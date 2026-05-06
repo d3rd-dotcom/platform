@@ -43,7 +43,10 @@ export default function SidebarInventoryCard({ shardCount, address, isCollapsed 
   const fetch = useCallback(async () => {
     setLoading(true);
     try {
-      const status = await window.fetch('/api/account/status', { cache: 'no-store', credentials: 'include' })
+      const statusUrl = address
+        ? `/api/account/status?walletAddress=${encodeURIComponent(address)}`
+        : '/api/account/status';
+      const status = await window.fetch(statusUrl, { cache: 'no-store', credentials: 'include' })
         .then(r => r.ok ? r.json().catch(() => null) : null)
         .catch(() => null);
       setHasVip(Boolean(status?.hasVipMembershipCard));
@@ -77,7 +80,7 @@ export default function SidebarInventoryCard({ shardCount, address, isCollapsed 
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [address]);
 
   useEffect(() => {
     if (address) fetch();

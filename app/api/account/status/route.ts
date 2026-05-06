@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
  * GET /api/account/status
  * Checks if the current user has a linked blockchain account
  */
-export async function GET() {
+export async function GET(request: Request) {
   if (!isDbConfigured()) {
     return NextResponse.json(
       { error: 'Database is not configured on the server.' },
@@ -33,16 +33,21 @@ export async function GET() {
   }
 
   try {
+    const requestedWallet = new URL(request.url).searchParams.get('walletAddress');
+    const checkedWalletAddress = requestedWallet && /^0x[a-fA-F0-9]{40}$/.test(requestedWallet)
+      ? requestedWallet
+      : user.walletAddress;
     const hasLinkedAccount = !!user.walletAddress;
-    const hasVipMembershipCard = hasLinkedAccount
-      ? await walletHoldsVipMembershipCard(user.walletAddress)
+    const hasVipMembershipCard = checkedWalletAddress
+      ? await walletHoldsVipMembershipCard(checkedWalletAddress)
       : false;
 
     return NextResponse.json(
       {
         hasLinkedAccount,
         hasVipMembershipCard,
-        walletAddress: user.walletAddress || undefined,
+        walletAddress: checkedWalletAddress || undefined,
+        linkedWalletAddress: user.walletAddress || undefined,
       },
       {
         headers: {

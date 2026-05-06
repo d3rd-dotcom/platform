@@ -30,7 +30,9 @@ export default function SidebarProfileCard({
   onSignOut,
 }: SidebarProfileCardProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [addressCopied, setAddressCopied] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const displayName = username && !username.startsWith('user_') ? username : null;
   const initials = displayName
     ? displayName.slice(0, 2).toUpperCase()
@@ -48,6 +50,38 @@ export default function SidebarProfileCard({
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, [menuOpen]);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    };
+  }, []);
+
+  const handleCopyAddress = async () => {
+    if (!address) return;
+
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(address);
+      } else {
+        const textarea = document.createElement('textarea');
+        textarea.value = address;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+      }
+
+      setAddressCopied(true);
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+      copyTimerRef.current = setTimeout(() => setAddressCopied(false), 1400);
+    } catch (error) {
+      console.error('Failed to copy wallet address:', error);
+    }
+  };
 
   if (isCollapsed) {
     return (
@@ -97,6 +131,15 @@ export default function SidebarProfileCard({
         <div className={styles.menu}>
           <button className={styles.menuItem} onClick={() => { setMenuOpen(false); onChangeAvatar(); }} type="button">Change Avatar</button>
           <button className={styles.menuItem} onClick={() => { setMenuOpen(false); onChangeUsername(); }} type="button">Change Username</button>
+          {address && (
+            <button
+              className={`${styles.menuItem} ${addressCopied ? styles.menuItemSuccess : ''}`}
+              onClick={() => void handleCopyAddress()}
+              type="button"
+            >
+              {addressCopied ? 'Copied Address' : 'Copy Address'}
+            </button>
+          )}
           <button className={styles.menuItem} onClick={() => { setMenuOpen(false); onConnections(); }} type="button">Connections</button>
           <div className={styles.menuDivider} />
           <button className={`${styles.menuItem} ${styles.menuItemDanger}`} onClick={() => { setMenuOpen(false); onSignOut(); }} type="button">Sign Out</button>

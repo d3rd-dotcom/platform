@@ -8,7 +8,6 @@ import { getClientIdentifier, checkRateLimit, getRateLimitHeaders } from '@/lib/
 import {
   walletHoldsVipMembershipCard,
   VIP_MEMBERSHIP_CARD_ADDRESS,
-  VIP_MEMBERSHIP_CARD_TOKEN_ID,
 } from '@/lib/soul-key';
 
 export const runtime = 'nodejs';
@@ -42,7 +41,7 @@ export async function POST(request: Request) {
         error: 'vip_required',
         message: 'Only the verified VIP Membership Card wallet can execute trades from Blue.',
         contractAddress: VIP_MEMBERSHIP_CARD_ADDRESS,
-        tokenId: VIP_MEMBERSHIP_CARD_TOKEN_ID.toString(),
+        tokenRequirement: 'any ERC-1155 token id held from this contract',
       },
       { status: 403, headers: rateLimitHeaders },
     );
