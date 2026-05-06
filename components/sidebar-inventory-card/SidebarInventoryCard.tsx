@@ -84,6 +84,7 @@ export default function SidebarInventoryCard({ shardCount, address, isCollapsed 
   }, [address, fetch]);
 
   const shardDisplay = shardCount !== null ? String(shardCount).padStart(3, '0') : '000';
+  const vipStatusClass = hasVip === null ? '' : hasVip ? styles.statValuePositive : styles.statValueNegative;
 
   if (isCollapsed) {
     return (
@@ -109,7 +110,7 @@ export default function SidebarInventoryCard({ shardCount, address, isCollapsed 
         </div>
         <div className={styles.statDivider} />
         <div className={styles.stat}>
-          <span className={styles.statValue}>{hasVip === null ? '--' : hasVip ? 'YES' : 'NO'}</span>
+          <span className={`${styles.statValue} ${vipStatusClass}`}>{hasVip === null ? '--' : hasVip ? 'YES' : 'NO'}</span>
           <span className={styles.statLabel}>VIP</span>
         </div>
       </div>

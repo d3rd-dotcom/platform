@@ -56,6 +56,14 @@
   letter-spacing: -0.01em;
 }
 
+.statValuePositive {
+  color: #44e990;
+}
+
+.statValueNegative {
+  color: #ff5a6d;
+}
+
 .statLabel {
   font-family: var(--font-primary);
   font-size: 9px;
@@ -162,6 +170,14 @@
 
 :global(:root:not([data-theme="dark"])) .statValue {
   color: #1a1d33;
+}
+
+:global(:root:not([data-theme="dark"])) .statValuePositive {
+  color: #1f7a3a;
+}
+
+:global(:root:not([data-theme="dark"])) .statValueNegative {
+  color: #c9253d;
 }
 
 :global(:root:not([data-theme="dark"])) .statLabel {

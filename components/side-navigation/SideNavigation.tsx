@@ -46,7 +46,7 @@ const desktopNavSections: NavSection[] = [
     id: 'extras',
     label: 'Community Resources',
     items: [
-      { id: 'research', label: 'Laboratory', href: '/research', iconSrc: '/icons/nav-laboratory.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'research', label: 'R-Tool', href: '/research', iconSrc: '/icons/nav-laboratory.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'simulations', label: 'Simulations', href: 'https://azure-world.vercel.app/', iconSrc: '/icons/nav-world.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
@@ -57,7 +57,7 @@ const mobileNavSections: NavSection[] = [
     id: 'extras',
     label: 'Community Resources',
     items: [
-      { id: 'research', label: 'Laboratory', href: '/research', iconSrc: '/icons/nav-laboratory.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'research', label: 'R-Tool', href: '/research', iconSrc: '/icons/nav-laboratory.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'simulations', label: 'Simulations', href: 'https://azure-world.vercel.app/', iconSrc: '/icons/nav-world.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },

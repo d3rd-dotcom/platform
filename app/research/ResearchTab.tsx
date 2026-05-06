@@ -14,6 +14,7 @@ import {
 } from 'chart.js';
 import { Scatter, Bar, Line } from 'react-chartjs-2';
 import Image from 'next/image';
+import { useTheme } from '@/components/theme/ThemeProvider';
 import styles from './page.module.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
@@ -225,8 +226,6 @@ Olga,26,A,93,16,4.8,North`;
 // ── Chart Config ─────────────────────────────────────────
 const monoFont = "'Space Mono', monospace";
 const buttonFont = "'IBM Plex Mono', monospace";
-const gridColor = 'rgba(26,27,36,0.08)';
-const tickColor = '#6b6890';
 const ACCENT_CLASSES = ['statTilePrimary', 'statTileAccent', 'statTileTertiary', 'statTileSecondary', 'statTileMental'] as const;
 const CHART_COLORS = [
   { bg: 'rgba(81,104,255,0.6)', border: '#5168FF' },
@@ -238,6 +237,7 @@ const CHART_COLORS = [
 ];
 
 export default function ResearchTab() {
+  const { theme } = useTheme();
   // ── Data State ──────────────────────────────────────
   const [columns, setColumns] = useState<ColumnDef[]>([]);
   const [rows, setRows] = useState<DataRow[]>([]);
@@ -285,6 +285,11 @@ export default function ResearchTab() {
   const numericCols = columns.filter(c => c.type === 'numeric');
   const categoricalCols = columns.filter(c => c.type === 'categorical');
   const n = rows.length;
+  const isDarkTheme = theme === 'dark';
+  const gridColor = isDarkTheme ? 'rgba(235,232,247,0.12)' : 'rgba(26,27,36,0.08)';
+  const tickColor = isDarkTheme ? 'rgba(235,232,247,0.62)' : '#6b6890';
+  const labelColor = isDarkTheme ? 'rgba(247,245,255,0.9)' : '#1A1B24';
+  const chartCanvasBackground = isDarkTheme ? '#191a26' : '#ffffff';
 
   const showToast = useCallback((msg: string) => {
     setToastMsg(msg);
@@ -294,7 +299,7 @@ export default function ResearchTab() {
 
   const colVals = (col: string) => rows.map(r => r[col]).filter((v): v is number => typeof v === 'number');
 
-  const loadData = (cols: ColumnDef[], data: DataRow[]) => {
+  const loadData = useCallback((cols: ColumnDef[], data: DataRow[]) => {
     setColumns(cols);
     setRows(data);
     const numCols = cols.filter(c => c.type === 'numeric').map(c => c.name);
@@ -314,7 +319,7 @@ export default function ResearchTab() {
     setBlueGenerated(false);
     setBlueRating(null);
     showToast(`DATASET LOADED — N=${data.length}, ${cols.length} VARIABLES`);
-  };
+  }, [showToast]);
 
   const parseAndLoad = useCallback((text: string) => {
     setParsing(true);
@@ -328,7 +333,7 @@ export default function ResearchTab() {
       }
       setParsing(false);
     }, 0);
-  }, [showToast]);
+  }, [loadData, showToast]);
 
   const handleCsvImport = () => {
     const text = csvText.trim();
@@ -514,10 +519,10 @@ export default function ResearchTab() {
             borderWidth: 2, pointRadius: 6,
           };
         });
-        return <Scatter data={{ datasets }} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { font: { family: monoFont, size: 10 }, color: '#1A1B24' } } }, scales: { x: { title: { display: true, text: chartX, font: { family: buttonFont, size: 10 }, color: tickColor }, grid: { color: gridColor }, ticks: { font: { family: monoFont, size: 9 }, color: tickColor } }, y: { title: { display: true, text: chartY, font: { family: buttonFont, size: 10 }, color: tickColor }, grid: { color: gridColor }, ticks: { font: { family: monoFont, size: 9 }, color: tickColor } } } }} />;
+        return <Scatter data={{ datasets }} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { font: { family: monoFont, size: 10 }, color: labelColor } } }, scales: { x: { title: { display: true, text: chartX, font: { family: buttonFont, size: 10 }, color: tickColor }, grid: { color: gridColor }, ticks: { font: { family: monoFont, size: 9 }, color: tickColor } }, y: { title: { display: true, text: chartY, font: { family: buttonFont, size: 10 }, color: tickColor }, grid: { color: gridColor }, ticks: { font: { family: monoFont, size: 9 }, color: tickColor } } } }} />;
       }
       const data = xVals.slice(0, minLen).map((x, i) => ({ x, y: yVals[i] }));
-      return <Scatter data={{ datasets: [{ label: `${chartX} vs ${chartY}`, data, backgroundColor: 'rgba(81,104,255,0.6)', borderColor: '#5168FF', borderWidth: 2, pointRadius: 6 }] }} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { font: { family: monoFont, size: 10 }, color: '#1A1B24' } } }, scales: { x: { title: { display: true, text: chartX, font: { family: buttonFont, size: 10 }, color: tickColor }, grid: { color: gridColor }, ticks: { font: { family: monoFont, size: 9 }, color: tickColor } }, y: { title: { display: true, text: chartY, font: { family: buttonFont, size: 10 }, color: tickColor }, grid: { color: gridColor }, ticks: { font: { family: monoFont, size: 9 }, color: tickColor } } } }} />;
+      return <Scatter data={{ datasets: [{ label: `${chartX} vs ${chartY}`, data, backgroundColor: 'rgba(81,104,255,0.6)', borderColor: '#5168FF', borderWidth: 2, pointRadius: 6 }] }} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { font: { family: monoFont, size: 10 }, color: labelColor } } }, scales: { x: { title: { display: true, text: chartX, font: { family: buttonFont, size: 10 }, color: tickColor }, grid: { color: gridColor }, ticks: { font: { family: monoFont, size: 9 }, color: tickColor } }, y: { title: { display: true, text: chartY, font: { family: buttonFont, size: 10 }, color: tickColor }, grid: { color: gridColor }, ticks: { font: { family: monoFont, size: 9 }, color: tickColor } } } }} />;
     }
 
     if (chartType === 'histogram') {
@@ -535,7 +540,7 @@ export default function ResearchTab() {
       if (!chartX || !chartY) return <div className={styles.emptyState}><p className={styles.emptyStateText}>Select category and value variables</p></div>;
       const cats = uniqueVals(chartX);
       const means = cats.map(c => { const vals = rows.filter(r => String(r[chartX]) === c).map(r => r[chartY]).filter((v): v is number => typeof v === 'number'); return mean(vals); });
-      return <Bar data={{ labels: cats, datasets: [{ label: `Mean ${chartY} by ${chartX}`, data: means, backgroundColor: cats.map((_, i) => CHART_COLORS[i % CHART_COLORS.length].bg), borderColor: cats.map((_, i) => CHART_COLORS[i % CHART_COLORS.length].border), borderWidth: 3 }] }} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { font: { family: monoFont, size: 10 }, color: '#1A1B24' } } }, scales: { x: { title: { display: true, text: chartX, font: { family: buttonFont, size: 10 }, color: tickColor }, grid: { display: false }, ticks: { font: { family: monoFont, size: 9 }, color: tickColor } }, y: { title: { display: true, text: `Mean ${chartY}`, font: { family: buttonFont, size: 10 }, color: tickColor }, grid: { color: gridColor }, ticks: { font: { family: monoFont, size: 9 }, color: tickColor }, beginAtZero: true } } }} />;
+      return <Bar data={{ labels: cats, datasets: [{ label: `Mean ${chartY} by ${chartX}`, data: means, backgroundColor: cats.map((_, i) => CHART_COLORS[i % CHART_COLORS.length].bg), borderColor: cats.map((_, i) => CHART_COLORS[i % CHART_COLORS.length].border), borderWidth: 3 }] }} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { font: { family: monoFont, size: 10 }, color: labelColor } } }, scales: { x: { title: { display: true, text: chartX, font: { family: buttonFont, size: 10 }, color: tickColor }, grid: { display: false }, ticks: { font: { family: monoFont, size: 9 }, color: tickColor } }, y: { title: { display: true, text: `Mean ${chartY}`, font: { family: buttonFont, size: 10 }, color: tickColor }, grid: { color: gridColor }, ticks: { font: { family: monoFont, size: 9 }, color: tickColor }, beginAtZero: true } } }} />;
     }
 
     if (chartType === 'line') {
@@ -543,7 +548,7 @@ export default function ResearchTab() {
       const xVals = rows.map(r => r[chartX]);
       const yVals = rows.map(r => r[chartY]).filter((v): v is number => typeof v === 'number');
       const labels = xVals.map(v => String(v));
-      return <Line data={{ labels, datasets: [{ label: `${chartY} over ${chartX}`, data: yVals, borderColor: '#5168FF', backgroundColor: 'rgba(81,104,255,0.1)', borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#5168FF', fill: true, tension: 0.3 }] }} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { font: { family: monoFont, size: 10 }, color: '#1A1B24' } } }, scales: { x: { title: { display: true, text: chartX, font: { family: buttonFont, size: 10 }, color: tickColor }, grid: { color: gridColor }, ticks: { font: { family: monoFont, size: 9 }, color: tickColor } }, y: { title: { display: true, text: chartY, font: { family: buttonFont, size: 10 }, color: tickColor }, grid: { color: gridColor }, ticks: { font: { family: monoFont, size: 9 }, color: tickColor } } } }} />;
+      return <Line data={{ labels, datasets: [{ label: `${chartY} over ${chartX}`, data: yVals, borderColor: '#5168FF', backgroundColor: 'rgba(81,104,255,0.1)', borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#5168FF', fill: true, tension: 0.3 }] }} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { font: { family: monoFont, size: 10 }, color: labelColor } } }, scales: { x: { title: { display: true, text: chartX, font: { family: buttonFont, size: 10 }, color: tickColor }, grid: { color: gridColor }, ticks: { font: { family: monoFont, size: 9 }, color: tickColor } }, y: { title: { display: true, text: chartY, font: { family: buttonFont, size: 10 }, color: tickColor }, grid: { color: gridColor }, ticks: { font: { family: monoFont, size: 9 }, color: tickColor } } } }} />;
     }
 
     if (chartType === 'boxplot') {
@@ -572,8 +577,8 @@ export default function ResearchTab() {
           {/* Y-axis ticks */}
           {ticks.map((t, i) => (
             <g key={i}>
-              <line x1={leftPad} y1={toY(t)} x2={leftPad + plotW} y2={toY(t)} stroke="rgba(26,27,36,0.08)" strokeWidth={1} />
-              <text x={leftPad - 6} y={toY(t) + 3} textAnchor="end" fill="#6b6890" fontSize={9} fontFamily="'Space Mono', monospace">{round2(t)}</text>
+              <line x1={leftPad} y1={toY(t)} x2={leftPad + plotW} y2={toY(t)} stroke={gridColor} strokeWidth={1} />
+              <text x={leftPad - 6} y={toY(t) + 3} textAnchor="end" fill={tickColor} fontSize={9} fontFamily="'Space Mono', monospace">{round2(t)}</text>
             </g>
           ))}
           {/* Boxes */}
@@ -592,14 +597,14 @@ export default function ResearchTab() {
                 {/* Median line */}
                 <line x1={cx - boxW / 2} y1={toY(g.med)} x2={cx + boxW / 2} y2={toY(g.med)} stroke={color.border} strokeWidth={3} />
                 {/* Group label */}
-                <text x={cx} y={svgH - 8} textAnchor="middle" fill="#1A1B24" fontSize={10} fontFamily="'IBM Plex Mono', monospace" fontWeight={600}>{g.name}</text>
+                <text x={cx} y={svgH - 8} textAnchor="middle" fill={labelColor} fontSize={10} fontFamily="'IBM Plex Mono', monospace" fontWeight={600}>{g.name}</text>
                 {/* N label */}
-                <text x={cx} y={svgH - 19} textAnchor="middle" fill="#6b6890" fontSize={8} fontFamily="'Space Mono', monospace">n={g.n}</text>
+                <text x={cx} y={svgH - 19} textAnchor="middle" fill={tickColor} fontSize={8} fontFamily="'Space Mono', monospace">n={g.n}</text>
               </g>
             );
           })}
           {/* Y-axis label */}
-          <text x={12} y={topPad + plotH / 2} textAnchor="middle" fill="#6b6890" fontSize={10} fontFamily="'IBM Plex Mono', monospace" transform={`rotate(-90, 12, ${topPad + plotH / 2})`}>{chartY}</text>
+          <text x={12} y={topPad + plotH / 2} textAnchor="middle" fill={tickColor} fontSize={10} fontFamily="'IBM Plex Mono', monospace" transform={`rotate(-90, 12, ${topPad + plotH / 2})`}>{chartY}</text>
         </svg>
       );
     }
@@ -763,7 +768,7 @@ export default function ResearchTab() {
         const c = document.createElement('canvas');
         c.width = img.width * 2; c.height = img.height * 2;
         const ctx = c.getContext('2d')!;
-        ctx.fillStyle = '#fff';
+        ctx.fillStyle = chartCanvasBackground;
         ctx.fillRect(0, 0, c.width, c.height);
         ctx.drawImage(img, 0, 0, c.width, c.height);
         const pngUrl = c.toDataURL('image/png');
@@ -786,7 +791,7 @@ export default function ResearchTab() {
         <div className={styles.headerBar}>
           <div className={styles.headerLeft}>
             <span className={styles.logoText}>MWA</span>
-            <span className={styles.logoTag}>Statistical Workbench</span>
+            <span className={styles.logoTag}>R-Tool Workbench</span>
           </div>
           <div className={styles.headerCenter}>
             <button className={styles.btnHeaderDemo} onClick={loadDemo}>LOAD DEMO DATA</button>

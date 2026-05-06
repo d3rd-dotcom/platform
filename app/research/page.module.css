@@ -5,6 +5,8 @@
   width: calc(100vw - var(--sidebar-width, 265px));
   max-width: calc(100vw - var(--sidebar-width, 265px));
   box-sizing: border-box;
+  background: #f5f5f5;
+  color: #1A1B24;
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1), width 0.3s cubic-bezier(0.25, 1, 0.5, 1), max-width 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
@@ -1029,4 +1031,264 @@
   .statsGrid {
     grid-template-columns: 1fr 1fr;
   }
+}
+
+/* ── DARK MODE ───────────────────────────────────────── */
+:global([data-theme="dark"]) .pageLayout {
+  background:
+    linear-gradient(180deg, rgba(30, 31, 45, 0.96) 0%, rgba(18, 19, 31, 0.98) 46%, #0c0d17 100%);
+  color: rgba(247, 245, 255, 0.92);
+}
+
+:global([data-theme="dark"]) .headerBar {
+  background: #11121d;
+  border-bottom-color: rgba(139, 149, 255, 0.24);
+  color: rgba(247, 245, 255, 0.94);
+}
+
+:global([data-theme="dark"]) .logoText,
+:global([data-theme="dark"]) .headerStatValue,
+:global([data-theme="dark"]) .entryTitle,
+:global([data-theme="dark"]) .fieldLabel,
+:global([data-theme="dark"]) .statTileValue,
+:global([data-theme="dark"]) .chartTitle,
+:global([data-theme="dark"]) .inferTitle {
+  color: rgba(247, 245, 255, 0.94);
+}
+
+:global([data-theme="dark"]) .logoTag {
+  color: #8b95ff;
+  border-color: rgba(139, 149, 255, 0.75);
+}
+
+:global([data-theme="dark"]) .headerStat,
+:global([data-theme="dark"]) .sectionLabel,
+:global([data-theme="dark"]) .entryDesc,
+:global([data-theme="dark"]) .fieldHint,
+:global([data-theme="dark"]) .liveSectionLabel,
+:global([data-theme="dark"]) .statTileLabel,
+:global([data-theme="dark"]) .statTileSub,
+:global([data-theme="dark"]) .corrNote,
+:global([data-theme="dark"]) .emptyStateText,
+:global([data-theme="dark"]) .inferSubtitle,
+:global([data-theme="dark"]) .inferNote {
+  color: rgba(235, 232, 247, 0.6);
+}
+
+:global([data-theme="dark"]) .sectionLabel::after {
+  background: rgba(235, 232, 247, 0.2);
+}
+
+:global([data-theme="dark"]) .brutCard,
+:global([data-theme="dark"]) .brutCardPrimary,
+:global([data-theme="dark"]) .brutCardAccent,
+:global([data-theme="dark"]) .chartCard,
+:global([data-theme="dark"]) .chartSingle,
+:global([data-theme="dark"]) .statTile {
+  background: rgba(25, 26, 38, 0.94);
+  border-color: rgba(235, 232, 247, 0.14);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.22);
+}
+
+:global([data-theme="dark"]) .input,
+:global([data-theme="dark"]) .select,
+:global([data-theme="dark"]) .csvTextarea {
+  background-color: rgba(15, 16, 27, 0.96);
+  border-color: rgba(235, 232, 247, 0.18);
+  color: rgba(247, 245, 255, 0.94);
+}
+
+:global([data-theme="dark"]) .select {
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23EBE8F7' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+:global([data-theme="dark"]) .input:focus,
+:global([data-theme="dark"]) .select:focus,
+:global([data-theme="dark"]) .csvTextarea:focus {
+  border-color: #8b95ff;
+  box-shadow: 3px 3px 0 rgba(139, 149, 255, 0.18);
+}
+
+:global([data-theme="dark"]) .input::placeholder,
+:global([data-theme="dark"]) .csvTextarea::placeholder {
+  color: rgba(235, 232, 247, 0.34);
+}
+
+:global([data-theme="dark"]) .btnPrimary,
+:global([data-theme="dark"]) .fileInput::file-selector-button {
+  background: #8b95ff;
+  border-color: #8b95ff;
+  color: #10111b;
+  box-shadow: 3px 3px 0 rgba(139, 149, 255, 0.24);
+}
+
+:global([data-theme="dark"]) .btnPrimary:hover,
+:global([data-theme="dark"]) .fileInput::file-selector-button:hover {
+  background: #aab0ff;
+  box-shadow: 4px 4px 0 rgba(139, 149, 255, 0.3);
+}
+
+:global([data-theme="dark"]) .btnOutline,
+:global([data-theme="dark"]) .btnExport {
+  color: rgba(235, 232, 247, 0.72);
+  border-color: rgba(235, 232, 247, 0.2);
+}
+
+:global([data-theme="dark"]) .btnOutline:hover,
+:global([data-theme="dark"]) .btnExport:hover {
+  border-color: #8b95ff;
+  color: #aab0ff;
+  box-shadow: 3px 3px 0 rgba(139, 149, 255, 0.14);
+}
+
+:global([data-theme="dark"]) .btnHeaderDemo {
+  color: #44e990;
+  border-color: rgba(68, 233, 144, 0.72);
+}
+
+:global([data-theme="dark"]) .btnHeaderDemo:hover {
+  background: #44e990;
+  color: #10111b;
+}
+
+:global([data-theme="dark"]) .tabBar {
+  border-bottom-color: rgba(235, 232, 247, 0.16);
+}
+
+:global([data-theme="dark"]) .tabBtn {
+  border-right-color: rgba(235, 232, 247, 0.12);
+  color: rgba(235, 232, 247, 0.54);
+}
+
+:global([data-theme="dark"]) .tabBtn:hover {
+  background: rgba(139, 149, 255, 0.1);
+  color: rgba(247, 245, 255, 0.9);
+}
+
+:global([data-theme="dark"]) .tabBtnActive {
+  background: #8b95ff;
+  color: #10111b;
+}
+
+:global([data-theme="dark"]) .checkboxRow,
+:global([data-theme="dark"]) .chartTitle,
+:global([data-theme="dark"]) .inferTitle {
+  border-bottom-color: rgba(235, 232, 247, 0.14);
+}
+
+:global([data-theme="dark"]) .dataTableWrapper {
+  border-color: rgba(235, 232, 247, 0.14);
+}
+
+:global([data-theme="dark"]) .dataTable thead,
+:global([data-theme="dark"]) .matrixHeader {
+  background: #11121d;
+  color: rgba(247, 245, 255, 0.92);
+}
+
+:global([data-theme="dark"]) .dataTable th {
+  border-right-color: rgba(235, 232, 247, 0.12);
+}
+
+:global([data-theme="dark"]) .dataTable td {
+  color: rgba(247, 245, 255, 0.88);
+  border-bottom-color: rgba(235, 232, 247, 0.1);
+  border-right-color: rgba(235, 232, 247, 0.08);
+}
+
+:global([data-theme="dark"]) .dataTable tr:nth-child(even) td {
+  background: rgba(139, 149, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .dataTable tr:hover td {
+  background: rgba(139, 149, 255, 0.12);
+}
+
+:global([data-theme="dark"]) .emptyRow {
+  color: rgba(235, 232, 247, 0.58);
+}
+
+:global([data-theme="dark"]) .tdN {
+  color: #aab0ff;
+}
+
+:global([data-theme="dark"]) .tdMean,
+:global([data-theme="dark"]) .fileInput {
+  color: rgba(247, 245, 255, 0.9);
+}
+
+:global([data-theme="dark"]) .tdSd {
+  color: #b8bdff;
+}
+
+:global([data-theme="dark"]) .tdMin {
+  color: #74c465;
+}
+
+:global([data-theme="dark"]) .tdMax {
+  color: #ff9a5c;
+}
+
+:global([data-theme="dark"]) .tdP {
+  color: #f2a0b5;
+}
+
+:global([data-theme="dark"]) .chartTypeBadge {
+  background: rgba(235, 232, 247, 0.1);
+  color: rgba(235, 232, 247, 0.64);
+}
+
+:global([data-theme="dark"]) .matrixCell {
+  border-color: rgba(235, 232, 247, 0.14);
+}
+
+:global([data-theme="dark"]) .matrixDiag {
+  background: rgba(139, 149, 255, 0.18);
+  color: #b8bdff;
+}
+
+:global([data-theme="dark"]) .matrixHighPos {
+  background: rgba(68, 233, 144, 0.18);
+  color: #8cf2bd;
+}
+
+:global([data-theme="dark"]) .matrixModPos {
+  background: rgba(68, 233, 144, 0.1);
+  color: #74c465;
+}
+
+:global([data-theme="dark"]) .matrixNeg {
+  background: rgba(255, 119, 41, 0.16);
+  color: #ff9a5c;
+}
+
+:global([data-theme="dark"]) .matrixLow {
+  background: rgba(235, 232, 247, 0.06);
+  color: rgba(235, 232, 247, 0.62);
+}
+
+:global([data-theme="dark"]) .emptyState {
+  border-color: rgba(235, 232, 247, 0.16);
+}
+
+:global([data-theme="dark"]) .bluePanel {
+  background: #11121d;
+  border-color: rgba(139, 149, 255, 0.26);
+}
+
+:global([data-theme="dark"]) .blueOutputLabel {
+  color: rgba(235, 232, 247, 0.48);
+}
+
+:global([data-theme="dark"]) .blueInterpretation {
+  color: rgba(247, 245, 255, 0.86);
+}
+
+:global([data-theme="dark"]) .bluePromptText {
+  color: rgba(235, 232, 247, 0.54);
+}
+
+:global([data-theme="dark"]) .toast {
+  background: #11121d;
+  color: rgba(247, 245, 255, 0.94);
 }
