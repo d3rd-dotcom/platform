@@ -170,6 +170,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [isLootBoxOpen, setIsLootBoxOpen] = useState(false);
   const [userLoadComplete, setUserLoadComplete] = useState(false);
+  const [hasVipSoulKey, setHasVipSoulKey] = useState(false);
   const { play } = useSound();
   const sessionCreatedForRef = useRef<string | null>(null);
   const accountMenuRef = useRef<HTMLDivElement>(null);
@@ -223,7 +224,32 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     args: address ? [address] : undefined,
     query: { enabled: !!address },
   });
-  const isPro = !!proTokenBalance && proTokenBalance > 0n;
+  const isPro = (!!proTokenBalance && proTokenBalance > 0n) || hasVipSoulKey;
+
+  useEffect(() => {
+    let cancelled = false;
+
+    if (!address) {
+      setHasVipSoulKey(false);
+      return;
+    }
+
+    window.fetch(`/api/account/status?walletAddress=${encodeURIComponent(address)}`, {
+      cache: 'no-store',
+      credentials: 'include',
+    })
+      .then((response) => response.ok ? response.json().catch(() => null) : null)
+      .then((status) => {
+        if (!cancelled) setHasVipSoulKey(Boolean(status?.hasVipMembershipCard));
+      })
+      .catch(() => {
+        if (!cancelled) setHasVipSoulKey(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [address]);
 
   // Create server session after wallet connects via ConnectKit
   const createSessionForWallet = async (walletAddress: string) => {
