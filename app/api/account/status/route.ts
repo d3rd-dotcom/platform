@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
-import { isDbConfigured, sqlQuery } from '@/lib/db';
+import { isDbConfigured } from '@/lib/db';
 import { walletHoldsVipMembershipCard } from '@/lib/soul-key';
 
 export const runtime = 'nodejs';
@@ -12,6 +12,34 @@ export const dynamic = 'force-dynamic';
  * Checks if the current user has a linked blockchain account
  */
 export async function GET(request: Request) {
+  const requestedWallet = new URL(request.url).searchParams.get('walletAddress');
+  if (requestedWallet && /^0x[a-fA-F0-9]{40}$/.test(requestedWallet)) {
+    try {
+      const hasVipMembershipCard = await walletHoldsVipMembershipCard(requestedWallet);
+      return NextResponse.json(
+        {
+          hasLinkedAccount: false,
+          hasVipMembershipCard,
+          walletAddress: requestedWallet,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+    } catch (err: any) {
+      console.error('Error checking wallet account status:', err);
+      return NextResponse.json(
+        { error: 'Failed to check account status.' },
+        {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
+  }
+
   if (!isDbConfigured()) {
     return NextResponse.json(
       { error: 'Database is not configured on the server.' },
@@ -33,10 +61,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const requestedWallet = new URL(request.url).searchParams.get('walletAddress');
-    const checkedWalletAddress = requestedWallet && /^0x[a-fA-F0-9]{40}$/.test(requestedWallet)
-      ? requestedWallet
-      : user.walletAddress;
+    const checkedWalletAddress = user.walletAddress;
     const hasLinkedAccount = !!user.walletAddress;
     const hasVipMembershipCard = checkedWalletAddress
       ? await walletHoldsVipMembershipCard(checkedWalletAddress)

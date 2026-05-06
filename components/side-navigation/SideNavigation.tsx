@@ -488,6 +488,10 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
 
   const navSections = isMobileMenuOpen ? mobileNavSections : desktopNavSections;
   const extrasSection = navSections.find((section) => section.id === 'extras');
+  const hasDisplayProfile = !!(username && !username.startsWith('user_'));
+  const hasConnectedWallet = !!(isConnected && address);
+  const shouldShowProfileSkeleton = !ready || (authenticated && !userLoadComplete);
+  const shouldShowProfileCards = !shouldShowProfileSkeleton && (hasConnectedWallet || hasDisplayProfile);
 
   const renderSection = (section: NavSection) => {
     const isExtras = section.id === 'extras';
@@ -593,6 +597,70 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     );
   };
 
+  const renderProfileSpace = () => {
+    if (shouldShowProfileSkeleton) {
+      return (
+        <div className={styles.profileSkeletonCard} aria-label="Loading profile">
+          <div className={styles.profileSkeletonAvatar} />
+          {!isCollapsed && (
+            <div className={styles.profileSkeletonLines}>
+              <span className={styles.profileSkeletonLineWide} />
+              <span className={styles.profileSkeletonLineShort} />
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    if (shouldShowProfileCards) {
+      return (
+        <>
+          <SidebarProfileCard
+            username={username}
+            avatarUrl={avatarUrl}
+            address={address}
+            isCollapsed={isCollapsed}
+            onChangeAvatar={handleAvatarClick}
+            onChangeUsername={handleUsernameClick}
+            onConnections={() => setIsYourAccountsModalOpen(true)}
+            onSignOut={handleSignOut}
+          />
+          <SidebarInventoryCard
+            shardCount={shardCount}
+            address={address}
+            isCollapsed={isCollapsed}
+          />
+        </>
+      );
+    }
+
+    return (
+      <div className={styles.profileSyncCard}>
+        <button
+          className={styles.profileSyncButton}
+          onClick={() => {
+            play('click');
+            login();
+            setIsMobileMenuOpen(false);
+          }}
+          onMouseEnter={() => play('hover')}
+          disabled={isCreatingSession}
+          type="button"
+          title="Sync"
+        >
+          {isCollapsed ? (
+            <Image src="/icons/ui-plug.svg" alt="" width={18} height={18} className={styles.profileSyncIcon} />
+          ) : (
+            <>
+              <span>{isCreatingSession ? 'SYNCING' : 'SYNC'}</span>
+              <Image src="/icons/ui-plug.svg" alt="" width={16} height={16} className={styles.profileSyncIcon} />
+            </>
+          )}
+        </button>
+      </div>
+    );
+  };
+
   return (
     <>
       {/* Mobile Top Bar */}
@@ -625,25 +693,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
       >
 
         {/* Profile + Inventory cards — always visible at top */}
-        {((isConnected && address) || (username && !username.startsWith('user_'))) && userLoadComplete && (
-          <>
-            <SidebarProfileCard
-              username={username}
-              avatarUrl={avatarUrl}
-              address={address}
-              isCollapsed={isCollapsed}
-              onChangeAvatar={handleAvatarClick}
-              onChangeUsername={handleUsernameClick}
-              onConnections={() => setIsYourAccountsModalOpen(true)}
-              onSignOut={handleSignOut}
-            />
-            <SidebarInventoryCard
-              shardCount={shardCount}
-              address={address}
-              isCollapsed={isCollapsed}
-            />
-          </>
-        )}
+        {renderProfileSpace()}
 
         {/* Navigation Sections */}
         <div className={styles.navSections}>
@@ -707,34 +757,6 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
           )}
         </div>
 
-        {/* Bottom Section — Sign In only for unauthenticated */}
-        {!((isConnected && address) || (username && !username.startsWith('user_'))) && (
-          <div className={styles.bottomSection}>
-            <button
-              className={styles.connectWalletButton}
-              onClick={() => {
-                play('click');
-                login();
-                setIsMobileMenuOpen(false);
-              }}
-              onMouseEnter={() => play('hover')}
-              disabled={isCreatingSession}
-              title="Sign In"
-            >
-              {isCollapsed ? (
-                <Image src="/icons/ui-plug.svg" alt="" width={18} height={18} style={{ filter: 'invert(1)' }} />
-              ) : (
-                <>
-                  <span className={styles.slideTextWrap}>
-                    <span className={styles.slideText}>{isCreatingSession ? 'Connecting...' : 'Sign In'}</span>
-                    <span className={`${styles.slideText} ${styles.slideTextClone}`}>{isCreatingSession ? 'Connecting...' : 'Sign In'}</span>
-                  </span>
-                  <Image src="/icons/ui-plug.svg" alt="" width={16} height={16} style={{ marginLeft: 6, filter: 'invert(1)' }} />
-                </>
-              )}
-            </button>
-          </div>
-        )}
       </nav>
 
       {/* Modals */}

@@ -179,6 +179,22 @@
   padding: 10px 6px;
 }
 
+.sideNavCollapsed .profileSkeletonCard,
+.sideNavCollapsed .profileSyncCard {
+  margin: 12px 8px 0;
+}
+
+.sideNavCollapsed .profileSkeletonCard {
+  justify-content: center;
+  padding: 8px 0;
+  min-height: 54px;
+}
+
+.sideNavCollapsed .profileSyncButton {
+  min-height: 54px;
+  padding: 8px 0;
+}
+
 /* Fade transitions for text content during collapse */
 .navItemLabel,
 .shardsLabel,
@@ -210,6 +226,121 @@
   0%   { border-color: rgba(81, 104, 255, 0.25); box-shadow: 0 0 8px rgba(81, 104, 255, 0.1); }
   50%  { border-color: rgba(167, 139, 250, 0.4); box-shadow: 0 0 12px rgba(167, 139, 250, 0.15); }
   100% { border-color: rgba(81, 104, 255, 0.25); box-shadow: 0 0 8px rgba(81, 104, 255, 0.1); }
+}
+
+@keyframes profileSkeletonPulse {
+  0% { opacity: 0.45; }
+  50% { opacity: 0.9; }
+  100% { opacity: 0.45; }
+}
+
+.profileSkeletonCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 10px 0;
+  min-height: 62px;
+  padding: 10px 12px;
+  background: var(--color-grey-900, #1a1b24);
+  border: 1px solid var(--color-grey-700, #2a2b36);
+  border-radius: 12px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.profileSkeletonAvatar,
+.profileSkeletonLineWide,
+.profileSkeletonLineShort {
+  display: block;
+  background: rgba(227, 225, 238, 0.14);
+  animation: profileSkeletonPulse 1.25s ease-in-out infinite;
+}
+
+.profileSkeletonAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.profileSkeletonLines {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profileSkeletonLineWide {
+  width: 78%;
+  height: 12px;
+  border-radius: 999px;
+}
+
+.profileSkeletonLineShort {
+  width: 52%;
+  height: 10px;
+  border-radius: 999px;
+}
+
+.profileSyncCard {
+  margin: 12px 10px 0;
+  flex-shrink: 0;
+}
+
+.profileSyncButton {
+  width: 100%;
+  min-height: 62px;
+  padding: 10px 12px;
+  background: var(--color-primary);
+  border: 2px solid #1A1D33;
+  border-radius: 12px;
+  font-family: var(--font-button);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 3px 3px 0 #1A1D33;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+}
+
+.profileSyncButton:hover {
+  background: var(--color-primary-hover);
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #1A1D33;
+}
+
+.profileSyncButton:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 #1A1D33;
+}
+
+.profileSyncButton:disabled {
+  opacity: 0.72;
+  cursor: wait;
+}
+
+.profileSyncIcon {
+  flex-shrink: 0;
+  filter: invert(1);
+}
+
+:global(:root:not([data-theme="dark"])) .profileSkeletonCard {
+  background: #f4f5fe;
+  border-color: rgba(26, 27, 36, 0.1);
+}
+
+:global(:root:not([data-theme="dark"])) .profileSkeletonAvatar,
+:global(:root:not([data-theme="dark"])) .profileSkeletonLineWide,
+:global(:root:not([data-theme="dark"])) .profileSkeletonLineShort {
+  background: rgba(26, 29, 51, 0.1);
 }
 
 .blueChatButton {
@@ -1520,6 +1651,22 @@
 :global([data-theme="dark"]) .bottomSection {
   border-top-color: var(--color-border-subtle);
   background: color-mix(in oklch, var(--color-surface-base) 82%, transparent);
+}
+
+:global([data-theme="dark"]) .profileSkeletonCard {
+  background: var(--color-grey-900, #1a1b24);
+  border-color: var(--color-border-subtle);
+}
+
+:global([data-theme="dark"]) .profileSkeletonAvatar,
+:global([data-theme="dark"]) .profileSkeletonLineWide,
+:global([data-theme="dark"]) .profileSkeletonLineShort {
+  background: rgba(227, 225, 238, 0.14);
+}
+
+:global([data-theme="dark"]) .profileSyncButton {
+  border-color: var(--color-border-subtle);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
 }
 
 :global([data-theme="dark"]) .shardsCounter {
