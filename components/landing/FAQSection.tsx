@@ -8,32 +8,52 @@ const FAQ_ITEMS = [
   {
     question: 'What is Mental Wealth Academy?',
     answer:
-      'Mental Wealth Academy is a guided 12-week personal growth program. It combines journaling, reflection, practical exercises, and community support to help you build better habits, understand yourself more clearly, and make real changes in your life.',
+      'Mental Wealth Academy is a mobile learning and research platform for mental wellness, financial literacy, and behavioral science. Members move through structured curriculum, complete assessments and surveys, work with B.L.U.E., and help produce data that can fund the community instead of being extracted by outside platforms.',
   },
   {
-    question: 'What does the 12-week course cover?',
+    question: 'How does the 12-week course work?',
     answer:
-      'Each week focuses on a different part of your life and mindset, including safety, identity, confidence, boundaries, connection, compassion, and purpose. The course gives you structured prompts and exercises that help you reflect, stay consistent, and apply what you learn in everyday life.',
+      'The first season is organized around Security, Identity, Power, and Connection. Each module combines reading, reflection, behavioral exercises, and research-backed assessments such as WHO-5, PSS-10, GSE, and BRS so progress creates useful longitudinal signal, not just app engagement.',
   },
   {
     question: 'What kind of tools do you use?',
     answer:
-      'We research and integrate tools from neuroscience and personal development. Things like reflective journaling frameworks, cognitive behavioral exercises, mindfulness protocols, and decision-making models. All of it bolted onto infrastructure that gives you ownership over your progress.',
+      'MWA uses curriculum tools, surveys, AI review, on-chain rewards, DAO proposals, treasury tracking, and market research workflows. The point is to give members a shared research stack: tools for learning, tools for measuring behavior, and tools for deciding how value moves back through the community.',
   },
   {
-    question: 'What are companions?',
+    question: 'What is B.L.U.E.?',
     answer:
-      'Companions are AI guides inside the platform. They remember your progress, help you stay oriented, and add personality to the experience. You can think of them as supportive digital characters that help carry the story and guide you through different parts of the program.',
+      'B.L.U.E. stands for Behavioral Learning & Understanding Engine. She is the AI companion architecture inside MWA, built to help with reflection, assessment review, research workflows, reward decisions, and market analysis. She is not a generic chatbot pasted onto a course.',
   },
   {
     question: 'How much time does it take each week?',
     answer:
-      'Roughly 2 to 3 hours. One lesson, one reflective exercise, one optional discussion with your cohort. You move at your own pace. Consistency matters more than speed here.',
+      'Most members should expect 2 to 3 focused hours each week for the core course: one module, one reflection or assessment, and optional cohort discussion. Extra surveys, DAO proposals, research tasks, and B.L.U.E. workflows can add more time when you want to participate more deeply.',
   },
   {
     question: 'Is this a therapy replacement?',
     answer:
-      'No. This is education on psychology and behavioral improvement, not clinical treatment. We teach you frameworks for understanding how your mind works, how groups coordinate, and how to take ownership of your mental wealth. If you need therapy, get therapy. This sits alongside it.',
+      'No. MWA is education, research participation, and community infrastructure. It is not diagnosis, crisis care, or clinical treatment. If you need therapy or medical support, use a qualified professional. MWA can sit alongside care, but it should not replace it.',
+  },
+  {
+    question: 'How does membership work?',
+    answer:
+      'Explorer members can start free with the core course, journaling, weekly quests, community access, and shard rewards. Paid members unlock governance, research tools, proposal access, and deeper B.L.U.E. features. The $90 VIP membership is the lifetime option with an on-chain membership card.',
+  },
+  {
+    question: 'How do you make money?',
+    answer:
+      'MWA revenue comes from activity inside the system: token trading fees, the shop, and fees for premium B.L.U.E. workflows such as the prediction market agent. The long-term model also includes research partnerships and licensing the assessment and AI stack after enough cohorts produce reliable signal.',
+  },
+  {
+    question: 'How do I make money?',
+    answer:
+      'Members can earn through eligible surveys, research tasks, quests, and funded community work. Surveys pay for your time and the usefulness of your answers. Higher-effort studies may carry higher rewards when funded by the DAO, partners, or research budgets. Rewards can vary by campaign and are not guaranteed income.',
+  },
+  {
+    question: 'What do I get in the $90 VIP Membership?',
+    answer:
+      'The $90 VIP Membership gives lifetime access, an on-chain membership card, treasury participation, and access to the Academic Angel cohort. The cohort is capped around 33 members, with data scientists and builders producing surveys, reviewing results, and helping direct DAO funding toward individual projects aligned with testing and research participation.',
   },
 ];
 
