@@ -3,11 +3,13 @@ import bluePersona from '@/lib/bluepersonality.json';
 
 const ELIZA_BASE_URL = (process.env.ELIZA_API_BASE_URL || 'https://www.elizacloud.ai').replace(/\/+$/, '');
 const ELIZA_API_KEY = process.env.ELIZA_API_KEY || '';
+const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY || '';
 const blueConfig = bluePersona as {
   settings?: { voice?: { voiceId?: string; model?: string } };
   tts?: { elevenlabs?: { voiceId?: string; modelId?: string } };
 };
 const BLUE_VOICE_ID =
+  process.env.ELEVENLABS_VOICE_ID ||
   blueConfig.settings?.voice?.voiceId ||
   blueConfig.tts?.elevenlabs?.voiceId ||
   '';
@@ -15,6 +17,21 @@ const BLUE_VOICE_MODEL =
   blueConfig.settings?.voice?.model ||
   blueConfig.tts?.elevenlabs?.modelId ||
   'eleven_flash_v2_5';
+
+async function requestElevenLabsTts(text: string, voiceId: string, modelId?: string) {
+  return fetch(`https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(voiceId)}?output_format=mp3_44100_128`, {
+    method: 'POST',
+    headers: {
+      'xi-api-key': ELEVENLABS_API_KEY,
+      'Content-Type': 'application/json',
+      'Accept': 'audio/mpeg',
+    },
+    body: JSON.stringify({
+      text,
+      model_id: modelId || BLUE_VOICE_MODEL,
+    }),
+  });
+}
 
 async function requestTts(path: string, text: string, voiceId?: string, modelId?: string) {
   const payload: Record<string, string> = {
@@ -38,7 +55,7 @@ async function requestTts(path: string, text: string, voiceId?: string, modelId?
 }
 
 export async function POST(req: NextRequest) {
-  if (!ELIZA_API_KEY) {
+  if (!ELEVENLABS_API_KEY && !ELIZA_API_KEY) {
     return NextResponse.json({ error: 'TTS not configured' }, { status: 500 });
   }
 
@@ -54,6 +71,23 @@ export async function POST(req: NextRequest) {
 
     const resolvedVoiceId = voiceId || BLUE_VOICE_ID || undefined;
     const resolvedModelId = modelId || BLUE_VOICE_MODEL;
+    if (ELEVENLABS_API_KEY && resolvedVoiceId) {
+      const elevenLabsResponse = await requestElevenLabsTts(text, resolvedVoiceId, resolvedModelId);
+
+      if (elevenLabsResponse.ok) {
+        const arrayBuffer = await elevenLabsResponse.arrayBuffer();
+        const base64 = Buffer.from(arrayBuffer).toString('base64');
+        return NextResponse.json({ audio: base64 });
+      }
+
+      const errText = await elevenLabsResponse.text();
+      console.error('ElevenLabs TTS error:', elevenLabsResponse.status, errText.slice(0, 200));
+
+      if (!ELIZA_API_KEY) {
+        return NextResponse.json({ error: 'TTS generation failed' }, { status: elevenLabsResponse.status });
+      }
+    }
+
     const attempts: Array<{ label: string; path: string; voiceId?: string }> = [
       { label: 'v1-configured-voice', path: '/api/v1/voice/tts', voiceId: resolvedVoiceId },
       { label: 'v1-default-voice', path: '/api/v1/voice/tts' },

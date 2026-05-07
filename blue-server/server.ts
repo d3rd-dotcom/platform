@@ -30,6 +30,7 @@ const PORT = parseInt(process.env.PORT || "3001", 10);
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
 const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL || "";
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY || "";
+const ELEVENLABS_VOICE_ID = process.env.ELEVENLABS_VOICE_ID || "";
 const POSTGRES_URL = process.env.POSTGRES_URL || "";
 const blueCharacter = blueCharacterData as any;
 
@@ -45,7 +46,7 @@ function normalizeMessageExamples(messageExamples: unknown) {
   }).filter((entry) => entry.length > 0);
 }
 
-const voiceSettings = blueCharacter.settings?.voice ?? (
+const baseVoiceSettings = blueCharacter.settings?.voice ?? (
   blueCharacter.tts?.provider === "elevenlabs"
     ? {
         provider: "elevenlabs",
@@ -54,6 +55,9 @@ const voiceSettings = blueCharacter.settings?.voice ?? (
       }
     : undefined
 );
+const voiceSettings = baseVoiceSettings
+  ? { ...baseVoiceSettings, ...(ELEVENLABS_VOICE_ID ? { voiceId: ELEVENLABS_VOICE_ID } : {}) }
+  : undefined;
 
 // ── Character setup ──────────────────────────────────────────
 const character: Character = createCharacter({

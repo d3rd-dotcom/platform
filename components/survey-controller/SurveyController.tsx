@@ -52,9 +52,6 @@ export default function SurveyController({
           <span className={styles.userName}>{userName}</span>
           <span className={styles.version}>{version}</span>
         </div>
-        <div className={styles.subtitleRow}>
-          <span className={styles.subtitle}>Complete User Form</span>
-        </div>
         <div className={styles.controlRow}>
           <span className={styles.controlLabel}>Character set</span>
           <span className={styles.controlLabel}>Persona</span>

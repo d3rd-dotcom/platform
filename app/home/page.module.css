@@ -6,7 +6,7 @@
   height: calc(100dvh - 72px);
   min-height: 0;
   display: flex;
-  background: oklch(0.25 0.02 270.56);
+  background: #FBF8FF;
   overflow: hidden;
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
@@ -20,6 +20,10 @@
   height: 100%;
   min-height: 0;
   overflow: hidden;
+}
+
+:global([data-theme="dark"]) .pageLayout {
+  background: var(--color-surface-base);
 }
 
 /* Collapse sidebar offset on mobile */

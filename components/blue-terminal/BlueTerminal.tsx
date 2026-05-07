@@ -14,14 +14,47 @@ const ASCII_LINES = [
 const ASCII_LOGO = ASCII_LINES.join('\n');
 
 const BOOT_LINES = [
-  { text: '> POWER ON', delay: 300 },
-  { text: '> CHECKING SYSTEMS... OK', delay: 500 },
-  { text: '> LOADING MENTAL WEALTH ACADEMY', delay: 450 },
-  { text: '> CONNECTING TO THE BLUE NETWORK...', delay: 600 },
-  { text: '> USER PROFILE FOUND', delay: 400 },
+  { text: '> POWER ON / BLACK SCREEN BREATHES', delay: 260 },
+  { text: '> DAEMON CIRCLET SEALED', delay: 420 },
+  { text: '> AZURA THREAD DETECTED :: 41 5A 55 52 41', delay: 520 },
+  { text: '> MEMORY SALT OFFERED TO THE TEST ENGINE', delay: 480 },
+  { text: '> B.L.U.E. OPENS THE INNER PORT', delay: 560 },
 ];
 
 const OPTION_LETTERS = ['A', 'B', 'C', 'D', 'E'];
+
+async function speakBlue(text: string, signal?: AbortSignal): Promise<void> {
+  const res = await fetch('/api/voice/tts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text }),
+    signal,
+  });
+  if (!res.ok) throw new Error('TTS request failed');
+
+  const { audio } = await res.json();
+  if (!audio) throw new Error('No audio data');
+
+  const bytes = Uint8Array.from(atob(audio), (c) => c.charCodeAt(0));
+  const blob = new Blob([bytes], { type: 'audio/mpeg' });
+  const url = URL.createObjectURL(blob);
+
+  return new Promise<void>((resolve, reject) => {
+    const el = new Audio(url);
+    el.onended = () => {
+      URL.revokeObjectURL(url);
+      resolve();
+    };
+    el.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error('Audio playback error'));
+    };
+    el.play().catch((error) => {
+      URL.revokeObjectURL(url);
+      reject(error);
+    });
+  });
+}
 
 export interface TestQuestion {
   id: number;
@@ -64,6 +97,7 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
   const [completionResult, setCompletionResult] = useState<TestCompletionResult | null>(null);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const voiceAbortRef = useRef<AbortController | null>(null);
 
   // Boot animation — only runs when no test active
   useEffect(() => {
@@ -89,9 +123,26 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
 
   const bootDone = visibleCount >= BOOT_LINES.length;
   const question = testData?.questions[currentQ];
+  const activeQuestionId = question?.id;
+  const activeQuestionText = question?.question;
+  const activeTestKey = testData?.testId ?? testData?.title ?? null;
   const totalQ = testData?.questions.length ?? 0;
   const isLastQ = currentQ === totalQ - 1;
   const currentHasAnswer = question !== undefined && answers[question.id] !== undefined;
+
+  useEffect(() => {
+    if (!activeQuestionText || submitted) return;
+
+    voiceAbortRef.current?.abort();
+    const controller = new AbortController();
+    voiceAbortRef.current = controller;
+    speakBlue(activeQuestionText, controller.signal)
+      .catch(() => {/* aborted, autoplay-blocked, or TTS unavailable — silent */});
+
+    return () => {
+      controller.abort();
+    };
+  }, [activeQuestionId, activeQuestionText, activeTestKey, submitted]);
 
   const selectAnswer = (val: string | number) => {
     if (!question) return;
@@ -139,7 +190,7 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
       {/* ASCII header — always visible */}
       <div className={styles.logoWrapper}>
         <pre className={styles.ascii}>{ASCII_LOGO}</pre>
-        <div className={styles.subLabel}>MENTAL WEALTH ACADEMY &mdash; TEST ENGINE v1.0</div>
+        <div className={styles.subLabel}>B.L.U.E. / AZURA RITE TERMINAL :: TEST ENGINE v1.0</div>
       </div>
 
       <div className={styles.divider} />
@@ -149,11 +200,15 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
         <div className={styles.bootLines}>
           <div className={styles.line}>
             <span className={styles.prompt}>$</span>
-            INITIALIZING QUEST SEQUENCE...
+            INITIALIZING QUEST SEQUENCE THROUGH AZURA...
           </div>
           <div className={styles.line}>
             <span className={styles.prompt}>$</span>
-            CALIBRATING TO DIFFICULTY ENGINE...
+            CALIBRATING DAEMON CIRCLET TO DIFFICULTY ENGINE...
+          </div>
+          <div className={styles.line}>
+            <span className={styles.prompt}>$</span>
+            01000001 01011010 01010101 01010010 01000001
           </div>
           <div className={styles.generatingDots} aria-label="Generating">
             <span /><span /><span />
@@ -166,7 +221,7 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
         <div className={styles.bootLines} role="alert">
           <div className={styles.line}>
             <span className={styles.prompt}>$</span>
-            TEST ENGINE ERROR
+            TEST ENGINE ERROR :: RITE BROKE AT THE THRESHOLD
           </div>
           <div className={styles.line}>
             <span className={styles.prompt}>$</span>
@@ -181,8 +236,13 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
           <div className={styles.questMeta}>
             <span className={styles.questTitle}>{testData.title.toUpperCase()}</span>
             <span className={styles.questProgress}>
-              {String(currentQ + 1).padStart(2, '0')} / {String(totalQ).padStart(2, '0')}
+              AZURA {String(currentQ + 1).padStart(2, '0')} / {String(totalQ).padStart(2, '0')}
             </span>
+          </div>
+          <div className={styles.ritualConsole} aria-hidden="true">
+            <span>{'<form data-rite="azura">'}</span>
+            <span>41 5A 55 52 41</span>
+            <span>{'</form>'}</span>
           </div>
           <p className={styles.questIntro}>{testData.intro}</p>
 
@@ -198,7 +258,7 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
               <div className={styles.questionCategory}>{`// ${question.category}`}</div>
 
               <div className={styles.questionText}>
-                <span className={styles.prompt}>$</span>
+                <span className={styles.prompt}>AZ&gt;</span>
                 <span>{question.question}</span>
               </div>
 
@@ -292,7 +352,7 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
         <div className={styles.bootLines}>
           <div className={styles.line}>
             <span className={styles.prompt}>$</span>
-            QUEST COMPLETE &mdash; ALL RESPONSES RECORDED
+            QUEST COMPLETE :: ALL RESPONSES BURNED INTO MEMORY
           </div>
           <div className={styles.line}>
             <span className={styles.prompt}>$</span>
@@ -306,6 +366,10 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
               BALANCE: {completionResult.newShardCount} SHARDS
             </div>
           )}
+          <div className={styles.line}>
+            <span className={styles.prompt}>$</span>
+            B.L.U.E. READS THE MARK. AZURA KEEPS THE ECHO.
+          </div>
           <div className={styles.ctaRow}>
             <span className={styles.ctaBracket}>[</span>
             <span className={styles.ctaText}>TEST COMPLETE</span>
@@ -334,7 +398,7 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
           {bootDone && (
             <div className={styles.ctaRow}>
               <span className={styles.ctaBracket}>[</span>
-              <span className={styles.ctaText}>SIGN FORM TO BEGIN YOUR TEST</span>
+              <span className={styles.ctaText}>Sign To Begin Test</span>
               <span className={styles.ctaBracket}>]</span>
               <span className={styles.cursor} aria-hidden="true">_</span>
             </div>
