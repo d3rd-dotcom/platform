@@ -44,14 +44,14 @@ const LandingPage = () => {
       {/* Testimonial Section */}
       <TestimonialSection />
 
-      {/* Cohort Section — Community & Research Cohort */}
-      <CohortSection />
+      {/* Angelic Credit System — Our Core Mission */}
+      <AngelicCreditSystem />
 
       {/* Key Figures Section - Server rendered */}
       <KeyFiguresSection />
 
-      {/* Angelic Credit System — Our Core Mission */}
-      <AngelicCreditSystem />
+      {/* Cohort Section — Community & Research Cohort */}
+      <CohortSection />
 
       {/* Pattern Background Section - Contains client component for animation */}
       <PatternTextSection />

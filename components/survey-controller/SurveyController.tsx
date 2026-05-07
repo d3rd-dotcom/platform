@@ -17,9 +17,9 @@ interface SurveyControllerProps {
 }
 
 export default function SurveyController({
-  userName = 'B.L.U.E. System Form',
+  userName = 'Welcome',
   version = 'V.e1-MWA36B',
-  characterImageSrc = '/ImageBlueTV.png',
+  characterImageSrc = '/uploads/blueavatar.mp4',
   difficulty: initialDifficulty = 101,
   persona = 'B.L.U.E. (default persona)',
   onSignForm,
@@ -55,14 +55,50 @@ export default function SurveyController({
         <div className={styles.subtitleRow}>
           <span className={styles.subtitle}>Complete User Form</span>
         </div>
-        <button className={styles.ctaButton} onClick={onSignForm} type="button">
-          Sign Form To Begin
-        </button>
+        <div className={styles.controlRow}>
+          <span className={styles.controlLabel}>Character set</span>
+          <span className={styles.controlLabel}>Persona</span>
+        </div>
+
+        <div className={styles.dropdownOuter}>
+          <div className={styles.dropdownInner}>
+            <span className={styles.dropdownText}>{persona}</span>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              className={styles.chevronIcon}
+              aria-hidden="true"
+            >
+              <path
+                d="M4 6L8 10L12 6"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+        </div>
       </div>
 
       <div className={styles.imagePanel}>
         <div className={styles.imageWrapper}>
-          {characterImageSrc ? (
+          {characterImageSrc.endsWith('.mp4') ? (
+            <video
+              className={styles.characterVideo}
+              src={characterImageSrc}
+              autoPlay
+              loop
+              muted
+              playsInline
+              disablePictureInPicture
+              disableRemotePlayback
+              controlsList="nodownload nofullscreen noremoteplayback"
+              aria-label="B.L.U.E. avatar"
+            />
+          ) : characterImageSrc ? (
             <Image
               src={characterImageSrc}
               alt="Character"
@@ -107,32 +143,9 @@ export default function SurveyController({
           </p>
         </div>
 
-        <div className={styles.controlRow}>
-          <span className={styles.controlLabel}>Character set</span>
-          <span className={styles.controlLabel}>Persona</span>
-        </div>
-
-        <div className={styles.dropdownOuter}>
-          <div className={styles.dropdownInner}>
-            <span className={styles.dropdownText}>{persona}</span>
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              className={styles.chevronIcon}
-              aria-hidden="true"
-            >
-              <path
-                d="M4 6L8 10L12 6"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-        </div>
+        <button className={styles.ctaButton} onClick={onSignForm} type="button">
+          Sign Form To Begin
+        </button>
       </div>
     </div>
   );

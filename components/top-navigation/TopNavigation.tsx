@@ -11,7 +11,7 @@ import { useTheme } from '@/components/theme/ThemeProvider';
 import SoundToggle from '@/components/sound/SoundToggle';
 
 const NAV_LINKS = [
-  { label: 'Surveys',   href: '/home',      icon: '/icons/nav-home.svg' },
+  { label: 'Surveys',   href: '/surveys',   icon: '/icons/nav-home.svg' },
   { label: 'Markets',   href: '/markets',   icon: '/icons/nav-markets.svg' },
   { label: 'Social',    href: '/community', icon: '/icons/nav-community.svg' },
   { label: 'Skills',    href: '/prompts',   icon: '/icons/ui-book.svg' },
@@ -77,7 +77,7 @@ const TopNavigation: React.FC = () => {
 
         <nav className={styles.centerNav} aria-label="Main navigation">
           {NAV_LINKS.map(({ label, href, icon }) => {
-            const active = pathname === href || pathname?.startsWith(href + '/');
+            const active = pathname === href || pathname?.startsWith(href + '/') || (href === '/surveys' && pathname === '/home');
             return (
               <Link
                 key={href}

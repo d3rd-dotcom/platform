@@ -7,10 +7,11 @@
   padding: 10px 12px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: clamp(8px, 1.8vh, 16px);
   width: 421px;
   flex-shrink: 0;
-  overflow-y: auto;
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* Top Wrapper */
@@ -57,23 +58,30 @@
 }
 
 .ctaButton {
+  position: relative;
+  overflow: hidden;
   width: 100%;
-  height: 74px;
-  background: #5169ff;
-  border: 1px solid #343333;
+  height: clamp(52px, 8.5vh, 74px);
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0) 18%, rgba(255, 255, 255, 0.1) 44%, rgba(255, 255, 255, 0) 66%),
+    linear-gradient(135deg, #465cff 0%, #5f70ff 52%, #3f55ee 100%);
+  background-size: 220% 100%, 100% 100%;
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: var(--radius-lg);
-  color: #dbdbdb;
+  color: #ffffff;
   font-family: var(--font-button);
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-medium);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   cursor: pointer;
-  transition: opacity var(--duration-fast) var(--ease-out);
+  box-shadow: 0 8px 18px rgba(81, 105, 255, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transition: opacity var(--duration-fast) var(--ease-out), background-position var(--duration-slow) var(--ease-out);
 }
 
 .ctaButton:hover {
   opacity: 0.88;
+  background-position: -120% 0, 0 0;
 }
 
 .ctaButton:active {
@@ -83,18 +91,41 @@
 /* Image Panel */
 
 .imagePanel {
-  background: var(--color-grey-950);
+  background: #000000;
   border: 1px solid var(--color-grey-600);
   border-radius: var(--radius-lg);
   padding: 6.5px 8.8px;
+  min-height: 0;
 }
 
 .imageWrapper {
   position: relative;
   width: 100%;
-  height: 269px;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  max-height: clamp(132px, 27vh, 220px);
   border-radius: 16px;
   overflow: hidden;
+  background: #000000;
+}
+
+.characterVideo {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  background: #000000;
+  pointer-events: none;
+}
+
+.characterVideo::-webkit-media-controls,
+.characterVideo::-webkit-media-controls-panel,
+.characterVideo::-webkit-media-controls-overlay-play-button,
+.characterVideo::-webkit-media-controls-start-playback-button,
+.characterVideo::-webkit-media-controls-enclosure {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 .imagePlaceholder {
@@ -109,6 +140,11 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-height: 0;
+}
+
+.controls .ctaButton {
+  margin-top: 12px;
 }
 
 .controlRow {
@@ -116,7 +152,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 10px;
-  min-height: 44px;
+  min-height: clamp(34px, 5vh, 44px);
   background: var(--color-grey-900);
 }
 
@@ -130,6 +166,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
 }
 
 /* Scaler */
@@ -138,16 +175,16 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #1a1a1a;
-  border: 1px solid #f4ecec;
+  background: rgba(26, 26, 26, 0.72);
+  border: 1px solid rgba(244, 236, 236, 0.34);
   border-radius: var(--radius-md);
   padding: 0 8px;
-  min-height: 114px;
+  min-height: clamp(78px, 13vh, 114px);
 }
 
 .sliderWrapper {
-  flex-shrink: 0;
-  width: 127px;
+  flex: 0 1 148px;
+  min-width: 96px;
   display: flex;
   align-items: center;
 }
@@ -155,7 +192,7 @@
 .slider {
   -webkit-appearance: none;
   appearance: none;
-  width: 127px;
+  width: 100%;
   height: 8px;
   border-radius: 21px;
   background: linear-gradient(
@@ -244,10 +281,134 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 10px;
-  height: 39px;
+  height: clamp(34px, 5vh, 39px);
   background: var(--color-grey-900);
   border: 1px solid #202020;
   border-radius: var(--radius-md);
+}
+
+@media (max-height: 760px) and (min-width: 901px) {
+  .controller {
+    gap: 8px;
+  }
+
+  .headerRow {
+    min-height: 24px;
+  }
+
+  .subtitleRow {
+    min-height: 28px;
+  }
+
+  .userName {
+    font-size: 1.05rem;
+  }
+
+  .version,
+  .subtitle,
+  .controlLabel {
+    font-size: 11px;
+  }
+
+  .helperText {
+    line-height: 1.35;
+  }
+
+  .imageWrapper {
+    max-height: clamp(112px, 22vh, 170px);
+  }
+}
+
+@media (max-width: 900px) {
+  .controller {
+    width: 100%;
+    flex: 0 0 auto;
+    gap: 8px;
+    overflow: visible;
+  }
+
+  .imageWrapper {
+    max-height: min(42vw, 220px);
+  }
+
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .controls > * {
+    min-width: 0;
+  }
+
+  .scaler {
+    min-height: 82px;
+  }
+
+  .sliderWrapper {
+    flex: 1 1 auto;
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 560px) {
+  .controller {
+    padding: 10px;
+  }
+
+  .topWrapper {
+    gap: 4px;
+  }
+
+  .headerRow,
+  .subtitleRow {
+    padding: 0 4px;
+  }
+
+  .userName {
+    font-size: 1rem;
+  }
+
+  .version {
+    font-size: 10px;
+  }
+
+  .ctaButton {
+    height: 42px;
+    font-size: 12px;
+  }
+
+  .imageWrapper {
+    max-height: none;
+  }
+
+  .scaler {
+    min-height: 58px;
+    padding: 10px;
+  }
+
+  .helperText {
+    display: none;
+  }
+
+  .controlRow {
+    min-height: 34px;
+    padding: 0 4px;
+    gap: 8px;
+  }
+
+  .controlMetrics {
+    gap: 8px;
+  }
+
+  .shardRewardBox {
+    height: 32px;
+    padding: 0 8px;
+  }
+
+  .shardRewardValue {
+    font-size: 12px;
+  }
 }
 
 .dropdownText {
@@ -282,7 +443,7 @@
 }
 
 :global(:root:not([data-theme="dark"])) .imagePanel {
-  background: #ebebeb;
+  background: #000000;
   border-color: rgba(26, 27, 36, 0.12);
 }
 
@@ -299,8 +460,8 @@
 }
 
 :global(:root:not([data-theme="dark"])) .scaler {
-  background: #ebebeb;
-  border-color: rgba(26, 27, 36, 0.14);
+  background: rgba(235, 235, 235, 0.7);
+  border-color: rgba(26, 27, 36, 0.1);
 }
 
 :global(:root:not([data-theme="dark"])) .slider {

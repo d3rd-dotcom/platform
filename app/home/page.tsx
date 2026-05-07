@@ -80,11 +80,9 @@ export default function HomePage() {
           onDifficultyChange={setDifficulty}
         />
         <SurveySpace
-          label="BLUE.SYS // TERMINAL"
+          label="BLUE.TERM"
           badges={[
-            { label: 'ONLINE' },
             { label: 'SECURE' },
-            { label: 'READY' },
             { label: 'MWA-36B' },
           ]}
         >

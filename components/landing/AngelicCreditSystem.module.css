@@ -2,14 +2,12 @@
 .section {
   position: relative;
   width: 100%;
-  min-height: 520px;
-  padding: 96px 24px;
+  min-height: 480px;
   background: #000000;
   z-index: 1;
   overflow: hidden;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
 }
 
 .bgImage {
@@ -20,21 +18,122 @@
   pointer-events: none;
 }
 
-.logoWrap {
+/* ── Inner layout ── */
+.innerLayout {
   position: relative;
   z-index: 1;
   width: 100%;
   max-width: 1180px;
+  margin: 0 auto;
+  padding: 72px 24px 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+/* ── Left ── */
+.innerLeft {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 72px;
+  max-width: 360px;
+}
+
+.splashLogo {
+  width: 200px;
+  height: auto;
+  object-fit: contain;
+}
+
+.tagline {
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  font-weight: var(--font-weight-regular);
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.6;
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+
+/* ── Right ── */
+.innerRight {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-end;
+}
+
+.bluePortrait {
+  display: block;
+  width: clamp(260px, 34vw, 420px);
+  height: auto;
+  object-fit: contain;
+  object-position: bottom center;
+  filter: drop-shadow(0 0 60px rgba(99, 126, 234, 0.18));
+}
+
+/* ── Wallet Card ── */
+.walletCard {
+  position: absolute;
+  bottom: 32px;
+  right: -8px;
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  background: #ffffff;
+  border: 1.4px solid #000000;
+  border-radius: 11px;
+  padding: 14px 20px;
+  white-space: nowrap;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+}
+
+.walletLeft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.walletAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #e8edff;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.logoImage {
-  width: min(100%, 750px);
-  height: auto;
-  object-fit: contain;
-  filter: invert(1);
+.walletAvatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.walletAddress {
+  font-family: var(--font-ibm-plex-mono);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1e4890;
+  letter-spacing: 0.01em;
+}
+
+.walletRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.walletBalance {
+  font-family: var(--font-ibm-plex-mono);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1e4890;
 }
 
 /* ── Scroll Animations ── */
@@ -700,12 +799,46 @@
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .section {
-    min-height: 420px;
-    padding: 72px 16px;
+    min-height: unset;
   }
 
-  .logoWrap {
-    max-width: 750px;
+  .innerLayout {
+    flex-direction: column;
+    align-items: center;
+    padding: 56px 16px 0;
+    gap: 32px;
+  }
+
+  .innerLeft {
+    padding-bottom: 0;
+    align-items: center;
+    text-align: center;
+    max-width: 100%;
+  }
+
+  .splashLogo {
+    width: 160px;
+  }
+
+  .innerRight {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .bluePortrait {
+    width: clamp(200px, 70vw, 320px);
+  }
+
+  .walletCard {
+    bottom: 20px;
+    right: 8px;
+    gap: 28px;
+    padding: 10px 14px;
+  }
+
+  .walletAddress,
+  .walletBalance {
+    font-size: 0.75rem;
   }
 
   .tierSection {
