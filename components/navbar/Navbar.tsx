@@ -277,9 +277,9 @@ const Navbar: React.FC = () => {
             </Link>
 
             {/* Knowledge Button */}
-            <Link href="/prompts" className={`${styles.navButton} ${isActive('/prompts') ? styles.navButtonActive : ''}`}>
-              <Image src="/icons/ui-book.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/prompts') ? styles.navImgIconActive : ''}`} />
-              <span className={isActive('/prompts') ? styles.buttonLabelActive : styles.buttonLabel}>
+            <Link href="/library" className={`${styles.navButton} ${isActive('/library') ? styles.navButtonActive : ''}`}>
+              <Image src="/icons/ui-book.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/library') ? styles.navImgIconActive : ''}`} />
+              <span className={isActive('/library') ? styles.buttonLabelActive : styles.buttonLabel}>
                 <span className={styles.slideWrap}><span className={styles.slideText}>Knowledge</span><span className={`${styles.slideText} ${styles.slideClone}`}>Knowledge</span></span>
               </span>
             </Link>

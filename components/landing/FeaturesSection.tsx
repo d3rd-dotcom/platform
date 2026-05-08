@@ -95,7 +95,7 @@ export const FeaturesSection: React.FC = () => {
             </div>
 
             <div className={styles.headlinePanel}>
-              <h2 className={styles.title}>&ldquo;Intellectually Refreshing&rdquo;</h2>
+              <h2 className={styles.title}>&ldquo;It&apos;s Become A Special Part Of My Life&rdquo;</h2>
               <p className={styles.description}>
                 New apps each week and point systems turned to real cash.
               </p>

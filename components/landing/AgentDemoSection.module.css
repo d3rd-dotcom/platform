@@ -61,6 +61,12 @@
   }
 }
 
+@media (max-width: 960px) {
+  .section {
+    margin-top: calc(92vh - 180px);
+  }
+}
+
 .terminal {
   border: 1px solid rgba(255, 255, 255, 0.16);
   background-color: rgba(7, 9, 18, 0.78);
@@ -268,6 +274,7 @@
 
 @media (max-width: 720px) {
   .section {
+    margin-top: calc(90vh - 180px);
     padding: 40px 16px 16px;
   }
 

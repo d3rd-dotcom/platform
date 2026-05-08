@@ -11,17 +11,17 @@ const FAQ_ITEMS = [
       'Mental Wealth Academy is a mobile learning and research platform for mental wellness, financial literacy, and behavioral science. Members move through structured curriculum, complete assessments and surveys, work with B.L.U.E., and help produce data that can fund the community instead of being extracted by outside platforms.',
   },
   {
-    question: 'How does the 12-week course work?',
+    question: 'How Does MWA Handle Data Gathered?',
     answer:
-      'The first season is organized around Security, Identity, Power, and Connection. Each module combines reading, reflection, behavioral exercises, and research-backed assessments such as WHO-5, PSS-10, GSE, and BRS so progress creates useful longitudinal signal, not just app engagement.',
+      'MWA treats the Academy like a live behavioral science laboratory. We clean consented survey, reflection, quest, and assessment data; protect personal-linked information (PLI); and use R-based research tools to score validated measures, check outliers, audit reliability, and improve accuracy before data enters model-training workflows. The goal is to fine-tune institutional-grade models that understand behavior, learning, resilience, and decision-making. Your contribution strengthens a proprietary research flywheel: better data creates better models, better models create better tools, and better tools return more value to members while helping build AI with a more human psychological foundation.',
   },
   {
-    question: 'What kind of tools do you use?',
+    question: 'How do I exchange my shards for cash?',
     answer:
-      'MWA uses curriculum tools, surveys, AI review, on-chain rewards, DAO proposals, treasury tracking, and market research workflows. The point is to give members a shared research stack: tools for learning, tools for measuring behavior, and tools for deciding how value moves back through the community.',
+      'Users exchange shards for cash through our partners at Coinbase Exchange. When a redemption campaign is open, eligible shards can be converted into USDC or another supported payout asset and sent to a connected Coinbase account or compatible wallet. Redemption rates, minimum balances, availability, and identity checks may vary by campaign and partner requirements.',
   },
   {
-    question: 'What is B.L.U.E.?',
+    question: 'Who is B.L.U.E.?',
     answer:
       'B.L.U.E. stands for Behavioral Learning & Understanding Engine. She is the AI companion architecture inside MWA, built to help with reflection, assessment review, research workflows, reward decisions, and market analysis. She is not a generic chatbot pasted onto a course.',
   },
@@ -31,9 +31,9 @@ const FAQ_ITEMS = [
       'Explorer members can start free with the core course, journaling, weekly quests, community access, and shard rewards. Paid members unlock governance, research tools, proposal access, and deeper B.L.U.E. features. The $90 VIP membership is the lifetime option with an on-chain membership card.',
   },
   {
-    question: 'How do I make money?',
+    question: 'How does the 12-week course work?',
     answer:
-      'Members can earn through eligible surveys, research tasks, quests, and funded community work. Surveys pay for your time and the usefulness of your answers. Higher-effort studies may carry higher rewards when funded by the DAO, partners, or research budgets. Rewards can vary by campaign and are not guaranteed income.',
+      'The first season is organized around Security, Identity, Power, and Connection. Each module combines reading, reflection, behavioral exercises, and research-backed assessments such as WHO-5, PSS-10, GSE, and BRS so progress creates useful longitudinal signal, not just app engagement.',
   },
 ];
 
