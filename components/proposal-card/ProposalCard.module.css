@@ -125,7 +125,7 @@
   font-family: 'Space Grotesk', sans-serif;
   font-size: 18px;
   font-weight: 700;
-  color: #1A1D33;
+  color: var(--color-primary);
   margin: 0;
   line-height: 1.2;
 }
@@ -390,7 +390,7 @@
   font-size: 13px;
   line-height: 1.7;
   font-family: var(--font-primary);
-  color: var(--color-secondary);
+  color: var(--color-primary);
 }
 
 .footer {
@@ -673,7 +673,11 @@
 }
 
 :global([data-theme="dark"]) .title {
-  color: rgba(227, 225, 238, 0.95);
+  color: var(--color-primary);
+}
+
+:global([data-theme="dark"]) .eyebrow {
+  color: rgba(227, 225, 238, 0.78);
 }
 
 :global([data-theme="dark"]) .stagesSection {

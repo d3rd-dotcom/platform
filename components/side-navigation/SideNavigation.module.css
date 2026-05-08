@@ -773,6 +773,10 @@
   transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), filter 0.28s ease;
 }
 
+.navItemImageIconOriginal {
+  filter: none !important;
+}
+
 .navItemIconActive {
   color: var(--color-primary);
   filter:
@@ -1596,6 +1600,12 @@
 :global([data-theme="dark"]) .navItemImageIcon {
   filter: brightness(0) saturate(100%) invert(89%) sepia(8%) saturate(306%) hue-rotate(206deg) brightness(99%) contrast(91%);
   opacity: 1;
+}
+
+:global([data-theme="dark"]) .navItemImageIconOriginal,
+:global([data-theme="dark"]) .navItemActive .navItemImageIconOriginal,
+:global([data-theme="dark"]) .navItem:hover .navItemImageIconOriginal {
+  filter: none !important;
 }
 
 :global([data-theme="dark"]) .navItemActive .navItemIcon {

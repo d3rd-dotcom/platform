@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import { useSound } from '@/hooks/useSound';
+import type { ParagraphBlogPost } from '@/lib/paragraph-blog';
 import styles from './page.module.css';
 
 interface Skill {
@@ -24,6 +25,11 @@ interface ArtStyle {
   useCase: string;
   copyText?: string;
   image?: string;
+}
+
+interface BlogPostsResponse {
+  posts: ParagraphBlogPost[];
+  error?: string;
 }
 
 const MENTAL_WEALTH_BRAND_BOOK_V4 = `# Mental Wealth Academy — Brand Book v4.0
@@ -1697,7 +1703,46 @@ export default function LibraryPage() {
   const [showCopyNotification, setShowCopyNotification] = useState(false);
   const [isFadingOut, setIsFadingOut] = useState(false);
   const [loadedArtImages, setLoadedArtImages] = useState<Set<string>>(() => new Set());
+  const [blogPosts, setBlogPosts] = useState<ParagraphBlogPost[]>([]);
+  const [blogPostsLoading, setBlogPostsLoading] = useState(true);
+  const [blogPostsError, setBlogPostsError] = useState<string | null>(null);
   const { play } = useSound();
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchBlogPosts() {
+      try {
+        setBlogPostsLoading(true);
+        setBlogPostsError(null);
+
+        const response = await fetch('/api/blog/recent');
+        const data = (await response.json()) as BlogPostsResponse;
+
+        if (!response.ok) {
+          throw new Error(data.error ?? 'Failed to fetch latest blog posts');
+        }
+
+        if (isMounted) {
+          setBlogPosts(data.posts ?? []);
+        }
+      } catch (error) {
+        if (isMounted) {
+          setBlogPostsError(error instanceof Error ? error.message : 'Failed to fetch latest blog posts');
+        }
+      } finally {
+        if (isMounted) {
+          setBlogPostsLoading(false);
+        }
+      }
+    }
+
+    fetchBlogPosts();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const showNotification = () => {
     setShowCopyNotification(true);
@@ -1736,6 +1781,20 @@ export default function LibraryPage() {
     });
   };
 
+  const formatBlogDate = (publishedAt: string) => {
+    const date = new Date(publishedAt);
+
+    if (Number.isNaN(date.getTime())) {
+      return 'Recent';
+    }
+
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  };
+
   return (
     <>
       <SideNavigation />
@@ -1770,6 +1829,68 @@ export default function LibraryPage() {
                   </svg>
                   Character
                 </button>
+              </div>
+
+              <div className={styles.blogSection}>
+                <div className={styles.blogSectionHeader}>
+                  <div>
+                    <h2 className={styles.featuredTitle}>LATEST ESSAYS</h2>
+                    <p className={styles.blogCopy}>Three recent posts from the Academy blog.</p>
+                  </div>
+                  <a
+                    className={styles.blogArchiveLink}
+                    href="https://mentalwealthacademy.net"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    View blog
+                  </a>
+                </div>
+
+                {blogPostsLoading && (
+                  <div className={styles.blogCardsContainer} aria-label="Loading latest essays">
+                    {[0, 1, 2].map((item) => (
+                      <div key={item} className={styles.blogCardSkeleton} aria-hidden="true" />
+                    ))}
+                  </div>
+                )}
+
+                {!blogPostsLoading && blogPostsError && (
+                  <p className={styles.blogStatus}>{blogPostsError}</p>
+                )}
+
+                {!blogPostsLoading && !blogPostsError && blogPosts.length > 0 && (
+                  <div className={styles.blogCardsContainer}>
+                    {blogPosts.map((post) => (
+                      <a
+                        key={post.url}
+                        className={styles.blogCard}
+                        href={post.url}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {post.imageUrl && (
+                          <div className={styles.blogCardImageWrap}>
+                            <img
+                              src={post.imageUrl}
+                              alt=""
+                              className={styles.blogCardImage}
+                              loading="lazy"
+                            />
+                          </div>
+                        )}
+                        <div className={styles.blogCardBody}>
+                          <div className={styles.blogCardMeta}>
+                            <span>Mental Wealth Academy</span>
+                            <span>{formatBlogDate(post.publishedAt)}</span>
+                          </div>
+                          <h3 className={styles.blogCardTitle}>{post.title}</h3>
+                          <p className={styles.blogCardExcerpt}>{post.excerpt}</p>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Featured Art Styles Section */}

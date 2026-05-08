@@ -71,6 +71,8 @@ export async function POST(req: NextRequest) {
 
     const resolvedVoiceId = voiceId || BLUE_VOICE_ID || undefined;
     const resolvedModelId = modelId || BLUE_VOICE_MODEL;
+
+    // ElevenLabs — primary path when key + voiceId are configured
     if (ELEVENLABS_API_KEY && resolvedVoiceId) {
       const elevenLabsResponse = await requestElevenLabsTts(text, resolvedVoiceId, resolvedModelId);
 
@@ -82,12 +84,10 @@ export async function POST(req: NextRequest) {
 
       const errText = await elevenLabsResponse.text();
       console.error('ElevenLabs TTS error:', elevenLabsResponse.status, errText.slice(0, 200));
-
-      if (!ELIZA_API_KEY) {
-        return NextResponse.json({ error: 'TTS generation failed' }, { status: elevenLabsResponse.status });
-      }
+      return NextResponse.json({ error: 'TTS generation failed' }, { status: 502 });
     }
 
+    // Eliza fallback — only reached when ElevenLabs is not configured
     const attempts: Array<{ label: string; path: string; voiceId?: string }> = [
       { label: 'v1-configured-voice', path: '/api/v1/voice/tts', voiceId: resolvedVoiceId },
       { label: 'v1-default-voice', path: '/api/v1/voice/tts' },
@@ -96,7 +96,6 @@ export async function POST(req: NextRequest) {
     ];
 
     let response: Response | null = null;
-    let lastStatus = 500;
     let lastErrorText = '';
 
     for (const attempt of attempts) {
@@ -110,17 +109,15 @@ export async function POST(req: NextRequest) {
       }
 
       const errText = await response.text();
-      lastStatus = response.status;
       lastErrorText = errText;
       console.error(`Eliza TTS attempt failed: ${attempt.label}`, response.status, errText.slice(0, 200));
     }
 
     if (!response || !response.ok) {
-      console.error('Eliza TTS error:', lastStatus, lastErrorText.slice(0, 200));
-      return NextResponse.json({ error: 'TTS generation failed' }, { status: lastStatus });
+      console.error('Eliza TTS all attempts failed:', lastErrorText.slice(0, 200));
+      return NextResponse.json({ error: 'TTS generation failed' }, { status: 502 });
     }
 
-    // Eliza returns streaming audio/mpeg
     const arrayBuffer = await response.arrayBuffer();
     const base64 = Buffer.from(arrayBuffer).toString('base64');
     return NextResponse.json({ audio: base64 });

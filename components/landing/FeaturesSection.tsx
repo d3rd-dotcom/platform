@@ -99,7 +99,7 @@ export const FeaturesSection: React.FC = () => {
               <p className={styles.description}>
                 New apps each week and point systems turned to real cash.
               </p>
-              <a href="/community" className={styles.ctaButton}>
+              <a href="/home" className={styles.ctaButton}>
                 Start Now
               </a>
             </div>

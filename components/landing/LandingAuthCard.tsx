@@ -21,7 +21,7 @@ export const LandingAuthCard: React.FC = () => {
   }, [showOnboarding]);
 
   const handleEnterAcademy = () => {
-    window.location.replace('/community');
+    window.location.replace('/home');
   };
 
   return (

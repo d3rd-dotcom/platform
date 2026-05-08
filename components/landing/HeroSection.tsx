@@ -10,7 +10,7 @@ export const HeroSection: React.FC = () => {
 
   const handleEnterAcademy = () => {
     play('click');
-    window.location.href = '/community';
+    window.location.href = '/home';
   };
 
   return (

@@ -11,13 +11,13 @@ const LandingAuthButtons = dynamic(
     ssr: false,
     loading: () => (
       <>
-        <a href="/community" className={styles.loginButton}>
+        <a href="/home" className={styles.loginButton}>
           <span className={styles.slideWrap}>
             <span className={styles.slideText}>Login</span>
             <span className={`${styles.slideText} ${styles.slideClone}`}>Login</span>
           </span>
         </a>
-        <a href="/community" className={styles.joinButton}>
+        <a href="/home" className={styles.joinButton}>
           <span className={styles.slideWrap}>
             <span className={styles.slideText}>Join Now</span>
             <span className={`${styles.slideText} ${styles.slideClone}`}>Join Now</span>

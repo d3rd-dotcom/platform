@@ -236,12 +236,12 @@
 }
 
 :global([data-theme="dark"]) .navLinkActive {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-primary);
   color: #ffffff;
 }
 
 :global([data-theme="dark"]) .navLinkActive:hover {
-  background: rgba(255, 255, 255, 0.14);
+  background: var(--color-primary-hover);
   color: #ffffff;
 }
 

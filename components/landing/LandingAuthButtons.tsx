@@ -18,7 +18,7 @@ function LandingAuthButtonsInner() {
     }
 
     loginTriggered.current = false;
-    router.push('/community');
+    router.push('/home');
   }, [authenticated, router]);
 
   const handleLogin = () => {
@@ -27,6 +27,7 @@ function LandingAuthButtonsInner() {
   };
 
   const handleJoinNow = () => {
+    loginTriggered.current = true;
     login();
   };
 

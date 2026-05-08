@@ -110,7 +110,8 @@ const NavIconMark: React.FC<{
   icon?: NavItem['icon'];
   iconSrc?: string;
   isActive?: boolean;
-}> = ({ icon: Icon, iconSrc, isActive = false }) => {
+  preserveColor?: boolean;
+}> = ({ icon: Icon, iconSrc, isActive = false, preserveColor = false }) => {
   if (iconSrc) {
     return (
       <span className={`${styles.navItemIconWrap} ${isActive ? styles.navItemIconWrapActive : ''}`} aria-hidden="true">
@@ -119,7 +120,7 @@ const NavIconMark: React.FC<{
           alt=""
           width={20}
           height={20}
-          className={`${styles.navItemImageIcon} ${isActive ? styles.navItemImageIconActive : ''}`}
+          className={`${styles.navItemImageIcon} ${preserveColor ? styles.navItemImageIconOriginal : ''} ${isActive ? styles.navItemImageIconActive : ''}`}
         />
       </span>
     );
@@ -765,13 +766,14 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                   title={isCollapsed ? item.label : undefined}
                   aria-current={active ? 'page' : undefined}
                 >
-                  <NavIconMark
-                    icon={item.icon}
-                    iconSrc={item.iconSrc}
-                    isActive={active}
-                  />
-                  <span className={styles.navItemLabel}>{item.label}</span>
-                </Link>
+                <NavIconMark
+                  icon={item.icon}
+                  iconSrc={item.iconSrc}
+                  isActive={active}
+                  preserveColor={item.id === 'morning-pages' || item.id === 'shop'}
+                />
+                <span className={styles.navItemLabel}>{item.label}</span>
+              </Link>
               );
             })}
           </div>

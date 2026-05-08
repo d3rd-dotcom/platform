@@ -206,11 +206,11 @@ const CATEGORY_LABELS: Record<MarketCategory, string> = {
 const MARKET_CATEGORIES: MarketCategory[] = ['commodities', 'economics', 'ai', 'politics'];
 
 const TRADE_CHAT_SUGGESTIONS = [
-  'Scan edge',
+  'Find price gap',
   'Size trade',
 ];
 const BLUE_ROUTE_TRIGGER_TEXT =
-  'Blue checks live markets, Kelly sizing, open positions, and the protected order router before acting.';
+  'Blue compares her estimate with the live price, checks position size, then waits for approval before any order routes.';
 const INITIAL_VISIBLE_MARKETS = 3;
 const MARKET_LOAD_MORE_STEP = 3;
 
@@ -313,6 +313,7 @@ export default function Markets() {
   const [isTradeChatSending, setIsTradeChatSending] = useState(false);
   const [isTradeExecuting, setIsTradeExecuting] = useState(false);
   const [isMembershipOpen, setIsMembershipOpen] = useState(false);
+  const [isModelDetailsOpen, setIsModelDetailsOpen] = useState(false);
   const [hasVipMembershipCard, setHasVipMembershipCard] = useState<boolean | null>(null);
   const [isHistoryHighlighted, setIsHistoryHighlighted] = useState(false);
   const [visibleMarketCounts, setVisibleMarketCounts] = useState<Record<MarketCategory, number>>({
@@ -426,6 +427,17 @@ export default function Markets() {
       politics: INITIAL_VISIBLE_MARKETS,
     });
   }, [kalshiMarkets]);
+
+  useEffect(() => {
+    if (!isModelDetailsOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsModelDetailsOpen(false);
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isModelDetailsOpen]);
 
   // Fetch SHARDS stats and execution logs
   useEffect(() => {
@@ -556,17 +568,17 @@ export default function Markets() {
     return [
       'You are Blue responding inside the /markets trading desk.',
       'The user wants Blue to trade for them. Treat direct trade requests as trading instructions for the protected trading engine.',
-      'If the user asks to "stage the highest-conviction trade", treat that as the strongest staging request and explicitly weigh Kelly sizing, the edge threshold, live asks, open positions, and execution safety before answering.',
+      'If the user asks to "stage the highest-conviction trade", treat that as the strongest staging request and explicitly weigh trade size, the price gap threshold, live asks, open positions, and execution safety before answering.',
       'Execution is VIP-gated. Only the verified VIP Membership Card wallet can submit a live Kalshi order.',
       'Do not claim an order filled unless the execution log confirms it. If execution is not confirmed, say you are routing, monitoring, or preparing the trade.',
       'When useful, answer with the intended market, direction, sizing posture, risk check, and next execution step. Keep it concise and conversational.',
       '',
       'Live model snapshot:',
       `signal: ${derived.signal}`,
-      `model fair: ${derived.model_fair.toFixed(2)}%`,
+      `Blue estimate: ${derived.model_fair.toFixed(2)}%`,
       `market price: ${derived.mkt_price.toFixed(2)}%`,
-      `divergence: ${derived.divergence >= 0 ? '+' : ''}${derived.divergence.toFixed(2)}%`,
-      `kelly cap: 0.25x`,
+      `price gap: ${derived.divergence >= 0 ? '+' : ''}${derived.divergence.toFixed(2)}%`,
+      `size cap: 0.25x`,
       `USDC markets balance: ${balance ? '$' + balance.formatted : 'not loaded'}`,
       `SHARDS price: ${shardStats ? formatPrice(shardStats.price) : 'not loaded'}`,
       '',
@@ -592,10 +604,10 @@ export default function Markets() {
     const direction = derived.divergence >= 0 ? 'yes/upside' : 'no/downside';
 
     if (command.includes('trade') || command.includes('buy') || command.includes('sell') || command.includes('size')) {
-      return `i'm reading this as a ${direction} instruction, but the signal is ${posture}: model fair ${derived.model_fair.toFixed(2)}% vs market ${derived.mkt_price.toFixed(2)}%. i'll keep it kelly-capped at 0.25x and only route once the protected execution path confirms the order.`;
+      return `i'm reading this as a ${direction} instruction, but the signal is ${posture}: Blue's estimate is ${derived.model_fair.toFixed(2)}% and the market price is ${derived.mkt_price.toFixed(2)}%. i'll keep the size capped at 0.25x and only route once the protected execution path confirms the order.`;
     }
 
-    return `current read: ${derived.signal.toLowerCase()}, fair ${derived.model_fair.toFixed(2)}%, market ${derived.mkt_price.toFixed(2)}%, divergence ${derived.divergence >= 0 ? '+' : ''}${derived.divergence.toFixed(2)}%. ask me to trade, size, hedge, or wait and i'll translate it into the next engine step.`;
+    return `current read: ${derived.signal.toLowerCase()}. Blue's estimate is ${derived.model_fair.toFixed(2)}%. The market price is ${derived.mkt_price.toFixed(2)}%. The gap is ${derived.divergence >= 0 ? '+' : ''}${derived.divergence.toFixed(2)}%. Ask me to trade, size, hedge, or wait.`;
   }, [derived]);
 
   const sendTradeChatMessage = useCallback(async (rawText: string) => {
@@ -714,15 +726,15 @@ export default function Markets() {
         {/* ── Status Bar ── */}
         <div className={styles.statusBar}>
           <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>model</span>
-            <span className={styles.statusHighlight}>BLACK-SCHOLES BINARY</span>
+            <span className={styles.statusLabel}>pricing method</span>
+            <span className={styles.statusHighlight}>PROBABILITY ESTIMATE</span>
           </div>
           <div className={styles.statusItem}>
             <span className={styles.statusLabel}>markets:</span>
             <span className={styles.statusValue}>GOLD OIL GAS CPI FED GDP</span>
           </div>
           <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>MC_paths:</span>
+            <span className={styles.statusLabel}>simulations:</span>
             <span className={styles.statusValue}>200,000</span>
           </div>
           <div className={styles.statusItem}>
@@ -734,11 +746,11 @@ export default function Markets() {
             <span className={styles.statusValue}>1.2s</span>
           </div>
           <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>edge_threshold:</span>
-            <span className={styles.statusHighlight}>3%</span>
+            <span className={styles.statusLabel}>trade when gap is</span>
+            <span className={styles.statusHighlight}>3%+</span>
           </div>
           <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>kelly:</span>
+            <span className={styles.statusLabel}>max size:</span>
             <span className={styles.statusValue}>0.25x</span>
           </div>
           {lastPriceUpdate > 0 && (
@@ -748,6 +760,15 @@ export default function Markets() {
           )}
           <div className={styles.statusItem}>
             <HowToButton />
+          </div>
+          <div className={styles.statusItem}>
+            <button
+              type="button"
+              className={styles.modelDetailsButton}
+              onClick={() => setIsModelDetailsOpen(true)}
+            >
+              Model details
+            </button>
           </div>
         </div>
 
@@ -781,11 +802,42 @@ export default function Markets() {
           </div>
         </div>
 
+        {isModelDetailsOpen && (
+          <button
+            type="button"
+            className={styles.modelDetailsBackdrop}
+            aria-label="Close model details"
+            onClick={() => setIsModelDetailsOpen(false)}
+          />
+        )}
+
         {/* ── Dashboard Grid ── */}
         <div className={styles.grid}>
 
-          {/* ════ LEFT COLUMN: Model Parameters ════ */}
-          <div className={styles.modelsColumn}>
+          {/* ════ POP-UP: Model Parameters ════ */}
+          <aside
+            className={`${styles.modelsColumn} ${isModelDetailsOpen ? styles.modelsColumnOpen : ''}`}
+            aria-hidden={!isModelDetailsOpen}
+            aria-label="Model details"
+            aria-modal={isModelDetailsOpen}
+            role="dialog"
+          >
+            <div className={styles.modelDrawerHeader}>
+              <div>
+                <span className={styles.modelDrawerKicker}>Advanced</span>
+                <h2 className={styles.modelDrawerTitle}>Model details</h2>
+              </div>
+              <button
+                type="button"
+                className={styles.modelDrawerClose}
+                onClick={() => setIsModelDetailsOpen(false)}
+              >
+                Close
+              </button>
+            </div>
+            <p className={styles.modelDrawerIntro}>
+              These numbers are for audit and debugging. Most members only need Blue estimate, market price, and price gap.
+            </p>
 
             {/* Black-Scholes Binary Pricing */}
             <div className={styles.modelPanel}>
@@ -928,34 +980,34 @@ export default function Markets() {
 
             {/* Edge Detection Pipeline */}
             <div className={styles.modelPanel}>
-              <div className={styles.modelName}>{'// edge detection pipeline'}</div>
+              <div className={styles.modelName}>{'// plain trade check'}</div>
               <div className={styles.paramRow}>
-                <span className={styles.paramKey}>model_fair</span>
+                <span className={styles.paramKey}>Blue estimate</span>
                 <span><span className={styles.paramValue}>{derived.model_fair.toFixed(2)}%</span></span>
               </div>
               <div className={styles.paramRow}>
-                <span className={styles.paramKey}>mkt_price</span>
+                <span className={styles.paramKey}>market price</span>
                 <span><span className={styles.paramValue}>{derived.mkt_price.toFixed(2)}%</span></span>
               </div>
               <div className={styles.paramRow}>
-                <span className={styles.paramKey}>divergence</span>
+                <span className={styles.paramKey}>price gap</span>
                 <span><span className={styles.paramValue}>{derived.divergence >= 0 ? '+' : ''}{derived.divergence.toFixed(2)}%</span></span>
               </div>
               <div className={styles.paramRow}>
-                <span className={styles.paramKey}>threshold</span>
+                <span className={styles.paramKey}>trade line</span>
                 <span><span className={styles.paramValue}>3.00%</span></span>
               </div>
               <div
                 className={styles.signalRow}
                 style={derived.signal === 'SKIP' ? { background: 'rgba(226, 86, 123, 0.08)', borderColor: 'rgba(226, 86, 123, 0.2)' } : undefined}
               >
-                <span className={styles.signalLabel}>signal</span>
+                <span className={styles.signalLabel}>next step</span>
                 <span className={derived.signal === 'TRADE' ? styles.signalValue : styles.signalSkip}>
                   &rarr; {derived.signal}
                 </span>
               </div>
               <div className={styles.paramRow}>
-                <span className={styles.paramKey}>kelly_f</span>
+                <span className={styles.paramKey}>max size</span>
                 <span><span className={styles.paramValue}>0.25x</span></span>
               </div>
               <div className={styles.paramRow}>
@@ -965,15 +1017,18 @@ export default function Markets() {
                   <span className={styles.paramComment}>{'// p(1-p)+0.0625'}</span>
                 </span>
               </div>
+              <p className={styles.tradeCheckHelp}>
+                Blue only considers a trade when her estimate and the market price are at least 3% apart.
+              </p>
             </div>
-          </div>
+          </aside>
 
           {/* ════ CENTER: Charts ════ */}
 
           {/* Kalshi Signal Markets */}
           <div className={`${styles.panel} ${styles.chartPanel} ${styles.kalshiPanel}`}>
             <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>Kalshi &middot; Signal Markets &middot; Top by Volume</span>
+              <span className={styles.panelTitle}>Kalshi &middot; Markets Blue Watches &middot; Top by Volume</span>
               <span className={styles.panelBadge}>live</span>
             </div>
             {!deferredKalshiMarkets && !kalshiError && (
@@ -1035,7 +1090,7 @@ export default function Markets() {
             className={`${styles.panel} ${styles.logPanel} ${isHistoryHighlighted ? styles.logPanelHighlighted : ''}`}
           >
             <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>Execution Log &middot; Edge Capture</span>
+              <span className={styles.panelTitle}>Execution Log &middot; Price Gaps</span>
               <span className={styles.panelBadge}>live</span>
             </div>
             <div className={styles.logEntries}>
@@ -1091,18 +1146,21 @@ export default function Markets() {
           <section className={styles.blueTradeColumn} aria-label="Blue trading chat">
             <div className={styles.blueTradeVitals}>
               <div className={styles.blueVital}>
-                <span>fair</span>
+                <span>Blue estimate</span>
                 <strong>{derived.model_fair.toFixed(2)}%</strong>
               </div>
               <div className={styles.blueVital}>
-                <span>mkt</span>
+                <span>market price</span>
                 <strong>{derived.mkt_price.toFixed(2)}%</strong>
               </div>
               <div className={styles.blueVital}>
-                <span>edge</span>
+                <span>price gap</span>
                 <strong>{derived.divergence >= 0 ? '+' : ''}{derived.divergence.toFixed(2)}%</strong>
               </div>
             </div>
+            <p className={styles.blueVitalsHelp}>
+              Blue estimate is what Blue thinks the chance is. Market price is what traders are paying. Price gap is the difference.
+            </p>
 
             <div className={styles.blueRouteCard}>
               <span className={styles.blueRouteDot} aria-hidden="true" />

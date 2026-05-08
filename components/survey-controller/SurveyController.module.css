@@ -2,7 +2,7 @@
 
 .controller {
   background: var(--color-grey-900);
-  border: 1px solid var(--color-grey-600);
+  border: 1px solid var(--color-grey-600-50);
   border-radius: var(--radius-lg);
   padding: 10px 12px;
   display: flex;
@@ -80,7 +80,7 @@
 
 .imagePanel {
   background: #000000;
-  border: 1px solid var(--color-grey-600);
+  border: 1px solid var(--color-grey-600-50);
   border-radius: var(--radius-lg);
   padding: 6.5px 8.8px;
   min-height: 0;
@@ -183,8 +183,8 @@
   border-radius: 21px;
   background: linear-gradient(
     to right,
-    var(--slider-color, #22c55e) 0%,
-    var(--slider-color, #22c55e) var(--progress, 17%),
+    var(--color-primary) 0%,
+    var(--color-primary) var(--progress, 17%),
     #404040 var(--progress, 17%),
     #404040 100%
   );
@@ -199,7 +199,7 @@
   width: 17.5px;
   height: 17.5px;
   border-radius: 50%;
-  background: var(--slider-color, #22c55e);
+  background: var(--color-primary);
   border: 1.75px solid rgba(255, 255, 255, 0.3);
   cursor: pointer;
 }
@@ -208,7 +208,7 @@
   width: 17.5px;
   height: 17.5px;
   border-radius: 50%;
-  background: var(--slider-color, #22c55e);
+  background: var(--color-primary);
   border: 1.75px solid rgba(255, 255, 255, 0.3);
   cursor: pointer;
   box-sizing: border-box;
@@ -256,7 +256,7 @@
 /* Dropdown */
 
 .dropdownOuter {
-  border: 1px solid var(--color-grey-600);
+  border: 1px solid var(--color-grey-600-50);
   border-radius: var(--radius-md);
   padding: 5.5px 6px;
 }
@@ -270,6 +270,15 @@
   background: var(--color-grey-900);
   border: 1px solid #202020;
   border-radius: var(--radius-md);
+}
+
+:global([data-theme="dark"]) .userName {
+  color: var(--color-primary);
+}
+
+:global([data-theme="dark"]) .version,
+:global([data-theme="dark"]) .controlLabel {
+  color: color-mix(in oklch, var(--color-primary) 44%, white);
 }
 
 @media (max-height: 760px) and (min-width: 901px) {
@@ -443,21 +452,21 @@
 :global(:root:not([data-theme="dark"])) .slider {
   background: linear-gradient(
     to right,
-    var(--color-text-dark) 0%,
-    var(--color-text-dark) var(--progress, 17%),
+    var(--color-primary) 0%,
+    var(--color-primary) var(--progress, 17%),
     rgba(26, 27, 36, 0.15) var(--progress, 17%),
     rgba(26, 27, 36, 0.15) 100%
   );
 }
 
 :global(:root:not([data-theme="dark"])) .slider::-webkit-slider-thumb {
-  background: #ffffff;
-  border-color: rgba(26, 27, 36, 0.3);
+  background: var(--color-primary);
+  border-color: rgba(255, 255, 255, 0.8);
 }
 
 :global(:root:not([data-theme="dark"])) .slider::-moz-range-thumb {
-  background: #ffffff;
-  border-color: rgba(26, 27, 36, 0.3);
+  background: var(--color-primary);
+  border-color: rgba(255, 255, 255, 0.8);
 }
 
 :global(:root:not([data-theme="dark"])) .helperText {

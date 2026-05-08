@@ -78,15 +78,6 @@ interface NewsTopic {
   items: NewsItem[];
 }
 
-interface NewsReviewQueueEntry {
-  topic: string;
-  priority: 'low' | 'medium' | 'high';
-  reason: string;
-  freshItemCount: number;
-  minimumFreshItems: number;
-  freshestPublishedAt: string | null;
-}
-
 interface ArticlePreviewState {
   title: string;
   source: string;
@@ -108,23 +99,6 @@ function formatPublishedDate(isoString: string): string {
     day: 'numeric',
     year: 'numeric',
   }).format(publishedAt);
-}
-
-function formatScanStartedAt(isoString: string | null): string {
-  if (!isoString) return 'Today, live';
-
-  const startedAt = new Date(isoString);
-
-  if (Number.isNaN(startedAt.getTime())) {
-    return 'Today, live';
-  }
-
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-  }).format(startedAt);
 }
 
 const getTutorialSteps = (): TutorialStep[] => [
@@ -244,102 +218,6 @@ function ProposalSkeletonList() {
   );
 }
 
-function WeeklyNewsReview({
-  topics,
-  fetchedAt,
-  reviewQueue,
-  loading,
-  error,
-}: {
-  topics: NewsTopic[];
-  fetchedAt: string | null;
-  reviewQueue: NewsReviewQueueEntry[];
-  loading: boolean;
-  error: string | null;
-}) {
-  if (loading) {
-    return (
-      <section className={styles.weeklyNewsReview} aria-label="Loading weekly news review">
-        <div className={styles.weeklyNewsReviewHeader}>
-          <SkeletonLine className={styles.weeklyReviewKickerSkeleton} />
-          <SkeletonLine className={styles.weeklyReviewTitleSkeleton} />
-        </div>
-        <div className={styles.weeklyReviewMetricRow}>
-          {[0, 1, 2].map((i) => (
-            <SkeletonLine key={i} className={styles.weeklyReviewMetricSkeleton} />
-          ))}
-        </div>
-        <SkeletonLine className={styles.weeklyReviewStorySkeleton} />
-        <SkeletonLine className={styles.weeklyReviewStoryShortSkeleton} />
-      </section>
-    );
-  }
-
-  const scannedItems = topics.flatMap((topic) =>
-    topic.items.map((item) => ({ ...item, topic: topic.topic, color: topic.color })),
-  );
-  const sources = new Set(scannedItems.map((item) => item.source));
-  const latestStories = [...scannedItems]
-    .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
-    .slice(0, 3);
-  const focusEntry = reviewQueue.find((entry) => entry.priority !== 'low') ?? reviewQueue[0] ?? null;
-
-  return (
-    <section className={styles.weeklyNewsReview} aria-label="Weekly news review">
-      <div className={styles.weeklyNewsReviewHeader}>
-        <span className={styles.weeklyReviewKicker}>Weekly Review</span>
-        <span className={styles.weeklyReviewTime}>Scan started {formatScanStartedAt(fetchedAt)}</span>
-      </div>
-      <div className={styles.weeklyReviewMetricRow}>
-        <div className={styles.weeklyReviewMetric}>
-          <span className={styles.weeklyReviewMetricValue}>{scannedItems.length}</span>
-          <span className={styles.weeklyReviewMetricLabel}>stories</span>
-        </div>
-        <div className={styles.weeklyReviewMetric}>
-          <span className={styles.weeklyReviewMetricValue}>{sources.size}</span>
-          <span className={styles.weeklyReviewMetricLabel}>sources</span>
-        </div>
-        <div className={styles.weeklyReviewMetric}>
-          <span className={styles.weeklyReviewMetricValue}>{topics.length}</span>
-          <span className={styles.weeklyReviewMetricLabel}>fields</span>
-        </div>
-      </div>
-
-      {error ? (
-        <p className={styles.weeklyReviewSummary}>{error}</p>
-      ) : latestStories.length > 0 ? (
-        <div className={styles.weeklyReviewStories}>
-          {latestStories.map((story) => (
-            <a
-              key={`${story.topic}-${story.url}`}
-              href={normalizeCommunityArticleUrl(story.url)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.weeklyReviewStory}
-            >
-              <span className={styles.weeklyReviewStoryTopic} style={{ color: story.color }}>
-                {story.topic}
-              </span>
-              <span className={styles.weeklyReviewStoryTitle}>{story.title}</span>
-            </a>
-          ))}
-        </div>
-      ) : (
-        <p className={styles.weeklyReviewSummary}>No fresh stories cleared the weekly scan yet.</p>
-      )}
-
-      {focusEntry && (
-        <div className={styles.weeklyReviewFocus}>
-          <span className={styles.weeklyReviewFocusLabel}>Curation focus</span>
-          <span className={styles.weeklyReviewFocusText}>
-            {focusEntry.topic}: {focusEntry.reason}
-          </span>
-        </div>
-      )}
-    </section>
-  );
-}
-
 export default function VotingPage() {
   const [showTutorial, setShowTutorial] = useState(false);
   const [proposals, setProposals] = useState<MergedProposal[]>([]);
@@ -351,8 +229,6 @@ export default function VotingPage() {
   const [newsTopics, setNewsTopics] = useState<NewsTopic[]>([]);
   const [newsLoading, setNewsLoading] = useState(true);
   const [newsError, setNewsError] = useState<string | null>(null);
-  const [newsFetchedAt, setNewsFetchedAt] = useState<string | null>(null);
-  const [newsReviewQueue, setNewsReviewQueue] = useState<NewsReviewQueueEntry[]>([]);
   const [articlePreview, setArticlePreview] = useState<ArticlePreviewState | null>(null);
   const { play } = useSound();
   const selectedProposal = selectedProposalId
@@ -378,16 +254,12 @@ export default function VotingPage() {
         if (!active) return;
 
         setNewsTopics(Array.isArray(data.topics) ? data.topics : []);
-        setNewsReviewQueue(Array.isArray(data.reviewQueue) ? data.reviewQueue : []);
-        setNewsFetchedAt(typeof data.fetchedAt === 'string' ? data.fetchedAt : new Date().toISOString());
         setNewsError(null);
       } catch (error) {
         if (!active) return;
 
         console.error('Error loading community news:', error);
         setNewsTopics([]);
-        setNewsReviewQueue([]);
-        setNewsFetchedAt(new Date().toISOString());
         setNewsError('News feed unavailable right now.');
       } finally {
         if (active) {
@@ -671,12 +543,11 @@ export default function VotingPage() {
                   <p className={styles.dashboardTreasuryBalance}>$5,343</p>
                 </div>
                 <div className={styles.dashboardTitleRightGroup}>
-                  <WeeklyNewsReview
-                    topics={newsTopics}
-                    fetchedAt={newsFetchedAt}
-                    reviewQueue={newsReviewQueue}
-                    loading={newsLoading}
-                    error={newsError}
+                  <TreasuryDisplay
+                    contractAddress={CONTRACT_ADDRESS}
+                    usdcAddress={USDC_ADDRESS}
+                    compact
+                    className={styles.dashboardWalletCard}
                   />
                 </div>
               </div>
@@ -686,12 +557,6 @@ export default function VotingPage() {
                   <div className={styles.overviewColumns}>
 
                     <div className={styles.latestNewsSection}>
-                      <TreasuryDisplay
-                        contractAddress={CONTRACT_ADDRESS}
-                        usdcAddress={USDC_ADDRESS}
-                        compact
-                        className={styles.dashboardWalletCard}
-                      />
                       <span className={styles.latestNewsLabel}>Latest News</span>
                       {newsLoading ? (
                         <NewsSkeletonStack />

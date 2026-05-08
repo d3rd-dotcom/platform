@@ -2,11 +2,22 @@
   --markets-status-height: 42px;
   --markets-shard-height: 34px;
   --markets-top-bars-height: calc(var(--markets-status-height) + var(--markets-shard-height));
+  --color-secondary: #23864f;
+  --color-secondary-hover: #176c3d;
+  --markets-light-gutter: #DDE2F2;
+  --markets-light-panel-low: #EEF1FA;
+  --markets-light-panel: #F8FAFF;
+  --markets-light-panel-raised: #FFFFFF;
+  --markets-light-warm: #FFF2E7;
+  --markets-light-green: #E9F8EF;
   height: calc(100dvh - 72px);
   min-height: calc(100dvh - 72px);
   max-height: calc(100dvh - 72px);
   margin-left: var(--sidebar-width, 272px);
-  background: #F4F5FE;
+  background:
+    radial-gradient(circle at 82% 4%, rgba(255, 119, 41, 0.16), transparent 32%),
+    radial-gradient(circle at 14% 18%, rgba(35, 134, 79, 0.13), transparent 30%),
+    linear-gradient(180deg, #F7F9FF 0%, #EEF2F8 100%);
   overflow: hidden;
 }
 
@@ -117,24 +128,26 @@
 /* ── Dashboard Grid ── */
 .grid {
   display: grid;
-  grid-template-columns: 280px minmax(0, 1.04fr) minmax(280px, 0.82fr) 300px;
+  grid-template-columns: minmax(0, 1.12fr) minmax(280px, 0.72fr) 300px;
   grid-template-rows: minmax(0, 1fr) auto;
   gap: 2px;
   flex: 1;
-  background: rgba(26, 29, 51, 0.08);
+  background: var(--markets-light-gutter);
   min-height: 0;
   overflow: hidden;
 }
 
 /* ── Panel Base ── */
 .panel {
-  background: #F4F5FE;
+  background: linear-gradient(180deg, var(--markets-light-panel-raised) 0%, var(--markets-light-panel) 100%);
   padding: 16px 18px;
   display: flex;
   flex-direction: column;
   gap: 8px;
   overflow: hidden;
   position: relative;
+  border: 1px solid rgba(26, 29, 51, 0.07);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 .panelHeader {
@@ -158,30 +171,142 @@
   font-size: 9px;
   padding: 2px 8px;
   border-radius: var(--radius-sm);
-  background: rgba(81, 104, 255, 0.08);
-  color: var(--color-primary);
-  border: 1px solid rgba(81, 104, 255, 0.2);
+  background: rgba(255, 242, 231, 0.96);
+  color: #9A4B18;
+  border: 1px solid rgba(255, 119, 41, 0.22);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
+.modelDetailsButton {
+  border: 1px solid rgba(35, 134, 79, 0.24);
+  border-radius: 999px;
+  background: rgba(233, 248, 239, 0.9);
+  color: var(--color-secondary);
+  font-family: var(--font-button);
+  font-size: 10px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.modelDetailsButton:hover {
+  background: #FFFFFF;
+  transform: translateY(-1px);
+}
+
+.modelDetailsBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 310;
+  border: 0;
+  background: rgba(26, 29, 51, 0.22);
+  cursor: default;
+}
+
 /* ── Left Column: Model Parameters ── */
 .modelsColumn {
-  grid-column: 1;
-  grid-row: 1 / 3;
+  position: fixed;
+  top: calc(72px + var(--markets-top-bars-height) + 12px);
+  bottom: 12px;
+  left: calc(var(--sidebar-width, 272px) + 12px);
+  z-index: 320;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  background: rgba(26, 29, 51, 0.08);
+  gap: 8px;
+  width: min(430px, calc(100vw - var(--sidebar-width, 272px) - 40px));
+  padding: 12px;
+  border: 1px solid rgba(26, 29, 51, 0.1);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, var(--markets-light-panel-raised) 0%, var(--markets-light-panel-low) 100%);
+  box-shadow: 0 24px 80px rgba(26, 29, 51, 0.22);
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-18px) scale(0.985);
+  transition:
+    opacity var(--duration-fast) var(--ease-default),
+    transform var(--duration-fast) var(--ease-default),
+    visibility var(--duration-fast) var(--ease-default);
+  visibility: hidden;
+}
+
+.modelsColumnOpen {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0) scale(1);
+  visibility: visible;
+}
+
+.modelDrawerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 4px 4px 8px;
+  flex: 0 0 auto;
+}
+
+.modelDrawerKicker {
+  display: block;
+  color: var(--color-secondary);
+  font-family: var(--font-button);
+  font-size: 9px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.modelDrawerTitle {
+  margin: 2px 0 0;
+  color: var(--color-text-dark);
+  font-family: var(--font-secondary);
+  font-size: 22px;
+  line-height: 1.1;
+}
+
+.modelDrawerClose {
+  border: 1px solid rgba(26, 29, 51, 0.12);
+  border-radius: 999px;
+  background: #FFFFFF;
+  color: var(--color-text-soft);
+  font-family: var(--font-button);
+  font-size: 10px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 7px 10px;
+  cursor: pointer;
+}
+
+.modelDrawerIntro {
+  margin: -2px 4px 4px;
+  color: var(--color-text-soft);
+  font-family: var(--font-button);
+  font-size: 11px;
+  line-height: 1.5;
 }
 
 .modelPanel {
-  background: #F4F5FE;
+  background: linear-gradient(180deg, var(--markets-light-panel-raised) 0%, var(--markets-light-panel) 100%);
   padding: 16px 18px;
-  flex: 1;
+  border: 1px solid rgba(26, 29, 51, 0.08);
+  border-radius: var(--radius-md);
+  flex: 0 0 auto;
+}
+
+.modelPanel:nth-of-type(odd) {
+  background: linear-gradient(180deg, var(--markets-light-panel) 0%, var(--markets-light-panel-low) 100%);
+}
+
+.modelPanel:last-child {
+  background: linear-gradient(180deg, var(--markets-light-green) 0%, var(--markets-light-panel) 100%);
+  border-color: rgba(35, 134, 79, 0.18);
 }
 
 .modelName {
@@ -216,7 +341,8 @@
 .paramKey {
   color: var(--color-primary);
   font-weight: var(--font-weight-semibold);
-  min-width: 60px;
+  min-width: 88px;
+  white-space: nowrap;
 }
 
 .paramValue {
@@ -265,25 +391,39 @@
   font-size: 12px;
 }
 
+.tradeCheckHelp {
+  margin: 10px 0 0;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: rgba(26, 29, 51, 0.05);
+  color: var(--color-text-soft);
+  font-family: var(--font-button);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
 /* ── Center Charts ── */
 .chartPanel {
-  grid-column: 2 / 4;
+  grid-column: 1 / 3;
   min-height: 0;
   position: relative;
 }
 
 .kalshiPanel {
-  grid-column: 2 / 4;
+  grid-column: 1 / 3;
   grid-row: 1;
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
+  background: linear-gradient(180deg, #FFFFFF 0%, #F5FBF7 100%);
 }
 
 .treasuryPanel {
-  grid-column: 3;
+  grid-column: 2;
   grid-row: 2;
   min-height: 0;
+  background: linear-gradient(180deg, var(--markets-light-warm) 0%, var(--markets-light-panel) 100%);
+  border-color: rgba(255, 119, 41, 0.16);
 }
 
 .chartPlaceholder {
@@ -331,7 +471,7 @@
 
 /* ── Right Column: Blue Trading Chat ── */
 .blueTradeColumn {
-  grid-column: 4;
+  grid-column: 3;
   grid-row: 1 / 3;
   display: flex;
   flex-direction: column;
@@ -344,8 +484,9 @@
   max-height: none;
   min-height: 0;
   background:
-    radial-gradient(circle at 78% 0%, rgba(81, 104, 255, 0.15), transparent 34%),
-    linear-gradient(180deg, #F4F5FE 0%, #EAEDFF 100%);
+    radial-gradient(circle at 50% 0%, rgba(35, 134, 79, 0.13), transparent 34%),
+    linear-gradient(180deg, #F8FAFF 0%, #E9EEF5 100%);
+  border-left: 1px solid rgba(26, 29, 51, 0.1);
   overflow: hidden;
   overscroll-behavior: contain;
 }
@@ -361,9 +502,25 @@
 .blueVital {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
   padding: 10px 12px;
   background: rgba(255, 255, 255, 0.54);
+  border-bottom: 2px solid rgba(26, 29, 51, 0.08);
+}
+
+.blueVital:nth-child(1) {
+  background: var(--markets-light-green);
+  border-bottom-color: rgba(35, 134, 79, 0.32);
+}
+
+.blueVital:nth-child(2) {
+  background: #FFFFFF;
+  border-bottom-color: rgba(26, 29, 51, 0.16);
+}
+
+.blueVital:nth-child(3) {
+  background: var(--markets-light-warm);
+  border-bottom-color: rgba(255, 119, 41, 0.32);
 }
 
 .blueVital span {
@@ -381,6 +538,18 @@
   font-variant-numeric: tabular-nums;
 }
 
+.blueVitalsHelp {
+  margin: 10px 16px 0;
+  padding: 9px 11px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(26, 29, 51, 0.08);
+  color: var(--color-text-soft);
+  font-family: var(--font-button);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
 .blueRouteCard {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -388,8 +557,8 @@
   margin: 14px 16px 0;
   padding: 10px 12px;
   border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.62);
-  border: 1px solid rgba(81, 104, 255, 0.14);
+  background: rgba(233, 248, 239, 0.78);
+  border: 1px solid rgba(35, 134, 79, 0.16);
   font-family: var(--font-button);
   font-size: 10px;
   line-height: 1.45;
@@ -549,10 +718,10 @@
 }
 
 .blueQuickActions button {
-  border: 1px solid rgba(81, 104, 255, 0.16);
+  border: 1px solid rgba(35, 134, 79, 0.18);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.68);
-  color: var(--color-primary);
+  background: rgba(233, 248, 239, 0.78);
+  color: var(--color-secondary);
   font-family: var(--font-button);
   font-size: 10px;
   font-weight: var(--font-weight-semibold);
@@ -692,9 +861,10 @@
 
 /* ── Execution Log ── */
 .logPanel {
-  grid-column: 2;
+  grid-column: 1;
   grid-row: 2;
   min-height: 0;
+  background: linear-gradient(180deg, var(--markets-light-panel-low) 0%, var(--markets-light-panel) 100%);
 }
 
 .logPanelHighlighted {
@@ -1201,9 +1371,9 @@
   font-size: 9px;
   font-weight: var(--font-weight-bold);
   letter-spacing: 0.12em;
-  color: var(--color-primary);
+  color: var(--color-secondary);
   padding: 4px 0 2px;
-  border-bottom: 1px solid rgba(81, 104, 255, 0.12);
+  border-bottom: 1px solid rgba(35, 134, 79, 0.16);
   margin-bottom: 2px;
 }
 
@@ -1214,17 +1384,22 @@
   padding: 6px 10px;
   border: 1px solid rgba(26, 29, 51, 0.08);
   border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.78);
   content-visibility: auto;
   contain-intrinsic-size: 84px;
+}
+
+.marketItem:nth-child(even) {
+  background: rgba(238, 241, 250, 0.86);
 }
 
 .marketLoadMore {
   align-self: flex-start;
   margin-top: 4px;
-  border: 1px solid rgba(81, 104, 255, 0.16);
+  border: 1px solid rgba(35, 134, 79, 0.18);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.68);
-  color: var(--color-primary);
+  background: rgba(233, 248, 239, 0.78);
+  color: var(--color-secondary);
   font-family: var(--font-button);
   font-size: 10px;
   font-weight: var(--font-weight-semibold);
@@ -1287,7 +1462,7 @@
 /* ── Responsive ── */
 @media (max-width: 1400px) {
   .grid {
-    grid-template-columns: 240px minmax(0, 1fr) minmax(240px, 0.78fr) 260px;
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 0.72fr) 260px;
   }
 
   .blueTradeColumn {
@@ -1301,16 +1476,9 @@
     grid-template-rows: auto;
   }
 
-  .modelsColumn {
-    grid-column: 1 / 3;
-    grid-row: auto;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
   .modelPanel {
-    flex: 1;
-    min-width: 260px;
+    flex: 0 0 auto;
+    min-width: 0;
   }
 
   .chartPanel {
@@ -1359,8 +1527,11 @@
   }
 
   .modelsColumn {
-    grid-column: 1;
-    flex-direction: column;
+    top: calc(72px + var(--markets-top-bars-height) + 78px);
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    width: auto;
   }
 
   .modelPanel {
@@ -1392,13 +1563,23 @@
 }
 
 :global([data-theme="dark"]) .main {
+  --color-secondary: #4fb877;
+  --color-secondary-hover: #5fcc84;
+  --markets-dark-gutter: oklch(10.5% 0.018 270);
+  --markets-dark-panel-low: oklch(16.5% 0.018 270);
+  --markets-dark-panel: oklch(20.5% 0.022 270);
+  --markets-dark-panel-raised: oklch(25.5% 0.028 270);
+  --markets-dark-warm: oklch(23% 0.033 48);
+  --markets-dark-green: oklch(24% 0.042 150);
   background:
-    linear-gradient(180deg, color-mix(in oklch, var(--color-surface-1) 38%, var(--color-background)) 0%, var(--color-background) 42%),
+    radial-gradient(circle at 78% 0%, color-mix(in oklch, var(--color-accent) 8%, transparent), transparent 34%),
+    radial-gradient(circle at 16% 18%, color-mix(in oklch, var(--color-tertiary) 9%, transparent), transparent 28%),
+    linear-gradient(180deg, var(--markets-dark-panel-low) 0%, var(--color-background) 44%),
     linear-gradient(
       90deg,
-      color-mix(in oklch, var(--color-primary) 5%, transparent) 0%,
+      color-mix(in oklch, var(--color-text-light) 3%, transparent) 0%,
       transparent 45%,
-      color-mix(in oklch, var(--color-accent) 3%, transparent) 100%
+      color-mix(in oklch, var(--color-surface-2) 22%, transparent) 100%
     );
 }
 
@@ -1408,22 +1589,93 @@
 }
 
 :global([data-theme="dark"]) .shardBar {
-  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-1));
+  background: color-mix(in oklch, var(--color-surface-2) 68%, var(--color-surface-1));
   border-bottom-color: var(--color-border-subtle);
 }
 
 :global([data-theme="dark"]) .grid,
-:global([data-theme="dark"]) .modelsColumn,
 :global([data-theme="dark"]) .blueTradeColumn {
-  background: var(--color-border-subtle);
+  background: var(--markets-dark-gutter);
+}
+
+:global([data-theme="dark"]) .modelsColumn {
+  background:
+    radial-gradient(circle at 12% 0%, color-mix(in oklch, var(--color-tertiary) 12%, transparent), transparent 30%),
+    linear-gradient(180deg, var(--markets-dark-panel) 0%, var(--markets-dark-panel-low) 100%);
+  border-color: var(--color-border-strong);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.58);
+}
+
+:global([data-theme="dark"]) .modelDetailsBackdrop {
+  background: rgba(7, 8, 14, 0.66);
+}
+
+:global([data-theme="dark"]) .modelDetailsButton {
+  background: color-mix(in oklch, var(--markets-dark-green) 54%, transparent);
+  border-color: color-mix(in oklch, var(--color-tertiary) 34%, transparent);
+  color: color-mix(in oklch, var(--color-tertiary) 74%, var(--color-text-light));
+}
+
+:global([data-theme="dark"]) .modelDetailsButton:hover,
+:global([data-theme="dark"]) .modelDrawerClose {
+  background: var(--markets-dark-panel-raised);
+  border-color: var(--color-border-strong);
+  color: var(--color-text-soft);
+}
+
+:global([data-theme="dark"]) .modelDrawerTitle {
+  color: var(--color-text-dark);
+}
+
+:global([data-theme="dark"]) .modelDrawerIntro {
+  color: var(--color-text-muted);
 }
 
 :global([data-theme="dark"]) .panel,
 :global([data-theme="dark"]) .modelPanel,
 :global([data-theme="dark"]) .marketRow {
   background:
-    linear-gradient(180deg, color-mix(in oklch, var(--color-surface-2) 76%, var(--color-surface-1)) 0%, var(--color-surface-1) 100%);
-  box-shadow: inset 0 1px 0 color-mix(in oklch, var(--color-text-light) 3%, transparent);
+    linear-gradient(180deg, var(--markets-dark-panel-raised) 0%, var(--markets-dark-panel) 100%);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklch, var(--color-text-light) 5%, transparent),
+    0 12px 28px color-mix(in oklch, var(--color-background) 34%, transparent);
+}
+
+:global([data-theme="dark"]) .modelsColumn {
+  gap: 3px;
+}
+
+:global([data-theme="dark"]) .modelPanel:nth-child(odd) {
+  background:
+    linear-gradient(180deg, var(--markets-dark-panel) 0%, var(--markets-dark-panel-low) 100%);
+}
+
+:global([data-theme="dark"]) .modelPanel:nth-child(even) {
+  background:
+    linear-gradient(180deg, var(--markets-dark-panel-raised) 0%, var(--markets-dark-panel) 100%);
+}
+
+:global([data-theme="dark"]) .modelPanel:last-child {
+  background:
+    linear-gradient(180deg, color-mix(in oklch, var(--markets-dark-green) 72%, var(--markets-dark-panel)) 0%, var(--markets-dark-panel-low) 100%);
+  border-color: color-mix(in oklch, var(--color-tertiary) 28%, transparent);
+}
+
+:global([data-theme="dark"]) .kalshiPanel {
+  background:
+    linear-gradient(180deg, color-mix(in oklch, var(--markets-dark-panel-raised) 88%, var(--color-tertiary)) 0%, var(--markets-dark-panel) 100%);
+}
+
+:global([data-theme="dark"]) .logPanel {
+  background:
+    linear-gradient(180deg, var(--markets-dark-panel-low) 0%, color-mix(in oklch, var(--markets-dark-panel) 72%, var(--color-background)) 100%);
+}
+
+:global([data-theme="dark"]) .treasuryPanel {
+  background:
+    linear-gradient(180deg, color-mix(in oklch, var(--markets-dark-warm) 74%, var(--markets-dark-panel)) 0%, var(--markets-dark-panel) 100%);
+  border-color: color-mix(in oklch, var(--color-accent) 18%, transparent);
 }
 
 :global([data-theme="dark"]) .panelTitle,
@@ -1467,8 +1719,9 @@
 }
 
 :global([data-theme="dark"]) .panelBadge {
-  background: color-mix(in oklch, var(--color-primary) 16%, transparent);
-  border-color: color-mix(in oklch, var(--color-primary) 28%, transparent);
+  background: color-mix(in oklch, var(--color-accent) 13%, var(--markets-dark-panel-raised));
+  border-color: color-mix(in oklch, var(--color-accent) 30%, transparent);
+  color: color-mix(in oklch, var(--color-accent) 70%, var(--color-text-light));
 }
 
 :global([data-theme="dark"]) .signalRow {
@@ -1478,7 +1731,9 @@
 
 :global([data-theme="dark"]) .blueTradeColumn {
   background:
-    linear-gradient(180deg, color-mix(in oklch, var(--color-surface-2) 74%, var(--color-surface-1)) 0%, var(--color-surface-1) 100%);
+    radial-gradient(circle at 50% 0%, color-mix(in oklch, var(--color-tertiary) 10%, transparent), transparent 34%),
+    linear-gradient(180deg, var(--markets-dark-panel-low) 0%, var(--markets-dark-gutter) 100%);
+  border-left: 1px solid var(--color-border-strong);
 }
 
 :global([data-theme="dark"]) .blueTradeComposer {
@@ -1495,13 +1750,49 @@
 :global([data-theme="dark"]) .blueTyping,
 :global([data-theme="dark"]) .blueQuickActions button,
 :global([data-theme="dark"]) .blueTradeComposer textarea {
-  background: color-mix(in oklch, var(--color-surface-2) 72%, transparent);
+  background: color-mix(in oklch, var(--markets-dark-panel-raised) 82%, transparent);
   border-color: var(--color-border-subtle);
 }
 
+:global([data-theme="dark"]) .blueVital {
+  gap: 4px;
+  border-bottom: 2px solid var(--color-border-subtle);
+}
+
+:global([data-theme="dark"]) .blueVital:nth-child(1) {
+  background: color-mix(in oklch, var(--markets-dark-green) 70%, var(--markets-dark-panel));
+  border-bottom-color: color-mix(in oklch, var(--color-tertiary) 48%, transparent);
+}
+
+:global([data-theme="dark"]) .blueVital:nth-child(2) {
+  background: var(--markets-dark-panel-raised);
+  border-bottom-color: color-mix(in oklch, var(--color-text-light) 18%, transparent);
+}
+
+:global([data-theme="dark"]) .blueVital:nth-child(3) {
+  background: color-mix(in oklch, var(--markets-dark-warm) 72%, var(--markets-dark-panel));
+  border-bottom-color: color-mix(in oklch, var(--color-accent) 44%, transparent);
+}
+
+:global([data-theme="dark"]) .blueVital span {
+  font-size: 8px;
+  letter-spacing: 0.045em;
+}
+
+:global([data-theme="dark"]) .blueVital strong {
+  font-size: 16px;
+}
+
+:global([data-theme="dark"]) .blueVitalsHelp,
+:global([data-theme="dark"]) .tradeCheckHelp {
+  background: color-mix(in oklch, var(--color-background) 38%, transparent);
+  border-color: var(--color-border-subtle);
+  color: var(--color-text-soft);
+}
+
 :global([data-theme="dark"]) .blueRouteCard {
-  background: color-mix(in oklch, var(--color-primary) 9%, transparent);
-  border-color: color-mix(in oklch, var(--color-primary) 18%, transparent);
+  background: color-mix(in oklch, var(--markets-dark-green) 38%, transparent);
+  border-color: color-mix(in oklch, var(--color-tertiary) 26%, transparent);
 }
 
 :global([data-theme="dark"]) .blueChatUser .blueBubbleText,
@@ -1539,18 +1830,23 @@
 }
 
 :global([data-theme="dark"]) .marketItem {
-  background: color-mix(in oklch, var(--color-surface-2) 46%, transparent);
+  background: color-mix(in oklch, var(--markets-dark-panel-low) 68%, transparent);
   border-color: var(--color-border-subtle);
+}
+
+:global([data-theme="dark"]) .marketItem:nth-child(even) {
+  background: color-mix(in oklch, var(--markets-dark-panel-raised) 52%, transparent);
 }
 
 :global([data-theme="dark"]) .marketLoadMore {
   background: color-mix(in oklch, var(--color-surface-2) 60%, transparent);
   border-color: var(--color-border-subtle);
-  color: var(--color-primary);
+  color: var(--color-text-soft);
 }
 
 :global([data-theme="dark"]) .marketSectionLabel {
-  border-bottom-color: color-mix(in oklch, var(--color-primary) 24%, transparent);
+  color: var(--color-text-soft);
+  border-bottom-color: var(--color-border-subtle);
 }
 
 :global([data-theme="dark"]) .comingSoonText {

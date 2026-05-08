@@ -206,7 +206,7 @@ export const MembershipSection: React.FC = () => {
               </li>
             </ul>
             <a
-              href="/community"
+              href="/home"
               className={styles.tierBtnSecondary}
               onClick={() => play('click')}
               onMouseEnter={() => play('hover')}

@@ -1620,6 +1620,7 @@
 }
 
 .communityMainWrapper {
+  --color-tertiary: var(--color-primary);
   width: 100%;
   padding: 24px 24px 28px;
   margin: 0;
@@ -1627,14 +1628,35 @@
 }
 
 .dashboardChrome {
+  --dashboard-bg:
+    radial-gradient(circle at 100% 0%, rgba(81, 104, 255, 0.08), transparent 34%),
+    linear-gradient(180deg, rgba(246, 247, 252, 0.96) 0%, rgba(236, 238, 248, 0.92) 100%);
+  --dashboard-border: rgba(26, 27, 36, 0.08);
+  --dashboard-divider: rgba(26, 27, 36, 0.08);
+  --dashboard-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.86),
+    0 10px 28px rgba(26, 27, 36, 0.08);
+  --dashboard-control-bg: rgba(26, 27, 36, 0.035);
+  --dashboard-control-border: rgba(26, 27, 36, 0.08);
+  --dashboard-panel-bg:
+    radial-gradient(circle at 100% 0%, rgba(81, 104, 255, 0.12), transparent 38%),
+    rgba(255, 255, 255, 0.72);
+  --dashboard-panel-border: rgba(26, 27, 36, 0.08);
+  --dashboard-panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.78);
+  --dashboard-title-color: var(--color-text-dark);
+  --dashboard-title-accent: var(--color-primary);
+  --dashboard-text-color: rgba(26, 27, 36, 0.9);
+  --dashboard-muted-color: rgba(26, 27, 36, 0.6);
+  --dashboard-faint-color: rgba(26, 27, 36, 0.46);
+  --dashboard-avatar-border: rgba(255, 255, 255, 0.92);
+  --dashboard-tabs-bg: rgba(255, 255, 255, 0.5);
+  --dashboard-tab-color: rgba(26, 27, 36, 0.54);
   width: 100%;
-  background: linear-gradient(180deg, #1d1d1f 0%, #232325 100%);
+  background: var(--dashboard-bg);
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--dashboard-border);
   overflow: hidden;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 8px 32px rgba(0, 0, 0, 0.28);
+  box-shadow: var(--dashboard-shadow);
 }
 
 .dashboardMasthead {
@@ -1643,7 +1665,7 @@
   align-items: center;
   gap: 18px;
   padding: 20px 28px 14px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--dashboard-divider);
 }
 
 .dashboardBrand {
@@ -1663,7 +1685,7 @@
 }
 
 .dashboardBrandMark span {
-  background: linear-gradient(180deg, #fafafa 0%, #a6a6a9 100%);
+  background: linear-gradient(180deg, var(--color-primary) 0%, color-mix(in oklch, var(--color-primary) 52%, var(--color-secondary)) 100%);
   border-radius: 999px;
 }
 
@@ -1691,7 +1713,7 @@
   font-family: 'IBM Plex Mono', monospace;
   font-size: 12px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--dashboard-text-color);
   letter-spacing: 0.02em;
 }
 
@@ -1699,7 +1721,7 @@
   font-family: 'Poppins', sans-serif;
   font-size: 11px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.44);
+  color: var(--dashboard-faint-color);
 }
 
 .dashboardSearch {
@@ -1709,9 +1731,9 @@
   gap: 10px;
   padding: 0 14px;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.52);
+  background: var(--dashboard-control-bg);
+  border: 1px solid var(--dashboard-control-border);
+  color: var(--dashboard-faint-color);
   font-family: 'Poppins', sans-serif;
   font-size: 12px;
   min-width: 0;
@@ -1742,8 +1764,8 @@
   height: 34px;
   margin-left: -8px;
   border-radius: 999px;
-  border: 2px solid #1d1d1f;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+  border: 2px solid var(--dashboard-avatar-border);
+  box-shadow: 0 0 0 1px var(--dashboard-control-border);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1811,9 +1833,9 @@
   justify-content: center;
   padding: 0;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.86);
+  border: 1px solid var(--dashboard-control-border);
+  background: var(--dashboard-control-bg);
+  color: var(--dashboard-text-color);
   font-family: 'IBM Plex Mono', monospace;
   font-size: 12px;
   font-weight: 700;
@@ -1824,8 +1846,8 @@
 .podInfoButton:hover,
 .podInfoButton:focus-visible {
   transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: color-mix(in oklch, var(--color-primary) 10%, var(--dashboard-control-bg));
+  border-color: color-mix(in oklch, var(--color-primary) 32%, var(--dashboard-control-border));
 }
 
 .podInfoTooltip {
@@ -1911,7 +1933,8 @@
   display: flex;
   align-items: flex-start;
   gap: 14px;
-  flex: 1 1 0;
+  flex: 0 0 clamp(280px, 30vw, 360px);
+  max-width: clamp(280px, 30vw, 360px);
   min-width: 0;
 }
 
@@ -1920,11 +1943,9 @@
   margin-left: auto;
   padding: 14px 16px;
   border-radius: 16px;
-  background:
-    radial-gradient(circle at 100% 0%, rgba(81, 104, 255, 0.18), transparent 36%),
-    rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  background: var(--dashboard-panel-bg);
+  border: 1px solid var(--dashboard-panel-border);
+  box-shadow: var(--dashboard-panel-shadow);
 }
 
 .weeklyNewsReviewHeader {
@@ -1939,13 +1960,13 @@
   font-family: 'Space Grotesk', sans-serif;
   font-size: 13px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--dashboard-title-color);
 }
 
 .weeklyReviewTime {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--dashboard-faint-color);
   white-space: nowrap;
 }
 
@@ -1962,15 +1983,15 @@
   gap: 2px;
   padding: 9px 10px;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--dashboard-control-bg);
+  border: 1px solid var(--dashboard-control-border);
 }
 
 .weeklyReviewMetricValue {
   font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
   font-size: 18px;
   line-height: 1;
-  color: #ffffff;
+  color: var(--dashboard-title-color);
 }
 
 .weeklyReviewMetricLabel {
@@ -1978,7 +1999,7 @@
   font-size: 9px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--dashboard-faint-color);
 }
 
 .weeklyReviewStories {
@@ -1995,7 +2016,7 @@
   text-decoration: none;
   color: inherit;
   padding: 4px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid var(--dashboard-divider);
 }
 
 .weeklyReviewStory:last-child {
@@ -2003,7 +2024,7 @@
 }
 
 .weeklyReviewStory:hover .weeklyReviewStoryTitle {
-  color: rgba(255, 255, 255, 0.96);
+  color: var(--dashboard-title-color);
 }
 
 .weeklyReviewStoryTopic {
@@ -2021,7 +2042,7 @@
   white-space: nowrap;
   font-family: 'Poppins', sans-serif;
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.74);
+  color: var(--dashboard-muted-color);
   transition: color 0.12s ease;
 }
 
@@ -2030,7 +2051,7 @@
   font-family: 'Poppins', sans-serif;
   font-size: 11px;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.68);
+  color: var(--dashboard-muted-color);
 }
 
 .weeklyReviewFocus {
@@ -2039,7 +2060,7 @@
   gap: 8px;
   margin-top: 10px;
   padding-top: 9px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--dashboard-divider);
   min-width: 0;
 }
 
@@ -2050,7 +2071,7 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.48);
+  color: var(--dashboard-faint-color);
 }
 
 .weeklyReviewFocusText {
@@ -2060,7 +2081,7 @@
   white-space: nowrap;
   font-family: 'Poppins', sans-serif;
   font-size: 10.5px;
-  color: rgba(255, 255, 255, 0.64);
+  color: var(--dashboard-muted-color);
 }
 
 .weeklyReviewKickerSkeleton {
@@ -2095,18 +2116,18 @@
   font-size: 32px;
   font-weight: 700;
   letter-spacing: -0.03em;
-  color: #ffffff;
+  color: var(--dashboard-title-color);
 }
 
 .dashboardTitleAccent {
-  color: #d7d7db;
+  color: inherit;
 }
 
 .dashboardSubtitle {
   margin: 6px 0 0;
   font-family: 'Poppins', sans-serif;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.58);
+  color: var(--dashboard-muted-color);
 }
 
 .dashboardTreasuryBalance {
@@ -2116,10 +2137,7 @@
   font-weight: 700;
   line-height: 0.9;
   letter-spacing: -0.05em;
-  background: var(--gradient-secondary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--color-primary);
   text-shadow: none;
 }
 
@@ -2155,7 +2173,10 @@
 
 .dashboardWalletCard {
   width: 100%;
+  max-width: clamp(280px, 30vw, 360px);
   margin-bottom: 4px;
+  border: 1px solid rgba(27, 57, 214, 0.44) !important;
+  box-shadow: none !important;
 }
 
 .dashboardMiniButton {
@@ -2166,9 +2187,9 @@
   min-height: 34px;
   padding: 0 14px;
   border-radius: 999px;
-  border: 1px solid rgba(178, 207, 255, 0.22);
-  background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
+  border: 1px solid var(--dashboard-control-border);
+  background: var(--dashboard-control-bg);
+  color: var(--dashboard-text-color);
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
   font-weight: 700;
@@ -2180,8 +2201,8 @@
 
 .dashboardMiniButton:hover {
   transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(197, 221, 255, 0.32);
+  background: color-mix(in oklch, var(--color-primary) 10%, var(--dashboard-control-bg));
+  border-color: color-mix(in oklch, var(--color-primary) 32%, var(--dashboard-control-border));
 }
 
 .dashboardStatus {
@@ -2192,8 +2213,8 @@
   margin-top: 6px;
   padding: 9px 12px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.84);
+  background: var(--dashboard-control-bg);
+  color: var(--dashboard-text-color);
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
   text-transform: uppercase;
@@ -2213,9 +2234,9 @@
   align-items: center;
   gap: 2px;
   padding: 0 24px;
-  background: rgba(10, 10, 11, 0.18);
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--dashboard-tabs-bg);
+  border-top: 1px solid var(--dashboard-divider);
+  border-bottom: 1px solid var(--dashboard-divider);
 }
 
 .communityTab {
@@ -2228,14 +2249,14 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.46);
+  color: var(--dashboard-tab-color);
   cursor: pointer;
   text-align: center;
   position: relative;
 }
 
 .communityTabActive {
-  color: #5168FF;
+  color: var(--color-primary);
 }
 
 .communityTabActive::after {
@@ -2246,30 +2267,30 @@
   bottom: 0;
   height: 2px;
   border-radius: 999px;
-  background: #5168FF;
+  background: var(--color-primary);
 }
 
 .communityTabAction {
   min-height: 46px;
   padding: 0 16px;
-  border: 1px solid rgba(198, 220, 255, 0.22);
+  border: 1px solid var(--dashboard-control-border);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--dashboard-control-bg);
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--dashboard-muted-color);
   cursor: pointer;
   transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
   align-self: center;
 }
 
 .communityTabAction:hover {
-  background: rgba(81, 104, 255, 0.18);
-  border-color: rgba(81, 104, 255, 0.5);
-  color: #ffffff;
+  background: color-mix(in oklch, var(--color-primary) 12%, var(--dashboard-control-bg));
+  border-color: color-mix(in oklch, var(--color-primary) 42%, var(--dashboard-control-border));
+  color: var(--dashboard-title-color);
 }
 
 .proposalsEntryButton {
@@ -4162,20 +4183,46 @@
 }
 
 :global([data-theme="dark"]) .communityTabs {
-  background: color-mix(in oklch, var(--color-background) 72%, transparent);
-  border-bottom-color: var(--color-border-subtle);
+  background: var(--dashboard-tabs-bg);
+  border-color: var(--dashboard-divider);
 }
 
 :global([data-theme="dark"]) .communityTab {
-  color: var(--color-text-faint);
+  color: var(--dashboard-tab-color);
 }
 
 :global([data-theme="dark"]) .communityTabActive {
-  color: #5168FF;
+  color: var(--color-primary);
 }
 
 :global([data-theme="dark"]) .pageLayout {
   background: transparent;
+}
+
+:global([data-theme="dark"]) .dashboardChrome {
+  --dashboard-bg:
+    radial-gradient(circle at 100% 0%, color-mix(in oklch, var(--color-primary) 18%, transparent), transparent 34%),
+    linear-gradient(180deg, color-mix(in oklch, var(--color-surface-1) 96%, black) 0%, color-mix(in oklch, var(--color-background) 92%, black) 100%);
+  --dashboard-border: var(--color-border-subtle);
+  --dashboard-divider: rgba(235, 232, 247, 0.08);
+  --dashboard-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 12px 30px rgba(0, 0, 0, 0.22);
+  --dashboard-control-bg: rgba(235, 232, 247, 0.045);
+  --dashboard-control-border: rgba(235, 232, 247, 0.08);
+  --dashboard-panel-bg:
+    radial-gradient(circle at 100% 0%, color-mix(in oklch, var(--color-primary) 16%, transparent), transparent 38%),
+    rgba(235, 232, 247, 0.04);
+  --dashboard-panel-border: rgba(235, 232, 247, 0.08);
+  --dashboard-panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+  --dashboard-title-color: var(--color-text-dark);
+  --dashboard-title-accent: color-mix(in oklch, var(--color-primary) 78%, var(--color-text-dark));
+  --dashboard-text-color: rgba(235, 232, 247, 0.9);
+  --dashboard-muted-color: rgba(235, 232, 247, 0.64);
+  --dashboard-faint-color: rgba(235, 232, 247, 0.46);
+  --dashboard-avatar-border: color-mix(in oklch, var(--color-background) 88%, black);
+  --dashboard-tabs-bg: rgba(7, 8, 14, 0.24);
+  --dashboard-tab-color: rgba(235, 232, 247, 0.5);
 }
 
 :global([data-theme="dark"]) .communityViewViewport {
@@ -4185,6 +4232,10 @@
 :global([data-theme="dark"]) .dashboardTreasuryBalance,
 :global([data-theme="dark"]) .treasuryHeroCard :global(.balance) {
   color: var(--color-primary);
+}
+
+:global([data-theme="dark"]) .dashboardWalletCard {
+  border-color: rgba(190, 205, 255, 0.24) !important;
 }
 
 :global([data-theme="dark"]) .dashboardMetricCard {

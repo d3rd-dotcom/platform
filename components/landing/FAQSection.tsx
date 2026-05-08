@@ -26,34 +26,14 @@ const FAQ_ITEMS = [
       'B.L.U.E. stands for Behavioral Learning & Understanding Engine. She is the AI companion architecture inside MWA, built to help with reflection, assessment review, research workflows, reward decisions, and market analysis. She is not a generic chatbot pasted onto a course.',
   },
   {
-    question: 'How much time does it take each week?',
-    answer:
-      'Most members should expect 2 to 3 focused hours each week for the core course: one module, one reflection or assessment, and optional cohort discussion. Extra surveys, DAO proposals, research tasks, and B.L.U.E. workflows can add more time when you want to participate more deeply.',
-  },
-  {
-    question: 'Is this a therapy replacement?',
-    answer:
-      'No. MWA is education, research participation, and community infrastructure. It is not diagnosis, crisis care, or clinical treatment. If you need therapy or medical support, use a qualified professional. MWA can sit alongside care, but it should not replace it.',
-  },
-  {
     question: 'How does membership work?',
     answer:
       'Explorer members can start free with the core course, journaling, weekly quests, community access, and shard rewards. Paid members unlock governance, research tools, proposal access, and deeper B.L.U.E. features. The $90 VIP membership is the lifetime option with an on-chain membership card.',
   },
   {
-    question: 'How do you make money?',
-    answer:
-      'MWA revenue comes from activity inside the system: token trading fees, the shop, and fees for premium B.L.U.E. workflows such as the prediction market agent. The long-term model also includes research partnerships and licensing the assessment and AI stack after enough cohorts produce reliable signal.',
-  },
-  {
     question: 'How do I make money?',
     answer:
       'Members can earn through eligible surveys, research tasks, quests, and funded community work. Surveys pay for your time and the usefulness of your answers. Higher-effort studies may carry higher rewards when funded by the DAO, partners, or research budgets. Rewards can vary by campaign and are not guaranteed income.',
-  },
-  {
-    question: 'What do I get in the $90 VIP Membership?',
-    answer:
-      'The $90 VIP Membership gives lifetime access, an on-chain membership card, treasury participation, and access to the Academic Angel cohort. The cohort is capped around 33 members, with data scientists and builders producing surveys, reviewing results, and helping direct DAO funding toward individual projects aligned with testing and research participation.',
   },
 ];
 

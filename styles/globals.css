@@ -42,9 +42,10 @@
   --color-shell-background: rgba(244, 245, 254, 0.6);
 
   /* Neutral Greys — for dark-first components (SurveyController, SurveySpace) */
-  --color-grey-500: #333341;
+  --color-grey-500: #282836;
   --color-grey-600: #555565;
-  --color-grey-900: #191a26;
+  --color-grey-600-50: rgba(85, 85, 101, 0.5);
+  --color-grey-900: #11121c;
   --color-grey-950: #0c0d17;
 
   /* Category Colors */

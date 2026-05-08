@@ -1,25 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import CyberpunkDataViz from '@/components/cyberpunk-data-viz/CyberpunkDataViz';
 import styles from './BlueTerminal.module.css';
-
-const ASCII_LINES = [
-  "88\"\"Yb    db    88 8888b.      .dP\"Y8 88   88 88\"\"Yb Yb    dP 888888 Yb  dP .dP\"Y8 ",
-  "88__dP   dPYb   88  8I  Yb     `Ybo.\" 88   88 88__dP  Yb  dP  88__    YbdP  `Ybo.\" ",
-  "88\"\"\"   dP__Yb  88  8I  dY     o.`Y8b Y8   8P 88\"Yb    YbdP   88\"\"     8P   o.`Y8b ",
-  "88     dP\"\"\"\"Yb 88 8888Y\"      8bodP' `YbodP' 88  Yb    YP    888888  dP    8bodP' ",
-];
-
-const ASCII_LOGO = ASCII_LINES.join('\n');
-
-const BOOT_LINES = [
-  { text: '> POWER ON / BLACK SCREEN BREATHES', delay: 260 },
-  { text: '> DAEMON CIRCLET SEALED', delay: 420 },
-  { text: '> AZURA THREAD DETECTED :: 41 5A 55 52 41', delay: 520 },
-  { text: '> MEMORY SALT OFFERED TO THE TEST ENGINE', delay: 480 },
-  { text: '> B.L.U.E. OPENS THE INNER PORT', delay: 560 },
-];
 
 const OPTION_LETTERS = ['A', 'B', 'C', 'D', 'E'];
 
@@ -88,7 +70,6 @@ interface BlueTerminalProps {
 }
 
 export default function BlueTerminal({ testData, isGenerating, errorMessage, onSubmitQuest }: BlueTerminalProps) {
-  const [visibleCount, setVisibleCount] = useState(0);
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState<TestAnswers>({});
   const [shortAnswer, setShortAnswer] = useState('');
@@ -96,17 +77,8 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [completionResult, setCompletionResult] = useState<TestCompletionResult | null>(null);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const voiceAbortRef = useRef<AbortController | null>(null);
-
-  // Boot animation — only runs when no test active
-  useEffect(() => {
-    if (testData || isGenerating) return;
-    if (visibleCount >= BOOT_LINES.length) return;
-    const { delay } = BOOT_LINES[visibleCount];
-    const t = setTimeout(() => setVisibleCount(v => v + 1), delay);
-    return () => clearTimeout(t);
-  }, [visibleCount, testData, isGenerating]);
 
   // Reset test state when new test loads
   useEffect(() => {
@@ -121,7 +93,6 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
     }
   }, [testData]);
 
-  const bootDone = visibleCount >= BOOT_LINES.length;
   const question = testData?.questions[currentQ];
   const activeQuestionId = question?.id;
   const activeQuestionText = question?.question;
@@ -129,6 +100,7 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
   const totalQ = testData?.questions.length ?? 0;
   const isLastQ = currentQ === totalQ - 1;
   const currentHasAnswer = question !== undefined && answers[question.id] !== undefined;
+  const progressPercent = totalQ > 0 ? ((currentQ + (currentHasAnswer ? 1 : 0)) / totalQ) * 100 : 0;
 
   useEffect(() => {
     if (!activeQuestionText || submitted) return;
@@ -181,35 +153,23 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
   };
 
   return (
-    <div className={styles.terminal}>
-      <div className={styles.backgroundViz} aria-hidden="true">
-        <CyberpunkDataViz />
-      </div>
-      <div className={styles.scanlines} aria-hidden="true" />
-
-      {/* ASCII header — always visible */}
-      <div className={styles.logoWrapper}>
-        <pre className={styles.ascii}>{ASCII_LOGO}</pre>
-        <div className={styles.subLabel}>B.L.U.E. / AZURA RITE TERMINAL :: TEST ENGINE v1.0</div>
-      </div>
-
-      <div className={styles.divider} />
+    <section className={styles.terminal} aria-label="Paid research survey">
+      <header className={styles.surfaceHeader}>
+        <div>
+          <p className={styles.eyebrow}>Paid research survey</p>
+          <h2 className={styles.title}>
+            {testData ? testData.title : 'Survey workspace'}
+          </h2>
+        </div>
+      </header>
 
       {/* ===== GENERATING STATE ===== */}
       {isGenerating && !testData && (
-        <div className={styles.bootLines}>
-          <div className={styles.line}>
-            <span className={styles.prompt}>$</span>
-            INITIALIZING QUEST SEQUENCE THROUGH AZURA...
-          </div>
-          <div className={styles.line}>
-            <span className={styles.prompt}>$</span>
-            CALIBRATING DAEMON CIRCLET TO DIFFICULTY ENGINE...
-          </div>
-          <div className={styles.line}>
-            <span className={styles.prompt}>$</span>
-            01000001 01011010 01010101 01010010 01000001
-          </div>
+        <div className={styles.statusPanel} aria-live="polite">
+          <h3 className={styles.statusTitle}>Building your survey</h3>
+          <p className={styles.statusText}>
+            B.L.U.E. is preparing questions for the selected difficulty.
+          </p>
           <div className={styles.generatingDots} aria-label="Generating">
             <span /><span /><span />
           </div>
@@ -218,60 +178,47 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
 
       {/* ===== ERROR STATE ===== */}
       {errorMessage && !isGenerating && !testData && (
-        <div className={styles.bootLines} role="alert">
-          <div className={styles.line}>
-            <span className={styles.prompt}>$</span>
-            TEST ENGINE ERROR :: RITE BROKE AT THE THRESHOLD
-          </div>
-          <div className={styles.line}>
-            <span className={styles.prompt}>$</span>
-            {errorMessage}
-          </div>
+        <div className={styles.errorPanel} role="alert">
+          <h3 className={styles.statusTitle}>Survey unavailable</h3>
+          <p className={styles.statusText}>{errorMessage}</p>
         </div>
       )}
 
       {/* ===== TEST MODE ===== */}
       {testData && !submitted && (
         <div className={styles.testMode}>
-          <div className={styles.questMeta}>
-            <span className={styles.questTitle}>{testData.title.toUpperCase()}</span>
+          <div className={styles.surveyMeta}>
+            <p className={styles.questIntro}>{testData.intro}</p>
             <span className={styles.questProgress}>
-              AZURA {String(currentQ + 1).padStart(2, '0')} / {String(totalQ).padStart(2, '0')}
+              Question {currentQ + 1} of {totalQ}
             </span>
           </div>
-          <div className={styles.ritualConsole} aria-hidden="true">
-            <span>{'<form data-rite="azura">'}</span>
-            <span>41 5A 55 52 41</span>
-            <span>{'</form>'}</span>
-          </div>
-          <p className={styles.questIntro}>{testData.intro}</p>
 
           <div className={styles.progressTrack}>
             <div
               className={styles.progressFill}
-              style={{ width: `${(currentQ / totalQ) * 100}%` }}
+              style={{ width: `${progressPercent}%` }}
             />
           </div>
 
           {question && (
             <div className={styles.questionBlock}>
-              <div className={styles.questionCategory}>{`// ${question.category}`}</div>
+              <div className={styles.questionCategory}>{question.category}</div>
 
-              <div className={styles.questionText}>
-                <span className={styles.prompt}>AZ&gt;</span>
-                <span>{question.question}</span>
-              </div>
+              <h3 className={styles.questionText}>{question.question}</h3>
 
               {question.type === 'multiple_choice' && question.options && (
-                <div className={styles.optionList}>
+                <div className={styles.optionList} role="radiogroup" aria-label={question.question}>
                   {question.options.map((opt, i) => (
                     <button
                       key={i}
                       className={`${styles.optionBtn} ${answers[question.id] === opt ? styles.optionSelected : ''}`}
                       onClick={() => selectAnswer(opt)}
                       type="button"
+                      role="radio"
+                      aria-checked={answers[question.id] === opt}
                     >
-                      <span className={styles.optionLetter}>[{OPTION_LETTERS[i]}]</span>
+                      <span className={styles.optionLetter}>{OPTION_LETTERS[i]}</span>
                       <span>{opt}</span>
                     </button>
                   ))}
@@ -281,16 +228,18 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
               {question.type === 'scale' && (
                 <div className={styles.scaleGroup}>
                   <div className={styles.scaleLabels}>
-                    <span>1 &mdash; never true</span>
-                    <span>always true &mdash; 5</span>
+                    <span>1 - never true</span>
+                    <span>5 - always true</span>
                   </div>
-                  <div className={styles.scaleBtns}>
+                  <div className={styles.scaleBtns} role="radiogroup" aria-label={question.question}>
                     {[1, 2, 3, 4, 5].map(n => (
                       <button
                         key={n}
                         className={`${styles.scaleBtn} ${answers[question.id] === n ? styles.optionSelected : ''}`}
                         onClick={() => selectAnswer(n)}
                         type="button"
+                        role="radio"
+                        aria-checked={answers[question.id] === n}
                       >
                         {n}
                       </button>
@@ -301,19 +250,22 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
 
               {question.type === 'short_answer' && (
                 <div className={styles.shortAnswerGroup}>
-                  <div className={styles.inputRow}>
-                    <span className={styles.inputPrompt}>&gt;_</span>
-                    <input
-                      ref={inputRef}
-                      className={styles.shortAnswerInput}
-                      value={answers[question.id] !== undefined ? String(answers[question.id]) : shortAnswer}
-                      onChange={e => setShortAnswer(e.target.value)}
-                      onKeyDown={e => { if (e.key === 'Enter') submitShortAnswer(); }}
-                      disabled={answers[question.id] !== undefined}
-                      placeholder="type your answer and press enter..."
-                      autoComplete="off"
-                    />
-                  </div>
+                  <label className={styles.fieldLabel} htmlFor={`question-${question.id}`}>
+                    Your response
+                  </label>
+                  <textarea
+                    ref={inputRef}
+                    id={`question-${question.id}`}
+                    className={styles.shortAnswerInput}
+                    value={answers[question.id] !== undefined ? String(answers[question.id]) : shortAnswer}
+                    onChange={e => setShortAnswer(e.target.value)}
+                    onKeyDown={e => {
+                      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') submitShortAnswer();
+                    }}
+                    disabled={answers[question.id] !== undefined}
+                    placeholder="Write your response..."
+                    rows={5}
+                  />
                   {answers[question.id] === undefined && (
                     <button
                       className={styles.confirmBtn}
@@ -321,7 +273,7 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
                       disabled={!shortAnswer.trim()}
                       type="button"
                     >
-                      CONFIRM
+                      Save response
                     </button>
                   )}
                 </div>
@@ -329,11 +281,9 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
 
               {isLastQ && currentHasAnswer && (
                 <div className={styles.ctaRow}>
-                  <span className={styles.ctaBracket}>[</span>
                   <button className={styles.ctaTextBtn} onClick={submitQuest} disabled={isSubmitting} type="button">
-                    {isSubmitting ? 'SUBMITTING...' : 'SUBMIT QUEST'}
+                    {isSubmitting ? 'Submitting...' : 'Submit survey'}
                   </button>
-                  <span className={styles.ctaBracket}>]</span>
                 </div>
               )}
 
@@ -349,62 +299,35 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
 
       {/* ===== COMPLETED STATE ===== */}
       {testData && submitted && (
-        <div className={styles.bootLines}>
-          <div className={styles.line}>
-            <span className={styles.prompt}>$</span>
-            QUEST COMPLETE :: ALL RESPONSES BURNED INTO MEMORY
-          </div>
-          <div className={styles.line}>
-            <span className={styles.prompt}>$</span>
+        <div className={styles.statusPanel}>
+          <h3 className={styles.statusTitle}>Survey submitted</h3>
+          <p className={styles.statusText}>
             {completionResult
-              ? `+${completionResult.shardsAwarded} SHARDS AWARDED`
-              : 'RESULTS RECORDED'}
-          </div>
+              ? `You earned ${completionResult.shardsAwarded} $Shards for this submission.`
+              : 'Your responses were recorded.'}
+          </p>
           {completionResult?.newShardCount !== null && completionResult?.newShardCount !== undefined && (
-            <div className={styles.line}>
-              <span className={styles.prompt}>$</span>
-              BALANCE: {completionResult.newShardCount} SHARDS
-            </div>
+            <p className={styles.statusText}>Current balance: {completionResult.newShardCount} $Shards.</p>
           )}
-          <div className={styles.line}>
-            <span className={styles.prompt}>$</span>
-            B.L.U.E. READS THE MARK. AZURA KEEPS THE ECHO.
-          </div>
-          <div className={styles.ctaRow}>
-            <span className={styles.ctaBracket}>[</span>
-            <span className={styles.ctaText}>TEST COMPLETE</span>
-            <span className={styles.ctaBracket}>]</span>
-            <span className={styles.cursor} aria-hidden="true">_</span>
-          </div>
+          <p className={styles.statusNote}>B.L.U.E. will use this submission to calibrate future reviews.</p>
         </div>
       )}
 
       {/* ===== BOOT MODE (idle) ===== */}
       {!testData && !isGenerating && !errorMessage && (
-        <>
-          <div className={styles.bootLines} aria-live="polite">
-            {BOOT_LINES.slice(0, visibleCount).map((entry, i) =>
-              entry.text === '' ? (
-                <div key={i} className={styles.gap} />
-              ) : (
-                <div key={i} className={styles.line}>
-                  <span className={styles.prompt}>$</span>
-                  {entry.text.replace('> ', '')}
-                </div>
-              )
-            )}
-          </div>
-
-          {bootDone && (
-            <div className={styles.ctaRow}>
-              <span className={styles.ctaBracket}>[</span>
-              <span className={styles.ctaText}>Sign To Begin Test</span>
-              <span className={styles.ctaBracket}>]</span>
-              <span className={styles.cursor} aria-hidden="true">_</span>
-            </div>
-          )}
-        </>
+        <div className={`${styles.statusPanel} ${styles.idlePanel}`}>
+          <h3 className={styles.statusTitle}>Ready for the next survey</h3>
+          <p className={styles.statusText}>
+            Sign the form to generate a paid research survey. B.L.U.E. keeps your answers in the review record.
+          </p>
+        </div>
       )}
-    </div>
+
+      <footer className={styles.brandFooter}>
+        <span aria-hidden="true" />
+        <p>Investing in human potential with the heart of tomorrow.</p>
+        <span aria-hidden="true" />
+      </footer>
+    </section>
   );
 }

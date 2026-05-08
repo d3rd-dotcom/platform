@@ -54,7 +54,7 @@ export const SnapshotFeaturesSection: React.FC = () => {
         </div>
 
         <div className={styles.footer}>
-          <Link href="/community" className={styles.moreLink}>
+          <Link href="/home" className={styles.moreLink}>
             More Details
             <svg
               className={styles.chevron}
