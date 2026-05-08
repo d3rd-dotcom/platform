@@ -35,8 +35,16 @@
 .shardsHero {
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
+  gap: 12px;
   min-height: 48px;
+}
+
+.shardsHeroLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
 }
 
 .shardsHeroIcon {
@@ -47,20 +55,16 @@
   flex-shrink: 0;
 }
 
-.shardsHeroText {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
 .shardsHeroValue {
-  font-family: var(--font-primary);
   font-size: 26px;
   line-height: 1;
   font-weight: 800;
   color: rgba(227, 225, 238, 0.95);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0;
+  font-family: var(--font-mono, 'Departure Mono', monospace);
+  text-align: right;
+  flex-shrink: 0;
 }
 
 .shardsHeroLabel {
@@ -70,7 +74,7 @@
   color: rgba(227, 225, 238, 0.4);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin-top: 3px;
+  line-height: 1;
 }
 
 .statValuePositive {
