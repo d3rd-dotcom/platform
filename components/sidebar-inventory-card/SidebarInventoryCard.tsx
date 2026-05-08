@@ -34,7 +34,6 @@ function fmt(raw: unknown, decimals: number, max = 4): string {
 }
 
 export default function SidebarInventoryCard({ shardCount, address, isCollapsed }: SidebarInventoryCardProps) {
-  const [ethBalance, setEthBalance] = useState<string | null>(null);
   const [usdcBalance, setUsdcBalance] = useState<string | null>(null);
   const [votingPower, setVotingPower] = useState<string | null>(null);
   const [hasVip, setHasVip] = useState<boolean | null>(null);
@@ -60,14 +59,12 @@ export default function SidebarInventoryCard({ shardCount, address, isCollapsed 
       const usdc = new Contract(USDC_ADDRESS, ERC20_ABI, provider);
       const ks = new Contract(CONTRACT_ADDRESS, KILLSTREAK_ABI, provider);
 
-      const [ethRaw, usdcRaw, usdcDec, vpRaw] = await Promise.all([
-        provider.getBalance(addr),
+      const [usdcRaw, usdcDec, vpRaw] = await Promise.all([
         usdc.balanceOf(addr),
         usdc.decimals(),
         ks.getVotingPower(addr).catch(() => null),
       ]);
 
-      setEthBalance(fmt(ethRaw, 18, 4));
       setUsdcBalance(fmt(usdcRaw, Number(usdcDec), 2));
       if (vpRaw !== null) {
         const vp = Number(vpRaw) / 1e18;
@@ -100,25 +97,14 @@ export default function SidebarInventoryCard({ shardCount, address, isCollapsed 
 
   return (
     <div className={styles.card}>
-      {/* Stats row */}
-      <div className={styles.statsRow}>
-        <div className={styles.stat}>
-          <span className={styles.statValue}>{shardDisplay}</span>
-          <span className={styles.statLabel}>Shards</span>
-        </div>
-        <div className={styles.statDivider} />
-        <div className={styles.stat}>
-          <span className={styles.statValue}>{loading ? '--' : (votingPower ?? '0')}</span>
-          <span className={styles.statLabel}>Votes</span>
-        </div>
-        <div className={styles.statDivider} />
-        <div className={styles.stat}>
-          <span className={`${styles.statValue} ${vipStatusClass}`}>{hasVip === null ? '--' : hasVip ? 'YES' : 'NO'}</span>
-          <span className={styles.statLabel}>VIP</span>
+      <div className={styles.shardsHero}>
+        <Image src="/icons/ui-shard.svg" alt="" width={34} height={34} className={styles.shardsHeroIcon} />
+        <div className={styles.shardsHeroText}>
+          <span className={styles.shardsHeroValue}>{shardDisplay}</span>
+          <span className={styles.shardsHeroLabel}>Shards</span>
         </div>
       </div>
 
-      {/* Balances */}
       <div className={styles.balanceDivider} />
       <div className={styles.balanceList}>
         {loading ? (
@@ -129,15 +115,25 @@ export default function SidebarInventoryCard({ shardCount, address, isCollapsed 
           <>
             <div className={styles.balanceRow}>
               <div className={styles.tokenLeft}>
-                <div className={styles.tokenIcon}>
+                <div className={`${styles.tokenIcon} ${styles.tokenVotes}`}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2L6 12l6 10 6-10L12 2z" fill="#627EEA" />
-                    <path d="M12 2v8.5L6 12l6-10z" fill="#627EEA" opacity="0.6" />
+                    <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
-                <span className={styles.tokenName}>ETH</span>
+                <span className={styles.tokenName}>Votes</span>
               </div>
-              <span className={styles.balanceVal}>{ethBalance ?? '0.00'}</span>
+              <span className={styles.balanceVal}>{votingPower ?? '0'}</span>
+            </div>
+            <div className={styles.balanceRow}>
+              <div className={styles.tokenLeft}>
+                <div className={`${styles.tokenIcon} ${hasVip ? styles.tokenVipActive : styles.tokenVip}`}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <span className={styles.tokenName}>VIP</span>
+              </div>
+              <span className={`${styles.balanceVal} ${vipStatusClass}`}>{hasVip === null ? '--' : hasVip ? 'YES' : 'NO'}</span>
             </div>
             <div className={styles.balanceRow}>
               <div className={styles.tokenLeft}>
