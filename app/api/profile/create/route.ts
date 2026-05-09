@@ -8,6 +8,8 @@
  * {
  *   username: string (5-32 chars, alphanumeric + underscores)
  *   email?: string (optional, for email notifications)
+ *   gender: string
+ *   birthday: string (YYYY-MM-DD)
  *   avatar_id: string (must be from assigned choices)
  * }
  */
@@ -26,12 +28,14 @@ interface CreateProfileBody {
   username: string;
   avatar_id: string;
   wallet_address?: string;
-  gender?: 'male' | 'female';
+  gender?: 'female' | 'male' | 'nonbinary' | 'private';
   birthday?: string;
 }
 
 // Username validation regex: 5-32 chars, alphanumeric + underscores
 const USERNAME_REGEX = /^[a-zA-Z0-9_]{5,32}$/;
+const ALLOWED_GENDERS = new Set(['female', 'male', 'nonbinary', 'private']);
+const BIRTHDAY_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
 export async function POST(request: Request) {
   // Database check
@@ -93,14 +97,47 @@ export async function POST(request: Request) {
     );
   }
 
-  // Validate avatar_id format (optional now - user selects avatar on homepage)
-  // Avatar selection is now handled separately via /api/avatars/select
-  // if (!avatar_id || typeof avatar_id !== 'string') {
-  //   return NextResponse.json(
-  //     { error: 'avatar_id is required.' },
-  //     { status: 400 }
-  //   );
-  // }
+  if (!gender || typeof gender !== 'string' || !ALLOWED_GENDERS.has(gender)) {
+    return NextResponse.json(
+      {
+        error: 'Invalid gender.',
+        message: 'Please select a valid gender option.',
+      },
+      { status: 400 }
+    );
+  }
+
+  if (!birthday || typeof birthday !== 'string' || !BIRTHDAY_REGEX.test(birthday)) {
+    return NextResponse.json(
+      {
+        error: 'Invalid birthday.',
+        message: 'Birthday must be a valid date.',
+      },
+      { status: 400 }
+    );
+  }
+
+  const birthdayDate = new Date(`${birthday}T00:00:00.000Z`);
+  if (
+    Number.isNaN(birthdayDate.getTime()) ||
+    birthdayDate.toISOString().slice(0, 10) !== birthday ||
+    birthdayDate > new Date()
+  ) {
+    return NextResponse.json(
+      {
+        error: 'Invalid birthday.',
+        message: 'Birthday must be a real date that is not in the future.',
+      },
+      { status: 400 }
+    );
+  }
+
+  if (!avatar_id || typeof avatar_id !== 'string') {
+    return NextResponse.json(
+      { error: 'avatar_id is required.' },
+      { status: 400 }
+    );
+  }
 
   // Get current user from session (created via signup)
   const currentUser = await getCurrentUserFromRequestCookie();
@@ -302,4 +339,3 @@ export async function POST(request: Request) {
     );
   }
 }
-

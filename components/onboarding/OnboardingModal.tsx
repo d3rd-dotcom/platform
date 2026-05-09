@@ -18,13 +18,42 @@ interface OnboardingModalProps {
   onComplete?: (username: string, avatarUrl: string | null) => void;
 }
 
+const genderOptions = [
+  { value: 'female', label: 'Female' },
+  { value: 'male', label: 'Male' },
+  { value: 'nonbinary', label: 'Non-binary' },
+  { value: 'private', label: 'Prefer not to say' },
+] as const;
+
 const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onComplete }) => {
   const { address } = useAccount();
   const { getAccessToken } = usePrivy();
-  const [step, setStep] = useState<'avatar' | 'details'>('avatar');
+  const [step, setStep] = useState<'details' | 'avatar' | 'shards'>('details');
   const [hasSession, setHasSession] = useState(false);
 
-  // Check if user has an active session (e.g. Farcaster mini-app users)
+  const [avatars, setAvatars] = useState<Avatar[]>([]);
+  const [selectedAvatarId, setSelectedAvatarId] = useState<string | null>(null);
+  const [loadingAvatars, setLoadingAvatars] = useState(true);
+  const [avatarError, setAvatarError] = useState<string | null>(null);
+
+  const [username, setUsername] = useState('');
+  const [gender, setGender] = useState('');
+  const [birthday, setBirthday] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
+  const [checkingUsername, setCheckingUsername] = useState(false);
+  const checkingRef = useRef<string | null>(null);
+
+  const usernameRegex = useMemo(() => /^[a-zA-Z0-9_]{5,32}$/, []);
+  const isUsernameValid = usernameRegex.test(username);
+  const isDetailsValid =
+    isUsernameValid &&
+    usernameAvailable !== false &&
+    !checkingUsername &&
+    !!gender &&
+    !!birthday;
+
   useEffect(() => {
     if (!isOpen) return;
     (async () => {
@@ -40,28 +69,6 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
     })();
   }, [isOpen, getAccessToken]);
 
-  // Avatar state
-  const [avatars, setAvatars] = useState<Avatar[]>([]);
-  const [selectedAvatarId, setSelectedAvatarId] = useState<string | null>(null);
-  const [loadingAvatars, setLoadingAvatars] = useState(true);
-  const [avatarError, setAvatarError] = useState<string | null>(null);
-
-  // Details state
-  const [username, setUsername] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
-  const [checkingUsername, setCheckingUsername] = useState(false);
-  const checkingRef = useRef<string | null>(null);
-
-  const usernameRegex = useMemo(() => /^[a-zA-Z0-9_]{5,32}$/, []);
-  const isUsernameValid = usernameRegex.test(username);
-
-  const isFormValid =
-    isUsernameValid &&
-    usernameAvailable !== false;
-
-  // Fetch avatars
   useEffect(() => {
     if (!isOpen) return;
     const fetchAvatars = async () => {
@@ -89,7 +96,6 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
     fetchAvatars();
   }, [isOpen, getAccessToken]);
 
-  // Username check
   const checkUsername = useCallback(async (name: string) => {
     if (checkingRef.current === name) return;
     if (!usernameRegex.test(name)) {
@@ -130,37 +136,81 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
       checkingRef.current = null;
       return;
     }
-    if (checkingRef.current === username) return;
-    if (usernameAvailable === true && checkingRef.current === null) return;
     const timer = setTimeout(() => {
       if (username && username.length >= 5 && checkingRef.current !== username) {
         checkUsername(username);
       }
     }, 500);
     return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [username]);
+  }, [checkUsername, username]);
 
-  // Reset state when modal opens
   useEffect(() => {
     if (isOpen) {
-      setStep('avatar');
+      setStep('details');
       setSelectedAvatarId(null);
       setUsername('');
+      setGender('');
+      setBirthday('');
       setError(null);
       setUsernameAvailable(null);
+      setCheckingUsername(false);
+      checkingRef.current = null;
     }
   }, [isOpen]);
 
-  const handleSubmit = async () => {
+  const handleUsernameChange = (value: string) => {
+    setUsername(value.toLowerCase().replace(/[^a-z0-9_]/g, ''));
+    setUsernameAvailable(null);
     setError(null);
+  };
 
+  const handleDetailsContinue = () => {
+    setError(null);
     if (!isUsernameValid) {
       setError('Username must be 5-32 characters (letters, numbers, underscores)');
       return;
     }
     if (usernameAvailable === false) {
       setError('This username is already taken');
+      return;
+    }
+    if (!gender || !birthday) {
+      setError('Please complete your gender and birthday.');
+      return;
+    }
+    setStep('avatar');
+  };
+
+  const handleAvatarContinue = () => {
+    setError(null);
+    if (!selectedAvatarId) {
+      setError('Choose an avatar to continue.');
+      return;
+    }
+    setStep('shards');
+  };
+
+  const handleSubmit = async () => {
+    setError(null);
+
+    if (!isUsernameValid) {
+      setError('Username must be 5-32 characters (letters, numbers, underscores)');
+      setStep('details');
+      return;
+    }
+    if (usernameAvailable === false) {
+      setError('This username is already taken');
+      setStep('details');
+      return;
+    }
+    if (!gender || !birthday) {
+      setError('Please complete your gender and birthday.');
+      setStep('details');
+      return;
+    }
+    if (!selectedAvatarId) {
+      setError('Choose an avatar to continue.');
+      setStep('avatar');
       return;
     }
     if (!address && !hasSession) {
@@ -180,7 +230,9 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
         },
         body: JSON.stringify({
           username,
-          avatar_id: selectedAvatarId || undefined,
+          gender,
+          birthday,
+          avatar_id: selectedAvatarId,
         }),
       });
 
@@ -214,7 +266,6 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
     }
   };
 
-  // Escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -231,8 +282,8 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
 
   if (!isOpen) return null;
 
-  const selectedAvatar = avatars.find(a => a.id === selectedAvatarId);
-  const progressWidth = step === 'avatar' ? '50%' : '100%';
+  const progressWidth = step === 'details' ? '33.33%' : step === 'avatar' ? '66.66%' : '100%';
+  const today = new Date().toISOString().slice(0, 10);
 
   return (
     <div className={styles.overlay}>
@@ -247,7 +298,99 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
           </svg>
         </button>
 
-        {step === 'avatar' ? (
+        {step === 'details' ? (
+          <div className={styles.stepContent}>
+            <div className={styles.stepIcon}>
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2"/>
+                <path d="M5 20C5 16.134 8.134 13 12 13C15.866 13 19 16.134 19 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <h2 className={styles.stepTitle}>Create your account</h2>
+            <p className={styles.stepDescription}>
+              Choose your Academy name and tell us the basics we use to personalize research and rewards.
+            </p>
+
+            <div className={styles.formFields}>
+              <div className={styles.inputGroup}>
+                <label htmlFor="onboarding-username" className={styles.inputLabel}>Username</label>
+                <div className={styles.inputWrapper}>
+                  <span className={styles.inputPrefix}>@</span>
+                  <input
+                    id="onboarding-username"
+                    name="username"
+                    type="text"
+                    value={username}
+                    onChange={(e) => handleUsernameChange(e.target.value)}
+                    placeholder="username"
+                    className={styles.input}
+                    maxLength={32}
+                    autoComplete="username"
+                    autoFocus
+                  />
+                  {checkingUsername && (
+                    <span className={styles.inputSuffix}>
+                      <div className={styles.spinner} />
+                    </span>
+                  )}
+                  {!checkingUsername && usernameAvailable === true && (
+                    <span className={`${styles.inputSuffix} ${styles.available}`}>✓</span>
+                  )}
+                  {!checkingUsername && usernameAvailable === false && (
+                    <span className={`${styles.inputSuffix} ${styles.taken}`}>✗</span>
+                  )}
+                </div>
+                <p className={styles.inputHint}>
+                  5-32 characters, letters, numbers, and underscores
+                </p>
+              </div>
+
+              <fieldset className={styles.inputGroup}>
+                <legend>Gender</legend>
+                <div className={styles.radioGroup}>
+                  {genderOptions.map((option) => (
+                    <label
+                      key={option.value}
+                      className={`${styles.radioOption} ${gender === option.value ? styles.radioOptionChecked : ''}`}
+                    >
+                      <input
+                        type="radio"
+                        name="gender"
+                        value={option.value}
+                        checked={gender === option.value}
+                        onChange={(e) => setGender(e.target.value)}
+                      />
+                      <span>{option.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+
+              <div className={styles.inputGroup}>
+                <label htmlFor="onboarding-birthday" className={styles.inputLabel}>Birthday</label>
+                <input
+                  id="onboarding-birthday"
+                  name="birthday"
+                  type="date"
+                  value={birthday}
+                  max={today}
+                  onChange={(e) => setBirthday(e.target.value)}
+                  className={styles.input}
+                />
+              </div>
+            </div>
+
+            {error && <p className={styles.error}>{error}</p>}
+
+            <button
+              className={styles.primaryButton}
+              onClick={handleDetailsContinue}
+              disabled={!isDetailsValid}
+            >
+              Continue
+            </button>
+          </div>
+        ) : step === 'avatar' ? (
           <div className={styles.stepContent}>
             <div className={styles.stepIcon}>
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
@@ -257,11 +400,11 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
             </div>
             <h2 className={styles.stepTitle}>Choose your avatar</h2>
             <p className={styles.stepDescription}>
-              Select one of your 5 unique avatars. These are assigned just for you.
+              Select one of your assigned avatars. This becomes your Academy identity.
             </p>
 
             {loadingAvatars ? (
-              <div style={{ padding: '40px 0', color: 'rgba(26,29,51,0.6)' }}>Loading avatars...</div>
+              <div className={styles.loadingState}>Loading avatars...</div>
             ) : avatarError ? (
               <div className={styles.error}>{avatarError}</div>
             ) : (
@@ -293,74 +436,54 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
               </div>
             )}
 
-            <button
-              className={styles.primaryButton}
-              onClick={() => setStep('details')}
-              disabled={!selectedAvatarId || loadingAvatars}
-            >
-              Continue
-            </button>
-            <button
-              className={styles.skipButton}
-              onClick={() => setStep('details')}
-              disabled={loadingAvatars}
-            >
-              Skip for now
-            </button>
+            {error && <p className={styles.error}>{error}</p>}
+
+            <div className={styles.buttonRow}>
+              <button
+                className={styles.secondaryButton}
+                onClick={() => setStep('details')}
+                disabled={isLoading}
+              >
+                Back
+              </button>
+              <button
+                className={styles.primaryButton}
+                onClick={handleAvatarContinue}
+                disabled={!selectedAvatarId || loadingAvatars}
+              >
+                Continue
+              </button>
+            </div>
           </div>
         ) : (
           <div className={styles.stepContent}>
-            {selectedAvatar && (
-              <div style={{ marginBottom: 16 }}>
-                <Image
-                  src={selectedAvatar.image_url}
-                  alt="Selected avatar"
-                  width={80}
-                  height={80}
-                  style={{ borderRadius: 20, border: '3px solid var(--color-primary)' }}
-                  unoptimized
-                />
-              </div>
-            )}
-            <h2 className={styles.stepTitle}>Create your account</h2>
+            <div className={styles.shardHero}>
+              <Image
+                src="/icons/ui-shard.svg"
+                alt="Shard"
+                width={88}
+                height={88}
+                className={styles.shardIcon}
+              />
+            </div>
+            <h2 className={styles.stepTitle}>Earn shards, build real upside</h2>
             <p className={styles.stepDescription}>
-              Enter your details to complete setup.
+              Shards are earned through meaningful Academy activity. Surveys and the 12-week course are the best starting paths because they turn your reflections, research participation, and completed lessons into shard rewards.
             </p>
 
-            <div className={styles.formFields}>
-              <div className={styles.inputGroup}>
-                <label htmlFor="onboarding-username" className={styles.inputLabel}>Username</label>
-                <div className={styles.inputWrapper}>
-                  <span className={styles.inputPrefix}>@</span>
-                  <input
-                    id="onboarding-username"
-                    name="username"
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
-                    placeholder="username"
-                    className={styles.input}
-                    maxLength={32}
-                    autoComplete="username"
-                    autoFocus
-                  />
-                  {checkingUsername && (
-                    <span className={styles.inputSuffix}>
-                      <div className={styles.spinner} />
-                    </span>
-                  )}
-                  {!checkingUsername && usernameAvailable === true && (
-                    <span className={`${styles.inputSuffix} ${styles.available}`}>✓</span>
-                  )}
-                  {!checkingUsername && usernameAvailable === false && (
-                    <span className={`${styles.inputSuffix} ${styles.taken}`}>✗</span>
-                  )}
-                </div>
-                <p className={styles.inputHint}>
-                  5-32 characters, letters, numbers, and underscores
-                </p>
+            <div className={styles.shardExplainer}>
+              <div className={styles.explainerCard}>
+                <h3>Earn</h3>
+                <p>Complete surveys, finish course milestones, build streaks, and submit quests to grow your shard balance.</p>
               </div>
-
+              <div className={styles.explainerCard}>
+                <h3>Use</h3>
+                <p>Use shards inside the AI prediction market to back forecasts and create ways to make real money.</p>
+              </div>
+              <div className={styles.explainerCard}>
+                <h3>Unlock</h3>
+                <p>VIP members can access research grants and community funds connected to Academy participation.</p>
+              </div>
             </div>
 
             {error && <p className={styles.error}>{error}</p>}
@@ -376,9 +499,9 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
               <button
                 className={styles.primaryButton}
                 onClick={handleSubmit}
-                disabled={!isFormValid || isLoading}
+                disabled={isLoading}
               >
-                {isLoading ? 'Creating Account...' : 'Continue'}
+                {isLoading ? 'Creating Account...' : 'Enter Academy'}
               </button>
             </div>
           </div>

@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/components/theme/ThemeProvider';
 import { ConditionalWeb3Provider } from '@/components/web3/ConditionalWeb3Provider';
 import TopNavigation from '@/components/top-navigation/TopNavigation';
 import MobileBottomNav from '@/components/mobile-bottom-nav/MobileBottomNav';
+import AcademyAccessGate from '@/components/auth/AcademyAccessGate';
 
 interface AuthenticatedAppShellProps {
   children: ReactNode;
@@ -21,7 +22,7 @@ export function AuthenticatedAppShell({
       <ConditionalWeb3Provider>
         <ThemeProvider>
           <TopNavigation />
-          {children}
+          <AcademyAccessGate>{children}</AcademyAccessGate>
           <MobileBottomNav />
         </ThemeProvider>
       </ConditionalWeb3Provider>

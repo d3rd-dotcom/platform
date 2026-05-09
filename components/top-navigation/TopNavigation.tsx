@@ -40,11 +40,20 @@ const TopNavigation: React.FC = () => {
   };
 
   const handleLogin = () => {
+    if (authenticated) {
+      router.push('/home');
+      return;
+    }
     loginTriggered.current = true;
     login();
   };
 
   const handleJoinNow = () => {
+    if (authenticated) {
+      router.push('/home');
+      return;
+    }
+    loginTriggered.current = true;
     login();
   };
 

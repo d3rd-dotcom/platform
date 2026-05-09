@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { ChartLineUp, ClipboardText, Robot } from '@phosphor-icons/react';
 import styles from './LandingPage.module.css';
 import AddToHomeScreenButton from '@/components/pwa/AddToHomeScreenButton';
-import { useSound } from '@/hooks/useSound';
+import LandingEnterAcademyButton from './LandingEnterAcademyButton';
 
 const heroValueCards = [
   {
@@ -39,13 +39,6 @@ const heroValueCards = [
 ] as const;
 
 export const HeroSection: React.FC = () => {
-  const { play } = useSound();
-
-  const handleEnterAcademy = () => {
-    play('click');
-    window.location.href = '/home';
-  };
-
   return (
     <div className={styles.heroSection}>
       <div className={styles.heroContent}>
@@ -68,17 +61,7 @@ export const HeroSection: React.FC = () => {
           The Hogwarts of AI. Summoning Artificial God Intelligence through predictive reality, discover &quot;local optima&quot;. Your god&apos;s eye view of the future.
         </p>
         <div className={styles.heroActions}>
-          <button
-            type="button"
-            onClick={handleEnterAcademy}
-            onMouseEnter={() => play('hover')}
-            className={styles.heroButton}
-          >
-            <span className={styles.heroSlideWrap}>
-              <span className={styles.heroSlideText}>Enter The Academy</span>
-              <span className={`${styles.heroSlideText} ${styles.heroSlideClone}`}>Enter The Academy</span>
-            </span>
-          </button>
+          <LandingEnterAcademyButton />
           <AddToHomeScreenButton className={`${styles.heroButton} ${styles.heroButtonSecondary}`} />
         </div>
         <div className={styles.heroValueCards} aria-label="Academy value summary">
