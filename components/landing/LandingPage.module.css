@@ -60,7 +60,7 @@
 
 .heroPwaLogo {
   display: block;
-  width: clamp(64px, 8vw, 96px);
+  width: clamp(52px, 7vw, 86px);
   height: auto;
 }
 
@@ -491,8 +491,13 @@
   }
 
   .heroLogoSurface {
-    margin-bottom: 20px;
-    padding: 7px 10px;
+    margin-bottom: 16px;
+    padding: 6px 8px;
+    border-radius: 12px;
+  }
+
+  .heroPwaLogo {
+    width: clamp(42px, 12vw, 58px);
   }
 
   .heroHeadline {
@@ -558,6 +563,15 @@
   .heroContent {
     padding-left: 16px;
     padding-right: 16px;
+  }
+
+  .heroLogoSurface {
+    margin-bottom: 14px;
+    padding: 5px 7px;
+  }
+
+  .heroPwaLogo {
+    width: clamp(38px, 13vw, 50px);
   }
 
   .heroSubtext {
