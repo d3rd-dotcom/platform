@@ -478,7 +478,7 @@
   .heroSection {
     flex-direction: column;
     align-items: center;
-    top: 40vh;
+    top: 44vh;
     width: min(calc(100% - 24px), 100%);
   }
 
@@ -551,6 +551,7 @@
 
 @media (max-width: 480px) {
   .heroSection {
+    top: 46vh;
     width: min(calc(100% - 16px), 100%);
   }
 
