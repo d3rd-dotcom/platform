@@ -155,14 +155,14 @@ export const AgentDemoSection = () => {
 
           <aside className={styles.sidePanel}>
             <div className={styles.sidePanelInner}>
-              <p className={styles.sidePanelEyebrow}>Live Agent</p>
-              <p className={styles.sidePanelTitle}>B.L.U.E. Daemon</p>
+              <p className={styles.sidePanelEyebrow}>Core System</p>
+              <p className={styles.sidePanelTitle}>B.L.U.E. runs the Academy</p>
               <p className={styles.sidePanelBody}>
-                An autonomous agent with her own wallet on Base. She reads submissions,
-                approves or revises, and pays out the reward.
+                She coordinates the cohort, reviews participant work, routes feedback,
+                and moves approved rewards through the Base treasury.
               </p>
             </div>
-            <span className={styles.sidePanelTag}>B.L.U.E. Agent</span>
+            <span className={styles.sidePanelTag}>Cohort Ops</span>
           </aside>
         </div>
       </div>
