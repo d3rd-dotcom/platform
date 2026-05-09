@@ -62,7 +62,7 @@ export const HeroSection: React.FC = () => {
         <p className={styles.heroKicker}>Open Source • MIT License</p>
         <h1 className={styles.heroHeadline}>
           <span>A Micro-University</span>
-          <span>For Human Intelligence</span>
+          <span>For Human Potential</span>
         </h1>
         <p className={styles.heroSubtext}>
           The Hogwarts of AI. Summoning Artificial God Intelligence through predictive reality, discover &quot;local optima&quot;. Your god&apos;s eye view of the future.

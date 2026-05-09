@@ -63,8 +63,9 @@
 
 @media (max-width: 960px) {
   .section {
-    margin-top: calc(100vh - 96px);
-    margin-top: calc(100svh - 96px);
+    margin-top: calc(100vh + 96px);
+    margin-top: calc(100svh + 96px);
+    padding-top: 32px;
   }
 }
 
