@@ -95,6 +95,10 @@
   white-space: nowrap;
 }
 
+.heroHeadline span:first-child {
+  color: #a8b4ff;
+}
+
 .heroSubheadline {
   font-family: var(--font-primary);
   font-size: 1.5rem;
