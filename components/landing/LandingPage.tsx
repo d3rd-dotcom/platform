@@ -38,8 +38,8 @@ const LandingPage = () => {
       {/* Company Logos Section */}
       <CompanyLogos />
 
-      {/* Features Section - Server rendered */}
-      <FeaturesSection />
+      {/* Cohort Section — Community & Research Cohort */}
+      <CohortSection />
 
       {/* Testimonial Section */}
       <TestimonialSection />
@@ -50,8 +50,8 @@ const LandingPage = () => {
       {/* Key Figures Section - Server rendered */}
       <KeyFiguresSection />
 
-      {/* Cohort Section — Community & Research Cohort */}
-      <CohortSection />
+      {/* Features Section - Server rendered */}
+      <FeaturesSection />
 
       {/* Pattern Background Section - Contains client component for animation */}
       <PatternTextSection />

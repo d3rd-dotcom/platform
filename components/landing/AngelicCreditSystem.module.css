@@ -58,6 +58,32 @@
   letter-spacing: 0.01em;
 }
 
+/* ── Centered video overlay ── */
+.videoOverlayCenter {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.videoPlayerInline {
+  pointer-events: all;
+  width: clamp(300px, 44vw, 560px);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 12px 60px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.10);
+  background: #000;
+}
+
+.videoEl {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 /* ── Right ── */
 .innerRight {
   position: relative;
@@ -814,6 +840,10 @@
     align-items: center;
     text-align: center;
     max-width: 100%;
+  }
+
+  .videoPlayerInline {
+    width: clamp(260px, 80vw, 400px);
   }
 
   .splashLogo {

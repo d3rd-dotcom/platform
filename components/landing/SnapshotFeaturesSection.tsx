@@ -8,7 +8,7 @@ const features = [
       'Twelve weeks of quests, readings, and field studies. Real start, real end — applied behavioral research with collaborators who publish.',
   },
   {
-    title: 'Ascend With Paradigmic Research',
+    title: 'Participatory Research',
     body:
       'B.L.U.E. reads every submission and pays out the reward. Your reflections become training data. Her judgments evolve as you do.',
   },
@@ -18,7 +18,7 @@ const features = [
       'On-chain credits earned in one case-study app, spendable across all of them. $Shards live in your wallet — not on our servers.',
   },
   {
-    title: 'Meta-Parasocial & Cybersecurity Research Programs',
+    title: 'Decentralized Ecosystems',
     body:
       'Programs span trust, distrust, parasocial dynamics, and digital autonomy. Each ships as its own disposable app. When it retires, your data and credentials don’t.',
   },

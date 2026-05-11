@@ -47,10 +47,10 @@ export const KeyFiguresSection: React.FC = () => {
         </div>
 
         <div className={styles.figure}>
-          <span className={styles.label}>First Week Payout</span>
+          <span className={styles.label}>Psychology Studies</span>
           <div className={styles.valueRow}>
-            <span className={styles.number}>382</span>
-            <span className={styles.unit}>Shards</span>
+            <span className={styles.number}>12+</span>
+            <span className={styles.unit}>Experiments</span>
           </div>
         </div>
       </div>
