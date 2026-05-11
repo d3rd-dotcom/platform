@@ -11,6 +11,7 @@ import styles from './page.module.css';
 
 export default function HomePage() {
   const [difficulty, setDifficulty] = useState(101);
+  const [persona, setPersona] = useState('B.L.U.E.');
   const [isSignFormOpen, setIsSignFormOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [testData, setTestData] = useState<TestData | null>(null);
@@ -31,7 +32,7 @@ export default function HomePage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ difficulty, persona: 'B.L.U.E.' }),
+        body: JSON.stringify({ difficulty, persona }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -78,6 +79,7 @@ export default function HomePage() {
         <SurveyController
           onSignForm={handleSignForm}
           onDifficultyChange={setDifficulty}
+          onPersonaChange={setPersona}
         />
         <SurveySpace
           label="Participatory Research"

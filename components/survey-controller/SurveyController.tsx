@@ -1,16 +1,22 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { getTestShardReward, TEST_DIFFICULTY_MAX, TEST_DIFFICULTY_MIN } from '@/lib/test-rewards';
 import styles from './SurveyController.module.css';
+
+const PERSONAS = [
+  { id: 'B.L.U.E.',        label: 'B.L.U.E.',        sub: 'Default researcher' },
+  { id: 'The Strategist',   label: 'The Strategist',   sub: 'Competitive & analytical' },
+  { id: 'The Counselor',    label: 'The Counselor',    sub: 'Reflective & emotional' },
+  { id: 'The Observer',     label: 'The Observer',     sub: 'Detached & scientific' },
+];
 
 interface SurveyControllerProps {
   userName?: string;
   version?: string;
   characterImageSrc?: string;
   difficulty?: number;
-  persona?: string;
   onSignForm?: () => void;
   onDifficultyChange?: (value: number) => void;
   onPersonaChange?: (persona: string) => void;
@@ -21,17 +27,36 @@ export default function SurveyController({
   version = 'V.e1-MWA36B',
   characterImageSrc = '/uploads/blueavatar.mp4',
   difficulty: initialDifficulty = 101,
-  persona = 'B.L.U.E. (default persona)',
   onSignForm,
   onDifficultyChange,
+  onPersonaChange,
 }: SurveyControllerProps) {
   const [difficulty, setDifficulty] = useState(initialDifficulty);
+  const [selectedPersona, setSelectedPersona] = useState(PERSONAS[0]);
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const shardReward = getTestShardReward(difficulty);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   const handleDifficultyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
     setDifficulty(value);
     onDifficultyChange?.(value);
+  };
+
+  const handleSelectPersona = (p: typeof PERSONAS[0]) => {
+    setSelectedPersona(p);
+    setIsOpen(false);
+    onPersonaChange?.(p.id);
   };
 
   const min = TEST_DIFFICULTY_MIN;
@@ -50,15 +75,21 @@ export default function SurveyController({
           <span className={styles.controlLabel}>Persona</span>
         </div>
 
-        <div className={styles.dropdownOuter}>
-          <div className={styles.dropdownInner}>
-            <span className={styles.dropdownText}>{persona}</span>
+        <div className={styles.dropdownOuter} ref={dropdownRef}>
+          <button
+            type="button"
+            className={styles.dropdownInner}
+            onClick={() => setIsOpen(o => !o)}
+            aria-haspopup="listbox"
+            aria-expanded={isOpen}
+          >
+            <span className={styles.dropdownText}>{selectedPersona.label}</span>
             <svg
               width="16"
               height="16"
               viewBox="0 0 16 16"
               fill="none"
-              className={styles.chevronIcon}
+              className={`${styles.chevronIcon} ${isOpen ? styles.chevronOpen : ''}`}
               aria-hidden="true"
             >
               <path
@@ -69,7 +100,23 @@ export default function SurveyController({
                 strokeLinejoin="round"
               />
             </svg>
-          </div>
+          </button>
+          {isOpen && (
+            <ul className={styles.dropdownMenu} role="listbox">
+              {PERSONAS.map(p => (
+                <li
+                  key={p.id}
+                  role="option"
+                  aria-selected={p.id === selectedPersona.id}
+                  className={`${styles.dropdownItem} ${p.id === selectedPersona.id ? styles.dropdownItemActive : ''}`}
+                  onClick={() => handleSelectPersona(p)}
+                >
+                  <span className={styles.dropdownItemLabel}>{p.label}</span>
+                  <span className={styles.dropdownItemSub}>{p.sub}</span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
 
