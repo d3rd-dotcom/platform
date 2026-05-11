@@ -57,7 +57,7 @@ const APP_URL = process.env.NEXT_PUBLIC_URL || 'https://mentalwealthacademy.worl
 
 export const metadata: Metadata = {
   title: 'Mental Wealth Academy',
-  description: 'Investing in the potential of humanity 🧠 with the he(art) of tomorrow. 🫀',
+  description: 'Investing in humanity 🧠 with the he(art) of tomorrow. 🫀',
   manifest: '/manifest.webmanifest',
   icons: {
     icon: '/icons/logo-mwa.png',
