@@ -57,7 +57,7 @@ const APP_URL = process.env.NEXT_PUBLIC_URL || 'https://mentalwealthacademy.worl
 
 export const metadata: Metadata = {
   title: 'Mental Wealth Academy',
-  description: 'Investing in human potential 🧠 with the he(art) of tomorrow. 🫀',
+  description: 'Investing in the potential of humanity 🧠 with the he(art) of tomorrow. 🫀',
   manifest: '/manifest.webmanifest',
   icons: {
     icon: '/icons/logo-mwa.png',
@@ -74,7 +74,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'Mental Wealth Academy',
-    description: 'Investing in human potential 🧠 with the he(art) of tomorrow. 🫀',
+    description: 'Investing in the potential of humanity 🧠 with the he(art) of tomorrow. 🫀',
     images: [
       {
         url: 'https://i.imgur.com/Ouwx2i8.png',
@@ -88,7 +88,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Mental Wealth Academy',
-    description: 'Investing in human potential 🧠 with the he(art) of tomorrow. 🫀',
+    description: 'Investing in the potential of humanity 🧠 with the he(art) of tomorrow. 🫀',
     images: ['https://i.imgur.com/Ouwx2i8.png'],
   },
   other: {
