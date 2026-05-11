@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './BlueTerminal.module.css';
+import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
 
 const OPTION_LETTERS = ['A', 'B', 'C', 'D', 'E'];
 
@@ -170,9 +171,7 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
           <p className={styles.statusText}>
             B.L.U.E. is preparing questions for the selected difficulty.
           </p>
-          <div className={styles.generatingDots} aria-label="Generating">
-            <span /><span /><span />
-          </div>
+          <DotmSquare15 speed={0.8} dotSize={7} gap={4} />
         </div>
       )}
 

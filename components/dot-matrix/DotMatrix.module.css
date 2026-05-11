@@ -1,0 +1,15 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 6), var(--dot-size, 6px));
+  gap: var(--dot-gap, 3px);
+  width: fit-content;
+}
+
+.dot {
+  width: var(--dot-size, 6px);
+  height: var(--dot-size, 6px);
+  border-radius: 50%;
+  background: var(--dot-color, var(--color-primary, #5168ff));
+  transition: opacity 0.08s linear;
+  flex-shrink: 0;
+}

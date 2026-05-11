@@ -5,6 +5,7 @@ import type { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
 import OnboardingModal from '@/components/onboarding/OnboardingModal';
+import { DotmSquare3 } from '@/components/dot-matrix/DotmSquare3';
 import styles from './AcademyAccessGate.module.css';
 
 type AccessState = 'checking' | 'needs-auth' | 'needs-profile' | 'ready' | 'error';
@@ -160,7 +161,11 @@ export default function AcademyAccessGate({ children }: { children: ReactNode })
             : 'The library stays open for browsing. Surveys, quests, shards, rewards, markets, profile state, and submissions require an account.'}
         </p>
 
-        {displayState === 'checking' && <div className={styles.status}>Checking access...</div>}
+        {displayState === 'checking' && (
+          <div className={styles.status}>
+            <DotmSquare3 speed={1.2} dotSize={7} gap={4} />
+          </div>
+        )}
         {displayState === 'error' && (
           <p className={styles.error}>{error || 'Something went wrong while preparing your account.'}</p>
         )}

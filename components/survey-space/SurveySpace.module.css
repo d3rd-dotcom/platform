@@ -22,8 +22,9 @@
 }
 
 .label {
-  font-family: var(--font-mono);
+  font-family: var(--font-primary);
   font-size: var(--font-size-sm);
+  font-weight: 500;
   color: #dbdbdb;
 }
 
@@ -34,14 +35,14 @@
 }
 
 .badge {
-  font-family: var(--font-mono);
+  font-family: var(--font-primary);
   font-size: var(--font-size-xs);
-  color: #dbdbdb;
-  border: 1px solid var(--color-grey-600-50);
+  font-weight: 500;
+  color: rgba(139, 149, 255, 0.9);
+  border: 1px solid rgba(81, 104, 255, 0.3);
   border-radius: var(--radius-full);
   padding: 4px 14px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  background: rgba(81, 104, 255, 0.08);
   white-space: nowrap;
 }
 
@@ -56,8 +57,8 @@
   width: 100%;
   height: 100%;
   min-height: 200px;
-  background: #000000;
-  border: 1px solid var(--color-grey-600-50);
+  background: linear-gradient(160deg, #0d1240 0%, #0a0e2e 40%, #06091c 100%);
+  border: 1px solid rgba(81, 104, 255, 0.22);
   border-radius: var(--radius-lg);
   overflow: hidden;
 }

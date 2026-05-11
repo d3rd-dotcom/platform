@@ -80,10 +80,10 @@ export default function HomePage() {
           onDifficultyChange={setDifficulty}
         />
         <SurveySpace
-          label="BLUE.TERM"
+          label="Participatory Research"
           badges={[
-            { label: 'SECURE' },
-            { label: 'MWA-36B' },
+            { label: 'Earning Rewards' },
+            { label: 'Live Study' },
           ]}
         >
           <BlueTerminal

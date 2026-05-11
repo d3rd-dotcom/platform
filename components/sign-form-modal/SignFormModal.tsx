@@ -107,9 +107,9 @@ export default function SignFormModal({ difficulty, shardReward, onLaunch, onClo
           <div className={styles.headerLeft}>
             <span className={styles.headerLabel}>
               <span className={styles.statusDot} aria-hidden="true" />
-              MWA-TEST-v1.0 // AUTHORIZATION REQUIRED
+              Participatory Research Study
             </span>
-            <span className={styles.headerTitle}>LAUNCH AUTHORIZATION</span>
+            <span className={styles.headerTitle}>Informed Consent</span>
           </div>
           <button className={styles.closeBtn} onClick={onClose} aria-label="Close" type="button">
             &times;

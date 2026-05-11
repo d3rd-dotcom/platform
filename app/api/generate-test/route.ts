@@ -110,27 +110,27 @@ function isValidTestData(value: unknown): value is TestData {
 }
 
 function buildFallbackTest(difficulty: number, persona: string): TestData {
-  const band = difficulty < 110 ? 'Signal Check' : difficulty < 155 ? 'Pattern Audit' : 'Cognition Stress Test';
-  const depth = difficulty < 110
-    ? 'simple, direct choices'
+  const band = difficulty < 110 ? 'Earning Rewards' : difficulty < 155 ? 'Behavioral Analysis' : 'Advanced Cognition Study';
+  const intro = difficulty < 110
+    ? 'A structured assessment of decision-making and behavioral patterns under everyday conditions.'
     : difficulty < 155
-      ? 'behavioral tradeoffs'
-      : 'high-friction self-modeling';
+      ? 'An applied study examining how individuals navigate competing priorities and social dynamics.'
+      : 'A high-fidelity behavioral study mapping self-awareness, cognitive flexibility, and stress response.';
 
   return {
     title: band,
-    intro: `This run uses ${depth} to map how you decide, recover, and notice yourself under pressure.`,
+    intro,
     questions: [
       {
         id: 1,
         type: 'multiple_choice',
         category: 'DECISION MAKING',
-        question: `When ${persona} gives you incomplete information, what do you do first?`,
+        question: 'When faced with ambiguous information before a decision, which approach best describes your default behavior?',
         options: [
-          'Pick the safest option and move',
-          'Ask for one missing fact before acting',
-          'Compare two paths and choose the cleaner risk',
-          'Wait until the picture feels complete',
+          'Proceed with the most conservative available option',
+          'Identify the single most critical missing variable and address it first',
+          'Model two probable outcomes and select the lower-variance path',
+          'Delay action until situational clarity improves',
         ],
       },
       {
