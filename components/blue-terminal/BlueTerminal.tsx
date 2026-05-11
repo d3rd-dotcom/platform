@@ -166,12 +166,9 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
 
       {/* ===== GENERATING STATE ===== */}
       {isGenerating && !testData && (
-        <div className={styles.statusPanel} aria-live="polite">
-          <h3 className={styles.statusTitle}>Building your survey</h3>
-          <p className={styles.statusText}>
-            B.L.U.E. is preparing questions for the selected difficulty.
-          </p>
+        <div className={styles.generatingPanel} aria-live="polite">
           <DotmSquare15 speed={0.8} dotSize={7} gap={4} />
+          <p className={styles.statusText}>Building your survey…</p>
         </div>
       )}
 

@@ -146,6 +146,15 @@ export default function AcademyAccessGate({ children }: { children: ReactNode })
     return <>{children}</>;
   }
 
+  // Authenticated users in checking state get a minimal loader — no panel text
+  if (authenticated && (accessState === 'checking' || accessState === 'ready')) {
+    return (
+      <main className={styles.gateShell} aria-live="polite">
+        <DotmSquare3 speed={1.2} dotSize={8} gap={5} />
+      </main>
+    );
+  }
+
   const displayState: AccessState = accessState === 'ready' ? 'checking' : accessState;
 
   return (

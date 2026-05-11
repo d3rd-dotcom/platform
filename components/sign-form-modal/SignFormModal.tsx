@@ -27,7 +27,7 @@ export default function SignFormModal({ difficulty, shardReward, onLaunch, onClo
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
-    ctx.strokeStyle = '#38bdf8';
+    ctx.strokeStyle = '#5168ff';
     ctx.lineWidth = 2;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
@@ -98,18 +98,11 @@ export default function SignFormModal({ difficulty, shardReward, onLaunch, onClo
   return (
     <div className={styles.overlay} onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
       <div className={styles.modal} role="dialog" aria-modal="true" aria-label="Launch Authorization">
-        <div className={styles.scanlines} aria-hidden="true" />
-        <span className={styles.cornerBR} aria-hidden="true" />
-        <span className={styles.cornerTR} aria-hidden="true" />
-
         {/* Header */}
         <div className={styles.header}>
           <div className={styles.headerLeft}>
-            <span className={styles.headerLabel}>
-              <span className={styles.statusDot} aria-hidden="true" />
-              Participatory Research Study
-            </span>
-            <span className={styles.headerTitle}>Informed Consent</span>
+            <span className={styles.headerLabel}>Participatory Research Study</span>
+            <span className={styles.headerTitle}>Quick Consent</span>
           </div>
           <button className={styles.closeBtn} onClick={onClose} aria-label="Close" type="button">
             &times;
@@ -119,52 +112,20 @@ export default function SignFormModal({ difficulty, shardReward, onLaunch, onClo
         {/* Scrollable body */}
         <div className={styles.body}>
 
-          {/* Legal content in Blue's voice */}
           <div className={styles.legalBlock}>
-
             <div className={styles.legalSection}>
-              <span className={styles.legalHeading}>Your Data</span>
+              <span className={styles.legalHeading}>Your Answers Stay Yours</span>
               <p className={styles.legalText}>
-                your answers stay yours. we don&apos;t sell responses or share individual results with advertisers.
+                Your responses are never sold or tied to your identity. Anonymized patterns help improve the research — that&apos;s it.
               </p>
             </div>
 
-            <div className={styles.legalDivider} />
-
             <div className={styles.legalSection}>
-              <span className={styles.legalHeading}>How We Use It</span>
+              <span className={styles.legalHeading}>This Is a Survey, Not a Test</span>
               <p className={styles.legalText}>
-                anonymized patterns help improve tests and research. published findings use aggregate data, not your identity.
+                There are no right answers. These questions explore how you think and decide — for research purposes only, not diagnosis or clinical advice.
               </p>
             </div>
-
-            <div className={styles.legalDivider} />
-
-            <div className={styles.legalSection}>
-              <span className={styles.legalHeading}>What This Test Is</span>
-              <p className={styles.legalText}>
-                a research survey about decisions, stress, behavior, and emotional awareness. not a diagnosis, medical advice, or therapy. if something heavy comes up, talk to a qualified professional.
-              </p>
-            </div>
-
-            <div className={styles.legalDivider} />
-
-            <div className={styles.legalSection}>
-              <span className={styles.legalHeading}>Your Rights</span>
-              <p className={styles.legalText}>
-                you can exit any time. request deletion through settings or email blue directly at blue@mentalwealthacademy.world. by continuing, you confirm you are 18 or older.
-              </p>
-            </div>
-
-            <div className={styles.legalDivider} />
-
-            <div className={styles.legalSection}>
-              <span className={styles.legalHeading}>Liability</span>
-              <p className={styles.legalText}>
-                results are informational. don&apos;t treat a score as the final word on a life decision.
-              </p>
-            </div>
-
           </div>
 
           {/* Agree checkbox */}
@@ -175,16 +136,16 @@ export default function SignFormModal({ difficulty, shardReward, onLaunch, onClo
               onChange={e => setAgreed(e.target.checked)}
             />
             <span className={styles.agreeLabel}>
-              i am 18 or older and choose to participate.
+              I am 18 or older and happy to participate.
             </span>
           </label>
 
           {/* Signature pad */}
           <div className={styles.signatureSection}>
             <div className={styles.signatureLabel}>
-              <span className={styles.signatureLabelText}>Draw Your Signature</span>
+              <span className={styles.signatureLabelText}>Your signature</span>
               <button className={styles.clearBtn} onClick={clearSignature} type="button">
-                CLEAR
+                Clear
               </button>
             </div>
             <div className={styles.canvasWrapper}>
@@ -217,7 +178,7 @@ export default function SignFormModal({ difficulty, shardReward, onLaunch, onClo
             disabled={!canLaunch}
             type="button"
           >
-            {canLaunch ? `LAUNCH QUEST +${shardReward} SHARDS` : 'AGREE + SIGN TO LAUNCH'}
+            {canLaunch ? `Start Survey · +${shardReward} Shards` : 'Agree & sign to continue'}
           </button>
         </div>
       </div>

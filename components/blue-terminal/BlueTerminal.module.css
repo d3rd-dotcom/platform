@@ -93,8 +93,13 @@
   color: rgba(243, 244, 248, 0.58);
 }
 
-.dotMatrixLoader {
-  margin-top: 18px;
+.generatingPanel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
 }
 
 .testMode {
