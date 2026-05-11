@@ -6,10 +6,8 @@ import { getTestShardReward, TEST_DIFFICULTY_MAX, TEST_DIFFICULTY_MIN } from '@/
 import styles from './SurveyController.module.css';
 
 const PERSONAS = [
-  { id: 'B.L.U.E.',        label: 'B.L.U.E.',        sub: 'Default researcher' },
-  { id: 'The Strategist',   label: 'The Strategist',   sub: 'Competitive & analytical' },
-  { id: 'The Counselor',    label: 'The Counselor',    sub: 'Reflective & emotional' },
-  { id: 'The Observer',     label: 'The Observer',     sub: 'Detached & scientific' },
+  { id: 'B.L.U.E.',  label: 'B.L.U.E.',  sub: 'Default researcher' },
+  { id: 'Vesper',    label: 'Vesper',     sub: 'Alternative persona' },
 ];
 
 interface SurveyControllerProps {
