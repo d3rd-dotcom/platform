@@ -220,8 +220,8 @@ export default function TopNavProfileButton() {
             <Image
               src={avatarUrl}
               alt={displayName || 'Profile'}
-              width={28}
-              height={28}
+              width={36}
+              height={36}
               className={styles.chipAvatarImg}
               unoptimized
             />
@@ -229,7 +229,14 @@ export default function TopNavProfileButton() {
             <span className={styles.chipInitials}>{initials}</span>
           )}
         </div>
-        {displayName && <span className={styles.chipName}>@{displayName}</span>}
+        <div className={styles.chipInfo}>
+          <span className={styles.chipName}>
+            {displayName ? `@${displayName}` : 'Connected'}
+          </span>
+          {address && (
+            <span className={styles.chipWallet}>{truncateAddr(address)}</span>
+          )}
+        </div>
         {shardCount !== null && (
           <span className={styles.chipShards}>
             <Image src="/icons/ui-shard.svg" alt="" width={12} height={12} />

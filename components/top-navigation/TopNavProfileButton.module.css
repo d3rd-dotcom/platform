@@ -2,63 +2,75 @@
 .chip {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px 4px 4px;
-  border-radius: 999px;
-  border: 1px solid rgba(0,0,0,0.10);
-  background: rgba(255,255,255,0.7);
-  backdrop-filter: blur(8px);
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--color-grey-700, #2a2b36);
+  background: var(--color-grey-900, #1a1b24);
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition: opacity 0.15s;
   white-space: nowrap;
   color: inherit;
+  text-align: left;
 }
 .chip:hover {
-  background: rgba(255,255,255,0.95);
-  border-color: rgba(0,0,0,0.18);
+  opacity: 0.85;
 }
 
-[data-theme="dark"] .chip {
-  background: rgba(255,255,255,0.08);
-  border-color: rgba(255,255,255,0.12);
-}
-[data-theme="dark"] .chip:hover {
-  background: rgba(255,255,255,0.14);
+:global(:root:not([data-theme="dark"])) .chip {
+  background: #f4f5fe;
+  border-color: rgba(26,27,36,0.10);
 }
 
 .chipAvatar {
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   overflow: hidden;
   background: rgba(81,104,255,0.12);
+  border: 1.5px solid rgba(81,104,255,0.25);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 .chipAvatarImg {
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   object-fit: cover;
   border-radius: 50%;
 }
 .chipInitials {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--color-primary, #5168FF);
   line-height: 1;
 }
+.chipInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
 .chipName {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
-  color: var(--color-text, #1a1a2e);
-  max-width: 100px;
+  color: rgba(227,225,238,0.95);
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
-[data-theme="dark"] .chipName {
-  color: rgba(255,255,255,0.9);
+:global(:root:not([data-theme="dark"])) .chipName {
+  color: #1a1d33;
+}
+.chipWallet {
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  color: rgba(227,225,238,0.4);
+  letter-spacing: 0.02em;
+}
+:global(:root:not([data-theme="dark"])) .chipWallet {
+  color: rgba(26,29,51,0.45);
 }
 .chipShards {
   display: flex;
@@ -67,6 +79,7 @@
   font-size: 11px;
   font-weight: 600;
   color: var(--color-primary, #5168FF);
+  flex-shrink: 0;
 }
 
 /* ── Backdrop ────────────────────────────────────────────── */
