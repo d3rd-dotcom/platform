@@ -48,7 +48,7 @@ const desktopNavSections: NavSection[] = [
     label: 'Community Resources',
     items: [
       { id: 'research', label: 'R-Tool', href: '/research', iconSrc: '/icons/nav-laboratory.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'simulations', label: 'Simulations', href: 'https://azure-world.vercel.app/', iconSrc: '/icons/nav-world.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'simulations', label: 'Simulations', href: 'https://azure-world.vercel.app/', iconSrc: '/icons/nav-community.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
 ];
@@ -59,7 +59,7 @@ const mobileNavSections: NavSection[] = [
     label: 'Community Resources',
     items: [
       { id: 'research', label: 'R-Tool', href: '/research', iconSrc: '/icons/nav-laboratory.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'simulations', label: 'Simulations', href: 'https://azure-world.vercel.app/', iconSrc: '/icons/nav-world.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'simulations', label: 'Simulations', href: 'https://azure-world.vercel.app/', iconSrc: '/icons/nav-community.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
 ];
@@ -70,6 +70,12 @@ const primaryNavItems: NavItem[] = [
     label: 'Journal',
     href: '/course',
     iconSrc: '/icons/nav-spiral.svg',
+  },
+  {
+    id: 'markets',
+    label: 'Markets',
+    href: '/markets',
+    iconSrc: '/icons/nav-markets.svg',
   },
   {
     id: 'events',

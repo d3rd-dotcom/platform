@@ -4,17 +4,20 @@
   --markets-top-bars-height: calc(var(--markets-status-height) + var(--markets-shard-height));
   --color-secondary: #23864f;
   --color-secondary-hover: #176c3d;
-  --markets-light-gutter: #3A4ACC;
-  --markets-light-panel-low: #3D4ED4;
-  --markets-light-panel: #4458E8;
-  --markets-light-panel-raised: #5168FF;
-  --markets-light-warm: #3A4ACC;
-  --markets-light-green: #3D4ED4;
+  --markets-light-gutter: #DDE2F2;
+  --markets-light-panel-low: #EEF1FA;
+  --markets-light-panel: #F8FAFF;
+  --markets-light-panel-raised: #FFFFFF;
+  --markets-light-warm: #FFF2E7;
+  --markets-light-green: #E9F8EF;
   height: calc(100dvh - 72px);
   min-height: calc(100dvh - 72px);
   max-height: calc(100dvh - 72px);
   margin-left: var(--sidebar-width, 272px);
-  background: linear-gradient(180deg, #4458E8 0%, #3A4ACC 100%);
+  background:
+    radial-gradient(circle at 82% 4%, rgba(255, 119, 41, 0.08), transparent 32%),
+    radial-gradient(circle at 14% 18%, rgba(35, 134, 79, 0.07), transparent 30%),
+    linear-gradient(180deg, #FCFDFF 0%, #F4F7FC 100%);
   overflow: hidden;
 }
 
@@ -480,8 +483,10 @@
   height: auto;
   max-height: none;
   min-height: 0;
-  background: linear-gradient(180deg, #4C5EFF 0%, #3A4ACC 100%);
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(81, 104, 255, 0.08), transparent 34%),
+    linear-gradient(180deg, #FFFFFF 0%, #F0F4FB 100%);
+  border-left: 1px solid rgba(26, 29, 51, 0.1);
   overflow: hidden;
   overscroll-behavior: contain;
 }
@@ -490,8 +495,8 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
-  background: rgba(0, 0, 0, 0.15);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(26, 29, 51, 0.08);
+  border-bottom: 1px solid rgba(26, 29, 51, 0.08);
 }
 
 .blueVital {
@@ -499,23 +504,23 @@
   flex-direction: column;
   gap: 4px;
   padding: 10px 12px;
-  background: rgba(0, 0, 0, 0.12);
-  border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.54);
+  border-bottom: 2px solid rgba(26, 29, 51, 0.08);
 }
 
 .blueVital:nth-child(1) {
-  background: rgba(0, 0, 0, 0.18);
-  border-bottom-color: rgba(255, 255, 255, 0.20);
+  background: rgba(81, 104, 255, 0.06);
+  border-bottom-color: rgba(81, 104, 255, 0.32);
 }
 
 .blueVital:nth-child(2) {
-  background: rgba(0, 0, 0, 0.10);
-  border-bottom-color: rgba(255, 255, 255, 0.10);
+  background: #FFFFFF;
+  border-bottom-color: rgba(26, 29, 51, 0.16);
 }
 
 .blueVital:nth-child(3) {
-  background: rgba(0, 0, 0, 0.14);
-  border-bottom-color: rgba(255, 255, 255, 0.10);
+  background: var(--markets-light-warm);
+  border-bottom-color: rgba(255, 119, 41, 0.32);
 }
 
 .blueVital span {
@@ -523,13 +528,13 @@
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: rgba(255, 255, 255, 0.60);
+  color: var(--color-secondary);
 }
 
 .blueVital strong {
   font-family: var(--font-button);
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.95);
+  color: var(--color-text-dark);
   font-variant-numeric: tabular-nums;
 }
 
@@ -537,9 +542,9 @@
   margin: 10px 16px 0;
   padding: 9px 11px;
   border-radius: var(--radius-md);
-  background: rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  color: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(26, 29, 51, 0.08);
+  color: var(--color-text-soft);
   font-family: var(--font-button);
   font-size: 10px;
   line-height: 1.45;
@@ -552,12 +557,12 @@
   margin: 14px 16px 0;
   padding: 10px 12px;
   border-radius: var(--radius-md);
-  background: rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(233, 248, 239, 0.78);
+  border: 1px solid rgba(35, 134, 79, 0.16);
   font-family: var(--font-button);
   font-size: 10px;
   line-height: 1.45;
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--color-secondary);
 }
 
 .blueRouteDot {
@@ -626,10 +631,10 @@
   font-family: var(--font-button);
   font-size: 12px;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.92);
-  background: rgba(0, 0, 0, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  box-shadow: none;
+  color: var(--color-text-dark);
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(26, 29, 51, 0.08);
+  box-shadow: 0 8px 24px rgba(26, 29, 51, 0.05);
 }
 
 .blueExecuteButton {
@@ -674,8 +679,8 @@
 
 .blueChatUser .blueBubbleText {
   color: #F7F8FF;
-  background: rgba(255, 255, 255, 0.20);
-  border-color: rgba(255, 255, 255, 0.22);
+  background: var(--color-primary);
+  border-color: rgba(81, 104, 255, 0.4);
 }
 
 .blueTyping {
@@ -749,10 +754,10 @@
   min-width: 0;
   height: 48px;
   resize: none;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: var(--radius-md);
   padding: 9px 12px;
-  background: rgba(0, 0, 0, 0.20);
+  background: rgba(0, 0, 0, 0.18);
   color: rgba(255, 255, 255, 0.92);
   font-family: var(--font-button);
   font-size: 12px;
@@ -1377,15 +1382,15 @@
   flex-direction: column;
   gap: 6px;
   padding: 10px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(26, 29, 51, 0.08);
   border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.78);
   content-visibility: auto;
   contain-intrinsic-size: 96px;
 }
 
 .marketItem:nth-child(even) {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(238, 241, 250, 0.86);
 }
 
 .marketLoadMore {
@@ -1426,7 +1431,7 @@
   font-family: var(--font-button);
   font-size: 13px;
   font-weight: var(--font-weight-semibold);
-  color: rgba(255, 255, 255, 0.95);
+  color: var(--color-text-dark);
   line-height: 1.4;
 }
 
@@ -1436,7 +1441,7 @@
   justify-content: flex-start;
   font-family: var(--font-button);
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--color-secondary);
 }
 
 .marketBarWrap {
@@ -1448,7 +1453,7 @@
 .marketBarLabel {
   font-family: var(--font-button);
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--color-secondary);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -1460,11 +1465,11 @@
   flex-shrink: 0;
   border-radius: 3px;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(26, 29, 51, 0.06);
 }
 
 .marketYes {
-  background: rgba(255, 255, 255, 0.85);
+  background: var(--color-tertiary);
   transition: width 0.3s ease;
 }
 
@@ -1773,10 +1778,15 @@
 :global([data-theme="dark"]) .blueVital,
 :global([data-theme="dark"]) .blueBubbleText,
 :global([data-theme="dark"]) .blueTyping,
-:global([data-theme="dark"]) .blueQuickActions button,
-:global([data-theme="dark"]) .blueTradeComposer textarea {
+:global([data-theme="dark"]) .blueQuickActions button {
   background: color-mix(in oklch, var(--markets-dark-panel-raised) 82%, transparent);
   border-color: var(--color-border-subtle);
+}
+
+:global([data-theme="dark"]) .blueTradeComposer textarea {
+  background: rgba(0, 0, 0, 0.22);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.92);
 }
 
 :global([data-theme="dark"]) .blueVital {
@@ -1826,7 +1836,8 @@
 }
 
 :global([data-theme="dark"]) .blueTradeComposer {
-  background: color-mix(in oklch, var(--color-surface-1) 92%, transparent);
+  background: #2D3BAD;
+  border-top-color: rgba(255, 255, 255, 0.08);
 }
 
 :global([data-theme="dark"]) .chartPlaceholder {

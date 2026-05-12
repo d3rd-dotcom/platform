@@ -13,8 +13,7 @@ import TopNavProfileButton from './TopNavProfileButton';
 
 const NAV_LINKS = [
   { label: 'Home',      href: '/surveys',   icon: '/icons/nav-home.svg' },
-  { label: 'Markets',   href: '/markets',   icon: '/icons/nav-markets.svg' },
-  { label: 'Social',    href: '/community', icon: '/icons/nav-community.svg' },
+  { label: 'Network',   href: '/community', icon: '/icons/nav-world.svg' },
   { label: 'Library',   href: '/library',   icon: '/icons/ui-book.svg' },
 ];
 
