@@ -110,6 +110,24 @@ const TopNavigation: React.FC = () => {
         </nav>
 
         <nav className={styles.nav}>
+          <button
+            type="button"
+            className={styles.shinyCard}
+            onClick={() => {
+              play('click');
+              window.dispatchEvent(new Event('toggleBlueChat'));
+            }}
+            onMouseEnter={() => play('hover')}
+            aria-label="Ask Blue"
+          >
+            <div className={styles.shinyCardShine} />
+            <div className={styles.shinyCardContent}>
+              <div className={styles.shinyCardIcon}>
+                <Image src="https://i.imgur.com/Y6YNtam.png" alt="Blue" width={28} height={28} unoptimized />
+              </div>
+              <span className={styles.shinyCardTitle}>Ask Blue</span>
+            </div>
+          </button>
           <SoundToggle />
           <button
             type="button"

@@ -1,80 +1,45 @@
-/* ── Chip button (ShinyCard style) ───────────────────────── */
+/* ── Chip button ─────────────────────────────────────────── */
 .chip {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  padding: 6px 12px 6px 6px;
-  border-radius: 12px;
-  border: 2px solid var(--color-primary, #5168FF);
-  background: linear-gradient(135deg, rgba(81,104,255,0.08) 0%, rgba(80,89,155,0.12) 50%, rgba(81,104,255,0.06) 100%);
-  box-shadow: 2px 2px 0 rgba(81,104,255,0.3);
-  cursor: pointer;
-  transition: all 0.15s ease;
-  overflow: hidden;
-  white-space: nowrap;
-  text-align: left;
-}
-.chip:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 rgba(81,104,255,0.4);
-}
-
-[data-theme="dark"] .chip {
-  background: linear-gradient(135deg, color-mix(in oklch, #5168FF 13%, #1a1b24) 0%, color-mix(in oklch, #5168FF 10%, #1a1b24) 100%);
-  border-color: #5168FF;
-  box-shadow: 2px 2px 0 rgba(139,149,255,0.18);
-}
-
-/* Shine sweep animation */
-.chipShine {
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    115deg,
-    transparent 40%,
-    rgba(81,104,255,0.06) 45%,
-    rgba(81,104,255,0.12) 50%,
-    rgba(81,104,255,0.06) 55%,
-    transparent 60%
-  );
-  animation: chipShineSweep 3s ease-in-out infinite;
-  pointer-events: none;
-}
-@keyframes chipShineSweep {
-  0%   { transform: translateX(-60%) rotate(15deg); }
-  100% { transform: translateX(60%) rotate(15deg); }
-}
-
-.chipContent {
-  position: relative;
-  z-index: 1;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  padding: 6px 12px 6px 6px;
+  border-radius: 12px;
+  border: 1px solid var(--color-grey-700, #2a2b36);
+  background: var(--color-grey-900, #1a1b24);
+  cursor: pointer;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+  color: inherit;
+  text-align: left;
+}
+.chip:hover { opacity: 0.85; }
+
+:global(:root:not([data-theme="dark"])) .chip {
+  background: #f4f5fe;
+  border-color: rgba(26,27,36,0.10);
 }
 
 .chipAvatar {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  border: 2px solid var(--color-primary, #5168FF);
   overflow: hidden;
   background: rgba(81,104,255,0.12);
+  border: 1.5px solid rgba(81,104,255,0.25);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 .chipAvatarImg {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   object-fit: cover;
+  border-radius: 50%;
 }
 .chipInitials {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   color: var(--color-primary, #5168FF);
   line-height: 1;
@@ -86,28 +51,29 @@
   min-width: 0;
 }
 .chipName {
-  font-family: var(--font-primary);
   font-size: 13px;
-  font-weight: 700;
-  color: #1A1D33;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
+  font-weight: 600;
+  color: rgba(227,225,238,0.95);
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
-[data-theme="dark"] .chipName {
-  color: rgba(227,225,238,0.95);
+:global(:root:not([data-theme="dark"])) .chipName { color: #1a1d33; }
+.chipWallet {
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  color: rgba(227,225,238,0.4);
+  letter-spacing: 0.02em;
 }
+:global(:root:not([data-theme="dark"])) .chipWallet { color: rgba(26,29,51,0.45); }
 .chipShards {
   display: flex;
   align-items: center;
   gap: 3px;
-  font-family: var(--font-button);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--color-primary, #5168FF);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  flex-shrink: 0;
 }
 
 /* ── Backdrop ────────────────────────────────────────────── */

@@ -215,33 +215,27 @@ export default function TopNavProfileButton() {
         onClick={() => setDrawerOpen(true)}
         aria-label="Open profile"
       >
-        <div className={styles.chipShine} />
-        <div className={styles.chipContent}>
-          <div className={styles.chipAvatar}>
-            {avatarUrl ? (
-              <Image
-                src={avatarUrl}
-                alt={displayName || 'Profile'}
-                width={32}
-                height={32}
-                className={styles.chipAvatarImg}
-                unoptimized
-              />
-            ) : (
-              <span className={styles.chipInitials}>{initials}</span>
-            )}
-          </div>
-          <div className={styles.chipInfo}>
-            <span className={styles.chipName}>
-              {displayName ? `@${displayName}` : 'Connected'}
-            </span>
-            {shardCount !== null && (
-              <span className={styles.chipShards}>
-                <Image src="/icons/ui-shard.svg" alt="" width={10} height={10} />
-                {shardCount}
-              </span>
-            )}
-          </div>
+        <div className={styles.chipAvatar}>
+          {avatarUrl ? (
+            <Image
+              src={avatarUrl}
+              alt={displayName || 'Profile'}
+              width={28}
+              height={28}
+              className={styles.chipAvatarImg}
+              unoptimized
+            />
+          ) : (
+            <span className={styles.chipInitials}>{initials}</span>
+          )}
+        </div>
+        <div className={styles.chipInfo}>
+          <span className={styles.chipName}>
+            {displayName ? `@${displayName}` : 'Connected'}
+          </span>
+          {address && (
+            <span className={styles.chipWallet}>{truncateAddr(address)}</span>
+          )}
         </div>
       </button>
 

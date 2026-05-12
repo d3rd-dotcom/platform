@@ -716,31 +716,6 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
         {/* Navigation Sections */}
         <div className={styles.navSections}>
           <div className={styles.navPrimaryGroup}>
-            <div className={styles.shinyCardSpacer}>
-              <button
-                className={styles.shinyCard}
-                onClick={() => {
-                  play('click');
-                  setIsChatOpen(true);
-                }}
-                onMouseEnter={() => play('hover')}
-                type="button"
-                title="Ask Blue"
-              >
-                <div className={styles.shinyCardShine} />
-                <div className={styles.shinyCardContent}>
-                  <div className={styles.shinyCardIcon}>
-                    <Image src="https://i.imgur.com/Y6YNtam.png" alt="Blue" width={36} height={36} unoptimized />
-                  </div>
-                  {!isCollapsed && (
-                    <div className={styles.shinyCardText}>
-                      <span className={styles.shinyCardTitle}>Ask Blue</span>
-                      <span className={styles.shinyCardSub}>FLAGSHIP MODEL 2.0</span>
-                    </div>
-                  )}
-                </div>
-              </button>
-            </div>
             {primaryNavItems.map((item) => {
               const active = isActive(item.href);
 
