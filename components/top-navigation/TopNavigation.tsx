@@ -9,7 +9,6 @@ import styles from './TopNavigation.module.css';
 import { useSound } from '@/hooks/useSound';
 import { useTheme } from '@/components/theme/ThemeProvider';
 import SoundToggle from '@/components/sound/SoundToggle';
-import TopNavProfileButton from './TopNavProfileButton';
 
 const NAV_LINKS = [
   { label: 'Home',      href: '/surveys',   icon: '/icons/nav-home.svg' },
@@ -110,24 +109,6 @@ const TopNavigation: React.FC = () => {
         </nav>
 
         <nav className={styles.nav}>
-          <button
-            type="button"
-            className={styles.shinyCard}
-            onClick={() => {
-              play('click');
-              window.dispatchEvent(new Event('toggleBlueChat'));
-            }}
-            onMouseEnter={() => play('hover')}
-            aria-label="Ask Blue"
-          >
-            <div className={styles.shinyCardShine} />
-            <div className={styles.shinyCardContent}>
-              <div className={styles.shinyCardIcon}>
-                <Image src="https://i.imgur.com/Y6YNtam.png" alt="Blue" width={28} height={28} unoptimized />
-              </div>
-              <span className={styles.shinyCardTitle}>Ask Blue</span>
-            </div>
-          </button>
           <SoundToggle />
           <button
             type="button"
@@ -157,9 +138,7 @@ const TopNavigation: React.FC = () => {
               </svg>
             )}
           </button>
-          {authenticated ? (
-            <TopNavProfileButton />
-          ) : (
+          {!authenticated && (
             <>
               <button
                 type="button"
@@ -179,6 +158,24 @@ const TopNavigation: React.FC = () => {
               </button>
             </>
           )}
+          <button
+            type="button"
+            className={styles.shinyCard}
+            onClick={() => {
+              play('click');
+              window.dispatchEvent(new Event('toggleBlueChat'));
+            }}
+            onMouseEnter={() => play('hover')}
+            aria-label="Ask Blue"
+          >
+            <div className={styles.shinyCardShine} />
+            <div className={styles.shinyCardContent}>
+              <div className={styles.shinyCardIcon}>
+                <Image src="https://i.imgur.com/Y6YNtam.png" alt="Blue" width={24} height={24} unoptimized />
+              </div>
+              <span className={styles.shinyCardTitle}>Ask Blue</span>
+            </div>
+          </button>
         </nav>
       </div>
     </header>

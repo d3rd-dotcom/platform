@@ -206,11 +206,11 @@
   position: relative;
   display: inline-flex;
   align-items: center;
-  padding: 6px 12px 6px 6px;
-  border-radius: 12px;
-  border: 2px solid var(--color-primary, #5168FF);
+  padding: 5px 10px 5px 5px;
+  border-radius: 10px;
+  border: 1.5px solid var(--color-primary, #5168FF);
   background: linear-gradient(135deg, rgba(81,104,255,0.08) 0%, rgba(80,89,155,0.12) 50%, rgba(81,104,255,0.06) 100%);
-  box-shadow: 2px 2px 0 rgba(81,104,255,0.3);
+  box-shadow: 2px 2px 0 rgba(81,104,255,0.25);
   cursor: pointer;
   overflow: hidden;
   transition: all 0.15s ease;
@@ -219,7 +219,7 @@
 }
 .shinyCard:hover {
   transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 rgba(81,104,255,0.4);
+  box-shadow: 3px 3px 0 rgba(81,104,255,0.38);
 }
 .shinyCardShine {
   position: absolute;
@@ -247,13 +247,13 @@
   z-index: 1;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
 }
 .shinyCardIcon {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  border: 2px solid var(--color-primary, #5168FF);
+  border: 1.5px solid var(--color-primary, #5168FF);
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -264,7 +264,7 @@
 }
 .shinyCardTitle {
   font-family: var(--font-primary);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   color: #1A1D33;
   letter-spacing: 0.02em;
