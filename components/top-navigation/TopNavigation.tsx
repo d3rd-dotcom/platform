@@ -9,6 +9,7 @@ import styles from './TopNavigation.module.css';
 import { useSound } from '@/hooks/useSound';
 import { useTheme } from '@/components/theme/ThemeProvider';
 import SoundToggle from '@/components/sound/SoundToggle';
+import TopNavProfileButton from './TopNavProfileButton';
 
 const NAV_LINKS = [
   { label: 'Surveys',   href: '/surveys',   icon: '/icons/nav-home.svg' },
@@ -139,22 +140,28 @@ const TopNavigation: React.FC = () => {
               </svg>
             )}
           </button>
-          <button
-            type="button"
-            onClick={handleLogin}
-            onMouseEnter={() => play('hover')}
-            className={styles.loginButton}
-          >
-            Login
-          </button>
-          <button
-            type="button"
-            onClick={handleJoinNow}
-            onMouseEnter={() => play('hover')}
-            className={styles.joinButton}
-          >
-            Join Now
-          </button>
+          {authenticated ? (
+            <TopNavProfileButton />
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={handleLogin}
+                onMouseEnter={() => play('hover')}
+                className={styles.loginButton}
+              >
+                Login
+              </button>
+              <button
+                type="button"
+                onClick={handleJoinNow}
+                onMouseEnter={() => play('hover')}
+                className={styles.joinButton}
+              >
+                Join Now
+              </button>
+            </>
+          )}
         </nav>
       </div>
     </header>

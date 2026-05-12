@@ -664,31 +664,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
       );
     }
 
-    return (
-      <div className={styles.profileSyncCard}>
-        <button
-          className={styles.profileSyncButton}
-          onClick={() => {
-            play('click');
-            login();
-            setIsMobileMenuOpen(false);
-          }}
-          onMouseEnter={() => play('hover')}
-          disabled={isCreatingSession}
-          type="button"
-          title="Sync"
-        >
-          {isCollapsed ? (
-            <Image src="/icons/ui-plug.svg" alt="" width={18} height={18} className={styles.profileSyncIcon} />
-          ) : (
-            <>
-              <span>{isCreatingSession ? 'SYNCING' : 'SYNC'}</span>
-              <Image src="/icons/ui-plug.svg" alt="" width={16} height={16} className={styles.profileSyncIcon} />
-            </>
-          )}
-        </button>
-      </div>
-    );
+    return null;
   };
 
   return (
