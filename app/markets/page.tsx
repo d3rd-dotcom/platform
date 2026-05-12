@@ -772,36 +772,6 @@ export default function Markets() {
           </div>
         </div>
 
-        {/* ── SHARDS Stats Bar ── */}
-        <div className={styles.shardBar}>
-          <div className={styles.shardBarItem}>
-            <span className={styles.shardBarLabel}>$SHARDS</span>
-            {shardStats
-              ? <span className={styles.shardBarValue}>{formatPrice(shardStats.price)}</span>
-              : <ShardValueSkeleton className={styles.shardPriceSkeleton} />}
-          </div>
-          <div className={styles.shardBarItem}>
-            <span className={styles.shardBarLabel}>holders</span>
-            {shardStats
-              ? <span className={styles.shardBarValue}>{shardStats.holders.toLocaleString()}</span>
-              : <ShardValueSkeleton className={styles.shardHoldersSkeleton} />}
-          </div>
-          <div className={styles.shardBarItem}>
-            <span className={styles.shardBarLabel}>epoch P&L</span>
-            {shardStats
-              ? <span className={`${styles.shardBarValue} ${shardStats.epochPnL >= 0 ? styles.shardBarPositive : styles.shardBarNegative}`}>
-                  {(shardStats.epochPnL >= 0 ? '+' : '') + '$' + Math.abs(shardStats.epochPnL).toFixed(2)}
-                </span>
-              : <ShardValueSkeleton className={styles.shardPnlSkeleton} />}
-          </div>
-          <div className={styles.shardBarItem}>
-            <span className={styles.shardBarLabel}>next distribution</span>
-            {shardStats
-              ? <span className={styles.shardBarValue}>{shardStats.nextDistribution || '--'}</span>
-              : <ShardValueSkeleton className={styles.shardDistributionSkeleton} />}
-          </div>
-        </div>
-
         {isModelDetailsOpen && (
           <button
             type="button"
@@ -1028,7 +998,7 @@ export default function Markets() {
           {/* Kalshi Signal Markets */}
           <div className={`${styles.panel} ${styles.chartPanel} ${styles.kalshiPanel}`}>
             <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>Kalshi &middot; Markets Blue Watches &middot; Top by Volume</span>
+              <span className={styles.panelTitle}>Markets</span>
               <span className={styles.panelBadge}>live</span>
             </div>
             {!deferredKalshiMarkets && !kalshiError && (
@@ -1046,7 +1016,6 @@ export default function Markets() {
                   const visibleItems = items.slice(0, visibleCount);
                   return (
                     <div key={cat} className={styles.marketSection}>
-                      <div className={styles.marketSectionLabel}>{CATEGORY_LABELS[cat]}</div>
                       {visibleItems.map((m) => {
                         const [yes, no] = parseOutcomePrices(m.outcomePrices);
                         const yesPct = Math.round(yes * 100);
@@ -1060,19 +1029,21 @@ export default function Markets() {
                                   src={m.iconUrl}
                                   alt=""
                                   className={styles.marketIcon}
-                                  width={28}
-                                  height={28}
+                                  width={40}
+                                  height={40}
                                   loading="lazy"
                                 />
                               )}
                               <div className={styles.marketQuestion}>{m.question}</div>
                             </div>
-                            <div className={styles.marketBar}>
-                              <div className={styles.marketYes} style={{ width: `${yesPct}%` }} />
-                              <div className={styles.marketNo} style={{ width: `${noPct}%` }} />
+                            <div className={styles.marketBarWrap}>
+                              <div className={styles.marketBar}>
+                                <div className={styles.marketYes} style={{ width: `${yesPct}%` }} />
+                                <div className={styles.marketNo} style={{ width: `${noPct}%` }} />
+                              </div>
+                              <span className={styles.marketBarLabel}>{yesPct}% yes</span>
                             </div>
                             <div className={styles.marketMeta}>
-                              <span>Yes {yesPct}% / No {noPct}%</span>
                               <span>Vol: {formatVol(m.volume)}</span>
                             </div>
                           </div>
@@ -1087,7 +1058,7 @@ export default function Markets() {
                             [cat]: Math.min(items.length, visibleCount + MARKET_LOAD_MORE_STEP),
                           }))}
                         >
-                          Load more {CATEGORY_LABELS[cat].toLowerCase()} markets
+                          Load more
                         </button>
                       )}
                     </div>
@@ -1103,7 +1074,7 @@ export default function Markets() {
             className={`${styles.panel} ${styles.logPanel} ${isHistoryHighlighted ? styles.logPanelHighlighted : ''}`}
           >
             <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>Execution Log &middot; Price Gaps</span>
+              <span className={styles.panelTitle}>Execution Log</span>
               <span className={styles.panelBadge}>live</span>
             </div>
             <div className={styles.logEntries}>
@@ -1130,8 +1101,7 @@ export default function Markets() {
           {/* Treasury Quick Data */}
           <div className={`${styles.panel} ${styles.chartPanel} ${styles.treasuryPanel}`}>
             <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>Markets Treasury &middot; Quick Data</span>
-              <span className={styles.panelBadge}>on-chain</span>
+              <span className={styles.panelTitle}>Markets Treasury</span>
             </div>
             <div className={styles.treasuryQuickGrid}>
               {!balance && !balanceError && (

@@ -820,7 +820,7 @@
   width: 100%;
   max-width: 640px;
   min-height: min(78vh, 760px);
-  background: #3a3a3a;
+  background: #222222;
   border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: 24px;
   box-shadow:
@@ -923,15 +923,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  padding: 24px 20px 16px;
-}
-
-.noteImage {
-  width: 120px;
-  height: 120px;
-  object-fit: contain;
-  flex-shrink: 0;
+  gap: 8px;
+  padding: 16px 20px 12px;
 }
 
 .promptBubble {
@@ -1229,13 +1222,8 @@
   }
 
   .noteBottom {
-    gap: 12px;
-    padding: 12px 16px 12px;
-  }
-
-  .noteImage {
-    width: 80px;
-    height: 80px;
+    gap: 8px;
+    padding: 10px 16px 10px;
   }
 
   .promptBubble {
@@ -1668,7 +1656,7 @@
 
 
 :global([data-theme="dark"]) .modal {
-  background: #3a3a3a;
+  background: #222222;
   border-color: rgba(255, 255, 255, 0.04);
   box-shadow:
     0 30px 90px rgba(0, 0, 0, 0.62),

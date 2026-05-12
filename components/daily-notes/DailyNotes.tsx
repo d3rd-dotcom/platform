@@ -660,11 +660,6 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
               </div>
 
               <div className={styles.noteBottom}>
-                <img
-                  src="https://i.imgur.com/ys2xupv.gif"
-                  alt="Ghost character"
-                  className={styles.noteImage}
-                />
                 <span className={`${styles.timerCount} ${styles.timerCountInline} ${isPaused ? styles.timerPaused : ''} ${timerSeconds <= 300 && !isPaused ? styles.timerWarning : ''}`}>
                   {isPaused ? 'paused' : formatTimer(timerSeconds)}
                 </span>
