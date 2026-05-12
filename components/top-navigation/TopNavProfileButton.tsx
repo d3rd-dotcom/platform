@@ -215,34 +215,34 @@ export default function TopNavProfileButton() {
         onClick={() => setDrawerOpen(true)}
         aria-label="Open profile"
       >
-        <div className={styles.chipAvatar}>
-          {avatarUrl ? (
-            <Image
-              src={avatarUrl}
-              alt={displayName || 'Profile'}
-              width={36}
-              height={36}
-              className={styles.chipAvatarImg}
-              unoptimized
-            />
-          ) : (
-            <span className={styles.chipInitials}>{initials}</span>
-          )}
+        <div className={styles.chipShine} />
+        <div className={styles.chipContent}>
+          <div className={styles.chipAvatar}>
+            {avatarUrl ? (
+              <Image
+                src={avatarUrl}
+                alt={displayName || 'Profile'}
+                width={32}
+                height={32}
+                className={styles.chipAvatarImg}
+                unoptimized
+              />
+            ) : (
+              <span className={styles.chipInitials}>{initials}</span>
+            )}
+          </div>
+          <div className={styles.chipInfo}>
+            <span className={styles.chipName}>
+              {displayName ? `@${displayName}` : 'Connected'}
+            </span>
+            {shardCount !== null && (
+              <span className={styles.chipShards}>
+                <Image src="/icons/ui-shard.svg" alt="" width={10} height={10} />
+                {shardCount}
+              </span>
+            )}
+          </div>
         </div>
-        <div className={styles.chipInfo}>
-          <span className={styles.chipName}>
-            {displayName ? `@${displayName}` : 'Connected'}
-          </span>
-          {address && (
-            <span className={styles.chipWallet}>{truncateAddr(address)}</span>
-          )}
-        </div>
-        {shardCount !== null && (
-          <span className={styles.chipShards}>
-            <Image src="/icons/ui-shard.svg" alt="" width={12} height={12} />
-            {shardCount}
-          </span>
-        )}
       </button>
 
       {/* Backdrop */}

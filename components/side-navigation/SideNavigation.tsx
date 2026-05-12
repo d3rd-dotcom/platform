@@ -85,7 +85,7 @@ const primaryNavItems: NavItem[] = [
   },
   {
     id: 'feedback',
-    label: 'Feedback',
+    label: 'Surveys',
     href: '/surveys',
     iconSrc: '/icons/nav-feedback.svg',
   },
