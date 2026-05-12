@@ -40,7 +40,7 @@
 .skeletonBlock {
   position: relative;
   overflow: hidden;
-  background: rgba(26, 29, 51, 0.08);
+  background: rgba(255, 255, 255, 0.07);
   color: transparent;
   pointer-events: none;
 }
@@ -50,7 +50,7 @@
   position: absolute;
   inset: 0;
   transform: translateX(-100%);
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
   animation: shimmer 1.3s ease-in-out infinite;
 }
 
@@ -276,7 +276,11 @@
 }
 
 .calendarCard {
-  padding: 20px 16px 18px;
+  padding: 20px 18px 18px;
+  background: #09090f;
+  border: 1px solid rgba(81, 104, 255, 0.14);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
 }
 
 .calendarHeader {
@@ -287,12 +291,12 @@
 }
 
 .calendarTitle {
-  margin: 8px 0 0;
+  margin: 4px 0 0;
   font-family: var(--font-primary);
-  font-size: 30px;
+  font-size: 26px;
   line-height: 1;
   font-weight: 800;
-  color: #44424f;
+  color: rgba(240, 240, 248, 0.95);
 }
 
 .calendarNav {
@@ -302,23 +306,22 @@
 }
 
 .monthButton {
-  width: 40px;
-  height: 40px;
-  border: 1px solid rgba(214, 205, 189, 0.9);
-  border-radius: 14px;
-  background: #fffdf9;
-  color: #7d7989;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.5);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .monthButton:hover {
-  transform: translateY(-1px);
-  border-color: rgba(81, 104, 255, 0.35);
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.09);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .calendarMetaRow {
@@ -333,62 +336,64 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 14px 16px;
-  border-radius: 20px;
-  border: 1px solid rgba(81, 104, 255, 0.1);
+  padding: 12px 14px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .calendarStat {
-  background: linear-gradient(180deg, rgba(81, 104, 255, 0.07) 0%, rgba(81, 104, 255, 0.03) 100%);
+  background: rgba(81, 104, 255, 0.08);
 }
 
 .calendarStatMuted {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .calendarStatValue {
   font-family: var(--font-primary);
-  font-size: 28px;
+  font-size: 26px;
   line-height: 1;
   font-weight: 800;
-  color: #44424f;
+  color: rgba(240, 240, 248, 0.95);
 }
 
 .calendarStatLabel {
   font-family: var(--font-primary);
-  font-size: 12px;
+  font-size: 10px;
   line-height: 1.25;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
-  color: rgba(68, 66, 79, 0.56);
+  color: rgba(240, 240, 248, 0.38);
 }
 
 .calendarGrid {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 10px 6px;
-  margin-top: 18px;
-  padding: 16px 8px 10px;
-  border-radius: 24px;
-  background: linear-gradient(180deg, #f9faff 0%, #f4f6ff 100%);
-  border: 1px solid rgba(81, 104, 255, 0.1);
+  gap: 0;
+  margin-top: 16px;
 }
 
 .weekday {
   text-align: center;
   font-family: var(--font-primary);
-  font-size: 12px;
+  font-size: 9px;
   font-weight: 700;
-  color: rgba(107, 102, 117, 0.62);
+  letter-spacing: 0.07em;
+  color: rgba(255, 255, 255, 0.28);
   text-transform: uppercase;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 4px;
 }
 
 .dayCell {
-  height: 40px;
-  border-radius: 16px;
+  height: 36px;
+  border-radius: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 2px;
   position: relative;
   border: 0;
   width: 100%;
@@ -399,75 +404,96 @@
   appearance: none;
 }
 
-.dayInMonth {
-  color: #4c4956;
+.dayInMonth .dayNumber {
+  color: rgba(255, 255, 255, 0.55);
 }
 
-.dayOutsideMonth {
-  color: rgba(76, 73, 86, 0.28);
+.dayOutsideMonth .dayNumber {
+  color: rgba(255, 255, 255, 0.15);
 }
 
-.dayCompleted {
-  background: linear-gradient(180deg, #6b7fff 0%, #5168FF 48%, #3d55f0 100%);
-  box-shadow:
-    inset 0 2px 0 rgba(255, 255, 255, 0.22),
-    0 6px 14px rgba(81, 104, 255, 0.22);
-  color: #ffffff;
+.dayCompleted .dayNumber {
+  color: rgba(255, 255, 255, 0.9);
 }
 
-.dayToday {
-  outline: 2px solid rgba(81, 104, 255, 0.32);
-  outline-offset: 2px;
+.dayToday .dayNumber {
+  background: rgba(255, 255, 255, 0.96);
+  color: #08090f;
+  border-radius: 50%;
+  font-weight: 800;
+}
+
+/* Dot indicator under completed days */
+.dayCompleted::after {
+  content: '';
+  display: block;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--color-primary, #5168FF);
+  flex-shrink: 0;
+}
+
+.dayToday.dayCompleted::after {
+  background: rgba(255, 255, 255, 0.6);
 }
 
 .dayInteractive {
   cursor: pointer;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+  transition: opacity 0.15s ease;
 }
 
 .dayInteractive:hover {
-  transform: translateY(-1px);
-  filter: saturate(1.05);
+  opacity: 0.75;
 }
 
 .dayInteractive:focus-visible {
-  outline: 2px solid rgba(81, 104, 255, 0.48);
+  outline: 1px solid rgba(81, 104, 255, 0.6);
   outline-offset: 2px;
 }
 
 .dayNumber {
   font-family: var(--font-primary);
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 600;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 .legend {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   margin-top: 16px;
-  padding-left: 2px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .legendSwatch {
-  width: 16px;
-  height: 16px;
-  border-radius: 999px;
-  background: linear-gradient(180deg, #6b7fff 0%, #5168FF 48%, #3d55f0 100%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-primary, #5168FF);
+  flex-shrink: 0;
 }
 
 .legendText {
   font-family: var(--font-primary);
-  font-size: 13px;
-  color: rgba(68, 66, 79, 0.68);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.35);
 }
 
 .calendarHint {
-  margin: 12px 2px 0;
+  margin: 10px 0 0;
   font-family: var(--font-primary);
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1.45;
-  color: rgba(68, 66, 79, 0.62);
+  color: rgba(255, 255, 255, 0.28);
 }
 
 .rereadOverlay {

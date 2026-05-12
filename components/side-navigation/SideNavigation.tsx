@@ -20,6 +20,7 @@ import { useSound } from '@/hooks/useSound';
 import { useInitialSidebarCollapsed } from './SidebarStateProvider';
 import SidebarProfileCard from '../sidebar-profile-card/SidebarProfileCard';
 import SidebarInventoryCard from '../sidebar-inventory-card/SidebarInventoryCard';
+import ProfilePopup from '../profile-popup/ProfilePopup';
 
 interface NavItem {
   id: string;
@@ -170,6 +171,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const [isCollapsed, setIsCollapsed] = useState(initialCollapsed);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [isLootBoxOpen, setIsLootBoxOpen] = useState(false);
+  const [isProfilePopupOpen, setIsProfilePopupOpen] = useState(false);
   const [userLoadComplete, setUserLoadComplete] = useState(false);
   const [hasVipSoulKey, setHasVipSoulKey] = useState(false);
   const { play } = useSound();
@@ -651,6 +653,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
             onChangeUsername={handleUsernameClick}
             onConnections={() => setIsYourAccountsModalOpen(true)}
             onSignOut={handleSignOut}
+            onViewProfile={() => setIsProfilePopupOpen(true)}
           />
           <SidebarInventoryCard
             shardCount={shardCount}
@@ -824,6 +827,15 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
         onClose={() => setIsOnboardingOpen(false)}
         onComplete={handleOnboardingComplete}
       />
+
+      {isProfilePopupOpen && (
+        <ProfilePopup
+          username={username}
+          avatarUrl={avatarUrl}
+          address={address}
+          onClose={() => setIsProfilePopupOpen(false)}
+        />
+      )}
 
     </>
   );

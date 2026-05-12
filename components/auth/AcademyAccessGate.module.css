@@ -100,7 +100,7 @@
   .gateShell {
     min-height: calc(100vh - 64px);
     padding: 88px 16px 104px;
-    place-items: start center;
+    place-items: center;
   }
 
   .gatePanel {

@@ -23,6 +23,36 @@
   gap: 10px;
 }
 
+.profileArea {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  border-radius: 6px;
+  transition: opacity 0.15s ease;
+}
+
+.profileArea:hover {
+  opacity: 0.85;
+}
+
+.cardCollapsedClickable {
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  transition: opacity 0.15s ease;
+}
+
+.cardCollapsedClickable:hover {
+  opacity: 0.75;
+}
+
 .avatar {
   width: 40px;
   height: 40px;

@@ -2,15 +2,12 @@
 
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import { useState, useEffect, useCallback, type MouseEvent } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import type { TutorialStep } from '@/components/still-tutorial/StillTutorial';
 import TreasuryDisplay from '@/components/treasury-display/TreasuryDisplay';
 import ProposalCard from '@/components/proposal-card/ProposalCard';
-import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import { useSound } from '@/hooks/useSound';
-import { useScrollLock } from '@/hooks/useScrollLock';
-import { normalizeCommunityArticleUrl } from '@/lib/community-links';
 import styles from './page.module.css';
 
 const StillTutorial = dynamic(() => import('@/components/still-tutorial/StillTutorial'), {
@@ -65,41 +62,6 @@ interface MergedProposal extends DatabaseProposal {
   };
 }
 
-interface NewsItem {
-  title: string;
-  url: string;
-  source: string;
-  createdAt: string;
-}
-
-interface NewsTopic {
-  topic: string;
-  color: string;
-  items: NewsItem[];
-}
-
-interface ArticlePreviewState {
-  title: string;
-  source: string;
-  canonicalUrl: string;
-  summary: string;
-  status: 'loading' | 'ready' | 'error';
-  isRecovered: boolean;
-}
-
-function formatPublishedDate(isoString: string): string {
-  const publishedAt = new Date(isoString);
-
-  if (Number.isNaN(publishedAt.getTime())) {
-    return 'Date unavailable';
-  }
-
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  }).format(publishedAt);
-}
 
 const getTutorialSteps = (): TutorialStep[] => [
   {
@@ -170,26 +132,6 @@ function SkeletonLine({ className = '' }: { className?: string }) {
   return <span className={`${styles.skeletonLine} ${className}`} aria-hidden="true" />;
 }
 
-function NewsSkeletonStack() {
-  return (
-    <div className={styles.newsLoadingStack} aria-label="Loading latest news">
-      {[0, 1, 2, 3].map((i) => (
-        <article key={i} className={`${styles.newsTopicCard} ${styles.newsSkeletonCard}`}>
-          <SkeletonLine className={styles.newsSkeletonTopic} />
-          <div className={styles.newsTopicDivider} />
-          <div className={styles.newsSkeletonArticleList}>
-            {[0, 1].map((row) => (
-              <div key={row} className={styles.newsSkeletonArticle}>
-                <SkeletonLine className={row === 0 ? styles.newsSkeletonTitleWide : styles.newsSkeletonTitle} />
-                <SkeletonLine className={styles.newsSkeletonMeta} />
-              </div>
-            ))}
-          </div>
-        </article>
-      ))}
-    </div>
-  );
-}
 
 function ProposalSkeletonCard() {
   return (
@@ -226,67 +168,11 @@ export default function VotingPage() {
   const [selectedProposalId, setSelectedProposalId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
-  const [newsTopics, setNewsTopics] = useState<NewsTopic[]>([]);
-  const [newsLoading, setNewsLoading] = useState(true);
-  const [newsError, setNewsError] = useState<string | null>(null);
-  const [articlePreview, setArticlePreview] = useState<ArticlePreviewState | null>(null);
   const { play } = useSound();
   const selectedProposal = selectedProposalId
     ? proposals.find((proposal) => proposal.id === selectedProposalId) ?? null
     : null;
   const isPageLoading = loading && proposals.length === 0;
-
-  useScrollLock(Boolean(articlePreview));
-
-  useEffect(() => {
-    let active = true;
-
-    const loadNews = async () => {
-      try {
-        const res = await fetch('/api/community/news', { cache: 'no-store' });
-
-        if (!res.ok) {
-          throw new Error(`News fetch failed with status ${res.status}`);
-        }
-
-        const data = await res.json();
-
-        if (!active) return;
-
-        setNewsTopics(Array.isArray(data.topics) ? data.topics : []);
-        setNewsError(null);
-      } catch (error) {
-        if (!active) return;
-
-        console.error('Error loading community news:', error);
-        setNewsTopics([]);
-        setNewsError('News feed unavailable right now.');
-      } finally {
-        if (active) {
-          setNewsLoading(false);
-        }
-      }
-    };
-
-    void loadNews();
-
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!articlePreview) return;
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setArticlePreview(null);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [articlePreview]);
 
   const enrichProposals = useCallback(async (dbProposals: DatabaseProposal[]) => {
     const proposalsNeedingChainData = dbProposals.filter((proposal) =>
@@ -392,56 +278,6 @@ export default function VotingPage() {
     }
   };
 
-  const handleArticleClick = useCallback(async (event: MouseEvent<HTMLAnchorElement>, item: NewsItem) => {
-    event.preventDefault();
-    const normalizedUrl = normalizeCommunityArticleUrl(item.url);
-
-    play('click');
-    setArticlePreview({
-      title: item.title,
-      source: item.source,
-      canonicalUrl: normalizedUrl,
-      summary: 'I am scanning this article now so I can pull out the key signal before you leave the Decision Room.',
-      status: 'loading',
-      isRecovered: normalizedUrl !== item.url,
-    });
-
-    try {
-      const response = await fetch(`/api/community/article-preview?url=${encodeURIComponent(item.url)}`);
-
-      if (!response.ok) {
-        throw new Error(`Article preview failed with status ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      setArticlePreview({
-        title: data.title || item.title,
-        source: data.source || item.source,
-        canonicalUrl: data.canonicalUrl || normalizedUrl,
-        summary: `${data.summary || 'This article is ready.'} Continue to the full article?`,
-        status: 'ready',
-        isRecovered: Boolean(data.isRecovered),
-      });
-    } catch (error) {
-      console.error('Error loading article preview:', error);
-      setArticlePreview({
-        title: item.title,
-        source: item.source,
-        canonicalUrl: normalizedUrl,
-        summary: 'I could not generate a clean summary for this one, but the article destination is ready if you want to keep reading.',
-        status: 'error',
-        isRecovered: normalizedUrl !== item.url,
-      });
-    }
-  }, [play]);
-
-  const handleContinueReading = useCallback(() => {
-    if (!articlePreview) return;
-    play('navigation');
-    window.open(articlePreview.canonicalUrl, '_blank', 'noopener,noreferrer');
-    setArticlePreview(null);
-  }, [articlePreview, play]);
 
   return (
     <>
@@ -556,60 +392,7 @@ export default function VotingPage() {
               <section className={styles.communityViewPanel}>
                   <div className={styles.overviewColumns}>
 
-                    <div className={styles.latestNewsSection}>
-                      <span className={styles.latestNewsLabel}>Latest News</span>
-                      {newsLoading ? (
-                        <NewsSkeletonStack />
-                      ) : newsError ? (
-                        <div className={styles.newsEmptyCard}>
-                          <span className={styles.newsEmptyText}>
-                            {newsError} Treasury and proposal tools are still available below.
-                          </span>
-                        </div>
-                      ) : newsTopics.length === 0 ? (
-                        <div className={styles.newsEmptyCard}>
-                          <span className={styles.newsEmptyText}>
-                            No recent stories surfaced in the tracked feeds.
-                          </span>
-                        </div>
-                      ) : (
-                        <div className={styles.newsStack}>
-                          {newsTopics.map((topic) => (
-                            <article key={topic.topic} className={styles.newsTopicCard}>
-                              <span className={styles.newsTopicLabel} style={{ color: topic.color }}>
-                                {topic.topic}
-                              </span>
-                              <div className={styles.newsTopicDivider} />
-                              {topic.items.length === 0 ? (
-                                <span className={styles.newsEmptyText}>No recent stories surfaced.</span>
-                              ) : (
-                                <ul className={styles.newsArticleList}>
-                                  {topic.items.map((item, i) => (
-                                    <li key={i} className={styles.newsArticleItem}>
-                                      <a
-                                        href={normalizeCommunityArticleUrl(item.url)}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className={styles.newsArticleLink}
-                                        onClick={(event) => void handleArticleClick(event, item)}
-                                        onMouseEnter={() => play('hover')}
-                                      >
-                                        <span className={styles.newsArticleTitle}>{item.title}</span>
-                                        <span className={styles.newsArticleMeta}>
-                                          {item.source} · {formatPublishedDate(item.createdAt)}
-                                        </span>
-                                      </a>
-                                    </li>
-                                  ))}
-                                </ul>
-                              )}
-                            </article>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className={styles.overviewProposalsColumn}>
+                      <div className={styles.overviewProposalsColumn}>
                       {isPageLoading || (loading && proposals.length > 0) ? (
                         <ProposalSkeletonList />
                       ) : error ? (
@@ -695,61 +478,6 @@ export default function VotingPage() {
         />
       )}
 
-      {articlePreview && (
-        <div className={styles.articlePreviewOverlay} onClick={() => setArticlePreview(null)}>
-          <div
-            className={styles.articlePreviewCard}
-            onClick={(event) => event.stopPropagation()}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="article-preview-title"
-          >
-            <div className={styles.articlePreviewDialogueWrap}>
-              <BlueDialogue
-                key={`${articlePreview.canonicalUrl}-${articlePreview.status}`}
-                message={articlePreview.summary}
-                emotion="happy"
-                variant="overlay"
-                showSkip={false}
-              />
-            </div>
-
-            <div className={styles.articlePreviewHeader}>
-              <div className={styles.articlePreviewMetaRow}>
-                <span className={styles.articlePreviewSource}>{articlePreview.source}</span>
-                {articlePreview.isRecovered && (
-                  <span className={styles.articlePreviewRecovered}>Recovered Link</span>
-                )}
-              </div>
-              <h2 id="article-preview-title" className={styles.articlePreviewTitle}>
-                {articlePreview.title}
-              </h2>
-            </div>
-
-            <div className={styles.articlePreviewActions}>
-              <button
-                type="button"
-                className={styles.articlePreviewDismiss}
-                onClick={() => {
-                  play('click');
-                  setArticlePreview(null);
-                }}
-                onMouseEnter={() => play('hover')}
-              >
-                Stay Here
-              </button>
-              <button
-                type="button"
-                className={styles.articlePreviewContinue}
-                onClick={handleContinueReading}
-                onMouseEnter={() => play('hover')}
-              >
-                Continue Reading
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 }

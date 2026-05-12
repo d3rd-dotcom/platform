@@ -5,7 +5,6 @@ import type { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
 import OnboardingModal from '@/components/onboarding/OnboardingModal';
-import { DotmSquare3 } from '@/components/dot-matrix/DotmSquare3';
 import styles from './AcademyAccessGate.module.css';
 
 type AccessState = 'checking' | 'needs-auth' | 'needs-profile' | 'ready' | 'error';
@@ -45,7 +44,6 @@ export default function AcademyAccessGate({ children }: { children: ReactNode })
   const pathname = usePathname();
   const { ready, authenticated, login, getAccessToken } = usePrivy();
   const [accessState, setAccessState] = useState<AccessState>('checking');
-  const [validatedPath, setValidatedPath] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
 
@@ -92,23 +90,12 @@ export default function AcademyAccessGate({ children }: { children: ReactNode })
       return;
     }
 
-    setValidatedPath(pathname);
     setAccessState('ready');
     window.dispatchEvent(new Event('userLoaded'));
-  }, [fetchMe, getAccessToken, pathname]);
+  }, [fetchMe, getAccessToken]);
 
   useEffect(() => {
-    if (publicRoute) {
-      setAccessState('ready');
-      setValidatedPath(null);
-      setIsOnboardingOpen(false);
-      return;
-    }
-
-    if (!ready) {
-      setAccessState('checking');
-      return;
-    }
+    if (publicRoute || !ready) return;
 
     if (!authenticated) {
       setAccessState('needs-auth');
@@ -136,81 +123,42 @@ export default function AcademyAccessGate({ children }: { children: ReactNode })
 
   const handleOnboardingComplete = () => {
     setIsOnboardingOpen(false);
-    setValidatedPath(pathname);
     setAccessState('ready');
     window.dispatchEvent(new Event('profileUpdated'));
     window.dispatchEvent(new Event('userLoaded'));
   };
 
-  if (publicRoute || (accessState === 'ready' && validatedPath === pathname)) {
-    return <>{children}</>;
-  }
-
-  // Authenticated users in checking state get a minimal loader — no panel text
-  if (authenticated && (accessState === 'checking' || accessState === 'ready')) {
+  // Public routes and authenticated users (including while Privy initializes): pass through immediately.
+  // Onboarding modal surfaces on top if needs-profile is detected in the background.
+  if (publicRoute || !ready || authenticated) {
     return (
-      <main className={styles.gateShell} aria-live="polite">
-        <DotmSquare3 speed={1.2} dotSize={8} gap={5} />
-      </main>
+      <>
+        {children}
+        <OnboardingModal
+          isOpen={isOnboardingOpen}
+          onClose={() => setIsOnboardingOpen(false)}
+          onComplete={handleOnboardingComplete}
+        />
+      </>
     );
   }
 
-  const displayState: AccessState = accessState === 'ready' ? 'checking' : accessState;
-
+  // Privy is ready and confirmed not authenticated: gate appears.
   return (
     <main className={styles.gateShell} aria-live="polite">
       <section className={styles.gatePanel}>
         <p className={styles.kicker}>Academy Access</p>
-        <h1 className={styles.title}>
-          {displayState === 'needs-profile' ? 'Finish setting up your profile' : 'Enter with an Academy account'}
-        </h1>
+        <h1 className={styles.title}>Enter with an Academy account</h1>
         <p className={styles.copy}>
-          {displayState === 'needs-profile'
-            ? 'Choose a username before surveys, quests, rewards, profile tools, and submissions start saving to your account.'
-            : 'The library stays open for browsing. Surveys, quests, shards, rewards, markets, profile state, and submissions require an account.'}
+          The library stays open for browsing. Surveys, quests, shards, rewards, markets, profile state, and submissions require an account.
         </p>
-
-        {displayState === 'checking' && (
-          <div className={styles.status}>
-            <DotmSquare3 speed={1.2} dotSize={7} gap={4} />
-          </div>
-        )}
-        {displayState === 'error' && (
+        {accessState === 'error' && (
           <p className={styles.error}>{error || 'Something went wrong while preparing your account.'}</p>
         )}
-
-        {displayState === 'needs-auth' && (
-          <button type="button" className={styles.primaryButton} onClick={handleLogin}>
-            Login / Join Now
-          </button>
-        )}
-
-        {(displayState === 'needs-profile' || displayState === 'error') && (
-          <button
-            type="button"
-            className={styles.primaryButton}
-            onClick={() => {
-              if (displayState === 'needs-profile') {
-                setIsOnboardingOpen(true);
-              } else {
-                ensureAccount().catch((err) => {
-                  console.error('[AcademyAccessGate] Retry failed:', err);
-                  setError(err instanceof Error ? err.message : 'Account setup failed.');
-                  setAccessState('error');
-                });
-              }
-            }}
-          >
-            {displayState === 'needs-profile' ? 'Complete Setup' : 'Try Again'}
-          </button>
-        )}
+        <button type="button" className={styles.primaryButton} onClick={handleLogin}>
+          Login / Join Now
+        </button>
       </section>
-
-      <OnboardingModal
-        isOpen={isOnboardingOpen}
-        onClose={() => setIsOnboardingOpen(false)}
-        onComplete={handleOnboardingComplete}
-      />
     </main>
   );
 }

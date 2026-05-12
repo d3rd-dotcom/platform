@@ -13,6 +13,7 @@ interface SidebarProfileCardProps {
   onChangeUsername: () => void;
   onConnections: () => void;
   onSignOut: () => void;
+  onViewProfile?: () => void;
 }
 
 function truncate(addr: string) {
@@ -28,6 +29,7 @@ export default function SidebarProfileCard({
   onChangeUsername,
   onConnections,
   onSignOut,
+  onViewProfile,
 }: SidebarProfileCardProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [addressCopied, setAddressCopied] = useState(false);
@@ -85,35 +87,49 @@ export default function SidebarProfileCard({
 
   if (isCollapsed) {
     return (
-      <div className={styles.cardCollapsed}>
+      <button
+        type="button"
+        className={`${styles.cardCollapsed} ${onViewProfile ? styles.cardCollapsedClickable : ''}`}
+        onClick={onViewProfile}
+        aria-label="View profile"
+        title="View profile"
+      >
         {avatarUrl ? (
           <Image src={avatarUrl} alt={displayName || 'Profile'} width={36} height={36} className={styles.avatarSm} unoptimized />
         ) : (
           <div className={styles.avatarFallbackSm}>{initials}</div>
         )}
-      </div>
+      </button>
     );
   }
 
   return (
     <div className={styles.card} ref={menuRef}>
       <div className={styles.row}>
-        {avatarUrl ? (
-          <Image src={avatarUrl} alt={displayName || 'Profile'} width={40} height={40} className={styles.avatar} unoptimized />
-        ) : (
-          <div className={styles.avatarFallback}>{initials}</div>
-        )}
-
-        <div className={styles.info}>
-          {displayName ? (
-            <span className={styles.name}>@{displayName}</span>
+        <button
+          type="button"
+          className={styles.profileArea}
+          onClick={onViewProfile}
+          aria-label="View profile"
+          title="View profile"
+        >
+          {avatarUrl ? (
+            <Image src={avatarUrl} alt={displayName || 'Profile'} width={40} height={40} className={styles.avatar} unoptimized />
           ) : (
-            <span className={styles.nameMuted}>not connected</span>
+            <div className={styles.avatarFallback}>{initials}</div>
           )}
-          {address && (
-            <span className={styles.wallet}>{truncate(address)}</span>
-          )}
-        </div>
+
+          <div className={styles.info}>
+            {displayName ? (
+              <span className={styles.name}>@{displayName}</span>
+            ) : (
+              <span className={styles.nameMuted}>not connected</span>
+            )}
+            {address && (
+              <span className={styles.wallet}>{truncate(address)}</span>
+            )}
+          </div>
+        </button>
 
         <button
           className={`${styles.menuBtn} ${menuOpen ? styles.menuBtnOpen : ''}`}
