@@ -72,10 +72,16 @@ const primaryNavItems: NavItem[] = [
     iconSrc: '/icons/nav-spiral.svg',
   },
   {
-    id: 'shop',
-    label: 'Shop',
-    href: '/shop',
-    iconSrc: '/icons/nav-shop.svg',
+    id: 'events',
+    label: 'Events',
+    href: '/events',
+    iconSrc: '/icons/nav-community.svg',
+  },
+  {
+    id: 'feedback',
+    label: 'Feedback',
+    href: '/surveys',
+    iconSrc: '/icons/nav-feedback.svg',
   },
 ];
 

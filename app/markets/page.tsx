@@ -999,7 +999,6 @@ export default function Markets() {
           <div className={`${styles.panel} ${styles.chartPanel} ${styles.kalshiPanel}`}>
             <div className={styles.panelHeader}>
               <span className={styles.panelTitle}>Markets</span>
-              <span className={styles.panelBadge}>live</span>
             </div>
             {!deferredKalshiMarkets && !kalshiError && (
               <MarketListSkeleton />
@@ -1012,11 +1011,9 @@ export default function Markets() {
                 {MARKET_CATEGORIES.map((cat) => {
                   const items = deferredKalshiMarkets[cat];
                   if (!items || items.length === 0) return null;
-                  const visibleCount = visibleMarketCounts[cat] ?? INITIAL_VISIBLE_MARKETS;
-                  const visibleItems = items.slice(0, visibleCount);
                   return (
                     <div key={cat} className={styles.marketSection}>
-                      {visibleItems.map((m) => {
+                      {items.map((m) => {
                         const [yes, no] = parseOutcomePrices(m.outcomePrices);
                         const yesPct = Math.round(yes * 100);
                         const noPct = Math.round(no * 100);
@@ -1049,18 +1046,6 @@ export default function Markets() {
                           </div>
                         );
                       })}
-                      {items.length > visibleCount && (
-                        <button
-                          type="button"
-                          className={styles.marketLoadMore}
-                          onClick={() => setVisibleMarketCounts((current) => ({
-                            ...current,
-                            [cat]: Math.min(items.length, visibleCount + MARKET_LOAD_MORE_STEP),
-                          }))}
-                        >
-                          Load more
-                        </button>
-                      )}
                     </div>
                   );
                 })}
@@ -1075,7 +1060,6 @@ export default function Markets() {
           >
             <div className={styles.panelHeader}>
               <span className={styles.panelTitle}>Execution Log</span>
-              <span className={styles.panelBadge}>live</span>
             </div>
             <div className={styles.logEntries}>
               {executionLogs.length === 0 && (
