@@ -1053,7 +1053,20 @@ export default function Markets() {
                         const noPct = Math.round(no * 100);
                         return (
                           <div key={m.id} className={styles.marketItem}>
-                            <div className={styles.marketQuestion}>{m.question}</div>
+                            <div className={styles.marketItemHeader}>
+                              {m.iconUrl && (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                  src={m.iconUrl}
+                                  alt=""
+                                  className={styles.marketIcon}
+                                  width={28}
+                                  height={28}
+                                  loading="lazy"
+                                />
+                              )}
+                              <div className={styles.marketQuestion}>{m.question}</div>
+                            </div>
                             <div className={styles.marketBar}>
                               <div className={styles.marketYes} style={{ width: `${yesPct}%` }} />
                               <div className={styles.marketNo} style={{ width: `${noPct}%` }} />

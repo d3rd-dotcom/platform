@@ -83,6 +83,7 @@ export interface MarketRow {
   event_ticker: string;
   yes_ask: number;
   no_ask: number;
+  iconUrl?: string;
 }
 
 export interface RecentTrade {
@@ -127,7 +128,82 @@ function pickQuestion(eventTitle: string, m: KalshiMarket): string {
   return title || sub || m.ticker;
 }
 
-function toRow(eventTitle: string, m: KalshiMarket): MarketRow {
+// ── Series icon mapping ──
+
+const _W = 'https://upload.wikimedia.org/wikipedia/commons/thumb';
+const _WE = 'https://upload.wikimedia.org/wikipedia/en/thumb';
+
+const SERIES_ICON_MAP: Record<string, string> = {
+  // Commodities
+  GOLD:        `${_W}/d/d7/Gold-crystals.jpg/120px-Gold-crystals.jpg`,
+  KXOIL:       `${_W}/c/c2/Petroleum_sample.jpg/120px-Petroleum_sample.jpg`,
+  WTIW:        `${_W}/c/c2/Petroleum_sample.jpg/120px-Petroleum_sample.jpg`,
+  NGAS:        `${_W}/0/06/Gas-natural.jpg/120px-Gas-natural.jpg`,
+  KXWHEAT:     `${_W}/a/a3/Vehn%C3%A4pelto_6.jpg/120px-Vehn%C3%A4pelto_6.jpg`,
+  KXAAAGASD:   `${_W}/c/c2/Petroleum_sample.jpg/120px-Petroleum_sample.jpg`,
+  KXAAAGASM:   `${_W}/c/c2/Petroleum_sample.jpg/120px-Petroleum_sample.jpg`,
+  KXAAAGASY:   `${_W}/c/c2/Petroleum_sample.jpg/120px-Petroleum_sample.jpg`,
+  KXDIESELM:   `${_W}/c/c2/Petroleum_sample.jpg/120px-Petroleum_sample.jpg`,
+  KXSPRLVL:    `${_W}/c/c2/Petroleum_sample.jpg/120px-Petroleum_sample.jpg`,
+  CPIGAS:      `${_W}/c/c2/Petroleum_sample.jpg/120px-Petroleum_sample.jpg`,
+  // Economics
+  FED:           `${_W}/1/1a/Seal_of_the_United_States_Federal_Reserve_System.svg/120px-Seal_of_the_United_States_Federal_Reserve_System.svg.png`,
+  KXFEDDECISION: `${_W}/1/1a/Seal_of_the_United_States_Federal_Reserve_System.svg/120px-Seal_of_the_United_States_Federal_Reserve_System.svg.png`,
+  KXEFFR:        `${_W}/1/1a/Seal_of_the_United_States_Federal_Reserve_System.svg/120px-Seal_of_the_United_States_Federal_Reserve_System.svg.png`,
+  LOWESTRATE:    `${_W}/1/1a/Seal_of_the_United_States_Federal_Reserve_System.svg/120px-Seal_of_the_United_States_Federal_Reserve_System.svg.png`,
+  KXPCECORE:     `${_W}/8/8d/Consumer_price_index_2024_relative_to_2010.svg/120px-Consumer_price_index_2024_relative_to_2010.svg.png`,
+  PCECORE:       `${_W}/8/8d/Consumer_price_index_2024_relative_to_2010.svg/120px-Consumer_price_index_2024_relative_to_2010.svg.png`,
+  LCPIMAXYOY:    `${_W}/8/8d/Consumer_price_index_2024_relative_to_2010.svg/120px-Consumer_price_index_2024_relative_to_2010.svg.png`,
+  KXCOREUND:     `${_W}/8/8d/Consumer_price_index_2024_relative_to_2010.svg/120px-Consumer_price_index_2024_relative_to_2010.svg.png`,
+  KXHPI:         `${_W}/6/6f/Us_housing.png/120px-Us_housing.png`,
+  HOMEUS:        `${_W}/6/6f/Us_housing.png/120px-Us_housing.png`,
+  HOMEUSY:       `${_W}/6/6f/Us_housing.png/120px-Us_housing.png`,
+  KXHOUSELENGTH: `${_W}/6/6f/Us_housing.png/120px-Us_housing.png`,
+  KXU3MAX:       `${_W}/4/47/Unemployment_rate%2C_World%2C_2025_%28cropped%29.svg/120px-Unemployment_rate%2C_World%2C_2025_%28cropped%29.svg.png`,
+  KXU3MIN:       `${_W}/4/47/Unemployment_rate%2C_World%2C_2025_%28cropped%29.svg/120px-Unemployment_rate%2C_World%2C_2025_%28cropped%29.svg.png`,
+  NFPDELAY:      `${_W}/4/47/Unemployment_rate%2C_World%2C_2025_%28cropped%29.svg/120px-Unemployment_rate%2C_World%2C_2025_%28cropped%29.svg.png`,
+  GDP:           `${_W}/6/61/Map_of_countries_by_GDP_%28PPP%29_per_capita_in_2024.svg/120px-Map_of_countries_by_GDP_%28PPP%29_per_capita_in_2024.svg.png`,
+  KXGDPYEAR:     `${_W}/6/61/Map_of_countries_by_GDP_%28PPP%29_per_capita_in_2024.svg/120px-Map_of_countries_by_GDP_%28PPP%29_per_capita_in_2024.svg.png`,
+  GDPUSMAX:      `${_W}/6/61/Map_of_countries_by_GDP_%28PPP%29_per_capita_in_2024.svg/120px-Map_of_countries_by_GDP_%28PPP%29_per_capita_in_2024.svg.png`,
+  KXTNOTE:       `${_W}/1/1a/Seal_of_the_United_States_Federal_Reserve_System.svg/120px-Seal_of_the_United_States_Federal_Reserve_System.svg.png`,
+  KXTNOTED:      `${_W}/1/1a/Seal_of_the_United_States_Federal_Reserve_System.svg/120px-Seal_of_the_United_States_Federal_Reserve_System.svg.png`,
+  KX10Y2Y:       `${_W}/1/1a/Seal_of_the_United_States_Federal_Reserve_System.svg/120px-Seal_of_the_United_States_Federal_Reserve_System.svg.png`,
+  // AI
+  KXOAIAGI:      `${_W}/6/66/OpenAI_logo_2025_%28symbol%29.svg/120px-OpenAI_logo_2025_%28symbol%29.svg.png`,
+  KXGPT:         `${_W}/6/66/OpenAI_logo_2025_%28symbol%29.svg/120px-OpenAI_logo_2025_%28symbol%29.svg.png`,
+  KXOAISCREEN:   `${_W}/6/66/OpenAI_logo_2025_%28symbol%29.svg/120px-OpenAI_logo_2025_%28symbol%29.svg.png`,
+  KXLEAVEOPENAI: `${_W}/6/66/OpenAI_logo_2025_%28symbol%29.svg/120px-OpenAI_logo_2025_%28symbol%29.svg.png`,
+  KXOAIHARDWARE: `${_W}/6/66/OpenAI_logo_2025_%28symbol%29.svg/120px-OpenAI_logo_2025_%28symbol%29.svg.png`,
+  KXCLAUDE4:     `${_W}/2/26/Deep_Learning.jpg/120px-Deep_Learning.jpg`,
+  KXCLAUDE5:     `${_W}/2/26/Deep_Learning.jpg/120px-Deep_Learning.jpg`,
+  KXJOINANTHROPIC:`${_W}/2/26/Deep_Learning.jpg/120px-Deep_Learning.jpg`,
+  KXAIPAUSE:     `${_W}/2/26/Deep_Learning.jpg/120px-Deep_Learning.jpg`,
+  KXAIOPEN:      `${_W}/2/26/Deep_Learning.jpg/120px-Deep_Learning.jpg`,
+  KXTOPLLM:      `${_W}/2/26/Deep_Learning.jpg/120px-Deep_Learning.jpg`,
+  KXFRONTIER:    `${_W}/2/26/Deep_Learning.jpg/120px-Deep_Learning.jpg`,
+  KXTOP3AI:      `${_W}/2/26/Deep_Learning.jpg/120px-Deep_Learning.jpg`,
+  // Politics
+  KXKASHOUT:       `${_W}/2/27/Capitol_Building_Full_View.jpg/120px-Capitol_Building_Full_View.jpg`,
+  KXIMPEACHCABINET:`${_W}/2/27/Capitol_Building_Full_View.jpg/120px-Capitol_Building_Full_View.jpg`,
+  KXLEAVEHOUSECOMBO:`${_W}/2/27/Capitol_Building_Full_View.jpg/120px-Capitol_Building_Full_View.jpg`,
+  KXLEAVEBONDI:  `${_W}/2/27/Capitol_Building_Full_View.jpg/120px-Capitol_Building_Full_View.jpg`,
+  KXTRANSSPORTS: `${_W}/2/27/Capitol_Building_Full_View.jpg/120px-Capitol_Building_Full_View.jpg`,
+  KXMINWAGE:     `${_W}/7/76/Map_of_US_minimum_wage_by_state.svg/120px-Map_of_US_minimum_wage_by_state.svg.png`,
+  KXSCOTUSPOWER: `${_W}/f/f3/Seal_of_the_United_States_Supreme_Court.svg/120px-Seal_of_the_United_States_Supreme_Court.svg.png`,
+  KXFENT:        `${_W}/e/e8/Fentanyl.svg/120px-Fentanyl.svg.png`,
+  KXTIKTOKCOURT: `${_WE}/8/85/Douyin_logo.svg/120px-Douyin_logo.svg.png`,
+  KXNATIONALE:   `${_W}/2/27/Capitol_Building_Full_View.jpg/120px-Capitol_Building_Full_View.jpg`,
+  KXDCEIL:       `${_W}/2/27/Capitol_Building_Full_View.jpg/120px-Capitol_Building_Full_View.jpg`,
+  KXMUNIBONDTAX: `${_W}/1/1a/Seal_of_the_United_States_Federal_Reserve_System.svg/120px-Seal_of_the_United_States_Federal_Reserve_System.svg.png`,
+  KXICERENAME:   `${_W}/2/27/Capitol_Building_Full_View.jpg/120px-Capitol_Building_Full_View.jpg`,
+  KXTAIWANLVL4:  `${_W}/7/72/Flag_of_the_Republic_of_China.svg/120px-Flag_of_the_Republic_of_China.svg.png`,
+  KXZELENSKYPUTIN:`${_W}/2/27/Capitol_Building_Full_View.jpg/120px-Capitol_Building_Full_View.jpg`,
+  KXINSURRECTION:`${_W}/2/27/Capitol_Building_Full_View.jpg/120px-Capitol_Building_Full_View.jpg`,
+  KXVOTEFEDCHAIR:`${_W}/1/1a/Seal_of_the_United_States_Federal_Reserve_System.svg/120px-Seal_of_the_United_States_Federal_Reserve_System.svg.png`,
+  KXIPCGAZA:     `${_W}/2/27/Capitol_Building_Full_View.jpg/120px-Capitol_Building_Full_View.jpg`,
+};
+
+function toRow(eventTitle: string, m: KalshiMarket, seriesTicker?: string): MarketRow {
   const bid = num(m.yes_bid_dollars);
   const ask = num(m.yes_ask_dollars);
   const last = num(m.last_price_dollars);
@@ -158,6 +234,7 @@ function toRow(eventTitle: string, m: KalshiMarket): MarketRow {
     event_ticker: m.event_ticker,
     yes_ask: ask,
     no_ask: num(m.no_ask_dollars),
+    iconUrl: seriesTicker ? SERIES_ICON_MAP[seriesTicker] : undefined,
   };
 }
 
@@ -300,7 +377,7 @@ export async function fetchCategorizedMarkets(): Promise<CategorizedMarkets> {
         if (ours === 'ai' && !AI_TITLE_REGEX.test(evt.title || '')) continue;
 
         for (const m of evt.markets || []) {
-          const row = toRow(evt.title, m);
+          const row = toRow(evt.title, m, evt.series_ticker);
           const s = score(row);
           if (s < 0) continue;
           buckets[ours].push({ row, score: s });
