@@ -206,54 +206,49 @@
   position: relative;
   display: inline-flex;
   align-items: center;
-  padding: 5px 10px 5px 5px;
-  border-radius: 10px;
-  border: 1.5px solid var(--color-primary, #5168FF);
-  background: linear-gradient(135deg, rgba(81,104,255,0.08) 0%, rgba(80,89,155,0.12) 50%, rgba(81,104,255,0.06) 100%);
-  box-shadow: 2px 2px 0 rgba(81,104,255,0.25);
+  padding: 2px;
+  border-radius: 20px;
+  border: none;
+  background: linear-gradient(
+    90deg,
+    #5168FF,
+    #74C465,
+    #E8556D,
+    #F2A0B5,
+    #a78bfa,
+    #5168FF
+  );
+  background-size: 200% 100%;
+  animation: shinyCardBorderShift 6s linear infinite;
   cursor: pointer;
-  overflow: hidden;
-  transition: all 0.15s ease;
-  text-align: left;
+  transition: opacity 0.15s ease, transform 0.15s ease;
   white-space: nowrap;
 }
 .shinyCard:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 rgba(81,104,255,0.38);
+  opacity: 0.88;
+  transform: translateY(-1px);
 }
-.shinyCardShine {
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    115deg,
-    transparent 40%,
-    rgba(81,104,255,0.06) 45%,
-    rgba(81,104,255,0.12) 50%,
-    rgba(81,104,255,0.06) 55%,
-    transparent 60%
-  );
-  animation: shinyCardSweep 3s ease-in-out infinite;
-  pointer-events: none;
+@keyframes shinyCardBorderShift {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
 }
-@keyframes shinyCardSweep {
-  0%   { transform: translateX(-60%) rotate(15deg); }
-  100% { transform: translateX(60%) rotate(15deg); }
-}
+.shinyCardShine { display: none; }
 .shinyCardContent {
-  position: relative;
-  z-index: 1;
   display: flex;
   align-items: center;
   gap: 7px;
+  padding: 5px 14px 5px 6px;
+  border-radius: 18px;
+  background: rgba(244, 245, 254, 0.96);
+  backdrop-filter: blur(4px);
+}
+:global([data-theme="dark"]) .shinyCardContent {
+  background: var(--color-shell-background, #0f1020);
 }
 .shinyCardIcon {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 1.5px solid var(--color-primary, #5168FF);
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -264,19 +259,13 @@
 }
 .shinyCardTitle {
   font-family: var(--font-primary);
-  font-size: 12px;
-  font-weight: 700;
-  color: #1A1D33;
-  letter-spacing: 0.02em;
-}
-
-:global([data-theme="dark"]) .shinyCard {
-  background: linear-gradient(135deg, color-mix(in oklch, var(--color-primary) 13%, var(--color-surface-1)) 0%, color-mix(in oklch, var(--color-primary) 10%, var(--color-surface-1)) 100%);
-  border-color: var(--color-primary);
-  box-shadow: 2px 2px 0 rgba(139,149,255,0.18);
+  font-size: 13px;
+  font-weight: var(--font-weight-medium);
+  color: #6b7280;
+  letter-spacing: 0;
 }
 :global([data-theme="dark"]) .shinyCardTitle {
-  color: var(--color-text-dark);
+  color: rgba(255,255,255,0.55);
 }
 
 /* Theme toggle */
