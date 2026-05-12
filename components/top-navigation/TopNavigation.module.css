@@ -209,17 +209,8 @@
   padding: 2px;
   border-radius: 20px;
   border: none;
-  background: linear-gradient(
-    90deg,
-    #5168FF,
-    #74C465,
-    #E8556D,
-    #F2A0B5,
-    #a78bfa,
-    #5168FF
-  );
-  background-size: 200% 100%;
-  animation: shinyCardBorderShift 6s linear infinite;
+  background: transparent;
+  overflow: hidden;
   cursor: pointer;
   transition: opacity 0.15s ease, transform 0.15s ease;
   white-space: nowrap;
@@ -228,11 +219,26 @@
   opacity: 0.88;
   transform: translateY(-1px);
 }
-@keyframes shinyCardBorderShift {
-  0%   { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
+.shinyCardShine {
+  position: absolute;
+  inset: -100%;
+  width: 300%;
+  height: 300%;
+  background: conic-gradient(
+    #5168FF,
+    #74C465,
+    #E8556D,
+    #F2A0B5,
+    #a78bfa,
+    #5168FF
+  );
+  animation: shinyCardRotate 4s linear infinite;
+  pointer-events: none;
 }
-.shinyCardShine { display: none; }
+@keyframes shinyCardRotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
 .shinyCardContent {
   display: flex;
   align-items: center;
