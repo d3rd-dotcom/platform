@@ -146,28 +146,23 @@ function SeedPostCard({ post }: { post: SeedPost }) {
 function HowItWorksHero() {
   return (
     <div className={styles.howItWorksHero}>
-      <div className={styles.howItWorksHeading}>
-        <h2 className={styles.howItWorksTitle}>How it works</h2>
-        <p className={styles.howItWorksSubtitle}>
-          MWA Community is where shared decisions get made — openly, on-chain.
-        </p>
-      </div>
+      <h2 className={styles.howItWorksTitle}>How it works</h2>
       <div className={styles.howItWorksSteps}>
         {[
           {
             n: '1',
-            label: 'Explore the Feed',
-            desc: 'Browse active funding proposals, mental health initiatives, neuroscience research, and open discussions from community members.',
+            label: 'Funding The Village',
+            desc: 'DAO funds are directed by AI governance and member votes, fueling what matters most.',
           },
           {
             n: '2',
-            label: 'Join the Discussion',
-            desc: 'React to posts, reply with your perspective, or upvote proposals you believe in. Every signal shapes what gets funded.',
+            label: 'Discussing Research',
+            desc: 'Compare methods, equipment, and tooling with peers advancing the science.',
           },
           {
             n: '3',
-            label: 'Submit a Proposal',
-            desc: 'Have an idea worth funding? Submit it for AI-assisted review by Blue, then bring it to community vote.',
+            label: 'Engage, Share, Network',
+            desc: 'Connect with members, share your story, and build relationships that grow your mental wealth.',
           },
         ].map((step) => (
           <div key={step.n} className={styles.howItWorksStep}>

@@ -4704,6 +4704,7 @@
 .howItWorksHero {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 24px;
   padding: 32px 40px 36px;
   background: linear-gradient(135deg, #f7f9ff 0%, #eef3ff 55%, #f4f0ff 100%);
@@ -4729,12 +4730,6 @@
   border-bottom-color: rgba(81, 104, 255, 0.12);
 }
 
-.howItWorksHeading {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
 .howItWorksTitle {
   margin: 0;
   font-family: var(--font-primary);
@@ -4742,22 +4737,11 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   color: #1a1d33;
+  text-align: center;
 }
 
 [data-theme="dark"] .howItWorksTitle {
   color: #e3e1ee;
-}
-
-.howItWorksSubtitle {
-  margin: 0;
-  font-family: var(--font-primary);
-  font-size: 13px;
-  color: rgba(26, 29, 51, 0.56);
-  line-height: 1.5;
-}
-
-[data-theme="dark"] .howItWorksSubtitle {
-  color: rgba(227, 225, 238, 0.52);
 }
 
 .howItWorksSteps {
@@ -4801,7 +4785,7 @@
   border-radius: 50%;
   background: var(--color-primary, #5168FF);
   color: #ffffff;
-  font-family: var(--font-primary);
+  font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 700;
   display: flex;
@@ -4830,7 +4814,7 @@
 }
 
 .howItWorksStepDesc {
-  font-family: var(--font-primary);
+  font-family: var(--font-secondary);
   font-size: 11.5px;
   line-height: 1.55;
   color: rgba(26, 29, 51, 0.58);
@@ -4846,7 +4830,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: var(--font-button);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
@@ -4945,7 +4929,7 @@
 }
 
 .seedPostTime {
-  font-family: var(--font-primary);
+  font-family: var(--font-mono);
   font-size: 11px;
   color: rgba(26, 29, 51, 0.40);
 }
@@ -4956,7 +4940,7 @@
 
 .seedPostCategoryPill {
   flex-shrink: 0;
-  font-family: var(--font-button);
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
@@ -4979,7 +4963,7 @@
 }
 
 .seedPostBody {
-  font-family: var(--font-primary);
+  font-family: var(--font-secondary);
   font-size: 12.5px;
   line-height: 1.6;
   color: rgba(26, 29, 51, 0.64);
