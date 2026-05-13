@@ -11,7 +11,6 @@ import { MembershipSection } from './MembershipSection';
 import { FAQSection } from './FAQSection';
 import { LandingFooter } from './LandingFooter';
 import CompanyLogos from './CompanyLogos';
-import AngelicCreditSystem from './AngelicCreditSystem';
 import { AgentDemoSection } from './AgentDemoSection';
 import { SnapshotFeaturesSection } from './SnapshotFeaturesSection';
 import styles from './LandingPage.module.css';
@@ -43,9 +42,6 @@ const LandingPage = () => {
 
       {/* Testimonial Section */}
       <TestimonialSection />
-
-      {/* Angelic Credit System — Our Core Mission */}
-      <AngelicCreditSystem />
 
       {/* Key Figures Section - Server rendered */}
       <KeyFiguresSection />

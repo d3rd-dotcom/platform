@@ -73,7 +73,6 @@ export const HeroSection: React.FC = () => {
                 {rotatingHeroWords[activeWordIndex]}
               </span>
             </span>
-            <span>.</span>
           </span>
         </h1>
         <p className={styles.heroSubtext}>

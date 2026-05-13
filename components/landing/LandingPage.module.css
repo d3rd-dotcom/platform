@@ -92,9 +92,10 @@
 .heroHeadlineWordViewport {
   display: inline-flex !important;
   align-items: center;
-  justify-content: flex-start;
-  min-width: 10.5ch;
+  justify-content: center;
+  width: 9.25ch;
   overflow: hidden;
+  text-align: center;
 }
 
 .heroHeadlineWord {
@@ -531,7 +532,7 @@
   }
 
   .heroHeadlineWordViewport {
-    min-width: 10ch;
+    width: 8.9ch;
   }
 
   .heroSubtext {
@@ -608,7 +609,7 @@
   }
 
   .heroHeadlineWordViewport {
-    min-width: 9.4ch;
+    width: 8.6ch;
   }
 }
 
