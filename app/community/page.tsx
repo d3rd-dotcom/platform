@@ -484,24 +484,19 @@ export default function VotingPage() {
 
                       <div className={styles.communityCardRow}>
                         <article className={`${styles.dashCard} ${styles.fundingVillageCard}`}>
-                          <div className={styles.dashCardHeader}>
-                            <div>
-                              <span className={styles.dashCardEyebrow}>Community Capital</span>
-                              <h2 className={styles.dashCardTitle}>Funding the Village</h2>
-                            </div>
+                          <div className={styles.fundingVillageContent}>
+                            <span className={styles.dashCardEyebrow}>Community Capital</span>
+                            <h2 className={styles.dashCardTitle}>Funding the Village</h2>
+                            <div className={styles.fundingVillageAmount}>${TREASURY_BALANCE.toLocaleString()}</div>
                           </div>
                           <Image
                             src="/images/treasury.png"
                             alt=""
-                            width={92}
-                            height={92}
+                            width={120}
+                            height={120}
                             className={styles.fundingVillageSticker}
                             unoptimized
                           />
-                          <div className={styles.fundingVillageProgressMeta}>
-                            <span>${TREASURY_BALANCE.toLocaleString()} raised</span>
-                            <strong>${TREASURY_DISPLAY_BALANCE.toLocaleString()} goal</strong>
-                          </div>
                         </article>
 
                         <article className={`${styles.dashCard} ${styles.topContributorsCard}`}>
