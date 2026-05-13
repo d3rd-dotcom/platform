@@ -90,18 +90,48 @@
 }
 
 .heroHeadlineWordViewport {
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-  width: 9.25ch;
+  position: relative;
+  display: inline-block !important;
+  height: 1.08em;
   overflow: hidden;
-  text-align: center;
+  vertical-align: baseline;
+}
+
+.heroHeadlineWordSizer {
+  display: block;
+  visibility: hidden;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.heroHeadlineWordTrack {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  animation: heroHeadlineWordCycle 7.2s var(--hero-ease-out) infinite;
+  will-change: transform;
 }
 
 .heroHeadlineWord {
   display: inline-block !important;
-  animation: heroHeadlineWordSwap 0.42s var(--hero-ease-out);
-  will-change: transform, opacity;
+  height: 1.08em;
+  line-height: 1.08;
+  white-space: nowrap;
+}
+
+.heroHeadlineSrOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .heroHeadline > span:first-child {
@@ -216,19 +246,27 @@
   }
 }
 
-@keyframes heroHeadlineWordSwap {
-  from {
-    opacity: 0;
-    transform: translateY(0.6em) rotate(4deg);
+@keyframes heroHeadlineWordCycle {
+  0%,
+  16.6667% {
+    transform: translateY(0);
   }
-  to {
-    opacity: 1;
-    transform: translateY(0) rotate(0deg);
+  22.2222%,
+  50% {
+    transform: translateY(calc(-1.08em * 1));
+  }
+  55.5556%,
+  83.3333% {
+    transform: translateY(calc(-1.08em * 2));
+  }
+  88.8889%,
+  100% {
+    transform: translateY(calc(-1.08em * 3));
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .heroHeadlineWord {
+  .heroHeadlineWordTrack {
     animation: none;
   }
 }
@@ -531,10 +569,6 @@
     font-size: clamp(1.18rem, 7.4vw, 2.25rem);
   }
 
-  .heroHeadlineWordViewport {
-    width: 8.9ch;
-  }
-
   .heroSubtext {
     font-size: 15px;
     margin-bottom: 28px;
@@ -606,10 +640,6 @@
 
   .heroSubtext {
     font-size: 14px;
-  }
-
-  .heroHeadlineWordViewport {
-    width: 8.6ch;
   }
 }
 

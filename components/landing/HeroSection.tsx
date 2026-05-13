@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import { ChartLineUp, ClipboardText, Robot } from '@phosphor-icons/react';
 import styles from './LandingPage.module.css';
@@ -39,18 +39,10 @@ const heroValueCards = [
 ] as const;
 
 const rotatingHeroWords = ['Learning', 'Community', 'Rewards'] as const;
+const heroRotatingWordsLoop = [...rotatingHeroWords, rotatingHeroWords[0]] as const;
+const longestHeroWord = 'Community';
 
 export const HeroSection: React.FC = () => {
-  const [activeWordIndex, setActiveWordIndex] = useState(0);
-
-  useEffect(() => {
-    const intervalId = window.setInterval(() => {
-      setActiveWordIndex((currentIndex) => (currentIndex + 1) % rotatingHeroWords.length);
-    }, 2200);
-
-    return () => window.clearInterval(intervalId);
-  }, []);
-
   return (
     <div className={styles.heroSection}>
       <div className={styles.heroContent}>
@@ -67,11 +59,19 @@ export const HeroSection: React.FC = () => {
         <h1 className={styles.heroHeadline}>
           <span>A Micro-University</span>
           <span className={styles.heroHeadlineRotatingLine}>
-            <span>For Real </span>
+            <span>For Real</span>
             <span className={styles.heroHeadlineWordViewport}>
-              <span key={rotatingHeroWords[activeWordIndex]} className={styles.heroHeadlineWord}>
-                {rotatingHeroWords[activeWordIndex]}
+              <span className={styles.heroHeadlineWordSizer} aria-hidden="true">
+                {longestHeroWord}
               </span>
+              <span className={styles.heroHeadlineWordTrack} aria-hidden="true">
+                {heroRotatingWordsLoop.map((word, index) => (
+                  <span key={`${word}-${index}`} className={styles.heroHeadlineWord}>
+                    {word}
+                  </span>
+                ))}
+              </span>
+              <span className={styles.heroHeadlineSrOnly}>{rotatingHeroWords[0]}</span>
             </span>
           </span>
         </h1>
