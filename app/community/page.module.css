@@ -2281,7 +2281,7 @@
   overflow: hidden;
   border-radius: 14px;
   border: 1px solid rgba(129, 144, 255, 0.25);
-  background: url('/images/community-hero-bg.png') right center / cover no-repeat;
+  background: #090d18;
   box-shadow: 0 14px 36px rgba(26, 27, 36, 0.1);
   isolation: isolate;
 }
@@ -2290,17 +2290,29 @@
   content: '';
   position: absolute;
   inset: 0;
-  z-index: 0;
+  z-index: 1;
   background:
-    linear-gradient(95deg, rgba(8, 10, 22, 0.9) 0%, rgba(8, 10, 22, 0.74) 42%, rgba(8, 10, 22, 0.32) 66%, rgba(8, 10, 22, 0.22) 100%),
-    linear-gradient(180deg, rgba(8, 10, 22, 0.16) 0%, rgba(8, 10, 22, 0.32) 100%),
-    radial-gradient(130% 115% at 50% 50%, transparent 58%, rgba(8, 10, 22, 0.38) 100%);
+    linear-gradient(95deg, rgba(8, 10, 22, 0.82) 0%, rgba(8, 10, 22, 0.7) 30%, rgba(8, 10, 22, 0.44) 54%, rgba(8, 10, 22, 0.24) 74%, rgba(8, 10, 22, 0.16) 100%),
+    linear-gradient(180deg, rgba(8, 10, 22, 0.1) 0%, rgba(8, 10, 22, 0.24) 100%),
+    radial-gradient(135% 120% at 18% 50%, rgba(8, 10, 22, 0.22) 0%, rgba(8, 10, 22, 0.08) 42%, transparent 72%),
+    radial-gradient(130% 115% at 50% 50%, transparent 60%, rgba(8, 10, 22, 0.28) 100%);
+  pointer-events: none;
+}
+
+.communityHero::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  z-index: 0;
+  background: url('/images/community-hero-bg.png') center / cover no-repeat;
+  transform: scaleX(-1);
+  transform-origin: center;
   pointer-events: none;
 }
 
 .communityHeroContent {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   width: min(430px, 62%);
   min-height: 230px;
   display: flex;
@@ -5338,8 +5350,7 @@
 
 @media (max-width: 520px) {
   .communityHero {
-    background-position: center;
-    background-size: cover;
+    background: #090d18;
   }
 
   .communityHeroContent {
