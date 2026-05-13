@@ -35,6 +35,7 @@ interface MorningPageEntry {
 interface DailyNotesProps {
   enablePersistence?: boolean;
   compact?: boolean;
+  onCompactClick?: () => void;
 }
 
 const MOBILE_PROMPT_MESSAGE = 'Dumping out my brain...';
@@ -54,7 +55,7 @@ const WEEK_COLORS = [
   '#9333EA', // Week 12 — purple
 ];
 
-export default function DailyNotes({ enablePersistence = false, compact = false }: DailyNotesProps) {
+export default function DailyNotes({ enablePersistence = false, compact = false, onCompactClick }: DailyNotesProps) {
   const { play } = useSound();
   const { ready, authenticated, login, getAccessToken } = usePrivy();
   const [currentWeek, setCurrentWeek] = useState(1);
@@ -403,6 +404,12 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
 
   const handleCompactClick = () => {
     if (!compact) return;
+
+    if (onCompactClick) {
+      play('click');
+      onCompactClick();
+      return;
+    }
 
     if (!enablePersistence) {
       play('click');

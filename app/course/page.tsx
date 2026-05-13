@@ -26,10 +26,6 @@ const BookReaderModal = dynamic(() => import('@/components/book-reader/BookReade
 const WeekOneVisualNovel = dynamic(() => import('@/components/visual-novel/WeekOneVisualNovel'), {
   ssr: false,
 });
-const AngelMintSection = dynamic(() => import('@/components/angel-mint-section/AngelMintSection'), {
-  ssr: false,
-  loading: () => null,
-});
 const MintModal = dynamic(() => import('@/components/mint-modal/MintModal'), {
   ssr: false,
 });
@@ -372,7 +368,7 @@ export default function CoursePage() {
     setIsReaderOpen(true);
   }, []);
 
-  const [rightContent, setRightContent] = useState<'reading' | null>(null);
+  const [rightContent, setRightContent] = useState<'daily-note' | 'reading' | null>(null);
   const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
@@ -445,7 +441,11 @@ export default function CoursePage() {
 
           <div className={styles.morningPagesShell}>
             <div className={styles.morningPagesGradient} />
-            <DailyNotes enablePersistence={canPersistMorningPages} compact />
+            <DailyNotes
+              enablePersistence={canPersistMorningPages}
+              compact
+              onCompactClick={isDesktop ? () => setRightContent('daily-note') : undefined}
+            />
           </div>
 
           <CreditScore showLoader={false} />
@@ -568,16 +568,20 @@ export default function CoursePage() {
             )}
           </div>
 
-          <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
         </div>
 
         {/* ── Right panel (desktop only) ── */}
-        {isDesktop && rightContent === 'reading' && (
+        {isDesktop && rightContent !== null && (
           <div className={styles.rightPanel}>
-            <CourseInlineReader
-              reading={WEEKLY_READINGS[readerIndex]}
-              onBack={() => setRightContent(null)}
-            />
+            {rightContent === 'daily-note' && (
+              <DailyNotes enablePersistence={canPersistMorningPages} />
+            )}
+            {rightContent === 'reading' && (
+              <CourseInlineReader
+                reading={WEEKLY_READINGS[readerIndex]}
+                onBack={() => setRightContent(null)}
+              />
+            )}
           </div>
         )}
 
