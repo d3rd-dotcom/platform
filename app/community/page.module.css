@@ -2545,12 +2545,43 @@
 }
 
 .fundingVillageAmount {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(26px, 3vw, 34px);
+  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-size: clamp(40px, 5vw, 58px);
   font-weight: 700;
   line-height: 1;
   color: var(--dashboard-title-color);
-  margin-top: 2px;
+  letter-spacing: -0.04em;
+  margin-top: 4px;
+}
+
+.fundingVillageLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  margin-top: 12px;
+  color: var(--color-primary);
+  font-family: var(--font-button);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.fundingVillageLink svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.fundingVillageLink:hover {
+  transform: translateX(2px);
+  opacity: 0.9;
 }
 
 .fundingVillageSticker {

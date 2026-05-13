@@ -488,6 +488,12 @@ export default function VotingPage() {
                             <span className={styles.dashCardEyebrow}>Community Capital</span>
                             <h2 className={styles.dashCardTitle}>Funding the Village</h2>
                             <div className={styles.fundingVillageAmount}>${TREASURY_BALANCE.toLocaleString()}</div>
+                            <a href="#active-proposals" className={styles.fundingVillageLink}>
+                              <span>View latest proposal</span>
+                              <svg viewBox="0 0 16 16" aria-hidden="true">
+                                <path d="M6 3.5 10.5 8 6 12.5" />
+                              </svg>
+                            </a>
                           </div>
                           <Image
                             src="/images/treasury.png"

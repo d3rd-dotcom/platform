@@ -120,12 +120,12 @@
 }
 
 .navLinkActive {
-  background: var(--color-primary);
+  background: #5168FF;
   color: #ffffff;
 }
 
 .navLinkActive:hover {
-  background: var(--color-primary-hover);
+  background: #5168FF;
   color: #ffffff;
 }
 
@@ -311,12 +311,12 @@
 }
 
 :global([data-theme="dark"]) .navLinkActive {
-  background: var(--color-primary);
+  background: #5168FF;
   color: #ffffff;
 }
 
 :global([data-theme="dark"]) .navLinkActive:hover {
-  background: var(--color-primary-hover);
+  background: #5168FF;
   color: #ffffff;
 }
 
