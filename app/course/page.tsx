@@ -576,7 +576,11 @@ export default function CoursePage() {
         {isDesktop && rightContent !== null && (
           <div className={styles.rightPanel}>
             {rightContent === 'daily-note' && (
-              <DailyNotes enablePersistence={canPersistMorningPages} />
+              <DailyNotes
+                enablePersistence={canPersistMorningPages}
+                panelMode
+                onPanelClose={() => setRightContent(null)}
+              />
             )}
             {rightContent === 'reading' && (
               <CourseInlineReader

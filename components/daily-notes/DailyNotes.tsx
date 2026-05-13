@@ -36,6 +36,8 @@ interface DailyNotesProps {
   enablePersistence?: boolean;
   compact?: boolean;
   onCompactClick?: () => void;
+  panelMode?: boolean;
+  onPanelClose?: () => void;
 }
 
 const MOBILE_PROMPT_MESSAGE = 'Dumping out my brain...';
@@ -55,7 +57,13 @@ const WEEK_COLORS = [
   '#9333EA', // Week 12 — purple
 ];
 
-export default function DailyNotes({ enablePersistence = false, compact = false, onCompactClick }: DailyNotesProps) {
+export default function DailyNotes({
+  enablePersistence = false,
+  compact = false,
+  onCompactClick,
+  panelMode = false,
+  onPanelClose,
+}: DailyNotesProps) {
   const { play } = useSound();
   const { ready, authenticated, login, getAccessToken } = usePrivy();
   const [currentWeek, setCurrentWeek] = useState(1);
@@ -402,10 +410,34 @@ export default function DailyNotes({ enablePersistence = false, compact = false,
     }
   }, [availableDayIndex, canStart, dataReady, enablePersistence, handleAttemptStart, queuedCompactStart]);
 
+  useEffect(() => {
+    if (!panelMode || !enablePersistence || !dataReady) return;
+    if (timerActive || introDayIndex !== null || activeDayIndex !== null) return;
+    if (!canStart) return;
+
+    handleAttemptStart(availableDayIndex);
+  }, [
+    activeDayIndex,
+    availableDayIndex,
+    canStart,
+    dataReady,
+    enablePersistence,
+    handleAttemptStart,
+    introDayIndex,
+    panelMode,
+    timerActive,
+  ]);
+
   const handleCompactClick = () => {
     if (!compact) return;
 
     if (onCompactClick) {
+      if (!enablePersistence) {
+        play('click');
+        setShowAuthPrompt(true);
+        return;
+      }
+
       play('click');
       onCompactClick();
       return;
@@ -427,6 +459,328 @@ export default function DailyNotes({ enablePersistence = false, compact = false,
       handleAttemptStart(availableDayIndex);
     }
   };
+
+  const renderTimerSession = (embedded: boolean) => {
+    const sessionContent = (
+      <div
+        className={`${styles.modal} ${embedded ? styles.panelModal : ''}`}
+        role="dialog"
+        aria-modal={embedded ? undefined : true}
+        aria-labelledby="morning-pages-session-title"
+      >
+        <h3 id="morning-pages-session-title" className={styles.srOnly}>Morning Pages</h3>
+
+        <div className={styles.modalMain}>
+          <div className={styles.modalHeader}>
+            <button
+              type="button"
+              className={styles.modalCloseBtn}
+              onClick={() => {
+                play('click');
+                if (embedded && onPanelClose) {
+                  closeSession();
+                  onPanelClose();
+                  return;
+                }
+                requestClose();
+              }}
+              onMouseEnter={() => play('hover')}
+              aria-label={embedded ? 'Close morning pages panel' : 'Back'}
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <span>{embedded ? 'Close' : 'Back'}</span>
+            </button>
+          </div>
+
+          <div className={styles.writeArea}>
+            <textarea
+              className={styles.textarea}
+              placeholder="Every word is a step closer to the new you."
+              value={timerText}
+              onChange={(e) => setTimerText(e.target.value)}
+              autoFocus
+              disabled={isPaused}
+            />
+          </div>
+
+          <div className={styles.noteBottom}>
+            <span className={`${styles.timerCount} ${styles.timerCountInline} ${isPaused ? styles.timerPaused : ''} ${timerSeconds <= 300 && !isPaused ? styles.timerWarning : ''}`}>
+              {isPaused ? 'paused' : formatTimer(timerSeconds)}
+            </span>
+          </div>
+        </div>
+
+        <div className={styles.modalFooter}>
+          <button
+            type="button"
+            className={styles.submitBtn}
+            onClick={() => submitMorningPages()}
+            onMouseEnter={() => play('hover')}
+          >
+            Submit
+          </button>
+        </div>
+      </div>
+    );
+
+    if (embedded) {
+      return (
+        <div className={styles.panelSession} style={{ '--week-color': weekColor } as React.CSSProperties}>
+          {sessionContent}
+          {showConfirmDialog && (
+            <div className={styles.confirmOverlay}>
+              <div className={styles.confirmDialog}>
+                <div className={styles.confirmTitleBar}>
+                  <span className={styles.confirmTitleText}>session.pause</span>
+                </div>
+                <div className={styles.confirmBody}>
+                  <div className={styles.confirmIcon}>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10"/>
+                      <line x1="12" y1="8" x2="12" y2="12"/>
+                      <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                  </div>
+                  <p className={styles.confirmMessage}>
+                    Are you sure you want to close? Your writing progress will be lost.
+                  </p>
+                  <div className={styles.confirmButtons}>
+                    <button
+                      type="button"
+                      className={styles.confirmBtnResume}
+                      onClick={() => { play('click'); resumeTimer(); }}
+                      onMouseEnter={() => play('hover')}
+                    >
+                      Resume
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.confirmBtnClose}
+                      onClick={() => {
+                        play('click');
+                        closeSession();
+                        onPanelClose?.();
+                      }}
+                      onMouseEnter={() => play('hover')}
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    return typeof window !== 'undefined' && createPortal(
+      <div className={styles.modalOverlay} style={{ '--week-color': weekColor } as React.CSSProperties}>
+        <div className={styles.modalBackdrop} onClick={requestClose} />
+        {sessionContent}
+        {showConfirmDialog && (
+          <div className={styles.confirmOverlay}>
+            <div className={styles.confirmDialog}>
+              <div className={styles.confirmTitleBar}>
+                <span className={styles.confirmTitleText}>session.pause</span>
+              </div>
+              <div className={styles.confirmBody}>
+                <div className={styles.confirmIcon}>
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
+                </div>
+                <p className={styles.confirmMessage}>
+                  Are you sure you want to close? Your writing progress will be lost.
+                </p>
+                <div className={styles.confirmButtons}>
+                  <button
+                    type="button"
+                    className={styles.confirmBtnResume}
+                    onClick={() => { play('click'); resumeTimer(); }}
+                    onMouseEnter={() => play('hover')}
+                  >
+                    Resume
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.confirmBtnClose}
+                    onClick={() => { play('click'); closeSession(); }}
+                    onMouseEnter={() => play('hover')}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>,
+      document.body
+    );
+  };
+
+  if (panelMode) {
+    return (
+      <>
+        {!timerActive && (
+          <div className={styles.panelStatusCard} style={{ '--week-color': weekColor } as React.CSSProperties}>
+            <div className={styles.panelStatusHeader}>
+              <span className={styles.panelStatusEyebrow}>Morning Pages</span>
+              <button
+                type="button"
+                className={styles.panelStatusClose}
+                onClick={() => {
+                  play('click');
+                  onPanelClose?.();
+                }}
+                onMouseEnter={() => play('hover')}
+                aria-label="Close morning pages panel"
+              >
+                Close
+              </button>
+            </div>
+            <p className={styles.panelStatusTitle}>
+              {!dataReady
+                ? 'Loading your writing session...'
+                : introDayIndex !== null
+                  ? `Opening Day ${introDayIndex + 1}...`
+                  : canStart
+                    ? `Opening Day ${availableDayIndex + 1}...`
+                    : todayDone
+                      ? 'Today’s morning page is already complete.'
+                      : weekComplete
+                        ? 'This week’s morning pages are complete.'
+                        : !isWeekUnlocked
+                          ? 'Finish the previous week to unlock this page.'
+                          : 'A new morning page will unlock tomorrow.'}
+            </p>
+            <p className={styles.panelStatusCopy}>
+              {!dataReady
+                ? 'Fetching your saved progress.'
+                : todayDone
+                  ? 'Come back tomorrow for the next writing session.'
+                  : weekComplete
+                    ? 'You finished all seven entries for this week.'
+                    : !isWeekUnlocked
+                      ? 'Morning pages unlock one week at a time after seven completed entries.'
+                      : introDayIndex !== null || canStart
+                        ? 'Preparing the writing space in this panel.'
+                        : 'You can only submit one morning page per day.'}
+            </p>
+          </div>
+        )}
+
+        {introDayIndex !== null && (
+          <IntroLoaderOverlay
+            src="/loaders/Sandy%20Loading.lottie"
+            label="Opening notes"
+            durationMs={580}
+            onFinish={() => {
+              const dayIndex = introDayIndex;
+              setIntroDayIndex(null);
+              if (dayIndex !== null) {
+                beginWritingSession(dayIndex);
+              }
+            }}
+          />
+        )}
+
+        {timerActive && renderTimerSession(true)}
+
+        {showAuthPrompt && typeof window !== 'undefined' && createPortal(
+          <div className={styles.authPromptOverlay} onClick={() => setShowAuthPrompt(false)}>
+            <div
+              className={styles.authPromptDialog}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="morning-pages-auth-title"
+              onClick={event => event.stopPropagation()}
+            >
+              <button
+                type="button"
+                className={styles.authPromptClose}
+                onClick={() => setShowAuthPrompt(false)}
+                aria-label="Close account prompt"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+              <div className={styles.authPromptContent}>
+                <div className={styles.authPromptHero} aria-hidden="true">
+                  <div className={styles.authPromptGlowOrb} />
+                  <div className={styles.authPromptBubble}>
+                    <span className={styles.authPromptBubbleSender}>Blue</span>
+                    <p className={styles.authPromptBubbleText}>
+                      {authPending
+                        ? 'I’m getting your space ready so your pages save properly.'
+                        : 'Create your account and I’ll keep your Morning Pages, streak, and weekly progress in one place.'}
+                    </p>
+                  </div>
+                  <div className={styles.authPromptAvatarStage}>
+                    <div className={styles.authPromptAvatarHalo} />
+                    <div className={styles.authPromptAvatarBase} />
+                    <Image
+                      src="/uploads/blueagent.png"
+                      alt=""
+                      width={220}
+                      height={260}
+                      className={styles.authPromptAvatar}
+                    />
+                  </div>
+                </div>
+                <h3 id="morning-pages-auth-title" className={styles.authPromptTitle}>
+                  {authPending ? 'Your account is almost ready.' : 'Create an account to continue.'}
+                </h3>
+                <p className={styles.authPromptCopy}>
+                  {authPending
+                    ? 'We are finishing your setup so Morning Pages can save to your account.'
+                    : 'Morning Pages saves your progress to your course account. Sign in to start writing and keep your progress.'}
+                </p>
+
+                <div className={styles.authPromptActions}>
+                  {!authPending && (
+                    <button
+                      type="button"
+                      className={styles.authPromptPrimary}
+                      onClick={handleGuestCta}
+                      disabled={!ready}
+                    >
+                      {ready ? 'Create account' : 'Loading sign-in...'}
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    className={styles.authPromptSecondary}
+                    onClick={() => setShowAuthPrompt(false)}
+                  >
+                    {authPending ? 'Close' : 'Not now'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
+
+        {showRewardAnimation && rewardData && (
+          <>
+            <ConfettiCelebration trigger={true} />
+            <ShardAnimation
+              shards={rewardData.shards}
+              startingShards={rewardData.startingShards}
+              onComplete={() => setShowRewardAnimation(false)}
+            />
+          </>
+        )}
+      </>
+    );
+  }
 
   return (
     <>
@@ -633,101 +987,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false,
         document.body
       )}
 
-      {timerActive && typeof window !== 'undefined' && createPortal(
-        <div className={styles.modalOverlay} style={{ '--week-color': weekColor } as React.CSSProperties}>
-          <div className={styles.modalBackdrop} onClick={requestClose} />
-          <div className={styles.modal} role="dialog" aria-modal="true" aria-labelledby="morning-pages-session-title">
-            <h3 id="morning-pages-session-title" className={styles.srOnly}>Morning Pages</h3>
-
-            <div className={styles.modalMain}>
-              <div className={styles.modalHeader}>
-                <button
-                  type="button"
-                  className={styles.modalCloseBtn}
-                  onClick={() => { play('click'); requestClose(); }}
-                  onMouseEnter={() => play('hover')}
-                  aria-label="Back"
-                >
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  <span>Back</span>
-                </button>
-              </div>
-
-              <div className={styles.writeArea}>
-                <textarea
-                  className={styles.textarea}
-                  placeholder="Every word is a step closer to the new you."
-                  value={timerText}
-                  onChange={(e) => setTimerText(e.target.value)}
-                  autoFocus
-                  disabled={isPaused}
-                />
-              </div>
-
-              <div className={styles.noteBottom}>
-                <span className={`${styles.timerCount} ${styles.timerCountInline} ${isPaused ? styles.timerPaused : ''} ${timerSeconds <= 300 && !isPaused ? styles.timerWarning : ''}`}>
-                  {isPaused ? 'paused' : formatTimer(timerSeconds)}
-                </span>
-              </div>
-            </div>
-
-            <div className={styles.modalFooter}>
-              <button
-                type="button"
-                className={styles.submitBtn}
-                onClick={() => submitMorningPages()}
-                onMouseEnter={() => play('hover')}
-              >
-                Submit
-              </button>
-            </div>
-          </div>
-
-          {/* Confirm Close Dialog */}
-          {showConfirmDialog && (
-            <div className={styles.confirmOverlay}>
-              <div className={styles.confirmDialog}>
-                <div className={styles.confirmTitleBar}>
-                  <span className={styles.confirmTitleText}>session.pause</span>
-                </div>
-                <div className={styles.confirmBody}>
-                  <div className={styles.confirmIcon}>
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10"/>
-                      <line x1="12" y1="8" x2="12" y2="12"/>
-                      <line x1="12" y1="16" x2="12.01" y2="16"/>
-                    </svg>
-                  </div>
-                  <p className={styles.confirmMessage}>
-                    Are you sure you want to close? Your writing progress will be lost.
-                  </p>
-                  <div className={styles.confirmButtons}>
-                    <button
-                      type="button"
-                      className={styles.confirmBtnResume}
-                      onClick={() => { play('click'); resumeTimer(); }}
-                      onMouseEnter={() => play('hover')}
-                    >
-                      Resume
-                    </button>
-                    <button
-                      type="button"
-                      className={styles.confirmBtnClose}
-                      onClick={() => { play('click'); closeSession(); }}
-                      onMouseEnter={() => play('hover')}
-                    >
-                      Close
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>,
-        document.body
-      )}
+      {timerActive && renderTimerSession(false)}
 
       {showRewardAnimation && rewardData && (
         <>
