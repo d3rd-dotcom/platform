@@ -111,11 +111,14 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   };
 
   const getStage2Variant = () => {
+    if (status === 'rejected') {
+      return 'failed';
+    }
     if (status === 'approved' && onChainProposalId) {
       return 'success'; // Approved and already on blockchain
     }
     if (status === 'approved') {
-      return 'waiting'; // Approved but not yet on blockchain
+      return 'processing'; // Approved and waiting to open on-chain
     }
     if (status === 'active' || status === 'completed') {
       return 'success'; // On blockchain
@@ -129,13 +132,25 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
     if (status === 'completed' || onChainData?.executed) {
       return 'completed';
     }
+    if (status === 'active') {
+      if (!onChainData) {
+        return 'active';
+      }
+
+      const forVotes = parseFloat(onChainData.forVotes);
+      const againstVotes = parseFloat(onChainData.againstVotes);
+
+      if (isExpired) {
+        const totalVotes = forVotes + againstVotes;
+        if (totalVotes === 0) return 'expired';
+        return forVotes > againstVotes ? 'completed' : 'defeated';
+      }
+
+      return 'active';
+    }
     if (onChainData) {
       const forVotes = parseFloat(onChainData.forVotes);
       const againstVotes = parseFloat(onChainData.againstVotes);
-      const hasVotes = forVotes > 0 || againstVotes > 0;
-      if (hasVotes && againstVotes > forVotes) {
-        return 'defeated';
-      }
       if (isExpired) {
         const totalVotes = forVotes + againstVotes;
         if (totalVotes === 0) return 'expired';
