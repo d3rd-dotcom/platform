@@ -277,6 +277,10 @@
   transform: rotate(180deg);
 }
 
+.expandArrowPanel {
+  transform: rotate(-90deg);
+}
+
 /* Card Content (expanded) */
 .taskCardContent {
   padding: 0 18px 18px;

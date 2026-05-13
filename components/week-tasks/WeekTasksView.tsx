@@ -56,6 +56,8 @@ interface WeekTasksViewProps {
   initialIsSealed?: boolean;
   initialSealTxHash?: string | null;
   onSealComplete?: (weekNumber: number, txHash: string | null) => void;
+  onSectionSelect?: (sectionId: string) => void;
+  focusedSectionId?: string | null;
 }
 
 export default function WeekTasksView({
@@ -65,6 +67,8 @@ export default function WeekTasksView({
   initialIsSealed,
   initialSealTxHash,
   onSealComplete,
+  onSectionSelect,
+  focusedSectionId,
 }: WeekTasksViewProps) {
   const journalSections: JournalSection[] =
     weekSectionsMap[weekNumber] || (weekNumber === 2 ? week2Sections : week1Sections);
@@ -182,6 +186,10 @@ export default function WeekTasksView({
   const completedCount = completedSections.size;
   const totalSections = journalSections.length;
   const canSeal = completedCount >= Math.ceil(totalSections / 2) && !isSealed;
+
+  useEffect(() => {
+    if (focusedSectionId) setExpandedSection(focusedSectionId);
+  }, [focusedSectionId]);
 
   const toggleExpand = (id: string) => {
     play(expandedSection === id ? 'toggle-off' : 'toggle-on');
@@ -497,13 +505,17 @@ export default function WeekTasksView({
     );
   }
 
+  const visibleSections = focusedSectionId
+    ? journalSections.filter(s => s.id === focusedSectionId)
+    : journalSections;
+
   return (
     <div
       className={styles.container}
       data-week-number={weekNumber}
       style={{ '--week-color': weekColor } as React.CSSProperties}
     >
-{journalSections.map(section => {
+{visibleSections.map(section => {
         const isOpen = expandedSection === section.id;
         const isDone = completedSections.has(section.id);
         const artVariant = getTaskArtVariant(section);
@@ -512,7 +524,11 @@ export default function WeekTasksView({
             <button
               type="button"
               className={styles.taskCardHeader}
-              onClick={() => { if (!isSealed) toggleExpand(section.id); }}
+              onClick={() => {
+                if (isSealed) return;
+                if (onSectionSelect) { play('click'); onSectionSelect(section.id); }
+                else toggleExpand(section.id);
+              }}
               onMouseEnter={() => play('hover')}
             >
               <div className={`${styles.taskArtwork} ${styles[`taskArtwork${artVariant[0].toUpperCase()}${artVariant.slice(1)}` as keyof typeof styles]}`} aria-hidden="true">
@@ -537,13 +553,15 @@ export default function WeekTasksView({
                 ) : (
                   <div className={styles.taskCheckEmpty} />
                 )}
-                <svg
-                  className={`${styles.expandArrow} ${isOpen ? styles.expandArrowOpen : ''}`}
-                  width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-                >
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
+                {!focusedSectionId && (
+                  <svg
+                    className={`${styles.expandArrow} ${onSectionSelect ? styles.expandArrowPanel : (isOpen ? styles.expandArrowOpen : '')}`}
+                    width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                  >
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                )}
               </div>
             </button>
 

@@ -368,7 +368,8 @@ export default function CoursePage() {
     setIsReaderOpen(true);
   }, []);
 
-  const [rightContent, setRightContent] = useState<'daily-note' | 'reading' | null>(null);
+  const [rightContent, setRightContent] = useState<'daily-note' | 'reading' | 'task' | null>(null);
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
@@ -563,6 +564,7 @@ export default function CoursePage() {
                   initialIsSealed={getWeekStatus(resolvedViewWeek)?.isSealed}
                   initialSealTxHash={getWeekStatus(resolvedViewWeek)?.sealTxHash}
                   onSealComplete={handleSealComplete}
+                  onSectionSelect={isDesktop ? (id) => { setSelectedTaskId(id); setRightContent('task'); } : undefined}
                 />
               </>
             )}
@@ -580,6 +582,18 @@ export default function CoursePage() {
               <CourseInlineReader
                 reading={WEEKLY_READINGS[readerIndex]}
                 onBack={() => setRightContent(null)}
+              />
+            )}
+            {rightContent === 'task' && selectedTaskId && (
+              <WeekTasksView
+                key={`panel-${resolvedViewWeek}-${selectedTaskId}`}
+                weekNumber={resolvedViewWeek}
+                enablePersistence={isAuthenticated}
+                isLocked={resolvedViewWeek > activeWeek}
+                initialIsSealed={getWeekStatus(resolvedViewWeek)?.isSealed}
+                initialSealTxHash={getWeekStatus(resolvedViewWeek)?.sealTxHash}
+                onSealComplete={handleSealComplete}
+                focusedSectionId={selectedTaskId}
               />
             )}
           </div>
