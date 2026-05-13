@@ -208,8 +208,6 @@ const MARKET_CATEGORIES: MarketCategory[] = ['commodities', 'economics', 'ai', '
 const TRADE_CHAT_SUGGESTIONS = [
   "What's the estimate?",
 ];
-const BLUE_ROUTE_TRIGGER_TEXT =
-  'Blue compares her estimate with the live price, keeps size capped, and waits for approval before routing anything.';
 const INITIAL_VISIBLE_MARKETS = 3;
 const MARKET_LOAD_MORE_STEP = 3;
 
@@ -1011,92 +1009,102 @@ export default function Markets() {
             <div className={styles.panelHeader}>
               <span className={styles.panelTitle}>Markets</span>
             </div>
-            {!deferredKalshiMarkets && !kalshiError && (
-              <MarketListSkeleton />
-            )}
-            {kalshiError && !deferredKalshiMarkets && (
-              <span className={styles.errorText}>Failed to load Kalshi data</span>
-            )}
-            {deferredKalshiMarkets && (
-              <div className={styles.marketList}>
-                {MARKET_CATEGORIES.map((cat) => {
-                  const items = deferredKalshiMarkets[cat];
-                  if (!items || items.length === 0) return null;
-                  const visibleCount = visibleMarketCounts[cat] ?? INITIAL_VISIBLE_MARKETS;
-                  const visibleItems = items.slice(0, visibleCount);
-                  const hasMore = items.length > visibleCount;
-                  return (
-                    <div key={cat} className={styles.marketSection}>
-                      <div className={styles.marketSectionHeader}>
-                        <span className={styles.marketSectionLabel}>{CATEGORY_LABELS[cat]}</span>
-                        <span className={styles.marketSectionCount}>{items.length} live</span>
-                      </div>
-                      <div className={styles.marketCards}>
-                        {visibleItems.map((m, index) => {
-                        const previous = visibleItems[index - 1];
-                        const showImage = Boolean(m.iconUrl) && previous?.iconUrl !== m.iconUrl;
-                        const [yes, no] = parseOutcomePrices(m.outcomePrices);
-                        const yesPct = Math.round(yes * 100);
-                        const noPct = Math.round(no * 100);
-                        return (
-                          <div key={m.id} className={styles.marketItem}>
-                            <div className={styles.marketItemTop}>
-                              <div className={styles.marketItemHeader}>
-                                {showImage ? (
-                                // eslint-disable-next-line @next/next/no-img-element
-                                <img
-                                  src={m.iconUrl}
-                                  alt=""
-                                  className={styles.marketIcon}
-                                  width={40}
-                                  height={40}
-                                  loading="lazy"
-                                />
-                                ) : (
-                                  <div className={styles.marketIconFallback} aria-hidden="true">
-                                    {getMarketMonogram(m)}
-                                  </div>
-                                )}
-                                <div className={styles.marketQuestion}>{m.question}</div>
-                              </div>
-                              <div className={styles.marketPill}>{yesPct}% yes</div>
-                            </div>
-                            <div className={styles.marketBarWrap}>
-                              <div className={styles.marketBar}>
-                                <div className={styles.marketYes} style={{ width: `${yesPct}%` }} />
-                                <div className={styles.marketNo} style={{ width: `${noPct}%` }} />
-                              </div>
-                              <div className={styles.marketBarValues}>
-                                <span className={styles.marketBarValueYes}>Yes {yesPct}%</span>
-                                <span className={styles.marketBarValueNo}>No {noPct}%</span>
-                              </div>
-                            </div>
-                            <div className={styles.marketMeta}>
-                              <span>Volume {formatVol(m.volume)}</span>
-                            </div>
-                          </div>
-                        );
-                        })}
-                      </div>
-                      {hasMore && (
-                        <button
-                          type="button"
-                          className={styles.marketLoadMore}
-                          onClick={() => {
-                            setVisibleMarketCounts((current) => ({
-                              ...current,
-                              [cat]: Math.min((current[cat] ?? INITIAL_VISIBLE_MARKETS) + MARKET_LOAD_MORE_STEP, items.length),
-                            }));
-                          }}
-                        >
-                          Show more
-                        </button>
-                      )}
-                    </div>
-                  );
-                })}
+            <div className={styles.marketArena}>
+              <div className={styles.marketArenaHeader}>
+                <span className={styles.marketArenaBadge}>Live boards</span>
+                <div className={styles.marketArenaChips} aria-hidden="true">
+                  {MARKET_CATEGORIES.map((cat) => (
+                    <span key={cat} className={styles.marketArenaChip}>{CATEGORY_LABELS[cat]}</span>
+                  ))}
+                </div>
               </div>
-            )}
+              {!deferredKalshiMarkets && !kalshiError && (
+                <MarketListSkeleton />
+              )}
+              {kalshiError && !deferredKalshiMarkets && (
+                <span className={styles.errorText}>Failed to load Kalshi data</span>
+              )}
+              {deferredKalshiMarkets && (
+                <div className={styles.marketList}>
+                  {MARKET_CATEGORIES.map((cat) => {
+                    const items = deferredKalshiMarkets[cat];
+                    if (!items || items.length === 0) return null;
+                    const visibleCount = visibleMarketCounts[cat] ?? INITIAL_VISIBLE_MARKETS;
+                    const visibleItems = items.slice(0, visibleCount);
+                    const hasMore = items.length > visibleCount;
+                    return (
+                      <div key={cat} className={styles.marketSection}>
+                        <div className={styles.marketSectionHeader}>
+                          <span className={styles.marketSectionLabel}>{CATEGORY_LABELS[cat]}</span>
+                          <span className={styles.marketSectionCount}>{items.length} live</span>
+                        </div>
+                        <div className={styles.marketCards}>
+                          {visibleItems.map((m, index) => {
+                            const previous = visibleItems[index - 1];
+                            const showImage = Boolean(m.iconUrl) && previous?.iconUrl !== m.iconUrl;
+                            const [yes, no] = parseOutcomePrices(m.outcomePrices);
+                            const yesPct = Math.round(yes * 100);
+                            const noPct = Math.round(no * 100);
+                            return (
+                              <div key={m.id} className={styles.marketItem}>
+                                <div className={styles.marketItemTop}>
+                                  <div className={styles.marketItemHeader}>
+                                    {showImage ? (
+                                      // eslint-disable-next-line @next/next/no-img-element
+                                      <img
+                                        src={m.iconUrl}
+                                        alt=""
+                                        className={styles.marketIcon}
+                                        width={40}
+                                        height={40}
+                                        loading="lazy"
+                                      />
+                                    ) : (
+                                      <div className={styles.marketIconFallback} aria-hidden="true">
+                                        {getMarketMonogram(m)}
+                                      </div>
+                                    )}
+                                    <div className={styles.marketQuestion}>{m.question}</div>
+                                  </div>
+                                  <div className={styles.marketPill}>{yesPct}% yes</div>
+                                </div>
+                                <div className={styles.marketBarWrap}>
+                                  <div className={styles.marketBar}>
+                                    <div className={styles.marketYes} style={{ width: `${yesPct}%` }} />
+                                    <div className={styles.marketNo} style={{ width: `${noPct}%` }} />
+                                  </div>
+                                  <div className={styles.marketBarValues}>
+                                    <span className={styles.marketBarValueYes}>Yes {yesPct}%</span>
+                                    <span className={styles.marketBarValueNo}>No {noPct}%</span>
+                                  </div>
+                                </div>
+                                <div className={styles.marketMeta}>
+                                  <span>Volume {formatVol(m.volume)}</span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        {hasMore && (
+                          <button
+                            type="button"
+                            className={styles.marketLoadMore}
+                            onClick={() => {
+                              setVisibleMarketCounts((current) => ({
+                                ...current,
+                                [cat]: Math.min((current[cat] ?? INITIAL_VISIBLE_MARKETS) + MARKET_LOAD_MORE_STEP, items.length),
+                              }));
+                            }}
+                          >
+                            Show more
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Execution Log */}
@@ -1157,33 +1165,6 @@ export default function Markets() {
 
           {/* ════ RIGHT COLUMN: Blue Trading Chat ════ */}
           <section className={styles.blueTradeColumn} aria-label="Blue trading chat">
-            <div className={styles.blueTradeIntro}>
-              <div className={styles.blueTradeIntroHeader}>
-                <div className={styles.blueTradeAvatar} aria-hidden="true">
-                  <Image src="/uploads/blueagent.png" alt="" width={40} height={40} className={styles.blueTradeAvatarImage} />
-                </div>
-                <div className={styles.blueTradeHeading}>
-                  <span className={styles.blueTradeEyebrow}>Blue on markets</span>
-                  <h2>What&apos;s the estimate?</h2>
-                  <p>{BLUE_ROUTE_TRIGGER_TEXT}</p>
-                </div>
-              </div>
-              <div className={styles.blueTradeVitals}>
-                <div className={styles.blueVital}>
-                  <span>Blue estimate</span>
-                  <strong>{derived.model_fair.toFixed(2)}%</strong>
-                </div>
-                <div className={styles.blueVital}>
-                  <span>Market price</span>
-                  <strong>{derived.mkt_price.toFixed(2)}%</strong>
-                </div>
-                <div className={styles.blueVital}>
-                  <span>Price gap</span>
-                  <strong>{derived.divergence >= 0 ? '+' : ''}{derived.divergence.toFixed(2)}%</strong>
-                </div>
-              </div>
-            </div>
-
             <div className={styles.blueChatMessages} ref={tradeChatScrollRef}>
               {tradeChatMessages.map((message, index) => {
                 const canExecute = message.role === 'blue' && index > 0 && tradeChatMessages[index - 1].role === 'user';
