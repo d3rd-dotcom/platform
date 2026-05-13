@@ -273,37 +273,6 @@ function DashboardAvatarStack({
   );
 }
 
-function PodInfoTooltip() {
-  return (
-    <div className={styles.podInfoWrap}>
-      <button
-        className={styles.podInfoButton}
-        type="button"
-        aria-label="Explain decentralized treasury cluster pods"
-      >
-        i
-      </button>
-      <div className={styles.podInfoTooltip} role="tooltip">
-        <span className={styles.podInfoTitle}>Decentralized treasury cluster</span>
-        <span className={styles.podInfoText}>
-          Blue separates the treasury into purpose-built pods so capital can be reviewed by use case instead of sitting in one undifferentiated pool.
-        </span>
-        <div className={styles.podInfoList}>
-          {FUNDING_PODS.map((pod) => (
-            <div key={pod.title} className={styles.podInfoItem}>
-              <span className={styles.podInfoDot} style={{ background: pod.accent }} />
-              <span className={styles.podInfoItemText}>
-                <strong>{pod.title}</strong>
-                <span>${pod.amount.toLocaleString()} · {pod.desc}</span>
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function SkeletonLine({ className = '' }: { className?: string }) {
   return <span className={`${styles.skeletonLine} ${className}`} aria-hidden="true" />;
 }
@@ -506,7 +475,6 @@ export default function VotingPage() {
                           <span className={styles.communityHeroEyebrow}>Mental Wealth Academy</span>
                           <div className={styles.communityHeroTitleRow}>
                             <h1 className={styles.dashboardTitle}>Community Hub</h1>
-                            <PodInfoTooltip />
                           </div>
                           <p className={styles.dashboardSubtitle}>Shared treasury. Shared decisions.</p>
                           <div className={styles.communityHeroMembers}>
