@@ -283,6 +283,76 @@
   border-radius: 999px;
 }
 
+/* Inventory card skeleton (shown while profile loads) */
+.inventorySkeletonCard {
+  margin: 8px 10px 0;
+  padding: 12px;
+  background: var(--color-grey-900, #1a1b24);
+  border: 1px solid var(--color-grey-700, #2a2b36);
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.inventorySkeletonHero {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+}
+
+.inventorySkeletonDivider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  margin: 10px 0 8px;
+}
+
+.inventorySkeletonRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 2px;
+}
+
+.inventorySkeletonRow + .inventorySkeletonRow {
+  margin-top: 4px;
+}
+
+.inventorySkeletonCircle,
+.inventorySkeletonCircleSm,
+.inventorySkeletonLine {
+  display: block;
+  background: rgba(227, 225, 238, 0.14);
+  animation: profileSkeletonPulse 1.25s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.inventorySkeletonCircle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+}
+
+.inventorySkeletonCircleSm {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.inventorySkeletonLine {
+  height: 10px;
+  border-radius: 4px;
+}
+
+.inventorySkeletonCardCollapsed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  margin: 6px 8px 0;
+  padding: 8px 0;
+  flex-shrink: 0;
+}
+
 .profileSyncCard {
   margin: 12px 10px 0;
   flex-shrink: 0;
@@ -341,6 +411,21 @@
 :global(:root:not([data-theme="dark"])) .profileSkeletonLineWide,
 :global(:root:not([data-theme="dark"])) .profileSkeletonLineShort {
   background: rgba(26, 29, 51, 0.1);
+}
+
+:global(:root:not([data-theme="dark"])) .inventorySkeletonCard {
+  background: #f4f5fe;
+  border-color: rgba(26, 27, 36, 0.1);
+}
+
+:global(:root:not([data-theme="dark"])) .inventorySkeletonCircle,
+:global(:root:not([data-theme="dark"])) .inventorySkeletonCircleSm,
+:global(:root:not([data-theme="dark"])) .inventorySkeletonLine {
+  background: rgba(26, 29, 51, 0.1);
+}
+
+:global(:root:not([data-theme="dark"])) .inventorySkeletonDivider {
+  background: rgba(26, 27, 36, 0.08);
 }
 
 .blueChatButton {

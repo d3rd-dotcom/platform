@@ -641,15 +641,38 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const renderProfileSpace = () => {
     if (shouldShowProfileSkeleton) {
       return (
-        <div className={styles.profileSkeletonCard} aria-label="Loading profile">
-          <div className={styles.profileSkeletonAvatar} />
-          {!isCollapsed && (
-            <div className={styles.profileSkeletonLines}>
-              <span className={styles.profileSkeletonLineWide} />
-              <span className={styles.profileSkeletonLineShort} />
+        <>
+          <div className={styles.profileSkeletonCard} aria-label="Loading profile">
+            <div className={styles.profileSkeletonAvatar} />
+            {!isCollapsed && (
+              <div className={styles.profileSkeletonLines}>
+                <span className={styles.profileSkeletonLineWide} />
+                <span className={styles.profileSkeletonLineShort} />
+              </div>
+            )}
+          </div>
+          {isCollapsed ? (
+            <div className={styles.inventorySkeletonCardCollapsed}>
+              <span className={styles.inventorySkeletonCircleSm} style={{ width: 18, height: 18 }} />
+              <span className={styles.inventorySkeletonLine} style={{ width: 22, height: 8 }} />
+            </div>
+          ) : (
+            <div className={styles.inventorySkeletonCard}>
+              <div className={styles.inventorySkeletonHero}>
+                <span className={styles.inventorySkeletonCircle} />
+                <span className={styles.inventorySkeletonLine} style={{ width: 80 }} />
+              </div>
+              <div className={styles.inventorySkeletonDivider} />
+              {[0, 1, 2].map(i => (
+                <div key={i} className={styles.inventorySkeletonRow}>
+                  <span className={styles.inventorySkeletonCircleSm} />
+                  <span className={styles.inventorySkeletonLine} style={{ width: 36 }} />
+                  <span className={styles.inventorySkeletonLine} style={{ width: 28, marginLeft: 'auto' }} />
+                </div>
+              ))}
             </div>
           )}
-        </div>
+        </>
       );
     }
 
