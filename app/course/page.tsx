@@ -372,7 +372,7 @@ export default function CoursePage() {
     setIsReaderOpen(true);
   }, []);
 
-  const [rightContent, setRightContent] = useState<'daily-note' | 'reading'>('daily-note');
+  const [rightContent, setRightContent] = useState<'reading' | null>(null);
   const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
@@ -443,13 +443,10 @@ export default function CoursePage() {
             </button>
           </section>
 
-          {/* DailyNotes compact — mobile only; desktop shows full editor in right panel */}
-          {!isDesktop && (
-            <div className={styles.morningPagesShell}>
-              <div className={styles.morningPagesGradient} />
-              <DailyNotes enablePersistence={canPersistMorningPages} compact />
-            </div>
-          )}
+          <div className={styles.morningPagesShell}>
+            <div className={styles.morningPagesGradient} />
+            <DailyNotes enablePersistence={canPersistMorningPages} compact />
+          </div>
 
           <CreditScore showLoader={false} />
 
@@ -575,17 +572,12 @@ export default function CoursePage() {
         </div>
 
         {/* ── Right panel (desktop only) ── */}
-        {isDesktop && (
+        {isDesktop && rightContent === 'reading' && (
           <div className={styles.rightPanel}>
-            {rightContent === 'daily-note' && (
-              <DailyNotes enablePersistence={canPersistMorningPages} />
-            )}
-            {rightContent === 'reading' && (
-              <CourseInlineReader
-                reading={WEEKLY_READINGS[readerIndex]}
-                onBack={() => setRightContent('daily-note')}
-              />
-            )}
+            <CourseInlineReader
+              reading={WEEKLY_READINGS[readerIndex]}
+              onBack={() => setRightContent(null)}
+            />
           </div>
         )}
 
