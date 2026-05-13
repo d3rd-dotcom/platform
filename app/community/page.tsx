@@ -10,6 +10,179 @@ import ProposalCard from '@/components/proposal-card/ProposalCard';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
 
+// ─── Seed social-feed posts ───────────────────────────────────────────────────
+
+type FeedCategory = 'Funding' | 'Mental Health' | 'Neuroscience' | 'Research';
+
+interface SeedPost {
+  id: string;
+  author: string;
+  avatar: string;
+  category: FeedCategory;
+  title: string;
+  body: string;
+  ts: number;
+  likes: number;
+  replies: number;
+}
+
+const NOW = Date.now();
+
+const SEED_POSTS: SeedPost[] = [
+  {
+    id: 'sp-1',
+    author: 'OpenGrants_DAO',
+    avatar: '/uploads/vesper-landing-avatar.png',
+    category: 'Funding',
+    title: 'Q2 Retroactive Funding Round — Nominations Open',
+    body: 'The Q2 retroactive public goods round is live. Nominate projects that created measurable impact for the AI-safety and mental wellness ecosystem. 200k pool. Voting closes May 20.',
+    ts: NOW - 1000 * 60 * 18,
+    likes: 112,
+    replies: 45,
+  },
+  {
+    id: 'sp-2',
+    author: 'MindBridge_Collective',
+    avatar: '/anbel09.png',
+    category: 'Mental Health',
+    title: 'AI-Assisted Peer Support for Rural Communities',
+    body: 'Rural access to mental health resources is critically underfunded. We\'re pairing LLM-based triage agents with licensed counselors across 3 pilot counties. Looking for 5 co-funders at $10k each.',
+    ts: NOW - 1000 * 60 * 60 * 5,
+    likes: 67,
+    replies: 28,
+  },
+  {
+    id: 'sp-3',
+    author: 'NeuroCognitive_Lab',
+    avatar: '/anbel11.png',
+    category: 'Neuroscience',
+    title: 'Cortical Plasticity Under Sleep Deprivation — fMRI Study',
+    body: 'Proposing a 12-week fMRI study tracking prefrontal cortex activity changes in 40 subjects with restricted sleep schedules. Seeking $48k in compute grants to run analysis pipelines.',
+    ts: NOW - 1000 * 60 * 60 * 22,
+    likes: 34,
+    replies: 12,
+  },
+  {
+    id: 'sp-4',
+    author: 'SynapticFlow_Research',
+    avatar: '/prompts/CharacterBlue.png',
+    category: 'Research',
+    title: 'Open Dataset: Attention Metrics in LLM-Augmented Dev Workflows',
+    body: "Releasing an anonymized 6-month dataset of human attention patterns when working alongside AI coding agents. Looking for collaborators to co-analyze and co-publish. DM to join.",
+    ts: NOW - 1000 * 60 * 60 * 48,
+    likes: 29,
+    replies: 9,
+  },
+  {
+    id: 'sp-5',
+    author: 'Clarity_Initiative',
+    avatar: '/uploads/vesper-landing-avatar.png',
+    category: 'Mental Health',
+    title: 'RFC: Open Protocol for Burnout Detection in Dev Teams',
+    body: 'Working with occupational psychologists to build a privacy-first burnout signal protocol. Agents could surface these patterns to team leads without surveillance. RFC stage — feedback welcome.',
+    ts: NOW - 1000 * 60 * 60 * 72,
+    likes: 18,
+    replies: 7,
+  },
+];
+
+const CATEGORY_STYLE: Record<FeedCategory, { bg: string; color: string }> = {
+  'Funding':       { bg: 'rgba(81, 104, 255, 0.12)', color: '#7b93ff' },
+  'Mental Health': { bg: 'rgba(116, 196, 101, 0.14)', color: '#74C465' },
+  'Neuroscience':  { bg: 'rgba(167, 139, 250, 0.14)', color: '#a78bfa' },
+  'Research':      { bg: 'rgba(242, 160, 181, 0.14)', color: '#f2a0b5' },
+};
+
+function relTime(ts: number): string {
+  const s = Math.floor((Date.now() - ts) / 1000);
+  if (s < 60) return `${s}s ago`;
+  if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+  if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
+  return `${Math.floor(s / 86400)}d ago`;
+}
+
+function SeedPostCard({ post }: { post: SeedPost }) {
+  const [liked, setLiked] = useState(false);
+  const cat = CATEGORY_STYLE[post.category];
+  return (
+    <div className={styles.seedPostCard}>
+      <div className={styles.seedPostHeader}>
+        <div className={styles.seedPostAvatar}>
+          <Image src={post.avatar} alt={post.author} width={36} height={36} unoptimized className={styles.seedPostAvatarImg} />
+        </div>
+        <div className={styles.seedPostMeta}>
+          <span className={styles.seedPostAuthor}>{post.author}</span>
+          <span className={styles.seedPostTime}>{relTime(post.ts)}</span>
+        </div>
+        <span className={styles.seedPostCategoryPill} style={{ background: cat.bg, color: cat.color }}>
+          {post.category}
+        </span>
+      </div>
+      <div className={styles.seedPostTitle}>{post.title}</div>
+      <div className={styles.seedPostBody}>{post.body}</div>
+      <div className={styles.seedPostActions}>
+        <button
+          className={`${styles.seedPostAction} ${liked ? styles.seedPostActionLiked : ''}`}
+          onClick={() => setLiked(v => !v)}
+          type="button"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill={liked ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+          </svg>
+          {post.likes + (liked ? 1 : 0)}
+        </button>
+        <button className={styles.seedPostAction} type="button">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>
+          {post.replies}
+        </button>
+        <button className={styles.seedPostDiscussBtn} type="button">Discuss →</button>
+      </div>
+    </div>
+  );
+}
+
+function HowItWorksHero() {
+  return (
+    <div className={styles.howItWorksHero}>
+      <div className={styles.howItWorksHeading}>
+        <h2 className={styles.howItWorksTitle}>How it works</h2>
+        <p className={styles.howItWorksSubtitle}>
+          MWA Community is where shared decisions get made — openly, on-chain.
+        </p>
+      </div>
+      <div className={styles.howItWorksSteps}>
+        {[
+          {
+            n: '1',
+            label: 'Explore the Feed',
+            desc: 'Browse active funding proposals, mental health initiatives, neuroscience research, and open discussions from community members.',
+          },
+          {
+            n: '2',
+            label: 'Join the Discussion',
+            desc: 'React to posts, reply with your perspective, or upvote proposals you believe in. Every signal shapes what gets funded.',
+          },
+          {
+            n: '3',
+            label: 'Submit a Proposal',
+            desc: 'Have an idea worth funding? Submit it for AI-assisted review by Blue, then bring it to community vote.',
+          },
+        ].map((step) => (
+          <div key={step.n} className={styles.howItWorksStep}>
+            <div className={styles.howItWorksStepNum}>{step.n}</div>
+            <div className={styles.howItWorksStepContent}>
+              <div className={styles.howItWorksStepLabel}>{step.label}</div>
+              <div className={styles.howItWorksStepDesc}>{step.desc}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const StillTutorial = dynamic(() => import('@/components/still-tutorial/StillTutorial'), {
   ssr: false,
 });
@@ -265,6 +438,12 @@ export default function VotingPage() {
     void fetchProposals();
   }, [fetchProposals]);
 
+  // Mark community as visited so the nav red dot clears
+  useEffect(() => {
+    try { localStorage.setItem('mwa-community-last-visit', Date.now().toString()); } catch { /* ignore */ }
+    window.dispatchEvent(new Event('communityVisited'));
+  }, []);
+
   const handleTutorialComplete = () => {
     localStorage.setItem('hasSeenAdminTutorial', 'true');
     setShowTutorial(false);
@@ -388,11 +567,30 @@ export default function VotingPage() {
                 </div>
               </div>
 
+            <HowItWorksHero />
+
             <div className={styles.communityViewViewport}>
               <section className={styles.communityViewPanel}>
                   <div className={styles.overviewColumns}>
 
                       <div className={styles.overviewProposalsColumn}>
+                        {/* Social feed — seed discussion posts */}
+                        <div className={styles.feedSectionLabel}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                          </svg>
+                          Recent Discussions
+                        </div>
+                        <div className={styles.seedFeed}>
+                          {SEED_POSTS.map((post) => <SeedPostCard key={post.id} post={post} />)}
+                        </div>
+
+                        <div className={styles.feedSectionLabel} style={{ marginTop: 32 }}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <path d="M12 2L3 7l9 5 9-5-9-5zM3 17l9 5 9-5M3 12l9 5 9-5" />
+                          </svg>
+                          Active Proposals
+                        </div>
                       {isPageLoading || (loading && proposals.length > 0) ? (
                         <ProposalSkeletonList />
                       ) : error ? (

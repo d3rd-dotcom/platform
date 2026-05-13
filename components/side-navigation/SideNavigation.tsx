@@ -66,6 +66,12 @@ const mobileNavSections: NavSection[] = [
 
 const primaryNavItems: NavItem[] = [
   {
+    id: 'feedback',
+    label: 'Surveys',
+    href: '/surveys',
+    iconSrc: '/icons/nav-feedback.svg',
+  },
+  {
     id: 'morning-pages',
     label: 'Journal',
     href: '/course',
@@ -82,12 +88,6 @@ const primaryNavItems: NavItem[] = [
     label: 'Events',
     href: '/events',
     iconSrc: '/icons/nav-community.svg',
-  },
-  {
-    id: 'feedback',
-    label: 'Surveys',
-    href: '/surveys',
-    iconSrc: '/icons/nav-feedback.svg',
   },
 ];
 
