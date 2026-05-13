@@ -521,26 +521,25 @@ export default function VotingPage() {
                 </div>
               </header>
 
-              <section className={styles.communityHero}>
-                <div className={styles.communityHeroOverlay} />
-                <div className={styles.communityHeroContent}>
-                  <span className={styles.communityHeroEyebrow}>Mental Wealth Academy</span>
-                  <div className={styles.communityHeroTitleRow}>
-                    <h1 className={styles.dashboardTitle}>Community Hub</h1>
-                    <PodInfoTooltip />
-                  </div>
-                  <p className={styles.dashboardSubtitle}>Shared treasury. Shared decisions.</p>
-                  <div className={styles.communityHeroMembers}>
-                    <DashboardAvatarStack />
-                    <span>{ACTIVE_MEMBER_COUNT} members online</span>
-                  </div>
-                </div>
-              </section>
-
               <div className={styles.communityViewViewport}>
                 <section className={styles.communityViewPanel}>
                   <div className={styles.communityDashGrid}>
                     <div className={styles.communityDashMain}>
+                      <section className={styles.communityHero}>
+                        <div className={styles.communityHeroContent}>
+                          <span className={styles.communityHeroEyebrow}>Mental Wealth Academy</span>
+                          <div className={styles.communityHeroTitleRow}>
+                            <h1 className={styles.dashboardTitle}>Community Hub</h1>
+                            <PodInfoTooltip />
+                          </div>
+                          <p className={styles.dashboardSubtitle}>Shared treasury. Shared decisions.</p>
+                          <div className={styles.communityHeroMembers}>
+                            <DashboardAvatarStack />
+                            <span>{ACTIVE_MEMBER_COUNT} members online</span>
+                          </div>
+                        </div>
+                      </section>
+
                       <div className={styles.communityCardRow}>
                         <article className={styles.dashCard}>
                           <div className={styles.dashCardHeader}>
@@ -571,34 +570,6 @@ export default function VotingPage() {
                                 </div>
                               ))}
                             </div>
-                          </div>
-                        </article>
-
-                        <article className={`${styles.dashCard} ${styles.fundingVillageCard}`}>
-                          <div className={styles.dashCardHeader}>
-                            <div>
-                              <span className={styles.dashCardEyebrow}>Community Capital</span>
-                              <h2 className={styles.dashCardTitle}>Funding the Village</h2>
-                            </div>
-                          </div>
-                          <Image
-                            src="/stickers/treasure.svg"
-                            alt=""
-                            width={92}
-                            height={92}
-                            className={styles.fundingVillageSticker}
-                            unoptimized
-                          />
-                          <div className={styles.fundingVillageProgressMeta}>
-                            <span>${TREASURY_BALANCE.toLocaleString()} raised</span>
-                            <strong>${TREASURY_DISPLAY_BALANCE.toLocaleString()} goal</strong>
-                          </div>
-                          <div className={styles.fundingVillageBar} aria-label={`${fundingProgress}% funded`}>
-                            <span className={styles.fundingVillageBarFill} style={{ width: `${fundingProgress}%` }} />
-                          </div>
-                          <div className={styles.fundingVillageFooter}>
-                            <DashboardAvatarStack />
-                            <span>{fundingProgress}% funded</span>
                           </div>
                         </article>
 
@@ -738,6 +709,34 @@ export default function VotingPage() {
                     </div>
 
                     <aside className={styles.communityDashRail}>
+                      <article className={`${styles.dashCard} ${styles.fundingVillageCard}`}>
+                        <div className={styles.dashCardHeader}>
+                          <div>
+                            <span className={styles.dashCardEyebrow}>Community Capital</span>
+                            <h2 className={styles.dashCardTitle}>Funding the Village</h2>
+                          </div>
+                        </div>
+                        <Image
+                          src="/stickers/treasure.svg"
+                          alt=""
+                          width={92}
+                          height={92}
+                          className={styles.fundingVillageSticker}
+                          unoptimized
+                        />
+                        <div className={styles.fundingVillageProgressMeta}>
+                          <span>${TREASURY_BALANCE.toLocaleString()} raised</span>
+                          <strong>${TREASURY_DISPLAY_BALANCE.toLocaleString()} goal</strong>
+                        </div>
+                        <div className={styles.fundingVillageBar} aria-label={`${fundingProgress}% funded`}>
+                          <span className={styles.fundingVillageBarFill} style={{ width: `${fundingProgress}%` }} />
+                        </div>
+                        <div className={styles.fundingVillageFooter}>
+                          <DashboardAvatarStack />
+                          <span>{fundingProgress}% funded</span>
+                        </div>
+                      </article>
+
                       <article className={`${styles.dashCard} ${styles.treasuryBalanceCard}`}>
                         <span className={styles.dashCardEyebrow}>Shared Treasury</span>
                         <div className={styles.treasuryBalanceValue}>${TREASURY_DISPLAY_BALANCE.toLocaleString()}</div>
