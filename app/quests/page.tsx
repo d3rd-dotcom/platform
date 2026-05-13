@@ -125,8 +125,6 @@ export default function QuestsPage() {
   const [customQuests, setCustomQuests] = useState<CustomQuest[]>([]);
   const [authoredQuests, setAuthoredQuests] = useState<CustomQuest[]>([]);
   const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>(null);
-  const [countdown, setCountdown] = useState('--:--:--');
-  const [seasonWeek, setSeasonWeek] = useState<number | null>(null);
   const [authorPanelOpen, setAuthorPanelOpen] = useState(false);
   const [filter, setFilter] = useState<QuestFilter>('all');
   const { play } = useSound();
@@ -225,41 +223,6 @@ export default function QuestsPage() {
       window.removeEventListener('shardsUpdated', handler);
     };
   }, [refreshQuestData, refreshAuthoredQuests]);
-
-  useEffect(() => {
-    const seasonStart = new Date(
-      process.env.NEXT_PUBLIC_SEASON_START_DATE || '2026-03-02T00:00:00Z'
-    ).getTime();
-    const weekMs = 7 * 24 * 60 * 60 * 1000;
-
-    const tick = () => {
-      const now = Date.now();
-      const elapsed = now - seasonStart;
-      if (elapsed < 0) {
-        const remaining = Math.abs(elapsed);
-        const days = Math.floor(remaining / (24 * 60 * 60 * 1000));
-        const hours = Math.floor((remaining % (24 * 60 * 60 * 1000)) / 3_600_000);
-        const minutes = Math.floor((remaining % 3_600_000) / 60_000);
-        setCountdown(`${days}D ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`);
-        setSeasonWeek(0);
-        return;
-      }
-      const weekIndex = Math.floor(elapsed / weekMs);
-      const nextBoundary = seasonStart + (weekIndex + 1) * weekMs;
-      const remaining = Math.max(0, nextBoundary - now);
-      const hours = Math.floor(remaining / 3_600_000);
-      const minutes = Math.floor((remaining % 3_600_000) / 60_000);
-      const seconds = Math.floor((remaining % 60_000) / 1000);
-      setCountdown(
-        `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
-      );
-      setSeasonWeek(weekIndex + 1);
-    };
-
-    tick();
-    const interval = window.setInterval(tick, 1000);
-    return () => window.clearInterval(interval);
-  }, []);
 
   const allQuests = useMemo<UnifiedQuest[]>(() => {
     const builtIn: UnifiedQuest[] = QUEST_DEFINITIONS.map((quest) => {
@@ -386,32 +349,6 @@ export default function QuestsPage() {
       <div className={styles.pageLayout}>
         <SideNavigation />
         <main className={styles.page}>
-          {/* ── Terminal-style status bar ── */}
-          <div className={styles.statusBar}>
-            <div className={styles.statusItem}>
-              <span className={styles.statusLabel}>season</span>
-              <span className={styles.statusHighlight}>
-                {seasonWeek === null ? '--' : seasonWeek === 0 ? 'PRE-LAUNCH' : `WEEK ${seasonWeek}`}
-              </span>
-            </div>
-            <div className={styles.statusItem}>
-              <span className={styles.statusLabel}>next reset</span>
-              <span className={styles.statusTimer} aria-live="polite">{countdown}</span>
-            </div>
-            <div className={styles.statusItem}>
-              <span className={styles.statusLabel}>shards on table</span>
-              <span className={styles.statusValue}>{totalShardsAvailable}</span>
-            </div>
-            <div className={styles.statusItem}>
-              <span className={styles.statusLabel}>cleared</span>
-              <span className={styles.statusValue}>{completedQuestCount}/{totalQuestCount}</span>
-            </div>
-            <div className={styles.statusItem}>
-              <span className={styles.statusLabel}>tier</span>
-              <span className={styles.statusValue}>{isPro ? 'SOUL KEY' : 'ACADEMIC'}</span>
-            </div>
-          </div>
-
           <div className={styles.content}>
             {/* ── Player banner ── */}
             <section className={styles.hero} aria-label="Player overview">
