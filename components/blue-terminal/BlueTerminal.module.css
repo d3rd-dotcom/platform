@@ -8,6 +8,7 @@
   background:
     linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.20)),
     url('/images/TerminalWallpaper.png') center / cover no-repeat;
+  border-radius: 28px;
   color: #f3f4f8;
   overflow: hidden;
 }
