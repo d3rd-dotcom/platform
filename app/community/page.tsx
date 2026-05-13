@@ -186,7 +186,7 @@ const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_BLUE_KILLSTREAK_ADDRESS || '0x2
 const USDC_ADDRESS = process.env.NEXT_PUBLIC_USDC_ADDRESS || '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'; // Base mainnet USDC
 const TREASURY_BALANCE = 5200;
 const TREASURY_DISPLAY_BALANCE = 5343;
-const ACTIVE_MEMBER_COUNT = 128;
+const DEFAULT_ACTIVE_MEMBER_COUNT = 128;
 const FUNDING_PODS = [
   {
     title: 'Brand Awareness',
@@ -229,7 +229,6 @@ const TOP_CONTRIBUTORS = [
   { participant: DASHBOARD_PARTICIPANTS[3], contributions: 24 },
 ];
 
-const fundingProgress = Math.min(100, Math.round((TREASURY_BALANCE / TREASURY_DISPLAY_BALANCE) * 100));
 const podTotal = FUNDING_PODS.reduce((total, pod) => total + pod.amount, 0);
 let podCursor = 0;
 const podDonutGradient = FUNDING_PODS.map((pod) => {
@@ -343,6 +342,7 @@ export default function VotingPage() {
   const [selectedProposalId, setSelectedProposalId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
+  const [activeMemberCount, setActiveMemberCount] = useState(DEFAULT_ACTIVE_MEMBER_COUNT);
   const { play } = useSound();
   const selectedProposal = selectedProposalId
     ? proposals.find((proposal) => proposal.id === selectedProposalId) ?? null
@@ -436,9 +436,26 @@ export default function VotingPage() {
     }
   }, [enrichProposals]);
 
+  const fetchCommunityStats = useCallback(async () => {
+    try {
+      const response = await fetch('/api/community/stats', { cache: 'no-store' });
+      if (!response.ok) return;
+      const data: { registeredAccounts?: number } = await response.json();
+      if (typeof data.registeredAccounts === 'number' && Number.isFinite(data.registeredAccounts)) {
+        setActiveMemberCount(Math.max(0, Math.floor(data.registeredAccounts)));
+      }
+    } catch (statsError) {
+      console.error('Error fetching community stats:', statsError);
+    }
+  }, []);
+
   useEffect(() => {
     void fetchProposals();
   }, [fetchProposals]);
+
+  useEffect(() => {
+    void fetchCommunityStats();
+  }, [fetchCommunityStats]);
 
   // Mark community as visited so the nav red dot clears
   useEffect(() => {
@@ -535,13 +552,13 @@ export default function VotingPage() {
                           <p className={styles.dashboardSubtitle}>Shared treasury. Shared decisions.</p>
                           <div className={styles.communityHeroMembers}>
                             <DashboardAvatarStack />
-                            <span>{ACTIVE_MEMBER_COUNT} members online</span>
+                            <span>{activeMemberCount} members online</span>
                           </div>
                         </div>
                       </section>
 
                       <div className={styles.communityCardRow}>
-                        <article className={styles.dashCard}>
+                        <article className={`${styles.dashCard} ${styles.treasuryBreakdownCard}`}>
                           <div className={styles.dashCardHeader}>
                             <div>
                               <span className={styles.dashCardEyebrow}>Treasury Pods</span>
@@ -573,41 +590,45 @@ export default function VotingPage() {
                           </div>
                         </article>
 
-                        <article className={styles.dashCard}>
+                        <article className={`${styles.dashCard} ${styles.topContributorsCard}`}>
                           <div className={styles.dashCardHeader}>
                             <div>
                               <span className={styles.dashCardEyebrow}>Participation</span>
                               <h2 className={styles.dashCardTitle}>Top Contributors</h2>
                             </div>
-                            <span className={styles.dashCardIcon} aria-hidden="true">
-                              <svg viewBox="0 0 24 24">
-                                <path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0V4Z" />
-                                <path d="M5 5H3v2a4 4 0 0 0 4 4M19 5h2v2a4 4 0 0 1-4 4" />
-                              </svg>
-                            </span>
                           </div>
-                          <div className={styles.topContributorsList}>
-                            {TOP_CONTRIBUTORS.map(({ participant, contributions }, index) => (
-                              <div key={participant.label} className={styles.topContributorRow}>
-                                <span className={styles.topContributorRank}>{index + 1}</span>
-                                <span className={`${styles.dashboardAvatar} ${participant.accent}`}>
-                                  {participant.image ? (
-                                    <Image
-                                      src={participant.image}
-                                      alt={participant.label}
-                                      width={34}
-                                      height={34}
-                                      className={styles.dashboardAvatarImage}
-                                      unoptimized
-                                    />
-                                  ) : (
-                                    participant.label
-                                  )}
-                                </span>
-                                <span className={styles.topContributorName}>{participant.label}</span>
-                                <strong>{contributions}</strong>
-                              </div>
-                            ))}
+                          <div className={styles.topContributorsBody}>
+                            <div className={styles.topContributorsList}>
+                              {TOP_CONTRIBUTORS.map(({ participant, contributions }, index) => (
+                                <div key={participant.label} className={styles.topContributorRow}>
+                                  <span className={styles.topContributorRank}>{index + 1}</span>
+                                  <span className={`${styles.dashboardAvatar} ${participant.accent}`}>
+                                    {participant.image ? (
+                                      <Image
+                                        src={participant.image}
+                                        alt={participant.label}
+                                        width={34}
+                                        height={34}
+                                        className={styles.dashboardAvatarImage}
+                                        unoptimized
+                                      />
+                                    ) : (
+                                      participant.label
+                                    )}
+                                  </span>
+                                  <span className={styles.topContributorName}>{participant.label}</span>
+                                  <strong>{contributions}</strong>
+                                </div>
+                              ))}
+                            </div>
+                            <Image
+                              src="/images/trophy.svg"
+                              alt=""
+                              width={84}
+                              height={84}
+                              className={styles.topContributorsTrophy}
+                              unoptimized
+                            />
                           </div>
                         </article>
                       </div>
@@ -717,7 +738,7 @@ export default function VotingPage() {
                           </div>
                         </div>
                         <Image
-                          src="/stickers/treasure.svg"
+                          src="/images/treasury.png"
                           alt=""
                           width={92}
                           height={92}
@@ -728,22 +749,18 @@ export default function VotingPage() {
                           <span>${TREASURY_BALANCE.toLocaleString()} raised</span>
                           <strong>${TREASURY_DISPLAY_BALANCE.toLocaleString()} goal</strong>
                         </div>
-                        <div className={styles.fundingVillageBar} aria-label={`${fundingProgress}% funded`}>
-                          <span className={styles.fundingVillageBarFill} style={{ width: `${fundingProgress}%` }} />
-                        </div>
-                        <div className={styles.fundingVillageFooter}>
-                          <DashboardAvatarStack />
-                          <span>{fundingProgress}% funded</span>
-                        </div>
                       </article>
 
                       <article className={`${styles.dashCard} ${styles.treasuryBalanceCard}`}>
-                        <span className={styles.dashCardEyebrow}>Shared Treasury</span>
-                        <div className={styles.treasuryBalanceValue}>${TREASURY_DISPLAY_BALANCE.toLocaleString()}</div>
-                        <div className={styles.treasuryBalanceMeta}>
-                          <span>Shared Treasury</span>
+                        <div className={styles.treasuryBalanceHeader}>
+                          <h2 className={styles.dashCardTitle}>Shared Treasury</h2>
                           <strong className={styles.treasuryBalanceDelta}>+12.6%</strong>
                         </div>
+                        <div className={styles.treasuryBalanceValue}>${TREASURY_DISPLAY_BALANCE.toLocaleString()}</div>
+                      </article>
+
+                      <article className={`${styles.dashCard} ${styles.dashboardWalletCardShell}`}>
+                        <span className={styles.dashCardEyebrow}>Blue&apos;s Wallet</span>
                         <TreasuryDisplay
                           contractAddress={CONTRACT_ADDRESS}
                           usdcAddress={USDC_ADDRESS}
@@ -754,9 +771,10 @@ export default function VotingPage() {
 
                       <article className={`${styles.dashCard} ${styles.activeMembersCard}`}>
                         <span className={styles.dashCardEyebrow}>Active Members</span>
-                        <strong>{ACTIVE_MEMBER_COUNT}</strong>
-                        <span>Members coordinating this cycle</span>
-                        <DashboardAvatarStack />
+                        <div className={styles.activeMembersInline}>
+                          <strong>{activeMemberCount}</strong>
+                          <DashboardAvatarStack className={styles.activeMembersAvatars} />
+                        </div>
                       </article>
 
                       <article className={`${styles.dashCard} ${styles.recentActivityCard}`}>
