@@ -85,8 +85,8 @@ const primaryNavItems: NavItem[] = [
   },
   {
     id: 'events',
-    label: 'Events',
-    href: '/events',
+    label: 'Quests',
+    href: '/quests',
     iconSrc: '/icons/nav-community.svg',
   },
 ];
