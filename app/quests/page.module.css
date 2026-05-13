@@ -1,48 +1,111 @@
+/* ── /quests — gamified terminal layout, sister to /markets ── */
+
 .pageLayout {
-  margin-left: var(--sidebar-width, 265px);
+  margin-left: var(--sidebar-width, 272px);
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   min-height: 100vh;
   min-height: 100dvh;
+  background:
+    radial-gradient(circle at 84% 6%, rgba(81, 104, 255, 0.08), transparent 32%),
+    radial-gradient(circle at 14% 18%, rgba(116, 196, 101, 0.06), transparent 28%),
+    linear-gradient(180deg, #fcfdff 0%, #f4f7fc 100%);
 }
 
 .page {
   box-sizing: border-box;
-  height: 100vh;
-  height: 100dvh;
-  max-width: 760px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  max-width: 1180px;
   width: 100%;
   margin: 0 auto;
-  padding: 14px 14px calc(48px + max(env(safe-area-inset-bottom, 0px), 16px));
+  padding: 0 0 calc(48px + max(env(safe-area-inset-bottom, 0px), 16px));
   color: var(--color-text-dark);
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   min-width: 0;
 }
 
+/* ── Status bar — like markets ── */
+.statusBar {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 22px;
+  padding: 11px 20px;
+  background: rgba(255, 255, 255, 0.94);
+  border-bottom: 2px solid #1a1d33;
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  overflow-x: auto;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(6px);
+}
+
+.statusItem {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+}
+
+.statusLabel {
+  color: rgba(18, 25, 53, 0.5);
+  font-weight: 600;
+  text-transform: lowercase;
+  letter-spacing: 0.04em;
+}
+
+.statusValue {
+  color: #121935;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.statusHighlight {
+  color: var(--color-primary, #5168ff);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.statusTimer {
+  color: #121935;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(81, 104, 255, 0.08);
+  border: 1px solid rgba(81, 104, 255, 0.16);
+}
+
+/* ── Content stack ── */
 .content {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  min-height: 0;
-  min-width: 0;
   gap: 18px;
+  padding: 18px 20px 0;
+  width: 100%;
+  min-width: 0;
 }
 
-/* Hero */
+/* ── Player banner ── */
 .hero {
   position: relative;
-  border-radius: 22px;
-  border: 1px solid rgba(81, 104, 255, 0.18);
-  background:
-    radial-gradient(120% 130% at 0% 0%, rgba(81, 104, 255, 0.16) 0%, rgba(81, 104, 255, 0) 50%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.99) 0%, rgba(247, 250, 255, 0.97) 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.86),
-    0 14px 30px rgba(28, 44, 103, 0.08);
-  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(81, 104, 255, 0.16);
+  background:
+    radial-gradient(120% 130% at 0% 0%, rgba(81, 104, 255, 0.14) 0%, transparent 52%),
+    linear-gradient(180deg, #ffffff 0%, #f7faff 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.86), 0 14px 28px rgba(28, 44, 103, 0.06);
   isolation: isolate;
+  overflow: hidden;
 }
 
 .hero::after {
@@ -52,28 +115,28 @@
   left: 18px;
   right: 18px;
   height: 2px;
-  background: linear-gradient(90deg, rgba(81, 104, 255, 0), rgba(81, 104, 255, 0.78) 24%, rgba(116, 196, 101, 0.6) 52%, rgba(81, 104, 255, 0) 88%);
+  background: linear-gradient(90deg, rgba(81, 104, 255, 0), rgba(81, 104, 255, 0.8) 24%, rgba(116, 196, 101, 0.62) 54%, rgba(255, 156, 81, 0.6) 80%, rgba(81, 104, 255, 0) 100%);
   pointer-events: none;
 }
 
-.heroProfile {
+.heroLeft {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   min-width: 0;
 }
 
 .heroAvatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 16px;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
   overflow: hidden;
-  border: 1px solid rgba(81, 104, 255, 0.22);
+  border: 1px solid rgba(81, 104, 255, 0.24);
   background: linear-gradient(180deg, #8b9aff 0%, #5a71ff 48%, #4258da 100%);
   display: grid;
   place-items: center;
   flex: 0 0 auto;
-  box-shadow: 0 6px 14px rgba(81, 104, 255, 0.22);
+  box-shadow: 0 8px 18px rgba(81, 104, 255, 0.24);
 }
 
 .heroAvatarImg {
@@ -83,8 +146,8 @@
 }
 
 .heroAvatarFallback {
-  font-family: var(--font-headline, 'Space Grotesk', sans-serif);
-  font-size: 20px;
+  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-size: 22px;
   font-weight: 800;
   color: #ffffff;
 }
@@ -93,11 +156,11 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
-  gap: 2px;
+  gap: 3px;
 }
 
 .heroEyebrow {
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.16em;
@@ -107,10 +170,10 @@
 
 .heroName {
   margin: 0;
-  font-family: var(--font-headline, 'Space Grotesk', sans-serif);
-  font-size: 24px;
+  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-size: 26px;
   font-weight: 800;
-  line-height: 1.05;
+  line-height: 1.04;
   letter-spacing: 0.005em;
   color: #121935;
   white-space: nowrap;
@@ -118,28 +181,35 @@
   text-overflow: ellipsis;
 }
 
+.heroSub {
+  margin-top: 2px;
+  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-size: 12.5px;
+  color: rgba(18, 25, 53, 0.6);
+}
+
 .heroStats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
+  gap: 10px;
 }
 
 .heroStat {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 10px 12px;
-  border-radius: 14px;
+  gap: 6px;
+  padding: 12px 14px;
+  border-radius: 12px;
   border: 1px solid rgba(81, 104, 255, 0.16);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(238, 244, 255, 0.92) 100%);
   min-width: 0;
 }
 
 .heroStatLabel {
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
   font-size: 9.5px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   color: rgba(18, 25, 53, 0.52);
   text-transform: uppercase;
 }
@@ -147,13 +217,13 @@
 .heroStatValueRow {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   min-width: 0;
 }
 
 .heroStatValue {
-  font-family: var(--font-headline, 'Space Grotesk', sans-serif);
-  font-size: 18px;
+  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-size: 20px;
   font-weight: 800;
   line-height: 1;
   color: #121935;
@@ -166,34 +236,19 @@
   font-size: 14px;
 }
 
-.heroStatTrophy {
+.heroStatIcon {
   color: #5168ff;
 }
 
-.heroTimerStat {
-  background: linear-gradient(180deg, rgba(16, 24, 52, 0.96) 0%, rgba(8, 13, 31, 0.96) 100%);
-  border-color: rgba(150, 170, 255, 0.16);
+.heroStatIconBolt {
+  color: #ff9c51;
 }
 
-.heroTimerStat .heroStatLabel {
-  color: rgba(226, 234, 255, 0.6);
-}
-
-.heroTimer {
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: #f2f6ff;
-  font-variant-numeric: tabular-nums;
-}
-
-/* Admin authoring */
+/* ── Admin / quest forge toggle ── */
 .adminSection {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  flex: 0 0 auto;
 }
 
 .adminToggle {
@@ -202,13 +257,11 @@
   gap: 10px;
   width: 100%;
   padding: 12px 14px;
-  border-radius: 16px;
+  border-radius: 12px;
   border: 1px dashed rgba(81, 104, 255, 0.36);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(244, 248, 255, 0.92) 100%);
   cursor: pointer;
   text-align: left;
-  appearance: none;
-  -webkit-appearance: none;
   transition: background 0.18s ease, border-color 0.18s ease;
 }
 
@@ -235,14 +288,14 @@
 
 .adminToggleLabel {
   flex: 1 1 auto;
-  font-family: var(--font-headline, 'Space Grotesk', sans-serif);
+  font-family: var(--font-primary, 'Poppins', sans-serif);
   font-size: 14px;
   font-weight: 700;
   color: #121935;
 }
 
 .adminToggleHint {
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
   font-size: 9.5px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -264,210 +317,373 @@
   flex: 0 0 auto;
 }
 
-/* Quest list */
-.questList {
+/* ── Filter pills ── */
+.filterRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 4px 0 2px;
+}
+
+.filterPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 12px 7px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(26, 29, 51, 0.1);
+  background: #ffffff;
+  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(18, 25, 53, 0.78);
+  cursor: pointer;
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+
+.filterPill:hover {
+  background: rgba(81, 104, 255, 0.06);
+  border-color: rgba(81, 104, 255, 0.28);
+}
+
+.filterPillDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #c1c8e0;
+  flex-shrink: 0;
+}
+
+.filterPill[data-kind='all'] .filterPillDot { background: #121935; }
+.filterPill[data-kind='course'] .filterPillDot { background: #5168ff; }
+.filterPill[data-kind='mission'] .filterPillDot { background: #4ea968; }
+.filterPill[data-kind='submit'] .filterPillDot { background: #ff9c51; }
+.filterPill[data-kind='social'] .filterPillDot { background: #a871f4; }
+.filterPill[data-kind='custom'] .filterPillDot { background: #ff648e; }
+
+.filterPillLabel {
+  font-weight: 700;
+}
+
+.filterPillCount {
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: rgba(18, 25, 53, 0.06);
+  color: rgba(18, 25, 53, 0.6);
+  font-variant-numeric: tabular-nums;
+}
+
+.filterPillActive {
+  background: #121935;
+  border-color: #121935;
+  color: #f5f8ff;
+}
+
+.filterPillActive .filterPillCount {
+  background: rgba(255, 255, 255, 0.16);
+  color: #f5f8ff;
+}
+
+/* ── Quest board / sections ── */
+.questBoard {
   display: flex;
   flex-direction: column;
-  flex: 1 1 auto;
-  min-height: 0;
-  min-width: 0;
-  overflow: hidden;
+  gap: 18px;
+}
+
+.questSection {
+  position: relative;
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(26, 29, 51, 0.07);
+  background: linear-gradient(180deg, #ffffff 0%, #f8faff 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.86), 0 10px 22px rgba(13, 19, 39, 0.04);
+}
+
+.questSection::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(120% 80% at 0% 0%, rgba(81, 104, 255, 0.05), transparent 38%);
+}
+
+.questSection[data-kind='course']::before {
+  background: radial-gradient(120% 80% at 0% 0%, rgba(81, 104, 255, 0.08), transparent 38%);
+}
+.questSection[data-kind='mission']::before {
+  background: radial-gradient(120% 80% at 0% 0%, rgba(78, 169, 104, 0.08), transparent 38%);
+}
+.questSection[data-kind='submit']::before {
+  background: radial-gradient(120% 80% at 0% 0%, rgba(255, 156, 81, 0.08), transparent 38%);
+}
+.questSection[data-kind='social']::before {
+  background: radial-gradient(120% 80% at 0% 0%, rgba(168, 113, 244, 0.08), transparent 38%);
+}
+.questSection[data-kind='custom']::before {
+  background: radial-gradient(120% 80% at 0% 0%, rgba(255, 100, 142, 0.08), transparent 38%);
 }
 
 .sectionHeading {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  padding: 0 4px 12px;
-  border-bottom: 1px solid rgba(81, 104, 255, 0.1);
-  flex: 0 0 auto;
   position: relative;
   z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+  border-bottom: 1px dashed rgba(26, 29, 51, 0.1);
+}
+
+.sectionHeadingLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   min-width: 0;
 }
 
-.sectionHeading::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -1px;
-  height: 14px;
-  background: linear-gradient(180deg, rgba(212, 223, 255, 0.18) 0%, rgba(212, 223, 255, 0) 100%);
-  pointer-events: none;
+.sectionEyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px 3px 7px;
+  border-radius: 999px;
+  background: rgba(18, 25, 53, 0.06);
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: rgba(18, 25, 53, 0.68);
+  text-transform: uppercase;
+  align-self: flex-start;
 }
 
-.questListScroll {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-  overscroll-behavior: contain;
-  padding: 12px 0 0;
-  min-width: 0;
+.sectionEyebrowDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #5168ff;
 }
 
-.questListFooter {
-  margin-top: 12px;
-  min-width: 0;
-}
+.sectionEyebrow[data-kind='course'] .sectionEyebrowDot { background: #5168ff; }
+.sectionEyebrow[data-kind='mission'] .sectionEyebrowDot { background: #4ea968; }
+.sectionEyebrow[data-kind='submit'] .sectionEyebrowDot { background: #ff9c51; }
+.sectionEyebrow[data-kind='social'] .sectionEyebrowDot { background: #a871f4; }
+.sectionEyebrow[data-kind='custom'] .sectionEyebrowDot { background: #ff648e; }
 
 .sectionTitle {
   margin: 0;
-  font-family: var(--font-headline, 'Space Grotesk', sans-serif);
-  font-size: 14px;
+  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-size: 16px;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  color: rgba(18, 25, 53, 0.78);
-  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  color: #121935;
+}
+
+.sectionBlurb {
+  margin: 0;
+  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-size: 12.5px;
+  color: rgba(18, 25, 53, 0.62);
+  max-width: 420px;
 }
 
 .sectionMeta {
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
-  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 10.5px;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: rgba(18, 25, 53, 0.46);
+  color: rgba(18, 25, 53, 0.5);
   text-transform: uppercase;
+  flex-shrink: 0;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(18, 25, 53, 0.04);
 }
 
-.cardList {
+.cardGrid {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 10px;
-  width: 100%;
-  min-width: 0;
+  gap: 12px;
 }
 
-.emptyHint {
-  margin: 0;
-  padding: 16px 14px;
+.boardFooter {
+  margin-top: 4px;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 36px 18px;
   border-radius: 14px;
   background: rgba(18, 25, 53, 0.04);
-  font-family: var(--font-primary, 'Poppins', sans-serif);
-  font-size: 13px;
+  border: 1px dashed rgba(18, 25, 53, 0.14);
   color: rgba(18, 25, 53, 0.6);
+  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-size: 13.5px;
   text-align: center;
 }
 
-/* Tablet */
-@media (min-width: 600px) {
-  .hero {
-    padding: 18px 20px;
-  }
-
-  .heroName {
-    font-size: 26px;
-  }
-
-  .heroStats {
-    gap: 10px;
-  }
-
-  .heroStat {
-    padding: 12px 14px;
-  }
-
-  .heroStatValue {
-    font-size: 20px;
-  }
-
-  .heroTimer {
-    font-size: 15px;
-  }
-
-  .questListScroll {
-    padding-top: 14px;
-  }
-}
-
-/* Desktop */
-@media (min-width: 900px) {
-  .page {
-    max-width: 880px;
-    padding: 14px 24px 48px;
-  }
-
+/* ── Tablet ── */
+@media (min-width: 720px) {
   .hero {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     gap: 18px;
-    padding: 20px 22px;
+    padding: 22px;
   }
 
-  .heroProfile {
+  .heroLeft {
     flex: 1 1 auto;
   }
 
   .heroStats {
+    grid-template-columns: repeat(3, minmax(120px, 1fr));
     flex: 0 1 auto;
-    grid-template-columns: repeat(3, minmax(112px, 1fr));
-  }
-
-  .cardList {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
   }
 }
 
-/* Mobile */
+@media (min-width: 900px) {
+  .content {
+    padding: 22px 24px 0;
+  }
+
+  .cardGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .cardGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ── Mobile ── */
 @media (max-width: 767px) {
   .pageLayout {
     margin-left: 0;
   }
 
-  .page {
-    padding-bottom: calc(110px + max(env(safe-area-inset-bottom, 0px), 16px));
+  .statusBar {
+    padding: 10px 14px;
+    gap: 16px;
+  }
+
+  .content {
+    padding: 14px 14px calc(110px + max(env(safe-area-inset-bottom, 0px), 16px));
+    gap: 14px;
+  }
+
+  .hero {
+    padding: 16px;
+    gap: 14px;
+  }
+
+  .heroStats {
+    gap: 8px;
+  }
+
+  .heroStat {
+    padding: 10px 12px;
+  }
+
+  .heroStatValue {
+    font-size: 18px;
+  }
+
+  .questSection {
+    padding: 14px;
+  }
+
+  .sectionHeading {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .sectionMeta {
+    align-self: flex-start;
   }
 }
 
 @media (max-width: 420px) {
-  .heroStats {
-    gap: 6px;
-  }
-
-  .heroStat {
-    padding: 8px 10px;
-    border-radius: 12px;
-  }
-
-  .heroStatLabel {
-    font-size: 9px;
-  }
-
-  .heroStatValue {
-    font-size: 16px;
-  }
-
-  .heroTimer {
-    font-size: 13px;
+  .heroName {
+    font-size: 22px;
   }
 
   .heroAvatar {
-    width: 42px;
-    height: 42px;
-    border-radius: 14px;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
   }
 
-  .heroName {
-    font-size: 20px;
+  .heroStats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .heroStats .heroStat:last-child {
+    grid-column: 1 / -1;
   }
 }
 
-/* Dark theme */
-:global([data-theme='dark']) .hero {
-  border-color: rgba(150, 170, 255, 0.16);
+/* ── Dark theme ── */
+:global([data-theme='dark']) .pageLayout {
   background:
-    radial-gradient(120% 130% at 0% 0%, rgba(81, 104, 255, 0.18) 0%, rgba(81, 104, 255, 0) 50%),
-    linear-gradient(180deg, rgba(31, 43, 79, 0.95) 0%, rgba(13, 19, 39, 0.96) 100%);
-  box-shadow: 0 14px 30px rgba(3, 7, 22, 0.32);
+    radial-gradient(circle at 84% 6%, rgba(81, 104, 255, 0.18), transparent 32%),
+    radial-gradient(circle at 14% 18%, rgba(78, 169, 104, 0.12), transparent 28%),
+    linear-gradient(180deg, #0b1024 0%, #060916 100%);
+}
+
+:global([data-theme='dark']) .statusBar {
+  background: rgba(13, 18, 36, 0.86);
+  border-bottom-color: rgba(150, 170, 255, 0.18);
+  color: rgba(226, 234, 255, 0.78);
+}
+
+:global([data-theme='dark']) .statusLabel {
+  color: rgba(226, 234, 255, 0.5);
+}
+
+:global([data-theme='dark']) .statusValue,
+:global([data-theme='dark']) .statusTimer {
+  color: #eef3ff;
+}
+
+:global([data-theme='dark']) .statusTimer {
+  background: rgba(81, 104, 255, 0.18);
+  border-color: rgba(150, 170, 255, 0.24);
+}
+
+:global([data-theme='dark']) .hero {
+  border-color: rgba(150, 170, 255, 0.18);
+  background:
+    radial-gradient(120% 130% at 0% 0%, rgba(81, 104, 255, 0.22) 0%, transparent 52%),
+    linear-gradient(180deg, rgba(31, 43, 79, 0.94) 0%, rgba(13, 19, 39, 0.96) 100%);
+  box-shadow: 0 14px 28px rgba(3, 7, 22, 0.36);
 }
 
 :global([data-theme='dark']) .heroEyebrow,
 :global([data-theme='dark']) .heroStatLabel,
-:global([data-theme='dark']) .sectionMeta {
-  color: rgba(226, 234, 255, 0.5);
+:global([data-theme='dark']) .sectionMeta,
+:global([data-theme='dark']) .sectionEyebrow,
+:global([data-theme='dark']) .sectionBlurb {
+  color: rgba(226, 234, 255, 0.6);
 }
 
 :global([data-theme='dark']) .heroName,
@@ -476,25 +692,56 @@
   color: #eef3ff;
 }
 
+:global([data-theme='dark']) .heroSub {
+  color: rgba(226, 234, 255, 0.68);
+}
+
+:global([data-theme='dark']) .heroStat,
+:global([data-theme='dark']) .questSection {
+  background: linear-gradient(180deg, rgba(35, 49, 91, 0.84) 0%, rgba(17, 24, 48, 0.88) 100%);
+  border-color: rgba(150, 170, 255, 0.16);
+}
+
+:global([data-theme='dark']) .sectionEyebrow {
+  background: rgba(226, 234, 255, 0.08);
+}
+
+:global([data-theme='dark']) .sectionMeta {
+  background: rgba(226, 234, 255, 0.06);
+}
+
+:global([data-theme='dark']) .sectionHeading {
+  border-bottom-color: rgba(150, 170, 255, 0.14);
+}
+
 :global([data-theme='dark']) .heroStatMuted {
   color: rgba(226, 234, 255, 0.36);
 }
 
-:global([data-theme='dark']) .heroStat {
-  border-color: rgba(150, 170, 255, 0.16);
-  background: linear-gradient(180deg, rgba(35, 49, 91, 0.86) 0%, rgba(17, 24, 48, 0.88) 100%);
+:global([data-theme='dark']) .filterPill {
+  background: rgba(35, 49, 91, 0.7);
+  border-color: rgba(150, 170, 255, 0.18);
+  color: rgba(226, 234, 255, 0.84);
 }
 
-:global([data-theme='dark']) .sectionHeading {
-  border-bottom-color: rgba(150, 170, 255, 0.12);
+:global([data-theme='dark']) .filterPill:hover {
+  background: rgba(81, 104, 255, 0.2);
 }
 
-:global([data-theme='dark']) .sectionHeading::after {
-  background: linear-gradient(180deg, rgba(98, 120, 194, 0.22) 0%, rgba(98, 120, 194, 0) 100%);
+:global([data-theme='dark']) .filterPillCount {
+  background: rgba(226, 234, 255, 0.08);
+  color: rgba(226, 234, 255, 0.7);
 }
 
-:global([data-theme='dark']) .heroTimerStat {
-  background: linear-gradient(180deg, rgba(8, 13, 31, 0.96) 0%, rgba(4, 7, 18, 0.96) 100%);
+:global([data-theme='dark']) .filterPillActive {
+  background: #eef3ff;
+  border-color: #eef3ff;
+  color: #121935;
+}
+
+:global([data-theme='dark']) .filterPillActive .filterPillCount {
+  background: rgba(18, 25, 53, 0.14);
+  color: #121935;
 }
 
 :global([data-theme='dark']) .adminToggle {
@@ -516,8 +763,9 @@
   color: #eef3ff;
 }
 
-:global([data-theme='dark']) .emptyHint {
+:global([data-theme='dark']) .emptyState {
   background: rgba(226, 234, 255, 0.06);
+  border-color: rgba(226, 234, 255, 0.12);
   color: rgba(226, 234, 255, 0.62);
 }
 

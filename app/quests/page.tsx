@@ -4,11 +4,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import { useReadContract } from 'wagmi';
 import Image from 'next/image';
-import { Trophy, Sparkle, Plus } from '@phosphor-icons/react';
+import { Trophy, Sparkle, Plus, Lightning, Target, ChartLineUp } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import QuestCard, { QuestCardKind } from '@/components/quest-card/QuestCard';
 import QuestAuthorPanel from '@/components/quest-author-panel/QuestAuthorPanel';
-import RewardDetailModal, { Quest } from '@/components/reward-detail-modal/RewardDetailModal';
+import QuestDrawer, { DrawerQuest } from '@/components/quest-drawer/QuestDrawer';
 import AngelMintSection from '@/components/angel-mint-section/AngelMintSection';
 import MintModal from '@/components/mint-modal/MintModal';
 import { useSound } from '@/hooks/useSound';
@@ -52,7 +52,14 @@ const BALANCE_OF_ABI = [
   },
 ] as const;
 
-function questKindFromType(type: QuestType | 'custom'): QuestCardKind {
+type QuestFilter = 'all' | QuestCardKind;
+
+interface UnifiedQuest extends DrawerQuest {
+  kind: QuestCardKind;
+  badge?: string;
+}
+
+function questKindFromType(type: QuestType): QuestCardKind {
   switch (type) {
     case 'sealed-week':
       return 'course';
@@ -67,6 +74,32 @@ function questKindFromType(type: QuestType | 'custom'): QuestCardKind {
       return 'custom';
   }
 }
+
+const FILTER_ORDER: QuestFilter[] = ['all', 'course', 'mission', 'submit', 'social', 'custom'];
+const FILTER_LABEL: Record<QuestFilter, string> = {
+  all: 'All',
+  course: 'Course',
+  mission: 'Mission',
+  submit: 'Submit',
+  social: 'Social',
+  custom: 'Custom',
+};
+
+const KIND_SECTION_TITLE: Record<QuestCardKind, string> = {
+  course: 'Course milestones',
+  mission: 'Self-report missions',
+  submit: 'Proof submissions',
+  social: 'Social signals',
+  custom: 'Community quests',
+};
+
+const KIND_SECTION_BLURB: Record<QuestCardKind, string> = {
+  course: 'Seal weekly lessons on the home dashboard, then claim shards here.',
+  mission: 'Trust-based quests. Mark them as done when finished.',
+  submit: 'Submit proof of work for community review.',
+  social: 'Quick wins by connecting external accounts.',
+  custom: 'Authored by Soul Key holders for the community.',
+};
 
 export default function QuestsPage() {
   const { ready, authenticated, getAccessToken, user: privyUser } = usePrivy();
@@ -84,8 +117,8 @@ export default function QuestsPage() {
   });
   const isPro = !!proTokenBalance && proTokenBalance > 0n;
 
-  const [selectedQuest, setSelectedQuest] = useState<Quest | null>(null);
-  const [isRewardModalOpen, setIsRewardModalOpen] = useState(false);
+  const [selectedQuest, setSelectedQuest] = useState<DrawerQuest | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [showMintModal, setShowMintModal] = useState(false);
   const [weekStatuses, setWeekStatuses] = useState<WeekStatus[]>([]);
   const [questCounts, setQuestCounts] = useState<Record<string, number>>({});
@@ -93,7 +126,9 @@ export default function QuestsPage() {
   const [authoredQuests, setAuthoredQuests] = useState<CustomQuest[]>([]);
   const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>(null);
   const [countdown, setCountdown] = useState('--:--:--');
+  const [seasonWeek, setSeasonWeek] = useState<number | null>(null);
   const [authorPanelOpen, setAuthorPanelOpen] = useState(false);
+  const [filter, setFilter] = useState<QuestFilter>('all');
   const { play } = useSound();
 
   const fetchWithAuth = useCallback(async (url: string) => {
@@ -206,6 +241,7 @@ export default function QuestsPage() {
         const hours = Math.floor((remaining % (24 * 60 * 60 * 1000)) / 3_600_000);
         const minutes = Math.floor((remaining % 3_600_000) / 60_000);
         setCountdown(`${days}D ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`);
+        setSeasonWeek(0);
         return;
       }
       const weekIndex = Math.floor(elapsed / weekMs);
@@ -217,6 +253,7 @@ export default function QuestsPage() {
       setCountdown(
         `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
       );
+      setSeasonWeek(weekIndex + 1);
     };
 
     tick();
@@ -224,8 +261,8 @@ export default function QuestsPage() {
     return () => window.clearInterval(interval);
   }, []);
 
-  const builtInQuests = useMemo<Quest[]>(() => {
-    return QUEST_DEFINITIONS.map((quest) => {
+  const allQuests = useMemo<UnifiedQuest[]>(() => {
+    const builtIn: UnifiedQuest[] = QUEST_DEFINITIONS.map((quest) => {
       const claimedCount = Math.min(questCounts[quest.key] ?? 0, quest.targetCount);
       const progressCount = quest.questType === 'sealed-week'
         ? (weekStatuses.find((week) => week.weekNumber === quest.weekNumber)?.isSealed ? 1 : 0)
@@ -242,38 +279,83 @@ export default function QuestsPage() {
         claimedCount,
         weekNumber: quest.weekNumber,
         icon: quest.icon,
+        kind: questKindFromType(quest.questType),
+        badge: quest.weekNumber ? `Week ${quest.weekNumber}` : undefined,
       };
     });
-  }, [questCounts, weekStatuses]);
 
-  const customQuestsAsModal = useMemo<Quest[]>(() => {
-    return customQuests.map((q) => ({
-      id: q.id,
-      title: q.title,
-      points: q.points,
-      desc: q.description,
-      rewardType: q.questType,
-      targetCount: q.targetCount,
-      progressCount: q.progressCount,
-      claimedCount: q.progressCount,
-    }));
-  }, [customQuests]);
+    const custom: UnifiedQuest[] = customQuests.map((q) => {
+      const handleLabel = q.creatorHandle
+        ? `By @${q.creatorHandle}`
+        : q.creatorWallet
+          ? `By ${q.creatorWallet.slice(0, 6)}…${q.creatorWallet.slice(-4)}`
+          : undefined;
+      return {
+        id: q.id,
+        title: q.title,
+        points: q.points,
+        desc: q.description,
+        rewardType: q.questType,
+        targetCount: q.targetCount,
+        progressCount: q.progressCount,
+        claimedCount: q.progressCount,
+        kind: 'custom',
+        badge: handleLabel,
+        authorLabel: handleLabel,
+      };
+    });
 
-  const totalQuestCount = builtInQuests.length + customQuests.length;
-  const completedQuestCount = useMemo(() => {
-    const builtIn = builtInQuests.filter((q) => (q.claimedCount ?? 0) >= (q.targetCount ?? 1)).length;
-    const custom = customQuests.filter((q) => q.progressCount >= q.targetCount).length;
-    return builtIn + custom;
-  }, [builtInQuests, customQuests]);
+    return [...builtIn, ...custom];
+  }, [customQuests, questCounts, weekStatuses]);
+
+  const countsByKind = useMemo(() => {
+    const acc: Record<QuestCardKind, number> = { course: 0, mission: 0, submit: 0, social: 0, custom: 0 };
+    for (const quest of allQuests) acc[quest.kind] += 1;
+    return acc;
+  }, [allQuests]);
+
+  const filteredQuests = useMemo(() => {
+    if (filter === 'all') return allQuests;
+    return allQuests.filter((q) => q.kind === filter);
+  }, [allQuests, filter]);
+
+  const groupedQuests = useMemo(() => {
+    const groups: Record<QuestCardKind, UnifiedQuest[]> = {
+      course: [],
+      mission: [],
+      submit: [],
+      social: [],
+      custom: [],
+    };
+    for (const quest of filteredQuests) groups[quest.kind].push(quest);
+    return groups;
+  }, [filteredQuests]);
+
+  const totalQuestCount = allQuests.length;
+  const completedQuestCount = useMemo(
+    () => allQuests.filter((q) => (q.claimedCount ?? 0) >= (q.targetCount ?? 1)).length,
+    [allQuests],
+  );
+  const totalShardsAvailable = useMemo(
+    () => allQuests
+      .filter((q) => (q.claimedCount ?? 0) < (q.targetCount ?? 1))
+      .reduce((sum, q) => sum + q.points, 0),
+    [allQuests],
+  );
 
   const playerName = playerProfile?.username?.trim() || 'Player One';
   const playerInitial = playerName.charAt(0).toUpperCase();
 
-  const handleAccept = (quest: Quest) => {
+  const handleAccept = (quest: UnifiedQuest) => {
     play('click');
     setSelectedQuest(quest);
-    setIsRewardModalOpen(true);
+    setIsDrawerOpen(true);
   };
+
+  const handleCloseDrawer = useCallback(() => {
+    setIsDrawerOpen(false);
+    setTimeout(() => setSelectedQuest(null), 320);
+  }, []);
 
   const handleQuestAuthored = useCallback(() => {
     refreshAuthoredQuests();
@@ -295,21 +377,52 @@ export default function QuestsPage() {
     }
   }, [getAccessToken, handleQuestAuthored]);
 
+  const visibleSections = (Object.keys(groupedQuests) as QuestCardKind[]).filter(
+    (kind) => groupedQuests[kind].length > 0,
+  );
+
   return (
     <>
       <div className={styles.pageLayout}>
         <SideNavigation />
         <main className={styles.page}>
+          {/* ── Terminal-style status bar ── */}
+          <div className={styles.statusBar}>
+            <div className={styles.statusItem}>
+              <span className={styles.statusLabel}>season</span>
+              <span className={styles.statusHighlight}>
+                {seasonWeek === null ? '--' : seasonWeek === 0 ? 'PRE-LAUNCH' : `WEEK ${seasonWeek}`}
+              </span>
+            </div>
+            <div className={styles.statusItem}>
+              <span className={styles.statusLabel}>next reset</span>
+              <span className={styles.statusTimer} aria-live="polite">{countdown}</span>
+            </div>
+            <div className={styles.statusItem}>
+              <span className={styles.statusLabel}>shards on table</span>
+              <span className={styles.statusValue}>{totalShardsAvailable}</span>
+            </div>
+            <div className={styles.statusItem}>
+              <span className={styles.statusLabel}>cleared</span>
+              <span className={styles.statusValue}>{completedQuestCount}/{totalQuestCount}</span>
+            </div>
+            <div className={styles.statusItem}>
+              <span className={styles.statusLabel}>tier</span>
+              <span className={styles.statusValue}>{isPro ? 'SOUL KEY' : 'ACADEMIC'}</span>
+            </div>
+          </div>
+
           <div className={styles.content}>
-            <section className={styles.hero} aria-label="Quest overview">
-              <div className={styles.heroProfile}>
+            {/* ── Player banner ── */}
+            <section className={styles.hero} aria-label="Player overview">
+              <div className={styles.heroLeft}>
                 <div className={styles.heroAvatar}>
                   {playerProfile?.avatarUrl ? (
                     <Image
                       src={playerProfile.avatarUrl}
                       alt={playerName}
-                      width={48}
-                      height={48}
+                      width={56}
+                      height={56}
                       className={styles.heroAvatarImg}
                     />
                   ) : (
@@ -317,36 +430,45 @@ export default function QuestsPage() {
                   )}
                 </div>
                 <div className={styles.heroNameBlock}>
-                  <span className={styles.heroEyebrow}>QUESTS</span>
+                  <span className={styles.heroEyebrow}>operative</span>
                   <h1 className={styles.heroName}>{playerName}</h1>
+                  <span className={styles.heroSub}>
+                    {completedQuestCount === 0
+                      ? 'Pick a quest below to start banking shards.'
+                      : `${completedQuestCount} quest${completedQuestCount === 1 ? '' : 's'} cleared this season.`}
+                  </span>
                 </div>
               </div>
 
               <div className={styles.heroStats}>
                 <div className={styles.heroStat}>
-                  <span className={styles.heroStatLabel}>Shards</span>
+                  <span className={styles.heroStatLabel}>Shard balance</span>
                   <span className={styles.heroStatValueRow}>
-                    <Image src="/icons/ui-shard.svg" alt="" width={16} height={16} />
+                    <Image src="/icons/ui-shard.svg" alt="" width={18} height={18} />
                     <span className={styles.heroStatValue}>{playerProfile?.shardCount ?? 0}</span>
                   </span>
                 </div>
                 <div className={styles.heroStat}>
                   <span className={styles.heroStatLabel}>Cleared</span>
                   <span className={styles.heroStatValueRow}>
-                    <Trophy size={15} weight="fill" className={styles.heroStatTrophy} />
+                    <Trophy size={16} weight="fill" className={styles.heroStatIcon} />
                     <span className={styles.heroStatValue}>
                       {completedQuestCount}
                       <span className={styles.heroStatMuted}>/{totalQuestCount}</span>
                     </span>
                   </span>
                 </div>
-                <div className={`${styles.heroStat} ${styles.heroTimerStat}`}>
-                  <span className={styles.heroStatLabel}>Next week</span>
-                  <span className={styles.heroTimer} aria-live="polite">{countdown}</span>
+                <div className={styles.heroStat}>
+                  <span className={styles.heroStatLabel}>On the table</span>
+                  <span className={styles.heroStatValueRow}>
+                    <Lightning size={16} weight="fill" className={styles.heroStatIconBolt} />
+                    <span className={styles.heroStatValue}>{totalShardsAvailable}</span>
+                  </span>
                 </div>
               </div>
             </section>
 
+            {/* ── Pro author rail ── */}
             {isPro && (
               <section className={styles.adminSection} aria-label="Quest authoring">
                 <button
@@ -359,11 +481,15 @@ export default function QuestsPage() {
                     <Sparkle size={14} weight="fill" />
                   </span>
                   <span className={styles.adminToggleLabel}>
-                    {authorPanelOpen ? 'Hide quest authoring' : 'Author a quest'}
+                    {authorPanelOpen ? 'Hide quest forge' : 'Open quest forge'}
                   </span>
                   <span className={styles.adminToggleHint}>Soul Key</span>
                   <span className={styles.adminToggleChevron} aria-hidden="true">
-                    <Plus size={14} weight="bold" style={{ transform: authorPanelOpen ? 'rotate(45deg)' : 'none', transition: 'transform 0.2s' }} />
+                    <Plus
+                      size={14}
+                      weight="bold"
+                      style={{ transform: authorPanelOpen ? 'rotate(45deg)' : 'none', transition: 'transform 0.2s' }}
+                    />
                   </span>
                 </button>
 
@@ -378,17 +504,56 @@ export default function QuestsPage() {
               </section>
             )}
 
-            <section className={styles.questList} aria-label="Quests">
-              <div className={styles.sectionHeading}>
-                <h2 className={styles.sectionTitle}>Active quests</h2>
-                <span className={styles.sectionMeta}>{totalQuestCount} total</span>
-              </div>
+            {/* ── Filter pills ── */}
+            <nav className={styles.filterRow} aria-label="Filter quests by kind">
+              {FILTER_ORDER.map((key) => {
+                const count = key === 'all' ? totalQuestCount : countsByKind[key as QuestCardKind];
+                if (key !== 'all' && count === 0) return null;
+                const active = filter === key;
+                return (
+                  <button
+                    type="button"
+                    key={key}
+                    className={`${styles.filterPill} ${active ? styles.filterPillActive : ''}`}
+                    onClick={() => setFilter(key)}
+                    data-kind={key}
+                  >
+                    <span className={styles.filterPillDot} aria-hidden="true" />
+                    <span className={styles.filterPillLabel}>{FILTER_LABEL[key]}</span>
+                    <span className={styles.filterPillCount}>{count}</span>
+                  </button>
+                );
+              })}
+            </nav>
 
-              <div className={styles.questListScroll}>
-                <div className={styles.cardList}>
-                  {builtInQuests.map((quest) => {
-                    const completed = (quest.claimedCount ?? 0) >= (quest.targetCount ?? 1);
-                    return (
+            {/* ── Quest sections ── */}
+            <div className={styles.questBoard}>
+              {visibleSections.length === 0 && (
+                <div className={styles.emptyState}>
+                  <Target size={28} weight="duotone" />
+                  <p>No quests match this filter yet.</p>
+                </div>
+              )}
+
+              {visibleSections.map((kind) => (
+                <section key={kind} className={styles.questSection} data-kind={kind}>
+                  <header className={styles.sectionHeading}>
+                    <div className={styles.sectionHeadingLeft}>
+                      <span className={styles.sectionEyebrow} data-kind={kind}>
+                        <span className={styles.sectionEyebrowDot} aria-hidden="true" />
+                        {FILTER_LABEL[kind]}
+                      </span>
+                      <h2 className={styles.sectionTitle}>{KIND_SECTION_TITLE[kind]}</h2>
+                      <p className={styles.sectionBlurb}>{KIND_SECTION_BLURB[kind]}</p>
+                    </div>
+                    <span className={styles.sectionMeta}>
+                      <ChartLineUp size={11} weight="bold" />
+                      {groupedQuests[kind].length} live
+                    </span>
+                  </header>
+
+                  <div className={styles.cardGrid}>
+                    {groupedQuests[kind].map((quest) => (
                       <div key={quest.id} onMouseEnter={() => play('hover')}>
                         <QuestCard
                           title={quest.title}
@@ -396,61 +561,29 @@ export default function QuestsPage() {
                           progressCurrent={quest.progressCount ?? 0}
                           progressTotal={quest.targetCount ?? 1}
                           points={quest.points}
-                          kind={questKindFromType((quest.rewardType ?? 'no-proof') as QuestType)}
-                          badge={quest.weekNumber ? `Week ${quest.weekNumber}` : undefined}
-                          onOpen={() => handleAccept(quest)}
-                        />
-                        {completed ? null : null}
-                      </div>
-                    );
-                  })}
-
-                  {customQuestsAsModal.map((quest) => {
-                    const original = customQuests.find((c) => c.id === quest.id);
-                    const handleLabel = original?.creatorHandle
-                      ? `By @${original.creatorHandle}`
-                      : original?.creatorWallet
-                        ? `By ${original.creatorWallet.slice(0, 6)}…${original.creatorWallet.slice(-4)}`
-                        : undefined;
-                    return (
-                      <div key={quest.id} onMouseEnter={() => play('hover')}>
-                        <QuestCard
-                          title={quest.title}
-                          description={quest.desc}
-                          progressCurrent={quest.progressCount ?? 0}
-                          progressTotal={quest.targetCount ?? 1}
-                          points={quest.points}
-                          kind="custom"
-                          badge={handleLabel}
+                          kind={quest.kind}
+                          badge={quest.badge}
                           onOpen={() => handleAccept(quest)}
                         />
                       </div>
-                    );
-                  })}
+                    ))}
+                  </div>
+                </section>
+              ))}
 
-                  {customQuests.length === 0 && (
-                    <p className={styles.emptyHint}>
-                      {isPro
-                        ? 'Open quest authoring to create your first one.'
-                        : 'Soul Key holders can author additional quests for the community.'}
-                    </p>
-                  )}
-                </div>
-
-                <div className={styles.questListFooter}>
-                  <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
-                </div>
+              <div className={styles.boardFooter}>
+                <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
               </div>
-            </section>
+            </div>
           </div>
         </main>
       </div>
 
       <MintModal isOpen={showMintModal} onClose={() => setShowMintModal(false)} />
-      <RewardDetailModal
-        isOpen={isRewardModalOpen}
-        onClose={() => { setIsRewardModalOpen(false); setSelectedQuest(null); }}
-        reward={selectedQuest}
+      <QuestDrawer
+        isOpen={isDrawerOpen}
+        onClose={handleCloseDrawer}
+        quest={selectedQuest}
       />
     </>
   );
