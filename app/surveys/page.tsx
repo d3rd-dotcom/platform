@@ -7,7 +7,7 @@ import SurveySpace from '@/components/survey-space/SurveySpace';
 import BlueTerminal, { type TestAnswers, type TestCompletionResult, type TestData } from '@/components/blue-terminal/BlueTerminal';
 import SignFormModal from '@/components/sign-form-modal/SignFormModal';
 import { getTestShardReward } from '@/lib/test-rewards';
-import styles from '../home/page.module.css';
+import styles from './page.module.css';
 
 export default function SurveysPage() {
   const [difficulty, setDifficulty] = useState(101);
@@ -44,7 +44,7 @@ export default function SurveysPage() {
     } finally {
       setIsGenerating(false);
     }
-  }, [difficulty]);
+  }, [difficulty, persona]);
 
   const handleSubmitQuest = useCallback(async (answers: TestAnswers): Promise<TestCompletionResult> => {
     if (!testData?.testId) {
