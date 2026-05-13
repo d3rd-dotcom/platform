@@ -301,12 +301,6 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
         </div>
       )}
 
-      {/* ===== BOOT MODE (idle) ===== */}
-      {!testData && !isGenerating && !errorMessage && (
-        <div className={styles.idleScreen}>
-          <h1 className={styles.idleHeading}>Surveys Generate Here</h1>
-        </div>
-      )}
 
       <footer className={styles.brandFooter}>
         <span aria-hidden="true" />
