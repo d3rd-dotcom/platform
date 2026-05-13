@@ -812,6 +812,7 @@
 .panelModal {
   max-width: none;
   min-height: calc(100vh - 48px);
+  animation: panelSlideIn 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .panelStatusCard {
@@ -868,6 +869,17 @@
   font-size: 14px;
   line-height: 1.65;
   color: rgba(26, 29, 51, 0.6);
+}
+
+@keyframes panelSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .modalBackdrop {
@@ -1615,6 +1627,10 @@
   .authPromptAvatar {
     animation: none;
   }
+
+  .panelModal {
+    animation: none;
+  }
 }
 
 /* ============================================ */
@@ -1726,6 +1742,31 @@
   box-shadow:
     0 30px 90px rgba(0, 0, 0, 0.62),
     inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+:global([data-theme="dark"]) .panelStatusCard {
+  background:
+    linear-gradient(180deg, rgba(17, 21, 32, 0.96) 0%, rgba(11, 15, 24, 0.96) 100%);
+  border-color: rgba(107, 128, 255, 0.18);
+  box-shadow:
+    0 20px 48px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+:global([data-theme="dark"]) .panelStatusClose {
+  color: rgba(214, 223, 242, 0.62);
+}
+
+:global([data-theme="dark"]) .panelStatusClose:hover {
+  color: rgba(244, 247, 255, 0.92);
+}
+
+:global([data-theme="dark"]) .panelStatusTitle {
+  color: rgba(244, 247, 255, 0.96);
+}
+
+:global([data-theme="dark"]) .panelStatusCopy {
+  color: rgba(214, 223, 242, 0.72);
 }
 
 :global([data-theme="dark"]) .sessionBadge {

@@ -412,18 +412,17 @@ export default function DailyNotes({
 
   useEffect(() => {
     if (!panelMode || !enablePersistence || !dataReady) return;
-    if (timerActive || introDayIndex !== null || activeDayIndex !== null) return;
+    if (timerActive || activeDayIndex !== null) return;
     if (!canStart) return;
 
-    handleAttemptStart(availableDayIndex);
+    beginWritingSession(availableDayIndex);
   }, [
     activeDayIndex,
     availableDayIndex,
+    beginWritingSession,
     canStart,
     dataReady,
     enablePersistence,
-    handleAttemptStart,
-    introDayIndex,
     panelMode,
     timerActive,
   ]);
@@ -647,17 +646,13 @@ export default function DailyNotes({
             <p className={styles.panelStatusTitle}>
               {!dataReady
                 ? 'Loading your writing session...'
-                : introDayIndex !== null
-                  ? `Opening Day ${introDayIndex + 1}...`
-                  : canStart
-                    ? `Opening Day ${availableDayIndex + 1}...`
-                    : todayDone
-                      ? 'Today’s morning page is already complete.'
-                      : weekComplete
-                        ? 'This week’s morning pages are complete.'
-                        : !isWeekUnlocked
-                          ? 'Finish the previous week to unlock this page.'
-                          : 'A new morning page will unlock tomorrow.'}
+                : todayDone
+                  ? 'Today’s morning page is already complete.'
+                  : weekComplete
+                    ? 'This week’s morning pages are complete.'
+                    : !isWeekUnlocked
+                      ? 'Finish the previous week to unlock this page.'
+                      : 'A new morning page will unlock tomorrow.'}
             </p>
             <p className={styles.panelStatusCopy}>
               {!dataReady
@@ -666,28 +661,11 @@ export default function DailyNotes({
                   ? 'Come back tomorrow for the next writing session.'
                   : weekComplete
                     ? 'You finished all seven entries for this week.'
-                    : !isWeekUnlocked
-                      ? 'Morning pages unlock one week at a time after seven completed entries.'
-                      : introDayIndex !== null || canStart
-                        ? 'Preparing the writing space in this panel.'
-                        : 'You can only submit one morning page per day.'}
+                  : !isWeekUnlocked
+                    ? 'Morning pages unlock one week at a time after seven completed entries.'
+                    : 'You can only submit one morning page per day.'}
             </p>
           </div>
-        )}
-
-        {introDayIndex !== null && (
-          <IntroLoaderOverlay
-            src="/loaders/Sandy%20Loading.lottie"
-            label="Opening notes"
-            durationMs={580}
-            onFinish={() => {
-              const dayIndex = introDayIndex;
-              setIntroDayIndex(null);
-              if (dayIndex !== null) {
-                beginWritingSession(dayIndex);
-              }
-            }}
-          />
         )}
 
         {timerActive && renderTimerSession(true)}
