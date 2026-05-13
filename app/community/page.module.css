@@ -1755,14 +1755,14 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  flex-direction: row-reverse;
+  gap: 8px;
   min-width: 0;
 }
 
 .dashboardAvatar {
   width: 34px;
   height: 34px;
-  margin-left: -8px;
+  margin-left: 0;
   border-radius: 999px;
   border: 2px solid var(--dashboard-avatar-border);
   box-shadow: 0 0 0 1px var(--dashboard-control-border);
@@ -2374,7 +2374,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  flex-direction: row-reverse;
+  gap: 8px;
   min-width: 0;
 }
 
@@ -2390,7 +2390,7 @@
   overflow: hidden;
   border-radius: 14px;
   border: 1px solid var(--dashboard-panel-border);
-  background: url('/images/community-hero-bg.png') right center / auto 114% no-repeat, var(--dashboard-panel-bg);
+  background: url('/images/community-hero-bg.png') right center / cover no-repeat;
   box-shadow: 0 14px 36px rgba(26, 27, 36, 0.1);
   isolation: isolate;
 }
@@ -2401,8 +2401,8 @@
   inset: 0;
   z-index: 0;
   background:
-    linear-gradient(95deg, color-mix(in oklch, var(--dashboard-panel-bg) 96%, transparent) 0%, color-mix(in oklch, var(--dashboard-panel-bg) 72%, transparent) 42%, transparent 72%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.06) 100%);
+    linear-gradient(95deg, rgba(8, 10, 22, 0.9) 0%, rgba(8, 10, 22, 0.72) 42%, rgba(8, 10, 22, 0.18) 66%, transparent 82%),
+    linear-gradient(180deg, rgba(8, 10, 22, 0.1) 0%, rgba(8, 10, 22, 0.28) 100%);
   pointer-events: none;
 }
 
@@ -2439,23 +2439,26 @@
 .communityHero .dashboardTitle {
   font-family: 'Poppins', sans-serif;
   font-size: clamp(22px, 2.4vw, 32px);
+  font-weight: 400;
   line-height: 1.1;
-  color: var(--dashboard-title-color);
+  color: #ffffff;
   text-shadow: none;
 }
 
 .communityHero .dashboardSubtitle {
   margin: 0;
-  color: var(--dashboard-muted-color);
+  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
+  color: rgba(255, 255, 255, 0.76);
   font-size: 13px;
 }
 
 .communityHero .podInfoButton {
   width: 28px;
   height: 28px;
-  background: var(--dashboard-control-bg);
-  border-color: var(--dashboard-control-border);
-  color: var(--dashboard-text-color);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  backdrop-filter: blur(10px);
 }
 
 .communityHeroMembers {
@@ -2463,12 +2466,12 @@
   align-items: center;
   gap: 14px;
   margin-top: 10px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--dashboard-text-color);
+  color: rgba(255, 255, 255, 0.86);
 }
 
 .communityDashGrid {
@@ -2488,8 +2491,8 @@
 
 .communityCardRow {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
 }
 
 .dashCard {
@@ -2621,7 +2624,7 @@
 
 .treasuryBreakdownCard,
 .topContributorsCard {
-  min-height: 216px;
+  min-height: 172px;
 }
 
 .treasuryBreakdownDot {
@@ -2658,7 +2661,7 @@
 
 .communityDashRail .fundingVillageSticker {
   grid-column: 2;
-  grid-row: 2 / span 3;
+  grid-row: 2;
   width: 118px;
   height: 118px;
   margin: -4px 4px 0 12px;
@@ -2705,13 +2708,13 @@
 .topContributorsList {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 
 .topContributorsBody {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
 }
 
@@ -2726,7 +2729,7 @@
   display: grid;
   grid-template-columns: 22px 34px minmax(0, 1fr) auto;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   min-width: 0;
 }
 
@@ -2754,57 +2757,159 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   font-family: 'Poppins', sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--dashboard-title-color);
 }
 
 .topContributorRow strong {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--color-primary);
 }
 
+.topContributorsCard {
+  padding: 14px 14px 12px;
+}
+
+.topContributorsCard .dashCardHeader {
+  margin-bottom: 10px;
+}
+
+.topContributorsCard .dashCardEyebrow {
+  margin-bottom: 3px;
+}
+
+.topContributorsCard .dashboardAvatar {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  font-size: 10px;
+}
+
+.treasuryBreakdownCard {
+  padding: 16px;
+}
+
 .communityChatCard {
-  padding-bottom: 8px;
+  padding: 0;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(11, 14, 28, 0.98) 0%, rgba(11, 14, 28, 0.94) 42%, rgba(11, 14, 28, 0.36) 66%, rgba(11, 14, 28, 0.08) 100%),
+    #0c101d;
+  border-color: rgba(129, 144, 255, 0.2);
+  color: #ffffff;
+}
+
+.communityChatHeader {
+  min-height: 78px;
+  display: grid;
+  grid-template-columns: auto minmax(160px, 220px) minmax(240px, 1fr);
+  align-items: center;
+  gap: 16px;
+  padding: 18px 22px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.communityChatTitle {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #ffffff;
+}
+
+.chatChannelButton,
+.chatInputMock {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(129, 144, 255, 0.14);
+  background: rgba(22, 27, 48, 0.74);
+  color: rgba(255, 255, 255, 0.78);
+  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
+}
+
+.chatChannelButton {
+  justify-content: space-between;
+  padding: 0 14px;
+  cursor: default;
+}
+
+.chatChannelButton span {
+  color: rgba(129, 144, 255, 0.9);
+}
+
+.chatChannelButton svg,
+.chatInputMock svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.chatInputMock {
+  justify-self: end;
+  width: min(100%, 420px);
+  justify-content: space-between;
+  padding: 0 16px 0 18px;
+  color: rgba(255, 255, 255, 0.36);
+}
+
+.chatInputMock svg {
+  width: 22px;
+  height: 22px;
+  color: rgba(129, 144, 255, 0.94);
+}
+
+.communityChatBody {
+  min-height: 360px;
+  display: grid;
+  grid-template-columns: minmax(320px, 0.95fr) minmax(280px, 1.05fr);
+  position: relative;
 }
 
 .chatList {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 18px;
+  padding: 28px 0 28px 22px;
 }
 
 .chatRow {
   display: grid;
-  grid-template-columns: 40px minmax(0, 1fr);
-  gap: 12px;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 13px;
   align-items: start;
 }
 
 .chatAvatar {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: 999px;
   object-fit: cover;
-  border: 2px solid var(--dashboard-avatar-border);
-  background: var(--dashboard-control-bg);
+  border: 2px solid rgba(129, 144, 255, 0.38);
+  background: rgba(255, 255, 255, 0.08);
 }
 
-.chatBubble {
+.chatMessage {
   min-width: 0;
-  padding: 13px 14px;
-  border-radius: 8px;
-  background: var(--dashboard-control-bg);
-  border: 1px solid var(--dashboard-control-border);
 }
 
 .chatMeta {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
   min-width: 0;
-  margin-bottom: 6px;
+  margin-bottom: 5px;
 }
 
 .chatMeta strong {
@@ -2812,16 +2917,17 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-family: 'Poppins', sans-serif;
-  font-size: 13px;
-  color: var(--dashboard-title-color);
+  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.94);
 }
 
+.chatMeta time,
 .chatMeta span {
   flex-shrink: 0;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
   font-size: 10px;
-  color: var(--dashboard-faint-color);
+  color: rgba(255, 255, 255, 0.48);
 }
 
 .chatCategory {
@@ -2832,12 +2938,49 @@
   text-transform: uppercase;
 }
 
-.chatBubble p {
+.chatMessage p {
   margin: 0;
+  max-width: 58ch;
   font-family: 'Poppins', sans-serif;
-  font-size: 12.5px;
+  font-size: 13px;
   line-height: 1.55;
-  color: var(--dashboard-muted-color);
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.chatImagePanel {
+  min-width: 0;
+  background:
+    linear-gradient(90deg, rgba(11, 14, 28, 0.86) 0%, rgba(11, 14, 28, 0.22) 24%, rgba(11, 14, 28, 0.02) 100%),
+    url('/images/community-hero-bg.png') center / cover no-repeat;
+}
+
+.communityChatFooter {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 0 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.communityChatFooter strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.78);
+  font-weight: 700;
+}
+
+.chatOnlineDot {
+  width: 9px;
+  height: 9px;
+  display: inline-flex;
+  border-radius: 999px;
+  background: #58dc8b;
+  box-shadow: 0 0 12px rgba(88, 220, 139, 0.55);
 }
 
 .activeProposalsSection {
@@ -5311,11 +5454,42 @@
   .chatMeta {
     flex-wrap: wrap;
   }
+
+  .communityChatHeader {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 18px;
+  }
+
+  .chatChannelButton,
+  .chatInputMock {
+    width: 100%;
+  }
+
+  .communityChatBody {
+    grid-template-columns: 1fr;
+  }
+
+  .chatList {
+    padding: 22px 18px;
+  }
+
+  .chatImagePanel {
+    min-height: 220px;
+    order: -1;
+  }
+
+  .communityChatFooter {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 16px 18px;
+  }
 }
 
 @media (max-width: 520px) {
   .communityHero {
-    background-size: auto 104%;
+    background-position: center;
+    background-size: cover;
   }
 
   .communityHeroContent {

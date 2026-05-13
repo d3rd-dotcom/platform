@@ -311,7 +311,7 @@ export default function CoursePage() {
     setIsReaderOpen(true);
   }, []);
 
-  const [selectedPanel, setSelectedPanel] = useState<'daily-note' | 'tasks'>('daily-note');
+  const [rightContent, setRightContent] = useState<'daily-note' | 'reading'>('daily-note');
   const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {

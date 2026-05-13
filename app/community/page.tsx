@@ -216,10 +216,11 @@ const DASHBOARD_PARTICIPANTS: ReadonlyArray<{
   accent: string;
   image?: string;
 }> = [
-  { label: 'Blue', image: '/prompts/CharacterBlue.png', accent: styles.dashboardAvatarImageWrap },
-  { label: 'Vesper', image: '/uploads/vesper-landing-avatar.png', accent: styles.dashboardAvatarImageWrap },
-  { label: 'Orbit', image: '/anbel09.png', accent: styles.dashboardAvatarImageWrap },
-  { label: 'Prism', image: '/anbel11.png', accent: styles.dashboardAvatarImageWrap },
+  { label: 'Seraph', image: '/anbel01.png', accent: styles.dashboardAvatarImageWrap },
+  { label: 'Halo', image: '/anbel02.png', accent: styles.dashboardAvatarImageWrap },
+  { label: 'Vesper', image: '/anbel03.png', accent: styles.dashboardAvatarImageWrap },
+  { label: 'Orbit', image: '/anbel04.png', accent: styles.dashboardAvatarImageWrap },
+  { label: 'Prism', image: '/anbel05.png', accent: styles.dashboardAvatarImageWrap },
 ];
 
 const TOP_CONTRIBUTORS = [
@@ -227,6 +228,7 @@ const TOP_CONTRIBUTORS = [
   { participant: DASHBOARD_PARTICIPANTS[1], contributions: 37 },
   { participant: DASHBOARD_PARTICIPANTS[2], contributions: 29 },
   { participant: DASHBOARD_PARTICIPANTS[3], contributions: 24 },
+  { participant: DASHBOARD_PARTICIPANTS[4], contributions: 21 },
 ];
 
 const podTotal = FUNDING_PODS.reduce((total, pod) => total + pod.amount, 0);
@@ -613,7 +615,7 @@ export default function VotingPage() {
                                         unoptimized
                                       />
                                     ) : (
-                                      participant.label
+                                      participant.label.slice(0, 1)
                                     )}
                                   </span>
                                   <span className={styles.topContributorName}>{participant.label}</span>
@@ -634,38 +636,56 @@ export default function VotingPage() {
                       </div>
 
                       <article className={`${styles.dashCard} ${styles.communityChatCard}`}>
-                        <div className={styles.dashCardHeader}>
-                          <div>
-                            <span className={styles.dashCardEyebrow}>Signal Feed</span>
-                            <h2 className={styles.dashCardTitle}>Community Chat</h2>
+                        <div className={styles.communityChatHeader}>
+                          <h2 className={styles.communityChatTitle}>Community Chat</h2>
+                          <button className={styles.chatChannelButton} type="button" aria-label="Current channel general">
+                            <span>#</span>
+                            general
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                              <path d="m6 9 6 6 6-6" />
+                            </svg>
+                          </button>
+                          <div className={styles.chatInputMock} aria-label="Message composer">
+                            <span>Write a message...</span>
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                              <path d="m22 2-7 20-4-9-9-4Z" />
+                              <path d="M22 2 11 13" />
+                            </svg>
                           </div>
                         </div>
-                        <div className={styles.chatList}>
-                          {SEED_POSTS.map((post) => {
-                            const cat = CATEGORY_STYLE[post.category];
-                            return (
-                              <div key={post.id} className={styles.chatRow}>
-                                <Image
-                                  src={post.avatar}
-                                  alt={post.author}
-                                  width={40}
-                                  height={40}
-                                  className={styles.chatAvatar}
-                                  unoptimized
-                                />
-                                <div className={styles.chatBubble}>
-                                  <div className={styles.chatMeta}>
-                                    <strong>{post.author}</strong>
-                                    <span>{relTime(post.ts)}</span>
-                                    <span className={styles.chatCategory} style={{ background: cat.bg, color: cat.color }}>
-                                      {post.category}
-                                    </span>
+                        <div className={styles.communityChatBody}>
+                          <div className={styles.chatList}>
+                            {SEED_POSTS.slice(0, 4).map((post) => {
+                              const cat = CATEGORY_STYLE[post.category];
+                              return (
+                                <div key={post.id} className={styles.chatRow}>
+                                  <Image
+                                    src={post.avatar}
+                                    alt={post.author}
+                                    width={42}
+                                    height={42}
+                                    className={styles.chatAvatar}
+                                    unoptimized
+                                  />
+                                  <div className={styles.chatMessage}>
+                                    <div className={styles.chatMeta}>
+                                      <strong>{post.author.toLowerCase()}</strong>
+                                      <span className={styles.chatCategory} style={{ background: cat.bg, color: cat.color }}>
+                                        {post.category}
+                                      </span>
+                                      <time>{relTime(post.ts)}</time>
+                                    </div>
+                                    <p>{post.body}</p>
                                   </div>
-                                  <p>{post.body}</p>
                                 </div>
-                              </div>
-                            );
-                          })}
+                              );
+                            })}
+                          </div>
+                          <div className={styles.chatImagePanel} aria-hidden="true" />
+                        </div>
+                        <div className={styles.communityChatFooter}>
+                          <span>Be respectful and keep building</span>
+                          <strong><span className={styles.chatOnlineDot} /> Online: {activeMemberCount}</strong>
                         </div>
                       </article>
 
@@ -758,16 +778,12 @@ export default function VotingPage() {
                         </div>
                         <div className={styles.treasuryBalanceValue}>${TREASURY_DISPLAY_BALANCE.toLocaleString()}</div>
                       </article>
-
-                      <article className={`${styles.dashCard} ${styles.dashboardWalletCardShell}`}>
-                        <span className={styles.dashCardEyebrow}>Blue&apos;s Wallet</span>
-                        <TreasuryDisplay
-                          contractAddress={CONTRACT_ADDRESS}
-                          usdcAddress={USDC_ADDRESS}
-                          compact
-                          className={styles.dashboardWalletCard}
-                        />
-                      </article>
+                      <TreasuryDisplay
+                        contractAddress={CONTRACT_ADDRESS}
+                        usdcAddress={USDC_ADDRESS}
+                        compact
+                        className={styles.dashboardWalletCard}
+                      />
 
                       <article className={`${styles.dashCard} ${styles.activeMembersCard}`}>
                         <span className={styles.dashCardEyebrow}>Active Members</span>

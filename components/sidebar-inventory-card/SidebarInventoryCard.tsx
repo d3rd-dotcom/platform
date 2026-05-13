@@ -108,9 +108,17 @@ export default function SidebarInventoryCard({ shardCount, address, isCollapsed 
       <div className={styles.balanceDivider} />
       <div className={styles.balanceList}>
         {loading ? (
-          <div className={styles.loadingRow}>
-            <span className={styles.loadingDot} /><span className={styles.loadingDot} /><span className={styles.loadingDot} />
-          </div>
+          <>
+            {[0, 1, 2].map(i => (
+              <div key={i} className={styles.balanceRow}>
+                <div className={styles.tokenLeft}>
+                  <div className={`${styles.tokenIcon} ${styles.skeletonIcon}`} />
+                  <span className={styles.skeletonText} style={{ width: 36 }} />
+                </div>
+                <span className={styles.skeletonText} style={{ width: 28 }} />
+              </div>
+            ))}
+          </>
         ) : (
           <>
             <div className={styles.balanceRow}>

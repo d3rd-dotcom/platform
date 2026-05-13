@@ -158,29 +158,22 @@
   font-variant-numeric: tabular-nums;
 }
 
-.loadingRow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  padding: 6px 0;
+.skeletonIcon {
+  background: rgba(227, 225, 238, 0.08) !important;
+  animation: skeletonPulse 1.4s ease-in-out infinite;
 }
 
-.loadingDot {
+.skeletonText {
   display: inline-block;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: rgba(227, 225, 238, 0.25);
-  animation: dotPulse 1.2s ease infinite;
+  height: 10px;
+  border-radius: 4px;
+  background: rgba(227, 225, 238, 0.08);
+  animation: skeletonPulse 1.4s ease-in-out infinite;
 }
 
-.loadingDot:nth-child(2) { animation-delay: 0.15s; }
-.loadingDot:nth-child(3) { animation-delay: 0.3s; }
-
-@keyframes dotPulse {
-  0%, 100% { opacity: 0.3; transform: scale(0.8); }
-  50% { opacity: 1; transform: scale(1); }
+@keyframes skeletonPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
 }
 
 /* Light mode */
