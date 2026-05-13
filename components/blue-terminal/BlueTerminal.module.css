@@ -6,10 +6,28 @@
   gap: 18px;
   padding: clamp(18px, 3vh, 28px);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0)),
-    #080914;
+    linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.20)),
+    url('/images/TerminalWallpaper.png') center / cover no-repeat;
   color: #f3f4f8;
   overflow: hidden;
+}
+
+.idleScreen {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.idleHeading {
+  font-family: 'Poppins', var(--font-primary), sans-serif;
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 700;
+  color: #ffffff;
+  text-align: center;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.5);
+  margin: 0;
 }
 
 .surfaceHeader {

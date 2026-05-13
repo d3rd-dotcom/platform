@@ -154,15 +154,7 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
   };
 
   return (
-    <section className={styles.terminal} aria-label="Paid research survey">
-      <header className={styles.surfaceHeader}>
-        <div>
-          <p className={styles.eyebrow}>Paid research survey</p>
-          <h2 className={styles.title}>
-            {testData ? testData.title : 'Survey workspace'}
-          </h2>
-        </div>
-      </header>
+    <section className={styles.terminal}>
 
       {/* ===== GENERATING STATE ===== */}
       {isGenerating && !testData && (
@@ -311,11 +303,8 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
 
       {/* ===== BOOT MODE (idle) ===== */}
       {!testData && !isGenerating && !errorMessage && (
-        <div className={`${styles.statusPanel} ${styles.idlePanel}`}>
-          <h3 className={styles.statusTitle}>Ready for the next survey</h3>
-          <p className={styles.statusText}>
-            Sign the form to generate a paid research survey. B.L.U.E. keeps your answers in the review record.
-          </p>
+        <div className={styles.idleScreen}>
+          <h1 className={styles.idleHeading}>Surveys Generate Here</h1>
         </div>
       )}
 

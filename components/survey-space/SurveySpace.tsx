@@ -23,16 +23,18 @@ export default function SurveySpace({
 }: SurveySpaceProps) {
   return (
     <div className={styles.space}>
-      <div className={styles.header}>
-        <span className={styles.label}>{label}</span>
-        <div className={styles.badges}>
-          {badges.map((b, i) => (
-            <span key={i} className={styles.badge}>
-              {b.label}
-            </span>
-          ))}
+      {(label || badges.length > 0) && (
+        <div className={styles.header}>
+          <span className={styles.label}>{label}</span>
+          <div className={styles.badges}>
+            {badges.map((b, i) => (
+              <span key={i} className={styles.badge}>
+                {b.label}
+              </span>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
       <div className={styles.content}>
         <div className={styles.innerPanel}>{children}</div>
       </div>
