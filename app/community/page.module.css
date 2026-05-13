@@ -1800,26 +1800,6 @@
   background: linear-gradient(135deg, #868b94 0%, #61656c 100%);
 }
 
-.dashboardTitleRow {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 20px 28px 12px;
-}
-
-.dashboardTitleBlock {
-  min-width: 0;
-  flex: 0 0 auto;
-}
-
-.communityHubHeading {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-
 .podInfoWrap {
   position: relative;
   flex: 0 0 auto;
@@ -1927,15 +1907,6 @@
 .podInfoItemText strong {
   color: rgba(255, 255, 255, 0.92);
   font-size: 11.5px;
-}
-
-.dashboardTitleRightGroup {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  flex: 0 0 clamp(280px, 30vw, 360px);
-  max-width: clamp(280px, 30vw, 360px);
-  min-width: 0;
 }
 
 .weeklyNewsReview {
@@ -2128,47 +2099,6 @@
   font-family: 'Poppins', sans-serif;
   font-size: 13px;
   color: var(--dashboard-muted-color);
-}
-
-.dashboardTreasuryBalance {
-  margin: 16px 0 0;
-  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
-  font-size: clamp(46px, 7vw, 86px);
-  font-weight: 700;
-  line-height: 0.9;
-  letter-spacing: -0.05em;
-  color: var(--color-primary);
-  text-shadow: none;
-}
-
-
-.dashboardTitleRightGroup .fundingPodsStack {
-  flex: 0 0 180px;
-  gap: 8px;
-}
-
-.dashboardTitleRightGroup .fundingPodMini {
-  padding: 10px 12px;
-  gap: 6px;
-  background: var(--funding-accent);
-  border: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.dashboardTitleRightGroup .fundingPodMiniTitle {
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 11px;
-}
-
-.dashboardTitleRightGroup .fundingPodMiniAmount {
-  color: #fff;
-  font-size: 13px;
-}
-
-.dashboardTitleRightGroup .fundingPodMini .fundingStateProgress {
-  background: rgba(255, 255, 255, 0.25);
-  height: 3px;
-  margin-top: 0;
 }
 
 .dashboardWalletCard {
@@ -2438,6 +2368,547 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+.dashboardAvatarStack {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: row-reverse;
+  min-width: 0;
+}
+
+.dashboardAvatarStack .dashboardAvatar:first-child,
+.dashboardPresence .dashboardAvatar:first-child {
+  margin-left: 0;
+}
+
+.communityHero {
+  position: relative;
+  min-height: 280px;
+  margin: 22px 28px 0;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background:
+    linear-gradient(120deg, rgba(10, 12, 24, 0.88) 0%, rgba(10, 12, 24, 0.64) 48%, rgba(10, 12, 24, 0.28) 100%),
+    url('/images/community-hero-bg.png') center / cover;
+  box-shadow: 0 20px 52px rgba(26, 27, 36, 0.18);
+  isolation: isolate;
+}
+
+.communityHeroOverlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.26)),
+    radial-gradient(circle at 18% 12%, rgba(81, 104, 255, 0.42), transparent 36%);
+  z-index: 0;
+}
+
+.communityHeroContent {
+  position: relative;
+  z-index: 1;
+  width: min(680px, 100%);
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 34px;
+  color: #ffffff;
+}
+
+.communityHeroEyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.communityHeroTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.communityHero .dashboardTitle {
+  font-size: clamp(36px, 5vw, 70px);
+  line-height: 0.96;
+  color: #ffffff;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.26);
+}
+
+.communityHero .dashboardSubtitle {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 15px;
+}
+
+.communityHero .podInfoButton {
+  width: 30px;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.24);
+  color: #ffffff;
+  backdrop-filter: blur(10px);
+}
+
+.communityHeroMembers {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 14px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.communityDashGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(300px, 1fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.communityDashMain,
+.communityDashRail {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  min-width: 0;
+}
+
+.communityCardRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.dashCard {
+  min-width: 0;
+  padding: 20px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.84);
+  border: 1px solid var(--dashboard-panel-border);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 12px 28px rgba(26, 27, 36, 0.06);
+}
+
+.dashCardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.dashCardEyebrow {
+  display: block;
+  margin-bottom: 5px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dashboard-faint-color);
+}
+
+.dashCardTitle {
+  margin: 0;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.15;
+  color: var(--dashboard-title-color);
+}
+
+.dashCardIcon {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
+  color: var(--color-primary);
+}
+
+.dashCardIcon svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.treasuryBreakdownBody {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  align-items: center;
+}
+
+.treasuryBreakdownDonut {
+  width: 112px;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  margin: 0 auto;
+  box-shadow: inset 0 0 0 1px rgba(26, 27, 36, 0.08);
+}
+
+.treasuryBreakdownDonut::after {
+  content: '';
+  position: absolute;
+  inset: 18px;
+  border-radius: inherit;
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px rgba(26, 27, 36, 0.08);
+}
+
+.treasuryBreakdownDonut span {
+  position: relative;
+  z-index: 1;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--dashboard-title-color);
+}
+
+.treasuryBreakdownLegend {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.treasuryBreakdownLegendItem {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  color: var(--dashboard-muted-color);
+}
+
+.treasuryBreakdownLegendItem span:nth-child(2) {
+  min-width: 0;
+  white-space: normal;
+}
+
+.treasuryBreakdownLegendItem strong {
+  grid-column: 2;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--dashboard-text-color);
+}
+
+.treasuryBreakdownDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+}
+
+.fundingVillageCard {
+  position: relative;
+  overflow: hidden;
+}
+
+.fundingVillageSticker {
+  width: 92px;
+  height: 92px;
+  object-fit: contain;
+  display: block;
+  margin: -6px auto 12px;
+  filter: drop-shadow(0 12px 18px rgba(26, 27, 36, 0.14));
+}
+
+.fundingVillageProgressMeta,
+.fundingVillageFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--dashboard-muted-color);
+}
+
+.fundingVillageProgressMeta strong,
+.fundingVillageFooter span {
+  color: var(--dashboard-title-color);
+}
+
+.fundingVillageBar {
+  width: 100%;
+  height: 10px;
+  margin: 11px 0 14px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(26, 27, 36, 0.08);
+}
+
+.fundingVillageBarFill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #5168ff 0%, #2fb7a0 100%);
+}
+
+.topContributorsList {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.topContributorRow {
+  display: grid;
+  grid-template-columns: 22px 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.topContributorRow .dashboardAvatar {
+  margin-left: 0;
+}
+
+.topContributorRank {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(26, 27, 36, 0.06);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--dashboard-muted-color);
+}
+
+.topContributorName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--dashboard-title-color);
+}
+
+.topContributorRow strong {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--color-primary);
+}
+
+.communityChatCard {
+  padding-bottom: 8px;
+}
+
+.chatList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.chatRow {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.chatAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 2px solid var(--dashboard-avatar-border);
+  background: var(--dashboard-control-bg);
+}
+
+.chatBubble {
+  min-width: 0;
+  padding: 13px 14px;
+  border-radius: 8px;
+  background: var(--dashboard-control-bg);
+  border: 1px solid var(--dashboard-control-border);
+}
+
+.chatMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  margin-bottom: 6px;
+}
+
+.chatMeta strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  color: var(--dashboard-title-color);
+}
+
+.chatMeta span {
+  flex-shrink: 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--dashboard-faint-color);
+}
+
+.chatCategory {
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.chatBubble p {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--dashboard-muted-color);
+}
+
+.activeProposalsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  scroll-margin-top: 24px;
+}
+
+.treasuryBalanceCard {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.treasuryBalanceValue {
+  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-size: clamp(48px, 5.4vw, 78px);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: 0;
+  color: var(--color-primary);
+}
+
+.treasuryBalanceMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  color: var(--dashboard-muted-color);
+}
+
+.treasuryBalanceDelta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(47, 183, 160, 0.12);
+  color: #1a8f7d;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+}
+
+.treasuryBalanceCard .dashboardWalletCard {
+  max-width: none;
+  margin: 2px 0 0;
+}
+
+.activeMembersCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.activeMembersCard strong {
+  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-size: 56px;
+  line-height: 0.95;
+  letter-spacing: 0;
+  color: var(--dashboard-title-color);
+}
+
+.activeMembersCard > span:not(.dashCardEyebrow) {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  color: var(--dashboard-muted-color);
+}
+
+.recentActivityList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: -4px;
+}
+
+.recentActivityItem {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--dashboard-divider);
+}
+
+.recentActivityItem span {
+  min-width: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--dashboard-text-color);
+}
+
+.recentActivityItem time {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--dashboard-faint-color);
+  white-space: nowrap;
+}
+
+.recentActivityLink {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  text-decoration: none;
 }
 
 /* Tab Content */
@@ -3599,17 +4070,6 @@
     justify-content: flex-start;
   }
 
-  .dashboardTitleRow {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-    padding: 14px 16px 10px;
-  }
-
-  .communityHubHeading {
-    align-items: flex-start;
-  }
-
   .podInfoTooltip {
     left: auto;
     right: -8px;
@@ -3627,17 +4087,6 @@
 
   .dashboardSubtitle {
     font-size: 12px;
-  }
-
-  .dashboardTreasuryBalance {
-    margin-top: 14px;
-    font-size: clamp(40px, 10vw, 68px);
-  }
-
-  .dashboardTitleRightGroup {
-    flex-direction: column;
-    flex: 1 1 auto;
-    width: 100%;
   }
 
   .weeklyNewsReview {
@@ -3675,11 +4124,6 @@
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-  }
-
-  .dashboardTitleRightGroup .fundingPodsStack {
-    flex: 0 0 auto;
-    width: 100%;
   }
 
   .grid {
@@ -4115,7 +4559,6 @@
   background: var(--gradient-futuristic-floss);
 }
 
-:global([data-theme="dark"]) .dashboardTreasuryBalance,
 :global([data-theme="dark"]) .treasuryHeroCard :global(.balance) {
   color: var(--color-primary);
 }
@@ -4724,199 +5167,112 @@
   flex-shrink: 0;
 }
 
-/* ─── Seed social-feed posts ─────────────────────────────────────────────────── */
-
-.seedFeed {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+:global([data-theme="dark"]) .dashCard {
+  background: color-mix(in oklch, var(--color-surface-1) 92%, transparent);
+  border-color: var(--color-border-subtle);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 14px 30px rgba(0, 0, 0, 0.18);
 }
 
-.seedPostCard {
-  background: rgba(255, 255, 255, 0.84);
-  border: 1px solid rgba(26, 29, 51, 0.08);
-  border-radius: 14px;
-  padding: 16px 18px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  box-shadow: 0 2px 10px rgba(26, 29, 51, 0.04);
-  transition: box-shadow 0.15s ease, transform 0.15s ease;
+:global([data-theme="dark"]) .treasuryBreakdownDonut::after,
+:global([data-theme="dark"]) .chatBubble {
+  background: rgba(9, 11, 18, 0.42);
+  border-color: rgba(235, 232, 247, 0.08);
 }
 
-.seedPostCard:hover {
-  box-shadow: 0 4px 18px rgba(81, 104, 255, 0.10);
-  transform: translateY(-1px);
+:global([data-theme="dark"]) .topContributorRank {
+  background: rgba(235, 232, 247, 0.08);
 }
 
-[data-theme="dark"] .seedPostCard {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.07);
-  box-shadow: none;
+:global([data-theme="dark"]) .fundingVillageBar {
+  background: rgba(235, 232, 247, 0.1);
 }
 
-[data-theme="dark"] .seedPostCard:hover {
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
+:global([data-theme="dark"]) .treasuryBalanceDelta {
+  background: rgba(47, 183, 160, 0.16);
+  color: #66d8c6;
 }
 
-.seedPostHeader {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+@media (max-width: 1024px) {
+  .communityDashGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .communityDashRail {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .treasuryBalanceValue {
+    font-size: clamp(42px, 8vw, 68px);
+  }
 }
 
-.seedPostAvatar {
-  flex-shrink: 0;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 2px solid rgba(81, 104, 255, 0.15);
-  background: rgba(81, 104, 255, 0.08);
+@media (max-width: 720px) {
+  .communityHero {
+    min-height: 250px;
+    margin: 14px 14px 0;
+  }
+
+  .communityHeroContent {
+    min-height: 250px;
+    padding: 24px;
+  }
+
+  .communityHeroTitleRow {
+    align-items: flex-start;
+  }
+
+  .communityHero .dashboardTitle {
+    font-size: clamp(34px, 12vw, 52px);
+  }
+
+  .communityCardRow,
+  .communityDashRail {
+    grid-template-columns: 1fr;
+  }
+
+  .treasuryBreakdownBody {
+    grid-template-columns: 1fr;
+  }
+
+  .treasuryBreakdownDonut {
+    margin: 0 auto;
+  }
+
+  .chatMeta {
+    flex-wrap: wrap;
+  }
 }
 
-.seedPostAvatarImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+@media (max-width: 520px) {
+  .communityHeroContent {
+    padding: 20px;
+  }
 
-.seedPostMeta {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  flex: 1 1 auto;
-  min-width: 0;
-}
+  .communityHeroMembers {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
 
-.seedPostAuthor {
-  font-family: var(--font-primary);
-  font-size: 13px;
-  font-weight: 700;
-  color: #1a1d33;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+  .dashCard {
+    padding: 16px;
+  }
 
-[data-theme="dark"] .seedPostAuthor {
-  color: #e3e1ee;
-}
+  .chatRow {
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 10px;
+  }
 
-.seedPostTime {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: rgba(26, 29, 51, 0.40);
-}
+  .chatAvatar {
+    width: 34px;
+    height: 34px;
+  }
 
-[data-theme="dark"] .seedPostTime {
-  color: rgba(227, 225, 238, 0.35);
-}
-
-.seedPostCategoryPill {
-  flex-shrink: 0;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 3px 9px;
-  border-radius: 99px;
-}
-
-.seedPostTitle {
-  font-family: var(--font-primary);
-  font-size: 14px;
-  font-weight: 700;
-  color: #1a1d33;
-  line-height: 1.4;
-  letter-spacing: -0.01em;
-}
-
-[data-theme="dark"] .seedPostTitle {
-  color: #e3e1ee;
-}
-
-.seedPostBody {
-  font-family: var(--font-secondary);
-  font-size: 12.5px;
-  line-height: 1.6;
-  color: rgba(26, 29, 51, 0.64);
-}
-
-[data-theme="dark"] .seedPostBody {
-  color: rgba(227, 225, 238, 0.54);
-}
-
-.seedPostActions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-top: 4px;
-  border-top: 1px solid rgba(26, 29, 51, 0.06);
-  margin-top: 2px;
-}
-
-[data-theme="dark"] .seedPostActions {
-  border-top-color: rgba(255, 255, 255, 0.06);
-}
-
-.seedPostAction {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: var(--font-button);
-  font-size: 12px;
-  font-weight: 600;
-  color: rgba(26, 29, 51, 0.45);
-  padding: 4px 0;
-  transition: color 0.12s ease;
-}
-
-.seedPostAction:hover {
-  color: rgba(26, 29, 51, 0.80);
-}
-
-[data-theme="dark"] .seedPostAction {
-  color: rgba(227, 225, 238, 0.35);
-}
-
-[data-theme="dark"] .seedPostAction:hover {
-  color: rgba(227, 225, 238, 0.72);
-}
-
-.seedPostActionLiked {
-  color: #E8556D !important;
-}
-
-.seedPostDiscussBtn {
-  margin-left: auto;
-  background: none;
-  border: 1px solid rgba(81, 104, 255, 0.28);
-  border-radius: 6px;
-  padding: 4px 12px;
-  font-family: var(--font-button);
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--color-primary, #5168FF);
-  cursor: pointer;
-  transition: background 0.12s ease, border-color 0.12s ease;
-}
-
-.seedPostDiscussBtn:hover {
-  background: rgba(81, 104, 255, 0.08);
-  border-color: rgba(81, 104, 255, 0.48);
-}
-
-[data-theme="dark"] .seedPostDiscussBtn {
-  border-color: rgba(81, 104, 255, 0.35);
-  color: #7b93ff;
-}
-
-[data-theme="dark"] .seedPostDiscussBtn:hover {
-  background: rgba(81, 104, 255, 0.12);
+  .recentActivityItem {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
 }

@@ -101,48 +101,6 @@ function relTime(ts: number): string {
   return `${Math.floor(s / 86400)}d ago`;
 }
 
-function SeedPostCard({ post }: { post: SeedPost }) {
-  const [liked, setLiked] = useState(false);
-  const cat = CATEGORY_STYLE[post.category];
-  return (
-    <div className={styles.seedPostCard}>
-      <div className={styles.seedPostHeader}>
-        <div className={styles.seedPostAvatar}>
-          <Image src={post.avatar} alt={post.author} width={36} height={36} unoptimized className={styles.seedPostAvatarImg} />
-        </div>
-        <div className={styles.seedPostMeta}>
-          <span className={styles.seedPostAuthor}>{post.author}</span>
-          <span className={styles.seedPostTime}>{relTime(post.ts)}</span>
-        </div>
-        <span className={styles.seedPostCategoryPill} style={{ background: cat.bg, color: cat.color }}>
-          {post.category}
-        </span>
-      </div>
-      <div className={styles.seedPostTitle}>{post.title}</div>
-      <div className={styles.seedPostBody}>{post.body}</div>
-      <div className={styles.seedPostActions}>
-        <button
-          className={`${styles.seedPostAction} ${liked ? styles.seedPostActionLiked : ''}`}
-          onClick={() => setLiked(v => !v)}
-          type="button"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill={liked ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-          </svg>
-          {post.likes + (liked ? 1 : 0)}
-        </button>
-        <button className={styles.seedPostAction} type="button">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-          </svg>
-          {post.replies}
-        </button>
-        <button className={styles.seedPostDiscussBtn} type="button">Discuss →</button>
-      </div>
-    </div>
-  );
-}
-
 
 const StillTutorial = dynamic(() => import('@/components/still-tutorial/StillTutorial'), {
   ssr: false,
@@ -227,6 +185,8 @@ const getTutorialSteps = (): TutorialStep[] => [
 const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_BLUE_KILLSTREAK_ADDRESS || '0x2cbb90a761ba64014b811be342b8ef01b471992d';
 const USDC_ADDRESS = process.env.NEXT_PUBLIC_USDC_ADDRESS || '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'; // Base mainnet USDC
 const TREASURY_BALANCE = 5200;
+const TREASURY_DISPLAY_BALANCE = 5343;
+const ACTIVE_MEMBER_COUNT = 128;
 const FUNDING_PODS = [
   {
     title: 'Brand Awareness',
@@ -261,6 +221,87 @@ const DASHBOARD_PARTICIPANTS: ReadonlyArray<{
   { label: 'Orbit', image: '/anbel09.png', accent: styles.dashboardAvatarImageWrap },
   { label: 'Prism', image: '/anbel11.png', accent: styles.dashboardAvatarImageWrap },
 ];
+
+const TOP_CONTRIBUTORS = [
+  { participant: DASHBOARD_PARTICIPANTS[0], contributions: 42 },
+  { participant: DASHBOARD_PARTICIPANTS[1], contributions: 37 },
+  { participant: DASHBOARD_PARTICIPANTS[2], contributions: 29 },
+  { participant: DASHBOARD_PARTICIPANTS[3], contributions: 24 },
+];
+
+const fundingProgress = Math.min(100, Math.round((TREASURY_BALANCE / TREASURY_DISPLAY_BALANCE) * 100));
+const podTotal = FUNDING_PODS.reduce((total, pod) => total + pod.amount, 0);
+let podCursor = 0;
+const podDonutGradient = FUNDING_PODS.map((pod) => {
+  const start = podCursor;
+  const end = start + (pod.amount / podTotal) * 100;
+  podCursor = end;
+  return `${pod.accent} ${start.toFixed(2)}% ${end.toFixed(2)}%`;
+}).join(', ');
+
+function DashboardAvatarStack({
+  participants = DASHBOARD_PARTICIPANTS,
+  className = '',
+}: {
+  participants?: typeof DASHBOARD_PARTICIPANTS;
+  className?: string;
+}) {
+  return (
+    <div className={`${styles.dashboardAvatarStack} ${className}`} aria-hidden="true">
+      {participants.map((participant) => (
+        <span
+          key={participant.label}
+          className={`${styles.dashboardAvatar} ${participant.accent}`}
+          title={participant.label}
+        >
+          {participant.image ? (
+            <Image
+              src={participant.image}
+              alt=""
+              width={34}
+              height={34}
+              className={styles.dashboardAvatarImage}
+              unoptimized
+            />
+          ) : (
+            participant.label
+          )}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function PodInfoTooltip() {
+  return (
+    <div className={styles.podInfoWrap}>
+      <button
+        className={styles.podInfoButton}
+        type="button"
+        aria-label="Explain decentralized treasury cluster pods"
+      >
+        i
+      </button>
+      <div className={styles.podInfoTooltip} role="tooltip">
+        <span className={styles.podInfoTitle}>Decentralized treasury cluster</span>
+        <span className={styles.podInfoText}>
+          Blue separates the treasury into purpose-built pods so capital can be reviewed by use case instead of sitting in one undifferentiated pool.
+        </span>
+        <div className={styles.podInfoList}>
+          {FUNDING_PODS.map((pod) => (
+            <div key={pod.title} className={styles.podInfoItem}>
+              <span className={styles.podInfoDot} style={{ background: pod.accent }} />
+              <span className={styles.podInfoItemText}>
+                <strong>{pod.title}</strong>
+                <span>${pod.amount.toLocaleString()} · {pod.desc}</span>
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function SkeletonLine({ className = '' }: { className?: string }) {
   return <span className={`${styles.skeletonLine} ${className}`} aria-hidden="true" />;
@@ -480,132 +521,268 @@ export default function VotingPage() {
                 </div>
               </header>
 
-              <div className={styles.dashboardTitleRow}>
-                <div className={styles.dashboardTitleBlock}>
-                  <div className={styles.communityHubHeading}>
-                    <h1 className={styles.dashboardTitle}>
-                      MWA <span className={styles.dashboardTitleAccent}>Community Hub</span>
-                    </h1>
-                    <div className={styles.podInfoWrap}>
-                      <button
-                        className={styles.podInfoButton}
-                        type="button"
-                        aria-label="Explain decentralized treasury cluster pods"
-                      >
-                        i
-                      </button>
-                      <div className={styles.podInfoTooltip} role="tooltip">
-                        <span className={styles.podInfoTitle}>Decentralized treasury cluster</span>
-                        <span className={styles.podInfoText}>
-                          Blue separates the treasury into purpose-built pods so capital can be reviewed by use case instead of sitting in one undifferentiated pool.
-                        </span>
-                        <div className={styles.podInfoList}>
-                          {FUNDING_PODS.map((pod) => (
-                            <div key={pod.title} className={styles.podInfoItem}>
-                              <span className={styles.podInfoDot} style={{ background: pod.accent }} />
-                              <span className={styles.podInfoItemText}>
-                                <strong>{pod.title}</strong>
-                                <span>${pod.amount.toLocaleString()} · {pod.desc}</span>
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
+              <section className={styles.communityHero}>
+                <div className={styles.communityHeroOverlay} />
+                <div className={styles.communityHeroContent}>
+                  <span className={styles.communityHeroEyebrow}>Mental Wealth Academy</span>
+                  <div className={styles.communityHeroTitleRow}>
+                    <h1 className={styles.dashboardTitle}>Community Hub</h1>
+                    <PodInfoTooltip />
                   </div>
-                  <p className={styles.dashboardSubtitle}>
-                    Shared treasury. Shared decisions.
-                  </p>
-                  <p className={styles.dashboardTreasuryBalance}>$5,343</p>
+                  <p className={styles.dashboardSubtitle}>Shared treasury. Shared decisions.</p>
+                  <div className={styles.communityHeroMembers}>
+                    <DashboardAvatarStack />
+                    <span>{ACTIVE_MEMBER_COUNT} members online</span>
+                  </div>
                 </div>
-                <div className={styles.dashboardTitleRightGroup}>
-                  <TreasuryDisplay
-                    contractAddress={CONTRACT_ADDRESS}
-                    usdcAddress={USDC_ADDRESS}
-                    compact
-                    className={styles.dashboardWalletCard}
-                  />
-                </div>
-              </div>
+              </section>
 
-            <div className={styles.communityViewViewport}>
-              <section className={styles.communityViewPanel}>
-                  <div className={styles.overviewColumns}>
+              <div className={styles.communityViewViewport}>
+                <section className={styles.communityViewPanel}>
+                  <div className={styles.communityDashGrid}>
+                    <div className={styles.communityDashMain}>
+                      <div className={styles.communityCardRow}>
+                        <article className={styles.dashCard}>
+                          <div className={styles.dashCardHeader}>
+                            <div>
+                              <span className={styles.dashCardEyebrow}>Treasury Pods</span>
+                              <h2 className={styles.dashCardTitle}>Treasury Breakdown</h2>
+                            </div>
+                            <span className={styles.dashCardIcon} aria-hidden="true">
+                              <svg viewBox="0 0 24 24">
+                                <path d="M12 3v18M3 12h18" />
+                              </svg>
+                            </span>
+                          </div>
+                          <div className={styles.treasuryBreakdownBody}>
+                            <div
+                              className={styles.treasuryBreakdownDonut}
+                              style={{ background: `conic-gradient(${podDonutGradient})` }}
+                              aria-label="Treasury pod allocation chart"
+                            >
+                              <span>${podTotal.toLocaleString()}</span>
+                            </div>
+                            <div className={styles.treasuryBreakdownLegend}>
+                              {FUNDING_PODS.map((pod) => (
+                                <div key={pod.title} className={styles.treasuryBreakdownLegendItem}>
+                                  <span className={styles.treasuryBreakdownDot} style={{ background: pod.accent }} />
+                                  <span>{pod.title}</span>
+                                  <strong>${pod.amount.toLocaleString()}</strong>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </article>
 
-                      <div className={styles.overviewProposalsColumn}>
-                        {/* Social feed — seed discussion posts */}
+                        <article className={`${styles.dashCard} ${styles.fundingVillageCard}`}>
+                          <div className={styles.dashCardHeader}>
+                            <div>
+                              <span className={styles.dashCardEyebrow}>Community Capital</span>
+                              <h2 className={styles.dashCardTitle}>Funding the Village</h2>
+                            </div>
+                          </div>
+                          <Image
+                            src="/stickers/treasure.svg"
+                            alt=""
+                            width={92}
+                            height={92}
+                            className={styles.fundingVillageSticker}
+                            unoptimized
+                          />
+                          <div className={styles.fundingVillageProgressMeta}>
+                            <span>${TREASURY_BALANCE.toLocaleString()} raised</span>
+                            <strong>${TREASURY_DISPLAY_BALANCE.toLocaleString()} goal</strong>
+                          </div>
+                          <div className={styles.fundingVillageBar} aria-label={`${fundingProgress}% funded`}>
+                            <span className={styles.fundingVillageBarFill} style={{ width: `${fundingProgress}%` }} />
+                          </div>
+                          <div className={styles.fundingVillageFooter}>
+                            <DashboardAvatarStack />
+                            <span>{fundingProgress}% funded</span>
+                          </div>
+                        </article>
+
+                        <article className={styles.dashCard}>
+                          <div className={styles.dashCardHeader}>
+                            <div>
+                              <span className={styles.dashCardEyebrow}>Participation</span>
+                              <h2 className={styles.dashCardTitle}>Top Contributors</h2>
+                            </div>
+                            <span className={styles.dashCardIcon} aria-hidden="true">
+                              <svg viewBox="0 0 24 24">
+                                <path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0V4Z" />
+                                <path d="M5 5H3v2a4 4 0 0 0 4 4M19 5h2v2a4 4 0 0 1-4 4" />
+                              </svg>
+                            </span>
+                          </div>
+                          <div className={styles.topContributorsList}>
+                            {TOP_CONTRIBUTORS.map(({ participant, contributions }, index) => (
+                              <div key={participant.label} className={styles.topContributorRow}>
+                                <span className={styles.topContributorRank}>{index + 1}</span>
+                                <span className={`${styles.dashboardAvatar} ${participant.accent}`}>
+                                  {participant.image ? (
+                                    <Image
+                                      src={participant.image}
+                                      alt={participant.label}
+                                      width={34}
+                                      height={34}
+                                      className={styles.dashboardAvatarImage}
+                                      unoptimized
+                                    />
+                                  ) : (
+                                    participant.label
+                                  )}
+                                </span>
+                                <span className={styles.topContributorName}>{participant.label}</span>
+                                <strong>{contributions}</strong>
+                              </div>
+                            ))}
+                          </div>
+                        </article>
+                      </div>
+
+                      <article className={`${styles.dashCard} ${styles.communityChatCard}`}>
+                        <div className={styles.dashCardHeader}>
+                          <div>
+                            <span className={styles.dashCardEyebrow}>Signal Feed</span>
+                            <h2 className={styles.dashCardTitle}>Community Chat</h2>
+                          </div>
+                        </div>
+                        <div className={styles.chatList}>
+                          {SEED_POSTS.map((post) => {
+                            const cat = CATEGORY_STYLE[post.category];
+                            return (
+                              <div key={post.id} className={styles.chatRow}>
+                                <Image
+                                  src={post.avatar}
+                                  alt={post.author}
+                                  width={40}
+                                  height={40}
+                                  className={styles.chatAvatar}
+                                  unoptimized
+                                />
+                                <div className={styles.chatBubble}>
+                                  <div className={styles.chatMeta}>
+                                    <strong>{post.author}</strong>
+                                    <span>{relTime(post.ts)}</span>
+                                    <span className={styles.chatCategory} style={{ background: cat.bg, color: cat.color }}>
+                                      {post.category}
+                                    </span>
+                                  </div>
+                                  <p>{post.body}</p>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </article>
+
+                      <section id="active-proposals" className={styles.activeProposalsSection}>
                         <div className={styles.feedSectionLabel}>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                          </svg>
-                          Recent Discussions
-                        </div>
-                        <div className={styles.seedFeed}>
-                          {SEED_POSTS.map((post) => <SeedPostCard key={post.id} post={post} />)}
-                        </div>
-
-                        <div className={styles.feedSectionLabel} style={{ marginTop: 32 }}>
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <path d="M12 2L3 7l9 5 9-5-9-5zM3 17l9 5 9-5M3 12l9 5 9-5" />
                           </svg>
                           Active Proposals
                         </div>
-                      {isPageLoading || (loading && proposals.length > 0) ? (
-                        <ProposalSkeletonList />
-                      ) : error ? (
-                        <div className={styles.errorState}>
-                          <h3>Error Loading Proposals</h3>
-                          <p>{error}</p>
-                          <button onClick={() => { play('click'); void fetchProposals(); }} onMouseEnter={() => play('hover')} className={styles.retryButton} type="button">Retry</button>
-                        </div>
-                      ) : proposals.length === 0 ? (
-                        <div className={styles.emptyState}>
-                          <h3>No proposals yet</h3>
-                          <p>Be the first to submit a proposal to the community!</p>
-                        </div>
-                      ) : (
-                        <div className={styles.overviewProposalsList} data-tutorial-target="submission">
-                          {proposals.map((proposal) => (
-                            <div key={proposal.id} className={styles.proposalCardContainer} onMouseEnter={() => play('hover')}>
-                              <ProposalCard
-                                id={proposal.id}
-                                title={proposal.title}
-                                proposalMarkdown={proposal.proposalMarkdown}
-                                status={proposal.status}
-                                walletAddress={proposal.walletAddress}
-                                createdAt={proposal.createdAt}
-                                user={proposal.user}
-                                review={proposal.review}
-                                onViewDetails={handleViewDetails}
-                                showAvatar={false}
-                                onChainProposalId={proposal.review?.onChainProposalId ? parseInt(proposal.review.onChainProposalId) : null}
-                                onChainData={proposal.onChainData || null}
-                              />
-                              {proposal.onChainTxHash && (
-                                <div className={styles.onChainInfo}>
-                                  <div className={styles.onChainBadge}>
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path d="M12 2L3 7L12 12L21 7L12 2Z" fill="currentColor"/>
-                                      <path d="M3 17L12 22L21 17" fill="currentColor" fillOpacity="0.6"/>
-                                      <path d="M3 12L12 17L21 12" fill="currentColor" fillOpacity="0.8"/>
-                                    </svg>
-                                    <span>Recorded Transparently</span>
+                        {isPageLoading || (loading && proposals.length > 0) ? (
+                          <ProposalSkeletonList />
+                        ) : error ? (
+                          <div className={styles.errorState}>
+                            <h3>Error Loading Proposals</h3>
+                            <p>{error}</p>
+                            <button onClick={() => { play('click'); void fetchProposals(); }} onMouseEnter={() => play('hover')} className={styles.retryButton} type="button">Retry</button>
+                          </div>
+                        ) : proposals.length === 0 ? (
+                          <div className={styles.emptyState}>
+                            <h3>No proposals yet</h3>
+                            <p>Be the first to submit a proposal to the community!</p>
+                          </div>
+                        ) : (
+                          <div className={styles.overviewProposalsList} data-tutorial-target="submission">
+                            {proposals.map((proposal) => (
+                              <div key={proposal.id} className={styles.proposalCardContainer} onMouseEnter={() => play('hover')}>
+                                <ProposalCard
+                                  id={proposal.id}
+                                  title={proposal.title}
+                                  proposalMarkdown={proposal.proposalMarkdown}
+                                  status={proposal.status}
+                                  walletAddress={proposal.walletAddress}
+                                  createdAt={proposal.createdAt}
+                                  user={proposal.user}
+                                  review={proposal.review}
+                                  onViewDetails={handleViewDetails}
+                                  showAvatar={false}
+                                  onChainProposalId={proposal.review?.onChainProposalId ? parseInt(proposal.review.onChainProposalId) : null}
+                                  onChainData={proposal.onChainData || null}
+                                />
+                                {proposal.onChainTxHash && (
+                                  <div className={styles.onChainInfo}>
+                                    <div className={styles.onChainBadge}>
+                                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 2L3 7L12 12L21 7L12 2Z" fill="currentColor"/>
+                                        <path d="M3 17L12 22L21 17" fill="currentColor" fillOpacity="0.6"/>
+                                        <path d="M3 12L12 17L21 12" fill="currentColor" fillOpacity="0.8"/>
+                                      </svg>
+                                      <span>Recorded Transparently</span>
+                                    </div>
+                                    <a href={`https://basescan.org/tx/${proposal.onChainTxHash}`} target="_blank" rel="noopener noreferrer" className={styles.txLink} onClick={() => play('navigation')} onMouseEnter={() => play('hover')}>
+                                      View Transaction →
+                                    </a>
                                   </div>
-                                  <a href={`https://basescan.org/tx/${proposal.onChainTxHash}`} target="_blank" rel="noopener noreferrer" className={styles.txLink} onClick={() => play('navigation')} onMouseEnter={() => play('hover')}>
-                                    View Transaction →
-                                  </a>
-                                </div>
-                              )}
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </section>
+                    </div>
+
+                    <aside className={styles.communityDashRail}>
+                      <article className={`${styles.dashCard} ${styles.treasuryBalanceCard}`}>
+                        <span className={styles.dashCardEyebrow}>Shared Treasury</span>
+                        <div className={styles.treasuryBalanceValue}>${TREASURY_DISPLAY_BALANCE.toLocaleString()}</div>
+                        <div className={styles.treasuryBalanceMeta}>
+                          <span>Shared Treasury</span>
+                          <strong className={styles.treasuryBalanceDelta}>+12.6%</strong>
+                        </div>
+                        <TreasuryDisplay
+                          contractAddress={CONTRACT_ADDRESS}
+                          usdcAddress={USDC_ADDRESS}
+                          compact
+                          className={styles.dashboardWalletCard}
+                        />
+                      </article>
+
+                      <article className={`${styles.dashCard} ${styles.activeMembersCard}`}>
+                        <span className={styles.dashCardEyebrow}>Active Members</span>
+                        <strong>{ACTIVE_MEMBER_COUNT}</strong>
+                        <span>Members coordinating this cycle</span>
+                        <DashboardAvatarStack />
+                      </article>
+
+                      <article className={`${styles.dashCard} ${styles.recentActivityCard}`}>
+                        <div className={styles.dashCardHeader}>
+                          <div>
+                            <span className={styles.dashCardEyebrow}>Room Log</span>
+                            <h2 className={styles.dashCardTitle}>Recent Activity</h2>
+                          </div>
+                        </div>
+                        <div className={styles.recentActivityList}>
+                          {SEED_POSTS.map((post) => (
+                            <div key={post.id} className={styles.recentActivityItem}>
+                              <span>{post.title}</span>
+                              <time>{relTime(post.ts)}</time>
                             </div>
                           ))}
                         </div>
-                      )}
-                    </div>
-
+                        <a href="#active-proposals" className={styles.recentActivityLink}>
+                          View all activity
+                        </a>
+                      </article>
+                    </aside>
                   </div>
                 </section>
-
-            </div>
+              </div>
             </div>
           </div>
           </>
