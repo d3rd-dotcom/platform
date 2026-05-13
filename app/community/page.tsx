@@ -497,49 +497,6 @@ export default function VotingPage() {
         <div className={styles.content}>
           <>
           <div className={styles.communityMainWrapper}>
-            <div className={styles.dashboardChrome}>
-              <header className={styles.dashboardMasthead}>
-                <div className={styles.dashboardBrand}>
-                  <div className={styles.dashboardBrandMark} aria-hidden="true">
-                    <span />
-                    <span />
-                    <span />
-                  </div>
-                  <div className={styles.dashboardBrandText}>
-                    <span className={styles.dashboardBrandName}>Mental Wealth Academy</span>
-                    <span className={styles.dashboardBrandMeta}>Decision Room</span>
-                  </div>
-                </div>
-                <div className={styles.dashboardSearch} aria-label="Dashboard search">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M11 5a6 6 0 1 0 0 12a6 6 0 0 0 0-12Zm8 14l-3.4-3.4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                  </svg>
-                  <span>Search proposals, treasury activity, and member signals</span>
-                </div>
-                <div className={styles.dashboardPresence} aria-label="Active members">
-                  {DASHBOARD_PARTICIPANTS.map((participant) => (
-                    <span
-                      key={participant.label}
-                      className={`${styles.dashboardAvatar} ${participant.accent}`}
-                      title={participant.label}
-                    >
-                      {participant.image ? (
-                        <Image
-                          src={participant.image}
-                          alt={participant.label}
-                          width={34}
-                          height={34}
-                          className={styles.dashboardAvatarImage}
-                          unoptimized
-                        />
-                      ) : (
-                        participant.label
-                      )}
-                    </span>
-                  ))}
-                </div>
-              </header>
-
               <div className={styles.communityViewViewport}>
                 <section className={styles.communityViewPanel}>
                   <div className={styles.communityDashGrid}>
@@ -816,7 +773,6 @@ export default function VotingPage() {
                   </div>
                 </section>
               </div>
-            </div>
           </div>
           </>
         </div>

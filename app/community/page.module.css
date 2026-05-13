@@ -1622,7 +1622,7 @@
 .communityMainWrapper {
   --color-tertiary: var(--color-primary);
   width: 100%;
-  padding: 24px 24px 28px;
+  padding: 20px 24px 28px;
   margin: 0;
   box-sizing: border-box;
 }
@@ -2299,7 +2299,7 @@
 .communityViewViewport {
   width: 100%;
   overflow: visible;
-  background: linear-gradient(180deg, #eff0f2 0%, #e2e4e8 100%);
+  background: transparent;
 }
 
 .proposalsActions {
@@ -2401,8 +2401,9 @@
   inset: 0;
   z-index: 0;
   background:
-    linear-gradient(95deg, rgba(8, 10, 22, 0.9) 0%, rgba(8, 10, 22, 0.72) 42%, rgba(8, 10, 22, 0.18) 66%, transparent 82%),
-    linear-gradient(180deg, rgba(8, 10, 22, 0.1) 0%, rgba(8, 10, 22, 0.28) 100%);
+    linear-gradient(95deg, rgba(8, 10, 22, 0.9) 0%, rgba(8, 10, 22, 0.74) 42%, rgba(8, 10, 22, 0.32) 66%, rgba(8, 10, 22, 0.22) 100%),
+    linear-gradient(180deg, rgba(8, 10, 22, 0.16) 0%, rgba(8, 10, 22, 0.32) 100%),
+    radial-gradient(130% 115% at 50% 50%, transparent 58%, rgba(8, 10, 22, 0.38) 100%);
   pointer-events: none;
 }
 
@@ -2476,7 +2477,7 @@
 
 .communityDashGrid {
   display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(330px, 0.95fr);
+  grid-template-columns: minmax(0, 1.85fr) minmax(280px, 320px);
   gap: 22px;
   align-items: start;
 }
