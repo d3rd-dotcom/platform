@@ -227,8 +227,6 @@ const TOP_CONTRIBUTORS = [
   { participant: DASHBOARD_PARTICIPANTS[0], contributions: 42 },
   { participant: DASHBOARD_PARTICIPANTS[1], contributions: 37 },
   { participant: DASHBOARD_PARTICIPANTS[2], contributions: 29 },
-  { participant: DASHBOARD_PARTICIPANTS[3], contributions: 24 },
-  { participant: DASHBOARD_PARTICIPANTS[4], contributions: 21 },
 ];
 
 const podTotal = FUNDING_PODS.reduce((total, pod) => total + pod.amount, 0);
@@ -485,35 +483,24 @@ export default function VotingPage() {
                       </section>
 
                       <div className={styles.communityCardRow}>
-                        <article className={`${styles.dashCard} ${styles.treasuryBreakdownCard}`}>
+                        <article className={`${styles.dashCard} ${styles.fundingVillageCard}`}>
                           <div className={styles.dashCardHeader}>
                             <div>
-                              <span className={styles.dashCardEyebrow}>Treasury Pods</span>
-                              <h2 className={styles.dashCardTitle}>Treasury Breakdown</h2>
+                              <span className={styles.dashCardEyebrow}>Community Capital</span>
+                              <h2 className={styles.dashCardTitle}>Funding the Village</h2>
                             </div>
-                            <span className={styles.dashCardIcon} aria-hidden="true">
-                              <svg viewBox="0 0 24 24">
-                                <path d="M12 3v18M3 12h18" />
-                              </svg>
-                            </span>
                           </div>
-                          <div className={styles.treasuryBreakdownBody}>
-                            <div
-                              className={styles.treasuryBreakdownDonut}
-                              style={{ background: `conic-gradient(${podDonutGradient})` }}
-                              aria-label="Treasury pod allocation chart"
-                            >
-                              <span>${podTotal.toLocaleString()}</span>
-                            </div>
-                            <div className={styles.treasuryBreakdownLegend}>
-                              {FUNDING_PODS.map((pod) => (
-                                <div key={pod.title} className={styles.treasuryBreakdownLegendItem}>
-                                  <span className={styles.treasuryBreakdownDot} style={{ background: pod.accent }} />
-                                  <span>{pod.title}</span>
-                                  <strong>${pod.amount.toLocaleString()}</strong>
-                                </div>
-                              ))}
-                            </div>
+                          <Image
+                            src="/images/treasury.png"
+                            alt=""
+                            width={92}
+                            height={92}
+                            className={styles.fundingVillageSticker}
+                            unoptimized
+                          />
+                          <div className={styles.fundingVillageProgressMeta}>
+                            <span>${TREASURY_BALANCE.toLocaleString()} raised</span>
+                            <strong>${TREASURY_DISPLAY_BALANCE.toLocaleString()} goal</strong>
                           </div>
                         </article>
 
@@ -573,8 +560,8 @@ export default function VotingPage() {
                           <div className={styles.chatInputMock} aria-label="Message composer">
                             <span>Write a message...</span>
                             <svg viewBox="0 0 24 24" aria-hidden="true">
-                              <circle cx="12" cy="12" r="10" />
-                              <path d="M12 16V8M8 12l4-4 4 4" />
+                              <rect x="3" y="3" width="18" height="18" rx="4" />
+                              <path d="M12 16V8M8 11l4-4 4 4" />
                             </svg>
                           </div>
                         </div>
@@ -671,27 +658,6 @@ export default function VotingPage() {
                     </div>
 
                     <aside className={styles.communityDashRail}>
-                      <article className={`${styles.dashCard} ${styles.fundingVillageCard}`}>
-                        <div className={styles.dashCardHeader}>
-                          <div>
-                            <span className={styles.dashCardEyebrow}>Community Capital</span>
-                            <h2 className={styles.dashCardTitle}>Funding the Village</h2>
-                          </div>
-                        </div>
-                        <Image
-                          src="/images/treasury.png"
-                          alt=""
-                          width={92}
-                          height={92}
-                          className={styles.fundingVillageSticker}
-                          unoptimized
-                        />
-                        <div className={styles.fundingVillageProgressMeta}>
-                          <span>${TREASURY_BALANCE.toLocaleString()} raised</span>
-                          <strong>${TREASURY_DISPLAY_BALANCE.toLocaleString()} goal</strong>
-                        </div>
-                      </article>
-
                       <article className={`${styles.dashCard} ${styles.treasuryBalanceCard}`}>
                         <div className={styles.treasuryBalanceHeader}>
                           <h2 className={styles.dashCardTitle}>Shared Treasury</h2>
@@ -699,6 +665,39 @@ export default function VotingPage() {
                         </div>
                         <div className={styles.treasuryBalanceValue}>${TREASURY_DISPLAY_BALANCE.toLocaleString()}</div>
                       </article>
+
+                      <article className={`${styles.dashCard} ${styles.treasuryBreakdownCard}`}>
+                        <div className={styles.dashCardHeader}>
+                          <div>
+                            <span className={styles.dashCardEyebrow}>Treasury Pods</span>
+                            <h2 className={styles.dashCardTitle}>Treasury Breakdown</h2>
+                          </div>
+                          <span className={styles.dashCardIcon} aria-hidden="true">
+                            <svg viewBox="0 0 24 24">
+                              <path d="M12 3v18M3 12h18" />
+                            </svg>
+                          </span>
+                        </div>
+                        <div className={styles.treasuryBreakdownBody}>
+                          <div
+                            className={styles.treasuryBreakdownDonut}
+                            style={{ background: `conic-gradient(${podDonutGradient})` }}
+                            aria-label="Treasury pod allocation chart"
+                          >
+                            <span>${podTotal.toLocaleString()}</span>
+                          </div>
+                          <div className={styles.treasuryBreakdownLegend}>
+                            {FUNDING_PODS.map((pod) => (
+                              <div key={pod.title} className={styles.treasuryBreakdownLegendItem}>
+                                <span className={styles.treasuryBreakdownDot} style={{ background: pod.accent }} />
+                                <span>{pod.title}</span>
+                                <strong>${pod.amount.toLocaleString()}</strong>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </article>
+
                       <TreasuryDisplay
                         contractAddress={CONTRACT_ADDRESS}
                         usdcAddress={USDC_ADDRESS}

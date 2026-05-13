@@ -2680,8 +2680,9 @@
   padding: 0;
   overflow: hidden;
   background:
-    linear-gradient(90deg, rgba(11, 14, 28, 0.98) 0%, rgba(11, 14, 28, 0.94) 42%, rgba(11, 14, 28, 0.36) 66%, rgba(11, 14, 28, 0.08) 100%),
-    #0c101d;
+    linear-gradient(90deg, rgba(11, 14, 28, 0.96) 0%, rgba(11, 14, 28, 0.88) 38%, rgba(11, 14, 28, 0.45) 62%, rgba(11, 14, 28, 0.2) 100%),
+    linear-gradient(180deg, rgba(11, 14, 28, 0.5) 0%, transparent 15%, transparent 85%, rgba(11, 14, 28, 0.4) 100%),
+    url('/images/campfire.png') center / cover no-repeat;
   border-color: rgba(129, 144, 255, 0.2);
   color: #ffffff;
 }
@@ -2715,7 +2716,7 @@
   border: 1px solid rgba(129, 144, 255, 0.14);
   background: rgba(22, 27, 48, 0.74);
   color: rgba(255, 255, 255, 0.78);
-  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-family: 'Space Grotesk', 'Poppins', sans-serif;
 }
 
 .chatChannelButton {
@@ -2835,10 +2836,6 @@
 
 .chatImagePanel {
   min-width: 0;
-  background:
-    linear-gradient(90deg, rgba(11, 14, 28, 0.92) 0%, rgba(11, 14, 28, 0.55) 30%, rgba(11, 14, 28, 0.25) 60%, rgba(11, 14, 28, 0.18) 100%),
-    linear-gradient(180deg, rgba(11, 14, 28, 0.4) 0%, transparent 20%, transparent 80%, rgba(11, 14, 28, 0.5) 100%),
-    url('/images/campfire.png') center / cover no-repeat;
 }
 
 .communityChatFooter {
