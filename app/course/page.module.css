@@ -802,6 +802,113 @@
 }
 
 /* ============================================ */
+/* DESKTOP TWO-COLUMN LAYOUT                    */
+/* ============================================ */
+
+.contentDesktop {
+  max-width: none;
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 0 28px;
+  align-items: start;
+  padding: 24px 32px 48px;
+  margin: 0;
+}
+
+.leftCol {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.rightCol {
+  min-width: 0;
+  position: sticky;
+  top: 24px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(26, 29, 51, 0.12) transparent;
+}
+
+/* Panel nav cards (Journal, Missions) in the left column */
+.panelNavCard {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(26, 29, 51, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.panelNavCard:hover {
+  border-color: rgba(81, 104, 255, 0.18);
+  box-shadow: 0 4px 16px rgba(81, 104, 255, 0.06);
+  transform: translateY(-1px);
+}
+
+.panelNavCardActive {
+  background: rgba(81, 104, 255, 0.06);
+  border-color: rgba(81, 104, 255, 0.3);
+  box-shadow: 0 0 0 3px rgba(81, 104, 255, 0.08), 0 2px 8px rgba(81, 104, 255, 0.06);
+}
+
+.panelNavCardActive:hover {
+  border-color: rgba(81, 104, 255, 0.4);
+}
+
+.panelNavCardIcon {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.panelNavCardActive .panelNavCardIcon {
+  opacity: 1;
+}
+
+.panelNavCardLabel {
+  flex: 1;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1A1D33;
+  letter-spacing: -0.01em;
+}
+
+.panelNavCardArrow {
+  flex-shrink: 0;
+  color: rgba(26, 29, 51, 0.25);
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.panelNavCardActive .panelNavCardArrow {
+  color: #5168FF;
+  transform: translateX(2px);
+}
+
+:global([data-theme="dark"]) .panelNavCard {
+  background: color-mix(in oklch, var(--color-surface-2) 92%, transparent);
+  border-color: var(--color-border-subtle);
+}
+
+:global([data-theme="dark"]) .panelNavCardActive {
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 35%, transparent);
+}
+
+:global([data-theme="dark"]) .panelNavCardLabel {
+  color: var(--color-text-dark);
+}
+
+/* ============================================ */
 /* RESPONSIVE                                   */
 /* ============================================ */
 
