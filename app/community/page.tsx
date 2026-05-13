@@ -143,40 +143,6 @@ function SeedPostCard({ post }: { post: SeedPost }) {
   );
 }
 
-function HowItWorksHero() {
-  return (
-    <div className={styles.howItWorksHero}>
-      <h2 className={styles.howItWorksTitle}>How it works</h2>
-      <div className={styles.howItWorksSteps}>
-        {[
-          {
-            n: '1',
-            label: 'Funding The Village',
-            desc: 'DAO funds are directed by AI governance and member votes, fueling what matters most.',
-          },
-          {
-            n: '2',
-            label: 'Discussing Research',
-            desc: 'Compare methods, equipment, and tooling with peers advancing the science.',
-          },
-          {
-            n: '3',
-            label: 'Engage, Share, Network',
-            desc: 'Connect with members, share your story, and build relationships that grow your mental wealth.',
-          },
-        ].map((step) => (
-          <div key={step.n} className={styles.howItWorksStep}>
-            <div className={styles.howItWorksStepNum}>{step.n}</div>
-            <div className={styles.howItWorksStepContent}>
-              <div className={styles.howItWorksStepLabel}>{step.label}</div>
-              <div className={styles.howItWorksStepDesc}>{step.desc}</div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 const StillTutorial = dynamic(() => import('@/components/still-tutorial/StillTutorial'), {
   ssr: false,
@@ -561,8 +527,6 @@ export default function VotingPage() {
                   />
                 </div>
               </div>
-
-            <HowItWorksHero />
 
             <div className={styles.communityViewViewport}>
               <section className={styles.communityViewPanel}>
