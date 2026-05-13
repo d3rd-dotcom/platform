@@ -132,6 +132,22 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
     if (status === 'completed' || onChainData?.executed) {
       return 'completed';
     }
+    if (status === 'approved' && (onChainProposalId || onChainData)) {
+      if (!onChainData) {
+        return 'active';
+      }
+
+      const forVotes = parseFloat(onChainData.forVotes);
+      const againstVotes = parseFloat(onChainData.againstVotes);
+
+      if (isExpired) {
+        const totalVotes = forVotes + againstVotes;
+        if (totalVotes === 0) return 'expired';
+        return forVotes > againstVotes ? 'completed' : 'defeated';
+      }
+
+      return 'active';
+    }
     if (status === 'active') {
       if (!onChainData) {
         return 'active';
