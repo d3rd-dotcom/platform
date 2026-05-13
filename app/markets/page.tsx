@@ -219,17 +219,12 @@ const INITIAL_TRADE_CHAT: TradeChatMessage[] = [
   },
 ];
 
-function getMarketMonogram(market: MarketRow): string {
-  const ticker = (market.event_ticker || market.ticker || '').replace(/[^A-Z]/gi, '').slice(0, 3).toUpperCase();
-  if (ticker) return ticker;
-
-  return market.question
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((word) => word[0]?.toUpperCase() || '')
-    .join('');
-}
+const CATEGORY_AVATARS: Record<MarketCategory, string> = {
+  commodities: '/icons/treasury.svg',
+  economics: '/icons/governance.svg',
+  ai: '/icons/atom.svg',
+  politics: '/icons/debate.svg',
+};
 
 // ── Live Ticker Line ──
 
@@ -517,6 +512,35 @@ export default function Markets() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prices, kalshiMarkets, modelTick]);
+
+  const mixedMarkets = useMemo(() => {
+    if (!deferredKalshiMarkets) return [];
+
+    const perCategory = MARKET_CATEGORIES.map((category) => ({
+      category,
+      items: (deferredKalshiMarkets[category] || []).slice(0, visibleMarketCounts[category] ?? INITIAL_VISIBLE_MARKETS),
+    }));
+
+    const maxLength = Math.max(0, ...perCategory.map(({ items }) => items.length));
+    const mixed: Array<{ category: MarketCategory; market: MarketRow }> = [];
+
+    for (let index = 0; index < maxLength; index += 1) {
+      for (const entry of perCategory) {
+        const market = entry.items[index];
+        if (market) mixed.push({ category: entry.category, market });
+      }
+    }
+
+    return mixed;
+  }, [deferredKalshiMarkets, visibleMarketCounts]);
+
+  const hasMoreMixedMarkets = useMemo(() => {
+    if (!deferredKalshiMarkets) return false;
+    return MARKET_CATEGORIES.some((category) => {
+      const total = deferredKalshiMarkets[category]?.length ?? 0;
+      return total > (visibleMarketCounts[category] ?? INITIAL_VISIBLE_MARKETS);
+    });
+  }, [deferredKalshiMarkets, visibleMarketCounts]);
 
   useEffect(() => {
     const node = tradeChatScrollRef.current;
@@ -1010,14 +1034,6 @@ export default function Markets() {
               <span className={styles.panelTitle}>Markets</span>
             </div>
             <div className={styles.marketArena}>
-              <div className={styles.marketArenaHeader}>
-                <span className={styles.marketArenaBadge}>Live boards</span>
-                <div className={styles.marketArenaChips} aria-hidden="true">
-                  {MARKET_CATEGORIES.map((cat) => (
-                    <span key={cat} className={styles.marketArenaChip}>{CATEGORY_LABELS[cat]}</span>
-                  ))}
-                </div>
-              </div>
               {!deferredKalshiMarkets && !kalshiError && (
                 <MarketListSkeleton />
               )}
@@ -1025,84 +1041,66 @@ export default function Markets() {
                 <span className={styles.errorText}>Failed to load Kalshi data</span>
               )}
               {deferredKalshiMarkets && (
-                <div className={styles.marketList}>
-                  {MARKET_CATEGORIES.map((cat) => {
-                    const items = deferredKalshiMarkets[cat];
-                    if (!items || items.length === 0) return null;
-                    const visibleCount = visibleMarketCounts[cat] ?? INITIAL_VISIBLE_MARKETS;
-                    const visibleItems = items.slice(0, visibleCount);
-                    const hasMore = items.length > visibleCount;
-                    return (
-                      <div key={cat} className={styles.marketSection}>
-                        <div className={styles.marketSectionHeader}>
-                          <span className={styles.marketSectionLabel}>{CATEGORY_LABELS[cat]}</span>
-                          <span className={styles.marketSectionCount}>{items.length} live</span>
+                <>
+                  <div className={styles.marketCards}>
+                    {mixedMarkets.map(({ category, market }) => {
+                      const [yes, no] = parseOutcomePrices(market.outcomePrices);
+                      const yesPct = Math.round(yes * 100);
+                      const noPct = Math.round(no * 100);
+                      const iconSrc = market.iconUrl || CATEGORY_AVATARS[category];
+
+                      return (
+                        <div key={market.id} className={styles.marketItem}>
+                          <div className={styles.marketItemTop}>
+                            <div className={styles.marketItemHeader}>
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={iconSrc}
+                                alt=""
+                                className={styles.marketIcon}
+                                width={44}
+                                height={44}
+                                loading="lazy"
+                              />
+                              <div className={styles.marketQuestion}>{market.question}</div>
+                            </div>
+                            <div className={styles.marketPill}>{CATEGORY_LABELS[category]}</div>
+                          </div>
+                          <div className={styles.marketBarWrap}>
+                            <div className={styles.marketBar}>
+                              <div className={styles.marketYes} style={{ width: `${yesPct}%` }} />
+                              <div className={styles.marketNo} style={{ width: `${noPct}%` }} />
+                            </div>
+                            <div className={styles.marketBarValues}>
+                              <span className={styles.marketBarValueYes}>Yes {yesPct}%</span>
+                              <span className={styles.marketBarValueNo}>No {noPct}%</span>
+                            </div>
+                          </div>
+                          <div className={styles.marketMeta}>
+                            <span>Volume {formatVol(market.volume)}</span>
+                          </div>
                         </div>
-                        <div className={styles.marketCards}>
-                          {visibleItems.map((m, index) => {
-                            const previous = visibleItems[index - 1];
-                            const showImage = Boolean(m.iconUrl) && previous?.iconUrl !== m.iconUrl;
-                            const [yes, no] = parseOutcomePrices(m.outcomePrices);
-                            const yesPct = Math.round(yes * 100);
-                            const noPct = Math.round(no * 100);
-                            return (
-                              <div key={m.id} className={styles.marketItem}>
-                                <div className={styles.marketItemTop}>
-                                  <div className={styles.marketItemHeader}>
-                                    {showImage ? (
-                                      // eslint-disable-next-line @next/next/no-img-element
-                                      <img
-                                        src={m.iconUrl}
-                                        alt=""
-                                        className={styles.marketIcon}
-                                        width={40}
-                                        height={40}
-                                        loading="lazy"
-                                      />
-                                    ) : (
-                                      <div className={styles.marketIconFallback} aria-hidden="true">
-                                        {getMarketMonogram(m)}
-                                      </div>
-                                    )}
-                                    <div className={styles.marketQuestion}>{m.question}</div>
-                                  </div>
-                                  <div className={styles.marketPill}>{yesPct}% yes</div>
-                                </div>
-                                <div className={styles.marketBarWrap}>
-                                  <div className={styles.marketBar}>
-                                    <div className={styles.marketYes} style={{ width: `${yesPct}%` }} />
-                                    <div className={styles.marketNo} style={{ width: `${noPct}%` }} />
-                                  </div>
-                                  <div className={styles.marketBarValues}>
-                                    <span className={styles.marketBarValueYes}>Yes {yesPct}%</span>
-                                    <span className={styles.marketBarValueNo}>No {noPct}%</span>
-                                  </div>
-                                </div>
-                                <div className={styles.marketMeta}>
-                                  <span>Volume {formatVol(m.volume)}</span>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                        {hasMore && (
-                          <button
-                            type="button"
-                            className={styles.marketLoadMore}
-                            onClick={() => {
-                              setVisibleMarketCounts((current) => ({
-                                ...current,
-                                [cat]: Math.min((current[cat] ?? INITIAL_VISIBLE_MARKETS) + MARKET_LOAD_MORE_STEP, items.length),
-                              }));
-                            }}
-                          >
-                            Show more
-                          </button>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
+                      );
+                    })}
+                  </div>
+                  {hasMoreMixedMarkets && (
+                    <button
+                      type="button"
+                      className={styles.marketLoadMore}
+                      onClick={() => {
+                        setVisibleMarketCounts((current) => (
+                          MARKET_CATEGORIES.reduce<Record<MarketCategory, number>>((next, category) => {
+                            const total = deferredKalshiMarkets[category]?.length ?? 0;
+                            next[category] = Math.min((current[category] ?? INITIAL_VISIBLE_MARKETS) + 1, total);
+                            return next;
+                          }, { ...current })
+                        ));
+                      }}
+                    >
+                      Show more
+                    </button>
+                  )}
+                </>
               )}
             </div>
           </div>

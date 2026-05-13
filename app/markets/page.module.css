@@ -1288,7 +1288,7 @@
 .marketArena {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   padding: 14px;
   border-radius: calc(var(--radius-lg) - 2px);
   border: 1px solid rgba(26, 29, 51, 0.06);
@@ -1296,106 +1296,6 @@
     radial-gradient(circle at 1px 1px, rgba(81, 104, 255, 0.08) 1px, transparent 0);
   background-size: 16px 16px;
   background-color: #F9FBFF;
-}
-
-.marketArenaHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.marketArenaBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 12px;
-  border-radius: 999px;
-  background: #FFFFFF;
-  border: 1px solid rgba(81, 104, 255, 0.14);
-  font-family: var(--font-button);
-  font-size: 10px;
-  font-weight: var(--font-weight-bold);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-primary);
-  box-shadow: 0 8px 18px rgba(81, 104, 255, 0.08);
-}
-
-.marketArenaBadge::before {
-  content: '';
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: var(--color-tertiary);
-  box-shadow: 0 0 0 4px rgba(116, 196, 101, 0.12);
-}
-
-.marketArenaChips {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.marketArenaChip {
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(26, 29, 51, 0.08);
-  color: var(--color-text-soft);
-  font-family: var(--font-button);
-  font-size: 10px;
-  font-weight: var(--font-weight-semibold);
-}
-
-.marketSection {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 14px;
-  border-radius: var(--radius-lg);
-  border: 1px solid rgba(26, 29, 51, 0.06);
-  background: rgba(255, 255, 255, 0.76);
-}
-
-.marketSection:nth-child(4n + 1) {
-  background: #F4F8FF;
-}
-
-.marketSection:nth-child(4n + 2) {
-  background: #FFF8F0;
-}
-
-.marketSection:nth-child(4n + 3) {
-  background: #F4FBF4;
-}
-
-.marketSection:nth-child(4n + 4) {
-  background: #FBF6FF;
-}
-
-.marketSectionHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.marketSectionLabel {
-  font-family: var(--font-button);
-  font-size: 10px;
-  font-weight: var(--font-weight-bold);
-  letter-spacing: 0.12em;
-  color: var(--color-secondary);
-  text-transform: uppercase;
-}
-
-.marketSectionCount {
-  font-family: var(--font-button);
-  font-size: 10px;
-  color: var(--color-text-soft);
 }
 
 .marketCards {
@@ -1474,23 +1374,6 @@
   border: 1px solid rgba(81, 104, 255, 0.12);
 }
 
-.marketIconFallback {
-  width: 44px;
-  height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  border-radius: 12px;
-  background: linear-gradient(180deg, rgba(81, 104, 255, 0.12) 0%, rgba(81, 104, 255, 0.06) 100%);
-  border: 1px solid rgba(81, 104, 255, 0.14);
-  color: var(--color-primary);
-  font-family: var(--font-button);
-  font-size: 11px;
-  font-weight: var(--font-weight-bold);
-  letter-spacing: 0.08em;
-}
-
 .marketQuestion {
   font-family: var(--font-button);
   font-size: 13px;
@@ -1504,9 +1387,9 @@
   flex-shrink: 0;
   padding: 6px 9px;
   border-radius: 999px;
-  background: rgba(233, 248, 239, 0.9);
-  border: 1px solid rgba(35, 134, 79, 0.16);
-  color: var(--color-secondary);
+  background: rgba(81, 104, 255, 0.08);
+  border: 1px solid rgba(81, 104, 255, 0.14);
+  color: var(--color-primary);
   font-family: var(--font-button);
   font-size: 10px;
   font-weight: var(--font-weight-bold);
@@ -1813,9 +1696,7 @@
 :global([data-theme="dark"]) .shardBarLabel,
 :global([data-theme="dark"]) .statusLabel,
 :global([data-theme="dark"]) .statusValue,
-:global([data-theme="dark"]) .lastUpdated,
-:global([data-theme="dark"]) .marketSectionCount,
-:global([data-theme="dark"]) .marketArenaChip {
+:global([data-theme="dark"]) .lastUpdated {
   color: var(--color-text-muted);
 }
 
@@ -1922,46 +1803,14 @@
   border-color: var(--color-border-subtle);
 }
 
-:global([data-theme="dark"]) .marketArenaBadge,
-:global([data-theme="dark"]) .marketArenaChip,
 :global([data-theme="dark"]) .marketLoadMore {
   background: color-mix(in oklch, var(--markets-dark-panel-raised) 82%, transparent);
   border-color: var(--color-border-subtle);
 }
 
-:global([data-theme="dark"]) .marketArenaBadge {
-  color: var(--color-text-light);
-}
-
-:global([data-theme="dark"]) .marketSection {
-  border-color: var(--color-border-subtle);
-}
-
-:global([data-theme="dark"]) .marketSection:nth-child(4n + 1) {
-  background: color-mix(in oklch, var(--color-primary) 18%, var(--markets-dark-panel));
-}
-
-:global([data-theme="dark"]) .marketSection:nth-child(4n + 2) {
-  background: color-mix(in oklch, var(--color-accent) 18%, var(--markets-dark-panel));
-}
-
-:global([data-theme="dark"]) .marketSection:nth-child(4n + 3) {
-  background: color-mix(in oklch, var(--color-tertiary) 18%, var(--markets-dark-panel));
-}
-
-:global([data-theme="dark"]) .marketSection:nth-child(4n + 4) {
-  background: color-mix(in oklch, #a78bfa 18%, var(--markets-dark-panel));
-}
-
-:global([data-theme="dark"]) .marketIconFallback {
-  background: color-mix(in oklch, var(--color-primary) 18%, transparent);
-  border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
-  color: var(--color-text-light);
-}
-
 :global([data-theme="dark"]) .marketPill {
-  background: color-mix(in oklch, var(--markets-dark-green) 44%, transparent);
-  border-color: color-mix(in oklch, var(--color-tertiary) 26%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 18%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 26%, transparent);
   color: var(--color-text-light);
 }
 
