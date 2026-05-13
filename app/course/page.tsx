@@ -73,6 +73,67 @@ const WEEK_TITLES = [
   'Week 9', 'Week 10', 'Week 11', 'Week 12', 'Week 13',
 ];
 
+function parseMarkdownSimple(md: string): string {
+  let html = md
+    .replace(/^---$/gm, '<hr />')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+    .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>');
+  html = html.split('\n\n').map(p => {
+    const t = p.trim();
+    if (!t) return '';
+    if (/^<[h1-6hr]/.test(t)) return t;
+    return `<p>${t}</p>`;
+  }).join('\n');
+  return html;
+}
+
+interface CourseInlineReaderProps {
+  reading: typeof WEEKLY_READINGS[0];
+  onBack: () => void;
+}
+
+function CourseInlineReader({ reading, onBack }: CourseInlineReaderProps) {
+  const [content, setContent] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    setContent('');
+    fetch(reading.markdownPath)
+      .then(r => r.text())
+      .then(text => { setContent(text); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, [reading.markdownPath]);
+
+  return (
+    <div className={styles.inlineReader}>
+      <button type="button" className={styles.inlineReaderBack} onClick={onBack}>
+        ← Back to Journal
+      </button>
+      <div className={styles.inlineReaderHeader}>
+        <span className={styles.inlineReaderCategory}>{reading.category}</span>
+        <h2 className={styles.inlineReaderTitle}>{reading.title}</h2>
+      </div>
+      {loading ? (
+        <div className={styles.inlineReaderLoading}>
+          <div className={`${styles.skeletonBlock}`} style={{ height: 16, borderRadius: 8, marginBottom: 8 }} />
+          <div className={`${styles.skeletonBlock}`} style={{ height: 16, borderRadius: 8, width: '80%', marginBottom: 8 }} />
+          <div className={`${styles.skeletonBlock}`} style={{ height: 16, borderRadius: 8, width: '60%' }} />
+        </div>
+      ) : (
+        <div
+          className={styles.inlineReaderBody}
+          dangerouslySetInnerHTML={{ __html: parseMarkdownSimple(content) }}
+        />
+      )}
+    </div>
+  );
+}
+
 export default function CoursePage() {
   const { ready, authenticated, getAccessToken } = usePrivy();
   const [isLoaded, setIsLoaded] = useState(false);
@@ -321,130 +382,6 @@ export default function CoursePage() {
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  const leaderboardButton = (
-    <section className={`${styles.hero} ${isLoaded ? styles.heroLoaded : ''}`}>
-      <button
-        type="button"
-        className={styles.topLeaderboard}
-        onClick={() => { play('click'); setShowLeaderboard(true); }}
-      >
-        <div className={styles.topLeaderboardHeader}>
-          <Image src="/icons/ui-shard.svg" alt="" width={12} height={12} className={styles.topLeaderboardIcon} />
-          <span className={styles.topLeaderboardTitle}>WEEKLY LEADERBOARD</span>
-        </div>
-        <div className={styles.topLeaderboardPodium}>
-          {leaderboardLoading ? (
-            [1, 2, 3, 4, 5].map(rank => (
-              <div key={rank} className={styles.podiumSlot}>
-                <div className={styles.podiumAvatarRing}>
-                  <div className={`${styles.podiumAvatar} ${styles.skeletonBlock}`} />
-                </div>
-              </div>
-            ))
-          ) : (
-            leaderboard.slice(0, 5).map(u => (
-              <div
-                key={u.rank}
-                className={`${styles.podiumSlot} ${u.rank === 1 ? styles.podiumFirst : u.rank === 2 ? styles.podiumSecond : u.rank === 3 ? styles.podiumThird : ''}`}
-              >
-                <div className={styles.podiumAvatarRing}>
-                  {u.avatarUrl ? (
-                    <>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={u.avatarUrl} alt={u.username} className={styles.podiumAvatarImg} />
-                    </>
-                  ) : (
-                    <div className={styles.podiumAvatar} style={{ background: avatarColor(u.username) }}>
-                      {u.username[0]?.toUpperCase() ?? '?'}
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      </button>
-    </section>
-  );
-
-  const weekNav = (
-    <>
-      <div className={styles.weekHeader}>
-        <button
-          className={styles.weekArrow}
-          onClick={() => goToWeek('prev')}
-          onMouseEnter={() => play('hover')}
-          disabled={seasonLoading || resolvedViewWeek <= 1}
-          aria-label="Previous week"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M15 18l-6-6 6-6"/>
-          </svg>
-        </button>
-        <div className={styles.weekHeaderCenter}>
-          {seasonLoading ? (
-            <span className={`${styles.weekTitle} ${styles.skeletonTextWide} ${styles.skeletonBlock}`} />
-          ) : (
-            <span className={styles.weekTitle}>{WEEK_TITLES[resolvedViewWeek]}</span>
-          )}
-        </div>
-        <button
-          className={styles.weekArrow}
-          onClick={() => goToWeek('next')}
-          onMouseEnter={() => play('hover')}
-          disabled={seasonLoading || resolvedViewWeek >= 12}
-          aria-label="Next week"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 18l6-6-6-6"/>
-          </svg>
-        </button>
-      </div>
-      <div className={styles.weekDots}>
-        {Array.from({ length: 12 }, (_, i) => {
-          const w = i + 1;
-          const status = getWeekStatus(w);
-          return (
-            <button
-              key={w}
-              className={`${styles.weekDot} ${!seasonLoading && w === resolvedViewWeek ? styles.weekDotActive : ''} ${status?.isSealed ? styles.weekDotSealed : ''} ${seasonLoading ? styles.weekDotLoading : ''}`}
-              onClick={() => { play('click'); setViewWeek(w); }}
-              title={`Week ${w}: ${WEEK_TITLES[w]}`}
-              disabled={seasonLoading}
-            />
-          );
-        })}
-      </div>
-    </>
-  );
-
-  const readingCard = seasonLoading || viewWeek === null ? (
-    <div className={styles.readingCardSkeleton}>
-      <div className={`${styles.readingMediaSkeleton} ${styles.skeletonBlock}`} />
-      <div className={styles.readingInfo}>
-        <span className={`${styles.readingCategorySkeletonLine} ${styles.skeletonBlock}`} />
-        <span className={`${styles.readingTitleSkeletonLine} ${styles.skeletonBlock}`} />
-        <span className={`${styles.readingAuthorSkeletonLine} ${styles.skeletonBlock}`} />
-      </div>
-    </div>
-  ) : (
-    <button
-      type="button"
-      className={styles.readingCard}
-      style={{ '--reading-card-bg': `url(${JSON.stringify(weekReading.imageUrl)})` } as React.CSSProperties}
-      onClick={() => { play('click'); handleOpenReading(Math.min(resolvedViewWeek, WEEKLY_READINGS.length - 1)); }}
-      onMouseEnter={() => play('hover')}
-    >
-      <div className={styles.readingInfo}>
-        <span className={styles.readingTitle}>{weekReading.title}</span>
-        <span className={styles.readingAuthor}>{weekReading.author}</span>
-      </div>
-      <svg className={styles.readingArrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M9 18l6-6-6-6"/>
-      </svg>
-    </button>
-  );
-
   return (
     <>
     <MobileSplash />
@@ -457,83 +394,11 @@ export default function CoursePage() {
         </div>
       )}
       <SideNavigation />
+      <main className={`${styles.content} ${isDesktop ? styles.contentDesktop : ''}`} onFocus={handleFocus}>
 
-      {isDesktop ? (
-        /* ── Desktop: two-column master-detail layout ── */
-        <main className={`${styles.content} ${styles.contentDesktop}`} onFocus={handleFocus}>
-          {/* Left column — card list */}
-          <div className={styles.leftCol}>
-            {leaderboardButton}
+        {/* ── Left / main column — identical to original ── */}
+        <div className={isDesktop ? styles.leftCol : undefined}>
 
-            {/* Journal nav card */}
-            <button
-              type="button"
-              className={`${styles.panelNavCard} ${selectedPanel === 'daily-note' ? styles.panelNavCardActive : ''}`}
-              onClick={() => setSelectedPanel('daily-note')}
-              onMouseEnter={() => play('hover')}
-            >
-              <Image src="/icons/nav-spiral.svg" alt="" width={20} height={20} className={styles.panelNavCardIcon} />
-              <span className={styles.panelNavCardLabel}>Today&apos;s Journal</span>
-              <svg className={styles.panelNavCardArrow} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 18l6-6-6-6"/>
-              </svg>
-            </button>
-
-            <CreditScore showLoader={false} />
-
-            {weekNav}
-
-            {readingCard}
-
-            {/* Missions nav card */}
-            {!seasonLoading && viewWeek !== null && (
-              <button
-                type="button"
-                className={`${styles.panelNavCard} ${selectedPanel === 'tasks' ? styles.panelNavCardActive : ''}`}
-                onClick={() => setSelectedPanel('tasks')}
-                onMouseEnter={() => play('hover')}
-              >
-                <Image src="/icons/nav-community.svg" alt="" width={20} height={20} className={styles.panelNavCardIcon} />
-                <span className={styles.panelNavCardLabel}>Missions</span>
-                <svg className={styles.panelNavCardArrow} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M9 18l6-6-6-6"/>
-                </svg>
-              </button>
-            )}
-
-            <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
-          </div>
-
-          {/* Right column — content panel */}
-          <div className={styles.rightCol}>
-            {selectedPanel === 'daily-note' && (
-              <DailyNotes enablePersistence={canPersistMorningPages} />
-            )}
-            {selectedPanel === 'tasks' && (
-              seasonLoading || viewWeek === null ? (
-                <div className={styles.weekTasksSkeleton}>
-                  <div className={`${styles.taskCardSkeleton} ${styles.skeletonBlock}`} />
-                  <div className={`${styles.taskCardSkeleton} ${styles.skeletonBlock}`} />
-                  <div className={`${styles.taskCardSkeleton} ${styles.skeletonBlock}`} />
-                  <div className={`${styles.sealButtonSkeleton} ${styles.skeletonBlock}`} />
-                </div>
-              ) : (
-                <WeekTasksView
-                  key={resolvedViewWeek}
-                  weekNumber={resolvedViewWeek}
-                  enablePersistence={isAuthenticated}
-                  isLocked={resolvedViewWeek > activeWeek}
-                  initialIsSealed={getWeekStatus(resolvedViewWeek)?.isSealed}
-                  initialSealTxHash={getWeekStatus(resolvedViewWeek)?.sealTxHash}
-                  onSealComplete={handleSealComplete}
-                />
-              )
-            )}
-          </div>
-        </main>
-      ) : (
-        /* ── Mobile: single-column existing layout ── */
-        <main className={styles.content} onFocus={handleFocus}>
           <section className={`${styles.hero} ${isLoaded ? styles.heroLoaded : ''}`}>
             <button
               type="button"
@@ -578,10 +443,13 @@ export default function CoursePage() {
             </button>
           </section>
 
-          <div className={styles.morningPagesShell}>
-            <div className={styles.morningPagesGradient} />
-            <DailyNotes enablePersistence={canPersistMorningPages} compact />
-          </div>
+          {/* DailyNotes compact — mobile only; desktop shows full editor in right panel */}
+          {!isDesktop && (
+            <div className={styles.morningPagesShell}>
+              <div className={styles.morningPagesGradient} />
+              <DailyNotes enablePersistence={canPersistMorningPages} compact />
+            </div>
+          )}
 
           <CreditScore showLoader={false} />
 
@@ -660,9 +528,19 @@ export default function CoursePage() {
               <>
                 <button
                   type="button"
-                  className={styles.readingCard}
+                  className={`${styles.readingCard} ${isDesktop && rightContent === 'reading' ? styles.readingCardActive : ''}`}
                   style={{ '--reading-card-bg': `url(${JSON.stringify(weekReading.imageUrl)})` } as React.CSSProperties}
-                  onClick={() => { play('click'); handleOpenReading(Math.min(resolvedViewWeek, WEEKLY_READINGS.length - 1)); }}
+                  onClick={() => {
+                    play('click');
+                    const idx = Math.min(resolvedViewWeek, WEEKLY_READINGS.length - 1);
+                    const reading = WEEKLY_READINGS[idx];
+                    if (isDesktop && reading?.slug !== 'sense-of-safety') {
+                      setReaderIndex(idx);
+                      setRightContent('reading');
+                    } else {
+                      handleOpenReading(idx);
+                    }
+                  }}
                   onMouseEnter={() => play('hover')}
                 >
                   <div className={styles.readingInfo}>
@@ -694,8 +572,24 @@ export default function CoursePage() {
           </div>
 
           <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
-        </main>
-      )}
+        </div>
+
+        {/* ── Right panel (desktop only) ── */}
+        {isDesktop && (
+          <div className={styles.rightPanel}>
+            {rightContent === 'daily-note' && (
+              <DailyNotes enablePersistence={canPersistMorningPages} />
+            )}
+            {rightContent === 'reading' && (
+              <CourseInlineReader
+                reading={WEEKLY_READINGS[readerIndex]}
+                onBack={() => setRightContent('daily-note')}
+              />
+            )}
+          </div>
+        )}
+
+      </main>
 
       {showLeaderboard && (
         <div className={styles.modalOverlay} onClick={() => setShowLeaderboard(false)}>
