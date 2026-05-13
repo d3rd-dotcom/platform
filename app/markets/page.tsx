@@ -197,30 +197,41 @@ function formatTradeTime(ts: string): string {
 }
 
 const CATEGORY_LABELS: Record<MarketCategory, string> = {
-  commodities: 'COMMODITIES',
-  economics: 'ECONOMICS',
+  commodities: 'Commodities',
+  economics: 'Economics',
   ai: 'AI',
-  politics: 'POLITICS',
+  politics: 'Politics',
 };
 
 const MARKET_CATEGORIES: MarketCategory[] = ['commodities', 'economics', 'ai', 'politics'];
 
 const TRADE_CHAT_SUGGESTIONS = [
-  'Find price gap',
-  'Size trade',
+  "What's the estimate?",
 ];
 const BLUE_ROUTE_TRIGGER_TEXT =
-  'Blue compares her estimate with the live price, checks position size, then waits for approval before any order routes.';
+  'Blue compares her estimate with the live price, keeps size capped, and waits for approval before routing anything.';
 const INITIAL_VISIBLE_MARKETS = 3;
 const MARKET_LOAD_MORE_STEP = 3;
 
 const INITIAL_TRADE_CHAT: TradeChatMessage[] = [
   {
     role: 'blue',
-    text: "Hey, what's up?",
+    text: "Ask me about any market and I'll give you Blue's current estimate.",
     timestamp: Date.now(),
   },
 ];
+
+function getMarketMonogram(market: MarketRow): string {
+  const ticker = (market.event_ticker || market.ticker || '').replace(/[^A-Z]/gi, '').slice(0, 3).toUpperCase();
+  if (ticker) return ticker;
+
+  return market.question
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0]?.toUpperCase() || '')
+    .join('');
+}
 
 // ── Live Ticker Line ──
 
@@ -604,10 +615,10 @@ export default function Markets() {
     const direction = derived.divergence >= 0 ? 'yes/upside' : 'no/downside';
 
     if (command.includes('trade') || command.includes('buy') || command.includes('sell') || command.includes('size')) {
-      return `i'm reading this as a ${direction} instruction, but the signal is ${posture}: Blue's estimate is ${derived.model_fair.toFixed(2)}% and the market price is ${derived.mkt_price.toFixed(2)}%. i'll keep the size capped at 0.25x and only route once the protected execution path confirms the order.`;
+      return `I'm reading that as a ${direction} instruction, but the signal is still ${posture}. Blue's estimate is ${derived.model_fair.toFixed(2)}%, the market price is ${derived.mkt_price.toFixed(2)}%, and I'll keep size capped at 0.25x until the protected route confirms the order.`;
     }
 
-    return `current read: ${derived.signal.toLowerCase()}. Blue's estimate is ${derived.model_fair.toFixed(2)}%. The market price is ${derived.mkt_price.toFixed(2)}%. The gap is ${derived.divergence >= 0 ? '+' : ''}${derived.divergence.toFixed(2)}%. Ask me to trade, size, hedge, or wait.`;
+    return `Current read: ${derived.signal.toLowerCase()}. Blue's estimate is ${derived.model_fair.toFixed(2)}%, the market price is ${derived.mkt_price.toFixed(2)}%, and the price gap is ${derived.divergence >= 0 ? '+' : ''}${derived.divergence.toFixed(2)}%.`;
   }, [derived]);
 
   const sendTradeChatMessage = useCallback(async (rawText: string) => {
@@ -1011,16 +1022,27 @@ export default function Markets() {
                 {MARKET_CATEGORIES.map((cat) => {
                   const items = deferredKalshiMarkets[cat];
                   if (!items || items.length === 0) return null;
+                  const visibleCount = visibleMarketCounts[cat] ?? INITIAL_VISIBLE_MARKETS;
+                  const visibleItems = items.slice(0, visibleCount);
+                  const hasMore = items.length > visibleCount;
                   return (
                     <div key={cat} className={styles.marketSection}>
-                      {items.map((m) => {
+                      <div className={styles.marketSectionHeader}>
+                        <span className={styles.marketSectionLabel}>{CATEGORY_LABELS[cat]}</span>
+                        <span className={styles.marketSectionCount}>{items.length} live</span>
+                      </div>
+                      <div className={styles.marketCards}>
+                        {visibleItems.map((m, index) => {
+                        const previous = visibleItems[index - 1];
+                        const showImage = Boolean(m.iconUrl) && previous?.iconUrl !== m.iconUrl;
                         const [yes, no] = parseOutcomePrices(m.outcomePrices);
                         const yesPct = Math.round(yes * 100);
                         const noPct = Math.round(no * 100);
                         return (
                           <div key={m.id} className={styles.marketItem}>
-                            <div className={styles.marketItemHeader}>
-                              {m.iconUrl && (
+                            <div className={styles.marketItemTop}>
+                              <div className={styles.marketItemHeader}>
+                                {showImage ? (
                                 // eslint-disable-next-line @next/next/no-img-element
                                 <img
                                   src={m.iconUrl}
@@ -1030,22 +1052,46 @@ export default function Markets() {
                                   height={40}
                                   loading="lazy"
                                 />
-                              )}
-                              <div className={styles.marketQuestion}>{m.question}</div>
+                                ) : (
+                                  <div className={styles.marketIconFallback} aria-hidden="true">
+                                    {getMarketMonogram(m)}
+                                  </div>
+                                )}
+                                <div className={styles.marketQuestion}>{m.question}</div>
+                              </div>
+                              <div className={styles.marketPill}>{yesPct}% yes</div>
                             </div>
                             <div className={styles.marketBarWrap}>
                               <div className={styles.marketBar}>
                                 <div className={styles.marketYes} style={{ width: `${yesPct}%` }} />
                                 <div className={styles.marketNo} style={{ width: `${noPct}%` }} />
                               </div>
-                              <span className={styles.marketBarLabel}>{yesPct}% yes</span>
+                              <div className={styles.marketBarValues}>
+                                <span className={styles.marketBarValueYes}>Yes {yesPct}%</span>
+                                <span className={styles.marketBarValueNo}>No {noPct}%</span>
+                              </div>
                             </div>
                             <div className={styles.marketMeta}>
-                              <span>Vol: {formatVol(m.volume)}</span>
+                              <span>Volume {formatVol(m.volume)}</span>
                             </div>
                           </div>
                         );
-                      })}
+                        })}
+                      </div>
+                      {hasMore && (
+                        <button
+                          type="button"
+                          className={styles.marketLoadMore}
+                          onClick={() => {
+                            setVisibleMarketCounts((current) => ({
+                              ...current,
+                              [cat]: Math.min((current[cat] ?? INITIAL_VISIBLE_MARKETS) + MARKET_LOAD_MORE_STEP, items.length),
+                            }));
+                          }}
+                        >
+                          Show more
+                        </button>
+                      )}
                     </div>
                   );
                 })}
@@ -1111,27 +1157,31 @@ export default function Markets() {
 
           {/* ════ RIGHT COLUMN: Blue Trading Chat ════ */}
           <section className={styles.blueTradeColumn} aria-label="Blue trading chat">
-            <div className={styles.blueTradeVitals}>
-              <div className={styles.blueVital}>
-                <span>Blue estimate</span>
-                <strong>{derived.model_fair.toFixed(2)}%</strong>
+            <div className={styles.blueTradeIntro}>
+              <div className={styles.blueTradeIntroHeader}>
+                <div className={styles.blueTradeAvatar} aria-hidden="true">
+                  <Image src="/uploads/blueagent.png" alt="" width={40} height={40} className={styles.blueTradeAvatarImage} />
+                </div>
+                <div className={styles.blueTradeHeading}>
+                  <span className={styles.blueTradeEyebrow}>Blue on markets</span>
+                  <h2>What&apos;s the estimate?</h2>
+                  <p>{BLUE_ROUTE_TRIGGER_TEXT}</p>
+                </div>
               </div>
-              <div className={styles.blueVital}>
-                <span>market price</span>
-                <strong>{derived.mkt_price.toFixed(2)}%</strong>
+              <div className={styles.blueTradeVitals}>
+                <div className={styles.blueVital}>
+                  <span>Blue estimate</span>
+                  <strong>{derived.model_fair.toFixed(2)}%</strong>
+                </div>
+                <div className={styles.blueVital}>
+                  <span>Market price</span>
+                  <strong>{derived.mkt_price.toFixed(2)}%</strong>
+                </div>
+                <div className={styles.blueVital}>
+                  <span>Price gap</span>
+                  <strong>{derived.divergence >= 0 ? '+' : ''}{derived.divergence.toFixed(2)}%</strong>
+                </div>
               </div>
-              <div className={styles.blueVital}>
-                <span>price gap</span>
-                <strong>{derived.divergence >= 0 ? '+' : ''}{derived.divergence.toFixed(2)}%</strong>
-              </div>
-            </div>
-            <p className={styles.blueVitalsHelp}>
-              Blue estimate is what Blue thinks the chance is. Market price is what traders are paying. Price gap is the difference.
-            </p>
-
-            <div className={styles.blueRouteCard}>
-              <span className={styles.blueRouteDot} aria-hidden="true" />
-              <span>{BLUE_ROUTE_TRIGGER_TEXT}</span>
             </div>
 
             <div className={styles.blueChatMessages} ref={tradeChatScrollRef}>
