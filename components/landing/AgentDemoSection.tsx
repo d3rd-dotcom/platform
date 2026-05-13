@@ -156,10 +156,10 @@ export const AgentDemoSection = () => {
           <aside className={styles.sidePanel}>
             <div className={styles.sidePanelInner}>
               <p className={styles.sidePanelEyebrow}>Core System</p>
-              <p className={styles.sidePanelTitle}>B.L.U.E. runs the Academy</p>
+              <p className={styles.sidePanelTitle}>YOU run the Academy</p>
               <p className={styles.sidePanelBody}>
-                She coordinates the cohort, reviews participant work, routes feedback,
-                and moves approved rewards through the Base treasury.
+                You choose the pace, do the work, shape the culture, and earn the rewards.
+                The Academy works when your effort turns into real progress.
               </p>
             </div>
             <span className={styles.sidePanelTag}>Cohort Ops</span>

@@ -184,10 +184,10 @@
   position: absolute;
   inset: -2px;
   z-index: -1;
-  background-image: url('/uploads/blue-balloon-review.png');
+  background-image: url('/bluebeauty.png');
   background-size: cover;
-  background-position: 45% 32%;
-  filter: saturate(1.02) brightness(0.62) contrast(1.02);
+  background-position: center 24%;
+  filter: saturate(1.04) brightness(0.58) contrast(1.04);
   mix-blend-mode: normal;
   opacity: 0.82;
   pointer-events: none;
@@ -242,7 +242,7 @@
   font-size: 0.95rem;
   line-height: 1.55;
   color: rgba(255, 255, 255, 0.78);
-  max-width: 28ch;
+  max-width: 34ch;
 }
 
 .sidePanelTag {

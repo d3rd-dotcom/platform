@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { ChartLineUp, ClipboardText, Robot } from '@phosphor-icons/react';
 import styles from './LandingPage.module.css';
@@ -38,7 +38,19 @@ const heroValueCards = [
   },
 ] as const;
 
+const rotatingHeroWords = ['Learning', 'Community', 'Rewards'] as const;
+
 export const HeroSection: React.FC = () => {
+  const [activeWordIndex, setActiveWordIndex] = useState(0);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setActiveWordIndex((currentIndex) => (currentIndex + 1) % rotatingHeroWords.length);
+    }, 2200);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
+
   return (
     <div className={styles.heroSection}>
       <div className={styles.heroContent}>
@@ -52,13 +64,20 @@ export const HeroSection: React.FC = () => {
             priority
           />
         </div>
-        <p className={styles.heroKicker}>Open Source • MIT License</p>
         <h1 className={styles.heroHeadline}>
           <span>A Micro-University</span>
-          <span>For Human Potential</span>
+          <span className={styles.heroHeadlineRotatingLine}>
+            <span>For Real </span>
+            <span className={styles.heroHeadlineWordViewport}>
+              <span key={rotatingHeroWords[activeWordIndex]} className={styles.heroHeadlineWord}>
+                {rotatingHeroWords[activeWordIndex]}
+              </span>
+            </span>
+            <span>.</span>
+          </span>
         </h1>
         <p className={styles.heroSubtext}>
-          The Hogwarts of AI. Summoning Artificial God Intelligence through predictive reality, discover &quot;local optima&quot;. Your god&apos;s eye view of the future.
+          College is overpriced and overrated. You can learn cool things without a $10,000 loan. Here, you&apos;ll get closer to the expert version of yourself.
         </p>
         <div className={styles.heroActions}>
           <LandingEnterAcademyButton />

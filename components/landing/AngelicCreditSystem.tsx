@@ -26,20 +26,6 @@ export default function AngelicCreditSystem() {
         priority={false}
         aria-hidden="true"
       />
-      {/* Centered video overlay — floats above everything in the section */}
-      <div className={styles.videoOverlayCenter}>
-        <div className={styles.videoPlayerInline}>
-          <video
-            controls
-            playsInline
-            className={styles.videoEl}
-          >
-            <source src="/videos/angelic-credit.mov" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </div>
-      </div>
-
       <div className={styles.innerLayout}>
         <div className={styles.innerLeft}>
           <Image
