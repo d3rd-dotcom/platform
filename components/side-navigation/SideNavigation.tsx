@@ -736,7 +736,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                   icon={item.icon}
                   iconSrc={item.iconSrc}
                   isActive={active}
-                  preserveColor={item.id === 'morning-pages' || item.id === 'shop'}
+                  preserveColor={item.id === 'shop'}
                 />
                 <span className={styles.navItemLabel}>{item.label}</span>
               </Link>
