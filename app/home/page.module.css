@@ -1,4 +1,4 @@
-/* Home Page — Two-panel survey layout */
+/* Home Page */
 
 .pageLayout {
   position: relative;
@@ -6,7 +6,11 @@
   height: calc(100dvh - 72px);
   min-height: 0;
   display: flex;
-  background: #FBF8FF;
+  background-color: #fbf8ff;
+  background-image:
+    linear-gradient(rgba(81, 104, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(81, 104, 255, 0.08) 1px, transparent 1px);
+  background-size: 32px 32px;
   overflow: hidden;
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
@@ -16,40 +20,36 @@
   display: flex;
   height: 100%;
   min-height: 0;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
   padding: 0;
 }
 
-.player {
-  flex: 1;
-  background: #1F2937;
+.artworkWrap {
+  width: min(72vw, 860px);
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 24px;
 }
 
-.playBtn {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(255, 255, 255, 0.15);
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  backdrop-filter: blur(4px);
-  transition: background 0.2s ease, transform 0.2s ease;
-}
-
-.playBtn:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: scale(1.08);
+.artwork {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 22px 44px rgba(26, 29, 51, 0.14));
 }
 
 :global([data-theme="dark"]) .pageLayout {
-  background: var(--color-surface-base);
+  background-color: var(--color-surface-base);
+  background-image:
+    linear-gradient(rgba(81, 104, 255, 0.14) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(81, 104, 255, 0.14) 1px, transparent 1px);
+}
+
+:global([data-theme="dark"]) .artwork {
+  filter: drop-shadow(0 24px 54px rgba(0, 0, 0, 0.42));
 }
 
 /* Collapse sidebar offset on mobile */
@@ -60,13 +60,9 @@
     overflow: hidden;
   }
 
-  .content {
-    height: 100%;
-    min-height: 0;
-    flex-direction: column;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    padding: 16px;
+  .artworkWrap {
+    width: min(88vw, 720px);
+    padding: 20px;
   }
 }
 
@@ -76,7 +72,19 @@
     height: calc(100dvh - var(--mobile-nav-clearance));
   }
 
-  .content {
+  .artworkWrap {
+    width: min(92vw, 560px);
+    padding: 16px;
+  }
+}
+
+@media (max-width: 520px) {
+  .pageLayout {
+    background-size: 24px 24px;
+  }
+
+  .artworkWrap {
+    width: min(94vw, 460px);
     padding: 12px;
   }
 }
