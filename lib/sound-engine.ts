@@ -1,4 +1,6 @@
-// Generative pentatonic sound engine — pure Web Audio API, zero dependencies
+// Xylophone-style generative sound engine — pure Web Audio API, zero dependencies.
+// Each "tone" is a mallet hit: sine fundamental + brief 4× partial + short bandpassed
+// noise transient. No wet feedback reverb; only a single short delay tap for air.
 
 export type SoundType =
   | 'click'
@@ -13,6 +15,7 @@ export type SoundType =
   | 'hum';
 
 // C pentatonic scale frequencies
+const PENTATONIC_C5 = [523.25, 587.33, 659.25, 783.99, 880.0];
 const PENTATONIC_C4 = [261.63, 293.66, 329.63, 392.0, 440.0];
 const PENTATONIC_C3 = PENTATONIC_C4.map((f) => f / 2);
 
@@ -27,8 +30,8 @@ function pickIndex(len: number): number {
 export class SoundEngine {
   private ctx: AudioContext | null = null;
   private masterGain: GainNode | null = null;
-  private reverbInput: GainNode | null = null;
-  private _volume = 0.7;
+  private busInput: GainNode | null = null;
+  private _volume = 0.55;
   private _muted = false;
   private _tempo = 1.0;
 
@@ -53,7 +56,6 @@ export class SoundEngine {
   }
   set tempo(t: number) {
     this._tempo = t;
-    this.rebuildReverb();
   }
 
   private syncGain() {
@@ -72,8 +74,7 @@ export class SoundEngine {
       this.masterGain = this.ctx.createGain();
       this.masterGain.gain.value = this._muted ? 0 : this._volume;
       this.masterGain.connect(this.ctx.destination);
-      this.rebuildReverb();
-      // Eagerly resume — required by Chrome/Safari autoplay policy
+      this.buildBus();
       if (this.ctx.state === 'suspended') {
         this.ctx.resume();
       }
@@ -84,36 +85,39 @@ export class SoundEngine {
     }
   }
 
-  private rebuildReverb() {
+  /**
+   * Build the mixing bus. Voices connect to `busInput`. The bus has:
+   *  - dry path straight to master (the dominant signal)
+   *  - one short delay tap with a highpass, no feedback — adds spatial air
+   *    without the long wet wash a feedback loop would create.
+   */
+  private buildBus() {
     if (!this.ctx || !this.masterGain) return;
-    // Disconnect old
-    if (this.reverbInput) {
-      try { this.reverbInput.disconnect(); } catch { /* ok */ }
+    if (this.busInput) {
+      try { this.busInput.disconnect(); } catch { /* ok */ }
     }
 
-    const isSlowMode = this._tempo < 1;
     const input = this.ctx.createGain();
     input.gain.value = 1;
 
-    // Dry path straight to master
+    // Dry path — the dominant signal.
     input.connect(this.masterGain);
 
-    // Wet path: delay → filter → feedback loop → master
-    const delay = this.ctx.createDelay(1);
-    delay.delayTime.value = isSlowMode ? 0.25 : 0.1;
-    const fb = this.ctx.createGain();
-    fb.gain.value = isSlowMode ? 0.5 : 0.2;
-    const filter = this.ctx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.value = 2500;
+    // Air: single short delay, no feedback, highpass to keep it transparent.
+    const air = this.ctx.createDelay(0.06);
+    air.delayTime.value = 0.022;
+    const airHp = this.ctx.createBiquadFilter();
+    airHp.type = 'highpass';
+    airHp.frequency.value = 600;
+    const airGain = this.ctx.createGain();
+    airGain.gain.value = 0.09;
 
-    input.connect(delay);
-    delay.connect(filter);
-    filter.connect(fb);
-    fb.connect(delay); // feedback loop
-    filter.connect(this.masterGain); // wet out
+    input.connect(air);
+    air.connect(airHp);
+    airHp.connect(airGain);
+    airGain.connect(this.masterGain);
 
-    this.reverbInput = input;
+    this.busInput = input;
   }
 
   private scale(): number[] {
@@ -124,156 +128,160 @@ export class SoundEngine {
     return base / this._tempo;
   }
 
-  /** Play a single tone. Uses setTargetAtTime for reliable envelope (no zero-value issues). */
-  private tone(
+  /**
+   * Xylophone-style mallet hit. Layers:
+   *  1) Sine fundamental — short attack, exponential decay
+   *  2) Sine partial at 4× — quick shimmer, decays faster
+   *  3) Bandpassed noise transient at strike time — the "mallet click"
+   */
+  private mallet(
     freq: number,
     startTime: number,
-    duration: number,
-    waveform: OscillatorType = 'triangle',
-    gainPeak = 0.5,
+    decay = 0.32,
+    gainPeak = 0.55,
   ) {
     const ctx = this.ctx;
-    const dest = this.reverbInput;
+    const dest = this.busInput;
     if (!ctx || !dest) return;
 
+    const attack = 0.003;
+    const safeStart = Math.max(startTime, ctx.currentTime + 0.001);
+
+    // Fundamental
     const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = waveform;
+    osc.type = 'sine';
     osc.frequency.value = freq;
+    const oscGain = ctx.createGain();
+    oscGain.gain.setValueAtTime(0.0001, safeStart);
+    oscGain.gain.exponentialRampToValueAtTime(gainPeak, safeStart + attack);
+    oscGain.gain.exponentialRampToValueAtTime(0.0001, safeStart + attack + decay);
+    osc.connect(oscGain);
+    oscGain.connect(dest);
+    osc.start(safeStart);
+    osc.stop(safeStart + attack + decay + 0.05);
 
-    // Envelope: quick attack, hold, then release
-    const attackTime = Math.min(duration * 0.15, 0.02);
-    const releaseStart = startTime + duration * 0.5;
+    // 4× partial — gives the bar-like brightness, fades quickly
+    const partial = ctx.createOscillator();
+    partial.type = 'sine';
+    partial.frequency.value = freq * 4;
+    const partialGain = ctx.createGain();
+    const partialDecay = Math.max(0.08, decay * 0.35);
+    partialGain.gain.setValueAtTime(0.0001, safeStart);
+    partialGain.gain.exponentialRampToValueAtTime(gainPeak * 0.18, safeStart + attack);
+    partialGain.gain.exponentialRampToValueAtTime(0.0001, safeStart + attack + partialDecay);
+    partial.connect(partialGain);
+    partialGain.connect(dest);
+    partial.start(safeStart);
+    partial.stop(safeStart + attack + partialDecay + 0.05);
 
-    gain.gain.setValueAtTime(0.0001, startTime); // start near-zero (not 0, avoids exponential issues)
-    gain.gain.exponentialRampToValueAtTime(gainPeak, startTime + attackTime);
-    gain.gain.setValueAtTime(gainPeak, releaseStart);
-    gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
-
-    osc.connect(gain);
-    gain.connect(dest);
-
-    osc.start(startTime);
-    osc.stop(startTime + duration + 0.05);
+    // Mallet click — ultra-short bandpassed noise burst
+    const noiseLen = Math.max(1, Math.floor(ctx.sampleRate * 0.012));
+    const noiseBuf = ctx.createBuffer(1, noiseLen, ctx.sampleRate);
+    const noiseData = noiseBuf.getChannelData(0);
+    for (let i = 0; i < noiseLen; i++) noiseData[i] = Math.random() * 2 - 1;
+    const noise = ctx.createBufferSource();
+    noise.buffer = noiseBuf;
+    const bp = ctx.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = Math.min(8000, freq * 2.6);
+    bp.Q.value = 1.6;
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.0001, safeStart);
+    noiseGain.gain.exponentialRampToValueAtTime(gainPeak * 0.14, safeStart + 0.001);
+    noiseGain.gain.exponentialRampToValueAtTime(0.0001, safeStart + 0.014);
+    noise.connect(bp);
+    bp.connect(noiseGain);
+    noiseGain.connect(dest);
+    noise.start(safeStart);
+    noise.stop(safeStart + 0.04);
   }
 
   play(type: SoundType) {
     const ctx = this.ctx;
     if (!ctx || this._muted) return;
 
-    // Resume if suspended (iOS Safari, Chrome autoplay)
     if (ctx.state === 'suspended') {
       ctx.resume();
     }
 
-    // Schedule slightly in the future to avoid past-time issues after resume
     const now = ctx.currentTime + 0.02;
     const scale = this.scale();
 
     switch (type) {
       case 'click': {
-        this.tone(pick(scale), now, this.dur(0.2), 'sine', 0.4);
+        this.mallet(pick(scale), now, this.dur(0.28), 0.5);
         break;
       }
 
       case 'hover': {
-        // Lower octave, wide interval (P5), snappy attack with dreamy sine tail
-        const hoverBase = pick(scale) / 2;
-        this.tone(hoverBase, now, this.dur(0.08), 'sine', 0.2);
-        this.tone(hoverBase * 1.5, now + this.dur(0.03), this.dur(0.14), 'sine', 0.15);
+        // Soft, brief, low-octave tap — gentle accent on hover
+        this.mallet(pick(scale) / 2, now, this.dur(0.18), 0.22);
         break;
       }
 
       case 'success': {
-        // 3-note ascending arpeggio
+        // Ascending 3-note arpeggio
         const startIdx = pickIndex(scale.length - 2);
         for (let i = 0; i < 3; i++) {
-          this.tone(scale[startIdx + i], now + i * this.dur(0.12), this.dur(0.2));
+          this.mallet(scale[startIdx + i], now + i * this.dur(0.1), this.dur(0.3), 0.5);
         }
         break;
       }
 
       case 'error': {
-        // 2 notes, second a half-step below (gentle dissonance)
+        // Two-note minor-second drop — subtle dissonance, no harshness
         const freq = pick(scale);
-        this.tone(freq, now, this.dur(0.2));
-        this.tone(freq * 0.944, now + this.dur(0.15), this.dur(0.2), 'triangle', 0.35);
+        this.mallet(freq, now, this.dur(0.26), 0.42);
+        this.mallet(freq * 0.944, now + this.dur(0.13), this.dur(0.3), 0.36);
         break;
       }
 
       case 'navigation': {
-        // Soft washy P5 interval — sine, lower gain, longer release
+        // Two-note P5 ascend — calm, like a marimba flourish
         const base = pick(scale) / 2;
-        const interval = Math.random() > 0.5 ? 4 / 3 : 3 / 2;
-        this.tone(base, now, this.dur(0.25), 'sine', 0.15);
-        this.tone(base * interval, now + this.dur(0.06), this.dur(0.3), 'sine', 0.12);
+        this.mallet(base, now, this.dur(0.28), 0.32);
+        this.mallet(base * 1.5, now + this.dur(0.05), this.dur(0.32), 0.28);
         break;
       }
 
       case 'toggle-on': {
-        // Ascending pair — soft sine, matching click character
-        this.tone(scale[0], now, this.dur(0.18), 'sine', 0.3);
-        this.tone(scale[2], now + this.dur(0.1), this.dur(0.2), 'sine', 0.25);
+        // Ascending pair across the pentatonic
+        this.mallet(scale[0], now, this.dur(0.24), 0.42);
+        this.mallet(scale[2], now + this.dur(0.09), this.dur(0.28), 0.4);
         break;
       }
 
       case 'toggle-off': {
-        // Descending pair — soft sine, matching click character
-        this.tone(scale[2], now, this.dur(0.18), 'sine', 0.3);
-        this.tone(scale[0], now + this.dur(0.1), this.dur(0.2), 'sine', 0.25);
+        // Descending pair
+        this.mallet(scale[2], now, this.dur(0.24), 0.42);
+        this.mallet(scale[0], now + this.dur(0.09), this.dur(0.28), 0.4);
         break;
       }
 
       case 'hum': {
-        // Like hover but one octave deeper — same snappy two-tone P5
-        const humBase = pick(scale) / 4;
-        this.tone(humBase, now, this.dur(0.08), 'sine', 0.2);
-        this.tone(humBase * 1.5, now + this.dur(0.03), this.dur(0.14), 'sine', 0.15);
+        // Octave below hover — the same gentle tap, lower
+        this.mallet(pick(scale) / 4, now, this.dur(0.22), 0.2);
         break;
       }
 
       case 'celebration': {
-        // Full pentatonic run + shimmer
+        // Full pentatonic run + a high octave sparkle on top
         for (let i = 0; i < scale.length; i++) {
-          this.tone(scale[i], now + i * this.dur(0.1), this.dur(0.25), 'triangle', 0.4);
+          this.mallet(scale[i], now + i * this.dur(0.08), this.dur(0.36), 0.5);
         }
-        // Shimmer: high sine with LFO vibrato
-        if (ctx && this.reverbInput) {
-          const shimmer = ctx.createOscillator();
-          const shimmerGain = ctx.createGain();
-          const lfo = ctx.createOscillator();
-          const lfoGain = ctx.createGain();
-
-          shimmer.type = 'sine';
-          shimmer.frequency.value = scale[scale.length - 1] * 2;
-          lfo.type = 'sine';
-          lfo.frequency.value = 6;
-          lfoGain.gain.value = 15;
-
-          lfo.connect(lfoGain);
-          lfoGain.connect(shimmer.frequency);
-          shimmer.connect(shimmerGain);
-          shimmerGain.connect(this.reverbInput);
-
-          const shimmerStart = now + scale.length * this.dur(0.1);
-          shimmerGain.gain.setValueAtTime(0.0001, shimmerStart);
-          shimmerGain.gain.exponentialRampToValueAtTime(0.25, shimmerStart + this.dur(0.05));
-          shimmerGain.gain.setValueAtTime(0.25, shimmerStart + this.dur(0.2));
-          shimmerGain.gain.exponentialRampToValueAtTime(0.0001, shimmerStart + this.dur(0.5));
-
-          shimmer.start(shimmerStart);
-          shimmer.stop(shimmerStart + this.dur(0.6));
-          lfo.start(shimmerStart);
-          lfo.stop(shimmerStart + this.dur(0.6));
-        }
+        const sparkleStart = now + scale.length * this.dur(0.08);
+        const top = scale[scale.length - 1];
+        this.mallet(top * 2, sparkleStart, this.dur(0.4), 0.42);
+        this.mallet(PENTATONIC_C5[2], sparkleStart + this.dur(0.07), this.dur(0.5), 0.38);
         break;
       }
 
       case 'alarm': {
+        // Attention-grabbing but still mallet-clean
         const base = scale[3];
-        this.tone(base, now, this.dur(0.18), 'square', 0.28);
-        this.tone(base * 1.5, now + this.dur(0.12), this.dur(0.2), 'triangle', 0.24);
-        this.tone(scale[4] * 2, now + this.dur(0.3), this.dur(0.34), 'sine', 0.18);
+        this.mallet(base, now, this.dur(0.22), 0.42);
+        this.mallet(base * 1.5, now + this.dur(0.11), this.dur(0.24), 0.36);
+        this.mallet(base * 2, now + this.dur(0.24), this.dur(0.3), 0.32);
         break;
       }
     }
@@ -284,7 +292,7 @@ export class SoundEngine {
       this.ctx.close();
       this.ctx = null;
       this.masterGain = null;
-      this.reverbInput = null;
+      this.busInput = null;
     }
   }
 }
