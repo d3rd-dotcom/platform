@@ -34,8 +34,8 @@ const SEED_POSTS: SeedPost[] = [
     author: 'OpenGrants_DAO',
     avatar: '/uploads/vesper-landing-avatar.png',
     category: 'Funding',
-    title: 'Q2 Retroactive Funding Round — Nominations Open',
-    body: 'The Q2 retroactive public goods round is live. Nominate projects that created measurable impact for the AI-safety and mental wellness ecosystem. 200k pool. Voting closes May 20.',
+    title: 'If the treasury could fund one wild idea, what would yours be?',
+    body: 'If the treasury could fund one wild idea no questions asked, what would you pitch? Dream big — sometimes the weird ones are the best ones.',
     ts: NOW - 1000 * 60 * 18,
     likes: 112,
     replies: 45,
@@ -45,8 +45,8 @@ const SEED_POSTS: SeedPost[] = [
     author: 'MindBridge_Collective',
     avatar: '/anbel09.png',
     category: 'Mental Health',
-    title: 'AI-Assisted Peer Support for Rural Communities',
-    body: 'Rural access to mental health resources is critically underfunded. We\'re pairing LLM-based triage agents with licensed counselors across 3 pilot counties. Looking for 5 co-funders at $10k each.',
+    title: 'What daily habit changed your mental health the most?',
+    body: 'One small habit that shifted everything for me was morning walks with no phone. What tiny routine made the biggest difference for you?',
     ts: NOW - 1000 * 60 * 60 * 5,
     likes: 67,
     replies: 28,
@@ -56,8 +56,8 @@ const SEED_POSTS: SeedPost[] = [
     author: 'NeuroCognitive_Lab',
     avatar: '/anbel11.png',
     category: 'Neuroscience',
-    title: 'Cortical Plasticity Under Sleep Deprivation — fMRI Study',
-    body: 'Proposing a 12-week fMRI study tracking prefrontal cortex activity changes in 40 subjects with restricted sleep schedules. Seeking $48k in compute grants to run analysis pipelines.',
+    title: 'Would you try a brain-training game designed by the community?',
+    body: 'Thinking about a community-built focus game backed by real neuroscience. Would you play it? What would make you actually stick with it?',
     ts: NOW - 1000 * 60 * 60 * 22,
     likes: 34,
     replies: 12,
@@ -573,8 +573,8 @@ export default function VotingPage() {
                           <div className={styles.chatInputMock} aria-label="Message composer">
                             <span>Write a message...</span>
                             <svg viewBox="0 0 24 24" aria-hidden="true">
-                              <path d="m22 2-7 20-4-9-9-4Z" />
-                              <path d="M22 2 11 13" />
+                              <circle cx="12" cy="12" r="10" />
+                              <path d="M12 16V8M8 12l4-4 4 4" />
                             </svg>
                           </div>
                         </div>
@@ -607,10 +607,6 @@ export default function VotingPage() {
                             })}
                           </div>
                           <div className={styles.chatImagePanel} aria-hidden="true" />
-                        </div>
-                        <div className={styles.communityChatFooter}>
-                          <span>Be respectful and keep building</span>
-                          <strong><span className={styles.chatOnlineDot} /> Online: {activeMemberCount}</strong>
                         </div>
                       </article>
 
