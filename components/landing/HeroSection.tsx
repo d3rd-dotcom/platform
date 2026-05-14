@@ -55,7 +55,7 @@ export const HeroSection: React.FC = () => {
             A 12-week micro-university for artists, creators, and scientists ready to evolve and reach their highest potential.
           </p>
           <p className={styles.heroSubtextSecondary}>
-            Backed by research: By decentralizing scientific discovery across a global network of peers, decentralized research accelerates collaborative breakthroughs by 900% while ensuring 100% peer-verified transparency — returning ownership of science to the community involved.
+            Backed by research: decentralized science drives 900% faster collaboration with 100% transparent, community-owned discovery — Certified Open Science Trust Protocol.
           </p>
           <div className={styles.heroActions}>
             <LandingEnterAcademyButton />
