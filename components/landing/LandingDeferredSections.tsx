@@ -7,10 +7,6 @@ const AgentDemoSection = dynamic(() =>
   import('./AgentDemoSection').then((mod) => mod.AgentDemoSection),
   { ssr: false }
 );
-const SnapshotFeaturesSection = dynamic(() =>
-  import('./SnapshotFeaturesSection').then((mod) => mod.SnapshotFeaturesSection),
-  { ssr: false }
-);
 const CompanyLogos = dynamic(() => import('./CompanyLogos'), { ssr: false });
 const CohortSection = dynamic(() =>
   import('./CohortSection').then((mod) => mod.CohortSection),
@@ -63,7 +59,6 @@ export function LandingDeferredSections() {
   return (
     <>
       <AgentDemoSection />
-      <SnapshotFeaturesSection />
       <CompanyLogos />
       <FeaturesSection />
       <FounderSection />

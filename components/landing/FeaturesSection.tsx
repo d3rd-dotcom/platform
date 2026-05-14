@@ -8,20 +8,20 @@ import styles from './FeaturesSection.module.css';
 const featureCards = [
   {
     number: '01',
-    title: 'Decentralized Science Lab',
+    title: 'New Experiments Every Week',
     badge: 'DeSci',
     description:
-      'You are the subject and the scientist. Twelve weeks of live behavioral study — real research instruments, publishing collaborators, and an AI co-investigator who reviews your work.',
+      'Twelve weeks of quests, readings, and field studies. Real start, real end — applied behavioral research with collaborators who publish.',
     details: ['IRB-style research design', 'You co-own the dataset', 'Credentials that compound'],
     footerLabel: 'Season 1 cohort',
     footerValue: '12 weeks',
   },
   {
     number: '02',
-    title: 'Weekly Quests',
+    title: 'Participatory Research',
     badge: 'Weekly',
     description:
-      'Each week drops a new case-study challenge. B.L.U.E. reads your submission, decides if you pass, and pays out from her own blockchain wallet. No grade inflation. No participation trophies.',
+      'B.L.U.E. reads every submission and pays out the reward. Your reflections become training data. Her judgments evolve as you do.',
     details: ['Complete the reading', 'Submit to B.L.U.E.', 'Earn shards on-chain'],
     footerLabel: 'Week one reward',
     footerValue: '382 shards',
@@ -31,7 +31,7 @@ const featureCards = [
     title: 'Universal Credit System',
     badge: 'Yours Forever',
     description:
-      "Shards don't live on our servers — they live in your wallet. Earn while you study, spend across every MWA lab, or convert to real value. Your credits survive even when apps retire.",
+      'On-chain credits earned in one case-study app, spendable across all of them. $Shards live in your wallet — not on our servers.',
     details: ['Earn while you study', 'Credits in your wallet', 'Convert to real cash'],
     footerLabel: 'On Base blockchain',
     footerValue: 'User-owned',
@@ -96,7 +96,7 @@ export const FeaturesSection: React.FC = () => {
             </div>
 
             <div className={styles.headlinePanel}>
-              <h2 className={styles.title}>&ldquo;It&apos;s Become A Special Part Of My Life&rdquo;</h2>
+              <h2 className={styles.title}>How It Works</h2>
               <p className={styles.description}>
                 New apps each week and point systems turned to real cash.
               </p>
