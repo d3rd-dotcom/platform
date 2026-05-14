@@ -11,12 +11,6 @@ const LandingAuthButtons = dynamic(
     ssr: false,
     loading: () => (
       <>
-        <button type="button" className={styles.loginButton} disabled aria-disabled="true">
-          <span className={styles.slideWrap}>
-            <span className={styles.slideText}>Login</span>
-            <span className={`${styles.slideText} ${styles.slideClone}`}>Login</span>
-          </span>
-        </button>
         <a
           href="https://discord.gg/ZTRVCYwncs"
           className={styles.discordButton}

@@ -8,27 +8,12 @@ export function LandingAuthButtons() {
   const router = useRouter();
   const { play } = useSound();
 
-  const handleLogin = () => {
-    router.push('/home');
-  };
-
   const handleJoinNow = () => {
     router.push('/home');
   };
 
   return (
     <>
-      <button
-        type="button"
-        onClick={handleLogin}
-        onMouseEnter={() => play('hover')}
-        className={styles.loginButton}
-      >
-        <span className={styles.slideWrap}>
-          <span className={styles.slideText}>Login</span>
-          <span className={`${styles.slideText} ${styles.slideClone}`}>Login</span>
-        </span>
-      </button>
       <a
         href="https://discord.gg/ZTRVCYwncs"
         target="_blank"
