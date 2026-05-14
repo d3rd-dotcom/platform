@@ -16,7 +16,13 @@ export default function PwaRegistrar() {
       }
     };
 
-    void registerServiceWorker();
+    if ('requestIdleCallback' in window) {
+      const id = window.requestIdleCallback(() => void registerServiceWorker(), { timeout: 2500 });
+      return () => window.cancelIdleCallback(id);
+    }
+
+    const id = setTimeout(() => void registerServiceWorker(), 1500);
+    return () => clearTimeout(id);
   }, []);
 
   return null;

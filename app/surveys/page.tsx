@@ -1,13 +1,17 @@
 'use client';
 
 import React, { useState, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import SurveyController from '@/components/survey-controller/SurveyController';
 import SurveySpace from '@/components/survey-space/SurveySpace';
 import BlueTerminal, { type TestAnswers, type TestCompletionResult, type TestData } from '@/components/blue-terminal/BlueTerminal';
-import SignFormModal from '@/components/sign-form-modal/SignFormModal';
 import { getTestShardReward } from '@/lib/test-rewards';
 import styles from './page.module.css';
+
+const SignFormModal = dynamic(() => import('@/components/sign-form-modal/SignFormModal'), {
+  ssr: false,
+});
 
 export default function SurveysPage() {
   const [difficulty, setDifficulty] = useState(101);

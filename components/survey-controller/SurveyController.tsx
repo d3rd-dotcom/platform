@@ -14,6 +14,8 @@ interface SurveyControllerProps {
   userName?: string;
   version?: string;
   characterImageSrc?: string;
+  characterPosterSrc?: string;
+  deferVideo?: boolean;
   difficulty?: number;
   onSignForm?: () => void;
   onDifficultyChange?: (value: number) => void;
@@ -24,6 +26,8 @@ export default function SurveyController({
   userName = 'Welcome',
   version = 'V.e1-MWA36B',
   characterImageSrc = '/uploads/blueavatar.mp4',
+  characterPosterSrc = '/uploads/blue-landing-avatar.png',
+  deferVideo = true,
   difficulty: initialDifficulty = 101,
   onSignForm,
   onDifficultyChange,
@@ -32,7 +36,9 @@ export default function SurveyController({
   const [difficulty, setDifficulty] = useState(initialDifficulty);
   const [selectedPersona, setSelectedPersona] = useState(PERSONAS[0]);
   const [isOpen, setIsOpen] = useState(false);
+  const [shouldLoadVideo, setShouldLoadVideo] = useState(!deferVideo);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const imagePanelRef = useRef<HTMLDivElement>(null);
   const shardReward = getTestShardReward(difficulty);
 
   useEffect(() => {
@@ -44,6 +50,32 @@ export default function SurveyController({
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
+
+  useEffect(() => {
+    if (!deferVideo || shouldLoadVideo || !characterImageSrc.endsWith('.mp4')) return;
+    const el = imagePanelRef.current;
+    if (!el) return;
+
+    const load = () => {
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(() => setShouldLoadVideo(true), { timeout: 1800 });
+        return;
+      }
+      setTimeout(() => setShouldLoadVideo(true), 900);
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+        load();
+      },
+      { rootMargin: '160px' },
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [characterImageSrc, deferVideo, shouldLoadVideo]);
 
   const handleDifficultyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
@@ -118,21 +150,34 @@ export default function SurveyController({
         </div>
       </div>
 
-      <div className={styles.imagePanel}>
+      <div className={styles.imagePanel} ref={imagePanelRef}>
         <div className={styles.imageWrapper}>
           {characterImageSrc.endsWith('.mp4') ? (
-            <video
-              className={styles.characterVideo}
-              src={characterImageSrc}
-              autoPlay
-              loop
-              muted
-              playsInline
-              disablePictureInPicture
-              disableRemotePlayback
-              controlsList="nodownload nofullscreen noremoteplayback"
-              aria-label="B.L.U.E. avatar"
-            />
+            shouldLoadVideo ? (
+              <video
+                className={styles.characterVideo}
+                src={characterImageSrc}
+                poster={characterPosterSrc}
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="metadata"
+                disablePictureInPicture
+                disableRemotePlayback
+                controlsList="nodownload nofullscreen noremoteplayback"
+                aria-label="B.L.U.E. avatar"
+              />
+            ) : (
+              <Image
+                src={characterPosterSrc}
+                alt="B.L.U.E. avatar"
+                fill
+                sizes="397px"
+                className={styles.characterPoster}
+                priority={false}
+              />
+            )
           ) : characterImageSrc ? (
             <Image
               src={characterImageSrc}

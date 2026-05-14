@@ -1,15 +1,16 @@
 'use client';
 
-import { ReactNode, useLayoutEffect } from 'react';
-import { sdk } from '@farcaster/miniapp-sdk';
+import { ReactNode, useEffect } from 'react';
 
 interface MiniAppProviderProps {
   children: ReactNode;
 }
 
 export function MiniAppProvider({ children }: MiniAppProviderProps) {
-  useLayoutEffect(() => {
-    sdk.actions.ready().catch(() => {});
+  useEffect(() => {
+    import('@farcaster/miniapp-sdk')
+      .then(({ sdk }) => sdk.actions.ready())
+      .catch(() => {});
   }, []);
 
   return <>{children}</>;

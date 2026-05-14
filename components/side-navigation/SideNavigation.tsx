@@ -2,25 +2,27 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAccount, useReadContract } from 'wagmi';
 import { usePrivy } from '@privy-io/react-auth';
 import type { IconProps } from '@phosphor-icons/react';
 import styles from './SideNavigation.module.css';
-import BlueChat from '../blue-chat/BlueChat';
-import AvatarSelectorModal from '../avatar-selector/AvatarSelectorModal';
-import UsernameChangeModal from '../username-change/UsernameChangeModal';
-import ProMembershipModal from '../pro-membership-modal/ProMembershipModal';
-import InventoryModal from '../inventory-modal/InventoryModal';
-import YourAccountsModal from '../nav-buttons/YourAccountsModal';
-import OnboardingModal from '../onboarding/OnboardingModal';
-import LootBoxModal from '../loot-box/LootBoxModal';
 import { useSound } from '@/hooks/useSound';
 import { useInitialSidebarCollapsed } from './SidebarStateProvider';
-import SidebarProfileCard from '../sidebar-profile-card/SidebarProfileCard';
-import SidebarInventoryCard from '../sidebar-inventory-card/SidebarInventoryCard';
-import ProfilePopup from '../profile-popup/ProfilePopup';
+
+const BlueChat = dynamic(() => import('../blue-chat/BlueChat'), { ssr: false });
+const SidebarProfileCard = dynamic(() => import('../sidebar-profile-card/SidebarProfileCard'), { ssr: false });
+const SidebarInventoryCard = dynamic(() => import('../sidebar-inventory-card/SidebarInventoryCard'), { ssr: false });
+const AvatarSelectorModal = dynamic(() => import('../avatar-selector/AvatarSelectorModal'), { ssr: false });
+const UsernameChangeModal = dynamic(() => import('../username-change/UsernameChangeModal'), { ssr: false });
+const ProMembershipModal = dynamic(() => import('../pro-membership-modal/ProMembershipModal'), { ssr: false });
+const InventoryModal = dynamic(() => import('../inventory-modal/InventoryModal'), { ssr: false });
+const YourAccountsModal = dynamic(() => import('../nav-buttons/YourAccountsModal'), { ssr: false });
+const OnboardingModal = dynamic(() => import('../onboarding/OnboardingModal'), { ssr: false });
+const LootBoxModal = dynamic(() => import('../loot-box/LootBoxModal'), { ssr: false });
+const ProfilePopup = dynamic(() => import('../profile-popup/ProfilePopup'), { ssr: false });
 
 interface NavItem {
   id: string;
@@ -777,21 +779,27 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
       </nav>
 
       {/* Modals */}
-      <BlueChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
-      <InventoryModal
-        isOpen={isInventoryOpen}
-        onClose={() => setIsInventoryOpen(false)}
-        shardCount={shardCount}
-        username={username}
-        avatarUrl={avatarUrl}
-      />
-      <LootBoxModal
-        isOpen={isLootBoxOpen}
-        onClose={() => setIsLootBoxOpen(false)}
-        shardCount={shardCount}
-        onShardsSpent={(newCount) => setShardCount(newCount)}
-      />
-      <ProMembershipModal isOpen={isProModalOpen} onClose={() => setIsProModalOpen(false)} />
+      {isChatOpen && <BlueChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />}
+      {isInventoryOpen && (
+        <InventoryModal
+          isOpen={isInventoryOpen}
+          onClose={() => setIsInventoryOpen(false)}
+          shardCount={shardCount}
+          username={username}
+          avatarUrl={avatarUrl}
+        />
+      )}
+      {isLootBoxOpen && (
+        <LootBoxModal
+          isOpen={isLootBoxOpen}
+          onClose={() => setIsLootBoxOpen(false)}
+          shardCount={shardCount}
+          onShardsSpent={(newCount: number) => setShardCount(newCount)}
+        />
+      )}
+      {isProModalOpen && (
+        <ProMembershipModal isOpen={isProModalOpen} onClose={() => setIsProModalOpen(false)} />
+      )}
       {isYourAccountsModalOpen && (
         <YourAccountsModal onClose={() => setIsYourAccountsModalOpen(false)} />
       )}
@@ -808,11 +816,13 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
           onUsernameChanged={handleUsernameChanged}
         />
       )}
-      <OnboardingModal
-        isOpen={isOnboardingOpen}
-        onClose={() => setIsOnboardingOpen(false)}
-        onComplete={handleOnboardingComplete}
-      />
+      {isOnboardingOpen && (
+        <OnboardingModal
+          isOpen={isOnboardingOpen}
+          onClose={() => setIsOnboardingOpen(false)}
+          onComplete={handleOnboardingComplete}
+        />
+      )}
 
       {isProfilePopupOpen && (
         <ProfilePopup

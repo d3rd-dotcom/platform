@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import type { CSSProperties, ReactNode } from 'react';
 import { Poppins, Space_Grotesk, IBM_Plex_Mono, Space_Mono, Inter } from 'next/font/google';
 import localFont from 'next/font/local';
-import { cookies } from 'next/headers';
 import '@/styles/globals.css';
 import { RouteShell } from '@/components/layout/RouteShell';
 
@@ -60,7 +59,11 @@ export const metadata: Metadata = {
   description: 'Unlock your potential, reach your horizon.',
   manifest: '/manifest.webmanifest',
   icons: {
-    icon: '/icons/logo-mwa.png',
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icons/favicon.png', type: 'image/png' },
+      { url: '/icons/logo-mwa.png', type: 'image/png' },
+    ],
     apple: '/icons/apple-touch-icon.png',
   },
   applicationName: 'Mental Wealth Academy',
@@ -109,21 +112,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: ReactNode;
 }) {
-  const cookieStore = await cookies();
-  const initialSidebarCollapsed = cookieStore.get('sideNavCollapsed')?.value === 'true';
-  const initialSidebarWidth = initialSidebarCollapsed ? '72px' : '265px';
-
   return (
     <html
       lang="en"
       className={`${inter.variable} ${poppins.variable} ${spaceGrotesk.variable} ${ibmPlexMono.variable} ${spaceMono.variable} ${departureMono.variable}`}
-      data-sidebar-collapsed={initialSidebarCollapsed ? 'true' : 'false'}
-      style={{ '--sidebar-width': initialSidebarWidth } as CSSProperties}
+      data-sidebar-collapsed="false"
+      style={{ '--sidebar-width': '265px' } as CSSProperties}
       suppressHydrationWarning
     >
       <head>
@@ -132,7 +131,6 @@ export default async function RootLayout({
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
         />
         <meta name="base:app_id" content="695b13d2c63ad876c908212a" />
-        <link rel="preload" as="image" href="/splashlogo.png" fetchPriority="high" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -247,9 +245,7 @@ export default async function RootLayout({
         <PwaRegistrar />
         <MiniAppProvider>
           <SoundProvider>
-            <RouteShell initialCollapsed={initialSidebarCollapsed}>
-              {children}
-            </RouteShell>
+            <RouteShell>{children}</RouteShell>
           </SoundProvider>
         </MiniAppProvider>
         <SpeedInsights />

@@ -10,10 +10,10 @@ const AuthenticatedAppShell = dynamic(() =>
 
 interface RouteShellProps {
   children: ReactNode;
-  initialCollapsed: boolean;
+  initialCollapsed?: boolean;
 }
 
-export function RouteShell({ children, initialCollapsed }: RouteShellProps) {
+export function RouteShell({ children, initialCollapsed = false }: RouteShellProps) {
   const pathname = usePathname();
 
   if (pathname === '/') {

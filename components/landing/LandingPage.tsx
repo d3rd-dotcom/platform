@@ -1,18 +1,7 @@
 import { LandingScene } from './LandingScene';
 import { LandingHeader } from './LandingHeader';
 import { HeroSection } from './HeroSection';
-import { DonationPopup } from './DonationPopup';
-import { PatternTextSection } from './PatternTextSection';
-import { FeaturesSection } from './FeaturesSection';
-import { KeyFiguresSection } from './KeyFiguresSection';
-import { TestimonialSection } from './TestimonialSection';
-import { CohortSection } from './CohortSection';
-import { MembershipSection } from './MembershipSection';
-import { FAQSection } from './FAQSection';
-import { LandingFooter } from './LandingFooter';
-import CompanyLogos from './CompanyLogos';
-import { AgentDemoSection } from './AgentDemoSection';
-import { SnapshotFeaturesSection } from './SnapshotFeaturesSection';
+import { LandingDeferredSections } from './LandingDeferredSections';
 import styles from './LandingPage.module.css';
 
 // Server Component - Static content is server-rendered for fast LCP
@@ -28,41 +17,8 @@ const LandingPage = () => {
       {/* Hero Section - Centered headline and CTA */}
       <HeroSection />
 
-      {/* Agent Demo - Terminal showing B.L.U.E. reviewing a quest */}
-      <AgentDemoSection />
-
-      {/* Snapshot Features - 6-cell research-elevated overview */}
-      <SnapshotFeaturesSection />
-
-      {/* Company Logos Section */}
-      <CompanyLogos />
-
-      {/* Cohort Section — Community & Research Cohort */}
-      <CohortSection />
-
-      {/* Testimonial Section */}
-      <TestimonialSection />
-
-      {/* Key Figures Section - Server rendered */}
-      <KeyFiguresSection />
-
-      {/* Features Section - Server rendered */}
-      <FeaturesSection />
-
-      {/* Pattern Background Section - Contains client component for animation */}
-      <PatternTextSection />
-
-      {/* Membership — Free vs Paid tiers + purchase modal */}
-      <MembershipSection />
-
-      {/* FAQ Section - Client component for accordion */}
-      <FAQSection />
-
-      {/* Footer - Server rendered */}
-      <LandingFooter />
-
-      {/* Donation Popup - Client component */}
-      <DonationPopup />
+      {/* Below-the-fold sections are deferred until after the hero is interactive. */}
+      <LandingDeferredSections />
     </div>
   );
 };

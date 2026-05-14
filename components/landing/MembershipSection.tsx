@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import {
   SCATTER_COLLECTION_SLUG,
@@ -27,7 +27,7 @@ export const MembershipSection: React.FC = () => {
   const [mintLists, setMintLists] = useState<MintList[]>([]);
   const [selectedList, setSelectedList] = useState<MintList | null>(null);
   const [quantity, setQuantity] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [minting, setMinting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -47,7 +47,10 @@ export const MembershipSection: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (!showModal || selectedList || collectionAddress) return;
+
     const fetchData = async () => {
+      setLoading(true);
       try {
         const res = await fetch('/api/scatter/collection');
         if (res.ok) {
@@ -71,7 +74,7 @@ export const MembershipSection: React.FC = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [collectionAddress, selectedList, showModal]);
 
   const handleMint = async () => {
     if (!selectedList || !collectionAddress) return;
