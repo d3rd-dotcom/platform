@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
+import AddToHomeScreenButton from '@/components/pwa/AddToHomeScreenButton';
 import styles from './FeaturesSection.module.css';
 
 const featureCards = [
@@ -99,9 +100,7 @@ export const FeaturesSection: React.FC = () => {
               <p className={styles.description}>
                 New apps each week and point systems turned to real cash.
               </p>
-              <a href="/home" className={styles.ctaButton}>
-                Start Now
-              </a>
+              <AddToHomeScreenButton className={styles.ctaButton} />
             </div>
           </div>
 

@@ -104,11 +104,65 @@
   object-fit: cover;
   background: #000000;
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.characterVideoReady {
+  opacity: 1;
 }
 
 .characterPoster {
   object-fit: cover;
   background: #000000;
+}
+
+.videoLoadingShell {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top left, rgba(103, 124, 255, 0.16), transparent 38%),
+    radial-gradient(circle at bottom right, rgba(38, 195, 255, 0.12), transparent 32%),
+    linear-gradient(150deg, #071121 0%, #0b1730 52%, #050b16 100%);
+}
+
+.videoLoadingShell::before {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  background: linear-gradient(
+    105deg,
+    transparent 24%,
+    rgba(255, 255, 255, 0.08) 42%,
+    rgba(255, 255, 255, 0.18) 50%,
+    rgba(255, 255, 255, 0.08) 58%,
+    transparent 76%
+  );
+  transform: translateX(-55%);
+  animation: videoShellSweep 1.8s ease-in-out infinite;
+}
+
+.videoLoadingShell::after {
+  content: 'Loading video';
+  position: absolute;
+  left: 16px;
+  bottom: 14px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(235, 240, 255, 0.72);
+}
+
+@keyframes videoShellSweep {
+  0% {
+    transform: translateX(-55%);
+  }
+
+  100% {
+    transform: translateX(55%);
+  }
 }
 
 .characterVideo::-webkit-media-controls,
@@ -499,6 +553,28 @@
 
 :global(:root:not([data-theme="dark"])) .imagePlaceholder {
   background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%);
+}
+
+:global(:root:not([data-theme="dark"])) .videoLoadingShell {
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), transparent 38%),
+    radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.1), transparent 32%),
+    linear-gradient(150deg, #eef4ff 0%, #dfeafe 52%, #f6f9ff 100%);
+}
+
+:global(:root:not([data-theme="dark"])) .videoLoadingShell::before {
+  background: linear-gradient(
+    105deg,
+    transparent 24%,
+    rgba(255, 255, 255, 0.18) 42%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0.18) 58%,
+    transparent 76%
+  );
+}
+
+:global(:root:not([data-theme="dark"])) .videoLoadingShell::after {
+  color: rgba(15, 23, 42, 0.54);
 }
 
 :global(:root:not([data-theme="dark"])) .controlRow {

@@ -16,12 +16,12 @@ const CohortSection = dynamic(() =>
   import('./CohortSection').then((mod) => mod.CohortSection),
   { ssr: false }
 );
-const TestimonialSection = dynamic(() =>
-  import('./TestimonialSection').then((mod) => mod.TestimonialSection),
+const FounderSection = dynamic(() =>
+  import('./FounderSection').then((mod) => mod.FounderSection),
   { ssr: false }
 );
-const KeyFiguresSection = dynamic(() =>
-  import('./KeyFiguresSection').then((mod) => mod.KeyFiguresSection),
+const TestimonialSection = dynamic(() =>
+  import('./TestimonialSection').then((mod) => mod.TestimonialSection),
   { ssr: false }
 );
 const FeaturesSection = dynamic(() =>
@@ -30,10 +30,6 @@ const FeaturesSection = dynamic(() =>
 );
 const PatternTextSection = dynamic(() =>
   import('./PatternTextSection').then((mod) => mod.PatternTextSection),
-  { ssr: false }
-);
-const MembershipSection = dynamic(() =>
-  import('./MembershipSection').then((mod) => mod.MembershipSection),
   { ssr: false }
 );
 const FAQSection = dynamic(() =>
@@ -69,12 +65,11 @@ export function LandingDeferredSections() {
       <AgentDemoSection />
       <SnapshotFeaturesSection />
       <CompanyLogos />
-      <CohortSection />
-      <TestimonialSection />
-      <KeyFiguresSection />
       <FeaturesSection />
+      <FounderSection />
+      <TestimonialSection />
+      <CohortSection />
       <PatternTextSection />
-      <MembershipSection />
       <FAQSection />
       <LandingFooter />
       <DonationPopup />

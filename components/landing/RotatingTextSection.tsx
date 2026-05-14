@@ -132,7 +132,7 @@ export const RotatingTextSection: React.FC = () => {
             </div>
           </div>
         </h3>
-        <p className={styles.rotatingTextStaticLine}>through live research, real rewards, and an AI agent with memory</p>
+        <p className={styles.rotatingTextStaticLine}>through research, rewards, and memory</p>
       </div>
     </div>
   );

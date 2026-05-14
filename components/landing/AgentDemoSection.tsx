@@ -154,15 +154,15 @@ export const AgentDemoSection = () => {
           </div>
 
           <aside className={styles.sidePanel}>
-            <div className={styles.sidePanelInner}>
-              <p className={styles.sidePanelEyebrow}>Core System</p>
-              <p className={styles.sidePanelTitle}>YOU run the Academy</p>
-              <p className={styles.sidePanelBody}>
-                You choose the pace, do the work, shape the culture, and earn the rewards.
-                The Academy works when your effort turns into real progress.
-              </p>
+            <div className={styles.sidePanelInner} aria-label="Animated flanker test example">
+              <div className={styles.flankerExample}>
+                <div className={styles.flankerTrack}>
+                  <div className={`${styles.flankerSequence} ${styles.sequenceOne}`}>{'<<><<'}</div>
+                  <div className={`${styles.flankerSequence} ${styles.sequenceTwo}`}>{'HHSHH'}</div>
+                  <div className={`${styles.flankerSequence} ${styles.sequenceThree}`}>{'##@##'}</div>
+                </div>
+              </div>
             </div>
-            <span className={styles.sidePanelTag}>Cohort Ops</span>
           </aside>
         </div>
       </div>

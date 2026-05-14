@@ -36,8 +36,8 @@ export function LandingAuthButtons() {
         className={styles.joinButton}
       >
         <span className={styles.slideWrap}>
-          <span className={styles.slideText}>Join Now</span>
-          <span className={`${styles.slideText} ${styles.slideClone}`}>Join Now</span>
+          <span className={styles.slideText}>Apply to Join</span>
+          <span className={`${styles.slideText} ${styles.slideClone}`}>Apply to Join</span>
         </span>
       </button>
     </>

@@ -2,116 +2,111 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { ChartLineUp, ClipboardText, Robot } from '@phosphor-icons/react';
+import { Flask, Microscope, TestTube, UsersThree } from '@phosphor-icons/react';
 import styles from './LandingPage.module.css';
-import AddToHomeScreenButton from '@/components/pwa/AddToHomeScreenButton';
 import LandingEnterAcademyButton from './LandingEnterAcademyButton';
+import { KeyFiguresSection } from './KeyFiguresSection';
 
-const heroValueCards = [
+const ecosystemValueCards = [
   {
-    title: 'Paid Research',
-    value: 'USDC',
-    detail: 'Take surveys and turn useful data into stablecoin rewards.',
-    icon: ClipboardText,
-    tone: 'blue',
+    value: 'Scientists',
+    detail: 'Built for principal investigators and academic leaders running serious studies.',
+    icon: Microscope,
   },
   {
-    title: 'Game Currency',
-    value: 'Shards',
-    detail: 'Earn in-app currency from quests, streaks, and play.',
-    iconSrc: '/icons/ui-shard.svg',
-    tone: 'green',
+    value: 'Researchers',
+    detail: 'A home for research teams coordinating recruitment, insight collection, and analysis.',
+    icon: Flask,
   },
   {
-    title: 'AI Agent',
-    value: 'Prize Boost',
-    detail: 'Activate an agent that finds higher-value reward routes.',
-    icon: Robot,
-    tone: 'violet',
+    value: 'Experiments',
+    detail: 'Designed to support structured experiments, behavioral studies, and ongoing trials.',
+    icon: TestTube,
   },
   {
-    title: 'Reward Markets',
-    value: 'Cash Prizes',
-    detail: 'Compete in experiments, predictions, and quests.',
-    icon: ChartLineUp,
-    tone: 'gold',
+    value: 'Participants',
+    detail: 'Clear participation flows that help people join, respond, and stay engaged.',
+    icon: UsersThree,
   },
 ] as const;
 
-const rotatingHeroWords = ['Learning', 'Community', 'Rewards'] as const;
-const heroRotatingWordsLoop = [...rotatingHeroWords, rotatingHeroWords[0]] as const;
-const longestHeroWord = 'Community';
-
 export const HeroSection: React.FC = () => {
   return (
-    <div className={styles.heroSection}>
-      <div className={styles.heroContent}>
-        <div className={styles.heroLogoSurface}>
-          <Image
-            src="/icons/icon-512.png"
-            alt="Mental Wealth Academy"
-            width={96}
-            height={96}
-            className={styles.heroPwaLogo}
-            priority
-          />
-        </div>
-        <h1 className={styles.heroHeadline}>
-          <span>A Micro-University</span>
-          <span className={styles.heroHeadlineRotatingLine}>
-            <span>For Real</span>
-            <span className={styles.heroHeadlineWordViewport}>
-              <span className={styles.heroHeadlineWordSizer} aria-hidden="true">
-                {longestHeroWord}
+    <>
+      <div className={styles.heroSection}>
+        <div className={styles.heroContent}>
+          <p className={styles.heroTextBadge}>1 in 3 researchers funded</p>
+          <h1 className={styles.heroHeadline}>
+            <span className={styles.heroHeadlineLead}>
+              <span>Own Your Growth</span>
+              <span className={styles.heroHeadlineGifWrap} aria-hidden="true">
+                <Image
+                  src="/images/walking.gif"
+                  alt=""
+                  width={76}
+                  height={94}
+                  className={styles.heroHeadlineGif}
+                />
               </span>
-              <span className={styles.heroHeadlineWordTrack} aria-hidden="true">
-                {heroRotatingWordsLoop.map((word, index) => (
-                  <span key={`${word}-${index}`} className={styles.heroHeadlineWord}>
-                    {word}
-                  </span>
-                ))}
-              </span>
-              <span className={styles.heroHeadlineSrOnly}>{rotatingHeroWords[0]}</span>
             </span>
-          </span>
-        </h1>
-        <p className={styles.heroSubtext}>
-          College is overpriced and overrated. You can learn cool things without a $10,000 loan. Here, you&apos;ll get closer to the expert version of yourself.
-        </p>
-        <div className={styles.heroActions}>
-          <LandingEnterAcademyButton />
-          <AddToHomeScreenButton className={`${styles.heroButton} ${styles.heroButtonSecondary}`} />
+            <span>Fund Your Future</span>
+          </h1>
+          <p className={styles.heroSubtext}>
+            A 12-week micro-university for artists, creators, and scientists ready to evolve and reach their highest potential.
+          </p>
+          <div className={styles.heroActions}>
+            <LandingEnterAcademyButton />
+          </div>
         </div>
-        <div className={styles.heroValueCards} aria-label="Academy value summary">
-          {heroValueCards.map(({ title, value, detail, tone, ...card }) => (
-            <article key={title} className={styles.heroValueCard}>
-              <div className={styles.heroValueCardTop}>
-                <p className={styles.heroValueTitle}>{title}</p>
-                {'iconSrc' in card ? (
-                  <Image
-                    src={card.iconSrc}
-                    alt=""
-                    width={34}
-                    height={34}
-                    className={`${styles.heroValueIcon} ${styles.heroValueImageIcon} ${styles[`heroValueIcon_${tone}`]}`}
-                    aria-hidden="true"
-                  />
-                ) : (
-                  <card.icon
-                    size={34}
-                    weight="duotone"
-                    className={`${styles.heroValueIcon} ${styles[`heroValueIcon_${tone}`]}`}
-                    aria-hidden="true"
-                  />
-                )}
-              </div>
-              <p className={styles.heroValueMetric}>{value}</p>
-              <p className={styles.heroValueDetail}>{detail}</p>
-            </article>
-          ))}
+        <div className={styles.heroVisualColumn} aria-hidden="true">
+          <div className={styles.heroVisualFrame}>
+            <Image
+              src="/images/a.png"
+              alt=""
+              width={1408}
+              height={2000}
+              className={styles.heroVisualImage}
+              priority
+            />
+          </div>
         </div>
       </div>
-    </div>
+
+      <KeyFiguresSection />
+
+      <section className={styles.ecosystemSection} aria-label="Academy ecosystem">
+        <div className={styles.ecosystemInner}>
+          <h2 className={styles.ecosystemHeadline}>Built for scientists and psychologists</h2>
+          <p className={styles.ecosystemSubtext}>
+            Whether you&apos;re starting or an expert, our system is designed to reward you consistently. You belong in our ecosystem.
+          </p>
+          <div className={styles.heroValueCards} aria-label="Academy value summary">
+            {ecosystemValueCards.map(({ value, detail, icon: Icon }) => (
+              <article key={value} className={styles.heroValueCard}>
+                <div className={styles.heroValueIconBox}>
+                  <Icon
+                    size={40}
+                    weight="duotone"
+                    className={styles.heroValueIcon}
+                    aria-hidden="true"
+                  />
+                </div>
+                <div className={styles.heroValueText}>
+                  <p className={styles.heroValueMetric}>{value}</p>
+                  <p className={styles.heroValueDetail}>{detail}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+          <div className={styles.ecosystemBanner}>
+            <p className={styles.ecosystemBannerHeadline}>⚗️ We are active worldwide — remote-friendly, async-first</p>
+            <p className={styles.ecosystemBannerSubtext}>
+              Most academics meet 1-2x per week. Check-ins are flexible and fit around your life.
+            </p>
+          </div>
+        </div>
+      </section>
+    </>
   );
 };
 

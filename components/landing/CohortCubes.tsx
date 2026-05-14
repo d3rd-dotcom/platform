@@ -10,12 +10,13 @@ const getDPR = () => {
   return Math.min(window.devicePixelRatio || 1, 2);
 };
 
-const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, horizontalOnly }: {
+const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, horizontalOnly, bgColor }: {
   position: [number, number, number];
   rotationSpeed: [number, number, number];
   scale: number;
   verticalSpeed: number;
   horizontalOnly: boolean;
+  bgColor: THREE.Vector3;
 }) => {
   const mesh = useRef<THREE.Mesh>(null);
   const dprRef = useRef(getDPR());
@@ -47,16 +48,16 @@ const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, hori
     time: { value: 0.0 },
     rotationSpeed: { value: new THREE.Vector3(...rotationSpeed) },
     horizontalOnly: { value: horizontalOnly ? 1.0 : 0.0 },
-    ucolor1: { value: new THREE.Vector3(0.318, 0.408, 1.0) },
-    ucolor2: { value: new THREE.Vector3(1.0, 0.522, 0.106) },
-    ucolor3: { value: new THREE.Vector3(0.910, 0.251, 0.341) },
-    ucolor4: { value: new THREE.Vector3(1.0, 1.0, 1.0) },
-    ucolor5: { value: new THREE.Vector3(0.4, 0.4, 0.43) },
-    ucolor6: { value: new THREE.Vector3(0.298, 0.686, 0.314) },
+    ucolor1: { value: new THREE.Vector3(0.10, 0.13, 0.32) },
+    ucolor2: { value: new THREE.Vector3(0.30, 0.16, 0.03) },
+    ucolor3: { value: new THREE.Vector3(0.22, 0.21, 0.32) },
+    ucolor4: { value: new THREE.Vector3(0.0, 0.0, 0.0) },
+    ucolor5: { value: new THREE.Vector3(0.13, 0.13, 0.14) },
+    ucolor6: { value: new THREE.Vector3(0.09, 0.21, 0.09) },
     asciicode: { value: 100.0 },
     utexture: { value: null as THREE.Texture | null },
     uAsciiImageTexture: { value: new THREE.Texture() },
-    uBackgroundColor: { value: new THREE.Vector3(0.957, 0.961, 0.996) },
+    uBackgroundColor: { value: bgColor.clone() },
     brightness: { value: 1.3 },
     asciiu: { value: 1.0 },
     resolution: {
@@ -104,7 +105,7 @@ const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, hori
 
 RotatingCube.displayName = 'RotatingCube';
 
-const CubesScene = memo(() => {
+const CubesScene = memo(({ bgColor }: { bgColor: THREE.Vector3 }) => {
   const cubes = [];
   const count = 10;
   const cameraZ = 10;
@@ -113,13 +114,21 @@ const CubesScene = memo(() => {
   const fovRad = (fov * Math.PI) / 180;
   const visibleHeight = 2 * Math.tan(fovRad / 2) * cameraZ;
   const visibleWidth = visibleHeight * aspect;
-  const gridSize = Math.ceil(Math.sqrt(count));
+
+  // Spread cubes across the viewport using a fixed 5x2 grid (10 slots, 10 cubes).
+  // Every slot is filled and jitter is small enough that cubes can't drift toward the center.
+  const cols = aspect >= 1 ? 5 : 2;
+  const rows = Math.ceil(count / cols);
+  const jitterX = visibleWidth / cols * 0.18;
+  const jitterY = visibleHeight / rows * 0.18;
 
   for (let i = 0; i < count; i++) {
-    const gridX = (i % gridSize) / (gridSize - 1);
-    const gridY = Math.floor(i / gridSize) / (gridSize - 1);
-    const x = (gridX - 0.5) * visibleWidth * 0.85 + (Math.random() - 0.5) * visibleWidth * 0.2;
-    const y = (gridY - 0.5) * visibleHeight * 0.7 + (Math.random() - 0.5) * visibleHeight * 0.2;
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    const gridX = cols === 1 ? 0.5 : col / (cols - 1);
+    const gridY = rows === 1 ? 0.5 : row / (rows - 1);
+    const x = (gridX - 0.5) * visibleWidth * 0.92 + (Math.random() - 0.5) * jitterX;
+    const y = (gridY - 0.5) * visibleHeight * 0.78 + (Math.random() - 0.5) * jitterY;
 
     cubes.push({
       position: [x, y, (Math.random() - 0.5) * 6] as [number, number, number],
@@ -133,7 +142,7 @@ const CubesScene = memo(() => {
   return (
     <>
       {cubes.map((cube, i) => (
-        <RotatingCube key={i} {...cube} />
+        <RotatingCube key={i} {...cube} bgColor={bgColor} />
       ))}
     </>
   );
@@ -141,16 +150,22 @@ const CubesScene = memo(() => {
 
 CubesScene.displayName = 'CubesScene';
 
-const BgColor = memo(() => {
+const BgColor = memo(({ color }: { color: string }) => {
   const { scene } = useThree();
-  useEffect(() => { scene.background = new THREE.Color('#f4f5fe'); }, [scene]);
+  useEffect(() => { scene.background = new THREE.Color(color); }, [scene, color]);
   return null;
 });
 
 BgColor.displayName = 'BgColor';
 
-const CohortCubes = memo(() => {
+type CohortCubesProps = {
+  bgColor?: string;
+};
+
+const CohortCubes = memo(({ bgColor = '#f4f5fe' }: CohortCubesProps) => {
   const dpr = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2) : 1;
+  const bgVec = new THREE.Color(bgColor);
+  const bgVector3 = new THREE.Vector3(bgVec.r, bgVec.g, bgVec.b);
 
   return (
     <Canvas
@@ -161,9 +176,9 @@ const CohortCubes = memo(() => {
       frameloop="always"
       performance={{ min: 0.5 }}
     >
-      <BgColor />
+      <BgColor color={bgColor} />
       <Suspense fallback={null}>
-        <CubesScene />
+        <CubesScene bgColor={bgVector3} />
       </Suspense>
     </Canvas>
   );

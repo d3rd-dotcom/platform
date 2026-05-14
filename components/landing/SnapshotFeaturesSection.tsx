@@ -3,7 +3,7 @@ import styles from './SnapshotFeaturesSection.module.css';
 
 const features = [
   {
-    title: 'A Cohort For Next-Gen Scientists',
+    title: 'New Experiments Every Week',
     body:
       'Twelve weeks of quests, readings, and field studies. Real start, real end — applied behavioral research with collaborators who publish.',
   },
@@ -16,21 +16,6 @@ const features = [
     title: 'Universal Credit System',
     body:
       'On-chain credits earned in one case-study app, spendable across all of them. $Shards live in your wallet — not on our servers.',
-  },
-  {
-    title: 'Decentralized Ecosystems',
-    body:
-      'Programs span trust, distrust, parasocial dynamics, and digital autonomy. Each ships as its own disposable app. When it retires, your data and credentials don’t.',
-  },
-  {
-    title: 'Certified Academic Labs',
-    body:
-      'Defensible research instruments and IRB-style protocols. Your participation generates verifiable credentials and a behavioral dataset you co-own.',
-  },
-  {
-    title: 'Lifetime Membership',
-    body:
-      '$90 soul-bound NFT. One purchase, full access to every cohort and lab — for as long as the platform exists.',
   },
 ];
 

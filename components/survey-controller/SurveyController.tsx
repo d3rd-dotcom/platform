@@ -37,6 +37,7 @@ export default function SurveyController({
   const [selectedPersona, setSelectedPersona] = useState(PERSONAS[0]);
   const [isOpen, setIsOpen] = useState(false);
   const [shouldLoadVideo, setShouldLoadVideo] = useState(!deferVideo);
+  const [isVideoReady, setIsVideoReady] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const imagePanelRef = useRef<HTMLDivElement>(null);
   const shardReward = getTestShardReward(difficulty);
@@ -76,6 +77,10 @@ export default function SurveyController({
     observer.observe(el);
     return () => observer.disconnect();
   }, [characterImageSrc, deferVideo, shouldLoadVideo]);
+
+  useEffect(() => {
+    setIsVideoReady(false);
+  }, [characterImageSrc, selectedPersona.id]);
 
   const handleDifficultyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
@@ -154,29 +159,27 @@ export default function SurveyController({
         <div className={styles.imageWrapper}>
           {characterImageSrc.endsWith('.mp4') ? (
             shouldLoadVideo ? (
-              <video
-                className={styles.characterVideo}
-                src={characterImageSrc}
-                poster={characterPosterSrc}
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="metadata"
-                disablePictureInPicture
-                disableRemotePlayback
-                controlsList="nodownload nofullscreen noremoteplayback"
-                aria-label="B.L.U.E. avatar"
-              />
+              <>
+                <video
+                  className={`${styles.characterVideo} ${isVideoReady ? styles.characterVideoReady : ''}`}
+                  src={characterImageSrc}
+                  poster={characterPosterSrc}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="metadata"
+                  disablePictureInPicture
+                  disableRemotePlayback
+                  controlsList="nodownload nofullscreen noremoteplayback"
+                  aria-label="B.L.U.E. avatar"
+                  onLoadedData={() => setIsVideoReady(true)}
+                  onCanPlay={() => setIsVideoReady(true)}
+                />
+                {!isVideoReady && <div className={styles.videoLoadingShell} aria-hidden="true" />}
+              </>
             ) : (
-              <Image
-                src={characterPosterSrc}
-                alt="B.L.U.E. avatar"
-                fill
-                sizes="397px"
-                className={styles.characterPoster}
-                priority={false}
-              />
+              <div className={styles.videoLoadingShell} aria-hidden="true" />
             )
           ) : characterImageSrc ? (
             <Image

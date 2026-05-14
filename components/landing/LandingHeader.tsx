@@ -19,8 +19,8 @@ const LandingAuthButtons = dynamic(
         </button>
         <button type="button" className={styles.joinButton} disabled aria-disabled="true">
           <span className={styles.slideWrap}>
-            <span className={styles.slideText}>Join Now</span>
-            <span className={`${styles.slideText} ${styles.slideClone}`}>Join Now</span>
+            <span className={styles.slideText}>Apply to Join</span>
+            <span className={`${styles.slideText} ${styles.slideClone}`}>Apply to Join</span>
           </span>
         </button>
       </>
@@ -30,6 +30,7 @@ const LandingAuthButtons = dynamic(
 
 export const LandingHeader: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -38,8 +39,21 @@ export const LandingHeader: React.FC = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  useEffect(() => {
+    const onResize = () => {
+      if (window.innerWidth > 768) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
   return (
-    <header className={`${styles.header} ${scrolled ? styles.headerScrolled : ''}`}>
+    <header
+      className={`${styles.header} ${scrolled ? styles.headerScrolled : ''} ${mobileMenuOpen ? styles.headerMenuOpen : ''}`}
+    >
       <div className={styles.headerContent}>
         <a href="/" className={styles.logoLink}>
           <Image
@@ -53,9 +67,27 @@ export const LandingHeader: React.FC = () => {
         </a>
 
         <nav className={styles.nav}>
-          <LandingAuthButtons />
+          <div className={styles.desktopActions}>
+            <LandingAuthButtons />
+          </div>
+          <button
+            type="button"
+            className={styles.mobileMenuButton}
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileMenuOpen}
+            onClick={() => setMobileMenuOpen((open) => !open)}
+          >
+            <span className={styles.mobileMenuBar} />
+            <span className={styles.mobileMenuBar} />
+            <span className={styles.mobileMenuBar} />
+          </button>
         </nav>
       </div>
+      {mobileMenuOpen ? (
+        <div className={styles.mobileMenuPanel}>
+          <LandingAuthButtons />
+        </div>
+      ) : null}
     </header>
   );
 };

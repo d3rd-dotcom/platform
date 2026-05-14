@@ -2,7 +2,7 @@
   position: relative;
   width: 100%;
   min-height: 400px;
-  background-color: #12131B;
+  background-color: var(--color-primary);
   overflow-x: visible;
   overflow-y: hidden;
   margin: 0;

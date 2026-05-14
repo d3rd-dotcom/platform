@@ -35,24 +35,25 @@ vec2 barrelDistortion(vec2 uv, float strength) {
     return center + coord * factor;
 }
 
-// Create star pattern (✦) - 4-pointed star
+// Create sun pattern (❂) - 8-ray sun with central disc
 float starPattern(vec2 uv, float size) {
     vec2 p = uv - 0.5;
     float angle = atan(p.y, p.x);
     float radius = length(p) * 2.0;
-    
-    // Create 4-pointed star shape using polar coordinates
-    // Rotate angle by 45 degrees to align points
-    float rotatedAngle = angle + 3.14159 * 0.25;
-    float starShape = abs(cos(rotatedAngle * 2.0));
-    
-    // Create star outline - inner radius smaller for star effect
-    float innerRadius = size * 0.4;
+
+    // 8 sharp radiating rays around a center
+    float rayShape = pow(abs(cos(angle * 4.0)), 0.6);
+
+    // Ray envelope: inner radius for the body of each ray, outer radius for the tips
+    float innerRadius = size * 0.32;
     float outerRadius = size;
-    float dist = radius / mix(innerRadius, outerRadius, starShape);
-    
-    // Threshold for star visibility - make stars fill most of cell
-    return step(dist, 1.0);
+    float dist = radius / mix(innerRadius, outerRadius, rayShape);
+    float rays = step(dist, 1.0);
+
+    // Solid central disc so the glyph reads as a sun, not just a spike cluster
+    float core = step(radius, size * 0.42);
+
+    return max(rays, core);
 }
 
 // Sample image and create pixelated ASCII star pattern (screen-space)

@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { ArrowRight } from '@phosphor-icons/react';
 import { useSound } from '@/hooks/useSound';
 import styles from './LandingPage.module.css';
 
@@ -23,6 +24,9 @@ export default function LandingEnterAcademyButton() {
       <span className={styles.heroSlideWrap}>
         <span className={styles.heroSlideText}>Enter The Academy</span>
         <span className={`${styles.heroSlideText} ${styles.heroSlideClone}`}>Enter The Academy</span>
+      </span>
+      <span className={styles.heroButtonArrow} aria-hidden="true">
+        <ArrowRight size={22} weight="bold" />
       </span>
     </button>
   );

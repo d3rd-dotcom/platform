@@ -3,7 +3,7 @@
   top: 14px;
   left: 50%;
   transform: translateX(-50%);
-  width: calc(100% - 48px);
+  width: calc(100% - 144px);
   z-index: 100;
   padding: 10px 24px;
   background: rgba(5, 8, 22, 0.78);
@@ -47,13 +47,17 @@
 }
 
 .headerScrolled {
-  width: min(950px, calc(100% - 48px));
+  width: min(950px, calc(100% - 144px));
   padding: 8px 20px;
   background: rgba(5, 8, 22, 0.9);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-radius: 100px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.24);
+}
+
+.headerMenuOpen {
+  border-radius: 24px;
 }
 
 .headerContent {
@@ -86,10 +90,47 @@
   gap: 10px;
 }
 
+.desktopActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mobileMenuButton {
+  display: none;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.mobileMenuBar {
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.mobileMenuPanel {
+  display: none;
+}
+
 .loginButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.38);
-  padding: 0.6rem 1.4rem;
+  padding: 0.68rem 1.4rem 0.58rem;
   border-radius: 100px;
   color: var(--color-text-light);
   font-size: 0.875rem;
@@ -103,7 +144,7 @@
 
 .headerScrolled .loginButton {
   border-radius: 100px;
-  padding: 0.4rem 1rem;
+  padding: 0.48rem 1rem 0.38rem;
   font-size: 0.75rem;
 }
 
@@ -114,9 +155,12 @@
 }
 
 .joinButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background-color: var(--color-primary);
   border: none;
-  padding: 0.6rem 1.4rem;
+  padding: 0.68rem 1.4rem 0.58rem;
   border-radius: 100px;
   color: white;
   font-size: 0.875rem;
@@ -131,7 +175,7 @@
 
 .headerScrolled .joinButton {
   border-radius: 100px;
-  padding: 0.4rem 1rem;
+  padding: 0.48rem 1rem 0.38rem;
   font-size: 0.75rem;
 }
 
@@ -144,14 +188,18 @@
 /* Slide text hover */
 .slideWrap {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
-  height: 1.2em;
+  height: 1.1em;
   vertical-align: middle;
+  line-height: 1;
 }
 
 .slideText {
   display: block;
+  line-height: 1;
   transition: transform 0.3s ease;
   will-change: transform;
 }
@@ -179,12 +227,12 @@
   .header {
     top: 6px;
     width: calc(100% - 24px);
-    padding: 8px 14px;
+    padding: 8px 10px;
   }
 
   .headerScrolled {
     width: min(672px, calc(100% - 24px));
-    padding: 6px 14px;
+    padding: 6px 10px;
   }
 
   .logo {
@@ -196,18 +244,33 @@
   }
 
   .nav {
-    gap: 6px;
+    gap: 0;
   }
 
-  .loginButton,
-  .joinButton {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.7rem;
+  .desktopActions {
+    display: none;
   }
 
-  .headerScrolled .loginButton,
-  .headerScrolled .joinButton {
-    padding: 0.35rem 0.7rem;
-    font-size: 0.65rem;
+  .mobileMenuButton {
+    display: inline-flex;
+  }
+
+  .mobileMenuPanel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 2px 2px;
+  }
+
+  .mobileMenuPanel .loginButton,
+  .mobileMenuPanel .joinButton {
+    width: 100%;
+    justify-content: center;
+    padding: 0.76rem 1rem 0.64rem;
+    font-size: 0.76rem;
+  }
+
+  .mobileMenuPanel .slideWrap {
+    text-align: center;
   }
 }
