@@ -266,12 +266,12 @@
 .shinyCardTitle {
   font-family: var(--font-primary);
   font-size: 13px;
-  font-weight: var(--font-weight-medium);
-  color: #9ca3af;
+  font-weight: var(--font-weight-regular);
+  color: #4b5563;
   letter-spacing: 0;
 }
 :global([data-theme="dark"]) .shinyCardTitle {
-  color: rgba(255,255,255,0.38);
+  color: rgba(255, 255, 255, 0.92);
 }
 
 /* Theme toggle */

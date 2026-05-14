@@ -6,6 +6,7 @@ import { buildBlueContext, storeBlueChatMessage, touchBlueRelationship, upsertBl
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { elizaAPI } from '@/lib/eliza-api';
 import bluePersona from '@/lib/bluepersonality.json';
+import { retrieveBlueKnowledge, formatKnowledgeForPrompt, type RetrievedEntry } from '@/lib/blue-knowledge';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -109,6 +110,17 @@ interface BlueDebugInfo {
     highestWeekTouched: number | null;
   };
   extractedFactsCount: number;
+  rag: {
+    pathname: string | null;
+    entriesRetrieved: number;
+    entries: Array<{
+      id: string;
+      title: string;
+      score: number;
+      pageMatch: boolean;
+      matchedKeywords: string[];
+    }>;
+  };
 }
 
 function isClaudeImageMime(mime: string) {
@@ -191,6 +203,8 @@ function buildBlueChatMessages(args: {
   systemPrompt: string;
   userMessage: string;
   contextText: string;
+  knowledgeText: string;
+  pathname: string | null;
   recentMessages: Array<{ role: 'user' | 'assistant'; text: string }>;
 }): ElizaMessage[] {
   const truncate = (text: string, maxLength: number) => (
@@ -202,13 +216,24 @@ function buildBlueChatMessages(args: {
     parts: [{ type: 'text', text: truncate(message.text, 320) }],
   }));
 
+  const pageLine = args.pathname
+    ? `Current page the user is viewing: ${args.pathname}`
+    : 'Current page: unknown';
+
+  const systemText = [
+    args.systemPrompt,
+    '',
+    pageLine,
+    '',
+    truncate(args.contextText, 4000),
+    args.knowledgeText ? '' : null,
+    args.knowledgeText ? truncate(args.knowledgeText, 4000) : null,
+  ].filter((line) => line !== null).join('\n');
+
   return [
     {
       role: 'system',
-      parts: [{
-        type: 'text',
-        text: `${args.systemPrompt}\n\n${truncate(args.contextText, 4000)}`,
-      }],
+      parts: [{ type: 'text', text: systemText }],
     },
     ...historyMessages,
     {
@@ -285,6 +310,8 @@ function buildBlueDebugInfo(args: {
   shardsDeducted: number;
   contextValues: Awaited<ReturnType<typeof buildBlueContext>>['values'];
   extractedFactsCount: number;
+  pathname: string | null;
+  retrievedEntries: RetrievedEntry[];
 }): BlueDebugInfo {
   return {
     source: 'eliza',
@@ -300,6 +327,17 @@ function buildBlueDebugInfo(args: {
       highestWeekTouched: args.contextValues.highestWeekTouched,
     },
     extractedFactsCount: args.extractedFactsCount,
+    rag: {
+      pathname: args.pathname,
+      entriesRetrieved: args.retrievedEntries.length,
+      entries: args.retrievedEntries.map((entry) => ({
+        id: entry.id,
+        title: entry.title,
+        score: Number(entry.score.toFixed(2)),
+        pageMatch: entry.pageMatch,
+        matchedKeywords: entry.matchedKeywords,
+      })),
+    },
   };
 }
 
@@ -310,11 +348,19 @@ async function runBlueMemoryAwareTurn(args: {
   mode: 'chat' | 'research' | 'auto-distribution';
   attachmentsCount?: number;
   shardsDeducted: number;
+  pathname: string | null;
 }) {
   const blueContext = await buildBlueContext({
     userId: args.userId,
     username: args.username ?? null,
   });
+
+  const retrievedEntries = retrieveBlueKnowledge({
+    message: args.userMessage,
+    pathname: args.pathname,
+    limit: 5,
+  });
+  const knowledgeText = formatKnowledgeForPrompt(retrievedEntries);
 
   const response = await callElizaCloud(buildBlueChatMessages({
     systemPrompt:
@@ -325,6 +371,8 @@ async function runBlueMemoryAwareTurn(args: {
           : BLUE_SYSTEM_PROMPT,
     userMessage: args.userMessage,
     contextText: blueContext.contextText,
+    knowledgeText,
+    pathname: args.pathname,
     recentMessages: blueContext.values.recentMessages,
   }));
 
@@ -382,6 +430,8 @@ async function runBlueMemoryAwareTurn(args: {
       shardsDeducted: args.shardsDeducted,
       contextValues: blueContext.values,
       extractedFactsCount,
+      pathname: args.pathname,
+      retrievedEntries,
     }),
   };
 }
@@ -433,7 +483,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
 
-  let body: { message: string; mode?: string; attachments?: ChatAttachment[] };
+  let body: { message: string; mode?: string; attachments?: ChatAttachment[]; pathname?: string | null };
   try {
     body = await request.json();
   } catch {
@@ -456,6 +506,9 @@ export async function POST(request: Request) {
   const isResearch = body.mode === 'research';
   const isLinkedInProfessional = body.mode === 'linkedin-professional';
   const isAutoDistribution = body.mode === 'auto-distribution';
+  const pathname = typeof body.pathname === 'string' && body.pathname.trim().length
+    ? body.pathname.trim().slice(0, 256)
+    : null;
 
   if (!isLinkedInProfessional && !ELIZA_API_KEY) {
     return NextResponse.json(
@@ -490,6 +543,7 @@ export async function POST(request: Request) {
         mode: 'research',
         attachmentsCount: attachments.length,
         shardsDeducted: 0,
+        pathname,
       });
       return NextResponse.json(result);
     } catch (err: unknown) {
@@ -544,6 +598,7 @@ export async function POST(request: Request) {
       mode: isAutoDistribution ? 'auto-distribution' : 'chat',
       attachmentsCount: attachments.length,
       shardsDeducted: SHARD_COST,
+      pathname,
     });
 
     return NextResponse.json({

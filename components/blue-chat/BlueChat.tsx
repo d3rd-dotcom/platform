@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import styles from './BlueChat.module.css';
 import { useSound } from '@/hooks/useSound';
 import CreditBuilderInline from './CreditBuilderInline';
@@ -61,6 +62,17 @@ interface MessageDebugInfo {
     highestWeekTouched: number | null;
   };
   extractedFactsCount?: number;
+  rag?: {
+    pathname: string | null;
+    entriesRetrieved: number;
+    entries: Array<{
+      id: string;
+      title: string;
+      score: number;
+      pageMatch: boolean;
+      matchedKeywords: string[];
+    }>;
+  };
   notes?: string[];
 }
 
@@ -198,6 +210,7 @@ type GpuTier = keyof typeof GPU_TIER_INFO;
 
 const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const { play } = useSound();
+  const currentPathname = usePathname();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -532,7 +545,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ message: text, mode, attachments }),
+        body: JSON.stringify({ message: text, mode, attachments, pathname: currentPathname }),
       });
       const data = await res.json();
 
@@ -1166,9 +1179,21 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       addBlueMessage(
         "auto-distribution is live. connect approved channels, tell me the campaign, and i'll draft posts, image prompts, video concepts, ad angles, and engagement targets."
       );
-    } else if (action === 'research-lite') {
-      send('Help me think through this topic', 'searching');
-      addBlueMessage("give me the topic, paper, or claim and i will help you map the signal. if you want the full research desk, open Research Mode.");
+    } else if (action === 'funding') {
+      send('Help me get this funded', 'searching');
+      addBlueMessage(
+        "tell me what you're trying to fund — paper, study, dataset, or full project. i'll map you to treasury allocations, prediction-market backed pools, grants in your domain, and the framing that actually pulls capital. if you want the rate, lead with the mechanism."
+      );
+    } else if (action === 'earning') {
+      send('Show me ways to earn from my research', 'happy');
+      addBlueMessage(
+        "what's the asset — a paper, a survey, a dataset, a model, a methodology? i'll lay out x402 paywalls, paid replications, contribution rewards, paid syntheses for the desk, and where shards convert. give me one concrete thing you've already produced."
+      );
+    } else if (action === 'experiments') {
+      send('I want to design an experiment', 'searching');
+      addBlueMessage(
+        "drop the hypothesis or the messy question. i'll help you tighten the variable, pick a design, scope the sample, and route it through the platform — validated assessments, behavioral quests, or community surveys. if it can ship as an experiment here, i'll say so."
+      );
     } else if (action === 'research') {
       setClaudeProfessionalMode(false);
       setPendingAttachments([]);
@@ -1210,16 +1235,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setClaudeProfessionalMode(true);
       addBlueMessage(
         "claude professional mode is live. send me recruiter messages, job descriptions, cover letters, linkedin copy, screenshots, or pdfs and i'll handle it in james marsh voice."
-      );
-    } else if (action === 'treasury') {
-      send('Open the treasury desk', 'happy');
-      addBlueMessage(
-        "i can help you read the treasury, scan markets, pressure-test a proposal, or turn a loose idea into a governance memo. if you want signal, give me the decision in front of you."
-      );
-    } else if (action === 'agents') {
-      send('Show me the agent workflows', 'searching');
-      addBlueMessage(
-        "research passes, gpu synthesis, distribution systems, recruiter drafts, and focus blocks are all live here. pick a lane and i will move it from rough input to something usable."
       );
     }
   };
@@ -1312,6 +1327,18 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
     if (typeof debug.extractedFactsCount === 'number') {
       lines.push(`facts extracted: ${debug.extractedFactsCount}`);
+    }
+
+    if (debug.rag) {
+      lines.push(`rag page: ${debug.rag.pathname ?? 'unknown'}`);
+      lines.push(`rag entries: ${debug.rag.entriesRetrieved}`);
+      for (const entry of debug.rag.entries) {
+        const matched = entry.matchedKeywords.length
+          ? ` [${entry.matchedKeywords.join(', ')}]`
+          : '';
+        const pageTag = entry.pageMatch ? ' (page match)' : '';
+        lines.push(`  · ${entry.title} — score ${entry.score}${pageTag}${matched}`);
+      }
     }
 
     if (debug.notes?.length) {
@@ -1618,14 +1645,14 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             <span>{shardCount}</span>
           </div>
         )}
-        <button className={styles.quickAction} onClick={() => handleQuickAction('research-lite')} disabled={isTyping} type="button">
-          Research
+        <button className={styles.quickAction} onClick={() => handleQuickAction('funding')} disabled={isTyping} type="button">
+          Funding
         </button>
-        <button className={styles.quickAction} onClick={() => handleQuickAction('treasury')} disabled={isTyping} type="button">
-          Treasury
+        <button className={styles.quickAction} onClick={() => handleQuickAction('earning')} disabled={isTyping} type="button">
+          Earning
         </button>
-        <button className={styles.quickAction} onClick={() => handleQuickAction('agents')} disabled={isTyping} type="button">
-          Agents
+        <button className={styles.quickAction} onClick={() => handleQuickAction('experiments')} disabled={isTyping} type="button">
+          Experiments
         </button>
       </div>
 
@@ -1884,47 +1911,47 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
               <div className={styles.expandedQuickPanel}>
                 <h3 className={styles.panelHeading}>Power Tools</h3>
                 <div className={styles.expandedQuickGrid}>
-                  <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => { play('click'); handleQuickAction('research-lite'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
+                  <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => { play('click'); handleQuickAction('funding'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
                     <span className={styles.toolCardTop}>
                       <span className={styles.toolCardText}>
                         <span className={styles.toolSlideWrap}>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Research Mode</span>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Research Mode</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Funding</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Funding</span>
                         </span>
-                        <span className={styles.toolCardMeta}>Trace papers, mechanisms, and live topics without leaving the desk.</span>
+                        <span className={styles.toolCardMeta}>Map a study, paper, or dataset to treasury pools, prediction-backed funding, and live grants.</span>
                       </span>
                       <span className={styles.toolCardIcon} aria-hidden="true">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4zM1 3h2v18H1zm20 0h2v18h-2z"/></svg>
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2Zm.75 14.5v1.25h-1.5V16.5a3.5 3.5 0 0 1-3-2.43l1.43-.58a2 2 0 0 0 3.95-.34c0-1.13-1.04-1.55-2.5-2.07S8.5 9.95 8.5 8.43A2.95 2.95 0 0 1 11.25 5.6V4.25h1.5v1.32a3.06 3.06 0 0 1 2.66 1.99l-1.39.6a1.62 1.62 0 0 0-3.27.27c0 .9.92 1.28 2.36 1.79s3.39 1.23 3.39 3.18a3.13 3.13 0 0 1-2.75 3.1Z"/></svg>
                       </span>
                     </span>
                     <span className={styles.toolCardBottom} aria-hidden="true" />
                   </button>
-                  <button className={styles.expandedQuickCard} onClick={() => { play('click'); handleQuickAction('treasury'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
+                  <button className={styles.expandedQuickCard} onClick={() => { play('click'); handleQuickAction('earning'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
                     <span className={styles.toolCardTop}>
                       <span className={styles.toolCardText}>
                         <span className={styles.toolSlideWrap}>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Treasury Desk</span>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Treasury Desk</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Earning</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Earning</span>
                         </span>
-                        <span className={styles.toolCardMeta}>Review allocations, pressure-test proposals, and draft cleaner governance calls.</span>
+                        <span className={styles.toolCardMeta}>Turn papers, datasets, and methodology into x402 revenue, paid syntheses, and shards.</span>
                       </span>
                       <span className={styles.toolCardIcon} aria-hidden="true">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.75A10.25 10.25 0 1 0 22.25 12 10.262 10.262 0 0 0 12 1.75Zm0 18.5A8.25 8.25 0 1 1 20.25 12 8.259 8.259 0 0 1 12 20.25Zm.75-13h-1.5v5.06l4.03 2.42.78-1.28-3.31-1.98Z"/></svg>
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2l3-8 3 13 3-9 2 4h5v2h-6l-1-2-3 8-3-12-2 6H3z"/></svg>
                       </span>
                     </span>
                     <span className={styles.toolCardBottom} aria-hidden="true" />
                   </button>
-                  <button className={styles.expandedQuickCard} onClick={() => { play('click'); handleQuickAction('agents'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
+                  <button className={styles.expandedQuickCard} onClick={() => { play('click'); handleQuickAction('experiments'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
                     <span className={styles.toolCardTop}>
                       <span className={styles.toolCardText}>
                         <span className={styles.toolSlideWrap}>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Agent Workflows</span>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Agent Workflows</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Experiments</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Experiments</span>
                         </span>
-                        <span className={styles.toolCardMeta}>Route work into gpu synthesis, distribution systems, recruiter drafts, or focus blocks.</span>
+                        <span className={styles.toolCardMeta}>Scope a hypothesis, lock variables, pick a design, and route it to surveys or quests.</span>
                       </span>
                       <span className={styles.toolCardIcon} aria-hidden="true">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.11-.9-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M9 2v6L3.5 17.5A2 2 0 0 0 5.24 20.5h13.52A2 2 0 0 0 20.5 17.5L15 8V2Zm2 2h2v4.5l3.94 6.5H7.06L11 8.5ZM9.6 15h4.8l1.21 2H8.4Z"/></svg>
                       </span>
                     </span>
                     <span className={styles.toolCardBottom} aria-hidden="true" />
