@@ -3,7 +3,7 @@ import styles from './FounderSection.module.css';
 
 export const FounderSection: React.FC = () => {
   return (
-    <section className={styles.section} aria-labelledby="founder-section-heading">
+    <section id="about" className={styles.section} aria-labelledby="founder-section-heading">
       <div className={styles.container}>
         <div className={styles.avatarWrap} aria-hidden="true">
           <Image

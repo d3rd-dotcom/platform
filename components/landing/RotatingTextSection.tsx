@@ -7,7 +7,7 @@ export const RotatingTextSection: React.FC = () => {
   const texts = useMemo(() => [
     'Cyberculture',
     'Science',
-    'AI Research'
+    'Intelligence'
   ], []);
   const [step, setStep] = useState(0);
   const currentIndex = step % texts.length;

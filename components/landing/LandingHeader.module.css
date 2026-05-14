@@ -61,15 +61,17 @@
 }
 
 .headerContent {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  justify-content: space-between;
+  gap: 20px;
 }
 
 .logoLink {
   display: flex;
   align-items: center;
   text-decoration: none;
+  justify-self: start;
 }
 
 .logo {
@@ -84,10 +86,35 @@
   width: 90px;
 }
 
+.sectionNav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  justify-self: center;
+}
+
+.sectionNavLink {
+  color: rgba(255, 255, 255, 0.72);
+  font-family: var(--font-primary);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.sectionNavLink:hover {
+  color: #ffffff;
+}
+
 .nav {
   display: flex;
   align-items: center;
   gap: 10px;
+  justify-self: end;
 }
 
 .desktopActions {
@@ -122,6 +149,40 @@
 
 .mobileMenuPanel {
   display: none;
+}
+
+.mobileSectionNav {
+  display: none;
+}
+
+.discordButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(88, 101, 242, 0.16);
+  border: 1px solid rgba(128, 141, 255, 0.44);
+  padding: 0.68rem 1.1rem 0.58rem;
+  border-radius: 100px;
+  color: #eef1ff;
+  font-size: 0.8rem;
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-button);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.headerScrolled .discordButton {
+  padding: 0.48rem 0.9rem 0.38rem;
+  font-size: 0.72rem;
+}
+
+.discordButton:hover {
+  background: rgba(88, 101, 242, 0.28);
+  border-color: rgba(171, 181, 255, 0.72);
+  color: #ffffff;
 }
 
 .loginButton {
@@ -213,13 +274,31 @@
 }
 
 .loginButton:hover .slideText,
+.discordButton:hover .slideText,
 .joinButton:hover .slideText {
   transform: translateY(-100%);
 }
 
 .loginButton:hover .slideClone,
+.discordButton:hover .slideClone,
 .joinButton:hover .slideClone {
   transform: translateY(0);
+}
+
+@media (max-width: 1080px) {
+  .sectionNav {
+    gap: 12px;
+  }
+
+  .sectionNavLink {
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+  }
+
+  .discordButton {
+    padding-inline: 0.95rem;
+    font-size: 0.74rem;
+  }
 }
 
 /* Mobile */
@@ -235,6 +314,11 @@
     padding: 6px 10px;
   }
 
+  .headerContent {
+    display: flex;
+    justify-content: space-between;
+  }
+
   .logo {
     width: 90px;
   }
@@ -245,6 +329,10 @@
 
   .nav {
     gap: 0;
+  }
+
+  .sectionNav {
+    display: none;
   }
 
   .desktopActions {
@@ -262,8 +350,25 @@
     padding: 12px 2px 2px;
   }
 
+  .mobileSectionNav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+  }
+
+  .mobileSectionNavLink {
+    color: rgba(255, 255, 255, 0.78);
+    font-family: var(--font-primary);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
   .mobileMenuPanel .loginButton,
-  .mobileMenuPanel .joinButton {
+  .mobileMenuPanel .joinButton,
+  .mobileMenuPanel .discordButton {
     width: 100%;
     justify-content: center;
     padding: 0.76rem 1rem 0.64rem;

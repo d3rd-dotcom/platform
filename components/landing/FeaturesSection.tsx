@@ -59,6 +59,7 @@ export const FeaturesSection: React.FC = () => {
 
   return (
     <section
+      id="how-it-works"
       ref={sectionRef}
       className={`${styles.featuresSection} ${isVisible ? styles.sectionVisible : ''}`}
     >

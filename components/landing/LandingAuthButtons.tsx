@@ -29,6 +29,18 @@ export function LandingAuthButtons() {
           <span className={`${styles.slideText} ${styles.slideClone}`}>Login</span>
         </span>
       </button>
+      <a
+        href="https://discord.gg/ZTRVCYwncs"
+        target="_blank"
+        rel="noopener noreferrer"
+        onMouseEnter={() => play('hover')}
+        className={styles.discordButton}
+      >
+        <span className={styles.slideWrap}>
+          <span className={styles.slideText}>Discord</span>
+          <span className={`${styles.slideText} ${styles.slideClone}`}>Discord</span>
+        </span>
+      </a>
       <button
         type="button"
         onClick={handleJoinNow}

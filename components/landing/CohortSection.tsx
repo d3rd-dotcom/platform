@@ -3,15 +3,12 @@
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import styles from './CohortSection.module.css';
-import { useSound } from '@/hooks/useSound';
 
 const CubesCanvas = dynamic(() => import('./CohortCubes'), { ssr: false });
 
 export const CohortSection = () => {
-  const { play } = useSound();
-
   return (
-    <section className={styles.cohortSection}>
+    <section id="cohort" className={styles.cohortSection}>
       <div className={styles.cubesBackground}>
         <CubesCanvas />
       </div>
@@ -90,20 +87,6 @@ export const CohortSection = () => {
               </div>
             </div>
           </div>
-
-          <div className={styles.boardFooter}>
-            <a
-              href="https://t.me/mentalwealthacademy"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.ctaButton}
-              onClick={() => play('click')}
-              onMouseEnter={() => play('hover')}
-            >
-              Join us on Telegram
-            </a>
-          </div>
-
         </div>
       </div>
     </section>

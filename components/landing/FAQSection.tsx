@@ -64,7 +64,7 @@ export const FAQSection = () => {
   };
 
   return (
-    <section className={styles.faqSection}>
+    <section id="faqs" className={styles.faqSection}>
       <div className={styles.faqContainer}>
         <p className={styles.faqEyebrow}>FAQ</p>
         <h2 className={styles.faqTitle}>Frequently asked questions</h2>
