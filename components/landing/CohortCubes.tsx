@@ -125,8 +125,8 @@ const CubesScene = memo(({ bgColor }: { bgColor: THREE.Vector3 }) => {
   for (let i = 0; i < count; i++) {
     const col = i % cols;
     const row = Math.floor(i / cols);
-    const gridX = cols === 1 ? 0.5 : col / (cols - 1);
-    const gridY = rows === 1 ? 0.5 : row / (rows - 1);
+    const gridX = col / (cols - 1);
+    const gridY = row / (rows - 1);
     const x = (gridX - 0.5) * visibleWidth * 0.92 + (Math.random() - 0.5) * jitterX;
     const y = (gridY - 0.5) * visibleHeight * 0.78 + (Math.random() - 0.5) * jitterY;
 
