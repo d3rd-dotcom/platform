@@ -50,7 +50,6 @@ const QuestDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, r
   const [showShardAnimation, setShowShardAnimation] = useState(false);
   const [shardsAwarded, setShardsAwarded] = useState(0);
   const [showConnectingModal, setShowConnectingModal] = useState(false);
-  const [startingShards, setStartingShards] = useState(0);
 
   const getAuthHeaders = async (): Promise<HeadersInit> => {
     const token = await getAccessToken();
@@ -131,7 +130,6 @@ const QuestDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, r
 
               if (completeData.ok && completeData.shardsAwarded > 0) {
                 setShardsAwarded(completeData.shardsAwarded);
-                setStartingShards(completeData.startingShards || 0);
                 setShowConfetti(true);
                 setShowShardAnimation(true);
                 window.dispatchEvent(new Event('shardsUpdated'));
@@ -232,15 +230,6 @@ const QuestDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, r
     setIsCompleting(true);
     try {
       const authHeaders = await getAuthHeaders();
-      const meResponse = await fetch('/api/me', {
-        cache: 'no-store',
-        credentials: 'include',
-        headers: authHeaders,
-      });
-      const meData = await meResponse.json();
-      const currentStartingShards = meData?.user?.shardCount ?? 0;
-      setStartingShards(currentStartingShards);
-
       const shardReward = quest.points;
       const response = await fetch('/api/quests/complete', {
         method: 'POST',
@@ -597,7 +586,6 @@ const QuestDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, r
       {showShardAnimation && (
         <ShardAnimation
           shards={shardsAwarded}
-          startingShards={startingShards}
           onComplete={() => setShowShardAnimation(false)}
         />
       )}

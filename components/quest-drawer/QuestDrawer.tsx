@@ -52,7 +52,6 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
   const [showShardAnimation, setShowShardAnimation] = useState(false);
   const [shardsAwarded, setShardsAwarded] = useState(0);
   const [showConnectingModal, setShowConnectingModal] = useState(false);
-  const [startingShards, setStartingShards] = useState(0);
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
 
   const getAuthHeaders = async (): Promise<HeadersInit> => {
@@ -139,7 +138,6 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
 
               if (completeData.ok && completeData.shardsAwarded > 0) {
                 setShardsAwarded(completeData.shardsAwarded);
-                setStartingShards(completeData.startingShards || 0);
                 setShowConfetti(true);
                 setShowShardAnimation(true);
                 window.dispatchEvent(new Event('shardsUpdated'));
@@ -240,15 +238,6 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
     setIsCompleting(true);
     try {
       const authHeaders = await getAuthHeaders();
-      const meResponse = await fetch('/api/me', {
-        cache: 'no-store',
-        credentials: 'include',
-        headers: authHeaders,
-      });
-      const meData = await meResponse.json();
-      const currentStartingShards = meData?.user?.shardCount ?? 0;
-      setStartingShards(currentStartingShards);
-
       const shardReward = quest.points;
       const response = await fetch('/api/quests/complete', {
         method: 'POST',
@@ -584,7 +573,6 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
       {showShardAnimation && (
         <ShardAnimation
           shards={shardsAwarded}
-          startingShards={startingShards}
           onComplete={() => setShowShardAnimation(false)}
         />
       )}

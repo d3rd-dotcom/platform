@@ -77,7 +77,7 @@ export default function DailyNotes({
   const isExpanded = true;
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showRewardAnimation, setShowRewardAnimation] = useState(false);
-  const [rewardData, setRewardData] = useState<{ shards: number; startingShards: number } | null>(null);
+  const [rewardData, setRewardData] = useState<{ shards: number } | null>(null);
   const [introDayIndex, setIntroDayIndex] = useState<number | null>(null);
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
   const [showSaveConfirm, setShowSaveConfirm] = useState(false);
@@ -235,7 +235,7 @@ export default function DailyNotes({
     }
 
     if (enablePersistence) {
-      setRewardData({ shards: 100, startingShards: 0 });
+      setRewardData({ shards: 100 });
       setShowRewardAnimation(true);
 
       const dayIndex = activeDayIndex;
@@ -742,8 +742,6 @@ export default function DailyNotes({
             <ConfettiCelebration trigger={true} />
             <ShardAnimation
               shards={rewardData.shards}
-              startingShards={rewardData.startingShards}
-              showTotal={false}
               onComplete={() => setShowRewardAnimation(false)}
             />
           </>
@@ -964,7 +962,6 @@ export default function DailyNotes({
           <ConfettiCelebration trigger={true} />
           <ShardAnimation
             shards={rewardData.shards}
-            startingShards={rewardData.startingShards}
             onComplete={() => setShowRewardAnimation(false)}
           />
         </>
