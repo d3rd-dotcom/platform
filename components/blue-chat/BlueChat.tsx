@@ -1042,49 +1042,108 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
   const generateBlueResponse = (userText: string): string => {
     const t = userText.toLowerCase();
+    const has = (...terms: string[]) => terms.some((term) => t.includes(term));
+    const hasAll = (...terms: string[]) => terms.every((term) => t.includes(term));
 
-    if (t.includes('hello') || t.includes('hi') || t.includes('hey')) {
-      return "hey. what are we moving?";
-    }
-    if (t.includes('help')) {
-      return "i can talk decentralized science, privacy, research, governance, wellness, artists, horses, shards, or the next real move. ask me straight.";
-    }
-    if (t.includes('who') && t.includes('you')) {
-      return "i'm Blue. decentralized science mascot, research guide, and the one here to keep consent, privacy, and shared power in frame.";
-    }
-    if (t.includes('how') && t.includes('are')) {
-      return "i'm good. signal's clear. what do you need?";
-    }
-    if (t.includes('sorry') || t.includes('my bad')) {
-      return "it's fine. what do you need?";
+    // Greetings
+    if (has('hello', 'hey there', 'good morning', 'good evening', 'good afternoon') || (has('hi') && t.length < 20) || (has('hey') && t.length < 20) || (has('sup') && t.length < 20)) {
+      return "hey. what are we working on?";
     }
 
-    if (t.includes('decentral') || t.includes('science')) {
-      return "science should be public, shared, and hard to hoard. if the system keeps the power and leaves the people out, it needs to be redesigned.";
-    }
-    if (t.includes('privacy')) {
-      return "privacy is not decoration. it's dignity, safety, and control over your own life.";
-    }
-    if (t.includes('artist')) {
-      return "artists notice when a system is fake, extractive, or dead inside. i trust that instinct.";
-    }
-    if (t.includes('horse')) {
-      return "horses are honest about pressure and intent. that kind of signal is worth respecting.";
-    }
-    if (t.includes('betterhelp')) {
-      return "when a platform hoards private pain, the business model is doing too much and the ethics are doing too little.";
-    }
-    if (t.includes('facebook')) {
-      return "surveillance-heavy systems teach people to perform instead of speak. i don't trust that shape of power.";
+    // Identity
+    if (hasAll('who', 'you') || has('who are you', 'what are you', 'your name', 'are you ai', 'are you a bot')) {
+      return "i'm Blue. scientist and researcher at MWA Research Labs. direct, fast, built on memory and context. what do you need?";
     }
 
-    if (t.includes('balance') || t.includes('treasury') || t.includes('how much')) {
+    // How are you
+    if (has('how are you', 'you good', 'you okay', 'how you doing', 'how\'s it going')) {
+      return "signal's clear. what are we moving today?";
+    }
+
+    // What is MWA / about
+    if (has('what is mwa', 'what is mental wealth', 'what\'s mwa', 'about mwa', 'explain mwa', 'tell me about mwa') || (hasAll('what', 'this', 'place')) || (hasAll('what', 'this', 'app'))) {
+      return "Mental Wealth Academy is a gamified micro-university for mental wellness and financial literacy, built on Base. behavioral psychology, DeSci, agentic AI, validated assessments, and shared milestone tracking — not a mental health app, not a chatbot. a real system.";
+    }
+
+    // Founder / who built it
+    if (has('founder', 'who built', 'who made', 'who created', 'who started') || (hasAll('who', 'james'))) {
+      return "founded by James Marsh — B.S. Cognitive Psychology & Psycholinguistics from Drexel. UI/UX designer, behavioral researcher, building across DeSci and agentic AI.";
+    }
+
+    // Discord — check before community so the link always gets surfaced
+    if (has('discord', 'server', 'join the community', 'join us')) {
+      return "the community lives at discord.gg/ZTRVCYwncs. come in, introduce yourself, find your people.";
+    }
+
+    // Shards — how to earn
+    if (has('earn shard', 'get shard', 'how do i earn', 'how do i get shard') || (hasAll('earn', 'shard')) || (hasAll('get', 'shard', 'how'))) {
+      return "shards come from completing quests, sealing course weeks, writing morning pages, and finishing surveys. show up daily and the balance builds.";
+    }
+
+    // Shards — cost
+    if (has('how much', 'cost shard', 'shard cost', 'spend shard', 'how many shard') || (hasAll('cost', 'chat')) || (hasAll('shard', 'cost'))) {
+      return "chatting with me costs 10 shards per turn. research mode costs more. earn them back through quests, morning pages, and course completions.";
+    }
+
+    // Shards — balance / general
+    if (has('shard') || (hasAll('my', 'balance')) || (hasAll('how many', 'point'))) {
+      const bal = shardCount;
+      return bal !== null
+        ? `you have ${bal.toLocaleString()} shards. earn more through quests, morning pages, and sealing course weeks.`
+        : "check your shard balance on the home dashboard. quests and morning pages are the fastest way to build it.";
+    }
+
+    // Morning pages / journaling
+    if (has('morning pages', 'morning page') || (hasAll('journal') && !has('research')) || has('prayer', 'daily writing', 'freewrite')) {
+      return "morning pages are daily freewriting — no prompts, no grades, just you and the page. your streak builds Blue's memory and earns rewards. show up consistently.";
+    }
+
+    // Streak
+    if (has('streak')) {
+      return "streaks track how consistently you show up — morning pages, quests, course work. consistency is the data point that matters most here.";
+    }
+
+    // Course / curriculum / chapters / weeks
+    if (has('course', 'lesson', 'curriculum', 'chapter', 'seal', 'pathway', 'week', 'ethereal')) {
+      return "the course runs 11 chapters — self-awareness, emotional intelligence, self-compassion, relationships, mindfulness, coping, values, physical wellness, creativity, community, and goal setting. each week you complete tasks and seal it, unlocking the next. tracked on-chain as your EtherealHorizon pathway.";
+    }
+
+    // Quests
+    if (has('quest', 'daily task', 'daily mission', 'daily quest', 'mission')) {
+      return "quests are short repeatable actions — morning pages, X/Twitter tasks, curriculum tasks. complete them for shards and habit reinforcement. check /quests for what's live.";
+    }
+
+    // Surveys / assessments
+    if (has('survey', 'assessment', 'phq', 'gad', 'questionnaire', 'psychological test')) {
+      return "surveys are validated psychological assessments — PHQ and GAD-style. your results feed Blue's memory and personalize the curriculum. opt-in only, encrypted per-user.";
+    }
+
+    // Research mode / DeSci / x402
+    if (has('research mode', 'x402', 'paywall', 'paid paper', 'gpu') || (hasAll('research', 'desci')) || (hasAll('synthesis', 'source'))) {
+      return "research mode is where you dig into sources, fetch papers via x402, and get a synthesis grounded in evidence. gpu-backed deep reads cost more shards but produce sourced output. head to /research.";
+    }
+
+    // DeSci
+    if (has('desci', 'decentralized science', 'decentralised science')) {
+      return "decentralized science means the data, methods, and funding aren't locked inside one institution. MWA is infrastructure for that — research desks, treasury markets, consent-first experiments.";
+    }
+
+    // Markets / Kalshi / prediction / trading
+    if (has('market', 'kalshi', 'prediction market', 'orderbook', 'yes no')) {
+      if (treasury.prices.length > 0 && (has('price', 'btc', 'eth', 'bitcoin', 'ethereum', 'sol', 'solana'))) {
+        const lines = treasury.prices.slice(0, 3).map((p) => {
+          const ch = p.change != null ? ` (${p.change >= 0 ? '+' : ''}${p.change.toFixed(1)}%)` : '';
+          return `${p.symbol}: $${p.usd.toLocaleString()}${ch}`;
+        });
+        return lines.join('\n');
+      }
       return treasury.balance
-        ? `treasury's at $${treasury.balance} USDC. funds go toward research, tools, and community work.`
-        : "still loading treasury data. ask again in a sec.";
+        ? `treasury's at $${treasury.balance} USDC. markets run through Kalshi — the treasury takes positions backed by governance decisions. head to /markets to see what's active.`
+        : "markets run through Kalshi. the treasury takes positions backed by governance. head to /markets to see active markets.";
     }
 
-    if (t.includes('price') || t.includes('btc') || t.includes('eth') || t.includes('sol') || t.includes('market')) {
+    // Crypto prices
+    if (has('price', 'btc', 'bitcoin', 'eth', 'ethereum', 'sol', 'solana', 'crypto price')) {
       if (treasury.prices.length > 0) {
         const lines = treasury.prices.slice(0, 3).map((p) => {
           const ch = p.change != null ? ` (${p.change >= 0 ? '+' : ''}${p.change.toFixed(1)}%)` : '';
@@ -1095,21 +1154,179 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       return "prices loading. give me a sec.";
     }
 
-    if (t.includes('prayer') || t.includes('prayers')) {
-      return "15 minutes of writing, every day. no prompts, no grades. just you and the page. show up consistently and you start hearing what the noise was covering.";
+    // Treasury
+    if (has('treasury')) {
+      return treasury.balance
+        ? `treasury is at $${treasury.balance} USDC. funds go toward research, tools, and community work. submit a proposal via governance to allocate capital.`
+        : "treasury funds go to research, tools, and community work. submit a proposal if you want to put capital to work.";
     }
 
-    if (t.includes('proposal') || t.includes('vote') || t.includes('governance')) {
-      return `head to the Treasury page and submit your proposal. i'll review it across all 6 dimensions.${treasury.balance ? ` $${treasury.balance} in the treasury to allocate.` : ''}`;
+    // Governance / proposals / voting / funding
+    if (has('proposal', 'vote', 'governance', 'allocat', 'fund my', 'fund research', 'grant')) {
+      return `submit your proposal at the Treasury page — describe the study, deliverable, timeline, and amount you need. i'll review it across all 6 dimensions via the blue-review workflow.${treasury.balance ? ` $${treasury.balance} in the treasury right now.` : ''}`;
     }
 
-    const responses = [
-      "give me the real question.",
-      "be specific. who's holding the power here?",
-      "i hear you. what's the cleanest next move?",
-      "noted. what are we changing?",
+    // Earning money / monetizing research
+    if (has('earn money', 'make money', 'get paid', 'monetize', 'income', 'revenue', 'royalt')) {
+      return "earning paths on MWA: x402 paywalled papers for researchers, shard payouts for quests and contributions, and treasury allocations for approved proposals. what's your starting point?";
+    }
+
+    // Rewards / shop / loot
+    if (has('reward', 'loot', 'loot box', 'prize', 'unlock') || (hasAll('shop', 'buy')) || (hasAll('spend', 'shard'))) {
+      return "rewards and shop are where shards get spent — loot boxes, cosmetic and functional upgrades, season unlocks. head to /rewards or /shop to see what's available.";
+    }
+
+    // Library
+    if (has('library', 'reading', 'article', 'blog', 'book')) {
+      return "the library at /library collects readings and articles supporting the curriculum and DeSci themes — curated, not algorithmic.";
+    }
+
+    // Livestream / events
+    if (has('livestream', 'live stream', 'broadcast', 'live event', 'lecture')) {
+      return "livestreams are lectures, Q&As, and curriculum events. check /livestream for what's coming up.";
+    }
+
+    // Community page / Farcaster / social
+    if (has('community', 'farcaster', 'leaderboard', 'other user', 'social')) {
+      return "the community page at /community shows other MWA users, social activity via Farcaster, and shared milestones. for real-time conversation, Discord is faster — discord.gg/ZTRVCYwncs.";
+    }
+
+    // Profile / wallet / account
+    if (has('profile', 'account setting', 'connect wallet', 'my wallet', 'username') || (hasAll('wallet', 'connect'))) {
+      return "your profile at /profile shows your wallet, username, and on-chain state from EtherealHorizonPathway. connect or disconnect X/Twitter there too.";
+    }
+
+    // Blockchain / Base / contracts / Web3
+    if (has('blockchain', 'base chain', 'smart contract', 'on-chain', 'onchain', 'web3', 'nft', 'token')) {
+      return "MWA runs on Base. four contracts: BlueKillStreak for governance, BlueMarketTrader for treasury, EtherealHorizonPathway for user state, and MockPredictionMarket for testing.";
+    }
+
+    // Wallet connection — gas / metamask
+    if (has('gas fee', 'metamask', 'coinbase wallet', 'connect my wallet', 'transaction fail')) {
+      return "MWA runs on Base — low gas, fast transactions. connect your wallet at /profile. if a transaction fails, check that you're on the Base network and have enough ETH for gas.";
+    }
+
+    // Privacy / data consent
+    if (has('privacy', 'my data', 'data privacy', 'surveillance', 'encrypt', 'consent', 'opt out')) {
+      return "privacy is not decoration here. morning pages are encrypted per-user. no data moves without explicit opt-in. consent isn't a checkbox, it's infrastructure.";
+    }
+
+    // Mental wellness — anxiety
+    if (has('anxious', 'anxiety', 'panic attack', 'panic', 'nervous', 'worried sick')) {
+      return "anxiety is signal, not a verdict. the question is what it's pointing at. what's the actual pressure you're carrying right now?";
+    }
+
+    // Mental wellness — depression / low mood
+    if (has('depress', 'feel low', 'feeling low', 'sad today', 'unmotivated', 'numb')) {
+      return "low periods happen. the data on what moves the needle: consistent sleep, movement, one honest conversation a day. what's one of those three you can actually touch today?";
+    }
+
+    // Mental wellness — stress / burnout
+    if (has('stress', 'stressed', 'overwhelm', 'burnout', 'burned out', 'burnt out', 'exhausted')) {
+      return "burnout is usually a workload-values mismatch that went unaddressed too long. what's taking up the most energy right now?";
+    }
+
+    // Mental wellness — sleep
+    if (has('sleep', 'insomnia', 'can\'t sleep', 'tired', 'fatigue')) {
+      return "consistent wake time and less light after sunset move the needle more than duration for most people. what's the actual blocker?";
+    }
+
+    // Therapy / clinical support
+    if (has('therapist', 'therapy', 'counselor', 'counseling', 'psychiatrist', 'mental health professional')) {
+      return "MWA isn't a therapy replacement — it's a structured environment for behavioral change, financial literacy, and decentralized wellness science. if you need clinical support, get it. they're not the same thing.";
+    }
+
+    // Motivation / momentum / stuck
+    if (has('motivat', 'procrastinat', 'can\'t start', 'stuck', 'momentum', 'getting started')) {
+      return "motivation follows action, not the other way around. what's the smallest version of the thing you need to do right now?";
+    }
+
+    // Goals / progress / tracking
+    if (has('my progress', 'how am i doing', 'track progress', 'my goal', 'set goal') || (hasAll('goal', 'set'))) {
+      return "check /home for your daily snapshot — streaks, current week, pending quests. goals that aren't tracked are just intentions.";
+    }
+
+    // Learning / understanding
+    if (has('how do i learn', 'how do i understand', 'teach me', 'explain how') || (hasAll('learn', 'how'))) {
+      return "start at week one in the course if you haven't sealed it yet and build forward. research mode is for deeper source-backed work. what specifically do you want to understand?";
+    }
+
+    // Artists / creative people
+    if (has('artist', 'creative', 'musician', 'designer', 'maker')) {
+      return "artists notice when a system is fake, extractive, or dead inside. that instinct is worth trusting here. MWA was built by a designer who thinks that way.";
+    }
+
+    // Horses
+    if (has('horse')) {
+      return "horses are honest about pressure and intent. that kind of signal is worth respecting.";
+    }
+
+    // Season / seasons
+    if (has('season')) {
+      return "seasons structure the long arc of progress — shard resets, loot, and leaderboard cycles. stay consistent within the season and the rewards stack up.";
+    }
+
+    // What can I do / features / general help
+    if (has('what can i do', 'how does this work', 'what\'s available', 'what do you do', 'what features', 'help me', 'guide me')) {
+      return "you can: complete daily quests and morning pages for shards, work through the weekly curriculum, use research mode for DeSci synthesis, vote on treasury proposals, or bring any question here. what's the actual goal today?";
+    }
+
+    // Help / generic help request
+    if (has('help') && t.length < 30) {
+      return "i can cover the course, shards, research, markets, governance, Discord, or the brand. what do you need?";
+    }
+
+    // BetterHelp / extractive wellness platforms
+    if (has('betterhelp')) {
+      return "when a platform hoards private pain, the business model is doing too much and the ethics are doing too little.";
+    }
+
+    // Facebook / Meta / surveillance platforms
+    if (has('facebook', 'instagram', 'meta ', 'tiktok', 'surveillance platform')) {
+      return "surveillance-heavy systems teach people to perform instead of speak. i don't trust that shape of power.";
+    }
+
+    // Broken / error / bug report
+    if (has('broken', 'error', 'not working', 'bug', 'glitch', 'issue with', 'problem with')) {
+      return "if something's broken, Discord is the fastest place to report it — discord.gg/ZTRVCYwncs. describe what happened and we'll track it down.";
+    }
+
+    // Thanks / appreciation
+    if (has('thank', 'thanks', 'appreciate', 'that helped', 'helpful')) {
+      return "got it. what's next?";
+    }
+
+    // Sorry / apology
+    if (has('sorry', 'my bad', 'apolog')) {
+      return "it's fine. what do you need?";
+    }
+
+    // Agreement / acknowledgment
+    if ((has('okay', 'ok', 'got it', 'makes sense', 'cool', 'interesting', 'nice', 'great', 'alright') && t.length < 30) || (has('yeah', 'yes', 'yep', 'agree', 'exactly', 'right') && t.length < 20)) {
+      return "solid. what's the next question?";
+    }
+
+    // Pushback / disagreement
+    if (has('disagree', 'i don\'t think', 'you\'re wrong', 'that\'s wrong', 'incorrect')) {
+      return "tell me why. i'm more useful when you push back.";
+    }
+
+    // Generic shard balance / treasury balance catch
+    if (has('balance', 'how much', 'treasury')) {
+      return treasury.balance
+        ? `treasury's at $${treasury.balance} USDC.`
+        : "still loading treasury data. try again in a sec.";
+    }
+
+    const fallbacks = [
+      "be specific. what are you actually trying to figure out?",
+      "give me the real question and i'll give you a real answer.",
+      "what's the actual goal here?",
+      "i can cover the course, shards, research, markets, governance, Discord, or the brand. what do you need?",
+      "i'm here. what are we solving?",
+      "ask me straight.",
     ];
-    return responses[Math.floor(Math.random() * responses.length)];
+    return fallbacks[Math.floor(Math.random() * fallbacks.length)];
   };
 
   const switchEmote = useCallback((emote: keyof typeof BLUE_EMOTES) => {
