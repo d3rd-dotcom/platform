@@ -49,13 +49,13 @@ export const HeroSection: React.FC = () => {
                 />
               </span>
             </span>
-            <span>Of Micro-Learning</span>
+            <span>For Your Evolution</span>
           </h1>
           <p className={styles.heroSubtext}>
-            A modular 4-week accountability session inside a Micro-University. Access Viral Funding Opportunities, Transformative Bluesky Research, and a AI-Ecosystem for creators, innovators, & the future of humanity.
+            A modular 4-week Micro-University. Access Viral Oportunities, Transformative Bluesky Research. Reshape the future of humanity.
           </p>
           <p className={styles.heroSubtextSecondary}>
-            Backed by research: decentralized systems drive up to 900% faster collaboration, with transparency that keeps incentives and progress clear.
+            Backed by research: decentralized systems drive up to 900% faster collaboration, and accountability feedback has raised adherence from 67% to 86% in randomized trials.
           </p>
           <div className={styles.heroActions}>
             <LandingEnterAcademyButton />
