@@ -86,10 +86,7 @@ interface ChatAttachment {
 
 interface ElizaMessage {
   role: 'system' | 'user' | 'assistant';
-  parts: Array<{
-    type: 'text';
-    text: string;
-  }>;
+  content: string;
 }
 
 async function callElizaCloud(messages: ElizaMessage[]): Promise<string> {
@@ -213,7 +210,7 @@ function buildBlueChatMessages(args: {
 
   const historyMessages: ElizaMessage[] = args.recentMessages.map((message) => ({
     role: message.role,
-    parts: [{ type: 'text', text: truncate(message.text, 320) }],
+    content: truncate(message.text, 320),
   }));
 
   const pageLine = args.pathname
@@ -233,12 +230,12 @@ function buildBlueChatMessages(args: {
   return [
     {
       role: 'system',
-      parts: [{ type: 'text', text: systemText }],
+      content: systemText,
     },
     ...historyMessages,
     {
       role: 'user',
-      parts: [{ type: 'text', text: args.userMessage }],
+      content: args.userMessage,
     },
   ];
 }
@@ -278,11 +275,11 @@ async function extractBlueMemories(args: {
   const response = await callElizaCloud([
     {
       role: 'system',
-      parts: [{ type: 'text', text: BLUE_MEMORY_EXTRACTION_PROMPT }],
+      content: BLUE_MEMORY_EXTRACTION_PROMPT,
     },
     {
       role: 'user',
-      parts: [{ type: 'text', text: extractionInput }],
+      content: extractionInput,
     },
   ]);
 

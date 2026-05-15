@@ -5,10 +5,7 @@
 
 interface ElizaChatMessage {
   role: 'user' | 'assistant' | 'system';
-  parts: Array<{
-    type: 'text';
-    text: string;
-  }>;
+  content: string;
 }
 
 interface ElizaChatRequest {
@@ -68,11 +65,11 @@ class ElizaAPIClient {
    */
   async chat(request: ElizaChatRequest): Promise<string> {
     try {
-      const url = `${this.baseUrl}/api/v1/chat`;
+      const url = `${this.baseUrl}/api/v1/chat/completions`;
       console.log('Calling Eliza API:', { url, hasApiKey: !!this.apiKey, modelId: request.id || 'gpt-4o' });
 
       const body: Record<string, unknown> = { messages: request.messages };
-      if (request.id) body.id = request.id;
+      if (request.id) body.model = request.id;
 
       const response = await fetch(url, {
         method: 'POST',

@@ -28,7 +28,7 @@ export async function GET() {
   const rawBase = process.env.ELIZA_API_BASE_URL;
   const rawKey = process.env.ELIZA_API_KEY;
   const baseUrl = normalizeBaseUrl(rawBase);
-  const url = `${baseUrl}/api/v1/chat`;
+  const url = `${baseUrl}/api/v1/chat/completions`;
 
   const env = {
     baseUrlRaw: rawBase || null,
@@ -72,7 +72,7 @@ export async function GET() {
       },
       body: JSON.stringify({
         messages: [
-          { role: 'user', parts: [{ type: 'text', text: 'ping' }] },
+          { role: 'user', content: 'ping' },
         ],
       }),
     });

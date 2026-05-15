@@ -216,7 +216,7 @@ ${proposal.description}
           runtime,
           (sendRequester) => {
             const response = sendRequester.sendRequest({
-              url: `${elizaApiUrl}/api/v1/chat`,
+              url: `${elizaApiUrl}/api/v1/chat/completions`,
               method: "POST",
               headers: {
                 Authorization: `Bearer ${elizaApiKey.value}`,
@@ -224,10 +224,10 @@ ${proposal.description}
               },
               body: Buffer.from(JSON.stringify({
                 messages: [
-                  { role: "system", parts: [{ type: "text", text: REVIEW_SYSTEM_PROMPT }] },
-                  { role: "user", parts: [{ type: "text", text: userPrompt }] },
+                  { role: "system", content: REVIEW_SYSTEM_PROMPT },
+                  { role: "user", content: userPrompt },
                 ],
-                id: "gpt-4o",
+                model: "gpt-4o",
               })).toString("base64"),
               cacheSettings: {
                 store: true,

@@ -16,16 +16,17 @@ async function synthesize(topic: string, sourceContext: string): Promise<string>
     ? `Topic: ${topic}\n\n${sourceContext}\n\nSynthesize the above into one paragraph.`
     : `Topic: ${topic}\n\nProvide a graduate-level synthesis on this topic.`;
 
-  const res = await fetch(`${ELIZA_BASE_URL}/api/v1/chat`, {
+  const res = await fetch(`${ELIZA_BASE_URL}/api/v1/chat/completions`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${ELIZA_API_KEY}`,
+      'X-API-Key': ELIZA_API_KEY,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       messages: [
-        { role: 'system', parts: [{ type: 'text', text: RESEARCH_PROMPT }] },
-        { role: 'user', parts: [{ type: 'text', text: userMessage }] },
+        { role: 'system', content: RESEARCH_PROMPT },
+        { role: 'user', content: userMessage },
       ],
     }),
   });

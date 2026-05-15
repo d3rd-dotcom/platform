@@ -22,7 +22,7 @@ Style:
 
 interface ElizaMessage {
   role: 'system' | 'user' | 'assistant';
-  parts: Array<{ type: 'text'; text: string }>;
+  content: string;
 }
 
 async function callElizaCloud(messages: ElizaMessage[]): Promise<string> {
@@ -74,8 +74,8 @@ export async function POST(request: Request) {
 
   try {
     const response = await callElizaCloud([
-      { role: 'system', parts: [{ type: 'text', text: MARKETS_SYSTEM_PROMPT }] },
-      { role: 'user', parts: [{ type: 'text', text: message }] },
+      { role: 'system', content: MARKETS_SYSTEM_PROMPT },
+      { role: 'user', content: message },
     ]);
     return NextResponse.json({ response });
   } catch (err: unknown) {
