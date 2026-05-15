@@ -29,22 +29,23 @@ vec2 barrelDistortion(vec2 uv, float strength) {
 
 // Simple ASCII-like pattern
 float asciiPattern(vec2 uv, float code) {
-    vec2 grid = floor(uv * code);
     vec2 cell = fract(uv * code);
-    float pattern = step(0.5, cell.x) * step(0.5, cell.y);
-    return pattern;
+    return step(0.5, cell.x) * step(0.5, cell.y);
 }
 
 void main() {
     // Position math
     vec2 uv = vUv;
     vec2 pos = vPosition.xy;
-    
+
     // Barrel distortion
     vec2 distortedUV = barrelDistortion(uv, 0.1);
-    
+
     // ASCII texture effect
     float asciiValue = asciiPattern(distortedUV, asciicode);
+    // Drop non-dot fragments so the scene clear color shows through — cubes appear as
+    // floating dots only, no body.
+    if (asciiValue < 0.5) discard;
     float asciiBrightness = asciiu * asciiValue;
     
     // Texture effect
@@ -75,8 +76,5 @@ void main() {
     // Final color with depth
     vec3 finalColor = baseColor * (1.0 + asciiu * 0.2);
 
-    // Only show colors through the ASCII pattern; rest of cube blends into background
-    vec3 maskedColor = mix(uBackgroundColor, finalColor, asciiValue);
-
-    gl_FragColor = vec4(maskedColor, 1.0);
+    gl_FragColor = vec4(finalColor, 1.0);
 }

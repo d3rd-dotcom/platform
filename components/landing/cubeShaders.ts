@@ -140,12 +140,13 @@ void main() {
     float asciiMask;
     vec3 asciiColor = asciiPatternScreenSpace(screenUV, uAsciiImageTexture, asciicode, asciiMask);
 
-    // Use background color for non-star areas, blend cube colors into star areas
-    vec3 bgColor = uBackgroundColor;
-    vec3 starColor = glowingColor * 0.7 + asciiColor * 0.3;
-    vec3 finalColor = mix(bgColor, starColor, asciiMask);
+    // Discard non-star pixels so the scene clear color shows through — cubes appear as
+    // floating dots only, no body to mismatch the page background.
+    if (asciiMask < 0.5) discard;
 
-    gl_FragColor = vec4(finalColor, 1.0);
+    vec3 starColor = glowingColor * 0.7 + asciiColor * 0.3;
+
+    gl_FragColor = vec4(starColor, 1.0);
 }`;
 
 export const cubeVertexShader = `precision highp float;

@@ -175,6 +175,9 @@ const CohortCubes = memo(({ bgColor = '#FBF8FF' }: CohortCubesProps) => {
       gl={{ antialias: true, powerPreference: 'high-performance', alpha: false, stencil: false, depth: true }}
       frameloop="always"
       performance={{ min: 0.5 }}
+      onCreated={({ gl }) => {
+        gl.setClearColor(bgColor, 1);
+      }}
     >
       <BgColor color={bgColor} />
       <Suspense fallback={null}>

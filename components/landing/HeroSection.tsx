@@ -49,7 +49,9 @@ export const HeroSection: React.FC = () => {
                 />
               </span>
             </span>
-            <span>To Your Evolution</span>
+            <span className={styles.heroHeadlineSubline}>
+              To Your <span className={styles.heroHeadlineItalic}>Evolution</span>
+            </span>
           </h1>
           <p className={styles.heroSubtext}>
             A modular 4-week Micro-University. Access Viral Oportunities, Transformative Bluesky Research. Reshape the future of humanity.

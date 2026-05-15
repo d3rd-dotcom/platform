@@ -4,6 +4,7 @@
   min-height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
+  background-color: #FBF8FF;
   --hero-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --landing-shell-width: calc(100% - 144px);
   --landing-shell-padding: 24px;
@@ -26,7 +27,7 @@
   min-height: 100vh;
   width: min(1280px, var(--landing-content-width));
   margin: 0 auto;
-  padding: clamp(136px, 16vh, 176px) 0 clamp(40px, 8vh, 88px);
+  padding: clamp(136px, 16vh, 176px) 0 0;
   z-index: 10;
   display: flex;
   flex-direction: row;
@@ -46,6 +47,7 @@
   max-width: 54%;
   min-width: 0;
   padding: 0;
+  transform: translateY(-64px);
 }
 
 .heroVisualColumn {
@@ -74,7 +76,7 @@
   max-height: min(76vh, 920px);
   object-fit: contain;
   object-position: center;
-  filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.36));
+  filter: none;
 }
 
 .heroTextBadge {
@@ -108,6 +110,14 @@
 .heroHeadline > span {
   display: block;
   white-space: nowrap;
+}
+
+.heroHeadlineSubline {
+  font-size: 0.93em;
+}
+
+.heroHeadlineItalic {
+  font-style: italic;
 }
 
 .heroHeadlineLead {
@@ -854,7 +864,7 @@
   width: 100%;
   height: 100vh;
   z-index: 0;
-  background-color: #000000;
+  background-color: #FBF8FF;
   overflow: hidden;
 }
 
