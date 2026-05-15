@@ -2,11 +2,34 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Flask, Microscope, TestTube, UsersThree } from '@phosphor-icons/react';
+import { Microscope, TestTube, UsersThree } from '@phosphor-icons/react';
+import type { ComponentProps, ComponentType } from 'react';
 import { useSound } from '@/hooks/useSound';
 import styles from './LandingPage.module.css';
 import LandingEnterAcademyButton from './LandingEnterAcademyButton';
 import { KeyFiguresSection } from './KeyFiguresSection';
+
+type IconProps = ComponentProps<'svg'> & { size?: number; weight?: string };
+
+const ShardOutlineIcon: ComponentType<IconProps> = ({ size = 40, weight: _weight, ...rest }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 512 512"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={28}
+    strokeLinejoin="round"
+    strokeLinecap="round"
+    {...rest}
+  >
+    <path d="M89.55 46.28 H422.01 L511.38 179.51 L257.77 465.72 L0 179.77 Z" />
+    <path d="M0 179.77 H512" />
+    <path d="M89.55 46.28 L151.73 180.33 L257.77 465.72 L360.27 180.33 L422.01 46.28" />
+    <path d="M257.83 46.28 V180.33" />
+  </svg>
+);
 
 const ecosystemValueCards = [
   {
@@ -15,9 +38,9 @@ const ecosystemValueCards = [
     icon: Microscope,
   },
   {
-    value: 'Researchers',
-    detail: 'A home for research teams coordinating recruitment, insight collection, and analysis.',
-    icon: Flask,
+    value: 'Points',
+    detail: 'Earn shards for every contribution — they convert into real rewards and standing in the Academy.',
+    icon: ShardOutlineIcon,
   },
   {
     value: 'Experiments',

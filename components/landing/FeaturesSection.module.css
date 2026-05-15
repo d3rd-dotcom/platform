@@ -3,7 +3,7 @@
   overflow: hidden;
   width: 100%;
   padding: 88px 24px 112px;
-  background-color: #000000;
+  background-color: #FBF8FF;
   z-index: 1;
 }
 
@@ -12,12 +12,12 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(rgba(43, 76, 255, 0.26) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(43, 76, 255, 0.22) 1px, transparent 1px);
+    linear-gradient(rgba(81, 104, 255, 0.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(81, 104, 255, 0.08) 1px, transparent 1px);
   background-size: 88px 44px, 88px 44px;
   transform: perspective(920px) rotateX(76deg) scale(1.42) translateY(-4%);
   transform-origin: top center;
-  opacity: 0.52;
+  opacity: 0.6;
   pointer-events: none;
 }
 
@@ -26,8 +26,8 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 20% 80%, rgba(79, 101, 255, 0.28), transparent 28%),
-    linear-gradient(180deg, rgba(4, 4, 12, 0) 40%, rgba(5, 5, 18, 0.35) 100%);
+    radial-gradient(circle at 20% 80%, rgba(81, 104, 255, 0.08), transparent 32%),
+    linear-gradient(180deg, rgba(251, 248, 255, 0) 40%, rgba(251, 248, 255, 0.6) 100%);
   pointer-events: none;
 }
 
@@ -48,12 +48,14 @@
 
 /* Sharp-edged board — matches SnapshotFeaturesSection */
 .board {
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(17, 19, 27, 0.12);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(2px);
 }
 
 .boardHeader {
   padding: 16px 24px 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  border-bottom: 1px solid rgba(17, 19, 27, 0.10);
 }
 
 .eyebrow {
@@ -62,13 +64,13 @@
   font-size: 0.78rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(17, 19, 27, 0.6);
 }
 
 .eyebrowAccent {
   font-family: var(--font-primary);
   font-weight: 800;
-  color: var(--color-text-light);
+  color: #11131B;
   letter-spacing: 0.04em;
 }
 
@@ -76,14 +78,14 @@
 .topPanel {
   display: grid;
   grid-template-columns: 340px 1fr;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  border-bottom: 1px solid rgba(17, 19, 27, 0.10);
   min-height: 240px;
 }
 
 .phonePanel {
   position: relative;
   padding: 28px 24px;
-  border-right: 1px solid rgba(255, 255, 255, 0.14);
+  border-right: 1px solid rgba(17, 19, 27, 0.10);
   overflow: hidden;
 }
 
@@ -98,9 +100,9 @@
   border-radius: 22px;
   overflow: hidden;
   box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.08);
-  background: rgba(7, 7, 18, 0.72);
+    0 16px 36px rgba(17, 19, 27, 0.18),
+    0 0 0 1px rgba(17, 19, 27, 0.08);
+  background: rgba(255, 255, 255, 0.85);
 }
 
 .phoneRear {
@@ -139,7 +141,7 @@
   font-size: clamp(1.8rem, 2.8vw, 2.7rem);
   line-height: 1.06;
   letter-spacing: -0.03em;
-  color: #f7f1d5;
+  color: #11131B;
   text-align: center;
 }
 
@@ -148,7 +150,7 @@
   font-family: var(--font-primary);
   font-size: 16px;
   line-height: 1.65;
-  color: rgba(245, 247, 255, 0.78);
+  color: rgba(17, 19, 27, 0.7);
   text-align: center;
 }
 
@@ -191,7 +193,7 @@
   flex-direction: column;
   gap: 14px;
   padding: 26px 24px 22px;
-  border-right: 1px solid rgba(255, 255, 255, 0.14);
+  border-right: 1px solid rgba(17, 19, 27, 0.10);
   transition: background-color 0.22s ease;
 }
 
@@ -200,7 +202,7 @@
 }
 
 .card:hover {
-  background-color: rgba(255, 255, 255, 0.04);
+  background-color: rgba(81, 104, 255, 0.04);
 }
 
 .cardTop {
@@ -214,14 +216,14 @@
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.14em;
-  color: rgba(187, 193, 255, 0.55);
+  color: rgba(81, 104, 255, 0.7);
 }
 
 .badge {
   padding: 4px 9px;
-  border: 1px solid rgba(197, 160, 255, 0.38);
-  background: rgba(130, 92, 255, 0.1);
-  color: #c5a0ff;
+  border: 1px solid rgba(81, 104, 255, 0.32);
+  background: rgba(81, 104, 255, 0.08);
+  color: #5168FF;
   font-family: var(--font-ibm-plex-mono);
   font-size: 9px;
   font-weight: 700;
@@ -236,7 +238,7 @@
   font-weight: 800;
   letter-spacing: 0.03em;
   text-transform: uppercase;
-  color: var(--color-text-light);
+  color: #11131B;
   line-height: 1.2;
 }
 
@@ -245,7 +247,7 @@
   font-family: var(--font-primary);
   font-size: 14px;
   line-height: 1.7;
-  color: rgba(237, 239, 250, 0.76);
+  color: rgba(17, 19, 27, 0.7);
   flex: 1;
 }
 
@@ -259,7 +261,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: rgba(240, 242, 255, 0.9);
+  color: rgba(17, 19, 27, 0.78);
   font-family: var(--font-ibm-plex-mono);
   font-size: 11px;
   letter-spacing: 0.04em;
@@ -269,7 +271,7 @@
   width: 6px;
   height: 6px;
   flex-shrink: 0;
-  background: linear-gradient(180deg, #ffd76b 0%, #9f85ff 100%);
+  background: linear-gradient(180deg, #5168FF 0%, #9f85ff 100%);
 }
 
 .cardFooter {
@@ -278,16 +280,16 @@
   justify-content: space-between;
   gap: 12px;
   padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(17, 19, 27, 0.08);
   font-family: var(--font-ibm-plex-mono);
   font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(213, 217, 255, 0.58);
+  color: rgba(17, 19, 27, 0.55);
 }
 
 .cardFooter strong {
-  color: #8ef3b0;
+  color: #2f9d63;
   font-size: 10px;
 }
 
@@ -300,7 +302,7 @@
 
   .phonePanel {
     border-right: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    border-bottom: 1px solid rgba(17, 19, 27, 0.10);
     min-height: 200px;
   }
 
@@ -317,7 +319,7 @@
   }
 
   .card {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    border-bottom: 1px solid rgba(17, 19, 27, 0.10);
   }
 
   .card:nth-child(2n) {
@@ -362,7 +364,7 @@
 
   .card {
     border-right: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    border-bottom: 1px solid rgba(17, 19, 27, 0.10);
     padding: 20px 18px 18px;
   }
 

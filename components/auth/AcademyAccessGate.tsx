@@ -148,9 +148,9 @@ export default function AcademyAccessGate({ children }: { children: ReactNode })
     <main className={styles.gateShell} aria-live="polite">
       <section className={styles.gatePanel}>
         <p className={styles.kicker}>Academy Access</p>
-        <h1 className={styles.title}>Enter with an Academy account</h1>
+        <h1 className={styles.title}>Just Enter with an Account</h1>
         <p className={styles.copy}>
-          The library stays open for browsing. Surveys, quests, shards, rewards, markets, profile state, and submissions require an account.
+          Free access to library, rest of the platform is free as well but requires an account to track shards, points, & rewards.
         </p>
         {accessState === 'error' && (
           <p className={styles.error}>{error || 'Something went wrong while preparing your account.'}</p>

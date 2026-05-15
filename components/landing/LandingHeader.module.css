@@ -159,12 +159,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.45rem;
   background: #5865F2;
-  border: 1px solid #5865F2;
-  padding: 0.68rem 1.1rem 0.58rem;
+  border: none;
+  padding: 0.68rem 1.4rem 0.58rem;
   border-radius: 100px;
   color: #ffffff;
-  font-size: 0.8rem;
+  font-size: 0.875rem;
+  line-height: 1;
   font-weight: var(--font-weight-medium);
   font-family: var(--font-button);
   text-transform: uppercase;
@@ -174,9 +176,16 @@
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.discordButton svg {
+  flex-shrink: 0;
+  display: block;
+  width: 14px;
+  height: 14px;
+}
+
 .headerScrolled .discordButton {
-  padding: 0.48rem 0.9rem 0.38rem;
-  font-size: 0.72rem;
+  padding: 0.48rem 1rem 0.38rem;
+  font-size: 0.75rem;
 }
 
 .discordButton:hover {

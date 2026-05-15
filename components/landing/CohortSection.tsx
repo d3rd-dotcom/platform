@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
+import { DiscordLogo } from '@phosphor-icons/react';
 import styles from './CohortSection.module.css';
 
 const CubesCanvas = dynamic(() => import('./CohortCubes'), { ssr: false });
@@ -23,7 +24,7 @@ export const CohortSection = () => {
           </div>
 
           <div className={styles.titlePanel}>
-            <h2 className={styles.cohortTitle}>Next Gen of Decentralized Science</h2>
+            <h2 className={styles.cohortTitle}>Join a team changing the future</h2>
             <p className={styles.cohortSubtitle}>
               A living cohort of researchers, designers, and builders — running real experiments, earning on-chain rewards, and publishing results no institution owns.
             </p>
@@ -98,6 +99,18 @@ export const CohortSection = () => {
                 </div>
               </div>
             </div>
+          </div>
+
+          <div className={styles.discordCtaRow}>
+            <a
+              href="https://discord.gg/ZTRVCYwncs"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.discordPill}
+            >
+              <DiscordLogo size={20} weight="fill" aria-hidden="true" />
+              <span>Join the Discord</span>
+            </a>
           </div>
         </div>
       </div>
