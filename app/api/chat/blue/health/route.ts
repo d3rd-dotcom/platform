@@ -71,7 +71,7 @@ export async function GET() {
         'X-API-Key': rawKey,
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'gemini-2.0-flash',
         messages: [
           { role: 'user', content: 'ping' },
         ],

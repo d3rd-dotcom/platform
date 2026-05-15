@@ -69,7 +69,7 @@ class ElizaAPIClient {
       console.log('Calling Eliza API:', { url, hasApiKey: !!this.apiKey, modelId: request.id || 'gpt-4o' });
 
       const body: Record<string, unknown> = {
-        model: request.id || 'gpt-4o',
+        model: request.id || 'gemini-2.0-flash',
         messages: request.messages,
       };
 
