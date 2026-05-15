@@ -1368,7 +1368,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setAutoDistributionVisible(false);
       setCreditStep('hidden');
       addBlueMessage(
-        "start with the course at /course — week one is self-awareness, build from there and seal each week to unlock the next. run your morning pages daily to keep your streak and earn shards. check /quests for quick wins while you go. what week are you on?"
+        "the course, morning pages every day, and quests for shards. that's literally the whole loop no cap. just stay consistent."
       );
     } else if (action === 'shards-faq') {
       send('How do shards work?', 'happy');
@@ -1380,8 +1380,8 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       const bal = shardCount;
       addBlueMessage(
         bal !== null
-          ? `shards are the in-app currency — you have ${bal.toLocaleString()} right now. you earn them by completing quests, writing morning pages, sealing course weeks, and finishing surveys. chatting with me costs 10 per turn. spend them in the shop or rewards page. what do you want to do with them?`
-          : "shards are the in-app currency. earn them through quests, morning pages, sealing course weeks, and surveys. chatting with me costs 10 per turn. spend them in the shop or rewards page. what do you want to do with them?"
+          ? `your points fr — you got ${bal.toLocaleString()} rn. earn from daily stuff, spend on rewards and prizes.`
+          : "your points fr. earn from daily stuff, spend on rewards and prizes. that's it."
       );
     } else if (action === 'course-faq') {
       send("What's in the course?", 'happy');
@@ -1391,7 +1391,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setAutoDistributionVisible(false);
       setCreditStep('hidden');
       addBlueMessage(
-        "the course runs 11 chapters — self-awareness, emotional intelligence, self-compassion, relationships, mindfulness, coping skills, values, physical wellness, creativity, community, and goal setting. each week you complete tasks and seal it, unlocking the next. the full sequence is tracked on-chain as your EtherealHorizon pathway. which chapter are you in?"
+        "11 chapters of real work — self-awareness to goal setting. seal each week to unlock the next. simple."
       );
     } else if (action === 'credit') {
       send('I want to build my credit', 'happy');
