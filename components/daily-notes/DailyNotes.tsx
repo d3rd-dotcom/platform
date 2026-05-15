@@ -482,6 +482,10 @@ export default function DailyNotes({
               </svg>
               <span>{embedded ? 'Close' : 'Back'}</span>
             </button>
+            <span className={`${styles.timerCount} ${styles.timerCountHeader} ${isPaused ? styles.timerPaused : ''} ${timerSeconds <= 300 && !isPaused ? styles.timerWarning : ''}`}>
+              {isPaused ? 'paused' : formatTimer(timerSeconds)}
+            </span>
+            <span className={styles.modalHeaderEnd} aria-hidden="true" />
           </div>
 
           <div className={styles.writeArea}>
@@ -493,12 +497,6 @@ export default function DailyNotes({
               autoFocus
               disabled={isPaused}
             />
-          </div>
-
-          <div className={styles.noteBottom}>
-            <span className={`${styles.timerCount} ${styles.timerCountInline} ${isPaused ? styles.timerPaused : ''} ${timerSeconds <= 300 && !isPaused ? styles.timerWarning : ''}`}>
-              {isPaused ? 'paused' : formatTimer(timerSeconds)}
-            </span>
           </div>
         </div>
 
