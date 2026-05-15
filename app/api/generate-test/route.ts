@@ -346,6 +346,36 @@ export async function POST(request: NextRequest) {
   const persona = typeof body.persona === 'string' ? body.persona.slice(0, 60) : 'B.L.U.E.';
   const shardReward = getTestShardReward(difficulty);
 
+  // Rate limit: surface the one-survey-per-week cap before generating a test.
+  if (user && isDbConfigured()) {
+    try {
+      await ensureGeneratedTestsSchema();
+      const recent = await sqlQuery<Array<{ next_available: string }>>(
+        `SELECT (completed_at + INTERVAL '7 days') AS next_available
+         FROM generated_tests
+         WHERE user_id = :userId
+           AND completed_at IS NOT NULL
+           AND completed_at > CURRENT_TIMESTAMP - INTERVAL '7 days'
+         ORDER BY completed_at DESC
+         LIMIT 1`,
+        { userId: user.id }
+      );
+
+      if (recent.length > 0) {
+        return NextResponse.json(
+          {
+            error: 'You can only complete one survey per week. Check back soon to earn more shards.',
+            nextAvailable: recent[0].next_available,
+          },
+          { status: 429 }
+        );
+      }
+    } catch (rateError) {
+      // Fail open here — the complete route enforces the limit authoritatively.
+      console.error('generate-test: weekly limit check failed', rateError);
+    }
+  }
+
   const userPrompt = buildUserPrompt(difficulty, persona);
 
   let rawText: string | null = null;

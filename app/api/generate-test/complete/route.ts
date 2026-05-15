@@ -41,6 +41,23 @@ export async function POST(request: Request) {
 
   try {
     const result = await withTransaction(async (client) => {
+      // Rate limit: only one survey may be completed per user per week.
+      const recentRows = await sqlQueryWithClient<Array<{ id: string }>>(
+        client,
+        `SELECT id
+         FROM generated_tests
+         WHERE user_id = :userId
+           AND id <> :testId
+           AND completed_at IS NOT NULL
+           AND completed_at > CURRENT_TIMESTAMP - INTERVAL '7 days'
+         LIMIT 1`,
+        { userId: user.id, testId }
+      );
+
+      if (recentRows.length > 0) {
+        throw new Error('WEEKLY_LIMIT');
+      }
+
       const testRows = await sqlQueryWithClient<Array<{ shard_reward: number }>>(
         client,
         `UPDATE generated_tests
@@ -74,6 +91,13 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true, ...result });
   } catch (error) {
+    if (error instanceof Error && error.message === 'WEEKLY_LIMIT') {
+      return NextResponse.json(
+        { error: 'You already earned shards from a survey this week. Come back next week for another.' },
+        { status: 429 }
+      );
+    }
+
     if (error instanceof Error && error.message === 'TEST_UNAVAILABLE') {
       return NextResponse.json({ error: 'Test already completed or not linked to this account.' }, { status: 409 });
     }
