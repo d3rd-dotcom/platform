@@ -214,7 +214,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "hey. what are we protecting or building today?",
+      text: "hey. what's on your mind?",
       sender: 'blue',
       timestamp: new Date(),
     },
@@ -1360,7 +1360,40 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       }]);
     };
 
-    if (action === 'credit') {
+    if (action === 'where-to-start') {
+      send('Where do I start?', 'happy');
+      setClaudeProfessionalMode(false);
+      setPendingAttachments([]);
+      setTimeManagementVisible(false);
+      setAutoDistributionVisible(false);
+      setCreditStep('hidden');
+      addBlueMessage(
+        "start with the course at /course — week one is self-awareness, build from there and seal each week to unlock the next. run your morning pages daily to keep your streak and earn shards. check /quests for quick wins while you go. what week are you on?"
+      );
+    } else if (action === 'shards-faq') {
+      send('How do shards work?', 'happy');
+      setClaudeProfessionalMode(false);
+      setPendingAttachments([]);
+      setTimeManagementVisible(false);
+      setAutoDistributionVisible(false);
+      setCreditStep('hidden');
+      const bal = shardCount;
+      addBlueMessage(
+        bal !== null
+          ? `shards are the in-app currency — you have ${bal.toLocaleString()} right now. you earn them by completing quests, writing morning pages, sealing course weeks, and finishing surveys. chatting with me costs 10 per turn. spend them in the shop or rewards page. what do you want to do with them?`
+          : "shards are the in-app currency. earn them through quests, morning pages, sealing course weeks, and surveys. chatting with me costs 10 per turn. spend them in the shop or rewards page. what do you want to do with them?"
+      );
+    } else if (action === 'course-faq') {
+      send("What's in the course?", 'happy');
+      setClaudeProfessionalMode(false);
+      setPendingAttachments([]);
+      setTimeManagementVisible(false);
+      setAutoDistributionVisible(false);
+      setCreditStep('hidden');
+      addBlueMessage(
+        "the course runs 11 chapters — self-awareness, emotional intelligence, self-compassion, relationships, mindfulness, coping skills, values, physical wellness, creativity, community, and goal setting. each week you complete tasks and seal it, unlocking the next. the full sequence is tracked on-chain as your EtherealHorizon pathway. which chapter are you in?"
+      );
+    } else if (action === 'credit') {
       send('I want to build my credit', 'happy');
       setClaudeProfessionalMode(false);
       setPendingAttachments([]);
@@ -1862,14 +1895,14 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             <span>{shardCount}</span>
           </div>
         )}
-        <button className={styles.quickAction} onClick={() => handleQuickAction('funding')} disabled={isTyping} type="button">
-          Funding
+        <button className={styles.quickAction} onClick={() => handleQuickAction('where-to-start')} disabled={isTyping} type="button">
+          Where do I start?
         </button>
-        <button className={styles.quickAction} onClick={() => handleQuickAction('earning')} disabled={isTyping} type="button">
-          Earning
+        <button className={styles.quickAction} onClick={() => handleQuickAction('shards-faq')} disabled={isTyping} type="button">
+          How do shards work?
         </button>
-        <button className={styles.quickAction} onClick={() => handleQuickAction('experiments')} disabled={isTyping} type="button">
-          Experiments
+        <button className={styles.quickAction} onClick={() => handleQuickAction('course-faq')} disabled={isTyping} type="button">
+          What&apos;s in the course?
         </button>
       </div>
 
