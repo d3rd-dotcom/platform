@@ -1,6 +1,4 @@
 import { NextResponse } from 'next/server';
-import path from 'path';
-import { readFile } from 'fs/promises';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { buildBlueContext, storeBlueChatMessage, touchBlueRelationship, upsertBlueFacts } from '@/lib/blue-memory';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
@@ -12,8 +10,10 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const SHARD_COST = 10;
-const CLAUDE_ALLOWED_USERS = new Set(['volcano', 'jhinova_bay']);
 const ELIZA_API_KEY = process.env.ELIZA_API_KEY || '';
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || '';
+const DEEPSEEK_MODEL = process.env.DEEPSEEK_MODEL || 'deepseek-chat';
+const DEEPSEEK_BASE_URL = (process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com').replace(/\/+$/, '');
 
 const BLUE_SYSTEM_PROMPT = `${bluePersona.system}
 
@@ -44,39 +44,6 @@ Rules:
 - Do not store transient moods, raw private journal text, or broad psychological labels.
 - If nothing durable should be stored, return {"facts":[]}.`;
 
-const LINKEDIN_PROFESSIONAL_SYSTEM_PROMPT = `You are an elite LinkedIn and professional writing assistant for James Marsh.
-
-Identity rules:
-- Full professional name: James Marsh
-- Never use "Jhinova Bay" in any professional output
-- James is a UI/UX Designer, Behavioral Researcher, and founder working across cognitive psychology, design systems, health tech, DeSci, and agentic AI
-- Drexel degree must be stated accurately as B.S. Cognitive Psychology & Psycholinguistics
-
-Current work:
-- Founder and UX/AI Researcher at Mental Wealth Academy
-- UI/UX Research & Design at Metawave Studio LLC
-- UI Game Designer at Forbidden Kemono Studio LLC
-
-MWA reference:
-- Mental Wealth Academy is a gamified micro-university for mental wellness and financial literacy, built on Base
-- It combines behavioral psychology, DeSci, agentic AI, shared milestone tracking, and validated psychological assessments
-- Never call it a side project, startup idea, chatbot platform, or mental health app
-
-Voice rules:
-- Precise, grounded, direct
-- Warm but professional
-- No corporate filler like "passionate about", "leveraging", "results-driven", or "team player"
-- No hollow humility
-- Prefer first-person present tense when drafting cover letters or outreach
-- Write like someone evaluating opportunities seriously, not pleading for them
-
-Output rules:
-- Be concise and high-signal
-- No markdown
-- If the user asks for LinkedIn or career writing, produce polished final copy
-- If the user asks for review, give a candid assessment first, then improved draft language
-- Only answer career, LinkedIn, recruiter, profile, application, or professional branding tasks in this mode`;
-
 interface ChatAttachment {
   url: string;
   mime: string;
@@ -89,13 +56,56 @@ interface ElizaMessage {
   content: string;
 }
 
+async function callDeepSeek(messages: ElizaMessage[]): Promise<string> {
+  if (!DEEPSEEK_API_KEY) {
+    throw new Error('DEEPSEEK_API_KEY not configured');
+  }
+
+  const response = await fetch(`${DEEPSEEK_BASE_URL}/chat/completions`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${DEEPSEEK_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: DEEPSEEK_MODEL,
+      messages,
+      stream: false,
+    }),
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`DeepSeek API error: ${response.status} ${errText}`);
+  }
+
+  const data = await response.json();
+  const content = data?.choices?.[0]?.message?.content;
+  if (!content || typeof content !== 'string') {
+    throw new Error('DeepSeek returned empty content');
+  }
+  return content;
+}
+
 async function callElizaCloud(messages: ElizaMessage[]): Promise<string> {
-  return elizaAPI.chat({ messages });
+  if (!DEEPSEEK_API_KEY) {
+    if (ELIZA_API_KEY) return elizaAPI.chat({ messages });
+    throw new Error('No AI provider configured (DEEPSEEK_API_KEY or ELIZA_API_KEY)');
+  }
+
+  try {
+    return await callDeepSeek(messages);
+  } catch (err: unknown) {
+    if (!ELIZA_API_KEY) throw err;
+    const msg = err instanceof Error ? err.message : 'deepseek error';
+    console.warn('DeepSeek failed, falling back to Eliza:', msg);
+    return elizaAPI.chat({ messages });
+  }
 }
 
 interface BlueDebugInfo {
   source: 'eliza' | 'local-fallback';
-  mode: 'chat' | 'research' | 'linkedin-professional' | 'auto-distribution';
+  mode: 'chat' | 'research' | 'auto-distribution';
   shardsDeducted: number;
   memory: {
     recentMessages: number;
@@ -120,80 +130,8 @@ interface BlueDebugInfo {
   };
 }
 
-function isClaudeImageMime(mime: string) {
-  return ['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(mime);
-}
-
 function isSafeUploadUrl(url: string) {
   return typeof url === 'string' && /^\/uploads\/[A-Za-z0-9._-]+$/.test(url);
-}
-
-async function readUploadedImageAsBase64(url: string): Promise<string | null> {
-  if (!isSafeUploadUrl(url)) return null;
-
-  const uploadsRoot = path.join(process.cwd(), 'public', 'uploads');
-  const filePath = path.join(process.cwd(), 'public', url.replace(/^\/+/, ''));
-  const normalizedPath = path.normalize(filePath);
-
-  if (!normalizedPath.startsWith(uploadsRoot)) {
-    return null;
-  }
-
-  try {
-    const bytes = await readFile(normalizedPath);
-    return bytes.toString('base64');
-  } catch {
-    return null;
-  }
-}
-
-async function buildLinkedInClaudeMessage(
-  userMessage: string,
-  attachments: ChatAttachment[]
-) {
-  const content: Array<Record<string, unknown>> = [];
-  const attachmentNotes: string[] = [];
-
-  for (const attachment of attachments.slice(0, 4)) {
-    if (!isSafeUploadUrl(attachment.url)) continue;
-
-    const label = attachment.name || attachment.url.split('/').pop() || 'attachment';
-    if (attachment.mime === 'application/pdf') {
-      attachmentNotes.push(
-        attachment.extractedText?.trim()
-          ? `PDF: ${label}\n${attachment.extractedText.trim()}`
-          : `PDF: ${label}\nNo extractable text was available from this file.`
-      );
-      continue;
-    }
-
-    if (isClaudeImageMime(attachment.mime)) {
-      const base64 = await readUploadedImageAsBase64(attachment.url);
-      if (base64) {
-        attachmentNotes.push(`Image attached: ${label}`);
-        content.push({
-          type: 'image',
-          source: {
-            type: 'base64',
-            media_type: attachment.mime,
-            data: base64,
-          },
-        });
-      }
-    }
-  }
-
-  const textBlock = [
-    `User request:\n${userMessage}`,
-    attachmentNotes.length > 0
-      ? `Attachment context:\n${attachmentNotes.join('\n\n')}`
-      : null,
-  ].filter(Boolean).join('\n\n');
-
-  return [
-    { type: 'text', text: textBlock },
-    ...content,
-  ];
 }
 
 function buildBlueChatMessages(args: {
@@ -303,7 +241,7 @@ async function extractBlueMemories(args: {
 }
 
 function buildBlueDebugInfo(args: {
-  mode: 'chat' | 'research' | 'linkedin-professional' | 'auto-distribution';
+  mode: 'chat' | 'research' | 'auto-distribution';
   shardsDeducted: number;
   contextValues: Awaited<ReturnType<typeof buildBlueContext>>['values'];
   extractedFactsCount: number;
@@ -433,43 +371,6 @@ async function runBlueMemoryAwareTurn(args: {
   };
 }
 
-async function callClaudeLinkedInProfessional(
-  userMessage: string,
-  attachments: ChatAttachment[] = []
-): Promise<string> {
-  const anthropicKey = process.env.ANTHROPIC_API_KEY;
-  if (!anthropicKey) {
-    throw new Error('ANTHROPIC_API_KEY not configured');
-  }
-
-  const messageContent = await buildLinkedInClaudeMessage(userMessage, attachments);
-
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': anthropicKey,
-      'anthropic-version': '2023-06-01',
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1200,
-      system: LINKEDIN_PROFESSIONAL_SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: messageContent }],
-    }),
-  });
-
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Claude API error: ${response.status} ${errText}`);
-  }
-
-  const data = await response.json();
-  const responseText = data.content?.[0]?.text;
-  if (!responseText) throw new Error('Empty response from Claude');
-  return responseText;
-}
-
 export async function POST(request: Request) {
   if (!isDbConfigured()) {
     return NextResponse.json({ error: 'Database not configured' }, { status: 503 });
@@ -501,33 +402,16 @@ export async function POST(request: Request) {
     : [];
 
   const isResearch = body.mode === 'research';
-  const isLinkedInProfessional = body.mode === 'linkedin-professional';
   const isAutoDistribution = body.mode === 'auto-distribution';
   const pathname = typeof body.pathname === 'string' && body.pathname.trim().length
     ? body.pathname.trim().slice(0, 256)
     : null;
 
-  if (!isLinkedInProfessional && !ELIZA_API_KEY) {
+  if (!ELIZA_API_KEY && !DEEPSEEK_API_KEY) {
     return NextResponse.json(
-      { error: 'ai_unconfigured', message: 'ELIZA_API_KEY is not configured on the server.' },
+      { error: 'ai_unconfigured', message: 'No AI provider configured (DEEPSEEK_API_KEY or ELIZA_API_KEY).' },
       { status: 503 }
     );
-  }
-
-  if (isLinkedInProfessional) {
-    const normalizedUsername = (user.username || '').trim().toLowerCase();
-    if (!CLAUDE_ALLOWED_USERS.has(normalizedUsername)) {
-      return NextResponse.json({ error: 'forbidden' }, { status: 403 });
-    }
-
-    try {
-      const response = await callClaudeLinkedInProfessional(body.message, attachments);
-      return NextResponse.json({ response });
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Claude error';
-      console.error('Blue LinkedIn Claude error:', msg);
-      return NextResponse.json({ error: 'ai_unavailable', message: msg }, { status: 502 });
-    }
   }
 
   // Research mode fallback: synthesize from training (no x402 fetch here)

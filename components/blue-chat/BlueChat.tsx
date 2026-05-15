@@ -49,7 +49,7 @@ interface Message {
 
 interface MessageDebugInfo {
   source: 'eliza' | 'local-fallback';
-  mode: 'chat' | 'research' | 'linkedin-professional' | 'auto-distribution';
+  mode: 'chat' | 'research' | 'auto-distribution';
   shardsDeducted: number;
   shardBalance?: number | null;
   memory?: {
@@ -229,7 +229,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const [pendingMessage, setPendingMessage] = useState<string | null>(null);
   const [pendingType, setPendingType] = useState<'chat' | 'research'>('chat');
   const [researchMode, setResearchMode] = useState(false);
-  const [claudeProfessionalMode, setClaudeProfessionalMode] = useState(false);
   const [researchSources, setResearchSources] = useState<ResearchSource[] | null>(null);
   const [researchPayTo, setResearchPayTo] = useState('');
   const [researchTopic, setResearchTopic] = useState('');
@@ -465,8 +464,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             discoverResearch(text);
           } else if (autoDistributionVisible) {
             sendToEliza(text, 'auto-distribution');
-          } else if (claudeProfessionalMode) {
-            sendToEliza(text, 'linkedin-professional');
           } else {
             sendToEliza(text);
           }
@@ -533,7 +530,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
   const sendToEliza = async (
     text: string,
-    mode?: 'research' | 'linkedin-professional' | 'auto-distribution',
+    mode?: 'research' | 'auto-distribution',
     action?: Message['action'],
     attachments?: UploadedAttachment[]
   ) => {
@@ -686,11 +683,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
     if (autoDistributionVisible) {
       sendToEliza(text, 'auto-distribution', undefined, attachments);
-      return;
-    }
-
-    if (claudeProfessionalMode) {
-      sendToEliza(text, 'linkedin-professional', undefined, attachments);
       return;
     }
 
@@ -1362,7 +1354,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
     if (action === 'what-is-this') {
       send('What is this place?', 'happy');
-      setClaudeProfessionalMode(false);
       setPendingAttachments([]);
       setTimeManagementVisible(false);
       setAutoDistributionVisible(false);
@@ -1372,7 +1363,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       );
     } else if (action === 'level-up') {
       send('How do I level up?', 'happy');
-      setClaudeProfessionalMode(false);
       setPendingAttachments([]);
       setTimeManagementVisible(false);
       setAutoDistributionVisible(false);
@@ -1385,7 +1375,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       );
     } else if (action === 'bci-lore') {
       send("What's the helmet?", 'happy');
-      setClaudeProfessionalMode(false);
       setPendingAttachments([]);
       setTimeManagementVisible(false);
       setAutoDistributionVisible(false);
@@ -1395,7 +1384,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       );
     } else if (action === 'credit') {
       send('I want to build my credit', 'happy');
-      setClaudeProfessionalMode(false);
       setPendingAttachments([]);
       setTimeManagementVisible(false);
       setAutoDistributionVisible(false);
@@ -1405,7 +1393,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       );
     } else if (action === 'time') {
       send('Help me time block', 'happy');
-      setClaudeProfessionalMode(false);
       setPendingAttachments([]);
       setCreditStep('hidden');
       setAutoDistributionVisible(false);
@@ -1415,7 +1402,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       );
     } else if (action === 'auto-distribution') {
       setResearchMode(false);
-      setClaudeProfessionalMode(false);
       setPendingAttachments([]);
       setTimeManagementVisible(false);
       setCreditStep('hidden');
@@ -1445,7 +1431,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         "MWA hosts validated assessments, behavioral quests, and consented community surveys. ship your study here."
       );
     } else if (action === 'research') {
-      setClaudeProfessionalMode(false);
       setPendingAttachments([]);
       setAutoDistributionVisible(false);
       if (researchMode) {
@@ -1462,7 +1447,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       }
     } else if (action === 'gpu-research') {
       setResearchMode(false);
-      setClaudeProfessionalMode(false);
       setPendingAttachments([]);
       setAutoDistributionVisible(false);
       if (gpuResearchMode) {
@@ -1476,16 +1460,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       } else {
         openShardUpsell(GPU_TIER_INFO.focus.shards, 'gpu');
       }
-    } else if (action === 'claude-professional') {
-      send('Open LinkedIn professional mode', 'happy');
-      setResearchMode(false);
-      setTimeManagementVisible(false);
-      setCreditStep('hidden');
-      setAutoDistributionVisible(false);
-      setClaudeProfessionalMode(true);
-      addBlueMessage(
-        "claude professional mode is live. send me recruiter messages, job descriptions, cover letters, linkedin copy, screenshots, or pdfs and i'll handle it in james marsh voice."
-      );
     }
   };
 
@@ -1598,7 +1572,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     return lines;
   };
 
-  const canUseClaudeProfessional = ['volcano', 'jhinova_bay'].includes((viewerProfile?.username || '').trim().toLowerCase());
   const shardUpsellTitle = (
     shardUpsell?.reason === 'research'
       ? 'Research mode needs more shards'
@@ -1908,55 +1881,11 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
       {/* Chat Input */}
       <div className={styles.inputArea}>
-        {claudeProfessionalMode && pendingAttachments.length > 0 && (
-          <div className={styles.pendingAttachments}>
-            {pendingAttachments.map((attachment) => (
-              <div key={attachment.id} className={styles.pendingAttachmentChip}>
-                <span className={styles.pendingAttachmentType} aria-hidden="true">
-                  {attachment.mime === 'application/pdf' ? 'PDF' : 'IMG'}
-                </span>
-                <span className={styles.pendingAttachmentName}>{attachment.name}</span>
-                <button
-                  type="button"
-                  className={styles.pendingAttachmentRemove}
-                  onClick={() => removePendingAttachment(attachment.id)}
-                  aria-label={`Remove ${attachment.name}`}
-                >
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
-                    <path d="M18 6L6 18M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-        <input
-          ref={attachmentInputRef}
-          type="file"
-          accept="application/pdf,image/png,image/jpeg,image/webp"
-          multiple
-          className={styles.attachmentInput}
-          onChange={(e) => uploadAttachmentFiles(e.target.files)}
-          disabled={isTyping || isUploadingAttachment}
-        />
-        {claudeProfessionalMode && (
-          <button
-            className={styles.attachButton}
-            onClick={() => attachmentInputRef.current?.click()}
-            disabled={isTyping || isUploadingAttachment || pendingAttachments.length >= 4}
-            type="button"
-            aria-label="Attach PDF or screenshot"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21.44 11.05 12.25 20.24a6 6 0 1 1-8.49-8.49l9.2-9.19a4 4 0 0 1 5.65 5.66l-9.2 9.19a2 2 0 1 1-2.82-2.83l8.49-8.48" />
-            </svg>
-          </button>
-        )}
         <input
           ref={inputRef}
           type="text"
           className={styles.input}
-          placeholder={claudeProfessionalMode ? 'Send a prompt, screenshot, or PDF...' : 'Say something...'}
+          placeholder="Say something..."
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           onKeyDown={handleKeyPress}
@@ -1967,7 +1896,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
           onClick={startVoiceChat}
           type="button"
           aria-label={isRecording ? 'Stop recording' : 'Voice chat'}
-          disabled={claudeProfessionalMode || isUploadingAttachment}
+          disabled={isUploadingAttachment}
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
             <rect x="9" y="1" width="6" height="12" rx="3" fill="currentColor"/>
@@ -2224,28 +2153,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
                 </div>
               </div>
 
-              {canUseClaudeProfessional && (
-                <div className={styles.expandedQuickPanel}>
-                  <h3 className={styles.panelHeading}>Owner Access</h3>
-                  <div className={styles.expandedQuickGrid}>
-                    <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => { play('click'); handleQuickAction('claude-professional'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
-                      <span className={styles.toolCardTop}>
-                        <span className={styles.toolCardText}>
-                          <span className={styles.toolSlideWrap}>
-                            <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Claude Professional</span>
-                            <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Claude Professional</span>
-                          </span>
-                          <span className={styles.toolCardMeta}>LinkedIn, recruiter replies, and application drafting through your Claude skill path.</span>
-                        </span>
-                        <span className={styles.toolCardIcon} aria-hidden="true">
-                          <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 3 7v6c0 5.25 3.44 9.74 9 11 5.56-1.26 9-5.75 9-11V7l-9-5Zm0 4.18 5 2.78V13c0 3.66-2.15 6.92-5 7.94-2.85-1.02-5-4.28-5-7.94V8.96l5-2.78Z"/></svg>
-                        </span>
-                      </span>
-                      <span className={styles.toolCardBottom} aria-hidden="true" />
-                    </button>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>
