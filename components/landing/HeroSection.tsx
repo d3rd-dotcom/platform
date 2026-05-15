@@ -35,10 +35,10 @@ export const HeroSection: React.FC = () => {
     <>
       <div className={styles.heroSection}>
         <div className={styles.heroContent}>
-          <p className={styles.heroTextBadge}>100% of users compensated</p>
+          <p className={styles.heroTextBadge}>100% of users earn rewards</p>
           <h1 className={styles.heroHeadline}>
             <span className={styles.heroHeadlineLead}>
-              <span>Own Your Growth</span>
+              <span>A Psychic Spark</span>
               <span className={styles.heroHeadlineGifWrap} aria-hidden="true">
                 <Image
                   src="/images/walking.gif"
@@ -49,13 +49,13 @@ export const HeroSection: React.FC = () => {
                 />
               </span>
             </span>
-            <span>Fund Your Future</span>
+            <span>Of Micro-Learning</span>
           </h1>
           <p className={styles.heroSubtext}>
-            A 12-week micro-university for artists, creators, and scientists ready to evolve and reach their highest potential.
+            A modular 4-week accountability session inside a Micro-University. Access Viral Funding Opportunities, Transformative Bluesky Research, and a AI-Ecosystem for creators, innovators, & the future of humanity.
           </p>
           <p className={styles.heroSubtextSecondary}>
-            Backed by research: decentralized science drives 900% faster collaboration with 100% transparent, community-owned discovery — Certified Open Science Trust Protocol.
+            Backed by research: decentralized systems drive up to 900% faster collaboration, with transparency that keeps incentives and progress clear.
           </p>
           <div className={styles.heroActions}>
             <LandingEnterAcademyButton />
@@ -79,9 +79,9 @@ export const HeroSection: React.FC = () => {
 
       <section className={styles.ecosystemSection} aria-label="Academy ecosystem">
         <div className={styles.ecosystemInner}>
-          <h2 className={styles.ecosystemHeadline}>Built for scientists and psychologists</h2>
+          <h2 className={styles.ecosystemHeadline}>Revolutionized Psychology</h2>
           <p className={styles.ecosystemSubtext}>
-            Whether you&apos;re starting or an expert, our system is designed to reward you consistently. You belong in our ecosystem.
+            From first-time participants to seasoned researchers, the Academy rewards all forms of contribution and turns it into data with real value for humanity.
           </p>
           <div className={styles.heroValueCards} aria-label="Academy value summary">
             {ecosystemValueCards.map(({ value, detail, icon: Icon }) => (

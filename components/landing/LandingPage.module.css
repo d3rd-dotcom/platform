@@ -42,15 +42,15 @@
   justify-content: center;
   align-items: flex-start;
   text-align: left;
-  flex: 1 1 50%;
-  max-width: 50%;
+  flex: 1 1 54%;
+  max-width: 54%;
   min-width: 0;
   padding: 0;
 }
 
 .heroVisualColumn {
-  flex: 1 1 50%;
-  max-width: 50%;
+  flex: 1 1 46%;
+  max-width: 46%;
   min-width: 0;
   display: flex;
   align-items: flex-end;
@@ -78,28 +78,16 @@
 }
 
 .heroTextBadge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: fit-content;
-  padding: 9px 14px;
-  max-width: 100%;
+  display: block;
   margin: 0 0 22px 0;
-  border: 1px solid color-mix(in oklch, var(--color-primary) 82%, white 18%);
-  border-radius: 999px;
-  background: var(--color-primary, #5168FF);
-  box-shadow:
-    inset 0 -2px 0 0 rgba(14, 27, 112, 0.22),
-    0 14px 26px rgba(32, 52, 180, 0.22);
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.76);
   font-family: var(--font-primary);
   font-size: clamp(0.68rem, 0.95vw, 0.84rem);
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.1;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  white-space: nowrap;
-  filter: drop-shadow(0 8px 14px rgba(32, 52, 180, 0.16));
+  white-space: normal;
   animation: heroFadeUp 0.45s var(--hero-ease-out) both;
 }
 
@@ -109,7 +97,7 @@
   font-weight: 800;
   line-height: 0.96;
   margin: 0 0 16px 0;
-  letter-spacing: 0em;
+  letter-spacing: -0.035em;
   color: var(--color-primary, #5168FF);
   text-transform: uppercase;
   text-shadow: 0 2px 20px rgba(0, 0, 0, 0.18);
@@ -144,7 +132,7 @@
 }
 
 .heroHeadline > span:first-child {
-  color: #a8b4ff;
+  color: #f2f0ff;
 }
 
 .heroSubheadline {
@@ -167,9 +155,8 @@
   line-height: 1.46;
   margin: 0 0 14px 0;
   color: rgba(255, 255, 255, 0.85);
-  max-width: 40rem;
+  max-width: 44rem;
   animation: heroFadeUp 0.45s var(--hero-ease-out) 0.25s both;
-  text-wrap: balance;
 }
 
 .heroSubtextSecondary {
@@ -178,7 +165,7 @@
   font-weight: 400;
   line-height: 1.5;
   margin: 0 0 30px 0;
-  color: rgba(255, 255, 255, 0.56);
+  color: #b8becd;
   max-width: 38rem;
   animation: heroFadeUp 0.45s var(--hero-ease-out) 0.32s both;
   text-wrap: balance;
@@ -420,7 +407,7 @@
   width: clamp(44px, 22cqw, 72px);
   height: clamp(44px, 22cqw, 72px);
   border-radius: 14px;
-  background: rgba(81, 104, 255, 0.12);
+  background: var(--color-surface-base, #F5F5F5);
 }
 
 .heroValueIcon {
@@ -662,7 +649,6 @@
 
   .heroTextBadge {
     margin-bottom: 14px;
-    padding: 8px 12px;
     font-size: clamp(0.76rem, 3vw, 0.9rem);
     white-space: normal;
   }
@@ -807,7 +793,6 @@
 
   .heroTextBadge {
     margin-bottom: 12px;
-    padding: 8px 12px;
     font-size: 0.78rem;
     letter-spacing: 0.02em;
   }

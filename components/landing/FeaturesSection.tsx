@@ -8,33 +8,33 @@ import styles from './FeaturesSection.module.css';
 const featureCards = [
   {
     number: '01',
-    title: 'New Experiments Every Week',
-    badge: 'DeSci',
+    title: 'Enter The Experiment',
+    badge: 'Weekly',
     description:
-      'Twelve weeks of quests, readings, and field studies. Real start, real end — applied behavioral research with collaborators who publish.',
-    details: ['IRB-style research design', 'You co-own the dataset', 'Credentials that compound'],
-    footerLabel: 'Season 1 cohort',
-    footerValue: '12 weeks',
+      'Each week, the Academy opens a new experience designed to capture how people think, feel, and respond.',
+    details: ['A new drop every week', 'Fast to join', 'Built for participation'],
+    footerLabel: 'Starts with',
+    footerValue: 'One open call',
   },
   {
     number: '02',
-    title: 'Participatory Research',
-    badge: 'Weekly',
+    title: 'Contribute Real Insight',
+    badge: 'Research',
     description:
-      'B.L.U.E. reads every submission and pays out the reward. Your reflections become training data. Her judgments evolve as you do.',
-    details: ['Complete the reading', 'Submit to B.L.U.E.', 'Earn shards on-chain'],
-    footerLabel: 'Week one reward',
-    footerValue: '382 shards',
+      'Your reflections, behavior, and responses become structured research inputs that help map real human patterns.',
+    details: ['Respond to prompts', 'Complete the experience', 'Turn participation into data'],
+    footerLabel: 'Output',
+    footerValue: 'Usable findings',
   },
   {
     number: '03',
-    title: 'Universal Credit System',
-    badge: 'Yours Forever',
+    title: 'Get Rewarded For Showing Up',
+    badge: 'Value',
     description:
-      'On-chain credits earned in one case-study app, spendable across all of them. $Shards live in your wallet — not on our servers.',
-    details: ['Earn while you study', 'Credits in your wallet', 'Convert to real cash'],
-    footerLabel: 'On Base blockchain',
-    footerValue: 'User-owned',
+      'The Academy tracks meaningful contribution and returns value back to the people moving the research forward.',
+    details: ['Incentives stay clear', 'Progress is easy to track', 'Contribution does not disappear'],
+    footerLabel: 'Result',
+    footerValue: 'Shared upside',
   },
 ];
 

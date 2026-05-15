@@ -7,7 +7,7 @@ export const FounderSection: React.FC = () => {
       <div className={styles.container}>
         <div className={styles.avatarWrap} aria-hidden="true">
           <Image
-            src="/images/James.jpg"
+            src="/ogYpBJ6P_400x400.jpg"
             alt=""
             width={160}
             height={160}
@@ -24,7 +24,7 @@ export const FounderSection: React.FC = () => {
               Academia is enclosed. Debt without funding, knowledge gatekept, no exit. I&apos;m an artist — I build the systems the institutions can&apos;t.
             </p>
             <p>
-              Mental Wealth Academy is my attempt to fix this. Accountability, edutainment, and a community of focused creatives and intellectuals.
+              Mental Wealth Academy is my attempt to fix this. A community built on a foundation of psychology.
             </p>
           </div>
         </div>

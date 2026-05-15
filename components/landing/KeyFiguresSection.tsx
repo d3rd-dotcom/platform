@@ -7,7 +7,7 @@ export const KeyFiguresSection: React.FC = () => {
         <div className={styles.figure}>
           <span className={styles.label}>Active Members</span>
           <div className={styles.valueRow}>
-            <span className={styles.number}>100+</span>
+            <span className={styles.number}>30+</span>
             <span className={styles.unit}>Members</span>
           </div>
         </div>
@@ -26,7 +26,7 @@ export const KeyFiguresSection: React.FC = () => {
         </div>
 
         <div className={styles.figure}>
-          <span className={styles.label}>Community Raised</span>
+          <span className={styles.label}>Community Funds</span>
           <div className={styles.valueRow}>
             <span className={styles.number}>$20K</span>
             <span className={styles.unit}>Funded</span>
@@ -47,10 +47,10 @@ export const KeyFiguresSection: React.FC = () => {
         </div>
 
         <div className={styles.figure}>
-          <span className={styles.label}>Psychology Studies</span>
+          <span className={styles.label}>Experiments</span>
           <div className={styles.valueRow}>
-            <span className={styles.number}>12+</span>
-            <span className={styles.unit}>Experiments</span>
+            <span className={styles.number}>5+</span>
+            <span className={styles.unit}>Case Studies</span>
           </div>
         </div>
       </div>

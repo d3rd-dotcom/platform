@@ -25,12 +25,12 @@
 }
 
 .eyebrow {
-  font-family: var(--font-primary);
-  font-size: 1rem;
-  font-style: italic;
-  font-weight: var(--font-weight-light);
-  line-height: 1;
-  margin-bottom: 24px;
+  font-family: var(--font-poppins), 'Poppins', sans-serif;
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 40px;
   color: #ffffff;
   text-align: center;
 }
@@ -174,8 +174,8 @@
   }
 
   .eyebrow {
-    font-size: 0.9rem;
-    margin-bottom: 16px;
+    font-size: 1.15rem;
+    margin-bottom: 24px;
   }
 
   .card {
