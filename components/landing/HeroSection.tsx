@@ -134,9 +134,9 @@ export const HeroSection: React.FC = () => {
             ))}
           </div>
           <div className={styles.ecosystemBanner}>
-            <p className={styles.ecosystemBannerHeadline}>⚗️ We are active worldwide — remote-friendly, async-first</p>
+            <p className={styles.ecosystemBannerHeadline}>🌍 A global cohort — remote-friendly and async-first</p>
             <p className={styles.ecosystemBannerSubtext}>
-              Most academics meet 1-2x per week. Check-ins are flexible and fit around your life.
+              Most academics check in once or twice a week, on their own schedule. The work fits around your life — not the other way around.
             </p>
           </div>
         </div>

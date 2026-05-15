@@ -644,6 +644,7 @@
     align-items: flex-start;
     text-align: left;
     padding: 0;
+    transform: none;
   }
 
   .heroVisualColumn {
