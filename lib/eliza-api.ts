@@ -68,8 +68,10 @@ class ElizaAPIClient {
       const url = `${this.baseUrl}/api/v1/chat/completions`;
       console.log('Calling Eliza API:', { url, hasApiKey: !!this.apiKey, modelId: request.id || 'gpt-4o' });
 
-      const body: Record<string, unknown> = { messages: request.messages };
-      if (request.id) body.model = request.id;
+      const body: Record<string, unknown> = {
+        model: request.id || 'gpt-4o',
+        messages: request.messages,
+      };
 
       const response = await fetch(url, {
         method: 'POST',
