@@ -822,8 +822,8 @@
 .rightPanel {
   min-width: 0;
   position: sticky;
-  top: 24px;
-  max-height: calc(100vh - 48px);
+  top: calc(72px + 24px);
+  max-height: calc(100vh - 72px - 48px);
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(26, 29, 51, 0.12) transparent;
