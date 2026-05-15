@@ -484,13 +484,18 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   };
 
   const addBlueMessage = (text: string, action?: Message['action'], debug?: MessageDebugInfo) => {
+    // Strip <<recite>>...<</recite>> tags for display; drop the recited block entirely for TTS
+    const reciteTag = /<<\s*recite\s*>>([\s\S]*?)<<\s*\/?\s*recite\s*>>/gi;
+    const displayText = text.replace(reciteTag, '$1').trim();
+    const spokenText = text.replace(reciteTag, ' ').replace(/[ \t]{2,}/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+
     setIsTyping(true);
     setTimeout(() => {
       setMessages((prev) => [
         ...prev,
         {
           id: (Date.now() + 1).toString(),
-          text,
+          text: displayText,
           sender: 'blue',
           timestamp: new Date(),
           action,
@@ -504,9 +509,13 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       const controller = new AbortController();
       voiceAbortRef.current = controller;
       setIsSpeaking(true);
-      speakBlue(text, controller.signal)
-        .catch(() => {/* aborted or TTS unavailable — silent */})
-        .finally(() => setIsSpeaking(false));
+      if (spokenText) {
+        speakBlue(spokenText, controller.signal)
+          .catch(() => {/* aborted or TTS unavailable — silent */})
+          .finally(() => setIsSpeaking(false));
+      } else {
+        setIsSpeaking(false);
+      }
     }, 140 + Math.random() * 140);
   };
 
