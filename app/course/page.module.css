@@ -808,7 +808,7 @@
 .contentDesktop {
   max-width: none;
   display: grid;
-  grid-template-columns: 360px minmax(0, 1fr);
+  grid-template-columns: 420px 1fr;
   gap: 0 32px;
   align-items: start;
   padding: 24px 32px 48px;
