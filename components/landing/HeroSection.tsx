@@ -38,7 +38,7 @@ export const HeroSection: React.FC = () => {
           <p className={styles.heroTextBadge}>100% of users earn rewards</p>
           <h1 className={styles.heroHeadline}>
             <span className={styles.heroHeadlineLead}>
-              <span>A Psychic Spark</span>
+              <span>A Psychic Jump</span>
               <span className={styles.heroHeadlineGifWrap} aria-hidden="true">
                 <Image
                   src="/images/walking.gif"
