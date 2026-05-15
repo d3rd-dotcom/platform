@@ -122,16 +122,15 @@
 
 .heroHeadlineLead {
   display: inline-flex !important;
-  align-items: flex-end;
+  align-items: center;
   gap: clamp(10px, 1.4vw, 18px);
 }
 
 .heroHeadlineGifWrap {
   display: inline-flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  transform: translateY(0.08em);
 }
 
 .heroHeadlineGif {

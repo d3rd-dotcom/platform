@@ -275,13 +275,15 @@
 
 .loginButton:hover .slideText,
 .discordButton:hover .slideText,
-.joinButton:hover .slideText {
+.joinButton:hover .slideText,
+.sectionNavLink:hover .slideText {
   transform: translateY(-100%);
 }
 
 .loginButton:hover .slideClone,
 .discordButton:hover .slideClone,
-.joinButton:hover .slideClone {
+.joinButton:hover .slideClone,
+.sectionNavLink:hover .slideClone {
   transform: translateY(0);
 }
 

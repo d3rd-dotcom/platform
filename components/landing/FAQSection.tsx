@@ -96,7 +96,11 @@ export const FAQSection = () => {
         </ul>
         <button
           className={styles.scrollToTop}
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          onClick={() => {
+            play('click');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onMouseEnter={() => play('hover')}
           aria-label="Scroll to top"
           type="button"
         >

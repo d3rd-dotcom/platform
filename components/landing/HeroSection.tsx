@@ -3,6 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Flask, Microscope, TestTube, UsersThree } from '@phosphor-icons/react';
+import { useSound } from '@/hooks/useSound';
 import styles from './LandingPage.module.css';
 import LandingEnterAcademyButton from './LandingEnterAcademyButton';
 import { KeyFiguresSection } from './KeyFiguresSection';
@@ -31,6 +32,7 @@ const ecosystemValueCards = [
 ] as const;
 
 export const HeroSection: React.FC = () => {
+  const { play } = useSound();
   return (
     <>
       <div className={styles.heroSection}>
@@ -41,7 +43,7 @@ export const HeroSection: React.FC = () => {
               <span>A Psychic Jump</span>
               <span className={styles.heroHeadlineGifWrap} aria-hidden="true">
                 <Image
-                  src="/images/walking.gif"
+                  src="/images/walking.gif?v=2"
                   alt=""
                   width={76}
                   height={94}
@@ -87,7 +89,12 @@ export const HeroSection: React.FC = () => {
           </p>
           <div className={styles.heroValueCards} aria-label="Academy value summary">
             {ecosystemValueCards.map(({ value, detail, icon: Icon }) => (
-              <article key={value} className={styles.heroValueCard}>
+              <article
+                key={value}
+                className={styles.heroValueCard}
+                onMouseEnter={() => play('hover')}
+                onClick={() => play('click')}
+              >
                 <div className={styles.heroValueIconBox}>
                   <Icon
                     size={40}

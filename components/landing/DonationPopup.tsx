@@ -1,13 +1,16 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useSound } from '@/hooks/useSound';
 import styles from './LandingPage.module.css';
 
 export const DonationPopup: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
+  const { play } = useSound();
 
   const handleClose = () => {
+    play('click');
     setIsVisible(false);
     setIsDismissed(true);
     sessionStorage.setItem('donationPopupDismissed', 'true');
@@ -74,12 +77,15 @@ export const DonationPopup: React.FC = () => {
             href="https://artizen.fund/index/p/mental-wealth-academy?season=6"
             target="_blank"
             rel="noopener noreferrer"
+            onMouseEnter={() => play('hover')}
+            onClick={() => play('click')}
           >
             Support on Artizen
           </a>
           <button
             className={styles.donationPopupClose}
             onClick={handleClose}
+            onMouseEnter={() => play('hover')}
             aria-label="Close donation popup"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">

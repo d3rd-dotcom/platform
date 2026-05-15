@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSound } from '@/hooks/useSound';
 import styles from './AddToHomeScreenButton.module.css';
 
 interface BeforeInstallPromptEvent extends Event {
@@ -44,6 +45,7 @@ export default function AddToHomeScreenButton({ className }: AddToHomeScreenButt
   const [installState, setInstallState] = useState<InstallState>('idle');
   const [installPlatform, setInstallPlatform] = useState<InstallPlatform>('other');
   const [showInstallSheet, setShowInstallSheet] = useState(false);
+  const { play } = useSound();
 
   useEffect(() => {
     if (isIosDevice()) {
@@ -81,6 +83,7 @@ export default function AddToHomeScreenButton({ className }: AddToHomeScreenButt
   };
 
   const handleClick = async () => {
+    play('click');
     if (installState === 'installed') {
       openAcademyHome();
       return;
@@ -136,6 +139,7 @@ export default function AddToHomeScreenButton({ className }: AddToHomeScreenButt
         type="button"
         className={[className, installState === 'installed' ? styles.isInstalled : ''].filter(Boolean).join(' ')}
         onClick={handleClick}
+        onMouseEnter={() => play('hover')}
         disabled={installState === 'installing'}
       >
         {label}
@@ -154,7 +158,8 @@ export default function AddToHomeScreenButton({ className }: AddToHomeScreenButt
               type="button"
               className={styles.sheetClose}
               aria-label="Close install instructions"
-              onClick={closeInstallSheet}
+              onClick={() => { play('click'); closeInstallSheet(); }}
+              onMouseEnter={() => play('hover')}
             >
               ×
             </button>
@@ -170,7 +175,8 @@ export default function AddToHomeScreenButton({ className }: AddToHomeScreenButt
               <button
                 type="button"
                 className={styles.sheetPrimary}
-                onClick={openAcademyHome}
+                onClick={() => { play('click'); openAcademyHome(); }}
+                onMouseEnter={() => play('hover')}
               >
                 Open Academy Home
               </button>

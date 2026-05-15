@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
+import { useSound } from '@/hooks/useSound';
 import styles from './LandingHeader.module.css';
 
 const LandingAuthButtons = dynamic(
@@ -35,6 +36,7 @@ const LandingAuthButtons = dynamic(
 export const LandingHeader: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { play } = useSound();
   const sectionLinks = [
     { href: '#about', label: 'About' },
     { href: '#how-it-works', label: 'How it works' },
@@ -84,8 +86,14 @@ export const LandingHeader: React.FC = () => {
     href: string
   ) => {
     event.preventDefault();
+    play('click');
     setMobileMenuOpen(false);
     smoothScrollToSection(href);
+  };
+
+  const handleMobileMenuToggle = () => {
+    play('click');
+    setMobileMenuOpen((open) => !open);
   };
 
   useEffect(() => {
@@ -111,7 +119,12 @@ export const LandingHeader: React.FC = () => {
       className={`${styles.header} ${scrolled ? styles.headerScrolled : ''} ${mobileMenuOpen ? styles.headerMenuOpen : ''}`}
     >
       <div className={styles.headerContent}>
-        <a href="/" className={styles.logoLink}>
+        <a
+          href="/"
+          className={styles.logoLink}
+          onMouseEnter={() => play('hover')}
+          onClick={() => play('click')}
+        >
           <Image
             src="/icons/logo-mwa-horizontal.png"
             alt="Mental Wealth Academy"
@@ -129,8 +142,12 @@ export const LandingHeader: React.FC = () => {
               href={href}
               className={styles.sectionNavLink}
               onClick={(event) => handleSectionLinkClick(event, href)}
+              onMouseEnter={() => play('hover')}
             >
-              {label}
+              <span className={styles.slideWrap}>
+                <span className={styles.slideText}>{label}</span>
+                <span className={`${styles.slideText} ${styles.slideClone}`}>{label}</span>
+              </span>
             </a>
           ))}
         </nav>
@@ -144,7 +161,8 @@ export const LandingHeader: React.FC = () => {
             className={styles.mobileMenuButton}
             aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileMenuOpen}
-            onClick={() => setMobileMenuOpen((open) => !open)}
+            onMouseEnter={() => play('hover')}
+            onClick={handleMobileMenuToggle}
           >
             <span className={styles.mobileMenuBar} />
             <span className={styles.mobileMenuBar} />
@@ -161,6 +179,7 @@ export const LandingHeader: React.FC = () => {
                 href={href}
                 className={styles.mobileSectionNavLink}
                 onClick={(event) => handleSectionLinkClick(event, href)}
+                onMouseEnter={() => play('hover')}
               >
                 {label}
               </a>

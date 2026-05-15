@@ -9,6 +9,7 @@ export function LandingAuthButtons() {
   const { play } = useSound();
 
   const handleJoinNow = () => {
+    play('click');
     router.push('/home');
   };
 
@@ -19,6 +20,7 @@ export function LandingAuthButtons() {
         target="_blank"
         rel="noopener noreferrer"
         onMouseEnter={() => play('hover')}
+        onClick={() => play('click')}
         className={styles.discordButton}
       >
         <span className={styles.slideWrap}>
