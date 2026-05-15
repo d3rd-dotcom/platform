@@ -8,7 +8,7 @@ const CubesCanvas = dynamic(() => import('./CohortCubes'), { ssr: false });
 export const LandingScene: React.FC = () => {
   return (
     <div className={styles.canvas}>
-      <CubesCanvas bgColor="#000000" />
+      <CubesCanvas bgColor="#FBF8FF" />
     </div>
   );
 };

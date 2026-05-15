@@ -6,6 +6,7 @@ uniform vec3 ucolor3;
 uniform vec3 ucolor4;
 uniform vec3 ucolor5;
 uniform vec3 ucolor6;
+uniform vec3 uBackgroundColor;
 uniform float asciicode;
 uniform float texture;
 uniform float brightness;
@@ -73,6 +74,9 @@ void main() {
     
     // Final color with depth
     vec3 finalColor = baseColor * (1.0 + asciiu * 0.2);
-    
-    gl_FragColor = vec4(finalColor, 1.0);
+
+    // Only show colors through the ASCII pattern; rest of cube blends into background
+    vec3 maskedColor = mix(uBackgroundColor, finalColor, asciiValue);
+
+    gl_FragColor = vec4(maskedColor, 1.0);
 }

@@ -48,12 +48,12 @@ const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, hori
     time: { value: 0.0 },
     rotationSpeed: { value: new THREE.Vector3(...rotationSpeed) },
     horizontalOnly: { value: horizontalOnly ? 1.0 : 0.0 },
-    ucolor1: { value: new THREE.Vector3(0.10, 0.13, 0.32) },
-    ucolor2: { value: new THREE.Vector3(0.30, 0.16, 0.03) },
-    ucolor3: { value: new THREE.Vector3(0.22, 0.21, 0.32) },
-    ucolor4: { value: new THREE.Vector3(0.0, 0.0, 0.0) },
-    ucolor5: { value: new THREE.Vector3(0.13, 0.13, 0.14) },
-    ucolor6: { value: new THREE.Vector3(0.09, 0.21, 0.09) },
+    ucolor1: { value: new THREE.Vector3(0.32, 0.41, 1.00) },
+    ucolor2: { value: new THREE.Vector3(1.00, 0.47, 0.16) },
+    ucolor3: { value: new THREE.Vector3(0.59, 0.14, 0.65) },
+    ucolor4: { value: new THREE.Vector3(1.00, 0.84, 0.42) },
+    ucolor5: { value: new THREE.Vector3(0.91, 0.33, 0.43) },
+    ucolor6: { value: new THREE.Vector3(0.45, 0.77, 0.40) },
     asciicode: { value: 100.0 },
     utexture: { value: null as THREE.Texture | null },
     uAsciiImageTexture: { value: new THREE.Texture() },
@@ -162,7 +162,7 @@ type CohortCubesProps = {
   bgColor?: string;
 };
 
-const CohortCubes = memo(({ bgColor = '#f4f5fe' }: CohortCubesProps) => {
+const CohortCubes = memo(({ bgColor = '#FBF8FF' }: CohortCubesProps) => {
   const dpr = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2) : 1;
   const bgVec = new THREE.Color(bgColor);
   const bgVector3 = new THREE.Vector3(bgVec.r, bgVec.g, bgVec.b);
