@@ -234,39 +234,30 @@ export default function DailyNotes({
       }
     }
 
-    // Award shards via API
     if (enablePersistence) {
-      try {
-        const token = await getAccessToken();
-        const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
-        const meRes = await fetch('/api/me', { cache: 'no-store', credentials: 'include', headers: authHeaders });
-        const meData = await meRes.json();
-        const startingShards = meData?.user?.shardCount ?? 0;
+      setRewardData({ shards: 100, startingShards: 0 });
+      setShowRewardAnimation(true);
 
-        const questId = `daily-notes-w${currentWeek}-d${activeDayIndex + 1}`;
-        const res = await fetch('/api/quests/complete', {
-          method: 'POST',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json', ...authHeaders },
-          body: JSON.stringify({ questId, shards: 100 }),
-        });
-        const data = await res.json();
-
-        if (data.ok && data.shardsAwarded > 0) {
-          setRewardData({
-            shards: data.shardsAwarded,
-            startingShards: data.newShardCount - data.shardsAwarded,
+      const dayIndex = activeDayIndex;
+      (async () => {
+        try {
+          const token = await getAccessToken();
+          const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+          const questId = `daily-notes-w${currentWeek}-d${dayIndex + 1}`;
+          const res = await fetch('/api/quests/complete', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json', ...authHeaders },
+            body: JSON.stringify({ questId, shards: 100 }),
           });
-          setShowRewardAnimation(true);
-          window.dispatchEvent(new Event('shardsUpdated'));
-        } else {
-          // Quest already completed or other issue — still show reward for the effort
-          setRewardData({ shards: 100, startingShards });
-          setShowRewardAnimation(true);
+          const data = await res.json();
+          if (data.ok && data.shardsAwarded > 0) {
+            window.dispatchEvent(new Event('shardsUpdated'));
+          }
+        } catch (err) {
+          console.error('[DailyNotes] Shard award error:', err);
         }
-      } catch (err) {
-        console.error('[DailyNotes] Shard award error:', err);
-      }
+      })();
     }
   };
 
@@ -752,6 +743,7 @@ export default function DailyNotes({
             <ShardAnimation
               shards={rewardData.shards}
               startingShards={rewardData.startingShards}
+              showTotal={false}
               onComplete={() => setShowRewardAnimation(false)}
             />
           </>

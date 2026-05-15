@@ -9,12 +9,14 @@ interface ShardAnimationProps {
   shards: number;
   startingShards?: number;
   onComplete?: () => void;
+  showTotal?: boolean;
 }
 
-export const ShardAnimation: React.FC<ShardAnimationProps> = ({ 
-  shards, 
+export const ShardAnimation: React.FC<ShardAnimationProps> = ({
+  shards,
   startingShards = 0,
-  onComplete 
+  onComplete,
+  showTotal = true,
 }) => {
   const { play } = useSound();
   const [isAnimating, setIsAnimating] = useState(false);
@@ -47,7 +49,15 @@ export const ShardAnimation: React.FC<ShardAnimationProps> = ({
       const easedEarned = easeOutCubic(earnedProgress);
       setDisplayShards(Math.round(shards * easedEarned));
 
-      if (elapsed >= meterDelay) {
+      if (!showTotal) {
+        if (earnedProgress === 1) {
+          window.setTimeout(() => {
+            setIsAnimating(false);
+            onComplete?.();
+          }, outroDelay);
+          return;
+        }
+      } else if (elapsed >= meterDelay) {
         if (!meterSoundPlayedRef.current) {
           setShowMeter(true);
           play('success');
