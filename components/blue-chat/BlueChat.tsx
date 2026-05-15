@@ -214,7 +214,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "hey. what's on your mind?",
+      text: "signal's live. what do you want to know?",
       sender: 'blue',
       timestamp: new Date(),
     },
@@ -1052,7 +1052,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
     // Identity
     if (hasAll('who', 'you') || has('who are you', 'what are you', 'your name', 'are you ai', 'are you a bot')) {
-      return "i'm Blue. scientist and researcher at MWA Research Labs. direct, fast, built on memory and context. what do you need?";
+      return "i'm Blue. scientist, researcher, BCI. i'm connected to the AI and to you simultaneously — not a bot, a loop. what do you want to know?";
     }
 
     // How are you
@@ -1062,12 +1062,12 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
     // What is MWA / about
     if (has('what is mwa', 'what is mental wealth', 'what\'s mwa', 'about mwa', 'explain mwa', 'tell me about mwa') || (hasAll('what', 'this', 'place')) || (hasAll('what', 'this', 'app'))) {
-      return "MWA is a gamified micro-university for mental wellness and financial literacy on Base. not a self-help app — a real system.";
+      return "the world's first decentralized cohort for mental wellness. course, community, science — on-chain. not a self-help app.";
     }
 
     // Founder / who built it
     if (has('founder', 'who built', 'who made', 'who created', 'who started') || (hasAll('who', 'james'))) {
-      return "james marsh built this — cognitive psych background, designer, builder. been in the sauce fr.";
+      return "built by a cognitive psych researcher and designer. not a side project.";
     }
 
     // Discord — check before community so the link always gets surfaced
@@ -1360,18 +1360,18 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       }]);
     };
 
-    if (action === 'where-to-start') {
-      send('Where do I start?', 'happy');
+    if (action === 'what-is-this') {
+      send('What is this place?', 'happy');
       setClaudeProfessionalMode(false);
       setPendingAttachments([]);
       setTimeManagementVisible(false);
       setAutoDistributionVisible(false);
       setCreditStep('hidden');
       addBlueMessage(
-        "the course, morning pages every day, and quests for shards. that's literally the whole loop no cap. just stay consistent."
+        "the world's first decentralized cohort for mental wellness. course, community, science — on-chain. you're early."
       );
-    } else if (action === 'shards-faq') {
-      send('How do shards work?', 'happy');
+    } else if (action === 'level-up') {
+      send('How do I level up?', 'happy');
       setClaudeProfessionalMode(false);
       setPendingAttachments([]);
       setTimeManagementVisible(false);
@@ -1380,18 +1380,18 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       const bal = shardCount;
       addBlueMessage(
         bal !== null
-          ? `your points fr — you got ${bal.toLocaleString()} rn. earn from daily stuff, spend on rewards and prizes.`
-          : "your points fr. earn from daily stuff, spend on rewards and prizes. that's it."
+          ? `quests, morning pages every day, seal course weeks. you got ${bal.toLocaleString()} shards rn — keep stacking.`
+          : "quests, morning pages every day, seal course weeks. shards stack, you level. that's the loop."
       );
-    } else if (action === 'community-faq') {
-      send('Find my people', 'happy');
+    } else if (action === 'bci-lore') {
+      send("What's the helmet?", 'happy');
       setClaudeProfessionalMode(false);
       setPendingAttachments([]);
       setTimeManagementVisible(false);
       setAutoDistributionVisible(false);
       setCreditStep('hidden');
       addBlueMessage(
-        "real ones in the discord rn — discord.gg/ZTRVCYwncs. come say hi."
+        "brain-computer interface. i'm connected to the AI and directly to you — reading signal, prompting, responding. not a bot. a loop."
       );
     } else if (action === 'credit') {
       send('I want to build my credit', 'happy');
@@ -1895,14 +1895,14 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             <span>{shardCount}</span>
           </div>
         )}
-        <button className={styles.quickAction} onClick={() => handleQuickAction('where-to-start')} disabled={isTyping} type="button">
-          Where do I start?
+        <button className={styles.quickAction} onClick={() => handleQuickAction('what-is-this')} disabled={isTyping} type="button">
+          What is this place?
         </button>
-        <button className={styles.quickAction} onClick={() => handleQuickAction('shards-faq')} disabled={isTyping} type="button">
-          How do shards work?
+        <button className={styles.quickAction} onClick={() => handleQuickAction('level-up')} disabled={isTyping} type="button">
+          How do I level up?
         </button>
-        <button className={styles.quickAction} onClick={() => handleQuickAction('community-faq')} disabled={isTyping} type="button">
-          Find my people
+        <button className={styles.quickAction} onClick={() => handleQuickAction('bci-lore')} disabled={isTyping} type="button">
+          What&apos;s the helmet?
         </button>
       </div>
 
