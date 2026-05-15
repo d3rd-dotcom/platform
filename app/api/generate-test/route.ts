@@ -290,8 +290,8 @@ async function callOpenRouter(userPrompt: string): Promise<string> {
 async function callEliza(userPrompt: string): Promise<string> {
   return elizaAPI.chat({
     messages: [
-      { role: 'system', parts: [{ type: 'text', text: SYSTEM_PROMPT }] },
-      { role: 'user', parts: [{ type: 'text', text: userPrompt }] },
+      { role: 'system', content: SYSTEM_PROMPT },
+      { role: 'user', content: userPrompt },
     ],
   });
 }

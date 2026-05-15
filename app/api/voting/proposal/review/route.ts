@@ -96,8 +96,8 @@ async function getAIReview(reviewPrompt: string): Promise<string> {
   try {
     const response = await elizaAPI.chat({
       messages: [
-        { role: 'system', parts: [{ type: 'text', text: REVIEW_SYSTEM_PROMPT }] },
-        { role: 'user', parts: [{ type: 'text', text: reviewPrompt }] },
+        { role: 'system', content: REVIEW_SYSTEM_PROMPT },
+        { role: 'user', content: reviewPrompt },
       ],
       id: 'gpt-4o',
     });

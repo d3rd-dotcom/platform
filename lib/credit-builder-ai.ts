@@ -28,8 +28,8 @@ async function callAI(systemPrompt: string, userPrompt: string): Promise<string>
   try {
     const result = await elizaAPI.chat({
       messages: [
-        { role: 'system', parts: [{ type: 'text', text: systemPrompt }] },
-        { role: 'user', parts: [{ type: 'text', text: userPrompt }] },
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
       ],
     });
     if (result && result.trim()) return result;
