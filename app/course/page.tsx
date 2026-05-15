@@ -391,10 +391,13 @@ export default function CoursePage() {
         </div>
       )}
       <SideNavigation />
-      <main className={`${styles.content} ${isDesktop ? styles.contentDesktop : ''}`} onFocus={handleFocus}>
+      <main
+        className={`${styles.content} ${isDesktop ? styles.contentDesktop : ''} ${isDesktop && rightContent === 'daily-note' ? styles.contentDesktopFullPanel : ''}`}
+        onFocus={handleFocus}
+      >
 
         {/* ── Left / main column — identical to original ── */}
-        <div className={isDesktop ? styles.leftCol : undefined}>
+        <div className={`${isDesktop ? styles.leftCol : ''} ${isDesktop && rightContent === 'daily-note' ? styles.leftColHidden : ''}`}>
 
           <section className={`${styles.hero} ${isLoaded ? styles.heroLoaded : ''}`}>
             <button

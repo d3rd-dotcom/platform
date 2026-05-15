@@ -819,6 +819,16 @@
   min-width: 0;
 }
 
+.contentDesktopFullPanel {
+  grid-template-columns: 1fr;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.leftColHidden {
+  display: none;
+}
+
 .rightPanel {
   min-width: 0;
   position: sticky;
