@@ -1180,19 +1180,19 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         "auto-distribution is live. connect approved channels, tell me the campaign, and i'll draft posts, image prompts, video concepts, ad angles, and engagement targets."
       );
     } else if (action === 'funding') {
-      send('Help me get this funded', 'searching');
+      send('Funding', 'searching');
       addBlueMessage(
-        "tell me what you're trying to fund — paper, study, dataset, or full project. i'll map you to treasury allocations, prediction-market backed pools, grants in your domain, and the framing that actually pulls capital. if you want the rate, lead with the mechanism."
+        "MWA funds research through treasury allocations, prediction-market pools, and x402 paper pre-sales."
       );
     } else if (action === 'earning') {
-      send('Show me ways to earn from my research', 'happy');
+      send('Earning', 'happy');
       addBlueMessage(
-        "what's the asset — a paper, a survey, a dataset, a model, a methodology? i'll lay out x402 paywalls, paid replications, contribution rewards, paid syntheses for the desk, and where shards convert. give me one concrete thing you've already produced."
+        "earn here by paywalling papers on x402, taking synthesis commissions, or running paid surveys."
       );
     } else if (action === 'experiments') {
-      send('I want to design an experiment', 'searching');
+      send('Experiments', 'searching');
       addBlueMessage(
-        "drop the hypothesis or the messy question. i'll help you tighten the variable, pick a design, scope the sample, and route it through the platform — validated assessments, behavioral quests, or community surveys. if it can ship as an experiment here, i'll say so."
+        "MWA hosts validated assessments, behavioral quests, and consented community surveys. ship your study here."
       );
     } else if (action === 'research') {
       setClaudeProfessionalMode(false);
