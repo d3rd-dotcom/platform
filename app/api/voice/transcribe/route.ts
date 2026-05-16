@@ -46,8 +46,26 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'audio file too large' }, { status: 413 });
   }
 
+  // Browsers disagree on the recording container — Chrome/Firefox produce
+  // audio/webm, Safari produces audio/mp4. ElevenLabs rejects the file when the
+  // filename extension doesn't match its real format, so derive both from the
+  // actual MIME type rather than trusting a hardcoded name.
+  const mimeType = (file.type || 'audio/webm').split(';')[0].trim().toLowerCase();
+  const EXT_BY_MIME: Record<string, string> = {
+    'audio/webm': 'webm',
+    'audio/ogg': 'ogg',
+    'audio/mp4': 'mp4',
+    'video/mp4': 'mp4',
+    'audio/mpeg': 'mp3',
+    'audio/wav': 'wav',
+    'audio/x-wav': 'wav',
+    'audio/aac': 'aac',
+  };
+  const ext = EXT_BY_MIME[mimeType] || 'webm';
+  const audioBlob = new Blob([await file.arrayBuffer()], { type: mimeType });
+
   const elForm = new FormData();
-  elForm.append('file', file, file.name || 'recording.webm');
+  elForm.append('file', audioBlob, `recording.${ext}`);
   elForm.append('model_id', 'scribe_v1');
 
   try {
@@ -60,7 +78,10 @@ export async function POST(request: Request) {
     if (!res.ok) {
       const errText = await res.text();
       console.error('ElevenLabs STT error:', res.status, errText.slice(0, 220));
-      return NextResponse.json({ error: 'transcription_failed', message: 'Could not transcribe the recording.' }, { status: 502 });
+      return NextResponse.json(
+        { error: 'transcription_failed', message: 'Could not transcribe the recording.', detail: errText.slice(0, 220) },
+        { status: 502 }
+      );
     }
 
     const data = await res.json();

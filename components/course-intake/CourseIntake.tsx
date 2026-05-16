@@ -136,6 +136,7 @@ export default function CourseIntake({ initialAnswers = {}, onComplete }: Course
   const ttsAbortRef = useRef<AbortController | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const spokenStepRef = useRef<number>(-1);
+  const autoAdvanceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const question = INTAKE_QUESTIONS[stepIndex];
   const total = INTAKE_QUESTIONS.length;
@@ -143,6 +144,10 @@ export default function CourseIntake({ initialAnswers = {}, onComplete }: Course
 
   // Restore any previously given answer when the question changes.
   useEffect(() => {
+    if (autoAdvanceRef.current) {
+      clearTimeout(autoAdvanceRef.current);
+      autoAdvanceRef.current = null;
+    }
     const saved = answers[question.key];
     const matchedChoice = saved && question.choices?.some((c) => c.value === saved);
     setChoice(matchedChoice ? saved : null);
@@ -209,9 +214,7 @@ export default function CourseIntake({ initialAnswers = {}, onComplete }: Course
   const hasAnswer = Boolean(choice) || Boolean(textValue.trim());
   const canContinue = hasAnswer || Boolean(question.optional);
 
-  const handleContinue = useCallback(() => {
-    if (!canContinue) return;
-    const value = textValue.trim() || choice || '';
+  const commitAndAdvance = useCallback((value: string) => {
     let next = answers;
     if (value) {
       next = { ...answers, [question.key]: value };
@@ -225,7 +228,28 @@ export default function CourseIntake({ initialAnswers = {}, onComplete }: Course
     } else {
       setStepIndex((s) => s + 1);
     }
-  }, [answers, canContinue, choice, isLast, onComplete, persist, question.key, textValue]);
+  }, [answers, isLast, onComplete, persist, question.key]);
+
+  const handleContinue = useCallback(() => {
+    if (!canContinue) return;
+    commitAndAdvance(textValue.trim() || choice || '');
+  }, [canContinue, choice, textValue, commitAndAdvance]);
+
+  // Picking a choice auto-advances after a short beat so the selection shows.
+  const selectChoice = useCallback((value: string) => {
+    play('click');
+    setChoice(value);
+    setTextValue('');
+    if (autoAdvanceRef.current) clearTimeout(autoAdvanceRef.current);
+    autoAdvanceRef.current = setTimeout(() => {
+      autoAdvanceRef.current = null;
+      commitAndAdvance(value);
+    }, 280);
+  }, [commitAndAdvance, play]);
+
+  useEffect(() => () => {
+    if (autoAdvanceRef.current) clearTimeout(autoAdvanceRef.current);
+  }, []);
 
   return (
     <div className={styles.shell}>
@@ -258,11 +282,7 @@ export default function CourseIntake({ initialAnswers = {}, onComplete }: Course
                         role="radio"
                         aria-checked={active}
                         className={`${styles.option} ${active ? styles.optionActive : ''}`}
-                        onClick={() => {
-                          play('click');
-                          setChoice(c.value);
-                          setTextValue('');
-                        }}
+                        onClick={() => selectChoice(c.value)}
                         onMouseEnter={() => play('hover')}
                       >
                         <span className={styles.radio}>
