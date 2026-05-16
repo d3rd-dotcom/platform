@@ -1,4 +1,4 @@
-/* Home Page */
+/* Home Page — Blue course-builder bento */
 
 .pageLayout {
   position: relative;
@@ -20,26 +20,7 @@
   display: flex;
   height: 100%;
   min-height: 0;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
-  padding: 0;
-}
-
-.artworkWrap {
-  width: min(72vw, 860px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  transform: translateX(calc(var(--sidebar-width, 265px) / -2));
-}
-
-.artwork {
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 22px 44px rgba(26, 29, 51, 0.14));
 }
 
 :global([data-theme="dark"]) .pageLayout {
@@ -49,22 +30,11 @@
     linear-gradient(90deg, rgba(81, 104, 255, 0.14) 1px, transparent 1px);
 }
 
-:global([data-theme="dark"]) .artwork {
-  filter: drop-shadow(0 24px 54px rgba(0, 0, 0, 0.42));
-}
-
 /* Collapse sidebar offset on mobile */
 @media (max-width: 900px) {
   .pageLayout {
     margin-left: 0;
     height: 100dvh;
-    overflow: hidden;
-  }
-
-  .artworkWrap {
-    width: min(88vw, 720px);
-    padding: 20px;
-    transform: none;
   }
 }
 
@@ -73,20 +43,10 @@
     --mobile-nav-clearance: calc(74px + max(env(safe-area-inset-bottom, 0px), 20px));
     height: calc(100dvh - var(--mobile-nav-clearance));
   }
-
-  .artworkWrap {
-    width: min(92vw, 560px);
-    padding: 16px;
-  }
 }
 
 @media (max-width: 520px) {
   .pageLayout {
     background-size: 24px 24px;
-  }
-
-  .artworkWrap {
-    width: min(94vw, 460px);
-    padding: 12px;
   }
 }

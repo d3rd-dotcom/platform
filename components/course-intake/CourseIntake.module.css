@@ -1,0 +1,277 @@
+.shell {
+  width: 100%;
+  min-height: auto;
+  display: grid;
+  place-items: start stretch;
+  padding: 0 0 28px;
+}
+
+.card {
+  width: 100%;
+  max-width: none;
+  min-height: min(820px, calc(100dvh - 108px));
+  border: 1px solid rgba(26, 27, 36, 0.14);
+  border-radius: 28px;
+  overflow: hidden;
+  background: #10131f;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.videoStage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+}
+
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 10, 18, 0.36);
+}
+
+.overlay {
+  position: relative;
+  z-index: 1;
+  min-height: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px;
+}
+
+.questionWrap {
+  align-self: flex-start;
+  max-width: min(720px, 100%);
+  padding: 18px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 22px;
+  background: rgba(10, 12, 20, 0.28);
+  backdrop-filter: blur(12px);
+}
+
+.question {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(1.04rem, 1.7vw, 1.32rem);
+  line-height: 1.48;
+  font-weight: 400;
+  letter-spacing: 0;
+  font-family: var(--font-body), Inter, sans-serif;
+  text-wrap: balance;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.28);
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.option {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 12px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.94);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.16s ease,
+    border-color 0.16s ease,
+    transform 0.16s ease;
+}
+
+.option:hover {
+  border-color: rgba(255, 255, 255, 0.34);
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+}
+
+.optionActive,
+.optionActive:hover {
+  border-color: rgba(255, 255, 255, 0.56);
+  background: rgba(255, 255, 255, 0.16);
+  transform: none;
+}
+
+.radio {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border: 2px solid rgba(255, 255, 255, 0.34);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.radioDot {
+  width: 10px;
+  height: 10px;
+  border-radius: inherit;
+  background: #ffffff;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.optionActive .radio {
+  border-color: #ffffff;
+}
+
+.optionActive .radioDot {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.optionLabel {
+  font-size: 0.98rem;
+  line-height: 1.42;
+  font-weight: 600;
+}
+
+.textBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.textInput {
+  width: 100%;
+  resize: vertical;
+  min-height: 76px;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font: inherit;
+  font-size: 0.98rem;
+  line-height: 1.55;
+  backdrop-filter: blur(10px);
+}
+
+.textInput::placeholder {
+  color: rgba(255, 255, 255, 0.56);
+}
+
+.textInput:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08);
+}
+
+.controls {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.backBtn,
+.continueBtn {
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 0.94rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.16s ease, opacity 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+}
+
+.backBtn {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.84);
+}
+
+.continueBtn {
+  margin-left: auto;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.94);
+  color: #10131f;
+}
+
+.backBtn:hover:not(:disabled),
+.continueBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.backBtn:disabled,
+.continueBtn:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+  transform: none;
+}
+
+:global([data-theme="dark"]) .card {
+  border-color: rgba(139, 149, 255, 0.2);
+  background: #090b11;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.03);
+}
+
+:global([data-theme="dark"]) .scrim {
+  background: rgba(5, 7, 14, 0.4);
+}
+
+:global([data-theme="dark"]) .questionWrap {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(10, 12, 20, 0.34);
+}
+
+@media (max-width: 720px) {
+  .shell {
+    padding: 0 0 32px;
+  }
+
+  .card {
+    min-height: calc(100dvh - 120px);
+    border-radius: 22px;
+  }
+
+  .overlay {
+    padding: 16px;
+  }
+
+  .questionWrap {
+    padding: 16px;
+    border-radius: 18px;
+  }
+
+  .question {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .controls {
+    align-items: stretch;
+  }
+
+  .backBtn,
+  .continueBtn {
+    width: auto;
+  }
+}
