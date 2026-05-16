@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import Image from 'next/image';
 import type { CourseData, GeneratedMission } from '@/lib/personal-course';
 import styles from './PersonalCourse.module.css';
 
 interface WeekProgress {
-  notes?: string;
   missions?: Record<string, unknown>;
 }
 
@@ -18,49 +18,23 @@ interface PersonalCourseProps {
 }
 
 const WEEK_COLORS = ['#5168FF', '#7C3AED', '#0891B2', '#16A34A'];
+const STORY_IMAGE = '/stories/week-01/egg.png';
 
 export default function PersonalCourse({
   course,
   initialProgress,
-  imageGenerationEnabled = false,
 }: PersonalCourseProps) {
   const [selectedWeek, setSelectedWeek] = useState(1);
-  const [progress, setProgress] = useState<ProgressMap>(
-    (initialProgress as ProgressMap) ?? {}
-  );
-  const [weekImages, setWeekImages] = useState<Record<number, string>>({});
-  const [imageLoading, setImageLoading] = useState<Record<number, boolean>>({});
-  const requestedImages = useRef<Set<number>>(new Set());
+  const [progress, setProgress] = useState<ProgressMap>((initialProgress as ProgressMap) ?? {});
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const week = useMemo(
     () => course.weeks.find((w) => w.weekNumber === selectedWeek) ?? course.weeks[0],
     [course.weeks, selectedWeek]
   );
+
   const accent = WEEK_COLORS[(week.weekNumber - 1) % WEEK_COLORS.length];
-  const storyImage = weekImages[week.weekNumber] ?? week.story.imageUrl;
-
-  // Lazily generate the story illustration for the active week.
-  useEffect(() => {
-    const n = week.weekNumber;
-    if (storyImage || requestedImages.current.has(n)) return;
-    requestedImages.current.add(n);
-    setImageLoading((prev) => ({ ...prev, [n]: true }));
-
-    fetch('/api/course/generate-image', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ weekNumber: n, imagePrompt: week.story.imagePrompt }),
-    })
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data?.imageUrl) {
-          setWeekImages((prev) => ({ ...prev, [n]: data.imageUrl }));
-        }
-      })
-      .catch(() => {/* fallback art handled server-side */})
-      .finally(() => setImageLoading((prev) => ({ ...prev, [n]: false })));
-  }, [week.weekNumber, storyImage]);
+  const weekProgress: WeekProgress = progress.weeks?.[String(week.weekNumber)] ?? {};
 
   const persistProgress = useCallback((next: ProgressMap) => {
     if (saveTimer.current) clearTimeout(saveTimer.current);
@@ -84,12 +58,6 @@ export default function PersonalCourse({
     });
   }, [persistProgress]);
 
-  const weekProgress: WeekProgress = progress.weeks?.[String(week.weekNumber)] ?? {};
-
-  const setNotes = useCallback((value: string) => {
-    mutateWeek(week.weekNumber, (w) => ({ ...w, notes: value }));
-  }, [mutateWeek, week.weekNumber]);
-
   const setMissionValue = useCallback((missionId: string, value: unknown) => {
     mutateWeek(week.weekNumber, (w) => ({
       ...w,
@@ -98,90 +66,63 @@ export default function PersonalCourse({
   }, [mutateWeek, week.weekNumber]);
 
   return (
-    <div className={styles.courseGrid} style={{ '--accent': accent } as React.CSSProperties}>
-      {/* ── Header ── */}
-      <header className={styles.header}>
-        <span className={styles.kicker}>Your personal course</span>
-        <h1 className={styles.courseTitle}>{course.title}</h1>
-        {course.summary && <p className={styles.courseSummary}>{course.summary}</p>}
-      </header>
-
-      {/* ── Week tabs ── */}
-      <nav className={styles.weekTabs} aria-label="Course weeks">
-        {course.weeks.map((w) => (
-          <button
-            key={w.weekNumber}
-            type="button"
-            className={`${styles.weekTab} ${w.weekNumber === selectedWeek ? styles.weekTabActive : ''}`}
-            onClick={() => setSelectedWeek(w.weekNumber)}
-            style={{ '--tab-accent': WEEK_COLORS[(w.weekNumber - 1) % WEEK_COLORS.length] } as React.CSSProperties}
-          >
-            <span className={styles.weekTabNum}>Week {w.weekNumber}</span>
-            <span className={styles.weekTabTheme}>{w.theme}</span>
-          </button>
-        ))}
-      </nav>
-
-      {/* ── Weekly Story ── */}
-      <section className={`${styles.card} ${styles.storyCard}`}>
-        <div className={styles.storyMedia}>
-          {storyImage ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={storyImage} alt={week.story.title} className={styles.storyImg} />
-          ) : (
-            <div className={styles.storyImgLoading}>
-              <span className={styles.storySpinner} />
-              <span>{imageGenerationEnabled ? 'Painting your scene…' : 'Loading scene…'}</span>
-            </div>
-          )}
-          {imageLoading[week.weekNumber] && storyImage && (
-            <span className={styles.storyRefresh} />
-          )}
+    <div className={styles.courseShell} style={{ '--accent': accent } as React.CSSProperties}>
+      <aside className={styles.sidebar}>
+        <div className={styles.sidebarCard}>
+          <span className={styles.kicker}>Your personal course</span>
+          <h1 className={styles.courseTitle}>{course.title}</h1>
+          {course.summary && <p className={styles.courseSummary}>{course.summary}</p>}
         </div>
-        <div className={styles.storyBody}>
-          <span className={styles.cardLabel}>Weekly Story</span>
-          <h2 className={styles.storyTitle}>{week.story.title}</h2>
-          <p className={styles.storyText}>{week.story.body}</p>
-        </div>
-      </section>
 
-      {/* ── Morning Notes ── */}
-      <section className={`${styles.card} ${styles.morningCard}`}>
-        <span className={styles.cardLabel}>Morning Notes</span>
-        <h2 className={styles.sectionTitle}>{week.theme}</h2>
-        {week.morningNotes.intention && (
-          <p className={styles.intention}>“{week.morningNotes.intention}”</p>
-        )}
-        <p className={styles.prompt}>{week.morningNotes.prompt}</p>
-        <textarea
-          className={styles.notesInput}
-          value={weekProgress.notes ?? ''}
-          onChange={(e) => setNotes(e.target.value)}
-          placeholder="Start writing your morning notes for this week…"
-          rows={5}
-        />
-      </section>
+        <nav className={styles.weekRail} aria-label="Course weeks">
+          {course.weeks.map((w) => {
+            const active = w.weekNumber === selectedWeek;
+            return (
+              <button
+                key={w.weekNumber}
+                type="button"
+                className={`${styles.weekTab} ${active ? styles.weekTabActive : ''}`}
+                onClick={() => setSelectedWeek(w.weekNumber)}
+                style={{ '--tab-accent': WEEK_COLORS[(w.weekNumber - 1) % WEEK_COLORS.length] } as React.CSSProperties}
+              >
+                <span className={styles.weekTabNum}>Week {w.weekNumber}</span>
+                <span className={styles.weekTabTheme}>{w.theme}</span>
+              </button>
+            );
+          })}
+        </nav>
+      </aside>
 
-      {/* ── Missions ── */}
-      <section className={`${styles.card} ${styles.missionsCard}`}>
-        <span className={styles.cardLabel}>Missions</span>
-        {week.focus && <p className={styles.focus}>{week.focus}</p>}
-        <div className={styles.missionList}>
-          {week.missions.map((mission) => (
-            <MissionField
-              key={mission.id}
-              mission={mission}
-              value={weekProgress.missions?.[mission.id]}
-              onChange={(value) => setMissionValue(mission.id, value)}
-            />
-          ))}
-        </div>
-      </section>
+      <main className={styles.mainColumn}>
+        <section className={styles.storyCard}>
+          <div className={styles.storyMedia}>
+            <Image src={STORY_IMAGE} alt={week.story.title} fill className={styles.storyImg} />
+          </div>
+          <div className={styles.storyBody}>
+            <span className={styles.cardLabel}>Weekly Story</span>
+            <h2 className={styles.storyTitle}>{week.story.title}</h2>
+            <p className={styles.storyText}>{week.story.body}</p>
+          </div>
+        </section>
+
+        <section className={styles.practiceCard}>
+          {week.focus && <p className={styles.focus}>{week.focus}</p>}
+          <div className={styles.missionList}>
+            {week.missions.map((mission) => (
+              <MissionField
+                key={mission.id}
+                mission={mission}
+                value={weekProgress.missions?.[mission.id]}
+                onChange={(value) => setMissionValue(mission.id, value)}
+              />
+            ))}
+          </div>
+        </section>
+      </main>
     </div>
   );
 }
 
-// ── Mission field ───────────────────────────────────────────
 interface MissionFieldProps {
   mission: GeneratedMission;
   value: unknown;
