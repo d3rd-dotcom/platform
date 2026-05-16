@@ -38,17 +38,17 @@ const ecosystemValueCards = [
     icon: Microscope,
   },
   {
-    value: 'Points',
+    value: 'Students',
     detail: 'Earn shards for every contribution — they convert into real rewards and standing in the Academy.',
     icon: ShardOutlineIcon,
   },
   {
-    value: 'Experiments',
+    value: 'Founders',
     detail: 'Designed to support structured experiments, behavioral studies, and ongoing trials.',
     icon: TestTube,
   },
   {
-    value: 'Participants',
+    value: 'Communities',
     detail: 'Clear participation flows that help people join, respond, and stay engaged.',
     icon: UsersThree,
   },
@@ -104,9 +104,9 @@ export const HeroSection: React.FC = () => {
 
       <KeyFiguresSection />
 
-      <section className={styles.ecosystemSection} aria-label="Academy ecosystem">
+      <section id="value" className={styles.ecosystemSection} aria-label="Academy ecosystem">
         <div className={styles.ecosystemInner}>
-          <h2 className={styles.ecosystemHeadline}>Revolutionized Psychology</h2>
+          <h2 className={styles.ecosystemHeadline}>Who it&apos;s Built For</h2>
           <p className={styles.ecosystemSubtext}>
             From first-time participants to seasoned researchers, the Academy rewards all forms of contribution and turns it into data with real value for humanity.
           </p>

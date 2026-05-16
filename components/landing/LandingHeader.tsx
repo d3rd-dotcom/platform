@@ -40,7 +40,7 @@ export const LandingHeader: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { play } = useSound();
   const sectionLinks = [
-    { href: '#about', label: 'About' },
+    { href: '#value', label: 'Value' },
     { href: '#how-it-works', label: 'How it works' },
     { href: '#cohort', label: 'Cohort' },
     { href: '#faqs', label: 'FAQs' },
