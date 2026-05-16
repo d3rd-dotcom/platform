@@ -5,14 +5,14 @@ export interface IntakeChoice {
 
 export interface IntakeQuestion {
   key: string;
-  /** Short label shown in the "your answers" summary. */
+  /** Short label shown in the dashboard / summary. */
   label: string;
-  /** What Blue says when asking. */
+  /** What Blue says (and speaks) when asking. */
   blueText: string;
   choices?: IntakeChoice[];
   allowText?: boolean;
-  /** Small label above the free-text field. */
-  textPrompt?: string;
+  /** Renders the voice-note recorder instead of choices. */
+  voiceDump?: boolean;
   textPlaceholder?: string;
   optional?: boolean;
 }
@@ -21,77 +21,61 @@ export const INTAKE_QUESTIONS: IntakeQuestion[] = [
   {
     key: 'goal',
     label: 'Focus',
-    blueText:
-      'Hey, let me build your starter course. To begin, what would you like to focus on?',
+    blueText: 'Hey, let me build your starter course. To begin — what would you like to focus on?',
     choices: [
-      { label: 'A creative practice', value: 'A creative practice' },
-      { label: 'Mental clarity and focus', value: 'Mental clarity and focus' },
-      { label: 'Daily habits and routine', value: 'Building daily habits and routine' },
-      { label: 'Self-trust and healing', value: 'Self-trust and healing' },
+      { label: 'Creativity', value: 'Creativity' },
+      { label: 'Exercise', value: 'Exercise' },
+      { label: 'Wellness', value: 'Wellness' },
+      { label: 'Healing', value: 'Healing' },
     ],
-    textPlaceholder: 'What would you like to focus on?',
   },
   {
     key: 'accountability',
-    label: 'Staying on track',
-    blueText:
-      'thank you for sharing that. everyone keeps going in their own way — what tends to help you stay with something?',
+    label: 'Accountability',
+    blueText: 'Thank you for sharing. How do you feel about accountability?',
     choices: [
-      { label: 'I do better on my own', value: 'Prefers to work solo' },
-      { label: 'Gentle check-ins help me', value: 'Likes gentle weekly check-ins' },
-      { label: 'I like sharing with others', value: 'Likes sharing progress with a community' },
+      { label: 'Gentle check-ins help', value: 'Gentle check-ins help' },
+      { label: 'I like a teammate', value: 'Likes an accountability teammate' },
+      { label: "I'm a lone wolf", value: 'Prefers to work solo' },
     ],
   },
   {
     key: 'meetups',
     label: 'Meet-ups',
-    blueText:
-      "the mwa team holds live meet-ups from time to time. they're always optional — would you like me to include them?",
+    blueText: 'Would you like to join live meet-ups with the MWA team?',
     choices: [
-      { label: "Yes, I'd like that", value: 'Wants MWA team meet-ups included' },
+      { label: 'Yes, count me in', value: 'Wants MWA team meet-ups' },
       { label: 'Maybe later', value: 'Open to meet-ups later' },
-      { label: "I'd rather not", value: 'Prefers a self-paced path without meet-ups' },
+      { label: 'Not for me', value: 'Prefers a self-paced path' },
     ],
   },
   {
     key: 'timeCommitment',
     label: 'Time each day',
-    blueText:
-      "how much time feels realistic for you on most days? it's completely okay to start small.",
+    blueText: 'How much time can you give this each day?',
     choices: [
-      { label: 'A little — around 10 minutes', value: 'About 10 minutes a day' },
-      { label: 'Some — around 30 minutes', value: 'About 30 minutes a day' },
-      { label: 'More — an hour or so', value: 'An hour or more a day' },
+      { label: '10 minutes', value: 'About 10 minutes a day' },
+      { label: '30 minutes', value: 'About 30 minutes a day' },
+      { label: 'An hour or more', value: 'An hour or more a day' },
     ],
   },
   {
     key: 'experience',
     label: 'Experience',
-    blueText:
-      'have you spent much time with reflective practices, like journaling? either answer is welcome.',
+    blueText: 'Have you done reflective work before, like journaling?',
     choices: [
-      { label: "It's fairly new to me", value: 'New to reflective practice' },
-      { label: "I've tried it here and there", value: 'Some experience with reflective practice' },
-      { label: "It's a regular part of my life", value: 'Experienced with reflective practice' },
+      { label: "It's new to me", value: 'New to reflective practice' },
+      { label: 'A little', value: 'Some experience with reflective practice' },
+      { label: 'Often', value: 'Experienced with reflective practice' },
     ],
   },
   {
-    key: 'tone',
-    label: 'How Blue speaks',
-    blueText: 'how would you like me to show up for you as we go?',
-    choices: [
-      { label: 'Gently and patiently', value: 'Gentle and patient' },
-      { label: 'Honestly and directly', value: 'Honest and direct' },
-      { label: 'Warmly and lightly', value: 'Warm and light' },
-    ],
-  },
-  {
-    key: 'anythingElse',
-    label: 'Anything else',
-    blueText:
-      "last one — is there anything else you'd like me to know? a hope, a worry, anything on your mind. you're welcome to skip this.",
+    key: 'voiceContext',
+    label: 'About you',
+    blueText: "Last one — tell me as much about you as you'd like me to know. I'll use it to help you best.",
+    voiceDump: true,
     allowText: true,
     optional: true,
-    textPlaceholder: "Share whatever feels right — or skip this question.",
+    textPlaceholder: 'Record a voice note, or type here…',
   },
 ];

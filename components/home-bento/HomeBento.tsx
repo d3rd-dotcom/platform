@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import CourseIntake from '@/components/course-intake/CourseIntake';
-import PersonalCourse from '@/components/personal-course/PersonalCourse';
+import Dashboard from '@/components/dashboard/Dashboard';
 import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
 import type { CourseData, IntakeAnswers } from '@/lib/personal-course';
 import styles from './HomeBento.module.css';
@@ -30,7 +30,6 @@ export default function HomeBento() {
   const { ready } = usePrivy();
   const [phase, setPhase] = useState<Phase>('loading');
   const [course, setCourse] = useState<CourseRecord | null>(null);
-  const [imageGenEnabled, setImageGenEnabled] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [genStep, setGenStep] = useState(0);
   const fetchedRef = useRef(false);
@@ -41,7 +40,6 @@ export default function HomeBento() {
     try {
       const res = await fetch('/api/course/personal', { cache: 'no-store' });
       const data = await res.json().catch(() => ({}));
-      setImageGenEnabled(Boolean(data.imageGenerationEnabled));
       const record: CourseRecord | null = data.course ?? null;
       setCourse(record);
 
@@ -154,10 +152,9 @@ export default function HomeBento() {
   if (phase === 'ready' && course?.courseData) {
     return (
       <div className={styles.bentoScroll}>
-        <PersonalCourse
+        <Dashboard
           course={course.courseData}
-          initialProgress={course.progressData}
-          imageGenerationEnabled={imageGenEnabled}
+          initialIntake={course.intakeData}
         />
       </div>
     );

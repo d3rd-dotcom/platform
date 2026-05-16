@@ -87,30 +87,6 @@ export async function saveGeneratedCourse(userId: string, courseData: CourseData
   return mapRow(rows[0]);
 }
 
-export async function updateWeekImage(
-  userId: string,
-  weekNumber: number,
-  imageUrl: string
-): Promise<CourseData | null> {
-  const record = await getPersonalCourse(userId);
-  if (!record?.courseData) return null;
-
-  const courseData: CourseData = {
-    ...record.courseData,
-    weeks: record.courseData.weeks.map((week) =>
-      week.weekNumber === weekNumber
-        ? { ...week, story: { ...week.story, imageUrl } }
-        : week
-    ),
-  };
-
-  await sqlQuery(
-    `UPDATE personal_courses SET course_data = :courseData WHERE user_id = :userId`,
-    { userId, courseData: JSON.stringify(courseData) }
-  );
-  return courseData;
-}
-
 export async function saveProgress(
   userId: string,
   progressData: Record<string, unknown>

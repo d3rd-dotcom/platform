@@ -52,13 +52,25 @@
 }
 
 .questionWrap {
-  align-self: flex-start;
-  max-width: min(720px, 100%);
+  align-self: stretch;
+  width: 100%;
+  max-width: 720px;
   padding: 18px 20px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 22px;
   background: rgba(10, 12, 20, 0.28);
   backdrop-filter: blur(12px);
+}
+
+.stepCount {
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.58);
 }
 
 .question {
@@ -69,7 +81,7 @@
   font-weight: 400;
   letter-spacing: 0;
   font-family: var(--font-body), Inter, sans-serif;
-  text-wrap: balance;
+  text-wrap: pretty;
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.28);
 }
 
@@ -179,6 +191,82 @@
   border-color: rgba(255, 255, 255, 0.5);
   background: rgba(255, 255, 255, 0.14);
   box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08);
+}
+
+/* ── Voice dump ── */
+.voiceDump {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.recordBtn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font: inherit;
+  font-size: 0.94rem;
+  font-weight: 700;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: background 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
+}
+
+.recordBtn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.16);
+  transform: translateY(-1px);
+}
+
+.recordBtn:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.recordBtnActive,
+.recordBtnActive:hover {
+  border-color: rgba(255, 120, 120, 0.7);
+  background: rgba(232, 85, 85, 0.24);
+}
+
+.recDot {
+  width: 11px;
+  height: 11px;
+  border-radius: 999px;
+  background: #ff5d5d;
+  animation: recPulse 1.1s ease-in-out infinite;
+}
+
+@keyframes recPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.78); }
+}
+
+.recSpinner {
+  width: 15px;
+  height: 15px;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  animation: recSpin 0.8s linear infinite;
+}
+
+@keyframes recSpin {
+  to { transform: rotate(360deg); }
+}
+
+.voiceError {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: #ffb4b4;
 }
 
 .controls {

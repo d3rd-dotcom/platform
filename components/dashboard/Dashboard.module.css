@@ -1,0 +1,536 @@
+.dashboard {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr) 300px;
+  gap: 18px;
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+.leftCol {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+}
+
+.centerCol {
+  min-width: 0;
+}
+
+.rightCol {
+  position: sticky;
+  bottom: 0;
+  align-self: end;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 14px;
+}
+
+/* ── Cards ── */
+.radarCard,
+.eggCard {
+  background: #ffffff;
+  border: 1px solid rgba(81, 104, 255, 0.18);
+  border-radius: 22px;
+  box-shadow: 0 18px 40px rgba(26, 29, 51, 0.08);
+}
+
+.cardLabel {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #5168ff;
+}
+
+/* ── Profile ── */
+.profileCard {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 26px 22px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.profileContent {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profileAvatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(155deg, #eef0ff, #dfe3ff);
+  border: 3px solid rgba(81, 104, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.profileAvatarFallback {
+  font-size: 3.4rem;
+  font-weight: 800;
+  color: #5168ff;
+}
+
+.profileAvatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.profileName {
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #1a1d33;
+}
+
+.profileMeta {
+  font-size: 0.85rem;
+  color: #8b90b0;
+}
+
+.soulBtn {
+  margin-top: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(81, 104, 255, 0.3);
+  background: #f6f7ff;
+  color: #5168ff;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.16s ease, transform 0.16s ease;
+}
+
+.soulBtn:hover {
+  background: #e9ecff;
+  transform: translateY(-1px);
+}
+
+/* ── Radar ── */
+.radarCard {
+  padding: 18px 18px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  --radar-fill-a: rgba(81, 104, 255, 0.035);
+  --radar-fill-b: rgba(81, 104, 255, 0.02);
+  --radar-ring-color: rgba(81, 104, 255, 0.14);
+  --radar-axis-opacity: 0.3;
+  --radar-data-fill: rgba(81, 104, 255, 0.12);
+  --radar-data-stroke: rgba(81, 104, 255, 0.34);
+  --radar-node-stroke: rgba(255, 255, 255, 0.95);
+}
+
+.radarWrap {
+  position: relative;
+  width: 100%;
+  max-width: 230px;
+  margin: 6px auto 4px;
+  aspect-ratio: 1;
+}
+
+.radarSvg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.radarLabel {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: 8.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: none;
+  letter-spacing: 0.02em;
+}
+
+/* ── Egg card ── */
+.eggCard {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.eggMedia {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 5 / 4;
+  background: linear-gradient(155deg, #eef0ff, #dfe3ff);
+  border: none;
+  padding: 0;
+  display: block;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.eggImg {
+  object-fit: cover;
+}
+
+.eggShake {
+  animation: eggShake 0.4s ease-in-out;
+}
+
+@keyframes eggShake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eggShake {
+    animation: none;
+  }
+}
+
+.eggCaption {
+  padding: 22px 26px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.eggTitle {
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #1a1d33;
+  margin: 0;
+  line-height: 1.18;
+}
+
+.eggText {
+  margin: 4px 0 0;
+  font-size: 0.98rem;
+  line-height: 1.62;
+  color: #4a4f70;
+}
+
+.radarHint {
+  margin: 0 0 2px;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: #6b7194;
+}
+
+/* ── Leaderboard card ── */
+.leaderboardCard {
+  background: #ffffff;
+  border: 1px solid rgba(81, 104, 255, 0.18);
+  border-radius: 18px;
+  box-shadow: 0 16px 34px rgba(26, 29, 51, 0.08);
+  padding: 16px 16px 14px;
+}
+
+.leaderHead {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 12px;
+}
+
+.leaderTitle {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #5168ff;
+}
+
+.leaderList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.leaderRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 4px;
+  border-radius: 10px;
+}
+
+.leaderRow:first-child {
+  background: rgba(81, 104, 255, 0.07);
+}
+
+.leaderRank {
+  width: 18px;
+  flex-shrink: 0;
+  text-align: center;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #9aa0c0;
+}
+
+.leaderRow:first-child .leaderRank {
+  color: #5168ff;
+}
+
+.leaderAvatar {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.leaderName {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2a2f52;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.leaderShards {
+  flex-shrink: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #5168ff;
+}
+
+.leaderEmpty {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #9aa0c0;
+}
+
+/* ── Right: Blue full body ── */
+.blueBodyWrap {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.blueBody {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ── Soul.md modal ── */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(16, 19, 31, 0.55);
+  backdrop-filter: blur(4px);
+  animation: fade 0.18s ease;
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  width: 100%;
+  max-width: 540px;
+  background: #ffffff;
+  border: 1px solid rgba(81, 104, 255, 0.2);
+  border-radius: 22px;
+  box-shadow: 0 30px 70px rgba(16, 19, 31, 0.4);
+  padding: 26px 26px 22px;
+  animation: pop 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@keyframes pop {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modalTitle {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #1a1d33;
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+}
+
+.modalHint {
+  margin: 6px 0 14px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #6b7194;
+}
+
+.modalTextarea {
+  width: 100%;
+  resize: vertical;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(81, 104, 255, 0.24);
+  background: #fafbff;
+  font: inherit;
+  font-size: 0.96rem;
+  line-height: 1.6;
+  color: #1a1d33;
+}
+
+.modalTextarea:focus {
+  outline: none;
+  border-color: #5168ff;
+  box-shadow: 0 0 0 3px rgba(81, 104, 255, 0.14);
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.modalCancel,
+.modalSave {
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.16s ease;
+}
+
+.modalCancel {
+  border: 1px solid rgba(81, 104, 255, 0.24);
+  background: transparent;
+  color: #6b7194;
+}
+
+.modalSave {
+  border: none;
+  background: #5168ff;
+  color: #ffffff;
+}
+
+.modalCancel:hover,
+.modalSave:hover {
+  transform: translateY(-1px);
+}
+
+/* ── Dark theme ── */
+:global([data-theme="dark"]) .radarCard,
+:global([data-theme="dark"]) .eggCard,
+:global([data-theme="dark"]) .leaderboardCard,
+:global([data-theme="dark"]) .modal {
+  background: #15172a;
+  border-color: rgba(81, 104, 255, 0.28);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .leaderName {
+  color: #d6d9ee;
+}
+
+:global([data-theme="dark"]) .leaderRow:first-child {
+  background: rgba(81, 104, 255, 0.16);
+}
+
+:global([data-theme="dark"]) .radarCard {
+  --radar-fill-a: rgba(255, 255, 255, 0.028);
+  --radar-fill-b: rgba(81, 104, 255, 0.018);
+  --radar-ring-color: rgba(255, 255, 255, 0.05);
+  --radar-axis-opacity: 0.15;
+  --radar-data-fill: rgba(81, 104, 255, 0.11);
+  --radar-data-stroke: rgba(255, 255, 255, 0.24);
+  --radar-node-stroke: rgba(255, 255, 255, 0.7);
+}
+
+:global([data-theme="dark"]) .profileName,
+:global([data-theme="dark"]) .eggTitle,
+:global([data-theme="dark"]) .modalTitle {
+  color: #f0f1fa;
+}
+
+:global([data-theme="dark"]) .eggText {
+  color: #b6bad6;
+}
+
+:global([data-theme="dark"]) .radarHint {
+  color: #9aa0c0;
+}
+
+:global([data-theme="dark"]) .soulBtn {
+  background: #1e2138;
+}
+
+:global([data-theme="dark"]) .modalTextarea {
+  background: #1a1c30;
+  color: #f0f1fa;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1180px) {
+  .dashboard {
+    grid-template-columns: 260px minmax(0, 1fr);
+  }
+
+  .rightCol {
+    display: none;
+  }
+}
+
+@media (max-width: 840px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  .leftCol {
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .profileCard,
+  .radarCard {
+    display: none;
+  }
+
+  .eggTitle {
+    font-size: 1.4rem;
+  }
+}

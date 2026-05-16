@@ -15,37 +15,115 @@ function firstUnansweredIndex(answers: Record<string, string>): number {
   return idx === -1 ? INTAKE_QUESTIONS.length - 1 : idx;
 }
 
-async function speakBlue(text: string, signal?: AbortSignal): Promise<void> {
-  const res = await fetch('/api/voice/tts', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text }),
-    signal,
-  });
-  if (!res.ok) throw new Error('TTS request failed');
+// ── Voice-note recorder ─────────────────────────────────────
+interface VoiceDumpFieldProps {
+  value: string;
+  onChange: (value: string) => void;
+}
 
-  const { audio } = await res.json();
-  if (!audio) throw new Error('No audio data');
+function VoiceDumpField({ value, onChange }: VoiceDumpFieldProps) {
+  const [status, setStatus] = useState<'idle' | 'recording' | 'transcribing'>('idle');
+  const [error, setError] = useState<string | null>(null);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const valueRef = useRef(value);
+  valueRef.current = value;
 
-  const bytes = Uint8Array.from(atob(audio), (c) => c.charCodeAt(0));
-  const blob = new Blob([bytes], { type: 'audio/mpeg' });
-  const url = URL.createObjectURL(blob);
+  useEffect(() => () => {
+    recorderRef.current?.stream.getTracks().forEach((t) => t.stop());
+  }, []);
 
-  return new Promise<void>((resolve, reject) => {
-    const el = new Audio(url);
-    el.onended = () => {
-      URL.revokeObjectURL(url);
-      resolve();
-    };
-    el.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error('Audio playback error'));
-    };
-    el.play().catch((error) => {
-      URL.revokeObjectURL(url);
-      reject(error);
-    });
-  });
+  const startRecording = useCallback(async () => {
+    setError(null);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      chunksRef.current = [];
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data);
+      };
+      recorder.onstop = async () => {
+        stream.getTracks().forEach((t) => t.stop());
+        const blob = new Blob(chunksRef.current, { type: recorder.mimeType || 'audio/webm' });
+        if (blob.size === 0) {
+          setStatus('idle');
+          return;
+        }
+        setStatus('transcribing');
+        try {
+          const fd = new FormData();
+          fd.append('audio', blob, 'recording.webm');
+          const res = await fetch('/api/voice/transcribe', { method: 'POST', body: fd });
+          const data = await res.json().catch(() => ({}));
+          if (res.ok && data.text) {
+            const existing = valueRef.current.trim();
+            onChange(existing ? `${existing} ${data.text}` : data.text);
+          } else if (data?.error === 'transcription_unconfigured') {
+            setError('Voice transcription isn’t set up — you can type below instead.');
+          } else {
+            setError('Could not transcribe that — try again, or type below.');
+          }
+        } catch {
+          setError('Could not transcribe that — try again, or type below.');
+        }
+        setStatus('idle');
+      };
+
+      recorder.start();
+      recorderRef.current = recorder;
+      setStatus('recording');
+    } catch {
+      setError('Microphone access was blocked — you can type below instead.');
+      setStatus('idle');
+    }
+  }, [onChange]);
+
+  const stopRecording = useCallback(() => {
+    recorderRef.current?.stop();
+    recorderRef.current = null;
+  }, []);
+
+  return (
+    <div className={styles.voiceDump}>
+      <button
+        type="button"
+        className={`${styles.recordBtn} ${status === 'recording' ? styles.recordBtnActive : ''}`}
+        onClick={status === 'recording' ? stopRecording : startRecording}
+        disabled={status === 'transcribing'}
+      >
+        {status === 'recording' ? (
+          <>
+            <span className={styles.recDot} aria-hidden="true" />
+            Stop recording
+          </>
+        ) : status === 'transcribing' ? (
+          <>
+            <span className={styles.recSpinner} aria-hidden="true" />
+            Transcribing…
+          </>
+        ) : (
+          <>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" />
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3" />
+            </svg>
+            Record a voice note
+          </>
+        )}
+      </button>
+
+      {error && <p className={styles.voiceError}>{error}</p>}
+
+      <textarea
+        className={styles.textInput}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="Record a voice note, or type here…"
+        rows={6}
+      />
+    </div>
+  );
 }
 
 export default function CourseIntake({ initialAnswers = {}, onComplete }: CourseIntakeProps) {
@@ -54,9 +132,10 @@ export default function CourseIntake({ initialAnswers = {}, onComplete }: Course
   const [stepIndex, setStepIndex] = useState(() => firstUnansweredIndex(initialAnswers));
   const [choice, setChoice] = useState<string | null>(null);
   const [textValue, setTextValue] = useState('');
-  const speechAbortRef = useRef<AbortController | null>(null);
-  const speechReadyRef = useRef(false);
-  const spokenQuestionRef = useRef<string | null>(null);
+
+  const ttsAbortRef = useRef<AbortController | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const spokenStepRef = useRef<number>(-1);
 
   const question = INTAKE_QUESTIONS[stepIndex];
   const total = INTAKE_QUESTIONS.length;
@@ -71,21 +150,53 @@ export default function CourseIntake({ initialAnswers = {}, onComplete }: Course
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stepIndex]);
 
-  useEffect(() => {
-    if (!speechReadyRef.current) return;
-    if (spokenQuestionRef.current === question.key) return;
-
-    spokenQuestionRef.current = question.key;
-    speechAbortRef.current?.abort();
+  // Speak Blue's line — exactly once per question, cancelling anything prior.
+  const speak = useCallback(async (text: string, step: number) => {
+    ttsAbortRef.current?.abort();
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
     const controller = new AbortController();
-    speechAbortRef.current = controller;
+    ttsAbortRef.current = controller;
+    try {
+      const res = await fetch('/api/voice/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+        signal: controller.signal,
+      });
+      if (!res.ok || controller.signal.aborted) return;
+      const { audio } = await res.json();
+      if (!audio || controller.signal.aborted) return;
+      const bytes = Uint8Array.from(atob(audio), (c) => c.charCodeAt(0));
+      const url = URL.createObjectURL(new Blob([bytes], { type: 'audio/mpeg' }));
+      const el = new Audio(url);
+      el.onended = () => URL.revokeObjectURL(url);
+      audioRef.current = el;
+      await el.play();
+      spokenStepRef.current = step;
+    } catch {
+      // Aborted, autoplay-blocked, or TTS unavailable — narration is best-effort.
+    }
+  }, []);
 
-    speakBlue(question.blueText, controller.signal).catch(() => {
-      // Narration is best-effort.
-    });
+  // Narrate the active question.
+  useEffect(() => {
+    speak(question.blueText, stepIndex);
+    return () => ttsAbortRef.current?.abort();
+  }, [stepIndex, question.blueText, speak]);
 
-    return () => controller.abort();
-  }, [question.blueText, question.key]);
+  // If the intro was autoplay-blocked, the first interaction unlocks + replays it.
+  useEffect(() => {
+    const handler = () => {
+      if (spokenStepRef.current !== stepIndex) {
+        speak(question.blueText, stepIndex);
+      }
+    };
+    window.addEventListener('pointerdown', handler, { once: true });
+    return () => window.removeEventListener('pointerdown', handler);
+  }, [stepIndex, question.blueText, speak]);
 
   const persist = useCallback((next: Record<string, string>) => {
     fetch('/api/course/intake', {
@@ -100,7 +211,6 @@ export default function CourseIntake({ initialAnswers = {}, onComplete }: Course
 
   const handleContinue = useCallback(() => {
     if (!canContinue) return;
-    speechReadyRef.current = true;
     const value = textValue.trim() || choice || '';
     let next = answers;
     if (value) {
@@ -109,9 +219,10 @@ export default function CourseIntake({ initialAnswers = {}, onComplete }: Course
       persist(next);
     }
     if (isLast) {
+      ttsAbortRef.current?.abort();
+      audioRef.current?.pause();
       onComplete(next);
     } else {
-      spokenQuestionRef.current = null;
       setStepIndex((s) => s + 1);
     }
   }, [answers, canContinue, choice, isLast, onComplete, persist, question.key, textValue]);
@@ -133,6 +244,7 @@ export default function CourseIntake({ initialAnswers = {}, onComplete }: Course
           <div className={styles.scrim} aria-hidden="true" />
           <div className={styles.overlay}>
             <div className={styles.questionWrap} key={stepIndex}>
+              <span className={styles.stepCount}>Question {stepIndex + 1} of {total}</span>
               <h2 className={styles.question}>{question.blueText}</h2>
 
               {question.choices && (
@@ -148,10 +260,6 @@ export default function CourseIntake({ initialAnswers = {}, onComplete }: Course
                         className={`${styles.option} ${active ? styles.optionActive : ''}`}
                         onClick={() => {
                           play('click');
-                          if (!speechReadyRef.current) {
-                            speechReadyRef.current = true;
-                            void speakBlue(question.blueText).catch(() => {});
-                          }
                           setChoice(c.value);
                           setTextValue('');
                         }}
@@ -167,22 +275,26 @@ export default function CourseIntake({ initialAnswers = {}, onComplete }: Course
                 </div>
               )}
 
-              {question.allowText && (
-                <div className={styles.textBlock}>
-                  <textarea
-                    className={styles.textInput}
-                    value={textValue}
-                    onChange={(e) => {
-                      setTextValue(e.target.value);
-                      if (e.target.value) setChoice(null);
-                    }}
-                    onKeyDown={(e) => {
-                      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') handleContinue();
-                    }}
-                    placeholder={question.textPlaceholder ?? 'Type your answer…'}
-                    rows={question.choices ? 2 : 4}
-                  />
-                </div>
+              {question.voiceDump ? (
+                <VoiceDumpField value={textValue} onChange={setTextValue} />
+              ) : (
+                question.allowText && (
+                  <div className={styles.textBlock}>
+                    <textarea
+                      className={styles.textInput}
+                      value={textValue}
+                      onChange={(e) => {
+                        setTextValue(e.target.value);
+                        if (e.target.value) setChoice(null);
+                      }}
+                      onKeyDown={(e) => {
+                        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') handleContinue();
+                      }}
+                      placeholder={question.textPlaceholder ?? 'Type your answer…'}
+                      rows={question.choices ? 2 : 4}
+                    />
+                  </div>
+                )
               )}
             </div>
 
@@ -192,7 +304,6 @@ export default function CourseIntake({ initialAnswers = {}, onComplete }: Course
                 className={styles.backBtn}
                 onClick={() => {
                   play('click');
-                  spokenQuestionRef.current = null;
                   setStepIndex((s) => Math.max(0, s - 1));
                 }}
                 onMouseEnter={() => play('hover')}
