@@ -1,10 +1,10 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import { useReadContract } from 'wagmi';
 import Image from 'next/image';
-import { Trophy, Sparkle, Plus, Lightning, Target, ChartLineUp } from '@phosphor-icons/react';
+import { Trophy, Sparkle, Plus, Lightning, Target, CaretDown, Check } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import QuestCard, { QuestCardKind } from '@/components/quest-card/QuestCard';
 import QuestAuthorPanel from '@/components/quest-author-panel/QuestAuthorPanel';
@@ -56,7 +56,6 @@ type QuestFilter = 'all' | QuestCardKind;
 
 interface UnifiedQuest extends DrawerQuest {
   kind: QuestCardKind;
-  badge?: string;
 }
 
 function questKindFromType(type: QuestType): QuestCardKind {
@@ -77,28 +76,12 @@ function questKindFromType(type: QuestType): QuestCardKind {
 
 const FILTER_ORDER: QuestFilter[] = ['all', 'course', 'mission', 'submit', 'social', 'custom'];
 const FILTER_LABEL: Record<QuestFilter, string> = {
-  all: 'All',
+  all: 'All quests',
   course: 'Course',
   mission: 'Mission',
   submit: 'Submit',
   social: 'Social',
   custom: 'Custom',
-};
-
-const KIND_SECTION_TITLE: Record<QuestCardKind, string> = {
-  course: 'Course milestones',
-  mission: 'Self-report missions',
-  submit: 'Proof submissions',
-  social: 'Social signals',
-  custom: 'Community quests',
-};
-
-const KIND_SECTION_BLURB: Record<QuestCardKind, string> = {
-  course: 'Seal weekly lessons on the home dashboard, then claim shards here.',
-  mission: 'Trust-based quests. Mark them as done when finished.',
-  submit: 'Submit proof of work for community review.',
-  social: 'Quick wins by connecting external accounts.',
-  custom: 'Authored by Soul Key holders for the community.',
 };
 
 export default function QuestsPage() {
@@ -127,6 +110,8 @@ export default function QuestsPage() {
   const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>(null);
   const [authorPanelOpen, setAuthorPanelOpen] = useState(false);
   const [filter, setFilter] = useState<QuestFilter>('all');
+  const [filterOpen, setFilterOpen] = useState(false);
+  const filterRef = useRef<HTMLDivElement>(null);
   const { play } = useSound();
 
   const fetchWithAuth = useCallback(async (url: string) => {
@@ -224,6 +209,18 @@ export default function QuestsPage() {
     };
   }, [refreshQuestData, refreshAuthoredQuests]);
 
+  // Close the filter menu on outside click
+  useEffect(() => {
+    if (!filterOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (filterRef.current && !filterRef.current.contains(e.target as Node)) {
+        setFilterOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [filterOpen]);
+
   const allQuests = useMemo<UnifiedQuest[]>(() => {
     const builtIn: UnifiedQuest[] = QUEST_DEFINITIONS.map((quest) => {
       const claimedCount = Math.min(questCounts[quest.key] ?? 0, quest.targetCount);
@@ -243,7 +240,6 @@ export default function QuestsPage() {
         weekNumber: quest.weekNumber,
         icon: quest.icon,
         kind: questKindFromType(quest.questType),
-        badge: quest.weekNumber ? `Week ${quest.weekNumber}` : undefined,
       };
     });
 
@@ -263,7 +259,6 @@ export default function QuestsPage() {
         progressCount: q.progressCount,
         claimedCount: q.progressCount,
         kind: 'custom',
-        badge: handleLabel,
         authorLabel: handleLabel,
       };
     });
@@ -282,18 +277,6 @@ export default function QuestsPage() {
     return allQuests.filter((q) => q.kind === filter);
   }, [allQuests, filter]);
 
-  const groupedQuests = useMemo(() => {
-    const groups: Record<QuestCardKind, UnifiedQuest[]> = {
-      course: [],
-      mission: [],
-      submit: [],
-      social: [],
-      custom: [],
-    };
-    for (const quest of filteredQuests) groups[quest.kind].push(quest);
-    return groups;
-  }, [filteredQuests]);
-
   const totalQuestCount = allQuests.length;
   const completedQuestCount = useMemo(
     () => allQuests.filter((q) => (q.claimedCount ?? 0) >= (q.targetCount ?? 1)).length,
@@ -305,6 +288,9 @@ export default function QuestsPage() {
       .reduce((sum, q) => sum + q.points, 0),
     [allQuests],
   );
+
+  const filterCount = (key: QuestFilter) =>
+    key === 'all' ? totalQuestCount : countsByKind[key as QuestCardKind];
 
   const playerName = playerProfile?.username?.trim() || 'Player One';
   const playerInitial = playerName.charAt(0).toUpperCase();
@@ -340,10 +326,6 @@ export default function QuestsPage() {
     }
   }, [getAccessToken, handleQuestAuthored]);
 
-  const visibleSections = (Object.keys(groupedQuests) as QuestCardKind[]).filter(
-    (kind) => groupedQuests[kind].length > 0,
-  );
-
   return (
     <>
       <div className={styles.pageLayout}>
@@ -358,8 +340,8 @@ export default function QuestsPage() {
                     <Image
                       src={playerProfile.avatarUrl}
                       alt={playerName}
-                      width={56}
-                      height={56}
+                      width={48}
+                      height={48}
                       className={styles.heroAvatarImg}
                     />
                   ) : (
@@ -369,26 +351,21 @@ export default function QuestsPage() {
                 <div className={styles.heroNameBlock}>
                   <span className={styles.heroEyebrow}>operative</span>
                   <h1 className={styles.heroName}>{playerName}</h1>
-                  <span className={styles.heroSub}>
-                    {completedQuestCount === 0
-                      ? 'Pick a quest below to start banking shards.'
-                      : `${completedQuestCount} quest${completedQuestCount === 1 ? '' : 's'} cleared this season.`}
-                  </span>
                 </div>
               </div>
 
               <div className={styles.heroStats}>
                 <div className={styles.heroStat}>
-                  <span className={styles.heroStatLabel}>Shard balance</span>
+                  <span className={styles.heroStatLabel}>Shards</span>
                   <span className={styles.heroStatValueRow}>
-                    <Image src="/icons/ui-shard.svg" alt="" width={18} height={18} />
+                    <Image src="/icons/ui-shard.svg" alt="" width={15} height={15} />
                     <span className={styles.heroStatValue}>{playerProfile?.shardCount ?? 0}</span>
                   </span>
                 </div>
                 <div className={styles.heroStat}>
                   <span className={styles.heroStatLabel}>Cleared</span>
                   <span className={styles.heroStatValueRow}>
-                    <Trophy size={16} weight="fill" className={styles.heroStatIcon} />
+                    <Trophy size={14} weight="fill" className={styles.heroStatIcon} />
                     <span className={styles.heroStatValue}>
                       {completedQuestCount}
                       <span className={styles.heroStatMuted}>/{totalQuestCount}</span>
@@ -396,9 +373,9 @@ export default function QuestsPage() {
                   </span>
                 </div>
                 <div className={styles.heroStat}>
-                  <span className={styles.heroStatLabel}>On the table</span>
+                  <span className={styles.heroStatLabel}>On offer</span>
                   <span className={styles.heroStatValueRow}>
-                    <Lightning size={16} weight="fill" className={styles.heroStatIconBolt} />
+                    <Lightning size={14} weight="fill" className={styles.heroStatIconBolt} />
                     <span className={styles.heroStatValue}>{totalShardsAvailable}</span>
                   </span>
                 </div>
@@ -441,76 +418,81 @@ export default function QuestsPage() {
               </section>
             )}
 
-            {/* ── Filter pills ── */}
-            <nav className={styles.filterRow} aria-label="Filter quests by kind">
-              {FILTER_ORDER.map((key) => {
-                const count = key === 'all' ? totalQuestCount : countsByKind[key as QuestCardKind];
-                if (key !== 'all' && count === 0) return null;
-                const active = filter === key;
-                return (
-                  <button
-                    type="button"
-                    key={key}
-                    className={`${styles.filterPill} ${active ? styles.filterPillActive : ''}`}
-                    onClick={() => setFilter(key)}
-                    data-kind={key}
-                  >
-                    <span className={styles.filterPillDot} aria-hidden="true" />
-                    <span className={styles.filterPillLabel}>{FILTER_LABEL[key]}</span>
-                    <span className={styles.filterPillCount}>{count}</span>
-                  </button>
-                );
-              })}
-            </nav>
+            {/* ── Heading + compact filter ── */}
+            <div className={styles.boardHeader}>
+              <h2 className={styles.boardHeading}>Quests</h2>
 
-            {/* ── Quest sections ── */}
-            <div className={styles.questBoard}>
-              {visibleSections.length === 0 && (
+              <div className={styles.filterWrap} ref={filterRef}>
+                <button
+                  type="button"
+                  className={styles.filterTrigger}
+                  onClick={() => { play('click'); setFilterOpen((v) => !v); }}
+                  aria-haspopup="listbox"
+                  aria-expanded={filterOpen}
+                >
+                  <span className={styles.filterDot} data-kind={filter} aria-hidden="true" />
+                  <span className={styles.filterTriggerLabel}>{FILTER_LABEL[filter]}</span>
+                  <span className={styles.filterTriggerCount}>{filterCount(filter)}</span>
+                  <CaretDown
+                    size={13}
+                    weight="bold"
+                    className={`${styles.filterCaret} ${filterOpen ? styles.filterCaretOpen : ''}`}
+                  />
+                </button>
+
+                {filterOpen && (
+                  <div className={styles.filterMenu} role="listbox">
+                    {FILTER_ORDER.map((key) => {
+                      const count = filterCount(key);
+                      if (key !== 'all' && count === 0) return null;
+                      const active = filter === key;
+                      return (
+                        <button
+                          type="button"
+                          key={key}
+                          role="option"
+                          aria-selected={active}
+                          className={`${styles.filterOption} ${active ? styles.filterOptionActive : ''}`}
+                          onClick={() => { play('click'); setFilter(key); setFilterOpen(false); }}
+                        >
+                          <span className={styles.filterDot} data-kind={key} aria-hidden="true" />
+                          <span className={styles.filterOptionLabel}>{FILTER_LABEL[key]}</span>
+                          <span className={styles.filterOptionCount}>{count}</span>
+                          {active && <Check size={13} weight="bold" className={styles.filterOptionCheck} />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* ── Flat quest list ── */}
+            <div className={styles.questList}>
+              {filteredQuests.length === 0 ? (
                 <div className={styles.emptyState}>
                   <Target size={28} weight="duotone" />
                   <p>No quests match this filter yet.</p>
                 </div>
-              )}
-
-              {visibleSections.map((kind) => (
-                <section key={kind} className={styles.questSection} data-kind={kind}>
-                  <header className={styles.sectionHeading}>
-                    <div className={styles.sectionHeadingLeft}>
-                      <span className={styles.sectionEyebrow} data-kind={kind}>
-                        <span className={styles.sectionEyebrowDot} aria-hidden="true" />
-                        {FILTER_LABEL[kind]}
-                      </span>
-                      <h2 className={styles.sectionTitle}>{KIND_SECTION_TITLE[kind]}</h2>
-                      <p className={styles.sectionBlurb}>{KIND_SECTION_BLURB[kind]}</p>
-                    </div>
-                    <span className={styles.sectionMeta}>
-                      <ChartLineUp size={11} weight="bold" />
-                      {groupedQuests[kind].length} live
-                    </span>
-                  </header>
-
-                  <div className={styles.cardGrid}>
-                    {groupedQuests[kind].map((quest) => (
-                      <div key={quest.id} onMouseEnter={() => play('hover')}>
-                        <QuestCard
-                          title={quest.title}
-                          description={quest.desc}
-                          progressCurrent={quest.progressCount ?? 0}
-                          progressTotal={quest.targetCount ?? 1}
-                          points={quest.points}
-                          kind={quest.kind}
-                          badge={quest.badge}
-                          onOpen={() => handleAccept(quest)}
-                        />
-                      </div>
-                    ))}
+              ) : (
+                filteredQuests.map((quest) => (
+                  <div key={quest.id} onMouseEnter={() => play('hover')}>
+                    <QuestCard
+                      title={quest.title}
+                      description={quest.desc}
+                      progressCurrent={quest.progressCount ?? 0}
+                      progressTotal={quest.targetCount ?? 1}
+                      points={quest.points}
+                      kind={quest.kind}
+                      onOpen={() => handleAccept(quest)}
+                    />
                   </div>
-                </section>
-              ))}
+                ))
+              )}
+            </div>
 
-              <div className={styles.boardFooter}>
-                <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
-              </div>
+            <div className={styles.boardFooter}>
+              <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
             </div>
           </div>
         </main>

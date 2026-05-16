@@ -1,77 +1,49 @@
+/* QuestCard — mirrors the course mission card (WeekTasksView taskCard) */
+
 .card {
   position: relative;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid rgba(26, 29, 51, 0.08);
   border-radius: 14px;
-  border: 1px solid var(--color-border-subtle);
-  background: color-mix(in oklch, var(--color-surface-1) 96%, transparent);
-  box-shadow: var(--shadow-sm);
-  transition:
-    transform 0.2s cubic-bezier(0.25, 1, 0.5, 1),
-    box-shadow 0.2s ease,
-    border-color 0.2s ease,
-    background 0.2s ease;
-  isolation: isolate;
-}
-
-.card::before {
-  content: '';
-  position: absolute;
-  inset: 1px auto 1px 0;
-  width: 4px;
-  border-radius: inherit;
-  pointer-events: none;
-  background: #5168ff;
-}
-
-.card[data-kind='course']::before {
-  background: #5168ff;
-}
-.card[data-kind='submit']::before {
-  background: #ff9c51;
-}
-.card[data-kind='mission']::before {
-  background: #74c465;
-}
-.card[data-kind='social']::before {
-  background: #a871f4;
-}
-.card[data-kind='custom']::before {
-  background: #ff648e;
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .card:hover:not(.cardLocked) {
-  transform: translateY(-2px);
-  border-color: color-mix(in oklch, var(--color-primary) 20%, var(--color-border-subtle));
-  background: color-mix(in oklch, var(--color-surface-2) 74%, white);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 16px rgba(81, 104, 255, 0.08);
+  border-color: rgba(81, 104, 255, 0.15);
 }
 
 .cardComplete {
-  border-color: color-mix(in oklch, var(--color-tertiary) 32%, var(--color-border-subtle));
+  border-color: rgba(34, 197, 94, 0.22);
 }
 
 .cardLocked {
   opacity: 0.62;
 }
 
+/* Surface — full card is the button */
 .cardSurface {
   width: 100%;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  column-gap: 12px;
-  row-gap: 12px;
-  align-items: start;
-  padding: 14px 14px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: none;
   border: none;
-  background: transparent;
-  text-align: left;
-  cursor: pointer;
   border-radius: inherit;
+  cursor: pointer;
+  text-align: left;
   appearance: none;
   -webkit-appearance: none;
-  position: relative;
-  z-index: 1;
   text-transform: none;
   letter-spacing: normal;
+  transition: background 0.15s ease;
+}
+
+.cardSurface:hover:not(:disabled) {
+  background: rgba(26, 29, 51, 0.02);
 }
 
 .cardSurface:disabled {
@@ -79,210 +51,157 @@
 }
 
 .cardSurface:focus-visible {
-  outline: 2px solid var(--color-primary, #5168ff);
+  outline: 2px solid #5168ff;
   outline-offset: 2px;
 }
 
-.cardSurface:active:not(:disabled) {
-  transform: scale(0.997);
+/* Artwork thumbnail — gradient keyed to quest kind */
+.artwork {
+  display: block;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  box-shadow:
+    0 0 0 1px rgba(81, 104, 255, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    0 4px 10px rgba(81, 104, 255, 0.12);
+  transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-.topRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+.card:hover:not(.cardLocked) .artwork {
+  transform: translateY(-1px) scale(1.02);
+}
+
+.artwork[data-kind='course'] {
+  background:
+    radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.42), transparent 28%),
+    linear-gradient(135deg, #2a3b8f 0%, #5168ff 40%, #67d5ff 100%);
+}
+
+.artwork[data-kind='mission'] {
+  background:
+    radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.4), transparent 28%),
+    linear-gradient(135deg, #1d5b34 0%, #4ea968 44%, #9ee6a8 100%);
+}
+
+.artwork[data-kind='submit'] {
+  background:
+    radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.42), transparent 28%),
+    linear-gradient(135deg, #8a3d12 0%, #ff9c51 46%, #ffd2a6 100%);
+}
+
+.artwork[data-kind='social'] {
+  background:
+    radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.4), transparent 28%),
+    linear-gradient(135deg, #4a2a86 0%, #a871f4 46%, #d9bcff 100%);
+}
+
+.artwork[data-kind='custom'] {
+  background:
+    radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.4), transparent 28%),
+    linear-gradient(135deg, #8a2547 0%, #ff648e 46%, #ffbcd0 100%);
+}
+
+/* Title + preview */
+.info {
+  flex: 1;
   min-width: 0;
-}
-
-.kindChip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px 4px 8px;
-  border-radius: 999px;
-  border: 1px solid var(--color-border-subtle);
-  background: color-mix(in oklch, var(--color-surface-1) 92%, transparent);
-  font-family: var(--font-primary, 'Poppins', sans-serif);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  color: var(--color-text-soft);
-}
-
-.kindDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: #5168ff;
-}
-
-.card[data-kind='course'] .kindDot { background: #5168ff; }
-.card[data-kind='submit'] .kindDot { background: #ff9c51; }
-.card[data-kind='mission'] .kindDot { background: #74c465; }
-.card[data-kind='social'] .kindDot { background: #a871f4; }
-.card[data-kind='custom'] .kindDot { background: #ff648e; }
-
-.metaBadge {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: color-mix(in oklch, var(--color-text-dark) 6%, transparent);
-  color: var(--color-text-soft);
-  font-family: var(--font-primary, 'Poppins', sans-serif);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-}
-
-.pointsChip {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 10px 4px 7px;
-  border-radius: 999px;
-  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
-  border: 1px solid color-mix(in oklch, var(--color-primary) 18%, var(--color-border-subtle));
-  color: #1a234a;
-  justify-self: end;
-  align-self: start;
-}
-
-.pointsIcon {
-  width: 14px;
-  height: 14px;
-}
-
-.pointsValue {
-  font-family: var(--font-primary, 'Poppins', sans-serif);
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  font-variant-numeric: tabular-nums;
-}
-
-.body {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-  grid-column: 1 / -1;
+  gap: 3px;
 }
 
 .title {
-  margin: 0;
-  font-family: var(--font-primary, 'Poppins', sans-serif);
-  font-size: 17px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
   font-weight: 700;
-  color: #121935;
+  color: #1a1d33;
   line-height: 1.2;
-  letter-spacing: 0.005em;
-}
-
-.desc {
-  margin: 0;
-  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
-  font-size: 13.5px;
-  font-weight: 400;
-  line-height: 1.45;
-  color: var(--color-text-muted);
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.footer {
-  display: inline-grid;
-  grid-template-columns: minmax(136px, 172px) auto;
-  gap: 10px;
-  align-items: center;
-  margin-top: 2px;
-  max-width: 100%;
-  grid-column: 1 / -1;
-}
-
-.progressBlock {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  min-width: 0;
-  width: 100%;
-}
-
-.progressTrack {
-  flex: 1;
-  min-width: 0;
-  height: 6px;
-  border-radius: 999px;
-  background: color-mix(in oklch, var(--color-text-dark) 8%, transparent);
+.preview {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(26, 29, 51, 0.4);
+  line-height: 1.3;
   overflow: hidden;
-}
-
-.progressFill {
-  height: 100%;
-  border-radius: 999px;
-  background: #5168ff;
-  transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-.cardComplete .progressFill {
-  background: #4ea968;
-}
-
-.progressLabel {
-  font-family: var(--font-button, 'IBM Plex Mono', monospace);
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--color-text-muted);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.04em;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.cta {
+/* Right side — shard points / done / locked */
+.right {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.points {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 8px 14px;
+  padding: 5px 10px 5px 8px;
   border-radius: 999px;
-  background: #121935;
-  color: #f6f8ff;
-  font-family: var(--font-primary, 'Poppins', sans-serif);
+  background: color-mix(in oklch, #5168ff 12%, transparent);
+  border: 1px solid color-mix(in oklch, #5168ff 18%, rgba(26, 29, 51, 0.08));
+}
+
+.pointsValue {
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  transition: background 0.18s ease;
+  font-weight: 700;
+  color: #1a234a;
+  font-variant-numeric: tabular-nums;
 }
 
-.card:hover:not(.cardLocked) .cta {
-  background: color-mix(in oklch, #121935 88%, var(--color-primary));
-}
-
-.ctaComplete {
-  background: #4ea968 !important;
-}
-
-.deleteBtn {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 2;
+.checkDone {
   width: 28px;
   height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #22c55e;
+  color: #ffffff;
+  border-radius: 50%;
+}
+
+.lockChip {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1.5px solid rgba(26, 29, 51, 0.15);
+  color: rgba(26, 29, 51, 0.4);
+}
+
+/* Delete control for authored quests */
+.deleteBtn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  z-index: 2;
+  width: 26px;
+  height: 26px;
   border-radius: 999px;
   border: 1px solid rgba(255, 100, 142, 0.32);
-  background: rgba(255, 100, 142, 0.1);
+  background: #ffffff;
   color: #d4456b;
   display: grid;
   place-items: center;
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.12);
   transition: background 0.18s ease;
 }
 
 .deleteBtn:hover {
-  background: rgba(255, 100, 142, 0.22);
+  background: rgba(255, 100, 142, 0.12);
 }
 
 .deleteBtn:focus-visible {
@@ -290,86 +209,78 @@
   outline-offset: 2px;
 }
 
-@media (min-width: 768px) {
+@media (max-width: 480px) {
+  .card {
+    border-radius: 12px;
+  }
+
   .cardSurface {
-    padding: 16px 18px 14px;
-    column-gap: 14px;
-    row-gap: 14px;
+    padding: 12px 12px;
+    gap: 10px;
   }
 
   .title {
-    font-size: 18px;
-  }
-
-  .desc {
     font-size: 14px;
-  }
-
-  .footer {
-    grid-template-columns: minmax(150px, 188px) auto;
   }
 }
 
+/* ── Dark mode ── */
 :global([data-theme='dark']) .card {
-  border-color: var(--color-border-subtle);
-  background: color-mix(in oklch, var(--color-surface-1) 96%, transparent);
-  box-shadow: var(--shadow-md);
+  background: #1e1f2c;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 6px 24px rgba(0, 0, 0, 0.65);
+}
+
+:global([data-theme='dark']) .card:hover:not(.cardLocked) {
+  border-color: rgba(107, 128, 255, 0.28);
+  box-shadow:
+    0 0 0 1px rgba(107, 128, 255, 0.22),
+    0 8px 32px rgba(0, 0, 0, 0.7);
 }
 
 :global([data-theme='dark']) .cardComplete {
-  border-color: color-mix(in oklch, var(--color-tertiary) 28%, var(--color-border-subtle));
+  border-color: rgba(34, 197, 94, 0.28);
+}
+
+:global([data-theme='dark']) .cardSurface:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.03);
 }
 
 :global([data-theme='dark']) .title {
-  color: #f5f7ff;
+  color: rgba(227, 225, 238, 0.95);
 }
 
-:global([data-theme='dark']) .desc {
-  color: rgba(226, 234, 255, 0.7);
+:global([data-theme='dark']) .preview {
+  color: rgba(227, 225, 238, 0.55);
 }
 
-:global([data-theme='dark']) .kindChip {
-  background: rgba(20, 28, 56, 0.7);
-  border-color: rgba(150, 170, 255, 0.16);
-  color: rgba(226, 234, 255, 0.84);
-}
-
-:global([data-theme='dark']) .metaBadge {
+:global([data-theme='dark']) .points {
   background: rgba(81, 104, 255, 0.22);
-  color: rgba(226, 234, 255, 0.86);
+  border-color: rgba(150, 170, 255, 0.2);
 }
 
-:global([data-theme='dark']) .pointsChip {
-  background: linear-gradient(180deg, rgba(81, 104, 255, 0.28) 0%, rgba(81, 104, 255, 0.14) 100%);
-  border-color: rgba(150, 170, 255, 0.2);
+:global([data-theme='dark']) .pointsValue {
   color: #eaf0ff;
 }
 
-:global([data-theme='dark']) .progressTrack {
-  background: rgba(226, 234, 255, 0.12);
+:global([data-theme='dark']) .lockChip {
+  border-color: rgba(255, 255, 255, 0.15);
+  color: rgba(227, 225, 238, 0.45);
 }
 
-:global([data-theme='dark']) .progressLabel {
-  color: rgba(226, 234, 255, 0.62);
-}
-
-:global([data-theme='dark']) .cta {
-  background: #2a3868;
-  color: #f5f7ff;
-}
-
-:global([data-theme='dark']) .card:hover:not(.cardLocked) .cta {
-  background: #36488a;
+:global([data-theme='dark']) .deleteBtn {
+  background: #1e1f2c;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .card,
-  .progressFill,
-  .cta {
+  .artwork {
     transition: none;
   }
 
-  .card:hover:not(.cardLocked) {
+  .card:hover:not(.cardLocked) .artwork {
     transform: none;
   }
 }
