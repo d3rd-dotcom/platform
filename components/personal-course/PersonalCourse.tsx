@@ -18,7 +18,7 @@ interface PersonalCourseProps {
 }
 
 const WEEK_COLORS = ['#5168FF', '#7C3AED', '#0891B2', '#16A34A'];
-const STORY_IMAGE = '/stories/egg.png';
+const STORY_IMAGE = '/stories/week-01/egg.png';
 
 export default function PersonalCourse({
   course,
@@ -106,11 +106,6 @@ export default function PersonalCourse({
         </section>
 
         <section className={styles.practiceCard}>
-          <div className={styles.missionsHeadingRow} aria-hidden="true">
-            <span className={styles.missionsDivider} />
-            <h2 className={styles.missionsHeading}>Weekly Practice</h2>
-            <span className={styles.missionsDivider} />
-          </div>
           {week.focus && <p className={styles.focus}>{week.focus}</p>}
           <div className={styles.missionList}>
             {week.missions.map((mission) => (

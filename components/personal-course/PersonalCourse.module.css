@@ -163,28 +163,6 @@
   gap: 12px;
 }
 
-.missionsHeadingRow {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 0 0 2px;
-}
-
-.missionsDivider {
-  flex: 1;
-  height: 1px;
-  background: rgba(26, 29, 51, 0.1);
-}
-
-.missionsHeading {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 700;
-  color: #1a1d33;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-}
-
 .focus {
   margin: 0;
   font-size: 0.95rem;
@@ -380,10 +358,6 @@
 
 :global([data-theme="dark"]) .checkRow {
   color: #d6d9ee;
-}
-
-:global([data-theme="dark"]) .missionsDivider {
-  background: rgba(255, 255, 255, 0.1);
 }
 
 @media (max-width: 940px) {
