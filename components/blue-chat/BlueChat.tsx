@@ -1111,7 +1111,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
     // Quests
     if (has('quest', 'daily task', 'daily mission', 'daily quest', 'mission')) {
-      return "short daily tasks that earn shards — morning pages, X posts, course stuff. check /quests for what's live rn.";
+      return "short daily tasks that earn shards — morning pages, X posts, course stuff. check quests for what's live rn.";
     }
 
     // Surveys / assessments
@@ -1121,7 +1121,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
     // Research mode / DeSci / x402
     if (has('research mode', 'x402', 'paywall', 'paid paper', 'gpu') || (hasAll('research', 'desci')) || (hasAll('synthesis', 'source'))) {
-      return "source-backed synthesis on any topic — papers, mechanisms, evidence. go to /research.";
+      return "source-backed synthesis on any topic — papers, mechanisms, evidence. flip on research mode.";
     }
 
     // DeSci
@@ -1140,7 +1140,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       }
       return treasury.balance
         ? `treasury's at $${treasury.balance} USDC. markets run through Kalshi — governance decides the positions.`
-        : "markets on Kalshi, treasury-backed. head to /markets.";
+        : "markets on Kalshi, treasury-backed. head to markets.";
     }
 
     // Crypto prices
@@ -1174,27 +1174,27 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
     // Rewards / shop / loot
     if (has('reward', 'loot', 'loot box', 'prize', 'unlock') || (hasAll('shop', 'buy')) || (hasAll('spend', 'shard'))) {
-      return "where shards go — loot boxes, upgrades, season drops. check /rewards or /shop.";
+      return "where shards go — loot boxes, upgrades, season drops. check rewards.";
     }
 
     // Library
     if (has('library', 'reading', 'article', 'blog', 'book')) {
-      return "curated reads at /library — articles and papers that actually matter, no algorithm.";
+      return "curated reads in the library — articles and papers that actually matter, no algorithm.";
     }
 
     // Livestream / events
     if (has('livestream', 'live stream', 'broadcast', 'live event', 'lecture')) {
-      return "lectures, Q&As, curriculum events. check /livestream for what's up.";
+      return "lectures, Q&As, curriculum events. check the livestream for what's up.";
     }
 
     // Community page / Farcaster / social
     if (has('community', 'farcaster', 'leaderboard', 'other user', 'social')) {
-      return "see other users and shared milestones at /community. discord.gg/ZTRVCYwncs for the real-time convo.";
+      return "see other users and shared milestones over in community. discord.gg/ZTRVCYwncs for the real-time convo.";
     }
 
     // Profile / wallet / account
     if (has('profile', 'account setting', 'connect wallet', 'my wallet', 'username') || (hasAll('wallet', 'connect'))) {
-      return "wallet, username, on-chain state — all at /profile.";
+      return "wallet, username, on-chain state — all in your profile.";
     }
 
     // Blockchain / Base / contracts / Web3
@@ -1204,7 +1204,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
     // Wallet connection — gas / metamask
     if (has('gas fee', 'metamask', 'coinbase wallet', 'connect my wallet', 'transaction fail')) {
-      return "connect at /profile, you're on Base. if a tx fails just make sure you're on the right network with ETH for gas.";
+      return "connect in your profile, you're on Base. if a tx fails just make sure you're on the right network with ETH for gas.";
     }
 
     // Privacy / data consent
