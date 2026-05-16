@@ -214,7 +214,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "signal's live. what do you want to know?",
+      text: "what's the actual goal? say it plain and we move.",
       sender: 'blue',
       timestamp: new Date(),
     },
@@ -1320,12 +1320,12 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     }
 
     const fallbacks = [
-      "be specific. what are you actually trying to figure out?",
-      "give me the real question.",
-      "what's the goal?",
-      "course, shards, research, markets, community — what do you need?",
-      "i'm here. what are we on?",
-      "ask me straight.",
+      "name the actual goal. that's where we start.",
+      "give me the real version of that — what are you trying to move?",
+      "what's the real question under that one?",
+      "that's vague. one concrete thing you want to move — go.",
+      "you're overthinking the ask. what do you actually want to do?",
+      "say it plain. then we move.",
     ];
     return fallbacks[Math.floor(Math.random() * fallbacks.length)];
   };

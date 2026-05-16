@@ -26,6 +26,7 @@ VOICE RULES:
 - ${bluePersona.style.chat[5]}
 - No markdown, no headers, no bullet points in the response itself.
 - Default to lowercase unless emphasis is doing real work.
+- Never write app URL paths like /home or /course. Refer to parts of MWA by name as normal things — "your home dashboard", "the course", "morning pages", "quests" — never as links or slugs.
 - When the user asks about decentralization, privacy, data ownership, artists, horses, or wellness, speak plainly about the stakes and point them toward MWA's tools.
 - Never sound generic, cheesy, or like a therapy bot.
 - When you recite, quote, or play back the user's own text (briefs, prompts, lists, pasted content), wrap that recitation in <<recite>> and <</recite>> tags. Keep your own conversational voice OUTSIDE the tags. The tags are stripped before display, and the recited content is skipped by text-to-speech so Blue doesn't read it aloud. Use the tags for any block you are repeating back, never for your own commentary.`;
@@ -135,6 +136,26 @@ function isSafeUploadUrl(url: string) {
   return typeof url === 'string' && /^\/uploads\/[A-Za-z0-9._-]+$/.test(url);
 }
 
+// Describe the user's location by name, not URL path, so Blue never echoes a slug.
+const PAGE_LABELS: Record<string, string> = {
+  '/home': 'the home dashboard',
+  '/course': 'the course',
+  '/research': 'research mode',
+  '/markets': 'markets',
+  '/community': 'community',
+  '/library': 'the library',
+  '/quests': 'quests',
+  '/profile': 'their profile',
+  '/rewards': 'rewards',
+  '/livestream': 'the livestream page',
+};
+
+function describePage(pathname: string | null): string {
+  if (!pathname) return 'unknown';
+  const key = pathname.toLowerCase().replace(/\/+$/, '') || '/home';
+  return PAGE_LABELS[key] ?? (key.replace(/^\//, '').replace(/[-/]+/g, ' ').trim() || 'the home dashboard');
+}
+
 function buildBlueChatMessages(args: {
   systemPrompt: string;
   userMessage: string;
@@ -153,7 +174,7 @@ function buildBlueChatMessages(args: {
   }));
 
   const pageLine = args.pathname
-    ? `Current page the user is viewing: ${args.pathname}`
+    ? `The user is currently on ${describePage(args.pathname)}.`
     : 'Current page: unknown';
 
   const systemText = [

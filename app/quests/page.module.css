@@ -2,15 +2,11 @@
 
 .pageLayout {
   position: relative;
-  margin-left: var(--sidebar-width, 272px);
+  margin-left: var(--sidebar-width, 265px);
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   min-height: 100vh;
   min-height: 100dvh;
-  background-color: #fbf8ff;
-  background-image:
-    linear-gradient(rgba(81, 104, 255, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(81, 104, 255, 0.08) 1px, transparent 1px);
-  background-size: 32px 32px;
+  background: transparent;
 }
 
 .page {
@@ -482,7 +478,6 @@
 @media (max-width: 767px) {
   .pageLayout {
     margin-left: 0;
-    background-size: 24px 24px;
   }
 
   .content {
@@ -542,13 +537,6 @@
 }
 
 /* ── Dark theme ── */
-:global([data-theme='dark']) .pageLayout {
-  background-color: var(--color-surface-base);
-  background-image:
-    linear-gradient(rgba(81, 104, 255, 0.14) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(81, 104, 255, 0.14) 1px, transparent 1px);
-}
-
 :global([data-theme='dark']) .hero {
   border-color: var(--color-border-subtle);
   background: color-mix(in oklch, var(--color-surface-1) 94%, transparent);
