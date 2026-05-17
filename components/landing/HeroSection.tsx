@@ -63,7 +63,7 @@ export const HeroSection: React.FC = () => {
           <p className={styles.heroTextBadge}>100% of users earn rewards</p>
           <h1 className={styles.heroHeadline}>
             <span className={styles.heroHeadlineLead}>
-              <span>A Psychic Jump</span>
+              <span>Learn How Your</span>
               <span className={styles.heroHeadlineGifWrap} aria-hidden="true">
                 <Image
                   src="/images/walking.gif?v=2"
@@ -75,14 +75,14 @@ export const HeroSection: React.FC = () => {
               </span>
             </span>
             <span className={styles.heroHeadlineSubline}>
-              To Your <span className={styles.heroHeadlineItalic}>Evolution</span>
+              Mind Really Works
             </span>
           </h1>
           <p className={styles.heroSubtext}>
-            A modular 4-week Micro-University. Access Viral Oportunities, Transformative Bluesky Research. Reshape the future of humanity.
+            An AI research academy where people learn money, emotions, and habits through AI-guided behavioral research and rewards.
           </p>
           <p className={styles.heroSubtextSecondary}>
-            Backed by research: decentralized systems drive up to 900% faster collaboration, and accountability feedback has raised adherence from 67% to 86% in randomized trials.
+            Research backed: decentralized rewards drive 900% more participation; accountability feedback improved completion rates by 86%.
           </p>
           <div className={styles.heroActions}>
             <LandingEnterAcademyButton />
