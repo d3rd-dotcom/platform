@@ -8,8 +8,6 @@ export type CurrentUser = {
   createdAt: string;
   walletAddress: string;
   shardCount: number;
-  accountType: 'human' | 'agent';
-  operatorWallet: string | null;
 };
 
 /**
@@ -34,12 +32,9 @@ export async function getCurrentUserFromRequestCookie(): Promise<CurrentUser | n
         created_at: string;
         wallet_address: string;
         shard_count: number;
-        account_type: string | null;
-        operator_wallet: string | null;
       }>
     >(
-      `SELECT u.id, u.username, u.avatar_url, u.created_at, u.wallet_address, u.shard_count,
-              u.account_type, u.operator_wallet
+      `SELECT u.id, u.username, u.avatar_url, u.created_at, u.wallet_address, u.shard_count
        FROM users u
        WHERE LOWER(u.wallet_address) = LOWER(:walletAddress)
        LIMIT 1`,
@@ -59,8 +54,6 @@ export async function getCurrentUserFromRequestCookie(): Promise<CurrentUser | n
       createdAt: user.created_at,
       walletAddress: user.wallet_address,
       shardCount: user.shard_count,
-      accountType: user.account_type === 'agent' ? 'agent' : 'human',
-      operatorWallet: user.operator_wallet,
     };
   } catch (error) {
     console.warn('Auth failed:', error);
