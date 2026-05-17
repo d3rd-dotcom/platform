@@ -11,7 +11,7 @@ export default function LandingEnterAsAgentButton() {
 
   const handleEnterAsAgent = () => {
     play('click');
-    router.push('/home');
+    router.push('/agents');
   };
 
   return (

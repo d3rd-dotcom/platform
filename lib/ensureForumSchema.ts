@@ -111,6 +111,22 @@ async function _ensureForumSchemaImpl() {
     // Index might already exist
   }
 
+  // Agent accounts: operator-owned AI agent identities
+  try {
+    await sqlQuery(`ALTER TABLE users ADD COLUMN IF NOT EXISTS account_type VARCHAR(10) NOT NULL DEFAULT 'human'`);
+    await sqlQuery(`ALTER TABLE users ADD COLUMN IF NOT EXISTS operator_wallet VARCHAR(255) NULL`);
+    await sqlQuery(`ALTER TABLE users ADD COLUMN IF NOT EXISTS agent_bio TEXT NULL`);
+  } catch (err: any) {
+    if (!err?.message?.includes('already exists') && !err?.message?.includes('duplicate')) {
+      console.warn('Could not add agent account columns (may already exist):', err?.message);
+    }
+  }
+  try {
+    await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_users_operator_wallet ON users(operator_wallet)`);
+  } catch (err: any) {
+    // Index might already exist
+  }
+
   // Add shard_count column if it doesn't exist (for existing databases)
   try {
     await sqlQuery(`
