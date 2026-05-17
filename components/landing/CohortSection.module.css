@@ -43,36 +43,19 @@
   }
 }
 
-/* Sharp-edged board — matches FeaturesSection grid style */
+/* Soft rounded board — dark card on the light section */
 .board {
-  border: 1px solid rgba(26, 27, 56, 0.14);
-}
-
-.boardHeader {
-  padding: 16px 24px 12px;
-  border-bottom: 1px solid rgba(26, 27, 56, 0.1);
-}
-
-.eyebrow {
-  margin: 0;
-  font-family: var(--font-ibm-plex-mono);
-  font-size: 0.78rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(26, 27, 56, 0.55);
-}
-
-.eyebrowAccent {
-  font-family: var(--font-primary);
-  font-weight: 800;
-  color: var(--color-text-dark);
-  letter-spacing: 0.04em;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  overflow: hidden;
+  background: #1A1D33;
+  box-shadow: 0 34px 80px -34px rgba(8, 9, 22, 0.6);
 }
 
 /* Title panel */
 .titlePanel {
   padding: 36px 40px 32px;
-  border-bottom: 1px solid rgba(26, 27, 56, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .cohortTitle {
@@ -81,7 +64,7 @@
   line-height: 1.04;
   font-weight: var(--font-weight-bold);
   letter-spacing: -0.04em;
-  color: var(--color-text-dark);
+  color: #ffffff;
   margin: 0 0 14px;
   text-wrap: balance;
 }
@@ -92,13 +75,13 @@
   font-family: var(--font-primary);
   font-size: 16px;
   line-height: 1.65;
-  color: rgba(26, 27, 36, 0.65);
+  color: rgba(255, 255, 255, 0.66);
 }
 
 /* Content Grid */
 .cohortContentGrid {
   display: grid;
-  border-bottom: 1px solid rgba(26, 27, 56, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 @media (min-width: 1024px) {
@@ -111,13 +94,14 @@
 .cohortFeatures {
   display: flex;
   flex-direction: column;
-  border-right: 1px solid rgba(26, 27, 56, 0.1);
+  justify-content: center;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .cohortDivider {
-  width: 100%;
   height: 1px;
-  background-color: rgba(26, 27, 56, 0.1);
+  margin: 0 28px;
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 .cohortFeatureBlock {
@@ -140,13 +124,18 @@
   justify-content: center;
 }
 
+/* survey.svg is a flat black icon — invert it to white for the dark card */
+.cohortFeatureIconLight img {
+  filter: brightness(0) invert(1);
+}
+
 .cohortFeatureTitle {
   font-family: var(--font-primary);
   font-size: 0.9375rem;
   font-weight: 800;
   letter-spacing: 0.03em;
   text-transform: uppercase;
-  color: var(--color-text-dark);
+  color: #ffffff;
   margin: 0;
   line-height: 1.2;
 }
@@ -155,7 +144,7 @@
   font-family: var(--font-primary);
   font-size: 0.9375rem;
   line-height: 1.7;
-  color: rgba(26, 27, 36, 0.72);
+  color: rgba(255, 255, 255, 0.62);
   margin: 0;
 }
 
@@ -168,7 +157,7 @@
   .cohortDiamonds {
     display: block;
     position: relative;
-    overflow: hidden;
+    padding: 20px;
   }
 }
 
@@ -176,14 +165,17 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  gap: 0;
+  gap: 12px;
   height: 100%;
 }
 
 .cohortImgCell {
   position: relative;
-  min-height: 100%;
+  min-height: 200px;
   overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 28px -14px rgba(0, 0, 0, 0.6);
 }
 
 .cohortImg {
@@ -191,12 +183,13 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  filter: saturate(0.8);
-  transition: filter 0.3s ease;
+  filter: saturate(0.94);
+  transition: filter 0.4s ease, transform 0.5s ease;
 }
 
-.cohortImg:hover {
-  filter: saturate(1.05);
+.cohortImgCell:hover .cohortImg {
+  filter: saturate(1.06);
+  transform: scale(1.05);
 }
 
 /* Board footer / CTA */
@@ -274,7 +267,7 @@
   display: flex;
   justify-content: center;
   padding: 28px 24px 32px;
-  border-top: 1px solid rgba(26, 27, 56, 0.10);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .discordPill {

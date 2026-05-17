@@ -1,7 +1,7 @@
 .section {
   position: relative;
   width: 100%;
-  background-color: var(--color-primary);
+  background-color: rgba(0, 0, 0, 0.9);
   z-index: 1;
   overflow: hidden;
 }

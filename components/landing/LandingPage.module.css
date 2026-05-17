@@ -24,7 +24,7 @@
 /* Hero Section - Full-width two-column layout over 3D scene */
 .heroSection {
   position: relative;
-  min-height: 100vh;
+  min-height: calc(100vh - 172px);
   width: min(1280px, var(--landing-content-width));
   margin: 0 auto;
   padding: clamp(136px, 16vh, 176px) 0 0;
@@ -183,10 +183,10 @@
 
 .heroActions {
   display: flex;
-  align-items: center;
+  flex-direction: row;
+  align-items: stretch;
   justify-content: flex-start;
-  gap: 10px;
-  flex-wrap: nowrap;
+  gap: 12px;
 }
 
 .heroButton {
@@ -195,9 +195,9 @@
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 16px;
-  min-width: min(100%, 640px);
+  min-width: auto;
   padding: 18px 20px 18px 30px;
-  border-radius: 22px;
+  border-radius: 999px;
   border: 1.5px solid rgba(255, 255, 255, 0.3);
   background: var(--color-primary, #5168FF);
   color: #ffffff;
@@ -219,7 +219,7 @@
   justify-content: center;
   width: 64px;
   height: 64px;
-  border-radius: 18px;
+  border-radius: 50%;
   background: rgba(0, 0, 0, 0.33);
   color: #ffffff;
   flex: 0 0 auto;
@@ -232,8 +232,12 @@
 }
 
 .heroButtonSecondary {
-  background: #050505;
-  box-shadow: 0 4px 14px rgba(5, 5, 5, 0.24);
+  background: #202127;
+  box-shadow: 0 4px 14px rgba(15, 15, 18, 0.28);
+}
+
+.heroButtonSecondary .heroButtonArrow {
+  background: #3C3D45;
 }
 
 .heroButton::before {
@@ -295,8 +299,8 @@
 }
 
 .heroButtonSecondary:hover:not(:disabled) {
-  background: #141414;
-  box-shadow: 0 6px 20px rgba(5, 5, 5, 0.34);
+  background: #2B2C33;
+  box-shadow: 0 6px 20px rgba(15, 15, 18, 0.38);
 }
 
 .heroButton:hover:not(:disabled)::before {
@@ -327,7 +331,8 @@
   position: relative;
   width: 100%;
   margin: 0 auto;
-  padding: 72px clamp(20px, 4vw, 40px) 24px;
+  padding: 72px 0 24px;
+  background-color: rgba(0, 0, 0, 0.9);
   z-index: 2;
   box-sizing: border-box;
 }
@@ -336,9 +341,16 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  max-width: 1080px;
+  max-width: 1280px;
   margin: 0 auto;
+  padding: 0 16px;
   text-align: left;
+}
+
+@media (min-width: 768px) {
+  .ecosystemInner {
+    padding: 0 24px;
+  }
 }
 
 .ecosystemHeadline {
@@ -347,7 +359,7 @@
   font-weight: 800;
   line-height: 1.05;
   letter-spacing: 0;
-  color: var(--color-primary, #5168FF);
+  color: #FFFFFF;
   text-transform: uppercase;
   margin: 0 0 14px 0;
   text-shadow: none;
@@ -358,7 +370,7 @@
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.6;
-  color: rgba(11, 12, 18, 0.78);
+  color: rgba(255, 255, 255, 0.78);
   max-width: 720px;
   margin: 0 0 40px 0;
 }
@@ -388,6 +400,100 @@
   font-family: var(--font-primary);
   font-size: clamp(0.88rem, 1.15vw, 0.98rem);
   line-height: 1.5;
+}
+
+/* Apps showcase - blockchain node image + staggered wave rows */
+.appsLayout {
+  display: flex;
+  align-items: center;
+  gap: clamp(24px, 4vw, 56px);
+  width: 100%;
+}
+
+.appsImageCol {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+}
+
+.appsImage {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Takes all width left of the blockchain image so the 6 phone screenshots
+   can scale up to roughly the blockchain's height. Height is left to the
+   row's natural size; overflow:hidden crops the conveyor in/out. */
+.appsScrollCol {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: 18px 0;
+  overflow: hidden;
+}
+
+/* One cluster = the 6 screenshots of a single app.
+   Each shot cascades in top-down (staggered animation-delay),
+   the group holds, then slides out the bottom before the next drops in. */
+.appGroupRow {
+  display: flex;
+  gap: clamp(8px, 1.2vw, 14px);
+  align-items: center;
+  width: 100%;
+}
+
+.appWaveShot {
+  flex: 1 1 0;
+  min-width: 0;
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  border: 1px solid rgba(81, 104, 255, 0.22);
+  box-shadow: 0 16px 36px rgba(81, 104, 255, 0.18);
+  animation: appGroupCascade 6.5s cubic-bezier(0.33, 1, 0.68, 1) infinite both;
+  will-change: transform, opacity;
+}
+
+/* Smooth conveyor: drop in from above, hold, then slide out the bottom.
+   No fade-out — the shot stays opaque while it travels off-frame. */
+@keyframes appGroupCascade {
+  0% {
+    opacity: 0;
+    transform: translateY(-118%);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  64% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  82% {
+    opacity: 1;
+    transform: translateY(74%);
+  }
+  90% {
+    opacity: 0;
+    transform: translateY(118%);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-118%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .appWaveShot {
+    animation: none;
+  }
 }
 
 .heroValueCard {
@@ -765,7 +871,7 @@
     width: 100%;
     max-width: 100%;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
   }
 
   .heroButton {
@@ -776,13 +882,13 @@
     gap: 10px;
     font-size: 0.78rem;
     letter-spacing: 0.08em;
-    border-radius: 18px;
+    border-radius: 999px;
   }
 
   .heroButtonArrow {
     width: 50px;
     height: 50px;
-    border-radius: 14px;
+    border-radius: 50%;
   }
 
   .heroVisualFrame {
@@ -807,7 +913,7 @@
   }
 
   .ecosystemSection {
-    padding: 48px 20px 16px;
+    padding: 48px 0 16px;
   }
 
   .ecosystemHeadline {
@@ -817,6 +923,19 @@
 
   .ecosystemSubtext {
     font-size: 15px;
+  }
+
+  .appsLayout {
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .appsImage {
+    max-width: 270px;
+  }
+
+  .appsScrollCol {
+    width: 100%;
   }
 
   .ecosystemBanner {
@@ -898,7 +1017,7 @@
   .heroButtonArrow {
     width: 44px;
     height: 44px;
-    border-radius: 12px;
+    border-radius: 50%;
   }
 }
 

@@ -51,10 +51,10 @@
 .defeated .imageWrap,
 .expired .imageWrap {
   border-color: rgba(107, 114, 128, 0.4);
-  opacity: 0.7;
 }
 
-.waiting .imageWrap {
+.waiting .imageWrap,
+.skipped .imageWrap {
   opacity: 0.45;
 }
 
@@ -142,6 +142,22 @@
 
 .connectorDone .connectorLine {
   background: rgba(81, 104, 255, 0.35);
+}
+
+.connectorFailed .connectorLine {
+  background: rgba(186, 26, 26, 0.45);
+}
+
+/* Review rejected: line fills only halfway, the rest stays un-reached */
+.connectorHalfFailed .connectorLine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 50%;
+  background: rgba(186, 26, 26, 0.5);
+  border-radius: 2px;
 }
 
 .connectorAnimated .connectorLine::after {

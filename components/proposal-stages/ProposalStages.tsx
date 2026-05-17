@@ -5,7 +5,7 @@ import Image from 'next/image';
 import styles from './ProposalStages.module.css';
 
 type Stage1Variant = 'waiting' | 'analyzing' | 'approved' | 'rejected';
-type Stage2Variant = 'waiting' | 'processing' | 'success' | 'failed';
+type Stage2Variant = 'waiting' | 'processing' | 'success' | 'skipped';
 type Stage3Variant = 'waiting' | 'active' | 'completed' | 'defeated' | 'expired';
 
 interface ProposalStagesProps {
@@ -48,7 +48,7 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
       case 'processing': return 'Opening';
       case 'success':
         return (stage3 === 'defeated' || stage3 === 'completed' || stage3 === 'expired') ? 'Closed' : 'Live';
-      case 'failed': return 'Failed';
+      case 'skipped': return 'Not Held';
       default: return 'Unknown';
     }
   };
@@ -75,7 +75,6 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
 
   const getStage2Image = () => {
     if (stage2 === 'success') return EMOTE_ASSETS.happy;
-    if (stage2 === 'failed') return EMOTE_ASSETS.pain;
     return EMOTE_ASSETS.confused;
   };
 
@@ -86,9 +85,11 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
   };
 
   const isStage1Done = stage1 === 'approved' || stage1 === 'rejected';
-  const isStage2Done = stage2 === 'success' || stage2 === 'failed';
+  const isStage2Done = stage2 === 'success';
   const isStage1Waiting = stage1 === 'waiting' || stage1 === 'analyzing';
   const isStage2Waiting = stage2 === 'waiting' || stage2 === 'processing';
+  const isStage1Failed = stage1 === 'rejected';
+  const isStage2Failed = stage3 === 'defeated';
 
   return (
     <div className={styles.container}>
@@ -110,7 +111,7 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
       </div>
 
       {/* Connector 1 */}
-      <div className={`${styles.connector} ${isStage1Done ? styles.connectorDone : ''} ${isStage1Waiting ? styles.connectorAnimated : ''}`}>
+      <div className={`${styles.connector} ${isStage1Done && !isStage1Failed ? styles.connectorDone : ''} ${isStage1Failed ? styles.connectorHalfFailed : ''} ${isStage1Waiting ? styles.connectorAnimated : ''}`}>
         <div className={styles.connectorLine}>
           {isStage1Waiting && (
             <Image
@@ -143,7 +144,7 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
       </div>
 
       {/* Connector 2 */}
-      <div className={`${styles.connector} ${isStage2Done ? styles.connectorDone : ''} ${isStage2Waiting ? styles.connectorAnimated : ''}`}>
+      <div className={`${styles.connector} ${isStage2Done && !isStage2Failed ? styles.connectorDone : ''} ${isStage2Failed ? styles.connectorFailed : ''} ${isStage2Waiting ? styles.connectorAnimated : ''}`}>
         <div className={styles.connectorLine}>
           {isStage2Waiting && (
             <Image

@@ -112,7 +112,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
 
   const getStage2Variant = () => {
     if (status === 'rejected') {
-      return 'failed';
+      return 'skipped';
     }
     if (status === 'approved' && onChainProposalId) {
       return 'success'; // Approved and already on blockchain
@@ -129,9 +129,6 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   const isExpired = !!onChainData && onChainData.votingDeadline > 0 && Date.now() / 1000 > onChainData.votingDeadline && !onChainData.executed;
 
   const getStage3Variant = () => {
-    if (status === 'rejected') {
-      return 'defeated';
-    }
     if (status === 'completed' || onChainData?.executed) {
       return 'completed';
     }

@@ -17,16 +17,10 @@ export const CohortSection = () => {
       <div className={styles.cohortContainer}>
         <div className={styles.board}>
 
-          <div className={styles.boardHeader}>
-            <p className={styles.eyebrow}>
-              <span className={styles.eyebrowAccent}>Cohort</span>
-            </p>
-          </div>
-
           <div className={styles.titlePanel}>
-            <h2 className={styles.cohortTitle}>Join a team changing the future</h2>
+            <h2 className={styles.cohortTitle}>The Next-Gen Of Cyberculture</h2>
             <p className={styles.cohortSubtitle}>
-              A living cohort of researchers, designers, and builders — running real experiments, earning on-chain rewards, and publishing results no institution owns.
+              An intellectual refreshment. Over 4–12 weeks, you'll unlock rewards, access industry experts, run real experiments, and contribute to the future of scientific growth.
             </p>
           </div>
 
@@ -37,12 +31,12 @@ export const CohortSection = () => {
               <div className={styles.cohortFeatureBlock}>
                 <div className={styles.cohortFeatureHeader}>
                   <div className={styles.cohortFeatureIcon}>
-                    <Image src="/icons/refreshment.svg" alt="Accountability Partners" width={35} height={35} />
+                    <Image src="/icons/refreshment.svg" alt="" width={35} height={35} />
                   </div>
-                  <h3 className={styles.cohortFeatureTitle}>Paid Research & Participation</h3>
+                  <h3 className={styles.cohortFeatureTitle}>Participatory Research</h3>
                 </div>
                 <p className={styles.cohortFeatureText}>
-                  Every quest you complete is compensated. Your time, attention, and behavioral data have real market value — and here, you're the one who gets paid for them.
+                  Run real experiments as part of the cohort — every quest you complete adds to the research and pays you for your time.
                 </p>
               </div>
 
@@ -51,12 +45,12 @@ export const CohortSection = () => {
               <div className={styles.cohortFeatureBlock}>
                 <div className={styles.cohortFeatureHeader}>
                   <div className={styles.cohortFeatureIcon}>
-                    <Image src="/icons/atom.svg" alt="Community Public Goods" width={35} height={35} />
+                    <Image src="/icons/atom.svg" alt="" width={35} height={35} />
                   </div>
-                  <h3 className={styles.cohortFeatureTitle}>Decentralized Reward Ecosystem</h3>
+                  <h3 className={styles.cohortFeatureTitle}>DeFi Ecosystem</h3>
                 </div>
                 <p className={styles.cohortFeatureText}>
-                  Earn $Shards for every submission B.L.U.E. approves — paid directly to your wallet. No platform middleman, no delayed payouts, no permission required.
+                  Earn rewards for every approved submission, paid straight to your wallet.
                 </p>
               </div>
 
@@ -64,13 +58,13 @@ export const CohortSection = () => {
 
               <div className={styles.cohortFeatureBlock}>
                 <div className={styles.cohortFeatureHeader}>
-                  <div className={styles.cohortFeatureIcon}>
-                    <Image src="/icons/debate.svg" alt="Research-Grade Tools" width={35} height={35} />
+                  <div className={`${styles.cohortFeatureIcon} ${styles.cohortFeatureIconLight}`}>
+                    <Image src="/icons/survey.svg" alt="" width={35} height={35} />
                   </div>
-                  <h3 className={styles.cohortFeatureTitle}>Institutional Data & Infrastructure</h3>
+                  <h3 className={styles.cohortFeatureTitle}>Shared Infrastructure</h3>
                 </div>
                 <p className={styles.cohortFeatureText}>
-                  IRB-style protocols, verifiable on-chain credentials, and a behavioral dataset you co-own. The same infrastructure serious researchers use — without the gatekeeping.
+                  IRB-style protocols, onchain credentials, and a behavioral dataset you co-own.
                 </p>
               </div>
 

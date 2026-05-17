@@ -4,8 +4,8 @@ import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 
 const CompanyLogos = dynamic(() => import('./CompanyLogos'), { ssr: false });
-const CohortSection = dynamic(() =>
-  import('./CohortSection').then((mod) => mod.CohortSection),
+const EcosystemSection = dynamic(() =>
+  import('./HeroSection').then((mod) => mod.EcosystemSection),
   { ssr: false }
 );
 const FounderSection = dynamic(() =>
@@ -55,10 +55,10 @@ export function LandingDeferredSections() {
   return (
     <>
       <CompanyLogos />
-      <FeaturesSection />
+      <EcosystemSection />
       <FounderSection />
       <TestimonialSection />
-      <CohortSection />
+      <FeaturesSection />
       <PatternTextSection />
       <FAQSection />
       <LandingFooter />
