@@ -20,28 +20,28 @@ const WEEK_ONE_TYPING_DELAY_MS = 34;
 
 const SCENES: Scene[] = [
   {
-    id: 'shadow-artist',
-    body: 'Through the helmet, she can see herself at twenty-six \u2014 standing outside someone else\u2019s studio, not going in, carrying their finished work home like it was hers to protect. She used to do that for years. \u201cI stood that close to it,\u201d she says. \u201cI just never walked through the door.\u201d',
+    id: 'the-dream',
+    body: 'The dream always starts the same way \u2014 the sea standing up where the sky should be, koi drifting through the air between, pale and slow. Blue is already there, the way she always is, not surprised by any of it. She lifts a hand and a fish noses against her palm, then moves on. \u201cThey come every night,\u201d she says. \u201cWhy don\u2019t you ever catch one?\u201d',
     image: '/stories/week-01/scene-01.png',
   },
   {
-    id: 'artist-child',
-    body: 'The helmet shows her at seven, drawing on the floor of a room that smelled like chalk and someone else\u2019s rules \u2014 lines going wrong, kept going anyway. She\u2019d forgotten that part. \u201cShe was in there the whole time,\u201d Blue says. \u201cJust waiting to see if the room was safe.\u201d',
+    id: 'the-watching',
+    body: 'She wakes and the koi do not come with her. Something else does \u2014 a small drone, patient, lowering a pale blue light over her like it is reading the temperature of a room. One of her eyes goes bright with it; the other stays her own. Blue watches the scan finish. \u201cIt isn\u2019t hunting you,\u201d she says. \u201cIt\u2019s just taking notes.\u201d',
     image: '/stories/week-01/scene-02.png',
   },
   {
-    id: 'the-monsters',
-    body: 'She remembers the exact afternoon she stopped \u2014 someone she trusted looked at what she\u2019d made and said \u201calmost,\u201d not cruel, just certain, the way only someone who\u2019d already given up themselves could be. She put the work away that day. She didn\u2019t take it back out for eleven years.',
+    id: 'the-tether',
+    body: 'By the time the ground has turned to grey dust, the drone has folded itself into something with legs and a single red eye that does not blink. A cable runs from it to the circlet at her temple. She can no longer tell which of them the tether is holding in place. Blue crouches, looks at the red eye a long moment, and says nothing.',
     image: '/stories/week-01/scene-03.png',
   },
   {
-    id: 'the-censor',
-    body: 'The mirror in the helmet shows her the version that said yes \u2014 same face, same hands, a different door taken at seventeen. Behind her reflection a painter is still working, that particular posture of someone who forgot to be afraid. Blue keeps her palm against the glass for a long time.',
+    id: 'the-field',
+    body: 'Morning finds them in a field too green and too quiet, a single stone tower leaning at its far edge. The red-eyed thing keeps pace in the grass. Above, three more like it hang in the blue, unhurried. She had thought being seen would feel like a hand closing. It feels more like weather. \u201cThere,\u201d Blue says, and points at the tower.',
     image: '/stories/week-01/scene-04.png',
   },
   {
-    id: 'morning-pages',
-    body: 'A few days later the corridor again \u2014 the old tightness gone from her chest, but now she counts six doors, maybe seven, all of them lit. She thought the hard part was surviving the wound. She didn\u2019t know the harder part was choosing.',
+    id: 'the-tower',
+    body: 'Up close, the tower is older than anything should be allowed to get \u2014 mossed, patient, watched on every side by the small machines and unbothered by them. She stops at its base. The koi are not here. Nothing she has not already recorded is here. \u201cYou caught all of it,\u201d Blue says. \u201cWas it the keeping you wanted, or the letting go?\u201d',
     image: '/stories/week-01/scene-05.png',
   },
 ];

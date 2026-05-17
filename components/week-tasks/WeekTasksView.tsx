@@ -58,6 +58,9 @@ interface WeekTasksViewProps {
   onSealComplete?: (weekNumber: number, txHash: string | null) => void;
   onSectionSelect?: (sectionId: string) => void;
   focusedSectionId?: string | null;
+  onCompletionChange?: (weekNumber: number, completedSectionIds: string[]) => void;
+  syncedCompletedSections?: string[];
+  disableAutoSave?: boolean;
 }
 
 export default function WeekTasksView({
@@ -69,6 +72,9 @@ export default function WeekTasksView({
   onSealComplete,
   onSectionSelect,
   focusedSectionId,
+  onCompletionChange,
+  syncedCompletedSections,
+  disableAutoSave = false,
 }: WeekTasksViewProps) {
   const journalSections: JournalSection[] =
     weekSectionsMap[weekNumber] || (weekNumber === 2 ? week2Sections : week1Sections);
@@ -153,9 +159,21 @@ export default function WeekTasksView({
     })();
   }, [weekNumber, enablePersistence, getAuthHeaders]);
 
+  // Report completion changes upward so a sibling list view can mirror them live.
+  useEffect(() => {
+    if (isLoading) return;
+    onCompletionChange?.(weekNumber, Array.from(completedSections));
+  }, [completedSections, isLoading, weekNumber, onCompletionChange]);
+
+  // Mirror completions toggled in a sibling (panel) view.
+  useEffect(() => {
+    if (!syncedCompletedSections) return;
+    setCompletedSections(new Set(syncedCompletedSections));
+  }, [syncedCompletedSections]);
+
   // Auto-save
   useEffect(() => {
-    if (!hasLoadedRef.current || isSealed || !enablePersistence) return;
+    if (!hasLoadedRef.current || isSealed || !enablePersistence || disableAutoSave) return;
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     saveTimerRef.current = setTimeout(async () => {
       try {
@@ -169,7 +187,7 @@ export default function WeekTasksView({
       } catch { /* silent */ }
     }, 1500);
     return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current); };
-  }, [sectionData, blurtEntries, checklistStates, enjoyListEntries, timeMapActivities, lifePieValues, completedSections, weekNumber, isSealed, enablePersistence, collectProgressData, getAuthHeaders]);
+  }, [sectionData, blurtEntries, checklistStates, enjoyListEntries, timeMapActivities, lifePieValues, completedSections, weekNumber, isSealed, enablePersistence, disableAutoSave, collectProgressData, getAuthHeaders]);
 
   // Init checklists
   useEffect(() => {

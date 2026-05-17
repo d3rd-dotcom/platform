@@ -86,13 +86,6 @@ const SEED_POSTS: SeedPost[] = [
   },
 ];
 
-const CATEGORY_STYLE: Record<FeedCategory, { bg: string; color: string }> = {
-  'Funding':       { bg: 'rgba(81, 104, 255, 0.12)', color: '#7b93ff' },
-  'Mental Health': { bg: 'rgba(116, 196, 101, 0.14)', color: '#74C465' },
-  'Neuroscience':  { bg: 'rgba(167, 139, 250, 0.14)', color: '#a78bfa' },
-  'Research':      { bg: 'rgba(242, 160, 181, 0.14)', color: '#f2a0b5' },
-};
-
 function relTime(ts: number): string {
   const s = Math.floor((Date.now() - ts) / 1000);
   if (s < 60) return `${s}s ago`;
@@ -230,13 +223,20 @@ const TOP_CONTRIBUTORS = [
 ];
 
 const podTotal = FUNDING_PODS.reduce((total, pod) => total + pod.amount, 0);
-let podCursor = 0;
-const podDonutGradient = FUNDING_PODS.map((pod) => {
-  const start = podCursor;
-  const end = start + (pod.amount / podTotal) * 100;
-  podCursor = end;
-  return `${pod.accent} ${start.toFixed(2)}% ${end.toFixed(2)}%`;
-}).join(', ');
+const TREASURY_DONUT_GAP = 6;
+let podArcCursor = 0;
+const podArcs = FUNDING_PODS.map((pod) => {
+  const percent = (pod.amount / podTotal) * 100;
+  const rotation = podArcCursor * 3.6 - 90;
+  podArcCursor += percent;
+  const visible = Math.max(percent - TREASURY_DONUT_GAP, 1);
+  return {
+    title: pod.title,
+    accent: pod.accent,
+    dashArray: `${visible.toFixed(2)} ${(100 - visible).toFixed(2)}`,
+    rotation: rotation.toFixed(2),
+  };
+});
 
 function DashboardAvatarStack({
   participants = DASHBOARD_PARTICIPANTS,
@@ -548,56 +548,6 @@ export default function VotingPage() {
                         </article>
                       </div>
 
-                      <article className={`${styles.dashCard} ${styles.communityChatCard}`}>
-                        <div className={styles.communityChatHeader}>
-                          <h2 className={styles.communityChatTitle}>Community Chat</h2>
-                          <button className={styles.chatChannelButton} type="button" aria-label="Current channel general">
-                            <span>#</span>
-                            general
-                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                              <path d="m6 9 6 6 6-6" />
-                            </svg>
-                          </button>
-                          <div className={styles.chatInputMock} aria-label="Message composer">
-                            <span>Write a message...</span>
-                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                              <rect x="3" y="3" width="18" height="18" rx="4" />
-                              <path d="M12 16V8M8 11l4-4 4 4" />
-                            </svg>
-                          </div>
-                        </div>
-                        <div className={styles.communityChatBody}>
-                          <div className={styles.chatList}>
-                            {SEED_POSTS.slice(0, 4).map((post) => {
-                              const cat = CATEGORY_STYLE[post.category];
-                              return (
-                                <div key={post.id} className={styles.chatRow}>
-                                  <Image
-                                    src={post.avatar}
-                                    alt={post.author}
-                                    width={42}
-                                    height={42}
-                                    className={styles.chatAvatar}
-                                    unoptimized
-                                  />
-                                  <div className={styles.chatMessage}>
-                                    <div className={styles.chatMeta}>
-                                      <strong>{post.author.toLowerCase()}</strong>
-                                      <span className={styles.chatCategory} style={{ background: cat.bg, color: cat.color }}>
-                                        {post.category}
-                                      </span>
-                                      <time>{relTime(post.ts)}</time>
-                                    </div>
-                                    <p>{post.body}</p>
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                          <div className={styles.chatImagePanel} aria-hidden="true" />
-                        </div>
-                      </article>
-
                       <section id="active-proposals" className={styles.activeProposalsSection}>
                         <div className={styles.feedSectionLabel}>
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -682,10 +632,28 @@ export default function VotingPage() {
                         <div className={styles.treasuryBreakdownBody}>
                           <div
                             className={styles.treasuryBreakdownDonut}
-                            style={{ background: `conic-gradient(${podDonutGradient})` }}
+                            role="img"
                             aria-label="Treasury pod allocation chart"
                           >
-                            <span>${podTotal.toLocaleString()}</span>
+                            <svg viewBox="0 0 42 42" className={styles.treasuryDonutSvg} aria-hidden="true">
+                              <circle className={styles.treasuryDonutTrack} cx="21" cy="21" r="15.915" />
+                              {podArcs.map((arc) => (
+                                <circle
+                                  key={arc.title}
+                                  className={styles.treasuryDonutSegment}
+                                  cx="21"
+                                  cy="21"
+                                  r="15.915"
+                                  strokeDasharray={arc.dashArray}
+                                  transform={`rotate(${arc.rotation} 21 21)`}
+                                  style={{ stroke: arc.accent }}
+                                />
+                              ))}
+                            </svg>
+                            <div className={styles.treasuryDonutCenter}>
+                              <span className={styles.treasuryDonutValue}>${podTotal.toLocaleString()}</span>
+                              <span className={styles.treasuryDonutLabel}>Allocated</span>
+                            </div>
                           </div>
                           <div className={styles.treasuryBreakdownLegend}>
                             {FUNDING_PODS.map((pod) => (

@@ -274,6 +274,13 @@ export default function CoursePage() {
 
   const getWeekStatus = (week: number) => weekStatuses.find(w => w.weekNumber === week);
 
+  // Desktop renders the mission list and the task module as separate WeekTasksView
+  // instances. This mirrors completions toggled in the module back to the list.
+  const [liveCompletions, setLiveCompletions] = useState<Record<number, string[]>>({});
+  const handleCompletionChange = useCallback((week: number, completedSectionIds: string[]) => {
+    setLiveCompletions(prev => ({ ...prev, [week]: completedSectionIds }));
+  }, []);
+
   const handleFocus = useCallback((e: React.FocusEvent) => {
     const tag = (e.target as HTMLElement).tagName;
     if (tag === 'TEXTAREA' || tag === 'INPUT') play('hover');
@@ -565,6 +572,8 @@ export default function CoursePage() {
                   initialSealTxHash={getWeekStatus(resolvedViewWeek)?.sealTxHash}
                   onSealComplete={handleSealComplete}
                   onSectionSelect={isDesktop ? (id) => { setSelectedTaskId(id); setRightContent('task'); } : undefined}
+                  disableAutoSave={isDesktop}
+                  syncedCompletedSections={isDesktop ? liveCompletions[resolvedViewWeek] : undefined}
                 />
               </>
             )}
@@ -597,6 +606,7 @@ export default function CoursePage() {
                 initialIsSealed={getWeekStatus(resolvedViewWeek)?.isSealed}
                 initialSealTxHash={getWeekStatus(resolvedViewWeek)?.sealTxHash}
                 onSealComplete={handleSealComplete}
+                onCompletionChange={handleCompletionChange}
                 focusedSectionId={selectedTaskId}
               />
             )}

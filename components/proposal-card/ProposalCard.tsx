@@ -129,6 +129,9 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   const isExpired = !!onChainData && onChainData.votingDeadline > 0 && Date.now() / 1000 > onChainData.votingDeadline && !onChainData.executed;
 
   const getStage3Variant = () => {
+    if (status === 'rejected') {
+      return 'defeated';
+    }
     if (status === 'completed' || onChainData?.executed) {
       return 'completed';
     }
@@ -176,41 +179,43 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
     return 'waiting';
   };
 
-  const isDefeated = getStage3Variant() === 'defeated';
-  const isExpiredState = getStage3Variant() === 'expired';
+  const stage3 = getStage3Variant();
 
+  // The status pill mirrors the resolved Result stage so the two never disagree.
   const getStatusLabel = () => {
-    if (isExpiredState) return 'Expired';
-    if (isDefeated) return 'Defeated';
     switch (status) {
       case 'pending_review':
         return 'Under Review';
-      case 'approved':
-        return 'Approved';
       case 'rejected':
         return 'Failed';
-      case 'active':
-        return isExpired ? 'Expired' : 'Active';
       case 'completed':
         return 'Completed';
+      case 'approved':
+      case 'active':
+        if (stage3 === 'completed') return 'Approved';
+        if (stage3 === 'defeated') return 'Defeated';
+        if (stage3 === 'expired') return 'Expired';
+        if (stage3 === 'active') return 'Voting';
+        return 'Approved';
       default:
         return 'Unknown';
     }
   };
 
   const getStatusClass = () => {
-    if (isExpiredState) return 'expired';
-    if (isDefeated) return 'rejected';
     switch (status) {
       case 'pending_review':
         return 'pending';
-      case 'approved':
-        return 'approved';
       case 'rejected':
         return 'rejected';
-      case 'active':
-        return isExpired ? 'expired' : 'active';
       case 'completed':
+        return 'approved';
+      case 'approved':
+      case 'active':
+        if (stage3 === 'completed') return 'approved';
+        if (stage3 === 'defeated') return 'rejected';
+        if (stage3 === 'expired') return 'expired';
+        if (stage3 === 'active') return 'active';
         return 'approved';
       default:
         return 'pending';
@@ -274,7 +279,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
         <ProposalStages
           stage1={getStage1Variant()}
           stage2={getStage2Variant()}
-          stage3={getStage3Variant()}
+          stage3={stage3}
           blueReasoning={review?.reasoning || null}
           tokenAllocation={review?.tokenAllocation || null}
         />

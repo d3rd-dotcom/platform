@@ -2304,7 +2304,7 @@
   position: absolute;
   inset: -2px;
   z-index: 0;
-  background: url('/images/community-hero-bg.png') center / cover no-repeat;
+  background: url('/images/community-hero-bg.png') top / cover no-repeat;
   transform: scaleX(-1);
   transform-origin: center;
   pointer-events: none;
@@ -2460,33 +2460,80 @@
 }
 
 .treasuryBreakdownDonut {
-  width: 100px;
+  width: 108px;
   aspect-ratio: 1;
-  border-radius: 999px;
   display: grid;
   place-items: center;
   position: relative;
   margin: 0;
-  overflow: hidden;
-  box-shadow: inset 0 0 0 1px rgba(26, 27, 36, 0.08);
 }
 
-.treasuryBreakdownDonut::after {
-  content: '';
+.treasuryDonutSvg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.treasuryDonutTrack {
+  fill: none;
+  stroke: rgba(26, 27, 36, 0.07);
+  stroke-width: 4.5;
+}
+
+.treasuryDonutSegment {
+  fill: none;
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  filter: drop-shadow(0 1px 2.5px rgba(26, 27, 36, 0.2));
+  animation: treasuryDonutDraw 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.treasuryDonutSegment:nth-child(3) {
+  animation-delay: 0.1s;
+}
+
+.treasuryDonutSegment:nth-child(4) {
+  animation-delay: 0.2s;
+}
+
+@keyframes treasuryDonutDraw {
+  from {
+    stroke-dasharray: 0 100;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .treasuryDonutSegment {
+    animation: none;
+  }
+}
+
+.treasuryDonutCenter {
   position: absolute;
-  inset: 18px;
-  border-radius: inherit;
-  background: var(--color-surface-1, #f8f8fa);
-  box-shadow: inset 0 0 0 1px rgba(26, 27, 36, 0.08);
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  pointer-events: none;
 }
 
-.treasuryBreakdownDonut span {
-  position: relative;
-  z-index: 1;
+.treasuryDonutValue {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
+  letter-spacing: -0.01em;
   color: var(--dashboard-title-color);
+}
+
+.treasuryDonutLabel {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dashboard-faint-color);
 }
 
 .treasuryBreakdownLegend {
@@ -2535,10 +2582,44 @@
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
   gap: 8px;
-  box-shadow: inset 0 0 28px 4px rgba(129, 144, 255, 0.10), inset 0 1px 0 rgba(129, 144, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.12);
+  background-color: #0b0e1c;
+  box-shadow: 0 14px 36px rgba(26, 27, 36, 0.18);
+}
+
+/* Background photo — bleeds 2px past every edge so no sliver shows at the card border */
+.fundingVillageCard::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  z-index: 0;
+  background: url('/images/funding-village-bg.jpg') bottom center / cover no-repeat;
+  pointer-events: none;
+}
+
+/* Darkening overlay for text legibility over the photo */
+.fundingVillageCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(95deg, rgba(8, 10, 22, 0.88) 0%, rgba(8, 10, 22, 0.72) 34%, rgba(8, 10, 22, 0.42) 62%, rgba(8, 10, 22, 0.22) 100%),
+    linear-gradient(180deg, transparent 52%, rgba(8, 10, 22, 0.42) 100%);
+  pointer-events: none;
+}
+
+.fundingVillageCard .dashCardEyebrow {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.fundingVillageCard .dashCardTitle {
+  color: #ffffff;
 }
 
 .fundingVillageContent {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -2549,7 +2630,7 @@
   font-size: clamp(40px, 5vw, 58px);
   font-weight: 700;
   line-height: 1;
-  color: var(--dashboard-title-color);
+  color: #ffffff;
   letter-spacing: -0.04em;
   margin-top: 4px;
 }
@@ -2560,7 +2641,7 @@
   gap: 6px;
   width: fit-content;
   margin-top: 12px;
-  color: var(--color-primary);
+  color: #ffffff;
   font-family: var(--font-button);
   font-size: 11px;
   font-weight: 700;
@@ -2585,11 +2666,7 @@
 }
 
 .fundingVillageSticker {
-  width: 120px;
-  height: 120px;
-  object-fit: contain;
-  display: block;
-  filter: drop-shadow(0 12px 18px rgba(26, 27, 36, 0.14));
+  display: none;
 }
 
 .topContributorsList {
@@ -2684,7 +2761,7 @@
   background:
     linear-gradient(90deg, rgba(11, 14, 28, 0.94) 0%, rgba(11, 14, 28, 0.78) 35%, rgba(11, 14, 28, 0.30) 58%, rgba(11, 14, 28, 0.08) 100%),
     linear-gradient(180deg, rgba(11, 14, 28, 0.35) 0%, transparent 12%, transparent 88%, rgba(11, 14, 28, 0.3) 100%),
-    url('/images/campfire.png') right center / cover no-repeat;
+    url('/images/campfire.jpg') right center / cover no-repeat;
   border: 1px solid rgba(129, 144, 255, 0.28);
   color: #ffffff;
 }
@@ -5376,16 +5453,20 @@
   color: #b8f5d0;
 }
 
+:global([data-theme="dark"]) .fundingVillageCard {
+  background-color: #0b0e1c;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
 :global([data-theme="dark"]) .communityChatCard {
   background:
     linear-gradient(90deg, rgba(11, 14, 28, 0.94) 0%, rgba(11, 14, 28, 0.78) 35%, rgba(11, 14, 28, 0.30) 58%, rgba(11, 14, 28, 0.08) 100%),
     linear-gradient(180deg, rgba(11, 14, 28, 0.35) 0%, transparent 12%, transparent 88%, rgba(11, 14, 28, 0.3) 100%),
-    url('/images/campfire.png') right center / cover no-repeat;
+    url('/images/campfire.jpg') right center / cover no-repeat;
 }
 
-:global([data-theme="dark"]) .treasuryBreakdownDonut::after {
-  background: var(--color-surface-1, #16192e);
-  border-color: rgba(235, 232, 247, 0.08);
+:global([data-theme="dark"]) .treasuryDonutTrack {
+  stroke: rgba(235, 232, 247, 0.1);
 }
 
 :global([data-theme="dark"]) .chatBubble {

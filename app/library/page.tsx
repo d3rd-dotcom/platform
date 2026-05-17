@@ -12,8 +12,6 @@ interface Skill {
   category: string;
   added: string;
   type: string;
-  users: string;
-  rating: string;
   prompt: string;
 }
 
@@ -424,7 +422,7 @@ const ART_STYLES: ArtStyle[] = [
   {
     id: 'bright-anime',
     name: 'Academy Story Style',
-    description: 'Purely bright digital illustration, anime-influenced. Top-down close-up angle, character\'s head and face filling 70% of frame. Animated brown-skinned elf woman with long blue hair, blue eyebrows, purple eyes looking up directly at camera, one hand scratching her head, confused expression. White mechanical headset with red crescent moon on right side of head. Gold hoop earrings, gold chain star necklace, white dress shirt over atomic symbol graphic tee. Below her: desk covered in scattered research papers with black redacted government text. Background: space station laboratory, dark grey and dark purple tiled floor, green and purple bioluminescent fluid inside transparent computer testing equipment in the distance. Cinematic lighting, cool tones, detailed digital comic art.',
+    description: 'Purely bright digital illustration, anime-influenced. Detailed digital comic art with cinematic lighting and cool tones. Setting: a space station laboratory — dark grey and dark purple tiled floor, green and purple bioluminescent fluid inside transparent computer testing equipment in the distance. Set dressing: desks covered in scattered research papers with black redacted government text.',
     mood: 'Bright, Curious, Tech',
     useCase: 'Anime storytelling and larger illustration',
     image: '/academy-story.png',
@@ -440,8 +438,6 @@ const SKILLS: Skill[] = [
     category: 'Simulation Prompts',
     added: '2026-03-15',
     type: 'SIM',
-    users: '2,345',
-    rating: '4.8%',
     prompt: `You are participating in a behavioral research study. Read the following scenario carefully, then answer each question as honestly as possible.
 
 Scenario: A colleague you respect publicly takes credit for work you contributed to significantly. No one in the room knows the full story. You have 30 seconds before the meeting continues.
@@ -458,8 +454,6 @@ Reflect on the gap between your predicted behavior and your ideal behavior. What
     category: 'Simulation Prompts',
     added: '2026-03-10',
     type: 'SIM',
-    users: '1,892',
-    rating: '4.6%',
     prompt: `This is a timed decision simulation. You have 60 seconds to read and respond.
 
 Scenario: You are offered two options. Option A: receive $500 guaranteed right now. Option B: flip a coin — heads you receive $1,200, tails you receive nothing.
@@ -477,8 +471,6 @@ Now: replace the money with a career decision you're currently facing. Which opt
     category: 'Simulation Prompts',
     added: '2026-03-08',
     type: 'SIM',
-    users: '1,245',
-    rating: '4.7%',
     prompt: `You are going to temporarily inhabit the perspective of someone who occupies the social role most opposite to your own in a specific context you choose.
 
 Step 1 — Name your role: Describe a social role you currently hold (e.g., manager, youngest sibling, expert in the room, outsider, high earner).
@@ -496,8 +488,6 @@ Step 5 — Extract: What is one behavior of yours this reversal suggests you sho
     category: 'Simulation Prompts',
     added: '2026-03-05',
     type: 'SIM',
-    users: '856',
-    rating: '4.5%',
     prompt: `Choice architecture is the design of how options are presented — and it shapes decisions more than the options themselves.
 
 Choose a decision you made recently that felt "free" — a purchase, a behavioral change, a career move, a relationship choice.
@@ -517,8 +507,6 @@ Now answer: How much of your "choice" was actually a response to the architectur
     category: 'Simulation Prompts',
     added: '2026-03-02',
     type: 'SIM',
-    users: '1,123',
-    rating: '4.7%',
     prompt: `Research consistently shows that losses feel roughly twice as powerful as equivalent gains. This prompt is designed to surface your personal loss aversion ratio.
 
 Part 1 — Calibration:
@@ -538,8 +526,6 @@ Name a domain where you suspect loss aversion is running your behavior: relation
     category: 'Simulation Prompts',
     added: '2026-02-28',
     type: 'SIM',
-    users: '2,011',
-    rating: '4.9%',
     prompt: `This is a structured moral dilemma exercise. There are no correct answers — only revealing ones.
 
 Dilemma: A self-driving vehicle must choose between two unavoidable outcomes: swerving left kills one pedestrian (a child), swerving right kills five pedestrians (elderly adults). You are the programmer setting the decision algorithm in advance.
@@ -557,8 +543,6 @@ Final reflection: Which lens felt most natural to you? What does that reveal abo
     category: 'Simulation Prompts',
     added: '2026-02-25',
     type: 'SIM',
-    users: '978',
-    rating: '4.6%',
     prompt: `This experiment tests the gap between who you say you are and how you actually behave.
 
 Step 1 — Self-declaration:
@@ -583,8 +567,6 @@ Which is more accurate — the person you describe yourself as, or the person re
     category: 'Cognitive Dissonance Experiments',
     added: '2026-02-20',
     type: 'CDX',
-    users: '1,654',
-    rating: '4.8%',
     prompt: `Cognitive dissonance lives in the space between what you believe and what you do. This probe maps that gap.
 
 Step 1 — Name a belief you hold strongly. Something you would describe as a core value (e.g., environmental responsibility, fairness, honesty, health, community).
@@ -606,8 +588,6 @@ Step 5 — Resolution path. For each contradiction, name the path of least resis
     category: 'Cognitive Dissonance Experiments',
     added: '2026-02-18',
     type: 'CDX',
-    users: '945',
-    rating: '4.7%',
     prompt: `After making a decision, the mind works quickly to justify it — even when the decision was poor. This study examines that process.
 
 Choose a significant decision you made in the past six months that you're no longer certain was correct.
@@ -632,8 +612,6 @@ What does the gap between these two narratives tell you about how your mind prot
     category: 'Cognitive Dissonance Experiments',
     added: '2026-02-15',
     type: 'CDX',
-    users: '1,432',
-    rating: '4.6%',
     prompt: `Based on Festinger & Carlsmith's 1959 forced compliance experiment: when people are compelled to act against their beliefs for insufficient reward, they change their beliefs to match their actions.
 
 This prompt recreates that dynamic as a reflection exercise.
@@ -653,8 +631,6 @@ Step 5 — Festinger's question: If the reward disappeared tomorrow, would you c
     category: 'Cognitive Dissonance Experiments',
     added: '2026-02-12',
     type: 'CDX',
-    users: '1,876',
-    rating: '4.9%',
     prompt: `Most psychological distress is not caused by external events — it is caused by two internal values pulling in opposite directions simultaneously.
 
 Step 1 — Value pair identification:
@@ -683,8 +659,6 @@ Is the conflict actually irresolvable, or is there a frame in which both values 
     category: 'Cognitive Dissonance Experiments',
     added: '2026-02-10',
     type: 'CDX',
-    users: '1,203',
-    rating: '4.5%',
     prompt: `Daryl Bem's self-perception theory proposes that we learn about ourselves the same way we learn about others — by observing our own behavior. This test applies that framework to your self-concept.
 
 Step 1 — Behavioral inventory:
@@ -707,8 +681,6 @@ What behavior, if started or stopped today, would bring your observable self clo
     category: 'Cognitive Dissonance Experiments',
     added: '2026-02-08',
     type: 'CDX',
-    users: '789',
-    rating: '4.4%',
     prompt: `This prompt tracks how your attitudes shift over time and what mechanisms drive those shifts.
 
 Choose a topic where your attitude has changed significantly in the past two to five years. (Examples: a political position, a relationship pattern, a career belief, a spiritual view, a stance on a social issue.)
@@ -735,8 +707,6 @@ Authenticity audit:
     category: 'Cognitive Dissonance Experiments',
     added: '2026-02-05',
     type: 'CDX',
-    users: '1,567',
-    rating: '4.7%',
     prompt: `Cognitive dissonance requires mental resources to manage. Under high cognitive load, the capacity to maintain comfortable contradictions breaks down.
 
 This experiment creates that condition.
@@ -763,8 +733,6 @@ If you had to make all your major life decisions in a state of cognitive overloa
     category: 'Clinical & Personality Reflection',
     added: '2026-02-02',
     type: 'CPR',
-    users: '3,421',
-    rating: '4.9%',
     prompt: `Jung's shadow is everything we refuse to see in ourselves — traits we've disowned, rejected, or buried because they conflict with our self-image or social acceptability.
 
 Step 1 — Projection scan:
@@ -787,8 +755,6 @@ What does keeping this trait in the shadow protect you from? Whose disapproval? 
     category: 'Clinical & Personality Reflection',
     added: '2026-01-30',
     type: 'CPR',
-    users: '2,876',
-    rating: '4.8%',
     prompt: `Attachment theory proposes that early relational experiences create internal working models that shape how we seek and experience connection throughout life.
 
 Step 1 — Style identification:
@@ -816,8 +782,6 @@ Attachment styles are not fixed. What experience, relationship, or practice has 
     category: 'Clinical & Personality Reflection',
     added: '2026-01-28',
     type: 'CPR',
-    users: '2,154',
-    rating: '4.7%',
     prompt: `The inner critic is not random noise — it is a structured voice with a consistent worldview, a specific tone, and a protective function it believes serves you.
 
 Step 1 — Capture the voice:
@@ -842,8 +806,6 @@ What does the part of you that was just criticized actually need — not from th
     category: 'Clinical & Personality Reflection',
     added: '2026-01-25',
     type: 'CPR',
-    users: '1,345',
-    rating: '4.6%',
     prompt: `Defense mechanisms are unconscious strategies the psyche uses to manage anxiety, conflict, and painful reality. This audit maps yours.
 
 Review each mechanism and identify where it appears in your life:
@@ -869,8 +831,6 @@ For your top two mechanisms: What are they protecting you from? What would you h
     category: 'Clinical & Personality Reflection',
     added: '2026-01-22',
     type: 'CPR',
-    users: '1,987',
-    rating: '4.8%',
     prompt: `A core wound is not a single traumatic event — it is a conclusion the child drew about themselves or the world from early experiences that felt defining. That conclusion became a lens through which everything else is interpreted.
 
 Step 1 — The wound statement:
@@ -903,8 +863,6 @@ What would you say to the version of yourself who first drew that conclusion —
     category: 'Clinical & Personality Reflection',
     added: '2026-01-20',
     type: 'CPR',
-    users: '2,543',
-    rating: '4.9%',
     prompt: `Jung identified recurring patterns in the unconscious — archetypes — that organize psychic energy and shape how we relate to ourselves, others, and the world. This profiler maps your dominant and shadow archetypes.
 
 Step 1 — Primary archetype identification:
@@ -934,8 +892,6 @@ What would your life look like if your primary archetype and shadow archetype we
     category: 'Clinical & Personality Reflection',
     added: '2026-01-18',
     type: 'CPR',
-    users: '1,654',
-    rating: '4.7%',
     prompt: `Emotional regulation is not the suppression of emotion — it is the set of strategies you use to modulate emotional experience and expression. This prompt maps your habitual pattern.
 
 Step 1 — Inventory:
@@ -973,8 +929,6 @@ Which emotion, if you could experience it more fully without dysregulation, woul
     category: 'Social Dynamics Simulation',
     added: '2026-01-15',
     type: 'SDS',
-    users: '2,123',
-    rating: '4.8%',
     prompt: `Social identity theory proposes that much of human behavior is organized around group membership — and that the distinction between "us" and "them" activates profound psychological forces.
 
 Step 1 — Map your in-groups:
@@ -997,8 +951,6 @@ Research suggests that sustained, equal-status contact with out-group members re
     category: 'Social Dynamics Simulation',
     added: '2026-01-12',
     type: 'SDS',
-    users: '1,876',
-    rating: '4.7%',
     prompt: `Milgram's obedience studies showed that ordinary people would administer what they believed to be lethal electric shocks when instructed by an authority figure. This prompt applies that framework to everyday life.
 
 Step 1 — Authority inventory:
@@ -1021,8 +973,6 @@ Name one area where you currently defer to authority but believe your own judgme
     category: 'Social Dynamics Simulation',
     added: '2026-01-10',
     type: 'SDS',
-    users: '1,432',
-    rating: '4.6%',
     prompt: `Social proof is the tendency to determine correct behavior by observing what others do. This experiment maps where social proof runs your decisions without your awareness.
 
 Step 1 — Recent social proof audit:
@@ -1045,8 +995,6 @@ Name one preference, belief, or behavior you hold that runs counter to the domin
     category: 'Social Dynamics Simulation',
     added: '2026-01-08',
     type: 'SDS',
-    users: '987',
-    rating: '4.5%',
     prompt: `The bystander effect demonstrates that the presence of others reduces the likelihood that any individual will intervene in an emergency — each person assumes someone else will act.
 
 This prompt applies that framework to the non-emergency situations where it also operates.
@@ -1071,8 +1019,6 @@ Research shows that naming a specific person collapses the bystander effect. Whe
     category: 'Social Dynamics Simulation',
     added: '2026-01-05',
     type: 'SDS',
-    users: '1,234',
-    rating: '4.6%',
     prompt: `Group polarization is the phenomenon whereby group discussion tends to push members toward more extreme versions of their initial positions. This tracker maps that process in your own experience.
 
 Step 1 — Pre-group position:
@@ -1098,8 +1044,6 @@ Find the most compelling articulation of the position opposite to yours — not 
     category: 'Social Dynamics Simulation',
     added: '2026-01-03',
     type: 'SDS',
-    users: '1,654',
-    rating: '4.7%',
     prompt: `Based on Asch's conformity experiments, this protocol is designed to map your conformity threshold and build explicit resistance strategies.
 
 Step 1 — Conformity history:
@@ -1122,8 +1066,6 @@ Write a specific, concrete plan for the next situation where you feel pressure t
     category: 'Social Dynamics Simulation',
     added: '2025-12-30',
     type: 'SDS',
-    users: '2,345',
-    rating: '4.8%',
     prompt: `Power is not just formal authority — it is the ability to shape others' reality, access, options, and sense of self. This prompt maps the power dynamics operating in your current relationships.
 
 Step 1 — Relationship power audit:
@@ -1153,8 +1095,6 @@ Power reduces accountability — those with more power receive less honest feedb
     category: 'Cultural Bias & Opinion Mapping',
     added: '2025-12-28',
     type: 'CBO',
-    users: '3,234',
-    rating: '4.9%',
     prompt: `Implicit bias operates below conscious awareness — shaping attention, judgment, and behavior in ways that often contradict stated values. This probe is designed to surface it.
 
 Step 1 — Association mapping:
@@ -1182,8 +1122,6 @@ What structural process — not just intention — would interrupt the bias befo
     category: 'Cultural Bias & Opinion Mapping',
     added: '2025-12-25',
     type: 'CBO',
-    users: '2,456',
-    rating: '4.8%',
     prompt: `Cultural values are invisible until they collide. This exercise surfaces the value framework you absorbed through culture and examines where it creates friction with other frameworks.
 
 Step 1 — Value dimension self-assessment:
@@ -1209,8 +1147,6 @@ Choose your most certain position. Write a coherent, internally consistent case 
     category: 'Cultural Bias & Opinion Mapping',
     added: '2025-12-23',
     type: 'CBO',
-    users: '1,876',
-    rating: '4.7%',
     prompt: `Stereotype threat is the experience of being at risk of confirming a negative stereotype about a group you belong to. It reliably degrades performance — not through lack of ability, but through the cognitive and emotional load of managing the threat.
 
 Step 1 — Threat identification:
@@ -1237,8 +1173,6 @@ Stereotype threat is a structural problem created by the existence of the stereo
     category: 'Cultural Bias & Opinion Mapping',
     added: '2025-12-20',
     type: 'CBO',
-    users: '1,345',
-    rating: '4.6%',
     prompt: `Opinions feel like conclusions we reach through reasoning. Research suggests they are often formed through exposure, emotional response, and social alignment — and reasoning is applied afterward to justify them.
 
 Step 1 — Select a current opinion:
@@ -1265,8 +1199,6 @@ What piece of information, argument, or experience would actually change your mi
     category: 'Cultural Bias & Opinion Mapping',
     added: '2025-12-18',
     type: 'CBO',
-    users: '2,123',
-    rating: '4.7%',
     prompt: `Framing is the process by which media selects, emphasizes, and contextualizes information in ways that shape how audiences understand and evaluate issues. The same facts, differently framed, produce different conclusions.
 
 Step 1 — Issue selection:
@@ -1295,8 +1227,6 @@ After applying the missing frame, has any element of your opinion shifted? If no
     category: 'Cultural Bias & Opinion Mapping',
     added: '2025-12-15',
     type: 'CBO',
-    users: '1,987',
-    rating: '4.8%',
     prompt: `Confirmation bias is the tendency to search for, interpret, and remember information in ways that confirm existing beliefs while discounting information that contradicts them.
 
 Step 1 — Belief selection:
@@ -1323,8 +1253,6 @@ Find the most sophisticated, well-evidenced version of the argument against your
     category: 'Cultural Bias & Opinion Mapping',
     added: '2025-12-13',
     type: 'CBO',
-    users: '1,543',
-    rating: '4.6%',
     prompt: `Every culture provides a lens — a set of assumptions about human nature, social organization, and what constitutes a good life. This exercise makes your lens visible by placing it in comparison with others.
 
 Step 1 — Identify your default lens:
@@ -1347,340 +1275,6 @@ Apply the contrasting culture's criteria for a good life to your own. By their s
 Step 5 — Meta-lens question:
 Is there a position from which both lenses can be evaluated fairly — or does every evaluation already assume a third lens? What does that mean for the possibility of cultural objectivity?`,
   },
-
-  // AI & Automation
-  {
-    name: 'Self-Improving Skill Loop',
-    category: 'AI & Automation',
-    added: '2025-12-10',
-    type: 'AUTO',
-    users: '2,345',
-    rating: '4.8%',
-    prompt: `Design a self-improving feedback loop for a skill you are actively developing.
-
-Step 1 — Define the skill with precision. Not "become a better writer" — "write persuasive opening paragraphs for research proposals."
-
-Step 2 — Current baseline: What does your output look like today? Describe a recent example with honest assessment.
-
-Step 3 — Feedback architecture: How will you get accurate signal on quality? Who evaluates, by what criteria, on what timeline?
-
-Step 4 — Deliberate practice design: What is the highest-leverage practice activity — the smallest unit of the skill you can isolate and repeat with immediate feedback?
-
-Step 5 — Loop closure: After each practice iteration, what is the reflection protocol? How do you capture what changed and what still needs work?
-
-Step 6 — Plateau diagnosis: When progress stalls, what are the most likely causes? Build a diagnostic checklist in advance.
-
-Output: A structured 30-day skill development plan with weekly milestones, feedback sources, and a plateau protocol.`,
-  },
-  {
-    name: 'Workflow Orchestration',
-    category: 'AI & Automation',
-    added: '2025-12-08',
-    type: 'MULTI',
-    users: '1,892',
-    rating: '4.6%',
-    prompt: `Map and redesign a recurring workflow that currently requires significant manual coordination.
-
-Step 1 — Workflow selection: Choose a process you execute at least weekly that involves multiple steps, handoffs, or decision points.
-
-Step 2 — Current state mapping: Document every step, every actor, every input and output, every decision point. Be exhaustive.
-
-Step 3 — Friction inventory: Mark every step where time is wasted, errors occur, context is lost, or effort is duplicated.
-
-Step 4 — Automation candidates: Which steps are rule-based, repetitive, and have clear inputs and outputs?
-
-Step 5 — Human judgment requirements: Which steps require judgment, relationship, creativity, or ethical reasoning? These must remain human.
-
-Step 6 — Orchestration design: Design the new workflow. Which tools orchestrate which steps? How are handoffs structured? What are the failure modes and fallback protocols?
-
-Step 7 — Success metrics: What does a measurably better version of this workflow look like? Define before implementing.
-
-Output: A redesigned workflow diagram with automation map, human touchpoint rationale, and implementation priority order.`,
-  },
-  {
-    name: 'Multi-Agent Collaboration',
-    category: 'AI & Automation',
-    added: '2025-12-05',
-    type: 'AGENT',
-    users: '1,245',
-    rating: '4.7%',
-    prompt: `Design a multi-agent system to handle a complex task that currently requires a single human expert.
-
-Step 1 — Task decomposition: Select a complex task. Break it into discrete subtasks. For each, specify: inputs required, outputs produced, decision rules, and quality criteria.
-
-Step 2 — Agent specialization: For each subtask, define the ideal agent — what model, what system prompt, what tools, what context? Specialization produces better outputs than generalist agents on complex tasks.
-
-Step 3 — Coordination architecture: How do agents pass information, outputs, and flags between each other? Specify the handoff protocol, the shared memory structure, and the escalation path when an agent encounters ambiguity.
-
-Step 4 — Quality control layer: Design a reviewing agent or review protocol that catches errors before they propagate.
-
-Step 5 — Human-in-the-loop design: Where should a human be consulted? Build in clear checkpoints rather than running fully autonomous and reviewing only at the end.
-
-Step 6 — Failure mode analysis: What breaks if one agent fails? Design graceful degradation so a single agent failure does not corrupt the entire pipeline.
-
-Output: A multi-agent architecture specification with agent definitions, coordination protocol, quality control layer, and failure mode documentation.`,
-  },
-  {
-    name: 'Memory & Learning System',
-    category: 'AI & Automation',
-    added: '2025-12-03',
-    type: 'LEARN',
-    users: '856',
-    rating: '4.5%',
-    prompt: `Design a personal knowledge management system that actually improves your thinking over time — not just stores information.
-
-Step 1 — Capture philosophy: What is worth capturing? Define your criteria for what enters the system. Volume is the enemy of utility.
-
-Step 2 — Processing protocol: Raw capture is not knowledge. Design the processing step — when, how, and using what method do you transform raw input into a structured note, connection, or insight?
-
-Step 3 — Connection architecture: How does new knowledge link to existing knowledge? What tagging, linking, or mapping structure makes retrieval and connection possible?
-
-Step 4 — Review and decay: Knowledge without review decays. Design a spaced repetition or periodic review protocol that keeps your most important knowledge accessible without overwhelming your system.
-
-Step 5 — Output generation: A knowledge system that doesn't produce outputs is a graveyard. How does your system generate writing, decisions, conversations, or creative work from stored knowledge?
-
-Step 6 — System audit: At what cadence do you audit the system itself — removing outdated notes, restructuring categories, identifying what's missing?
-
-Output: A complete personal knowledge system design with capture criteria, processing protocol, connection architecture, review cadence, and output channels.`,
-  },
-
-  // Business & Marketing
-  {
-    name: 'Competitive Research Assistant',
-    category: 'Business & Marketing',
-    added: '2025-11-30',
-    type: 'RESEARCH',
-    users: '1,567',
-    rating: '4.6%',
-    prompt: `Conduct a structured competitive analysis for your product, project, or idea.
-
-Step 1 — Define your competitive landscape: Who are the direct competitors (same solution, same customer) and indirect competitors (different solution, same need)?
-
-Step 2 — Positioning audit: For each competitor, define:
-- Who they say they're for
-- What primary problem they claim to solve
-- Their pricing model and tier structure
-- Their dominant acquisition channel
-- The customer language they use in their messaging
-
-Step 3 — Differentiation mapping: Build a grid. Rows are competitors including yourself. Columns are the five to eight dimensions that matter most in this market. Fill in honestly.
-
-Step 4 — Gap analysis: Where does no competitor currently serve a real customer need? Where is the market underserved not by accident but by assumption?
-
-Step 5 — Positioning recommendation: Based on the map, where can you credibly occupy a distinct position? Distinct means: your target customer would choose you over alternatives for a specific, nameable reason.
-
-Step 6 — Threat prioritization: Which competitor is most dangerous to your position over the next 18 months, and why?
-
-Output: A competitive positioning map, gap analysis, and 12-month strategic response to your top threat.`,
-  },
-  {
-    name: 'Brand Guidelines Generator',
-    category: 'Business & Marketing',
-    added: '2025-11-28',
-    type: 'BRAND',
-    users: '654',
-    rating: '4.4%',
-    prompt: `Define the core guidelines that will make your brand communicable, consistent, and defensible.
-
-Step 1 — Brand truth: What is the single most honest thing you can say about what your organization does and why it matters? Not aspirational — true right now.
-
-Step 2 — Audience definition: Describe your primary audience with specificity. Not demographics — psychology. What do they want that they cannot easily articulate? What do they fear? What do they believe about themselves?
-
-Step 3 — Voice definition: Write three sentences your brand would say. Write three sentences your brand would never say. The contrast is more useful than the positive definition alone.
-
-Step 4 — Visual principles: Define three to five visual principles (not specific colors or fonts — the underlying logic). Example: "Every visual choice should make the complex feel approachable, not the simple feel complex."
-
-Step 5 — Consistency rules: What are the five non-negotiable rules that apply to every piece of communication? These should be specific enough to adjudicate real decisions.
-
-Step 6 — The brand test: Write the question you will ask of any piece of communication before publishing. One question that captures whether it is on-brand or off.
-
-Output: A one-page brand guidelines document usable by any collaborator.`,
-  },
-  {
-    name: 'Cohort Pitch Framework',
-    category: 'Business & Marketing',
-    added: '2025-11-25',
-    type: 'PITCH',
-    users: '987',
-    rating: '4.5%',
-    prompt: `Build a pitch for your cohort, program, or research initiative that is grounded, specific, and persuasive across multiple audience types.
-
-Step 1 — Core claim: State the single most important thing your program does for its participants. Make it specific and falsifiable — it should be possible to verify that it happened or didn't.
-
-Step 2 — Audience matrix: Define your three primary audience types. For each, identify:
-- The question they are trying to answer when evaluating you
-- The vocabulary that signals credibility to them
-- The proof they require before acting
-
-Step 3 — Evidence architecture: What evidence do you have? Sort it by type: testimonials, data, demonstrations, credentials, case studies. Match each evidence type to the audience that values it most.
-
-Step 4 — Objection library: List the five most common objections you encounter. Write a specific, honest response to each — not a reframe that avoids the objection, but a real answer.
-
-Step 5 — Call to action design: What is the exact next step you want each audience type to take? Make it as small and specific as possible.
-
-Step 6 — The one-paragraph version: Write the entire pitch in one paragraph. If you cannot do it in one paragraph, you do not yet know what you are saying.
-
-Output: A pitch framework with audience-specific variants, objection responses, and a one-paragraph master version.`,
-  },
-
-  // Productivity & Writing
-  {
-    name: 'Content Research Writer',
-    category: 'Productivity & Writing',
-    added: '2025-11-22',
-    type: 'CONTENT',
-    users: '2,876',
-    rating: '4.7%',
-    prompt: `Produce a research-backed piece of content on a topic where depth and accuracy matter.
-
-Step 1 — Topic definition: Define your topic with precision. What specific question are you answering? Broad topics produce shallow content.
-
-Step 2 — Audience and context: Who is reading this, in what context, with what prior knowledge, and what do they need to be able to do or understand after reading?
-
-Step 3 — Research protocol: Identify your primary sources. For each claim in your eventual piece, what is the evidence tier? (Primary research, secondary synthesis, expert opinion, anecdotal.) Define which tiers are acceptable for your audience and purpose.
-
-Step 4 — Structure design: What is the logical architecture? Map the argument, not just the topic areas. Each section should follow from the last with a reason.
-
-Step 5 — First draft discipline: Write a complete first draft without editing. Separate generation from refinement.
-
-Step 6 — Revision protocol: Read for: accuracy of claims, clarity of argument, appropriateness of evidence tier, and consistency of voice. Four separate passes.
-
-Step 7 — The one-sentence test: Before publishing, write the one sentence that captures what this piece actually argues. If you cannot, the structure needs revision.
-
-Output: A complete draft with source documentation and revision notes.`,
-  },
-  {
-    name: 'Brainstorming Assistant',
-    category: 'Productivity & Writing',
-    added: '2025-11-20',
-    type: 'IDEATION',
-    users: '1,654',
-    rating: '4.6%',
-    prompt: `Run a structured brainstorming session that produces genuinely novel ideas rather than recombinations of what you already know.
-
-Step 1 — Problem definition: Write the problem you're brainstorming on in three different ways. The reframings often contain the solution.
-
-Step 2 — Constraint removal: List every assumption you are making about what is possible, acceptable, or realistic. Then ignore those constraints temporarily and brainstorm in the unconstrained space.
-
-Step 3 — Analogical reasoning: What domains, industries, organisms, or historical periods have solved a structurally similar problem? What can be borrowed, inverted, or scaled from those solutions?
-
-Step 4 — Worst idea generation: List ten of the worst possible ideas for solving this problem. Then find the insight embedded in each bad idea — they often point toward unexplored territory.
-
-Step 5 — Forced combination: Take two ideas that seem unrelated and force a synthesis. What emerges?
-
-Step 6 — Evaluation protocol: After generating, evaluate each idea on: feasibility (can it be done?), novelty (has it been done?), leverage (does it actually solve the core problem?).
-
-Step 7 — Prioritization: From all generated ideas, identify the one with the highest potential regardless of feasibility. Then identify the one you can test fastest.
-
-Output: A ranked idea list with evaluation scores and a 48-hour test plan for the top two candidates.`,
-  },
-  {
-    name: 'Case Study Narrative Builder',
-    category: 'Productivity & Writing',
-    added: '2025-11-18',
-    type: 'CASE',
-    users: '1,345',
-    rating: '4.5%',
-    prompt: `Build a compelling case study that advances understanding, demonstrates method, and makes findings accessible to a non-specialist audience.
-
-Step 1 — Subject and scope: Define the case precisely. A case study answers a specific question through detailed examination of a specific instance. What is the question? What is the instance?
-
-Step 2 — Evidence inventory: What data, observations, documents, testimonials, or artifacts do you have access to? Audit completeness and gaps.
-
-Step 3 — Narrative architecture:
-- Setup: What was the situation before the intervention or event?
-- Complication: What problem, question, or disruption drove the study?
-- Investigation: What was examined, by what method, with what rigor?
-- Finding: What was discovered that was not already known?
-- Implication: What does this mean for theory, practice, or policy?
-
-Step 4 — Methodological transparency: A case study is only as credible as its method is visible. What did you observe? How? With what acknowledged limitations?
-
-Step 5 — Generalizability statement: What can be generalized from this case, and to what? Be specific about scope — overclaiming destroys credibility.
-
-Step 6 — Practitioner takeaway: If someone were to apply one insight from this case study to their own context, what would it be?
-
-Output: A structured case study draft with methodology section, narrative arc, and practitioner summary.`,
-  },
-  {
-    name: 'Research Paper Outliner',
-    category: 'Productivity & Writing',
-    added: '2025-11-15',
-    type: 'RESEARCH',
-    users: '2,234',
-    rating: '4.8%',
-    prompt: `Build the structural foundation for a research paper that makes a genuine contribution to its field.
-
-Step 1 — Contribution statement: What does this paper argue that has not been argued before, or argues with evidence or precision that did not previously exist? This is your north star — every section must serve it.
-
-Step 2 — Literature positioning: What are the three to five most directly relevant prior works? For each, state: what it argued, what it got right, and what gap your paper addresses.
-
-Step 3 — Method design: What is your method for generating or analyzing evidence? Why is this method appropriate to your research question? What are its limitations?
-
-Step 4 — Structure architecture:
-- Introduction: question, gap, contribution preview
-- Background/literature: what is already known
-- Method: how evidence was generated or selected
-- Findings: what the evidence shows
-- Discussion: what the findings mean and for whom
-- Conclusion: contribution statement, limitations, future work
-
-Step 5 — Argument flow: Within each section, write the one-sentence argument. The sections should form a logical chain — each following necessarily from the last.
-
-Step 6 — Objection anticipation: What are the three strongest objections a reviewer would raise? Where in the paper do you address each?
-
-Output: A complete annotated outline with argument chain, literature positioning, method justification, and objection map.`,
-  },
-
-  // Context & Management
-  {
-    name: 'Context Management',
-    category: 'Context & Management',
-    added: '2025-11-12',
-    type: 'CTX',
-    users: '2,345',
-    rating: '4.8%',
-    prompt: `Design a system for managing the information context required to work effectively on complex, long-horizon projects.
-
-Step 1 — Context audit: For your most demanding current project, list every category of information you need to hold in working memory to make good decisions. What do you currently forget, lose, or have to rediscover?
-
-Step 2 — Context decay analysis: Which information decays fastest (becomes stale or irrelevant)? Which is stable and reusable? Design different retention and refresh protocols for each.
-
-Step 3 — External storage design: What information should be externalized into documentation, structured notes, or shared systems rather than held in individual memory?
-
-Step 4 — Context transfer protocol: When handing a project to a collaborator or returning to it after time away, what information must be transferred to restore full working context? Write that transfer protocol.
-
-Step 5 — Meeting and decision context: Before each significant meeting or decision, what context must be loaded? Design a pre-session context-loading routine that takes less than 10 minutes.
-
-Step 6 — Context overload response: When you are holding too much context simultaneously, what is your triage protocol? Which information gets dropped first, and how do you recover it when needed?
-
-Output: A context management system with storage architecture, refresh cadence, transfer protocol, and overload triage plan.`,
-  },
-  {
-    name: 'Root Cause Tracing',
-    category: 'Context & Management',
-    added: '2025-11-10',
-    type: 'DEBUG',
-    users: '1,432',
-    rating: '4.6%',
-    prompt: `Apply structured root cause analysis to a recurring problem in your work or life.
-
-Step 1 — Problem statement precision: Describe the problem in one sentence. Include what is happening, where, when, and at what frequency. Vague problem statements produce vague causes.
-
-Step 2 — Symptom vs. cause separation: List everything you observe about this problem. Separate observations (symptoms) from explanations (hypothesized causes). Do not conflate them.
-
-Step 3 — Five whys cascade: Take your most plausible surface cause and ask why it exists. Take that answer and ask why again. Repeat five times or until you reach a root cause — a cause that, if removed, would prevent the problem from recurring.
-
-Step 4 — Causal tree expansion: The five whys produces a single chain. Reality is usually a tree. Map the other causal branches — the contributing factors that are not the root but enable it.
-
-Step 5 — Root cause verification: Test your root cause hypothesis. If this cause is removed or modified, does the problem resolve? What evidence would confirm or disconfirm your hypothesis?
-
-Step 6 — Solution design: Interventions at symptom level produce temporary relief. Interventions at root cause level produce resolution. Design interventions at each level — triage now, resolution over time.
-
-Step 7 — Recurrence prevention: What monitoring system detects early signs of this problem recurring before it reaches full expression?
-
-Output: A root cause map with causal tree, verified root hypothesis, and tiered intervention plan.`,
-  },
 ];
 
 const CATEGORY_FILTERS = [
@@ -1690,10 +1284,6 @@ const CATEGORY_FILTERS = [
   'Clinical & Personality Reflection',
   'Social Dynamics Simulation',
   'Cultural Bias & Opinion Mapping',
-  'AI & Automation',
-  'Business & Marketing',
-  'Productivity & Writing',
-  'Context & Management',
 ];
 
 export default function LibraryPage() {
@@ -1957,7 +1547,7 @@ export default function LibraryPage() {
                   </svg>
                   <input
                     type="text"
-                    placeholder="Search skills..."
+                    placeholder="Search prompts..."
                     className={styles.searchInput}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -2011,7 +1601,7 @@ export default function LibraryPage() {
               {/* Results Count */}
               <div className={styles.resultsInfo}>
                 <p className={styles.resultsText}>
-                  {filteredSkills.length} skill{filteredSkills.length !== 1 ? 's' : ''} found
+                  {filteredSkills.length} prompt{filteredSkills.length !== 1 ? 's' : ''} found
                 </p>
               </div>
 
@@ -2021,12 +1611,10 @@ export default function LibraryPage() {
                   <table className={styles.skillsTable}>
                     <thead>
                       <tr>
-                        <th>SKILL</th>
+                        <th>PROMPT</th>
                         <th>CATEGORY</th>
                         <th>ADDED</th>
                         <th>TYPE</th>
-                        <th>USERS</th>
-                        <th>RATING</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -2046,14 +1634,12 @@ export default function LibraryPage() {
                             <td className={styles.categoryCell}>{skill.category}</td>
                             <td>{skill.added}</td>
                             <td>{skill.type}</td>
-                            <td>{skill.users}</td>
-                            <td>{skill.rating}</td>
                           </tr>
                         ))
                       ) : (
                         <tr>
-                          <td colSpan={6} className={styles.emptyState}>
-                            No skills found
+                          <td colSpan={4} className={styles.emptyState}>
+                            No prompts found
                           </td>
                         </tr>
                       )}
@@ -2067,7 +1653,7 @@ export default function LibraryPage() {
 
         {showCopyNotification && (
           <div className={`${styles.copyNotification} ${isFadingOut ? styles.fadeOut : ''}`}>
-            ✓ Copied to clipboard
+            Copied to clipboard
           </div>
         )}
       </main>
