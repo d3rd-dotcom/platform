@@ -21,7 +21,7 @@ export const CohortSection = () => {
             <div className={styles.titlePanelText}>
               <h2 className={styles.cohortTitle}>The Next-Gen Of Cyberculture</h2>
               <p className={styles.cohortSubtitle}>
-                An intellectual refreshment. Over 4–12 weeks, you'll unlock rewards, access industry experts, run real experiments, and contribute to the future of scientific growth.
+                An intellectual refreshment. Over 4–12 weeks, you will unlock rewards, access industry experts, run real experiments, and contribute to the future of scientific growth.
               </p>
             </div>
             <a
