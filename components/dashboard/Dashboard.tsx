@@ -11,11 +11,6 @@ interface DashboardProps {
   initialIntake?: Record<string, string>;
 }
 
-interface Profile {
-  username: string | null;
-  avatarUrl: string | null;
-}
-
 interface LeaderUser {
   rank: number;
   username: string;
@@ -153,26 +148,9 @@ function DashboardRadar() {
   );
 }
 
-export default function Dashboard({ initialIntake }: DashboardProps) {
-  const [profile, setProfile] = useState<Profile | null>(null);
+export default function Dashboard(_props: DashboardProps) {
   const [leaderboard, setLeaderboard] = useState<LeaderUser[]>([]);
-  const [intake, setIntake] = useState<Record<string, string>>(initialIntake ?? {});
-  const [soulOpen, setSoulOpen] = useState(false);
-  const [soulDraft, setSoulDraft] = useState('');
   const [eggShaking, setEggShaking] = useState(false);
-
-  const soul = intake.voiceContext ?? '';
-
-  useEffect(() => {
-    fetch('/api/me', { credentials: 'include', cache: 'no-store' })
-      .then((r) => r.json())
-      .then((d) => {
-        if (d?.user) {
-          setProfile({ username: d.user.username ?? null, avatarUrl: d.user.avatarUrl ?? null });
-        }
-      })
-      .catch(() => {/* guest — placeholder profile */});
-  }, []);
 
   useEffect(() => {
     fetch('/api/leaderboard')
@@ -180,17 +158,6 @@ export default function Dashboard({ initialIntake }: DashboardProps) {
       .then((d) => setLeaderboard(Array.isArray(d.users) ? d.users : []))
       .catch(() => {/* leaderboard is best-effort */});
   }, []);
-
-  const saveSoul = useCallback(() => {
-    const next = { ...intake, voiceContext: soulDraft.trim() };
-    setIntake(next);
-    setSoulOpen(false);
-    fetch('/api/course/intake', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ answers: next }),
-    }).catch(() => {/* guests aren't persisted — local state still updates */});
-  }, [intake, soulDraft]);
 
   const pokeEgg = useCallback(() => {
     setEggShaking(true);
@@ -219,42 +186,10 @@ export default function Dashboard({ initialIntake }: DashboardProps) {
     window.setTimeout(() => ctx.close(), 900);
   }, []);
 
-  const displayName = profile?.username || 'Welcome';
-  const initial = displayName.trim().charAt(0).toUpperCase() || 'M';
-
   return (
     <div className={styles.dashboard}>
-      {/* ── Left: profile + radar ── */}
+      {/* ── Left: DNA radar ── */}
       <aside className={styles.leftCol}>
-        <div className={styles.profileCard}>
-          <div className={styles.profileContent}>
-            <div className={styles.profileAvatar}>
-              {profile?.avatarUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={profile.avatarUrl} alt={displayName} className={styles.profileAvatarImg} />
-              ) : (
-                <span className={styles.profileAvatarFallback}>{initial}</span>
-              )}
-            </div>
-            <span className={styles.profileName}>{displayName}</span>
-            <span className={styles.profileMeta}>Active Lab Guest</span>
-            <button
-              type="button"
-              className={styles.soulBtn}
-              onClick={() => {
-                setSoulDraft(soul);
-                setSoulOpen(true);
-              }}
-            >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <path d="M14 2v6h6M9 13h6M9 17h4" />
-              </svg>
-              Soul.md
-            </button>
-          </div>
-        </div>
-
         <div className={styles.radarCard}>
           <span className={styles.cardLabel}>Your DNA</span>
           <p className={styles.radarHint}>
@@ -274,7 +209,7 @@ export default function Dashboard({ initialIntake }: DashboardProps) {
             aria-label="Poke your egg"
           >
             <Image
-              src="/stories/week-01/egg.png"
+              src="/images/egg.png"
               alt=""
               fill
               className={`${styles.eggImg}${eggShaking ? ` ${styles.eggShake}` : ''}`}
@@ -337,33 +272,6 @@ export default function Dashboard({ initialIntake }: DashboardProps) {
           />
         </div>
       </aside>
-
-      {/* ── Soul.md popup ── */}
-      {soulOpen && (
-        <div className={styles.modalOverlay} onClick={() => setSoulOpen(false)}>
-          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-            <h2 className={styles.modalTitle}>Soul.md</h2>
-            <p className={styles.modalHint}>
-              Context Blue keeps about you. She reads this so her help stays specific to who you are.
-            </p>
-            <textarea
-              className={styles.modalTextarea}
-              value={soulDraft}
-              onChange={(e) => setSoulDraft(e.target.value)}
-              rows={11}
-              placeholder="Anything you want Blue to know — what you're working through, what matters, what to avoid…"
-            />
-            <div className={styles.modalActions}>
-              <button type="button" className={styles.modalCancel} onClick={() => setSoulOpen(false)}>
-                Cancel
-              </button>
-              <button type="button" className={styles.modalSave} onClick={saveSoul}>
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

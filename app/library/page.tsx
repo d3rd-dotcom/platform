@@ -432,858 +432,189 @@ const ART_STYLES: ArtStyle[] = [
 const DESCRIPTION_MAX = ART_STYLES[0].description.length;
 
 const SKILLS: Skill[] = [
-  // Simulation Prompts
   {
-    name: 'Behavioral Prediction Scenario',
+    name: 'Company Editorial Style Guide',
     category: 'Simulation Prompts',
-    added: '2026-03-15',
+    added: '2026-05-17',
     type: 'SIM',
-    prompt: `You are participating in a behavioral research study. Read the following scenario carefully, then answer each question as honestly as possible.
-
-Scenario: A colleague you respect publicly takes credit for work you contributed to significantly. No one in the room knows the full story. You have 30 seconds before the meeting continues.
-
-1. What do you predict you would actually do in this moment — not what you think you should do?
-2. What factors would influence your response most: the relationship, the audience, the stakes, or your mood?
-3. After the meeting, how do you predict you would process this? Silence, confrontation, rumination?
-4. If a friend described this exact scenario to you, what would you advise them to do — and how does that differ from your own predicted behavior?
-
-Reflect on the gap between your predicted behavior and your ideal behavior. What does that gap reveal?`,
+    prompt: MENTAL_WEALTH_BRAND_BOOK_V4,
   },
   {
-    name: 'Decision Under Pressure Simulator',
+    name: 'BCI Neuralmapping',
     category: 'Simulation Prompts',
-    added: '2026-03-10',
+    added: '2026-05-17',
     type: 'SIM',
-    prompt: `This is a timed decision simulation. You have 60 seconds to read and respond.
+    prompt: `Design a graduate-level research protocol for an exploratory Mental Wealth Academy experiment based on the article "Neuroplastic Synapses Forming Live In Social Dating Experiments."
 
-Scenario: You are offered two options. Option A: receive $500 guaranteed right now. Option B: flip a coin — heads you receive $1,200, tails you receive nothing.
+Treat the article as a concept brief, not as evidence. Translate its central thesis into a defensible study:
+Can non-invasive neural, physiological, behavioral, and computer-vision signals support measurable bidirectional communication between humans and computer systems without speech, typing, or direct wired input?
 
-Before choosing, answer these:
-1. Which did you choose, and how long did it take you to decide?
-2. Did the time pressure change your answer from what you'd choose with unlimited time?
-3. What emotion was most present during the decision — fear, excitement, calculation, or something else?
-4. If you had to make this same decision 100 times, which option produces the best outcome? Does knowing that change your single-time choice?
+Hard constraint:
+Do not claim telepathy, mind reading, or direct thought transmission. Frame the study around measurable correlates of intention, attention, affect, interpretation, and classifier performance. Every claim must be falsifiable.
 
-Now: replace the money with a career decision you're currently facing. Which option maps to guaranteed but smaller, and which to risky but larger? Apply the same analysis.`,
+Produce the protocol in this structure:
+
+1. Study title and abstract
+- Give the study a precise title.
+- Summarize the research question, design, participant task, measures, and expected contribution in 150-250 words.
+
+2. Theoretical rationale
+- Ground the study in cognitive neuroscience, social cognition, human-computer interaction, affective computing, and BCI research.
+- Distinguish non-invasive BCI signal detection from speculative claims about wireless mind-to-machine communication.
+- Explain why a controlled social-dating or game-show environment can create ecologically valid social signals while still allowing experimental control.
+
+3. Research questions and hypotheses
+- RQ1: Can machine classifiers detect above-chance differences between participant intention states during silent social-signaling tasks?
+- RQ2: Can participants reliably interpret computer-generated stimuli without verbal instruction beyond the task frame?
+- RQ3: Do neural, physiological, behavioral, and self-report measures converge during live social interaction?
+- H1: Predefined intention conditions will produce above-chance classification from EEG/fNIRS/rPPG/video-derived features.
+- H2: Participants will identify computer-generated social cues above chance when stimuli are standardized and counterbalanced.
+- H3: Multimodal models will outperform single-modality models.
+- H4: Qualitative testimony will explain variance not captured by physiological models.
+
+4. Operational definitions
+Define each construct in measurable terms:
+- Intention state
+- Availability signaling in a dating context
+- Computer-generated stimulus
+- Interpretation accuracy
+- Neural/physiological signal
+- Bidirectional validation
+- Successful trial
+- Failed trial
+
+5. Study design
+Use a mixed-methods, within-subjects design with three phases:
+- Phase A, human-to-machine signal detection: participants silently adopt assigned intention states while non-invasive sensors record data. Models predict condition labels.
+- Phase B, machine-to-human interpretation: participants receive visual, auditory, or haptic computer-generated stimuli and report perceived meaning. Accuracy is tested against predefined cue labels.
+- Phase C, live social interaction: consenting participants complete structured, time-limited social rounds in a game-show or speed-dating format. Compare self-report, partner perception, behavioral coding, and physiological signal.
+
+6. Participants and sampling
+- Define target population, inclusion criteria, exclusion criteria, recruitment method, compensation, and consent requirements.
+- Include a power-analysis placeholder and justify a pilot sample if this is exploratory.
+- Address participant vulnerability, dating-context sensitivity, withdrawal rights, and post-study support.
+
+7. Materials and instrumentation
+Specify practical, non-invasive tools:
+- EEG and/or fNIRS headset
+- rPPG-compatible camera stream
+- External camera for behavior coding
+- Audio interface for ambient/session markers only
+- Stimulus presentation software
+- Open-source processing options such as OpenViBE, rPPG-Toolbox, ffmpeg, Audacity, Python/R analysis scripts
+
+State safety limits:
+- No invasive devices.
+- No exposure beyond consumer-safe light, sound, vibration, RF, or EMF norms.
+- No covert physiological profiling.
+- No inference about non-consenting people.
+
+8. Experimental procedure
+Write a step-by-step session protocol:
+- Intake and consent
+- Baseline recording
+- Sensor calibration
+- Practice trials
+- Phase A trials
+- Phase B trials
+- Phase C live interaction rounds
+- Post-round surveys
+- Open-ended interview
+- Debrief and data deletion option
+
+Include timing, randomization, counterbalancing, rest periods, and stopping rules.
+
+9. Measures and data schema
+Define each data stream:
+- Neural features
+- Physiological features
+- Behavioral video codes
+- Stimulus labels
+- Participant self-report
+- Partner perception ratings
+- Response latency
+- Qualitative interview responses
+- Adverse event notes
+
+Create a compact data dictionary with field names, data type, collection point, and privacy risk.
+
+10. Analysis plan
+Include:
+- Pre-registration plan
+- Primary endpoint: above-chance classification or interpretation accuracy
+- Secondary endpoints: cross-modal convergence, response latency, subjective confidence, partner agreement
+- Baseline correction
+- Artifact rejection
+- Cross-validation
+- Permutation testing against chance
+- Mixed-effects models for repeated measures
+- Correction for multiple comparisons
+- Qualitative thematic coding
+- Convergent mixed-methods integration
+
+11. Validity, confounds, and failure modes
+Address:
+- Demand characteristics
+- Experimenter expectancy
+- Social desirability bias
+- Motion artifacts
+- Lighting and camera bias
+- Attraction effects
+- Familiarity between participants
+- Device drift
+- Overfitting
+- Low ecological validity
+- Ambiguous stimuli
+
+For each risk, name a mitigation.
+
+12. Ethics and consent
+Write the IRB-facing ethics section:
+- Explicit opt-in for dating-context tasks
+- Separate consent for video, neural/physiological recording, and future data reuse
+- No hidden identity inference
+- No deception unless separately approved and debriefed
+- Data minimization
+- De-identification
+- Retention schedule
+- Participant right to withdraw
+- Prohibition on using results for surveillance, targeting, stalking, discrimination, employment, insurance, or sexual profiling
+
+13. Deliverables
+Generate:
+- One-page study overview
+- IRB summary
+- Participant consent script
+- Moderator script
+- Trial flow table
+- Survey instrument
+- Interview guide
+- Data dictionary
+- Analysis checklist
+- Plain-language limitation statement
+
+Writing standard:
+Use clear graduate-level language. Be precise, skeptical, and operational. Replace mystical claims with measurable constructs. If evidence is uncertain, say what would count as support, what would count as failure, and what follow-up study would be needed.`,
   },
   {
-    name: 'Social Role Reversal Prompt',
+    name: 'Case Study on Parasocial Relationships',
     category: 'Simulation Prompts',
-    added: '2026-03-08',
+    added: '2026-05-17',
     type: 'SIM',
-    prompt: `You are going to temporarily inhabit the perspective of someone who occupies the social role most opposite to your own in a specific context you choose.
-
-Step 1 — Name your role: Describe a social role you currently hold (e.g., manager, youngest sibling, expert in the room, outsider, high earner).
-
-Step 2 — Name the opposite: Who holds the opposite role in the same context? What assumptions do you hold about their experience?
-
-Step 3 — Inhabit it: Write a first-person account of a recent interaction from their perspective. What did they notice that you didn't? What did they want that they couldn't say? What did your behavior look like from where they stood?
-
-Step 4 — Reality check: Which parts of that account feel uncomfortably accurate? Which feel like projection?
-
-Step 5 — Extract: What is one behavior of yours this reversal suggests you should examine?`,
-  },
-  {
-    name: 'Choice Architecture Mapper',
-    category: 'Simulation Prompts',
-    added: '2026-03-05',
-    type: 'SIM',
-    prompt: `Choice architecture is the design of how options are presented — and it shapes decisions more than the options themselves.
-
-Choose a decision you made recently that felt "free" — a purchase, a behavioral change, a career move, a relationship choice.
-
-Map the architecture:
-1. Default option: What was the path of least resistance? Did you take it?
-2. Framing: Was the choice framed as gain (what you'd get) or loss (what you'd avoid)?
-3. Order effect: Which option was presented first, most prominently, or most memorably?
-4. Social proof: Were you aware of what others in your situation typically chose?
-5. Scarcity or urgency: Was there a deadline, limited availability, or pressure signal?
-6. Effort asymmetry: Was one option significantly easier to execute than another?
-
-Now answer: How much of your "choice" was actually a response to the architecture around it? If you redesigned the architecture, would you choose differently?`,
-  },
-  {
-    name: 'Loss Aversion Scenario',
-    category: 'Simulation Prompts',
-    added: '2026-03-02',
-    type: 'SIM',
-    prompt: `Research consistently shows that losses feel roughly twice as powerful as equivalent gains. This prompt is designed to surface your personal loss aversion ratio.
-
-Part 1 — Calibration:
-- You have $1,000. A guaranteed loss of $300, or a 50% chance of losing $600 and a 50% chance of losing nothing. Which do you choose?
-- You have nothing. A guaranteed gain of $300, or a 50% chance of gaining $600 and a 50% chance of gaining nothing. Which do you choose?
-- Did your answer change between these two scenarios? If so, what changed — the math (it didn't) or the framing?
-
-Part 2 — Behavioral mapping:
-Name a domain where you suspect loss aversion is running your behavior: relationships, finances, creative risk, career stability.
-
-1. What is the "guaranteed small loss" you're currently accepting to avoid the "possible larger loss"?
-2. What would you do in this domain if you felt no loss aversion at all?
-3. What is the actual worst-case scenario if you stopped protecting against loss? Is it survivable?`,
-  },
-  {
-    name: 'Moral Dilemma Framework',
-    category: 'Simulation Prompts',
-    added: '2026-02-28',
-    type: 'SIM',
-    prompt: `This is a structured moral dilemma exercise. There are no correct answers — only revealing ones.
-
-Dilemma: A self-driving vehicle must choose between two unavoidable outcomes: swerving left kills one pedestrian (a child), swerving right kills five pedestrians (elderly adults). You are the programmer setting the decision algorithm in advance.
-
-Round 1 — Utilitarian lens: Which choice saves the most lives, and does that make it right?
-Round 2 — Deontological lens: Is there a moral difference between action (choosing to kill) and inaction (letting a pre-set outcome happen)?
-Round 3 — Virtue lens: What would a person of good character do — and can a machine have good character?
-Round 4 — Personal stakes: Would your answer change if one of the pedestrians was someone you loved?
-Round 5 — System design: Who should make this decision — engineers, governments, ethicists, or the car's owner?
-
-Final reflection: Which lens felt most natural to you? What does that reveal about your moral reasoning style?`,
-  },
-  {
-    name: 'Identity Consistency Test',
-    category: 'Simulation Prompts',
-    added: '2026-02-25',
-    type: 'SIM',
-    prompt: `This experiment tests the gap between who you say you are and how you actually behave.
-
-Step 1 — Self-declaration:
-Write three sentences that begin with "I am the kind of person who..." Complete them with things you genuinely believe about yourself.
-
-Step 2 — Behavioral audit:
-For each statement, identify a specific recent situation where you acted in direct contradiction to that claim.
-- What happened?
-- What did you tell yourself about it afterward?
-- Did you update your self-concept, or did you explain away the contradiction?
-
-Step 3 — Pattern recognition:
-Is the contradiction a one-time failure, or a pattern? Are there whole domains of your life where your stated identity and actual behavior consistently diverge?
-
-Step 4 — Integrity question:
-Which is more accurate — the person you describe yourself as, or the person revealed by your behavior? What would it cost you to close that gap?`,
-  },
-
-  // Cognitive Dissonance Experiments
-  {
-    name: 'Belief-Action Gap Probe',
-    category: 'Cognitive Dissonance Experiments',
-    added: '2026-02-20',
-    type: 'CDX',
-    prompt: `Cognitive dissonance lives in the space between what you believe and what you do. This probe maps that gap.
-
-Step 1 — Name a belief you hold strongly. Something you would describe as a core value (e.g., environmental responsibility, fairness, honesty, health, community).
-
-Step 2 — Behavioral audit. In the past 30 days, list three ways your behavior directly contradicted that belief. Be specific.
-
-Step 3 — Rationalization inventory. For each contradiction, write the exact internal narrative you used to reconcile it. Common forms:
-- "This one instance doesn't count because..."
-- "I'll make up for it by..."
-- "Everyone does this, so..."
-- "The system makes it impossible to..."
-
-Step 4 — Dissonance rating. On a scale of 1–10, how much psychological discomfort did you feel from each contradiction? If the discomfort is low, what has suppressed it?
-
-Step 5 — Resolution path. For each contradiction, name the path of least resistance to closing the gap — and identify what it would cost you to take it.`,
-  },
-  {
-    name: 'Post-Decision Rationalization Study',
-    category: 'Cognitive Dissonance Experiments',
-    added: '2026-02-18',
-    type: 'CDX',
-    prompt: `After making a decision, the mind works quickly to justify it — even when the decision was poor. This study examines that process.
-
-Choose a significant decision you made in the past six months that you're no longer certain was correct.
-
-Pre-decision reconstruction:
-1. What were the actual options you considered?
-2. What information did you have at the time?
-3. What emotions were driving you most strongly?
-
-Post-decision audit:
-1. List three ways your thinking about this decision has shifted since you made it.
-2. Have you selectively remembered evidence that supports the choice and minimized evidence against it?
-3. Have you reframed the outcome as "what you really wanted all along"?
-
-The rationalization reveal:
-Write the version of this story you would tell someone else — then write the version you'd only admit to yourself. Where do they differ?
-
-What does the gap between these two narratives tell you about how your mind protects your self-concept after decisions?`,
-  },
-  {
-    name: 'Forced Compliance Scenario',
-    category: 'Cognitive Dissonance Experiments',
-    added: '2026-02-15',
-    type: 'CDX',
-    prompt: `Based on Festinger & Carlsmith's 1959 forced compliance experiment: when people are compelled to act against their beliefs for insufficient reward, they change their beliefs to match their actions.
-
-This prompt recreates that dynamic as a reflection exercise.
-
-Step 1 — Identify a role or context where you regularly perform a belief you don't fully hold. (Examples: expressing enthusiasm for a project you find meaningless, agreeing with a group position you privately question, performing contentment you don't feel.)
-
-Step 2 — Duration check. How long have you been performing this? Weeks, months, years?
-
-Step 3 — Belief drift audit. Has your actual private belief shifted closer to the performed belief over time? Rate the drift from 1 (no drift) to 10 (you've almost convinced yourself).
-
-Step 4 — Reward analysis. What is the "insufficient reward" you're being paid for this compliance? Social acceptance, job security, peace in the relationship?
-
-Step 5 — Festinger's question: If the reward disappeared tomorrow, would you continue the behavior? Would you recover the original belief, or has it been overwritten?`,
-  },
-  {
-    name: 'Value Conflict Activator',
-    category: 'Cognitive Dissonance Experiments',
-    added: '2026-02-12',
-    type: 'CDX',
-    prompt: `Most psychological distress is not caused by external events — it is caused by two internal values pulling in opposite directions simultaneously.
-
-Step 1 — Value pair identification:
-From the list below, identify one pair of values that currently feel like they're in conflict in your life:
-- Freedom vs. Security
-- Loyalty vs. Honesty
-- Ambition vs. Presence
-- Independence vs. Connection
-- Consistency vs. Growth
-- Fairness vs. Mercy
-- Recognition vs. Humility
-
-Or name your own pair.
-
-Step 2 — Scenario mapping:
-Describe a current situation where you can feel this tension operating. What does each value demand from you in this situation?
-
-Step 3 — Hierarchy test:
-If you could only honor one of these two values completely, which would you choose? What does that choice cost you?
-
-Step 4 — Integration question:
-Is the conflict actually irresolvable, or is there a frame in which both values can be honored? What would that look like in practice?`,
-  },
-  {
-    name: 'Self-Perception Dissonance Test',
-    category: 'Cognitive Dissonance Experiments',
-    added: '2026-02-10',
-    type: 'CDX',
-    prompt: `Daryl Bem's self-perception theory proposes that we learn about ourselves the same way we learn about others — by observing our own behavior. This test applies that framework to your self-concept.
-
-Step 1 — Behavioral inventory:
-List 10 specific behaviors you've exhibited in the past two weeks. Be concrete. (Not "I was kind" — "I stayed on the phone for 40 minutes with someone who was struggling.")
-
-Step 2 — Trait inference:
-If you were a stranger observing only those behaviors — with no access to your internal narrative — what would you conclude about this person's values, character, and priorities?
-
-Step 3 — Comparison:
-How does the stranger's inference compare to your self-description? Where do they align? Where do they diverge?
-
-Step 4 — The uncomfortable question:
-Which is more accurate — the self you narrate internally, or the self revealed by your observed behavior? Where are you giving yourself credit for intentions rather than actions?
-
-Step 5 — Adjustment:
-What behavior, if started or stopped today, would bring your observable self closer to your intended self?`,
-  },
-  {
-    name: 'Attitude Change Tracker',
-    category: 'Cognitive Dissonance Experiments',
-    added: '2026-02-08',
-    type: 'CDX',
-    prompt: `This prompt tracks how your attitudes shift over time and what mechanisms drive those shifts.
-
-Choose a topic where your attitude has changed significantly in the past two to five years. (Examples: a political position, a relationship pattern, a career belief, a spiritual view, a stance on a social issue.)
-
-Map the change:
-1. What did you believe before, and what do you believe now?
-2. Was the change gradual or sudden? If sudden, what was the triggering event?
-
-Mechanism identification — which of these drove the change?
-- New information that contradicted old beliefs
-- A personal experience that made the abstract concrete
-- Social environment shift (new peer group, relationship, community)
-- Emotional event that changed what felt true
-- Persuasive argument from a specific person
-- Gradual erosion from repeated exposure
-
-Authenticity audit:
-1. Do you believe this new attitude emerged from genuine reasoning, or from social pressure?
-2. Are there aspects of the old position that still feel valid that you've stopped voicing?
-3. If the social pressure disappeared, would the new attitude hold?`,
-  },
-  {
-    name: 'Cognitive Load Dissonance',
-    category: 'Cognitive Dissonance Experiments',
-    added: '2026-02-05',
-    type: 'CDX',
-    prompt: `Cognitive dissonance requires mental resources to manage. Under high cognitive load, the capacity to maintain comfortable contradictions breaks down.
-
-This experiment creates that condition.
-
-Part 1 — Load calibration:
-Choose a moment in the past week when you were at maximum cognitive capacity — exhausted, overwhelmed, or operating under deadline. What decisions did you make in that state?
-
-Part 2 — Dissonance surface:
-Under high load, which of your maintained contradictions surfaced?
-- The opinion you express in professional settings that you privately question
-- The relationship dynamic you rationalize as fine when you know it isn't
-- The habit you justify as manageable that you know is a problem
-
-Part 3 — Low-load comparison:
-What cognitive work do you do daily to keep these contradictions from creating distress? (Reframing, avoidance, selective attention, narrative construction?)
-
-Part 4 — The stripped signal:
-If you had to make all your major life decisions in a state of cognitive overload — too tired to maintain your rationalizations — what would change? What does that stripped-down version of you actually believe?`,
-  },
-
-  // Clinical & Personality Reflection
-  {
-    name: 'Shadow Self Identification',
-    category: 'Clinical & Personality Reflection',
-    added: '2026-02-02',
-    type: 'CPR',
-    prompt: `Jung's shadow is everything we refuse to see in ourselves — traits we've disowned, rejected, or buried because they conflict with our self-image or social acceptability.
-
-Step 1 — Projection scan:
-List three people — real or fictional — who provoke a strong negative reaction in you. Not mild dislike: genuine irritation, contempt, or disgust. For each, write the trait that triggers the response.
-
-Step 2 — The mirror:
-For each trait you named, ask: In what context, at what intensity, or in what disguised form does this trait appear in me? The shadow rarely appears as an exact copy — it appears in compensation, justification, or projection.
-
-Step 3 — Disowned strengths:
-The shadow also contains buried capacities — ambition suppressed as arrogance, anger suppressed as weakness, sensuality suppressed as impropriety. What strength have you disowned because someone important once punished you for it?
-
-Step 4 — Integration:
-You cannot eliminate the shadow. You can only bring it into conscious relationship. Choose one shadow trait and write one way its energy, if redirected, could serve you.
-
-Step 5 — The payoff question:
-What does keeping this trait in the shadow protect you from? Whose disapproval? Whose image of you?`,
-  },
-  {
-    name: 'Attachment Style Mapping',
-    category: 'Clinical & Personality Reflection',
-    added: '2026-01-30',
-    type: 'CPR',
-    prompt: `Attachment theory proposes that early relational experiences create internal working models that shape how we seek and experience connection throughout life.
-
-Step 1 — Style identification:
-Read each pattern and mark which resonates most strongly:
-
-Secure: I generally find it easy to trust others. I feel comfortable depending on people and having them depend on me. Relationships feel like a resource, not a risk.
-
-Anxious: I worry about whether others truly care about me. I need more reassurance than I usually admit. Withdrawal from others feels threatening.
-
-Avoidant: I value independence strongly and find closeness uncomfortable. I often manage by not needing people before they fail me. Self-sufficiency feels like safety.
-
-Disorganized: Closeness feels both necessary and frightening. I want connection but something in me sabotages it. Relationships feel unpredictable in ways I can't explain.
-
-Step 2 — Origin mapping:
-Trace your dominant pattern to its earliest context. What relational environment taught you that this pattern was the correct response?
-
-Step 3 — Current impact:
-Name one current relationship where your attachment pattern is creating difficulty. What does your pattern demand from the other person? What does it prevent you from asking for directly?
-
-Step 4 — Earned security:
-Attachment styles are not fixed. What experience, relationship, or practice has moved you toward security — even temporarily?`,
-  },
-  {
-    name: 'Inner Critic Dialogue Protocol',
-    category: 'Clinical & Personality Reflection',
-    added: '2026-01-28',
-    type: 'CPR',
-    prompt: `The inner critic is not random noise — it is a structured voice with a consistent worldview, a specific tone, and a protective function it believes serves you.
-
-Step 1 — Capture the voice:
-Write down the most recent critical internal statement you directed at yourself. (Examples: "You're not as capable as they think." "You always do this." "You should be further along by now.")
-
-Step 2 — Profile the critic:
-- Does it sound like anyone from your past?
-- What emotion does it primarily use — shame, fear, contempt, disappointment?
-- What outcome does it believe it's preventing by attacking you?
-
-Step 3 — Give it a character:
-If your inner critic were a character — a person, an archetype, a figure — what would it look like? Name it. Describe it. This is not dismissal; it's differentiation.
-
-Step 4 — The protective interview:
-Ask your critic: "What are you afraid will happen if you stop criticizing me?" Write its answer honestly. The fear underneath the attack is usually the more important signal.
-
-Step 5 — Response:
-What does the part of you that was just criticized actually need — not from the critic, but from you?`,
-  },
-  {
-    name: 'Defense Mechanism Audit',
-    category: 'Clinical & Personality Reflection',
-    added: '2026-01-25',
-    type: 'CPR',
-    prompt: `Defense mechanisms are unconscious strategies the psyche uses to manage anxiety, conflict, and painful reality. This audit maps yours.
-
-Review each mechanism and identify where it appears in your life:
-
-Rationalization: Constructing logical explanations for choices made on emotional or self-interested grounds. Where do you apply intelligent reasoning to justify what you already wanted to do?
-
-Projection: Attributing your own unacceptable feelings to others. Who do you accuse of motivations that may be reflections of your own?
-
-Displacement: Redirecting emotional energy from its true target to a safer one. Where does frustration from one domain get expressed in another?
-
-Intellectualization: Using abstract analysis to avoid emotional contact with a situation. Which painful experiences do you analyze instead of feel?
-
-Denial: Refusing to acknowledge painful realities. What are you currently not looking at directly?
-
-Reaction formation: Expressing the opposite of what you actually feel. Where are you performing an emotion that conceals its opposite?
-
-Sublimation: Channeling unacceptable impulses into socially productive behavior. Where does your shadow energy go when it can't express directly?
-
-For your top two mechanisms: What are they protecting you from? What would you have to feel if they stopped working?`,
-  },
-  {
-    name: 'Core Wound Narrative',
-    category: 'Clinical & Personality Reflection',
-    added: '2026-01-22',
-    type: 'CPR',
-    prompt: `A core wound is not a single traumatic event — it is a conclusion the child drew about themselves or the world from early experiences that felt defining. That conclusion became a lens through which everything else is interpreted.
-
-Step 1 — The wound statement:
-Common core wound statements include:
-- "I am not enough."
-- "I am too much."
-- "I am not safe."
-- "I am unlovable."
-- "I must perform to be valued."
-- "My needs don't matter."
-- "People always leave."
-- "I am fundamentally different and do not belong."
-
-Which statement, or variation of it, rings most true when you are at your lowest?
-
-Step 2 — The origin scene:
-You don't need a single memory. Describe the relational environment, the recurring dynamic, or the message you absorbed repeatedly. Who delivered it? Through action, words, or absence?
-
-Step 3 — The adaptive response:
-What did you develop to survive or compensate for that wound? (Overachievement, invisibility, caretaking, control, humor, brilliance, compliance?)
-
-Step 4 — Current footprint:
-Where does the wound still run your adult decisions? In which current relationships or contexts does the original conclusion still feel true?
-
-Step 5 — The update:
-What would you say to the version of yourself who first drew that conclusion — knowing what you now know?`,
-  },
-  {
-    name: 'Jungian Archetype Profiler',
-    category: 'Clinical & Personality Reflection',
-    added: '2026-01-20',
-    type: 'CPR',
-    prompt: `Jung identified recurring patterns in the unconscious — archetypes — that organize psychic energy and shape how we relate to ourselves, others, and the world. This profiler maps your dominant and shadow archetypes.
-
-Step 1 — Primary archetype identification:
-Read each briefly and note which resonates most strongly as an organizing force in your life:
-
-The Hero: defined by challenge, conquest, and proving worth through achievement
-The Caregiver: defined by nurturing, sacrifice, and finding value through others' wellbeing
-The Sage: defined by knowledge, understanding, and truth-seeking
-The Rebel: defined by disruption, freedom, and opposition to constraint
-The Creator: defined by expression, originality, and making something from nothing
-The Explorer: defined by discovery, independence, and resistance to enclosure
-The Ruler: defined by order, control, responsibility, and leadership
-The Innocent: defined by optimism, faith, and the desire for safety and goodness
-The Lover: defined by passion, connection, and deep aesthetic and relational engagement
-The Jester: defined by play, humor, and the disruption of solemnity
-The Orphan: defined by belonging-seeking, resilience, and the experience of abandonment
-The Magician: defined by transformation, vision, and the ability to change what seems fixed
-
-Step 2 — Shadow archetype:
-Which archetype do you most dismiss, ridicule, or feel contempt for? That is likely your shadow archetype — the one whose energy you've most suppressed.
-
-Step 3 — Integration question:
-What would your life look like if your primary archetype and shadow archetype were both operational — not competing, but collaborating?`,
-  },
-  {
-    name: 'Emotional Regulation Pattern',
-    category: 'Clinical & Personality Reflection',
-    added: '2026-01-18',
-    type: 'CPR',
-    prompt: `Emotional regulation is not the suppression of emotion — it is the set of strategies you use to modulate emotional experience and expression. This prompt maps your habitual pattern.
-
-Step 1 — Inventory:
-For each primary emotion below, describe what you typically do when you feel it strongly:
-
-Anger: ___
-Fear: ___
-Sadness: ___
-Shame: ___
-Loneliness: ___
-Joy: ___
-Desire: ___
-
-Step 2 — Strategy classification:
-Review your responses and classify each strategy:
-- Suppression (don't feel it, push it down)
-- Expression (feel it fully, show it)
-- Displacement (feel it somewhere else)
-- Regulation (acknowledge and modulate)
-- Avoidance (behavior that prevents the feeling from arising)
-
-Step 3 — Pattern recognition:
-Is your dominant strategy consistent across emotions, or does it vary? Which emotions do you regulate most effectively? Which do you manage least well?
-
-Step 4 — Origin mapping:
-What did your early environment teach you about each emotion? Which ones were safe? Which were dangerous or punished?
-
-Step 5 — Capacity question:
-Which emotion, if you could experience it more fully without dysregulation, would most improve the quality of your relationships and decisions?`,
-  },
-
-  // Social Dynamics Simulation
-  {
-    name: 'In-Group / Out-Group Tension',
-    category: 'Social Dynamics Simulation',
-    added: '2026-01-15',
-    type: 'SDS',
-    prompt: `Social identity theory proposes that much of human behavior is organized around group membership — and that the distinction between "us" and "them" activates profound psychological forces.
-
-Step 1 — Map your in-groups:
-List three groups you currently belong to that feel most central to your identity. These can be professional, cultural, ideological, familial, or community-based.
-
-Step 2 — The out-group scan:
-For each in-group, identify the corresponding out-group — the group whose existence most defines the boundary of yours. What do you believe distinguishes them from you?
-
-Step 3 — Dehumanization audit:
-In what ways do you engage in the subtle dehumanization of out-group members — attributing less complexity, less good faith, or less individuality to them than to in-group members?
-
-Step 4 — Threat analysis:
-Which of your in-group memberships feels most threatened right now? How is that threat shaping your behavior toward out-group members?
-
-Step 5 — Contact hypothesis:
-Research suggests that sustained, equal-status contact with out-group members reduces prejudice. Name a specific person who belongs to one of your identified out-groups. What would it take to engage them as an individual rather than as a representative of that group?`,
-  },
-  {
-    name: 'Authority Compliance Test',
-    category: 'Social Dynamics Simulation',
-    added: '2026-01-12',
-    type: 'SDS',
-    prompt: `Milgram's obedience studies showed that ordinary people would administer what they believed to be lethal electric shocks when instructed by an authority figure. This prompt applies that framework to everyday life.
-
-Step 1 — Authority inventory:
-List the authority figures whose instructions you currently follow without significant independent verification. These can be institutional (employer, government, medical), social (community leaders, influencers), or relational (parents, partners).
-
-Step 2 — Compliance mapping:
-For each authority, identify one instruction or norm you follow that you have not independently validated. Why do you comply? (Expertise, legitimate authority, social cost of refusal, habit, fear?)
-
-Step 3 — The refusal test:
-For each compliance you identified, ask: Under what conditions would you refuse this instruction? Is that threshold clearly defined — or would you discover it only when it was tested?
-
-Step 4 — Agentic state analysis:
-Milgram described the "agentic state" — a psychological shift from autonomous agent to instrument of authority. In which contexts do you most readily enter the agentic state? What cues trigger it?
-
-Step 5 — Autonomous action:
-Name one area where you currently defer to authority but believe your own judgment is more reliable. What stops you from acting on that judgment?`,
-  },
-  {
-    name: 'Social Proof Pressure Experiment',
-    category: 'Social Dynamics Simulation',
-    added: '2026-01-10',
-    type: 'SDS',
-    prompt: `Social proof is the tendency to determine correct behavior by observing what others do. This experiment maps where social proof runs your decisions without your awareness.
-
-Step 1 — Recent social proof audit:
-In the past month, identify three decisions you made primarily because of what others were doing, buying, believing, or saying. Small choices count.
-
-Step 2 — Counterfactual test:
-For each decision: if everyone around you had made the opposite choice, what would you have done? Does your answer feel certain or uncertain?
-
-Step 3 — Crowd accuracy check:
-Social proof works when crowds have genuine information. Where are you using social proof in situations where the crowd may be wrong, uninformed, or responding to something different than your actual needs?
-
-Step 4 — Preference vs. performance:
-Are you using social proof to make genuine decisions (what do I actually want?) or performance decisions (what will make me appear correct, safe, or normal to others)?
-
-Step 5 — Authentic departure:
-Name one preference, belief, or behavior you hold that runs counter to the dominant social proof in your environment. How do you manage that divergence? Do you hide it, rationalize it, or defend it?`,
-  },
-  {
-    name: 'Bystander Effect Mapping',
-    category: 'Social Dynamics Simulation',
-    added: '2026-01-08',
-    type: 'SDS',
-    prompt: `The bystander effect demonstrates that the presence of others reduces the likelihood that any individual will intervene in an emergency — each person assumes someone else will act.
-
-This prompt applies that framework to the non-emergency situations where it also operates.
-
-Step 1 — Active bystander inventory:
-In the past six months, name three situations where you observed something that warranted a response — a problem, an injustice, a need, a dangerous pattern — and did not act.
-
-Step 2 — Diffusion analysis:
-For each: How many others were also aware of the situation? Did the presence of those others reduce your sense of personal responsibility to act?
-
-Step 3 — Pluralistic ignorance check:
-Pluralistic ignorance occurs when everyone privately disagrees but assumes everyone else privately agrees, so no one dissents. Where are you participating in a group norm you privately question because no one else is challenging it?
-
-Step 4 — Cost-benefit reconstruction:
-For each non-intervention, was your inaction a genuine cost-benefit calculation or a social responsibility diffusion? What would you have done if you were the only person who knew?
-
-Step 5 — The intervention architecture:
-Research shows that naming a specific person collapses the bystander effect. Where in your life do you need to name yourself as the person responsible for intervening?`,
-  },
-  {
-    name: 'Group Polarization Tracker',
-    category: 'Social Dynamics Simulation',
-    added: '2026-01-05',
-    type: 'SDS',
-    prompt: `Group polarization is the phenomenon whereby group discussion tends to push members toward more extreme versions of their initial positions. This tracker maps that process in your own experience.
-
-Step 1 — Pre-group position:
-Identify an opinion you hold on a topic that matters to you — political, professional, relational, or cultural. Write your honest position as it existed before your current primary community reinforced it.
-
-Step 2 — Community audit:
-Describe the community or group in which you most frequently discuss this topic. What is the dominant position within that group?
-
-Step 3 — Drift measurement:
-Has your position on this topic become more extreme over time? Compare your current view to where you were two and five years ago. Chart the direction and magnitude of the drift.
-
-Step 4 — Mechanism identification:
-Which polarization mechanism drove the shift?
-- Persuasive argument pool (you've only heard arguments in one direction)
-- Social comparison (you've positioned yourself at or beyond the group norm to appear committed)
-- Emotional contagion (the group's intensity has amplified your own)
-
-Step 5 — Depolarization experiment:
-Find the most compelling articulation of the position opposite to yours — not a straw man, but the strongest version. Write a one-paragraph summary of it as if you found it genuinely persuasive. What shifted, if anything?`,
-  },
-  {
-    name: 'Conformity Resistance Protocol',
-    category: 'Social Dynamics Simulation',
-    added: '2026-01-03',
-    type: 'SDS',
-    prompt: `Based on Asch's conformity experiments, this protocol is designed to map your conformity threshold and build explicit resistance strategies.
-
-Step 1 — Conformity history:
-Recall a specific situation where you publicly agreed with a group position you privately disagreed with. What was the position? What was the cost of dissent you were avoiding?
-
-Step 2 — Internal signal audit:
-In the moment of conformity, what did your body signal? (Discomfort, constriction, a small voice, a sense of something wrong?) How quickly did you override that signal?
-
-Step 3 — Threshold mapping:
-Asch found that even one other dissenting voice dramatically reduced conformity rates. In which areas of your life are you the one dissenting voice keeping others' conformity honest? Where are you the silent conformist waiting for someone else to go first?
-
-Step 4 — Cost-benefit analysis:
-List the actual, concrete costs of dissenting in your most important current context. Now list what the dissent would protect or preserve. Is the calculation being made honestly, or is social fear compressing the benefit side?
-
-Step 5 — Protocol design:
-Write a specific, concrete plan for the next situation where you feel pressure to conform against your private judgment. What will you say? To whom? In what form?`,
-  },
-  {
-    name: 'Power Dynamics Role Play',
-    category: 'Social Dynamics Simulation',
-    added: '2025-12-30',
-    type: 'SDS',
-    prompt: `Power is not just formal authority — it is the ability to shape others' reality, access, options, and sense of self. This prompt maps the power dynamics operating in your current relationships.
-
-Step 1 — Relationship power audit:
-Choose three significant relationships (professional, personal, familial). For each, rate who holds more structural power on a scale of -5 (you hold significantly less) to +5 (you hold significantly more).
-
-Step 2 — Power source identification:
-For each relationship, identify what the power differential is based on:
-- Resource control (money, opportunity, information)
-- Social status (reputation, network, position)
-- Emotional leverage (the person who cares less holds more power)
-- Dependency asymmetry (who needs whom more?)
-- Expertise or knowledge
-
-Step 3 — Behavior mapping:
-How does your position in each power dynamic shape your behavior? Where do you perform deference you don't feel? Where do you exercise power in ways you haven't examined?
-
-Step 4 — Power and ethics:
-In the relationships where you hold more power: what obligations does that create? Are you meeting them?
-
-Step 5 — The accountability gap:
-Power reduces accountability — those with more power receive less honest feedback. Where are you receiving systematically distorted information because of your position? What would you need to do to correct it?`,
-  },
-
-  // Cultural Bias & Opinion Mapping
-  {
-    name: 'Implicit Bias Surface Probe',
-    category: 'Cultural Bias & Opinion Mapping',
-    added: '2025-12-28',
-    type: 'CBO',
-    prompt: `Implicit bias operates below conscious awareness — shaping attention, judgment, and behavior in ways that often contradict stated values. This probe is designed to surface it.
-
-Step 1 — Association mapping:
-For each pairing below, notice your immediate gut response — not what you think you should feel, but what arises first:
-- Young / competent vs. Old / competent
-- Male leadership / decisive vs. Female leadership / decisive
-- Foreign accent / intelligent vs. Native accent / intelligent
-- Wealth / deserving vs. Poverty / deserving
-- Conventional appearance / trustworthy vs. Unconventional appearance / trustworthy
-
-Step 2 — Bias source archaeology:
-Choose the pairing where your gut response most diverged from your stated beliefs. Trace it: Where did that association come from? Media, family, early experience, peer environment?
-
-Step 3 — Behavioral footprint:
-Where has this association shaped a real decision — a hire, a recommendation, an assessment of credibility, a first impression you acted on?
-
-Step 4 — Correction mechanism:
-Research suggests awareness alone does not reduce implicit bias — deliberate counter-stereotypic thinking does. For your identified bias, name three people who directly counter the association. Make them specific and real.
-
-Step 5 — Accountability structure:
-What structural process — not just intention — would interrupt the bias before it affects your decisions?`,
-  },
-  {
-    name: 'Cross-Cultural Value Clash',
-    category: 'Cultural Bias & Opinion Mapping',
-    added: '2025-12-25',
-    type: 'CBO',
-    prompt: `Cultural values are invisible until they collide. This exercise surfaces the value framework you absorbed through culture and examines where it creates friction with other frameworks.
-
-Step 1 — Value dimension self-assessment:
-Rate yourself on each dimension (1 = strongly one end, 10 = strongly the other):
-
-Individualism (1) to Collectivism (10): Does primary obligation run to individual fulfillment or group harmony?
-Low-context (1) to High-context (10): Should meaning be stated explicitly or encoded in context and relationship?
-Monochronic (1) to Polychronic (10): Is time a linear resource to be managed or a flexible medium for relationship?
-Low power distance (1) to High power distance (10): Should hierarchy be minimized or respected?
-Short-term (1) to Long-term (10): Do decisions prioritize immediate outcomes or generational continuity?
-
-Step 2 — Friction mapping:
-In which current relationships or professional contexts do you experience friction that might be explained by clashing positions on these dimensions?
-
-Step 3 — Ethnocentrism audit:
-Which of your dimension positions do you experience as simply correct — not cultural, but universal? That certainty is where ethnocentrism lives.
-
-Step 4 — Reframe exercise:
-Choose your most certain position. Write a coherent, internally consistent case for the opposite position from the perspective of someone who holds it genuinely. Not a critique — a real defense.`,
-  },
-  {
-    name: 'Stereotype Threat Scenario',
-    category: 'Cultural Bias & Opinion Mapping',
-    added: '2025-12-23',
-    type: 'CBO',
-    prompt: `Stereotype threat is the experience of being at risk of confirming a negative stereotype about a group you belong to. It reliably degrades performance — not through lack of ability, but through the cognitive and emotional load of managing the threat.
-
-Step 1 — Threat identification:
-List the social groups you belong to that carry negative stereotypes in contexts that matter to you (professional, academic, social, physical).
-
-Step 2 — Activation mapping:
-For each group membership, identify the contexts where you feel the stereotype most acutely activated. What cues activate it? Specific people, environments, tasks, or evaluations?
-
-Step 3 — Behavioral response:
-When stereotype threat activates, what happens to your performance, attention, or self-presentation?
-- Do you over-prepare to inoculate against the stereotype?
-- Do you distance from the group identity in the context?
-- Do you experience intrusive thoughts that consume cognitive bandwidth?
-- Do you avoid the situation entirely?
-
-Step 4 — Role model effect:
-Research shows that exposure to counter-stereotypic exemplars reduces threat. Who in your field or context actively defies the negative stereotype you carry? How might deliberate attention to their existence change your experience?
-
-Step 5 — Structural vs. individual:
-Stereotype threat is a structural problem created by the existence of the stereotype — not a personal failing. How does naming it as structural change your relationship to the experience?`,
-  },
-  {
-    name: 'Opinion Formation Tracker',
-    category: 'Cultural Bias & Opinion Mapping',
-    added: '2025-12-20',
-    type: 'CBO',
-    prompt: `Opinions feel like conclusions we reach through reasoning. Research suggests they are often formed through exposure, emotional response, and social alignment — and reasoning is applied afterward to justify them.
-
-Step 1 — Select a current opinion:
-Choose a strong opinion you hold on a topic of real consequence to you.
-
-Step 2 — Formation archaeology:
-Trace how you came to hold this opinion. Be specific:
-- What was your first exposure to this topic?
-- What emotional response accompanied early encounters?
-- Who were the first people you knew who held positions on it?
-- When did you form your current position — was there a moment, or was it gradual?
-
-Step 3 — Evidence audit:
-List the five most influential pieces of evidence, arguments, or experiences that support your current position. Now list the most compelling evidence against it. Is the first list longer, more accessible, and more emotionally resonant than the second?
-
-Step 4 — Motivated reasoning check:
-Would you accept the same quality of evidence in support of the opposite position that you've accepted in support of your own? Apply the same evidentiary standard to both.
-
-Step 5 — Update trigger:
-What piece of information, argument, or experience would actually change your mind on this topic? If you cannot name one, you are holding a belief rather than an opinion.`,
-  },
-  {
-    name: 'Media Framing Analyzer',
-    category: 'Cultural Bias & Opinion Mapping',
-    added: '2025-12-18',
-    type: 'CBO',
-    prompt: `Framing is the process by which media selects, emphasizes, and contextualizes information in ways that shape how audiences understand and evaluate issues. The same facts, differently framed, produce different conclusions.
-
-Step 1 — Issue selection:
-Choose a current issue you have a clear opinion about that you primarily understand through media coverage.
-
-Step 2 — Frame identification:
-Identify the dominant frame through which you've encountered this issue:
-- Conflict frame: Who is fighting whom?
-- Economic frame: Who wins or loses financially?
-- Human interest frame: What is the personal story?
-- Morality frame: What is right or wrong?
-- Responsibility frame: Who is to blame or who should act?
-- Game/strategy frame: Who is winning or losing politically?
-
-Step 3 — Frame source audit:
-Which outlets or sources have most shaped your understanding? What frames do they typically apply to this issue?
-
-Step 4 — Missing frame exercise:
-Write a 200-word account of the same issue using a completely different frame than the one you've been consuming. What does the issue look like when framed around the opposite emphasis?
-
-Step 5 — Belief update:
-After applying the missing frame, has any element of your opinion shifted? If not, has the exercise revealed what you'd need to see to shift it?`,
-  },
-  {
-    name: 'Confirmation Bias Detector',
-    category: 'Cultural Bias & Opinion Mapping',
-    added: '2025-12-15',
-    type: 'CBO',
-    prompt: `Confirmation bias is the tendency to search for, interpret, and remember information in ways that confirm existing beliefs while discounting information that contradicts them.
-
-Step 1 — Belief selection:
-Choose a belief you hold with high confidence — about yourself, others, society, or how the world works.
-
-Step 2 — Information diet audit:
-Map the sources through which you primarily receive information about this topic. Do they skew toward confirmation or challenge of this belief?
-
-Step 3 — Disconfirmation history:
-Name the last time a piece of information meaningfully challenged this belief. How did you respond? Did you:
-- Dismiss the source?
-- Find a technicality that made it not apply?
-- Acknowledge it briefly, then revert?
-- Genuinely update?
-
-Step 4 — Motivated skepticism test:
-Apply your standard of critical evaluation to a piece of evidence that supports your belief. Do you apply the same level of scrutiny to confirming evidence as to disconfirming evidence?
-
-Step 5 — Steel man the opposition:
-Find the most sophisticated, well-evidenced version of the argument against your belief. Write it out. If you cannot do this, you do not yet understand the opposing position well enough to be confident in your own.`,
-  },
-  {
-    name: 'Cultural Lens Comparison',
-    category: 'Cultural Bias & Opinion Mapping',
-    added: '2025-12-13',
-    type: 'CBO',
-    prompt: `Every culture provides a lens — a set of assumptions about human nature, social organization, and what constitutes a good life. This exercise makes your lens visible by placing it in comparison with others.
-
-Step 1 — Identify your default lens:
-What cultural framework most shaped your assumptions about:
-- What success looks like
-- What a good family structure looks like
-- What constitutes a moral life
-- What an individual owes their community
-- What an individual is owed by their community
-
-Step 2 — Locate a contrasting lens:
-Choose a culture — historical or contemporary — that holds substantially different answers to these questions. This is most powerful when it is a culture you find initially difficult to relate to.
-
-Step 3 — Internal logic exercise:
-Write a defense of the contrasting lens from the inside. Not "they believe X because they haven't learned Y" — but "from within this framework, X is the coherent, rational, and humane response to the conditions of human life."
-
-Step 4 — Your lens on trial:
-Apply the contrasting culture's criteria for a good life to your own. By their standard, how are you doing? What does their framework reveal that yours obscures?
-
-Step 5 — Meta-lens question:
-Is there a position from which both lenses can be evaluated fairly — or does every evaluation already assume a third lens? What does that mean for the possibility of cultural objectivity?`,
+    prompt: `Develop a case study on parasocial relationships in digital communities.
+
+Include:
+1. Context and subject profile
+2. Behavioral patterns that signal parasocial attachment
+3. Psychological drivers and reinforcement loops
+4. Risks, benefits, and ethical tensions
+5. Intervention or design recommendations`,
   },
 ];
 
 const CATEGORY_FILTERS = [
   'All Categories',
   'Simulation Prompts',
-  'Cognitive Dissonance Experiments',
-  'Clinical & Personality Reflection',
-  'Social Dynamics Simulation',
-  'Cultural Bias & Opinion Mapping',
 ];
 
 export default function LibraryPage() {
@@ -1461,11 +792,13 @@ export default function LibraryPage() {
                       >
                         {post.imageUrl && (
                           <div className={styles.blogCardImageWrap}>
-                            <img
+                            <Image
                               src={post.imageUrl}
                               alt=""
+                              fill
+                              sizes="(max-width: 900px) calc(100vw - 56px), 33vw"
                               className={styles.blogCardImage}
-                              loading="lazy"
+                              unoptimized
                             />
                           </div>
                         )}

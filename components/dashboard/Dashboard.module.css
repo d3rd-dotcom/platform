@@ -31,8 +31,7 @@
 }
 
 /* ── Cards ── */
-.radarCard,
-.eggCard {
+.radarCard {
   background: #ffffff;
   border: 1px solid rgba(81, 104, 255, 0.18);
   border-radius: 22px;
@@ -45,89 +44,6 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #5168ff;
-}
-
-/* ── Profile ── */
-.profileCard {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  padding: 26px 22px 22px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  background: transparent;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-}
-
-.profileContent {
-  position: relative;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.profileAvatar {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  overflow: hidden;
-  background: linear-gradient(155deg, #eef0ff, #dfe3ff);
-  border: 3px solid rgba(81, 104, 255, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 12px;
-}
-
-.profileAvatarFallback {
-  font-size: 3.4rem;
-  font-weight: 800;
-  color: #5168ff;
-}
-
-.profileAvatarImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.profileName {
-  font-size: 1.2rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: #1a1d33;
-}
-
-.profileMeta {
-  font-size: 0.85rem;
-  color: #8b90b0;
-}
-
-.soulBtn {
-  margin-top: 16px;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 10px 18px;
-  border-radius: 12px;
-  border: 1px solid rgba(81, 104, 255, 0.3);
-  background: #f6f7ff;
-  color: #5168ff;
-  font-size: 0.88rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.16s ease, transform 0.16s ease;
-}
-
-.soulBtn:hover {
-  background: #e9ecff;
-  transform: translateY(-1px);
 }
 
 /* ── Radar ── */
@@ -169,19 +85,27 @@
   letter-spacing: 0.02em;
 }
 
-/* ── Egg card ── */
+.radarHint {
+  margin: 0 0 2px;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: #6b7194;
+}
+
+/* ── Egg card ── image sits free at the top, only the text part is framed ── */
 .eggCard {
-  overflow: hidden;
   display: flex;
   flex-direction: column;
+  gap: 14px;
 }
 
 .eggMedia {
   position: relative;
   width: 100%;
   aspect-ratio: 5 / 4;
-  background: linear-gradient(155deg, #eef0ff, #dfe3ff);
+  background: transparent;
   border: none;
+  border-radius: 0;
   padding: 0;
   display: block;
   cursor: pointer;
@@ -189,7 +113,7 @@
 }
 
 .eggImg {
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .eggShake {
@@ -213,6 +137,10 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  background: #ffffff;
+  border: 1px solid rgba(81, 104, 255, 0.18);
+  border-radius: 22px;
+  box-shadow: 0 18px 40px rgba(26, 29, 51, 0.08);
 }
 
 .eggTitle {
@@ -229,13 +157,6 @@
   font-size: 0.98rem;
   line-height: 1.62;
   color: #4a4f70;
-}
-
-.radarHint {
-  margin: 0 0 2px;
-  font-size: 0.86rem;
-  line-height: 1.55;
-  color: #6b7194;
 }
 
 /* ── Leaderboard card ── */
@@ -348,115 +269,10 @@
   display: block;
 }
 
-/* ── Soul.md modal ── */
-.modalOverlay {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  background: rgba(16, 19, 31, 0.55);
-  backdrop-filter: blur(4px);
-  animation: fade 0.18s ease;
-}
-
-@keyframes fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.modal {
-  width: 100%;
-  max-width: 540px;
-  background: #ffffff;
-  border: 1px solid rgba(81, 104, 255, 0.2);
-  border-radius: 22px;
-  box-shadow: 0 30px 70px rgba(16, 19, 31, 0.4);
-  padding: 26px 26px 22px;
-  animation: pop 0.2s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-@keyframes pop {
-  from { opacity: 0; transform: translateY(12px) scale(0.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-.modalTitle {
-  margin: 0;
-  font-size: 1.3rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: #1a1d33;
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
-}
-
-.modalHint {
-  margin: 6px 0 14px;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: #6b7194;
-}
-
-.modalTextarea {
-  width: 100%;
-  resize: vertical;
-  padding: 14px 16px;
-  border-radius: 14px;
-  border: 1px solid rgba(81, 104, 255, 0.24);
-  background: #fafbff;
-  font: inherit;
-  font-size: 0.96rem;
-  line-height: 1.6;
-  color: #1a1d33;
-}
-
-.modalTextarea:focus {
-  outline: none;
-  border-color: #5168ff;
-  box-shadow: 0 0 0 3px rgba(81, 104, 255, 0.14);
-}
-
-.modalActions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.modalCancel,
-.modalSave {
-  padding: 10px 20px;
-  border-radius: 12px;
-  font-size: 0.9rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: transform 0.16s ease;
-}
-
-.modalCancel {
-  border: 1px solid rgba(81, 104, 255, 0.24);
-  background: transparent;
-  color: #6b7194;
-}
-
-.modalSave {
-  border: none;
-  background: #5168ff;
-  color: #ffffff;
-}
-
-.modalCancel:hover,
-.modalSave:hover {
-  transform: translateY(-1px);
-}
-
 /* ── Dark theme ── */
 :global([data-theme="dark"]) .radarCard,
-:global([data-theme="dark"]) .eggCard,
-:global([data-theme="dark"]) .leaderboardCard,
-:global([data-theme="dark"]) .modal {
+:global([data-theme="dark"]) .eggCaption,
+:global([data-theme="dark"]) .leaderboardCard {
   background: #15172a;
   border-color: rgba(81, 104, 255, 0.28);
   box-shadow: 0 18px 44px rgba(0, 0, 0, 0.4);
@@ -480,9 +296,7 @@
   --radar-node-stroke: rgba(255, 255, 255, 0.7);
 }
 
-:global([data-theme="dark"]) .profileName,
-:global([data-theme="dark"]) .eggTitle,
-:global([data-theme="dark"]) .modalTitle {
+:global([data-theme="dark"]) .eggTitle {
   color: #f0f1fa;
 }
 
@@ -492,15 +306,6 @@
 
 :global([data-theme="dark"]) .radarHint {
   color: #9aa0c0;
-}
-
-:global([data-theme="dark"]) .soulBtn {
-  background: #1e2138;
-}
-
-:global([data-theme="dark"]) .modalTextarea {
-  background: #1a1c30;
-  color: #f0f1fa;
 }
 
 /* ── Responsive ── */
@@ -521,11 +326,8 @@
 
   .leftCol {
     position: static;
-    flex-direction: row;
-    flex-wrap: wrap;
   }
 
-  .profileCard,
   .radarCard {
     display: none;
   }

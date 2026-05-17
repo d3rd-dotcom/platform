@@ -18,10 +18,21 @@ export const CohortSection = () => {
         <div className={styles.board}>
 
           <div className={styles.titlePanel}>
-            <h2 className={styles.cohortTitle}>The Next-Gen Of Cyberculture</h2>
-            <p className={styles.cohortSubtitle}>
-              An intellectual refreshment. Over 4–12 weeks, you'll unlock rewards, access industry experts, run real experiments, and contribute to the future of scientific growth.
-            </p>
+            <div className={styles.titlePanelText}>
+              <h2 className={styles.cohortTitle}>The Next-Gen Of Cyberculture</h2>
+              <p className={styles.cohortSubtitle}>
+                An intellectual refreshment. Over 4–12 weeks, you'll unlock rewards, access industry experts, run real experiments, and contribute to the future of scientific growth.
+              </p>
+            </div>
+            <a
+              href="https://discord.gg/ZTRVCYwncs"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.discordPill}
+            >
+              <DiscordLogo size={24} weight="fill" aria-hidden="true" />
+              <span>Join the Discord</span>
+            </a>
           </div>
 
           <div className={styles.cohortContentGrid}>
@@ -93,18 +104,6 @@ export const CohortSection = () => {
                 </div>
               </div>
             </div>
-          </div>
-
-          <div className={styles.discordCtaRow}>
-            <a
-              href="https://discord.gg/ZTRVCYwncs"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.discordPill}
-            >
-              <DiscordLogo size={20} weight="fill" aria-hidden="true" />
-              <span>Join the Discord</span>
-            </a>
           </div>
         </div>
       </div>

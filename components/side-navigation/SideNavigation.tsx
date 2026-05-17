@@ -23,6 +23,7 @@ const YourAccountsModal = dynamic(() => import('../nav-buttons/YourAccountsModal
 const OnboardingModal = dynamic(() => import('../onboarding/OnboardingModal'), { ssr: false });
 const LootBoxModal = dynamic(() => import('../loot-box/LootBoxModal'), { ssr: false });
 const ProfilePopup = dynamic(() => import('../profile-popup/ProfilePopup'), { ssr: false });
+const SoulModal = dynamic(() => import('../soul-modal/SoulModal'), { ssr: false });
 
 interface NavItem {
   id: string;
@@ -186,6 +187,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [isLootBoxOpen, setIsLootBoxOpen] = useState(false);
   const [isProfilePopupOpen, setIsProfilePopupOpen] = useState(false);
+  const [isSoulModalOpen, setIsSoulModalOpen] = useState(false);
   const [userLoadComplete, setUserLoadComplete] = useState(false);
   const [hasVipSoulKey, setHasVipSoulKey] = useState(false);
   const { play } = useSound();
@@ -689,6 +691,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
             onChangeAvatar={handleAvatarClick}
             onChangeUsername={handleUsernameClick}
             onConnections={() => setIsYourAccountsModalOpen(true)}
+            onSoul={() => setIsSoulModalOpen(true)}
             onSignOut={handleSignOut}
             onViewProfile={() => setIsProfilePopupOpen(true)}
           />
@@ -831,6 +834,10 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
           address={address}
           onClose={() => setIsProfilePopupOpen(false)}
         />
+      )}
+
+      {isSoulModalOpen && (
+        <SoulModal onClose={() => setIsSoulModalOpen(false)} />
       )}
 
     </>
