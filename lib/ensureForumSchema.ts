@@ -127,6 +127,41 @@ async function _ensureForumSchemaImpl() {
     // Index might already exist
   }
 
+  // Agent wallet keys: encrypted private keys for custodial (platform-managed) agents.
+  // Kept in a separate table so key material is never selected by ordinary user queries.
+  await sqlQuery(`
+    CREATE TABLE IF NOT EXISTS agent_wallet_keys (
+      user_id CHAR(36) PRIMARY KEY,
+      encrypted_key TEXT NOT NULL,
+      iv VARCHAR(64) NOT NULL,
+      auth_tag VARCHAR(64) NOT NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )
+  `);
+
+  // Agent reminders: operator-facing nudges created by agents or operators.
+  await sqlQuery(`
+    CREATE TABLE IF NOT EXISTS agent_reminders (
+      id CHAR(36) PRIMARY KEY,
+      agent_user_id CHAR(36) NOT NULL,
+      operator_wallet VARCHAR(255) NOT NULL,
+      kind VARCHAR(24) NOT NULL DEFAULT 'custom',
+      message TEXT NOT NULL,
+      due_at TIMESTAMP NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      dismissed_at TIMESTAMP NULL,
+      FOREIGN KEY (agent_user_id) REFERENCES users(id) ON DELETE CASCADE
+    )
+  `);
+
+  try {
+    await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_agent_reminders_operator ON agent_reminders(operator_wallet)`);
+    await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_agent_reminders_agent ON agent_reminders(agent_user_id)`);
+  } catch (err: any) {
+    console.warn('Could not create agent_reminders indexes (may already exist):', err?.message);
+  }
+
   // Add shard_count column if it doesn't exist (for existing databases)
   try {
     await sqlQuery(`
