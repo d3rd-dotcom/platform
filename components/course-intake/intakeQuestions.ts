@@ -11,8 +11,6 @@ export interface IntakeQuestion {
   blueText: string;
   choices?: IntakeChoice[];
   allowText?: boolean;
-  /** Renders the voice-note recorder instead of choices. */
-  voiceDump?: boolean;
   textPlaceholder?: string;
   optional?: boolean;
 }
@@ -73,9 +71,8 @@ export const INTAKE_QUESTIONS: IntakeQuestion[] = [
     key: 'voiceContext',
     label: 'About you',
     blueText: "Last one — tell me as much about you as you'd like me to know. I'll use it to help you best.",
-    voiceDump: true,
     allowText: true,
     optional: true,
-    textPlaceholder: 'Record a voice note, or type here…',
+    textPlaceholder: "Type anything you'd like Blue to know...",
   },
 ];

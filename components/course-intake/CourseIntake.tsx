@@ -15,117 +15,6 @@ function firstUnansweredIndex(answers: Record<string, string>): number {
   return idx === -1 ? INTAKE_QUESTIONS.length - 1 : idx;
 }
 
-// ── Voice-note recorder ─────────────────────────────────────
-interface VoiceDumpFieldProps {
-  value: string;
-  onChange: (value: string) => void;
-}
-
-function VoiceDumpField({ value, onChange }: VoiceDumpFieldProps) {
-  const [status, setStatus] = useState<'idle' | 'recording' | 'transcribing'>('idle');
-  const [error, setError] = useState<string | null>(null);
-  const recorderRef = useRef<MediaRecorder | null>(null);
-  const chunksRef = useRef<Blob[]>([]);
-  const valueRef = useRef(value);
-  valueRef.current = value;
-
-  useEffect(() => () => {
-    recorderRef.current?.stream.getTracks().forEach((t) => t.stop());
-  }, []);
-
-  const startRecording = useCallback(async () => {
-    setError(null);
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream);
-      chunksRef.current = [];
-
-      recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) chunksRef.current.push(e.data);
-      };
-      recorder.onstop = async () => {
-        stream.getTracks().forEach((t) => t.stop());
-        const blob = new Blob(chunksRef.current, { type: recorder.mimeType || 'audio/webm' });
-        if (blob.size === 0) {
-          setStatus('idle');
-          return;
-        }
-        setStatus('transcribing');
-        try {
-          const fd = new FormData();
-          fd.append('audio', blob, 'recording.webm');
-          const res = await fetch('/api/voice/transcribe', { method: 'POST', body: fd });
-          const data = await res.json().catch(() => ({}));
-          if (res.ok && data.text) {
-            const existing = valueRef.current.trim();
-            onChange(existing ? `${existing} ${data.text}` : data.text);
-          } else if (data?.error === 'transcription_unconfigured') {
-            setError('Voice transcription isn’t set up — you can type below instead.');
-          } else {
-            setError('Could not transcribe that — try again, or type below.');
-          }
-        } catch {
-          setError('Could not transcribe that — try again, or type below.');
-        }
-        setStatus('idle');
-      };
-
-      recorder.start();
-      recorderRef.current = recorder;
-      setStatus('recording');
-    } catch {
-      setError('Microphone access was blocked — you can type below instead.');
-      setStatus('idle');
-    }
-  }, [onChange]);
-
-  const stopRecording = useCallback(() => {
-    recorderRef.current?.stop();
-    recorderRef.current = null;
-  }, []);
-
-  return (
-    <div className={styles.voiceDump}>
-      <button
-        type="button"
-        className={`${styles.recordBtn} ${status === 'recording' ? styles.recordBtnActive : ''}`}
-        onClick={status === 'recording' ? stopRecording : startRecording}
-        disabled={status === 'transcribing'}
-      >
-        {status === 'recording' ? (
-          <>
-            <span className={styles.recDot} aria-hidden="true" />
-            Stop recording
-          </>
-        ) : status === 'transcribing' ? (
-          <>
-            <span className={styles.recSpinner} aria-hidden="true" />
-            Transcribing…
-          </>
-        ) : (
-          <>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" />
-              <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3" />
-            </svg>
-            Record a voice note
-          </>
-        )}
-      </button>
-
-      {error && <p className={styles.voiceError}>{error}</p>}
-
-      <textarea
-        className={styles.textInput}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder="Record a voice note, or type here…"
-        rows={6}
-      />
-    </div>
-  );
-}
-
 export default function CourseIntake({ initialAnswers = {}, onComplete }: CourseIntakeProps) {
   const { play } = useSound();
   const [answers, setAnswers] = useState<Record<string, string>>(initialAnswers);
@@ -323,26 +212,22 @@ export default function CourseIntake({ initialAnswers = {}, onComplete }: Course
                 </div>
               )}
 
-              {question.voiceDump ? (
-                <VoiceDumpField value={textValue} onChange={setTextValue} />
-              ) : (
-                question.allowText && (
-                  <div className={styles.textBlock}>
-                    <textarea
-                      className={styles.textInput}
-                      value={textValue}
-                      onChange={(e) => {
-                        setTextValue(e.target.value);
-                        if (e.target.value) setChoice(null);
-                      }}
-                      onKeyDown={(e) => {
-                        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') handleContinue();
-                      }}
-                      placeholder={question.textPlaceholder ?? 'Type your answer…'}
-                      rows={question.choices ? 2 : 4}
-                    />
-                  </div>
-                )
+              {question.allowText && (
+                <div className={styles.textBlock}>
+                  <textarea
+                    className={styles.textInput}
+                    value={textValue}
+                    onChange={(e) => {
+                      setTextValue(e.target.value);
+                      if (e.target.value) setChoice(null);
+                    }}
+                    onKeyDown={(e) => {
+                      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') handleContinue();
+                    }}
+                    placeholder={question.textPlaceholder ?? 'Type your answer...'}
+                    rows={question.choices ? 2 : 6}
+                  />
+                </div>
               )}
 
               {isLast && controls}
