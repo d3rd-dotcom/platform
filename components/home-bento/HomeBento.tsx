@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import CourseIntake from '@/components/course-intake/CourseIntake';
 import Dashboard from '@/components/dashboard/Dashboard';
@@ -116,15 +115,6 @@ export default function HomeBento() {
         <div className={styles.genGrid}>
           <section className={styles.genHero}>
             <div className={styles.genHeader}>
-              <div className={styles.genAvatar}>
-                <Image
-                  src="/images/a.png"
-                  alt="Blue"
-                  width={160}
-                  height={160}
-                  className={styles.genPortrait}
-                />
-              </div>
               <div className={styles.genCopy}>
                 <p className={styles.loaderKicker}>Blue is building</p>
                 <h1 className={styles.genTitle}>Your 4-week course is taking shape</h1>

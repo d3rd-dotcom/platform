@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import type { CourseData } from '@/lib/personal-course';
+import { buildConnectome } from '@/lib/dsm-connectome';
+import Connectome from './Connectome';
 import styles from './Dashboard.module.css';
 
 interface DashboardProps {
@@ -27,130 +29,14 @@ function avatarColor(name: string): string {
   return colors[Math.abs(hash) % colors.length];
 }
 
-// ── Radar graph ── default baseline: every axis starts even, not a fake stat line.
-const RADAR_AXES = [
-  { label: 'Focus', value: 50, color: '#5168FF' },
-  { label: 'Consistency', value: 50, color: '#3D8BFF' },
-  { label: 'Energy', value: 50, color: '#7B8FFF' },
-  { label: 'Clarity', value: 50, color: '#C084FC' },
-  { label: 'Rest', value: 50, color: '#E8556D' },
-  { label: 'Momentum', value: 50, color: '#FF8844' },
-];
-
-function getRadarPoint(index: number, scale: number, radius = 80) {
-  const angle = (index / RADAR_AXES.length) * 2 * Math.PI - Math.PI / 2;
-  const r = radius * scale;
-  return { x: 100 + r * Math.cos(angle), y: 100 + r * Math.sin(angle) };
-}
-
-function getRadarPoints(scales: number[], radius = 80) {
-  return scales
-    .map((scale, index) => {
-      const point = getRadarPoint(index, scale, radius);
-      return `${point.x},${point.y}`;
-    })
-    .join(' ');
-}
-
-function DashboardRadar() {
-  return (
-    <div className={styles.radarWrap}>
-      <svg viewBox="0 0 200 200" className={styles.radarSvg}>
-        {[1.0, 0.78, 0.56, 0.34].map((scale, ri) => (
-          <polygon
-            key={`fill-${ri}`}
-            points={getRadarPoints(RADAR_AXES.map(() => scale))}
-            fill={ri % 2 === 0 ? 'var(--radar-fill-a)' : 'var(--radar-fill-b)'}
-            stroke="none"
-          />
-        ))}
-        {[0.2, 0.4, 0.6, 0.8, 1.0].map((scale, ri) => (
-          <polygon
-            key={ri}
-            points={getRadarPoints(RADAR_AXES.map(() => scale))}
-            fill="none"
-            stroke="var(--radar-ring-color)"
-            strokeWidth={ri === 4 ? '1.2' : '1'}
-          />
-        ))}
-        {RADAR_AXES.map((axis, i) => {
-          const point = getRadarPoint(i, 1);
-          return (
-            <line
-              key={i}
-              x1="100"
-              y1="100"
-              x2={point.x}
-              y2={point.y}
-              stroke={axis.color}
-              strokeWidth="1"
-              opacity="var(--radar-axis-opacity)"
-            />
-          );
-        })}
-        {RADAR_AXES.map((axis, index) => {
-          const prev = (index - 1 + RADAR_AXES.length) % RADAR_AXES.length;
-          const next = (index + 1) % RADAR_AXES.length;
-          const scales = RADAR_AXES.map((_, i) => {
-            if (i === index) return axis.value / 100;
-            if (i === prev || i === next) return 0.46;
-            return 0.18;
-          });
-          return (
-            <polygon
-              key={`facet-${axis.label}`}
-              points={getRadarPoints(scales)}
-              fill={`${axis.color}1F`}
-              stroke={axis.color}
-              strokeWidth="1.1"
-              opacity="0.82"
-            />
-          );
-        })}
-        <polygon
-          points={getRadarPoints(RADAR_AXES.map((axis) => axis.value / 100))}
-          fill="var(--radar-data-fill)"
-          stroke="var(--radar-data-stroke)"
-          strokeWidth="1.4"
-        />
-        {RADAR_AXES.map((axis, i) => {
-          const point = getRadarPoint(i, axis.value / 100);
-          return (
-            <circle
-              key={`node-${axis.label}`}
-              cx={point.x}
-              cy={point.y}
-              r="3.2"
-              fill={axis.color}
-              stroke="var(--radar-node-stroke)"
-              strokeWidth="1"
-            />
-          );
-        })}
-      </svg>
-      {RADAR_AXES.map((axis, i) => {
-        const labelPoint = getRadarPoint(i, 1.2);
-        return (
-          <span
-            key={axis.label}
-            className={styles.radarLabel}
-            style={{
-              left: `${(labelPoint.x / 200) * 100}%`,
-              top: `${(labelPoint.y / 200) * 100}%`,
-              color: axis.color,
-            }}
-          >
-            {axis.label}
-          </span>
-        );
-      })}
-    </div>
-  );
-}
-
-export default function Dashboard(_props: DashboardProps) {
+export default function Dashboard(props: DashboardProps) {
   const [leaderboard, setLeaderboard] = useState<LeaderUser[]>([]);
   const [eggShaking, setEggShaking] = useState(false);
+
+  const connectome = useMemo(
+    () => buildConnectome(props.initialIntake),
+    [props.initialIntake],
+  );
 
   useEffect(() => {
     fetch('/api/leaderboard')
@@ -188,19 +74,21 @@ export default function Dashboard(_props: DashboardProps) {
 
   return (
     <div className={styles.dashboard}>
-      {/* ── Left: DNA radar ── */}
-      <aside className={styles.leftCol}>
-        <div className={styles.radarCard}>
-          <span className={styles.cardLabel}>Your DNA</span>
-          <p className={styles.radarHint}>
-            How it feels to be you right now.
+      {/* ── DSM symptom-cluster connectome ── */}
+      <section className={styles.connectomeCard}>
+        <div className={styles.connectomeHeader}>
+          <span className={styles.cardLabel}>DSM connectome</span>
+          <p className={styles.connectomeHint}>
+            {connectome.source === 'intake'
+              ? 'A live map of DSM symptom clusters — drag a node, hover for detail.'
+              : 'A baseline map of DSM symptom clusters — drag a node, hover for detail.'}
           </p>
-          <DashboardRadar />
         </div>
-      </aside>
+        <Connectome connectome={connectome} />
+      </section>
 
-      {/* ── Center: egg ── */}
-      <main className={styles.centerCol}>
+      {/* ── Side: egg, leaderboard, Blue ── */}
+      <aside className={styles.sideStack}>
         <div className={styles.eggCard}>
           <button
             type="button"
@@ -217,19 +105,12 @@ export default function Dashboard(_props: DashboardProps) {
               priority
             />
           </button>
-          <div className={styles.eggCaption}>
-            <span className={styles.cardLabel}>Your egg</span>
-            <h1 className={styles.eggTitle}>Nurturing Your Potential</h1>
-            <p className={styles.eggText}>
-              Complete Academy activities, quests, and check-ins to earn shards
-              and nurture what is growing inside. What will hatch?
-            </p>
-          </div>
+          <h2 className={styles.eggTitle}>Your Egg</h2>
+          <p className={styles.eggText}>
+            Earn shards from quests and check-ins. What will hatch?
+          </p>
         </div>
-      </main>
 
-      {/* ── Right: leaderboard + Blue ── */}
-      <aside className={styles.rightCol}>
         <div className={styles.leaderboardCard}>
           <div className={styles.leaderHead}>
             <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} />
@@ -259,17 +140,6 @@ export default function Dashboard(_props: DashboardProps) {
               ))}
             </ul>
           )}
-        </div>
-
-        <div className={styles.blueBodyWrap}>
-          <Image
-            src="/images/blue-fullbody.png"
-            alt="Blue"
-            width={861}
-            height={1543}
-            className={styles.blueBody}
-            priority
-          />
         </div>
       </aside>
     </div>

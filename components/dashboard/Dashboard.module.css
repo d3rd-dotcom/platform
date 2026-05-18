@@ -1,6 +1,6 @@
 .dashboard {
   display: grid;
-  grid-template-columns: 280px minmax(0, 1fr) 300px;
+  grid-template-columns: minmax(0, 1fr) 320px;
   gap: 18px;
   width: 100%;
   max-width: 1320px;
@@ -8,34 +8,11 @@
   align-items: start;
 }
 
-.leftCol {
+.sideStack {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  position: sticky;
-  top: 0;
-}
-
-.centerCol {
-  min-width: 0;
-}
-
-.rightCol {
-  position: sticky;
-  bottom: 0;
-  align-self: end;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
   gap: 14px;
-}
-
-/* ── Cards ── */
-.radarCard {
-  background: #ffffff;
-  border: 1px solid rgba(81, 104, 255, 0.18);
-  border-radius: 22px;
-  box-shadow: 0 18px 40px rgba(26, 29, 51, 0.08);
+  min-width: 0;
 }
 
 .cardLabel {
@@ -46,66 +23,52 @@
   color: #5168ff;
 }
 
-/* ── Radar ── */
-.radarCard {
-  padding: 18px 18px 14px;
+/* ── Connectome card ── */
+.connectomeCard {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  --radar-fill-a: rgba(81, 104, 255, 0.035);
-  --radar-fill-b: rgba(81, 104, 255, 0.02);
-  --radar-ring-color: rgba(81, 104, 255, 0.14);
-  --radar-axis-opacity: 0.3;
-  --radar-data-fill: rgba(81, 104, 255, 0.12);
-  --radar-data-stroke: rgba(81, 104, 255, 0.34);
-  --radar-node-stroke: rgba(255, 255, 255, 0.95);
+  gap: 14px;
+  min-height: 620px;
+  padding: 18px 18px 16px;
+  background: #ffffff;
+  border: 1px solid rgba(26, 29, 51, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
 }
 
-.radarWrap {
-  position: relative;
-  width: 100%;
-  max-width: 230px;
-  margin: 6px auto 4px;
-  aspect-ratio: 1;
+.connectomeHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 0 4px;
 }
 
-.radarSvg {
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-
-.radarLabel {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  font-size: 8.5px;
-  font-weight: 700;
-  white-space: nowrap;
-  pointer-events: none;
-  letter-spacing: 0.02em;
-}
-
-.radarHint {
-  margin: 0 0 2px;
+.connectomeHint {
+  margin: 0;
   font-size: 0.86rem;
   line-height: 1.55;
   color: #6b7194;
 }
 
-/* ── Egg card ── image sits free at the top, only the text part is framed ── */
+/* ── Egg card — matches the /course missions card shades ── */
 .eggCard {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 8px;
+  padding: 20px 22px;
+  background: #ffffff;
+  border: 1px solid rgba(26, 29, 51, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
 }
 
 .eggMedia {
   position: relative;
   width: 100%;
-  aspect-ratio: 5 / 4;
-  background: transparent;
+  aspect-ratio: 4 / 3;
+  border-radius: 10px;
+  background: rgba(81, 104, 255, 0.04);
   border: none;
-  border-radius: 0;
   padding: 0;
   display: block;
   cursor: pointer;
@@ -130,17 +93,6 @@
   .eggShake {
     animation: none;
   }
-}
-
-.eggCaption {
-  padding: 22px 26px 26px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  background: #ffffff;
-  border: 1px solid rgba(81, 104, 255, 0.18);
-  border-radius: 22px;
-  box-shadow: 0 18px 40px rgba(26, 29, 51, 0.08);
 }
 
 .eggTitle {
@@ -256,26 +208,25 @@
   color: #9aa0c0;
 }
 
-/* ── Right: Blue full body ── */
-.blueBodyWrap {
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-}
-
-.blueBody {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
 /* ── Dark theme ── */
-:global([data-theme="dark"]) .radarCard,
-:global([data-theme="dark"]) .eggCaption,
 :global([data-theme="dark"]) .leaderboardCard {
   background: #15172a;
   border-color: rgba(81, 104, 255, 0.28);
   box-shadow: 0 18px 44px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .connectomeCard,
+:global([data-theme="dark"]) .eggCard {
+  background: #1e1f2c;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 6px 24px rgba(0, 0, 0, 0.65),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+
+:global([data-theme="dark"]) .eggMedia {
+  background: rgba(124, 143, 255, 0.07);
 }
 
 :global([data-theme="dark"]) .leaderName {
@@ -286,16 +237,6 @@
   background: rgba(81, 104, 255, 0.16);
 }
 
-:global([data-theme="dark"]) .radarCard {
-  --radar-fill-a: rgba(255, 255, 255, 0.028);
-  --radar-fill-b: rgba(81, 104, 255, 0.018);
-  --radar-ring-color: rgba(255, 255, 255, 0.05);
-  --radar-axis-opacity: 0.15;
-  --radar-data-fill: rgba(81, 104, 255, 0.11);
-  --radar-data-stroke: rgba(255, 255, 255, 0.24);
-  --radar-node-stroke: rgba(255, 255, 255, 0.7);
-}
-
 :global([data-theme="dark"]) .eggTitle {
   color: #f0f1fa;
 }
@@ -304,32 +245,24 @@
   color: #b6bad6;
 }
 
-:global([data-theme="dark"]) .radarHint {
+:global([data-theme="dark"]) .connectomeHint {
   color: #9aa0c0;
 }
 
 /* ── Responsive ── */
-@media (max-width: 1180px) {
-  .dashboard {
-    grid-template-columns: 260px minmax(0, 1fr);
-  }
-
-  .rightCol {
-    display: none;
-  }
-}
-
-@media (max-width: 840px) {
+@media (max-width: 1080px) {
   .dashboard {
     grid-template-columns: 1fr;
   }
 
-  .leftCol {
-    position: static;
+  .connectomeCard {
+    min-height: 480px;
   }
+}
 
-  .radarCard {
-    display: none;
+@media (max-width: 840px) {
+  .connectomeCard {
+    min-height: 380px;
   }
 
   .eggTitle {
