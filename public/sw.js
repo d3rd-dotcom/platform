@@ -20,13 +20,28 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  const url = new URL(event.request.url);
+  const isSameOrigin = url.origin === self.location.origin;
+  const shouldCache =
+    isSameOrigin &&
+    !url.pathname.startsWith('/_next/') &&
+    !url.pathname.startsWith('/api/');
+
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        const responseClone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+        if (shouldCache && response.ok) {
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+        }
         return response;
       })
-      .catch(() => caches.match(event.request).then((cached) => cached || caches.match('/home')))
+      .catch(() => {
+        if (!shouldCache) {
+          return Response.error();
+        }
+
+        return caches.match(event.request).then((cached) => cached || caches.match('/home'));
+      })
   );
 });

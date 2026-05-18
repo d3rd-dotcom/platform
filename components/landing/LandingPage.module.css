@@ -184,28 +184,32 @@
 .heroActions {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   align-items: stretch;
   justify-content: flex-start;
   gap: 12px;
+  max-width: 100%;
 }
 
 .heroButton {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(max-content, 1fr) auto;
   align-items: center;
   gap: 16px;
-  min-width: auto;
+  flex: 0 0 auto;
+  width: max-content;
+  max-width: 100%;
   padding: 18px 20px 18px 30px;
   border-radius: 999px;
   border: 1.5px solid rgba(255, 255, 255, 0.3);
   background: var(--color-primary, #5168FF);
   color: #ffffff;
-  font-size: 1rem;
+  font-size: clamp(0.88rem, 0.46vw + 0.55rem, 1rem);
   font-weight: 700;
   font-family: var(--font-primary);
   text-transform: uppercase;
-  letter-spacing: 0.14em;
+  letter-spacing: clamp(0.08em, 0.18vw, 0.14em);
   cursor: pointer;
   box-shadow: 0 6px 18px rgba(81, 104, 255, 0.28);
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -638,13 +642,19 @@
   display: inline-flex;
   align-items: center;
   overflow: hidden;
-  height: 1.4em;
+  min-width: 0;
+  max-width: 100%;
+  height: 1.12em;
+  line-height: 1.12;
+  white-space: nowrap;
   vertical-align: middle;
   justify-self: start;
 }
 
 .heroSlideText {
   display: block;
+  line-height: 1.12;
+  white-space: nowrap;
   transition: transform 0.3s ease;
   will-change: transform;
 }
@@ -768,6 +778,24 @@
 
 
 /* Hero responsive styles */
+@media (max-width: 1400px) {
+  .heroActions {
+    gap: 10px;
+  }
+
+  .heroButton {
+    gap: 12px;
+    padding: 16px 16px 16px 24px;
+    font-size: clamp(0.8rem, 0.64vw + 0.42rem, 0.92rem);
+    letter-spacing: clamp(0.06em, 0.14vw, 0.1em);
+  }
+
+  .heroButtonArrow {
+    width: 56px;
+    height: 56px;
+  }
+}
+
 @media (max-width: 1200px) {
   .container {
     --landing-shell-width: calc(100% - 64px);
@@ -876,12 +904,13 @@
 
   .heroButton {
     min-width: 0;
-    width: auto;
+    width: 100%;
     max-width: 100%;
+    grid-template-columns: minmax(0, 1fr) auto;
     padding: 12px 12px 12px 18px;
     gap: 10px;
-    font-size: 0.78rem;
-    letter-spacing: 0.08em;
+    font-size: clamp(0.74rem, 1.2vw + 0.42rem, 0.84rem);
+    letter-spacing: clamp(0.05em, 0.28vw, 0.08em);
     border-radius: 999px;
   }
 
