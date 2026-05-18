@@ -51,16 +51,18 @@
   align-items: flex-start;
 }
 
-.headerIcon {
+.headerImage {
   flex-shrink: 0;
   width: 52px;
   height: 52px;
   border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-text-light);
-  background: var(--gradient-primary);
+  object-fit: contain;
+  object-position: center;
+  box-sizing: border-box;
+  padding: 3px;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: 0 8px 20px rgba(81, 104, 255, 0.18);
 }
 
 .title {

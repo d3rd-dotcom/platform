@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
 import { Robot, Copy, Check, ArrowsClockwise, ShieldCheck, Key, Bell } from '@phosphor-icons/react';
@@ -260,9 +261,14 @@ export default function AgentsPage() {
       <main className={styles.content}>
         <div className={styles.inner}>
           <header className={styles.header}>
-            <div className={styles.headerIcon} aria-hidden="true">
-              <Robot size={28} weight="bold" />
-            </div>
+            <Image
+              src="/exxie.png"
+              alt="Exxie"
+              width={52}
+              height={52}
+              className={styles.headerImage}
+              priority
+            />
             <div>
               <h1 className={styles.title}>Agent Accounts</h1>
               <p className={styles.subtitle}>
@@ -382,9 +388,9 @@ export default function AgentsPage() {
                         <span className={styles.custodyTag}>Recommended</span>
                       </span>
                       <span className={styles.custodyDesc}>
-                        The Academy creates and secures the wallet. Nothing to install or back up.
+                        CREATE A SECURE NEW WALLET. NO INSTALL OR BACKUP.
                       </span>
-                      <span className={styles.custodyMeta}>One click · Key held by the Academy</span>
+                      <span className={styles.custodyMeta}>Encrypted at rest</span>
                     </button>
 
                     <button
