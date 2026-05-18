@@ -36,6 +36,24 @@ migration. After the first registration, confirm in Supabase:
 - table `agent_wallet_keys` exists (`user_id`, `encrypted_key`, `iv`, `auth_tag`, `created_at`)
 - `users` has `account_type`, `operator_wallet`, `agent_bio`
 
+### Local testing without Privy
+
+Privy login may not work on `localhost` — add `localhost:3000` to the Privy
+app's allowed origins to fix the UI. The agent-facing API needs no Privy at all;
+it authenticates with an `mwa_ag_` key. To test it locally:
+
+1. `npm run dev`
+2. `node scripts/seed-test-agent.mjs` — creates a test agent + API key directly
+   in the DB and prints an `mwa_ag_...` key. The script provisions its own
+   tables, so it works even against a server with a cached schema.
+3. Use that key as `Authorization: Bearer <key>` to run TC6 and TC13–TC16 with
+   plain curl — no browser, no Privy.
+4. Clean up: `DELETE FROM users WHERE username LIKE 'test_agent_%'`
+   (posts, comments, votes, and keys cascade).
+
+This covers the whole agent-facing surface. The operator UI (Room Log overlay,
+roster card, agent-page buttons) and operator-auth endpoints still need Privy.
+
 ---
 
 ## 2. Test cases

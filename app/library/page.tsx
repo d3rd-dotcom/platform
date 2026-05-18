@@ -19,16 +19,6 @@ interface Skill extends PromptSource {
   type: string;
 }
 
-interface ArtStyle extends PromptSource {
-  id: string;
-  name: string;
-  description: string;
-  mood: string;
-  useCase: string;
-  copyText?: string;
-  image?: string;
-}
-
 interface PromptPreview {
   title: string;
   eyebrow: string;
@@ -411,36 +401,6 @@ Before publishing any content:
 *Version 4.0 — April 2026*
 *Mental Wealth Academy — Wyoming, USA*`;
 
-const ART_STYLES: ArtStyle[] = [
-  {
-    id: 'lab-aesthetic',
-    name: 'Style Guide For Authorship',
-    description: 'Investor, partner, collaborator, and team onboarding prompt covering product framing, Blue, business model, brand voice, and editorial rules.',
-    mood: 'Brand Book',
-    useCase: 'Managing tone in MWA marketing',
-    copyText: MENTAL_WEALTH_BRAND_BOOK_V4,
-    image: '/lab-aesthetic.png',
-  },
-  {
-    id: 'surveillance-aesthetic',
-    name: 'Surveillance Aesthetic',
-    description: 'Bright anime style cinematic aerial drone shot looking through the school window at a character in their classroom taking notes. POV is from outside the window, they are in the back of the classroom with other students. They are writing in a notebook at their desk, completely unaware they are being watched. Camera angle is slightly voyeuristic — surveillance footage aesthetic with subtle scan lines and a data overlay brushing in at the edges (heart rate: 82 BPM, mood analysis: slightly depressed, browsing history: Class-A4). Warm, scientific, data-gathering wildlife observer tone.',
-    mood: 'Warm, Scientific, Observant',
-    useCase: 'Surveillance-style classroom illustration prompts',
-    image: '/surveillance-aesthetic.png',
-  },
-  {
-    id: 'bright-anime',
-    name: 'Academy Story Style',
-    description: 'Purely bright digital illustration, anime-influenced. Detailed digital comic art with cinematic lighting and cool tones. Setting: a space station laboratory — dark grey and dark purple tiled floor, green and purple bioluminescent fluid inside transparent computer testing equipment in the distance. Set dressing: desks covered in scattered research papers with black redacted government text.',
-    mood: 'Bright, Curious, Tech',
-    useCase: 'Anime storytelling and larger illustration',
-    image: '/academy-story.png',
-  },
-];
-
-const DESCRIPTION_MAX = ART_STYLES[0].description.length;
-
 const SKILLS: Skill[] = [
   {
     name: 'Blue Persona Prompt',
@@ -450,8 +410,8 @@ const SKILLS: Skill[] = [
     promptPath: '/prompts/blue-persona.md',
   },
   {
-    name: 'Company Editorial Style Guide',
-    category: 'Simulation Prompts',
+    name: 'Academy Editorial',
+    category: 'Editorial Prompts',
     added: '2026-05-17',
     type: 'SIM',
     prompt: MENTAL_WEALTH_BRAND_BOOK_V4,
@@ -627,12 +587,28 @@ Include:
 4. Risks, benefits, and ethical tensions
 5. Intervention or design recommendations`,
   },
+  {
+    name: 'Surveillance Aesthetic',
+    category: 'Image Prompts',
+    added: '2026-05-18',
+    type: 'IMG',
+    prompt: `Bright anime style cinematic aerial drone shot looking through the school window at a character in their classroom taking notes. POV is from outside the window, they are in the back of the classroom with other students. They are writing in a notebook at their desk, completely unaware they are being watched. Camera angle is slightly voyeuristic — surveillance footage aesthetic with subtle scan lines and a data overlay brushing in at the edges (heart rate: 82 BPM, mood analysis: slightly depressed, browsing history: Class-A4). Warm, scientific, data-gathering wildlife observer tone.`,
+  },
+  {
+    name: 'Academy Story Style',
+    category: 'Image Prompts',
+    added: '2026-05-18',
+    type: 'IMG',
+    prompt: `Purely bright digital illustration, anime-influenced. Detailed digital comic art with cinematic lighting and cool tones. Setting: a space station laboratory — dark grey and dark purple tiled floor, green and purple bioluminescent fluid inside transparent computer testing equipment in the distance. Set dressing: desks covered in scattered research papers with black redacted government text.`,
+  },
 ];
 
 const CATEGORY_FILTERS = [
   'All Categories',
   'Persona Prompts',
   'Simulation Prompts',
+  'Editorial Prompts',
+  'Image Prompts',
 ];
 
 export default function LibraryPage() {
@@ -641,7 +617,6 @@ export default function LibraryPage() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [showCopyNotification, setShowCopyNotification] = useState(false);
   const [isFadingOut, setIsFadingOut] = useState(false);
-  const [loadedArtImages, setLoadedArtImages] = useState<Set<string>>(() => new Set());
   const [promptAssetCache, setPromptAssetCache] = useState<Record<string, string>>({});
   const [previewPrompt, setPreviewPrompt] = useState<PromptPreview | null>(null);
   const [blogPosts, setBlogPosts] = useState<ParagraphBlogPost[]>([]);
@@ -783,18 +758,6 @@ export default function LibraryPage() {
     }
   };
 
-  const openArtStylePreview = (style: ArtStyle) => {
-    void openPromptPreview({
-      title: style.name,
-      eyebrow: `${style.mood} Prompt`,
-      source: {
-        prompt: style.copyText ?? style.prompt,
-        promptPath: style.promptPath,
-      },
-      fallback: style.description,
-    });
-  };
-
   const openSkillPreview = (skill: Skill) => {
     void openPromptPreview({
       title: skill.name,
@@ -834,15 +797,6 @@ export default function LibraryPage() {
     setSelectedCategory(category);
     setFilterOpen(false);
     play('click');
-  };
-
-  const markArtImageLoaded = (id: string) => {
-    setLoadedArtImages((current) => {
-      if (current.has(id)) return current;
-      const next = new Set(current);
-      next.add(id);
-      return next;
-    });
   };
 
   const formatBlogDate = (publishedAt: string) => {
@@ -957,59 +911,6 @@ export default function LibraryPage() {
                     ))}
                   </div>
                 )}
-              </div>
-
-              {/* Featured Art Styles Section */}
-              <div className={styles.featuredSection}>
-                <h2 className={styles.featuredTitle}>FEATURED PROMPTS</h2>
-                <p className={styles.featuredCopyHint}>Click any item to preview before copying.</p>
-                <div className={styles.artStylesContainer}>
-                  {ART_STYLES.map((style) => (
-                    <div
-                      key={style.id}
-                      className={styles.artStyleCard}
-                      onClick={() => openArtStylePreview(style)}
-                      onKeyDown={(event) => {
-                        if (event.key === 'Enter' || event.key === ' ') {
-                          event.preventDefault();
-                          openArtStylePreview(style);
-                        }
-                      }}
-                      role="button"
-                      tabIndex={0}
-                      title="Click to preview"
-                    >
-                      <div className={styles.artStyleHeader}>
-                        <h3 className={styles.artStyleName}>{style.name}</h3>
-                        <span className={styles.artStyleMood}>{style.mood}</span>
-                      </div>
-                      <p className={styles.artStyleDescription}>
-                        {style.description.length > DESCRIPTION_MAX
-                          ? `${style.description.slice(0, DESCRIPTION_MAX)}…`
-                          : style.description}
-                      </p>
-                      {style.image && (
-                        <div className={styles.artStyleImage}>
-                          {!loadedArtImages.has(style.id) && (
-                            <div className={styles.artStyleImageSkeleton} aria-hidden="true" />
-                          )}
-                          <Image
-                            src={style.image}
-                            alt={style.name}
-                            fill
-                            sizes="(max-width: 900px) calc(100vw - 56px), 33vw"
-                            className={`${styles.artStyleImg} ${loadedArtImages.has(style.id) ? styles.artStyleImgLoaded : ''}`}
-                            onLoad={() => markArtImageLoaded(style.id)}
-                            onError={() => markArtImageLoaded(style.id)}
-                          />
-                        </div>
-                      )}
-                      <div className={styles.artStyleFooter}>
-                        <span className={styles.artStyleUseCase}>{style.useCase}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
               </div>
 
               {/* Search & Filter Section */}
