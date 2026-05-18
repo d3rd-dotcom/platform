@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import CourseIntake from '@/components/course-intake/CourseIntake';
 import Dashboard from '@/components/dashboard/Dashboard';
+import AgentRosterCard from '@/components/room-log/AgentRosterCard';
 import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
 import { DotmSquare3 } from '@/components/dot-matrix/DotmSquare3';
 import type { CourseData, IntakeAnswers } from '@/lib/personal-course';
@@ -130,6 +131,7 @@ export default function HomeBento() {
           course={course.courseData}
           initialIntake={course.intakeData}
         />
+        <AgentRosterCard />
       </div>
     );
   }

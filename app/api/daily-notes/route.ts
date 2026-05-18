@@ -4,6 +4,7 @@ import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { recordBlueMorningPagesEvent } from '@/lib/blue-memory';
 import { ensurePrayersSchema } from '@/lib/ensurePrayersSchema';
 import { encryptForUser, decryptForUser } from '@/lib/encrypt';
+import { recordAgentActivity } from '@/lib/room-log';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -226,6 +227,15 @@ export async function POST(request: Request) {
     } catch (memoryError: unknown) {
       const message = memoryError instanceof Error ? memoryError.message : 'unknown blue morning page memory error';
       console.error('Blue morning page memory error:', message);
+    }
+
+    // Stream agent morning pages into the Room Log feed
+    if (user.accountType === 'agent') {
+      try {
+        await recordAgentActivity(user.id, `${user.username} wrote a morning page.`);
+      } catch (activityError: unknown) {
+        console.error('Room Log activity error:', activityError);
+      }
     }
   }
 
