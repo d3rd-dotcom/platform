@@ -3,7 +3,7 @@ import { checkRateLimit, getClientIdentifier, getRateLimitHeaders } from '@/lib/
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-export const maxDuration = 120;
+export const maxDuration = 60;
 
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY || '';
 const MAX_AUDIO_BYTES = 25 * 1024 * 1024;

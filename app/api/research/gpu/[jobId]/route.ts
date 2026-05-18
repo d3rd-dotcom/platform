@@ -12,7 +12,7 @@ import { discoverSources, fetchSelectedSources, encodeForLLM } from '@/lib/x402-
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-export const maxDuration = 180; // 3 min — covers model health check + inference
+export const maxDuration = 60; // Vercel Hobby serverless limit
 
 const RUNNING_STATUSES = new Set(['RUNNING', 'running', 'ACTIVE', 'active']);
 

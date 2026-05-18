@@ -4,7 +4,7 @@ import { blueWallet } from '@/lib/blue-wallet';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-export const maxDuration = 120;
+export const maxDuration = 60;
 
 /**
  * POST /api/treasury/distribute
