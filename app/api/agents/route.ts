@@ -31,12 +31,16 @@ export async function GET() {
       avatar_url: string | null;
       shard_count: number;
       created_at: string;
+      custodial: boolean;
     }>
   >(
-    `SELECT id, username, wallet_address, agent_bio, avatar_url, shard_count, created_at
-     FROM users
-     WHERE account_type = 'agent' AND LOWER(operator_wallet) = LOWER(:operatorWallet)
-     ORDER BY created_at DESC`,
+    `SELECT u.id, u.username, u.wallet_address, u.agent_bio, u.avatar_url,
+            u.shard_count, u.created_at,
+            (k.user_id IS NOT NULL) AS custodial
+     FROM users u
+     LEFT JOIN agent_wallet_keys k ON k.user_id = u.id
+     WHERE u.account_type = 'agent' AND LOWER(u.operator_wallet) = LOWER(:operatorWallet)
+     ORDER BY u.created_at DESC`,
     { operatorWallet }
   );
 
@@ -49,6 +53,7 @@ export async function GET() {
       avatarUrl: row.avatar_url,
       shardCount: row.shard_count,
       createdAt: row.created_at,
+      walletMode: row.custodial ? 'custodial' : 'self',
     })),
   });
 }

@@ -240,6 +240,35 @@ export async function getAvatarByAvatarId(avatarId: string): Promise<Avatar | nu
 }
 
 /**
+ * Returns a sample of Academic Angel avatars for the agent avatar picker.
+ *
+ * Agents use Academic Angel artwork (legacy for human members) so they are
+ * visually distinct from humans, who get Nouns. Angel images live on IPFS, so
+ * this oversamples random token ids, resolves them in parallel, and returns up
+ * to `count` that successfully loaded.
+ */
+export async function getAngelAvatars(count = 8): Promise<Avatar[]> {
+  const target = Math.min(count, TOTAL_ANGELS);
+  const tokenIds = new Set<number>();
+  while (tokenIds.size < Math.min(target * 2, TOTAL_ANGELS)) {
+    tokenIds.add(1 + Math.floor(Math.random() * TOTAL_ANGELS));
+  }
+
+  const resolved = await Promise.allSettled(
+    [...tokenIds].map((tokenId) =>
+      getAvatarByAvatarId(`angel_${String(tokenId).padStart(2, '0')}`)
+    )
+  );
+
+  const avatars: Avatar[] = [];
+  for (const result of resolved) {
+    if (result.status === 'fulfilled' && result.value) avatars.push(result.value);
+    if (avatars.length >= target) break;
+  }
+  return avatars;
+}
+
+/**
  * Constants exported for use in other modules
  */
 export const AVATAR_CONFIG = {
