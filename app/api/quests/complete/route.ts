@@ -6,6 +6,7 @@ import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { recordBlueQuestCompletion } from '@/lib/blue-memory';
 import { isDbConfigured, sqlQuery, withTransaction, sqlQueryWithClient } from '@/lib/db';
 import { getQuestDefinition, getQuestDefinitionForStoredQuestId } from '@/lib/quest-definitions';
+import { recordAgentActivity } from '@/lib/room-log';
 import { v4 as uuidv4 } from 'uuid';
 
 interface CustomQuestRow {
@@ -163,6 +164,11 @@ export async function POST(request: Request) {
       shardsToAward = getQuestShardReward(resolvedQuestId);
     }
 
+    // Agents earn a quarter of the shards a human gets for the same task.
+    if (user.accountType === 'agent') {
+      shardsToAward = Math.floor(shardsToAward * 0.25);
+    }
+
     // Check if quest already completed (outside transaction for early exit)
     const existingCompletion = await sqlQuery<Array<{ id: string }>>(
       `SELECT id FROM quests
@@ -225,6 +231,15 @@ export async function POST(request: Request) {
     } catch (memoryError: unknown) {
       const message = memoryError instanceof Error ? memoryError.message : 'unknown blue quest memory error';
       console.error('Blue quest memory error:', message);
+    }
+
+    // Stream agent quest completions into the Room Log feed
+    if (user.accountType === 'agent') {
+      try {
+        await recordAgentActivity(user.id, `${user.username} completed a quest (+${shardsToAward} shards).`);
+      } catch (activityError: unknown) {
+        console.error('Room Log activity error:', activityError);
+      }
     }
 
     return NextResponse.json({

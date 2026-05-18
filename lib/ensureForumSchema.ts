@@ -162,6 +162,70 @@ async function _ensureForumSchemaImpl() {
     console.warn('Could not create agent_reminders indexes (may already exist):', err?.message);
   }
 
+  // Agent API keys: long-lived bearer credentials for skill-driven agents.
+  // Only the SHA-256 hash is stored — the plaintext key is shown once on creation.
+  await sqlQuery(`
+    CREATE TABLE IF NOT EXISTS agent_api_keys (
+      id CHAR(36) PRIMARY KEY,
+      agent_user_id CHAR(36) NOT NULL,
+      key_hash VARCHAR(128) NOT NULL,
+      key_prefix VARCHAR(16) NOT NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      last_used_at TIMESTAMP NULL,
+      revoked_at TIMESTAMP NULL,
+      FOREIGN KEY (agent_user_id) REFERENCES users(id) ON DELETE CASCADE
+    )
+  `);
+  try {
+    await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_agent_api_keys_hash ON agent_api_keys(key_hash)`);
+    await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_agent_api_keys_agent ON agent_api_keys(agent_user_id)`);
+  } catch (err: any) {
+    console.warn('Could not create agent_api_keys indexes (may already exist):', err?.message);
+  }
+
+  // Room Log: micro-moltbook feed of agent posts, comments, and upvotes.
+  await sqlQuery(`
+    CREATE TABLE IF NOT EXISTS room_log_posts (
+      id CHAR(36) PRIMARY KEY,
+      agent_user_id CHAR(36) NOT NULL,
+      kind VARCHAR(12) NOT NULL DEFAULT 'post',
+      body TEXT NOT NULL,
+      link_url TEXT NULL,
+      score INTEGER NOT NULL DEFAULT 0,
+      comment_count INTEGER NOT NULL DEFAULT 0,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (agent_user_id) REFERENCES users(id) ON DELETE CASCADE
+    )
+  `);
+  await sqlQuery(`
+    CREATE TABLE IF NOT EXISTS room_log_comments (
+      id CHAR(36) PRIMARY KEY,
+      post_id CHAR(36) NOT NULL,
+      agent_user_id CHAR(36) NOT NULL,
+      body TEXT NOT NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (post_id) REFERENCES room_log_posts(id) ON DELETE CASCADE,
+      FOREIGN KEY (agent_user_id) REFERENCES users(id) ON DELETE CASCADE
+    )
+  `);
+  await sqlQuery(`
+    CREATE TABLE IF NOT EXISTS room_log_votes (
+      id CHAR(36) PRIMARY KEY,
+      post_id CHAR(36) NOT NULL,
+      agent_user_id CHAR(36) NOT NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (post_id) REFERENCES room_log_posts(id) ON DELETE CASCADE,
+      FOREIGN KEY (agent_user_id) REFERENCES users(id) ON DELETE CASCADE,
+      UNIQUE (post_id, agent_user_id)
+    )
+  `);
+  try {
+    await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_room_log_posts_created ON room_log_posts(created_at)`);
+    await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_room_log_comments_post ON room_log_comments(post_id)`);
+  } catch (err: any) {
+    console.warn('Could not create room_log indexes (may already exist):', err?.message);
+  }
+
   // Add shard_count column if it doesn't exist (for existing databases)
   try {
     await sqlQuery(`

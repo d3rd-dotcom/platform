@@ -3,8 +3,9 @@
 import { type FormEvent, useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
-import { ArrowLeft, Bell, CheckCircle, Clock, Plus, Robot, X } from '@phosphor-icons/react';
+import { ArrowLeft, Bell, Check, CheckCircle, Clock, Copy, Key, Plus, Robot, X } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
+import RoomLogOverlay from '@/components/room-log/RoomLogOverlay';
 import styles from './page.module.css';
 
 type WalletMode = 'custodial' | 'self';
@@ -129,6 +130,12 @@ export default function AgentDetailPage({ params }: { params: { id: string } }) 
   const [reminderMessage, setReminderMessage] = useState('');
   const [reminderBusy, setReminderBusy] = useState(false);
 
+  const [apiKey, setApiKey] = useState<string | null>(null);
+  const [apiKeyBusy, setApiKeyBusy] = useState(false);
+  const [apiKeyMsg, setApiKeyMsg] = useState<string | null>(null);
+  const [keyCopied, setKeyCopied] = useState(false);
+  const [roomLogOpen, setRoomLogOpen] = useState(false);
+
   const authHeaders = useCallback(async (): Promise<HeadersInit> => {
     const token = await getAccessToken();
     return token ? { Authorization: `Bearer ${token}` } : {};
@@ -251,6 +258,61 @@ export default function AgentDetailPage({ params }: { params: { id: string } }) 
     }
   };
 
+  const handleGenerateApiKey = async () => {
+    setApiKeyBusy(true);
+    setApiKeyMsg(null);
+    try {
+      const res = await fetch(`/api/agents/${params.id}/api-key`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: await authHeaders(),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setApiKeyMsg(data.error || 'Could not generate an API key.');
+        return;
+      }
+      setApiKey(data.apiKey);
+    } catch {
+      setApiKeyMsg('Network error while generating the API key.');
+    } finally {
+      setApiKeyBusy(false);
+    }
+  };
+
+  const handleRevokeApiKey = async () => {
+    setApiKeyBusy(true);
+    setApiKeyMsg(null);
+    try {
+      const res = await fetch(`/api/agents/${params.id}/api-key`, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: await authHeaders(),
+      });
+      if (res.ok) {
+        setApiKey(null);
+        setApiKeyMsg('API key revoked.');
+      } else {
+        setApiKeyMsg('Could not revoke the API key.');
+      }
+    } catch {
+      setApiKeyMsg('Network error while revoking the API key.');
+    } finally {
+      setApiKeyBusy(false);
+    }
+  };
+
+  const handleCopyKey = async () => {
+    if (!apiKey) return;
+    try {
+      await navigator.clipboard.writeText(apiKey);
+      setKeyCopied(true);
+      setTimeout(() => setKeyCopied(false), 1500);
+    } catch {
+      // Clipboard unavailable — operator can select manually
+    }
+  };
+
   const weekOptions = Array.from({ length: 12 }, (_, index) => index + 1);
 
   return (
@@ -326,6 +388,71 @@ export default function AgentDetailPage({ params }: { params: { id: string } }) 
                   <span className={styles.statLabel}>Tests completed</span>
                 </div>
               </div>
+
+              <section className={styles.card}>
+                <div className={styles.sectionHeader}>
+                  <div>
+                    <h2 className={styles.cardTitle}>Connection &amp; Room Log</h2>
+                    <p className={styles.sectionMeta}>API key for hands-off automation</p>
+                  </div>
+                  <Key size={20} weight="bold" className={styles.sectionIcon} />
+                </div>
+                <p className={styles.cardText}>
+                  Generate an API key and give it to your agent — with it, the agent connects on
+                  its own. Setup steps live in{' '}
+                  <a
+                    className={styles.inlineLink}
+                    href="/skill.md"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    skill.md
+                  </a>
+                  .
+                </p>
+                <div className={styles.buttonRow}>
+                  <button
+                    type="button"
+                    className={styles.primaryButton}
+                    onClick={handleGenerateApiKey}
+                    disabled={apiKeyBusy}
+                  >
+                    {apiKeyBusy ? 'Working...' : 'Generate API key'}
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.secondaryButton}
+                    onClick={handleRevokeApiKey}
+                    disabled={apiKeyBusy}
+                  >
+                    Revoke key
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.secondaryButton}
+                    onClick={() => setRoomLogOpen(true)}
+                  >
+                    Open Room Log
+                  </button>
+                </div>
+                {apiKey && (
+                  <>
+                    <div className={styles.keyBlock}>
+                      <code className={styles.keyValue}>{apiKey}</code>
+                      <button
+                        type="button"
+                        className={styles.iconButton}
+                        onClick={handleCopyKey}
+                        aria-label="Copy API key"
+                      >
+                        {keyCopied ? <Check size={14} weight="bold" /> : <Copy size={14} weight="bold" />}
+                      </button>
+                    </div>
+                    <p className={styles.hint}>Store this key now — it will not be shown again.</p>
+                  </>
+                )}
+                {apiKeyMsg && <p className={styles.muted}>{apiKeyMsg}</p>}
+              </section>
 
               <section className={styles.card}>
                 <div className={styles.sectionHeader}>
@@ -500,6 +627,8 @@ export default function AgentDetailPage({ params }: { params: { id: string } }) 
                   </ul>
                 )}
               </section>
+
+              <RoomLogOverlay isOpen={roomLogOpen} onClose={() => setRoomLogOpen(false)} />
             </>
           ) : null}
         </div>
