@@ -24,7 +24,7 @@
 .modal {
   background: #ffffff;
   border: 3px solid #1A1D33;
-  border-radius: 8px;
+  border-radius: 24px;
   box-shadow: 6px 6px 0 #1A1D33;
   max-width: 520px;
   width: 100%;
@@ -53,7 +53,7 @@
   height: 36px;
   background: #ffffff;
   border: 2px solid #1A1D33;
-  border-radius: 4px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -85,11 +85,17 @@
 }
 
 .membershipImage {
-  border-radius: 12px;
+  border-radius: 20px;
   width: 100%;
   max-width: 360px;
   height: auto;
   box-shadow: 0 8px 28px rgba(26, 29, 51, 0.18);
+}
+
+.exxieImage {
+  width: auto;
+  height: 132px;
+  object-fit: contain;
 }
 
 .textContent {
@@ -107,7 +113,7 @@
   padding: 6px 12px;
   background: linear-gradient(135deg, var(--color-primary) 0%, #7B8CFF 100%);
   color: #ffffff;
-  border-radius: 4px;
+  border-radius: 999px;
   margin-bottom: 12px;
 }
 
@@ -142,7 +148,7 @@
   padding: 10px 12px;
   background: rgba(81, 104, 255, 0.06);
   border: 1px solid rgba(81, 104, 255, 0.15);
-  border-radius: 4px;
+  border-radius: 16px;
   margin-bottom: 8px;
   font-family: var(--font-primary);
   font-size: 14px;
@@ -163,9 +169,9 @@
 .ctaButton {
   width: 100%;
   padding: 14px 24px;
-  background: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary) 45%, #7B5CF5 100%);
   border: 2px solid #1A1D33;
-  border-radius: 4px;
+  border-radius: 999px;
   font-family: var(--font-button);
   font-size: 13px;
   font-weight: 700;
@@ -183,7 +189,7 @@
 }
 
 .ctaButton:hover {
-  background: var(--color-primary-hover);
+  background: linear-gradient(135deg, var(--color-primary-hover) 0%, var(--color-primary-hover) 40%, #6B49E0 100%);
   transform: translate(-2px, -2px);
   box-shadow: 6px 6px 0 #1A1D33;
 }
@@ -191,6 +197,52 @@
 .ctaButton:active {
   transform: translate(1px, 1px);
   box-shadow: 3px 3px 0 #1A1D33;
+}
+
+/* Animated rainbow border for the purchase CTAs. A slowly rotating conic
+   gradient: the colors circle the perimeter, so nothing sweeps across and
+   there is no flashing band. Masked to a ring like the landing header. */
+@property --mwa-rb-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.ctaButtonBuy {
+  position: relative;
+}
+
+.ctaButtonBuy::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(
+    from var(--mwa-rb-angle),
+    #5168FF,
+    #74C465,
+    #E8556D,
+    #F2A0B5,
+    #a78bfa,
+    #5168FF
+  );
+  animation: rainbowSpin 7s linear infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+@keyframes rainbowSpin {
+  to { --mwa-rb-angle: 360deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ctaButtonBuy::before {
+    animation: none;
+  }
 }
 
 /* Mobile Styles */
@@ -316,11 +368,13 @@
 }
 
 :global([data-theme="dark"]) .ctaButton {
+  background: var(--color-primary);
   border-color: rgba(255, 255, 255, 0.1);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 :global([data-theme="dark"]) .ctaButton:hover {
+  background: var(--color-primary-hover);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 }
 
@@ -332,4 +386,265 @@
   :global([data-theme="dark"]) .modal {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   }
+}
+
+/* ============================================================ */
+/* Multi-screen flow: checkout + transfer                       */
+/* ============================================================ */
+
+.ctaButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 4px 4px 0 #1A1D33;
+}
+
+.backLink {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  z-index: 10;
+  background: none;
+  border: none;
+  padding: 4px 6px;
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #666666;
+  cursor: pointer;
+}
+
+.backLink:hover {
+  color: var(--color-primary);
+}
+
+/* Checkout screen */
+.priceRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border: 2px solid #1A1D33;
+  border-radius: 16px;
+  margin: 0 0 16px 0;
+}
+
+.priceLabel {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 600;
+  color: #666666;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.priceValue {
+  font-family: var(--font-primary);
+  font-size: 20px;
+  font-weight: 800;
+  color: #1A1D33;
+}
+
+.checkoutForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 4px;
+}
+
+.loadingText,
+.secureNote {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  color: #888888;
+  text-align: center;
+  margin: 8px 0 0 0;
+}
+
+.formError {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  color: #C0392B;
+  margin: 4px 0 0 0;
+  text-align: left;
+}
+
+/* Transfer screen */
+.transferStage {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  margin: 8px 0 16px 0;
+}
+
+.flowSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.flowLine {
+  stroke: #1A1D33;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 1 7;
+  vector-effect: non-scaling-stroke;
+  animation: flowDash 0.9s linear infinite;
+}
+
+.flowLineSettled {
+  animation: none;
+  opacity: 0.35;
+}
+
+@keyframes flowDash {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+
+.node {
+  position: absolute;
+  width: 76px;
+  height: 76px;
+  border: 3px solid #1A1D33;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 3px 3px 0 #1A1D33;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.node img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.nodeBlue {
+  top: 0;
+  left: 0;
+}
+
+.nodeUser {
+  bottom: 0;
+  right: 0;
+  overflow: visible;
+}
+
+.nodeUser img {
+  border-radius: 14px;
+}
+
+.nodeFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 700;
+  color: #666666;
+  background: rgba(81, 104, 255, 0.08);
+}
+
+.nodeCheck {
+  position: absolute;
+  bottom: -10px;
+  right: -10px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #1FA968;
+  border: 2px solid #1A1D33;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+
+.travelCard {
+  position: absolute;
+  width: 92px;
+  z-index: 2;
+}
+
+.travelCard img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 2px solid #1A1D33;
+  border-radius: 14px;
+  box-shadow: 3px 3px 0 rgba(26, 29, 51, 0.35);
+}
+
+.transferActions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.txLink {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+  text-align: center;
+}
+
+.txLink:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .transferStage {
+    height: 220px;
+  }
+
+  .node {
+    width: 64px;
+    height: 64px;
+  }
+
+  .travelCard {
+    width: 78px;
+  }
+}
+
+/* Dark mode — new screens */
+:global([data-theme="dark"]) .priceRow {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+:global([data-theme="dark"]) .priceValue {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .priceLabel,
+:global([data-theme="dark"]) .backLink,
+:global([data-theme="dark"]) .loadingText,
+:global([data-theme="dark"]) .secureNote {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .flowLine {
+  stroke: rgba(227, 225, 238, 0.6);
+}
+
+:global([data-theme="dark"]) .node {
+  background: #1F2030;
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .travelCard img {
+  border-color: rgba(255, 255, 255, 0.14);
 }
