@@ -248,6 +248,23 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
       'Blue (sometimes called Azura) is the in-app AI. A scientist and researcher voice at MWA Research Labs. ' +
       'Direct, fast, gen-z boss energy. Lowercase by default. No therapy-bot tone. Powered by Eliza Cloud with full user memory and page-aware RAG context.',
   },
+  {
+    id: 'vip-membership',
+    title: 'VIP Membership',
+    routes: ['*', '/shop', '/markets'],
+    keywords: [
+      'vip', 'membership', 'member', 'pro', 'upgrade',
+      'lifetime', 'price', 'cost', 'buy', 'purchase', 'card', 'stripe', 'nft',
+    ],
+    body:
+      'VIP Membership is a one-time $89.90 purchase that unlocks MWA for life. It is an ERC-1155 NFT on Base ' +
+      '(contract 0x5da79055cf8ca6482c997df58822e08e5707d6fc, token id 1) — real on-chain ownership, not a subscription. ' +
+      'Members can build and deploy their own AI agent squads and design a fully personalized learning path. ' +
+      'How buying works: open the VIP Membership pop-up, pay by card (no crypto or gas needed), and Blue transfers the ' +
+      'membership NFT straight from her wallet into your MWA (Privy) wallet — usually within a minute. ' +
+      'The whole supply of memberships is held by Blue; each purchase grants one. Membership status is verified on-chain ' +
+      'by checking the wallet balance of that token.',
+  },
 ];
 
 const STOPWORDS = new Set([

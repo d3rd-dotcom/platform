@@ -184,3 +184,36 @@ export async function walletHoldsVipMembershipCard(wallet: string | null | undef
     return false;
   }
 }
+
+/**
+ * Reads the raw ERC-1155 balance of a VIP membership token for a wallet.
+ * Used to size Blue's remaining inventory before selling a card.
+ */
+export async function getVipMembershipCardBalance(
+  wallet: string | null | undefined,
+  tokenId: string | bigint = VIP_MEMBERSHIP_CARD_TOKEN_ID,
+): Promise<bigint> {
+  if (!wallet || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) return BigInt(0);
+
+  const rpcUrl = getBaseRpcUrl();
+  if (!rpcUrl) return BigInt(0);
+
+  try {
+    const data = erc1155BalanceInterface.encodeFunctionData('balanceOf', [
+      wallet,
+      tokenId.toString(),
+    ]);
+    const result = await rpcRequest<string>(rpcUrl, 'eth_call', [
+      { to: VIP_MEMBERSHIP_CARD_ADDRESS, data },
+      'latest',
+    ]);
+    const [balance] = erc1155BalanceInterface.decodeFunctionResult(
+      'balanceOf',
+      result,
+    ) as [BigNumber];
+    return BigInt(balance.toString());
+  } catch (err) {
+    console.error('[vip-membership-card] balance read failed:', err);
+    return BigInt(0);
+  }
+}
