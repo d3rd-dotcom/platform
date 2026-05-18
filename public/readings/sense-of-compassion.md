@@ -12,7 +12,7 @@ Do not call the inability to start laziness. Call it fear.
 
 Fear is the true name for what ails the blocked artist. It may be fear of failure or fear of success. Often it is fear of abandonment. That fear has roots in childhood reality. Many artists tried to become artists against either their parents' good wishes or their parents' good judgment. For a youngster, that is a terrible conflict.
 
-The need to be a great artist makes it hard to be an artist at all. Finding it hard to begin does not mean you will not be able to do it. It means you will need help: from your higher power, from supportive friends, and from yourself. You must give yourself permission to begin small and go in baby steps.
+The need to be a great artist makes it hard to be an artist at all. Finding it hard to begin does not mean you will not be able to do it. It means you will need help from supportive friends, practical structure, and yourself. You must give yourself permission to begin small and go in baby steps.
 
 Use love for your artist to cure its fear. Stop yelling at yourself. Be nice. Call fear by its right name.
 
@@ -20,7 +20,7 @@ Use love for your artist to cure its fear. Stop yelling at yourself. Be nice. Ca
 
 It is tempting to think art requires discipline in the heroic, Spartan sense. In the short run, discipline may work. In the long run, what sustains the artist is enthusiasm.
 
-Enthusiasm is not just an emotion. It is a spiritual commitment, a loving surrender to the creative process, a recognition of creativity everywhere. True enthusiasm is grounded in play, not grim duty.
+Enthusiasm is not just an emotion. It is a practical commitment to the creative process and a willingness to notice what gives you energy. True enthusiasm is grounded in play, not grim duty.
 
 Our artist is our child within, our playmate. It works best when treated accordingly. Paint is great gooey stuff. Sharpened pencils are fun. Work spaces often function best when they also feel like play spaces.
 
@@ -66,6 +66,5 @@ The deal is simple: "You take care of the quality, I will take care of the quant
 
 1. How many days this week did you do your morning pages? Regarding your U-turns, have you allowed yourself a shift toward compassion?
 2. Did you do your artist date this week? What did you do? How did it feel?
-3. Did you experience any synchronicity this week? What was it?
+3. Did you notice any useful timing, support, or opportunity this week? What was it?
 4. Were there any other issues this week that you consider significant for your recovery? Describe them.
-

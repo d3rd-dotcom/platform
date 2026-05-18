@@ -159,7 +159,7 @@ export default function SidebarProfileCard({
             </button>
           )}
           <button className={styles.menuItem} onClick={() => { setMenuOpen(false); onConnections(); }} type="button">Connections</button>
-          <button className={styles.menuItem} onClick={() => { setMenuOpen(false); onSoul(); }} type="button">Soul.md</button>
+          <button className={styles.menuItem} onClick={() => { setMenuOpen(false); onSoul(); }} type="button">Context.md</button>
           <div className={styles.menuDivider} />
           <button className={`${styles.menuItem} ${styles.menuItemDanger}`} onClick={() => { setMenuOpen(false); onSignOut(); }} type="button">Sign Out</button>
         </div>

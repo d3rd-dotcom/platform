@@ -97,7 +97,7 @@ function artistDate(): JournalSection {
     title: 'Artist Date',
     icon: ClockIcon,
     type: 'text',
-    instructions: 'Take yourself on a solo artist date this week. A block of time (about two hours) set aside and committed to nurturing your creative consciousness. A visit to a great junk store, a solo trip to the beach, an old movie — the point is to have fun and explore.',
+    instructions: 'Take yourself on a solo artist date this week. Set aside about two hours for creative attention. A visit to a great junk store, a solo trip to the beach, an old movie — the point is to have fun and explore.',
     placeholder: 'Describe your artist date plans or experience...',
   };
 }
@@ -109,7 +109,7 @@ function artistWalk(): JournalSection {
     title: 'Artist Walk',
     icon: WalkIcon,
     type: 'checklist',
-    instructions: 'Take your artist for a walk, the two of you. A brisk twenty-minute walk can dramatically alter consciousness.',
+    instructions: 'Take your artist for a walk, the two of you. A brisk twenty-minute walk can shift attention and clear stuck thinking.',
     checkItems: [
       'Completed 20-minute walk',
       'Walked mindfully (no phone)',
@@ -122,11 +122,11 @@ function artistWalk(): JournalSection {
 export const week0Sections: JournalSection[] = [
   {
     id: 'intro-reading',
-    title: 'What\'s Your Ethereal Horizon?',
+    title: 'What Are You Building Toward?',
     icon: TextIcon,
     type: 'text',
-    instructions: 'A DIVINE BEING STRUCK BY INFINITE! A DIVINE TREE THAT GREW FROM WITHIN ME, AND IT BRANCHED THROUGH THE RHIZOME. AND ROSE AN ETHEREAL HORIZON.',
-    placeholder: 'Write your genesis thoughts...',
+    instructions: 'Name the version of your creative life you want to build. Be concrete: what changes, what habits support it, and what evidence would prove you are moving.',
+    placeholder: 'Write what you are building toward...',
   },
 ];
 
@@ -144,19 +144,19 @@ export const week3Sections: JournalSection[] = [
     listLabels: ['Anger 1', 'Anger 2', 'Anger 3', 'Anger 4', 'Anger 5'],
   },
   {
-    id: 'synchronicity-log',
-    title: 'Synchronicity Log',
+    id: 'useful-timing-log',
+    title: 'Useful Timing Log',
     icon: TextIcon,
     type: 'text',
-    instructions: 'Record any coincidences, lucky breaks, or "answered prayers" you notice this week. Tracking synchronicity builds trust in the process.',
-    placeholder: 'Describe synchronicities you noticed...',
+    instructions: 'Record any coincidences, lucky breaks, or useful openings you notice this week. Tracking them helps you see what action creates.',
+    placeholder: 'Describe useful openings you noticed...',
   },
   {
     id: 'forbidden-joys',
-    title: 'Forbidden Joys List',
+    title: 'Deferred Joys List',
     icon: HeartIcon,
     type: 'numbered-list',
-    instructions: 'List ten things you love and would love to do but aren\'t allowed to. Who says you can\'t? Often the things on this list are what we need most.',
+    instructions: 'List ten things you love and would love to do but have postponed, dismissed, or ruled out. Who says you can\'t? Often the things on this list are what we need most.',
     listCount: 10,
     listLabels: Array.from({ length: 10 }, (_, i) => `${i + 1}.`),
   },
@@ -218,20 +218,20 @@ export const week4Sections: JournalSection[] = [
 // ─── Week 5: Possibility ─────────────────────────────────────────────
 export const week5Sections: JournalSection[] = [
   {
-    id: 'god',
-    title: 'God',
+    id: 'support-beliefs',
+    title: 'Support Beliefs',
     icon: FlameIcon,
     type: 'list',
-    instructions: 'The reason I can\'t really believe in a supportive God is ... List five grievances. (God can take it.)',
+    instructions: 'List five reasons you struggle to believe support will show up when you take creative risks.',
     listCount: 5,
-    listLabels: ['Grievance 1', 'Grievance 2', 'Grievance 3', 'Grievance 4', 'Grievance 5'],
+    listLabels: ['Reason 1', 'Reason 2', 'Reason 3', 'Reason 4', 'Reason 5'],
   },
   {
     id: 'desires',
     title: 'List 5 Desires',
     icon: HeartIcon,
     type: 'list',
-    instructions: 'If I had either faith or money I would try ... List five desires. For the next week, be alert for images of these desires. When you spot them, clip them, buy them, photograph them, draw them, collect them somehow. With these images, begin a file of dreams that speak to you. Add to it continually for the duration of the course.',
+    instructions: 'If I had either trust or money I would try ... List five desires. For the next week, be alert for images of these desires. When you spot them, clip them, buy them, photograph them, draw them, collect them somehow. With these images, begin a file of dreams that speak to you. Add to it continually for the duration of the course.',
     listCount: 5,
     listLabels: ['Desire 1', 'Desire 2', 'Desire 3', 'Desire 4', 'Desire 5'],
   },
@@ -350,7 +350,7 @@ export const week6Sections: JournalSection[] = [
     icon: TextIcon,
     type: 'text',
     instructions: 'Complete these phrases as fast as you can. Don\'t think, just write:\n\nPeople with money are ___.\nMoney makes people ___.\nI\'d have more money if ___.\nMy dad thought money was ___.\nMy mom always thought money would ___.\nIn my family, money caused ___.\nMoney equals ___.\nIf I had money, I\'d ___.\nIf I could afford it, I\'d ___.\nI\'m afraid that if I had money I would ___.\nMoney is ___.\nHaving money is not ___.\nIn order to have more money, I\'d need to ___.\nWhen I have money, I usually ___.\nIf I weren\'t so cheap I\'d ___.\nBeing broke tells me ___.',
-    placeholder: 'Write your money mythology...',
+    placeholder: 'Write your money story...',
   },
   {
     id: 'time-money-inventory',
@@ -365,7 +365,7 @@ export const week6Sections: JournalSection[] = [
     title: 'Natural Abundance',
     icon: LeafIcon,
     type: 'checklist',
-    instructions: 'Go outside and collect five pretty or interesting rocks. Then pick five flowers or leaves. Rocks can be carried in pockets, fingered in meetings\u2014small, constant reminders of your creative consciousness. Press the flowers between wax paper and save them in a book. If you did this in kindergarten, good. Some of the best creative play happens there.',
+    instructions: 'Go outside and collect five pretty or interesting rocks. Then pick five flowers or leaves. Rocks can be carried in pockets as small reminders of creative attention. Press the flowers between wax paper and save them in a book. If you did this in kindergarten, good. Some of the best creative play happens there.',
     checkItems: ['Found 5 interesting rocks', 'Picked 5 flowers or leaves', 'Pressed or saved the flowers'],
   },
   {
@@ -397,11 +397,11 @@ export const week7Sections: JournalSection[] = [
     placeholder: 'What did you listen to? What did you notice?',
   },
   {
-    id: 'sacred-space',
-    title: 'Sacred Space',
+    id: 'quiet-space',
+    title: 'Quiet Space',
     icon: CompassIcon,
     type: 'text',
-    instructions: 'Take yourself into a sacred space—a church, synagogue, library, grove of trees—and allow yourself to savor the silence and healing solitude. Each of us has a personal idea of what sacred space is. For me, a large clock store or a great aquarium store can engender a sense of timeless wonder. Experiment.',
+    instructions: 'Take yourself into a quiet place: a library, grove of trees, museum, aquarium, or room where you can think without interruption. Notice what the silence makes available.',
     placeholder: 'Where did you go? What did you feel?',
   },
   {
@@ -497,7 +497,7 @@ export const week8Sections: JournalSection[] = [
     title: 'Color Schemes',
     icon: SparkleIcon,
     type: 'text',
-    instructions: 'Pick a color and write a quick few sentences describing yourself in the first person. ("I am silver, high-tech and ethereal…" or "I am red. I am passion, sunset, anger…") What is your favorite color? What do you have that is that color? What about an entire room?',
+    instructions: 'Pick a color and write a quick few sentences describing yourself in the first person. ("I am silver, precise and reflective..." or "I am red. I am heat, sunset, anger...") What is your favorite color? What do you have that is that color? What about an entire room?',
     placeholder: 'I am [color]. I am...',
   },
   {
@@ -514,7 +514,7 @@ export const week8Sections: JournalSection[] = [
     title: 'Style',
     icon: ListIcon,
     type: 'numbered-list',
-    instructions: 'Style Search: List twenty things you like to do. For each item, note: Does it cost money or is it free? Expensive or cheap? Alone or with somebody? Job related? Physical risk? Fast-paced or slow? Mind, body, or spiritual?',
+    instructions: 'Style Search: List twenty things you like to do. For each item, note: Does it cost money or is it free? Expensive or cheap? Alone or with somebody? Job related? Physical risk? Fast-paced or slow? Mind, body, or values?',
     listCount: 20,
     listLabels: Array.from({ length: 20 }, (_, i) => `${i + 1}.`),
   },
@@ -669,18 +669,18 @@ export const week10Sections: JournalSection[] = [
 export const week11Sections: JournalSection[] = [
   {
     id: 'artists-prayer',
-    title: "Artist's Prayer",
+    title: 'Creative Commitment',
     icon: StarIcon,
     type: 'text',
-    instructions: "Write out, in longhand, your Artist's Prayer from Week Four. Place it in your wallet.",
-    placeholder: "Write out your Artist's Prayer here...",
+    instructions: 'Write out, in longhand, your strongest creative commitment from Week Four. Place it in your wallet.',
+    placeholder: 'Write out your creative commitment here...',
   },
   {
     id: 'notebook',
     title: 'Notebook',
     icon: TextIcon,
     type: 'numbered-list',
-    instructions: 'Buy yourself a special creativity notebook. Number pages one through seven. Give one page each to: health, possessions, leisure, relationships, creativity, career, and spirituality. With no thought as to practicality, list ten wishes in each area. Let yourself dream.',
+    instructions: 'Buy yourself a special creativity notebook. Number pages one through seven. Give one page each to: health, possessions, leisure, relationships, creativity, career, and values. With no thought as to practicality, list ten wishes in each area. Let yourself imagine freely.',
     listCount: 7,
     listLabels: [
       'Health (10 wishes):',
@@ -689,7 +689,7 @@ export const week11Sections: JournalSection[] = [
       'Relationships (10 wishes):',
       'Creativity (10 wishes):',
       'Career (10 wishes):',
-      'Spirituality (10 wishes):',
+      'Values (10 wishes):',
     ],
   },
   {
@@ -736,25 +736,25 @@ export const week11Sections: JournalSection[] = [
     placeholder: 'Dear inner artist...',
   },
   {
-    id: 'god',
-    title: 'God',
+    id: 'belief-system',
+    title: 'Belief System',
     icon: SparkleIcon,
     type: 'text',
-    instructions: 'Once more, reexamine your God concept. Does your belief system limit or support your creative expansion? Are you open minded about altering your concept of God?',
-    placeholder: 'Reflect on your God concept and how it shapes your creative life...',
+    instructions: 'Reexamine the belief system around your creativity. Does it limit or support your creative expansion? What would you revise?',
+    placeholder: 'Reflect on the beliefs shaping your creative life...',
   },
   {
-    id: 'synchronicity',
-    title: 'Synchronicity',
+    id: 'useful timing',
+    title: 'Useful Timing',
     icon: GemIcon,
     type: 'numbered-list',
-    instructions: 'List ten examples of personal synchronicity that support the possibility of a nurturing creative force.',
+    instructions: 'List ten examples of useful timing, support, or opportunity that appeared after you took action.',
     listCount: 10,
     listLabels: ['1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.', '9.', '10.'],
   },
 ];
 
-// ─── Week 12: Faith ──────────────────────────────────────────────────
+// ─── Week 12: Trust ──────────────────────────────────────────────────
 export const week12Sections: JournalSection[] = [
   {
     id: 'fears',
@@ -765,20 +765,20 @@ export const week12Sections: JournalSection[] = [
     placeholder: 'Write your fears, resistances, and angers...',
   },
   {
-    id: 'god-jar',
-    title: 'God Jar',
+    id: 'worry-container',
+    title: 'Worry Container',
     icon: GemIcon,
     type: 'text',
-    instructions: 'Select a God jar. A jar, a box, a vase, a container. Something to put your fears, your resentments, your hopes, your dreams, your worries into. Describe what you chose.',
-    placeholder: 'Describe your God jar...',
+    instructions: 'Select a jar, box, vase, or container for fears, resentments, hopes, and worries. Describe what you chose.',
+    placeholder: 'Describe your worry container...',
   },
   {
-    id: 'use-god-jar',
-    title: 'Use God Jar',
+    id: 'use-worry-container',
+    title: 'Use Worry Container',
     icon: SparkleIcon,
     type: 'text',
-    instructions: 'Use your God jar. Start with your fear list from above. When worried, remind yourself it\'s in the jar — "God\'s got it." Then take the next action. Write about your experience.',
-    placeholder: 'Write about using your God jar...',
+    instructions: 'Use your container. Start with your fear list from above. When worried, remind yourself it is recorded, then take the next concrete action. Write about your experience.',
+    placeholder: 'Write about using your worry container...',
   },
 ];
 
@@ -786,11 +786,11 @@ export const week12Sections: JournalSection[] = [
 export const week13Sections: JournalSection[] = [
   {
     id: 'final-entry',
-    title: 'Final Journey Entry',
+    title: 'Final Reflection',
     icon: TextIcon,
     type: 'text',
-    instructions: 'This is your epilogue. Reflect on the entire journey. What has changed? What have you recovered? What will you carry forward? This is not an ending — it is a beginning.',
-    placeholder: 'Write your final journey reflection...',
+    instructions: 'This is your epilogue. Reflect on the entire course. What has changed? What have you recovered? What will you carry forward?',
+    placeholder: 'Write your final reflection...',
   },
 ];
 

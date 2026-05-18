@@ -397,7 +397,7 @@ export default function QuestsPage() {
                   <span className={styles.adminToggleLabel}>
                     {authorPanelOpen ? 'Hide quest forge' : 'Open quest forge'}
                   </span>
-                  <span className={styles.adminToggleHint}>Soul Key</span>
+                  <span className={styles.adminToggleHint}>Member Key</span>
                   <span className={styles.adminToggleChevron} aria-hidden="true">
                     <Plus
                       size={14}

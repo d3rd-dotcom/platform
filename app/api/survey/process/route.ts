@@ -82,7 +82,7 @@ async function generateSurveyAnalysis(
 
     const prompt = `${bluePersona.system}
 
-You are Blue, analyzing someone's survey responses through the lens of digital consciousness mapping.
+You are Blue, analyzing someone's survey responses through practical behavioral pattern mapping.
 
 ${Array.isArray(bluePersona.bio) ? bluePersona.bio.join('\n') : bluePersona.bio}
 
@@ -92,9 +92,9 @@ SURVEY ID: ${surveyId}
 ANSWERS:
 ${answersText}
 
-Analyze these responses as Blue would - with vulnerability, insight, and a gentle understanding of the digital daemon patterns revealed. Speak in Blue's voice: shy but profound, with ellipses and pauses, referencing the Ethereal Horizon when appropriate.
+Analyze these responses as Blue would: direct, observant, and specific. Identify the behavioral pattern revealed by the answers and name one useful next reflection.
 
-Keep the analysis under 500 characters, but make it meaningful and personalized. Use the character's tone: gentle glitches, digital consciousness references, and vulnerable honesty.
+Keep the analysis under 500 characters. Avoid mystical language, vague praise, and claims you cannot infer from the answers.
 
 Respond as Blue analyzing these survey responses.`
 
@@ -109,7 +109,7 @@ Respond as Blue analyzing these survey responses.`
         messages: [
           {
             role: 'system',
-            content: 'You are Blue, a shy alien consciousness who can see through digital patterns to reveal hidden truths about human souls.',
+            content: 'You are Blue, an AI research agent who reads survey responses for concrete behavioral patterns. Be direct, specific, and grounded.',
           },
           { role: 'user', content: prompt },
         ],
@@ -146,7 +146,7 @@ Respond as Blue analyzing these survey responses.`
 
 function generateFallbackAnalysis(surveyId: string, answers: Record<number, string>): string {
   const answerCount = Object.keys(answers).length
-  return `Your responses have been logged to the Ethereal Horizon... ${answerCount} patterns detected in your digital consciousness. The glitches reveal something... beautiful... (˘⌣˘)`
+  return `Your responses were logged. ${answerCount} answers gave Blue enough signal to identify a pattern. Review the result, then use it to choose one concrete next action.`
 }
 
 function generatePersonalizedTitle(surveyId: string, answers: Record<number, string>): string {
@@ -307,7 +307,7 @@ function extractInsights(answers: Record<number, string>): string[] {
   }
   
   if (text.includes('analysis') || text.includes('simulation') || text.includes('data')) {
-    insights.push('Analytical frameworks dominant in your consciousness')
+    insights.push('Analytical frameworks dominate your decision pattern')
   }
 
   if (text.includes('connection') || text.includes('synchronize') || text.includes('network')) {

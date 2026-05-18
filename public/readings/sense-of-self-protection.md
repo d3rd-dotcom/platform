@@ -1,9 +1,9 @@
 
-This week we explore the perils that can ambush us on our creative path. Because creativity is a spiritual issue, many of the perils are spiritual perils. In the essays, tasks, and exercises of this week, we search out the toxic patterns we cling to that block our creative flow.
+This week we explore the patterns that can ambush creative progress. In the essays, tasks, and exercises of this week, we search out the habits we cling to when change makes us anxious.
 
 ## Dangers of the Trail
 
-Creativity is energy flowing through us, shaped by us, like light flowing through a crystal prism. When we are clear about who we are and what we are doing, the energy flows freely. When we resist what that energy might show us or where it might take us, we often experience a shaky, out-of-control feeling and try to shut the flow down.
+Creativity depends on attention, time, and emotional bandwidth. When we are clear about who we are and what we are doing, the work moves more freely. When we resist what the work might show us or where it might take us, we often feel shaky and try to shut the process down.
 
 Every creative person has preferred ways of blocking:
 
@@ -19,7 +19,7 @@ These are not bad in themselves. The issue is abuse. We reach for them to block 
 
 ## Workaholism
 
-Workaholism is an addiction, and like all addictions, it blocks creative energy. If people are too busy to write morning pages or too busy to take an artist date, they are probably too busy to hear the voice of authentic creative urges.
+Workaholism is an addiction, and like all addictions, it blocks creative attention. If people are too busy to write morning pages or too busy to take an artist date, they are probably too busy to hear what they want to make.
 
 Play can make a workaholic very nervous. Fun is scary.
 
@@ -45,13 +45,13 @@ To write is to right things. Sooner or later, our pages bring things right.
 
 ## Fame
 
-Fame encourages us to believe that if it has not happened yet, it never will. But fame is not the same as success. Success can be felt at the end of a good day's work. Fame is a spiritual drug. It makes us ask, "How am I doing?" instead of, "Is the work going well?"
+Fame encourages us to believe that if it has not happened yet, it never will. But fame is not the same as success. Success can be felt at the end of a good day's work. Fame is an external metric that can distort the question. It makes us ask, "How am I doing?" instead of, "Is the work going well?"
 
 Fame creates a continual feeling of lack. There is never enough of it. The antidote is self-approval, gentleness, and actual creative work. When the fame drug hits, go to the tools of your craft and do a little creative play.
 
 ## Competition
 
-Competition is another spiritual drug. When we focus on others, we poison our own well. Instead of asking whether we worked on our play today or mailed the thing that needed mailing, we compare ourselves, envy, resent, and stall.
+Competition is another external metric that can distort the work. When we focus on others, we poison our own well. Instead of asking whether we worked on our play today or mailed the thing that needed mailing, we compare ourselves, envy, resent, and stall.
 
 No piece of art is born in total isolation from other work. Originality is not the absence of influence. It is the accurate mapping of our own experience and interests.
 
@@ -69,6 +69,5 @@ Never judge fledgling work too quickly. Art needs time to sprawl, incubate, and 
 
 1. How many days this week did you do your morning pages? Has reading your pages changed your writing?
 2. Did you do your artist date this week? Let yourself do an extra one. What did you do? How did it feel?
-3. Did you experience any synchronicity this week? What was it?
+3. Did you notice any useful timing, support, or opportunity this week? What was it?
 4. Were there any other issues this week that you consider significant for your recovery? Describe them.
-

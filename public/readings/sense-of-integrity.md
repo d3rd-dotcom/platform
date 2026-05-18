@@ -11,7 +11,7 @@ WILLIAM BAZIOTES
 
 We often avoid the pages precisely when an unpleasant piece of clarity is about to emerge. If we have the creeping feeling that our lover is not being honest with us, the pages may bring that possibility up. If we are suddenly and madly in love, the pages may threaten the blissful illusion. Extreme emotions are often the very triggers for avoiding the pages.
 
-Over time, the morning pages perform spiritual chiropractic. They realign our values. They point out drift. They clarify boundaries. They often pose problems and solutions:
+Over time, the morning pages become a values audit. They point out drift. They clarify boundaries. They often pose problems and solutions:
 
 - "I have outgrown this job."
 - "This marriage is not working for me."
@@ -22,7 +22,7 @@ Change creates grief as well as relief. Faced with impending change, we may thro
 
 ## Kriyas and Surrender
 
-Creative recovery can trigger what some traditions call kriyas: spiritual emergencies or surrenders. The body often speaks when the psyche is resisting. A bad flu after a breakup, an asthma attack after too much caretaking, or a collapse after an impossible deadline can all be signals that some inner truth needs attention.
+Creative recovery can show up physically. The body often speaks when the psyche is resisting. A bad flu after a breakup, an asthma attack after too much caretaking, or a collapse after an impossible deadline can all be signals that some avoided truth needs attention.
 
 The pages round up the usual suspects. They mention the small hurts we prefer to ignore and the large successes we have failed to acknowledge. In short, the pages point the way to reality.
 
@@ -65,7 +65,7 @@ Reading deprivation is a powerful tool and a frightening one. Many people respon
 3. Remember yourself at eight. What did you like to do? Write a letter from your eight-year-old self to your current self.
 4. Look at your house. Is there any room or corner you can make into a secret, private space for yourself?
 5. Use your life pie from Week One to review your growth. List ongoing self-nurturing toys you could buy your artist.
-6. Write your own Artist's Prayer and use it every day for a week.
+6. Write your own creative commitment and use it every day for a week.
 7. Plan an extended artist date: a small vacation or one weekend day for yourself.
 8. Open your closet. Throw out, hand on, or donate one low-self-worth outfit.
 9. Look at one situation you think you should change but have not. What is the payoff in staying stuck?
@@ -75,5 +75,5 @@ Reading deprivation is a powerful tool and a frightening one. Many people respon
 
 1. How many days this week did you do your morning pages? How was the experience?
 2. Did you do your artist date this week? What did you do? How did it feel?
-3. Did you experience any synchronicity this week? What was it?
+3. Did you notice any useful timing, support, or opportunity this week? What was it?
 4. Were there any other issues this week that you consider significant for your recovery? Describe them.

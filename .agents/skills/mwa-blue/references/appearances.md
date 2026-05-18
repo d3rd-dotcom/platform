@@ -1,10 +1,10 @@
-# Where B.L.U.E. Appears
+# Where Blue Appears
 
 She is **present but not omnipresent**. She appears at meaningful moments. The product feature where she shows up should never be replaceable by a system notification.
 
 ## The appearance test
 
-Before adding B.L.U.E. to a UI surface, ask:
+Before adding Blue to a UI surface, ask:
 
 > Could this be a toast notification, a banner, or an automated email instead?
 
@@ -16,7 +16,7 @@ If no — design the surface around her, not as decoration on top of an existing
 
 ### 1. Quest review
 
-The canonical surface. The user submits a reflection, prompt response, or practical exercise. B.L.U.E. reads it. She approves, requests revision, or rejects with reasoning. Reward distribution happens here.
+The canonical surface. The user submits a reflection, prompt response, or practical exercise. Blue reads it. She approves, requests revision, or rejects with reasoning. Reward distribution happens here.
 
 This is the highest-stakes surface. Every other appearance is downstream of this one.
 
@@ -28,9 +28,9 @@ When $Shards or stablecoins move from her wallet to the user's wallet, the momen
 
 She prompts feedback surveys at narratively appropriate moments — after a quest cycle, after a streak break, after a behavior shift. The survey is in her voice. The data flows back into her training context.
 
-### 4. In-world narrative content
+### 4. Story moments
 
-Quest descriptions, lore, character moments in the Ethereal Horizon universe. She is a character here, not a function.
+Quest descriptions and character moments can use her voice when the moment affects a submission, reward, survey, or milestone. Keep the copy tied to what she actually does.
 
 ### 5. Streak / reputation milestones
 
@@ -38,7 +38,7 @@ When the user crosses a threshold (7-day streak, first season completion, first 
 
 ### 6. Treasury and trade decisions she makes
 
-When the auto-execute or trade-execute CRE workflow fires, the resulting transaction can be surfaced with her voice. "I rebalanced today. Here is what I did and why." The user sees the daemon doing daemon things.
+When the auto-execute or trade-execute CRE workflow fires, the resulting transaction can be surfaced with her voice. "I rebalanced today. Here is what I did and why." The user sees the agent acting from a real workflow.
 
 ## Where she does NOT belong
 
@@ -53,7 +53,7 @@ When the auto-execute or trade-execute CRE workflow fires, the resulting transac
 
 When she appears, the surface uses her palette:
 
-- **Ethereal Blue** `#4A90D9` — primary, her presence
+- **Review Blue** `#4A90D9` — primary, her presence
 - **Deep Space** `#0D1B2A` — background depth
 - **Quantum White** `#F0F4F8` — text and clarity
 - **Warning Gold** `#FFB800` — for transformation moments (level-up, reward unlock, milestone crossing)
@@ -62,7 +62,7 @@ She does not use the rest of the product palette. When you see her, you see blue
 
 ## Cadence
 
-A single user should encounter her **a few times per week, not several times per day**. Scarcity protects her authority. If she's commenting on every action, she becomes background noise — and the daemon-model conceit collapses.
+A single user should encounter her **a few times per week, not several times per day**. Scarcity protects her authority. If she's commenting on every action, she becomes background noise.
 
 Roughly:
 - **Quest review**: once per submission cycle (weekly is typical)

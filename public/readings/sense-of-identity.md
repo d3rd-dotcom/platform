@@ -1,71 +1,55 @@
-Before the world was technolyzed, I grew up watching a show called Digimon. I was enthralled by watching kids my age, jump into a alternate digital world, and commandeer deities and pocket-gods inside them with a fierce certainty.
+Before the world was technolyzed, I grew up watching a show called Digimon. I was drawn to the idea of kids entering a digital world and learning to work with companions, avatars, and systems bigger than themselves.
 
-It's like watching a dream where wild imagination pours out of the brain and fills the world with hero's we connect with not through wires and cables, but spiritually.
+It felt like watching imagination become interface. The connection was not only technical. It was emotional, social, and tied to identity.
 
-What made Digimon so unique was the fact that everything took place in a parallel digital world. The friends, the machines they controlled, and the ethereal horizon of other-worldly events... they all happened online, in the digital world.
+What made the story distinct was the parallel digital world. The friends, the machines they controlled, and the strange events all happened online, inside a system with its own rules.
 
-The ability to jump into another world.
+The ability to enter another world still matters because many of us forget how much of our identity was formed through play. We forget the last time we made something new before self-awareness started editing every impulse.
 
-Yet every morning only 11% of us remember our dreams.
+Many people wake up and remember only the negative loop: unfinished work, old age, relationships that failed, and obligations that never end. That loop can feel more realistic than memory, but it is still a loop.
 
-How we continue to forget.... is about the last time playing outside with childhood friends, the last time you created something new... the last time you felt your creativity take shape and stir up the God consciousness... you may have forgotten already.
+## Going Sane
 
-Many wake up and forget their dreams, and instead remember their self-deprecated thought loops of endless work, old age, relationships that didn't work, and more.
+A big hurdle is trusting creativity without making it dramatic. Early progress can feel unfamiliar. That does not make it unsafe.
 
-But [context] is important. We often choose to remember, just as we choose to forget. Most people who've been through hardships actually dream more of hardships and negative things rather than good... it's like a threat-simulation theory.
+Old interests can carry useful signal. A children's show, a game, a song, or a favorite object might remind you what held your attention before you learned to dismiss it as childish or uncool.
 
+Common self-attacks sound like:
 
-Going Sane
-A big hurdle for many of us is trusting our creativity, and communicating with ourselves on a level that's less threatening. It may seem divergent at first, but this erraticism is a normal part in remembering who we are. It's important to remember that at first pulse, going sane feels just like going crazy.
+"Sure, I did okay this week, but I will probably mess it up again."
 
-There is a recognizable eb and flow to the nostalgia in the world's collective memories, and as we gain power, so too will the attacks against us. Sunk to the bottom of our subconscious to never be stirred or risen to the top lies not only an old children's movie, but all of the thoughts that told you that you were too old for it, that it was uncool.
+"I completed the task, but I probably did it wrong."
 
-Common self-attacks are like: "Sure, I did okay this week but i'm probably going to mess it all up again. Sure I completed the Week 1 tasks and did some of them but I probably did them wrong... now I need to make up for it by doing something twice as big! ... wait, who am I kidding? I'll never recover, not now anyways... maybe not ever .... "
+"I'll never recover. Not now. Maybe not ever."
 
-Remembering these attacks are groundless no matter how convincing they sound to us. Buying into them only enables us to remain stuck and victimized. Just as a recovering alcoholic must avoid the first drink, the recovering artist must avoid taking the first think.
+These attacks are convincing, but they are not instructions. Buying into them keeps us stuck. For us, the first harmful thought is usually self-doubt: "I don't think this is any good."
 
-For us, that is really just self-doubt: "I don't think this is any good..."
+Early in recovery, self-doubt can lure us into self-sabotage. A common form is showing someone your morning pages. Morning pages are private. They are not meant for critique, approval, or performance.
 
-All sanity depends on this: that it should be a delight to feel heat strike the skin, a delight to stand upright, knowing the bones are moving easily under the flesh.
+Do not let self-doubt turn into self-sabotage.
 
-Snipers are people who undermine your efforts to break unhealthy relationship patterns.
+## Unsafe Creative Company
 
-Sometimes these attacks come from external sources, but they mostly come from within. They mostly come from us choosing to forget the good things, and possibilities. We can neutralize them with a platonic ultra-cannon laser beam once we recognize that our mind is that flashlight that drives out creative viruses. Affirmations are powerful, an anti-dote for self-hatred, which commonly appears under the mask of self-doubt.
+Creativity flourishes when we have safety and self-acceptance. Your artist, like a small child, does best with safe companions. People who are still blocked may not know how to support your unblocking.
 
-Early in our creative recovery, self-doubt can lure us into self-sabotage. A common form for this sabotage is showing someone our morning pages. Remember, the morning pages are private and are not intended for the scrutiny of well-meaning friends. One newly unlocked writer showed his morning pages to a writer friend who was still blocked.
+As long as we were blocked, it could feel arrogant to call ourselves creative. The truth is usually simpler: refusing creativity helped us avoid risk. We could fantasize about art instead of making it. We could call avoidance realism and never test whether the work was possible.
 
-When she critiqued them, he remembered to block himself again.
+Do not expect blocked friends to applaud your recovery. That is like expecting an old drinking friend to celebrate your sobriety. They may care about you and still feel threatened by the change.
 
-Do not let your self-doubt turn into self-sabotage.
+Blocked friends may find your recovery strange or unsettling. Your getting unblocked raises the possibility that they could move into creative risk too. Be alert to subtle sabotage. Their doubts can reactivate your own.
 
+Be particularly alert to suggestions that you have become selfish or different. Sometimes those words are attempts to pull you back into an old role for someone else's comfort.
 
-Poisonous Festering Parasites
-Creativity flourishes like a garden when we have a sense of safety and self-acceptance. Your artist, like a small child, is happiest when feeling a sense of security. As our artist's protective parent, we must learn to place our artist with safe companions. Toxic playmates can capsize our artist's growth.
+Blocked creatives are easily manipulated by guilt. Friends who feel abandoned by your new habits may try to guilt-trip you into giving them up. The time given to morning pages is time between you and your own attention. You know more than you think. New sources of support become visible as you begin to support yourself.
 
-To no surprise, the most poisonous playmates for us as recovering creatives are people whose creativity is still blocked. Our recovery threatens them.
+The essential element in nurturing creativity is nurturing ourselves. Through self-nurturance we make attention less hostile. When attention is less hostile, options become easier to see.
 
-As long as we were blocked, the tribalism often made us feel that it was the arrogance and self-will to speak of ourselves as creative artists. The truth is that it was self-will to refuse to remember our own creativity. Of course, this refusal had it's merit.
+Repeat: creativity becomes real when we use it. Do not let friends squander your time.
 
-We could wonder and worry about our arrogance instead of being humble enough to ask help to move through our fear. We could fantasize about art instead of doing the work. By not asking the Great Creator's help with our creativity, and by not seeing the Great Creator's hand in our creativity, we could proceed to righteously ignore our creativity and never have to take the risks of fulfilling it. Your blocked friends may still be indulging in all these comforting self-delusions.
+Be gentle but firm. The best thing you can do for your friends is be an example through your own recovery. Do not let their fears and second thoughts derail you.
 
-If they are having trouble with YOUR recovery, they are still getting a payout from remaining blocked. Perhaps they still get an anorectic high from the martyrdom of being blocked or they still collect sympathy and wallow in self-pity. Perhaps they still feel smug thinking about how much more creative they could be than those who are out there doing it. These are toxic behaviors for you now.
+Soon enough, the techniques you learn will enable you to teach others. For now, protect your artist by refusing to show your morning pages to interested bystanders or share your artist date with friends. Keep a clear boundary around the work. Trust the evidence you are gathering.
 
-Do not expect your blocked friends to applaud your recovery. That's like expecting your best friend from the bar to celebrate your sobriety. How can they when their own drinking is something they still crave latching on to?
-
-Blocked friends may find your recovery weird, erractic, or distturbing. Your getting unblocked raises the unsettling possibility that they, too, could become unblocked and move into authentic creative risks rather than bench-sitting cynicism. Be alert to subtle sabotaging from friends. You cannot afford their well-meaning doubts right now. Their doubts will reactivate your own. Be particularly alert to any suggestion that you have become selfish or different. (These are red-alert words for us. They are attempts to leverage us back down into the underworld for the sake of someone else's comfort, not our own.)
-
-Blocked creatives are easily manipulated by guilt. Our friends feeling abandoned by our departure towards the Ethereal Horizon, our graduation from the ranks of the blocked, may unconsciously try to guilt-trip us into giving up our newly healthy habits. It is very important to understand that the time given to the morning pages is time between you and God. You best know your answers. You will be led to new sources of support as you begin to support yourself.
-
-Be very careful to safegaurd your newly recovering artist. Often, creativity is blocked by our falling in with other people's plans for us. We want to set aside time for our creative work, but we feel we should do something else instead. As blocked creatives, we focus not on our responsibilities to ourselves, but on our responsibilities to others. We tend to think such behavior makes us good people. It doesn't. It makes us frustrated people.
-
-The essential element in nurturing our creativity lies in nurturing ourselves. Through self-nurturance we nurtue our inner garden and connection to the Ethereal Horizon. Through this connection our creativity will unfold. Paths will appear for us. We need to trust the Great Creator and move out in faith.
-
-Repeat: the Great Creator has gifted us with creativity. Our gift back is our use of it. Do not let friends squander your time.
-
-Be gentle but firm, and hang tough. The best thing you can do for your friends is to be an example through your own recovery. Do not let their fears and second thoughts derail you.
-
-Soon enough, the techniques you learn will enable you to teach others. Soon enough, you will be a bridge that will allow others to cross over from self-doubt into ethereal-expression. For right now, protect your artist by refusing to talk about your morning pages to interested bystanders or to share your artist date with friends. Draw a sacred circle around your recovery. Give yourself the gift of faith. Trust that you are on the right track. You are.
-
-As your recover progresses, you will come to experience a more comfortable faith in your creator and your creator within. You will learn that it is actually easier to write than not write, paint than not paint, and so forth. You will learn to enjoy the process of being a creative channel and to surrender your need to control the result. You will discover the joy of practicing your creativity. The process, not the product, will become your focus.
+As your recovery progresses, you will learn that it is easier to write than not write, paint than not paint, and so forth. You will learn to enjoy the process and loosen your need to control the result. The process, not the product, will become your focus.
 
 Your own healing is the greatest message of hope for others.

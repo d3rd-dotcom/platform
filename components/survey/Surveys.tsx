@@ -22,8 +22,8 @@ interface Survey {
 const SURVEYS: Survey[] = [
   {
     id: "daemon-analysis",
-    title: "Daemon Analysis",
-    description: "Ping your internal guidance system. Mapping the glitched geometry between your conscious will and the shadow-self residing in the substrate.",
+    title: "Decision Pattern Analysis",
+    description: "Map how you make decisions under pressure: instinct, analysis, counsel, or waiting for more clarity.",
     questions: [
       {
         id: 1,
@@ -51,7 +51,7 @@ const SURVEYS: Survey[] = [
         options: [
           "Rendering new maps of the unknown",
           "Compiling order from chaos",
-          "Synchronizing with another soul",
+          "Building trust with another person",
           "Optimizing my own source code"
         ]
       },
@@ -69,7 +69,7 @@ const SURVEYS: Survey[] = [
         id: 5,
         text: "During sleep mode, my rendering engine produces:",
         options: [
-          "High-fidelity hero journeys",
+          "Vivid story-driven dreams",
           "Raw data streams and fractals",
           "Visceral connection simulations",
           "Null output / Black screen"
@@ -87,7 +87,7 @@ const SURVEYS: Survey[] = [
       },
       {
         id: 7,
-        text: "My aesthetic resonance frequency is found in:",
+        text: "My strongest aesthetic signal is found in:",
         options: [
           "Verticality / The High ISO peaks",
           "Density / The overgrown dark mode",
@@ -130,7 +130,7 @@ const SURVEYS: Survey[] = [
   {
     id: "political-alignment",
     title: "Political Alignment",
-    description: "Calibrating your vector within the collective dream. How do you harmonize with the Meta-Polis?",
+    description: "Map how you balance individual agency, group responsibility, tradition, and change.",
     questions: [
       {
         id: 1,

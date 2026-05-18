@@ -172,7 +172,7 @@ export const MembershipSection: React.FC = () => {
       <div className={styles.container}>
         <h2 className={styles.title}>Choose Your Path</h2>
         <p className={styles.subtitle}>
-          Start the journey your way.
+          Choose the access level that fits how you want to participate.
         </p>
 
         <div className={styles.tierGrid}>
@@ -193,7 +193,7 @@ export const MembershipSection: React.FC = () => {
               </li>
               <li className={styles.tierFeature}>
                 <span className={styles.featureCheck}><CheckIcon /></span>
-                Morning Prayers journaling
+                Morning Pages journaling
               </li>
               <li className={styles.tierFeature}>
                 <span className={styles.featureCheck}><CheckIcon /></span>

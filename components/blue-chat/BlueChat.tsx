@@ -1106,7 +1106,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
     // Course / curriculum / chapters / weeks
     if (has('course', 'lesson', 'curriculum', 'chapter', 'seal', 'pathway', 'week', 'ethereal')) {
-      return "11 chapters of real work — self-awareness to goal setting. seal each week to unlock the next.";
+      return "11 chapters of real work — self-awareness to goal setting. complete each week to unlock the next.";
     }
 
     // Quests
@@ -1389,7 +1389,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setAutoDistributionVisible(false);
       setCreditStep('hidden');
       addBlueMessage(
-        "brain-computer interface. i'm connected to the AI and directly to you — reading signal, prompting, responding. not a bot. a loop."
+        "brain-computer interface. the helmet is a research object for reading signals, prompting reflection, and studying feedback loops."
       );
     } else if (action === 'credit') {
       send('I want to build my credit', 'happy');

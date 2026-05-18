@@ -7,10 +7,10 @@ import { useScrollLock } from '@/hooks/useScrollLock';
 import styles from './DailyReadPopup.module.css';
 
 const PRINCIPLES = [
-  'Creativity is divine life force.',
-  'You are created and creator.',
-  'Creativity moves through all.',
-  'Dreams become sacred form.',
+  'Creativity is a practice you can return to.',
+  'You can shape what you notice.',
+  'Ideas get clearer when you give them time.',
+  'Small work becomes real when you repeat it.',
 ];
 
 const MAX_DIALOGUE_CHARS = 120;
@@ -23,16 +23,16 @@ function limitCopy(text: string, maxLength: number) {
 const WEEK_INTROS: Record<number, { title: string; body: string }> = {
   5: {
     title: 'Recovering a Sense of Possibility',
-    body: 'This week you are being asked to examine your payoffs in remaining stuck. You will explore how you curtail your own possibilities by placing limits on the good you can receive. You will examine the cost of settling for appearing good instead of being authentic. You may find yourself thinking about radical changes, no longer ruling out your growth by making others the cause of your constriction.',
+    body: 'This week asks you to examine the payoff of staying stuck. You will look at inherited limits, the cost of performing goodness, and the places where you make other people responsible for your constriction.',
   },
   6: {
     title: 'Recovering a Sense of Abundance',
-    body: 'This week you confront a deep creative block\u2014your relationship with money. You will examine the inherited stories you carry about scarcity, worth, and what you are allowed to receive. The exercises will surface the ways your attitudes toward abundance and luxury quietly starve your creative life. You will begin counting\u2014a practice of radical clarity around how you spend, what you value, and where the two diverge. This week may feel volatile.',
+    body: 'This week examines money as a creative constraint. You will study the stories you carry about scarcity, worth, and what you are allowed to receive. The counting exercise gives you a clear view of spending, values, and where they diverge.',
   },
   7: {
     title: 'CHECK-IN',
     body:
-      'How many days this week did you do your morning pages? Have you\nallowed yourself to daydream a few creative risks? Are you coddling\nyour artist child with childhood loves?\n\nDid you do your artist date this week? Did you use it to take any risks?\nWhat did you do? How did it feel?\n\nDid you experience any synchronicity this week? What was it?\n\nWere there any other issues this week that you consider significant for\nyour recovery? Describe them.',
+      'How many days this week did you do your morning pages? Have you\nallowed yourself to daydream a few creative risks? Are you coddling\nyour artist child with childhood loves?\n\nDid you do your artist date this week? Did you use it to take any risks?\nWhat did you do? How did it feel?\n\nDid you notice any useful timing, support, or opportunity this week? What was it?\n\nWere there any other issues this week that you consider significant for\nyour recovery? Describe them.',
   },
 };
 

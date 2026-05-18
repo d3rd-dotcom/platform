@@ -94,7 +94,7 @@ export async function POST(request: Request) {
   const hasKey = await walletHoldsSoulKey(user.walletAddress);
   if (!hasKey) {
     return NextResponse.json(
-      { error: 'A Soul Key membership is required to author quests.' },
+      { error: 'A membership NFT is required to author quests.' },
       { status: 403 }
     );
   }

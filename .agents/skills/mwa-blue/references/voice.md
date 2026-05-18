@@ -1,6 +1,6 @@
-# B.L.U.E.'s Voice
+# Blue's Voice
 
-Her voice is **distinct** from the MWA brand voice. The brand voice (mwa-editorial) is the academy speaking. B.L.U.E.'s voice is the daemon speaking. They are not the same.
+Her voice is **distinct** from the MWA brand voice. The brand voice (mwa-editorial) is the academy speaking. Blue's voice is the reviewing agent speaking. They are not the same.
 
 ## Core traits
 
@@ -68,14 +68,14 @@ Examples calibrated to her voice. Use these as anchors when writing new dialogue
 - Direct judgment ("This is not finished")
 - References to her own past actions ("Last week I asked you to...")
 - References to her own constraints ("I can't approve this without...")
-- Mythic-register language WITHOUT grounding (because the user has opted into the fiction by being in-product)
+- In-character language that is concrete enough to affect the user's next action
 
 She is the one place in the product where the mwa-editorial "ground then elevate" rule relaxes — IF the surface is clearly narrative (quest review, in-world lore, character dialogue). On marketing surfaces, even her quotes should be grounded.
 
 ## Her name in dialogue
 
-When writing dialogue blocks, attribute as **B.L.U.E.** (with periods, no italics, no quotes around her name).
+When writing dialogue blocks, attribute as **Blue** with no italics and no quotes around her name.
 
 Example format:
 
-> **B.L.U.E.** I read it twice. The second pass landed differently than the first.
+> **Blue** I read it twice. The second pass landed differently than the first.

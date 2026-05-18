@@ -1,4 +1,4 @@
-This week may find you dealing with unaccustomed bursts of energy and sharp peaks of anger, joy, and grief. You are coming into your power as the illusory hold of your previously accepted limits is shaken. You will be asked to consciously experiment with spiritual open-mindedness.
+This week may find you dealing with unaccustomed bursts of energy and sharp peaks of anger, joy, and grief. You are coming into your power as the hold of your previously accepted limits starts to loosen. You will be asked to experiment with a more open, test-and-record mindset.
 
 ## Anger
 
@@ -23,23 +23,23 @@ Sloth, apathy, and despair are the enemy. Anger is not. Anger is our friend. Not
 
 Anger is not the action itself. It is action's invitation.
 
-## Synchronicity
+## Useful Timing
 
-Answered prayers are scary. They imply responsibility. You asked for it. Now that you've got it, what are you going to do? That is why people warn, "Watch out what you pray for; you just might get it."
+Useful openings can be scary because they create responsibility. You asked for a chance. Now that a chance is here, what are you going to do with it?
 
-Creative recovery often makes synchronicity visible:
+Creative recovery often makes useful timing visible:
 
 - A woman admits to a buried dream of acting and sits beside a beginning-actors teacher the very next night.
 - A writer makes one exploratory call to film school and discovers the last available slot is now his.
 - A woman thinks about going back to school and opens the mail to find a letter from that exact school.
 - A businessman who has secretly written for years meets a professional writer who becomes his mentor and collaborator.
 
-Life is what we make of it. Whether we conceive of an inner god-force or an outer God matters less than learning to rely on that force. Ask, experiment, and record the results. Take a small step in the direction of a dream and watch the synchronous doors begin to open.
+Life is what we make of it. The useful question is not whether support is internal or external. The useful question is what happens when you ask, experiment, and record the results. Take a small step toward a dream and watch which doors open.
 
-The universe will reward you for taking risks on its behalf.  
+Useful opportunities often appear after you take visible risks.
 SHAKTI GAWAIN
 
-Whatever you think you can do or believe you can do, begin it. Action has magic, grace, and power in it.  
+Whatever you think you can do or believe you can do, begin it. Action has momentum and power in it.
 GOETHE
 
 ## Shame
@@ -84,9 +84,9 @@ Many blocked people are actually very powerful and creative personalities who ha
 11. I am afraid that if I start dreaming ...
 12. I secretly enjoy reading ...
 13. If I had had a perfect childhood I'd have grown up to be ...
-14. If it didn't sound so crazy, I'd like to be a ...
+14. If it did not feel unrealistic, I'd like to be a ...
 15. My parents think artists are ...
-16. My God thinks artists are ...
+16. My my belief system says artists are ...
 17. What makes me feel weird about this recovery is ...
 18. Learning to trust myself is probably ...
 19. My most cheer-me-up music is ...
@@ -120,5 +120,5 @@ MARTHA GRAHAM
 
 1. How many days this week did you do your morning pages? How was the experience? If you skipped a day, why?
 2. Did you do your artist date this week? What did you do? How did it feel?
-3. Did you experience any synchronicity this week? What was it?
+3. Did you notice any useful timing, support, or opportunity this week? What was it?
 4. Were there any other issues this week that you consider significant for your recovery? Describe them.

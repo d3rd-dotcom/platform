@@ -1,4 +1,4 @@
-# B.L.U.E. — Agent Plumbing
+# Blue — Agent Plumbing
 
 The technical side of the daemon. For her voice and character, see the `mwa-blue` skill instead.
 
@@ -8,7 +8,7 @@ The technical side of the daemon. For her voice and character, see the `mwa-blue
 |---|---|
 | `lib/eliza-api.ts` | HTTP client for Eliza Cloud — chat completions, TTS |
 | `lib/blue-memory.ts` | Persistent memory store (Supabase-backed) |
-| `lib/blue-wallet.ts` | Server-side wallet client — signs and sends txs as B.L.U.E. |
+| `lib/blue-wallet.ts` | Server-side wallet client — signs and sends txs as Blue |
 | `lib/blue-contract.ts` | BlueKillStreak read/write helpers |
 | `lib/bluepersonality.json` | System-prompt material — voice, traits, anchors |
 
@@ -42,7 +42,7 @@ Default model is `gpt-4o`. If you change the model for a route, leave a comment 
 
 ## Wallet
 
-`lib/blue-wallet.ts` holds the viem account that controls B.L.U.E.'s on-chain wallet. **Server-side only.** The private key comes from env (never hard-coded, never in client bundles).
+`lib/blue-wallet.ts` holds the viem account that controls Blue's on-chain wallet. **Server-side only.** The private key comes from env (never hard-coded, never in client bundles).
 
 Hard rules:
 
@@ -54,7 +54,7 @@ If you're adding a new endpoint that calls `blue-wallet.ts`, surface the change 
 
 ## Personality file
 
-`lib/bluepersonality.json` is the source of truth for her system prompt — voice anchors, behavioral rules, character traits. When the user says "B.L.U.E. is being too friendly" or "she's not remembering things," the fix is usually here.
+`lib/bluepersonality.json` is the source of truth for her system prompt — voice anchors, behavioral rules, character traits. When the user says "Blue is being too friendly" or "she's not remembering things," the fix is usually here.
 
 Edit pattern: change the file, redeploy, test against a known prompt that previously triggered the bad behavior. Don't change it casually — small edits ripple across every conversation.
 

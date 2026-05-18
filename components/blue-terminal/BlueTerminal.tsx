@@ -297,7 +297,7 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
           {completionResult?.newShardCount !== null && completionResult?.newShardCount !== undefined && (
             <p className={styles.statusText}>Current balance: {completionResult.newShardCount} $Shards.</p>
           )}
-          <p className={styles.statusNote}>B.L.U.E. will use this submission to calibrate future reviews.</p>
+          <p className={styles.statusNote}>Blue will use this submission to calibrate future reviews.</p>
         </div>
       )}
 

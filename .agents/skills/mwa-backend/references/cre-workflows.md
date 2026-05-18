@@ -10,7 +10,7 @@ Self-contained TypeScript workflows that run on Chainlink CRE (DON-signed off-ch
 | `auto-execute` | Cron, every 10 minutes | Reads active proposals, auto-executes any past 50% vote threshold via KeystoneForwarder |
 | `trade-execute` | `ProposalExecuted` event on BlueKillStreak | For trade-action proposals, executes the corresponding position on MockPredictionMarket |
 
-The three together implement the proposal-to-trade pipeline: a proposal is created → B.L.U.E. reviews it → the DAO votes → it auto-executes once it passes → if it's a trade, the trade fires on the market contract.
+The three together implement the proposal-to-trade pipeline: a proposal is created → Blue reviews it → the DAO votes → it auto-executes once it passes → if it's a trade, the trade fires on the market contract.
 
 ## Layout
 

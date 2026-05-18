@@ -9,10 +9,10 @@ Each directory under `app/api/` is a route. Examples:
 ```
 app/api/
 ├── auth/            — wallet-signature → Supabase session
-├── chat/            — B.L.U.E. chat completions (proxies Eliza)
+├── chat/            — Blue chat completions (proxies Eliza)
 ├── community/       — forum, posts, comments
 ├── credit-builder/  — credit-score feature
-├── daemon/          — B.L.U.E. agent endpoints (memory writes, decisions)
+├── daemon/          — Blue agent endpoints (memory writes, decisions)
 ├── ethereal-progress/ — pathway state, weekly seals
 ├── leaderboard/     — streaks, rankings
 ├── quests/          — quest CRUD and submission
@@ -40,7 +40,7 @@ When success, return the data directly; don't wrap in `{ data: ... }` unless the
 
 ### Auth
 
-Routes that touch user data verify the session via Supabase Auth helpers. Routes that touch B.L.U.E.'s wallet require additional admin check — see existing handlers in `app/api/daemon/` for the pattern. Don't invent new auth checks; reuse the existing helpers.
+Routes that touch user data verify the session via Supabase Auth helpers. Routes that touch Blue's wallet require additional admin check — see existing handlers in `app/api/daemon/` for the pattern. Don't invent new auth checks; reuse the existing helpers.
 
 ### Rate limiting
 
@@ -56,7 +56,7 @@ Server-side logs are picked up by Vercel; production-grade routes log at structu
 
 See `app/api/ethereal-progress/`. It uses `lib/pathway-contract.ts` to read seal state. Pattern: viem public client, env-resolved address, typed return.
 
-### Writing from B.L.U.E.'s wallet
+### Writing from Blue's wallet
 
 See `app/api/daemon/`. Uses `lib/blue-wallet.ts`. The wallet key is server-side only — never expose. Always idempotent: include a request-id check so retries don't double-spend.
 

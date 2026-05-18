@@ -10,7 +10,7 @@ const features = [
   {
     title: 'Participatory Research',
     body:
-      'B.L.U.E. reads every submission and pays out the reward. Your reflections become training data. Her judgments evolve as you do.',
+      'Blue reads every submission and pays out the reward. Your reflections become training data. Her judgments evolve as you do.',
   },
   {
     title: 'Universal Credit System',

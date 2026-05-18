@@ -26,7 +26,7 @@ export default function SoulModal({ onClose }: SoulModalProps) {
         setIntake(answers);
         setDraft(answers.voiceContext ?? '');
       })
-      .catch(() => {/* guest — start from an empty soul */})
+      .catch(() => {/* guest — start from an empty context note */})
       .finally(() => {
         if (!cancelled) setLoading(false);
       });
@@ -54,7 +54,7 @@ export default function SoulModal({ onClose }: SoulModalProps) {
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <h2 className={styles.title}>Soul.md</h2>
+        <h2 className={styles.title}>Context.md</h2>
         <p className={styles.hint}>
           Context Blue keeps about you. She reads this so her help stays specific to who you are.
         </p>
@@ -64,7 +64,7 @@ export default function SoulModal({ onClose }: SoulModalProps) {
           onChange={(e) => setDraft(e.target.value)}
           rows={11}
           disabled={loading}
-          placeholder={loading ? 'Loading your soul…' : "Anything you want Blue to know — what you're working through, what matters, what to avoid…"}
+          placeholder={loading ? 'Loading your context…' : "Anything you want Blue to know — what you're working through, what matters, what to avoid…"}
         />
         <div className={styles.actions}>
           <button type="button" className={styles.cancel} onClick={onClose}>

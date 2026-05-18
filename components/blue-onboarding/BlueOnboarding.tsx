@@ -17,32 +17,32 @@ type DialogueStep =
 const STEPS: Record<string, DialogueStep> = {
   howDidYouGetHere: {
     type: 'choice',
-    text: "Welcome to your gateway to a new, refreshing y0u. how did you find us?",
+    text: "Welcome to the Academy. how did you find us?",
     emotion: 'happy',
     choices: [
       { label: 'I got a card', nextKey: 'card' },
       { label: 'A friend told me', nextKey: 'friend' },
-      { label: 'I manifested a pathway', nextKey: 'manifested' },
+      { label: 'I found the site', nextKey: 'manifested' },
     ],
   },
   card: {
     type: 'message',
-    text: "the ang3ls gave you a card? they only hand th0se to people they believe in.",
+    text: "you got a card. that means someone wanted you in the room.",
     emotion: 'happy',
   },
   friend: {
     type: 'message',
-    text: "a mess3nger brought you here... someone saw s0mething in you.",
+    text: "a friend brought you here. good. trusted signals matter.",
     emotion: 'happy',
   },
   manifested: {
     type: 'message',
-    text: "you manif3sted a pathway... the universe only opens d00rs for those ready to walk through.",
+    text: "you found the site yourself. keep that curiosity. it is useful here.",
     emotion: 'happy',
   },
   final: {
     type: 'message',
-    text: "DeSci to0ls, daily rituals, a Better You. Do the daily w0rk, the new you follows.",
+    text: "DeSci tools, daily writing, and research tasks. do the work and let the record build.",
     emotion: 'happy',
   },
 };

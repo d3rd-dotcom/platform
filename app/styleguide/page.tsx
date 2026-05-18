@@ -539,7 +539,7 @@ export default function StyleGuidePage() {
               <BookCard 
                 title="Web3 Education"
                 author="By: Jhinn Bay"
-                description="Explore the transformative power of blockchain technology and its revolutionary capabilities in reshaping the digital landscape."
+                description="Learn how blockchain infrastructure can support portable credentials, transparent rewards, and user-owned records."
                 category="Non-Fiction"
               />
             </div>
@@ -606,14 +606,14 @@ export default function StyleGuidePage() {
           </div>
         </section>
 
-        {/* Soul Gem Display Component */}
+        {/* Shard Display Component */}
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>💎 Soul Gem Display</h2>
+          <h2 className={styles.sectionTitle}>Shard Display</h2>
           <p className={styles.sectionDescription}>
             Token/currency display with animated gem icon. Used for voting power and governance tokens.
           </p>
           <div className={styles.componentShowcase}>
-            <div className={styles.componentLabel}>SoulGemDisplay</div>
+            <div className={styles.componentLabel}>ShardDisplay</div>
             <div className={styles.componentPreviewRow}>
               <div className={styles.componentVariant}>
                 <span className={styles.variantLabel}>Small Amount</span>
@@ -944,7 +944,7 @@ export default function StyleGuidePage() {
               description="Approve/Reject voting UI"
             />
             <ComponentIndexItem 
-              name="SoulGemDisplay" 
+              name="ShardDisplay"
               path="components/soul-gems" 
               description="Token/voting power display"
             />

@@ -16,7 +16,7 @@ interface BookCardProps {
 const BookCard: React.FC<BookCardProps> = ({
   title = "Web3 Education",
   author = "By: Jhinn Bay",
-  description = "Explore the transformative power of blockchain technology.",
+  description = "Learn how blockchain infrastructure can support portable records and verified rewards.",
   category = "Non-Fiction",
   imageUrl = "https://i.imgur.com/4K6QZ8k.png",
   slug = "",

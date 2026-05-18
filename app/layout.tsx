@@ -83,7 +83,7 @@ export const metadata: Metadata = {
         url: 'https://i.imgur.com/Ouwx2i8.png',
         width: 1200,
         height: 630,
-        alt: 'Mental Wealth Academy — a 12-week personal development program with B.L.U.E.',
+        alt: 'Mental Wealth Academy — a 12-week personal development program with Blue',
       },
     ],
     type: 'website',

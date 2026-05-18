@@ -135,14 +135,14 @@ export const AgentDemoSection = () => {
 
         <div className={styles.grid}>
           <div className={styles.terminalWrap}>
-            <div className={styles.terminal} role="img" aria-label="B.L.U.E. quest review terminal demo">
+            <div className={styles.terminal} role="img" aria-label="Blue quest review terminal demo">
               <div className={styles.terminalChrome}>
                 <div className={styles.dots}>
                   <span className={`${styles.dot} ${styles.dotPrimary}`} />
                   <span className={`${styles.dot} ${styles.dotMid}`} />
                   <span className={`${styles.dot} ${styles.dotFaint}`} />
                 </div>
-                <span className={styles.chromeLabel}>B.L.U.E.</span>
+                <span className={styles.chromeLabel}>Blue</span>
               </div>
               <pre className={styles.terminalBody}>
                 {visibleLines.map((line, i) => renderLine(line, i, i === step))}

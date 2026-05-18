@@ -35,7 +35,7 @@ const mentalWealthCourses: CourseData[] = [
     title: 'Introduction to Mental Wealth',
     date: 'January 20, 2026',
     time: '10:00 AM PST',
-    description: 'Discover the foundations of mental wealth and how to build a sustainable practice for lifelong wellbeing. This foundational session sets the stage for your transformative 12-week journey.',
+    description: 'Discover the foundations of mental wealth and how to build a sustainable practice for long-term wellbeing. This session sets the stage for the 12-week cohort.',
     category: 'Foundation',
     color: POP_COLORS[0],
     weekNumber: 1,
@@ -253,7 +253,7 @@ const mentalWealthCourses: CourseData[] = [
       'Review and consolidate learnings from the program',
       'Create a comprehensive mental wealth action plan',
       'Set up accountability systems for continued growth',
-      'Celebrate your journey and plan next steps'
+      'Review your progress and plan next steps'
     ],
     instructor: 'Full Faculty Team',
     format: 'Integration Session + Celebration'
@@ -426,8 +426,8 @@ export const CoursesShowcase: React.FC = () => {
           <span className={styles.eyebrow}>MWA Academy</span>
           <h1 className={styles.title}>Mental Wealth Pathway</h1>
           <p className={styles.subtitle}>
-            A transformative 12-week journey designed to build lasting mental wellness habits.
-            Join our expert-led sessions and unlock your full potential through evidence-based practices.
+            A 12-week program designed to build lasting mental wellness habits.
+            Join expert-led sessions and practice evidence-based tools each week.
           </p>
           <div className={styles.programHighlights}>
             <div className={styles.highlight}>

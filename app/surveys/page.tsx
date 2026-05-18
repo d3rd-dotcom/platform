@@ -15,7 +15,7 @@ const SignFormModal = dynamic(() => import('@/components/sign-form-modal/SignFor
 
 export default function SurveysPage() {
   const [difficulty, setDifficulty] = useState(101);
-  const [persona, setPersona] = useState('B.L.U.E.');
+  const [persona, setPersona] = useState('Blue');
   const [isSignFormOpen, setIsSignFormOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [testData, setTestData] = useState<TestData | null>(null);

@@ -1,17 +1,17 @@
-In this final week, we acknowledge the inherently mysterious spiritual heart of creativity. We address the fact that creativity requires receptivity and profound trust, capacities you have been developing through the work. We set our creative aims, take a special look at last-minute sabotage, and renew our commitment to the tools.
+In this final week, we focus on trust, receptivity, and commitment. These are capacities you have been developing through the work. We set creative aims, take a clear look at last-minute sabotage, and renew our commitment to the tools.
 
 ## Trusting
 
-Creativity requires faith, and faith requires that we relinquish control. This is frightening, and we resist it. Our resistance to creativity is a form of self-destruction. We throw up roadblocks on our own path in order to maintain the illusion of control.
+Creativity requires trust, and trust requires that we relinquish some control. This is frightening, and we resist it. Our resistance to creativity can become self-sabotage. We throw up roadblocks in order to maintain the illusion of control.
 
-The truth is that we do know, and we know that we know. Each of us has an inner dream that can unfold if we have the courage to admit what it is and the faith to trust our own admission.
+The truth is that we often know more than we admit. Each of us has a creative aim that can unfold if we have the courage to name it and test it.
 
 Helpful affirmations for this week:
 
 - I know the things I know.
-- I trust my own inner guide.
+- I trust the evidence I gather from doing the work.
 
-When we trigger an internal yes by affirming our truest goals and desires, the universe mirrors that yes and expands it. When we are on our right path, we have a sure-footedness. We may not know what is around the bend, but we know the next right action.
+When we trigger an internal yes by naming our goals and desires, we become more likely to notice matching opportunities. We may not know what is around the bend, but we can usually identify the next right action.
 
 ## Mystery
 
@@ -19,7 +19,7 @@ Creativity, like human life itself, begins in darkness. Insights may arrive in f
 
 Ideas need time. They form in drips and drops, not in sharp, immediate building blocks. We must learn not to pull our ideas up by the roots to see if they are growing. We must let them hatch, rise, and bake in the dark.
 
-Creativity is a process of surrender, not control.
+Creativity is a process of attention, patience, and partial control.
 
 ## The Imagination at Play
 
@@ -46,17 +46,17 @@ Escape velocity requires self-containment, intention, and boundaries.
 3. Revisit your core negative beliefs from Week One. Note your progress and write new affirmations for continued creativity.
 4. Mend any actual mending.
 5. Repot any pinched and languishing plants.
-6. Select a God jar, box, or container for your worries, fears, resentments, and dreams.
-7. Use the God jar. Put your fear list into it and then take the next action.
+6. Select a jar, box, or container for your worries, fears, resentments, and dreams.
+7. Use the container. Put your fear list into it and then take the next action.
 8. Ask yourself honestly what you most want to create, what oddball paths you would dare to try, and what appearances you are willing to shed.
 9. List five people with whom you can talk about your dreams and feel supported.
-10. Reread the book. Share it with a friend. Remember that the miracle is one artist sharing with another.
+10. Reread the book. Share it with a friend. Remember that one artist sharing with another is often enough.
 
 ## Check-In
 
-1. How many days this week did you do your morning pages? Have you accepted them as a permanent spiritual practice?
+1. How many days this week did you do your morning pages? Have you accepted them as a permanent writing practice?
 2. Did you do your artist date this week? Will you allow yourself these on a permanent basis as well?
-3. Did you experience any synchronicity this week? What was it?
+3. Did you notice any useful timing, support, or opportunity this week? What was it?
 4. Were there any other issues this week that you consider significant for your recovery? Describe them.
 
 ## Creativity Contract

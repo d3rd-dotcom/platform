@@ -37,6 +37,206 @@
   animation: slideOut 0.3s ease forwards;
 }
 
+.previewOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(10, 14, 24, 0.58);
+  backdrop-filter: blur(6px);
+}
+
+.previewModal {
+  width: min(760px, calc(100vw - 32px));
+  max-height: min(82vh, 760px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid rgba(81, 104, 255, 0.24);
+  border-radius: 8px;
+  box-shadow: 0 24px 70px rgba(10, 14, 24, 0.32);
+}
+
+[data-theme='dark'] .previewModal {
+  background: #101827;
+  border-color: rgba(147, 197, 253, 0.24);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.52);
+}
+
+.previewHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.previewTitleGroup {
+  min-width: 0;
+}
+
+.previewEyebrow {
+  margin: 0 0 5px;
+  color: #5168ff;
+  font-family: var(--font-code);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+[data-theme='dark'] .previewEyebrow {
+  color: #93c5fd;
+}
+
+.previewTitle {
+  margin: 0;
+  color: var(--color-text-dark);
+  font-family: var(--font-primary);
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+[data-theme='dark'] .previewTitle {
+  color: var(--color-text-dark);
+}
+
+.previewCloseButton {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(81, 104, 255, 0.24);
+  border-radius: 6px;
+  background: transparent;
+  color: #5168ff;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.previewCloseButton:hover {
+  background: rgba(81, 104, 255, 0.08);
+  border-color: rgba(81, 104, 255, 0.6);
+}
+
+[data-theme='dark'] .previewCloseButton {
+  color: #93c5fd;
+  border-color: rgba(147, 197, 253, 0.22);
+}
+
+.previewBody {
+  min-height: 240px;
+  padding: 18px 20px;
+  overflow-y: auto;
+  background: #f8fafc;
+}
+
+[data-theme='dark'] .previewBody {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.previewText {
+  margin: 0;
+  color: #1f2937;
+  font-family: var(--font-code);
+  font-size: 11px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+[data-theme='dark'] .previewText {
+  color: rgba(228, 228, 228, 0.86);
+}
+
+.previewStatus,
+.previewError {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.previewStatus {
+  color: #737373;
+}
+
+.previewError {
+  color: #b42318;
+}
+
+[data-theme='dark'] .previewStatus {
+  color: rgba(228, 228, 228, 0.58);
+}
+
+[data-theme='dark'] .previewError {
+  color: #fca5a5;
+}
+
+.previewActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 20px 18px;
+  border-top: 1px solid var(--color-border);
+}
+
+.previewSecondaryButton,
+.previewCopyButton {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 13px;
+  border-radius: 6px;
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.previewSecondaryButton {
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-dark);
+}
+
+.previewSecondaryButton:hover {
+  border-color: rgba(81, 104, 255, 0.5);
+  background: rgba(81, 104, 255, 0.06);
+}
+
+.previewCopyButton {
+  border: 1px solid #5168ff;
+  background: #5168ff;
+  color: #ffffff;
+}
+
+.previewCopyButton:hover:not(:disabled) {
+  background: #4053d8;
+  border-color: #4053d8;
+}
+
+.previewCopyButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
 @keyframes slideOut {
   from {
     transform: translateX(0);
@@ -1198,6 +1398,44 @@
     padding: 12px;
     gap: 8px;
     border-radius: 6px;
+  }
+
+  .previewOverlay {
+    align-items: stretch;
+    padding: 12px;
+  }
+
+  .previewModal {
+    width: 100%;
+    max-height: calc(100vh - 24px);
+  }
+
+  .previewHeader {
+    padding: 14px 14px 10px;
+  }
+
+  .previewTitle {
+    font-size: 16px;
+  }
+
+  .previewBody {
+    min-height: 180px;
+    padding: 14px;
+  }
+
+  .previewText {
+    font-size: 10px;
+    line-height: 1.6;
+  }
+
+  .previewActions {
+    padding: 12px 14px 14px;
+  }
+
+  .previewSecondaryButton,
+  .previewCopyButton {
+    flex: 1;
+    padding: 8px 10px;
   }
 
   .title {

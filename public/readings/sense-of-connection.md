@@ -8,19 +8,19 @@ If we are trying to think something up, we are straining to reach for something 
 
 When an actor is in the moment, he or she is listening for the next right creative move. When a painter paints, there may be a plan at first, but that plan is quickly surrendered to the painting's own plan. Painters often say, "The brush takes the next stroke." In dance, in composition, in sculpture, the experience is the same: we are more conduit than creator.
 
-"Art is an act of tuning in and dropping down the well." It is as though all the stories, paintings, music, and performances in the world live just under the surface of normal consciousness. Like an underground river, they flow through us as a stream of ideas we can tap into. As artists, we drop down the well into that stream. We hear what is down there and act on it. It is more like taking dictation than inventing something from scratch.
+"Art is an act of tuning in and dropping down the well." It can feel as though stories, paintings, music, and performances live just under the surface of ordinary attention. Like an underground river, they flow through us as a stream of ideas we can tap into. As artists, we drop down the well into that stream. We hear what is down there and act on it.
 
-Most artists have had the experience of catching a paragraph, a poem, a melody, or an image that arrives already formed. We call these moments miracles. What we fail to realize is that they are, in fact, the norm. We are often the instrument more than the author of our work.
+Most artists have had the experience of catching a paragraph, a poem, a melody, or an image that arrives already formed. We call these moments useful exchanges. What we fail to realize is that they are, in fact, the norm. We are often the instrument more than the author of our work.
 
 Michelangelo is said to have remarked that he released David from the rock in which he found him. Jackson Pollock said, "The painting has a life of its own. I try to let it come through." The same may be said of all art. Paintings wait for us. Sculptures wait for us. Sonatas, books, plays, poems, and films wait for us too. Our job is simply to get them down.
 
 Some people find it easier to picture the stream of inspiration as radio waves being broadcast at all times. With practice, we learn how to hear the desired frequency on request. We tune in. Like a parent, we learn to hear the voice of our current brainchild among all the other voices.
 
-Listening is a form of accepting. Once you accept that it is natural to create, you can begin to accept a second idea: the Creator will have whatever you need for the project. The minute you are willing to accept the help of this collaborator, you begin to notice useful bits of help everywhere in your life.
+Listening is a form of accepting. Once you accept that it is natural to create, you can begin to accept a second idea: the project may already have more support available than you assumed. The minute you become willing to notice help, you begin to see useful bits of it everywhere in your life.
 
-You will hear the dialogue you need, find the right song for a scene, notice the exact paint color you had almost imagined, discover a book, seminar, or discarded object that happens to fit what you are working on. Learn to accept the possibility that the universe is helping you. Become willing to see the hand of God and accept it as a friend's offer of assistance.
+You may hear the dialogue you need, find the right song for a scene, notice the exact paint color you had almost imagined, or discover a book, seminar, or discarded object that fits what you are working on. Learn to accept useful help when it appears.
 
-Many of us harbor the fearful belief that God would find our creations decadent, frivolous, or unimportant. Because of this, we discount creator-to-creator help. Try to remember that God is the Great Creator. Artists like other artists. Expect the universe to support your dream. It will.
+Many of us harbor the fear that our creations are decadent, frivolous, or unimportant. Because of this, we discount help. Artists like other artists. Let support count when it arrives.
 
 
 ## Perfectionism

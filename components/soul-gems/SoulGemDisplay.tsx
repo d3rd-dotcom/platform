@@ -11,7 +11,7 @@ interface SoulGemDisplayProps {
 }
 
 /**
- * Soul Gem Icon SVG
+ * Shard icon SVG
  */
 const SoulGemIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -41,7 +41,7 @@ const SoulGemIcon = () => (
 );
 
 /**
- * Display Soul Gem count with icon
+ * Display shard count with icon
  */
 export const SoulGemDisplay: React.FC<SoulGemDisplayProps> = ({
   amount,
@@ -62,7 +62,7 @@ export const SoulGemDisplay: React.FC<SoulGemDisplayProps> = ({
         <Image src="/icons/ui-shard.svg" alt="DAEMON Shard" width={24} height={24} unoptimized />
       </div>
       <span className={styles.amount}>{formatAmount(amount)}</span>
-      {showLabel && <span className={styles.label}>{label || 'Soul Gems'}</span>}
+      {showLabel && <span className={styles.label}>{label || 'Shards'}</span>}
     </div>
   );
 };

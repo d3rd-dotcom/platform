@@ -52,12 +52,12 @@
 
 ### Tasks for Week 1
 
-1.  [cite_start]**Morning Pages**: Every morning, write three pages of longhand, stream-of-consciousness writing. [cite: 208] [cite_start]Do not reread them or let anyone else see them. [cite: 209]
+1.  [cite_start]**Morning Pages**: Every morning, write three pages of longhand freewriting. [cite: 208] [cite_start]Do not reread them or let anyone else see them. [cite: 209]
 2.  [cite_start]**Artist Date**: Once a week, take yourself on a solo expedition to do something fun or silly, like visiting a five-and-dime store to buy gold stars or stickers. [cite: 215, 217, 218]
 3.  [cite_start]**Time Travel**: Write out a "horror story" from your past involving someone who discouraged your creativity (a "monster"). [cite: 219] [cite_start]Sketch the monster or draw a red X through it. [cite: 222, 223]
 4.  [cite_start]**Letter in Defense**: Write a letter to the "editor" (or yourself) in the voice of your wounded artist child, defending your right to create. [cite: 224, 225]
 5.  [cite_start]**Imaginary Lives**: Jot down other lives you might have liked to lead (e.g., country singer, cowhand) and try to do one small thing related to one of those lives this week. [cite: 228, 231]
-6.  [cite_start]**Artist Walk**: Take a brisk twenty-minute walk to help alter your consciousness. [cite: 236, 237]
+6.  [cite_start]**Artist Walk**: Take a brisk twenty-minute walk to help shift your attention. [cite: 236, 237]
 
 ---
 

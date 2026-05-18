@@ -343,7 +343,7 @@ export async function POST(request: NextRequest) {
   }
 
   const difficulty = clampTestDifficulty(body.difficulty);
-  const persona = typeof body.persona === 'string' ? body.persona.slice(0, 60) : 'B.L.U.E.';
+  const persona = typeof body.persona === 'string' ? body.persona.slice(0, 60) : 'Blue';
   const shardReward = getTestShardReward(difficulty);
 
   // Rate limit: surface the one-survey-per-week cap before generating a test.

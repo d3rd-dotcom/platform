@@ -48,7 +48,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
           <div className={styles.imageWrapper}>
             <Image
               src="/uploads/soul-key-membership.png"
-              alt="Soul Key Membership Card"
+              alt="Membership card"
               width={1050}
               height={655}
               className={styles.membershipImage}
@@ -79,7 +79,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
               rel="noopener noreferrer"
               className={styles.ctaButton}
             >
-              <span>Unlock Everything</span>
+              <span>Get Access</span>
             </a>
           </div>
         </div>

@@ -6,7 +6,7 @@ import { getTestShardReward, TEST_DIFFICULTY_MAX, TEST_DIFFICULTY_MIN } from '@/
 import styles from './SurveyController.module.css';
 
 const PERSONAS = [
-  { id: 'B.L.U.E.',  label: 'B.L.U.E.',  sub: 'Default researcher' },
+  { id: 'Blue',  label: 'Blue',  sub: 'Default researcher' },
   { id: 'Vesper',    label: 'Vesper',     sub: 'Alternative persona' },
 ];
 
@@ -172,7 +172,7 @@ export default function SurveyController({
                   disablePictureInPicture
                   disableRemotePlayback
                   controlsList="nodownload nofullscreen noremoteplayback"
-                  aria-label="B.L.U.E. avatar"
+                  aria-label="Blue avatar"
                   onLoadedData={() => setIsVideoReady(true)}
                   onCanPlay={() => setIsVideoReady(true)}
                 />

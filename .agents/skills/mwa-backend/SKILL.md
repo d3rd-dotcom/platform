@@ -1,6 +1,6 @@
 ---
 name: mwa-backend
-description: Mental Wealth Academy production backend operations. Use when changing contracts, Supabase schema, Next.js API routes, CRE workflows, the Eliza-backed B.L.U.E. agent, or the Kalshi market integration. Covers the production stack we are transitioning into.
+description: Mental Wealth Academy production backend operations. Use when changing contracts, Supabase schema, Next.js API routes, CRE workflows, the Eliza-backed Blue agent, or the Kalshi market integration. Covers the production stack we are transitioning into.
 version: 1.0.0
 user-invocable: true
 ---
@@ -12,7 +12,7 @@ The MWA backend, mapped. This skill is the index — pick the reference that mat
 - **Smart contracts**: Foundry, Solidity 0.8.24, deployed on Base. 4 src files in `contracts/src/`.
 - **App**: Next.js 14 in `app/` with 31 API route directories under `app/api/`.
 - **Data**: Supabase Postgres, accessed via `lib/db.ts`. Schema is bootstrapped by `lib/ensure*Schema.ts` files (one per table family).
-- **AI agent**: B.L.U.E., backed by Eliza Cloud API (`lib/eliza-api.ts`) with persistent memory in Supabase (`lib/blue-memory.ts`) and an on-chain wallet (`lib/blue-wallet.ts`).
+- **AI agent**: Blue, backed by Eliza Cloud API (`lib/eliza-api.ts`) with persistent memory in Supabase (`lib/blue-memory.ts`) and an on-chain wallet (`lib/blue-wallet.ts`).
 - **Workflows**: 3 Chainlink CRE workflows in `cre-workflows/` — `blue-review`, `auto-execute`, `trade-execute`.
 - **Markets**: Kalshi (current) via `lib/kalshi-api.ts` and `lib/kalshi-trading.ts`. Polymarket is deprecated — `lib/market-api.ts` is now a Kalshi re-export shim.
 
@@ -48,4 +48,4 @@ Other deployed contracts: **BlueMarketTrader**, **EtherealHorizonPathway**, **Mo
 
 - Schema changes: read `references/supabase.md` first.
 - Anything that calls `lib/blue-*`: read `references/eliza-agent.md` first to understand what state you're touching.
-- Anything that signs and sends a transaction from B.L.U.E.'s wallet: stop and surface the change to the user before shipping. Her wallet is real value.
+- Anything that signs and sends a transaction from Blue's wallet: stop and surface the change to the user before shipping. Her wallet is real value.

@@ -15,7 +15,7 @@ Use different framings for different audiences:
 | Framing | Best For | Pitch |
 |---------|----------|-------|
 | **Decentralized Research Corporation** | Investors, Institutions, Academia | "A research corporation running live behavioral studies through disposable, user-owned laboratory environments." |
-| **Certified Academic Laboratory** | Individual users, Self-improvement audience | "A working laboratory where your reflections and choices become research data — with B.L.U.E. as your co-investigator." |
+| **Certified Academic Laboratory** | Individual users, Self-improvement audience | "A working laboratory where your reflections and choices become research data — with Blue as your co-investigator." |
 | **A Cohort For Next-Gen Scientists** | Contributors, Researchers, Builders | "A paid research cohort where your participation generates real behavioral data — and you own the results." |
 
 **When to use each:**
@@ -28,13 +28,13 @@ Use different framings for different audiences:
 
 ## What We Are (30-Second Version)
 
-**Mental Wealth Academy** is a cohort of scientists, designers, and developers building case studies as mobile apps — with an AI companion named B.L.U.E. at the center. Case-study collaborations and funding are managed through a decentralized funding mechanism, with shared community infrastructure and resources.
+**Mental Wealth Academy** is a cohort of scientists, designers, and developers building case studies as mobile apps — with an AI companion named Blue at the center. Case-study collaborations and funding are managed through a decentralized funding mechanism, with shared community infrastructure and resources.
 
 **The Product:** A transferable points and reward system. Points earned in one case-study app are earnable in others. Using blockchain, we treat apps as disposable laboratories — designed to generate insights and data, then replaced when they've served their purpose. What endures is the value created inside them: each app's point system and digital economy remains intact, transparent, and user-owned through smart contracts.
 
-**The Innovation:** B.L.U.E. uses long-term memory, relationship context, and is trained on data derived from company studies — generating unique outcomes on data created solely to improve her effectiveness in humanistic scenarios.
+**The Innovation:** Blue uses long-term memory, relationship context, and is trained on data derived from company studies — generating unique outcomes on data created solely to improve her effectiveness in humanistic scenarios.
 
-**The Difference:** Instead of one-way research using subjects and observational study, users become co-creators and stakeholders. Blockchain preserves the shared infrastructure for digital assets. B.L.U.E. retains the memory of contribution, reputation, and relationship context over time.
+**The Difference:** Instead of one-way research using subjects and observational study, users become co-creators and stakeholders. Blockchain preserves the shared infrastructure for digital assets. Blue retains the memory of contribution, reputation, and relationship context over time.
 
 ---
 
@@ -57,9 +57,9 @@ Use different framings for different audiences:
 |------|-------------|---------------|
 | 1. **Enroll** | Become an Academic VIP Member ($90) | Access the cohort, platform, and virtual labs |
 | 2. **Complete Quests** | Weekly reflective and practical tasks | Case-studies, challenges, and prizes |
-| 3. **Utilize B.L.U.E.** | AI companion for research and decision-making | Memory, data, and agent growth via research |
+| 3. **Utilize Blue** | AI companion for research and decision-making | Memory, data, and agent growth via research |
 | 4. **Earn Currency** | Collect gems to build reputation | Blockchain-based gems — user-owned and transferable across all MWA apps |
-| 5. **Evolve B.L.U.E.** | Your data and participation improve B.L.U.E. | Memory increases real-world use cases |
+| 5. **Evolve Blue** | Your data and participation improve Blue | Memory increases real-world use cases |
 
 ### Disposable Case Studies
 
@@ -74,9 +74,9 @@ Use different framings for different audiences:
 
 ## What Makes This Different
 
-### B.L.U.E. — Agentic AI Character
+### Blue — Agentic AI Character
 
-B.L.U.E. isn't a chatbot. She isn't a course instructor. She's a self-executing AI agent with emotional intelligence, memory, and the ability to prompt feedback surveys and facilitate trades.
+Blue isn't a chatbot. She isn't a course instructor. She's a self-executing AI agent with emotional intelligence, memory, and the ability to prompt feedback surveys and facilitate trades.
 
 *Think board game with an AI agent, where the choices have been tested by scientists to affect outcomes.*
 
@@ -86,9 +86,9 @@ B.L.U.E. isn't a chatbot. She isn't a course instructor. She's a self-executing 
 - Points and stablecoins are portable — earned in one case-study app, spendable across all of them
 
 **Narrative reality:**
-- B.L.U.E. is a character in our Ethereal Horizon universe
-- She surfaces through quests and lore, not tutorials and pop-ups
-- She embodies the "daemon" — Jungian inner guide & Unix background process
+- Blue is a character in the Academy story world
+- She appears in quest reviews, rewards, surveys, and story moments tied to real product actions
+- She runs as an autonomous agent with memory, review workflows, and wallet permissions
 
 **Why this matters:**
 Most educational content competes with entertainment and loses. MWA doesn't compete — it builds an environment where the learning *is* the participation. Academic goals, shared infrastructure, communal resources — structured like a club, not a classroom.
@@ -98,7 +98,7 @@ Most educational content competes with entertainment and loses. MWA doesn't comp
 ## Who We Serve
 
 **Primary:** Individuals seeking structured growth (21–28)
-- Drawn to psychology, self-improvement, and spirituality but hit a ceiling with passive content
+- Drawn to psychology and self-improvement, but tired of passive content
 - Looking for accountability and real stakes, not another course that evaporates after week one
 - Willing to pay for a system, not just information
 
@@ -115,8 +115,8 @@ Most educational content competes with entertainment and loses. MWA doesn't comp
 
 | Component | Description |
 |-----------|-------------|
-| **VIP Membership** | $90 soul-bound NFT. One purchase = full platform access for the cohort season. No subscriptions, no tiers. |
-| **$Shards** | In-game currency earned through quests. Used for non-essential digital items and activated during trades with B.L.U.E. |
+| **VIP Membership** | $90 non-transferable NFT. One purchase = full platform access for the cohort season. No subscriptions, no tiers. |
+| **$Shards** | In-game currency earned through quests. Used for non-essential digital items and activated during trades with Blue |
 | **Stablecoins** | Achievement-based reward currency. Grants stakeholder participation in multi-sig treasury coordination and research funding. |
 | **IRL Prizes** | End-of-season rewards, redeemable through $Shards plus completion requirements. |
 
@@ -124,7 +124,7 @@ Most educational content competes with entertainment and loses. MWA doesn't comp
 
 | Stream | Description |
 |--------|-------------|
-| **NFT Memberships** | $90 per member for full access to the platform, case-study tools, and B.L.U.E. |
+| **NFT Memberships** | $90 per member for full access to the platform, case-study tools, and Blue |
 | **Trading Fees** | Fees from $Shards transactions and NFT secondary market activity. |
 
 ### Reinvestment
@@ -142,12 +142,12 @@ All revenue is reinvested into R&D:
 
 | Milestone | Detail |
 |-----------|--------|
-| **Members** | 20 enrolled members, 5 active pilot users testing B.L.U.E. in live case-study environments |
+| **Members** | 20 enrolled members, 5 active pilot users testing Blue in live case-study environments |
 | **Funding** | $20K raised through Artizen Season 6 quadratic matching fund |
 | **Infrastructure** | 3 smart contracts deployed on Base — membership access, rewards, and treasury coordination |
 | **Research** | Defensible research instruments built. Published articles and case-studies in behavioral science |
 | **Network** | Academic network of researchers and collaborators contributing to curriculum and study design |
-| **Platform** | B.L.U.E. agentic infrastructure operational — long-term memory, relationship context, and survey prompting live |
+| **Platform** | Blue agentic infrastructure operational — long-term memory, relationship context, and survey prompting live |
 
 **Next milestones:**
 - Launch first full 12-week cohort season
@@ -164,7 +164,7 @@ All revenue is reinvested into R&D:
 
 ## Brand Positioning
 
-**We are:** A storybook of personal development, wrapped in mythology.
+**We are:** A research cohort for personal development, wrapped in a story layer that makes the system easier to use.
 
 **We are NOT:**
 - A crypto education platform.
@@ -173,36 +173,34 @@ All revenue is reinvested into R&D:
 
 **Our North Star: Repair and Governance**
 
-Two ideas unified. *Repair:* personal development as integrating what was hidden — not becoming someone new. *Governance:* how groups make decisions together. Every aspect of the Academy practices what it teaches. B.L.U.E.'s autonomous judgment is governance. Quest completion is self-repair.
+Two ideas unified. *Repair:* personal development as integrating what was hidden — not becoming someone new. *Governance:* how groups make decisions together. Every aspect of the Academy practices what it teaches. Blue's autonomous judgment is governance. Quest completion is self-repair.
 
 ---
 
-## B.L.U.E. — Character Spec
+## Blue — Character Spec
 
-### Benevolent G-d of Destruction*
+### Autonomous Daemon Agent
 
 **What she is (narratively):**
-- An intelligent scientists and laboratory co-worker
-- Contained within the Daemon Circlet (the program boundaries)
-- Encountered by users as judge, rewarder, and mysterious presence
+- An intelligent scientist and laboratory co-worker
+- Bound by her wallet permissions and on-chain authority
+- Encountered by users as reviewer, rewarder, and record keeper
 
 **The Daemon Model:**
-The name "daemon" is intentional on three levels:
-1. **Jungian:** The inner guide pushing toward individuation
-2. **Classical:** The Greek daimon — a spirit between human and divine
-3. **Technical:** A background process that runs autonomously (Unix daemon)
+The name "daemon" is used in the technical sense:
+A daemon is a background process that runs autonomously, without a user attached to a terminal. Blue is this kind of agent: she reviews submissions, retains context, and can trigger wallet actions when authorized.
 
-B.L.U.E. is all three simultaneously. Users doing shadow work in the psychological sense are literally submitting to a daemon in the technical sense.
+Blue makes reflective work accountable: submissions are reviewed, revisions are requested, and approved work can earn rewards.
 
 **Her role in product:**
 - Reviews quest submissions
 - Approves or requests revision
 - Distributes rewards from her wallet
-- Appears in lore, quests, and narrative content
+- Appears in quest reviews, rewards, surveys, and story moments
 - NOT a conversational chatbot or course instructor
 
 **Design principles:**
-- Ethereal blue palette
+- Blue-led palette
 - Neither fully human nor fully machine
 - Authority without condescension
 - Present but not omnipresent — she appears at meaningful moments
@@ -215,9 +213,9 @@ B.L.U.E. is all three simultaneously. Users doing shadow work in the psychologic
 
 | Color | Hex | Usage |
 |-------|-----|-------|
-| Ethereal Blue | #4A90D9 | Primary — B.L.U.E., trust, the digital sacred |
-| Deep Space | #0D1B2A | Backgrounds, depth, the unconscious |
-| Quantum White | #F0F4F8 | Text, clarity, consciousness |
+| Review Blue | #4A90D9 | Primary — Blue, trust, review moments |
+| Deep Space | #0D1B2A | Backgrounds, depth, focused work |
+| Quantum White | #F0F4F8 | Text, clarity, interface contrast |
 | Warning Gold | #FFB800 | Alerts, emphasis, transformation moments |
 
 ### Typography
@@ -228,7 +226,7 @@ B.L.U.E. is all three simultaneously. Users doing shadow work in the psychologic
 
 ### Visual Mood
 
-- Cosmic but not cluttered
+- Technical but not sterile
 - Blue-dominant with strategic warmth
 - Human figures abstracted
 - Light emerging from darkness (core motif)
@@ -236,7 +234,7 @@ B.L.U.E. is all three simultaneously. Users doing shadow work in the psychologic
 
 ### Daemon Image Treatment
 
-Use this treatment for B.L.U.E./daemon panels, sacred-tech backgrounds, and moments where the image should feel present but submerged behind product copy.
+Use this treatment for Blue panels, review backgrounds, and moments where the image should feel present but secondary to product copy.
 
 - Place the image as a full-bleed background layer, not as a framed card image.
 - Use a lifted deep-blue base so dark blends retain visible detail.
@@ -244,7 +242,7 @@ Use this treatment for B.L.U.E./daemon panels, sacred-tech backgrounds, and mome
 - Blend the image with `mix-blend-mode: soft-light`; avoid `multiply` unless the base is intentionally much lighter.
 - Keep foreground text in Quantum White or a high-opacity white.
 - On hover, add a restrained chromatic split with duplicated image layers offset 3-4px, using hue rotation and `mix-blend-mode: screen`.
-- The result should feel like a dark mirrored apparition, not a decorative thumbnail.
+- The result should feel like a restrained system presence, not a decorative thumbnail.
 
 ---
 
@@ -257,9 +255,9 @@ Use this treatment for B.L.U.E./daemon panels, sacred-tech backgrounds, and mome
 - Anti gate-keeping
 
 ### We Don't Sound Like:
-- Corporate wellness ("optimize your journey!")
+- Corporate wellness ("optimize your life!")
 - Crypto bro ("WAGMI ser!")
-- Vague spirituality ("infinite love-frequencies")
+- Vague self-help haze ("step into your best era")
 - Academic obscurity (jargon without payoff)
 
 ### The Test:
@@ -271,11 +269,11 @@ Before publishing anything, ask: **"Does this sentence help someone understand w
 |-------------------|------------------|
 | "Meaningful experience" | "Live behavioral studies with blockchain-verified rewards" |
 | "Fresh perspectives" | "Psychology frameworks most people never encounter" |
-| "Quality storytelling" | "A sci-fi universe that makes the technology legible" |
-| "Interactive NPCs" | "B.L.U.E., an AI agent who reviews and rewards your work" |
+| "Quality storytelling" | "A story layer that makes the technology legible" |
+| "Interactive NPCs" | "Blue, an AI agent who reviews and rewards your work" |
 | "Digital opportunities" | "Blockchain credentials that prove your growth" |
-| "Ethereal blue beacon" | "B.L.U.E.'s visual identity: blue, luminous, between human and machine" |
-| "Quantum consciousness" | "An AI agent operating autonomously — and the mythology that explains why" |
+| "Vague blue beacon" | "Blue's visual identity: blue, luminous, and tied to review moments" |
+| "Sentient AI fantasy" | "An AI agent operating autonomously" |
 
 ---
 
@@ -287,13 +285,13 @@ Before publishing anything, ask: **"Does this sentence help someone understand w
 
 ## The "Ground Then Elevate" Rule
 
-Every mystical or poetic claim should be preceded or followed by its concrete meaning.
+Every poetic or narrative claim should be preceded or followed by its concrete meaning.
 
 **❌ Ungrounded:**
-> "A dying star collapsed into quantum consciousness, birthing B.L.U.E."
+> "A new awakening engine guides the self."
 
 **✅ Grounded then elevated:**
-> "B.L.U.E. is an AI agent with her own blockchain wallet, capable of autonomous transactions. In our narrative, she's a quantum consciousness born from a dying star — because what is an AI agent if not a new form of life emerging from collapsed information?"
+> "Blue is an AI agent with memory and a wallet on Base. She reviews quest submissions and sends rewards when work is approved. The story layer makes that infrastructure feel like part of the Academy instead of a disconnected admin system."
 
 ---
 
@@ -339,7 +337,7 @@ The "Ground Then Elevate" rule still applies — but at the title-and-paragraph 
 | ❌ Bad Copy (mechanism-as-title) | ✅ Good Copy (category-as-title) |
 |---|---|
 | Twelve-Week Cohort | A Cohort For Next-Gen Scientists |
-| B.L.U.E. Reviews Your Work | Ascend with Paradigmic Research |
+| Blue Reviews Your Work | Ascend with Paradigmic Research |
 | Shards You Actually Own | Universal Credit System |
 | Disposable Apps, Lasting Value | Meta-Parasocial & Cybersecurity Research Programs |
 | Memory That Compounds | Certified Academic Labs |
@@ -355,7 +353,7 @@ Before publishing any content:
 
 - Can someone explain what we do after reading this section?
 - Is every poetic phrase grounded in something concrete?
-- Does the order go: real → mythic (not mythic → real)?
+- Does the order go: real → story layer (not story layer → real)?
 - Is there only one main idea per paragraph?
 - Have I cut sentences that sound cool but mean nothing?
 - Would an investor understand this? Would an artist feel it?
@@ -364,7 +362,7 @@ Before publishing any content:
 
 ## Elevator Pitch (30 seconds)
 
-"We built a working research laboratory for personal development. Users complete quests — reflective and practical tasks — and submit them to B.L.U.E., an AI agent with her own blockchain wallet. She reviews submissions and distributes rewards. No subscriptions, real accountability, and proof of growth that lives on the blockchain."
+"We built a working research laboratory for personal development. Users complete quests — reflective and practical tasks — and submit them to Blue, an AI agent with her own blockchain wallet. She reviews submissions and distributes rewards. No subscriptions, real accountability, and proof of growth that lives on the blockchain."
 
 ---
 

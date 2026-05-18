@@ -448,7 +448,7 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
             {quest.rewardType === 'no-proof' && (
               <>
                 <p className={styles.actionDesc}>
-                  Finish the task above on your own, then claim your shards. The academy oracle trusts the call.
+                  Finish the task above on your own, then claim your shards. This one uses self-attestation.
                 </p>
                 <button
                   type="button"

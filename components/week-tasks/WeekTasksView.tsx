@@ -469,7 +469,7 @@ export default function WeekTasksView({
         );
       case 'life-pie': {
         const areas = [
-          { key: 'spirituality', label: 'Spirituality' }, { key: 'exercise', label: 'Exercise' },
+          { key: 'spirituality', label: 'Values' }, { key: 'exercise', label: 'Exercise' },
           { key: 'play', label: 'Play' }, { key: 'work', label: 'Work' },
           { key: 'friends', label: 'Friends' }, { key: 'romance', label: 'Romance/Adventure' },
         ];

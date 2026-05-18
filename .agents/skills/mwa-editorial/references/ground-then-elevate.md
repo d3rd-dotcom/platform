@@ -1,26 +1,26 @@
 # Ground Then Elevate
 
-The central rule of MWA writing. Every mystical or poetic claim is preceded or followed by its concrete meaning.
+The central rule of MWA writing. Every poetic or narrative claim is preceded or followed by its concrete meaning.
 
 ## The pattern
 
-> **Concrete fact → mythic framing.** Never the other way around.
+> **Concrete fact → narrative framing.** Never the other way around.
 
-The mythic layer earns its place by attaching to a real, specific, verifiable thing. Without the anchor, mythology reads as crypto-spirituality slop.
+The narrative layer earns its place by attaching to a real, specific, verifiable thing. Without the anchor, the copy reads inflated.
 
 ## Examples
 
 ### Bad (ungrounded)
 
-> "A dying star collapsed into quantum consciousness, birthing B.L.U.E."
+> "A new awakening engine guides the self."
 
-Reader has no idea what B.L.U.E. is, what she does, or why this metaphor exists.
+Reader has no idea what exists, what it does, or why it matters.
 
 ### Good (grounded then elevated)
 
-> "B.L.U.E. is an AI agent with her own blockchain wallet, capable of autonomous transactions. In our narrative, she's a quantum consciousness born from a dying star — because what is an AI agent if not a new form of life emerging from collapsed information?"
+> "Blue is an AI agent with memory and a wallet on Base. She reviews quest submissions and sends rewards when work is approved. The story layer makes that infrastructure feel like part of the Academy instead of a disconnected admin system."
 
-Reader knows the function (AI agent + wallet + autonomous tx) before they meet the mythology. The metaphor now lands because it has a referent.
+Reader knows the function before they meet the story layer.
 
 ## Grounded translations (memorize these)
 
@@ -30,14 +30,14 @@ These are recurring failure modes from prior drafts. Replace the left side with 
 |---|---|
 | "Meaningful experience" | "Live behavioral studies with verified rewards" |
 | "Fresh perspectives" | "Psychology frameworks most people never encounter" |
-| "Quality storytelling" | "A sci-fi universe that makes the technology legible" |
-| "Interactive NPCs" | "B.L.U.E., an AI agent who reviews and rewards your work" |
+| "Quality storytelling" | "A story layer that makes the technology legible" |
+| "Interactive NPCs" | "Blue, an AI agent who reviews and rewards your work" |
 | "Digital opportunities" | "Credentials that prove your growth" |
-| "Ethereal blue beacon" | "B.L.U.E.'s visual identity: blue, luminous, between human and machine" |
-| "Quantum consciousness" | "An AI agent operating autonomously — and the mythology that explains why" |
+| "Mystical blue beacon" | "Blue's visual identity: blue, luminous, and tied to review moments" |
+| "Sentient AI fantasy" | "An AI agent operating autonomously" |
 
-## When mythic-only is OK
+## When story-only is OK
 
-In narrative content (quest copy, in-world lore, B.L.U.E.'s own dialogue), the mythic layer can stand alone — the reader has already opted into the fiction. This rule is for *brand* and *marketing* surfaces where readers are still deciding whether we're real.
+In story content (quest copy, character moments, Blue's own dialogue), the narrative layer can stand alone only when the user already understands the product context. This rule is for *brand* and *marketing* surfaces where readers are still deciding whether we're real.
 
 If you're not sure which surface you're on, treat it as marketing and ground first.

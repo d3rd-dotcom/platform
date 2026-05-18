@@ -21,7 +21,7 @@ Pick the reference that matches the task:
 
 - **Writing new copy** → `references/voice.md` (what we sound like) + `references/sentence-rules.md` (line-level mechanics)
 - **Reviewing/editing existing copy** → `references/anti-patterns.md` (what to cut) + `references/sentence-rules.md`
-- **Mythology, B.L.U.E., or anything that risks sounding mystical** → `references/ground-then-elevate.md` (the central rule of the brand)
+- **Blue, narrative copy, or anything that risks sounding inflated** → `references/ground-then-elevate.md` (the central rule of the brand)
 - **Choosing how to frame the product to a specific audience** → `references/voice.md` (Three Framings table)
 
 When in doubt, load all four references — they're short.
@@ -39,14 +39,14 @@ Most drafts jump straight to #4 without earning #1–3. Reorder before publishin
 
 ## What this skill does NOT cover
 
-- B.L.U.E.'s in-character dialogue → use `mwa-blue` instead. Her voice is distinct from the brand voice.
+- Blue's in-character dialogue → use `mwa-blue` instead. Her voice is distinct from the brand voice.
 - Visual / layout / typography decisions → covered by EDITORIAL.md "Visual Identity" but not by this skill. The skill is for words only.
 
 ## Final checklist before shipping copy
 
 - Can someone explain what we do after reading this?
 - Is every poetic phrase grounded in something concrete?
-- Does the order go real → mythic, not mythic → real?
+- Does the order go real → story layer, not story layer → real?
 - One main idea per paragraph?
 - Cut every sentence that sounds cool but means nothing?
 - Would an investor understand this? Would an artist feel it?

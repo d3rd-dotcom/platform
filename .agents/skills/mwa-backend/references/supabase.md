@@ -6,7 +6,7 @@ Postgres on Supabase, accessed from server code via `lib/db.ts`.
 
 Schema is bootstrapped by `lib/ensure*Schema.ts` files. Each one is responsible for a table family and runs at app start (or on first access of that family). Found:
 
-- `ensureBlueMemorySchema.ts` — B.L.U.E.'s persistent memory store
+- `ensureBlueMemorySchema.ts` — Blue's persistent memory store
 - `ensureCreditBuilderSchema.ts` — credit builder feature
 - `ensureCustomQuestsSchema.ts` — user-defined quests
 - `ensureForumSchema.ts` — community forum
@@ -53,7 +53,7 @@ Common patterns to apply:
 
 - Add indexes for any `WHERE` column that will see > 1000 rows
 - Use `select()` with explicit columns, not `*`, on hot paths
-- Use Postgres `JSONB` for flexible-shape data (B.L.U.E.'s memory uses this); add `GIN` indexes if you query inside the JSON
+- Use Postgres `JSONB` for flexible-shape data (Blue's memory uses this); add `GIN` indexes if you query inside the JSON
 
 ## Auth
 

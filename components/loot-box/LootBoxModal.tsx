@@ -21,7 +21,7 @@ const LOOT_TABLE: LootItem[] = [
     name: '+5 Shards',
     tier: 'common',
     image: '/icons/ui-shard.svg',
-    description: 'A small shard bonus to fuel your journey.',
+    description: 'A small shard bonus for the next task.',
     chance: 35,
   },
   {

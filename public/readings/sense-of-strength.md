@@ -29,7 +29,7 @@ When faced with a loss, immediately take one small action to support your artist
 
 Creativity occurs in process, not product. "I am writing a screenplay" is more alive than "I wrote a screenplay." The same is true of acting, painting, music, and any other form. Creativity lies in the doing, not just in the done.
 
-The grace to be a beginner is one of the greatest prayers for an artist. Beginner's humility and openness lead to exploration. Exploration leads to accomplishment.
+The willingness to be a beginner is one of the strongest tools an artist has. Beginner's humility and openness lead to exploration. Exploration leads to accomplishment.
 
 ## Filling the Form
 
@@ -100,6 +100,5 @@ Select five affirmations to work with this week:
 
 1. How many days this week did you do your morning pages? How was the experience?
 2. Did you do your artist date this week? What did you do? How did it feel?
-3. Did you experience any synchronicity this week? What was it?
+3. Did you notice any useful timing, support, or opportunity this week? What was it?
 4. Were there any other issues this week that you consider significant for your recovery? Describe them.
-

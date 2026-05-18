@@ -28,7 +28,7 @@ const shopItems: ShopItem[] = [
     id: 'blazer',
     title: 'The Academy Blazer',
     sub: 'Official MWA Uniform',
-    desc: 'Midnight navy with embroidered crest and hidden inner pocket for your field journal. The blazer that says "I study realities you haven\'t unlocked yet." Tailored cut, unisex, runs true to size.',
+    desc: 'Midnight navy with embroidered crest and hidden inner pocket for your field journal. Tailored cut, unisex, runs true to size.',
     price: '120 USDC',
     image: 'https://i.imgur.com/S3AMvJA.png',
     category: 'Uniforms',
@@ -40,7 +40,7 @@ const shopItems: ShopItem[] = [
     id: 'journal',
     title: 'Glitch Field Journal',
     sub: 'Leather-bound, grid pages',
-    desc: 'A 200-page leather field journal with dot-grid pages, gilded edges, and the Academy sigil debossed on the cover. Includes a ribbon bookmark and pen loop. For documenting anomalies, breakthroughs, and forbidden curricula.',
+    desc: 'A 200-page leather field journal with dot-grid pages, gilded edges, and the Academy sigil debossed on the cover. Includes a ribbon bookmark and pen loop. Built for notes, reflections, and research sketches.',
     price: '45 USDC',
     image: 'https://i.imgur.com/57ahVVX.png',
     category: 'Accessories',
@@ -75,7 +75,7 @@ const shopItems: ShopItem[] = [
     id: 'beanie',
     title: 'Neural Beanie',
     sub: 'Merino wool blend',
-    desc: 'Ribbed merino-blend beanie in Academy black with a woven label. The kind professors at fringe institutions wear while teaching forbidden topology.',
+    desc: 'Ribbed merino-blend beanie in Academy black with a woven label. Warm enough for late study sessions and early walks.',
     price: '32 USDC',
     image: 'https://i.imgur.com/fO2vF5f.png',
     category: 'Accessories',
@@ -85,7 +85,7 @@ const shopItems: ShopItem[] = [
     id: 'patch',
     title: 'Division Patch',
     sub: 'Iron-on, 3" diameter',
-    desc: 'Embroidered patch for your chosen division. Attach to your blazer, bag, or jacket. Each division has unique symbology derived from sacred geometry and systems theory.',
+    desc: 'Embroidered patch for your chosen division. Attach to your blazer, bag, or jacket. Each division has a mark derived from systems diagrams and Academy iconography.',
     price: '12 USDC',
     image: 'https://i.imgur.com/yImR5DJ.png',
     category: 'Accessories',
@@ -155,7 +155,7 @@ const shopItems: ShopItem[] = [
     id: 'sticker-pack',
     title: 'Glitch Sticker Pack',
     sub: '12 vinyl die-cuts',
-    desc: 'Twelve weatherproof vinyl stickers featuring glitch art, Academy sigils, division emblems, and forbidden formulae. Laptop, water bottle, and reality-approved.',
+    desc: 'Twelve weatherproof vinyl stickers featuring glitch art, Academy marks, division emblems, and research motifs. Laptop and water bottle approved.',
     price: '6 USDC',
     image: 'https://i.imgur.com/fO2vF5f.png',
     category: 'Accessories',
@@ -201,7 +201,7 @@ const shopItems: ShopItem[] = [
     id: 'starter-kit',
     title: 'New Scholar Starter Kit',
     sub: 'Blazer + Journal + Pin Set + Keycard',
-    desc: 'Everything you need to begin your journey. The official Academy blazer, glitch field journal, full scholar pin set, and your NFC access keycard — bundled at a discount.',
+    desc: 'Everything you need to begin the cohort. The official Academy blazer, glitch field journal, full scholar pin set, and your NFC access keycard bundled at a discount.',
     price: '185 USDC',
     image: 'https://i.imgur.com/S3AMvJA.png',
     category: 'Bundles',
@@ -287,8 +287,8 @@ export default function ShopPage() {
           {activeCategory === 'All' && (
             <div className={styles.featuredBanner}>
               <div className={styles.bannerLeft}>
-                <span className={styles.bannerTitle}>The Ethereal Starter Collection</span>
-                <span className={styles.bannerSub}>Everything you need to begin your ascension — blazer, journal, pins, and keycard.</span>
+                <span className={styles.bannerTitle}>The Cohort Starter Collection</span>
+                <span className={styles.bannerSub}>Everything you need to begin the cohort: blazer, journal, pins, and keycard.</span>
               </div>
               <button
                 className={styles.bannerButton}

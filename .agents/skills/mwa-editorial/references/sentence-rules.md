@@ -43,9 +43,9 @@ Short sentences carry weight. Use periods.
 | Generic | Specific |
 |---|---|
 | "users" | "members" or "participants" |
-| "rewards" | "$Shards" or "stablecoins" or "soul-bound NFT" |
+| "rewards" | "$Shards", stablecoins, or non-transferable membership NFTs |
 | "the platform" | name the actual surface (the cohort dashboard, the Treasury page, etc.) |
-| "AI" | "B.L.U.E." (when it's her) or "an LLM with persistent memory" (when it's the underlying tech) |
+| "AI" | "Blue" (when it's her) or "an LLM with persistent memory" (when it's the underlying tech) |
 | "blockchain" | "Base" or "smart contracts on Base" |
 
 ## Numbers earn their place
@@ -62,8 +62,8 @@ If a number would change the reader's understanding, include it. If it wouldn't,
 
 ## Active voice, present tense
 
-- ❌ "Submissions are reviewed by B.L.U.E."
-- ✅ "B.L.U.E. reviews submissions."
+- ❌ "Submissions are reviewed by Blue"
+- ✅ "Blue reviews submissions."
 
 - ❌ "Will be launched next year"
 - ✅ "Launches Q3 2026"

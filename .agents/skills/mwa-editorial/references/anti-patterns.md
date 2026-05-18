@@ -41,7 +41,7 @@ Pick one framing per surface (one section, one page, one tweet). If you need bot
 If the page describes a feature that ChatGPT, Claude, and 50 other AI products also have, you've underdescribed. What's specific to MWA?
 
 - ❌ "Our AI is trained to understand you"
-- ✅ "B.L.U.E. retains memory of every quest you've submitted and uses it to calibrate her review of the next one"
+- ✅ "Blue retains memory of every quest you've submitted and uses it to calibrate her review of the next one"
 
 ## Repeated information
 
@@ -65,7 +65,7 @@ Feature card titles, nav labels, and section headers should name the **category*
 | ❌ Mechanism-as-title | ✅ Category-as-title |
 |---|---|
 | Twelve-Week Cohort | A Cohort For Next-Gen Scientists |
-| B.L.U.E. Reviews Your Work | Ascend with Paradigmic Research |
+| Blue Reviews Your Work | Ascend with Paradigmic Research |
 | Shards You Actually Own | Universal Credit System |
 | Disposable Apps, Lasting Value | Meta-Parasocial & Cybersecurity Research Programs |
 | Memory That Compounds | Certified Academic Labs |
@@ -77,4 +77,4 @@ The pattern: bad titles describe *how it works*. Good titles name *what you're j
 
 Sentence case reads as confident. Title Case Reads As Advertising. Use sentence case unless the heading is a proper noun phrase.
 
-Exception: B.L.U.E. is always written B.L.U.E. (with periods) or BLUE in code/contracts. Never "Blue" except when she's used as a casual shorthand mid-paragraph.
+Exception: Her name is written Blue in user-facing copy. Use BLUE only for code and contract identifiers. Do not write her name as an acronym.

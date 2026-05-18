@@ -141,7 +141,7 @@ export const week1Sections: JournalSection[] = [
       </svg>
     ),
     type: 'checklist',
-    instructions: 'Take your artist for a walk, the two of you. A brisk twenty-minute walk can dramatically alter consciousness.',
+    instructions: 'Take your artist for a walk, the two of you. A brisk twenty-minute walk can shift attention and clear stuck thinking.',
     checkItems: [
       'Completed 20-minute walk',
       'Walked mindfully (no phone)',
@@ -222,7 +222,7 @@ export const week2Sections: JournalSection[] = [
       </svg>
     ),
     type: 'life-pie',
-    instructions: 'Draw a circle divided into six pieces: Spirituality, Exercise, Play, Work, Friends, and Romance/Adventure. Place a dot in each slice at the degree to which you are fulfilled (outer rim = great; inner circle = not so great). Connect the dots. This shows where you are lopsided. Even the slightest attention to impoverished areas can nurture them.'
+    instructions: 'Draw a circle divided into six pieces: Values, Exercise, Play, Work, Friends, and Romance/Adventure. Place a dot in each slice at the degree to which you are fulfilled (outer rim = great; inner circle = not so great). Connect the dots. This shows where you are lopsided. Even the slightest attention to impoverished areas can nurture them.'
   },
   {
     id: 'ten-tiny-changes',
@@ -908,7 +908,7 @@ export default function AccordionJournalCard({
 
       case 'life-pie':
         const pieAreas = [
-          { key: 'spirituality', label: 'Spirituality' },
+          { key: 'spirituality', label: 'Values' },
           { key: 'exercise', label: 'Exercise' },
           { key: 'play', label: 'Play' },
           { key: 'work', label: 'Work' },
@@ -1264,7 +1264,7 @@ export default function AccordionJournalCard({
                     <Image src="/uploads/BlueSeal.svg" width={48} height={48} alt="shield" />
                   </div>
                   <p className={styles.sealCompleteText}>
-                    Your creative journey for Week {weekNumber} is now permanently attested on Base.
+                    Your Week {weekNumber} creative work is now permanently attested on Base.
                   </p>
                   <div className={styles.sealReward}>
                     <span>+700 Shards earned</span>
