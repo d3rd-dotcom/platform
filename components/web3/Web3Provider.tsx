@@ -29,7 +29,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
           theme: 'light',
           accentColor: '#5168FF',
         },
-        loginMethods: ['wallet', 'email', 'farcaster'],
+        loginMethods: ['wallet', 'email', 'google', 'discord', 'farcaster'],
         embeddedWallets: {
           ethereum: {
             createOnLogin: 'users-without-wallets',
