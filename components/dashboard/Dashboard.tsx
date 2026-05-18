@@ -1,10 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import type { CourseData } from '@/lib/personal-course';
-import { buildConnectome } from '@/lib/dsm-connectome';
-import Connectome from './Connectome';
 import styles from './Dashboard.module.css';
 
 interface DashboardProps {
@@ -29,14 +27,63 @@ function avatarColor(name: string): string {
   return colors[Math.abs(hash) % colors.length];
 }
 
-export default function Dashboard(props: DashboardProps) {
+interface EventItem {
+  id: string;
+  imageUrl: string;
+  heading: string;
+  category: string;
+  date: string;
+  time: string;
+  description: string;
+}
+
+const EVENTS: EventItem[] = [
+  {
+    id: 'governance-workshop',
+    imageUrl: '/images/academy-blockchain.png',
+    heading: 'Blockchain Governance Workshop',
+    category: 'Workshop',
+    date: 'May 24, 2026',
+    time: '5:00 PM UTC',
+    description:
+      'A hands-on session on how the Academy treasury votes, funds proposals, and keeps Blue accountable.',
+  },
+  {
+    id: 'angel-investing-circle',
+    imageUrl: '/images/angel-investing.png',
+    heading: 'Angel Investing Circle',
+    category: 'Discussion',
+    date: 'May 28, 2026',
+    time: '6:30 PM UTC',
+    description:
+      'Members walk through real deals together and learn to read a cap table without the jargon.',
+  },
+  {
+    id: 'cohort-campfire',
+    imageUrl: '/images/campfire.jpg',
+    heading: 'Cohort Campfire Check-in',
+    category: 'Community',
+    date: 'May 31, 2026',
+    time: '7:00 PM UTC',
+    description:
+      'An informal end-of-week gathering to share wins, blockers, and what the next week looks like.',
+  },
+  {
+    id: 'funding-village-tour',
+    imageUrl: '/images/funding-village-bg.jpg',
+    heading: 'Funding Village Live Tour',
+    category: 'Event',
+    date: 'June 4, 2026',
+    time: '4:00 PM UTC',
+    description:
+      'See newly funded projects, meet the builders, and learn how to put your own proposal forward.',
+  },
+];
+
+export default function Dashboard(_props: DashboardProps) {
   const [leaderboard, setLeaderboard] = useState<LeaderUser[]>([]);
   const [eggShaking, setEggShaking] = useState(false);
-
-  const connectome = useMemo(
-    () => buildConnectome(props.initialIntake),
-    [props.initialIntake],
-  );
+  const [reserved, setReserved] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     fetch('/api/leaderboard')
@@ -74,21 +121,54 @@ export default function Dashboard(props: DashboardProps) {
 
   return (
     <div className={styles.dashboard}>
-      {/* ── DSM symptom-cluster connectome ── */}
-      <section className={styles.connectomeCard}>
-        <div className={styles.connectomeHeader}>
-          <span className={styles.cardLabel}>DSM connectome</span>
-          <p className={styles.connectomeHint}>
-            {connectome.source === 'intake'
-              ? 'A live map of DSM symptom clusters — drag a node, hover for detail.'
-              : 'A baseline map of DSM symptom clusters — drag a node, hover for detail.'}
+      {/* ── Upcoming events ── */}
+      <section className={styles.eventsSection}>
+        <div className={styles.eventsHeader}>
+          <span className={styles.cardLabel}>Upcoming events</span>
+          <p className={styles.eventsHint}>
+            Live sessions, circles, and gatherings — register or reserve a seat.
           </p>
         </div>
-        <Connectome connectome={connectome} />
+        <div className={styles.eventsGrid}>
+          {EVENTS.map((ev) => (
+            <article key={ev.id} className={styles.eventCard}>
+              <div className={styles.eventImage}>
+                <Image src={ev.imageUrl} alt="" fill style={{ objectFit: 'cover' }} />
+              </div>
+              <div className={styles.eventBody}>
+                <span className={styles.eventMeta}>
+                  {ev.category} • {ev.date}
+                </span>
+                <h3 className={styles.eventTitle}>{ev.heading}</h3>
+                <p className={styles.eventText}>{ev.description}</p>
+                <div className={styles.eventFoot}>
+                  <span className={styles.eventTime}>{ev.time}</span>
+                  <button
+                    type="button"
+                    className={styles.eventBtn}
+                    onClick={() =>
+                      setReserved((prev) => ({ ...prev, [ev.id]: true }))
+                    }
+                    disabled={!!reserved[ev.id]}
+                  >
+                    {reserved[ev.id] ? 'Reserved' : 'Register'}
+                  </button>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
 
       {/* ── Side: egg, leaderboard, Blue ── */}
       <aside className={styles.sideStack}>
+        <div className={styles.eventsHeader}>
+          <span className={styles.cardLabel}>Your progress</span>
+          <p className={styles.eventsHint}>
+            Hatch your egg and see where you stand.
+          </p>
+        </div>
+
         <div className={styles.eggCard}>
           <button
             type="button"

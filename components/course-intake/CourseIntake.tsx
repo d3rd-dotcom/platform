@@ -251,6 +251,34 @@ export default function CourseIntake({ initialAnswers = {}, onComplete }: Course
     if (autoAdvanceRef.current) clearTimeout(autoAdvanceRef.current);
   }, []);
 
+  // On the last step the controls sit inside the question card, right under
+  // the answer field — so there's no cross-screen mouse trip after typing.
+  const controls = (
+    <div className={`${styles.controls}${isLast ? ` ${styles.controlsInline}` : ''}`}>
+      <button
+        type="button"
+        className={styles.backBtn}
+        onClick={() => {
+          play('click');
+          setStepIndex((s) => Math.max(0, s - 1));
+        }}
+        onMouseEnter={() => play('hover')}
+        disabled={stepIndex === 0}
+      >
+        Back
+      </button>
+      <button
+        type="button"
+        className={styles.continueBtn}
+        onClick={handleContinue}
+        onMouseEnter={() => play('hover')}
+        disabled={!canContinue}
+      >
+        {isLast ? 'Build my course' : 'Continue'}
+      </button>
+    </div>
+  );
+
   return (
     <div className={styles.shell}>
       <div className={styles.card}>
@@ -316,31 +344,11 @@ export default function CourseIntake({ initialAnswers = {}, onComplete }: Course
                   </div>
                 )
               )}
+
+              {isLast && controls}
             </div>
 
-            <div className={styles.controls}>
-              <button
-                type="button"
-                className={styles.backBtn}
-                onClick={() => {
-                  play('click');
-                  setStepIndex((s) => Math.max(0, s - 1));
-                }}
-                onMouseEnter={() => play('hover')}
-                disabled={stepIndex === 0}
-              >
-                Back
-              </button>
-              <button
-                type="button"
-                className={styles.continueBtn}
-                onClick={handleContinue}
-                onMouseEnter={() => play('hover')}
-                disabled={!canContinue}
-              >
-                {isLast ? 'Build my course' : 'Continue'}
-              </button>
-            </div>
+            {!isLast && controls}
           </div>
         </div>
       </div>

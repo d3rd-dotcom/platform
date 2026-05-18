@@ -5,6 +5,7 @@ import { usePrivy } from '@privy-io/react-auth';
 import CourseIntake from '@/components/course-intake/CourseIntake';
 import Dashboard from '@/components/dashboard/Dashboard';
 import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
+import { DotmSquare3 } from '@/components/dot-matrix/DotmSquare3';
 import type { CourseData, IntakeAnswers } from '@/lib/personal-course';
 import styles from './HomeBento.module.css';
 
@@ -111,29 +112,12 @@ export default function HomeBento() {
 
   if (phase === 'generating') {
     return (
-      <div className={styles.bentoScroll}>
-        <div className={styles.genGrid}>
-          <section className={styles.genHero}>
-            <div className={styles.genHeader}>
-              <div className={styles.genCopy}>
-                <p className={styles.loaderKicker}>Blue is building</p>
-                <h1 className={styles.genTitle}>Your 4-week course is taking shape</h1>
-                <p className={styles.genStatus}>{GEN_STEPS[genStep]}</p>
-              </div>
-            </div>
-            <DotmSquare15 speed={0.75} dotSize={6} gap={4} />
-            <div className={styles.genBar}>
-              <span className={styles.genBarFill} />
-            </div>
-          </section>
-          {[1, 2, 3, 4].map((w) => (
-            <section key={w} className={styles.genWeek}>
-              <span className={styles.genWeekNum}>Week {w}</span>
-              <span className={styles.genSkeleton} style={{ width: '70%' }} />
-              <span className={styles.genSkeleton} style={{ width: '90%' }} />
-              <span className={styles.genSkeleton} style={{ width: '50%' }} />
-            </section>
-          ))}
+      <div className={styles.genOverlay} aria-live="polite">
+        <div className={styles.genCenter}>
+          <DotmSquare3 speed={0.75} dotSize={8} gap={5} />
+          <p className={styles.loaderKicker}>Blue is building</p>
+          <h1 className={styles.genHeading}>Your 4-week course is taking shape</h1>
+          <p className={styles.genStatus}>{GEN_STEPS[genStep]}</p>
         </div>
       </div>
     );

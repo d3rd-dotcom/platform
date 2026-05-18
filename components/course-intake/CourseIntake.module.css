@@ -276,6 +276,11 @@
   gap: 16px;
 }
 
+/* Last step: controls live inside the question card, under the answer field. */
+.controlsInline {
+  margin-top: 18px;
+}
+
 .backBtn,
 .continueBtn {
   min-height: 44px;
