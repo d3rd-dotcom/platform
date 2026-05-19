@@ -1085,6 +1085,13 @@
   overflow: hidden;
 }
 
+.canvasFallback {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.68) 0%, rgba(251, 248, 255, 0.96) 58%, #FBF8FF 100%),
+    repeating-linear-gradient(135deg, rgba(26, 29, 51, 0.035) 0 1px, transparent 1px 18px),
+    #FBF8FF;
+}
+
 /* Crosshair cursor */
 .crosshair {
   position: fixed;

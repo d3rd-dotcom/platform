@@ -1,9 +1,10 @@
-const CACHE_NAME = 'mwa-shell-v1';
-const APP_SHELL = ['/', '/home', '/manifest.webmanifest', '/icons/badge-academy.png'];
+const CACHE_NAME = 'mwa-assets-v2';
+const PRECACHE_ASSETS = ['/manifest.webmanifest', '/icons/badge-academy.png'];
+const CACHEABLE_DESTINATIONS = new Set(['image', 'font', 'manifest']);
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)).then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE_ASSETS)).then(() => self.skipWaiting())
   );
 });
 
@@ -20,10 +21,15 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  if (event.request.mode === 'navigate' || event.request.destination === 'document') {
+    return;
+  }
+
   const url = new URL(event.request.url);
   const isSameOrigin = url.origin === self.location.origin;
   const shouldCache =
     isSameOrigin &&
+    CACHEABLE_DESTINATIONS.has(event.request.destination) &&
     !url.pathname.startsWith('/_next/') &&
     !url.pathname.startsWith('/api/');
 
@@ -41,7 +47,7 @@ self.addEventListener('fetch', (event) => {
           return Response.error();
         }
 
-        return caches.match(event.request).then((cached) => cached || caches.match('/home'));
+        return caches.match(event.request).then((cached) => cached || Response.error());
       })
   );
 });
