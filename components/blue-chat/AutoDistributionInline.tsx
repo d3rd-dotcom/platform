@@ -234,10 +234,10 @@ const AutoDistributionInline: React.FC<AutoDistributionInlineProps> = ({
           Unconnected channels will get review-ready drafts and setup recommendations, not live publishing.
         </span>
         <div className={styles.autoDistributionButtons}>
-          <button type="button" className={styles.gpuPickerCancel} onClick={onClose} disabled={isBusy}>
+          <button type="button" className={styles.inlineFormCancel} onClick={onClose} disabled={isBusy}>
             Close
           </button>
-          <button type="button" className={styles.gpuPickerProceed} onClick={submit} disabled={isBusy || !brief.trim() || selectedPlatforms.length === 0 || selectedDeliverables.length === 0}>
+          <button type="button" className={styles.inlineFormProceed} onClick={submit} disabled={isBusy || !brief.trim() || selectedPlatforms.length === 0 || selectedDeliverables.length === 0}>
             Build Campaign
           </button>
         </div>

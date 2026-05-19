@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
+import { getWalletAddressFromRequest } from '@/lib/wallet-auth';
+import { walletHoldsVipMembershipCard } from '@/lib/soul-key';
 import { buildBlueContext, storeBlueChatMessage, touchBlueRelationship, upsertBlueFacts } from '@/lib/blue-memory';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { elizaAPI } from '@/lib/eliza-api';
@@ -452,8 +454,14 @@ export async function POST(request: Request) {
     );
   }
 
-  // Research mode: Blue drafts grant/proposal/thesis documents from the model
+  // Research mode: Blue drafts grant/proposal/thesis documents from the model.
+  // It is a VIP-membership benefit, so enforce the membership check server-side
+  // on every research turn — not just at activation.
   if (isResearch) {
+    const wallet = await getWalletAddressFromRequest();
+    if (!wallet || !(await walletHoldsVipMembershipCard(wallet))) {
+      return NextResponse.json({ error: 'vip_required' }, { status: 403 });
+    }
     try {
       const result = await runBlueMemoryAwareTurn({
         userId: user.id,

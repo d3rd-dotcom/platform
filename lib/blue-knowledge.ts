@@ -113,12 +113,12 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
     routes: ['/research'],
     keywords: [
       'research', 'paper', 'proposal', 'grant', 'thesis', 'desci',
-      'synthesis', 'gpu', 'report',
+      'synthesis', 'report', 'vip',
     ],
     body:
-      'Research mode is a shard-gated writing partner inside Blue chat for drafting grant applications, research proposals, and thesis chapters. ' +
-      'Activate it (1,000 shards) and Blue drafts and refines full report-style documents section by section. ' +
-      'GPU-backed deep reads cost more shards and run on the Nosana network to produce graduate-level reports.',
+      'Research mode is a VIP-membership writing partner inside Blue chat for drafting grant applications, research proposals, and thesis chapters. ' +
+      'Holders of a VIP membership card unlock it for good; Blue then drafts and refines full report-style documents section by section. ' +
+      'Users can upload reference material — notes, prior drafts, datasets, or a call for proposals — for Blue to draft from.',
   },
   {
     id: 'page-rewards',
@@ -210,8 +210,7 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
     ],
     body:
       'Earning paths for researchers: (1) Validated surveys with shard payouts — researchers commission cohort responses; ' +
-      '(2) GPU deep-read commissions — premium synthesis jobs; ' +
-      '(3) Contribution rewards (shards) for sealed quests, peer review, and curated reading lists. ' +
+      '(2) Contribution rewards (shards) for sealed quests, peer review, and curated reading lists. ' +
       'Shards convert through the treasury rails; on-chain payouts settle through BlueMarketTrader.',
   },
   {

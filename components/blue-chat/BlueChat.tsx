@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
 import styles from './BlueChat.module.css';
 import { useSound } from '@/hooks/useSound';
@@ -10,6 +11,8 @@ import type { CreditIntakeData } from './CreditBuilderInline';
 import TimeManagementInline from './TimeManagementInline';
 import AutoDistributionInline from './AutoDistributionInline';
 import type { AutoDistributionRequest } from './AutoDistributionInline';
+
+const ProMembershipModal = dynamic(() => import('../pro-membership-modal/ProMembershipModal'), { ssr: false });
 
 // ── Blue Voice TTS ──────────────────────────────────────────
 async function speakBlue(text: string, signal?: AbortSignal): Promise<void> {
@@ -101,7 +104,7 @@ interface BlueChatProps {
 interface ShardUpsellState {
   required: number;
   current: number;
-  reason: 'chat' | 'research' | 'gpu' | 'credit';
+  reason: 'chat' | 'credit';
 }
 
 interface TreasuryContext {
@@ -168,42 +171,6 @@ function getRadarPoints(scales: number[], radius = 80) {
 }
 
 const SHARD_COST = 10;
-const RESEARCH_COST = 1000;
-
-const GPU_TIER_INFO = {
-  focus: {
-    label: 'Focus',
-    model: 'Llama 3.1 8B',
-    gpu: 'RTX 4070',
-    desc: 'Fast synthesis. Summaries and structured reports.',
-    shards: 700,
-    badge: 'Fast',
-    badgeClass: 'gpuTierBadgeFocus',
-    cardClass: 'gpuTierCardFocus',
-  },
-  deep: {
-    label: 'Deep',
-    model: 'Llama 3.1 8B',
-    gpu: 'RTX 4090',
-    desc: 'Thorough multi-source analysis.',
-    shards: 1400,
-    badge: 'Balanced',
-    badgeClass: 'gpuTierBadgeDeep',
-    cardClass: 'gpuTierCardDeep',
-  },
-  elite: {
-    label: 'Elite',
-    model: 'Llama 3.1 70B',
-    gpu: 'A100',
-    desc: 'Graduate-level synthesis at 70B scale.',
-    shards: 2000,
-    badge: 'Maximum',
-    badgeClass: 'gpuTierBadgeElite',
-    cardClass: 'gpuTierCardElite',
-  },
-} as const;
-
-type GpuTier = keyof typeof GPU_TIER_INFO;
 
 const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const { play } = useSound();
@@ -223,16 +190,10 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const [shardCount, setShardCount] = useState<number | null>(null);
   const [shardUpsell, setShardUpsell] = useState<ShardUpsellState | null>(null);
   const [viewerProfile, setViewerProfile] = useState<ViewerProfile | null>(null);
-  const [pendingMessage, setPendingMessage] = useState<string | null>(null);
-  const [pendingType, setPendingType] = useState<'chat' | 'research'>('chat');
   const [researchMode, setResearchMode] = useState(false);
-  const [gpuPickerStep, setGpuPickerStep] = useState<'gate' | 'topic' | 'select' | null>(null);
-  const [gpuTopicDraft, setGpuTopicDraft] = useState('');
-  const [gpuJobId, setGpuJobId] = useState<string | null>(null);
-  const [gpuResearchMode, setGpuResearchMode] = useState(false);
-  const [gpuTopic, setGpuTopic] = useState('');
-  const [gpuStatus, setGpuStatus] = useState<'provisioning' | 'completed' | 'failed' | null>(null);
-  const gpuPollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [researchUploaderVisible, setResearchUploaderVisible] = useState(false);
+  const [isVipMember, setIsVipMember] = useState(false);
+  const [showMembershipModal, setShowMembershipModal] = useState(false);
   const [treasury, setTreasury] = useState<TreasuryContext>({
     balance: null,
     balanceUsd: null,
@@ -318,6 +279,17 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     } catch { /* silent */ }
   }, []);
 
+  // VIP membership card holders unlock research mode without spending shards.
+  const fetchVipStatus = useCallback(async () => {
+    try {
+      const res = await fetch('/api/membership/holding-status', { credentials: 'include' });
+      if (res.ok) {
+        const data = await res.json();
+        setIsVipMember(!!data.hasVipMembershipCard);
+      }
+    } catch { /* silent */ }
+  }, []);
+
   useEffect(() => {
     const mediaQuery = window.matchMedia('(max-width: 1024px)');
     const syncMobileState = (event?: MediaQueryListEvent) => {
@@ -340,8 +312,9 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     if (isOpen) {
       fetchTreasuryContext();
       fetchShardCount();
+      fetchVipStatus();
     }
-  }, [isOpen, fetchTreasuryContext, fetchShardCount]);
+  }, [isOpen, fetchTreasuryContext, fetchShardCount, fetchVipStatus]);
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -444,14 +417,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
           setMessages((prev) => [...prev, userMessage]);
           setInputText('');
           showEmote('dead');
-          if (gpuResearchMode && gpuJobId) {
-            if (gpuTopic) {
-              addBlueMessage('already processing your topic. gpu synthesis in progress.');
-            } else {
-              setGpuTopic(text);
-              addBlueMessage(`locking in "${text.slice(0, 60)}${text.length > 60 ? '...' : ''}" — polling nosana gpu.`);
-            }
-          } else if (researchMode) {
+          if (researchMode) {
             sendToEliza(text, 'research');
           } else if (autoDistributionVisible) {
             sendToEliza(text, 'auto-distribution');
@@ -557,7 +523,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       if (data.error === 'insufficient_shards') {
         setShardCount(data.shardCount);
         setIsTyping(false);
-        openShardUpsell(mode === 'research' ? RESEARCH_COST : SHARD_COST, mode === 'research' ? 'research' : 'chat');
+        openShardUpsell(SHARD_COST, 'chat');
         return;
       }
 
@@ -566,6 +532,16 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         addBlueMessage(
           'i cannot find your account record for this session. refresh, reconnect your wallet, and try again.'
         );
+        return;
+      }
+
+      if (res.status === 403 || data.error === 'vip_required') {
+        setIsTyping(false);
+        setResearchMode(false);
+        setResearchUploaderVisible(false);
+        setIsVipMember(false);
+        addBlueMessage("research mode needs an active VIP membership. grab a membership card and it unlocks again.");
+        setShowMembershipModal(true);
         return;
       }
 
@@ -663,18 +639,8 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     setPendingAttachments([]);
     showEmote('dead');
 
-    if (gpuResearchMode && gpuJobId) {
-      if (gpuTopic) {
-        addBlueMessage('already processing your topic. gpu synthesis in progress — hang tight.');
-      } else {
-        setGpuTopic(text);
-        addBlueMessage(`locking in "${text.slice(0, 60)}${text.length > 60 ? '...' : ''}" — polling nosana gpu for synthesis.`);
-        showEmote('searching');
-      }
-      return;
-    }
-
     if (researchMode) {
+      setResearchUploaderVisible(false);
       sendToEliza(text, 'research', attachments);
       return;
     }
@@ -687,155 +653,34 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     sendToEliza(text, undefined, attachments);
   };
 
-  const startGpuResearch = async (tier: GpuTier, topic: string) => {
-    setGpuPickerStep(null);
-    setGpuTopicDraft('');
-    setIsTyping(true);
-    showEmote('searching');
+  // Activate research mode. Research mode is a VIP-membership benefit — the
+  // server confirms the wallet holds a membership card before unlocking.
+  const activateResearchMode = async () => {
     try {
-      const res = await fetch('/api/research/gpu', {
+      const res = await fetch('/api/research/activate', {
         method: 'POST',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier }),
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
 
-      if (!res.ok) {
-        if (data.error === 'insufficient_shards') {
-          addBlueMessage(
-            `not enough shards. ${GPU_TIER_INFO[tier].label} GPU costs ${GPU_TIER_INFO[tier].shards.toLocaleString()} shards. keep building and come back.`
-          );
-        } else if (data.error === 'GPU research not available') {
-          addBlueMessage('gpu research is not configured yet. check back soon.');
-        } else {
-          addBlueMessage(`gpu provisioning failed: ${data.error || 'unknown error'}. try again.`);
-        }
+      if (res.status === 403 || data.error === 'vip_required') {
+        setIsVipMember(false);
+        addBlueMessage("research mode is a VIP membership benefit — full grant, proposal, and thesis drafting. grab a membership card and it unlocks for good.");
+        setShowMembershipModal(true);
+        return;
+      }
+      if (!res.ok || !data.ok) {
+        addBlueMessage("couldn't unlock research mode. try again.");
         return;
       }
 
-      // Set topic immediately so polling loop starts as soon as the job ID is set
-      setGpuTopic(topic);
-      setGpuJobId(data.jobId);
-      setGpuStatus('provisioning');
-      setGpuResearchMode(true);
-      setShardCount(data.shardsRemaining ?? shardCount);
-      setMessages((prev) => [
-        ...prev,
-        { id: Date.now().toString(), text: topic, sender: 'user' as const, timestamp: new Date() },
-      ]);
-      addBlueMessage(
-        `${GPU_TIER_INFO[tier].label} GPU is spinning up on Nosana (${GPU_TIER_INFO[tier].model}, ${GPU_TIER_INFO[tier].gpu}). synthesizing "${topic.slice(0, 60)}${topic.length > 60 ? '...' : ''}" — this usually takes 2–5 minutes.`
-      );
+      setIsVipMember(true);
+      setResearchMode(true);
+      setResearchUploaderVisible(true);
+      addBlueMessage("research mode is live — unlocked with your VIP membership. tell me what you're writing — a grant, a proposal, a thesis chapter — plus the topic and any constraints (funder, length, deadline). drop any reference material in the card above. i'll draft it in full report form and we can refine section by section.");
     } catch {
-      addBlueMessage('gpu connection failed. check your network and try again.');
-    } finally {
-      setIsTyping(false);
+      addBlueMessage("something went wrong unlocking research mode. try again.");
     }
-  };
-
-  // Poll GPU job status until synthesis completes or fails
-  useEffect(() => {
-    if (!gpuJobId || !gpuTopic) return;
-
-    let active = true;
-
-    const poll = async () => {
-      if (!active) return;
-      try {
-        const res = await fetch(
-          `/api/research/gpu/${gpuJobId}?topic=${encodeURIComponent(gpuTopic)}`,
-          { credentials: 'include' }
-        );
-        const data = await res.json();
-        if (!active) return;
-
-        if (data.status === 'completed' && data.result) {
-          active = false;
-          setGpuStatus('completed');
-          setGpuResearchMode(false);
-          setGpuJobId(null);
-          setGpuTopic('');
-          setIsTyping(true);
-          setTimeout(() => {
-            setMessages((prev) => [
-              ...prev,
-              {
-                id: (Date.now() + 1).toString(),
-                text: data.result as string,
-                sender: 'blue' as const,
-                timestamp: new Date(),
-              },
-            ]);
-            setIsTyping(false);
-          }, 600);
-        } else if (data.status === 'failed') {
-          active = false;
-          setGpuStatus('failed');
-          setGpuResearchMode(false);
-          setGpuJobId(null);
-          setGpuTopic('');
-          setIsTyping(true);
-          setTimeout(() => {
-            setMessages((prev) => [
-              ...prev,
-              {
-                id: (Date.now() + 1).toString(),
-                text: 'gpu synthesis failed. your shards have been refunded.',
-                sender: 'blue' as const,
-                timestamp: new Date(),
-              },
-            ]);
-            setIsTyping(false);
-          }, 600);
-        }
-      } catch {
-        // network error — keep polling
-      }
-    };
-
-    poll();
-    const id = setInterval(poll, 10000);
-    gpuPollRef.current = id;
-
-    return () => {
-      active = false;
-      clearInterval(id);
-      gpuPollRef.current = null;
-    };
-  }, [gpuJobId, gpuTopic]);
-
-  const confirmShardSpend = async () => {
-    if (!pendingMessage) return;
-
-    if (pendingType !== 'research') return;
-
-    setPendingMessage(null);
-    setPendingType('chat');
-    try {
-      const res = await fetch('/api/shards/deduct', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: RESEARCH_COST, reason: 'research_activation' }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setShardCount(data.shardsRemaining ?? (shardCount !== null ? shardCount - RESEARCH_COST : null));
-        setResearchMode(true);
-        addBlueMessage("research mode is live. tell me what you're writing — a grant, a proposal, a thesis chapter — plus the topic and any constraints (funder, length, deadline). i'll draft it in full report form and we can refine section by section.");
-      } else {
-        addBlueMessage("couldn't process the payment. try again.");
-      }
-    } catch {
-      addBlueMessage("something went wrong. try again.");
-    }
-  };
-
-  const cancelShardSpend = () => {
-    if (!pendingMessage) return;
-    setPendingMessage(null);
-    setPendingType('chat');
   };
 
 
@@ -1009,8 +854,8 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     }
 
     // Research mode / DeSci
-    if (has('research mode', 'proposal', 'grant', 'thesis', 'gpu') || (hasAll('research', 'desci')) || (hasAll('research', 'write'))) {
-      return "research mode is a writing partner for grants, proposals, and thesis chapters — full report drafts you refine section by section. flip it on.";
+    if (has('research mode', 'proposal', 'grant', 'thesis') || (hasAll('research', 'desci')) || (hasAll('research', 'write'))) {
+      return "research mode is a VIP writing partner for grants, proposals, and thesis chapters — full report drafts you refine section by section. it unlocks with a VIP membership.";
     }
 
     // DeSci
@@ -1322,27 +1167,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         return;
       }
       send('Open research mode', 'searching');
-      if (shardCount !== null && shardCount >= RESEARCH_COST) {
-        setPendingType('research');
-        setPendingMessage('__research_activate__');
-      } else {
-        openShardUpsell(RESEARCH_COST, 'research');
-      }
-    } else if (action === 'gpu-research') {
-      setResearchMode(false);
-      setPendingAttachments([]);
-      setAutoDistributionVisible(false);
-      if (gpuResearchMode) {
-        send('GPU research is running', 'searching');
-        addBlueMessage(gpuTopic ? 'gpu research is processing your topic. synthesis in progress.' : 'gpu research is active. drop your research topic.');
-        return;
-      }
-      send('Start GPU research session', 'searching');
-      if (shardCount !== null && shardCount >= GPU_TIER_INFO.focus.shards) {
-        setGpuPickerStep('gate');
-      } else {
-        openShardUpsell(GPU_TIER_INFO.focus.shards, 'gpu');
-      }
+      activateResearchMode();
     }
   };
 
@@ -1456,13 +1281,9 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   };
 
   const shardUpsellTitle = (
-    shardUpsell?.reason === 'research'
-      ? 'Research mode needs more shards'
-      : shardUpsell?.reason === 'gpu'
-        ? 'GPU research needs more shards'
-        : shardUpsell?.reason === 'credit'
-          ? 'Credit Builder needs more shards'
-          : 'You are out of shards'
+    shardUpsell?.reason === 'credit'
+      ? 'Credit Builder needs more shards'
+      : 'You are out of shards'
   );
   const shardUpsellBody = shardUpsell
     ? `You need ${shardUpsell.required.toLocaleString()} shards to continue. You currently have ${shardUpsell.current.toLocaleString()}. Purchase more to keep the conversation going.`
@@ -1574,102 +1395,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       )}
 
 
-      {/* GPU Research Picker */}
-      {gpuPickerStep === 'gate' && (
-        <div className={styles.gpuPicker}>
-          <span className={styles.gpuPickerTitle}>GPU Research</span>
-          <p className={styles.gpuPickerDesc}>
-            Borrow dedicated GPU compute from the Nosana network. A powerful open-source model will synthesize a graduate-level report on your topic.
-          </p>
-          <div className={styles.gpuPickerButtons}>
-            <button className={styles.gpuPickerProceed} onClick={() => setGpuPickerStep('topic')} type="button">
-              Continue
-            </button>
-            <button className={styles.gpuPickerCancel} onClick={() => setGpuPickerStep(null)} type="button">
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
-      {gpuPickerStep === 'topic' && (
-        <div className={styles.gpuPicker}>
-          <span className={styles.gpuPickerTitle}>What do you want to research?</span>
-          <input
-            className={styles.input}
-            type="text"
-            placeholder="e.g. cognitive behavioral therapy and neuroplasticity"
-            value={gpuTopicDraft}
-            onChange={(e) => setGpuTopicDraft(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && gpuTopicDraft.trim()) setGpuPickerStep('select');
-            }}
-            autoFocus
-            style={{ marginBottom: 8 }}
-          />
-          <div className={styles.gpuPickerButtons}>
-            <button
-              className={styles.gpuPickerProceed}
-              onClick={() => { if (gpuTopicDraft.trim()) setGpuPickerStep('select'); }}
-              disabled={!gpuTopicDraft.trim()}
-              type="button"
-            >
-              Choose Compute Tier
-            </button>
-            <button className={styles.gpuPickerCancel} onClick={() => setGpuPickerStep(null)} type="button">
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
-      {gpuPickerStep === 'select' && (
-        <div className={styles.gpuPicker}>
-          <span className={styles.gpuPickerTitle}>Select Compute Tier</span>
-          <div className={styles.gpuTierGrid}>
-            {(Object.keys(GPU_TIER_INFO) as GpuTier[]).map((tier) => {
-              const t = GPU_TIER_INFO[tier];
-              const hasShards = shardCount !== null && shardCount >= t.shards;
-              return (
-                <button
-                  key={tier}
-                  className={`${styles.gpuTierCard} ${styles[t.cardClass as keyof typeof styles]}`}
-                  onClick={() => startGpuResearch(tier, gpuTopicDraft.trim())}
-                  disabled={!hasShards || isTyping}
-                  type="button"
-                >
-                  <span className={`${styles.gpuTierBadge} ${styles[t.badgeClass as keyof typeof styles]}`}>{t.badge}</span>
-                  <span className={styles.gpuTierLabel}>{t.label}</span>
-                  <span className={styles.gpuTierModel}>{t.model}</span>
-                  <span className={styles.gpuTierGpu}>{t.gpu}</span>
-                  <span className={styles.gpuTierDesc}>{t.desc}</span>
-                  <span className={styles.gpuTierShards}>{t.shards.toLocaleString()} shards{!hasShards ? ' (need more)' : ''}</span>
-                </button>
-              );
-            })}
-          </div>
-          <button className={styles.gpuPickerCancel} onClick={() => setGpuPickerStep('topic')} type="button" style={{ marginTop: 4 }}>
-            Back
-          </button>
-        </div>
-      )}
-
-      {/* Shard Confirmation */}
-      {pendingMessage && pendingType === 'research' && (
-        <div className={styles.shardConfirm}>
-          <div className={styles.shardConfirmText}>
-            Activate research mode?
-            <span className={styles.shardConfirmBalance}>{shardCount} shards available</span>
-          </div>
-          <div className={styles.shardConfirmButtons}>
-            <button className={styles.shardConfirmYes} onClick={confirmShardSpend} type="button">
-              {`Spend ${RESEARCH_COST.toLocaleString()} Shards`}
-            </button>
-            <button className={styles.shardConfirmNo} onClick={cancelShardSpend} type="button">
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
-
       {shardUpsell && (
         <div className={styles.shardUpsell} role="dialog" aria-modal="true" aria-label={shardUpsellTitle}>
           <div className={styles.shardUpsellIconWrap} aria-hidden="true">
@@ -1689,6 +1414,73 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
       )}
+
+      {/* Research context uploader — shown right after research mode unlocks */}
+      {researchMode && researchUploaderVisible && (
+        <div className={styles.researchUploader}>
+          <div className={styles.researchUploaderHead}>
+            <span className={styles.researchUploaderTitle}>Add reference material</span>
+            <button
+              type="button"
+              className={styles.researchUploaderDismiss}
+              onClick={() => setResearchUploaderVisible(false)}
+              aria-label="Dismiss uploader"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <p className={styles.researchUploaderDesc}>
+            Upload notes, a prior draft, a dataset, or the call for proposals (PDF or image) and Blue will draft from them. Optional — you can also just describe what you need.
+          </p>
+          {pendingAttachments.length > 0 && (
+            <div className={styles.researchUploaderChips}>
+              {pendingAttachments.map((attachment) => (
+                <span key={attachment.id} className={styles.researchUploaderChip}>
+                  <span className={styles.researchUploaderChipIcon} aria-hidden="true">
+                    {attachment.mime === 'application/pdf' ? 'PDF' : 'IMG'}
+                  </span>
+                  <span className={styles.researchUploaderChipName}>{attachment.name}</span>
+                  <button
+                    type="button"
+                    className={styles.researchUploaderChipRemove}
+                    onClick={() => removePendingAttachment(attachment.id)}
+                    aria-label={`Remove ${attachment.name}`}
+                  >
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+                      <path d="M18 6L6 18M6 6l12 12" />
+                    </svg>
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
+          <button
+            type="button"
+            className={styles.researchUploaderButton}
+            onClick={() => attachmentInputRef.current?.click()}
+            disabled={isUploadingAttachment || pendingAttachments.length >= 4}
+          >
+            {isUploadingAttachment
+              ? 'Uploading...'
+              : pendingAttachments.length >= 4
+                ? 'Maximum of 4 files'
+                : pendingAttachments.length > 0
+                  ? 'Add another file'
+                  : 'Choose files'}
+          </button>
+        </div>
+      )}
+
+      <input
+        ref={attachmentInputRef}
+        type="file"
+        accept="application/pdf,image/*"
+        multiple
+        hidden
+        onChange={(e) => uploadAttachmentFiles(e.target.files)}
+      />
 
       {/* Quick Actions */}
       <div className={styles.quickActions}>
@@ -1747,6 +1539,13 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
           </svg>
         </button>
       </div>
+
+      {showMembershipModal && (
+        <ProMembershipModal
+          isOpen={showMembershipModal}
+          onClose={() => { setShowMembershipModal(false); fetchVipStatus(); }}
+        />
+      )}
     </>
   );
 
@@ -1927,10 +1726,14 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
                           <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Research</span>
                           <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Research</span>
                         </span>
-                        <span className={styles.toolCardMeta}>Source-backed synthesis on any topic — trace papers, mechanisms, and evidence with Blue.</span>
+                        <span className={styles.toolCardMeta}>Draft grant applications, research proposals, and thesis chapters with Blue — full report drafts refined section by section.</span>
                         <span className={styles.toolCardCost}>
-                          <Image src="/icons/ui-shard.svg" alt="" width={12} height={12} />
-                          {researchMode ? 'Research mode active' : `${RESEARCH_COST.toLocaleString()} shards to activate`}
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z"/></svg>
+                          {researchMode
+                            ? 'Research mode active'
+                            : isVipMember
+                              ? 'Included with VIP membership'
+                              : 'VIP membership required'}
                         </span>
                       </span>
                       <span className={styles.toolCardIcon} aria-hidden="true">
