@@ -383,8 +383,15 @@ export function deriveChapterActivation(intake?: IntakeAnswers): Record<string, 
   if (intake.accountability === 'Prefers to work solo') add('anxiety', 0.2);
   if (intake.accountability === 'Gentle check-ins help') add('anxiety', 0.1);
 
-  if (intake.meetups === 'Prefers a self-paced path') add('anxiety', 0.18);
-  else if (intake.meetups === 'Open to meet-ups later') add('anxiety', 0.06);
+  if (intake.mood === 'Feeling overwhelmed this week') {
+    add('anxiety', 0.2);
+    add('depressive', 0.12);
+  } else if (intake.mood === 'Struggling this week') {
+    add('anxiety', 0.12);
+    add('depressive', 0.16);
+  } else if (intake.mood === 'Feeling okay this week') {
+    add('anxiety', 0.04);
+  }
 
   if (intake.timeCommitment === 'About 10 minutes a day') {
     add('somatic', 0.16);

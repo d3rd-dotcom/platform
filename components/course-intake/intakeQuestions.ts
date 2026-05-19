@@ -33,7 +33,7 @@ export const INTAKE_QUESTIONS: IntakeQuestion[] = [
   {
     key: 'accountability',
     label: 'Accountability',
-    blueText: 'Thank you for sharing. How do you feel about accountability?',
+    blueText: 'When you tackle a new problem, what helps you stick with it?',
     audioSrc: '/audio/onboarding/course-intake/accountability.mp3',
     choices: [
       { label: 'Gentle check-ins help', value: 'Gentle check-ins help' },
@@ -42,20 +42,21 @@ export const INTAKE_QUESTIONS: IntakeQuestion[] = [
     ],
   },
   {
-    key: 'meetups',
-    label: 'Meet-ups',
-    blueText: 'Would you like to join live meet-ups with the MWA team?',
-    audioSrc: '/audio/onboarding/course-intake/meetups.mp3',
+    key: 'mood',
+    label: 'Check-in',
+    blueText: 'How are you feeling overall this week?',
+    audioSrc: '/audio/onboarding/course-intake/mood.mp3',
     choices: [
-      { label: 'Yes, count me in', value: 'Wants MWA team meet-ups' },
-      { label: 'Maybe later', value: 'Open to meet-ups later' },
-      { label: 'Not for me', value: 'Prefers a self-paced path' },
+      { label: 'Great', value: 'Feeling great this week' },
+      { label: 'Okay', value: 'Feeling okay this week' },
+      { label: 'Struggling', value: 'Struggling this week' },
+      { label: 'Overwhelmed', value: 'Feeling overwhelmed this week' },
     ],
   },
   {
     key: 'timeCommitment',
     label: 'Time each day',
-    blueText: 'How much time can you give this each day?',
+    blueText: 'How much time do you set aside for your mental wellness each day?',
     audioSrc: '/audio/onboarding/course-intake/time-commitment.mp3',
     choices: [
       { label: '10 minutes', value: 'About 10 minutes a day' },

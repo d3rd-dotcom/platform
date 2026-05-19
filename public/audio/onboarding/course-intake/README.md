@@ -3,9 +3,9 @@
 The course intake screen uses these MP3 files instead of dynamic TTS:
 
 - `goal.mp3` - What brings you to this world?
-- `accountability.mp3` - Thank you for sharing. How do you feel about accountability?
-- `meetups.mp3` - Would you like to join live meet-ups with the MWA team?
-- `time-commitment.mp3` - How much time can you give this each day?
+- `accountability.mp3` - When you tackle a new problem, what helps you stick with it?
+- `mood.mp3` - How are you feeling overall this week?
+- `time-commitment.mp3` - How much time do you set aside for your mental wellness each day?
 - `experience.mp3` - Have you done reflective work before, like journaling?
 - `voice-context.mp3` - Last one, tell me as much about you as you'd like me to know. I'll use it to help you best.
 
