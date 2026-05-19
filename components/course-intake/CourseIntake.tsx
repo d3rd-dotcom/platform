@@ -24,7 +24,7 @@ export default function CourseIntake({ initialAnswers = {}, onComplete }: Course
 
   const ttsAbortRef = useRef<AbortController | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const spokenStepRef = useRef<number>(-1);
+  const unlockedRef = useRef(false);
   const autoAdvanceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const question = INTAKE_QUESTIONS[stepIndex];
@@ -44,80 +44,75 @@ export default function CourseIntake({ initialAnswers = {}, onComplete }: Course
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stepIndex]);
 
-  // Speak Blue's line — exactly once per question, cancelling anything prior.
-  const playStaticAudio = useCallback(async (src: string, step: number) => {
-    const el = new Audio(src);
+  // One reusable audio element for the whole intake. Creating a fresh Audio()
+  // per question meant only the first (gesture-triggered) one was allowed to
+  // play; every later element was autoplay-blocked. A single element, once
+  // played inside a user gesture, stays unlocked for every subsequent step.
+  useEffect(() => {
+    const el = new Audio();
+    el.preload = 'auto';
     audioRef.current = el;
+    return () => {
+      el.pause();
+      el.removeAttribute('src');
+      el.load();
+      audioRef.current = null;
+    };
+  }, []);
+
+  // Narrate a question through the shared audio element.
+  const playStep = useCallback(async (text: string, audioSrc?: string) => {
+    const el = audioRef.current;
+    if (!el) return;
+    ttsAbortRef.current?.abort();
+    el.pause();
+
+    let src = audioSrc;
+    if (!src) {
+      // TTS fallback for any question without a static narration file.
+      const controller = new AbortController();
+      ttsAbortRef.current = controller;
+      try {
+        const res = await fetch('/api/voice/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text }),
+          signal: controller.signal,
+        });
+        if (!res.ok || controller.signal.aborted) return;
+        const { audio } = await res.json();
+        if (!audio || controller.signal.aborted) return;
+        const bytes = Uint8Array.from(atob(audio), (c) => c.charCodeAt(0));
+        src = URL.createObjectURL(new Blob([bytes], { type: 'audio/mpeg' }));
+      } catch {
+        return;
+      }
+    }
+
+    el.src = src;
     try {
       await el.play();
-      if (audioRef.current === el) {
-        spokenStepRef.current = step;
-      }
-      return true;
-    } catch (err) {
-      if (audioRef.current === el) {
-        audioRef.current = null;
-      }
-      if (err instanceof DOMException && err.name === 'NotAllowedError') {
-        return true;
-      }
-      console.warn(`Static intake audio failed to play: ${src}`);
-      return false;
+      unlockedRef.current = true;
+    } catch {
+      // Autoplay blocked — the next pointer interaction retries (see below).
     }
   }, []);
 
-  const speak = useCallback(async (text: string, step: number, audioSrc?: string) => {
-    ttsAbortRef.current?.abort();
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
-    }
-
-    if (audioSrc) {
-      await playStaticAudio(audioSrc, step);
-      return;
-    }
-
-    const controller = new AbortController();
-    ttsAbortRef.current = controller;
-    try {
-      const res = await fetch('/api/voice/tts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text }),
-        signal: controller.signal,
-      });
-      if (!res.ok || controller.signal.aborted) return;
-      const { audio } = await res.json();
-      if (!audio || controller.signal.aborted) return;
-      const bytes = Uint8Array.from(atob(audio), (c) => c.charCodeAt(0));
-      const url = URL.createObjectURL(new Blob([bytes], { type: 'audio/mpeg' }));
-      const el = new Audio(url);
-      el.onended = () => URL.revokeObjectURL(url);
-      audioRef.current = el;
-      await el.play();
-      spokenStepRef.current = step;
-    } catch {
-      // Aborted, autoplay-blocked, or TTS unavailable — narration is best-effort.
-    }
-  }, [playStaticAudio]);
-
-  // Narrate the active question.
+  // Narrate the active question whenever the step changes.
   useEffect(() => {
-    speak(question.blueText, stepIndex, question.audioSrc);
+    playStep(question.blueText, question.audioSrc);
     return () => ttsAbortRef.current?.abort();
-  }, [stepIndex, question.blueText, question.audioSrc, speak]);
+  }, [stepIndex, question.blueText, question.audioSrc, playStep]);
 
-  // If the intro was autoplay-blocked, the first interaction unlocks + replays it.
+  // Until the audio element is unlocked, retry on the next pointer interaction.
   useEffect(() => {
+    if (unlockedRef.current) return;
     const handler = () => {
-      if (spokenStepRef.current !== stepIndex) {
-        speak(question.blueText, stepIndex, question.audioSrc);
-      }
+      if (!unlockedRef.current) playStep(question.blueText, question.audioSrc);
     };
-    window.addEventListener('pointerdown', handler, { once: true });
+    window.addEventListener('pointerdown', handler);
     return () => window.removeEventListener('pointerdown', handler);
-  }, [stepIndex, question.blueText, question.audioSrc, speak]);
+  }, [stepIndex, question.blueText, question.audioSrc, playStep]);
 
   const persist = useCallback((next: Record<string, string>) => {
     fetch('/api/course/intake', {

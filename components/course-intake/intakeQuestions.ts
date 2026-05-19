@@ -19,15 +19,15 @@ export interface IntakeQuestion {
 
 export const INTAKE_QUESTIONS: IntakeQuestion[] = [
   {
-    key: 'goal',
-    label: 'Focus',
-    blueText: 'What brings you to this world?',
-    audioSrc: '/audio/onboarding/course-intake/goal.mp3',
+    key: 'mood',
+    label: 'Check-in',
+    blueText: 'How are you feeling overall this week?',
+    audioSrc: '/audio/onboarding/course-intake/mood.mp3',
     choices: [
-      { label: 'Creativity', value: 'Creativity' },
-      { label: 'Exercise', value: 'Exercise' },
-      { label: 'Wellness', value: 'Wellness' },
-      { label: 'Healing', value: 'Healing' },
+      { label: 'Great', value: 'Feeling great this week' },
+      { label: 'Okay', value: 'Feeling okay this week' },
+      { label: 'Struggling', value: 'Struggling this week' },
+      { label: 'Overwhelmed', value: 'Feeling overwhelmed this week' },
     ],
   },
   {
@@ -42,15 +42,15 @@ export const INTAKE_QUESTIONS: IntakeQuestion[] = [
     ],
   },
   {
-    key: 'mood',
-    label: 'Check-in',
-    blueText: 'How are you feeling overall this week?',
-    audioSrc: '/audio/onboarding/course-intake/mood.mp3',
+    key: 'goal',
+    label: 'Focus',
+    blueText: 'What brings you to this world?',
+    audioSrc: '/audio/onboarding/course-intake/goal.mp3',
     choices: [
-      { label: 'Great', value: 'Feeling great this week' },
-      { label: 'Okay', value: 'Feeling okay this week' },
-      { label: 'Struggling', value: 'Struggling this week' },
-      { label: 'Overwhelmed', value: 'Feeling overwhelmed this week' },
+      { label: 'Creativity', value: 'Creativity' },
+      { label: 'Exercise', value: 'Exercise' },
+      { label: 'Wellness', value: 'Wellness' },
+      { label: 'Healing', value: 'Healing' },
     ],
   },
   {
