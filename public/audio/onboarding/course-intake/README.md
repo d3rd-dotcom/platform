@@ -2,7 +2,7 @@
 
 The course intake screen uses these MP3 files instead of dynamic TTS:
 
-- `goal.mp3` - Hey, let me build your starter course. To begin, what would you like to focus on?
+- `goal.mp3` - What brings you to this world?
 - `accountability.mp3` - Thank you for sharing. How do you feel about accountability?
 - `meetups.mp3` - Would you like to join live meet-ups with the MWA team?
 - `time-commitment.mp3` - How much time can you give this each day?

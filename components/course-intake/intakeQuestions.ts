@@ -21,7 +21,7 @@ export const INTAKE_QUESTIONS: IntakeQuestion[] = [
   {
     key: 'goal',
     label: 'Focus',
-    blueText: 'Hey, let me build your starter course. To begin — what would you like to focus on?',
+    blueText: 'What brings you to this world?',
     audioSrc: '/audio/onboarding/course-intake/goal.mp3',
     choices: [
       { label: 'Creativity', value: 'Creativity' },
