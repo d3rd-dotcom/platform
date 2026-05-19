@@ -260,6 +260,10 @@ export default function CoursePage() {
   }, [showLeaderboard]);
 
   const handleSealComplete = useCallback((weekNumber: number, txHash: string | null) => {
+    // Close any open task panel so the user lands on the sealed week
+    // overview rather than a now-locked task editor.
+    setRightContent(prev => (prev === 'task' ? null : prev));
+    setSelectedTaskId(null);
     setWeekStatuses(prev => {
       const hasWeek = prev.some(w => w.weekNumber === weekNumber);
       if (!hasWeek) {

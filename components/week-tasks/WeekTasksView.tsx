@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import { usePrivy } from '@privy-io/react-auth';
 import styles from './WeekTasksView.module.css';
 import jStyles from '@/components/accordion-journal/AccordionJournalCard.module.css';
@@ -9,6 +10,17 @@ import { weekSectionsMap } from '@/components/accordion-journal/weekSections';
 import { week1Sections, week2Sections } from '@/components/accordion-journal/AccordionJournalCard';
 import type { JournalSection } from '@/components/accordion-journal/AccordionJournalCard';
 import { useSound } from '@/hooks/useSound';
+
+// Reward overlays shared with the Morning Pages flow, so sealing a week
+// celebrates the same way completing a morning page does.
+const ShardAnimation = dynamic(() => import('@/components/quests/ShardAnimation').then(mod => mod.ShardAnimation), {
+  ssr: false,
+  loading: () => null,
+});
+const ConfettiCelebration = dynamic(() => import('@/components/quests/ConfettiCelebration').then(mod => mod.ConfettiCelebration), {
+  ssr: false,
+  loading: () => null,
+});
 
 const WEEK_COLORS: Record<number, string> = {
   0: '#5168FF', 1: '#5168FF', 2: '#3B82F6', 3: '#06B6D4',
@@ -102,8 +114,10 @@ export default function WeekTasksView({
   });
   const [isSealed, setIsSealed] = useState(initialIsSealed ?? false);
   const [isSealing, setIsSealing] = useState(false);
-  const [sealStep, setSealStep] = useState<'confirm' | 'sealing' | 'complete'>('confirm');
+  const [sealStep, setSealStep] = useState<'confirm' | 'sealing'>('confirm');
   const [showSealModal, setShowSealModal] = useState(false);
+  const [shardsAwarded, setShardsAwarded] = useState(700);
+  const [showRewardAnimation, setShowRewardAnimation] = useState(false);
   const [sealTxHash, setSealTxHash] = useState<string | null>(initialSealTxHash ?? null);
   const [isLoading, setIsLoading] = useState(true);
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -291,8 +305,18 @@ export default function WeekTasksView({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Seal failed');
       setSealTxHash(data.txHash ?? null);
-      setSealStep('complete');
+      setShardsAwarded(typeof data.shardsAwarded === 'number' ? data.shardsAwarded : 700);
       setIsSealed(true);
+      // Collapse whatever task module was open so the user lands on the
+      // celebration rather than a now-locked editor.
+      setExpandedSection(null);
+      // Close the modal and hand off to the shared reward overlays
+      // (confetti + shard count-up), the same celebration Morning Pages uses.
+      setShowSealModal(false);
+      setSealStep('confirm');
+      setShowRewardAnimation(true);
+      // Tell the navbar shard counter (and anything else listening) to refresh.
+      if (typeof window !== 'undefined') window.dispatchEvent(new Event('shardsUpdated'));
       if (onSealComplete) onSealComplete(weekNumber, data.txHash ?? null);
       if (typeof window !== 'undefined' && 'vibrate' in navigator) navigator.vibrate([50, 30, 50, 30, 100]);
     } catch (err) {
@@ -623,8 +647,8 @@ export default function WeekTasksView({
         );
       })}
 
-      {/* Seal Button */}
-      {!isSealed && (
+      {/* Seal Button — only in the full list view, not the single-task panel */}
+      {!isSealed && !focusedSectionId && (
         <div className={styles.sealSection}>
           <div className={styles.progressInfo}>
             <span className={styles.progressText}>{completedCount} / {totalSections} tasks completed</span>
@@ -648,7 +672,7 @@ export default function WeekTasksView({
         </div>
       )}
 
-      {isSealed && (
+      {isSealed && !focusedSectionId && (
         <div className={styles.sealedBanner}>
           <Image src="/uploads/BlueSeal.svg" alt="" width={20} height={20} />
           <span>Week {weekNumber} sealed</span>
@@ -680,18 +704,19 @@ export default function WeekTasksView({
                 <span>Sealing week...</span>
               </div>
             )}
-            {sealStep === 'complete' && (
-              <div className={styles.sealModalComplete}>
-                <Image src="/uploads/BlueSeal.svg" alt="" width={40} height={40} />
-                <h3>Week {weekNumber} Sealed</h3>
-                <p>+700 shards awarded</p>
-                <button className={styles.sealModalConfirm} onClick={() => { setShowSealModal(false); setSealStep('confirm'); }}>
-                  Done
-                </button>
-              </div>
-            )}
           </div>
         </div>
+      )}
+
+      {/* Reward celebration — shared with Morning Pages */}
+      {showRewardAnimation && (
+        <>
+          <ConfettiCelebration trigger={true} />
+          <ShardAnimation
+            shards={shardsAwarded}
+            onComplete={() => setShowRewardAnimation(false)}
+          />
+        </>
       )}
     </div>
   );

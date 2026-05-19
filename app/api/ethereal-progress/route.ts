@@ -136,6 +136,7 @@ export async function POST(request: Request) {
     // Upsert progress, mark sealed, and award shards atomically.
     // Sealing is a normal system action and does not depend on prior weeks
     // or an on-chain attestation.
+    let newShardCount = 0;
     const pathwayCompleted = await withTransaction(async (client) => {
       // Upsert progress data
       await sqlQueryWithClient(
@@ -158,11 +159,13 @@ export async function POST(request: Request) {
       );
 
       // Award 700 shards for sealing a week
-      await sqlQueryWithClient(
+      const shardRows = await sqlQueryWithClient<Array<{ shard_count: number }>>(
         client,
-        `UPDATE users SET shard_count = COALESCE(shard_count, 0) + 700 WHERE id = :userId`,
+        `UPDATE users SET shard_count = COALESCE(shard_count, 0) + 700 WHERE id = :userId
+         RETURNING shard_count`,
         { userId: user.id }
       );
+      newShardCount = Number(shardRows[0]?.shard_count ?? 0);
 
       // Check pathway completion (week 13 = final)
       let completed = false;
@@ -202,6 +205,8 @@ export async function POST(request: Request) {
       txHash: null,
       contentHash: null,
       pathwayCompleted,
+      shardsAwarded: 700,
+      shardCount: newShardCount,
     });
   }
 
