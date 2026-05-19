@@ -77,6 +77,14 @@ interface ElizaMessage {
   content: string;
 }
 
+// Collect extracted text from uploaded files into a single block for the prompt.
+function buildAttachmentsText(attachments: ChatAttachment[]): string {
+  return attachments
+    .filter((a) => typeof a.extractedText === 'string' && a.extractedText.trim())
+    .map((a) => `--- Reference file: ${a.name || 'upload'} ---\n${a.extractedText!.trim()}`)
+    .join('\n\n');
+}
+
 async function callDeepSeek(messages: ElizaMessage[], maxTokens = 8000): Promise<string> {
   if (!DEEPSEEK_API_KEY) {
     throw new Error('DEEPSEEK_API_KEY not configured');
@@ -348,6 +356,7 @@ async function runBlueMemoryAwareTurn(args: {
   userMessage: string;
   mode: 'chat' | 'research' | 'auto-distribution';
   attachmentsCount?: number;
+  attachmentsText?: string;
   shardsDeducted: number;
   pathname: string | null;
 }) {
@@ -363,6 +372,12 @@ async function runBlueMemoryAwareTurn(args: {
   });
   const knowledgeText = formatKnowledgeForPrompt(retrievedEntries);
 
+  // Fold any uploaded reference text into the message sent to the model.
+  // The plain userMessage is still what gets stored in memory.
+  const promptUserMessage = args.attachmentsText
+    ? `${args.userMessage}\n\nThe user attached the reference material below. Treat it as source input for this request.\n\n${args.attachmentsText}`
+    : args.userMessage;
+
   const response = await callElizaCloud(
     buildBlueChatMessages({
       systemPrompt:
@@ -371,7 +386,7 @@ async function runBlueMemoryAwareTurn(args: {
           : args.mode === 'auto-distribution'
             ? AUTO_DISTRIBUTION_SYSTEM_PROMPT
             : BLUE_SYSTEM_PROMPT,
-      userMessage: args.userMessage,
+      userMessage: promptUserMessage,
       contextText: blueContext.contextText,
       knowledgeText,
       pathname: args.pathname,
@@ -501,6 +516,7 @@ export async function POST(request: Request) {
         userMessage: body.message,
         mode: 'research',
         attachmentsCount: attachments.length,
+        attachmentsText: buildAttachmentsText(attachments),
         shardsDeducted: 0,
         pathname,
       });
@@ -556,6 +572,7 @@ export async function POST(request: Request) {
       userMessage: body.message,
       mode: isAutoDistribution ? 'auto-distribution' : 'chat',
       attachmentsCount: attachments.length,
+      attachmentsText: buildAttachmentsText(attachments),
       shardsDeducted: SHARD_COST,
       pathname,
     });

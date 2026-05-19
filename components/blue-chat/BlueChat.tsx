@@ -172,6 +172,13 @@ function getRadarPoints(scales: number[], radius = 80) {
 
 const SHARD_COST = 10;
 
+function fileTypeLabel(mime: string): string {
+  if (mime === 'text/markdown') return 'MD';
+  if (mime === 'text/plain') return 'TXT';
+  if (mime.startsWith('image/')) return 'IMG';
+  return 'FILE';
+}
+
 const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const { play } = useSound();
   const currentPathname = usePathname();
@@ -1323,7 +1330,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
                 {message.attachments.map((attachment) => (
                   <div key={attachment.id} className={styles.messageAttachmentChip}>
                     <span className={styles.messageAttachmentIcon} aria-hidden="true">
-                      {attachment.mime === 'application/pdf' ? 'PDF' : 'IMG'}
+                      {fileTypeLabel(attachment.mime)}
                     </span>
                     <span className={styles.messageAttachmentName}>{attachment.name}</span>
                   </div>
@@ -1432,14 +1439,14 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             </button>
           </div>
           <p className={styles.researchUploaderDesc}>
-            Upload notes, a prior draft, a dataset, or the call for proposals (PDF or image) and Blue will draft from them. Optional — you can also just describe what you need.
+            Upload notes, a prior draft, or the call for proposals as a .txt or .md file and Blue will draft from them. Optional — you can also just describe what you need.
           </p>
           {pendingAttachments.length > 0 && (
             <div className={styles.researchUploaderChips}>
               {pendingAttachments.map((attachment) => (
                 <span key={attachment.id} className={styles.researchUploaderChip}>
                   <span className={styles.researchUploaderChipIcon} aria-hidden="true">
-                    {attachment.mime === 'application/pdf' ? 'PDF' : 'IMG'}
+                    {fileTypeLabel(attachment.mime)}
                   </span>
                   <span className={styles.researchUploaderChipName}>{attachment.name}</span>
                   <button
@@ -1476,7 +1483,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       <input
         ref={attachmentInputRef}
         type="file"
-        accept="application/pdf,image/*"
+        accept=".txt,.md,text/plain,text/markdown"
         multiple
         hidden
         onChange={(e) => uploadAttachmentFiles(e.target.files)}

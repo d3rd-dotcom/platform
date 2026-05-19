@@ -8,69 +8,33 @@ import { checkRateLimit, getClientIdentifier, getRateLimitHeaders } from '@/lib/
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
-const ALLOWED_MIME = new Set([
-  'image/png',
-  'image/jpeg',
-  'image/gif',
-  'image/webp',
-  'application/pdf',
-]);
-
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const MAX_EXTRACTED_TEXT_LENGTH = 12000;
 
-function extForMime(mime: string) {
-  switch (mime) {
-    case 'image/png':
-      return 'png';
-    case 'image/jpeg':
-      return 'jpg';
-    case 'image/gif':
-      return 'gif';
-    case 'image/webp':
-      return 'webp';
-    case 'application/pdf':
-      return 'pdf';
-    default:
-      return null;
+const IMAGE_EXT: Record<string, string> = {
+  'image/png': 'png',
+  'image/jpeg': 'jpg',
+  'image/gif': 'gif',
+  'image/webp': 'webp',
+};
+
+type FileKind = 'image' | 'text';
+
+/**
+ * Classify an upload. Text files (.txt/.md) are matched by extension first
+ * because browsers report Markdown's MIME type inconsistently (often empty
+ * or text/x-markdown). Images are matched by MIME type.
+ */
+function classify(file: File): { ext: string; mime: string; kind: FileKind } | null {
+  const name = (file.name || '').toLowerCase();
+  if (name.endsWith('.md')) return { ext: 'md', mime: 'text/markdown', kind: 'text' };
+  if (name.endsWith('.txt')) return { ext: 'txt', mime: 'text/plain', kind: 'text' };
+  if (file.type === 'text/markdown' || file.type === 'text/x-markdown') {
+    return { ext: 'md', mime: 'text/markdown', kind: 'text' };
   }
-}
-
-async function extractPdfText(bytes: Uint8Array): Promise<string | null> {
-  try {
-    const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
-    const loadingTask = pdfjs.getDocument({
-      data: bytes,
-      isEvalSupported: false,
-      useSystemFonts: false,
-    });
-    const pdf = await loadingTask.promise;
-
-    const pages: string[] = [];
-    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
-      const page = await pdf.getPage(pageNumber);
-      const textContent = await page.getTextContent();
-      const pageText = textContent.items
-        .map((item) => ('str' in item ? item.str : ''))
-        .join(' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-
-      if (pageText) {
-        pages.push(pageText);
-      }
-
-      if (pages.join('\n').length >= MAX_EXTRACTED_TEXT_LENGTH) {
-        break;
-      }
-    }
-
-    const text = pages.join('\n').slice(0, MAX_EXTRACTED_TEXT_LENGTH).trim();
-    return text || null;
-  } catch (error) {
-    console.error('PDF text extraction failed:', error);
-    return null;
-  }
+  if (file.type === 'text/plain') return { ext: 'txt', mime: 'text/plain', kind: 'text' };
+  if (IMAGE_EXT[file.type]) return { ext: IMAGE_EXT[file.type], mime: file.type, kind: 'image' };
+  return null;
 }
 
 export async function POST(request: Request) {
@@ -99,7 +63,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Missing file.' }, { status: 400 });
   }
 
-  // Validate file size (max 10MB)
   if (file.size > MAX_FILE_SIZE) {
     return NextResponse.json(
       { error: `File size exceeds 10MB limit. Current size: ${(file.size / 1024 / 1024).toFixed(2)}MB` },
@@ -107,17 +70,10 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!ALLOWED_MIME.has(file.type)) {
+  const classified = classify(file);
+  if (!classified) {
     return NextResponse.json(
-      { error: `Unsupported file type: ${file.type}` },
-      { status: 415 }
-    );
-  }
-
-  const ext = extForMime(file.type);
-  if (!ext) {
-    return NextResponse.json(
-      { error: `Unsupported file type: ${file.type}` },
+      { error: 'Unsupported file type. Upload a .txt or .md text file, or a PNG/JPEG/GIF/WebP image.' },
       { status: 415 }
     );
   }
@@ -128,19 +84,19 @@ export async function POST(request: Request) {
   const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
   await mkdir(uploadsDir, { recursive: true });
 
-  const filename = `${uuidv4()}.${ext}`;
-  const diskPath = path.join(uploadsDir, filename);
+  const filename = `${uuidv4()}.${classified.ext}`;
+  await writeFile(path.join(uploadsDir, filename), bytes);
 
-  await writeFile(diskPath, bytes);
-
-  const extractedText = file.type === 'application/pdf'
-    ? await extractPdfText(new Uint8Array(bytes))
+  // Text files are read straight into extractedText so Blue can use them as
+  // source material. Images carry no extracted text.
+  const extractedText = classified.kind === 'text'
+    ? bytes.toString('utf-8').slice(0, MAX_EXTRACTED_TEXT_LENGTH).trim() || null
     : null;
 
   return NextResponse.json({
     url: `/uploads/${filename}`,
-    name: path.basename(file.name || `upload.${ext}`),
-    mime: file.type,
+    name: path.basename(file.name || `upload.${classified.ext}`),
+    mime: classified.mime,
     size: file.size,
     extractedText,
   });
