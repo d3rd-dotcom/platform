@@ -769,7 +769,7 @@ export default function DailyNotes({
           onMouseEnter={() => play('hover')}
           aria-label="Open Morning Note"
         >
-          <img
+          <Image
             className={styles.icon}
             src="/icons/notebook-writing.svg"
             alt="Notebook writing icon"

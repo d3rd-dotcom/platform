@@ -42,6 +42,7 @@ export default function Starboard({
               onClick={() => onNavigate?.('prev')}
               aria-label="Previous"
             >
+              {/* eslint-disable-next-line @next/next/no-img-element -- small decorative SVG nav icon; next/image adds no benefit */}
               <img src={imgIcon} alt="" />
             </button>
             <div className={styles.statContainer}>
@@ -53,6 +54,7 @@ export default function Starboard({
               onClick={() => onNavigate?.('next')}
               aria-label="Next"
             >
+              {/* eslint-disable-next-line @next/next/no-img-element -- small decorative SVG nav icon; next/image adds no benefit */}
               <img src={imgIcon} alt="" />
             </button>
           </div>
