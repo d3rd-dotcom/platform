@@ -363,10 +363,11 @@
   background: color-mix(in oklch, var(--color-primary) 16%, transparent);
 }
 
-/* Tablet & mobile — hidden, bottom nav replaces it */
+/* Compact top nav — tablet landscape / small-desktop range.
+   Tightens spacing so everything (incl. Ask Blue) fits without clipping. */
 @media (max-width: 1024px) {
   .header {
-    display: none;
+    padding: 0 14px;
   }
 
   .menuButton {
@@ -378,6 +379,16 @@
     width: 90px;
   }
 
+  .centerNav {
+    gap: 2px;
+    padding: 0 8px;
+  }
+
+  .navLink {
+    padding: 0 9px;
+    font-size: 12px;
+  }
+
   .nav {
     gap: 6px;
   }
@@ -386,5 +397,14 @@
   .joinButton {
     padding: 0.4rem 0.8rem;
     font-size: 0.7rem;
+  }
+}
+
+/* Phone & small tablet — top nav hidden, bottom nav takes over.
+   Matches the body padding-top: 72px -> 0 switch in globals.css so the
+   header and its reserved space appear and disappear together. */
+@media (max-width: 900px) {
+  .header {
+    display: none;
   }
 }

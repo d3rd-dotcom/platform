@@ -469,9 +469,11 @@
   border-color: rgba(147, 197, 253, 0.35);
 }
 
+/* Always exactly 3 essays — fixed 3-up so the last card never orphans
+   into a half-empty second row. Collapses to a single column on mobile. */
 .blogCardsContainer {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
   width: 100%;
 }
@@ -1288,7 +1290,8 @@
     max-width: min(100%, 34rem);
   }
 
-  .artStylesContainer {
+  .artStylesContainer,
+  .blogCardsContainer {
     grid-template-columns: 1fr;
     gap: 8px;
   }
