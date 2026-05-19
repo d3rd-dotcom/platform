@@ -1424,21 +1424,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       addBlueMessage(
         "auto-distribution is live. connect approved channels, tell me the campaign, and i'll draft posts, image prompts, video concepts, ad angles, and engagement targets."
       );
-    } else if (action === 'funding') {
-      send('Funding', 'searching');
-      addBlueMessage(
-        "MWA funds research through treasury allocations, prediction-market pools, and x402 paper pre-sales."
-      );
-    } else if (action === 'earning') {
-      send('Earning', 'happy');
-      addBlueMessage(
-        "earn here by paywalling papers on x402, taking synthesis commissions, or running paid surveys."
-      );
-    } else if (action === 'experiments') {
-      send('Experiments', 'searching');
-      addBlueMessage(
-        "MWA hosts validated assessments, behavioral quests, and consented community surveys. ship your study here."
-      );
     } else if (action === 'research') {
       setPendingAttachments([]);
       setAutoDistributionVisible(false);
@@ -2099,47 +2084,21 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
               <div className={styles.expandedQuickPanel}>
                 <h3 className={styles.panelHeading}>Power Tools</h3>
                 <div className={styles.expandedQuickGrid}>
-                  <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => { play('click'); handleQuickAction('funding'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
+                  <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => { play('click'); handleQuickAction('research'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
                     <span className={styles.toolCardTop}>
                       <span className={styles.toolCardText}>
                         <span className={styles.toolSlideWrap}>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Funding</span>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Funding</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Research</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Research</span>
                         </span>
-                        <span className={styles.toolCardMeta}>Map a study, paper, or dataset to treasury pools, prediction-backed funding, and live grants.</span>
+                        <span className={styles.toolCardMeta}>Source-backed synthesis on any topic — trace papers, mechanisms, and evidence with Blue.</span>
+                        <span className={styles.toolCardCost}>
+                          <Image src="/icons/ui-shard.svg" alt="" width={12} height={12} />
+                          {researchMode ? 'Research mode active' : `${RESEARCH_COST.toLocaleString()} shards to activate`}
+                        </span>
                       </span>
                       <span className={styles.toolCardIcon} aria-hidden="true">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2Zm.75 14.5v1.25h-1.5V16.5a3.5 3.5 0 0 1-3-2.43l1.43-.58a2 2 0 0 0 3.95-.34c0-1.13-1.04-1.55-2.5-2.07S8.5 9.95 8.5 8.43A2.95 2.95 0 0 1 11.25 5.6V4.25h1.5v1.32a3.06 3.06 0 0 1 2.66 1.99l-1.39.6a1.62 1.62 0 0 0-3.27.27c0 .9.92 1.28 2.36 1.79s3.39 1.23 3.39 3.18a3.13 3.13 0 0 1-2.75 3.1Z"/></svg>
-                      </span>
-                    </span>
-                    <span className={styles.toolCardBottom} aria-hidden="true" />
-                  </button>
-                  <button className={styles.expandedQuickCard} onClick={() => { play('click'); handleQuickAction('earning'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
-                    <span className={styles.toolCardTop}>
-                      <span className={styles.toolCardText}>
-                        <span className={styles.toolSlideWrap}>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Earning</span>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Earning</span>
-                        </span>
-                        <span className={styles.toolCardMeta}>Turn papers, datasets, and methodology into x402 revenue, paid syntheses, and shards.</span>
-                      </span>
-                      <span className={styles.toolCardIcon} aria-hidden="true">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2l3-8 3 13 3-9 2 4h5v2h-6l-1-2-3 8-3-12-2 6H3z"/></svg>
-                      </span>
-                    </span>
-                    <span className={styles.toolCardBottom} aria-hidden="true" />
-                  </button>
-                  <button className={styles.expandedQuickCard} onClick={() => { play('click'); handleQuickAction('experiments'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
-                    <span className={styles.toolCardTop}>
-                      <span className={styles.toolCardText}>
-                        <span className={styles.toolSlideWrap}>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Experiments</span>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Experiments</span>
-                        </span>
-                        <span className={styles.toolCardMeta}>Scope a hypothesis, lock variables, pick a design, and route it to surveys or quests.</span>
-                      </span>
-                      <span className={styles.toolCardIcon} aria-hidden="true">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M9 2v6L3.5 17.5A2 2 0 0 0 5.24 20.5h13.52A2 2 0 0 0 20.5 17.5L15 8V2Zm2 2h2v4.5l3.94 6.5H7.06L11 8.5ZM9.6 15h4.8l1.21 2H8.4Z"/></svg>
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M10 2a8 8 0 0 1 6.32 12.9l5.39 5.39-1.42 1.42-5.39-5.39A8 8 0 1 1 10 2Zm0 2a6 6 0 1 0 0 12 6 6 0 0 0 0-12Zm-.9 2.4h1.8v2.7h2.7v1.8h-2.7v2.7H9.1v-2.7H6.4V9.1h2.7Z"/></svg>
                       </span>
                     </span>
                     <span className={styles.toolCardBottom} aria-hidden="true" />

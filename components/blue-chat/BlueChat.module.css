@@ -1300,6 +1300,22 @@
   color: rgba(255, 255, 255, 0.52);
 }
 
+.toolCardCost {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(120, 170, 255, 0.95);
+}
+
+.toolCardCost img {
+  opacity: 0.9;
+}
+
 .toolCardIcon {
   flex-shrink: 0;
   width: 54px;
@@ -2181,6 +2197,10 @@
 
 :global(:root:not([data-theme="dark"])) .toolCardMeta {
   color: rgba(26, 29, 51, 0.5);
+}
+
+:global(:root:not([data-theme="dark"])) .toolCardCost {
+  color: rgba(45, 95, 215, 0.95);
 }
 
 :global(:root:not([data-theme="dark"])) .toolCardIcon {
