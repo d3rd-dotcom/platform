@@ -1,25 +1,22 @@
 import { NextResponse } from 'next/server';
-import { BigNumber } from 'ethers';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { ensureMembershipSchema } from '@/lib/ensureMembershipSchema';
 import { getWalletAddressFromRequest } from '@/lib/wallet-auth';
-import { getBlueWalletAddress, transferVipMembership } from '@/lib/blue-membership';
-import { verifyPayment } from '@/lib/crypto-payment';
+import { reconcileMembershipOrder } from '@/lib/membership-fulfillment';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-/** ETH price can drift between the quote and payment — allow 2% slippage. */
-const ETH_TOLERANCE_BPS = 9800; // 98% of the quoted wei
 
 /**
  * POST /api/membership/confirm-crypto
  * Body: { orderId, currency: 'eth' | 'usdc', txHash }
  *
- * Verifies the buyer's payment landed in Blue's wallet, then has Blue
- * transfer the VIP Membership NFT. This is the crypto equivalent of the
- * Stripe webhook — it runs synchronously and persists the final order
- * status, which the transfer screen then polls via /order-status.
+ * The buyer's wallet has broadcast the payment. This route's job is to durably
+ * record the transaction hash on the order — the hand-off point after which the
+ * server owns delivery. It then runs one reconcile pass so the happy path ships
+ * the NFT within this request; if the payment is not yet confirmed, the order
+ * carries its payment_tx_hash and the reconcile cron / status poll finishes the
+ * job. Delivery no longer depends on the buyer's browser staying open.
  */
 export async function POST(request: Request) {
   if (!isDbConfigured()) {
@@ -62,12 +59,10 @@ export async function POST(request: Request) {
     id: string;
     status: string;
     buyer_wallet: string;
-    token_id: string;
-    eth_amount_wei: string | null;
-    usdc_amount: string | null;
     tx_hash: string | null;
+    payment_tx_hash: string | null;
   }>>(
-    `SELECT id, status, buyer_wallet, token_id, eth_amount_wei, usdc_amount, tx_hash
+    `SELECT id, status, buyer_wallet, tx_hash, payment_tx_hash
        FROM membership_orders WHERE id = :id LIMIT 1`,
     { id: orderId },
   );
@@ -79,98 +74,34 @@ export async function POST(request: Request) {
   if (order.buyer_wallet.toLowerCase() !== buyerWallet.toLowerCase()) {
     return NextResponse.json({ error: 'This order belongs to another wallet.' }, { status: 403 });
   }
-
-  // Already fulfilled — return the result so a repeated confirm is harmless.
   if (order.status === 'transferred') {
     return NextResponse.json({ status: 'transferred', txHash: order.tx_hash });
   }
-
-  // Expected amount in base units for the chosen currency.
-  let minAmount: BigNumber;
-  if (currency === 'eth') {
-    if (!order.eth_amount_wei) {
-      return NextResponse.json({ error: 'This order has no ETH price. Restart checkout.' }, { status: 409 });
-    }
-    minAmount = BigNumber.from(order.eth_amount_wei).mul(ETH_TOLERANCE_BPS).div(10000);
-  } else {
-    if (!order.usdc_amount) {
-      return NextResponse.json({ error: 'This order has no USDC price. Restart checkout.' }, { status: 409 });
-    }
-    minAmount = BigNumber.from(order.usdc_amount);
-  }
-
-  let blueAddress: string;
-  try {
-    blueAddress = getBlueWalletAddress();
-  } catch (err) {
-    console.error('[membership] Blue wallet not configured:', err);
-    return NextResponse.json({ error: 'Membership wallet is not configured.' }, { status: 503 });
-  }
-
-  // Confirm the payment actually reached Blue's wallet on-chain.
-  let verification;
-  try {
-    verification = await verifyPayment({
-      txHash,
-      currency,
-      recipient: blueAddress,
-      expectedSender: buyerWallet,
-      minAmount,
-    });
-  } catch (err) {
-    console.error('[membership] payment verification error:', err);
+  if (order.payment_tx_hash && order.payment_tx_hash.toLowerCase() !== txHash.toLowerCase()) {
     return NextResponse.json(
-      { error: 'Could not verify the payment on Base. Try again shortly.' },
-      { status: 502 },
+      { error: 'A different payment is already recorded for this order.' },
+      { status: 409 },
     );
   }
-  if (!verification.ok) {
-    return NextResponse.json({ error: verification.reason }, { status: 400 });
-  }
 
-  // Claim the order. The conditional update is the idempotency gate: a second
-  // confirm cannot move it out of transferring/transferred.
-  const claimed = await sqlQuery<Array<{ id: string }>>(
+  // Durably record the payment. After this the order is the reconcile worker's
+  // responsibility — closing the tab no longer loses the delivery.
+  await sqlQuery(
     `UPDATE membership_orders
-        SET status = 'transferring', payment_method = 'crypto',
-            payment_currency = :cur, payment_tx_hash = :tx,
-            updated_at = CURRENT_TIMESTAMP
-      WHERE id = :id AND status IN ('pending', 'paid', 'failed')
-      RETURNING id`,
+        SET payment_method = 'crypto', payment_currency = :cur,
+            payment_tx_hash = :tx, updated_at = CURRENT_TIMESTAMP
+      WHERE id = :id AND status IN ('pending', 'paid', 'failed', 'expired')`,
     { id: orderId, cur: currency, tx: txHash },
   );
-  if (claimed.length === 0) {
-    // Another request is already fulfilling this order.
-    return NextResponse.json({ status: order.status });
-  }
 
-  try {
-    const { txHash: nftTx } = await transferVipMembership(order.buyer_wallet, order.token_id, 1);
-    await sqlQuery(
-      `UPDATE membership_orders
-          SET status = 'transferred', tx_hash = :tx, error = NULL,
-              transferred_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP
-        WHERE id = :id`,
-      { id: orderId, tx: nftTx },
-    );
-    return NextResponse.json({ status: 'transferred', txHash: nftTx });
-  } catch (err) {
-    // Payment cleared but the NFT transfer failed. Keep payment_tx_hash on the
-    // row so the delivery can be retried; surface a clear failure to the buyer.
-    const message = err instanceof Error ? err.message : 'Transfer failed';
-    await sqlQuery(
-      `UPDATE membership_orders
-          SET status = 'failed', error = :err, updated_at = CURRENT_TIMESTAMP
-        WHERE id = :id`,
-      { id: orderId, err: `Payment received. NFT transfer failed: ${message}` },
-    );
-    console.error('[membership] crypto NFT transfer failed:', message);
-    return NextResponse.json(
-      {
-        status: 'failed',
-        error: 'Your payment went through, but sending the membership NFT failed. Our team has been notified.',
-      },
-      { status: 500 },
-    );
-  }
+  // Try to finish the job now; whatever the outcome, the order is recorded and
+  // the cron / status poll will carry it the rest of the way.
+  const result = await reconcileMembershipOrder(orderId);
+
+  return NextResponse.json({
+    ok: true,
+    status: result.status,
+    txHash: result.txHash ?? null,
+    error: result.error ?? null,
+  });
 }

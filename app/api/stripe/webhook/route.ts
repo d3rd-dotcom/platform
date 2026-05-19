@@ -3,7 +3,7 @@ import type Stripe from 'stripe';
 import { getStripe } from '@/lib/stripe';
 import { sqlQuery } from '@/lib/db';
 import { ensureMembershipSchema } from '@/lib/ensureMembershipSchema';
-import { transferVipMembership } from '@/lib/blue-membership';
+import { deliverMembershipOrder } from '@/lib/membership-fulfillment';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -62,7 +62,6 @@ export async function POST(request: Request) {
   const pi = event.data.object as Stripe.PaymentIntent;
   const orderId = pi.metadata?.orderId;
   const buyerWallet = pi.metadata?.buyerWallet;
-  const tokenId = pi.metadata?.tokenId || '1';
 
   if (!orderId || !buyerWallet) {
     console.error('[membership webhook] payment intent missing metadata:', pi.id);
@@ -71,41 +70,17 @@ export async function POST(request: Request) {
 
   await ensureMembershipSchema();
 
-  // Claim the order. This conditional update is the idempotency gate: only one
-  // delivery can move the order out of pending/paid into transferring.
-  const claimed = await sqlQuery<Array<{ id: string }>>(
+  // Record that payment cleared. The conditional update keeps this idempotent
+  // and lets a payment that lands after the reservation lapsed still deliver.
+  await sqlQuery(
     `UPDATE membership_orders
-        SET status='transferring', updated_at=CURRENT_TIMESTAMP
-      WHERE id=:id AND status IN ('pending', 'paid')
-      RETURNING id`,
+        SET status='paid', updated_at=CURRENT_TIMESTAMP
+      WHERE id=:id AND status IN ('pending', 'paid', 'expired')`,
     { id: orderId },
   );
-  if (claimed.length === 0) {
-    // Already transferred, in flight, or failed — nothing more to do.
-    return NextResponse.json({ received: true });
-  }
 
-  try {
-    const { txHash } = await transferVipMembership(buyerWallet, tokenId, 1);
-    await sqlQuery(
-      `UPDATE membership_orders
-          SET status='transferred', tx_hash=:tx, error=NULL,
-              transferred_at=CURRENT_TIMESTAMP, updated_at=CURRENT_TIMESTAMP
-        WHERE id=:id`,
-      { id: orderId, tx: txHash },
-    );
-    return NextResponse.json({ received: true, txHash });
-  } catch (err) {
-    // Payment cleared but the on-chain transfer failed. Drop back to 'paid' so
-    // a Stripe webhook retry re-attempts, and return 500 to trigger that retry.
-    const message = err instanceof Error ? err.message : 'Transfer failed';
-    await sqlQuery(
-      `UPDATE membership_orders
-          SET status='paid', error=:err, updated_at=CURRENT_TIMESTAMP
-        WHERE id=:id`,
-      { id: orderId, err: message },
-    );
-    console.error('[membership webhook] NFT transfer failed:', message);
-    return NextResponse.json({ error: 'Transfer failed, will retry.' }, { status: 500 });
-  }
+  // Hand off to the shared delivery path. If it fails, the order is left as
+  // `failed` and the reconcile cron retries — no need to fail the webhook.
+  const result = await deliverMembershipOrder(orderId);
+  return NextResponse.json({ received: true, status: result.status, txHash: result.txHash });
 }

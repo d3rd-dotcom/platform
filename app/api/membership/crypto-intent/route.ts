@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server';
 import { MEMBERSHIP_PRICE_CENTS } from '@/lib/stripe';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
-import { ensureMembershipSchema, countCommittedMemberships } from '@/lib/ensureMembershipSchema';
+import {
+  ensureMembershipSchema,
+  countCommittedMemberships,
+  expireStaleMembershipOrders,
+} from '@/lib/ensureMembershipSchema';
 import { getWalletAddressFromRequest } from '@/lib/wallet-auth';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { getBlueWalletAddress } from '@/lib/blue-membership';
@@ -37,6 +41,8 @@ export async function POST() {
   }
 
   await ensureMembershipSchema();
+  // Clear out abandoned checkouts so they neither pile up nor hold inventory.
+  await expireStaleMembershipOrders();
 
   const tokenId = VIP_MEMBERSHIP_CARD_TOKEN_ID.toString();
 

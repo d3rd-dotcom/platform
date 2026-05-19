@@ -9,6 +9,7 @@ import { useAccount } from 'wagmi';
 import { Contract, providers } from 'ethers';
 import { loadStripe, type Stripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import { useDevMode } from '../useDevMode';
 import styles from './ProMembershipModal.module.css';
 
 interface ProMembershipModalProps {
@@ -215,14 +216,15 @@ function CryptoCheckout({
           value: intent.quote.eth.amount,
         });
         txHash = tx.hash;
-        await tx.wait();
       } else {
         const usdc = new Contract(intent.usdcAddress, ERC20_TRANSFER_ABI, signer);
         const tx = await usdc.transfer(intent.blueWallet, intent.quote.usdc.amount);
         txHash = tx.hash;
-        await tx.wait();
       }
 
+      // Hand the payment hash to the server right away. Once it is recorded the
+      // server owns delivery — verification and the NFT transfer happen in the
+      // backend reconcile worker, so closing this tab no longer loses the order.
       const headers = (await authHeaders()) as Record<string, string>;
       const confirmRes = await fetch('/api/membership/confirm-crypto', {
         method: 'POST',
@@ -232,14 +234,13 @@ function CryptoCheckout({
       });
       const confirmData = await confirmRes.json().catch(() => ({}));
 
-      // The payment was accepted on-chain — let the transfer screen take over,
-      // whether the NFT shipped immediately or needs a retry.
-      if (confirmData.status === 'transferred' || confirmData.status === 'failed') {
+      if (confirmRes.ok) {
+        // Payment recorded — the transfer screen polls the order to completion.
         onPaid(intent.orderId);
         return;
       }
 
-      setError(confirmData?.error || 'Payment sent, but confirmation failed. Contact support.');
+      setError(confirmData?.error || 'Payment sent, but we could not record it. Contact support.');
       setPaying(null);
     } catch (err) {
       const e = err as { shortMessage?: string; reason?: string; message?: string; code?: string };
@@ -384,9 +385,12 @@ function TransferStage({
 
 const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose }) => {
   const { getAccessToken } = usePrivy();
+  const devMode = useDevMode();
 
   const [screen, setScreen] = useState<Screen>('intro');
-  const [method, setMethod] = useState<PaymentMethod>(stripePromise ? 'card' : 'crypto');
+  // No method is pre-selected when card is available — the buyer must choose,
+  // so the Stripe PaymentIntent is not opened until they actually pick "Card".
+  const [method, setMethod] = useState<PaymentMethod | null>(stripePromise ? null : 'crypto');
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
   const [intentLoading, setIntentLoading] = useState(false);
@@ -413,7 +417,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
   useEffect(() => {
     if (!isOpen) {
       setScreen('intro');
-      setMethod(stripePromise ? 'card' : 'crypto');
+      setMethod(stripePromise ? null : 'crypto');
       setClientSecret(null);
       setOrderId(null);
       setIntentError(null);
@@ -454,6 +458,35 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
       setMembershipCheckLoading(false);
     }
   }, [authHeaders, membershipCheckLoading]);
+
+  // Dev-only: drop straight into a screen / transfer phase, no real payment.
+  const devJump = useCallback((target: Screen | 'transfer:done' | 'transfer:failed') => {
+    setIntentError(null);
+    cardIntentAttemptedRef.current = false;
+    cardIntentInFlightRef.current = false;
+    if (target === 'transfer:done') {
+      setOrderId(null); // no orderId -> polling stays off, phase is ours to set
+      setTxHash('0xdev0000000000000000000000000000000000000000000000000000000000000');
+      setTransferError(null);
+      setTransferPhase('done');
+      setScreen('transfer');
+      return;
+    }
+    if (target === 'transfer:failed') {
+      setOrderId(null);
+      setTxHash(null);
+      setTransferError('Payment received, but the NFT transfer did not complete. (dev preview)');
+      setTransferPhase('failed');
+      setScreen('transfer');
+      return;
+    }
+    if (target === 'transfer') {
+      setOrderId(null);
+      setTransferError(null);
+      setTransferPhase('working');
+    }
+    setScreen(target);
+  }, []);
 
   // Close on escape, lock body scroll.
   useEffect(() => {
@@ -755,6 +788,10 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
                 </div>
               )}
 
+              {stripePromise && !method && (
+                <p className={styles.secureNote}>Choose how you would like to pay.</p>
+              )}
+
               {/* Card path */}
               {method === 'card' && (
                 <>
@@ -861,6 +898,54 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
                 </div>
               )}
             </div>
+          </div>
+        )}
+
+        {/* ── Dev-only: screen jumper ───────────────────────────────────── */}
+        {devMode && (
+          <div
+            style={{
+              position: 'absolute',
+              left: 8,
+              bottom: 8,
+              right: 8,
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 4,
+              padding: '6px 8px',
+              borderRadius: 6,
+              background: 'rgba(0,0,0,0.78)',
+              zIndex: 10,
+            }}
+          >
+            <span style={{ fontSize: 10, color: '#9aa', alignSelf: 'center', marginRight: 4 }}>
+              dev
+            </span>
+            {([
+              ['Intro', 'intro'],
+              ['Duplicate', 'duplicate-warning'],
+              ['Purchase', 'purchase'],
+              ['Transfer · working', 'transfer'],
+              ['Transfer · done', 'transfer:done'],
+              ['Transfer · failed', 'transfer:failed'],
+            ] as const).map(([label, target]) => (
+              <button
+                key={target}
+                type="button"
+                onClick={() => devJump(target)}
+                style={{
+                  fontSize: 11,
+                  padding: '3px 7px',
+                  borderRadius: 4,
+                  border: '1px solid #444',
+                  background: '#1c1c22',
+                  color: '#dde',
+                  cursor: 'pointer',
+                }}
+              >
+                {label}
+              </button>
+            ))}
           </div>
         )}
       </div>

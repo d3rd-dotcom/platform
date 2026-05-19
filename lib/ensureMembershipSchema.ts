@@ -78,6 +78,16 @@ async function _ensureMembershipSchemaImpl(): Promise<void> {
   await sqlQuery(
     `ALTER TABLE membership_orders ADD COLUMN IF NOT EXISTS usdc_amount VARCHAR(40)`
   );
+  // How many times NFT delivery has been attempted — caps retries so a
+  // permanently broken order is not retried forever by the reconcile sweep.
+  await sqlQuery(
+    `ALTER TABLE membership_orders
+       ADD COLUMN IF NOT EXISTS delivery_attempts INTEGER NOT NULL DEFAULT 0`
+  );
+  // Set the first time the buyer is shown the "welcome to premium" screen.
+  await sqlQuery(
+    `ALTER TABLE membership_orders ADD COLUMN IF NOT EXISTS welcomed_at TIMESTAMP`
+  );
 
   await sqlQuery(
     `CREATE INDEX IF NOT EXISTS idx_membership_orders_status ON membership_orders(status)`
@@ -109,4 +119,23 @@ export async function countCommittedMemberships(tokenId: string): Promise<number
     { tokenId }
   );
   return Number(rows[0]?.committed ?? 0);
+}
+
+/**
+ * Expires abandoned checkouts: pending orders whose reservation has lapsed and
+ * which carry no recorded payment. Orders with a payment_tx_hash are left alone
+ * — those are paid and belong to the delivery pipeline, not the bin.
+ *
+ * Returns the number of orders expired.
+ */
+export async function expireStaleMembershipOrders(): Promise<number> {
+  const rows = await sqlQuery<Array<{ id: string }>>(
+    `UPDATE membership_orders
+        SET status = 'expired', updated_at = CURRENT_TIMESTAMP
+      WHERE status = 'pending'
+        AND reserved_until < CURRENT_TIMESTAMP
+        AND payment_tx_hash IS NULL
+      RETURNING id`
+  );
+  return rows.length;
 }
