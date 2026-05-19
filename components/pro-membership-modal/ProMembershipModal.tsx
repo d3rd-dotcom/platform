@@ -5,6 +5,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePrivy } from '@privy-io/react-auth';
+import { useAccount } from 'wagmi';
+import { Contract, providers } from 'ethers';
 import { loadStripe, type Stripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import styles from './ProMembershipModal.module.css';
@@ -16,6 +18,7 @@ interface ProMembershipModalProps {
 
 type Screen = 'intro' | 'purchase' | 'transfer';
 type TransferPhase = 'working' | 'done' | 'failed';
+type PaymentMethod = 'card' | 'crypto';
 
 const PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '';
 const stripePromise: Promise<Stripe | null> | null = PUBLISHABLE_KEY
@@ -36,7 +39,50 @@ const FEATURES = [
   'A learning path shaped around you',
 ];
 
-/* ── Checkout form (must render inside <Elements>) ───────────────────────── */
+const ERC20_TRANSFER_ABI = ['function transfer(address to, uint256 amount) returns (bool)'];
+const BASE_CHAIN_ID = 8453;
+const BASE_CHAIN_ID_HEX = '0x2105';
+const BASE_CHAIN_PARAMS = {
+  chainId: BASE_CHAIN_ID_HEX,
+  chainName: 'Base',
+  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+  rpcUrls: ['https://mainnet.base.org'],
+  blockExplorerUrls: ['https://basescan.org'],
+};
+
+interface Eip1193Provider {
+  request: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
+}
+
+function getProviderErrorCode(err: unknown): string | number | undefined {
+  return (err as { code?: string | number })?.code;
+}
+
+async function ensureBaseChain(eip1193: Eip1193Provider): Promise<void> {
+  const current = await eip1193.request({ method: 'eth_chainId' }).catch(() => null);
+  if (typeof current === 'string' && current.toLowerCase() === BASE_CHAIN_ID_HEX) return;
+
+  try {
+    await eip1193.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: BASE_CHAIN_ID_HEX }],
+    });
+  } catch (err) {
+    const code = getProviderErrorCode(err);
+    if (code !== 4902 && code !== '4902') throw err;
+    await eip1193.request({
+      method: 'wallet_addEthereumChain',
+      params: [BASE_CHAIN_PARAMS],
+    });
+  }
+
+  const after = await eip1193.request({ method: 'eth_chainId' });
+  if (typeof after !== 'string' || after.toLowerCase() !== BASE_CHAIN_ID_HEX) {
+    throw new Error('Switch your wallet to Base to pay with crypto.');
+  }
+}
+
+/* ── Stripe checkout form (must render inside <Elements>) ─────────────────── */
 
 function CheckoutForm({ onPaid }: { onPaid: () => void }) {
   const stripe = useStripe();
@@ -83,6 +129,173 @@ function CheckoutForm({ onPaid }: { onPaid: () => void }) {
         <span>{submitting ? 'Processing...' : `Pay ${PRICE_LABEL}`}</span>
       </button>
     </form>
+  );
+}
+
+/* ── Crypto checkout — pay Blue's wallet directly in USDC or ETH ──────────── */
+
+interface CryptoIntent {
+  orderId: string;
+  blueWallet: string;
+  chainId: number;
+  usdcAddress: string;
+  quote: {
+    usdAmount: number;
+    usdc: { amount: string; decimals: number; display: string };
+    eth: { amount: string; decimals: number; display: string; usdPrice: number };
+  };
+}
+
+function CryptoCheckout({
+  authHeaders,
+  onPaid,
+}: {
+  authHeaders: () => Promise<HeadersInit>;
+  onPaid: (orderId: string) => void;
+}) {
+  const { isConnected, connector } = useAccount();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [intent, setIntent] = useState<CryptoIntent | null>(null);
+  const [paying, setPaying] = useState<'usdc' | 'eth' | null>(null);
+
+  // Reserve a slot and quote the price the moment crypto checkout is shown.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch('/api/membership/crypto-intent', {
+          method: 'POST',
+          credentials: 'include',
+          headers: await authHeaders(),
+        });
+        const data = await res.json();
+        if (cancelled) return;
+        if (!res.ok) {
+          setError(data?.error || 'Could not start crypto checkout.');
+          return;
+        }
+        setIntent(data as CryptoIntent);
+      } catch {
+        if (!cancelled) setError('Could not reach the checkout service.');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [authHeaders]);
+
+  const pay = async (currency: 'usdc' | 'eth') => {
+    if (!intent || paying) return;
+    if (!isConnected || !connector) {
+      setError('Connect a wallet first to pay with crypto.');
+      return;
+    }
+
+    setPaying(currency);
+    setError(null);
+
+    try {
+      if (intent.chainId !== BASE_CHAIN_ID) {
+        throw new Error('Crypto checkout is only configured for Base.');
+      }
+      const eip1193 = (await connector.getProvider()) as Eip1193Provider;
+      await ensureBaseChain(eip1193);
+      const web3Provider = new providers.Web3Provider(eip1193 as providers.ExternalProvider);
+      const signer = web3Provider.getSigner();
+
+      let txHash: string;
+      if (currency === 'eth') {
+        const tx = await signer.sendTransaction({
+          to: intent.blueWallet,
+          value: intent.quote.eth.amount,
+        });
+        txHash = tx.hash;
+        await tx.wait();
+      } else {
+        const usdc = new Contract(intent.usdcAddress, ERC20_TRANSFER_ABI, signer);
+        const tx = await usdc.transfer(intent.blueWallet, intent.quote.usdc.amount);
+        txHash = tx.hash;
+        await tx.wait();
+      }
+
+      const headers = (await authHeaders()) as Record<string, string>;
+      const confirmRes = await fetch('/api/membership/confirm-crypto', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { ...headers, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId: intent.orderId, currency, txHash }),
+      });
+      const confirmData = await confirmRes.json().catch(() => ({}));
+
+      // The payment was accepted on-chain — let the transfer screen take over,
+      // whether the NFT shipped immediately or needs a retry.
+      if (confirmData.status === 'transferred' || confirmData.status === 'failed') {
+        onPaid(intent.orderId);
+        return;
+      }
+
+      setError(confirmData?.error || 'Payment sent, but confirmation failed. Contact support.');
+      setPaying(null);
+    } catch (err) {
+      const e = err as { shortMessage?: string; reason?: string; message?: string; code?: string };
+      const msg =
+        e?.code === 'ACTION_REJECTED'
+          ? 'Payment was cancelled in your wallet.'
+          : e?.shortMessage || e?.reason || e?.message || 'Payment could not be completed.';
+      setError(msg);
+      setPaying(null);
+    }
+  };
+
+  if (loading) {
+    return <p className={styles.loadingText}>Preparing crypto checkout...</p>;
+  }
+  if (error && !intent) {
+    return <p className={styles.formError}>{error}</p>;
+  }
+  if (!intent) return null;
+
+  const { quote } = intent;
+
+  return (
+    <div className={styles.cryptoOptions}>
+      {!isConnected && (
+        <p className={styles.walletNote}>Connect a wallet to pay with crypto.</p>
+      )}
+
+      <button
+        type="button"
+        className={`${styles.ctaButton} ${styles.ctaButtonBuy}`}
+        onClick={() => pay('usdc')}
+        disabled={!!paying || !isConnected}
+      >
+        <span>{paying === 'usdc' ? 'Confirm in wallet...' : `Pay ${quote.usdc.display} USDC`}</span>
+      </button>
+
+      <button
+        type="button"
+        className={`${styles.ctaButton} ${styles.ctaButtonSecondary}`}
+        onClick={() => pay('eth')}
+        disabled={!!paying || !isConnected}
+      >
+        <span>{paying === 'eth' ? 'Confirm in wallet...' : `Pay ${quote.eth.display} ETH`}</span>
+      </button>
+
+      <p className={styles.cryptoMeta}>
+        {`Both equal ${PRICE_LABEL} · 1 ETH ≈ $${quote.eth.usdPrice.toLocaleString('en-US', {
+          maximumFractionDigits: 0,
+        })}`}
+      </p>
+
+      {error && <p className={styles.formError}>{error}</p>}
+
+      <p className={styles.secureNote}>Paid straight to Blue&apos;s wallet on Base.</p>
+    </div>
   );
 }
 
@@ -173,6 +386,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
   const { getAccessToken } = usePrivy();
 
   const [screen, setScreen] = useState<Screen>('intro');
+  const [method, setMethod] = useState<PaymentMethod>(stripePromise ? 'card' : 'crypto');
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
   const [intentLoading, setIntentLoading] = useState(false);
@@ -195,6 +409,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
   useEffect(() => {
     if (!isOpen) {
       setScreen('intro');
+      setMethod(stripePromise ? 'card' : 'crypto');
       setClientSecret(null);
       setOrderId(null);
       setIntentError(null);
@@ -234,9 +449,8 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
     };
   }, [isOpen]);
 
-  // Open a payment intent when the user moves to the purchase screen.
-  const startCheckout = useCallback(async () => {
-    setScreen('purchase');
+  // Open a Stripe payment intent — only for the card path.
+  const ensureCardIntent = useCallback(async () => {
     if (clientSecret || intentLoading) return;
 
     setIntentLoading(true);
@@ -260,6 +474,13 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
       setIntentLoading(false);
     }
   }, [clientSecret, intentLoading, authHeaders]);
+
+  // Fetch the Stripe intent lazily once the card path is on screen.
+  useEffect(() => {
+    if (screen === 'purchase' && method === 'card' && stripePromise) {
+      ensureCardIntent();
+    }
+  }, [screen, method, ensureCardIntent]);
 
   // Poll order status while the transfer screen is showing.
   useEffect(() => {
@@ -374,7 +595,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
 
               <button
                 className={`${styles.ctaButton} ${styles.ctaButtonBuy}`}
-                onClick={startCheckout}
+                onClick={() => setScreen('purchase')}
               >
                 <span>Continue · {PRICE_LABEL}</span>
               </button>
@@ -412,25 +633,56 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
                 <span className={styles.priceValue}>{PRICE_LABEL}</span>
               </div>
 
-              {!stripePromise && (
-                <p className={styles.formError}>
-                  Payments are not configured. Set NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY.
-                </p>
+              {/* Payment method picker — card path is only offered when Stripe
+                  is configured; the crypto path always works. */}
+              {stripePromise && (
+                <div className={styles.methodToggle}>
+                  <button
+                    type="button"
+                    className={`${styles.methodOption} ${method === 'card' ? styles.methodOptionActive : ''}`}
+                    onClick={() => setMethod('card')}
+                  >
+                    Card
+                  </button>
+                  <button
+                    type="button"
+                    className={`${styles.methodOption} ${method === 'crypto' ? styles.methodOptionActive : ''}`}
+                    onClick={() => setMethod('crypto')}
+                  >
+                    Crypto
+                  </button>
+                </div>
               )}
 
-              {intentError && <p className={styles.formError}>{intentError}</p>}
+              {/* Card path */}
+              {method === 'card' && (
+                <>
+                  {intentError && <p className={styles.formError}>{intentError}</p>}
 
-              {stripePromise && intentLoading && (
-                <p className={styles.loadingText}>Preparing secure checkout...</p>
+                  {intentLoading && (
+                    <p className={styles.loadingText}>Preparing secure checkout...</p>
+                  )}
+
+                  {clientSecret && elementsOptions && stripePromise && (
+                    <Elements stripe={stripePromise} options={elementsOptions}>
+                      <CheckoutForm onPaid={() => setScreen('transfer')} />
+                    </Elements>
+                  )}
+
+                  <p className={styles.secureNote}>Payments secured by Stripe.</p>
+                </>
               )}
 
-              {stripePromise && clientSecret && elementsOptions && (
-                <Elements stripe={stripePromise} options={elementsOptions}>
-                  <CheckoutForm onPaid={() => setScreen('transfer')} />
-                </Elements>
+              {/* Crypto path */}
+              {method === 'crypto' && (
+                <CryptoCheckout
+                  authHeaders={authHeaders}
+                  onPaid={(oid) => {
+                    setOrderId(oid);
+                    setScreen('transfer');
+                  }}
+                />
               )}
-
-              <p className={styles.secureNote}>Payments secured by Stripe.</p>
             </div>
           </div>
         )}

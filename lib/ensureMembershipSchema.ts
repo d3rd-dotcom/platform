@@ -59,11 +59,36 @@ async function _ensureMembershipSchemaImpl(): Promise<void> {
     )
   `);
 
+  // Crypto checkout columns — added for wallets paying Blue directly in
+  // USDC or ETH instead of going through Stripe. Older deployments created
+  // the table without these, so each is added conditionally.
+  await sqlQuery(
+    `ALTER TABLE membership_orders
+       ADD COLUMN IF NOT EXISTS payment_method VARCHAR(10) NOT NULL DEFAULT 'stripe'`
+  );
+  await sqlQuery(
+    `ALTER TABLE membership_orders ADD COLUMN IF NOT EXISTS payment_currency VARCHAR(8)`
+  );
+  await sqlQuery(
+    `ALTER TABLE membership_orders ADD COLUMN IF NOT EXISTS payment_tx_hash VARCHAR(80)`
+  );
+  await sqlQuery(
+    `ALTER TABLE membership_orders ADD COLUMN IF NOT EXISTS eth_amount_wei VARCHAR(40)`
+  );
+  await sqlQuery(
+    `ALTER TABLE membership_orders ADD COLUMN IF NOT EXISTS usdc_amount VARCHAR(40)`
+  );
+
   await sqlQuery(
     `CREATE INDEX IF NOT EXISTS idx_membership_orders_status ON membership_orders(status)`
   );
   await sqlQuery(
     `CREATE INDEX IF NOT EXISTS idx_membership_orders_wallet ON membership_orders(LOWER(buyer_wallet))`
+  );
+  // A single incoming crypto payment can only ever fulfil one order.
+  await sqlQuery(
+    `CREATE UNIQUE INDEX IF NOT EXISTS idx_membership_orders_payment_tx
+       ON membership_orders(payment_tx_hash) WHERE payment_tx_hash IS NOT NULL`
   );
 }
 

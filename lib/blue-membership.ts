@@ -29,7 +29,7 @@ function getBluePrivateKey(): string {
   const key = process.env.BLUE_PRIVATE_KEY || process.env.AZURA_PRIVATE_KEY;
   if (!key) {
     throw new Error(
-      'BLUE_PRIVATE_KEY is not set — Blue cannot sign the membership transfer.',
+      'BLUE_PRIVATE_KEY or AZURA_PRIVATE_KEY is not set — Blue cannot sign the membership transfer.',
     );
   }
   return key.startsWith('0x') ? key : `0x${key}`;

@@ -27,5 +27,16 @@ CREATE TABLE IF NOT EXISTS membership_orders (
   transferred_at TIMESTAMP NULL
 );
 
+-- Crypto checkout: buyers can pay Blue's wallet directly in USDC or ETH on
+-- Base instead of using Stripe. payment_tx_hash records the incoming payment.
+ALTER TABLE membership_orders
+  ADD COLUMN IF NOT EXISTS payment_method VARCHAR(10) NOT NULL DEFAULT 'stripe';
+ALTER TABLE membership_orders ADD COLUMN IF NOT EXISTS payment_currency VARCHAR(8);
+ALTER TABLE membership_orders ADD COLUMN IF NOT EXISTS payment_tx_hash VARCHAR(80);
+ALTER TABLE membership_orders ADD COLUMN IF NOT EXISTS eth_amount_wei VARCHAR(40);
+ALTER TABLE membership_orders ADD COLUMN IF NOT EXISTS usdc_amount VARCHAR(40);
+
 CREATE INDEX IF NOT EXISTS idx_membership_orders_status ON membership_orders(status);
 CREATE INDEX IF NOT EXISTS idx_membership_orders_wallet ON membership_orders(LOWER(buyer_wallet));
+CREATE UNIQUE INDEX IF NOT EXISTS idx_membership_orders_payment_tx
+  ON membership_orders(payment_tx_hash) WHERE payment_tx_hash IS NOT NULL;
