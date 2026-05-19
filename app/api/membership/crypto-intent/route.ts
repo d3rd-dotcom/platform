@@ -8,7 +8,6 @@ import { getBlueWalletAddress } from '@/lib/blue-membership';
 import {
   VIP_MEMBERSHIP_CARD_TOKEN_ID,
   getVipMembershipCardBalance,
-  walletHoldsVipMembershipCard,
 } from '@/lib/soul-key';
 import { BASE_CHAIN_ID, USDC_ADDRESS, quoteCryptoPrice } from '@/lib/crypto-payment';
 
@@ -40,14 +39,6 @@ export async function POST() {
   await ensureMembershipSchema();
 
   const tokenId = VIP_MEMBERSHIP_CARD_TOKEN_ID.toString();
-
-  // Already a member — don't sell a second card to the same wallet.
-  if (await walletHoldsVipMembershipCard(buyerWallet)) {
-    return NextResponse.json(
-      { error: 'This wallet already holds a VIP Membership.' },
-      { status: 409 },
-    );
-  }
 
   // Blue's wallet — both the inventory holder and the crypto payee.
   let blueAddress: string;

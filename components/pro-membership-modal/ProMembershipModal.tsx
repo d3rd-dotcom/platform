@@ -16,7 +16,7 @@ interface ProMembershipModalProps {
   onClose: () => void;
 }
 
-type Screen = 'intro' | 'purchase' | 'transfer';
+type Screen = 'intro' | 'duplicate-warning' | 'purchase' | 'transfer';
 type TransferPhase = 'working' | 'done' | 'failed';
 type PaymentMethod = 'card' | 'crypto';
 
@@ -391,6 +391,8 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
   const [orderId, setOrderId] = useState<string | null>(null);
   const [intentLoading, setIntentLoading] = useState(false);
   const [intentError, setIntentError] = useState<string | null>(null);
+  const [membershipCheckLoading, setMembershipCheckLoading] = useState(false);
+  const [membershipCheckError, setMembershipCheckError] = useState<string | null>(null);
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
   const [transferPhase, setTransferPhase] = useState<TransferPhase>('working');
   const [transferError, setTransferError] = useState<string | null>(null);
@@ -413,11 +415,41 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
       setClientSecret(null);
       setOrderId(null);
       setIntentError(null);
+      setMembershipCheckLoading(false);
+      setMembershipCheckError(null);
       setTransferPhase('working');
       setTransferError(null);
       setTxHash(null);
     }
   }, [isOpen]);
+
+  const continueToPurchase = useCallback(async () => {
+    if (membershipCheckLoading) return;
+
+    setMembershipCheckLoading(true);
+    setMembershipCheckError(null);
+    try {
+      const res = await fetch('/api/membership/holding-status', {
+        method: 'GET',
+        credentials: 'include',
+        headers: await authHeaders(),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data?.hasVipMembershipCard) {
+        setScreen('duplicate-warning');
+        return;
+      }
+      if (res.ok || res.status === 401) {
+        setScreen('purchase');
+        return;
+      }
+      setMembershipCheckError(data?.error || 'Could not check your current membership.');
+    } catch {
+      setMembershipCheckError('Could not check your current membership. Try again.');
+    } finally {
+      setMembershipCheckLoading(false);
+    }
+  }, [authHeaders, membershipCheckLoading]);
 
   // Close on escape, lock body scroll.
   useEffect(() => {
@@ -595,10 +627,61 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
 
               <button
                 className={`${styles.ctaButton} ${styles.ctaButtonBuy}`}
-                onClick={() => setScreen('purchase')}
+                onClick={continueToPurchase}
+                disabled={membershipCheckLoading}
               >
-                <span>Continue · {PRICE_LABEL}</span>
+                <span>{membershipCheckLoading ? 'Checking...' : `Continue · ${PRICE_LABEL}`}</span>
               </button>
+              {membershipCheckError && (
+                <p className={styles.formError}>{membershipCheckError}</p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ── Screen 1b: Repeat-purchase warning ───────────────────────── */}
+        {screen === 'duplicate-warning' && (
+          <div className={styles.content}>
+            <button
+              className={styles.backLink}
+              onClick={() => setScreen('intro')}
+              type="button"
+            >
+              Back
+            </button>
+            <div className={styles.imageWrapper}>
+              <Image
+                src={MEMBERSHIP_IMAGE}
+                alt="VIP Membership card"
+                width={1008}
+                height={619}
+                className={styles.membershipImage}
+              />
+            </div>
+            <div className={styles.textContent}>
+              <span className={styles.badge}>Already a Member</span>
+              <h2 className={styles.title}>
+                You already have one, are you sure you want another one?
+              </h2>
+              <p className={styles.description}>
+                Digital memberships can be traded and exchanged to other accounts and inventories.
+              </p>
+              <div className={styles.duplicateActions}>
+                <button
+                  type="button"
+                  className={`${styles.ctaButton} ${styles.ctaButtonBuy}`}
+                  onClick={() => setScreen('purchase')}
+                >
+                  <span>Buy another membership</span>
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.ctaButton} ${styles.ctaButtonSecondary}`}
+                  onClick={() => setScreen('intro')}
+                >
+                  <span>Cancel</span>
+                </button>
+              </div>
             </div>
           </div>
         )}
