@@ -16,10 +16,9 @@
 }
 
 .cardLabel {
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: 0.01em;
   color: #5168ff;
 }
 
@@ -78,10 +77,9 @@
 }
 
 .eventMeta {
-  font-size: 0.66rem;
+  font-size: 0.74rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: 0.01em;
   color: #5168ff;
 }
 
@@ -221,10 +219,9 @@
 }
 
 .leaderTitle {
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: 0.01em;
   color: #5168ff;
 }
 
@@ -301,6 +298,90 @@
   color: #9aa0c0;
 }
 
+/* ── VIP membership card ── */
+.vipCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  padding: 16px 16px 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(81, 104, 255, 0.5);
+  background: linear-gradient(150deg, #5168ff 0%, #6a52d9 100%);
+  box-shadow: 0 16px 34px rgba(81, 104, 255, 0.28);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+/* Texture overlay — blends into the gradient, sits below the content */
+.vipCard::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: url('/uploads/vip-card-texture.png') center / cover no-repeat;
+  opacity: 0.7;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+.vipCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px rgba(81, 104, 255, 0.36);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vipCard {
+    transition: none;
+  }
+  .vipCard:hover {
+    transform: none;
+  }
+}
+
+.vipHead {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.vipIcon {
+  color: #ffffff;
+}
+
+.vipTitle {
+  font-size: 0.98rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+}
+
+.vipText {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.vipCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  align-self: flex-start;
+  margin-top: 2px;
+  padding: 7px 13px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #5168ff;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
 /* ── Dark theme ── */
 :global([data-theme="dark"]) .leaderboardCard {
   background: #15172a;
@@ -327,6 +408,10 @@
 
 :global([data-theme="dark"]) .leaderRow:first-child {
   background: rgba(81, 104, 255, 0.16);
+}
+
+:global([data-theme="dark"]) .vipCard {
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
 }
 
 :global([data-theme="dark"]) .eggTitle {

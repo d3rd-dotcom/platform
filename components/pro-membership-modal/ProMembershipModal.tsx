@@ -23,7 +23,7 @@ const stripePromise: Promise<Stripe | null> | null = PUBLISHABLE_KEY
   : null;
 
 const BLUE_AVATAR = '/uploads/blueagent.png';
-const MEMBERSHIP_IMAGE = '/uploads/soul-key-membership.png';
+const MEMBERSHIP_IMAGE = '/uploads/vip-membership-card.png';
 const EXXIE_IMAGE = '/exxie.png';
 const PRICE_LABEL = '$89.90';
 const OPENSEA_URL =
@@ -334,8 +334,8 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
               <Image
                 src={MEMBERSHIP_IMAGE}
                 alt="VIP Membership card"
-                width={1050}
-                height={655}
+                width={1008}
+                height={619}
                 className={styles.membershipImage}
                 priority
               />

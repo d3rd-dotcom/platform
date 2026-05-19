@@ -96,6 +96,16 @@
       "sourceType": "github",
       "computedHash": "8edad33758f2461f51afdb51741bfcc4cc57d84ea42e2751a84be2c6a2d48f69"
     },
+    "stripe-best-practices": {
+      "source": "docs.stripe.com",
+      "sourceType": "well-known",
+      "computedHash": "4cedb294535650bd178718515c248d837325c4093d09b722bd748fc61834af69"
+    },
+    "stripe-projects": {
+      "source": "docs.stripe.com",
+      "sourceType": "well-known",
+      "computedHash": "5f82f044d22f5d23b5ddd8cf0370d173e05d9d82345176e388eb49deeac3af0e"
+    },
     "swap-integration": {
       "source": "Uniswap/uniswap-ai",
       "sourceType": "github",
@@ -110,6 +120,11 @@
       "source": "pbakaus/impeccable",
       "sourceType": "github",
       "computedHash": "1cd76e560d1ba25b0bd5f7adfa2957a9f653a3ad0b031d467221154fcd1e0423"
+    },
+    "upgrade-stripe": {
+      "source": "docs.stripe.com",
+      "sourceType": "well-known",
+      "computedHash": "df1c52c17aff54490e81e98979f302564988fbddaaf59e74c2d1bd4b103a7d2e"
     },
     "v4-security-foundations": {
       "source": "Uniswap/uniswap-ai",

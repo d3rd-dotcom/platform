@@ -2,8 +2,14 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import type { CourseData } from '@/lib/personal-course';
 import styles from './Dashboard.module.css';
+
+const ProMembershipModal = dynamic(
+  () => import('../pro-membership-modal/ProMembershipModal'),
+  { ssr: false },
+);
 
 interface DashboardProps {
   course: CourseData;
@@ -84,6 +90,7 @@ export default function Dashboard(_props: DashboardProps) {
   const [leaderboard, setLeaderboard] = useState<LeaderUser[]>([]);
   const [eggShaking, setEggShaking] = useState(false);
   const [reserved, setReserved] = useState<Record<string, boolean>>({});
+  const [isProModalOpen, setIsProModalOpen] = useState(false);
 
   useEffect(() => {
     fetch('/api/leaderboard')
@@ -200,7 +207,7 @@ export default function Dashboard(_props: DashboardProps) {
             <p className={styles.leaderEmpty}>No rankings yet — be the first to show up.</p>
           ) : (
             <ul className={styles.leaderList}>
-              {leaderboard.slice(0, 5).map((u) => (
+              {leaderboard.slice(0, 3).map((u) => (
                 <li key={u.rank} className={styles.leaderRow}>
                   <span className={styles.leaderRank}>{u.rank}</span>
                   {u.avatarUrl ? (
@@ -221,7 +228,46 @@ export default function Dashboard(_props: DashboardProps) {
             </ul>
           )}
         </div>
+
+        <button
+          type="button"
+          className={styles.vipCard}
+          onClick={() => setIsProModalOpen(true)}
+        >
+          <div className={styles.vipHead}>
+            <svg
+              className={styles.vipIcon}
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M5 16L3 6l5.5 4L12 4l3.5 6L21 6l-2 10H5zm0 3h14v2H5z" />
+            </svg>
+            <span className={styles.vipTitle}>VIP Membership</span>
+          </div>
+          <p className={styles.vipText}>
+            One payment, lifetime access — unlock R-Tool, Simulations, and every tool we build.
+          </p>
+          <span className={styles.vipCta}>
+            Go VIP
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path
+                d="M6 3L11 8L6 13"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </span>
+        </button>
       </aside>
+
+      {isProModalOpen && (
+        <ProMembershipModal isOpen={isProModalOpen} onClose={() => setIsProModalOpen(false)} />
+      )}
     </div>
   );
 }
