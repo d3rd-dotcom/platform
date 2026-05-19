@@ -10,8 +10,6 @@ import type { CreditIntakeData } from './CreditBuilderInline';
 import TimeManagementInline from './TimeManagementInline';
 import AutoDistributionInline from './AutoDistributionInline';
 import type { AutoDistributionRequest } from './AutoDistributionInline';
-import ResearchCards from './ResearchCards';
-import type { ResearchSource } from './ResearchCards';
 
 // ── Blue Voice TTS ──────────────────────────────────────────
 async function speakBlue(text: string, signal?: AbortSignal): Promise<void> {
@@ -42,7 +40,6 @@ interface Message {
   text: string;
   sender: 'user' | 'blue';
   timestamp: Date;
-  action?: 'research-reclaim';
   attachments?: UploadedAttachment[];
   debug?: MessageDebugInfo;
 }
@@ -229,12 +226,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const [pendingMessage, setPendingMessage] = useState<string | null>(null);
   const [pendingType, setPendingType] = useState<'chat' | 'research'>('chat');
   const [researchMode, setResearchMode] = useState(false);
-  const [researchSources, setResearchSources] = useState<ResearchSource[] | null>(null);
-  const [researchPayTo, setResearchPayTo] = useState('');
-  const [researchTopic, setResearchTopic] = useState('');
-  const [researchReclaimToken, setResearchReclaimToken] = useState<string | null>(null);
-  const [researchReclaimStatus, setResearchReclaimStatus] = useState<'idle' | 'claiming' | 'claimed'>('idle');
-  const [researchSuggestions, setResearchSuggestions] = useState<Array<{ title: string; author: string; year?: number; desc: string }> | null>(null);
   const [gpuPickerStep, setGpuPickerStep] = useState<'gate' | 'topic' | 'select' | null>(null);
   const [gpuTopicDraft, setGpuTopicDraft] = useState('');
   const [gpuJobId, setGpuJobId] = useState<string | null>(null);
@@ -461,7 +452,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
               addBlueMessage(`locking in "${text.slice(0, 60)}${text.length > 60 ? '...' : ''}" — polling nosana gpu.`);
             }
           } else if (researchMode) {
-            discoverResearch(text);
+            sendToEliza(text, 'research');
           } else if (autoDistributionVisible) {
             sendToEliza(text, 'auto-distribution');
           } else {
@@ -483,7 +474,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     recognition.start();
   };
 
-  const addBlueMessage = (text: string, action?: Message['action'], debug?: MessageDebugInfo) => {
+  const addBlueMessage = (text: string, debug?: MessageDebugInfo) => {
     // Strip <<recite>>...<</recite>> tags for display; drop the recited block entirely for TTS
     const reciteTag = /<<\s*recite\s*>>([\s\S]*?)<<\s*\/?\s*recite\s*>>/gi;
     const displayText = text.replace(reciteTag, '$1').trim();
@@ -498,7 +489,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
           text: displayText,
           sender: 'blue',
           timestamp: new Date(),
-          action,
           debug,
         },
       ]);
@@ -540,7 +530,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const sendToEliza = async (
     text: string,
     mode?: 'research' | 'auto-distribution',
-    action?: Message['action'],
     attachments?: UploadedAttachment[]
   ) => {
     setIsTyping(true);
@@ -558,7 +547,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       if (res.ok && data.response) {
         setShardCount(data.shardsRemaining ?? shardCount);
         setIsTyping(false);
-        addBlueMessage(data.response, action, {
+        addBlueMessage(data.response, {
           ...(data.debug || {}),
           shardBalance: data.shardsRemaining ?? shardCount ?? null,
         });
@@ -587,7 +576,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
           : 'API returned a non-success response without usable assistant text.',
       ];
       setIsTyping(false);
-      addBlueMessage(generateBlueResponse(text), action, {
+      addBlueMessage(generateBlueResponse(text), {
         source: 'local-fallback',
         mode: mode ?? 'chat',
         shardsDeducted: 0,
@@ -596,7 +585,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       });
     } catch {
       setIsTyping(false);
-      addBlueMessage(generateBlueResponse(text), action, {
+      addBlueMessage(generateBlueResponse(text), {
         source: 'local-fallback',
         mode: mode ?? 'chat',
         shardsDeducted: 0,
@@ -686,89 +675,16 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     }
 
     if (researchMode) {
-      discoverResearch(text);
+      sendToEliza(text, 'research', attachments);
       return;
     }
 
     if (autoDistributionVisible) {
-      sendToEliza(text, 'auto-distribution', undefined, attachments);
+      sendToEliza(text, 'auto-distribution', attachments);
       return;
     }
 
-    sendToEliza(text, undefined, undefined, attachments);
-  };
-
-  const discoverResearch = async (topic: string) => {
-    setIsTyping(true);
-    showEmote('searching');
-    setResearchTopic(topic);
-    setResearchSuggestions(null);
-
-    try {
-      const res = await fetch('/api/research/discover', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topic }),
-      });
-      const data = await res.json();
-
-      if (data.sources?.length > 0) {
-        setIsTyping(false);
-        setResearchReclaimToken(null);
-        setResearchReclaimStatus('idle');
-        setResearchSources(data.sources);
-        setResearchPayTo(data.payTo);
-        addBlueMessage('found some sources. pick the ones you want and i will fetch them.');
-        return;
-      }
-
-      // No paid sources — fetch AI-curated suggestions as entry points
-      try {
-        const suggestRes = await fetch('/api/research/suggest', {
-          method: 'POST',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ topic }),
-        });
-        const suggestData = await suggestRes.json();
-
-        setIsTyping(false);
-
-        if (suggestRes.ok && suggestData.suggestions?.length > 0) {
-          setResearchSuggestions(suggestData.suggestions);
-          setResearchReclaimToken(data.reclaimToken ?? null);
-          setResearchReclaimStatus(data.reclaimToken ? 'idle' : 'claimed');
-          addBlueMessage("no paid sources in the bazaar yet. here are three foundational works — click one to synthesize from it.");
-          return;
-        }
-      } catch {
-        // suggest failed — fall through to Eliza
-      }
-
-      setIsTyping(false);
-      setResearchReclaimToken(data.reclaimToken ?? null);
-      setResearchReclaimStatus(data.reclaimToken ? 'idle' : 'claimed');
-      addBlueMessage('no sources available. synthesizing from training.');
-      sendToEliza(topic, 'research', data.reclaimToken ? 'research-reclaim' : undefined);
-    } catch {
-      setIsTyping(false);
-      addBlueMessage('discovery failed. synthesizing from training.');
-      sendToEliza(topic, 'research');
-    }
-  };
-
-  const handleSuggestionClick = (s: { title: string; author: string; year?: number; desc: string }) => {
-    setResearchSuggestions(null);
-    const label = `${s.title} by ${s.author}${s.year ? ` (${s.year})` : ''}`;
-    setMessages((prev) => [...prev, {
-      id: Date.now().toString(),
-      text: `Synthesize: ${label}`,
-      sender: 'user' as const,
-      timestamp: new Date(),
-    }]);
-    const prompt = `${label} — synthesize the key contributions of this work in the context of: ${researchTopic}`;
-    sendToEliza(prompt, 'research');
+    sendToEliza(text, undefined, attachments);
   };
 
   const startGpuResearch = async (tier: GpuTier, topic: string) => {
@@ -907,7 +823,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         const data = await res.json();
         setShardCount(data.shardsRemaining ?? (shardCount !== null ? shardCount - RESEARCH_COST : null));
         setResearchMode(true);
-        addBlueMessage("research mode activated. what topic do you want me to look into?");
+        addBlueMessage("research mode is live. tell me what you're writing — a grant, a proposal, a thesis chapter — plus the topic and any constraints (funder, length, deadline). i'll draft it in full report form and we can refine section by section.");
       } else {
         addBlueMessage("couldn't process the payment. try again.");
       }
@@ -922,33 +838,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     setPendingType('chat');
   };
 
-  const reclaimResearchShards = async () => {
-    if (!researchReclaimToken || researchReclaimStatus !== 'idle') return;
-
-    setResearchReclaimStatus('claiming');
-
-    try {
-      const res = await fetch('/api/shards/reclaim', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: researchReclaimToken }),
-      });
-      const data = await res.json();
-
-      if (res.ok) {
-        setShardCount(data.shardsRemaining ?? shardCount);
-        setResearchReclaimStatus('claimed');
-        setResearchReclaimToken(null);
-        window.dispatchEvent(new Event('shardsUpdated'));
-        return;
-      }
-    } catch {
-      // ignore and restore idle state below
-    }
-
-    setResearchReclaimStatus('idle');
-  };
 
   const handleCreditIntakeComplete = async (data: CreditIntakeData) => {
     showEmote('surprised');
@@ -1119,9 +1008,9 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       return "validated psych assessments — your results make the whole experience more personal. opt-in only.";
     }
 
-    // Research mode / DeSci / x402
-    if (has('research mode', 'x402', 'paywall', 'paid paper', 'gpu') || (hasAll('research', 'desci')) || (hasAll('synthesis', 'source'))) {
-      return "source-backed synthesis on any topic — papers, mechanisms, evidence. flip on research mode.";
+    // Research mode / DeSci
+    if (has('research mode', 'proposal', 'grant', 'thesis', 'gpu') || (hasAll('research', 'desci')) || (hasAll('research', 'write'))) {
+      return "research mode is a writing partner for grants, proposals, and thesis chapters — full report drafts you refine section by section. flip it on.";
     }
 
     // DeSci
@@ -1169,7 +1058,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
     // Earning money / monetizing research
     if (has('earn money', 'make money', 'get paid', 'monetize', 'income', 'revenue', 'royalt')) {
-      return "paywalled papers on x402, shard payouts from contributions, or treasury proposals. pick a lane.";
+      return "shard payouts from contributions, validated surveys, or treasury proposals. pick a lane.";
     }
 
     // Rewards / shop / loot
@@ -1429,7 +1318,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setAutoDistributionVisible(false);
       if (researchMode) {
         send('Open research mode', 'searching');
-        addBlueMessage("research mode is already open. give me a topic, paper, or mechanism to trace.");
+        addBlueMessage("research mode is already open. tell me the document — grant, proposal, thesis chapter — the topic, and any constraints.");
         return;
       }
       send('Open research mode', 'searching');
@@ -1620,19 +1509,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
                 ))}
               </div>
             )}
-            {message.sender === 'blue' && message.action === 'research-reclaim' && (
-              <button
-                type="button"
-                className={styles.reclaimBubble}
-                onClick={reclaimResearchShards}
-                disabled={researchReclaimStatus !== 'idle'}
-              >
-                <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} className={styles.reclaimBubbleIcon} />
-                <span className={styles.reclaimBubbleText}>
-                  {researchReclaimStatus === 'claimed' ? 'Shards reclaimed' : researchReclaimStatus === 'claiming' ? 'Reclaiming shards...' : 'Reclaim shards'}
-                </span>
-              </button>
-            )}
             <div className={styles.messageTime}>
               {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </div>
@@ -1697,46 +1573,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         />
       )}
 
-      {/* Research Source Cards */}
-      {researchSources && researchSources.length > 0 && (
-        <ResearchCards
-          sources={researchSources}
-          payTo={researchPayTo}
-          topic={researchTopic}
-          onComplete={(synthesis) => {
-            setResearchSources(null);
-            showEmote('default');
-            addBlueMessage(synthesis);
-          }}
-          onError={(msg) => {
-            setResearchSources(null);
-            addBlueMessage(msg);
-          }}
-        />
-      )}
-
-      {/* Research Suggestions — shown when bazaar returns no paid sources */}
-      {researchSuggestions && researchSuggestions.length > 0 && (
-        <div className={styles.researchCards}>
-          <span className={styles.researchLabel}>foundational works — click to synthesize</span>
-          <div className={styles.researchGrid}>
-            {researchSuggestions.map((s, i) => (
-              <button
-                key={i}
-                type="button"
-                className={styles.researchCard}
-                onClick={() => handleSuggestionClick(s)}
-                disabled={isTyping}
-              >
-                <span className={styles.researchCardTitle}>{s.title}</span>
-                <span className={styles.researchCardDesc}>
-                  {s.author}{s.year ? ` · ${s.year}` : ''} — {s.desc}
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* GPU Research Picker */}
       {gpuPickerStep === 'gate' && (

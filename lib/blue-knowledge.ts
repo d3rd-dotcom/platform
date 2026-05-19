@@ -112,12 +112,13 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
     title: 'Research mode',
     routes: ['/research'],
     keywords: [
-      'research', 'paper', 'source', 'evidence', 'desci',
-      'synthesis', 'gpu', 'discover',
+      'research', 'paper', 'proposal', 'grant', 'thesis', 'desci',
+      'synthesis', 'gpu', 'report',
     ],
     body:
-      'The /research page is Blue\'s DeSci research mode. Users discover sources, fetch payable papers via x402, and get Blue\'s synthesis grounded in evidence. ' +
-      'GPU-backed deep reads cost more shards but produce sourced syntheses for public-facing decentralized science work.',
+      'Research mode is a shard-gated writing partner inside Blue chat for drafting grant applications, research proposals, and thesis chapters. ' +
+      'Activate it (1,000 shards) and Blue drafts and refines full report-style documents section by section. ' +
+      'GPU-backed deep reads cost more shards and run on the Nosana network to produce graduate-level reports.',
   },
   {
     id: 'page-rewards',
@@ -195,23 +196,22 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
     body:
       'Funding mechanisms available on MWA for academics: (1) Treasury allocations from BlueMarketTrader for accepted proposals; ' +
       '(2) Prediction-market backed pools on Kalshi — researchers stake market signals against study outcomes; ' +
-      '(3) Domain grants surfaced through the research desk; (4) x402 paywall pre-sales of unreleased papers and datasets. ' +
-      'Researchers submit a memo via governance (BlueKillStreak) describing study, deliverable, timeline, and requested allocation.',
+      '(3) Domain grants surfaced through the research desk. ' +
+      'Researchers submit a memo via governance (BlueKillStreak) describing study, deliverable, timeline, and requested allocation. ' +
+      'Blue research mode helps draft the proposal or grant application itself.',
   },
   {
     id: 'academic-earning',
     title: 'Earning on MWA — turning research into income',
     routes: ['*', '/research', '/shop', '/markets'],
     keywords: [
-      'earn', 'earning', 'income', 'revenue', 'monetize', 'monetise', 'paywall',
-      'x402', 'sell', 'paid', 'royalty', 'royalties', 'payout', 'compensation',
+      'earn', 'earning', 'income', 'revenue', 'monetize', 'monetise',
+      'sell', 'paid', 'royalty', 'royalties', 'payout', 'compensation',
     ],
     body:
-      'Earning paths for researchers: (1) x402 paywalled papers — readers pay per fetch via /api/research/fetch; ' +
-      '(2) Paid syntheses — Blue research-desk synthesis fees pass-through to the original author; ' +
-      '(3) GPU deep-read commissions — premium synthesis jobs; ' +
-      '(4) Validated surveys with shard payouts — researchers commission cohort responses; ' +
-      '(5) Contribution rewards (shards) for sealed quests, peer review, and curated reading lists. ' +
+      'Earning paths for researchers: (1) Validated surveys with shard payouts — researchers commission cohort responses; ' +
+      '(2) GPU deep-read commissions — premium synthesis jobs; ' +
+      '(3) Contribution rewards (shards) for sealed quests, peer review, and curated reading lists. ' +
       'Shards convert through the treasury rails; on-chain payouts settle through BlueMarketTrader.',
   },
   {
