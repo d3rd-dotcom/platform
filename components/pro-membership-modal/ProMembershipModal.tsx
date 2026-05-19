@@ -1,7 +1,7 @@
 'use client';
 
 /* eslint-disable @next/next/no-img-element */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePrivy } from '@privy-io/react-auth';
@@ -397,6 +397,8 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
   const [transferPhase, setTransferPhase] = useState<TransferPhase>('working');
   const [transferError, setTransferError] = useState<string | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);
+  const cardIntentAttemptedRef = useRef(false);
+  const cardIntentInFlightRef = useRef(false);
 
   const authHeaders = useCallback(async (): Promise<HeadersInit> => {
     try {
@@ -415,6 +417,8 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
       setClientSecret(null);
       setOrderId(null);
       setIntentError(null);
+      cardIntentAttemptedRef.current = false;
+      cardIntentInFlightRef.current = false;
       setMembershipCheckLoading(false);
       setMembershipCheckError(null);
       setTransferPhase('working');
@@ -483,8 +487,10 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
 
   // Open a Stripe payment intent — only for the card path.
   const ensureCardIntent = useCallback(async () => {
-    if (clientSecret || intentLoading) return;
+    if (clientSecret || cardIntentAttemptedRef.current || cardIntentInFlightRef.current) return;
 
+    cardIntentAttemptedRef.current = true;
+    cardIntentInFlightRef.current = true;
     setIntentLoading(true);
     setIntentError(null);
     try {
@@ -503,9 +509,16 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
     } catch {
       setIntentError('Could not reach the payment service.');
     } finally {
+      cardIntentInFlightRef.current = false;
       setIntentLoading(false);
     }
-  }, [clientSecret, intentLoading, authHeaders]);
+  }, [clientSecret, authHeaders]);
+
+  const retryCardIntent = useCallback(() => {
+    cardIntentAttemptedRef.current = false;
+    cardIntentInFlightRef.current = false;
+    void ensureCardIntent();
+  }, [ensureCardIntent]);
 
   // Fetch the Stripe intent lazily once the card path is on screen.
   useEffect(() => {
@@ -644,7 +657,12 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
           <div className={styles.content}>
             <button
               className={styles.backLink}
-              onClick={() => setScreen('intro')}
+              onClick={() => {
+                cardIntentAttemptedRef.current = false;
+                cardIntentInFlightRef.current = false;
+                setIntentError(null);
+                setScreen('intro');
+              }}
               type="button"
             >
               Back
@@ -740,7 +758,19 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
               {/* Card path */}
               {method === 'card' && (
                 <>
-                  {intentError && <p className={styles.formError}>{intentError}</p>}
+                  {intentError && (
+                    <div className={styles.formErrorBlock}>
+                      <p className={styles.formError}>{intentError}</p>
+                      <button
+                        type="button"
+                        className={styles.inlineRetryButton}
+                        onClick={retryCardIntent}
+                        disabled={intentLoading}
+                      >
+                        Try again
+                      </button>
+                    </div>
+                  )}
 
                   {intentLoading && (
                     <p className={styles.loadingText}>Preparing secure checkout...</p>

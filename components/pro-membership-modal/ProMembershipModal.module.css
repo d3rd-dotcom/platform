@@ -477,6 +477,33 @@
   text-align: left;
 }
 
+.formErrorBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 4px 0 0 0;
+}
+
+.inlineRetryButton {
+  align-self: flex-start;
+  padding: 6px 10px;
+  background: #ffffff;
+  border: 2px solid #1A1D33;
+  border-radius: 999px;
+  font-family: var(--font-button);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #1A1D33;
+  cursor: pointer;
+}
+
+.inlineRetryButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 /* Transfer screen */
 .transferStage {
   position: relative;
@@ -643,6 +670,12 @@
 
 :global([data-theme="dark"]) .flowLine {
   stroke: rgba(227, 225, 238, 0.6);
+}
+
+:global([data-theme="dark"]) .inlineRetryButton {
+  background: #1F2030;
+  border-color: rgba(255, 255, 255, 0.14);
+  color: rgba(227, 225, 238, 0.95);
 }
 
 :global([data-theme="dark"]) .node {
