@@ -161,6 +161,7 @@ const TopNavigation: React.FC = () => {
           <button
             type="button"
             className={styles.shinyCard}
+            data-tour="ask-blue"
             onClick={() => {
               play('click');
               window.dispatchEvent(new Event('toggleBlueChat'));

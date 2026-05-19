@@ -232,6 +232,7 @@ export default function Dashboard(_props: DashboardProps) {
         <button
           type="button"
           className={styles.vipCard}
+          data-tour="vip"
           onClick={() => setIsProModalOpen(true)}
         >
           <div className={styles.vipHead}>

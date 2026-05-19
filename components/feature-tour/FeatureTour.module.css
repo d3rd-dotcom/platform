@@ -1,0 +1,132 @@
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+}
+
+/* Full-screen blocker so the page can't be interacted with mid-tour. */
+.scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+}
+
+/* For centered (no-target) steps the dim lives on the scrim itself. */
+.scrimSolid {
+  background: rgba(8, 10, 16, 0.78);
+}
+
+/* For anchored steps the dim is the spotlight's huge box-shadow, leaving
+   the target element visible through the transparent box. */
+.spotlight {
+  position: fixed;
+  border-radius: 14px;
+  box-shadow: 0 0 0 9999px rgba(8, 10, 16, 0.78);
+  outline: 2px solid var(--color-primary, #6c8cff);
+  outline-offset: 3px;
+  pointer-events: none;
+  transition: top 0.28s ease, left 0.28s ease, width 0.28s ease, height 0.28s ease;
+}
+
+.callout {
+  position: fixed;
+  width: 320px;
+  max-width: calc(100vw - 32px);
+  box-sizing: border-box;
+  padding: 20px;
+  background: var(--card-background, #161821);
+  border: 1px solid var(--card-border, rgba(255, 255, 255, 0.12));
+  border-radius: 16px;
+  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.55);
+  pointer-events: auto;
+  opacity: 0;
+  transition: top 0.28s ease, left 0.28s ease, opacity 0.2s ease;
+}
+
+.stepCount {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--color-text-faint, #8a8f9c);
+}
+
+.title {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-text-dark, #1a1b24);
+}
+
+.body {
+  margin: 0 0 18px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--color-text-soft, #c2c6d0);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.skipSlot {
+  display: inline-flex;
+}
+
+.navBtns {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.skip {
+  padding: 6px 4px;
+  font-size: 13px;
+  color: var(--color-text-faint, #8a8f9c);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.skip:hover {
+  color: var(--color-text-soft, #c2c6d0);
+}
+
+.back {
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-soft, #c2c6d0);
+  background: var(--color-surface-2, rgba(255, 255, 255, 0.06));
+  border: 1px solid var(--card-border, rgba(255, 255, 255, 0.12));
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.back:hover {
+  background: var(--color-surface-3, rgba(255, 255, 255, 0.1));
+}
+
+.next {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--color-primary, #6c8cff);
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.next:hover {
+  background: var(--color-primary-hover, #5b7bf0);
+}
+
+/* Tour is tablet + desktop only — never paint on phones. */
+@media (max-width: 767px) {
+  .root {
+    display: none;
+  }
+}

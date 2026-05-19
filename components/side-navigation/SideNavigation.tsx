@@ -753,6 +753,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                   key={item.id}
                   href={item.href}
                   className={`${styles.navItem} ${active ? styles.navItemActive : ''}`}
+                  data-tour={item.id === 'morning-pages' ? 'journal' : item.id === 'markets' ? 'markets' : item.id === 'events' ? 'quests' : undefined}
                   onClick={() => {
                     play('navigation');
                     setIsMobileMenuOpen(false);
