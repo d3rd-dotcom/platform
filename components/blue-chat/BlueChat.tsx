@@ -89,7 +89,6 @@ interface AutoDistributionXConnection {
 
 interface UploadedAttachment {
   id: string;
-  url: string;
   mime: string;
   size: number;
   name: string;
@@ -578,42 +577,45 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     }
   };
 
+  // Reference files are read in the browser — .txt/.md are plain text, so
+  // there is no need to round-trip through an upload endpoint. The text is
+  // sent inline with the next message.
   const uploadAttachmentFiles = async (files: FileList | null) => {
     if (!files?.length || isUploadingAttachment) return;
 
     setIsUploadingAttachment(true);
 
     try {
-      for (const file of Array.from(files).slice(0, Math.max(0, 4 - pendingAttachments.length))) {
-        const formData = new FormData();
-        formData.append('file', file);
-
-        const res = await fetch('/api/upload', {
-          method: 'POST',
-          credentials: 'include',
-          body: formData,
-        });
-
-        const data = await res.json();
-        if (!res.ok || !data.url || !data.mime) {
-          throw new Error(data.error || 'Upload failed');
+      const slots = Math.max(0, 4 - pendingAttachments.length);
+      for (const file of Array.from(files).slice(0, slots)) {
+        const lower = file.name.toLowerCase();
+        if (!lower.endsWith('.txt') && !lower.endsWith('.md')) {
+          addBlueMessage(`skipped ${file.name} — only .txt and .md files are supported.`);
+          continue;
         }
-
+        if (file.size > 2 * 1024 * 1024) {
+          addBlueMessage(`skipped ${file.name} — keep reference files under 2MB.`);
+          continue;
+        }
+        const text = (await file.text()).slice(0, 12000).trim();
+        if (!text) {
+          addBlueMessage(`skipped ${file.name} — the file looks empty.`);
+          continue;
+        }
         setPendingAttachments((prev) => [
           ...prev,
           {
-            id: `${data.url}:${Date.now()}`,
-            url: data.url,
-            mime: data.mime,
-            size: data.size ?? file.size,
-            name: data.name ?? file.name,
-            extractedText: data.extractedText ?? null,
+            id: `${file.name}:${Date.now()}`,
+            mime: lower.endsWith('.md') ? 'text/markdown' : 'text/plain',
+            size: file.size,
+            name: file.name,
+            extractedText: text,
           },
         ]);
       }
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Upload failed';
-      addBlueMessage(`attachment upload failed: ${message}`);
+      const message = error instanceof Error ? error.message : 'could not read file';
+      addBlueMessage(`couldn't read that file: ${message}`);
     } finally {
       if (attachmentInputRef.current) {
         attachmentInputRef.current.value = '';

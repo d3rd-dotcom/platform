@@ -66,8 +66,7 @@ Rules:
 - If nothing durable should be stored, return {"facts":[]}.`;
 
 interface ChatAttachment {
-  url: string;
-  mime: string;
+  mime?: string;
   name?: string;
   extractedText?: string | null;
 }
@@ -182,10 +181,6 @@ interface BlueDebugInfo {
       matchedKeywords: string[];
     }>;
   };
-}
-
-function isSafeUploadUrl(url: string) {
-  return typeof url === 'string' && /^\/uploads\/[A-Za-z0-9._-]+$/.test(url);
 }
 
 // Describe the user's location by name, not URL path, so Blue never echoes a slug.
@@ -479,13 +474,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Message is required' }, { status: 400 });
   }
 
+  // Reference attachments carry their extracted text inline (read in the
+  // browser); cap the count and per-file size defensively.
   const attachments = Array.isArray(body.attachments)
-    ? body.attachments.filter((attachment) => (
-      attachment
-      && typeof attachment.url === 'string'
-      && typeof attachment.mime === 'string'
-      && isSafeUploadUrl(attachment.url)
-    ))
+    ? body.attachments
+      .filter((attachment) => (
+        attachment
+        && typeof attachment.extractedText === 'string'
+        && attachment.extractedText.trim().length > 0
+      ))
+      .slice(0, 4)
+      .map((attachment) => ({
+        name: typeof attachment.name === 'string' ? attachment.name.slice(0, 200) : 'upload',
+        mime: typeof attachment.mime === 'string' ? attachment.mime : 'text/plain',
+        extractedText: attachment.extractedText!.slice(0, 12000),
+      }))
     : [];
 
   const isResearch = body.mode === 'research';
