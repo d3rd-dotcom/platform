@@ -10,6 +10,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "generate:intake-audio": "tsx scripts/generate-course-intake-audio.ts",
     "test-db": "tsx scripts/test-db-connection.ts",
     "check-treasury": "tsx scripts/check-treasury-balance.ts",
     "check-blue-wallet": "tsx scripts/check-blue-wallet.ts",

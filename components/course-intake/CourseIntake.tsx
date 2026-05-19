@@ -45,12 +45,39 @@ export default function CourseIntake({ initialAnswers = {}, onComplete }: Course
   }, [stepIndex]);
 
   // Speak Blue's line — exactly once per question, cancelling anything prior.
-  const speak = useCallback(async (text: string, step: number) => {
+  const playStaticAudio = useCallback(async (src: string, step: number) => {
+    const el = new Audio(src);
+    audioRef.current = el;
+    try {
+      await el.play();
+      if (audioRef.current === el) {
+        spokenStepRef.current = step;
+      }
+      return true;
+    } catch (err) {
+      if (audioRef.current === el) {
+        audioRef.current = null;
+      }
+      if (err instanceof DOMException && err.name === 'NotAllowedError') {
+        return true;
+      }
+      console.warn(`Static intake audio failed to play: ${src}`);
+      return false;
+    }
+  }, []);
+
+  const speak = useCallback(async (text: string, step: number, audioSrc?: string) => {
     ttsAbortRef.current?.abort();
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current = null;
     }
+
+    if (audioSrc) {
+      await playStaticAudio(audioSrc, step);
+      return;
+    }
+
     const controller = new AbortController();
     ttsAbortRef.current = controller;
     try {
@@ -73,24 +100,24 @@ export default function CourseIntake({ initialAnswers = {}, onComplete }: Course
     } catch {
       // Aborted, autoplay-blocked, or TTS unavailable — narration is best-effort.
     }
-  }, []);
+  }, [playStaticAudio]);
 
   // Narrate the active question.
   useEffect(() => {
-    speak(question.blueText, stepIndex);
+    speak(question.blueText, stepIndex, question.audioSrc);
     return () => ttsAbortRef.current?.abort();
-  }, [stepIndex, question.blueText, speak]);
+  }, [stepIndex, question.blueText, question.audioSrc, speak]);
 
   // If the intro was autoplay-blocked, the first interaction unlocks + replays it.
   useEffect(() => {
     const handler = () => {
       if (spokenStepRef.current !== stepIndex) {
-        speak(question.blueText, stepIndex);
+        speak(question.blueText, stepIndex, question.audioSrc);
       }
     };
     window.addEventListener('pointerdown', handler, { once: true });
     return () => window.removeEventListener('pointerdown', handler);
-  }, [stepIndex, question.blueText, speak]);
+  }, [stepIndex, question.blueText, question.audioSrc, speak]);
 
   const persist = useCallback((next: Record<string, string>) => {
     fetch('/api/course/intake', {
