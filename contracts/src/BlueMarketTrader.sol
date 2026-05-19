@@ -25,6 +25,15 @@ contract BlueMarketTrader is Ownable, ReentrancyGuard {
     /// @notice Chainlink CRE KeystoneForwarder address
     address public keystoneForwarder;
 
+    /// @notice Workflow owner whose DON reports this contract accepts.
+    ///         Zero = uninitialized = onReport disabled.
+    address public allowedWorkflowOwner;
+
+    /// @notice Workflow name (bytes10) the contract accepts. KeystoneForwarder
+    ///         is multi-tenant — without (owner, name) pinning, any workflow
+    ///         on the same forwarder could trigger trades.
+    bytes10 public allowedWorkflowName;
+
     /// @notice Trade counter
     uint256 public tradeCount;
 
@@ -60,6 +69,7 @@ contract BlueMarketTrader is Ownable, ReentrancyGuard {
 
     event KeystoneForwarderUpdated(address indexed oldForwarder, address indexed newForwarder);
     event PredictionMarketUpdated(address indexed oldMarket, address indexed newMarket);
+    event AllowedWorkflowUpdated(address indexed workflowOwner, bytes10 workflowName);
 
     // ============================================================================
     // ERRORS
@@ -70,6 +80,9 @@ contract BlueMarketTrader is Ownable, ReentrancyGuard {
     error InvalidMarket();
     error TransferFailed();
     error InsufficientBalance();
+    error WorkflowNotConfigured();
+    error WorkflowNotAllowed();
+    error InvalidMetadata();
 
     // ============================================================================
     // CONSTRUCTOR
@@ -110,12 +123,40 @@ contract BlueMarketTrader is Ownable, ReentrancyGuard {
 
     /**
      * @notice Receive DON-signed reports from Chainlink CRE via KeystoneForwarder
-     * @param metadata CRE metadata (unused, required by interface)
+     * @dev Validates the metadata is from the pinned workflow before acting.
+     * @param metadata CRE workflow context (validated, not optional)
      * @param report   ABI-encoded payload: (uint256 marketId, bool isYes, uint256 amount)
      */
     function onReport(bytes calldata metadata, bytes calldata report) external onlyForwarder nonReentrant {
+        _validateWorkflowMetadata(metadata);
         (uint256 marketId, bool isYes, uint256 amount) = abi.decode(report, (uint256, bool, uint256));
         _executeTrade(marketId, isYes, amount);
+    }
+
+    /**
+     * @notice Pin the workflow owner + name whose DON reports this contract
+     *         accepts. MUST be called post-deploy before onReport is functional.
+     */
+    function setAllowedWorkflow(address _workflowOwner, bytes10 _workflowName) external onlyOwner {
+        if (_workflowOwner == address(0)) revert WorkflowNotConfigured();
+        allowedWorkflowOwner = _workflowOwner;
+        allowedWorkflowName = _workflowName;
+        emit AllowedWorkflowUpdated(_workflowOwner, _workflowName);
+    }
+
+    /**
+     * @notice Validate Keystone forwarder metadata pins this report to the
+     *         allowed (owner, name) workflow. Layout matches the standard
+     *         Keystone forwarder metadata (workflowOwner at [76:96],
+     *         workflowName at [96:106]).
+     */
+    function _validateWorkflowMetadata(bytes calldata metadata) internal view {
+        if (allowedWorkflowOwner == address(0)) revert WorkflowNotConfigured();
+        if (metadata.length < 106) revert InvalidMetadata();
+        address workflowOwner = address(bytes20(metadata[76:96]));
+        bytes10 workflowName = bytes10(metadata[96:106]);
+        if (workflowOwner != allowedWorkflowOwner) revert WorkflowNotAllowed();
+        if (workflowName != allowedWorkflowName) revert WorkflowNotAllowed();
     }
 
     /**
@@ -193,6 +234,32 @@ contract BlueMarketTrader is Ownable, ReentrancyGuard {
     function deposit(uint256 _amount) external {
         if (_amount == 0) revert InvalidAmount();
         bool ok = usdcToken.transferFrom(msg.sender, address(this), _amount);
+        if (!ok) revert TransferFailed();
+    }
+
+    /**
+     * @notice Recover principal from an unresolved prediction market position.
+     *         Calls refundUnresolved on the configured prediction market —
+     *         USDC returns to this contract and can then be withdrawn.
+     * @param _marketId Market to refund from
+     */
+    function refundFromMarket(uint256 _marketId) external onlyOwner nonReentrant {
+        if (predictionMarket == address(0)) revert InvalidMarket();
+        (bool ok,) = predictionMarket.call(
+            abi.encodeWithSignature("refundUnresolved(uint256)", _marketId)
+        );
+        if (!ok) revert TransferFailed();
+    }
+
+    /**
+     * @notice Claim winnings from a resolved prediction market.
+     * @param _marketId Resolved market to claim from
+     */
+    function claimFromMarket(uint256 _marketId) external onlyOwner nonReentrant {
+        if (predictionMarket == address(0)) revert InvalidMarket();
+        (bool ok,) = predictionMarket.call(
+            abi.encodeWithSignature("claim(uint256)", _marketId)
+        );
         if (!ok) revert TransferFailed();
     }
 

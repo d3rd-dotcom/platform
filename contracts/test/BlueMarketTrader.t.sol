@@ -24,6 +24,8 @@ contract BlueMarketTraderTest is Test {
     address public owner;
     address public forwarder;
     address public user;
+    address public workflowOwnerAddr;
+    bytes10 public constant WORKFLOW_NAME = bytes10("trade-exe");
 
     uint256 public constant TREASURY_FUND = 100_000 * 1e6; // 100k USDC
 
@@ -38,6 +40,7 @@ contract BlueMarketTraderTest is Test {
         owner = address(this);
         forwarder = makeAddr("forwarder");
         user = makeAddr("user");
+        workflowOwnerAddr = makeAddr("workflowOwner");
 
         usdc = new MockUSDC(1_000_000 * 1e6);
         market = new MockPredictionMarket(address(usdc));
@@ -45,6 +48,7 @@ contract BlueMarketTraderTest is Test {
 
         trader.setPredictionMarket(address(market));
         trader.setKeystoneForwarder(forwarder);
+        trader.setAllowedWorkflow(workflowOwnerAddr, WORKFLOW_NAME);
 
         // Fund the trader treasury
         usdc.transfer(address(trader), TREASURY_FUND);
@@ -151,6 +155,13 @@ contract BlueMarketTraderTest is Test {
     // CRE INTEGRATION TESTS
     // ============================================================================
 
+    function _validMetadata() internal view returns (bytes memory) {
+        return abi.encodePacked(
+            bytes32(0), bytes32(0), bytes4(0), bytes4(0), bytes4(0),
+            workflowOwnerAddr, WORKFLOW_NAME, bytes2(0)
+        );
+    }
+
     function test_OnReport_ExecutesTrade() public {
         uint256 marketId = market.createMarket("CRE trade test?");
         uint256 amount = 4000 * 1e6;
@@ -160,7 +171,7 @@ contract BlueMarketTraderTest is Test {
         vm.prank(forwarder);
         vm.expectEmit(true, true, false, true);
         emit TradeExecuted(1, marketId, true, amount);
-        trader.onReport("", report);
+        trader.onReport(_validMetadata(), report);
 
         (uint256 yes,) = market.getPosition(marketId, address(trader));
         assertEq(yes, amount);
@@ -173,7 +184,7 @@ contract BlueMarketTraderTest is Test {
         bytes memory report = abi.encode(uint256(marketId), false, uint256(2000 * 1e6));
 
         vm.prank(forwarder);
-        trader.onReport("", report);
+        trader.onReport(_validMetadata(), report);
 
         (, uint256 no) = market.getPosition(marketId, address(trader));
         assertEq(no, 2000 * 1e6);
@@ -184,7 +195,7 @@ contract BlueMarketTraderTest is Test {
 
         vm.prank(user);
         vm.expectRevert(BlueMarketTrader.Unauthorized.selector);
-        trader.onReport("", report);
+        trader.onReport(_validMetadata(), report);
     }
 
     // ============================================================================

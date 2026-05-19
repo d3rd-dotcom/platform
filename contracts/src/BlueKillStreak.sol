@@ -54,6 +54,15 @@ contract BlueKillStreak is Ownable, ReentrancyGuard {
     /// @notice Chainlink CRE KeystoneForwarder address (delivers DON-signed reports)
     address public keystoneForwarder;
 
+    /// @notice Workflow owner address whose DON reports are accepted. Must be
+    ///         set post-deploy or onReport reverts. Zero = uninitialized = disabled.
+    address public allowedWorkflowOwner;
+
+    /// @notice Workflow name (bytes10) whose DON reports are accepted. The
+    ///         KeystoneForwarder is multi-tenant — without (owner, name)
+    ///         pinning, any workflow could deliver reports to this contract.
+    bytes10 public allowedWorkflowName;
+
     // ============================================================================
     // STRUCTS
     // ============================================================================
@@ -153,6 +162,7 @@ contract BlueKillStreak is Ownable, ReentrancyGuard {
     event KeystoneForwarderUpdated(address indexed oldForwarder, address indexed newForwarder);
     event BlueAgentUpdated(address indexed oldAgent, address indexed newAgent);
     event AdminUpdated(address indexed admin, bool status);
+    event AllowedWorkflowUpdated(address indexed workflowOwner, bytes10 workflowName);
 
     // ============================================================================
     // ERRORS
@@ -168,6 +178,9 @@ contract BlueKillStreak is Ownable, ReentrancyGuard {
     error Unauthorized();
     error InvalidAmount();
     error TransferFailed();
+    error WorkflowNotConfigured();
+    error WorkflowNotAllowed();
+    error InvalidMetadata();
     
     // ============================================================================
     // CONSTRUCTOR
@@ -409,12 +422,16 @@ contract BlueKillStreak is Ownable, ReentrancyGuard {
 
     /**
      * @notice Receive DON-signed reports from Chainlink CRE via KeystoneForwarder
-     * @param metadata CRE metadata (unused, required by interface)
+     * @dev The KeystoneForwarder is multi-tenant; metadata is parsed and pinned
+     *      to (allowedWorkflowOwner, allowedWorkflowName) so that reports from
+     *      unrelated workflows cannot drive treasury actions on this contract.
+     * @param metadata CRE-supplied workflow context (validated, not optional)
      * @param report ABI-encoded payload: (uint8 actionType, bytes payload)
      *        actionType 1 = Auto-execute proposal (USDC to recipient)
      *        actionType 2 = Blue review from DON
      */
     function onReport(bytes calldata metadata, bytes calldata report) external onlyForwarder nonReentrant {
+        _validateWorkflowMetadata(metadata);
         (uint8 actionType, bytes memory payload) = abi.decode(report, (uint8, bytes));
 
         if (actionType == 1) {
@@ -482,6 +499,40 @@ contract BlueKillStreak is Ownable, ReentrancyGuard {
         address oldForwarder = keystoneForwarder;
         keystoneForwarder = _forwarder;
         emit KeystoneForwarderUpdated(oldForwarder, _forwarder);
+    }
+
+    /**
+     * @notice Pin the workflow owner + name whose DON reports this contract
+     *         accepts. MUST be called post-deploy before onReport is functional.
+     * @param _workflowOwner Address that owns the CRE workflow
+     * @param _workflowName  10-byte workflow name (left-aligned, zero-padded)
+     */
+    function setAllowedWorkflow(address _workflowOwner, bytes10 _workflowName) external onlyOwner {
+        if (_workflowOwner == address(0)) revert WorkflowNotConfigured();
+        allowedWorkflowOwner = _workflowOwner;
+        allowedWorkflowName = _workflowName;
+        emit AllowedWorkflowUpdated(_workflowOwner, _workflowName);
+    }
+
+    /**
+     * @notice Verify CRE metadata identifies the pinned workflow.
+     * @dev Standard Keystone forwarder metadata layout (108 bytes):
+     *      [0:32]   workflowExecutionId
+     *      [32:64]  workflowId / workflowCid
+     *      [64:68]  donId
+     *      [68:72]  donConfigVersion
+     *      [72:76]  timestamp
+     *      [76:96]  workflowOwner (address)
+     *      [96:106] workflowName (bytes10)
+     *      [106:108] reportName (bytes2)
+     */
+    function _validateWorkflowMetadata(bytes calldata metadata) internal view {
+        if (allowedWorkflowOwner == address(0)) revert WorkflowNotConfigured();
+        if (metadata.length < 106) revert InvalidMetadata();
+        address workflowOwner = address(bytes20(metadata[76:96]));
+        bytes10 workflowName = bytes10(metadata[96:106]);
+        if (workflowOwner != allowedWorkflowOwner) revert WorkflowNotAllowed();
+        if (workflowName != allowedWorkflowName) revert WorkflowNotAllowed();
     }
 
     /**

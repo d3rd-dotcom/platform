@@ -32,11 +32,14 @@ contract MockPredictionMarket {
     event MarketCreated(uint256 indexed marketId, string question);
     event PositionOpened(uint256 indexed marketId, address indexed buyer, bool isYes, uint256 amount);
     event MarketResolved(uint256 indexed marketId, bool outcome);
+    event PositionClaimed(uint256 indexed marketId, address indexed holder, uint256 payout);
 
     error InvalidMarket();
     error MarketAlreadyResolved();
+    error MarketNotResolved();
     error TransferFailed();
     error InvalidAmount();
+    error NothingToClaim();
 
     constructor(address _usdc) {
         usdc = IERC20(_usdc);
@@ -91,6 +94,63 @@ contract MockPredictionMarket {
         markets[_marketId].resolved = true;
         markets[_marketId].outcome = _outcome;
         emit MarketResolved(_marketId, _outcome);
+    }
+
+    /**
+     * @notice Refund a position on an unresolved market (full principal).
+     *         Lets the depositor (e.g. BlueMarketTrader) recover funds before
+     *         resolution — without this, USDC sent here would be permanently
+     *         locked, since this is a demo market with no AMM.
+     * @param _marketId Market to refund from
+     */
+    function refundUnresolved(uint256 _marketId) external {
+        if (_marketId == 0 || _marketId > marketCount) revert InvalidMarket();
+        Market storage m = markets[_marketId];
+        if (m.resolved) revert MarketAlreadyResolved();
+
+        Position storage p = positions[_marketId][msg.sender];
+        uint256 refund = p.yesAmount + p.noAmount;
+        if (refund == 0) revert NothingToClaim();
+
+        m.totalYes -= p.yesAmount;
+        m.totalNo -= p.noAmount;
+        p.yesAmount = 0;
+        p.noAmount = 0;
+
+        bool ok = usdc.transfer(msg.sender, refund);
+        if (!ok) revert TransferFailed();
+
+        emit PositionClaimed(_marketId, msg.sender, refund);
+    }
+
+    /**
+     * @notice Claim winnings on a resolved market. Winning side splits the
+     *         total pool (winning principal + losing principal) pro-rata by
+     *         their stake on the winning side. Losing side gets nothing.
+     * @param _marketId Resolved market to claim from
+     */
+    function claim(uint256 _marketId) external {
+        if (_marketId == 0 || _marketId > marketCount) revert InvalidMarket();
+        Market storage m = markets[_marketId];
+        if (!m.resolved) revert MarketNotResolved();
+
+        Position storage p = positions[_marketId][msg.sender];
+        uint256 stake = m.outcome ? p.yesAmount : p.noAmount;
+        if (stake == 0) revert NothingToClaim();
+
+        uint256 winningPool = m.outcome ? m.totalYes : m.totalNo;
+        // winningPool >= stake by construction; payout = stake * total / winningPool
+        uint256 totalPool = m.totalYes + m.totalNo;
+        uint256 payout = (stake * totalPool) / winningPool;
+
+        // Zero out the holder's position entirely so neither side can re-claim.
+        p.yesAmount = 0;
+        p.noAmount = 0;
+
+        bool ok = usdc.transfer(msg.sender, payout);
+        if (!ok) revert TransferFailed();
+
+        emit PositionClaimed(_marketId, msg.sender, payout);
     }
 
     // ── Views ────────────────────────────────────────────────────────────

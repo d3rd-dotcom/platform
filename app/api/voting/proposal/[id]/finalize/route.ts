@@ -118,26 +118,11 @@ export async function POST(
       );
     }
 
-    // Check if already finalized
-    const existingTransactions = await sqlQuery<Array<{ id: string }>>(
-      `SELECT id FROM proposal_transactions 
-       WHERE proposal_id = :proposalId 
-       AND transaction_status IN ('pending', 'confirmed')
-       LIMIT 1`,
-      { proposalId }
-    );
-
-    if (existingTransactions.length > 0) {
-      return NextResponse.json(
-        { error: 'Proposal has already been finalized.' },
-        { status: 409 }
-      );
-    }
-
-    // Initialize Blue wallet
+    // Initialize Blue wallet and pre-check allocation BEFORE we claim the
+    // DB lock — avoids leaving a stuck 'pending' row when the request was
+    // never going to succeed.
     await blueWallet.initialize();
 
-    // Check if Blue can allocate the tokens
     const canAllocate = await blueWallet.canAllocate(proposal.token_allocation_percentage);
     if (!canAllocate.canAllocate) {
       return NextResponse.json(
@@ -146,30 +131,66 @@ export async function POST(
       );
     }
 
-    // Execute token allocation
-    console.log(`Finalizing proposal ${proposalId} with ${proposal.token_allocation_percentage}% allocation`);
-    
-    const allocation = await blueWallet.allocateTokens(
-      userWalletAddress,
-      proposal.token_allocation_percentage,
-      proposalId
-    );
-
-    // Record transaction in database
+    // DB-side lock for concurrent finalize: insert the pending row FIRST.
+    // The partial unique index on (proposal_id) WHERE status IN
+    // ('pending','confirmed') guarantees that two parallel requests cannot
+    // both reach the on-chain transfer — the second insert raises 23505 and
+    // we bail out before any USDC moves.
     const transactionId = uuidv4();
+    try {
+      await sqlQuery(
+        `INSERT INTO proposal_transactions (
+          id,
+          proposal_id,
+          transaction_hash,
+          transaction_status,
+          token_amount,
+          gas_used
+        )
+         VALUES (:id, :proposalId, NULL, 'pending', NULL, NULL)`,
+        { id: transactionId, proposalId }
+      );
+    } catch (insertErr: any) {
+      if (insertErr?.code === '23505') {
+        return NextResponse.json(
+          { error: 'Proposal has already been finalized (or is currently being finalized).' },
+          { status: 409 }
+        );
+      }
+      throw insertErr;
+    }
+
+    // Execute token allocation. From here on, if anything fails we must mark
+    // the row 'failed' so the user can retry (the unique index excludes
+    // failed rows).
+    console.log(`Finalizing proposal ${proposalId} with ${proposal.token_allocation_percentage}% allocation`);
+
+    let allocation;
+    try {
+      allocation = await blueWallet.allocateTokens(
+        userWalletAddress,
+        proposal.token_allocation_percentage,
+        proposalId
+      );
+    } catch (allocErr: any) {
+      await sqlQuery(
+        `UPDATE proposal_transactions
+           SET transaction_status = 'failed'
+         WHERE id = :id`,
+        { id: transactionId }
+      ).catch((e) => console.error('Failed to mark transaction row as failed:', e));
+      throw allocErr;
+    }
+
+    // Fill in the on-chain details now that the transfer broadcast.
     await sqlQuery(
-      `INSERT INTO proposal_transactions (
-        id, 
-        proposal_id, 
-        transaction_hash, 
-        transaction_status, 
-        token_amount, 
-        gas_used
-      )
-       VALUES (:id, :proposalId, :txHash, 'pending', :tokenAmount, :gasUsed)`,
+      `UPDATE proposal_transactions
+         SET transaction_hash = :txHash,
+             token_amount     = :tokenAmount,
+             gas_used         = :gasUsed
+       WHERE id = :id`,
       {
         id: transactionId,
-        proposalId,
         txHash: allocation.txHash,
         tokenAmount: allocation.amount.toString(),
         gasUsed: allocation.estimatedGas,
@@ -178,7 +199,7 @@ export async function POST(
 
     // Update proposal status to 'active' (now on blockchain)
     await sqlQuery(
-      `UPDATE proposals 
+      `UPDATE proposals
        SET status = 'active', updated_at = CURRENT_TIMESTAMP
        WHERE id = :proposalId`,
       { proposalId }

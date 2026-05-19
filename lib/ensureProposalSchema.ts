@@ -129,6 +129,25 @@ export async function ensureProposalSchema() {
     await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_proposal_transactions_proposal_id ON proposal_transactions(proposal_id)`);
     await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_proposal_transactions_status ON proposal_transactions(transaction_status)`);
 
+    // Race-safety: at most one in-flight (pending) or successful (confirmed)
+    // transaction per proposal. Failed rows are excluded so a user can retry
+    // after a legitimate on-chain failure. This is the DB-side lock that
+    // prevents concurrent finalize() calls from double-paying — see the
+    // finalize route.
+    try {
+      await sqlQuery(`
+        CREATE UNIQUE INDEX IF NOT EXISTS uniq_proposal_transactions_active
+          ON proposal_transactions(proposal_id)
+          WHERE transaction_status IN ('pending', 'confirmed')
+      `);
+    } catch (e: any) {
+      console.warn(
+        'Warning: could not create uniq_proposal_transactions_active — likely duplicate rows already exist. ' +
+        'Clean up duplicates (keep newest pending/confirmed per proposal_id) then redeploy. Error:',
+        e.message
+      );
+    }
+
     // Trigger for updated_at
     await sqlQuery(`
       DROP TRIGGER IF EXISTS update_proposals_updated_at ON proposals

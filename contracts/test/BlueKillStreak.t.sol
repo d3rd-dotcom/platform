@@ -64,6 +64,8 @@ contract BlueKillStreakTest is Test {
     address public voter4;
     address public recipient;
     address public forwarder;
+    address public workflowOwnerAddr;
+    bytes10 public constant WORKFLOW_NAME = bytes10("blue-revw");
 
     uint256 public constant TOTAL_SUPPLY = 100_000 * 1e18; // 100k tokens
     uint256 public constant BLUE_BALANCE = 40_000 * 1e18; // 40% (40k tokens)
@@ -112,6 +114,7 @@ contract BlueKillStreakTest is Test {
         voter4 = makeAddr("voter4");
         recipient = makeAddr("recipient");
         forwarder = makeAddr("forwarder");
+        workflowOwnerAddr = makeAddr("workflowOwner");
 
         // Deploy tokens
         governanceToken = new MockERC20Votes("Governance", "GOV", TOTAL_SUPPLY);
@@ -160,6 +163,26 @@ contract BlueKillStreakTest is Test {
     // ============================================================================
     // HELPER: create proposal and advance block for snapshot
     // ============================================================================
+
+    /// Build a Keystone-forwarder-shaped metadata blob pinning the allowed
+    /// (workflowOwner, workflowName). Layout matches the contract decoder:
+    /// 32 + 32 + 4 + 4 + 4 + 20 + 10 + 2 = 108 bytes.
+    function _validMetadata() internal view returns (bytes memory) {
+        return abi.encodePacked(
+            bytes32(0),                   // workflowExecutionId
+            bytes32(0),                   // workflowId
+            bytes4(0),                    // donId
+            bytes4(0),                    // donConfigVersion
+            bytes4(0),                    // timestamp
+            workflowOwnerAddr,            // workflowOwner (20)
+            WORKFLOW_NAME,                // workflowName (10)
+            bytes2(0)                     // reportName
+        );
+    }
+
+    function _configureWorkflow() internal {
+        governance.setAllowedWorkflow(workflowOwnerAddr, WORKFLOW_NAME);
+    }
 
     function _createProposalAndAdvance(
         address _proposer,
@@ -616,8 +639,9 @@ contract BlueKillStreakTest is Test {
     }
 
     function test_OnReportBlueReview() public {
-        // Setup forwarder
+        // Setup forwarder + workflow allowlist
         governance.setKeystoneForwarder(forwarder);
+        _configureWorkflow();
 
         // Create proposal (Pending)
         uint256 proposalId = _createProposalAndAdvance(
@@ -629,7 +653,7 @@ contract BlueKillStreakTest is Test {
         bytes memory report = abi.encode(uint8(2), payload);
 
         vm.prank(forwarder);
-        governance.onReport("", report);
+        governance.onReport(_validMetadata(), report);
 
         // Verify review applied
         BlueKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
@@ -643,6 +667,7 @@ contract BlueKillStreakTest is Test {
 
     function test_OnReportBlueReviewLevel0Kill() public {
         governance.setKeystoneForwarder(forwarder);
+        _configureWorkflow();
 
         uint256 proposalId = _createProposalAndAdvance(
             proposer, recipient, USDC_AMOUNT, "CRE Kill", "Test CRE kill", VOTING_PERIOD
@@ -652,7 +677,7 @@ contract BlueKillStreakTest is Test {
         bytes memory report = abi.encode(uint8(2), payload);
 
         vm.prank(forwarder);
-        governance.onReport("", report);
+        governance.onReport(_validMetadata(), report);
 
         BlueKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
         assertEq(uint(proposal.status), uint(BlueKillStreak.ProposalStatus.Rejected));
@@ -662,6 +687,7 @@ contract BlueKillStreakTest is Test {
 
     function test_OnReportExecuteViaForwarder() public {
         governance.setKeystoneForwarder(forwarder);
+        _configureWorkflow();
 
         // Create proposal, review via CRE, then vote to threshold, then execute via CRE
         uint256 proposalId = _createProposalAndAdvance(
@@ -672,7 +698,7 @@ contract BlueKillStreakTest is Test {
         bytes memory reviewPayload = abi.encode(uint256(proposalId), uint256(3));
         bytes memory reviewReport = abi.encode(uint8(2), reviewPayload);
         vm.prank(forwarder);
-        governance.onReport("", reviewReport);
+        governance.onReport(_validMetadata(), reviewReport);
 
         // Community votes to reach 50%
         vm.prank(voter1);
@@ -687,22 +713,51 @@ contract BlueKillStreakTest is Test {
 
     function test_RevertWhen_NonForwarderCallsOnReport() public {
         governance.setKeystoneForwarder(forwarder);
+        _configureWorkflow();
 
         bytes memory report = abi.encode(uint8(1), abi.encode(uint256(1)));
 
         vm.prank(voter1);
         vm.expectRevert(BlueKillStreak.Unauthorized.selector);
-        governance.onReport("", report);
+        governance.onReport(_validMetadata(), report);
     }
 
     function test_RevertWhen_OnReportInvalidActionType() public {
         governance.setKeystoneForwarder(forwarder);
+        _configureWorkflow();
 
         bytes memory report = abi.encode(uint8(99), abi.encode(uint256(1)));
 
         vm.prank(forwarder);
         vm.expectRevert(BlueKillStreak.InvalidProposal.selector);
-        governance.onReport("", report);
+        governance.onReport(_validMetadata(), report);
+    }
+
+    function test_RevertWhen_OnReportFromUnpinnedWorkflow() public {
+        governance.setKeystoneForwarder(forwarder);
+        _configureWorkflow();
+
+        // Forge metadata with a different workflowOwner — should revert.
+        address attacker = makeAddr("evilWorkflowOwner");
+        bytes memory badMetadata = abi.encodePacked(
+            bytes32(0), bytes32(0), bytes4(0), bytes4(0), bytes4(0),
+            attacker, WORKFLOW_NAME, bytes2(0)
+        );
+        bytes memory report = abi.encode(uint8(2), abi.encode(uint256(1), uint256(4)));
+
+        vm.prank(forwarder);
+        vm.expectRevert(BlueKillStreak.WorkflowNotAllowed.selector);
+        governance.onReport(badMetadata, report);
+    }
+
+    function test_RevertWhen_OnReportBeforeWorkflowConfigured() public {
+        governance.setKeystoneForwarder(forwarder);
+        // Deliberately skip setAllowedWorkflow
+        bytes memory report = abi.encode(uint8(2), abi.encode(uint256(1), uint256(4)));
+
+        vm.prank(forwarder);
+        vm.expectRevert(BlueKillStreak.WorkflowNotConfigured.selector);
+        governance.onReport(_validMetadata(), report);
     }
 
     // ============================================================================
