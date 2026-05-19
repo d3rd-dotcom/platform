@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { providers, Contract } from 'ethers';
+import { providers, Contract, utils } from 'ethers';
+import { getEthUsdPrice } from '@/lib/crypto-payment';
 import styles from './TreasuryDisplay.module.css';
 
 interface TreasuryDisplayProps {
@@ -48,19 +49,24 @@ const TreasuryDisplay: React.FC<TreasuryDisplayProps> = ({
         provider = new providers.JsonRpcProvider(rpcUrl);
       }
 
+      // Total wallet value = USDC held + ETH held priced in USD. The label
+      // still reads USDC; only the number reflects the combined holdings.
       const usdcContract = new Contract(usdcAddress, USDC_ABI, provider);
-      const balanceRaw = await usdcContract.balanceOf(BLUE_WALLET);
-      const decimals = await usdcContract.decimals();
-      const balanceNum = Number(balanceRaw) / (10 ** Number(decimals));
+      const [balanceRaw, decimals, ethRaw, ethUsdPrice] = await Promise.all([
+        usdcContract.balanceOf(BLUE_WALLET),
+        usdcContract.decimals(),
+        provider.getBalance(BLUE_WALLET),
+        getEthUsdPrice().catch(() => 0),
+      ]);
 
-      setBalance(balanceNum.toLocaleString('en-US', {
+      const usdcValue = Number(balanceRaw) / (10 ** Number(decimals));
+      const ethValue = Number(utils.formatEther(ethRaw)) * ethUsdPrice;
+      const totalValue = usdcValue + ethValue;
+
+      setBalance(totalValue.toLocaleString('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
       }));
-
-      if (balanceNum === 0) {
-        setBalance('0.00');
-      }
     } catch (error) {
       console.error('Error loading Blue wallet balance:', error);
       setBalance('0.00');
