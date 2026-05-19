@@ -214,7 +214,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "what's the actual goal? say it plain and we move.",
+      text: "hey, i'm blue — your research partner here at mwa. what's on your mind today?",
       sender: 'blue',
       timestamp: new Date(),
     },
