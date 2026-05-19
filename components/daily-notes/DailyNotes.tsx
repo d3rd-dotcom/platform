@@ -8,6 +8,7 @@ import { usePrivy } from '@privy-io/react-auth';
 import { useSound } from '@/hooks/useSound';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import styles from './DailyNotes.module.css';
+import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 
 const ShardAnimation = dynamic(() => import('@/components/quests/ShardAnimation').then(mod => mod.ShardAnimation), {
   ssr: false,
@@ -224,10 +225,10 @@ export default function DailyNotes({
 
     if (enablePersistence) {
       const saveKey = `morningPagesSavedToday_${todayDateStr}`;
-      const alreadyShown = localStorage.getItem(saveKey);
+      const alreadyShown = getStorageItem(saveKey);
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (!alreadyShown && !reducedMotion) {
-        localStorage.setItem(saveKey, '1');
+        setStorageItem(saveKey, '1');
         setShowSaveConfirm(true);
         if (saveConfirmTimerRef.current) clearTimeout(saveConfirmTimerRef.current);
         saveConfirmTimerRef.current = setTimeout(() => setShowSaveConfirm(false), 2500);

@@ -433,7 +433,7 @@ export default function VotingPage() {
   }, []);
 
   const handleTutorialComplete = () => {
-    localStorage.setItem('hasSeenAdminTutorial', 'true');
+    try { localStorage.setItem('hasSeenAdminTutorial', 'true'); } catch { /* ignore */ }
     setShowTutorial(false);
   };
 

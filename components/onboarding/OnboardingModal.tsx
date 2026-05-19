@@ -27,9 +27,12 @@ const genderOptions = [
 
 const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onComplete }) => {
   const { address } = useAccount();
-  const { getAccessToken } = usePrivy();
+  const { getAccessToken, authenticated, login } = usePrivy();
   const [step, setStep] = useState<'details' | 'avatar' | 'shards'>('details');
   const [hasSession, setHasSession] = useState(false);
+  // Gate the onboarding questions behind a confirmed account. The questions
+  // must never be answerable before an account exists on the server.
+  const [authStatus, setAuthStatus] = useState<'checking' | 'ready' | 'needs-signin'>('checking');
 
   const [avatars, setAvatars] = useState<Avatar[]>([]);
   const [selectedAvatarId, setSelectedAvatarId] = useState<string | null>(null);
@@ -54,23 +57,59 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
     !!gender &&
     !!birthday;
 
+  // On open, confirm an account exists on the server BEFORE showing any
+  // questions. If the user is signed in with Privy but has no server account
+  // yet, create it now (wallet-signup). Otherwise prompt them to sign in.
   useEffect(() => {
     if (!isOpen) return;
+    let cancelled = false;
+    setAuthStatus('checking');
+
     (async () => {
-      const token = await getAccessToken();
-      fetch('/api/me', {
-        credentials: 'include',
-        cache: 'no-store',
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      })
-        .then(res => res.json())
-        .then(data => { if (data?.user) setHasSession(true); })
-        .catch(() => {});
+      try {
+        const token = await getAccessToken();
+        const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+
+        let res = await fetch('/api/me', {
+          credentials: 'include',
+          cache: 'no-store',
+          headers: authHeaders,
+        });
+        let data = await res.json().catch(() => ({ user: null }));
+
+        // Signed in with Privy but no server account row yet — create it.
+        if (!data?.user && token) {
+          await fetch('/api/auth/wallet-signup', {
+            method: 'POST',
+            credentials: 'include',
+            headers: authHeaders,
+          }).catch(() => {});
+          res = await fetch('/api/me', {
+            credentials: 'include',
+            cache: 'no-store',
+            headers: authHeaders,
+          });
+          data = await res.json().catch(() => ({ user: null }));
+        }
+
+        if (cancelled) return;
+        if (data?.user) {
+          setHasSession(true);
+          setAuthStatus('ready');
+        } else {
+          setAuthStatus('needs-signin');
+        }
+      } catch (err) {
+        console.error('Onboarding account check failed:', err);
+        if (!cancelled) setAuthStatus('needs-signin');
+      }
     })();
-  }, [isOpen, getAccessToken]);
+
+    return () => { cancelled = true; };
+  }, [isOpen, authenticated, getAccessToken]);
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || authStatus !== 'ready') return;
     const fetchAvatars = async () => {
       setLoadingAvatars(true);
       setAvatarError(null);
@@ -94,7 +133,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
       }
     };
     fetchAvatars();
-  }, [isOpen, getAccessToken]);
+  }, [isOpen, authStatus, getAccessToken]);
 
   const checkUsername = useCallback(async (name: string) => {
     if (checkingRef.current === name) return;
@@ -163,6 +202,16 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
     setUsernameAvailable(null);
     setError(null);
   };
+
+  const handleSignIn = useCallback(async () => {
+    setError(null);
+    try {
+      await login();
+    } catch (err) {
+      console.error('Sign-in failed:', err);
+      setError('Sign-in failed. Please try again.');
+    }
+  }, [login]);
 
   const handleDetailsContinue = () => {
     setError(null);
@@ -288,15 +337,42 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
-        <div className={styles.progressBar}>
-          <div className={styles.progressFill} style={{ width: progressWidth }} />
-        </div>
-
         <button className={styles.closeButton} onClick={onClose} aria-label="Close">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
           </svg>
         </button>
+
+        {authStatus === 'checking' && (
+          <div className={styles.stepContent}>
+            <div className={styles.loadingState}>Setting up your account...</div>
+          </div>
+        )}
+
+        {authStatus === 'needs-signin' && (
+          <div className={styles.stepContent}>
+            <div className={styles.stepIcon}>
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2"/>
+                <path d="M5 20C5 16.134 8.134 13 12 13C15.866 13 19 16.134 19 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <h2 className={styles.stepTitle}>Create your account</h2>
+            <p className={styles.stepDescription}>
+              Sign in with your wallet to create your Academy account. You&apos;ll set up your profile right after.
+            </p>
+            {error && <p className={styles.error}>{error}</p>}
+            <button className={styles.primaryButton} onClick={handleSignIn}>
+              Sign in to continue
+            </button>
+          </div>
+        )}
+
+        {authStatus === 'ready' && (
+        <>
+        <div className={styles.progressBar}>
+          <div className={styles.progressFill} style={{ width: progressWidth }} />
+        </div>
 
         {step === 'details' ? (
           <div className={styles.stepContent}>
@@ -306,7 +382,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
                 <path d="M5 20C5 16.134 8.134 13 12 13C15.866 13 19 16.134 19 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
               </svg>
             </div>
-            <h2 className={styles.stepTitle}>Create your account</h2>
+            <h2 className={styles.stepTitle}>Profile Setup</h2>
             <p className={styles.stepDescription}>
               Choose your Academy name and tell us the basics we use to personalize research and rewards.
             </p>
@@ -505,6 +581,8 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
               </button>
             </div>
           </div>
+        )}
+        </>
         )}
       </div>
     </div>

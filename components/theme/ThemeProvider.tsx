@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
+import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 
 type Theme = 'light' | 'dark';
 
@@ -26,12 +27,12 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [theme, setThemeState] = useState<Theme>('dark');
 
   useEffect(() => {
-    const stored = localStorage.getItem('mwa-theme') as Theme | null;
+    const stored = getStorageItem('mwa-theme') as Theme | null;
     if (stored === 'dark' || stored === 'light') {
       setThemeState(stored);
     } else {
       setThemeState('dark');
-      localStorage.setItem('mwa-theme', 'dark');
+      setStorageItem('mwa-theme', 'dark');
     }
   }, []);
 
@@ -46,7 +47,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const setTheme = useCallback((t: Theme) => {
     setThemeState(t);
-    localStorage.setItem('mwa-theme', t);
+    setStorageItem('mwa-theme', t);
   }, []);
 
   const toggleTheme = useCallback(() => {

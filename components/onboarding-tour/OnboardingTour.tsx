@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import BlueDialogue, { BlueEmotion } from '../blue-dialogue/BlueDialogue';
 import styles from './OnboardingTour.module.css';
+import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 
 interface OnboardingTourProps {
   isBlocked?: boolean;
@@ -37,7 +38,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ isBlocked = false }) =>
       return;
     }
     
-    const hasSeenTour = localStorage.getItem('hasSeenOnboardingTour');
+    const hasSeenTour = getStorageItem('hasSeenOnboardingTour');
     
     if (!hasSeenTour) {
       // Show after a brief delay
@@ -70,7 +71,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ isBlocked = false }) =>
 
   const handleClose = () => {
     setIsOpen(false);
-    localStorage.setItem('hasSeenOnboardingTour', 'true');
+    setStorageItem('hasSeenOnboardingTour', 'true');
   };
 
   if (!isOpen) return null;

@@ -5,6 +5,7 @@ import BlueDialogue, { BlueEmotion } from '@/components/blue-dialogue/BlueDialog
 import { useSound } from '@/hooks/useSound';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import styles from './DailyReadPopup.module.css';
+import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 
 const PRINCIPLES = [
   'Creativity is a practice you can return to.',
@@ -68,7 +69,7 @@ export default function DailyReadPopup({ activeWeek, onDismiss }: DailyReadPopup
 
   useEffect(() => {
     if (activeWeek <= 0) return;
-    const lastSeen = localStorage.getItem(STORAGE_KEY);
+    const lastSeen = getStorageItem(STORAGE_KEY);
     if (lastSeen !== String(activeWeek)) {
       setVisible(true);
       play('navigation');
@@ -86,7 +87,7 @@ export default function DailyReadPopup({ activeWeek, onDismiss }: DailyReadPopup
 
   const handleDismiss = () => {
     play('success');
-    localStorage.setItem(STORAGE_KEY, String(activeWeek));
+    setStorageItem(STORAGE_KEY, String(activeWeek));
     setVisible(false);
     onDismiss?.();
   };

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSound } from '@/hooks/useSound';
 import styles from './LandingPage.module.css';
+import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 
 export const DonationPopup: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -13,11 +14,11 @@ export const DonationPopup: React.FC = () => {
     play('click');
     setIsVisible(false);
     setIsDismissed(true);
-    sessionStorage.setItem('donationPopupDismissed', 'true');
+    setStorageItem('donationPopupDismissed', 'true', 'session');
   };
 
   useEffect(() => {
-    if (sessionStorage.getItem('donationPopupDismissed') === 'true') {
+    if (getStorageItem('donationPopupDismissed', 'session') === 'true') {
       setIsDismissed(true);
       return;
     }

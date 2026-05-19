@@ -12,6 +12,7 @@ import {
 } from '@phosphor-icons/react';
 import Image from 'next/image';
 import styles from './MobileOnboarding.module.css';
+import { setStorageItem } from '@/lib/safe-storage';
 
 interface StandardScreen {
   type: 'standard';
@@ -263,7 +264,7 @@ export const MobileOnboarding: React.FC<MobileOnboardingProps> = ({
   }, []);
 
   const markAsComplete = useCallback(() => {
-    localStorage.setItem(STORAGE_KEY, 'true');
+    setStorageItem(STORAGE_KEY, 'true');
     onComplete();
   }, [onComplete]);
 

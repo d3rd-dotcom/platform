@@ -363,10 +363,11 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
       if (cancelled) return;
       try {
         const token = await getAccessToken();
-        if (!token && attempt <= 3) {
-          // Privy token not ready yet — retry after delay
+        if (!token && attempt <= 5) {
+          // Privy token not ready yet — poll responsively (it usually
+          // arrives within a few hundred ms once Privy is authenticated).
           console.warn('[SideNav] getAccessToken returned null, retry', attempt);
-          retryTimer = setTimeout(() => fetchUserData(attempt + 1), attempt * 1500);
+          retryTimer = setTimeout(() => fetchUserData(attempt + 1), attempt * 400);
           return;
         }
         const response = await fetch('/api/me', {

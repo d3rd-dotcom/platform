@@ -8,6 +8,7 @@ import React, {
   useState,
 } from 'react';
 import { SoundEngine, type SoundType } from '@/lib/sound-engine';
+import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 
 interface SoundContextValue {
   play: (type: SoundType) => void;
@@ -23,15 +24,13 @@ const LS_MUTED = 'mwa-sound-muted-v2'; // v2: old key had a bug that saved "true
 const LS_VOLUME = 'mwa-sound-volume';
 
 function readMutedPref(): boolean {
-  if (typeof window === 'undefined') return false;
-  const saved = localStorage.getItem(LS_MUTED);
+  const saved = getStorageItem(LS_MUTED);
   if (saved === null) return false; // default: unmuted
   return saved === 'true';
 }
 
 function readVolumePref(): number {
-  if (typeof window === 'undefined') return 0.7;
-  const saved = localStorage.getItem(LS_VOLUME);
+  const saved = getStorageItem(LS_VOLUME);
   if (saved === null) return 0.7;
   const v = parseFloat(saved);
   return isNaN(v) ? 0.7 : v;
@@ -114,12 +113,12 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
   // Persist ONLY on explicit user toggle — never on mount
   const setMuted = useCallback((m: boolean) => {
     setMutedRaw(m);
-    localStorage.setItem(LS_MUTED, String(m));
+    setStorageItem(LS_MUTED, String(m));
   }, []);
 
   const setVolume = useCallback((v: number) => {
     setVolumeRaw(v);
-    localStorage.setItem(LS_VOLUME, String(v));
+    setStorageItem(LS_VOLUME, String(v));
   }, []);
 
   useEffect(() => {
