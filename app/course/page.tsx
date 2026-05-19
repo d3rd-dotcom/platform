@@ -599,7 +599,7 @@ export default function CoursePage() {
             )}
             {rightContent === 'task' && selectedTaskId && (
               <WeekTasksView
-                key={`panel-${resolvedViewWeek}-${selectedTaskId}`}
+                key={`panel-${resolvedViewWeek}`}
                 weekNumber={resolvedViewWeek}
                 enablePersistence={isAuthenticated}
                 isLocked={resolvedViewWeek > activeWeek}

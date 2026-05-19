@@ -171,23 +171,41 @@ export default function WeekTasksView({
     setCompletedSections(new Set(syncedCompletedSections));
   }, [syncedCompletedSections]);
 
+  // Persist the current progress snapshot. Kept in a ref so the unmount
+  // flush below always calls the latest version.
+  const persistProgress = useCallback(async () => {
+    try {
+      const authHeaders = await getAuthHeaders();
+      await fetch('/api/ethereal-progress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
+        credentials: 'include',
+        body: JSON.stringify({ weekNumber, progressData: collectProgressData() }),
+      });
+    } catch { /* silent */ }
+  }, [weekNumber, collectProgressData, getAuthHeaders]);
+  const persistRef = useRef(persistProgress);
+  persistRef.current = persistProgress;
+  // True when an edit has been made that the debounced save hasn't flushed yet.
+  const pendingSaveRef = useRef(false);
+
   // Auto-save
   useEffect(() => {
     if (!hasLoadedRef.current || isSealed || !enablePersistence || disableAutoSave) return;
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-    saveTimerRef.current = setTimeout(async () => {
-      try {
-        const authHeaders = await getAuthHeaders();
-        await fetch('/api/ethereal-progress', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', ...authHeaders },
-          credentials: 'include',
-          body: JSON.stringify({ weekNumber, progressData: collectProgressData() }),
-        });
-      } catch { /* silent */ }
+    pendingSaveRef.current = true;
+    saveTimerRef.current = setTimeout(() => {
+      pendingSaveRef.current = false;
+      persistProgress();
     }, 1500);
     return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current); };
-  }, [sectionData, blurtEntries, checklistStates, enjoyListEntries, timeMapActivities, lifePieValues, completedSections, weekNumber, isSealed, enablePersistence, disableAutoSave, collectProgressData, getAuthHeaders]);
+  }, [sectionData, blurtEntries, checklistStates, enjoyListEntries, timeMapActivities, lifePieValues, completedSections, weekNumber, isSealed, enablePersistence, disableAutoSave, persistProgress]);
+
+  // Flush any pending save on unmount so switching weeks/closing the panel
+  // mid-debounce doesn't silently discard the last edit.
+  useEffect(() => {
+    return () => { if (pendingSaveRef.current) persistRef.current(); };
+  }, []);
 
   // Init checklists
   useEffect(() => {
