@@ -16,6 +16,10 @@ const ELIZA_API_KEY = process.env.ELIZA_API_KEY || '';
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || '';
 const DEEPSEEK_MODEL = process.env.DEEPSEEK_MODEL || 'deepseek-chat';
 const DEEPSEEK_BASE_URL = (process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com').replace(/\/+$/, '');
+// Model used for research mode — the strongest model that tested cleanly
+// through the Eliza Cloud gateway for long-form academic drafting.
+const RESEARCH_MODEL = process.env.RESEARCH_MODEL || 'anthropic/claude-opus-4.7';
+const RESEARCH_MAX_TOKENS = 8000;
 
 const BLUE_SYSTEM_PROMPT = `${bluePersona.system}
 
@@ -73,7 +77,7 @@ interface ElizaMessage {
   content: string;
 }
 
-async function callDeepSeek(messages: ElizaMessage[]): Promise<string> {
+async function callDeepSeek(messages: ElizaMessage[], maxTokens = 8000): Promise<string> {
   if (!DEEPSEEK_API_KEY) {
     throw new Error('DEEPSEEK_API_KEY not configured');
   }
@@ -90,7 +94,7 @@ async function callDeepSeek(messages: ElizaMessage[]): Promise<string> {
       stream: false,
       // Headroom for full research-report drafts; short chat replies still
       // stop on their own well before this cap.
-      max_tokens: 8000,
+      max_tokens: maxTokens,
     }),
   });
 
@@ -107,19 +111,41 @@ async function callDeepSeek(messages: ElizaMessage[]): Promise<string> {
   return content;
 }
 
-async function callElizaCloud(messages: ElizaMessage[]): Promise<string> {
+interface ElizaCloudOptions {
+  // Run on Eliza Cloud first (with `model`), fall back to DeepSeek on error.
+  // Used by research mode to reach a frontier model. Default path stays
+  // DeepSeek-first since Eliza Cloud's default model is weaker for chat.
+  preferEliza?: boolean;
+  model?: string;
+  maxTokens?: number;
+}
+
+async function callElizaCloud(messages: ElizaMessage[], opts?: ElizaCloudOptions): Promise<string> {
+  const callEliza = () => elizaAPI.chat({ messages, id: opts?.model, maxTokens: opts?.maxTokens });
+
+  if (opts?.preferEliza && ELIZA_API_KEY) {
+    try {
+      return await callEliza();
+    } catch (err: unknown) {
+      if (!DEEPSEEK_API_KEY) throw err;
+      const msg = err instanceof Error ? err.message : 'eliza error';
+      console.warn('Eliza Cloud failed, falling back to DeepSeek:', msg);
+      return callDeepSeek(messages, opts?.maxTokens);
+    }
+  }
+
   if (!DEEPSEEK_API_KEY) {
-    if (ELIZA_API_KEY) return elizaAPI.chat({ messages });
+    if (ELIZA_API_KEY) return callEliza();
     throw new Error('No AI provider configured (DEEPSEEK_API_KEY or ELIZA_API_KEY)');
   }
 
   try {
-    return await callDeepSeek(messages);
+    return await callDeepSeek(messages, opts?.maxTokens);
   } catch (err: unknown) {
     if (!ELIZA_API_KEY) throw err;
     const msg = err instanceof Error ? err.message : 'deepseek error';
     console.warn('DeepSeek failed, falling back to Eliza:', msg);
-    return elizaAPI.chat({ messages });
+    return callEliza();
   }
 }
 
@@ -337,19 +363,25 @@ async function runBlueMemoryAwareTurn(args: {
   });
   const knowledgeText = formatKnowledgeForPrompt(retrievedEntries);
 
-  const response = await callElizaCloud(buildBlueChatMessages({
-    systemPrompt:
-      args.mode === 'research'
-        ? RESEARCH_SYSTEM_PROMPT
-        : args.mode === 'auto-distribution'
-          ? AUTO_DISTRIBUTION_SYSTEM_PROMPT
-          : BLUE_SYSTEM_PROMPT,
-    userMessage: args.userMessage,
-    contextText: blueContext.contextText,
-    knowledgeText,
-    pathname: args.pathname,
-    recentMessages: blueContext.values.recentMessages,
-  }));
+  const response = await callElizaCloud(
+    buildBlueChatMessages({
+      systemPrompt:
+        args.mode === 'research'
+          ? RESEARCH_SYSTEM_PROMPT
+          : args.mode === 'auto-distribution'
+            ? AUTO_DISTRIBUTION_SYSTEM_PROMPT
+            : BLUE_SYSTEM_PROMPT,
+      userMessage: args.userMessage,
+      contextText: blueContext.contextText,
+      knowledgeText,
+      pathname: args.pathname,
+      recentMessages: blueContext.values.recentMessages,
+    }),
+    // Research mode runs on the frontier model via Eliza Cloud.
+    args.mode === 'research'
+      ? { preferEliza: true, model: RESEARCH_MODEL, maxTokens: RESEARCH_MAX_TOKENS }
+      : undefined
+  );
 
   let extractedFactsCount = 0;
 

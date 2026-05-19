@@ -10,7 +10,8 @@ interface ElizaChatMessage {
 
 interface ElizaChatRequest {
   messages: ElizaChatMessage[];
-  id?: string; // Model ID (optional, defaults to gpt-4o)
+  id?: string; // Model ID (optional, defaults to gemini-2.0-flash)
+  maxTokens?: number; // Output token cap (optional)
 }
 
 interface ElizaChatResponse {
@@ -66,12 +67,20 @@ class ElizaAPIClient {
   async chat(request: ElizaChatRequest): Promise<string> {
     try {
       const url = `${this.baseUrl}/api/v1/chat/completions`;
-      console.log('Calling Eliza API:', { url, hasApiKey: !!this.apiKey, modelId: request.id || 'gpt-4o' });
+      const model = request.id || 'gemini-2.0-flash';
+      console.log('Calling Eliza API:', { url, hasApiKey: !!this.apiKey, modelId: model });
 
+      // stream:true is required — the non-streaming path on Eliza Cloud 500s
+      // inside its billing-ledger write. Streaming returns content fine, and
+      // parseSSEResponse below collects the full reply.
       const body: Record<string, unknown> = {
-        model: request.id || 'gemini-2.0-flash',
+        model,
         messages: request.messages,
+        stream: true,
       };
+      if (typeof request.maxTokens === 'number') {
+        body.max_tokens = request.maxTokens;
+      }
 
       const response = await fetch(url, {
         method: 'POST',
