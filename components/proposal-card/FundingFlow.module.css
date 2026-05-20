@@ -1,0 +1,174 @@
+.flow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 4px;
+  margin-bottom: 16px;
+  padding: 16px 14px;
+  background: rgba(81, 104, 255, 0.05);
+  border: 1px solid rgba(81, 104, 255, 0.12);
+  border-radius: var(--radius-lg);
+}
+
+.node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+  width: 30%;
+  min-width: 0;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(81, 104, 255, 0.2);
+  background: #ffffff;
+}
+
+.treasuryAvatar {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.initialAvatar {
+  background: var(--color-primary);
+  color: #ffffff;
+  font-family: var(--font-primary);
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.recipientAvatar {
+  color: var(--color-primary);
+  background: rgba(81, 104, 255, 0.08);
+}
+
+.blankAvatar {
+  border-style: dashed;
+  border-color: rgba(26, 29, 51, 0.25);
+  background: rgba(26, 29, 51, 0.03);
+}
+
+.role {
+  font-size: 9px;
+  font-weight: 700;
+  font-family: var(--font-primary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(26, 29, 51, 0.5);
+  margin-top: 2px;
+}
+
+.value {
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--font-primary);
+  color: var(--color-text-dark);
+  text-align: center;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.arrow {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: var(--color-primary-muted, rgba(81, 104, 255, 0.6));
+  margin-top: 14px;
+  min-width: 28px;
+}
+
+.arrow svg {
+  width: 100%;
+  max-width: 44px;
+  height: 8px;
+}
+
+.arrowAmount {
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--font-primary);
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+.outcome {
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--font-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-top: 2px;
+}
+
+.outcome_pending,
+.outcome_voting {
+  color: #8B5CF6;
+  background: rgba(139, 92, 246, 0.14);
+}
+
+.outcome_funded {
+  color: #2E7D32;
+  background: rgba(76, 175, 80, 0.16);
+}
+
+.outcome_rejected {
+  color: #BA1A1A;
+  background: rgba(186, 26, 26, 0.12);
+}
+
+.outcome_expired {
+  color: #6B7280;
+  background: rgba(107, 114, 128, 0.14);
+}
+
+:global([data-theme="dark"]) .flow {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .value {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .role {
+  color: rgba(227, 225, 238, 0.5);
+}
+
+:global([data-theme="dark"]) .avatar {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .treasuryAvatar {
+  background: var(--color-primary);
+}
+
+@media (max-width: 768px) {
+  .flow {
+    padding: 14px 8px;
+  }
+  .avatar {
+    width: 34px;
+    height: 34px;
+  }
+  .value {
+    font-size: 11px;
+  }
+  .arrowAmount {
+    font-size: 10px;
+  }
+}

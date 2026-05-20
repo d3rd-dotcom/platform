@@ -15,6 +15,8 @@ interface OnChainData {
   blueLevel: number;
   executed: boolean;
   status: number;
+  recipient: string;
+  usdcAmount: string;
 }
 
 /**
@@ -52,6 +54,8 @@ async function enrichWithOnChain<T extends { onChainProposalId: string | null }>
             blueLevel: Number(p.blueLevel),
             executed: p.executed,
             status: Number(p.status),
+            recipient: String(p.recipient || ''),
+            usdcAmount: p.usdcAmount.toString(),
           });
         } catch {
           /* skip this one; card falls back to DB state */

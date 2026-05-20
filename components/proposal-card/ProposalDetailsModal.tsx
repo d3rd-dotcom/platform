@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import VoteButton from './FinalizeButton';
+import FundingFlow, { type FlowOutcome } from './FundingFlow';
 import { useSound } from '@/hooks/useSound';
 import styles from './ProposalDetailsModal.module.css';
 
@@ -26,6 +27,8 @@ interface ProposalDetailsModalProps {
   onChainProposalId?: number | null;
   contractAddress?: string;
   onVoted?: () => void;
+  /** Shared treasury balance (whole USDC) shown as the funding source. */
+  treasuryUsd?: number;
   proposal: {
     id: string;
     title: string;
@@ -46,6 +49,8 @@ interface ProposalDetailsModalProps {
       blueLevel: number;
       executed: boolean;
       status?: number;
+      recipient?: string;
+      usdcAmount?: string;
     };
   };
 }
@@ -89,9 +94,23 @@ export default function ProposalDetailsModal({
   onChainProposalId,
   contractAddress,
   onVoted,
+  treasuryUsd,
   proposal,
 }: ProposalDetailsModalProps) {
   const { play } = useSound();
+
+  const oc = proposal.onChainData;
+  const flowOutcome: FlowOutcome = (() => {
+    if (proposal.status === 'rejected') return 'rejected';
+    if (oc?.executed || oc?.status === 2) return 'funded';
+    if (oc?.status === 3) return 'rejected';
+    if (oc?.status === 4) return 'expired';
+    const expired = !!oc && oc.votingDeadline > 0 && Date.now() / 1000 > oc.votingDeadline && !oc.executed;
+    if (oc?.status === 1) return expired ? 'expired' : 'voting';
+    if (oc?.status === 0) return expired ? 'expired' : 'pending';
+    return 'pending';
+  })();
+  const requestedUsd = oc?.usdcAmount ? Number(oc.usdcAmount) / 1e6 : null;
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -199,6 +218,18 @@ export default function ProposalDetailsModal({
               )}
             </div>
           )}
+
+          <FundingFlow
+            treasuryUsd={treasuryUsd ?? 0}
+            proposer={{
+              username: proposal.user.username,
+              avatarUrl: proposal.user.avatarUrl,
+              walletAddress: proposal.walletAddress,
+            }}
+            requestedUsd={requestedUsd}
+            recipient={oc?.recipient ?? null}
+            outcome={flowOutcome}
+          />
 
           <Accordion title="Proposal" defaultOpen={false}>
             <div className={styles.markdownContent}>

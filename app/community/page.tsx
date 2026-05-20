@@ -145,6 +145,8 @@ interface MergedProposal extends DatabaseProposal {
     blueLevel: number;
     executed: boolean;
     status: number;
+    recipient: string;
+    usdcAmount: string;
   };
 }
 
@@ -657,6 +659,7 @@ export default function VotingPage() {
           proposal={selectedProposal}
           onChainProposalId={selectedProposal.review?.onChainProposalId ? parseInt(selectedProposal.review.onChainProposalId) : null}
           contractAddress={CONTRACT_ADDRESS}
+          treasuryUsd={TREASURY_DISPLAY_BALANCE}
           onVoted={fetchProposals}
         />
       )}
