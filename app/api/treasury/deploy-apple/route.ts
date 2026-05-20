@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { isValidAdminSecret } from '@/lib/admin-secret';
 import { deployAppleToken } from '@/lib/clanker-deploy';
 import { blueWallet } from '@/lib/blue-wallet';
 
@@ -12,7 +13,7 @@ export const dynamic = 'force-dynamic';
  */
 export async function POST(request: Request) {
   const adminSecret = request.headers.get('x-admin-secret');
-  if (!adminSecret || adminSecret !== process.env.ADMIN_SECRET) {
+  if (!isValidAdminSecret(adminSecret)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
