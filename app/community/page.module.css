@@ -2310,6 +2310,34 @@
   pointer-events: none;
 }
 
+:global(:root:not([data-theme="dark"])) .communityHero {
+  background: #eef1fb;
+  border-color: rgba(129, 144, 255, 0.3);
+}
+
+:global(:root:not([data-theme="dark"])) .communityHero::before {
+  background:
+    linear-gradient(95deg, rgba(244, 246, 255, 0.9) 0%, rgba(244, 246, 255, 0.78) 30%, rgba(244, 246, 255, 0.5) 54%, rgba(244, 246, 255, 0.24) 74%, rgba(244, 246, 255, 0.12) 100%),
+    linear-gradient(180deg, rgba(244, 246, 255, 0.1) 0%, rgba(244, 246, 255, 0.22) 100%),
+    radial-gradient(135% 120% at 18% 50%, rgba(244, 246, 255, 0.24) 0%, rgba(244, 246, 255, 0.08) 42%, transparent 72%);
+}
+
+:global(:root:not([data-theme="dark"])) .communityHero::after {
+  background: url('/images/community-hero-bg-light.png') top / cover no-repeat;
+}
+
+:global(:root:not([data-theme="dark"])) .communityHero .dashboardTitle {
+  color: var(--color-text-dark);
+}
+
+:global(:root:not([data-theme="dark"])) .communityHero .dashboardSubtitle {
+  color: rgba(26, 29, 51, 0.7);
+}
+
+:global(:root:not([data-theme="dark"])) .communityHeroMembers {
+  color: rgba(26, 29, 51, 0.82);
+}
+
 .communityHeroContent {
   position: relative;
   z-index: 2;
