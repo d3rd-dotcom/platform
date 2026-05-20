@@ -6,8 +6,6 @@ import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
 import styles from './BlueChat.module.css';
 import { useSound } from '@/hooks/useSound';
-import CreditBuilderInline from './CreditBuilderInline';
-import type { CreditIntakeData } from './CreditBuilderInline';
 import TimeManagementInline from './TimeManagementInline';
 import AutoDistributionInline from './AutoDistributionInline';
 import type { AutoDistributionRequest } from './AutoDistributionInline';
@@ -103,7 +101,7 @@ interface BlueChatProps {
 interface ShardUpsellState {
   required: number;
   current: number;
-  reason: 'chat' | 'credit';
+  reason: 'chat';
 }
 
 interface TreasuryContext {
@@ -216,7 +214,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isUploadingAttachment, setIsUploadingAttachment] = useState(false);
   const [pendingAttachments, setPendingAttachments] = useState<UploadedAttachment[]>([]);
-  const [creditStep, setCreditStep] = useState<'hidden' | 'intake' | 'payment' | 'processing' | 'done'>('hidden');
   const [timeManagementVisible, setTimeManagementVisible] = useState(false);
   const [autoDistributionVisible, setAutoDistributionVisible] = useState(false);
   const [autoDistributionXConnection, setAutoDistributionXConnection] = useState<AutoDistributionXConnection>({
@@ -693,97 +690,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   };
 
 
-  const handleCreditIntakeComplete = async (data: CreditIntakeData) => {
-    showEmote('surprised');
-
-    // Build credit data payload
-    const scores = [];
-    if (data.equifax) scores.push({ bureau: 'equifax', score: data.equifax });
-    if (data.experian) scores.push({ bureau: 'experian', score: data.experian });
-    if (data.transunion) scores.push({ bureau: 'transunion', score: data.transunion });
-
-    const accounts = [];
-    for (let i = 0; i < data.latePayments; i++) accounts.push({ name: `Late ${i+1}`, type: 'revolving', balance: 0, limit: null, status: 'late' });
-    for (let i = 0; i < data.collections; i++) accounts.push({ name: `Collection ${i+1}`, type: 'collection', balance: 0, limit: null, status: 'collection' });
-    for (let i = 0; i < data.chargeOffs; i++) accounts.push({ name: `Charge-off ${i+1}`, type: 'other', balance: 0, limit: null, status: 'charged_off' });
-
-    const inquiries = [];
-    for (let i = 0; i < data.hardInquiries; i++) inquiries.push({ creditor: `Inquiry ${i+1}`, date: new Date().toISOString(), type: 'hard' });
-
-    const creditData = {
-      scores,
-      accounts,
-      inquiries,
-      derogatory: [],
-      totalDebt: data.totalDebt ?? undefined,
-      totalCreditLimit: data.totalCreditLimit ?? undefined,
-      oldestAccountAge: data.oldestAccountYears ? data.oldestAccountYears * 12 : undefined,
-    };
-
-    // Save to profile
-    try {
-      await fetch('/api/credit-builder/profile', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ creditData, step: 'intake' }),
-      });
-    } catch { /* profile save failed but continue */ }
-
-    setCreditStep('payment');
-    addBlueMessage("nice. i've got your info. now let's activate the audit. this runs a full FICO breakdown, generates dispute letters, and tracks your progress.");
-  };
-
-  const handleCreditPayment = async () => {
-    // Deduct shards
-    if (shardCount !== null && shardCount < 50) {
-      openShardUpsell(50, 'credit');
-      return;
-    }
-    setCreditStep('processing');
-    showEmote('searching', 12000);
-    addBlueMessage("processing payment and running your audit. give me a moment...");
-
-    try {
-      // Deduct shards
-      const deductRes = await fetch('/api/shards/deduct', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: 50, reason: 'credit_builder_activation' }),
-      });
-      if (deductRes.ok) {
-        const deductData = await deductRes.json();
-        setShardCount(deductData.shardsRemaining ?? (shardCount !== null ? shardCount - 50 : null));
-      }
-
-      // Trigger audit
-      const auditRes = await fetch('/api/credit-builder/audit', {
-        method: 'POST',
-        credentials: 'include',
-      });
-
-      if (auditRes.ok) {
-        const auditData = await auditRes.json();
-        const result = auditData.auditResult;
-        setCreditStep('done');
-        showEmote('default');
-        addBlueMessage(
-          `audit complete. your average score is ${result.currentScoreAvg}, grade: ${result.overallGrade}. ` +
-          `i found ${result.disputeRecommendations?.length || 0} items you can dispute. ` +
-          `estimated potential gain: +${result.estimatedScoreAfterFixes - result.currentScoreAvg} points. ` +
-          `head to the full Credit Builder page for your dispute letters and action plan.`
-        );
-      } else {
-        setCreditStep('done');
-        addBlueMessage("audit saved. head to the Credit Builder page to see your full results and start disputes.");
-      }
-    } catch {
-      setCreditStep('done');
-      addBlueMessage("something went wrong with the audit. your info is saved though. try the Credit Builder page directly.");
-    }
-  };
-
   const generateBlueResponse = (userText: string): string => {
     const t = userText.toLowerCase();
     const has = (...terms: string[]) => terms.some((term) => t.includes(term));
@@ -1109,7 +1015,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setPendingAttachments([]);
       setTimeManagementVisible(false);
       setAutoDistributionVisible(false);
-      setCreditStep('hidden');
       addBlueMessage(
         "the world's first decentralized cohort for mental wellness. course, community, science — on-chain. you're early."
       );
@@ -1118,7 +1023,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setPendingAttachments([]);
       setTimeManagementVisible(false);
       setAutoDistributionVisible(false);
-      setCreditStep('hidden');
       const bal = shardCount;
       addBlueMessage(
         bal !== null
@@ -1130,23 +1034,12 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setPendingAttachments([]);
       setTimeManagementVisible(false);
       setAutoDistributionVisible(false);
-      setCreditStep('hidden');
       addBlueMessage(
         "brain-computer interface. the helmet is a research object for reading signals, prompting reflection, and studying feedback loops."
-      );
-    } else if (action === 'credit') {
-      send('I want to build my credit', 'happy');
-      setPendingAttachments([]);
-      setTimeManagementVisible(false);
-      setAutoDistributionVisible(false);
-      setCreditStep('intake');
-      addBlueMessage(
-        "let's get your credit right. fill out the form below with your current scores and any negative items on your report. you can find your scores free at annualcreditreport.com or through your bank app."
       );
     } else if (action === 'time') {
       send('Help me time block', 'happy');
       setPendingAttachments([]);
-      setCreditStep('hidden');
       setAutoDistributionVisible(false);
       setTimeManagementVisible(true);
       addBlueMessage(
@@ -1156,7 +1049,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setResearchMode(false);
       setPendingAttachments([]);
       setTimeManagementVisible(false);
-      setCreditStep('hidden');
       if (autoDistributionVisible) {
         send('Open auto-distribution', 'searching');
         addBlueMessage("auto-distribution is already open. connect your channels and tell me what you're pushing.");
@@ -1289,11 +1181,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     return lines;
   };
 
-  const shardUpsellTitle = (
-    shardUpsell?.reason === 'credit'
-      ? 'Credit Builder needs more shards'
-      : 'You are out of shards'
-  );
+  const shardUpsellTitle = 'You are out of shards';
   const shardUpsellBody = shardUpsell
     ? `You need ${shardUpsell.required.toLocaleString()} shards to continue. You currently have ${shardUpsell.current.toLocaleString()}. Purchase more to keep the conversation going.`
     : '';
@@ -1376,15 +1264,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
         <div ref={messagesEndRef} />
       </div>
-
-      {/* Credit Builder Inline Form */}
-      {creditStep !== 'hidden' && (
-        <CreditBuilderInline
-          step={creditStep as 'intake' | 'payment' | 'processing' | 'done'}
-          onComplete={handleCreditIntakeComplete}
-          onRequestPayment={handleCreditPayment}
-        />
-      )}
 
       {timeManagementVisible && (
         <TimeManagementInline
