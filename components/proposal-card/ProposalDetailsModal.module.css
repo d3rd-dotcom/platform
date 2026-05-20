@@ -390,6 +390,9 @@
 
 .reasoning p {
   margin: 0;
+  /* Override the global `p { color: var(--color-text-dark) }` so the text on
+     the dark-blue banner stays white in light mode. */
+  color: #ffffff;
 }
 
 .reviewDate {
