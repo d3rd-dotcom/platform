@@ -61,7 +61,18 @@ interface OnChainData {
   votingDeadline: number;
   blueLevel: number;
   executed: boolean;
+  /** On-chain ProposalStatus (0 Pending, 1 Active, 2 Executed, 3 Rejected, 4 Cancelled). */
+  status?: number;
 }
+
+// Mirrors the contract's ProposalStatus enum.
+const CHAIN_STATUS = {
+  Pending: 0,
+  Active: 1,
+  Executed: 2,
+  Rejected: 3,
+  Cancelled: 4,
+} as const;
 
 interface ProposalCardProps {
   id: string;
@@ -110,7 +121,25 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
     return 'waiting';
   };
 
+  const isExpired = !!onChainData && onChainData.votingDeadline > 0 && Date.now() / 1000 > onChainData.votingDeadline && !onChainData.executed;
+  const chainStatus = onChainData?.status;
+
+  // Resolve the vote-window outcome from on-chain tallies once voting closed.
+  const resolveExpiredOutcome = () => {
+    const forVotes = parseFloat(onChainData!.forVotes);
+    const againstVotes = parseFloat(onChainData!.againstVotes);
+    if (forVotes + againstVotes === 0) return 'expired' as const;
+    return forVotes > againstVotes ? ('completed' as const) : ('defeated' as const);
+  };
+
   const getStage2Variant = () => {
+    // When we know the on-chain status, it is the source of truth — the DB can
+    // say "approved" while the on-chain review never landed (still Pending).
+    if (chainStatus !== undefined) {
+      if (chainStatus === CHAIN_STATUS.Rejected || chainStatus === CHAIN_STATUS.Cancelled) return 'skipped';
+      if (chainStatus === CHAIN_STATUS.Pending) return 'processing'; // on-chain review not applied yet
+      return 'success'; // Active or Executed → it is live/closed on-chain
+    }
     if (status === 'rejected') {
       return 'skipped';
     }
@@ -126,52 +155,32 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
     return 'waiting';
   };
 
-  const isExpired = !!onChainData && onChainData.votingDeadline > 0 && Date.now() / 1000 > onChainData.votingDeadline && !onChainData.executed;
-
   const getStage3Variant = () => {
+    // Prefer on-chain truth when available.
+    if (chainStatus !== undefined) {
+      if (chainStatus === CHAIN_STATUS.Executed || onChainData?.executed) return 'completed';
+      if (chainStatus === CHAIN_STATUS.Rejected) return 'defeated';
+      if (chainStatus === CHAIN_STATUS.Cancelled) return 'expired';
+      if (chainStatus === CHAIN_STATUS.Pending) return 'waiting'; // review hasn't opened voting
+      if (chainStatus === CHAIN_STATUS.Active) {
+        if (!isExpired) return 'active';
+        // Still Active after the deadline means it never reached threshold —
+        // passing would have flipped it to Executed. So it did not pass.
+        const forVotes = parseFloat(onChainData!.forVotes);
+        const againstVotes = parseFloat(onChainData!.againstVotes);
+        return againstVotes > forVotes ? 'defeated' : 'expired';
+      }
+    }
+
     if (status === 'completed' || onChainData?.executed) {
       return 'completed';
     }
-    if (status === 'approved' && (onChainProposalId || onChainData)) {
-      if (!onChainData) {
-        return 'active';
-      }
-
-      const forVotes = parseFloat(onChainData.forVotes);
-      const againstVotes = parseFloat(onChainData.againstVotes);
-
-      if (isExpired) {
-        const totalVotes = forVotes + againstVotes;
-        if (totalVotes === 0) return 'expired';
-        return forVotes > againstVotes ? 'completed' : 'defeated';
-      }
-
-      return 'active';
+    if ((status === 'approved' || status === 'active') && (onChainProposalId || onChainData)) {
+      if (!onChainData) return 'active';
+      return isExpired ? resolveExpiredOutcome() : 'active';
     }
-    if (status === 'active') {
-      if (!onChainData) {
-        return 'active';
-      }
-
-      const forVotes = parseFloat(onChainData.forVotes);
-      const againstVotes = parseFloat(onChainData.againstVotes);
-
-      if (isExpired) {
-        const totalVotes = forVotes + againstVotes;
-        if (totalVotes === 0) return 'expired';
-        return forVotes > againstVotes ? 'completed' : 'defeated';
-      }
-
-      return 'active';
-    }
-    if (onChainData) {
-      const forVotes = parseFloat(onChainData.forVotes);
-      const againstVotes = parseFloat(onChainData.againstVotes);
-      if (isExpired) {
-        const totalVotes = forVotes + againstVotes;
-        if (totalVotes === 0) return 'expired';
-        return forVotes > againstVotes ? 'completed' : 'defeated';
-      }
+    if (onChainData && isExpired) {
+      return resolveExpiredOutcome();
     }
     return 'waiting';
   };
@@ -193,6 +202,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
         if (stage3 === 'defeated') return 'Defeated';
         if (stage3 === 'expired') return 'Expired';
         if (stage3 === 'active') return 'Voting';
+        if (stage3 === 'waiting') return 'Pending';
         return 'Approved';
       default:
         return 'Unknown';
@@ -213,6 +223,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
         if (stage3 === 'defeated') return 'rejected';
         if (stage3 === 'expired') return 'expired';
         if (stage3 === 'active') return 'active';
+        if (stage3 === 'waiting') return 'pending';
         return 'approved';
       default:
         return 'pending';

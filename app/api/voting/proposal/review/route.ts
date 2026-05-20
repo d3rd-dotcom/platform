@@ -303,8 +303,12 @@ export async function POST(request: Request) {
           : 0;
 
         try {
-          const bluePrivateKey = process.env.BLUE_PRIVATE_KEY;
-          if (!bluePrivateKey) throw new Error('BLUE_PRIVATE_KEY not configured');
+          // Blue's signer key. The live key is stored under AZURA_PRIVATE_KEY
+          // (legacy name); fall back to it so the on-chain blueReview actually
+          // lands instead of silently failing and leaving the proposal stuck
+          // Pending on-chain while the DB marks it reviewed.
+          const bluePrivateKey = process.env.BLUE_PRIVATE_KEY || process.env.AZURA_PRIVATE_KEY;
+          if (!bluePrivateKey) throw new Error('BLUE_PRIVATE_KEY / AZURA_PRIVATE_KEY not configured');
 
           const { providers: ethProviders, Wallet: EthWallet, Contract: EthContract } = await import('ethers');
           const ethProvider = new ethProviders.JsonRpcProvider(rpcUrl);

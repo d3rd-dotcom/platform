@@ -144,6 +144,7 @@ interface MergedProposal extends DatabaseProposal {
     votingDeadline: number;
     blueLevel: number;
     executed: boolean;
+    status: number;
   };
 }
 
@@ -353,6 +354,7 @@ export default function VotingPage() {
                 votingDeadline: onChainProposal.votingDeadline,
                 blueLevel: onChainProposal.blueLevel,
                 executed: onChainProposal.executed,
+                status: onChainProposal.status,
               },
             };
           } catch (chainError) {
