@@ -137,7 +137,11 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
     // say "approved" while the on-chain review never landed (still Pending).
     if (chainStatus !== undefined) {
       if (chainStatus === CHAIN_STATUS.Rejected || chainStatus === CHAIN_STATUS.Cancelled) return 'skipped';
-      if (chainStatus === CHAIN_STATUS.Pending) return 'processing'; // on-chain review not applied yet
+      if (chainStatus === CHAIN_STATUS.Pending) {
+        // Review never landed. If the deadline has also passed, voting can
+        // never open — mark it Not Held rather than perpetually "Opening".
+        return isExpired ? 'skipped' : 'processing';
+      }
       return 'success'; // Active or Executed → it is live/closed on-chain
     }
     if (status === 'rejected') {
@@ -161,7 +165,8 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
       if (chainStatus === CHAIN_STATUS.Executed || onChainData?.executed) return 'completed';
       if (chainStatus === CHAIN_STATUS.Rejected) return 'defeated';
       if (chainStatus === CHAIN_STATUS.Cancelled) return 'expired';
-      if (chainStatus === CHAIN_STATUS.Pending) return 'waiting'; // review hasn't opened voting
+      // Review hasn't opened voting. Past the deadline it is effectively dead.
+      if (chainStatus === CHAIN_STATUS.Pending) return isExpired ? 'expired' : 'waiting';
       if (chainStatus === CHAIN_STATUS.Active) {
         if (!isExpired) return 'active';
         // Still Active after the deadline means it never reached threshold —
