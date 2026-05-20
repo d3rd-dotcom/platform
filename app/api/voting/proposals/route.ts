@@ -131,6 +131,7 @@ export async function GET() {
          LEFT JOIN users u ON p.user_id = u.id
          LEFT JOIN proposal_reviews pr ON p.id = pr.proposal_id
          WHERE pr.decision IS NOT NULL
+           AND p.on_chain_proposal_id IS NOT NULL
          ORDER BY p.created_at DESC`
       );
     } catch (queryError: any) {

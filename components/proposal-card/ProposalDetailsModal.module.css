@@ -309,6 +309,58 @@
   line-height: inherit;
 }
 
+/* ─── Blue's Review summary (scannable, above the proposal) ─── */
+
+.reviewSummary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  background: rgba(81, 104, 255, 0.05);
+  border: 1px solid rgba(81, 104, 255, 0.12);
+  border-radius: var(--radius-lg);
+}
+
+.reviewHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.reviewHead .sectionTitle {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.reviewBadge {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.reviewBadgeApproved {
+  color: #2E7D32;
+  background: rgba(76, 175, 80, 0.15);
+}
+
+.reviewBadgeRejected {
+  color: #BA1A1A;
+  background: rgba(186, 26, 26, 0.12);
+}
+
+:global([data-theme="dark"]) .reviewSummary {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
 /* ─── Review ─── */
 
 .reviewContent {

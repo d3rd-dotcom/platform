@@ -45,12 +45,13 @@ interface ProposalDetailsModalProps {
       votingDeadline: number;
       blueLevel: number;
       executed: boolean;
+      status?: number;
     };
   };
 }
 
-function Accordion({ title, children }: { title: string; children: React.ReactNode }) {
-  const [open, setOpen] = useState(true);
+function Accordion({ title, children, defaultOpen = true }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
+  const [open, setOpen] = useState(defaultOpen);
   const { play } = useSound();
   return (
     <div className={styles.accordion}>
@@ -172,25 +173,57 @@ export default function ProposalDetailsModal({
           </div>
         </div>
 
-        {/* Scrollable middle: proposal content (accordion) */}
+        {/* Scrollable middle: Blue's review at a glance, then the full proposal */}
         <div className={styles.scrollArea}>
-          <Accordion title="Proposal">
+          {proposal.review && (
+            <div className={styles.reviewSummary}>
+              <div className={styles.reviewHead}>
+                <h3 className={styles.sectionTitle}>Blue&apos;s Review</h3>
+                <span
+                  className={`${styles.reviewBadge} ${
+                    proposal.review.decision === 'approved'
+                      ? styles.reviewBadgeApproved
+                      : styles.reviewBadgeRejected
+                  }`}
+                >
+                  {proposal.review.decision === 'approved' ? 'Approved' : 'Rejected'}
+                  {proposal.review.decision === 'approved' &&
+                    proposal.review.tokenAllocation != null &&
+                    ` · ${proposal.review.tokenAllocation}%`}
+                </span>
+              </div>
+              {proposal.review.reasoning && (
+                <div className={styles.reasoning}>
+                  <p>{proposal.review.reasoning}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          <Accordion title="Proposal" defaultOpen={false}>
             <div className={styles.markdownContent}>
               <pre className={styles.markdownPre}>{proposal.proposalMarkdown}</pre>
             </div>
           </Accordion>
         </div>
 
-        {/* Fixed bottom: Vote Yes / Vote No */}
-        {onChainProposalId && contractAddress && proposal.onChainData && !proposal.onChainData.executed && (
-          <div className={styles.bottomSection}>
-            <VoteButton
-              onChainProposalId={onChainProposalId}
-              contractAddress={contractAddress}
-              onVoted={onVoted}
-            />
-          </div>
-        )}
+        {/* Fixed bottom: Vote Yes / Vote No — only while voting is genuinely open
+            (on-chain Active, not past deadline, not executed). */}
+        {onChainProposalId &&
+          contractAddress &&
+          proposal.onChainData &&
+          proposal.onChainData.status === 1 &&
+          !proposal.onChainData.executed &&
+          (proposal.onChainData.votingDeadline === 0 ||
+            Date.now() / 1000 <= proposal.onChainData.votingDeadline) && (
+            <div className={styles.bottomSection}>
+              <VoteButton
+                onChainProposalId={onChainProposalId}
+                contractAddress={contractAddress}
+                onVoted={onVoted}
+              />
+            </div>
+          )}
       </div>
     </div>
   );

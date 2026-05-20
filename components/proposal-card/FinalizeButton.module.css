@@ -18,7 +18,7 @@
   justify-content: center;
   gap: 8px;
   padding: 10px 20px;
-  background: #74C465;
+  background: var(--color-primary);
   border: 3px solid #1A1D33;
   border-radius: var(--radius-md);
   font-size: 12px;
@@ -33,6 +33,7 @@
 }
 
 .yesButton:hover:not(:disabled) {
+  background: var(--color-primary-hover);
   transform: translate(-1px, -1px);
   box-shadow: 3px 3px 0 #1A1D33;
 }
@@ -62,14 +63,14 @@
   font-family: var(--font-primary);
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #BA1A1A;
+  color: #8B5CF6;
   cursor: pointer;
   transition: all 0.15s ease;
   box-shadow: 2px 2px 0 #1A1D33;
 }
 
 .noButton:hover:not(:disabled) {
-  background: #BA1A1A;
+  background: #8B5CF6;
   color: #ffffff;
   transform: translate(-1px, -1px);
   box-shadow: 3px 3px 0 #1A1D33;
