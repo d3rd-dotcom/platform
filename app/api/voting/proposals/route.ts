@@ -1,9 +1,74 @@
 import { NextResponse } from 'next/server';
+import { providers, Contract } from 'ethers';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { ensureProposalSchema } from '@/lib/ensureProposalSchema';
+import { BLUE_KILLSTREAK_ABI } from '@/lib/blue-contract';
 
+export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
+
+interface OnChainData {
+  forVotes: string;
+  againstVotes: string;
+  votingDeadline: number;
+  blueLevel: number;
+  executed: boolean;
+  status: number;
+}
+
+/**
+ * Resolve on-chain state for every proposal that exists on-chain. Done
+ * server-side so the cards always have authoritative status without depending
+ * on a browser wallet/RPC (which was failing, leaving cards stuck on DB-only
+ * state). Best-effort: a failed read just omits onChainData for that proposal.
+ */
+async function enrichWithOnChain<T extends { onChainProposalId: string | null }>(
+  rows: T[]
+): Promise<Array<T & { onChainData?: OnChainData }>> {
+  const withChain = rows.filter((r) => r.onChainProposalId);
+  if (withChain.length === 0) return rows;
+
+  const rpcUrl =
+    process.env.BASE_RPC_URL || process.env.NEXT_PUBLIC_BASE_RPC_URL || 'https://mainnet.base.org';
+  const contractAddress =
+    process.env.NEXT_PUBLIC_BLUE_KILLSTREAK_ADDRESS ||
+    process.env.NEXT_PUBLIC_AZURA_KILLSTREAK_ADDRESS ||
+    '0x2cbb90a761ba64014b811be342b8ef01b471992d';
+
+  try {
+    const provider = new providers.JsonRpcProvider(rpcUrl);
+    const contract = new Contract(contractAddress, BLUE_KILLSTREAK_ABI, provider);
+
+    const byId = new Map<string, OnChainData>();
+    await Promise.all(
+      withChain.map(async (r) => {
+        try {
+          const p = await contract.getProposal(parseInt(r.onChainProposalId as string, 10));
+          byId.set(r.onChainProposalId as string, {
+            forVotes: p.forVotes.toString(),
+            againstVotes: p.againstVotes.toString(),
+            votingDeadline: Number(p.votingDeadline),
+            blueLevel: Number(p.blueLevel),
+            executed: p.executed,
+            status: Number(p.status),
+          });
+        } catch {
+          /* skip this one; card falls back to DB state */
+        }
+      })
+    );
+
+    return rows.map((r) =>
+      r.onChainProposalId && byId.has(r.onChainProposalId)
+        ? { ...r, onChainData: byId.get(r.onChainProposalId) }
+        : r
+    );
+  } catch (e: any) {
+    console.warn('proposals on-chain enrichment failed:', e?.message);
+    return rows;
+  }
+}
 
 interface ProposalWithReview {
   id: string;
@@ -137,9 +202,11 @@ export async function GET() {
       } : null,
     }));
 
+    const enrichedProposals = await enrichWithOnChain(formattedProposals);
+
     return NextResponse.json({
       ok: true,
-      proposals: formattedProposals,
+      proposals: enrichedProposals,
     });
   } catch (error: any) {
     console.error('Error fetching proposals:', error);

@@ -319,71 +319,6 @@ export default function VotingPage() {
     : null;
   const isPageLoading = loading && proposals.length === 0;
 
-  const enrichProposals = useCallback(async (dbProposals: DatabaseProposal[]) => {
-    const proposalsNeedingChainData = dbProposals.filter((proposal) =>
-      proposal.review?.onChainProposalId &&
-      (proposal.status === 'approved' || proposal.status === 'active' || proposal.status === 'completed')
-    );
-
-    if (proposalsNeedingChainData.length === 0) return;
-
-    try {
-      const [{ providers }, { fetchProposal }] = await Promise.all([
-        import('ethers'),
-        import('@/lib/blue-contract'),
-      ]);
-
-      const provider = typeof window.ethereum !== 'undefined'
-        ? new providers.Web3Provider(window.ethereum)
-        : new providers.JsonRpcProvider('https://mainnet.base.org');
-
-      const updates = await Promise.all(
-        proposalsNeedingChainData.map(async (proposal) => {
-          try {
-            const onChainProposal = await fetchProposal(
-              CONTRACT_ADDRESS,
-              parseInt(proposal.review!.onChainProposalId!, 10),
-              provider as any,
-            );
-
-            return {
-              id: proposal.id,
-              onChainData: {
-                forVotes: onChainProposal.forVotes,
-                againstVotes: onChainProposal.againstVotes,
-                votingDeadline: onChainProposal.votingDeadline,
-                blueLevel: onChainProposal.blueLevel,
-                executed: onChainProposal.executed,
-                status: onChainProposal.status,
-              },
-            };
-          } catch (chainError) {
-            console.error(`Error fetching on-chain data for proposal ${proposal.id}:`, chainError);
-            return null;
-          }
-        }),
-      );
-
-      const updatesById = new Map(
-        updates
-          .filter((update): update is NonNullable<typeof update> => update !== null)
-          .map((update) => [update.id, update.onChainData]),
-      );
-
-      if (updatesById.size === 0) return;
-
-      setProposals((current) =>
-        current.map((proposal) =>
-          updatesById.has(proposal.id)
-            ? { ...proposal, onChainData: updatesById.get(proposal.id) }
-            : proposal,
-        ),
-      );
-    } catch (chainError) {
-      console.error('Error enriching proposals with on-chain data:', chainError);
-    }
-  }, []);
-
   const fetchProposals = useCallback(async () => {
     try {
       setLoading(true);
@@ -398,14 +333,13 @@ export default function VotingPage() {
       const dbData = await dbResponse.json();
       const dbProposals: DatabaseProposal[] = dbData.proposals || [];
       setProposals(dbProposals as MergedProposal[]);
-      void enrichProposals(dbProposals);
     } catch (error) {
       console.error('Error fetching proposals:', error);
       setError('Failed to load proposals');
     } finally {
       setLoading(false);
     }
-  }, [enrichProposals]);
+  }, []);
 
   const fetchCommunityStats = useCallback(async () => {
     try {

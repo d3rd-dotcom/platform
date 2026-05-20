@@ -133,6 +133,8 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   };
 
   const getStage2Variant = () => {
+    // A Blue rejection is definitive — no vote is ever held, regardless of chain.
+    if (status === 'rejected') return 'skipped';
     // When we know the on-chain status, it is the source of truth — the DB can
     // say "approved" while the on-chain review never landed (still Pending).
     if (chainStatus !== undefined) {
@@ -143,9 +145,6 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
         return isExpired ? 'skipped' : 'processing';
       }
       return 'success'; // Active or Executed → it is live/closed on-chain
-    }
-    if (status === 'rejected') {
-      return 'skipped';
     }
     if (status === 'approved' && onChainProposalId) {
       return 'success'; // Approved and already on blockchain
@@ -160,6 +159,8 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   };
 
   const getStage3Variant = () => {
+    // A Blue rejection is the terminal result — it never reaches a vote.
+    if (status === 'rejected') return 'defeated';
     // Prefer on-chain truth when available.
     if (chainStatus !== undefined) {
       if (chainStatus === CHAIN_STATUS.Executed || onChainData?.executed) return 'completed';
