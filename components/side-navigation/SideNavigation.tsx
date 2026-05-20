@@ -50,6 +50,7 @@ const desktopNavSections: NavSection[] = [
     id: 'extras',
     label: 'Community Resources',
     items: [
+      { id: 'markets', label: 'Markets', href: '/markets', iconSrc: '/icons/nav-markets.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'research', label: 'R-Tool', href: '/research', iconSrc: '/icons/nav-laboratory.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'simulations', label: 'Simulations', href: 'https://azure-world.vercel.app/', iconSrc: '/icons/nav-community.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
@@ -61,6 +62,7 @@ const mobileNavSections: NavSection[] = [
     id: 'extras',
     label: 'Community Resources',
     items: [
+      { id: 'markets', label: 'Markets', href: '/markets', iconSrc: '/icons/nav-markets.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'research', label: 'R-Tool', href: '/research', iconSrc: '/icons/nav-laboratory.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'simulations', label: 'Simulations', href: 'https://azure-world.vercel.app/', iconSrc: '/icons/nav-community.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
@@ -79,12 +81,6 @@ const primaryNavItems: NavItem[] = [
     label: 'Surveys',
     href: '/surveys',
     iconSrc: '/icons/nav-feedback.svg',
-  },
-  {
-    id: 'markets',
-    label: 'Markets',
-    href: '/markets',
-    iconSrc: '/icons/nav-markets.svg',
   },
   {
     id: 'events',
@@ -600,6 +596,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                 className={`${styles.navItem} ${styles.navItemDisabled}`}
                 title={isCollapsed ? item.label : undefined}
                 aria-busy="true"
+                data-tour={item.id === 'markets' ? 'markets' : undefined}
               >
                 <NavIconMark icon={item.icon} iconSrc={item.iconSrc} />
                 <span className={styles.navItemLabel}>{item.label}</span>
@@ -618,6 +615,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                 onMouseEnter={() => play('hover')}
                 className={`${styles.navItem} ${styles.navItemButton}`}
                 title={isCollapsed ? item.label : undefined}
+                data-tour={item.id === 'markets' ? 'markets' : undefined}
               >
                 <NavIconMark icon={item.icon} iconSrc={item.iconSrc} />
                 <span className={styles.navItemLabel}>{item.label}</span>
@@ -634,6 +632,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                 key={item.id}
                 className={`${styles.navItem} ${styles.navItemDisabled}`}
                 title={isCollapsed ? item.label : undefined}
+                data-tour={item.id === 'markets' ? 'markets' : undefined}
               >
                 <NavIconMark icon={item.icon} iconSrc={item.iconSrc} />
                 <span className={styles.navItemLabel}>{item.label}</span>
@@ -656,6 +655,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                 onMouseEnter={() => play('hover')}
                 title={isCollapsed ? item.label : undefined}
                 aria-current={active ? 'page' : undefined}
+                data-tour={item.id === 'markets' ? 'markets' : undefined}
               >
                 <NavIconMark icon={item.icon} iconSrc={item.iconSrc} isActive={active} />
                 <span className={styles.navItemLabel}>{item.label}</span>
@@ -782,7 +782,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                   key={item.id}
                   href={item.href}
                   className={`${styles.navItem} ${active ? styles.navItemActive : ''}`}
-                  data-tour={item.id === 'morning-pages' ? 'journal' : item.id === 'markets' ? 'markets' : item.id === 'events' ? 'quests' : undefined}
+                  data-tour={item.id === 'morning-pages' ? 'journal' : item.id === 'events' ? 'quests' : undefined}
                   onClick={() => {
                     play('navigation');
                     setIsMobileMenuOpen(false);

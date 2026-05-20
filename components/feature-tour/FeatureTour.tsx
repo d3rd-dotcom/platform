@@ -38,8 +38,8 @@ const STEPS: TourStep[] = [
   },
   {
     target: 'markets',
-    title: 'Put your shards to work',
-    body: 'Exchange shards in the markets for a chance to win real USDC — your activity here becomes real upside.',
+    title: 'VIP markets desk',
+    body: 'VIP members can open the markets desk to review Blue signals, treasury routing, and live execution history.',
   },
   {
     target: 'quests',
