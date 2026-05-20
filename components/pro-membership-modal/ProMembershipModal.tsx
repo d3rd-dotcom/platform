@@ -635,6 +635,12 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
     };
   }, [screen, orderId, authHeaders]);
 
+  useEffect(() => {
+    if (transferPhase === 'done') {
+      window.dispatchEvent(new Event('vipMembershipUpdated'));
+    }
+  }, [transferPhase]);
+
   if (!isOpen) return null;
 
   const elementsOptions = clientSecret

@@ -186,7 +186,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const [isProfilePopupOpen, setIsProfilePopupOpen] = useState(false);
   const [isSoulModalOpen, setIsSoulModalOpen] = useState(false);
   const [userLoadComplete, setUserLoadComplete] = useState(false);
-  const [hasVipMembershipCard, setHasVipMembershipCard] = useState(false);
+  const [hasVipMembershipCard, setHasVipMembershipCard] = useState<boolean | null>(null);
   const { play } = useSound();
   const sessionCreatedForRef = useRef<string | null>(null);
   const accountMenuRef = useRef<HTMLDivElement>(null);
@@ -233,38 +233,51 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     };
   }, [onExternalMobileClose, toggleCollapsed]);
 
-  const isPro = hasVipMembershipCard;
-
-  useEffect(() => {
-    let cancelled = false;
-
+  const refreshVipMembershipStatus = useCallback(async () => {
     if (!ready || !authenticated) {
       setHasVipMembershipCard(false);
       return;
     }
 
-    (async () => {
-      try {
-        const token = await getAccessToken();
-        const url = address
-          ? `/api/account/status?walletAddress=${encodeURIComponent(address)}`
-          : '/api/account/status';
-        const response = await window.fetch(url, {
+    setHasVipMembershipCard(null);
+    try {
+      const token = await getAccessToken();
+      const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+      const urls = address
+        ? [`/api/account/status?walletAddress=${encodeURIComponent(address)}`, '/api/account/status']
+        : ['/api/account/status'];
+      const statuses = await Promise.all(
+        urls.map((url) => window.fetch(url, {
           cache: 'no-store',
           credentials: 'include',
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
-        });
-        const status = response.ok ? await response.json().catch(() => null) : null;
-        if (!cancelled) setHasVipMembershipCard(Boolean(status?.hasVipMembershipCard));
-      } catch {
-        if (!cancelled) setHasVipMembershipCard(false);
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
+          headers,
+        })
+          .then((response) => (response.ok ? response.json().catch(() => null) : null))
+          .catch(() => null)),
+      );
+      setHasVipMembershipCard(statuses.some((status) => Boolean(status?.hasVipMembershipCard)));
+    } catch {
+      setHasVipMembershipCard(false);
+    }
   }, [address, authenticated, getAccessToken, ready]);
+
+  useEffect(() => {
+    if (!ready || !authenticated) {
+      setHasVipMembershipCard(false);
+      return;
+    }
+
+    void refreshVipMembershipStatus();
+  }, [authenticated, ready, refreshVipMembershipStatus]);
+
+  useEffect(() => {
+    const handler = () => {
+      void refreshVipMembershipStatus();
+    };
+
+    window.addEventListener('vipMembershipUpdated', handler);
+    return () => window.removeEventListener('vipMembershipUpdated', handler);
+  }, [refreshVipMembershipStatus]);
 
   // Create server session after wallet connects via ConnectKit
   const createSessionForWallet = async (walletAddress: string) => {
@@ -573,8 +586,28 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
         <div className={`${styles.sectionItems} ${!isExpanded ? styles.sectionItemsCollapsed : ''}`}>
           {section.items.map((item) => {
             const active = isActive(item.href);
+            const proState = !item.requiresPro
+              ? 'public'
+              : hasVipMembershipCard === true
+                ? 'unlocked'
+                : hasVipMembershipCard === false
+                  ? 'locked'
+                  : 'checking';
 
-            return item.requiresPro && !isPro ? (
+            return proState === 'checking' ? (
+              <div
+                key={item.id}
+                className={`${styles.navItem} ${styles.navItemDisabled}`}
+                title={isCollapsed ? item.label : undefined}
+                aria-busy="true"
+              >
+                <NavIconMark icon={item.icon} iconSrc={item.iconSrc} />
+                <span className={styles.navItemLabel}>{item.label}</span>
+                <span className={`${styles.badge} ${styles.badgeChecking}`}>
+                  Checking
+                </span>
+              </div>
+            ) : proState === 'locked' ? (
               <button
                 key={item.id}
                 onClick={() => {
@@ -588,12 +621,12 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
               >
                 <NavIconMark icon={item.icon} iconSrc={item.iconSrc} />
                 <span className={styles.navItemLabel}>{item.label}</span>
-                <span className={`${styles.badge} ${styles.badgePro}`}>
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 3, verticalAlign: '-1px' }}>
+                <span className={`${styles.badge} ${styles.badgeLocked}`}>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 3, verticalAlign: '-1px' }}>
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                   </svg>
-                  Pro
+                  Locked
                 </span>
               </button>
             ) : item.disabled ? (
@@ -627,8 +660,8 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                 <NavIconMark icon={item.icon} iconSrc={item.iconSrc} isActive={active} />
                 <span className={styles.navItemLabel}>{item.label}</span>
                 {item.badge && (
-                  <span className={`${styles.badge} ${item.badgeType === 'highlight' ? styles.badgeHighlight : item.badgeType === 'green' ? styles.badgeGreen : item.badgeType === 'pro' ? styles.badgePro : ''}`}>
-                    {item.badge}
+                  <span className={`${styles.badge} ${item.requiresPro ? styles.badgeUnlocked : item.badgeType === 'highlight' ? styles.badgeHighlight : item.badgeType === 'green' ? styles.badgeGreen : item.badgeType === 'pro' ? styles.badgePro : ''}`}>
+                    {item.requiresPro ? 'VIP' : item.badge}
                   </span>
                 )}
               </Link>
