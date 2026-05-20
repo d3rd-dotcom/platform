@@ -27,6 +27,7 @@ const ERC1155_EVENT_ABI = [
 
 let cached: { wallet: string; hasKey: boolean; expiresAt: number } | null = null;
 let vipCached: { wallet: string; hasCard: boolean; expiresAt: number } | null = null;
+let configuredVipCached: { wallet: string; hasCard: boolean; expiresAt: number } | null = null;
 const CACHE_TTL_MS = 60_000;
 const erc1155Interface = new utils.Interface(ERC1155_EVENT_ABI);
 const erc1155BalanceInterface = new utils.Interface(ERC1155_BALANCE_ABI);
@@ -186,8 +187,32 @@ export async function walletHoldsVipMembershipCard(wallet: string | null | undef
 }
 
 /**
+ * Fast VIP check for checkout warnings. This only reads configured token ids,
+ * avoiding the slower historical log discovery path used by hard access gates.
+ */
+export async function walletHoldsConfiguredVipMembershipCard(wallet: string | null | undefined): Promise<boolean> {
+  if (!wallet || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) return false;
+
+  const now = Date.now();
+  const normalized = wallet.toLowerCase();
+  if (configuredVipCached && configuredVipCached.wallet === normalized && configuredVipCached.expiresAt > now) {
+    return configuredVipCached.hasCard;
+  }
+
+  const rpcUrl = getBaseRpcUrl();
+  if (!rpcUrl) {
+    return false;
+  }
+
+  const hasCard = await walletHasAnyVipTokenId(rpcUrl, wallet, VIP_MEMBERSHIP_CARD_TOKEN_IDS);
+  configuredVipCached = { wallet: normalized, hasCard, expiresAt: now + CACHE_TTL_MS };
+  return hasCard;
+}
+
+/**
  * Reads the raw ERC-1155 balance of a VIP membership token for a wallet.
- * Used to size Blue's remaining inventory before selling a card.
+ * Used to size Blue's remaining inventory before selling a card. Throws on
+ * RPC read failure so checkout does not mistake an outage for zero inventory.
  */
 export async function getVipMembershipCardBalance(
   wallet: string | null | undefined,
@@ -214,6 +239,6 @@ export async function getVipMembershipCardBalance(
     return BigInt(balance.toString());
   } catch (err) {
     console.error('[vip-membership-card] balance read failed:', err);
-    return BigInt(0);
+    throw new Error('VIP membership inventory could not be read.');
   }
 }

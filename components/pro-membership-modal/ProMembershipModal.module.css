@@ -300,6 +300,29 @@
     font-size: 12px;
   }
 
+  .orderSummary {
+    padding: 10px;
+  }
+
+  .orderItem {
+    grid-template-columns: 60px minmax(0, 1fr) auto;
+    gap: 10px;
+  }
+
+  .orderItemImage {
+    width: 60px;
+    height: 38px;
+  }
+
+  .orderItemTitle {
+    font-size: 13px;
+  }
+
+  .orderItemMeta,
+  .methodHint {
+    font-size: 10px;
+  }
+
   .closeButton {
     top: 10px;
     right: 10px;
@@ -445,6 +468,77 @@
   font-size: 20px;
   font-weight: 800;
   color: #1A1D33;
+}
+
+.orderSummary {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  border: 2px solid #1A1D33;
+  border-radius: 16px;
+  margin: 0 0 16px 0;
+  background: #ffffff;
+}
+
+.orderItem {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.orderItemImage {
+  width: 72px;
+  height: 46px;
+  object-fit: cover;
+  border: 2px solid #1A1D33;
+  border-radius: 8px;
+}
+
+.orderItemText {
+  min-width: 0;
+  text-align: left;
+}
+
+.orderItemTitle {
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 800;
+  color: #1A1D33;
+  margin: 0 0 3px 0;
+}
+
+.orderItemMeta {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  color: #666666;
+  margin: 0;
+}
+
+.orderItemPrice {
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 800;
+  color: #1A1D33;
+}
+
+.orderTotalRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(26, 29, 51, 0.18);
+  font-family: var(--font-primary);
+  font-size: 13px;
+  color: #666666;
+}
+
+.orderTotalRow strong {
+  color: #1A1D33;
+  font-size: 18px;
 }
 
 .checkoutForm {
@@ -657,15 +751,33 @@
   border-color: rgba(255, 255, 255, 0.14);
 }
 
-:global([data-theme="dark"]) .priceValue {
+:global([data-theme="dark"]) .priceValue,
+:global([data-theme="dark"]) .orderItemTitle,
+:global([data-theme="dark"]) .orderItemPrice,
+:global([data-theme="dark"]) .orderTotalRow strong {
   color: rgba(227, 225, 238, 0.95);
 }
 
 :global([data-theme="dark"]) .priceLabel,
+:global([data-theme="dark"]) .orderItemMeta,
+:global([data-theme="dark"]) .orderTotalRow,
 :global([data-theme="dark"]) .backLink,
 :global([data-theme="dark"]) .loadingText,
 :global([data-theme="dark"]) .secureNote {
   color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .orderSummary {
+  background: #1F2030;
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+:global([data-theme="dark"]) .orderItemImage {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+:global([data-theme="dark"]) .orderTotalRow {
+  border-top-color: rgba(255, 255, 255, 0.12);
 }
 
 :global([data-theme="dark"]) .flowLine {
@@ -700,18 +812,20 @@
 
 .methodOption {
   flex: 1;
+  min-width: 0;
   padding: 10px 12px;
   background: #ffffff;
   border: 2px solid #1A1D33;
   border-radius: 14px;
   font-family: var(--font-button);
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
   color: #1A1D33;
   cursor: pointer;
   transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  text-align: left;
 }
 
 .methodOption:hover {
@@ -726,6 +840,22 @@
 
 .methodOptionActive:hover {
   box-shadow: 2px 2px 0 rgba(26, 29, 51, 0.4);
+}
+
+.methodLabel {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.methodHint {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  opacity: 0.72;
+  text-transform: none;
 }
 
 .cryptoOptions {

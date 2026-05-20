@@ -21,6 +21,7 @@ const ETH_USD_FEED = process.env.ETH_USD_PRICE_FEED || '0x71041dddad3595F9CEd3Dc
 
 /** ERC-20 Transfer(address,address,uint256) event topic. */
 const ERC20_TRANSFER_TOPIC = utils.id('Transfer(address,address,uint256)').toLowerCase();
+const WEI_PER_ETH = BigNumber.from(10).pow(18);
 
 const AGGREGATOR_ABI = [
   'function latestRoundData() view returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound)',
@@ -76,6 +77,16 @@ export interface CryptoQuote {
   eth: { amount: string; decimals: number; display: string; usdPrice: number };
 }
 
+function formatEthDisplay(wei: BigNumber): string {
+  const eth = Number(utils.formatEther(wei));
+  if (!Number.isFinite(eth)) return utils.formatEther(wei);
+
+  return eth.toLocaleString('en-US', {
+    minimumFractionDigits: eth >= 1 ? 2 : 5,
+    maximumFractionDigits: eth >= 1 ? 4 : 6,
+  });
+}
+
 /**
  * Quotes the membership price (given in US cents) in both USDC and ETH.
  * `amount` fields are base units (USDC: 6 dp, ETH: wei) as decimal strings.
@@ -87,8 +98,14 @@ export async function quoteCryptoPrice(priceCents: number): Promise<CryptoQuote>
   const usdcUnits = BigNumber.from(priceCents).mul(BigNumber.from(10).pow(USDC_DECIMALS - 2));
 
   const ethPrice = await getEthUsdPrice();
-  const ethFloat = usd / ethPrice;
-  const ethWei = utils.parseUnits(ethFloat.toFixed(18), 18);
+  const ethPriceCents = Math.round(ethPrice * 100);
+  if (!Number.isFinite(ethPriceCents) || ethPriceCents <= 0) {
+    throw new Error('Could not determine the current ETH price.');
+  }
+  const ethWei = BigNumber.from(priceCents)
+    .mul(WEI_PER_ETH)
+    .add(ethPriceCents - 1)
+    .div(ethPriceCents);
 
   return {
     usdAmount: usd,
@@ -100,7 +117,7 @@ export async function quoteCryptoPrice(priceCents: number): Promise<CryptoQuote>
     eth: {
       amount: ethWei.toString(),
       decimals: 18,
-      display: ethFloat.toFixed(5),
+      display: formatEthDisplay(ethWei),
       usdPrice: ethPrice,
     },
   };

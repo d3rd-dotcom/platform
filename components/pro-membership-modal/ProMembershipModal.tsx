@@ -83,6 +83,31 @@ async function ensureBaseChain(eip1193: Eip1193Provider): Promise<void> {
   }
 }
 
+function CheckoutSummary() {
+  return (
+    <div className={styles.orderSummary} aria-label="Order summary">
+      <div className={styles.orderItem}>
+        <Image
+          src={MEMBERSHIP_IMAGE}
+          alt="VIP Membership card"
+          width={1008}
+          height={619}
+          className={styles.orderItemImage}
+        />
+        <div className={styles.orderItemText}>
+          <p className={styles.orderItemTitle}>VIP Membership Card</p>
+          <p className={styles.orderItemMeta}>Lifetime access · Qty 1</p>
+        </div>
+        <span className={styles.orderItemPrice}>{PRICE_LABEL}</span>
+      </div>
+      <div className={styles.orderTotalRow}>
+        <span>Total due today</span>
+        <strong>{PRICE_LABEL}</strong>
+      </div>
+    </div>
+  );
+}
+
 /* ── Stripe checkout form (must render inside <Elements>) ─────────────────── */
 
 function CheckoutForm({ onPaid }: { onPaid: () => void }) {
@@ -159,6 +184,7 @@ function CryptoCheckout({
   const [error, setError] = useState<string | null>(null);
   const [intent, setIntent] = useState<CryptoIntent | null>(null);
   const [paying, setPaying] = useState<'usdc' | 'eth' | null>(null);
+  const [retryKey, setRetryKey] = useState(0);
 
   // Reserve a slot and quote the price the moment crypto checkout is shown.
   useEffect(() => {
@@ -188,7 +214,7 @@ function CryptoCheckout({
     return () => {
       cancelled = true;
     };
-  }, [authHeaders]);
+  }, [authHeaders, retryKey]);
 
   const pay = async (currency: 'usdc' | 'eth') => {
     if (!intent || paying) return;
@@ -257,7 +283,18 @@ function CryptoCheckout({
     return <p className={styles.loadingText}>Preparing crypto checkout...</p>;
   }
   if (error && !intent) {
-    return <p className={styles.formError}>{error}</p>;
+    return (
+      <div className={styles.formErrorBlock}>
+        <p className={styles.formError}>{error}</p>
+        <button
+          type="button"
+          className={styles.inlineRetryButton}
+          onClick={() => setRetryKey((value) => value + 1)}
+        >
+          Try again
+        </button>
+      </div>
+    );
   }
   if (!intent) return null;
 
@@ -288,9 +325,7 @@ function CryptoCheckout({
       </button>
 
       <p className={styles.cryptoMeta}>
-        {`Both equal ${PRICE_LABEL} · 1 ETH ≈ $${quote.eth.usdPrice.toLocaleString('en-US', {
-          maximumFractionDigits: 0,
-        })}`}
+        {`ETH quote: ${quote.eth.display} ETH for the ${PRICE_LABEL} total. Gas not included.`}
       </p>
 
       {error && <p className={styles.formError}>{error}</p>}
@@ -762,10 +797,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
                 VIP Membership. Lifetime access, charged once.
               </p>
 
-              <div className={styles.priceRow}>
-                <span className={styles.priceLabel}>Total</span>
-                <span className={styles.priceValue}>{PRICE_LABEL}</span>
-              </div>
+              <CheckoutSummary />
 
               {/* Payment method picker — card path is only offered when Stripe
                   is configured; the crypto path always works. */}
@@ -775,15 +807,19 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
                     type="button"
                     className={`${styles.methodOption} ${method === 'card' ? styles.methodOptionActive : ''}`}
                     onClick={() => setMethod('card')}
+                    aria-pressed={method === 'card'}
                   >
-                    Card
+                    <span className={styles.methodLabel}>Card</span>
+                    <span className={styles.methodHint}>Secure checkout</span>
                   </button>
                   <button
                     type="button"
                     className={`${styles.methodOption} ${method === 'crypto' ? styles.methodOptionActive : ''}`}
                     onClick={() => setMethod('crypto')}
+                    aria-pressed={method === 'crypto'}
                   >
-                    Crypto
+                    <span className={styles.methodLabel}>Crypto</span>
+                    <span className={styles.methodHint}>USDC or ETH on Base</span>
                   </button>
                 </div>
               )}

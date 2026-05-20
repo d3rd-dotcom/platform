@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getWalletAddressFromRequest } from '@/lib/wallet-auth';
-import { walletHoldsVipMembershipCard } from '@/lib/soul-key';
+import { walletHoldsConfiguredVipMembershipCard } from '@/lib/soul-key';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -18,6 +18,6 @@ export async function GET() {
     return NextResponse.json({ error: 'Sign in to check membership status.' }, { status: 401 });
   }
 
-  const hasVipMembershipCard = await walletHoldsVipMembershipCard(buyerWallet);
+  const hasVipMembershipCard = await walletHoldsConfiguredVipMembershipCard(buyerWallet);
   return NextResponse.json({ hasVipMembershipCard, walletAddress: buyerWallet });
 }

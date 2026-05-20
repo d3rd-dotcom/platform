@@ -104,18 +104,32 @@ async function _ensureMembershipSchemaImpl(): Promise<void> {
 
 /**
  * Counts inventory slots that are already spoken for: every transferred or
- * in-flight order, plus pending orders whose reservation has not lapsed.
- * Expired pending orders are not counted, so abandoned checkouts free up.
+ * in-flight order, plus one active pending reservation per buyer wallet.
+ * Expired pending orders are not counted unless a payment has already been
+ * recorded, so abandoned duplicate checkouts free up.
  */
 export async function countCommittedMemberships(tokenId: string): Promise<number> {
   const rows = await sqlQuery<Array<{ committed: string }>>(
-    `SELECT COUNT(*)::int AS committed
-       FROM membership_orders
-      WHERE token_id = :tokenId
-        AND (
-          status IN ('paid', 'transferring', 'transferred')
-          OR (status = 'pending' AND reserved_until > CURRENT_TIMESTAMP)
-        )`,
+    `SELECT (
+        SELECT COUNT(*)::int
+          FROM membership_orders
+         WHERE token_id = :tokenId
+           AND (
+             status IN ('paid', 'transferring', 'transferred')
+             OR (status = 'failed' AND delivery_attempts > 0)
+             OR (status IN ('pending', 'expired') AND payment_tx_hash IS NOT NULL)
+           )
+      ) + (
+        SELECT COUNT(*)::int
+          FROM (
+            SELECT DISTINCT LOWER(buyer_wallet)
+              FROM membership_orders
+             WHERE token_id = :tokenId
+               AND status = 'pending'
+               AND reserved_until > CURRENT_TIMESTAMP
+               AND payment_tx_hash IS NULL
+          ) pending_reservations
+      ) AS committed`,
     { tokenId }
   );
   return Number(rows[0]?.committed ?? 0);

@@ -58,10 +58,6 @@ export async function POST() {
     );
   }
 
-  // Inventory check — Blue's on-chain balance minus everything committed.
-  const inventory = await getVipMembershipCardBalance(blueAddress, tokenId);
-  const committed = await countCommittedMemberships(tokenId);
-
   let quote;
   try {
     quote = await quoteCryptoPrice(MEMBERSHIP_PRICE_CENTS);
@@ -75,14 +71,15 @@ export async function POST() {
 
   const user = await getCurrentUserFromRequestCookie();
 
-  // Reuse an open crypto checkout for this wallet rather than stacking
-  // reservations. Refresh the quote so the ETH amount tracks the live price.
+  // Reuse any open checkout for this wallet rather than stacking reservations
+  // when the buyer switches between card and crypto. Refresh the quote so the
+  // ETH amount tracks the live price.
   const existing = await sqlQuery<Array<{ id: string }>>(
     `SELECT id FROM membership_orders
       WHERE LOWER(buyer_wallet) = LOWER(:wallet)
         AND status = 'pending' AND reserved_until > CURRENT_TIMESTAMP
-        AND payment_method = 'crypto'
-      ORDER BY created_at DESC LIMIT 1`,
+        AND payment_tx_hash IS NULL
+      ORDER BY updated_at DESC, created_at DESC LIMIT 1`,
     { wallet: buyerWallet },
   );
 
@@ -91,18 +88,35 @@ export async function POST() {
     orderId = existing[0].id;
     await sqlQuery(
       `UPDATE membership_orders
-          SET eth_amount_wei = :eth, usdc_amount = :usdc,
+          SET payment_method = 'crypto',
+              eth_amount_wei = :eth, usdc_amount = :usdc,
+              user_id = COALESCE(user_id, :userId),
               reserved_until = CURRENT_TIMESTAMP + (:minutes || ' minutes')::interval,
               updated_at = CURRENT_TIMESTAMP
         WHERE id = :id`,
       {
         eth: quote.eth.amount,
         usdc: quote.usdc.amount,
+        userId: user?.id ?? null,
         minutes: String(RESERVATION_MINUTES),
         id: orderId,
       },
     );
   } else {
+    // Inventory check — Blue's on-chain balance minus everything committed.
+    let inventory: bigint;
+    try {
+      inventory = await getVipMembershipCardBalance(blueAddress, tokenId);
+    } catch (err) {
+      console.error('[membership] inventory check failed:', err);
+      return NextResponse.json(
+        { error: 'Could not check membership availability. Try again.' },
+        { status: 503 },
+      );
+    }
+
+    const committed = await countCommittedMemberships(tokenId);
+
     // Only block a brand-new reservation when inventory is genuinely full.
     if (committed >= Number(inventory)) {
       return NextResponse.json({ error: 'Memberships are sold out.' }, { status: 409 });
