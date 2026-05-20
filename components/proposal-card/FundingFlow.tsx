@@ -74,9 +74,14 @@ const FundingFlow: React.FC<FundingFlowProps> = ({
 
       {/* 2. Requested amount (from the treasury) */}
       <div className={styles.node}>
-        <div className={`${styles.avatar} ${styles.treasuryAvatar}`}>
-          <Image src="/icons/logo-mwa.png" alt="MWA Treasury" width={28} height={28} unoptimized />
-        </div>
+        <Image
+          src="/icons/icon-192.png"
+          alt="MWA Treasury"
+          width={40}
+          height={40}
+          className={styles.avatar}
+          unoptimized
+        />
         <span className={styles.role}>Requested</span>
         <span className={styles.value}>{usd(requestedUsd)}</span>
       </div>

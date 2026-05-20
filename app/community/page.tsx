@@ -128,6 +128,8 @@ interface DatabaseProposal {
   status: 'pending_review' | 'approved' | 'rejected' | 'active' | 'completed';
   walletAddress: string;
   createdAt: string;
+  tokenAmount: string | null;
+  recipientAddress: string | null;
   onChainProposalId: string | null;
   onChainTxHash: string | null;
   user: {

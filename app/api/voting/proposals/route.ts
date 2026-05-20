@@ -83,6 +83,8 @@ interface ProposalWithReview {
   status: string;
   created_at: string;
   updated_at: string;
+  token_amount: string | null;
+  recipient_address: string | null;
   on_chain_proposal_id: string | null;
   on_chain_tx_hash: string | null;
   username: string | null;
@@ -121,6 +123,8 @@ export async function GET() {
           p.status,
           p.created_at,
           p.updated_at,
+          p.token_amount,
+          p.recipient_address,
           p.on_chain_proposal_id,
           p.on_chain_tx_hash,
           u.username,
@@ -152,6 +156,8 @@ export async function GET() {
             p.status,
             p.created_at,
             p.updated_at,
+            p.token_amount,
+            p.recipient_address,
             NULL as on_chain_proposal_id,
             NULL as on_chain_tx_hash,
             u.username,
@@ -183,6 +189,8 @@ export async function GET() {
       status: p.status,
       createdAt: p.created_at,
       updatedAt: p.updated_at,
+      tokenAmount: p.token_amount || null,
+      recipientAddress: p.recipient_address || null,
       onChainProposalId: p.on_chain_proposal_id || null,
       onChainTxHash: p.on_chain_tx_hash || null,
       user: {

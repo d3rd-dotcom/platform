@@ -370,14 +370,16 @@
 }
 
 .reasoning {
-  background: var(--color-primary);
+  /* Darker academy blue so white text clears WCAG AA (~6.5:1 vs 4.4:1 on the
+     base primary). Upright, not italic, for readability. */
+  background: var(--color-primary-hover);
   padding: 12px 16px;
   border-radius: var(--radius-lg);
   color: #ffffff;
   font-family: var(--font-primary);
   font-size: var(--font-size-sm);
   line-height: 1.5;
-  font-style: italic;
+  font-weight: var(--font-weight-medium);
 }
 
 .voteSection {
