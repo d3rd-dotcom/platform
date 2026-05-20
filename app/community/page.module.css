@@ -2645,6 +2645,35 @@
   color: #ffffff;
 }
 
+/* Light-mode: swap to the light photo, lighten the overlay, darken the text */
+:global(:root:not([data-theme="dark"])) .fundingVillageCard {
+  background-color: #eef1fb;
+  border-color: rgba(129, 144, 255, 0.3);
+}
+
+:global(:root:not([data-theme="dark"])) .fundingVillageCard::after {
+  background: url('/images/funding-village-bg-light.png') bottom center / cover no-repeat;
+}
+
+:global(:root:not([data-theme="dark"])) .fundingVillageCard::before {
+  background:
+    linear-gradient(95deg, rgba(244, 246, 255, 0.92) 0%, rgba(244, 246, 255, 0.78) 34%, rgba(244, 246, 255, 0.46) 62%, rgba(244, 246, 255, 0.2) 100%),
+    linear-gradient(180deg, transparent 52%, rgba(244, 246, 255, 0.4) 100%);
+}
+
+:global(:root:not([data-theme="dark"])) .fundingVillageCard .dashCardEyebrow {
+  color: rgba(26, 29, 51, 0.7);
+}
+
+:global(:root:not([data-theme="dark"])) .fundingVillageCard .dashCardTitle,
+:global(:root:not([data-theme="dark"])) .fundingVillageAmount {
+  color: var(--color-text-dark);
+}
+
+:global(:root:not([data-theme="dark"])) .fundingVillageLink {
+  color: var(--color-text-dark);
+}
+
 .fundingVillageContent {
   position: relative;
   z-index: 2;
