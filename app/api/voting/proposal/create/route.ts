@@ -3,6 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { ensureProposalSchema } from '@/lib/ensureProposalSchema';
 import { getUserFromRequest } from '@/lib/auth';
+import { providers, Contract } from 'ethers';
+import { BLUE_KILLSTREAK_ABI } from '@/lib/blue-contract';
 
 export async function POST(request: Request) {
   if (!isDbConfigured()) {
@@ -113,7 +115,66 @@ export async function POST(request: Request) {
     );
   }
 
-  // Log the on-chain data (no verification needed - user already paid gas)
+  // M8: Verify the submitted fields match the actual on-chain proposal.
+  // Without this, the AI reviews the DB markdown while the proposal can carry a
+  // different recipient/amount on-chain — a proposer could show the reviewer a
+  // small, benign ask and route a large payout to an attacker on-chain.
+  // Fail closed: if we cannot read and confirm the chain, we do not save.
+  {
+    const rpcUrl = process.env.NEXT_PUBLIC_BASE_RPC_URL || 'https://mainnet.base.org';
+    const contractAddress =
+      process.env.NEXT_PUBLIC_BLUE_KILLSTREAK_ADDRESS || '0x2cbb90a761ba64014b811be342b8ef01b471992d';
+
+    let onChain: any;
+    try {
+      const provider = new providers.JsonRpcProvider(rpcUrl);
+      const contract = new Contract(contractAddress, BLUE_KILLSTREAK_ABI, provider);
+      onChain = await contract.getProposal(parseInt(proposalIdStr, 10));
+    } catch (rpcError: any) {
+      console.error('M8 on-chain verification RPC read failed:', rpcError?.message);
+      return NextResponse.json(
+        { error: 'Could not verify the on-chain proposal right now. Please try again in a moment.' },
+        { status: 503 }
+      );
+    }
+
+    // Expected on-chain values, computed the same way the client did when it
+    // created the proposal (whole USDC -> 6-decimal base units).
+    const expectedRecipient = recipientAddress.trim().toLowerCase();
+    const expectedProposer = walletAddress.trim().toLowerCase();
+    const expectedUsdc = BigInt(Math.floor(tokenAmountNum * 1e6));
+
+    const onChainRecipient = String(onChain.recipient || '').toLowerCase();
+    const onChainProposer = String(onChain.proposer || '').toLowerCase();
+    let onChainUsdc: bigint;
+    try {
+      onChainUsdc = BigInt(onChain.usdcAmount.toString());
+    } catch {
+      onChainUsdc = -1n;
+    }
+
+    const mismatches: string[] = [];
+    if (onChainRecipient !== expectedRecipient) mismatches.push('recipient');
+    if (onChainProposer !== expectedProposer) mismatches.push('proposer');
+    if (onChainUsdc !== expectedUsdc) mismatches.push('amount');
+
+    if (mismatches.length > 0) {
+      console.warn('M8 proposal mismatch', {
+        onChainProposalId: proposalIdStr,
+        mismatches,
+        expected: { expectedRecipient, expectedProposer, expectedUsdc: expectedUsdc.toString() },
+        onChain: { onChainRecipient, onChainProposer, onChainUsdc: onChainUsdc.toString() },
+      });
+      return NextResponse.json(
+        {
+          error: `Submitted proposal does not match the on-chain proposal (${mismatches.join(', ')}). Nothing was saved.`,
+        },
+        { status: 409 }
+      );
+    }
+  }
+
+  // Log the on-chain data (verified to match the submission above)
   console.log('📝 Proposal submission:', {
     onChainProposalId: proposalIdStr,
     txHash: txHashStr,
