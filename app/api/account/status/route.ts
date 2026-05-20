@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured } from '@/lib/db';
-import { walletHoldsVipMembershipCard } from '@/lib/soul-key';
+import { walletHoldsVipMembershipCard } from '@/lib/vip-membership-card';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';

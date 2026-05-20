@@ -4,7 +4,7 @@ import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { ensureCustomQuestsSchema } from '@/lib/ensureCustomQuestsSchema';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
-import { walletHoldsSoulKey } from '@/lib/soul-key';
+import { walletHoldsVipMembershipCard } from '@/lib/vip-membership-card';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -91,8 +91,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
 
-  const hasKey = await walletHoldsSoulKey(user.walletAddress);
-  if (!hasKey) {
+  const hasMembership = await walletHoldsVipMembershipCard(user.walletAddress);
+  if (!hasMembership) {
     return NextResponse.json(
       { error: 'A membership NFT is required to author quests.' },
       { status: 403 }

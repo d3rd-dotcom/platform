@@ -12,7 +12,7 @@ import { getBlueWalletAddress } from '@/lib/blue-membership';
 import {
   VIP_MEMBERSHIP_CARD_TOKEN_ID,
   getVipMembershipCardBalance,
-} from '@/lib/soul-key';
+} from '@/lib/vip-membership-card';
 import { BASE_CHAIN_ID, USDC_ADDRESS, quoteCryptoPrice } from '@/lib/crypto-payment';
 
 export const runtime = 'nodejs';

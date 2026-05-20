@@ -130,8 +130,17 @@
   font-family: var(--font-primary);
   font-size: 14px;
   color: #666666;
-  margin: 0 0 20px 0;
+  margin: 0 0 16px 0;
   line-height: 1.5;
+}
+
+.benefitsHeading {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 800;
+  color: #1A1D33;
+  margin: 0 0 10px 0;
+  letter-spacing: 0;
 }
 
 .featureList {
@@ -277,7 +286,12 @@
 
   .description {
     font-size: 13px;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
+  }
+
+  .benefitsHeading {
+    font-size: 11px;
+    margin-bottom: 8px;
   }
 
   .featureList {
@@ -382,6 +396,10 @@
 
 :global([data-theme="dark"]) .description {
   color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .benefitsHeading {
+  color: rgba(227, 225, 238, 0.9);
 }
 
 :global([data-theme="dark"]) .featureItem {

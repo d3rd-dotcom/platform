@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
-import { useReadContract } from 'wagmi';
 import Image from 'next/image';
 import { Trophy, Sparkle, Plus, Lightning, Target, CaretDown, Check } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
@@ -41,17 +40,6 @@ interface CustomQuest {
   progressCount: number;
 }
 
-const SOUL_KEY_ADDRESS = '0x39f259B58A9aB02d42bC3DF5836bA7fc76a8880F' as const;
-const BALANCE_OF_ABI = [
-  {
-    type: 'function',
-    name: 'balanceOf',
-    stateMutability: 'view',
-    inputs: [{ name: 'account', type: 'address' }],
-    outputs: [{ name: '', type: 'uint256' }],
-  },
-] as const;
-
 type QuestFilter = 'all' | QuestCardKind;
 
 interface UnifiedQuest extends DrawerQuest {
@@ -85,20 +73,7 @@ const FILTER_LABEL: Record<QuestFilter, string> = {
 };
 
 export default function QuestsPage() {
-  const { ready, authenticated, getAccessToken, user: privyUser } = usePrivy();
-  const walletAddress = useMemo(() => {
-    const wallets = ((privyUser?.linkedAccounts ?? []) as any[]).filter((a) => a?.type === 'wallet');
-    return wallets[0]?.address as `0x${string}` | undefined;
-  }, [privyUser]);
-
-  const { data: proTokenBalance } = useReadContract({
-    address: SOUL_KEY_ADDRESS,
-    abi: BALANCE_OF_ABI,
-    functionName: 'balanceOf',
-    args: walletAddress ? [walletAddress] : undefined,
-    query: { enabled: !!walletAddress },
-  });
-  const isPro = !!proTokenBalance && proTokenBalance > 0n;
+  const { ready, authenticated, getAccessToken } = usePrivy();
 
   const [selectedQuest, setSelectedQuest] = useState<DrawerQuest | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -107,6 +82,7 @@ export default function QuestsPage() {
   const [questCounts, setQuestCounts] = useState<Record<string, number>>({});
   const [customQuests, setCustomQuests] = useState<CustomQuest[]>([]);
   const [authoredQuests, setAuthoredQuests] = useState<CustomQuest[]>([]);
+  const [isPro, setIsPro] = useState(false);
   const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>(null);
   const [authorPanelOpen, setAuthorPanelOpen] = useState(false);
   const [filter, setFilter] = useState<QuestFilter>('all');
@@ -119,6 +95,28 @@ export default function QuestsPage() {
     const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
     return fetch(url, { credentials: 'include', cache: 'no-store', headers });
   }, [getAccessToken]);
+
+  useEffect(() => {
+    if (!ready || !authenticated) {
+      setIsPro(false);
+      return;
+    }
+
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetchWithAuth('/api/account/status');
+        const data = res.ok ? await res.json().catch(() => null) : null;
+        if (!cancelled) setIsPro(Boolean(data?.hasVipMembershipCard));
+      } catch {
+        if (!cancelled) setIsPro(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [authenticated, fetchWithAuth, ready]);
 
   const refreshQuestData = useCallback(async () => {
     if (!ready || !authenticated) {

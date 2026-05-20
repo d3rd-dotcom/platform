@@ -1,5 +1,5 @@
 import { providers, Wallet, Contract } from 'ethers';
-import { VIP_MEMBERSHIP_CARD_ADDRESS } from './soul-key';
+import { VIP_MEMBERSHIP_CARD_ADDRESS } from './vip-membership-card';
 
 /**
  * Blue's membership wallet — the wallet that holds the VIP Membership NFT

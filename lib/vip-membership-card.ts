@@ -1,6 +1,5 @@
-import { BigNumber, Contract, providers, utils } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 
-export const SOUL_KEY_ADDRESS = '0x39f259B58A9aB02d42bC3DF5836bA7fc76a8880F';
 export const VIP_MEMBERSHIP_CARD_ADDRESS =
   process.env.VIP_MEMBERSHIP_CARD_ADDRESS || '0x5da79055cf8ca6482c997df58822e08e5707d6fc';
 export const VIP_MEMBERSHIP_CARD_TOKEN_IDS = Array.from(new Set([
@@ -14,9 +13,6 @@ export const VIP_MEMBERSHIP_CARD_TOKEN_ID = BigInt(VIP_MEMBERSHIP_CARD_TOKEN_IDS
 export const VIP_MEMBERSHIP_CARD_FROM_BLOCK = Number(process.env.VIP_MEMBERSHIP_CARD_FROM_BLOCK || '45000000');
 const VIP_MEMBERSHIP_CARD_LOG_CHUNK_SIZE = Number(process.env.VIP_MEMBERSHIP_CARD_LOG_CHUNK_SIZE || '10000');
 
-const ERC721_BALANCE_ABI = [
-  'function balanceOf(address owner) view returns (uint256)',
-];
 const ERC1155_BALANCE_ABI = [
   'function balanceOf(address account, uint256 id) view returns (uint256)',
 ];
@@ -25,7 +21,6 @@ const ERC1155_EVENT_ABI = [
   'event TransferBatch(address indexed operator, address indexed from, address indexed to, uint256[] ids, uint256[] values)',
 ];
 
-let cached: { wallet: string; hasKey: boolean; expiresAt: number } | null = null;
 let vipCached: { wallet: string; hasCard: boolean; expiresAt: number } | null = null;
 let configuredVipCached: { wallet: string; hasCard: boolean; expiresAt: number } | null = null;
 const CACHE_TTL_MS = 60_000;
@@ -37,18 +32,11 @@ const transferBatchTopic = erc1155Interface.getEventTopic('TransferBatch');
 function getBaseRpcUrl(): string | null {
   const rpcUrl = process.env.VIP_MEMBERSHIP_CARD_RPC_URL || process.env.BASE_MAINNET_RPC_URL || 'https://mainnet.base.org';
   if (!rpcUrl) {
-    console.warn('[soul-key] Base mainnet RPC URL not configured');
+    console.warn('[vip-membership-card] Base mainnet RPC URL not configured');
     return null;
   }
 
   return rpcUrl;
-}
-
-function getProvider(): providers.JsonRpcProvider | null {
-  const rpcUrl = getBaseRpcUrl();
-  if (!rpcUrl) return null;
-
-  return new providers.StaticJsonRpcProvider(rpcUrl, { chainId: 8453, name: 'base' });
 }
 
 async function rpcRequest<T>(rpcUrl: string, method: string, params: unknown[]): Promise<T> {
@@ -62,32 +50,6 @@ async function rpcRequest<T>(rpcUrl: string, method: string, params: unknown[]):
     throw new Error(body?.error?.message || `RPC ${method} failed with status ${response.status}`);
   }
   return body.result as T;
-}
-
-export async function walletHoldsSoulKey(wallet: string | null | undefined): Promise<boolean> {
-  if (!wallet || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) return false;
-
-  const now = Date.now();
-  const normalized = wallet.toLowerCase();
-  if (cached && cached.wallet === normalized && cached.expiresAt > now) {
-    return cached.hasKey;
-  }
-
-  const provider = getProvider();
-  if (!provider) {
-    return false;
-  }
-
-  try {
-    const contract = new Contract(SOUL_KEY_ADDRESS, ERC721_BALANCE_ABI, provider);
-    const balance = await contract.balanceOf(wallet);
-    const hasKey = balance && balance.gt(0);
-    cached = { wallet: normalized, hasKey: !!hasKey, expiresAt: now + CACHE_TTL_MS };
-    return !!hasKey;
-  } catch (err) {
-    console.error('[soul-key] balanceOf failed:', err);
-    return false;
-  }
 }
 
 async function walletHasVipTokenId(rpcUrl: string, wallet: string, tokenId: string): Promise<boolean> {

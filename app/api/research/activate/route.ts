@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { getWalletAddressFromRequest } from '@/lib/wallet-auth';
-import { walletHoldsVipMembershipCard } from '@/lib/soul-key';
+import { walletHoldsVipMembershipCard } from '@/lib/vip-membership-card';
 import { isDbConfigured } from '@/lib/db';
 import { checkRateLimit, getRateLimitHeaders } from '@/lib/rate-limit';
 

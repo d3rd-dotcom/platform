@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getWalletAddressFromRequest } from '@/lib/wallet-auth';
-import { walletHoldsConfiguredVipMembershipCard } from '@/lib/soul-key';
+import { walletHoldsConfiguredVipMembershipCard } from '@/lib/vip-membership-card';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';

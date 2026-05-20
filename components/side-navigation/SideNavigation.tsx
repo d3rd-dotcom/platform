@@ -5,7 +5,7 @@ import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useAccount, useReadContract } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { usePrivy } from '@privy-io/react-auth';
 import type { IconProps } from '@phosphor-icons/react';
 import styles from './SideNavigation.module.css';
@@ -93,9 +93,6 @@ const primaryNavItems: NavItem[] = [
     iconSrc: '/icons/nav-community.svg',
   },
 ];
-
-const PRO_TOKEN_ADDRESS = '0x39f259B58A9aB02d42bC3DF5836bA7fc76a8880F' as const;
-const BALANCE_OF_ABI = [{ type: 'function', name: 'balanceOf', stateMutability: 'view', inputs: [{ name: 'account', type: 'address' }], outputs: [{ name: '', type: 'uint256' }] }] as const;
 
 interface SideNavigationProps {
   externalMobileOpen?: boolean;
@@ -189,7 +186,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const [isProfilePopupOpen, setIsProfilePopupOpen] = useState(false);
   const [isSoulModalOpen, setIsSoulModalOpen] = useState(false);
   const [userLoadComplete, setUserLoadComplete] = useState(false);
-  const [hasVipSoulKey, setHasVipSoulKey] = useState(false);
+  const [hasVipMembershipCard, setHasVipMembershipCard] = useState(false);
   const { play } = useSound();
   const sessionCreatedForRef = useRef<string | null>(null);
   const accountMenuRef = useRef<HTMLDivElement>(null);
@@ -236,39 +233,38 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     };
   }, [onExternalMobileClose, toggleCollapsed]);
 
-  const { data: proTokenBalance } = useReadContract({
-    address: PRO_TOKEN_ADDRESS,
-    abi: BALANCE_OF_ABI,
-    functionName: 'balanceOf',
-    args: address ? [address] : undefined,
-    query: { enabled: !!address },
-  });
-  const isPro = (!!proTokenBalance && proTokenBalance > 0n) || hasVipSoulKey;
+  const isPro = hasVipMembershipCard;
 
   useEffect(() => {
     let cancelled = false;
 
-    if (!address) {
-      setHasVipSoulKey(false);
+    if (!ready || !authenticated) {
+      setHasVipMembershipCard(false);
       return;
     }
 
-    window.fetch(`/api/account/status?walletAddress=${encodeURIComponent(address)}`, {
-      cache: 'no-store',
-      credentials: 'include',
-    })
-      .then((response) => response.ok ? response.json().catch(() => null) : null)
-      .then((status) => {
-        if (!cancelled) setHasVipSoulKey(Boolean(status?.hasVipMembershipCard));
-      })
-      .catch(() => {
-        if (!cancelled) setHasVipSoulKey(false);
-      });
+    (async () => {
+      try {
+        const token = await getAccessToken();
+        const url = address
+          ? `/api/account/status?walletAddress=${encodeURIComponent(address)}`
+          : '/api/account/status';
+        const response = await window.fetch(url, {
+          cache: 'no-store',
+          credentials: 'include',
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
+        const status = response.ok ? await response.json().catch(() => null) : null;
+        if (!cancelled) setHasVipMembershipCard(Boolean(status?.hasVipMembershipCard));
+      } catch {
+        if (!cancelled) setHasVipMembershipCard(false);
+      }
+    })();
 
     return () => {
       cancelled = true;
     };
-  }, [address]);
+  }, [address, authenticated, getAccessToken, ready]);
 
   // Create server session after wallet connects via ConnectKit
   const createSessionForWallet = async (walletAddress: string) => {

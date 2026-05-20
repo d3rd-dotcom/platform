@@ -34,10 +34,10 @@ const OPENSEA_URL =
   'https://opensea.io/item/base/0x5da79055cf8ca6482c997df58822e08e5707d6fc/1';
 
 const FEATURES = [
-  'One payment, lifetime access',
-  'Every lesson and tool we build',
-  'Lifetime magazine subscription',
-  'A learning path shaped around you',
+  "Unlock Blue's AI Power-Tools",
+  'Access Community Treasury',
+  'MWA-7B Model & Datasets',
+  'Lifetime Magazine Subscription',
 ];
 
 const ERC20_TRANSFER_ABI = ['function transfer(address to, uint256 amount) returns (bool)'];
@@ -683,6 +683,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
                 not a classroom. One membership unlocks the path to excellence.
               </p>
 
+              <p className={styles.benefitsHeading}>Benefits Include:</p>
               <ul className={styles.featureList}>
                 {FEATURES.map((feature) => (
                   <li key={feature} className={styles.featureItem}>

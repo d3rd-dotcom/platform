@@ -8,7 +8,7 @@ import { getClientIdentifier, checkRateLimit, getRateLimitHeaders } from '@/lib/
 import {
   walletHoldsVipMembershipCard,
   VIP_MEMBERSHIP_CARD_ADDRESS,
-} from '@/lib/soul-key';
+} from '@/lib/vip-membership-card';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
