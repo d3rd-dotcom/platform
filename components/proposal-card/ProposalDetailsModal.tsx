@@ -27,8 +27,6 @@ interface ProposalDetailsModalProps {
   onChainProposalId?: number | null;
   contractAddress?: string;
   onVoted?: () => void;
-  /** Shared treasury balance (whole USDC) shown as the funding source. */
-  treasuryUsd?: number;
   proposal: {
     id: string;
     title: string;
@@ -94,7 +92,6 @@ export default function ProposalDetailsModal({
   onChainProposalId,
   contractAddress,
   onVoted,
-  treasuryUsd,
   proposal,
 }: ProposalDetailsModalProps) {
   const { play } = useSound();
@@ -220,7 +217,6 @@ export default function ProposalDetailsModal({
           )}
 
           <FundingFlow
-            treasuryUsd={treasuryUsd ?? 0}
             proposer={{
               username: proposal.user.username,
               avatarUrl: proposal.user.avatarUrl,
@@ -236,25 +232,25 @@ export default function ProposalDetailsModal({
               <pre className={styles.markdownPre}>{proposal.proposalMarkdown}</pre>
             </div>
           </Accordion>
-        </div>
 
-        {/* Fixed bottom: Vote Yes / Vote No — only while voting is genuinely open
-            (on-chain Active, not past deadline, not executed). */}
-        {onChainProposalId &&
-          contractAddress &&
-          proposal.onChainData &&
-          proposal.onChainData.status === 1 &&
-          !proposal.onChainData.executed &&
-          (proposal.onChainData.votingDeadline === 0 ||
-            Date.now() / 1000 <= proposal.onChainData.votingDeadline) && (
-            <div className={styles.bottomSection}>
-              <VoteButton
-                onChainProposalId={onChainProposalId}
-                contractAddress={contractAddress}
-                onVoted={onVoted}
-              />
-            </div>
-          )}
+          {/* Vote Yes / No — directly under the proposal, only while voting is
+              genuinely open (on-chain Active, before deadline, not executed). */}
+          {onChainProposalId &&
+            contractAddress &&
+            proposal.onChainData &&
+            proposal.onChainData.status === 1 &&
+            !proposal.onChainData.executed &&
+            (proposal.onChainData.votingDeadline === 0 ||
+              Date.now() / 1000 <= proposal.onChainData.votingDeadline) && (
+              <div className={styles.voteSection}>
+                <VoteButton
+                  onChainProposalId={onChainProposalId}
+                  contractAddress={contractAddress}
+                  onVoted={onVoted}
+                />
+              </div>
+            )}
+        </div>
       </div>
     </div>
   );

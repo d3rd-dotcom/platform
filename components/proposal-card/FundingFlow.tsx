@@ -7,7 +7,6 @@ import styles from './FundingFlow.module.css';
 export type FlowOutcome = 'pending' | 'voting' | 'funded' | 'rejected' | 'expired';
 
 interface FundingFlowProps {
-  treasuryUsd: number;
   proposer: {
     username: string | null;
     avatarUrl: string | null;
@@ -40,8 +39,15 @@ const OUTCOME_LABEL: Record<FlowOutcome, string> = {
 
 const ZERO_ADDR = '0x0000000000000000000000000000000000000000';
 
+const Arrow = () => (
+  <div className={styles.arrow} aria-hidden="true">
+    <svg viewBox="0 0 40 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 4H36M36 4L32 1M36 4L32 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  </div>
+);
+
 const FundingFlow: React.FC<FundingFlowProps> = ({
-  treasuryUsd,
   proposer,
   requestedUsd,
   recipient,
@@ -53,23 +59,7 @@ const FundingFlow: React.FC<FundingFlowProps> = ({
 
   return (
     <div className={styles.flow} aria-label="Funding flow">
-      {/* Source: MWA treasury */}
-      <div className={styles.node}>
-        <div className={`${styles.avatar} ${styles.treasuryAvatar}`}>
-          <Image src="/icons/logo-mwa.png" alt="MWA Treasury" width={28} height={28} unoptimized />
-        </div>
-        <span className={styles.role}>Treasury</span>
-        <span className={styles.value}>{usd(treasuryUsd)}</span>
-      </div>
-
-      <div className={styles.arrow} aria-hidden="true">
-        <span className={styles.arrowAmount}>{usd(requestedUsd)}</span>
-        <svg viewBox="0 0 40 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0 4H36M36 4L32 1M36 4L32 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </div>
-
-      {/* Proposer */}
+      {/* 1. Proposer */}
       <div className={styles.node}>
         {proposer.avatarUrl ? (
           <Image src={proposer.avatarUrl} alt={proposerName} width={40} height={40} className={styles.avatar} unoptimized />
@@ -80,13 +70,20 @@ const FundingFlow: React.FC<FundingFlowProps> = ({
         <span className={styles.value} title={proposer.walletAddress}>{proposerName}</span>
       </div>
 
-      <div className={styles.arrow} aria-hidden="true">
-        <svg viewBox="0 0 40 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0 4H36M36 4L32 1M36 4L32 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+      <Arrow />
+
+      {/* 2. Requested amount (from the treasury) */}
+      <div className={styles.node}>
+        <div className={`${styles.avatar} ${styles.treasuryAvatar}`}>
+          <Image src="/icons/logo-mwa.png" alt="MWA Treasury" width={28} height={28} unoptimized />
+        </div>
+        <span className={styles.role}>Requested</span>
+        <span className={styles.value}>{usd(requestedUsd)}</span>
       </div>
 
-      {/* Recipient + outcome */}
+      <Arrow />
+
+      {/* 3. Recipient + outcome */}
       <div className={styles.node}>
         {hasRecipient ? (
           <div className={`${styles.avatar} ${styles.recipientAvatar}`}>
