@@ -10,11 +10,17 @@ export async function ensureGeneratedTestsSchema() {
       title VARCHAR(80) NOT NULL,
       shard_reward INTEGER NOT NULL,
       source VARCHAR(32) NOT NULL,
+      questions JSONB NULL,
+      answers JSONB NULL,
       completed_at TIMESTAMP NULL,
       created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     )
   `);
+
+  // Backfill columns on tables created before answer collection existed.
+  await sqlQuery(`ALTER TABLE generated_tests ADD COLUMN IF NOT EXISTS questions JSONB`);
+  await sqlQuery(`ALTER TABLE generated_tests ADD COLUMN IF NOT EXISTS answers JSONB`);
 
   await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_generated_tests_user_id ON generated_tests(user_id)`);
 }

@@ -114,16 +114,16 @@ export default function SignFormModal({ difficulty, shardReward, onLaunch, onClo
 
           <div className={styles.legalBlock}>
             <div className={styles.legalSection}>
-              <span className={styles.legalHeading}>Your Answers Stay Yours</span>
+              <span className={styles.legalHeading}>Your Answers Count</span>
               <p className={styles.legalText}>
-                Your responses are never sold or tied to your identity. Anonymized patterns help improve the research — that&apos;s it.
+                Your responses are saved to your account so Blue can grade them and credit your shards. They also help build better models for the community.
               </p>
             </div>
 
             <div className={styles.legalSection}>
-              <span className={styles.legalHeading}>This Is a Survey, Not a Test</span>
+              <span className={styles.legalHeading}>This Is a Graded Test</span>
               <p className={styles.legalText}>
-                There are no right answers. These questions explore how you think and decide — for research purposes only, not diagnosis or clinical advice.
+                There are right and wrong answers, and Blue grades every one. Higher difficulty means harder questions and a bigger shard payout. It&apos;s for the Academy, not medical or clinical advice.
               </p>
             </div>
           </div>

@@ -1,6 +1,9 @@
 export const TEST_DIFFICULTY_MIN = 80;
 export const TEST_DIFFICULTY_MAX = 200;
 
+// Minimum characters required for a short-answer response (UI gate + server check).
+export const MIN_SHORT_ANSWER_CHARS = 100;
+
 export function clampTestDifficulty(value: unknown): number {
   return Math.max(TEST_DIFFICULTY_MIN, Math.min(TEST_DIFFICULTY_MAX, Number(value) || 101));
 }

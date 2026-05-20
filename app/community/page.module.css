@@ -1621,6 +1621,18 @@
 
 .communityMainWrapper {
   --color-tertiary: var(--color-primary);
+  --community-light-shadow-color: 132, 112, 208;
+  --community-light-shadow-low:
+    0 5px 14px rgba(var(--community-light-shadow-color), 0.08),
+    0 1px 4px rgba(76, 63, 142, 0.04);
+  --community-light-shadow-mid:
+    0 8px 20px rgba(var(--community-light-shadow-color), 0.1),
+    0 2px 8px rgba(76, 63, 142, 0.045);
+  --community-light-shadow-hero:
+    0 10px 24px rgba(var(--community-light-shadow-color), 0.12),
+    0 2px 8px rgba(76, 63, 142, 0.05);
+  --community-light-card-border: rgba(102, 86, 185, 0.3);
+  --community-light-card-border-strong: rgba(102, 86, 185, 0.42);
   width: 100%;
   padding: 20px 24px 28px;
   margin: 0;
@@ -1631,18 +1643,20 @@
   --dashboard-bg:
     radial-gradient(circle at 100% 0%, rgba(81, 104, 255, 0.08), transparent 34%),
     linear-gradient(180deg, rgba(246, 247, 252, 0.96) 0%, rgba(236, 238, 248, 0.92) 100%);
-  --dashboard-border: rgba(26, 27, 36, 0.08);
+  --dashboard-border: var(--community-light-card-border-strong);
   --dashboard-divider: rgba(26, 27, 36, 0.08);
   --dashboard-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.86),
-    0 10px 28px rgba(26, 27, 36, 0.08);
+    var(--community-light-shadow-mid);
   --dashboard-control-bg: rgba(26, 27, 36, 0.035);
-  --dashboard-control-border: rgba(26, 27, 36, 0.08);
+  --dashboard-control-border: rgba(102, 86, 185, 0.24);
   --dashboard-panel-bg:
     radial-gradient(circle at 100% 0%, rgba(81, 104, 255, 0.12), transparent 38%),
     rgba(255, 255, 255, 0.72);
-  --dashboard-panel-border: rgba(26, 27, 36, 0.08);
-  --dashboard-panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.78);
+  --dashboard-panel-border: var(--community-light-card-border);
+  --dashboard-panel-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.78),
+    var(--community-light-shadow-low);
   --dashboard-title-color: var(--color-text-dark);
   --dashboard-title-accent: var(--color-primary);
   --dashboard-text-color: rgba(26, 27, 36, 0.9);
@@ -2123,10 +2137,12 @@
   width: auto;
   min-width: 232px;
   padding: 14px 16px;
-  border: 1px solid rgba(17, 17, 18, 0.14);
+  border: 1px solid var(--community-light-card-border-strong);
   border-radius: 16px;
   background: #ffffff;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.92);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.92),
+    var(--community-light-shadow-low);
   cursor: pointer;
   transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
   text-align: left;
@@ -2134,8 +2150,10 @@
 
 .proposalsEntryButton:hover {
   transform: translateY(-1px);
-  border-color: rgba(17, 17, 18, 0.24);
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.08);
+  border-color: rgba(102, 86, 185, 0.58);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.92),
+    var(--community-light-shadow-mid);
 }
 
 .overviewProposalsCta {}
@@ -2213,8 +2231,10 @@
   padding: 16px 18px;
   border-radius: 16px;
   background: #f7f7f8;
-  border: 1px solid rgba(17, 17, 18, 0.14);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--community-light-card-border);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    var(--community-light-shadow-low);
 }
 
 .dashboardMetricLabel {
@@ -2282,7 +2302,7 @@
   border-radius: 14px;
   border: 1px solid rgba(129, 144, 255, 0.25);
   background: #090d18;
-  box-shadow: 0 14px 36px rgba(26, 27, 36, 0.1);
+  box-shadow: 0 10px 28px rgba(26, 27, 36, 0.08);
   isolation: isolate;
 }
 
@@ -2311,8 +2331,9 @@
 }
 
 :global(:root:not([data-theme="dark"])) .communityHero {
-  background: #eef1fb;
-  border-color: rgba(129, 144, 255, 0.3);
+  background: #f1efff;
+  border-color: rgba(148, 128, 229, 0.24);
+  box-shadow: var(--community-light-shadow-hero);
 }
 
 :global(:root:not([data-theme="dark"])) .communityHero::before {
@@ -2423,10 +2444,10 @@
   padding: 20px;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.96);
-  border: 1px solid rgba(81, 104, 255, 0.12);
+  border: 1px solid var(--community-light-card-border);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    0 12px 28px rgba(26, 27, 36, 0.08);
+    var(--community-light-shadow-low);
 }
 
 .dashCardHeader {
@@ -2612,7 +2633,7 @@
   gap: 8px;
   border-color: rgba(255, 255, 255, 0.12);
   background-color: #0b0e1c;
-  box-shadow: 0 14px 36px rgba(26, 27, 36, 0.18);
+  box-shadow: 0 10px 28px rgba(26, 27, 36, 0.12);
 }
 
 /* Background photo — bleeds 2px past every edge so no sliver shows at the card border */
@@ -2648,7 +2669,8 @@
 /* Light-mode: swap to the light photo, lighten the overlay, darken the text */
 :global(:root:not([data-theme="dark"])) .fundingVillageCard {
   background-color: #eef1fb;
-  border-color: rgba(129, 144, 255, 0.3);
+  border-color: var(--community-light-card-border-strong);
+  box-shadow: var(--community-light-shadow-mid);
 }
 
 :global(:root:not([data-theme="dark"])) .fundingVillageCard::after {
@@ -3018,8 +3040,14 @@
   gap: 12px;
   border-color: rgba(255, 255, 255, 0.12);
   background: linear-gradient(150deg, #6175ff 0%, #5168ff 48%, #3f4fd6 100%);
-  box-shadow: 0 12px 28px rgba(81, 104, 255, 0.28);
+  box-shadow: 0 9px 20px rgba(94, 88, 214, 0.2);
   color: #ffffff;
+}
+
+:global(:root:not([data-theme="dark"])) .treasuryBalanceCard,
+:global(:root:not([data-theme="dark"])) .recentActivityCard,
+:global(:root:not([data-theme="dark"])) .communityChatCard {
+  border-color: rgba(102, 86, 185, 0.44);
 }
 
 .treasuryBalanceCard > * {
@@ -3134,7 +3162,7 @@
   overflow: hidden;
   border-color: rgba(255, 255, 255, 0.12);
   background: linear-gradient(150deg, #6175ff 0%, #5168ff 48%, #3f4fd6 100%);
-  box-shadow: 0 12px 28px rgba(81, 104, 255, 0.28);
+  box-shadow: 0 9px 20px rgba(94, 88, 214, 0.2);
 }
 
 .recentActivityCard > * {
@@ -4774,6 +4802,15 @@
     grid-template-columns: 1fr;
   }
 }
+
+:global(:root:not([data-theme="dark"])) .votingSection,
+:global(:root:not([data-theme="dark"])) .emptyState,
+:global(:root:not([data-theme="dark"])) .loadingState,
+:global(:root:not([data-theme="dark"])) .errorState {
+  border-color: var(--community-light-card-border-strong);
+  box-shadow: var(--community-light-shadow-low);
+}
+
 /* ==================== DARK MODE ==================== */
 
 :global([data-theme="dark"]) .eyebrow {
@@ -5022,8 +5059,8 @@
   padding: 18px;
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.76);
-  border: 1px solid rgba(17, 17, 18, 0.08);
-  box-shadow: 0 12px 32px rgba(26, 29, 51, 0.06);
+  border: 1px solid var(--community-light-card-border);
+  box-shadow: var(--community-light-shadow-low);
 }
 
 .proposalSkeletonHeader,

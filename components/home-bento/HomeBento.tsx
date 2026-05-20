@@ -5,6 +5,7 @@ import { usePrivy } from '@privy-io/react-auth';
 import CourseIntake from '@/components/course-intake/CourseIntake';
 import Dashboard from '@/components/dashboard/Dashboard';
 import AgentRosterCard from '@/components/room-log/AgentRosterCard';
+import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
 import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
 import { DotmSquare3 } from '@/components/dot-matrix/DotmSquare3';
 import type { CourseData, IntakeAnswers } from '@/lib/personal-course';
@@ -26,6 +27,9 @@ const GEN_STEPS = [
   'Designing missions tuned to your pace…',
   'Putting the finishing touches on it…',
 ];
+
+const HOME_BLUE_MESSAGE =
+  'I keep your course, shards, agents, and daily work in one place. Pick the next task that can leave evidence today.';
 
 export default function HomeBento() {
   const { ready } = usePrivy();
@@ -127,6 +131,11 @@ export default function HomeBento() {
   if (phase === 'ready' && course?.courseData) {
     return (
       <div className={styles.bentoScroll}>
+        <BlueChatBubble
+          className={styles.homeBlueBubble}
+          message={HOME_BLUE_MESSAGE}
+          variant="featured"
+        />
         <Dashboard
           course={course.courseData}
           initialIntake={course.intakeData}
@@ -139,6 +148,11 @@ export default function HomeBento() {
   // intake
   return (
     <div className={styles.bentoScroll}>
+      <BlueChatBubble
+        className={styles.homeBlueBubble}
+        message={HOME_BLUE_MESSAGE}
+        variant="featured"
+      />
       {errorMsg && (
         <div className={styles.intakeNotice} role="alert">
           {errorMsg}

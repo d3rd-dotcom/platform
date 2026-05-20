@@ -820,7 +820,7 @@
 .panelStatusCard {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
   padding: 20px 22px;
   border-radius: 24px;
   background:
@@ -832,17 +832,8 @@
 .panelStatusHeader {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 12px;
-}
-
-.panelStatusEyebrow {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--week-color, #5168FF);
 }
 
 .panelStatusClose {
@@ -856,21 +847,8 @@
   color: rgba(26, 29, 51, 0.48);
 }
 
-.panelStatusTitle {
-  margin: 0;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 1.1;
-  color: #1A1D33;
-}
-
-.panelStatusCopy {
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  line-height: 1.65;
-  color: rgba(26, 29, 51, 0.6);
+.panelStatusBubble {
+  width: 100%;
 }
 
 @keyframes panelSlideIn {
@@ -1009,6 +987,10 @@
   display: flex;
   padding: 12px 20px 8px;
   min-height: 0;
+}
+
+.sessionBubbleWrap {
+  padding: 4px 20px 0;
 }
 
 .noteBottom {
@@ -1313,6 +1295,10 @@
     padding: 0;
   }
 
+  .sessionBubbleWrap {
+    padding: 6px 16px 10px;
+  }
+
   .noteBottom {
     gap: 8px;
     padding: 10px 16px 10px;
@@ -1499,6 +1485,10 @@
 
   .writeArea {
     padding: 0;
+  }
+
+  .sessionBubbleWrap {
+    padding: 6px 14px 10px;
   }
 
   .promptPill {
@@ -1774,14 +1764,6 @@
 
 :global([data-theme="dark"]) .panelStatusClose:hover {
   color: rgba(244, 247, 255, 0.92);
-}
-
-:global([data-theme="dark"]) .panelStatusTitle {
-  color: rgba(244, 247, 255, 0.96);
-}
-
-:global([data-theme="dark"]) .panelStatusCopy {
-  color: rgba(214, 223, 242, 0.72);
 }
 
 :global([data-theme="dark"]) .sessionBadge {

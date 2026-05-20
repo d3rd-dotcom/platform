@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
+import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
 import { useSound } from '@/hooks/useSound';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import styles from './DailyNotes.module.css';
@@ -42,6 +43,8 @@ interface DailyNotesProps {
 }
 
 const MOBILE_PROMPT_MESSAGE = 'Dumping out my brain...';
+const WRITING_BLUE_MESSAGE =
+  'Write without polishing. I keep proof you showed up, not a score for the prose.';
 
 const WEEK_COLORS = [
   '#5168FF', // Week 1 — indigo
@@ -125,6 +128,22 @@ export default function DailyNotes({
   const weekColor = WEEK_COLORS[(currentWeek - 1) % WEEK_COLORS.length];
   const authPending = authenticated && !enablePersistence;
 
+  // Dev-only bypass: append ?devnotes to the URL to open the writing component
+  // without auth (nothing persists to the server). Ignored in production builds.
+  const [devBypass, setDevBypass] = useState(false);
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'production') return;
+    try {
+      if (new URLSearchParams(window.location.search).has('devnotes')) {
+        setDevBypass(true);
+      }
+    } catch {
+      /* no-op */
+    }
+  }, []);
+  // Gate that controls whether a writing session can start (auth OR dev bypass).
+  const gateOpen = enablePersistence || devBypass;
+
   useScrollLock(showAuthPrompt || timerActive);
 
   const previousWeekCount = currentWeek === 1
@@ -143,6 +162,16 @@ export default function DailyNotes({
   const todayDone = morningPages.some(e => e.date === todayDateStr);
   const weekComplete = morningPages.length >= 7;
   const totalCompleted = Object.values(allWeekPages).reduce((sum, pages) => sum + pages.length, 0);
+
+  const panelBlueMessage = !dataReady
+    ? 'I am checking your saved pages. Hold the line for a moment.'
+    : todayDone
+      ? 'I already have today’s page. Come back tomorrow for the next writing session.'
+      : weekComplete
+        ? 'This week is complete. Seven entries are on the record.'
+        : !isWeekUnlocked
+          ? 'Finish the previous week first. The next page opens after seven completed entries.'
+          : 'A new morning page will unlock tomorrow. One entry per day keeps the practice clean.';
 
   const formatTimer = (s: number) =>
     `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
@@ -196,7 +225,7 @@ export default function DailyNotes({
     if (activeDayIndex === null) return;
     if (!enablePersistence) {
       closeSession();
-      setShowAuthPrompt(true);
+      if (!devBypass) setShowAuthPrompt(true);
       return;
     }
     if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
@@ -372,7 +401,7 @@ export default function DailyNotes({
 
 
   const handleAttemptStart = useCallback((dayIndex: number) => {
-    if (!enablePersistence) {
+    if (!gateOpen) {
       play('click');
       setShowAuthPrompt(true);
       return;
@@ -380,7 +409,7 @@ export default function DailyNotes({
 
     play('click');
     startTimer(dayIndex);
-  }, [enablePersistence, play, startTimer]);
+  }, [gateOpen, play, startTimer]);
 
   const canStart = dataReady && isWeekUnlocked && !weekComplete && !todayDone && availableDayIndex >= 0;
   const cardSubLabel = 'daily reflection and notes';
@@ -394,16 +423,16 @@ export default function DailyNotes({
   }, [authPending, login, play, ready]);
 
   useEffect(() => {
-    if (!queuedCompactStart || !enablePersistence || !dataReady) return;
+    if (!queuedCompactStart || !gateOpen || !dataReady) return;
 
     setQueuedCompactStart(false);
     if (canStart) {
       handleAttemptStart(availableDayIndex);
     }
-  }, [availableDayIndex, canStart, dataReady, enablePersistence, handleAttemptStart, queuedCompactStart]);
+  }, [availableDayIndex, canStart, dataReady, gateOpen, handleAttemptStart, queuedCompactStart]);
 
   useEffect(() => {
-    if (!panelMode || !enablePersistence || !dataReady) return;
+    if (!panelMode || !gateOpen || !dataReady) return;
     if (timerActive || activeDayIndex !== null) return;
     if (!canStart) return;
 
@@ -414,7 +443,7 @@ export default function DailyNotes({
     beginWritingSession,
     canStart,
     dataReady,
-    enablePersistence,
+    gateOpen,
     panelMode,
     timerActive,
   ]);
@@ -423,7 +452,7 @@ export default function DailyNotes({
     if (!compact) return;
 
     if (onCompactClick) {
-      if (!enablePersistence) {
+      if (!gateOpen) {
         play('click');
         setShowAuthPrompt(true);
         return;
@@ -434,7 +463,7 @@ export default function DailyNotes({
       return;
     }
 
-    if (!enablePersistence) {
+    if (!gateOpen) {
       play('click');
       setShowAuthPrompt(true);
       return;
@@ -487,6 +516,13 @@ export default function DailyNotes({
               {isPaused ? 'paused' : formatTimer(timerSeconds)}
             </span>
             <span className={styles.modalHeaderEnd} aria-hidden="true" />
+          </div>
+
+          <div className={styles.sessionBubbleWrap}>
+            <BlueChatBubble
+              message={WRITING_BLUE_MESSAGE}
+              variant="compact"
+            />
           </div>
 
           <div className={styles.writeArea}>
@@ -619,7 +655,6 @@ export default function DailyNotes({
         {!timerActive && (
           <div className={styles.panelStatusCard} style={{ '--week-color': weekColor } as React.CSSProperties}>
             <div className={styles.panelStatusHeader}>
-              <span className={styles.panelStatusEyebrow}>Morning Pages</span>
               <button
                 type="button"
                 className={styles.panelStatusClose}
@@ -633,28 +668,13 @@ export default function DailyNotes({
                 Close
               </button>
             </div>
-            <p className={styles.panelStatusTitle}>
-              {!dataReady
-                ? 'Loading your writing session...'
-                : todayDone
-                  ? 'Today’s morning page is already complete.'
-                  : weekComplete
-                    ? 'This week’s morning pages are complete.'
-                    : !isWeekUnlocked
-                      ? 'Finish the previous week to unlock this page.'
-                      : 'A new morning page will unlock tomorrow.'}
-            </p>
-            <p className={styles.panelStatusCopy}>
-              {!dataReady
-                ? 'Fetching your saved progress.'
-                : todayDone
-                  ? 'Come back tomorrow for the next writing session.'
-                  : weekComplete
-                    ? 'You finished all seven entries for this week.'
-                  : !isWeekUnlocked
-                    ? 'Morning pages unlock one week at a time after seven completed entries.'
-                    : 'You can only submit one morning page per day.'}
-            </p>
+            <BlueChatBubble
+              className={styles.panelStatusBubble}
+              message={panelBlueMessage}
+              variant="featured"
+              context="Review"
+              ariaLive="polite"
+            />
           </div>
         )}
 
@@ -694,7 +714,7 @@ export default function DailyNotes({
                     <div className={styles.authPromptAvatarHalo} />
                     <div className={styles.authPromptAvatarBase} />
                     <Image
-                      src="/uploads/blueagent.png"
+                      src="/images/blue-portrait.png"
                       alt=""
                       width={220}
                       height={260}
@@ -912,7 +932,7 @@ export default function DailyNotes({
                   <div className={styles.authPromptAvatarHalo} />
                   <div className={styles.authPromptAvatarBase} />
                   <Image
-                    src="/uploads/blueagent.png"
+                    src="/images/blue-portrait.png"
                     alt=""
                     width={220}
                     height={260}

@@ -100,16 +100,18 @@ export default function SurveyController({
 
   return (
     <div className={styles.controller}>
-      <div className={styles.topWrapper}>
-        <div className={styles.headerRow}>
-          <span className={styles.userName}>{userName}</span>
-          <span className={styles.version}>{version}</span>
+      {/* Hero */}
+      <section className={styles.hero}>
+        <div className={styles.heroText}>
+          <span className={styles.eyebrow}>Assessment engine</span>
+          <h1 className={styles.heroTitle}>{userName}</h1>
         </div>
-        <div className={styles.controlRow}>
-          <span className={styles.controlLabel}>Character set</span>
-          <span className={styles.controlLabel}>Persona</span>
-        </div>
+        <span className={styles.heroVersion}>{version}</span>
+      </section>
 
+      {/* Persona selector */}
+      <div className={styles.persona}>
+        <span className={styles.eyebrow}>Persona</span>
         <div className={styles.dropdownOuter} ref={dropdownRef}>
           <button
             type="button"
@@ -155,8 +157,9 @@ export default function SurveyController({
         </div>
       </div>
 
-      <div className={styles.imagePanel} ref={imagePanelRef}>
-        <div className={styles.imageWrapper}>
+      {/* Character video / blue panel */}
+      <div className={styles.videoPanel} ref={imagePanelRef}>
+        <div className={styles.videoWrapper}>
           {characterImageSrc.endsWith('.mp4') ? (
             shouldLoadVideo ? (
               <>
@@ -193,43 +196,46 @@ export default function SurveyController({
             <div className={styles.imagePlaceholder} />
           )}
         </div>
-      </div>
-
-      <div className={styles.controls}>
-        <div className={styles.controlRow}>
-          <span className={styles.controlLabel}>Test scale</span>
-          <div className={styles.controlMetrics}>
-            <span className={styles.controlLabel}>{difficulty}</span>
-            <div className={styles.shardRewardBox} aria-label={`${shardReward} shards earned for this test`}>
-              <Image src="/icons/ui-shard.svg" alt="" width={18} height={18} className={styles.shardIcon} />
-              <div className={styles.shardRewardText}>
-                <span className={styles.shardRewardValue}>+{shardReward} reward</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className={styles.scaler}>
-          <div className={styles.sliderWrapper}>
-            <input
-              type="range"
-              min={min}
-              max={max}
-              value={difficulty}
-              onChange={handleDifficultyChange}
-              className={styles.slider}
-              style={{ '--progress': `${progress}%` } as React.CSSProperties}
-            />
-          </div>
-          <p className={styles.helperText}>
-            Higher difficulty means harder questions and a larger shard payout.
+        <div className={styles.videoReview}>
+          <div className={styles.videoReviewEyebrow}>{selectedPersona.label} · review</div>
+          <p className={styles.videoReviewText}>
+            I will read every answer and score this attempt. Pick your scale, sign the form, and we begin.
           </p>
         </div>
-
-        <button className={styles.ctaButton} onClick={onSignForm} type="button">
-          Sign Form To Begin
-        </button>
       </div>
+
+      {/* Difficulty scale */}
+      <section className={styles.scaleCard}>
+        <div className={styles.row}>
+          <span className={styles.eyebrow}>Test scale</span>
+          <div className={styles.shardBadge} aria-label={`${shardReward} shards earned for this test`}>
+            <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} className={styles.shardIcon} />
+            +{shardReward} shards
+          </div>
+        </div>
+
+        <div className={styles.scaleStatRow}>
+          <span className={styles.scaleStat}>{difficulty}</span>
+          <span className={styles.scaleStatUnit}>difficulty</span>
+        </div>
+
+        <input
+          type="range"
+          min={min}
+          max={max}
+          value={difficulty}
+          onChange={handleDifficultyChange}
+          className={styles.slider}
+          style={{ '--progress': `${progress}%` } as React.CSSProperties}
+        />
+        <p className={styles.helperText}>
+          Higher difficulty means harder questions and a larger shard payout.
+        </p>
+      </section>
+
+      <button className={styles.cta} onClick={onSignForm} type="button">
+        Sign form to begin
+      </button>
     </div>
   );
 }

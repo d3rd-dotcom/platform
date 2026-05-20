@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './BlueTerminal.module.css';
 import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
+import { MIN_SHORT_ANSWER_CHARS } from '@/lib/test-rewards';
 
 const OPTION_LETTERS = ['A', 'B', 'C', 'D', 'E'];
 
@@ -129,8 +130,10 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
   };
 
   const submitShortAnswer = () => {
-    if (!question || !shortAnswer.trim()) return;
-    setAnswers(prev => ({ ...prev, [question.id]: shortAnswer.trim() }));
+    if (!question) return;
+    const trimmed = shortAnswer.trim();
+    if (trimmed.length < MIN_SHORT_ANSWER_CHARS) return;
+    setAnswers(prev => ({ ...prev, [question.id]: trimmed }));
     setShortAnswer('');
     if (!isLastQ) {
       setTimeout(() => setCurrentQ(q => q + 1), 200);
@@ -255,14 +258,24 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
                     rows={5}
                   />
                   {answers[question.id] === undefined && (
-                    <button
-                      className={styles.confirmBtn}
-                      onClick={submitShortAnswer}
-                      disabled={!shortAnswer.trim()}
-                      type="button"
-                    >
-                      Save response
-                    </button>
+                    <div className={styles.shortAnswerFooter}>
+                      <span
+                        className={styles.charCount}
+                        data-met={shortAnswer.trim().length >= MIN_SHORT_ANSWER_CHARS}
+                      >
+                        {shortAnswer.trim().length < MIN_SHORT_ANSWER_CHARS
+                          ? `${shortAnswer.trim().length} / ${MIN_SHORT_ANSWER_CHARS} characters`
+                          : `${shortAnswer.trim().length} characters`}
+                      </span>
+                      <button
+                        className={styles.confirmBtn}
+                        onClick={submitShortAnswer}
+                        disabled={shortAnswer.trim().length < MIN_SHORT_ANSWER_CHARS}
+                        type="button"
+                      >
+                        Save response
+                      </button>
+                    </div>
                   )}
                 </div>
               )}

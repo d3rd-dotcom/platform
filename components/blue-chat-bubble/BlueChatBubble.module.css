@@ -1,0 +1,148 @@
+/* Panel: [avatar] [ label + Blue's message bubble ] inside a soft card. */
+.shell {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 20, 40, 0.08);
+  box-shadow: 0 10px 30px rgba(15, 20, 40, 0.06);
+}
+
+.avatar {
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid rgba(15, 20, 40, 0.1);
+  background: #0c0d17;
+}
+
+.avatar :global(img) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sender {
+  display: inline-flex;
+  align-items: center;
+  min-height: 18px;
+  padding: 0 2px;
+  font-family: var(--font-departure-mono), 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: rgba(81, 104, 255, 0.86);
+}
+
+.context {
+  color: rgba(81, 104, 255, 0.6);
+}
+
+.bubble {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 12px;
+  background: #f2f3f8;
+  border: 1px solid rgba(15, 20, 40, 0.06);
+}
+
+.message {
+  margin: 0;
+  font-family: var(--font-poppins), 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.55;
+  color: #1a1d2e;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Variants */
+.featured {
+  padding: 18px 20px;
+}
+
+.featured .message {
+  font-size: 14px;
+  line-height: 1.58;
+}
+
+.compact {
+  gap: 10px;
+  padding: 13px 14px;
+  border-radius: 12px;
+}
+
+.compact .avatar {
+  width: 46px;
+  height: 46px;
+}
+
+.compact .body {
+  gap: 6px;
+}
+
+.compact .bubble {
+  padding: 10px 13px;
+}
+
+.compact .message {
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* Dark theme — matches the panel design (#0c0d17 card, lifted dark bubble). */
+:global([data-theme="dark"]) .shell {
+  background: #0c0d17;
+  border-color: rgba(120, 140, 255, 0.16);
+  box-shadow:
+    0 12px 34px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+:global([data-theme="dark"]) .avatar {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+:global([data-theme="dark"]) .sender {
+  color: rgba(139, 160, 255, 0.92);
+}
+
+:global([data-theme="dark"]) .context {
+  color: rgba(139, 160, 255, 0.62);
+}
+
+:global([data-theme="dark"]) .bubble {
+  background: #14172a;
+  border-color: rgba(120, 140, 255, 0.14);
+}
+
+:global([data-theme="dark"]) .message {
+  color: #eef0fb;
+}
+
+@media (max-width: 560px) {
+  .shell {
+    padding: 14px 15px;
+  }
+
+  .featured .message {
+    font-size: 13px;
+  }
+}

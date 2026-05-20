@@ -54,7 +54,16 @@ async function requestTts(path: string, text: string, voiceId?: string, modelId?
   });
 }
 
+// Kill switch — voice TTS is OFF unless VOICE_TTS_ENABLED=true.
+// Keeps ElevenLabs (and the Eliza fallback) from burning credits. Callers
+// treat a null-audio response as "no voice" and silently skip playback.
+const TTS_ENABLED = process.env.VOICE_TTS_ENABLED === 'true';
+
 export async function POST(req: NextRequest) {
+  if (!TTS_ENABLED) {
+    return NextResponse.json({ audio: null, disabled: true });
+  }
+
   if (!ELEVENLABS_API_KEY && !ELIZA_API_KEY) {
     return NextResponse.json({ error: 'TTS not configured' }, { status: 500 });
   }

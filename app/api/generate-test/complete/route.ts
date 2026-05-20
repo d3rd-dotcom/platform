@@ -2,6 +2,12 @@ import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQueryWithClient, withTransaction } from '@/lib/db';
 import { ensureGeneratedTestsSchema } from '@/lib/ensureGeneratedTestsSchema';
+import { MIN_SHORT_ANSWER_CHARS } from '@/lib/test-rewards';
+
+interface StoredQuestion {
+  id: number;
+  type: 'multiple_choice' | 'short_answer' | 'scale';
+}
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -37,6 +43,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Complete all questions before submitting.' }, { status: 400 });
   }
 
+  const answersJson = JSON.stringify(body.answers);
+
   await ensureGeneratedTestsSchema();
 
   try {
@@ -58,15 +66,34 @@ export async function POST(request: Request) {
         throw new Error('WEEKLY_LIMIT');
       }
 
+      // Enforce the short-answer minimum against the stored questions.
+      const questionRows = await sqlQueryWithClient<Array<{ questions: StoredQuestion[] | null }>>(
+        client,
+        `SELECT questions FROM generated_tests WHERE id = :testId AND user_id = :userId`,
+        { testId, userId: user.id }
+      );
+      const storedQuestions = questionRows[0]?.questions;
+      if (Array.isArray(storedQuestions)) {
+        const answers = body.answers as Record<string, unknown>;
+        const tooShort = storedQuestions.some((q) =>
+          q?.type === 'short_answer' &&
+          String(answers?.[q.id] ?? '').trim().length < MIN_SHORT_ANSWER_CHARS
+        );
+        if (tooShort) {
+          throw new Error('SHORT_ANSWER_TOO_SHORT');
+        }
+      }
+
       const testRows = await sqlQueryWithClient<Array<{ shard_reward: number }>>(
         client,
         `UPDATE generated_tests
-         SET completed_at = CURRENT_TIMESTAMP
+         SET completed_at = CURRENT_TIMESTAMP,
+             answers = :answers::jsonb
          WHERE id = :testId
            AND user_id = :userId
            AND completed_at IS NULL
          RETURNING shard_reward`,
-        { testId, userId: user.id }
+        { testId, userId: user.id, answers: answersJson }
       );
 
       if (testRows.length === 0) {
@@ -95,6 +122,13 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: 'You already earned shards from a survey this week. Come back next week for another.' },
         { status: 429 }
+      );
+    }
+
+    if (error instanceof Error && error.message === 'SHORT_ANSWER_TOO_SHORT') {
+      return NextResponse.json(
+        { error: `Each written answer needs at least ${MIN_SHORT_ANSWER_CHARS} characters.` },
+        { status: 400 }
       );
     }
 

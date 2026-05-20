@@ -28,12 +28,13 @@ Return ONLY valid JSON — no markdown fences, no explanation, no extra text. Ma
 
 Rules:
 - Generate exactly 8 questions
-- Question mix: 5 multiple_choice (4 options each), 2 scale (omit options field), 1 short_answer (omit options field)
+- Question mix: 5 short_answer (omit options field), 2 multiple_choice (4 options each), 1 scale (omit options field)
+- Short_answer questions must be the majority — they are the core of this survey
 - Valid categories: COGNITIVE PATTERN, BEHAVIORAL TENDENCY, SELF-ASSESSMENT, STRESS RESPONSE, EMOTIONAL AWARENESS, DECISION MAKING, SOCIAL DYNAMICS, MENTAL AGILITY
 - Difficulty 80=accessible 6th-grade reading level, 140=college level, 200=expert complexity — scale vocabulary, abstraction, and conceptual depth accordingly
 - Questions must be honest, grounded, and thought-provoking — never therapy-speak, never HR jargon, never generic self-help
+- For short_answer: open-ended and specific, demanding a reflective response of at least 100 characters (a few sentences). Phrase each so a one-word or one-line answer is impossible — ask for a concrete moment, example, or reasoning, not a yes/no
 - For scale questions: ask about frequency or intensity of a specific behavior or feeling, on a 1-5 scale (1=never, 5=always)
-- For short_answer: open-ended, specific, requires reflection — not just a one-word answer
 - For multiple_choice: options should be meaningfully distinct behavioral or cognitive stances, not trick answers
 - No markdown in any field value`;
 
@@ -123,36 +124,18 @@ function buildFallbackTest(difficulty: number, persona: string): TestData {
     questions: [
       {
         id: 1,
-        type: 'multiple_choice',
+        type: 'short_answer',
         category: 'DECISION MAKING',
-        question: 'When faced with ambiguous information before a decision, which approach best describes your default behavior?',
-        options: [
-          'Proceed with the most conservative available option',
-          'Identify the single most critical missing variable and address it first',
-          'Model two probable outcomes and select the lower-variance path',
-          'Delay action until situational clarity improves',
-        ],
+        question: 'Describe a recent decision you made with incomplete information. What did you do about the gap, and how did it turn out?',
       },
       {
         id: 2,
-        type: 'multiple_choice',
+        type: 'short_answer',
         category: 'STRESS RESPONSE',
-        question: 'A plan breaks in public. What is your default response?',
-        options: [
-          'Get quiet and repair the next step',
-          'Explain what happened so people stay calm',
-          'Look for who can help immediately',
-          'Freeze until the pressure drops',
-        ],
+        question: 'Think of the last time a plan broke in front of other people. Walk through what you actually did, step by step.',
       },
       {
         id: 3,
-        type: 'scale',
-        category: 'SELF-ASSESSMENT',
-        question: 'How often do you notice the difference between what you intended and what you actually did?',
-      },
-      {
-        id: 4,
         type: 'multiple_choice',
         category: 'COGNITIVE PATTERN',
         question: 'Which thought loop costs you the most time?',
@@ -164,33 +147,33 @@ function buildFallbackTest(difficulty: number, persona: string): TestData {
         ],
       },
       {
-        id: 5,
-        type: 'multiple_choice',
+        id: 4,
+        type: 'short_answer',
         category: 'SOCIAL DYNAMICS',
-        question: 'When a group disagrees with you, what usually happens inside your head?',
-        options: [
-          'I update fast if their evidence is better',
-          'I hold my view but listen for useful details',
-          'I get sharper and defend my position',
-          'I pull back even when I still disagree',
-        ],
+        question: 'Recall a time a group disagreed with you. What happened inside your head, and how did you respond out loud?',
       },
       {
-        id: 6,
+        id: 5,
         type: 'scale',
         category: 'EMOTIONAL AWARENESS',
         question: 'How often can you name the emotion driving a decision before you act on it?',
       },
       {
+        id: 6,
+        type: 'short_answer',
+        category: 'MENTAL AGILITY',
+        question: 'Describe a moment when a better explanation appeared after you had already committed. What did you do next, and why?',
+      },
+      {
         id: 7,
         type: 'multiple_choice',
-        category: 'MENTAL AGILITY',
-        question: 'A better explanation appears after you already committed. What do you do?',
+        category: 'SELF-ASSESSMENT',
+        question: 'When you notice a gap between what you intended and what you actually did, what is your first move?',
         options: [
-          'Switch quickly and say why',
-          'Test it against the current plan first',
-          'Keep both models open until one wins',
-          'Stay committed to avoid looking inconsistent',
+          'Name the gap honestly and adjust',
+          'Look for the reason it happened',
+          'Set it aside and move on',
+          'Replay it without changing anything',
         ],
       },
       {
@@ -210,6 +193,7 @@ async function persistGeneratedTest(args: {
   title: string;
   shardReward: number;
   source: NonNullable<TestData['source']>;
+  questions: TestQuestion[];
 }): Promise<string> {
   const testId = crypto.randomUUID();
   if (!isDbConfigured() || !args.userId) return testId;
@@ -217,8 +201,8 @@ async function persistGeneratedTest(args: {
   try {
     await ensureGeneratedTestsSchema();
     await sqlQuery(
-      `INSERT INTO generated_tests (id, user_id, difficulty, persona, title, shard_reward, source)
-       VALUES (:id, :userId, :difficulty, :persona, :title, :shardReward, :source)`,
+      `INSERT INTO generated_tests (id, user_id, difficulty, persona, title, shard_reward, source, questions)
+       VALUES (:id, :userId, :difficulty, :persona, :title, :shardReward, :source, :questions::jsonb)`,
       {
         id: testId,
         userId: args.userId,
@@ -227,6 +211,7 @@ async function persistGeneratedTest(args: {
         title: args.title.slice(0, 80),
         shardReward: args.shardReward,
         source: args.source,
+        questions: JSON.stringify(args.questions),
       }
     );
   } catch (error) {
@@ -405,6 +390,7 @@ export async function POST(request: NextRequest) {
           title: fallback.title,
           shardReward,
           source,
+          questions: fallback.questions,
         });
         fallback.shardReward = shardReward;
         fallback.source = source;
@@ -424,6 +410,7 @@ export async function POST(request: NextRequest) {
       title: fallback.title,
       shardReward,
       source,
+      questions: fallback.questions,
     });
     fallback.shardReward = shardReward;
     fallback.source = source;
@@ -442,6 +429,7 @@ export async function POST(request: NextRequest) {
       title: fallback.title,
       shardReward,
       source,
+      questions: fallback.questions,
     });
     fallback.shardReward = shardReward;
     fallback.source = source;
@@ -455,6 +443,7 @@ export async function POST(request: NextRequest) {
     title: testData.title,
     shardReward,
     source,
+    questions: testData.questions,
   });
   testData.shardReward = shardReward;
   testData.source = source;

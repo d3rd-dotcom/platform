@@ -9,6 +9,12 @@
   scroll-padding: 18px;
 }
 
+.homeBlueBubble {
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto 2px;
+}
+
 /* ── Centered states (loading / gate / error) ── */
 .centerWrap {
   width: 100%;

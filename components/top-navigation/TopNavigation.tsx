@@ -171,8 +171,11 @@ const TopNavigation: React.FC = () => {
           >
             <div className={styles.shinyCardShine} />
             <div className={styles.shinyCardContent}>
-              <div className={styles.shinyCardIcon}>
-                <Image src="https://i.imgur.com/Y6YNtam.png" alt="Blue" width={24} height={24} unoptimized />
+              <div className={styles.shinyCardIcon} aria-hidden="true">
+                <svg className={styles.shinyCardIconSvg} width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M5.5 16.5H5a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3h14a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3h-7l-5.5 4v-4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M7.5 9.5h9M7.5 12.5h5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
               </div>
               <span className={styles.shinyCardTitle}>Ask Blue</span>
             </div>

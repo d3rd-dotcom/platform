@@ -38,7 +38,7 @@
 .scrim {
   position: absolute;
   inset: 0;
-  background: rgba(8, 10, 18, 0.36);
+  background: rgba(8, 10, 18, 0.88);
 }
 
 .overlay {
@@ -251,7 +251,7 @@
 }
 
 :global([data-theme="dark"]) .scrim {
-  background: rgba(5, 7, 14, 0.4);
+  background: rgba(5, 7, 14, 0.88);
 }
 
 :global([data-theme="dark"]) .questionWrap {
