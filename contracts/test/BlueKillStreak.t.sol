@@ -760,6 +760,45 @@ contract BlueKillStreakTest is Test {
         governance.onReport(_validMetadata(), report);
     }
 
+    // M5: a DON auto-execute report delivered after the voting deadline must be
+    // rejected. The deadline guard runs before the threshold check, so an
+    // expired Active proposal reverts with VotingEnded. (Pre-fix, this same
+    // call fell through to ThresholdNotReached — no deadline enforcement.)
+    function test_OnReportRejectsExpired() public {
+        governance.setKeystoneForwarder(forwarder);
+        _configureWorkflow();
+
+        uint256 proposalId = _createProposalAndAdvance(
+            proposer, recipient, USDC_AMOUNT, "Expired CRE Execute", "Late report test", VOTING_PERIOD
+        );
+
+        // Blue review activates the proposal (level 4 = 40%).
+        bytes memory reviewReport = abi.encode(uint8(2), abi.encode(uint256(proposalId), uint256(4)));
+        vm.prank(forwarder);
+        governance.onReport(_validMetadata(), reviewReport);
+
+        // Warp past the voting deadline.
+        vm.warp(block.timestamp + VOTING_PERIOD + 1);
+
+        // CRE auto-execute report arrives late — must revert on the deadline.
+        bytes memory execReport = abi.encode(uint8(1), abi.encode(uint256(proposalId)));
+        vm.prank(forwarder);
+        vm.expectRevert(BlueKillStreak.VotingEnded.selector);
+        governance.onReport(_validMetadata(), execReport);
+    }
+
+    // M6: deploying with a zero total supply must revert — otherwise the
+    // approval threshold is 0 and any reviewed proposal is instantly executable.
+    function test_RevertWhen_ZeroSupply() public {
+        vm.expectRevert(BlueKillStreak.InvalidAmount.selector);
+        new BlueKillStreak(
+            address(governanceToken),
+            address(usdc),
+            blueAgent,
+            0
+        );
+    }
+
     // ============================================================================
     // GAS OPTIMIZATION TESTS
     // ============================================================================

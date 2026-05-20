@@ -202,7 +202,10 @@ contract BlueKillStreak is Ownable, ReentrancyGuard {
         if (_governanceToken == address(0) || _usdcToken == address(0) || _blueAgent == address(0)) {
             revert InvalidProposal();
         }
-        
+        // A zero supply makes approvalThreshold 0 (any proposal instantly
+        // executable) and makes getVotingProgress revert on divide-by-zero.
+        if (_totalSupply == 0) revert InvalidAmount();
+
         governanceToken = IERC20(_governanceToken);
         usdcToken = IERC20(_usdcToken);
         blueAgent = _blueAgent;
@@ -438,6 +441,9 @@ contract BlueKillStreak is Ownable, ReentrancyGuard {
             uint256 proposalId = abi.decode(payload, (uint256));
             Proposal storage proposal = proposals[proposalId];
             if (proposal.status != ProposalStatus.Active) revert ProposalNotActive();
+            // A late DON report must not bypass the voting window — mirror the
+            // same deadline guard enforced by executeProposal().
+            if (block.timestamp > proposal.votingDeadline) revert VotingEnded();
             if (proposal.forVotes < approvalThreshold) revert ThresholdNotReached();
             if (proposal.executed) revert AlreadyExecuted();
             _executeProposal(proposalId);
