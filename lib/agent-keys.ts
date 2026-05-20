@@ -6,8 +6,9 @@
  * while signing on the agent's behalf — it is never returned to a client.
  *
  * The encryption secret comes from AGENT_KEY_ENCRYPTION_SECRET. It is run
- * through SHA-256 to produce a fixed 32-byte key, so the env var can be any
- * sufficiently random string (a 32+ byte hex/base64 value is recommended).
+ * through SHA-256 to produce a fixed 32-byte key, but SHA-256 cannot add
+ * entropy a short secret never had — these keys hold funds, so we require at
+ * least 32 characters (generate with `openssl rand -base64 48`).
  */
 
 import { createCipheriv, createDecipheriv, createHash, randomBytes } from 'crypto';
@@ -23,9 +24,10 @@ export interface EncryptedKey {
 
 function getEncryptionKey(): Buffer {
   const secret = process.env.AGENT_KEY_ENCRYPTION_SECRET;
-  if (!secret || secret.length < 16) {
+  if (!secret || secret.length < 32) {
     throw new Error(
-      'AGENT_KEY_ENCRYPTION_SECRET is not set (or too short). It is required to register custodial agents.'
+      'AGENT_KEY_ENCRYPTION_SECRET is not set or too short (need at least 32 characters). ' +
+      'Generate one with `openssl rand -base64 48`. It is required to register custodial agents.'
     );
   }
   return createHash('sha256').update(secret).digest();
