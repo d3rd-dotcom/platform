@@ -260,7 +260,7 @@ export async function GET(
   // Sync on-chain state: if CRE auto-executed the proposal, update DB
   try {
     const rpcUrl = process.env.NEXT_PUBLIC_BASE_RPC_URL || 'https://mainnet.base.org';
-    const contractAddress = process.env.NEXT_PUBLIC_BLUE_KILLSTREAK_ADDRESS || '0x2cbb90a761ba64014b811be342b8ef01b471992d';
+    const contractAddress = process.env.NEXT_PUBLIC_BLUE_KILLSTREAK_ADDRESS || '0x09a4FEfEe8245B644713546FDF28b4160218f7Fc';
     const provider = new providers.JsonRpcProvider(rpcUrl);
     const contract = new Contract(contractAddress, BLUE_KILLSTREAK_ABI, provider);
 

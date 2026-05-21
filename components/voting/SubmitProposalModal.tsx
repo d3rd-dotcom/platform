@@ -11,7 +11,7 @@ import ProposalSuccessModal from './ProposalSuccessModal';
 import { useSound } from '@/hooks/useSound';
 import styles from './SubmitProposalModal.module.css';
 
-const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_BLUE_KILLSTREAK_ADDRESS || '0x2cbb90a761ba64014b811be342b8ef01b471992d';
+const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_BLUE_KILLSTREAK_ADDRESS || '0x09a4FEfEe8245B644713546FDF28b4160218f7Fc';
 
 interface SubmitProposalModalProps {
   isOpen: boolean;

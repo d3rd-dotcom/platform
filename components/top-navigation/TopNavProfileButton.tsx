@@ -10,7 +10,7 @@ import styles from './TopNavProfileButton.module.css';
 
 const CONTRACT_ADDRESS =
   process.env.NEXT_PUBLIC_BLUE_KILLSTREAK_ADDRESS ||
-  '0x2cbb90a761ba64014b811be342b8ef01b471992d';
+  '0x09a4FEfEe8245B644713546FDF28b4160218f7Fc';
 const USDC_ADDRESS =
   process.env.NEXT_PUBLIC_USDC_ADDRESS ||
   '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';

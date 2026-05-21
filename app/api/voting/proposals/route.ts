@@ -36,7 +36,7 @@ async function enrichWithOnChain<T extends { onChainProposalId: string | null }>
   const contractAddress =
     process.env.NEXT_PUBLIC_BLUE_KILLSTREAK_ADDRESS ||
     process.env.NEXT_PUBLIC_AZURA_KILLSTREAK_ADDRESS ||
-    '0x2cbb90a761ba64014b811be342b8ef01b471992d';
+    '0x09a4FEfEe8245B644713546FDF28b4160218f7Fc';
 
   try {
     const provider = new providers.JsonRpcProvider(rpcUrl);
@@ -47,6 +47,11 @@ async function enrichWithOnChain<T extends { onChainProposalId: string | null }>
       withChain.map(async (r) => {
         try {
           const p = await contract.getProposal(parseInt(r.onChainProposalId as string, 10));
+          // A non-existent proposal on the configured contract returns a zero
+          // struct (id == 0). Skip it so the card falls back to the DB status
+          // instead of falsely showing Pending — e.g. legacy proposals after
+          // the governance contract was redeployed.
+          if (Number(p.id) === 0) return;
           byId.set(r.onChainProposalId as string, {
             forVotes: p.forVotes.toString(),
             againstVotes: p.againstVotes.toString(),

@@ -123,7 +123,7 @@ export async function POST(request: Request) {
   {
     const rpcUrl = process.env.NEXT_PUBLIC_BASE_RPC_URL || 'https://mainnet.base.org';
     const contractAddress =
-      process.env.NEXT_PUBLIC_BLUE_KILLSTREAK_ADDRESS || '0x2cbb90a761ba64014b811be342b8ef01b471992d';
+      process.env.NEXT_PUBLIC_BLUE_KILLSTREAK_ADDRESS || '0x09a4FEfEe8245B644713546FDF28b4160218f7Fc';
 
     let onChain: any;
     try {
