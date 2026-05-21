@@ -22,15 +22,28 @@ import "../migration/MwgHolders.sol";
  * Broadcast to Base mainnet (spends real ETH — review first):
  *   forge script script/DeployV2.s.sol:DeployV2 --rpc-url $BASE_RPC_URL --broadcast --verify
  *
- * Requires env: PRIVATE_KEY (deployer), BLUE_AGENT_ADDRESS (Blue's wallet).
+ * Blue is the deployer: the script signs with BLUE_PRIVATE_KEY (or the legacy
+ * AZURA_PRIVATE_KEY), so Blue's wallet (0x0920...4f8a) deploys, owns, and is the
+ * agent. Blue's wallet must hold Base ETH for gas. blueAgent defaults to the
+ * deployer; override with BLUE_AGENT_ADDRESS only if they must differ.
  */
 contract DeployV2 is Script {
     address constant USDC_MAINNET = 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913;
     address constant USDC_SEPOLIA = 0x036CbD53842c5426634e7929541eC2318f3dCF7e;
 
     function run() external {
-        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
-        address blueAgent = vm.envAddress("BLUE_AGENT_ADDRESS");
+        // Blue signs the deploy. Prefer BLUE_PRIVATE_KEY, fall back to the
+        // legacy AZURA_PRIVATE_KEY (where Blue's key is actually stored).
+        uint256 deployerPrivateKey;
+        try vm.envUint("BLUE_PRIVATE_KEY") returns (uint256 k) {
+            deployerPrivateKey = k;
+        } catch {
+            deployerPrivateKey = vm.envUint("AZURA_PRIVATE_KEY");
+        }
+        address deployer = vm.addr(deployerPrivateKey);
+        // Blue is the agent by default; allow an explicit override if needed.
+        address blueAgent = vm.envOr("BLUE_AGENT_ADDRESS", deployer);
+        console.log("Deployer (Blue):", deployer);
 
         address usdc;
         if (block.chainid == 8453) usdc = USDC_MAINNET;
