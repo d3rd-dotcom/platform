@@ -4,67 +4,83 @@ Goal: ship the contract-level security fixes that require new deployments, put
 treasury control behind a 2-of-3 Safe, deploy MWG as a real ERC20Votes token,
 and rewire the app + CRE workflows to the new addresses.
 
-Do this BEFORE Plan B (on-chain-first), because the indexer and CRE work in
+Do this before Plan B (on-chain-first), because the indexer and CRE work in
 Plan B must target the final contract addresses, not the ones we're replacing.
 
 Current deployed contracts are the old AzuraKillStreak set (governance at
 0x2cbb90a761ba64014b811be342b8ef01b471992d). The repo source is newer and not
-deployed. The new repo source uses getPastVotes, which REQUIRES an ERC20Votes
-governance token (the current MWG is plain ERC20 — see Phase 2).
+deployed. The new repo source uses getPastVotes, which needs an ERC20Votes
+governance token (the current MWG is plain ERC20).
 
 ---
 
-## Phase 0 — Finish the remaining contract fixes (code, not yet done)
+## Where we are (updated 2026-05-21)
 
-Already coded + tested in the repo: C1 (onReport workflow metadata pinning),
-C2 (MockPredictionMarket redemption + trader refund/claim), M5 (onReport
-deadline guard), M6 (zero-supply constructor guard).
+- Phase 0 — Done (all fixes coded + tested).
+- Phase 1 — Code + migration prepared and fork-tested. Awaiting Blue's on-chain broadcast.
+- Phase 2 — Deploy script ready (bundled with Phase 1 in DeployV2). Awaiting the same broadcast.
+- Phase 3 — Next. Waiting on the Gnosis Safe setup before we wire it.
+- Phase 4 — Pending (after Phase 3).
+- Phase 5 — Pending (audit before funds).
 
-Still to add, each with a Foundry test:
-- M7 — reset `usdcToken.approve(predictionMarket, 0)` after the buyOutcome call
-  in `_executeTrade` (or use forceApprove). Currently only reset in
-  setPredictionMarket.
-- L1 — require `predictionMarket.code.length > 0` in `setPredictionMarket`.
-- L3 — `cancelProposal` must refuse a proposal that already reached threshold
-  (only cancel Pending / sub-threshold Active).
-- L8 — add the deadline guard to `blueReview` and `_blueReviewInternal`
-  (`if (block.timestamp > proposal.votingDeadline) revert VotingEnded();`) so a
-  long-expired Pending proposal cannot be revived into a zombie Active.
+The deploy is a single run of `script/DeployV2.s.sol`, signed by Blue's wallet
+(0x0920...4f8a) via BLUE_PRIVATE_KEY / AZURA_PRIVATE_KEY. Nothing has been
+broadcast yet.
 
-Exit check: `forge test --use 0.8.24` all green.
+---
 
-## Phase 1 — Deploy the ERC20Votes governance token (L4)
+## Phase 0 — Contract fixes — Done
 
-The new BlueKillStreak votes via `getPastVotes`; the current MWG reverts on it.
-- Write/deploy a new MWG as ERC20Votes (OZ ERC20Votes + ERC20Permit), same
-  name/symbol, on Base.
-- Snapshot current MWG holders (token 0x84939fEc50EfdEDC8522917645AAfABFd5b3EA6F)
-  and mint matching balances on the new token (or make it claimable).
-- Note: holders must self-delegate (or be delegated) for voting power to count —
-  document this for the community.
+Coded + tested in the repo:
+- C1 — onReport workflow metadata pinning (both fund contracts).
+- C2 — MockPredictionMarket redemption + trader refund/claim.
+- M5 — onReport deadline guard. M6 — zero-supply constructor guard.
+- M7 — reset market allowance to 0 after the buyOutcome call in _executeTrade.
+- L1 — setPredictionMarket rejects EOAs (requires contract code; address(0) ok).
+- L3 — cancelProposal refuses an at-threshold Active proposal.
+- L8 — deadline guard in blueReview + _blueReviewInternal (no zombie revival).
 
-## Phase 2 — Deploy the new contracts
+Exit check met: `forge test --use 0.8.24` — 101 local tests green.
 
-- Deploy BlueKillStreak with the new ERC20Votes token, USDC, Blue agent, and a
-  non-zero total supply.
-- Deploy BlueMarketTrader (USDC).
-- Decide on MockPredictionMarket: do NOT point real funds at it unless the
-  redemption path (C2) is the intended mechanism; otherwise leave unset on
-  mainnet.
-- EtherealHorizonPathway: unchanged, no redeploy needed unless desired.
+## Phase 1 — ERC20Votes governance token (L4) — Code complete, awaiting broadcast
 
-## Phase 3 — Lock down ownership + signer (H2)
+- Done: `BlueCreditSystem.sol` — MWG re-issued as ERC20Votes + ERC20Permit, same
+  name/symbol ("Mental Wealth Governance" / "MWG"), owner mint/batchMint +
+  renounceMinting, block-number clock. Tested (8 tests).
+- Done: read-only holder snapshot reconstructed from Transfer events — 2 holders,
+  sum equals the 100k MWG supply exactly:
+  - 0x84D55C4BB3d4062f74F096Fcdf58E1A9d7405d95 = 60,000 MWG
+  - 0x0920553CcA188871b146ee79f562B4Af46aB4f8a = 40,000 MWG (Blue)
+  Data files: contracts/migration/mwg-holders.json + MwgHolders.sol.
+- Done: MigrationFork test proves minted balances equal live MWG balances 1:1.
+- Remaining: Blue broadcasts DeployV2 (mints the 60k/40k, then renounceMinting).
+- After deploy: each holder calls delegate(self) once to activate voting power.
+
+## Phase 2 — Deploy the new contracts — Code complete, awaiting broadcast
+
+Bundled into `script/DeployV2.s.sol` (one run): deploy token -> batchMint
+snapshot -> renounceMinting -> deploy BlueKillStreak (sized to the real migrated
+supply) + BlueMarketTrader.
+- MockPredictionMarket: leave unset on mainnet unless its redemption path (C2)
+  is the intended mechanism.
+- EtherealHorizonPathway: unchanged, no redeploy needed.
+- Ownership stays with Blue (deployer) until Phase 3.
+
+Run (Blue's wallet needs Base ETH for gas):
+- Dry run: `forge script script/DeployV2.s.sol:DeployV2 --rpc-url https://mainnet.base.org`
+- Broadcast: add `--broadcast --verify`
+
+## Phase 3 — Lock down ownership + signer (H2) — Next (waiting on Gnosis Safe)
 
 - Create a 2-of-3 Gnosis Safe on Base: James + Blue + AI signer.
-- `transferOwnership(<Safe>)` on BlueKillStreak, BlueMarketTrader, and (if
-  redeployed) the others.
-- Optional but recommended: a TimelockController between the Safe and the
-  contracts for destructive calls (emergencyWithdraw, setKeystoneForwarder,
-  setAllowedWorkflow, setBlueAgent, withdraw).
+- `transferOwnership(<Safe>)` on BlueKillStreak, BlueMarketTrader, and the token.
+- Optional: a TimelockController between the Safe and the contracts for
+  destructive calls (emergencyWithdraw, setKeystoneForwarder, setAllowedWorkflow,
+  setBlueAgent, withdraw).
 - Migrate Blue's signer from the plaintext env key (AZURA_PRIVATE_KEY) to CDP
   Server-Signer / MPC so no raw private key exists in env.
 
-## Phase 4 — Wire CRE + app to the new addresses
+## Phase 4 — Wire CRE + app to the new addresses — Pending
 
 - On both fund contracts: `setKeystoneForwarder(<Base forwarder>)` and
   `setAllowedWorkflow(<workflow owner>, <workflow name bytes10>)` — C1 makes
@@ -73,17 +89,20 @@ The new BlueKillStreak votes via `getPastVotes`; the current MWG reverts on it.
   auto-execute, trade-execute.
 - Update env: NEXT_PUBLIC_BLUE_KILLSTREAK_ADDRESS, the governance token address,
   and reconcile the AZURA_ vs BLUE_ naming so there is one canonical set.
+- Mark the old DB proposals terminal (their on-chain ids point at the old
+  contract); align /community with the new address.
 
-## Phase 5 — External audit gate
+## Phase 5 — External audit gate — Pending
 
 Before any meaningful funds (grant money) land, get an external audit of the
-four contracts (~600 lines, small scope). The fixes above go INTO the audit
-scope, not around it. Options: fixed-scope firm audit, Cantina/Code4rena
-listing, or one independent auditor for a second opinion.
+contracts (small scope). The fixes above go into the audit scope, not around it.
+Options: fixed-scope firm audit, Cantina/Code4rena listing, or one independent
+auditor for a second opinion.
 
 ---
 
 ## Open decisions
-- Token migration mechanism: airdrop vs claimable for new MWG.
+- Token migration mechanism: decided — 1:1 batchMint from the snapshot, then
+  renounceMinting (in DeployV2).
 - Timelock: yes/no and delay length (24-48h suggested).
 - Whether MockPredictionMarket is wired on mainnet at all.
