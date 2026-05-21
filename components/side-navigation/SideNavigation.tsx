@@ -72,21 +72,21 @@ const mobileNavSections: NavSection[] = [
 const primaryNavItems: NavItem[] = [
   {
     id: 'morning-pages',
-    label: 'Journal',
+    label: 'Homework',
     href: '/course',
     iconSrc: '/icons/nav-spiral.svg',
+  },
+  {
+    id: 'events',
+    label: 'Quests',
+    href: '/quests',
+    iconSrc: '/icons/nav-teleport.svg',
   },
   {
     id: 'feedback',
     label: 'Surveys',
     href: '/surveys',
     iconSrc: '/icons/nav-feedback.svg',
-  },
-  {
-    id: 'events',
-    label: 'Quests',
-    href: '/quests',
-    iconSrc: '/icons/nav-community.svg',
   },
 ];
 

@@ -33,7 +33,7 @@ const STEPS: TourStep[] = [
   },
   {
     target: 'journal',
-    title: 'Journal to earn',
+    title: 'Homework to earn',
     body: 'Morning pages are quick reflective writing that builds your streak and earns gems. A few minutes pays off.',
   },
   {
