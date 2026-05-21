@@ -38,8 +38,14 @@ function reqAddr(name, fallback) {
     throw new Error('Missing dependency. Run: npm install @safe-global/protocol-kit');
   });
 
-  const rawKey = process.env.SAFE_DEPLOYER_PRIVATE_KEY || process.env.JAMES_PRIVATE_KEY;
-  if (!rawKey) throw new Error('Set SAFE_DEPLOYER_PRIVATE_KEY (or JAMES_PRIVATE_KEY) — the wallet that pays gas.');
+  // Any hot key can deploy the Safe (owners are just config). Default to Blue's
+  // key since it's already in env and funded — a Ledger can't sign from a script.
+  const rawKey =
+    process.env.SAFE_DEPLOYER_PRIVATE_KEY ||
+    process.env.JAMES_PRIVATE_KEY ||
+    process.env.BLUE_PRIVATE_KEY ||
+    process.env.AZURA_PRIVATE_KEY;
+  if (!rawKey) throw new Error('No deployer key found (SAFE_DEPLOYER_PRIVATE_KEY / BLUE_PRIVATE_KEY / AZURA_PRIVATE_KEY).');
   const deployerKey = rawKey.startsWith('0x') ? rawKey : `0x${rawKey}`;
 
   const owners = [reqAddr('OWNER_JAMES'), reqAddr('OWNER_BLUE', BLUE_DEFAULT), reqAddr('OWNER_AI')];
