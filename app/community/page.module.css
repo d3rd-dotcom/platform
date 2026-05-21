@@ -5519,6 +5519,45 @@
   color: rgba(227, 225, 238, 0.38);
 }
 
+.proposalsHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.submitProposalButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 12px;
+  padding: 10px 16px;
+  background: var(--color-primary);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(81, 104, 255, 0.22);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.submitProposalButton:hover {
+  transform: translateY(-1px);
+  background: var(--color-primary-hover);
+}
+
+.submitProposalButton svg {
+  flex-shrink: 0;
+}
+
+.emptyState .submitProposalButton {
+  margin-top: 14px;
+}
+
 .feedSectionLabel svg {
   opacity: 0.6;
   flex-shrink: 0;
