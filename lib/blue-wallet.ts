@@ -23,7 +23,10 @@ class BlueWalletManager {
   private allocations: Map<string, TokenAllocation> = new Map();
 
   private constructor() {
-    this.tokenContractAddress = process.env.VOTING_TOKEN_CONTRACT_ADDRESS || '';
+    this.tokenContractAddress =
+      process.env.VOTING_TOKEN_CONTRACT_ADDRESS ||
+      process.env.NEXT_PUBLIC_GOVERNANCE_TOKEN_ADDRESS ||
+      '';
     const poolSize = process.env.BLUE_TOTAL_TOKEN_POOL || '1000000';
     const decimals = parseInt(process.env.VOTING_TOKEN_DECIMALS || '18');
     this.totalTokenPool = BigInt(poolSize) * BigInt(10 ** decimals);
@@ -57,7 +60,7 @@ class BlueWalletManager {
       }
 
       if (!this.tokenContractAddress) {
-        throw new Error('VOTING_TOKEN_CONTRACT_ADDRESS not configured in environment.');
+        throw new Error('Governance token address not configured. Set NEXT_PUBLIC_GOVERNANCE_TOKEN_ADDRESS.');
       }
 
       // Initialize Coinbase SDK

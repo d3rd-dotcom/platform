@@ -35,7 +35,6 @@ async function enrichWithOnChain<T extends { onChainProposalId: string | null }>
     process.env.BASE_RPC_URL || process.env.NEXT_PUBLIC_BASE_RPC_URL || 'https://mainnet.base.org';
   const contractAddress =
     process.env.NEXT_PUBLIC_BLUE_KILLSTREAK_ADDRESS ||
-    process.env.NEXT_PUBLIC_AZURA_KILLSTREAK_ADDRESS ||
     '0x09a4FEfEe8245B644713546FDF28b4160218f7Fc';
 
   try {
