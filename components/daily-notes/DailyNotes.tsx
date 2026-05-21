@@ -814,8 +814,8 @@ export default function DailyNotes({
                 </svg>
               </div>
             ) : (
-              <span className={styles.shardBadge} title="Earn 100 shards per day completed">
-                <Image src="/icons/ui-shard.svg" alt="shard" width={14} height={14} />
+              <span className={styles.shardBadge} title="Earn 100 gems per day completed">
+                <Image src="/icons/ui-shard.svg" alt="gem" width={14} height={14} />
                 +100
               </span>
             )}

@@ -28,13 +28,13 @@ const STEPS: TourStep[] = [
   },
   {
     target: 'shards',
-    title: 'Shards are your rewards',
-    body: 'You earn shards for real activity — surveys, course milestones, streaks, and quests. This is your running balance.',
+    title: 'Gems are your rewards',
+    body: 'You earn gems for real activity — surveys, course milestones, streaks, and quests. This is your running balance.',
   },
   {
     target: 'journal',
     title: 'Journal to earn',
-    body: 'Morning pages are quick reflective writing that builds your streak and earns shards. A few minutes pays off.',
+    body: 'Morning pages are quick reflective writing that builds your streak and earns gems. A few minutes pays off.',
   },
   {
     target: 'markets',
@@ -44,7 +44,7 @@ const STEPS: TourStep[] = [
   {
     target: 'quests',
     title: 'Take on quests',
-    body: 'Quests are bite-size challenges. Complete them to earn shards and keep your momentum going.',
+    body: 'Quests are bite-size challenges. Complete them to earn gems and keep your momentum going.',
   },
   {
     target: 'vip',

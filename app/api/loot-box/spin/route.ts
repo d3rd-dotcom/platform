@@ -47,7 +47,7 @@ export async function POST(request: Request) {
 
     if (rows.length === 0) {
       return NextResponse.json(
-        { error: 'Not enough shards to spin.' },
+        { error: 'Not enough gems to spin.' },
         { status: 400 }
       );
     }

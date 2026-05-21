@@ -656,7 +656,7 @@ export default function CoursePage() {
                     </div>
                   )}
                   <span className={styles.leagueName}>{u.username}</span>
-                  <span className={styles.leagueShards}>{u.shards} Shards</span>
+                  <span className={styles.leagueShards}>{u.shards} Gems</span>
                 </div>
               ))}
               {!leaderboardLoading && leaderboard.length === 0 && (

@@ -536,25 +536,25 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
             <div className={styles.shardHero}>
               <Image
                 src="/icons/ui-shard.svg"
-                alt="Shard"
+                alt="Gem"
                 width={88}
                 height={88}
                 className={styles.shardIcon}
               />
             </div>
-            <h2 className={styles.stepTitle}>Earn shards, build real upside</h2>
+            <h2 className={styles.stepTitle}>Earn gems, build real upside</h2>
             <p className={styles.stepDescription}>
-              Shards are earned through meaningful Academy activity. Surveys and the 12-week course are the best starting paths because they turn your reflections, research participation, and completed lessons into shard rewards.
+              Gems are earned through meaningful Academy activity. Surveys and the 12-week course are the best starting paths because they turn your reflections, research participation, and completed lessons into gem rewards.
             </p>
 
             <div className={styles.shardExplainer}>
               <div className={styles.explainerCard}>
                 <h3>Earn</h3>
-                <p>Complete surveys, finish course milestones, build streaks, and submit quests to grow your shard balance.</p>
+                <p>Complete surveys, finish course milestones, build streaks, and submit quests to grow your gem balance.</p>
               </div>
               <div className={styles.explainerCard}>
                 <h3>Use</h3>
-                <p>Use shards inside the AI prediction market to back forecasts and create ways to make real money.</p>
+                <p>Use gems inside the AI prediction market to back forecasts and create ways to make real money.</p>
               </div>
               <div className={styles.explainerCard}>
                 <h3>Unlock</h3>

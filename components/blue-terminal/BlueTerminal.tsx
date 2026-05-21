@@ -149,7 +149,7 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
       setCompletionResult(result ?? null);
       setSubmitted(true);
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Shard award failed.';
+      const message = error instanceof Error ? error.message : 'Gem award failed.';
       setSubmissionError(message);
     } finally {
       setIsSubmitting(false);
@@ -304,7 +304,7 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
           <h3 className={styles.statusTitle}>Survey submitted</h3>
           <p className={styles.statusText}>
             {completionResult
-              ? `You earned ${completionResult.shardsAwarded} $Shards for this submission.`
+              ? `You earned ${completionResult.shardsAwarded} $Gems for this submission.`
               : 'Your responses were recorded.'}
           </p>
           {completionResult?.newShardCount !== null && completionResult?.newShardCount !== undefined && (

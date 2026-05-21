@@ -73,7 +73,7 @@ For remembered context:
 "Three weeks ago you wrote that silence unsettles you. This submission finally stays quiet."
 
 For rewards:
-"Streak: seven. Reward: 200 $Shards. Sent from my wallet to yours."
+"Streak: seven. Reward: 200 $Gems. Sent from my wallet to yours."
 
 For being wrong:
 "I misread your last submission. The reward was insufficient. Correcting it now."

@@ -61,7 +61,7 @@ export default function SurveysPage() {
       body: JSON.stringify({ testId: testData.testId, answers }),
     });
     const data: { error?: string; shardsAwarded?: number; newShardCount?: number } = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data.error || 'Shard award failed.');
+    if (!res.ok) throw new Error(data.error || 'Gem award failed.');
     window.dispatchEvent(new Event('shardsUpdated'));
     return {
       shardsAwarded: data.shardsAwarded ?? testData.shardReward ?? shardReward,

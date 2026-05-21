@@ -21,7 +21,7 @@ const SCRIPT: Line[] = [
   { kind: 'blank', text: '' },
   { kind: 'finding', text: 'finding: 14-day reflection streak — shadow coherence rising' },
   { kind: 'overview', text: 'overview: trust ↑ 12%, parasocial baseline stable, gem yield 38%' },
-  { kind: 'saved', text: '→ 47 shards saved to wallet 0x2c…1992d' },
+  { kind: 'saved', text: '→ 47 gems saved to wallet 0x2c…1992d' },
 ];
 
 const TYPE_SPEED_MS = 28;

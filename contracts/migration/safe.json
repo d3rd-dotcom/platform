@@ -1,0 +1,12 @@
+{
+  "safeAddress": "0xbD2A2DBaDb71BDaCDB9A51E8d1c33f31B412fC71",
+  "owners": [
+    "0xCbDBCBA31b3CE7f061379BD27cd2e8B2465d56EF",
+    "0x0920553CcA188871b146ee79f562B4Af46aB4f8a",
+    "0x181E3345C332178cbEf5caEA0eca196c9D78bB57"
+  ],
+  "threshold": 2,
+  "chainId": 8453,
+  "rpc": "https://mainnet.base.org",
+  "deployer": "0x0920553CcA188871b146ee79f562B4Af46aB4f8a"
+}

@@ -45,6 +45,15 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   }, [theme, isLandingPage]);
 
+  // The landing page ('/') renders outside the authenticated shell, so this
+  // provider unmounts when navigating to it. Clear the theme attribute on
+  // unmount so dark-mode styles don't leak onto the un-themed landing page.
+  useEffect(() => {
+    return () => {
+      document.documentElement.removeAttribute('data-theme');
+    };
+  }, []);
+
   const setTheme = useCallback((t: Theme) => {
     setThemeState(t);
     setStorageItem('mwa-theme', t);

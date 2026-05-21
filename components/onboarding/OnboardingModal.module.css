@@ -133,7 +133,7 @@
   font-family: var(--font-primary);
   font-size: 13px;
   font-weight: var(--font-weight-medium);
-  color: #1a1d33;
+  color: var(--color-text-dark);
   text-align: left;
   margin-bottom: 8px;
 }

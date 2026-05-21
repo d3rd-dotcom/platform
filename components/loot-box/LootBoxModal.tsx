@@ -18,18 +18,18 @@ interface LootItem {
 const LOOT_TABLE: LootItem[] = [
   {
     id: 'shards-5',
-    name: '+5 Shards',
+    name: '+5 Gems',
     tier: 'common',
     image: '/icons/ui-shard.svg',
-    description: 'A small shard bonus for the next task.',
+    description: 'A small gem bonus for the next task.',
     chance: 35,
   },
   {
     id: 'shards-15',
-    name: '+15 Shards',
+    name: '+15 Gems',
     tier: 'uncommon',
     image: '/icons/ui-shard.svg',
-    description: 'A generous shard drop. Keep spinning!',
+    description: 'A generous gem drop. Keep spinning!',
     chance: 25,
   },
   {
@@ -216,7 +216,7 @@ const LootBoxModal: React.FC<LootBoxModalProps> = ({ isOpen, onClose, shardCount
         {/* Header */}
         <div className={styles.header}>
           <h2 className={styles.title}>Loot Box</h2>
-          <p className={styles.subtitle}>Spin for rare items, shards, and boosts</p>
+          <p className={styles.subtitle}>Spin for rare items, gems, and boosts</p>
         </div>
 
         {/* Spin Area */}
@@ -264,7 +264,7 @@ const LootBoxModal: React.FC<LootBoxModalProps> = ({ isOpen, onClose, shardCount
 
           {!canSpin && !spinning && (
             <div className={styles.insufficientNotice}>
-              Not enough shards — you need {SPIN_COST} to spin
+              Not enough gems — you need {SPIN_COST} to spin
               {shardCount !== null && ` (you have ${shardCount})`}
             </div>
           )}

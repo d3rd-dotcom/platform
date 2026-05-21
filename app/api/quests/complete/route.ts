@@ -236,7 +236,7 @@ export async function POST(request: Request) {
     // Stream agent quest completions into the Room Log feed
     if (user.accountType === 'agent') {
       try {
-        await recordAgentActivity(user.id, `${user.username} completed a quest (+${shardsToAward} shards).`);
+        await recordAgentActivity(user.id, `${user.username} completed a quest (+${shardsToAward} gems).`);
       } catch (activityError: unknown) {
         console.error('Room Log activity error:', activityError);
       }

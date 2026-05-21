@@ -32,7 +32,7 @@ export const EcosystemSection: React.FC = () => (
         <div className={styles.appsImageCol}>
           <Image
             src="/images/academy-blockchain.png"
-            alt="A blockchain node powering the Academy shard point-system"
+            alt="A blockchain node powering the Academy gem point-system"
             width={1698}
             height={1625}
             className={styles.appsImage}

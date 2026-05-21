@@ -354,7 +354,7 @@ export default function QuestsPage() {
 
               <div className={styles.heroStats}>
                 <div className={styles.heroStat}>
-                  <span className={styles.heroStatLabel}>Shards</span>
+                  <span className={styles.heroStatLabel}>Gems</span>
                   <span className={styles.heroStatValueRow}>
                     <Image src="/icons/ui-shard.svg" alt="" width={15} height={15} />
                     <span className={styles.heroStatValue}>{playerProfile?.shardCount ?? 0}</span>

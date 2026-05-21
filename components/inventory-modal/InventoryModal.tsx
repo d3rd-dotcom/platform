@@ -189,7 +189,7 @@ export default function InventoryModal({ isOpen, onClose, shardCount, username, 
         <div className={styles.statsRow}>
           <div className={styles.stat}>
             <span className={styles.statValue}>{shardCount !== null ? shardCount.toLocaleString() : '0'}</span>
-            <span className={styles.statLabel}>Shards</span>
+            <span className={styles.statLabel}>Gems</span>
           </div>
           <div className={styles.statDivider} />
           <div className={styles.stat}>

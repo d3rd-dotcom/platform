@@ -17,15 +17,15 @@ export default function SwapModal({ isOpen, onClose }: SwapModalProps) {
   const [toAmount, setToAmount] = useState('')
   const [isReversed, setIsReversed] = useState(false)
 
-  const RATE = 100 // 100 SHARDS = 1 VOTE
+  const RATE = 100 // 100 GEMS = 1 VOTE
 
   useEffect(() => {
     setMounted(true)
     return () => setMounted(false)
   }, [])
 
-  const fromToken = isReversed ? 'VOTES' : 'SHARDS'
-  const toToken = isReversed ? 'SHARDS' : 'VOTES'
+  const fromToken = isReversed ? 'VOTES' : 'GEMS'
+  const toToken = isReversed ? 'GEMS' : 'VOTES'
   const fromBalance = '0.00'
   const toBalance = '0.00'
 
@@ -89,7 +89,7 @@ export default function SwapModal({ isOpen, onClose }: SwapModalProps) {
             </div>
             <div className={styles.tokenRow}>
               <div className={styles.tokenBadge}>
-                <span className={styles.tokenIcon}>{fromToken === 'SHARDS' ? 'S' : 'V'}</span>
+                <span className={styles.tokenIcon}>{fromToken === 'GEMS' ? 'G' : 'V'}</span>
                 <span className={styles.tokenName}>{fromToken}</span>
               </div>
               <input
@@ -127,7 +127,7 @@ export default function SwapModal({ isOpen, onClose }: SwapModalProps) {
             </div>
             <div className={styles.tokenRow}>
               <div className={styles.tokenBadge}>
-                <span className={styles.tokenIcon}>{toToken === 'SHARDS' ? 'S' : 'V'}</span>
+                <span className={styles.tokenIcon}>{toToken === 'GEMS' ? 'G' : 'V'}</span>
                 <span className={styles.tokenName}>{toToken}</span>
               </div>
               <input
@@ -143,7 +143,7 @@ export default function SwapModal({ isOpen, onClose }: SwapModalProps) {
           {/* Rate Display */}
           <div className={styles.rateRow}>
             <span className={styles.rateLabel}>Rate</span>
-            <span className={styles.rateValue}>100 SHARDS = 1 VOTE</span>
+            <span className={styles.rateValue}>100 GEMS = 1 VOTE</span>
           </div>
 
           {/* Swap CTA */}

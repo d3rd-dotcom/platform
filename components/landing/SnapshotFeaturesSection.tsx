@@ -15,7 +15,7 @@ const features = [
   {
     title: 'Universal Credit System',
     body:
-      'On-chain credits earned in one case-study app, spendable across all of them. $Shards live in your wallet — not on our servers.',
+      'On-chain credits earned in one case-study app, spendable across all of them. $Gems live in your wallet — not on our servers.',
   },
 ];
 

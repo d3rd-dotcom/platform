@@ -120,7 +120,7 @@ export async function POST(request: Request) {
   } catch (error) {
     if (error instanceof Error && error.message === 'WEEKLY_LIMIT') {
       return NextResponse.json(
-        { error: 'You already earned shards from a survey this week. Come back next week for another.' },
+        { error: 'You already earned gems from a survey this week. Come back next week for another.' },
         { status: 429 }
       );
     }
@@ -137,6 +137,6 @@ export async function POST(request: Request) {
     }
 
     console.error('generate-test complete error:', error);
-    return NextResponse.json({ error: 'Failed to award shards.' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to award gems.' }, { status: 500 });
   }
 }

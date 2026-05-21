@@ -150,16 +150,16 @@ Most educational content competes with entertainment and loses. MWA doesn't comp
 | Component | Description |
 |-----------|-------------|
 | **VIP Membership** | $90 non-transferable NFT. One purchase = full platform access for the cohort season. No subscriptions, no tiers. |
-| **$Shards** | In-game currency earned through quests. Used for non-essential digital items and activated during trades with Blue |
+| **$Gems** | In-game currency earned through quests. Used for non-essential digital items and activated during trades with Blue |
 | **Stablecoins** | Achievement-based reward currency. Grants stakeholder participation in multi-sig treasury coordination and research funding. |
-| **IRL Prizes** | End-of-season rewards, redeemable through $Shards plus completion requirements. |
+| **IRL Prizes** | End-of-season rewards, redeemable through $Gems plus completion requirements. |
 
 ### Revenue Streams
 
 | Stream | Description |
 |--------|-------------|
 | **NFT Memberships** | $90 per member for full access to the platform, case-study tools, and Blue |
-| **Trading Fees** | Fees from $Shards transactions and NFT secondary market activity. |
+| **Trading Fees** | Fees from $Gems transactions and NFT secondary market activity. |
 
 ### Reinvestment
 
@@ -350,7 +350,7 @@ Feature card titles, nav labels, and section headers should name the **category*
 |---|---|
 | Twelve-Week Cohort | A Cohort For Next-Gen Scientists |
 | Blue Reviews Your Work | Ascend with Paradigmic Research |
-| Shards You Actually Own | Universal Credit System |
+| Gems You Actually Own | Universal Credit System |
 | Disposable Apps, Lasting Value | Meta-Parasocial & Cybersecurity Research Programs |
 | Memory That Compounds | Certified Academic Labs |
 | One NFT, Full Access | Lifetime Membership |

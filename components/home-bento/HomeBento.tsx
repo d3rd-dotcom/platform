@@ -29,7 +29,7 @@ const GEN_STEPS = [
 ];
 
 const HOME_BLUE_MESSAGE =
-  'I keep your course, shards, agents, and daily work in one place. Pick the next task that can leave evidence today.';
+  'I keep your course, gems, agents, and daily work in one place. Pick the next task that can leave evidence today.';
 
 export default function HomeBento() {
   const { ready } = usePrivy();

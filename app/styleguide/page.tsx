@@ -608,7 +608,7 @@ export default function StyleGuidePage() {
 
         {/* Shard Display Component */}
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Shard Display</h2>
+          <h2 className={styles.sectionTitle}>Gem Display</h2>
           <p className={styles.sectionDescription}>
             Token/currency display with animated gem icon. Used for voting power and governance tokens.
           </p>
@@ -966,7 +966,7 @@ export default function StyleGuidePage() {
             <ComponentIndexItem 
               name="ShardAnimation" 
               path="components/quests" 
-              description="Gamification shard reward animation"
+              description="Gamification gem reward animation"
             />
             <ComponentIndexItem 
               name="Navbar" 

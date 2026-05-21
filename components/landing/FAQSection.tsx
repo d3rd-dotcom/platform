@@ -16,9 +16,9 @@ const FAQ_ITEMS = [
       'MWA treats the Academy like a live behavioral science laboratory. We clean consented survey, reflection, quest, and assessment data; protect personal-linked information (PLI); and use R-based research tools to score validated measures, check outliers, audit reliability, and improve accuracy before data enters model-training workflows. The goal is to fine-tune institutional-grade models that understand behavior, learning, resilience, and decision-making. Your contribution strengthens a proprietary research flywheel: better data creates better models, better models create better tools, and better tools return more value to members while helping build AI with a more human psychological foundation.',
   },
   {
-    question: 'How do I exchange my shards for cash?',
+    question: 'How do I exchange my gems for cash?',
     answer:
-      'Users exchange shards for cash through our partners at Coinbase Exchange. When a redemption campaign is open, eligible shards can be converted into USDC or another supported payout asset and sent to a connected Coinbase account or compatible wallet. Redemption rates, minimum balances, availability, and identity checks may vary by campaign and partner requirements.',
+      'Users exchange gems for cash through our partners at Coinbase Exchange. When a redemption campaign is open, eligible gems can be converted into USDC or another supported payout asset and sent to a connected Coinbase account or compatible wallet. Redemption rates, minimum balances, availability, and identity checks may vary by campaign and partner requirements.',
   },
   {
     question: 'Who is Blue?',
@@ -28,7 +28,7 @@ const FAQ_ITEMS = [
   {
     question: 'How does membership work?',
     answer:
-      'Explorer members can start free with the core course, journaling, weekly quests, community access, and shard rewards. Paid members unlock governance, research tools, proposal access, and deeper Blue features. The $90 VIP membership is the lifetime option with an on-chain membership card.',
+      'Explorer members can start free with the core course, journaling, weekly quests, community access, and gem rewards. Paid members unlock governance, research tools, proposal access, and deeper Blue features. The $90 VIP membership is the lifetime option with an on-chain membership card.',
   },
   {
     question: 'How does the 12-week course work?',

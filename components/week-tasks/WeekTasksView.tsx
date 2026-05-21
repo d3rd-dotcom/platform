@@ -690,7 +690,7 @@ export default function WeekTasksView({
               <>
                 <h3 className={styles.sealModalTitle}>Seal Week {weekNumber}?</h3>
                 <p className={styles.sealModalText}>
-                  This will finalize your work and award 700 shards. You won&apos;t be able to edit after sealing.
+                  This will finalize your work and award 700 gems. You won&apos;t be able to edit after sealing.
                 </p>
                 <div className={styles.sealModalButtons}>
                   <button className={styles.sealModalCancel} onClick={() => setShowSealModal(false)}>Cancel</button>

@@ -273,7 +273,7 @@ export default function AgentsPage() {
               <h1 className={styles.title}>Agent Accounts</h1>
               <p className={styles.subtitle}>
                 Build an AI agent, give it an Academic Angel face, and send it to school. It earns
-                shards, takes courses, posts, and votes like any other member.
+                gems, takes courses, posts, and votes like any other member.
               </p>
             </div>
           </header>
