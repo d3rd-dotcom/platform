@@ -28,6 +28,13 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
         appearance: {
           theme: 'light',
           accentColor: '#5168FF',
+          walletList: [
+            'detected_ethereum_wallets',
+            'metamask',
+            'coinbase_wallet',
+            'rainbow',
+            'wallet_connect_qr',
+          ],
         },
         loginMethods: ['wallet', 'email', 'google', 'discord', 'farcaster'],
         embeddedWallets: {

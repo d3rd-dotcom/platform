@@ -318,11 +318,10 @@ const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClo
             <label className={styles.label}>
               <span className={styles.labelText}>Send funds to</span>
             </label>
-            <div style={{ display: 'flex', gap: 8 }}>
+            <div className={styles.recipientRow}>
               <input
                 type="text"
-                className={styles.input}
-                style={{ flex: 1 }}
+                className={`${styles.input} ${styles.dataInput}`}
                 placeholder="0x..."
                 value={recipientAddress}
                 onChange={(e) => setRecipientAddress(e.target.value)}
@@ -331,7 +330,6 @@ const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClo
                 <button
                   type="button"
                   className={styles.templateButton}
-                  style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
                   onClick={() => setRecipientAddress(address)}
                 >
                   My wallet
@@ -347,7 +345,7 @@ const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClo
             </label>
             <input
               type="number"
-              className={styles.input}
+              className={`${styles.input} ${styles.dataInput}`}
               placeholder="0.00"
               value={tokenAmount}
               onChange={(e) => setTokenAmount(e.target.value)}

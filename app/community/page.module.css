@@ -4146,7 +4146,7 @@
   font-weight: 700;
   color: #1A1D33;
   margin: 0;
-  font-family: var(--font-primary);
+  font-family: var(--font-secondary);
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
@@ -5552,10 +5552,6 @@
 
 .submitProposalButton svg {
   flex-shrink: 0;
-}
-
-.emptyState .submitProposalButton {
-  margin-top: 14px;
 }
 
 .feedSectionLabel svg {
