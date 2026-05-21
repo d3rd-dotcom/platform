@@ -7,6 +7,7 @@ import SideNavigation from '@/components/side-navigation/SideNavigation';
 import type { TutorialStep } from '@/components/still-tutorial/StillTutorial';
 import TreasuryDisplay from '@/components/treasury-display/TreasuryDisplay';
 import ProposalCard from '@/components/proposal-card/ProposalCard';
+import ActivateVotesCard from '@/components/voting/ActivateVotesCard';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
 
@@ -495,6 +496,7 @@ export default function VotingPage() {
                           </svg>
                           Active Proposals
                         </div>
+                        <ActivateVotesCard />
                         {isPageLoading || (loading && proposals.length > 0) ? (
                           <ProposalSkeletonList />
                         ) : error ? (

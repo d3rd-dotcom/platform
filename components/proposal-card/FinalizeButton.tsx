@@ -54,7 +54,7 @@ const VoteButton: React.FC<VoteButtonProps> = ({
       } else if (error.message?.includes('VotingEnded')) {
         setError('Voting period has ended');
       } else if (error.message?.includes('InsufficientVotingPower')) {
-        setError('No voting power');
+        setError('Activate your votes first, then vote.');
       } else if (error.code === 'ACTION_REJECTED' || error.code === 4001) {
         setError('Transaction cancelled');
       } else {
