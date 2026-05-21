@@ -195,6 +195,9 @@ contract BlueMarketTrader is Ownable, ReentrancyGuard {
         );
         if (!ok) revert TransferFailed();
 
+        // Clear any residual allowance so the market cannot pull more later.
+        usdcToken.approve(predictionMarket, 0);
+
         emit TradeExecuted(tradeId, _marketId, _isYes, _amount);
         return tradeId;
     }
@@ -208,6 +211,10 @@ contract BlueMarketTrader is Ownable, ReentrancyGuard {
      * @param _market Address of the prediction market contract
      */
     function setPredictionMarket(address _market) external onlyOwner {
+        // A non-zero market must be a contract — a low-level call to an EOA
+        // returns success without moving funds, which would record phantom
+        // trades. address(0) is allowed to unset the market.
+        if (_market != address(0) && _market.code.length == 0) revert InvalidMarket();
         address oldMarket = predictionMarket;
         if (predictionMarket != address(0)) {
             usdcToken.approve(predictionMarket, 0);

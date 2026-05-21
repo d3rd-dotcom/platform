@@ -1,0 +1,19 @@
+{
+  "token": "0x84939fEc50EfdEDC8522917645AAfABFd5b3EA6F",
+  "name": "Mental Wealth Governance",
+  "symbol": "MWG",
+  "snapshotBlock": 46267118,
+  "totalSupply": "100000000000000000000000",
+  "reconstructedSum": "100000000000000000000000",
+  "holderCount": 2,
+  "holders": [
+    {
+      "address": "0x84D55C4BB3d4062f74F096Fcdf58E1A9d7405d95",
+      "amount": "60000000000000000000000"
+    },
+    {
+      "address": "0x0920553CcA188871b146ee79f562B4Af46aB4f8a",
+      "amount": "40000000000000000000000"
+    }
+  ]
+}

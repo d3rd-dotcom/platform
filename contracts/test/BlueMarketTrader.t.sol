@@ -241,9 +241,27 @@ contract BlueMarketTraderTest is Test {
     // ============================================================================
 
     function test_SetPredictionMarket() public {
-        address newMarket = makeAddr("newMarket");
+        address newMarket = address(new MockPredictionMarket(address(usdc)));
         trader.setPredictionMarket(newMarket);
         assertEq(trader.predictionMarket(), newMarket);
+    }
+
+    function test_RevertWhen_SetPredictionMarketToEOA() public {
+        // L1: a non-zero market must be a contract.
+        vm.expectRevert(BlueMarketTrader.InvalidMarket.selector);
+        trader.setPredictionMarket(makeAddr("eoaMarket"));
+    }
+
+    function test_SetPredictionMarketAllowsZeroToUnset() public {
+        trader.setPredictionMarket(address(0));
+        assertEq(trader.predictionMarket(), address(0));
+    }
+
+    function test_AllowanceResetAfterTrade() public {
+        // M7: allowance to the market is cleared after the buyOutcome call.
+        uint256 marketId = market.createMarket("Allowance after trade?");
+        trader.executeTrade(marketId, true, 2000 * 1e6);
+        assertEq(usdc.allowance(address(trader), address(market)), 0);
     }
 
     function test_SetKeystoneForwarder() public {
@@ -284,7 +302,7 @@ contract BlueMarketTraderTest is Test {
     }
 
     function test_EmitPredictionMarketUpdated() public {
-        address newMarket = makeAddr("newMarket2");
+        address newMarket = address(new MockPredictionMarket(address(usdc)));
         vm.expectEmit(true, true, false, false);
         emit PredictionMarketUpdated(address(market), newMarket);
         trader.setPredictionMarket(newMarket);
@@ -296,7 +314,7 @@ contract BlueMarketTraderTest is Test {
         trader.executeTrade(marketId, true, 1000 * 1e6);
 
         // Change prediction market - old approval should be reset to 0
-        address newMarket = makeAddr("newMarket3");
+        address newMarket = address(new MockPredictionMarket(address(usdc)));
         trader.setPredictionMarket(newMarket);
 
         // Verify old market allowance is 0

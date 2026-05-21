@@ -181,6 +181,7 @@ contract BlueKillStreak is Ownable, ReentrancyGuard {
     error WorkflowNotConfigured();
     error WorkflowNotAllowed();
     error InvalidMetadata();
+    error ProposalAlreadyPassed();
     
     // ============================================================================
     // CONSTRUCTOR
@@ -308,10 +309,13 @@ contract BlueKillStreak is Ownable, ReentrancyGuard {
         Proposal storage proposal = proposals[_proposalId];
         
         if (proposal.status != ProposalStatus.Pending) revert ProposalNotActive();
+        // Do not revive an expired Pending proposal into a zombie Active state
+        // that can never be voted or executed.
+        if (block.timestamp > proposal.votingDeadline) revert VotingEnded();
         if (_level > 4) revert InvalidProposal();
-        
+
         proposal.blueLevel = _level;
-        
+
         // Level 0 = Kill
         if (_level == 0) {
             proposal.status = ProposalStatus.Rejected;
@@ -464,6 +468,7 @@ contract BlueKillStreak is Ownable, ReentrancyGuard {
         Proposal storage proposal = proposals[_proposalId];
 
         if (proposal.status != ProposalStatus.Pending) revert ProposalNotActive();
+        if (block.timestamp > proposal.votingDeadline) revert VotingEnded();
         if (_level > 4) revert InvalidProposal();
 
         proposal.blueLevel = _level;
@@ -547,9 +552,14 @@ contract BlueKillStreak is Ownable, ReentrancyGuard {
      */
     function cancelProposal(uint256 _proposalId) external onlyAdmin {
         Proposal storage proposal = proposals[_proposalId];
-        
+
         if (proposal.executed) revert AlreadyExecuted();
-        
+        // An admin cannot cancel a proposal that has already met the approval
+        // threshold — at that point only execution should follow.
+        if (proposal.status == ProposalStatus.Active && proposal.forVotes >= approvalThreshold) {
+            revert ProposalAlreadyPassed();
+        }
+
         proposal.status = ProposalStatus.Cancelled;
         
         emit ProposalCancelled(_proposalId, msg.sender);

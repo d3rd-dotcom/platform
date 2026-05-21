@@ -549,6 +549,47 @@ contract BlueKillStreakTest is Test {
         assertEq(uint(proposal.status), uint(BlueKillStreak.ProposalStatus.Cancelled));
     }
 
+    // L3: an admin can still cancel a live, sub-threshold Active proposal — the
+    // new threshold guard must not false-trigger on a normal in-progress vote.
+    // (The guarded state, Active AND forVotes >= threshold, is unreachable via
+    // public calls because vote() auto-executes on crossing the threshold.)
+    function test_CancelActiveSubThresholdProposal() public {
+        uint256 proposalId = _createProposalAndAdvance(
+            proposer, recipient, USDC_AMOUNT, "Live cancel", "x", VOTING_PERIOD
+        );
+        vm.prank(blueAgent);
+        governance.blueReview(proposalId, 4); // Active at 40% (< 50% threshold)
+
+        governance.cancelProposal(proposalId);
+        BlueKillStreak.Proposal memory p = governance.getProposal(proposalId);
+        assertEq(uint(p.status), uint(BlueKillStreak.ProposalStatus.Cancelled));
+    }
+
+    // L8: Blue cannot review (and revive) a proposal whose deadline has passed.
+    function test_RevertWhen_BlueReviewExpired() public {
+        uint256 proposalId = _createProposalAndAdvance(
+            proposer, recipient, USDC_AMOUNT, "Expired review", "x", VOTING_PERIOD
+        );
+        vm.warp(block.timestamp + VOTING_PERIOD + 1);
+        vm.prank(blueAgent);
+        vm.expectRevert(BlueKillStreak.VotingEnded.selector);
+        governance.blueReview(proposalId, 4);
+    }
+
+    // L8: same guard on the CRE onReport review path.
+    function test_RevertWhen_OnReportReviewExpired() public {
+        governance.setKeystoneForwarder(forwarder);
+        _configureWorkflow();
+        uint256 proposalId = _createProposalAndAdvance(
+            proposer, recipient, USDC_AMOUNT, "Expired CRE review", "x", VOTING_PERIOD
+        );
+        vm.warp(block.timestamp + VOTING_PERIOD + 1);
+        bytes memory report = abi.encode(uint8(2), abi.encode(uint256(proposalId), uint256(4)));
+        vm.prank(forwarder);
+        vm.expectRevert(BlueKillStreak.VotingEnded.selector);
+        governance.onReport(_validMetadata(), report);
+    }
+
     function test_SetAdmin() public {
         address newAdmin = makeAddr("newAdmin");
 
