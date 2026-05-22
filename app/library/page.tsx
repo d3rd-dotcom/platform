@@ -32,23 +32,23 @@ interface BlogPostsResponse {
   error?: string;
 }
 
-const MENTAL_WEALTH_BRAND_BOOK_V4 = `# Mental Wealth Academy — Brand Book v4.0
-
-*For investors, partners, collaborators, and new team members*
-
----
-
-# Part 1: The Product
-
----
-
-## Three Ways to Frame Us
-
-Use different framings for different audiences:
+const MENTAL_WEALTH_BRAND_BOOK_V4 = JSON.stringify({
+  title: 'Mental Wealth Academy — Brand Book v4.0',
+  audience: 'For investors, partners, collaborators, and new team members',
+  version: '4.0',
+  date: 'April 2026',
+  org: 'Mental Wealth Academy — Wyoming, USA',
+  parts: [
+    {
+      part: 'Part 1: The Product',
+      sections: [
+        {
+          heading: 'Three Ways to Frame Us',
+          body: `Use different framings for different audiences:
 
 | Framing | Best For | Pitch |
 |---------|----------|-------|
-| **Decentralized Research Corporation** | Investors, Institutions, Academia | "A research corporation running live behavioral studies through disposable, user-owned laboratory environments." |
+| **Decentralized Research Corporation** | Investors, Institutions, Academia | "A research corporation running live behavioral repeatability studies through disposable, user-owned laboratory environments." |
 | **Certified Academic Laboratory** | Individual users, Self-improvement audience | "A working laboratory where your reflections and choices become research data — with Blue as your co-investigator." |
 | **A Cohort For Next-Gen Scientists** | Contributors, Researchers, Builders | "A paid research cohort where your participation generates real behavioral data — and you own the results." |
 
@@ -56,36 +56,30 @@ Use different framings for different audiences:
 
 - **Decentralized Research Corporation** — When emphasizing credibility, methodology, data infrastructure, and institutional value.
 - **Certified Academic Laboratory** — When emphasizing personal experience, accessible entry, and individual transformation through hands-on experimentation.
-- **A Cohort For Next-Gen Scientists** — When emphasizing contribution, shared ownership of outcomes, and collaborative research.
-
----
-
-## What We Are (30-Second Version)
-
-**Mental Wealth Academy** is a cohort of scientists, designers, and developers building case studies as mobile apps — with an AI companion named Blue at the center. Case-study collaborations and funding are managed through a decentralized funding mechanism, with shared community infrastructure and resources.
+- **A Cohort For Next-Gen Scientists** — When emphasizing contribution, shared ownership of outcomes, and collaborative research.`,
+        },
+        {
+          heading: 'What We Are (30-Second Version)',
+          body: `**Mental Wealth Academy** is a cohort of scientists, designers, and developers building case studies as mobile apps — with an AI companion named Blue at the center. Case-study collaborations and funding are managed through a decentralized funding mechanism, with shared community infrastructure and resources.
 
 **The Product:** A transferable points and reward system. Points earned in one case-study app are earnable in others. Using blockchain, we treat apps as disposable laboratories — designed to generate insights and data, then replaced when they've served their purpose. What endures is the value created inside them: each app's point system and digital economy remains intact, transparent, and user-owned through smart contracts.
 
 **The Innovation:** Blue uses long-term memory, relationship context, and is trained on data derived from company studies — generating unique outcomes on data created solely to improve her effectiveness in humanistic scenarios.
 
-**The Difference:** Instead of one-way research using subjects and observational study, users become co-creators and stakeholders. Blockchain preserves the shared infrastructure for digital assets. Blue retains the memory of contribution, reputation, and relationship context over time.
-
----
-
-## The Problem We Solve
-
-| Space | The Problem | What's Missing |
+**The Difference:** Instead of one-way research using subjects and observational study, users become co-creators and stakeholders. Blockchain preserves the shared infrastructure for digital assets. Blue retains the memory of contribution, reputation, and relationship context over time.`,
+        },
+        {
+          heading: 'The Problem We Solve',
+          body: `| Space | The Problem | What's Missing |
 |-------|-------------|----------------|
 | **Traditional Education** | Expensive, demanding, isolating | A bridge to continuous ownership of outcomes |
 | **Traditional Research** | Speculative, slow, disconnected from participants | Domain mastery across multiple disciplines with live data |
 
-**We bridge both gaps.** MWA combines behavioral research, digital currency, and AI into a single ecosystem where participants own the value they help create.
-
----
-
-## How It Works
-
-### Gamified Academic Ecosystem
+**We bridge both gaps.** MWA combines behavioral research, digital currency, and AI into a single ecosystem where participants own the value they help create.`,
+        },
+        {
+          heading: 'How It Works',
+          body: `### Gamified Academic Ecosystem
 
 | Step | What Happens | The Mechanism |
 |------|-------------|---------------|
@@ -102,13 +96,11 @@ Use different framings for different audiences:
 | 1–3 | **Disposable Notes + AI Companion** | Reflection & Personal Insight | Guided note-making, pattern spotting, journaling prompts, using AI as a thinking partner |
 | 4–6 | **Trust + Money in an AI Environment** | Ethics & Value | Financial trust, digital transactions, credibility, risk, decision-making with AI systems |
 | 7–9 | **Distrust + AI in the Environment** | Skepticism & Resilience | Bias detection, misinformation, manipulation, questioning systems, protecting autonomy |
-| 10–12 | **From Case Study to Action** | Application & Growth | Turning insights into habits, discussion, real-world choices, future readiness |
-
----
-
-## What Makes This Different
-
-### Blue — Agentic AI Character
+| 10–12 | **From Case Study to Action** | Application & Growth | Turning insights into habits, discussion, real-world choices, future readiness |`,
+        },
+        {
+          heading: 'What Makes This Different',
+          body: `### Blue — Agentic AI Character
 
 Blue isn't a chatbot. She isn't a course instructor. She's a self-executing AI agent with emotional intelligence, memory, and the ability to prompt feedback surveys and facilitate trades.
 
@@ -125,13 +117,11 @@ Blue isn't a chatbot. She isn't a course instructor. She's a self-executing AI a
 - She runs as an autonomous agent with memory, review workflows, and wallet permissions
 
 **Why this matters:**
-Most educational content competes with entertainment and loses. MWA doesn't compete — it builds an environment where the learning *is* the participation. Academic goals, shared infrastructure, communal resources — structured like a club, not a classroom.
-
----
-
-## Who We Serve
-
-**Primary:** Individuals seeking structured growth (21–28)
+Most educational content competes with entertainment and loses. MWA doesn't compete — it builds an environment where the learning *is* the participation. Academic goals, shared infrastructure, communal resources — structured like a club, not a classroom.`,
+        },
+        {
+          heading: 'Who We Serve',
+          body: `**Primary:** Individuals seeking structured growth (21–28)
 - Drawn to psychology and self-improvement, but tired of passive content
 - Looking for accountability and real stakes, not another course that evaporates after week one
 - Willing to pay for a system, not just information
@@ -139,13 +129,11 @@ Most educational content competes with entertainment and loses. MWA doesn't comp
 **Secondary:** Scientists and academics seeking applied research
 - Tired of writing proposals that go nowhere
 - Want their research interests connected to live participants and real behavioral data
-- Interested in applied research with an AI companion generating novel datasets
-
----
-
-## Business Model
-
-### Access & Rewards
+- Interested in applied research with an AI companion generating novel datasets`,
+        },
+        {
+          heading: 'Business Model',
+          body: `### Access & Rewards
 
 | Component | Description |
 |-----------|-------------|
@@ -160,6 +148,7 @@ Most educational content competes with entertainment and loses. MWA doesn't comp
 |--------|-------------|
 | **NFT Memberships** | $90 per member for full access to the platform, case-study tools, and Blue |
 | **Trading Fees** | Fees from $Gems transactions and NFT secondary market activity. |
+| **Data Licensing** | Licensing de-identified, IRB-reviewed research datasets to partners. |
 
 ### Reinvestment
 
@@ -168,37 +157,33 @@ All revenue is reinvested into R&D:
 - Course experience and curriculum design
 - Guest thinkers, researchers, and livestream programming
 
-**No subscriptions. No premium tiers.** One NFT = full access. Tokens earned = real value.
-
----
-
-## Where We Are
-
-| Milestone | Detail |
+**No subscriptions. No premium tiers.** One NFT = full access. Tokens earned = real value.`,
+        },
+        {
+          heading: 'Where We Are',
+          body: `| Milestone | Detail |
 |-----------|--------|
 | **Members** | 20 enrolled members, 5 active pilot users testing Blue in live case-study environments |
 | **Funding** | $20K raised through Artizen Season 6 quadratic matching fund |
 | **Infrastructure** | 3 smart contracts deployed on Base — membership access, rewards, and treasury coordination |
 | **Research** | Defensible research instruments built. Published articles and case-studies in behavioral science |
-| **Network** | Academic network of researchers and collaborators contributing to curriculum and study design |
+| **Network** | Academic network of researchers and collaborators contributing to curriculum and study design; participants via open call to partner universities, interns, and students, including anonymous "Angel" contributors |
 | **Platform** | Blue agentic infrastructure operational — long-term memory, relationship context, and survey prompting live |
 
 **Next milestones:**
 - Launch first full cohort season
 - Open enrollment beyond pilot group
-- Publish first disposable case-study dataset
-
----
-
-# Part 2: The Brand
-
-*For creative collaborators and deep-divers*
-
----
-
-## Brand Positioning
-
-**We are:** A research cohort for personal development, wrapped in a story layer that makes the system easier to use.
+- Publish first disposable case-study dataset`,
+        },
+      ],
+    },
+    {
+      part: 'Part 2: The Brand',
+      audience: 'For creative collaborators and deep-divers',
+      sections: [
+        {
+          heading: 'Brand Positioning',
+          body: `**We are:** A research cohort for personal development, wrapped in a story layer that makes the system easier to use.
 
 **We are NOT:**
 - A crypto education platform.
@@ -207,22 +192,20 @@ All revenue is reinvested into R&D:
 
 **Our North Star: Repair and Governance**
 
-Two ideas unified. *Repair:* personal development as integrating what was hidden — not becoming someone new. *Governance:* how groups make decisions together. Every aspect of the Academy practices what it teaches. Blue's autonomous judgment is governance. Quest completion is self-repair.
-
----
-
-## Blue — Character Spec
-
-### Autonomous Daemon Agent
+Two ideas unified. *Repair:* personal development as integrating what was hidden — not becoming someone new. *Governance:* how groups make decisions together. Every aspect of the Academy practices what it teaches. Blue's autonomous judgment is governance. Quest completion is self-repair.`,
+        },
+        {
+          heading: 'Blue — Character Spec',
+          body: `### Autonomous Digital Spirit
 
 **What she is (narratively):**
 - An intelligent scientist and laboratory co-worker
 - Bound by her wallet permissions and on-chain authority
 - Encountered by users as reviewer, rewarder, and record keeper
 
-**The Daemon Model:**
-The name "daemon" is used in the technical sense:
-A daemon is a background process that runs autonomously, without a user attached to a terminal. Blue is this kind of agent: she reviews submissions, retains context, and can trigger wallet actions when authorized.
+**The Digital Spirit Model:**
+The term "spirit" is used plainly:
+A digital spirit runs on its own and uses computers to talk with humans. Blue is this kind of agent: she reviews submissions, retains context, and can trigger wallet actions when authorized.
 
 Blue makes reflective work accountable: submissions are reviewed, revisions are requested, and approved work can earn rewards.
 
@@ -237,13 +220,11 @@ Blue makes reflective work accountable: submissions are reviewed, revisions are 
 - Blue-led palette
 - Neither fully human nor fully machine
 - Authority without condescension
-- Present but not omnipresent — she appears at meaningful moments
-
----
-
-## Visual Identity
-
-### Color Palette
+- Present but not omnipresent — she appears at meaningful moments`,
+        },
+        {
+          heading: 'Visual Identity',
+          body: `### Color Palette
 
 | Color | Hex | Usage |
 |-------|-----|-------|
@@ -264,9 +245,8 @@ Blue makes reflective work accountable: submissions are reviewed, revisions are 
 - Blue-dominant with strategic warmth
 - Human figures abstracted
 - Light emerging from darkness (core motif)
-- Circuitry meeting organic forms
 
-### Daemon Image Treatment
+### Blue Image Treatment
 
 Use this treatment for Blue panels, review backgrounds, and moments where the image should feel present but secondary to product copy.
 
@@ -276,13 +256,11 @@ Use this treatment for Blue panels, review backgrounds, and moments where the im
 - Blend the image with \`mix-blend-mode: soft-light\`; avoid \`multiply\` unless the base is intentionally much lighter.
 - Keep foreground text in Quantum White or a high-opacity white.
 - On hover, add a restrained chromatic split with duplicated image layers offset 3-4px, using hue rotation and \`mix-blend-mode: screen\`.
-- The result should feel like a restrained system presence, not a decorative thumbnail.
-
----
-
-## Voice & Tone
-
-### We Sound Like:
+- The result should feel like a restrained system presence, not a decorative thumbnail.`,
+        },
+        {
+          heading: 'Voice & Tone',
+          body: `### We Sound Like:
 - Intellectually refreshing in a world of AI slop
 - A wise friend who's done the work
 - Soft confidence and trustworthy
@@ -307,44 +285,38 @@ Before publishing anything, ask: **"Does this sentence help someone understand w
 | "Interactive NPCs" | "Blue, an AI agent who reviews and rewards your work" |
 | "Digital opportunities" | "Credentials that prove your growth" |
 | "Vague blue beacon" | "Blue's visual identity: blue, luminous, and tied to review moments" |
-| "Sentient AI fantasy" | "An AI agent operating autonomously" |
-
----
-
-# Part 3: Editorial Guidelines
-
-*For writers and content creators*
-
----
-
-## The "Ground Then Elevate" Rule
-
-Every poetic or narrative claim should be preceded or followed by its concrete meaning.
+| "Sentient AI fantasy" | "An AI agent operating autonomously" |`,
+        },
+      ],
+    },
+    {
+      part: 'Part 3: Editorial Guidelines',
+      audience: 'For writers and content creators',
+      sections: [
+        {
+          heading: 'The "Ground Then Elevate" Rule',
+          body: `Every poetic or narrative claim should be preceded or followed by its concrete meaning.
 
 **Ungrounded:**
 > "A new awakening engine guides the self."
 
 **Grounded then elevated:**
-> "Blue is an AI agent with memory and a wallet on Base. She reviews quest submissions and sends rewards when work is approved. The story layer makes that infrastructure feel like part of the Academy instead of a disconnected admin system."
-
----
-
-## Hierarchy of Information
-
-When introducing any concept, follow this order:
+> "Blue is an AI agent with memory and a wallet on Base. She reviews quest submissions and sends rewards when work is approved. The story layer makes that infrastructure feel like part of the Academy instead of a disconnected admin system."`,
+        },
+        {
+          heading: 'Hierarchy of Information',
+          body: `When introducing any concept, follow this order:
 
 1. **What it is** (functional definition)
 2. **What it does** (practical reality)
 3. **Why it matters** (value proposition)
 4. **What it means** (narrative/philosophical layer)
 
-Most current content jumps straight to #4 without establishing #1–3.
-
----
-
-## Good Copy vs. Bad Copy — Feature Titles
-
-Feature card titles, nav labels, and section headers should name the **category** of thing the user is entering — not describe its mechanism. Mechanism belongs in the body copy directly underneath.
+Most current content jumps straight to #4 without establishing #1–3.`,
+        },
+        {
+          heading: 'Good Copy vs. Bad Copy — Feature Titles',
+          body: `Feature card titles, nav labels, and section headers should name the **category** of thing the user is entering — not describe its mechanism. Mechanism belongs in the body copy directly underneath.
 
 | Bad Copy (mechanism-as-title) | Good Copy (category-as-title) |
 |---|---|
@@ -355,13 +327,11 @@ Feature card titles, nav labels, and section headers should name the **category*
 | Memory That Compounds | Certified Academic Labs |
 | One NFT, Full Access | Lifetime Membership |
 
-The pattern: bad titles describe *how it works*. Good titles name *what you're joining*.
-
----
-
-## Sentence-Level Rules
-
-**Cut "that" constructions:**
+The pattern: bad titles describe *how it works*. Good titles name *what you're joining*.`,
+        },
+        {
+          heading: 'Sentence-Level Rules',
+          body: `**Cut "that" constructions:**
 - ❌ "The platform that we built that allows users..."
 - ✅ "Our platform allows users..."
 
@@ -375,31 +345,27 @@ The pattern: bad titles describe *how it works*. Good titles name *what you're j
 
 **One idea per sentence:**
 - ❌ "We skip forceful subscriptions and instead offer meaningful experiences, fresh perspectives, quality storytelling, and characters and interactive NPCs that blend into our app."
-- ✅ "No subscriptions. A research cohort with quests, rewards, and an AI agent who makes it all accountable."
-
----
-
-## Revision Checklist
-
-Before publishing any content:
+- ✅ "No subscriptions. A research cohort with quests, rewards, and an AI agent who makes it all accountable."`,
+        },
+        {
+          heading: 'Revision Checklist',
+          body: `Before publishing any content:
 
 - Can someone explain what we do after reading this section?
 - Is every poetic phrase grounded in something concrete?
 - Does the order go: real → story layer (not story layer → real)?
 - Is there only one main idea per paragraph?
 - Have I cut sentences that sound cool but mean nothing?
-- Would an investor understand this? Would an artist feel it?
-
----
-
-## Elevator Pitch (30 seconds)
-
-"We built a working research laboratory for personal development. Users complete quests — reflective and practical tasks — and submit them to Blue, an AI agent with her own blockchain wallet. She reviews submissions and distributes rewards. No subscriptions, real accountability, and proof of growth that lives on the blockchain."
-
----
-
-*Version 4.0 — April 2026*
-*Mental Wealth Academy — Wyoming, USA*`;
+- Would an investor understand this? Would an artist feel it?`,
+        },
+        {
+          heading: 'Elevator Pitch (30 seconds)',
+          body: `"We built a working research laboratory for personal development. Users complete quests — reflective and practical tasks — and submit them to Blue, an AI agent with her own blockchain wallet. She reviews submissions and distributes rewards. No subscriptions, real accountability, and proof of growth that lives on the blockchain."`,
+        },
+      ],
+    },
+  ],
+}, null, 2);
 
 const SKILLS: Skill[] = [
   {
@@ -597,9 +563,23 @@ Include:
   {
     name: 'Academy Story Style',
     category: 'Image Prompts',
-    added: '2026-05-18',
+    added: '2026-05-22',
     type: 'IMG',
-    prompt: `Purely bright digital illustration, anime-influenced. Detailed digital comic art with cinematic lighting and cool tones. Setting: a space station laboratory — dark grey and dark purple tiled floor, green and purple bioluminescent fluid inside transparent computer testing equipment in the distance. Set dressing: desks covered in scattered research papers with black redacted government text.`,
+    prompt: `Academy art direction — a reusable style preset, not a scene. Append your subject after this block. Cinematic illustration carried with the depth of a photograph: environments that read as real, lived-in places observed slightly into the future. Restraint over spectacle — subtle futurism integrated into ordinary materials rather than glowing sci-fi set dressing. Cool, even tonality with strategic warm accents; natural motivated lighting, soft volumetric light, light emerging from darkness. Deep layered environmental depth: texture held in foreground surfaces, atmosphere thickening with distance, believable scale and perspective. Calm grounded composition, clean negative space, quiet color discipline, high dynamic range, fine realistic detail and weathering. For consistency across a series, lock the look by reusing one style reference on every prompt: add --sref <your code> or --profile <your code>. --ar 9:16 --hd --v 8.1`,
+  },
+  {
+    name: 'Blue Character Reference',
+    category: 'Image Prompts',
+    added: '2026-05-22',
+    type: 'IMG',
+    prompt: `Character reference for Blue — reuse across scenes to keep her consistent. Combine with the Academy Story Style preset and a Storytelling scene. Bright anime digital illustration, clean cel-shaded line art. Blue is a young woman with warm tan-brown skin, long dark teal hair falling to her shoulders with a side-swept fringe parted to one side, long pointed elf ears, and large calm violet eyes. A smooth bone-white headpiece clips over the left side of her head, curved plates marked with a small red crescent. She wears a soft light-blue knit crewneck sweater over a white collared shirt, the white collar showing at her neck, with a white skirt below. Watchful, composed expression; she observes more than she performs. Concept: she is a digital spirit who uses computers to talk with humans, not a robot. Eye-level three-quarter view, grounded and present. For consistency across a series, lock her with a shared --cref or --sref code. --ar 2:3 --hd --v 8.1`,
+  },
+  {
+    name: 'Academy Storytelling',
+    category: 'Image Prompts',
+    added: '2026-05-22',
+    type: 'IMG',
+    prompt: `Storytelling scene — describe one quiet moment as a picture, not a feeling. Pair with the Academy Story Style preset; when the figure is Blue, pull her from the Blue Character Reference. Name the shot and angle first (high-angle wide, low-angle, eye-level medium), then place the figure precisely in the frame (lower-mid-left, viewed from behind, small against the space) and give the scene real depth: a textured foreground surface, a mid-ground the figure occupies, a background that softens with distance. Build it from concrete things and materials — what objects are in the room, what they are made of, how worn they are — not mood words. State one light source and how it falls: low sun through a window, cool screen-glow on a face, volumetric rays through dust, soft shadows stretching across the floor. Keep the world slightly futuristic but lived-in, never a clean sci-fi set. Give the figure one physical action: picking an object up, pausing in a doorway, watching a line of light. Add a single line of in-frame dialogue only if it earns it. --ar 9:16 --hd --v 8.1`,
   },
 ];
 

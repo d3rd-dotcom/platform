@@ -20,10 +20,36 @@ interface PopupData {
   shardCount: number;
 }
 
+interface RereadNote {
+  date: string;
+  content: string;
+  day: number;
+  weekNumber: number;
+}
+
+interface RereadModalState {
+  dateKey: string;
+  isLoading: boolean;
+  error: string | null;
+  note: RereadNote | null;
+}
+
 const WEEKDAY_LABELS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
 const MONTH_LABEL = new Intl.DateTimeFormat('en-US', { month: 'long' });
 const YEAR_LABEL = new Intl.DateTimeFormat('en-US', { year: 'numeric' });
+const FULL_DATE_LABEL = new Intl.DateTimeFormat('en-US', {
+  weekday: 'long',
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric',
+});
+const REREAD_SHARD_COST = 50;
+
+function formatReadableDate(dateKey: string) {
+  const [year, month, day] = dateKey.split('-').map(Number);
+  return FULL_DATE_LABEL.format(new Date(year, month - 1, day));
+}
 
 function startOfMonth(date: Date) {
   return new Date(date.getFullYear(), date.getMonth(), 1);
@@ -49,6 +75,7 @@ export default function ProfilePopup({ username, avatarUrl, address, onClose }: 
   const [data, setData] = useState<PopupData>({ streak: 0, completedDates: new Set(), shardCount: 0 });
   const [loading, setLoading] = useState(true);
   const [currentMonth, setCurrentMonth] = useState(() => startOfMonth(new Date()));
+  const [rereadModal, setRereadModal] = useState<RereadModalState | null>(null);
 
   const displayName = username && !username.startsWith('user_') ? username : null;
   const initials = displayName
@@ -106,11 +133,63 @@ export default function ProfilePopup({ username, avatarUrl, address, onClose }: 
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key !== 'Escape') return;
+      if (rereadModal) {
+        if (!rereadModal.isLoading) setRereadModal(null);
+        return;
+      }
+      onClose();
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [onClose]);
+  }, [onClose, rereadModal]);
+
+  const openRereadModal = useCallback((dateKey: string) => {
+    setRereadModal({ dateKey, isLoading: false, error: null, note: null });
+  }, []);
+
+  const unlockReread = useCallback(async () => {
+    if (!rereadModal || rereadModal.note) return;
+
+    setRereadModal((prev) => (prev ? { ...prev, isLoading: true, error: null } : prev));
+
+    try {
+      const token = await getAccessToken();
+      const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+      const res = await fetch('/api/daily-notes/reread', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
+        body: JSON.stringify({ date: rereadModal.dateKey }),
+      });
+
+      const resData = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        const errorMessage = resData?.error === 'insufficient_shards'
+          ? `You need ${REREAD_SHARD_COST} gems to reread this page.`
+          : resData?.error === 'note_not_found'
+            ? 'This morning page is no longer available to reread.'
+            : 'The reread could not be opened right now.';
+
+        setRereadModal((prev) => (prev ? { ...prev, isLoading: false, error: errorMessage } : prev));
+        return;
+      }
+
+      if (typeof resData?.shardsRemaining === 'number') {
+        setData((prev) => ({ ...prev, shardCount: resData.shardsRemaining }));
+        window.dispatchEvent(new Event('shardsUpdated'));
+      }
+
+      setRereadModal((prev) => (
+        prev ? { ...prev, isLoading: false, error: null, note: resData.note ?? null } : prev
+      ));
+    } catch {
+      setRereadModal((prev) => (
+        prev ? { ...prev, isLoading: false, error: 'The reread could not be opened right now.' } : prev
+      ));
+    }
+  }, [getAccessToken, rereadModal]);
 
   const calendarDays = useMemo(() => {
     const monthStart = startOfMonth(currentMonth);
@@ -210,23 +289,42 @@ export default function ProfilePopup({ username, avatarUrl, address, onClose }: 
             ))}
 
             {calendarDays.map((day) => {
+              const isRereadable = day.completed && day.inMonth;
               const cls = [
                 styles.dayCell,
                 !day.inMonth && styles.dayCellOut,
                 day.today && styles.dayCellToday,
-                day.completed && day.inMonth && styles.dayCellDone,
+                isRereadable && styles.dayCellDone,
+                isRereadable && styles.dayCellInteractive,
               ].filter(Boolean).join(' ');
 
+              if (!isRereadable) {
+                return (
+                  <div key={day.dateKey} className={cls}>
+                    <span className={styles.dayNum}>{day.date.getDate()}</span>
+                  </div>
+                );
+              }
+
               return (
-                <div key={day.dateKey} className={cls}>
+                <button
+                  key={day.dateKey}
+                  type="button"
+                  className={cls}
+                  onClick={() => openRereadModal(day.dateKey)}
+                  aria-label={`Reread morning page for ${formatReadableDate(day.dateKey)}`}
+                  title={`Reread ${formatReadableDate(day.dateKey)} for ${REREAD_SHARD_COST} gems`}
+                >
                   <span className={styles.dayNum}>{day.date.getDate()}</span>
-                  {day.completed && day.inMonth && <span className={styles.dot} />}
-                </div>
+                  <span className={styles.dot} />
+                </button>
               );
             })}
           </div>
 
           {loading && <div className={styles.loadingBar} aria-label="Loading calendar data" />}
+
+          <p className={styles.calendarHint}>Tap a completed day to reread it for {REREAD_SHARD_COST} gems.</p>
         </div>
 
         {/* Footer */}
@@ -239,6 +337,95 @@ export default function ProfilePopup({ username, avatarUrl, address, onClose }: 
     </div>
   );
 
+  const selectedDateLabel = rereadModal ? formatReadableDate(rereadModal.dateKey) : '';
+
+  const rereadOverlay = rereadModal ? (
+    <div
+      className={styles.rereadOverlay}
+      onClick={() => {
+        if (!rereadModal.isLoading) setRereadModal(null);
+      }}
+    >
+      <div
+        className={styles.rereadModal}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="popup-reread-title"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          type="button"
+          className={styles.rereadClose}
+          onClick={() => setRereadModal(null)}
+          aria-label="Close reread note"
+          disabled={rereadModal.isLoading}
+        >
+          <X size={16} weight="bold" />
+        </button>
+
+        <div className={styles.rereadEyebrow}>Morning Pages Archive</div>
+        <h3 id="popup-reread-title" className={styles.rereadTitle}>{selectedDateLabel}</h3>
+
+        {rereadModal.note ? (
+          <>
+            <p className={styles.rereadMeta}>
+              Week {rereadModal.note.weekNumber}, Day {rereadModal.note.day}
+            </p>
+            <div className={styles.noteFrame}>
+              <p className={styles.noteContent}>{rereadModal.note.content}</p>
+            </div>
+            <div className={styles.rereadFooter}>
+              <span className={styles.rereadBalance}>{data.shardCount} shards remaining</span>
+              <button type="button" className={styles.rereadPrimary} onClick={() => setRereadModal(null)}>
+                Close
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <p className={styles.rereadCopy}>
+              Spend {REREAD_SHARD_COST} gems to reopen this completed morning page. Access lasts for this view only.
+            </p>
+            <div className={styles.rereadCostRow}>
+              <span className={styles.rereadCostBadge}>
+                <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} />
+                {REREAD_SHARD_COST} gems
+              </span>
+              <span className={styles.rereadBalance}>{data.shardCount} available</span>
+            </div>
+            {rereadModal.error && (
+              <p className={styles.rereadError} role="alert">{rereadModal.error}</p>
+            )}
+            <div className={styles.rereadActions}>
+              <button
+                type="button"
+                className={styles.rereadSecondary}
+                onClick={() => setRereadModal(null)}
+                disabled={rereadModal.isLoading}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className={styles.rereadPrimary}
+                onClick={unlockReread}
+                disabled={rereadModal.isLoading}
+              >
+                {rereadModal.isLoading ? 'Opening...' : `Spend ${REREAD_SHARD_COST} gems`}
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  ) : null;
+
   if (typeof window === 'undefined') return null;
-  return createPortal(popup, document.body);
+  return createPortal(
+    <>
+      {popup}
+      {rereadOverlay}
+    </>,
+    document.body
+  );
 }
