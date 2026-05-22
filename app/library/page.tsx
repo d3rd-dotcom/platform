@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
+import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
 import { useSound } from '@/hooks/useSound';
 import type { ParagraphBlogPost } from '@/lib/paragraph-blog';
 import styles from './page.module.css';
@@ -802,31 +803,13 @@ export default function LibraryPage() {
           <div className={styles.contentWrapper}>
             {/* Left Content Area */}
             <div className={styles.mainArea}>
-              {/* Header Section */}
+              {/* Header — Blue introduces the library */}
               <div className={styles.headerSection}>
-                <div className={styles.headerCopy}>
-                  <h1 className={styles.title}>Prompt Library</h1>
-                  <p className={styles.subtitle}>Browse featured prompts and AI art styles.<span className={styles.subtitleCopyHint}> Click any item to preview before copying.</span></p>
-                </div>
-                <button
-                  className={styles.scanButton}
-                  onClick={() => {
-                    const link = document.createElement('a');
-                    link.href = '/prompts/CharacterBlue.png';
-                    link.download = 'CharacterBlue.png';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    play('click');
-                  }}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="7 10 12 15 17 10" />
-                    <line x1="12" y1="15" x2="12" y2="3" />
-                  </svg>
-                  Character
-                </button>
+                <BlueChatBubble
+                  variant="featured"
+                  stackOnMobile
+                  message="Welcome to my library. Copy a prompt to make Academy-style art and keep my look consistent, or read an essay to see how we think."
+                />
               </div>
 
               <div className={styles.blogSection}>
