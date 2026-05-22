@@ -23,6 +23,18 @@ export interface DrawerQuest {
   weekNumber?: number;
   icon?: string;
   authorLabel?: string;
+  usdcReward?: number;
+}
+
+type UsdcClaimStatus = 'pending' | 'approved' | 'paid' | 'rejected';
+
+interface UsdcClaimState {
+  loading: boolean;
+  reward: number;
+  eligible: boolean;
+  status: UsdcClaimStatus | null;
+  txHash: string | null;
+  note: string | null;
 }
 
 interface QuestDrawerProps {
@@ -53,10 +65,82 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
   const [shardsAwarded, setShardsAwarded] = useState(0);
   const [showConnectingModal, setShowConnectingModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
+  const [usdcClaim, setUsdcClaim] = useState<UsdcClaimState | null>(null);
+  const [isSubmittingUsdc, setIsSubmittingUsdc] = useState(false);
 
   const getAuthHeaders = async (): Promise<HeadersInit> => {
     const token = await getAccessToken();
     return token ? { Authorization: `Bearer ${token}` } : {};
+  };
+
+  const usdcReward = quest?.usdcReward ?? 0;
+
+  // Load USDC bounty eligibility + existing claim state when the drawer opens
+  // for a quest that carries a USDC reward.
+  useEffect(() => {
+    if (!isOpen || !quest || !usdcReward) {
+      setUsdcClaim(null);
+      return;
+    }
+
+    let cancelled = false;
+    setUsdcClaim({ loading: true, reward: usdcReward, eligible: false, status: null, txHash: null, note: null });
+
+    (async () => {
+      try {
+        const headers = await getAuthHeaders();
+        const res = await fetch(`/api/quests/usdc/submit?questId=${encodeURIComponent(quest.id)}`, {
+          credentials: 'include',
+          cache: 'no-store',
+          headers,
+        });
+        const data = await res.json().catch(() => ({}));
+        if (cancelled) return;
+        setUsdcClaim({
+          loading: false,
+          reward: data.usdcReward ?? usdcReward,
+          eligible: Boolean(data.eligible),
+          status: data.claim?.status ?? null,
+          txHash: data.claim?.txHash ?? null,
+          note: data.claim?.note ?? null,
+        });
+      } catch {
+        if (!cancelled) {
+          setUsdcClaim({ loading: false, reward: usdcReward, eligible: false, status: null, txHash: null, note: null });
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, quest?.id, usdcReward]);
+
+  const handleRequestUsdc = async () => {
+    if (!quest || isSubmittingUsdc) return;
+    setIsSubmittingUsdc(true);
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch('/api/quests/usdc/submit', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', ...headers },
+        body: JSON.stringify({ questId: quest.id }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.ok) {
+        setUsdcClaim((prev) => (prev ? { ...prev, status: 'pending', note: null } : prev));
+      } else if (data?.claim?.status) {
+        setUsdcClaim((prev) => (prev ? { ...prev, status: data.claim.status } : prev));
+      } else {
+        alert(data.error || 'Could not submit USDC bounty. Please try again.');
+      }
+    } catch {
+      alert('Could not submit USDC bounty. Please try again.');
+    } finally {
+      setIsSubmittingUsdc(false);
+    }
   };
 
   useEffect(() => {
@@ -442,6 +526,77 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
                       ? 'Submitting...'
                       : `Submit entry (${progressCount}/${targetCount})`}
                 </button>
+
+                {usdcReward > 0 && usdcClaim && (
+                  <div className={styles.usdcPanel}>
+                    <div className={styles.usdcHeader}>
+                      <span className={styles.usdcBadge}>${usdcClaim.reward} USDC bounty</span>
+                      <span className={styles.usdcHeaderHint}>Academic Angels only</span>
+                    </div>
+
+                    {usdcClaim.loading ? (
+                      <div className={styles.callout} data-state="info">
+                        <span className={styles.calloutDot} aria-hidden="true" />
+                        <span>Checking your USDC eligibility...</span>
+                      </div>
+                    ) : usdcClaim.status === 'paid' ? (
+                      <div className={styles.callout} data-state="ready">
+                        <span className={styles.calloutDot} aria-hidden="true" />
+                        <span>
+                          Paid. ${usdcClaim.reward} USDC was sent to your wallet.
+                          {usdcClaim.txHash && (
+                            <>
+                              {' '}
+                              <a
+                                href={`https://basescan.org/tx/${usdcClaim.txHash}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={styles.usdcTxLink}
+                              >
+                                View transaction
+                                <ArrowSquareOut size={12} weight="bold" />
+                              </a>
+                            </>
+                          )}
+                        </span>
+                      </div>
+                    ) : usdcClaim.status === 'approved' ? (
+                      <div className={styles.callout} data-state="info">
+                        <span className={styles.calloutDot} aria-hidden="true" />
+                        <span>Approved. Your USDC payout is on its way.</span>
+                      </div>
+                    ) : usdcClaim.status === 'pending' ? (
+                      <div className={styles.callout} data-state="info">
+                        <span className={styles.calloutDot} aria-hidden="true" />
+                        <span>Submitted. A staff member will review your work and release the USDC.</span>
+                      </div>
+                    ) : usdcClaim.status === 'rejected' ? (
+                      <div className={styles.callout} data-state="waiting">
+                        <span className={styles.calloutDot} aria-hidden="true" />
+                        <span>{usdcClaim.note || 'This USDC bounty was not approved.'}</span>
+                      </div>
+                    ) : usdcClaim.eligible ? (
+                      <>
+                        <p className={styles.actionDesc}>
+                          Submit your work for staff review. Once approved, Blue sends ${usdcClaim.reward} USDC straight to your wallet.
+                        </p>
+                        <button
+                          type="button"
+                          className={styles.primaryButton}
+                          onClick={handleRequestUsdc}
+                          disabled={isSubmittingUsdc}
+                        >
+                          {isSubmittingUsdc ? 'Submitting...' : `Request $${usdcClaim.reward} USDC payout`}
+                        </button>
+                      </>
+                    ) : (
+                      <div className={styles.callout} data-state="waiting">
+                        <span className={styles.calloutDot} aria-hidden="true" />
+                        <span>Hold an Academic Angel NFT to unlock the ${usdcClaim.reward} USDC bounty.</span>
+                      </div>
+                    )}
+                  </div>
+                )}
               </>
             )}
 

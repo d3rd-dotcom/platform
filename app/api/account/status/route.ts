@@ -3,6 +3,7 @@ import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured } from '@/lib/db';
 import { walletHoldsVipMembershipCard } from '@/lib/vip-membership-card';
+import { walletHoldsAcademicAngel } from '@/lib/academic-angels';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -15,11 +16,15 @@ export async function GET(request: Request) {
   const requestedWallet = new URL(request.url).searchParams.get('walletAddress');
   if (requestedWallet && /^0x[a-fA-F0-9]{40}$/.test(requestedWallet)) {
     try {
-      const hasVipMembershipCard = await walletHoldsVipMembershipCard(requestedWallet);
+      const [hasVipMembershipCard, hasAcademicAngel] = await Promise.all([
+        walletHoldsVipMembershipCard(requestedWallet),
+        walletHoldsAcademicAngel(requestedWallet),
+      ]);
       return NextResponse.json(
         {
           hasLinkedAccount: false,
           hasVipMembershipCard,
+          hasAcademicAngel,
           walletAddress: requestedWallet,
         },
         {
@@ -63,14 +68,18 @@ export async function GET(request: Request) {
   try {
     const checkedWalletAddress = user.walletAddress;
     const hasLinkedAccount = !!user.walletAddress;
-    const hasVipMembershipCard = checkedWalletAddress
-      ? await walletHoldsVipMembershipCard(checkedWalletAddress)
-      : false;
+    const [hasVipMembershipCard, hasAcademicAngel] = checkedWalletAddress
+      ? await Promise.all([
+          walletHoldsVipMembershipCard(checkedWalletAddress),
+          walletHoldsAcademicAngel(checkedWalletAddress),
+        ])
+      : [false, false];
 
     return NextResponse.json(
       {
         hasLinkedAccount,
         hasVipMembershipCard,
+        hasAcademicAngel,
         walletAddress: checkedWalletAddress || undefined,
         linkedWalletAddress: user.walletAddress || undefined,
       },

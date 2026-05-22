@@ -33,10 +33,13 @@ function fmt(raw: unknown, decimals: number, max = 4): string {
   return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: max });
 }
 
+// Membership tier shown in the profile card. Staff (VIP card) outranks Angel.
+type MembershipTier = 'Guest' | 'Angel' | 'Staff';
+
 export default function SidebarInventoryCard({ shardCount, address, isCollapsed }: SidebarInventoryCardProps) {
   const [usdcBalance, setUsdcBalance] = useState<string | null>(null);
   const [votingPower, setVotingPower] = useState<string | null>(null);
-  const [hasVip, setHasVip] = useState<boolean | null>(null);
+  const [tier, setTier] = useState<MembershipTier | null>(null);
   const [loading, setLoading] = useState(false);
 
   const fetch = useCallback(async () => {
@@ -48,7 +51,12 @@ export default function SidebarInventoryCard({ shardCount, address, isCollapsed 
       const status = await window.fetch(statusUrl, { cache: 'no-store', credentials: 'include' })
         .then(r => r.ok ? r.json().catch(() => null) : null)
         .catch(() => null);
-      setHasVip(Boolean(status?.hasVipMembershipCard));
+      const resolvedTier: MembershipTier = status?.hasVipMembershipCard
+        ? 'Staff'
+        : status?.hasAcademicAngel
+          ? 'Angel'
+          : 'Guest';
+      setTier(resolvedTier);
 
       if (typeof window === 'undefined' || !window.ethereum) return;
       const provider = new providers.Web3Provider(window.ethereum);
@@ -84,7 +92,8 @@ export default function SidebarInventoryCard({ shardCount, address, isCollapsed 
   }, [address, fetch]);
 
   const shardDisplay = shardCount !== null ? String(shardCount).padStart(3, '0') : '000';
-  const vipStatusClass = hasVip === null ? '' : hasVip ? styles.statValuePositive : styles.statValueNegative;
+  const isMember = tier === 'Angel' || tier === 'Staff';
+  const tierStatusClass = tier === null ? '' : isMember ? styles.statValuePositive : styles.statValueNegative;
 
   if (isCollapsed) {
     return (
@@ -134,14 +143,14 @@ export default function SidebarInventoryCard({ shardCount, address, isCollapsed 
             </div>
             <div className={styles.balanceRow}>
               <div className={styles.tokenLeft}>
-                <div className={`${styles.tokenIcon} ${hasVip ? styles.tokenVipActive : styles.tokenVip}`}>
+                <div className={`${styles.tokenIcon} ${isMember ? styles.tokenVipActive : styles.tokenVip}`}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                     <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
-                <span className={styles.tokenName}>VIP</span>
+                <span className={styles.tokenName}>Membership</span>
               </div>
-              <span className={`${styles.balanceVal} ${vipStatusClass}`}>{hasVip === null ? '--' : hasVip ? 'YES' : 'NO'}</span>
+              <span className={`${styles.balanceVal} ${tierStatusClass}`}>{tier === null ? '--' : tier}</span>
             </div>
             <div className={styles.balanceRow}>
               <div className={styles.tokenLeft}>

@@ -15,11 +15,19 @@
 
 ---
 
-## What This Is
+## What this is
 
-A learning app with a transparent treasury where an AI Agent (Blue) scores funding proposals, community uses **Chainlink CRE workflows + ElizaOS to automate the pipeline** from review to autonomous executions -- min beaurocratic pressure required.
+Mental Wealth Academy is a research cohort and learning app. Members complete quests, Blue reviews the work, and approved submissions can earn USDC rewards from a bounded community treasury.
 
-**Governance:** [`0x2cbb90a761ba64014b811be342b8ef01b471992d`](https://basescan.org/address/0x2cbb90a761ba64014b811be342b8ef01b471992d) (Base Mainnet)
+Governance controls the community spending path. The larger reserve stays behind a Safe/Gnosis multisig, while the app-facing micro-treasury handles smaller quest rewards, grants, and approved proposals.
+
+```text
+// large-treasury: the main reserve. Protected by the 2-of-3 Safe/Gnosis multisig; used for custody, reserves, and high-risk transfers.
+// micro-treasury: the smaller app-facing USDC pool. Governance can route funds here for quests, grants, and approved proposals.
+// quests + USDC rewards: members submit proof of work, Blue reviews it, and approved claims can receive USDC from the micro-treasury.
+```
+
+**Governance contract:** [`0x09a4FEfEe8245B644713546FDF28b4160218f7Fc`](https://basescan.org/address/0x09a4FEfEe8245B644713546FDF28b4160218f7Fc) (BlueKillStreak, Base Mainnet)
 
 ---
 
@@ -29,14 +37,15 @@ https://github.com/user-attachments/assets/e111f509-1f39-4009-8c8e-b8beef6165a0
 
 
 
-## What's The Most Advanced Stuff
+## What's advanced here
 
 ### `/community`
 
-The community governance hub. Members submit funding proposals, vote on-chain, and interact with **Blue** -- our AI governance agent.
+The community governance hub. Members submit funding proposals, vote on-chain, and interact with **Blue** -- the AI governance agent reviewing the micro-treasury spending path.
 
 - **Private Governance Calls** -- Blue reviews every proposal through the ElizaOS API, scoring across 6 dimensions (clarity, impact, feasibility, budget, ingenuity, chaos). Reviews are delivered on-chain via CRE workflow DON, making AI scoring tamper-proof.
 - **On-chain Voting** -- Token-weighted community votes with a 50% threshold. Blue's approval level (1-4) determines her voting weight (10%-40%). Level 0 kills the proposal outright.
+- **Quest and USDC Rewards** -- Approved quest work and community proposals can route USDC from the micro-treasury. The large-treasury remains separate multisig custody.
 
 ### `/markets`
 

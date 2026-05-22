@@ -10,6 +10,7 @@ import QuestAuthorPanel from '@/components/quest-author-panel/QuestAuthorPanel';
 import QuestDrawer, { DrawerQuest } from '@/components/quest-drawer/QuestDrawer';
 import AngelMintSection from '@/components/angel-mint-section/AngelMintSection';
 import MintModal from '@/components/mint-modal/MintModal';
+import UsdcReviewPanel from '@/components/usdc-review-panel/UsdcReviewPanel';
 import { useSound } from '@/hooks/useSound';
 import { QUEST_DEFINITIONS, QuestType } from '@/lib/quest-definitions';
 import styles from './page.module.css';
@@ -90,10 +91,15 @@ export default function QuestsPage() {
   const filterRef = useRef<HTMLDivElement>(null);
   const { play } = useSound();
 
-  const fetchWithAuth = useCallback(async (url: string) => {
+  const fetchWithAuth = useCallback(async (url: string, init?: RequestInit) => {
     const token = await getAccessToken();
-    const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
-    return fetch(url, { credentials: 'include', cache: 'no-store', headers });
+    const authHeader: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+    return fetch(url, {
+      credentials: 'include',
+      cache: 'no-store',
+      ...init,
+      headers: { ...authHeader, ...(init?.headers ?? {}) },
+    });
   }, [getAccessToken]);
 
   useEffect(() => {
@@ -237,6 +243,7 @@ export default function QuestsPage() {
         claimedCount,
         weekNumber: quest.weekNumber,
         icon: quest.icon,
+        usdcReward: quest.usdcReward,
         kind: questKindFromType(quest.questType),
       };
     });
@@ -413,6 +420,13 @@ export default function QuestsPage() {
                     onDelete={handleDeleteAuthored}
                   />
                 )}
+              </section>
+            )}
+
+            {/* ── Staff USDC payout review (VIP members) ── */}
+            {isPro && (
+              <section className={styles.adminSection} aria-label="USDC payout review">
+                <UsdcReviewPanel fetchWithAuth={fetchWithAuth} />
               </section>
             )}
 

@@ -14,6 +14,13 @@ export interface QuestDefinition {
   targetCount: number;
   weekNumber?: number;
   icon?: string;
+  /**
+   * Real USDC bounty (in whole dollars) paid by Blue once a staff member
+   * approves the submission. Only set on official quests Blue funds — custom
+   * user-authored quests are funded and judged by their creator, never Blue.
+   * Eligibility requires the recipient to hold an Academic Angel NFT.
+   */
+  usdcReward?: number;
 }
 
 export const QUEST_DEFINITIONS: QuestDefinition[] = [
@@ -42,6 +49,7 @@ export const QUEST_DEFINITIONS: QuestDefinition[] = [
     desc: 'Share knowledge or a personal story with the community in five separate entries.',
     questType: 'proof-required',
     targetCount: 5,
+    usdcReward: 1,
   },
   {
     key: 'quest-social-asset',
@@ -50,6 +58,7 @@ export const QUEST_DEFINITIONS: QuestDefinition[] = [
     desc: 'Create five shareable assets that represent Mental Wealth Academy values.',
     questType: 'proof-required',
     targetCount: 5,
+    usdcReward: 1,
   },
   {
     key: 'quest-onboard-member',
@@ -97,4 +106,13 @@ export function getQuestDefinitionForStoredQuestId(questId: string): QuestDefini
 export function isRepeatableQuest(questKey: string): boolean {
   const definition = getQuestDefinition(questKey);
   return !!definition && definition.targetCount > 1;
+}
+
+/**
+ * Whole-dollar USDC bounty for a quest id (handles repeatable "-N" suffixes),
+ * or 0 if the quest is not a Blue-funded USDC quest.
+ */
+export function getQuestUsdcReward(questId: string): number {
+  const definition = getQuestDefinitionForStoredQuestId(questId) ?? getQuestDefinition(questId);
+  return definition?.usdcReward ?? 0;
 }
