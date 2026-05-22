@@ -421,11 +421,13 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
               <span className={styles.authorTag}>{quest.authorLabel}</span>
             )}
 
-            <div className={styles.rewardChip}>
-              <Image src="/icons/ui-shard.svg" alt="" width={16} height={16} />
-              <span className={styles.rewardValue}>{quest.points}</span>
-              <span className={styles.rewardLabel}>gems</span>
-            </div>
+            {usdcReward === 0 && (
+              <div className={styles.rewardChip}>
+                <Image src="/icons/ui-shard.svg" alt="" width={16} height={16} />
+                <span className={styles.rewardValue}>{quest.points}</span>
+                <span className={styles.rewardLabel}>gems</span>
+              </div>
+            )}
           </section>
 
           <section className={styles.metricRow}>

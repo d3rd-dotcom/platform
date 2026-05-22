@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import Image from 'next/image';
-import { Trophy, Sparkle, Plus, Lightning, Target, CaretDown, Check } from '@phosphor-icons/react';
+import { Trophy, Sparkle, Plus, Target, CaretDown, Check } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import QuestCard, { QuestCardKind } from '@/components/quest-card/QuestCard';
 import QuestAuthorPanel from '@/components/quest-author-panel/QuestAuthorPanel';
@@ -14,7 +14,7 @@ import UsdcReviewPanel from '@/components/usdc-review-panel/UsdcReviewPanel';
 import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
 
 const QUESTS_BLUE_MESSAGE =
-  'Academic Angels, the whole board is yours. Clear any quest to earn gems — and the ones marked with a USDC badge pay you real $1 USDC once a staff member approves your work. Not an Angel yet? Every quest still earns gems.';
+  'Quests unlock rewards — gems for everyone, and real USDC cash for Academic Angels.';
 import { useSound } from '@/hooks/useSound';
 import { QUEST_DEFINITIONS, QuestType } from '@/lib/quest-definitions';
 import styles from './page.module.css';
@@ -291,10 +291,10 @@ export default function QuestsPage() {
     () => allQuests.filter((q) => (q.claimedCount ?? 0) >= (q.targetCount ?? 1)).length,
     [allQuests],
   );
-  const totalShardsAvailable = useMemo(
+  const usdcAvailable = useMemo(
     () => allQuests
-      .filter((q) => (q.claimedCount ?? 0) < (q.targetCount ?? 1))
-      .reduce((sum, q) => sum + q.points, 0),
+      .filter((q) => (q.usdcReward ?? 0) > 0 && (q.claimedCount ?? 0) < (q.targetCount ?? 1))
+      .reduce((sum, q) => sum + (q.usdcReward ?? 0), 0),
     [allQuests],
   );
 
@@ -389,10 +389,13 @@ export default function QuestsPage() {
                   </span>
                 </div>
                 <div className={styles.heroStat}>
-                  <span className={styles.heroStatLabel}>On offer</span>
+                  <span className={styles.heroStatLabel}>USDC</span>
                   <span className={styles.heroStatValueRow}>
-                    <Lightning size={14} weight="fill" className={styles.heroStatIconBolt} />
-                    <span className={styles.heroStatValue}>{totalShardsAvailable}</span>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <circle cx="12" cy="12" r="11" fill="#2775CA" />
+                      <text x="12" y="16.5" textAnchor="middle" fill="#fff" fontSize="13" fontWeight="700">$</text>
+                    </svg>
+                    <span className={styles.heroStatValue}>${usdcAvailable}</span>
                   </span>
                 </div>
               </div>

@@ -169,17 +169,6 @@
   overflow: hidden;
 }
 
-.heroPanel::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 18px;
-  right: 18px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--tone) 40%, transparent);
-  opacity: 0.6;
-}
-
 .heroIcon {
   width: 56px;
   height: 56px;
