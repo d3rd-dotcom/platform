@@ -496,6 +496,7 @@ export default function QuestsPage() {
                       progressTotal={quest.targetCount ?? 1}
                       points={quest.points}
                       kind={quest.kind}
+                      usdcReward={quest.usdcReward}
                       onOpen={() => handleAccept(quest)}
                     />
                   </div>

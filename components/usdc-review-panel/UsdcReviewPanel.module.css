@@ -1,17 +1,38 @@
 .panel {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 14px;
-  border-radius: 14px;
-  border: 1px solid rgba(39, 117, 202, 0.2);
-  background: linear-gradient(180deg, #ffffff 0%, rgba(39, 117, 202, 0.05) 100%);
+  gap: 12px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(26, 29, 51, 0.08);
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(26, 29, 51, 0.04);
 }
 
 .head {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
+}
+
+.headLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.headIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: rgba(39, 117, 202, 0.1);
+  color: #2775ca;
+  flex-shrink: 0;
 }
 
 .title {
@@ -19,33 +40,122 @@
   font-size: 13px;
   font-weight: 700;
   color: #121935;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #2775ca;
+  color: #fff;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
 }
 
 .refresh {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: 8px;
   border: 1px solid rgba(26, 29, 51, 0.12);
   background: #fff;
-  color: rgba(18, 25, 53, 0.6);
+  color: rgba(18, 25, 53, 0.55);
   cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.15s ease, border-color 0.15s ease;
 }
 
-.refresh:hover {
+.refresh:hover:not(:disabled) {
   color: #2775ca;
   border-color: rgba(39, 117, 202, 0.4);
 }
 
-.empty {
-  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
-  font-size: 12px;
-  color: rgba(18, 25, 53, 0.55);
-  margin: 0;
+.refresh:disabled {
+  cursor: default;
+  opacity: 0.6;
 }
 
+.refreshSpin svg {
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Empty state */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+  padding: 22px 12px 18px;
+}
+
+.emptyMark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 4px;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.12);
+  color: #22a45a;
+}
+
+.emptyTitle {
+  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-size: 13px;
+  font-weight: 700;
+  color: #121935;
+}
+
+.emptyText {
+  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-size: 12px;
+  color: rgba(18, 25, 53, 0.5);
+}
+
+/* Loading skeleton */
+.skeletonList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeletonRow {
+  height: 52px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #f1f3f9 25%, #e7eaf2 37%, #f1f3f9 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.3s ease infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+/* Claim list */
 .list {
   list-style: none;
   margin: 0;
@@ -58,10 +168,9 @@
 .row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 12px;
-  padding: 10px 12px;
-  border-radius: 10px;
+  padding: 11px 12px;
+  border-radius: 12px;
   border: 1px solid rgba(26, 29, 51, 0.08);
   background: #fff;
 }
@@ -71,6 +180,7 @@
   flex-direction: column;
   gap: 2px;
   min-width: 0;
+  flex: 1;
 }
 
 .rowTitle {
@@ -78,15 +188,27 @@
   font-size: 13px;
   font-weight: 600;
   color: #121935;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .rowMeta {
-  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
   color: rgba(18, 25, 53, 0.55);
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+}
+
+.rowAmount {
+  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-size: 14px;
+  font-weight: 800;
+  color: #1f5c9e;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
 }
 
 .rowActions {
@@ -100,8 +222,8 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 12px;
-  border-radius: 9px;
+  padding: 8px 13px;
+  border-radius: 10px;
   border: none;
   background: #2775ca;
   color: #fff;
@@ -109,6 +231,7 @@
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
+  transition: background 0.15s ease;
 }
 
 .approve:hover:not(:disabled) {
@@ -119,13 +242,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 9px;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
   border: 1px solid rgba(214, 69, 69, 0.25);
   background: #fff;
   color: #d64545;
   cursor: pointer;
+  transition: background 0.15s ease;
 }
 
 .reject:hover:not(:disabled) {
@@ -136,4 +260,62 @@
 .reject:disabled {
   opacity: 0.55;
   cursor: default;
+}
+
+@media (max-width: 540px) {
+  .row {
+    flex-wrap: wrap;
+  }
+
+  .rowInfo {
+    flex: 1 1 70%;
+  }
+
+  .rowActions {
+    flex: 1 1 100%;
+    justify-content: flex-end;
+  }
+
+  .approve {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+/* Dark mode */
+:global([data-theme='dark']) .panel {
+  background: #1e1f2c;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+}
+
+:global([data-theme='dark']) .title,
+:global([data-theme='dark']) .emptyTitle,
+:global([data-theme='dark']) .rowTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme='dark']) .emptyText,
+:global([data-theme='dark']) .rowMeta {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme='dark']) .row {
+  background: #25273a;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme='dark']) .refresh {
+  background: #25273a;
+  border-color: rgba(255, 255, 255, 0.12);
+  color: rgba(227, 225, 238, 0.6);
+}
+
+:global([data-theme='dark']) .skeletonRow {
+  background: linear-gradient(90deg, #25273a 25%, #2d2f44 37%, #25273a 63%);
+  background-size: 400% 100%;
+}
+
+:global([data-theme='dark']) .rowAmount {
+  color: #7fb6ec;
 }

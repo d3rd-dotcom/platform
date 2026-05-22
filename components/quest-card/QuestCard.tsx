@@ -14,6 +14,7 @@ interface QuestCardProps {
   progressTotal: number;
   points: number;
   kind: QuestCardKind;
+  usdcReward?: number;
   isLocked?: boolean;
   showDelete?: boolean;
   onOpen?: () => void;
@@ -27,6 +28,7 @@ const QuestCard: React.FC<QuestCardProps> = ({
   progressTotal,
   points,
   kind,
+  usdcReward = 0,
   isLocked = false,
   showDelete = false,
   onOpen,
@@ -61,6 +63,14 @@ const QuestCard: React.FC<QuestCardProps> = ({
           ) : isLocked ? (
             <span className={styles.lockChip}>
               <Lock size={13} weight="fill" />
+            </span>
+          ) : usdcReward > 0 ? (
+            <span className={styles.usdcBadge}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="12" r="11" fill="#2775CA" />
+                <text x="12" y="16.5" textAnchor="middle" fill="#fff" fontSize="13" fontWeight="700">$</text>
+              </svg>
+              <span className={styles.usdcValue}>{usdcReward}</span>
             </span>
           ) : (
             <span className={styles.points}>

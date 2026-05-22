@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { CheckCircle, XCircle, ArrowsClockwise } from '@phosphor-icons/react';
+import { CheckCircle, XCircle, ArrowsClockwise, Coins } from '@phosphor-icons/react';
 import styles from './UsdcReviewPanel.module.css';
 
 interface ReviewClaim {
@@ -88,16 +88,37 @@ export default function UsdcReviewPanel({ fetchWithAuth }: UsdcReviewPanelProps)
   return (
     <div className={styles.panel}>
       <div className={styles.head}>
-        <span className={styles.title}>USDC payouts to review</span>
-        <button type="button" className={styles.refresh} onClick={() => void load()} aria-label="Refresh">
+        <div className={styles.headLeft}>
+          <span className={styles.headIcon} aria-hidden="true">
+            <Coins size={15} weight="fill" />
+          </span>
+          <span className={styles.title}>USDC payouts to review</span>
+          {!loading && claims.length > 0 && <span className={styles.count}>{claims.length}</span>}
+        </div>
+        <button
+          type="button"
+          className={`${styles.refresh} ${loading ? styles.refreshSpin : ''}`}
+          onClick={() => void load()}
+          aria-label="Refresh"
+          disabled={loading}
+        >
           <ArrowsClockwise size={13} weight="bold" />
         </button>
       </div>
 
       {loading ? (
-        <p className={styles.empty}>Loading claims...</p>
+        <div className={styles.skeletonList}>
+          <span className={styles.skeletonRow} />
+          <span className={styles.skeletonRow} />
+        </div>
       ) : claims.length === 0 ? (
-        <p className={styles.empty}>No USDC bounties are waiting for review.</p>
+        <div className={styles.empty}>
+          <span className={styles.emptyMark} aria-hidden="true">
+            <CheckCircle size={20} weight="fill" />
+          </span>
+          <span className={styles.emptyTitle}>All caught up</span>
+          <span className={styles.emptyText}>No USDC bounties are waiting for review.</span>
+        </div>
       ) : (
         <ul className={styles.list}>
           {claims.map((claim) => (
@@ -105,16 +126,18 @@ export default function UsdcReviewPanel({ fetchWithAuth }: UsdcReviewPanelProps)
               <div className={styles.rowInfo}>
                 <span className={styles.rowTitle}>{claim.questTitle}</span>
                 <span className={styles.rowMeta}>
-                  {claim.username ? `@${claim.username}` : 'Member'} · {truncate(claim.recipientWallet)} · ${claim.usdcAmount} USDC
+                  {claim.username ? `@${claim.username}` : 'Member'} · {truncate(claim.recipientWallet)}
                 </span>
               </div>
+              <span className={styles.rowAmount}>${claim.usdcAmount}</span>
               <div className={styles.rowActions}>
                 <button
                   type="button"
                   className={styles.reject}
                   onClick={() => review(claim, 'reject')}
                   disabled={busyId === claim.id}
-                  aria-label="Reject"
+                  aria-label="Reject claim"
+                  title="Reject"
                 >
                   <XCircle size={16} weight="fill" />
                 </button>
@@ -125,7 +148,7 @@ export default function UsdcReviewPanel({ fetchWithAuth }: UsdcReviewPanelProps)
                   disabled={busyId === claim.id}
                 >
                   <CheckCircle size={15} weight="fill" />
-                  {busyId === claim.id ? 'Sending...' : 'Approve & pay'}
+                  {busyId === claim.id ? 'Sending…' : 'Approve & pay'}
                 </button>
               </div>
             </li>
