@@ -22,8 +22,8 @@ function getSurveyIntroCopy(survey: Survey): { meta: string; text: string; note:
   if (survey.questionType === 'likert') {
     return {
       meta: 'Character strengths quiz',
-      text: 'Meet your best-self build. The part of you that tells the truth, makes good trouble, keeps promises, and notices the magic in the room. Tap what feels uncomfortably accurate; Blue will handle the pattern read.',
-      note: 'Long quiz, fast rhythm. Ten items per page.',
+      text: 'Research shows that applying your strengths can increase confidence, happiness, positive relationships and reduces stress and anxiety. Discover your strengths today!',
+      note: '',
     };
   }
 

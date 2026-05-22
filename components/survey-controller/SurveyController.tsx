@@ -6,7 +6,7 @@ import { getTestShardReward, TEST_DIFFICULTY_MAX, TEST_DIFFICULTY_MIN } from '@/
 import styles from './SurveyController.module.css';
 
 const SURVEY_TYPES = [
-  { id: 'via-character-strengths', label: 'Who are you at your best?', sub: '240-item strengths inventory' },
+  { id: 'via-character-strengths', label: 'Via Character Quiz', sub: '240-item strengths inventory' },
   { id: 'daemon-analysis', label: 'Decision Pattern Analysis', sub: 'Decision-making under pressure' },
   { id: 'political-alignment', label: 'Political Alignment', sub: 'Agency, responsibility, and change' },
   { id: 'archetype', label: 'Mystic Archetype', sub: 'Narrative pattern mapping' },

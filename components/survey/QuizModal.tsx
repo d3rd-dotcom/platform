@@ -138,11 +138,6 @@ export default function QuizModal({ isOpen, onClose, survey, variant = 'modal', 
             style={{ width: `${progress}%` }}
           />
         </div>
-        <p className={styles.quizModalProgressText}>
-          {isLikertSurvey
-            ? `Questions ${pageStart + 1}-${pageEnd} of ${survey.questions.length}`
-            : `Question ${pageStart + 1} of ${survey.questions.length}`}
-        </p>
       </div>
 
       {/* Question Content */}
@@ -252,6 +247,12 @@ export default function QuizModal({ isOpen, onClose, survey, variant = 'modal', 
           </button>
         </div>
       </div>
+
+      <p className={styles.quizModalProgressText}>
+        {isLikertSurvey
+          ? `Questions ${pageStart + 1}-${pageEnd} of ${survey.questions.length}`
+          : `Question ${pageStart + 1} of ${survey.questions.length}`}
+      </p>
     </div>
   )
 

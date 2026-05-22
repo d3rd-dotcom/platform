@@ -54,9 +54,10 @@
 }
 
 .quizModalHeaderContent {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   margin-bottom: 12px;
   gap: 12px;
 }
@@ -67,10 +68,14 @@
   font-weight: 700;
   color: #1a1d33;
   letter-spacing: -0.01em;
-  flex: 1;
+  text-align: center;
 }
 
 .quizModalClose {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
   background: rgba(26, 29, 51, 0.06);
   border: 1px solid transparent;
   border-radius: 999px;
@@ -99,7 +104,6 @@
   background: rgba(81, 104, 255, 0.14);
   border-radius: 99px;
   overflow: hidden;
-  margin-bottom: 8px;
 }
 
 .quizModalProgressBar {
@@ -110,6 +114,8 @@
 }
 
 .quizModalProgressText {
+  flex-shrink: 0;
+  padding: 12px 20px;
   font-family: var(--font-primary);
   font-size: 11px;
   font-weight: 600;

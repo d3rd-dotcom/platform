@@ -198,7 +198,7 @@ export default function BlueTerminal({
               <p className={styles.eyebrow}>{idleMeta}</p>
               <h3 className={styles.statusTitle}>{idleTitle}</h3>
               <p className={styles.statusText}>{idleText}</p>
-              <p className={styles.statusNote}>{idleNote}</p>
+              {idleNote && <p className={styles.statusNote}>{idleNote}</p>}
             </div>
             <div className={styles.idleImageWrap} aria-hidden="true">
               <Image
