@@ -808,7 +808,7 @@ export default function LibraryPage() {
                 <BlueChatBubble
                   variant="featured"
                   stackOnMobile
-                  message="Welcome to my library. Copy a prompt to make Academy-style art and keep my look consistent, or read an essay to see how we think."
+                  message="Welcome to my library. Copy a prompt to make Academy-style art, or read an essay to see how we think."
                 />
               </div>
 
