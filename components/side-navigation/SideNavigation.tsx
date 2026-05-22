@@ -77,10 +77,10 @@ const primaryNavItems: NavItem[] = [
     iconSrc: '/icons/nav-spiral.svg',
   },
   {
-    id: 'events',
-    label: 'Quests',
-    href: '/quests',
-    iconSrc: '/icons/nav-teleport.svg',
+    id: 'library',
+    label: 'Library',
+    href: '/library',
+    iconSrc: '/icons/ui-book.svg',
   },
   {
     id: 'feedback',
