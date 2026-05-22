@@ -168,6 +168,10 @@
   color: #ff9c51;
 }
 
+.questsBlueBubble {
+  margin-bottom: 2px;
+}
+
 /* ── Admin / quest forge toggle ── */
 .adminSection {
   display: flex;
@@ -511,9 +515,15 @@
   color: rgba(226, 234, 255, 0.4);
 }
 
+:global([data-theme='dark']) .adminToggleIcon {
+  background: rgba(99, 118, 255, 0.22);
+  color: #c2ccff;
+}
+
 :global([data-theme='dark']) .adminToggleHint {
-  background: rgba(81, 104, 255, 0.24);
-  color: #eaf0ff;
+  background: rgba(99, 118, 255, 0.22);
+  border: 1px solid rgba(140, 158, 255, 0.45);
+  color: #c8d2ff;
 }
 
 :global([data-theme='dark']) .adminToggleChevron {

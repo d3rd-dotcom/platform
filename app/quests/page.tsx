@@ -11,6 +11,10 @@ import QuestDrawer, { DrawerQuest } from '@/components/quest-drawer/QuestDrawer'
 import AngelMintSection from '@/components/angel-mint-section/AngelMintSection';
 import MintModal from '@/components/mint-modal/MintModal';
 import UsdcReviewPanel from '@/components/usdc-review-panel/UsdcReviewPanel';
+import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
+
+const QUESTS_BLUE_MESSAGE =
+  'Academic Angels, the whole board is yours. Clear any quest to earn gems — and the ones marked with a USDC badge pay you real $1 USDC once a staff member approves your work. Not an Angel yet? Every quest still earns gems.';
 import { useSound } from '@/hooks/useSound';
 import { QUEST_DEFINITIONS, QuestType } from '@/lib/quest-definitions';
 import styles from './page.module.css';
@@ -337,6 +341,13 @@ export default function QuestsPage() {
         <SideNavigation />
         <main className={styles.page}>
           <div className={styles.content}>
+            <BlueChatBubble
+              className={styles.questsBlueBubble}
+              message={QUESTS_BLUE_MESSAGE}
+              variant="featured"
+              stackOnMobile
+            />
+
             {/* ── Player banner ── */}
             <section className={styles.hero} aria-label="Player overview">
               <div className={styles.heroLeft}>
