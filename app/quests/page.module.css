@@ -32,6 +32,12 @@
   min-width: 0;
 }
 
+@media (min-width: 901px) {
+  .page {
+    transform: translateX(calc(var(--sidebar-width, 265px) / -2));
+  }
+}
+
 /* ── Player banner ── */
 .hero {
   display: flex;

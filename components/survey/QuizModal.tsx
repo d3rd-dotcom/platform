@@ -127,7 +127,7 @@ export default function QuizModal({ isOpen, onClose, survey, variant = 'modal', 
             className={styles.quizModalClose}
             aria-label="Close survey"
           >
-            x
+            ×
           </button>
         </div>
 
