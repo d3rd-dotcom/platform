@@ -5,10 +5,18 @@ import Image from 'next/image';
 import { getTestShardReward, TEST_DIFFICULTY_MAX, TEST_DIFFICULTY_MIN } from '@/lib/test-rewards';
 import styles from './SurveyController.module.css';
 
-const PERSONAS = [
-  { id: 'Blue',  label: 'Blue',  sub: 'Default researcher' },
-  { id: 'Vesper',    label: 'Vesper',     sub: 'Alternative persona' },
-];
+const SURVEY_TYPES = [
+  { id: 'via-character-strengths', label: 'Who are you at your best?', sub: '240-item strengths inventory' },
+  { id: 'daemon-analysis', label: 'Decision Pattern Analysis', sub: 'Decision-making under pressure' },
+  { id: 'political-alignment', label: 'Political Alignment', sub: 'Agency, responsibility, and change' },
+  { id: 'archetype', label: 'Mystic Archetype', sub: 'Narrative pattern mapping' },
+] as const;
+
+type SurveyType = (typeof SURVEY_TYPES)[number];
+
+function getSurveyTypeById(id?: string): SurveyType {
+  return SURVEY_TYPES.find((survey) => survey.id === id) ?? SURVEY_TYPES[0];
+}
 
 interface SurveyControllerProps {
   userName?: string;
@@ -17,9 +25,13 @@ interface SurveyControllerProps {
   characterPosterSrc?: string;
   deferVideo?: boolean;
   difficulty?: number;
+  showDifficulty?: boolean;
+  ctaLabel?: string;
   onSignForm?: () => void;
+  onStartSurvey?: () => void;
   onDifficultyChange?: (value: number) => void;
-  onPersonaChange?: (persona: string) => void;
+  selectedSurveyId?: string;
+  onSurveyTypeChange?: (surveyId: string) => void;
 }
 
 export default function SurveyController({
@@ -29,12 +41,16 @@ export default function SurveyController({
   characterPosterSrc = '/uploads/blue-landing-avatar.png',
   deferVideo = true,
   difficulty: initialDifficulty = 101,
+  showDifficulty = true,
+  ctaLabel = 'Sign form to begin',
   onSignForm,
+  onStartSurvey,
   onDifficultyChange,
-  onPersonaChange,
+  selectedSurveyId,
+  onSurveyTypeChange,
 }: SurveyControllerProps) {
   const [difficulty, setDifficulty] = useState(initialDifficulty);
-  const [selectedPersona, setSelectedPersona] = useState(PERSONAS[0]);
+  const [selectedSurvey, setSelectedSurvey] = useState<SurveyType>(() => getSurveyTypeById(selectedSurveyId));
   const [isOpen, setIsOpen] = useState(false);
   const [shouldLoadVideo, setShouldLoadVideo] = useState(!deferVideo);
   const [isVideoReady, setIsVideoReady] = useState(false);
@@ -80,7 +96,11 @@ export default function SurveyController({
 
   useEffect(() => {
     setIsVideoReady(false);
-  }, [characterImageSrc, selectedPersona.id]);
+  }, [characterImageSrc, selectedSurvey.id]);
+
+  useEffect(() => {
+    setSelectedSurvey(getSurveyTypeById(selectedSurveyId));
+  }, [selectedSurveyId]);
 
   const handleDifficultyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
@@ -88,10 +108,10 @@ export default function SurveyController({
     onDifficultyChange?.(value);
   };
 
-  const handleSelectPersona = (p: typeof PERSONAS[0]) => {
-    setSelectedPersona(p);
+  const handleSelectSurvey = (survey: SurveyType) => {
+    setSelectedSurvey(survey);
     setIsOpen(false);
-    onPersonaChange?.(p.id);
+    onSurveyTypeChange?.(survey.id);
   };
 
   const min = TEST_DIFFICULTY_MIN;
@@ -108,54 +128,6 @@ export default function SurveyController({
         </div>
         <span className={styles.heroVersion}>{version}</span>
       </section>
-
-      {/* Persona selector */}
-      <div className={styles.persona}>
-        <span className={styles.eyebrow}>Persona</span>
-        <div className={styles.dropdownOuter} ref={dropdownRef}>
-          <button
-            type="button"
-            className={styles.dropdownInner}
-            onClick={() => setIsOpen(o => !o)}
-            aria-haspopup="listbox"
-            aria-expanded={isOpen}
-          >
-            <span className={styles.dropdownText}>{selectedPersona.label}</span>
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              className={`${styles.chevronIcon} ${isOpen ? styles.chevronOpen : ''}`}
-              aria-hidden="true"
-            >
-              <path
-                d="M4 6L8 10L12 6"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-          {isOpen && (
-            <ul className={styles.dropdownMenu} role="listbox">
-              {PERSONAS.map(p => (
-                <li
-                  key={p.id}
-                  role="option"
-                  aria-selected={p.id === selectedPersona.id}
-                  className={`${styles.dropdownItem} ${p.id === selectedPersona.id ? styles.dropdownItemActive : ''}`}
-                  onClick={() => handleSelectPersona(p)}
-                >
-                  <span className={styles.dropdownItemLabel}>{p.label}</span>
-                  <span className={styles.dropdownItemSub}>{p.sub}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
 
       {/* Character video / blue panel */}
       <div className={styles.videoPanel} ref={imagePanelRef}>
@@ -197,44 +169,94 @@ export default function SurveyController({
           )}
         </div>
         <div className={styles.videoReview}>
-          <div className={styles.videoReviewEyebrow}>{selectedPersona.label} · review</div>
+          <div className={styles.videoReviewEyebrow}>{selectedSurvey.label} · review</div>
           <p className={styles.videoReviewText}>
-            I will read every answer and score this attempt. Pick your scale, sign the form, and we begin.
+            I will read every answer and score this attempt. Pick your survey type, answer honestly, and we begin.
           </p>
         </div>
       </div>
 
+      {/* Survey type selector */}
+      <div className={styles.persona}>
+        <span className={styles.eyebrow}>Survey type</span>
+        <div className={styles.dropdownOuter} ref={dropdownRef}>
+          <button
+            type="button"
+            className={styles.dropdownInner}
+            onClick={() => setIsOpen(o => !o)}
+            aria-haspopup="listbox"
+            aria-expanded={isOpen}
+          >
+            <span className={styles.dropdownText}>{selectedSurvey.label}</span>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              className={`${styles.chevronIcon} ${isOpen ? styles.chevronOpen : ''}`}
+              aria-hidden="true"
+            >
+              <path
+                d="M4 6L8 10L12 6"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+          {isOpen && (
+            <ul className={styles.dropdownMenu} role="listbox">
+              {SURVEY_TYPES.map(survey => (
+                <li
+                  key={survey.id}
+                  role="option"
+                  aria-selected={survey.id === selectedSurvey.id}
+                  className={`${styles.dropdownItem} ${survey.id === selectedSurvey.id ? styles.dropdownItemActive : ''}`}
+                  onClick={() => handleSelectSurvey(survey)}
+                >
+                  <span className={styles.dropdownItemLabel}>{survey.label}</span>
+                  <span className={styles.dropdownItemSub}>{survey.sub}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+
       {/* Difficulty scale */}
-      <section className={styles.scaleCard}>
-        <div className={styles.row}>
-          <span className={styles.eyebrow}>Test scale</span>
-          <div className={styles.shardBadge} aria-label={`${shardReward} gems earned for this test`}>
-            <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} className={styles.shardIcon} />
-            +{shardReward} gems
+      {showDifficulty && (
+        <section className={styles.scaleCard}>
+          <div className={styles.row}>
+            <span className={styles.eyebrow}>Test scale</span>
+            <div className={styles.shardBadge} aria-label={`${shardReward} gems earned for this test`}>
+              <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} className={styles.shardIcon} />
+              +{shardReward} gems
+            </div>
           </div>
-        </div>
 
-        <div className={styles.scaleStatRow}>
-          <span className={styles.scaleStat}>{difficulty}</span>
-          <span className={styles.scaleStatUnit}>difficulty</span>
-        </div>
+          <div className={styles.scaleStatRow}>
+            <span className={styles.scaleStat}>{difficulty}</span>
+            <span className={styles.scaleStatUnit}>difficulty</span>
+          </div>
 
-        <input
-          type="range"
-          min={min}
-          max={max}
-          value={difficulty}
-          onChange={handleDifficultyChange}
-          className={styles.slider}
-          style={{ '--progress': `${progress}%` } as React.CSSProperties}
-        />
-        <p className={styles.helperText}>
-          Higher difficulty means harder questions and a larger gem payout.
-        </p>
-      </section>
+          <input
+            type="range"
+            min={min}
+            max={max}
+            value={difficulty}
+            onChange={handleDifficultyChange}
+            className={styles.slider}
+            style={{ '--progress': `${progress}%` } as React.CSSProperties}
+          />
+          <p className={styles.helperText}>
+            Higher difficulty means harder questions and a larger gem payout.
+          </p>
+        </section>
+      )}
 
-      <button className={styles.cta} onClick={onSignForm} type="button">
-        Sign form to begin
+      <button className={styles.cta} onClick={onStartSurvey ?? onSignForm} type="button">
+        {ctaLabel}
       </button>
     </div>
   );

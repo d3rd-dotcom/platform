@@ -414,6 +414,96 @@
   opacity: 0.9;
 }
 
+/* ===== Light Mode ===== */
+
+:global(:root:not([data-theme="dark"])) .controller {
+  --c-card: rgba(255, 255, 255, 0.86);
+  --c-card-soft: rgba(255, 255, 255, 0.72);
+  --c-border: rgba(30, 34, 54, 0.12);
+  --c-fg: #1a1d33;
+  --c-fg-soft: rgba(26, 29, 51, 0.74);
+  --c-fg-muted: rgba(26, 29, 51, 0.56);
+  --c-fg-faint: rgba(26, 29, 51, 0.42);
+
+  border-color: rgba(81, 104, 255, 0.20);
+  background:
+    linear-gradient(rgba(81, 104, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(81, 104, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(246, 248, 255, 0.82) 100%);
+  box-shadow: 0 18px 48px rgba(38, 45, 84, 0.12);
+}
+
+:global(:root:not([data-theme="dark"])) .hero {
+  border-color: rgba(81, 104, 255, 0.22);
+  background:
+    linear-gradient(135deg, rgba(81, 104, 255, 0.14) 0%, rgba(249, 250, 255, 0.9) 68%),
+    #ffffff;
+}
+
+:global(:root:not([data-theme="dark"])) .heroVersion,
+:global(:root:not([data-theme="dark"])) .shardBadge {
+  background: rgba(81, 104, 255, 0.09);
+  border-color: rgba(81, 104, 255, 0.22);
+}
+
+:global(:root:not([data-theme="dark"])) .dropdownMenu {
+  background: #ffffff;
+  border-color: rgba(81, 104, 255, 0.22);
+  box-shadow: 0 18px 40px rgba(38, 45, 84, 0.18);
+}
+
+:global(:root:not([data-theme="dark"])) .dropdownItem:hover {
+  background: rgba(81, 104, 255, 0.08);
+}
+
+:global(:root:not([data-theme="dark"])) .dropdownItemActive {
+  background: rgba(81, 104, 255, 0.12);
+}
+
+:global(:root:not([data-theme="dark"])) .videoPanel {
+  border-color: rgba(81, 104, 255, 0.20);
+  background:
+    linear-gradient(180deg, rgba(81, 104, 255, 0.08) 0%, rgba(255, 255, 255, 0.82) 100%),
+    #eef3ff;
+}
+
+:global(:root:not([data-theme="dark"])) .videoWrapper,
+:global(:root:not([data-theme="dark"])) .characterVideo {
+  background: #eef3ff;
+}
+
+:global(:root:not([data-theme="dark"])) .videoLoadingShell {
+  background:
+    radial-gradient(circle at top left, rgba(81, 104, 255, 0.16), transparent 38%),
+    radial-gradient(circle at bottom right, rgba(68, 233, 144, 0.10), transparent 32%),
+    linear-gradient(150deg, #f6f8ff 0%, #eef3ff 52%, #ffffff 100%);
+}
+
+:global(:root:not([data-theme="dark"])) .videoLoadingShell::before {
+  background: linear-gradient(
+    105deg,
+    transparent 24%,
+    rgba(81, 104, 255, 0.04) 42%,
+    rgba(81, 104, 255, 0.14) 50%,
+    rgba(81, 104, 255, 0.04) 58%,
+    transparent 76%
+  );
+}
+
+:global(:root:not([data-theme="dark"])) .imagePlaceholder {
+  background: linear-gradient(135deg, #f6f8ff 0%, #eef3ff 50%, #ffffff 100%);
+}
+
+:global(:root:not([data-theme="dark"])) .slider {
+  background: linear-gradient(
+    to right,
+    var(--c-blue) 0%,
+    var(--c-green) var(--progress, 17%),
+    rgba(26, 29, 51, 0.12) var(--progress, 17%),
+    rgba(26, 29, 51, 0.12) 100%
+  );
+}
+
 /* ----- responsive ----- */
 @media (max-height: 760px) and (min-width: 901px) {
   .heroTitle { font-size: 20px; }

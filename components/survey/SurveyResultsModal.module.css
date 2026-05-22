@@ -30,6 +30,25 @@
   transition: all var(--duration-normal) var(--ease-default);
 }
 
+.resultsModalInlineShell {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+}
+
+.resultsModalContainerInline {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  max-width: none;
+  max-height: none;
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
 .resultsModalContainerVisible {
   opacity: 1;
   transform: scale(1) translateY(0);
@@ -61,13 +80,13 @@
 }
 
 .resultsModalClose {
-  background: transparent;
-  border: none;
-  color: var(--color-text-dark);
+  background: #dc2626;
+  border: 1.5px solid #ef4444;
+  border-radius: 8px;
+  color: #ffffff;
   font-size: 32px;
   line-height: 1;
   cursor: pointer;
-  padding: var(--space-1);
   width: 40px;
   height: 40px;
   display: flex;
@@ -75,11 +94,12 @@
   justify-content: center;
   flex-shrink: 0;
   transition: all var(--duration-fast) var(--ease-default);
-  opacity: 0.6;
+  opacity: 1;
 }
 
 .resultsModalClose:hover {
-  opacity: 1;
+  background: #b91c1c;
+  border-color: #f87171;
   transform: scale(1.1);
 }
 
@@ -214,6 +234,82 @@
   opacity: 0.8;
 }
 
+.resultsModalRankings {
+  margin-bottom: var(--space-6);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all var(--duration-normal) var(--ease-default);
+  transition-delay: 550ms;
+}
+
+.resultsModalRankingsVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.resultsModalStrengthList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.resultsModalStrengthItem {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  background: rgba(81, 104, 255, 0.04);
+  border: 1px solid rgba(81, 104, 255, 0.14);
+  border-radius: var(--radius-md);
+}
+
+.resultsModalStrengthRank {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-full);
+  background: rgba(81, 104, 255, 0.12);
+  color: var(--color-primary);
+  font-family: var(--font-button);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.resultsModalStrengthMain {
+  min-width: 0;
+}
+
+.resultsModalStrengthName,
+.resultsModalStrengthMeta {
+  margin: 0;
+  font-family: var(--font-button);
+}
+
+.resultsModalStrengthName {
+  color: var(--color-text-dark);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.25;
+}
+
+.resultsModalStrengthMeta {
+  margin-top: 3px;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  line-height: 1.4;
+}
+
+.resultsModalStrengthScore {
+  font-family: var(--font-button);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
 .resultsModalFooter {
   flex-shrink: 0;
   padding: var(--space-4);
@@ -297,6 +393,23 @@
     font-size: var(--font-size-xs);
   }
 
+  .resultsModalStrengthItem {
+    grid-template-columns: 28px minmax(0, 1fr);
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .resultsModalStrengthRank {
+    width: 28px;
+    height: 28px;
+    font-size: var(--font-size-xs);
+  }
+
+  .resultsModalStrengthScore {
+    grid-column: 2;
+    font-size: var(--font-size-xs);
+  }
+
   .resultsModalCloseButton {
     padding: var(--space-2) var(--space-3);
     font-size: var(--font-size-xs);
@@ -321,4 +434,75 @@
   .resultsModalAnalysisText {
     font-size: var(--font-size-lg);
   }
+}
+
+.resultsModalContainer.resultsModalContainerInline {
+  width: 100%;
+  max-width: none;
+  max-height: none;
+}
+
+/* Dark mode */
+
+:global([data-theme="dark"]) .resultsModalContainer {
+  background: #080914;
+  border-color: rgba(139, 149, 255, 0.32);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.42);
+}
+
+:global([data-theme="dark"]) .resultsModalContainerInline {
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .resultsModalClose {
+  background: #dc2626;
+  border-color: #ef4444;
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .resultsModalClose:hover {
+  background: #b91c1c;
+  border-color: #f87171;
+}
+
+:global([data-theme="dark"]) .resultsModalHeader,
+:global([data-theme="dark"]) .resultsModalFooter {
+  background: rgba(255, 255, 255, 0.035);
+  border-color: rgba(139, 149, 255, 0.16);
+}
+
+:global([data-theme="dark"]) .resultsModalClose,
+:global([data-theme="dark"]) .resultsModalInsightsTitle,
+:global([data-theme="dark"]) .resultsModalAnalysisText,
+:global([data-theme="dark"]) .resultsModalInsightText,
+:global([data-theme="dark"]) .resultsModalStrengthName {
+  color: #f3f4f8;
+}
+
+:global([data-theme="dark"]) .resultsModalSurveyTitle,
+:global([data-theme="dark"]) .resultsModalStrengthMeta {
+  color: rgba(243, 244, 248, 0.62);
+}
+
+:global([data-theme="dark"]) .resultsModalAnalysis,
+:global([data-theme="dark"]) .resultsModalInsightItem,
+:global([data-theme="dark"]) .resultsModalStrengthItem {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(139, 149, 255, 0.18);
+}
+
+:global([data-theme="dark"]) .resultsModalSuccessIcon,
+:global([data-theme="dark"]) .resultsModalStrengthRank {
+  background: rgba(81, 104, 255, 0.18);
+  border-color: rgba(139, 149, 255, 0.36);
+}
+
+:global([data-theme="dark"]) .resultsModalCloseButton {
+  background: rgba(81, 104, 255, 0.18);
+  border-color: rgba(139, 149, 255, 0.36);
+}
+
+:global([data-theme="dark"]) .resultsModalCloseButton:hover {
+  background: rgba(81, 104, 255, 0.28);
+  border-color: rgba(139, 149, 255, 0.58);
 }

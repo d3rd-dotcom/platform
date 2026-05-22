@@ -27,6 +27,25 @@
   overflow: hidden;
 }
 
+.quizModalInlineShell {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+}
+
+.quizModalContainerInline {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  max-width: none;
+  max-height: none;
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
 .quizModalHeader {
   flex-shrink: 0;
   padding: 16px 20px;
@@ -53,8 +72,8 @@
 }
 
 .quizModalClose {
-  background: rgba(255, 255, 255, 0.15);
-  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  background: #dc2626;
+  border: 1.5px solid #ef4444;
   border-radius: 8px;
   color: #ffffff;
   font-size: 20px;
@@ -71,8 +90,8 @@
 }
 
 .quizModalClose:hover {
-  background: rgba(255, 255, 255, 0.28);
-  border-color: rgba(255, 255, 255, 0.6);
+  background: #b91c1c;
+  border-color: #f87171;
 }
 
 .quizModalProgressContainer {
@@ -195,6 +214,86 @@
   color: inherit;
 }
 
+.quizModalLikertList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.quizModalLikertLegend {
+  position: sticky;
+  top: -20px;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  padding: 10px;
+  background: rgba(246, 247, 255, 0.96);
+  border: 1.5px solid rgba(81, 104, 255, 0.16);
+  border-radius: 10px;
+}
+
+.quizModalLikertLegend span {
+  font-family: var(--font-primary);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: rgba(26, 29, 51, 0.7);
+  text-align: center;
+}
+
+.quizModalLikertQuestion {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 180px;
+  gap: 14px;
+  align-items: center;
+  padding: 14px;
+  background: rgba(81, 104, 255, 0.04);
+  border: 1.5px solid rgba(81, 104, 255, 0.14);
+  border-radius: 12px;
+}
+
+.quizModalLikertQuestionText {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: #1A1D33;
+}
+
+.quizModalLikertOptions {
+  display: grid;
+  grid-template-columns: repeat(5, 32px);
+  gap: 5px;
+  justify-content: end;
+}
+
+.quizModalLikertOption {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(81, 104, 255, 0.24);
+  background: #ffffff;
+  color: #1A1D33;
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.quizModalLikertOption:hover {
+  background: rgba(81, 104, 255, 0.08);
+  border-color: var(--color-primary);
+}
+
+.quizModalLikertOptionSelected {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+}
+
 .quizModalFooter {
   flex-shrink: 0;
   padding: 16px 20px;
@@ -300,6 +399,32 @@
     padding: 10px 16px;
     font-size: 11px;
   }
+
+  .quizModalLikertLegend {
+    top: -16px;
+    gap: 4px;
+    padding: 8px;
+  }
+
+  .quizModalLikertLegend span {
+    font-size: 9px;
+  }
+
+  .quizModalLikertQuestion {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .quizModalLikertOptions {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    justify-content: stretch;
+  }
+
+  .quizModalLikertOption {
+    width: 100%;
+    height: 34px;
+  }
 }
 
 /* Tablet and up */
@@ -324,4 +449,111 @@
     font-size: 13px;
     padding: 14px 24px;
   }
+}
+
+.quizModalContainer.quizModalContainerInline {
+  width: 100%;
+  max-width: none;
+  max-height: none;
+}
+
+/* Dark mode */
+
+:global([data-theme="dark"]) .quizModalContainer {
+  background: #080914;
+  border-color: rgba(139, 149, 255, 0.32);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.42);
+}
+
+:global([data-theme="dark"]) .quizModalContainerInline {
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .quizModalClose {
+  background: #dc2626;
+  border-color: #ef4444;
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .quizModalClose:hover {
+  background: #b91c1c;
+  border-color: #f87171;
+}
+
+:global([data-theme="dark"]) .quizModalHeader {
+  background:
+    linear-gradient(135deg, rgba(81, 104, 255, 0.38), rgba(8, 9, 20, 0.92)),
+    #0c1028;
+  border-bottom-color: rgba(139, 149, 255, 0.22);
+}
+
+:global([data-theme="dark"]) .quizModalContent {
+  background: #080914;
+}
+
+:global([data-theme="dark"]) .quizModalQuestion,
+:global([data-theme="dark"]) .quizModalLikertQuestion {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(139, 149, 255, 0.22);
+}
+
+:global([data-theme="dark"]) .quizModalQuestionText,
+:global([data-theme="dark"]) .quizModalLikertQuestionText {
+  color: #f3f4f8;
+}
+
+:global([data-theme="dark"]) .quizModalOption,
+:global([data-theme="dark"]) .quizModalLikertOption {
+  background: rgba(255, 255, 255, 0.035);
+  border-color: rgba(139, 149, 255, 0.24);
+  color: rgba(243, 244, 248, 0.86);
+}
+
+:global([data-theme="dark"]) .quizModalOption:hover,
+:global([data-theme="dark"]) .quizModalLikertOption:hover {
+  background: rgba(81, 104, 255, 0.14);
+  border-color: rgba(139, 149, 255, 0.56);
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .quizModalOptionSelected,
+:global([data-theme="dark"]) .quizModalLikertOptionSelected {
+  background: rgba(81, 104, 255, 0.38);
+  border-color: #8b95ff;
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .quizModalOptionIndicator {
+  background: rgba(8, 9, 20, 0.9);
+  border-color: rgba(139, 149, 255, 0.42);
+}
+
+:global([data-theme="dark"]) .quizModalOptionIndicatorSelected {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+:global([data-theme="dark"]) .quizModalLikertLegend {
+  background: rgba(12, 16, 40, 0.96);
+  border-color: rgba(139, 149, 255, 0.22);
+}
+
+:global([data-theme="dark"]) .quizModalLikertLegend span {
+  color: rgba(243, 244, 248, 0.72);
+}
+
+:global([data-theme="dark"]) .quizModalFooter {
+  background: rgba(255, 255, 255, 0.035);
+  border-top-color: rgba(139, 149, 255, 0.16);
+}
+
+:global([data-theme="dark"]) .quizModalButtonSecondary {
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(243, 244, 248, 0.86);
+  border-color: rgba(139, 149, 255, 0.24);
+}
+
+:global([data-theme="dark"]) .quizModalButtonSecondary:hover:not(:disabled) {
+  background: rgba(81, 104, 255, 0.14);
+  border-color: rgba(139, 149, 255, 0.56);
 }

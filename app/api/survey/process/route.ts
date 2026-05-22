@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import bluePersona from '@/lib/bluepersonality.json'
 import { getCurrentUserFromRequestCookie } from '@/lib/auth'
+import type { SurveyAnswers } from '@/components/survey/types'
+import { scoreViaSurvey } from '@/components/survey/viaScoring'
+import { VIA_SURVEY_ID } from '@/components/survey/viaQuestions'
 
-interface SurveyAnswers {
+interface ProcessSurveyRequest {
   surveyId: string
-  surveyTitle: string
-  answers: Record<number, string>
+  surveyTitle?: string
+  answers: SurveyAnswers
 }
 
 export async function POST(request: NextRequest) {
@@ -19,7 +22,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { surveyId, surveyTitle, answers } = body as SurveyAnswers
+    const { surveyId, surveyTitle, answers } = body as ProcessSurveyRequest
 
     if (!surveyId || !answers || Object.keys(answers).length === 0) {
       return NextResponse.json(
@@ -28,11 +31,29 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    if (surveyId === VIA_SURVEY_ID) {
+      const viaScore = scoreViaSurvey(answers)
+
+      if (!viaScore.ok) {
+        return NextResponse.json(
+          { success: false, error: viaScore.error },
+          { status: 400 }
+        )
+      }
+
+      return NextResponse.json({
+        success: true,
+        results: viaScore.results
+      })
+    }
+
+    const resolvedSurveyTitle = surveyTitle || 'Survey'
+
     // Generate personalized title based on survey answers
     const personalizedTitle = generatePersonalizedTitle(surveyId, answers)
     
     // Generate analysis based on survey answers
-    const analysis = await generateSurveyAnalysis(surveyId, surveyTitle, answers)
+    const analysis = await generateSurveyAnalysis(surveyId, resolvedSurveyTitle, answers)
     
     // Extract insights from answers
     const insights = extractInsights(answers)
@@ -41,7 +62,7 @@ export async function POST(request: NextRequest) {
       success: true,
       results: {
         surveyId,
-        surveyTitle: surveyTitle || 'Survey',
+        surveyTitle: resolvedSurveyTitle,
         personalizedTitle,
         answers,
         analysis,

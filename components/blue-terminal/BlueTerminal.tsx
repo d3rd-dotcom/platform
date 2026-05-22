@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import styles from './BlueTerminal.module.css';
 import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
 import { MIN_SHORT_ANSWER_CHARS } from '@/lib/test-rewards';
@@ -68,10 +69,25 @@ interface BlueTerminalProps {
   testData?: TestData | null;
   isGenerating?: boolean;
   errorMessage?: string | null;
+  idleTitle?: string;
+  idleText?: string;
+  idleMeta?: string;
+  idleNote?: string;
+  idleImageSrc?: string;
   onSubmitQuest?: (answers: TestAnswers) => Promise<TestCompletionResult | null>;
 }
 
-export default function BlueTerminal({ testData, isGenerating, errorMessage, onSubmitQuest }: BlueTerminalProps) {
+export default function BlueTerminal({
+  testData,
+  isGenerating,
+  errorMessage,
+  idleTitle = 'Pick your quiz',
+  idleText = 'Choose a survey on the left. Blue will read the pattern, but the fun part is the answers you give before she gets involved.',
+  idleMeta = 'Personality lab',
+  idleNote = 'No wrong answers. Only suspiciously revealing ones.',
+  idleImageSrc = '/exxie.png',
+  onSubmitQuest,
+}: BlueTerminalProps) {
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState<TestAnswers>({});
   const [shortAnswer, setShortAnswer] = useState('');
@@ -172,6 +188,29 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
         <div className={styles.errorPanel} role="alert">
           <h3 className={styles.statusTitle}>Survey unavailable</h3>
           <p className={styles.statusText}>{errorMessage}</p>
+        </div>
+      )}
+
+      {!isGenerating && !errorMessage && !testData && (
+        <div className={`${styles.statusPanel} ${styles.idleStatusPanel}`}>
+          <div className={styles.idleIntro}>
+            <div className={styles.idleCopy}>
+              <p className={styles.eyebrow}>{idleMeta}</p>
+              <h3 className={styles.statusTitle}>{idleTitle}</h3>
+              <p className={styles.statusText}>{idleText}</p>
+              <p className={styles.statusNote}>{idleNote}</p>
+            </div>
+            <div className={styles.idleImageWrap} aria-hidden="true">
+              <Image
+                src={idleImageSrc}
+                alt=""
+                fill
+                sizes="(max-width: 900px) 220px, 32vw"
+                className={styles.idleImage}
+                priority
+              />
+            </div>
+          </div>
         </div>
       )}
 

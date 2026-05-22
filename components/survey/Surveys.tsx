@@ -4,22 +4,10 @@ import { useState } from 'react'
 import Image from 'next/image'
 import QuizModal from './QuizModal'
 import SurveyResultsModal from './SurveyResultsModal'
+import type { Survey, SurveyAnswers, SurveyResults } from './types'
 import styles from './Surveys.module.css'
 
-interface Question {
-  id: number
-  text: string
-  options: string[]
-}
-
-interface Survey {
-  id: string
-  title: string
-  description: string
-  questions: Question[]
-}
-
-const SURVEYS: Survey[] = [
+export const STANDARD_SURVEYS: Survey[] = [
   {
     id: "daemon-analysis",
     title: "Decision Pattern Analysis",
@@ -343,18 +331,20 @@ const SURVEYS: Survey[] = [
   }
 ]
 
+export const SURVEYS = STANDARD_SURVEYS
+
 export default function Surveys() {
   const [showQuizModal, setShowQuizModal] = useState(false)
   const [selectedSurvey, setSelectedSurvey] = useState<Survey | null>(null)
   const [showResultsModal, setShowResultsModal] = useState(false)
-  const [surveyResults, setSurveyResults] = useState<any>(null)
+  const [surveyResults, setSurveyResults] = useState<SurveyResults | null>(null)
 
   const handleStartSurvey = (survey: Survey) => {
     setSelectedSurvey(survey)
     setShowQuizModal(true)
   }
 
-  const handleSurveyComplete = async (answers: Record<number, string>) => {
+  const handleSurveyComplete = async (answers: SurveyAnswers) => {
     if (!selectedSurvey) return
 
     try {
@@ -396,7 +386,7 @@ export default function Surveys() {
       <div className={styles.surveysSection}>
         <h3 className={styles.surveysTitle}>Earn For Surveys</h3>
         <div className={styles.surveysGrid}>
-          {SURVEYS.map((survey) => (
+          {STANDARD_SURVEYS.map((survey) => (
             <div 
               key={survey.id} 
               className={styles.surveyCard}

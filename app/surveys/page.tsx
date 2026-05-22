@@ -1,101 +1,147 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
-import dynamic from 'next/dynamic';
+import React, { useCallback, useMemo, useState } from 'react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import SurveyController from '@/components/survey-controller/SurveyController';
 import SurveySpace from '@/components/survey-space/SurveySpace';
-import BlueTerminal, { type TestAnswers, type TestCompletionResult, type TestData } from '@/components/blue-terminal/BlueTerminal';
-import { getTestShardReward } from '@/lib/test-rewards';
+import BlueTerminal from '@/components/blue-terminal/BlueTerminal';
+import QuizModal from '@/components/survey/QuizModal';
+import SurveyResultsModal from '@/components/survey/SurveyResultsModal';
+import { STANDARD_SURVEYS } from '@/components/survey/Surveys';
+import type { Survey, SurveyAnswers, SurveyResults } from '@/components/survey/types';
+import { VIA_SURVEY } from '@/components/survey/viaQuestions';
 import styles from './page.module.css';
 
-const SignFormModal = dynamic(() => import('@/components/sign-form-modal/SignFormModal'), {
-  ssr: false,
-});
+const AVAILABLE_SURVEYS: Survey[] = [VIA_SURVEY, ...STANDARD_SURVEYS];
+
+function getSurveyById(id: string): Survey {
+  return AVAILABLE_SURVEYS.find((survey) => survey.id === id) ?? AVAILABLE_SURVEYS[0];
+}
+
+function getSurveyIntroCopy(survey: Survey): { meta: string; text: string; note: string } {
+  if (survey.questionType === 'likert') {
+    return {
+      meta: 'Character strengths quiz',
+      text: 'Meet your best-self build. The part of you that tells the truth, makes good trouble, keeps promises, and notices the magic in the room. Tap what feels uncomfortably accurate; Blue will handle the pattern read.',
+      note: 'Long quiz, fast rhythm. Ten items per page.',
+    };
+  }
+
+  return {
+    meta: '10 question personality read',
+    text: 'A short personality quiz with sharper teeth. Pick the answer with the strongest charge and let Blue turn the pattern into a clean read.',
+    note: 'No wrong answers. Only suspiciously revealing ones.',
+  };
+}
 
 export default function SurveysPage() {
-  const [difficulty, setDifficulty] = useState(101);
-  const [persona, setPersona] = useState('Blue');
-  const [isSignFormOpen, setIsSignFormOpen] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [testData, setTestData] = useState<TestData | null>(null);
+  const [selectedSurveyId, setSelectedSurveyId] = useState(AVAILABLE_SURVEYS[0].id);
+  const [activeSurvey, setActiveSurvey] = useState<Survey | null>(null);
+  const [showQuizModal, setShowQuizModal] = useState(false);
+  const [showResultsModal, setShowResultsModal] = useState(false);
+  const [surveyResults, setSurveyResults] = useState<SurveyResults | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const shardReward = getTestShardReward(difficulty);
 
-  const handleSignForm = useCallback(() => { setIsSignFormOpen(true); }, []);
+  const selectedSurvey = useMemo(() => getSurveyById(selectedSurveyId), [selectedSurveyId]);
+  const selectedSurveyIntro = useMemo(() => getSurveyIntroCopy(selectedSurvey), [selectedSurvey]);
 
-  const handleLaunchQuest = useCallback(async () => {
-    setIsSignFormOpen(false);
-    setIsGenerating(true);
-    setTestData(null);
+  const handleSurveyTypeChange = useCallback((surveyId: string) => {
+    setSelectedSurveyId(surveyId);
     setErrorMessage(null);
-    try {
-      const res = await fetch('/api/generate-test', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ difficulty, persona }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setTestData(data as TestData);
-      } else {
-        const data: { error?: string } = await res.json().catch(() => ({}));
-        setErrorMessage(data.error || 'Test engine rejected the request. Sign in and try again.');
-      }
-    } catch {
-      setErrorMessage('Test engine connection failed. Try again in a moment.');
-    } finally {
-      setIsGenerating(false);
-    }
-  }, [difficulty, persona]);
+    setShowQuizModal(false);
+    setShowResultsModal(false);
+    setActiveSurvey(null);
+    setSurveyResults(null);
+  }, []);
 
-  const handleSubmitQuest = useCallback(async (answers: TestAnswers): Promise<TestCompletionResult> => {
-    if (!testData?.testId) {
-      throw new Error('This test was not linked to your account. Generate a new test and try again.');
+  const handleStartSurvey = useCallback(() => {
+    setActiveSurvey(selectedSurvey);
+    setShowQuizModal(true);
+    setShowResultsModal(false);
+    setSurveyResults(null);
+    setErrorMessage(null);
+  }, [selectedSurvey]);
+
+  const handleSurveyComplete = useCallback(async (answers: SurveyAnswers) => {
+    if (!activeSurvey) return;
+
+    try {
+      const processResponse = await fetch('/api/survey/process', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          surveyId: activeSurvey.id,
+          surveyTitle: activeSurvey.title,
+          answers,
+        }),
+      });
+
+      const processData: { success?: boolean; results?: SurveyResults; error?: string } =
+        await processResponse.json().catch(() => ({}));
+
+      if (!processResponse.ok || !processData.success || !processData.results) {
+        throw new Error(processData.error || 'Failed to process survey results.');
+      }
+
+      setSurveyResults(processData.results);
+      setShowQuizModal(false);
+      setShowResultsModal(true);
+      setErrorMessage(null);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to complete survey. Please try again.';
+      setErrorMessage(message);
+      alert(message);
+      throw error;
     }
-    const res = await fetch('/api/generate-test/complete', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ testId: testData.testId, answers }),
-    });
-    const data: { error?: string; shardsAwarded?: number; newShardCount?: number } = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data.error || 'Gem award failed.');
-    window.dispatchEvent(new Event('shardsUpdated'));
-    return {
-      shardsAwarded: data.shardsAwarded ?? testData.shardReward ?? shardReward,
-      newShardCount: data.newShardCount ?? null,
-    };
-  }, [shardReward, testData]);
+  }, [activeSurvey]);
 
   return (
     <div className={styles.pageLayout}>
       <SideNavigation />
       <main className={styles.content}>
         <SurveyController
-          onSignForm={handleSignForm}
-          onDifficultyChange={setDifficulty}
-          onPersonaChange={setPersona}
+          selectedSurveyId={selectedSurveyId}
+          onSurveyTypeChange={handleSurveyTypeChange}
+          onStartSurvey={handleStartSurvey}
+          showDifficulty={false}
+          ctaLabel="Begin survey"
         />
         <SurveySpace label="" badges={[]}>
-          <BlueTerminal
-            testData={testData}
-            isGenerating={isGenerating}
-            errorMessage={errorMessage}
-            onSubmitQuest={handleSubmitQuest}
-          />
+          {showQuizModal ? (
+            <QuizModal
+              isOpen={showQuizModal}
+              onClose={() => {
+                setShowQuizModal(false);
+                setActiveSurvey(null);
+              }}
+              survey={activeSurvey}
+              variant="inline"
+              onComplete={handleSurveyComplete}
+            />
+          ) : showResultsModal ? (
+            <SurveyResultsModal
+              isOpen={showResultsModal}
+              onClose={() => {
+                setShowResultsModal(false);
+                setSurveyResults(null);
+              }}
+              results={surveyResults}
+              variant="inline"
+            />
+          ) : (
+            <BlueTerminal
+              errorMessage={errorMessage}
+              idleMeta={selectedSurveyIntro.meta}
+              idleTitle={selectedSurvey.title}
+              idleText={selectedSurveyIntro.text}
+              idleNote={selectedSurveyIntro.note}
+            />
+          )}
         </SurveySpace>
       </main>
-
-      {isSignFormOpen && (
-        <SignFormModal
-          difficulty={difficulty}
-          shardReward={shardReward}
-          onLaunch={handleLaunchQuest}
-          onClose={() => setIsSignFormOpen(false)}
-        />
-      )}
     </div>
   );
 }

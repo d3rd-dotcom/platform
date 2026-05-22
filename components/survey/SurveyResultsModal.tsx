@@ -2,25 +2,17 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { createPortal } from 'react-dom'
+import type { SurveyResults } from './types'
 import styles from './SurveyResultsModal.module.css'
-
-interface SurveyResults {
-  surveyId: string
-  surveyTitle: string
-  personalizedTitle: string
-  answers: Record<number, string>
-  analysis: string
-  insights: string[]
-  timestamp: string
-}
 
 interface SurveyResultsModalProps {
   isOpen: boolean
   onClose: () => void
   results: SurveyResults | null
+  variant?: 'modal' | 'inline'
 }
 
-export default function SurveyResultsModal({ isOpen, onClose, results }: SurveyResultsModalProps) {
+export default function SurveyResultsModal({ isOpen, onClose, results, variant = 'modal' }: SurveyResultsModalProps) {
   const [showContent, setShowContent] = useState(false)
   const [mounted, setMounted] = useState(false)
 
@@ -38,6 +30,8 @@ export default function SurveyResultsModal({ isOpen, onClose, results }: SurveyR
   }, [isOpen, results])
 
   useEffect(() => {
+    if (variant !== 'modal') return
+
     if (isOpen) {
       document.body.style.overflow = 'hidden'
     } else {
@@ -46,7 +40,7 @@ export default function SurveyResultsModal({ isOpen, onClose, results }: SurveyR
     return () => {
       document.body.style.overflow = 'unset'
     }
-  }, [isOpen])
+  }, [isOpen, variant])
 
   const handleClose = useCallback((e?: React.MouseEvent) => {
     if (e) {
@@ -71,8 +65,126 @@ export default function SurveyResultsModal({ isOpen, onClose, results }: SurveyR
   }, [isOpen, handleClose])
 
   if (!isOpen || !results || !mounted) return null
+  const hasStrengthRankings = results.resultType === 'via' && results.strengthRankings && results.strengthRankings.length > 0
 
-  const modalContent = (
+  const panelContent = (
+    <div
+      className={`${styles.resultsModalContainer} ${showContent ? styles.resultsModalContainerVisible : ''} ${variant === 'inline' ? styles.resultsModalContainerInline : ''}`}
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* Header with close button */}
+      <div className={styles.resultsModalHeader}>
+        <div className={styles.resultsModalHeaderContent}>
+          <h2 className={styles.resultsModalTitle}>Survey complete</h2>
+          <button
+            onClick={(e) => handleClose(e)}
+            className={styles.resultsModalClose}
+            aria-label="Close results"
+          >
+            x
+          </button>
+        </div>
+      </div>
+
+      {/* Animated Content */}
+      <div className={styles.resultsModalContent}>
+        {/* Success Animation */}
+        <div className={`${styles.resultsModalSuccessIcon} ${showContent ? styles.resultsModalSuccessIconVisible : ''}`}>
+          <svg
+            width="60"
+            height="60"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="var(--color-primary)"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M20 6L9 17l-5-5" />
+          </svg>
+        </div>
+
+        {/* Personalized Title */}
+        <div className={`${styles.resultsModalTitleSection} ${showContent ? styles.resultsModalTitleSectionVisible : ''}`}>
+          <h3 className={styles.resultsModalPersonalizedTitle}>
+            {results.personalizedTitle || results.surveyTitle}
+          </h3>
+          <p className={styles.resultsModalSurveyTitle}>
+            {results.surveyTitle}
+          </p>
+        </div>
+
+        {/* Analysis Text */}
+        <div className={`${styles.resultsModalAnalysis} ${showContent ? styles.resultsModalAnalysisVisible : ''}`}>
+          <p className={styles.resultsModalAnalysisText}>
+            {results.analysis}
+          </p>
+        </div>
+
+        {/* Insights */}
+        {results.insights && results.insights.length > 0 && (
+          <div className={`${styles.resultsModalInsights} ${showContent ? styles.resultsModalInsightsVisible : ''}`}>
+            <h4 className={styles.resultsModalInsightsTitle}>
+              {hasStrengthRankings ? 'Top strengths' : 'Key insights'}
+            </h4>
+            <div className={styles.resultsModalInsightsList}>
+              {results.insights.map((insight, index) => (
+                <div key={index} className={styles.resultsModalInsightItem}>
+                  <p className={styles.resultsModalInsightText}>
+                    - {insight}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {hasStrengthRankings && (
+          <div className={`${styles.resultsModalRankings} ${showContent ? styles.resultsModalRankingsVisible : ''}`}>
+            <h4 className={styles.resultsModalInsightsTitle}>
+              Full ranking
+            </h4>
+            <div className={styles.resultsModalStrengthList}>
+              {results.strengthRankings?.map((strength) => (
+                <div key={strength.id} className={styles.resultsModalStrengthItem}>
+                  <div className={styles.resultsModalStrengthRank}>
+                    {strength.rank}
+                  </div>
+                  <div className={styles.resultsModalStrengthMain}>
+                    <p className={styles.resultsModalStrengthName}>
+                      {strength.label}
+                    </p>
+                    <p className={styles.resultsModalStrengthMeta}>
+                      {strength.virtue} - {strength.description}
+                    </p>
+                  </div>
+                  <div className={styles.resultsModalStrengthScore}>
+                    {strength.score}/{strength.maxScore}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Footer */}
+      <div className={`${styles.resultsModalFooter} ${showContent ? styles.resultsModalFooterVisible : ''}`}>
+        <button
+          onClick={handleClose}
+          className={styles.resultsModalCloseButton}
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  )
+
+  if (variant === 'inline') {
+    return <div className={styles.resultsModalInlineShell}>{panelContent}</div>
+  }
+
+  return createPortal((
     <div
       className={styles.resultsModalOverlay}
       onClick={(e) => {
@@ -81,90 +193,7 @@ export default function SurveyResultsModal({ isOpen, onClose, results }: SurveyR
         }
       }}
     >
-      <div
-        className={`${styles.resultsModalContainer} ${showContent ? styles.resultsModalContainerVisible : ''}`}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header with close button */}
-        <div className={styles.resultsModalHeader}>
-          <div className={styles.resultsModalHeaderContent}>
-            <h2 className={styles.resultsModalTitle}>Survey Complete</h2>
-            <button
-              onClick={(e) => handleClose(e)}
-              className={styles.resultsModalClose}
-              aria-label="Close modal"
-            >
-              ×
-            </button>
-          </div>
-        </div>
-
-        {/* Animated Content */}
-        <div className={styles.resultsModalContent}>
-          {/* Success Animation */}
-          <div className={`${styles.resultsModalSuccessIcon} ${showContent ? styles.resultsModalSuccessIconVisible : ''}`}>
-            <svg
-              width="60"
-              height="60"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="var(--color-primary)"
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M20 6L9 17l-5-5" />
-            </svg>
-          </div>
-
-          {/* Personalized Title */}
-          <div className={`${styles.resultsModalTitleSection} ${showContent ? styles.resultsModalTitleSectionVisible : ''}`}>
-            <h3 className={styles.resultsModalPersonalizedTitle}>
-              {results.personalizedTitle || results.surveyTitle}
-            </h3>
-            <p className={styles.resultsModalSurveyTitle}>
-              {results.surveyTitle}
-            </p>
-          </div>
-
-          {/* Analysis Text */}
-          <div className={`${styles.resultsModalAnalysis} ${showContent ? styles.resultsModalAnalysisVisible : ''}`}>
-            <p className={styles.resultsModalAnalysisText}>
-              {results.analysis}
-            </p>
-          </div>
-
-          {/* Insights */}
-          {results.insights && results.insights.length > 0 && (
-            <div className={`${styles.resultsModalInsights} ${showContent ? styles.resultsModalInsightsVisible : ''}`}>
-              <h4 className={styles.resultsModalInsightsTitle}>
-                Key Insights
-              </h4>
-              <div className={styles.resultsModalInsightsList}>
-                {results.insights.map((insight, index) => (
-                  <div key={index} className={styles.resultsModalInsightItem}>
-                    <p className={styles.resultsModalInsightText}>
-                      • {insight}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Footer */}
-        <div className={`${styles.resultsModalFooter} ${showContent ? styles.resultsModalFooterVisible : ''}`}>
-          <button
-            onClick={handleClose}
-            className={styles.resultsModalCloseButton}
-          >
-            Close
-          </button>
-        </div>
-      </div>
+      {panelContent}
     </div>
-  )
-
-  return createPortal(modalContent, document.body)
+  ), document.body)
 }
