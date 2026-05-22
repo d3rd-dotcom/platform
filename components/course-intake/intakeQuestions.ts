@@ -42,18 +42,6 @@ export const INTAKE_QUESTIONS: IntakeQuestion[] = [
     ],
   },
   {
-    key: 'goal',
-    label: 'Focus',
-    blueText: 'What brings you to this world?',
-    audioSrc: '/audio/onboarding/course-intake/goal.mp3',
-    choices: [
-      { label: 'Creativity', value: 'Creativity' },
-      { label: 'Exercise', value: 'Exercise' },
-      { label: 'Wellness', value: 'Wellness' },
-      { label: 'Healing', value: 'Healing' },
-    ],
-  },
-  {
     key: 'timeCommitment',
     label: 'Time each day',
     blueText: 'How much time do you set aside for your mental wellness each day?',

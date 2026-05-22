@@ -15,63 +15,9 @@
   padding: 32px 20px 32px 104px;
 }
 
-.loaderCard {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  width: min(520px, calc(100vw - 48px));
-  min-height: 330px;
-  padding: 40px 34px;
-  border-radius: 28px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background:
-    radial-gradient(circle at 50% 0%, rgba(139, 149, 255, 0.18), transparent 42%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0)),
-    #080914;
-  box-shadow:
-    0 24px 80px rgba(0, 0, 0, 0.42),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  text-align: center;
-}
-
-.kicker {
-  margin: 0;
-  color: rgba(243, 244, 248, 0.58);
-  font-size: 0.74rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.title {
-  margin: 0;
-  color: #ffffff;
-  font-size: clamp(1.6rem, 3vw, 2.3rem);
-  line-height: 1.1;
-  font-weight: 800;
-  letter-spacing: -0.04em;
-}
-
-.text {
-  max-width: 360px;
-  margin: 0;
-  color: rgba(243, 244, 248, 0.7);
-  font-size: 0.98rem;
-  line-height: 1.55;
-}
-
 @media (max-width: 768px) {
   .page {
     padding: 20px 16px 108px;
-  }
-
-  .loaderCard {
-    width: min(360px, calc(100vw - 40px));
-    min-height: 300px;
-    padding: 34px 24px;
-    border-radius: 24px;
   }
 }
 
@@ -80,27 +26,4 @@
     radial-gradient(circle at top left, rgba(81, 104, 255, 0.12), transparent 34%),
     radial-gradient(circle at top right, rgba(232, 85, 109, 0.1), transparent 30%),
     linear-gradient(180deg, #f8faff 0%, #eef3ff 100%);
-}
-
-:global(:root:not([data-theme="dark"])) .loaderCard {
-  border-color: rgba(81, 104, 255, 0.1);
-  background:
-    radial-gradient(circle at 50% 0%, rgba(81, 104, 255, 0.12), transparent 42%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.78)),
-    #f7fbff;
-  box-shadow:
-    0 20px 60px rgba(74, 93, 160, 0.14),
-    inset 0 1px 0 rgba(255, 255, 255, 0.82);
-}
-
-:global(:root:not([data-theme="dark"])) .kicker {
-  color: rgba(26, 27, 36, 0.58);
-}
-
-:global(:root:not([data-theme="dark"])) .title {
-  color: var(--color-text-dark);
-}
-
-:global(:root:not([data-theme="dark"])) .text {
-  color: rgba(26, 27, 36, 0.72);
 }

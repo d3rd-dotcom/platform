@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { usePrivy } from '@privy-io/react-auth';
 import { INTAKE_QUESTIONS } from './intakeQuestions';
 import { useSound } from '@/hooks/useSound';
 import styles from './CourseIntake.module.css';
@@ -10,6 +11,9 @@ interface CourseIntakeProps {
   onComplete: (answers: Record<string, string>) => void;
 }
 
+// Distinct accent per option slot — calm palette only (no warning/emergency hues).
+const OPTION_COLORS = ['#5168ff', '#8b5cf6', '#2dd4bf', '#34d399', '#38bdf8'];
+
 function firstUnansweredIndex(answers: Record<string, string>): number {
   const idx = INTAKE_QUESTIONS.findIndex((q) => !answers[q.key]);
   return idx === -1 ? INTAKE_QUESTIONS.length - 1 : idx;
@@ -17,6 +21,7 @@ function firstUnansweredIndex(answers: Record<string, string>): number {
 
 export default function CourseIntake({ initialAnswers = {}, onComplete }: CourseIntakeProps) {
   const { play } = useSound();
+  const { getAccessToken } = usePrivy();
   const [answers, setAnswers] = useState<Record<string, string>>(initialAnswers);
   const [stepIndex, setStepIndex] = useState(() => firstUnansweredIndex(initialAnswers));
   const [choice, setChoice] = useState<string | null>(null);
@@ -114,13 +119,21 @@ export default function CourseIntake({ initialAnswers = {}, onComplete }: Course
     return () => window.removeEventListener('pointerdown', handler);
   }, [stepIndex, question.blueText, question.audioSrc, playStep]);
 
-  const persist = useCallback((next: Record<string, string>) => {
-    fetch('/api/course/intake', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ answers: next }),
-    }).catch(() => {/* progressive save is best-effort */});
-  }, []);
+  const persist = useCallback(async (next: Record<string, string>) => {
+    try {
+      const token = await getAccessToken();
+      await fetch('/api/course/intake', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ answers: next }),
+      });
+    } catch {
+      /* progressive save is best-effort */
+    }
+  }, [getAccessToken]);
 
   const hasAnswer = Boolean(choice) || Boolean(textValue.trim());
   const canContinue = hasAnswer || Boolean(question.optional);
@@ -185,7 +198,7 @@ export default function CourseIntake({ initialAnswers = {}, onComplete }: Course
         onMouseEnter={() => play('hover')}
         disabled={!canContinue}
       >
-        {isLast ? 'Build my course' : 'Continue'}
+        {isLast ? 'Build my plan' : 'Continue'}
       </button>
     </div>
   );
@@ -212,7 +225,7 @@ export default function CourseIntake({ initialAnswers = {}, onComplete }: Course
 
               {question.choices && (
                 <div className={styles.options} role="radiogroup" aria-label={question.label}>
-                  {question.choices.map((c) => {
+                  {question.choices.map((c, i) => {
                     const active = choice === c.value;
                     return (
                       <button
@@ -221,6 +234,7 @@ export default function CourseIntake({ initialAnswers = {}, onComplete }: Course
                         role="radio"
                         aria-checked={active}
                         className={`${styles.option} ${active ? styles.optionActive : ''}`}
+                        style={{ '--accent': OPTION_COLORS[i % OPTION_COLORS.length] } as React.CSSProperties}
                         onClick={() => selectChoice(c.value)}
                         onMouseEnter={() => play('hover')}
                       >

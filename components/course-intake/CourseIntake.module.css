@@ -93,15 +93,16 @@
 }
 
 .option {
+  --accent: rgba(255, 255, 255, 0.6);
   width: 100%;
   min-height: 48px;
   display: flex;
   align-items: center;
   gap: 13px;
   padding: 12px 15px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, rgba(255, 255, 255, 0.14));
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--accent) 9%, rgba(255, 255, 255, 0.05));
   color: rgba(255, 255, 255, 0.94);
   text-align: left;
   cursor: pointer;
@@ -112,15 +113,15 @@
 }
 
 .option:hover {
-  border-color: rgba(255, 255, 255, 0.34);
-  background: rgba(255, 255, 255, 0.12);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: color-mix(in srgb, var(--accent) 16%, rgba(255, 255, 255, 0.05));
   transform: translateY(-1px);
 }
 
 .optionActive,
 .optionActive:hover {
-  border-color: rgba(255, 255, 255, 0.56);
-  background: rgba(255, 255, 255, 0.16);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 22%, rgba(255, 255, 255, 0.05));
   transform: none;
 }
 
@@ -130,7 +131,7 @@
   flex: 0 0 auto;
   display: grid;
   place-items: center;
-  border: 2px solid rgba(255, 255, 255, 0.34);
+  border: 2px solid color-mix(in srgb, var(--accent) 70%, rgba(255, 255, 255, 0.3));
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.06);
 }
@@ -139,14 +140,14 @@
   width: 10px;
   height: 10px;
   border-radius: inherit;
-  background: #ffffff;
+  background: var(--accent);
   opacity: 0;
   transform: scale(0.6);
   transition: opacity 0.16s ease, transform 0.16s ease;
 }
 
 .optionActive .radio {
-  border-color: #ffffff;
+  border-color: var(--accent);
 }
 
 .optionActive .radioDot {
