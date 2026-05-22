@@ -13,7 +13,7 @@ import * as path from 'path';
 // Load environment variables
 dotenv.config({ path: path.join(__dirname, '../.env.local') });
 
-const BLUE_PRIVATE_KEY = process.env.BLUE_PRIVATE_KEY;
+const BLUE_PRIVATE_KEY = process.env.BLUE_PRIVATE_KEY || process.env.AZURA_PRIVATE_KEY;
 const RPC_URL = process.env.NEXT_PUBLIC_BASE_RPC_URL || 'https://mainnet.base.org';
 const GOV_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_GOVERNANCE_TOKEN_ADDRESS || '0x84939fEc50EfdEDC8522917645AAfABFd5b3EA6F';
 
@@ -28,10 +28,10 @@ async function checkBlueWallet() {
   console.log('\n🤖 Checking Blue\'s Wallet Balance...\n');
 
   if (!BLUE_PRIVATE_KEY) {
-    console.error('❌ BLUE_PRIVATE_KEY not set in .env.local');
+    console.error('❌ BLUE_PRIVATE_KEY / AZURA_PRIVATE_KEY not set in .env.local');
     console.log('\n📝 To set up Blue\'s wallet:');
     console.log('1. Generate a new private key OR use existing wallet');
-    console.log('2. Add to .env.local: BLUE_PRIVATE_KEY=0x...');
+    console.log('2. Add to .env.local: BLUE_PRIVATE_KEY=0x... (AZURA_PRIVATE_KEY also accepted)');
     console.log('3. Fund the wallet with ETH (for gas) and governance tokens\n');
     process.exit(1);
   }
