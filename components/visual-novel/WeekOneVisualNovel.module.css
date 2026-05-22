@@ -31,6 +31,25 @@
   transform: scale(1);
 }
 
+/* Check-in step: drop the cinematic stage and any wrapper chrome — the Blue
+   card is the only surface, sitting directly on the dimmed backdrop. */
+.modalCheckIn {
+  inset: 50% auto auto 50%;
+  width: min(640px, calc(100vw - 32px));
+  height: auto;
+  max-height: calc(100vh - 32px);
+  overflow: visible;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  transform: translate(-50%, -50%) scale(0.98);
+}
+
+.modalCheckIn.modalOpen {
+  transform: translate(-50%, -50%) scale(1);
+}
+
 /* Background image */
 .bgImage {
   object-fit: cover;
@@ -88,6 +107,7 @@
   font-size: clamp(1.05rem, 1.6vw, 1.28rem);
   line-height: 1.75;
   color: #fff;
+  white-space: pre-wrap;
   text-shadow:
     -1px -1px 0 rgba(0, 0, 0, 0.75),
     1px -1px 0 rgba(0, 0, 0, 0.75),
@@ -204,10 +224,118 @@
   letter-spacing: 0.01em;
 }
 
+.checkInScreen {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  background: transparent;
+}
+
+.checkInCard {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.checkInActions {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.backButton,
+.completeButton {
+  min-height: 42px;
+  padding: 0.7rem 1.1rem;
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+}
+
+.backButton {
+  color: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.backButton:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.completeButton {
+  color: #ffffff;
+  background: #5168ff;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 8px 20px rgba(81, 104, 255, 0.26);
+}
+
+.completeButton:hover:not(:disabled) {
+  background: #4153d9;
+}
+
+.backButton:hover,
+.completeButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.completeButton:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.claimMessage {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.72);
+}
+
 /* On small landscape screens, shift text down a touch */
 @media (max-height: 480px) {
   .overlay {
     top: 12%;
+  }
+}
+
+@media (min-width: 900px) {
+  .modal {
+    inset: 50% auto auto 50%;
+    width: min(1120px, calc(100vw - 96px));
+    aspect-ratio: 16 / 9;
+    height: auto;
+    max-height: calc(100vh - 72px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 18px;
+    box-shadow: 0 34px 100px rgba(0, 0, 0, 0.56);
+    transform: translate(-50%, -50%) scale(0.98);
+  }
+
+  .modalOpen {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .modalCheckIn {
+    width: min(640px, calc(100vw - 48px));
+    aspect-ratio: auto;
+    height: auto;
+    max-height: calc(100vh - 72px);
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .portraitOverlay {
+    display: none;
   }
 }
 
@@ -224,5 +352,15 @@
 
   .body {
     font-size: 1rem;
+  }
+
+  .checkInActions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .backButton,
+  .completeButton {
+    width: 100%;
   }
 }

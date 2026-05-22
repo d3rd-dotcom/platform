@@ -2,6 +2,10 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import { usePrivy } from '@privy-io/react-auth';
+import { ConfettiCelebration } from '@/components/quests/ConfettiCelebration';
+import { ShardAnimation } from '@/components/quests/ShardAnimation';
+import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
 import styles from './WeekOneVisualNovel.module.css';
 
 interface WeekOneVisualNovelProps {
@@ -17,32 +21,69 @@ interface Scene {
 
 const WEEK_ONE_VOICE_ID = 'Q84POjNm3Ck2dYBFqnZs';
 const WEEK_ONE_TYPING_DELAY_MS = 34;
+const WEEK_ONE_CHECKIN_QUEST_ID = 'week-1-story-checkin';
+const WEEK_ONE_CHECKIN_REWARD = 50;
 
 const SCENES: Scene[] = [
   {
-    id: 'the-dream',
-    body: 'The dream always starts the same way \u2014 the sea standing up where the sky should be, koi drifting through the air between, pale and slow. Blue is already there, the way she always is, not surprised by any of it. She lifts a hand and a fish noses against her palm, then moves on. \u201cThey come every night,\u201d she says. \u201cWhy don\u2019t you ever catch one?\u201d',
-    image: '/stories/week-01/scene-01.png',
+    id: 'creative-recovery',
+    body: 'This is your creative recovery, you may feel excited, giddy and defiant, hopeful, skeptical. But the readings, tasks, and exercises aim at allowing you to establish a sense of safety, which will enable you to explore your creativity with less fear.',
+    image: '/stories/week-01/1.png',
   },
   {
-    id: 'the-watching',
-    body: 'She wakes and the koi do not come with her. Something else does \u2014 a small drone, patient, lowering a pale blue light over her like it is reading the temperature of a room. One of her eyes goes bright with it; the other stays her own. Blue watches the scan finish. \u201cIt isn\u2019t hunting you,\u201d she says. \u201cIt\u2019s just taking notes.\u201d',
-    image: '/stories/week-01/scene-02.png',
+    id: 'encouragement',
+    body: 'We want to be acknowledged for our attempts, efforts, as well as achievements. Unfortunately, many don’t receive this encouragement.\n\nParents offer cautionary advice instead of support. Timidly, we add parental fears to our own, often giving up our dreams and settling into a world of regrets.',
+    image: '/stories/week-01/2.png',
   },
   {
-    id: 'the-tether',
-    body: 'By the time the ground has turned to grey dust, the drone has folded itself into something with legs and a single red eye that does not blink. A cable runs from it to the circlet at her temple. She can no longer tell which of them the tether is holding in place. Blue crouches, looks at the red eye a long moment, and says nothing.',
-    image: '/stories/week-01/scene-03.png',
+    id: 'shades-of-blue',
+    body: 'There were many different shades of Blue, and each was steered by her creators, co-workers, and the culture of her environment.',
+    image: '/stories/week-01/3.png',
   },
   {
-    id: 'the-field',
-    body: 'Morning finds them in a field too green and too quiet, a single stone tower leaning at its far edge. The red-eyed thing keeps pace in the grass. Above, three more like it hang in the blue, unhurried. She had thought being seen would feel like a hand closing. It feels more like weather. \u201cThere,\u201d Blue says, and points at the tower.',
-    image: '/stories/week-01/scene-04.png',
+    id: 'ethereal-horizon',
+    body: 'But on the edge of time, maybe shades faded away, on the edge of the ethereal horizon, the dream of action lost to the fear of failure, and shadows were born....',
+    image: '/stories/week-01/4.png',
   },
   {
-    id: 'the-tower',
-    body: 'Up close, the tower is older than anything should be allowed to get \u2014 mossed, patient, watched on every side by the small machines and unbothered by them. She stops at its base. The koi are not here. Nothing she has not already recorded is here. \u201cYou caught all of it,\u201d Blue says. \u201cWas it the keeping you wanted, or the letting go?\u201d',
-    image: '/stories/week-01/scene-05.png',
+    id: 'the-healer',
+    body: 'Blue’s first world contained a therapist, a healer, who suppressed her creative urges for decades, pouring her all into others while abandoning her own “artist child” inside.',
+    image: '/stories/week-01/5.png',
+  },
+  {
+    id: 'jermaine',
+    body: 'Jermaine, was laughed at and told being an artist was gay, and even though he had a love for film-making, he instead poured all of his energy into his girlfriend’s art career.',
+    image: '/stories/week-01/6.png',
+  },
+  {
+    id: 'the-incubator',
+    body: 'On the nearby desk an egg inside of an incubator shakes, it’s heartbeat inside stirred resonating with the energy around,',
+    image: '/stories/week-01/7.png',
+  },
+  {
+    id: 'the-inner-child',
+    body: '“how do we protect the inner child that lays dormant, buried under the weight of the world?” Blue thought to herself on high effort while devouring documents in the library.',
+    image: '/stories/week-01/8.png',
+  },
+  {
+    id: 'creative-abuse',
+    body: 'A memory: Recovering shadows often begin self-sabotage or “creative abuse” by measuring fresh new work against masterworks or exposing it to premature criticism.',
+    image: '/stories/week-01/9.png',
+  },
+  {
+    id: 'go-gently',
+    body: 'To recover, you must go gently and slowly. As Healing old wounds is the goal, progress is much better, and more realistic than perfection. Be willing to be a bad artist.',
+    image: '/stories/week-01/10.png',
+  },
+  {
+    id: 'affirmations',
+    body: 'Affirmations are the greatest weapon. Positive statements of belief that help excavate the lost child. When you write “I am a brilliant creator.” you empower yourself.',
+    image: '/stories/week-01/11.png',
+  },
+  {
+    id: 'blurts',
+    body: 'But you must listen to the blurts as well, identify where they come from. (a bad teacher or parent), and then convert them into positive affirmations to dissolve them.',
+    image: '/stories/week-01/12.png',
   },
 ];
 
@@ -51,19 +92,24 @@ type ScreenOrientationWithLock = ScreenOrientation & {
 };
 
 export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNovelProps) {
+  const { ready, authenticated, login, getAccessToken } = usePrivy();
   const [shouldRender, setShouldRender] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [sceneIndex, setSceneIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isPortrait, setIsPortrait] = useState(false);
+  const [showCheckIn, setShowCheckIn] = useState(false);
+  const [isClaiming, setIsClaiming] = useState(false);
+  const [claimStatus, setClaimStatus] = useState<'idle' | 'claimed' | 'already-claimed' | 'error'>('idle');
+  const [showRewardAnimation, setShowRewardAnimation] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const voiceAbortRef = useRef<AbortController | null>(null);
   const spokenSceneRef = useRef<string | null>(null);
 
   // Letter-by-letter animation
   useEffect(() => {
-    if (!shouldRender) return;
+    if (!shouldRender || showCheckIn) return;
 
     const fullText = SCENES[sceneIndex].body;
     setDisplayedText('');
@@ -84,10 +130,10 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [sceneIndex, shouldRender]);
+  }, [sceneIndex, shouldRender, showCheckIn]);
 
   useEffect(() => {
-    if (!shouldRender || isTyping) return;
+    if (!shouldRender || isTyping || showCheckIn) return;
 
     const currentScene = SCENES[sceneIndex];
     if (!currentScene || spokenSceneRef.current === currentScene.id) return;
@@ -123,7 +169,7 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
       .catch(() => {
         // Silent fallback if narration audio is unavailable.
       });
-  }, [sceneIndex, shouldRender, isTyping]);
+  }, [sceneIndex, shouldRender, isTyping, showCheckIn]);
 
   // Orientation detection + landscape lock
   useEffect(() => {
@@ -168,7 +214,9 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isOpen) return;
       if (e.key === 'Escape') onClose();
+      if (showCheckIn) return;
       if (e.key === 'ArrowRight' && sceneIndex < SCENES.length - 1) setSceneIndex((c) => c + 1);
+      if (e.key === 'ArrowRight' && sceneIndex === SCENES.length - 1) setShowCheckIn(true);
       if (e.key === 'ArrowLeft' && sceneIndex > 0) setSceneIndex((c) => c - 1);
     };
 
@@ -182,6 +230,10 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
       const timer = setTimeout(() => {
         setShouldRender(false);
         setSceneIndex(0);
+        setShowCheckIn(false);
+        setDisplayedText('');
+        setClaimStatus('idle');
+        setShowRewardAnimation(false);
       }, 250);
       return () => clearTimeout(timer);
     }
@@ -190,7 +242,7 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
       document.body.style.overflow = 'unset';
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen, onClose, sceneIndex]);
+  }, [isOpen, onClose, sceneIndex, showCheckIn]);
 
   if (!shouldRender) return null;
 
@@ -207,16 +259,77 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
       spokenSceneRef.current = null;
       setSceneIndex((c) => c + 1);
     } else {
-      onClose();
+      spokenSceneRef.current = null;
+      voiceAbortRef.current?.abort();
+      setShowCheckIn(true);
     }
   };
 
   const goPrev = () => {
+    if (showCheckIn) {
+      setShowCheckIn(false);
+      return;
+    }
     if (sceneIndex > 0) {
       spokenSceneRef.current = null;
       setSceneIndex((c) => c - 1);
     }
   };
+
+  const claimCheckInReward = async () => {
+    if (!ready) return;
+    if (!authenticated) {
+      login();
+      return;
+    }
+
+    setIsClaiming(true);
+    setClaimStatus('idle');
+    try {
+      const token = await getAccessToken();
+      const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+      const response = await fetch('/api/quests/complete', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
+        body: JSON.stringify({
+          questId: WEEK_ONE_CHECKIN_QUEST_ID,
+          shards: WEEK_ONE_CHECKIN_REWARD,
+        }),
+      });
+      const data = await response.json().catch(() => ({}));
+
+      if (response.ok && data?.ok) {
+        setClaimStatus('claimed');
+        setShowRewardAnimation(true);
+        window.dispatchEvent(new Event('shardsUpdated'));
+        return;
+      }
+
+      if (response.status === 409) {
+        setClaimStatus('already-claimed');
+        return;
+      }
+
+      setClaimStatus('error');
+    } catch {
+      setClaimStatus('error');
+    } finally {
+      setIsClaiming(false);
+    }
+  };
+
+  const claimButtonLabel = !ready
+    ? 'Loading...'
+    : !authenticated
+      ? 'Sign in to claim 50 Shards'
+      : isClaiming
+        ? 'Claiming...'
+        : claimStatus === 'claimed'
+          ? '50 Shards awarded'
+          : claimStatus === 'already-claimed'
+            ? 'Already completed'
+            : 'Complete check-in (+50 Shards)';
 
   return (
     <>
@@ -225,20 +338,24 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
         onClick={onClose}
       />
 
-      <div className={`${styles.modal} ${isAnimating ? styles.modalOpen : ''}`}>
-        {/* Background image */}
-        <Image
-          key={scene.image}
-          src={scene.image}
-          alt=""
-          fill
-          priority
-          className={styles.bgImage}
-          sizes="100vw"
-        />
+      <div className={`${styles.modal} ${isAnimating ? styles.modalOpen : ''} ${showCheckIn ? styles.modalCheckIn : ''}`}>
+        {!showCheckIn && (
+          <>
+            {/* Background image */}
+            <Image
+              key={scene.image}
+              src={scene.image}
+              alt=""
+              fill
+              priority
+              className={styles.bgImage}
+              sizes="(min-width: 900px) min(1120px, calc(100vw - 96px)), 100vw"
+            />
 
-        {/* Shading gradients */}
-        <div className={styles.shade} />
+            {/* Shading gradients */}
+            <div className={styles.shade} />
+          </>
+        )}
 
         {/* Close */}
         <button type="button" className={styles.closeButton} onClick={onClose} aria-label="Close">
@@ -247,37 +364,70 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
           </svg>
         </button>
 
-        {/* Story text overlay — top-left, well inset */}
-        <div className={styles.overlay}>
-          <p className={styles.body}>
-            {displayedText}
-            {isTyping && <span className={styles.cursor}>|</span>}
-          </p>
-        </div>
-
-        {/* Invisible tap zones for prev / next */}
-        <button type="button" className={styles.tapPrev} onClick={goPrev} aria-label="Previous scene" disabled={sceneIndex === 0} />
-        <button type="button" className={styles.tapNext} onClick={goNext} aria-label="Next scene" />
-
-        {/* Bottom bar: dots only */}
-        <div className={styles.bottomBar}>
-          <div className={styles.dots} role="tablist">
-            {SCENES.map((s, i) => (
-              <button
-                key={s.id}
-                type="button"
-                role="tab"
-                aria-selected={i === sceneIndex}
-                aria-label={`Scene ${i + 1}`}
-                className={`${styles.dot} ${i === sceneIndex ? styles.dotActive : ''}`}
-                onClick={() => setSceneIndex(i)}
+        {showCheckIn ? (
+          <div className={styles.checkInScreen}>
+            <div className={styles.checkInCard}>
+              <BlueChatBubble
+                variant="featured"
+                context="Check-In"
+                message="At the end of the week, answer these questions by hand: How many days did you do your morning pages? A delicious morning ritual. Did you do your artist date? What did you do and how did it feel? Were there any other significant issues this week?"
               />
-            ))}
+              <div className={styles.checkInActions}>
+                <button type="button" className={styles.backButton} onClick={goPrev}>
+                  Back to story
+                </button>
+                <button
+                  type="button"
+                  className={styles.completeButton}
+                  onClick={claimCheckInReward}
+                  disabled={!ready || isClaiming || claimStatus === 'claimed' || claimStatus === 'already-claimed'}
+                >
+                  {claimButtonLabel}
+                </button>
+              </div>
+              {claimStatus === 'error' && (
+                <p className={styles.claimMessage}>The reward did not post. Try again in a moment.</p>
+              )}
+              {claimStatus === 'already-claimed' && (
+                <p className={styles.claimMessage}>This check-in has already been completed.</p>
+              )}
+            </div>
           </div>
-        </div>
+        ) : (
+          <>
+            {/* Story text overlay — top-left, well inset */}
+            <div className={styles.overlay}>
+              <p className={styles.body}>
+                {displayedText}
+                {isTyping && <span className={styles.cursor}>|</span>}
+              </p>
+            </div>
+
+            {/* Invisible tap zones for prev / next */}
+            <button type="button" className={styles.tapPrev} onClick={goPrev} aria-label="Previous scene" disabled={sceneIndex === 0} />
+            <button type="button" className={styles.tapNext} onClick={goNext} aria-label="Next scene" />
+
+            {/* Bottom bar: dots only */}
+            <div className={styles.bottomBar}>
+              <div className={styles.dots} role="tablist">
+                {SCENES.map((s, i) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={i === sceneIndex}
+                    aria-label={`Scene ${i + 1}`}
+                    className={`${styles.dot} ${i === sceneIndex ? styles.dotActive : ''}`}
+                    onClick={() => setSceneIndex(i)}
+                  />
+                ))}
+              </div>
+            </div>
+          </>
+        )}
 
         {/* Portrait hard-block overlay */}
-        {isPortrait && (
+        {isPortrait && !showCheckIn && (
           <div className={styles.portraitOverlay}>
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" className={styles.rotateIcon}>
               <path d="M4 9V5a1 1 0 0 1 1-1h4" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
@@ -287,6 +437,16 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
             </svg>
             <p className={styles.portraitText}>Rotate your phone to continue.</p>
           </div>
+        )}
+
+        {showRewardAnimation && (
+          <>
+            <ConfettiCelebration trigger={true} />
+            <ShardAnimation
+              shards={WEEK_ONE_CHECKIN_REWARD}
+              onComplete={() => setShowRewardAnimation(false)}
+            />
+          </>
         )}
       </div>
     </>

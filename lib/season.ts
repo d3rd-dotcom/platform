@@ -11,11 +11,17 @@
 
 const WEEK_DURATION_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 
+// TEMPORARY: keep Week 1 unlocked before the season officially starts so the
+// course is browsable now. Self-expires once the season begins (the override
+// branch below only runs while elapsed < 0). Set to false to fully lock until
+// the start date.
+const PREVIEW_WEEK_ONE_BEFORE_START = true;
+
 export function getSeasonStartDate(): Date {
   const env = process.env.SEASON_START_DATE;
   if (env) return new Date(env);
-  // Default: Season 1 starts Monday March 2, 2026
-  return new Date('2026-03-02T00:00:00Z');
+  // Default: Season starts Monday May 25, 2026
+  return new Date('2026-05-25T00:00:00Z');
 }
 
 export interface SeasonInfo {
@@ -35,6 +41,21 @@ export function getSeasonInfo(): SeasonInfo {
 
   // Season hasn't started yet
   if (elapsed < 0) {
+    // Preview: surface Week 1 as the active week so it stays unlocked, while
+    // weeks 2-12 remain locked. Week 1's window runs continuously into the
+    // real first week so the schedule (Week 2 unlocks at start + 7 days) holds.
+    if (PREVIEW_WEEK_ONE_BEFORE_START) {
+      const weekEndMs = start.getTime() + WEEK_DURATION_MS;
+      return {
+        seasonStartDate: start.toISOString(),
+        currentWeek: 1,
+        weekStartedAt: now.toISOString(),
+        weekEndsAt: new Date(weekEndMs).toISOString(),
+        msUntilNextWeek: Math.max(0, weekEndMs - now.getTime()),
+        seasonActive: true,
+        seasonComplete: false,
+      };
+    }
     return {
       seasonStartDate: start.toISOString(),
       currentWeek: 0,

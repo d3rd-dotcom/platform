@@ -43,6 +43,7 @@ const QUEST_REWARDS: Record<string, number> = {
   'complete-profile': 15,
   'first-reading': 20,
   'first-journal': 20,
+  'week-1-story-checkin': 50,
 };
 
 // Daily notes quests follow pattern: daily-notes-w{week}-d{day}
