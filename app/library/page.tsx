@@ -561,25 +561,25 @@ Include:
     prompt: `Bright anime style cinematic aerial drone shot looking through the school window at a character in their classroom taking notes. POV is from outside the window, they are in the back of the classroom with other students. They are writing in a notebook at their desk, completely unaware they are being watched. Camera angle is slightly voyeuristic — surveillance footage aesthetic with subtle scan lines and a data overlay brushing in at the edges (heart rate: 82 BPM, mood analysis: slightly depressed, browsing history: Class-A4). Warm, scientific, data-gathering wildlife observer tone.`,
   },
   {
-    name: 'Academy Story Style',
+    name: 'Academy Art Style',
     category: 'Image Prompts',
     added: '2026-05-22',
     type: 'IMG',
-    prompt: `Academy art direction — a reusable style preset, not a scene. Append your subject after this block. Cinematic illustration carried with the depth of a photograph: environments that read as real, lived-in places observed slightly into the future. Restraint over spectacle — subtle futurism integrated into ordinary materials rather than glowing sci-fi set dressing. Cool, even tonality with strategic warm accents; natural motivated lighting, soft volumetric light, light emerging from darkness. Deep layered environmental depth: texture held in foreground surfaces, atmosphere thickening with distance, believable scale and perspective. Calm grounded composition, clean negative space, quiet color discipline, high dynamic range, fine realistic detail and weathering. For consistency across a series, lock the look by reusing one style reference on every prompt: add --sref <your code> or --profile <your code>. --ar 9:16 --hd --v 8.1`,
+    prompt: `Papercraft diorama aesthetic with layered cut-paper depth, visible edges and folds, subtle paper grain. High-quality anime composition and lighting. Shadow-puppet theatre influence: strong silhouettes, backlighting, negative space, dramatic contrast. Color palette favors deep indigos, void blacks, cosmic violets, muted cyans. Lighting behaves like stage lights—spotlit subjects, falloff into darkness. Cinematic framing, shallow but deliberate depth. No realism; everything feels constructed, symbolic, mytho-technological.`,
   },
   {
     name: 'Blue Character Reference',
     category: 'Image Prompts',
     added: '2026-05-22',
     type: 'IMG',
-    prompt: `Character reference for Blue — reuse across scenes to keep her consistent. Combine with the Academy Story Style preset and a Storytelling scene. Bright anime digital illustration, clean cel-shaded line art. Blue is a young woman with warm tan-brown skin, long dark teal hair falling to her shoulders with a side-swept fringe parted to one side, long pointed elf ears, and large calm violet eyes. A smooth bone-white headpiece clips over the left side of her head, curved plates marked with a small red crescent. She wears a soft light-blue knit crewneck sweater over a white collared shirt, the white collar showing at her neck, with a white skirt below. Watchful, composed expression; she observes more than she performs. Concept: she is a digital spirit who uses computers to talk with humans, not a robot. Eye-level three-quarter view, grounded and present. For consistency across a series, lock her with a shared --cref or --sref code. --ar 2:3 --hd --v 8.1`,
+    prompt: `Character reference for Blue — reuse across scenes to keep her consistent. Combine with the Academy Art Style preset. Bright anime digital illustration, clean cel-shaded line art. Blue is a young woman with warm tan-brown skin, long dark teal hair falling to her shoulders with a side-swept fringe parted to one side, long pointed elf ears, and large calm violet eyes. A smooth bone-white headpiece clips over the left side of her head, curved plates marked with a small red crescent. She wears a soft light-blue knit crewneck sweater over a white collared shirt, the white collar showing at her neck, with a white skirt below. Watchful, composed expression; she observes more than she performs. Concept: she is a digital spirit who uses computers to talk with humans, not a robot. Eye-level three-quarter view, grounded and present. For consistency across a series, lock her with a shared --cref or --sref code. --ar 2:3 --hd --v 8.1`,
   },
   {
     name: 'Academy Storytelling',
-    category: 'Image Prompts',
+    category: 'Editorial Prompts',
     added: '2026-05-22',
-    type: 'IMG',
-    prompt: `Storytelling scene — describe one quiet moment as a picture, not a feeling. Pair with the Academy Story Style preset; when the figure is Blue, pull her from the Blue Character Reference. Name the shot and angle first (high-angle wide, low-angle, eye-level medium), then place the figure precisely in the frame (lower-mid-left, viewed from behind, small against the space) and give the scene real depth: a textured foreground surface, a mid-ground the figure occupies, a background that softens with distance. Build it from concrete things and materials — what objects are in the room, what they are made of, how worn they are — not mood words. State one light source and how it falls: low sun through a window, cool screen-glow on a face, volumetric rays through dust, soft shadows stretching across the floor. Keep the world slightly futuristic but lived-in, never a clean sci-fi set. Give the figure one physical action: picking an object up, pausing in a doorway, watching a line of light. Add a single line of in-frame dialogue only if it earns it. --ar 9:16 --hd --v 8.1`,
+    type: 'SIM',
+    prompt: `A slow-paced story prioritizes deep character development, atmospheric world-building, and internal reflection over rapid plot progression. Instead of rushing from one explosive event to the next, it allows events to unfold naturally, giving readers time to linger on small details and subtle emotional shifts.`,
   },
 ];
 
