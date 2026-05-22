@@ -91,6 +91,15 @@
   background: rgba(0, 0, 0, 0.6);
 }
 
+/* On the check-in there's no card behind the button, so sit it in the top
+   strip above the bubble (cleared by .checkInScreen padding) and shrink it. */
+.closeButtonCheckIn {
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 34px;
+  height: 34px;
+}
+
 /* Text overlay: top-left, generously inset from corner */
 .overlay {
   position: absolute;
@@ -229,7 +238,7 @@
   z-index: 2;
   display: flex;
   flex-direction: column;
-  padding: 0;
+  padding: 2.75rem 0 0;
   background: transparent;
 }
 

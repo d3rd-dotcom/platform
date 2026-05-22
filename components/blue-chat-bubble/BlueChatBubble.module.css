@@ -145,4 +145,25 @@
   .featured .message {
     font-size: 13px;
   }
+
+  /* Stacked layout: avatar on top + centered, full-width message below so the
+     text doesn't get squished into a narrow column. */
+  .stackMobile {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .stackMobile .avatar {
+    width: 64px;
+    height: 64px;
+  }
+
+  .stackMobile .body {
+    width: 100%;
+    align-items: center;
+  }
+
+  .stackMobile .sender {
+    justify-content: center;
+  }
 }

@@ -52,7 +52,7 @@ const SCENES: Scene[] = [
   },
   {
     id: 'jermaine',
-    body: 'Jermaine, was laughed at and told being an artist was gay, and even though he had a love for film-making, he instead poured all of his energy into his girlfriend’s art career.',
+    body: 'Jermaine, was laughed at and told that art was too girly, and even though he had a love for film-making, he instead poured all of his energy into his girlfriend’s art career.',
     image: '/stories/week-01/6.png',
   },
   {
@@ -358,7 +358,12 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
         )}
 
         {/* Close */}
-        <button type="button" className={styles.closeButton} onClick={onClose} aria-label="Close">
+        <button
+          type="button"
+          className={`${styles.closeButton} ${showCheckIn ? styles.closeButtonCheckIn : ''}`}
+          onClick={onClose}
+          aria-label="Close"
+        >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
             <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
@@ -370,6 +375,7 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
               <BlueChatBubble
                 variant="featured"
                 context="Check-In"
+                stackOnMobile
                 message="At the end of the week, answer these questions by hand: How many days did you do your morning pages? A delicious morning ritual. Did you do your artist date? What did you do and how did it feel? Were there any other significant issues this week?"
               />
               <div className={styles.checkInActions}>
