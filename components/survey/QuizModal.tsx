@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import type { Survey, SurveyAnswers, SurveyQuestion } from './types'
 import styles from './QuizModal.module.css'
@@ -18,6 +18,8 @@ export default function QuizModal({ isOpen, onClose, survey, variant = 'modal', 
   const [answers, setAnswers] = useState<SurveyAnswers>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const questionRefs = useRef<Record<number, HTMLDivElement | null>>({})
+  const footerRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     setMounted(true)
@@ -73,11 +75,22 @@ export default function QuizModal({ isOpen, onClose, survey, variant = 'modal', 
   ), 0)
   const hasPageAnswers = currentQuestions.every((question) => answers[question.id] !== undefined)
 
-  const handleAnswerSelect = (question: SurveyQuestion, option: string) => {
+  const handleAnswerSelect = (question: SurveyQuestion, option: string, displayIndex?: number) => {
     setAnswers((currentAnswers) => ({
       ...currentAnswers,
       [question.id]: option
     }))
+
+    if (displayIndex === undefined) return
+    // Ease the reader to the next unanswered question (or the footer once the page is done).
+    const nextQuestion = currentQuestions[displayIndex + 1]
+    window.setTimeout(() => {
+      if (nextQuestion) {
+        questionRefs.current[nextQuestion.id]?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      } else {
+        footerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+      }
+    }, 80)
   }
 
   const handleNext = () => {
@@ -144,6 +157,7 @@ export default function QuizModal({ isOpen, onClose, survey, variant = 'modal', 
       <div className={styles.quizModalContent}>
         {isLikertSurvey ? (
           <div className={styles.quizModalLikertList}>
+            <h2 className={styles.quizModalLikertHeading}>{survey.title}</h2>
             {currentQuestions[0]?.options && (
               <div className={styles.quizModalLikertLegend} aria-hidden="true">
                 {currentQuestions[0].options.map((option, index) => (
@@ -151,11 +165,20 @@ export default function QuizModal({ isOpen, onClose, survey, variant = 'modal', 
                 ))}
               </div>
             )}
-            {currentQuestions.map((question) => (
-              <div key={question.id} className={styles.quizModalLikertQuestion}>
-                <h3 className={styles.quizModalLikertQuestionText}>
-                  {question.id}. {question.text}
-                </h3>
+            {currentQuestions.map((question, displayIndex) => (
+              <div
+                key={question.id}
+                ref={(el) => { questionRefs.current[question.id] = el }}
+                className={styles.quizModalLikertQuestion}
+              >
+                <div className={styles.quizModalLikertHead}>
+                  <span className={styles.quizModalLikertIndex}>
+                    Question {pageStart + displayIndex + 1} of {survey.questions.length}
+                  </span>
+                  <h3 className={styles.quizModalLikertQuestionText}>
+                    {question.text}
+                  </h3>
+                </div>
                 <div className={styles.quizModalLikertOptions} role="radiogroup" aria-label={question.text}>
                   {question.options.map((option, index) => {
                     const isSelected = answers[question.id] === option
@@ -163,14 +186,16 @@ export default function QuizModal({ isOpen, onClose, survey, variant = 'modal', 
                     return (
                       <button
                         key={option}
-                        onClick={() => handleAnswerSelect(question, option)}
+                        onClick={() => handleAnswerSelect(question, option, displayIndex)}
                         className={`${styles.quizModalLikertOption} ${isSelected ? styles.quizModalLikertOptionSelected : ''}`}
                         type="button"
                         role="radio"
                         aria-checked={isSelected}
                         aria-label={`${option}: ${question.text}`}
                       >
-                        {index + 1}
+                        <span className={styles.quizModalLikertOptionLabel}>{option}</span>
+                        <span className={styles.quizModalLikertOptionNum}>{index + 1}</span>
+                        <span className={styles.quizModalLikertRadio} aria-hidden="true" />
                       </button>
                     )
                   })}
@@ -196,7 +221,7 @@ export default function QuizModal({ isOpen, onClose, survey, variant = 'modal', 
                     return (
                       <button
                         key={index}
-                        onClick={() => handleAnswerSelect(currentQuestion, option)}
+                        onClick={() => handleAnswerSelect(currentQuestion, option, currentQuestions.length - 1)}
                         className={`${styles.quizModalOption} ${isSelected ? styles.quizModalOptionSelected : ''}`}
                         type="button"
                       >
@@ -229,7 +254,7 @@ export default function QuizModal({ isOpen, onClose, survey, variant = 'modal', 
       </div>
 
       {/* Footer Navigation */}
-      <div className={styles.quizModalFooter}>
+      <div className={styles.quizModalFooter} ref={footerRef}>
         <div className={styles.quizModalFooterButtons}>
           <button
             onClick={handlePrevious}

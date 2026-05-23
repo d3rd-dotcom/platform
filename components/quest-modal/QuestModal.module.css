@@ -1,0 +1,120 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 5vh 16px calc(16px + env(safe-area-inset-bottom, 0px));
+  background: rgba(15, 17, 34, 0.55);
+  backdrop-filter: blur(4px);
+  overflow-y: auto;
+  animation: overlayIn 0.16s ease;
+}
+
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  width: 100%;
+  max-width: 520px;
+  margin: auto 0;
+  border-radius: 18px;
+  border: 1px solid rgba(26, 29, 51, 0.1);
+  background: #ffffff;
+  box-shadow: 0 24px 64px rgba(15, 17, 34, 0.32);
+  animation: modalIn 0.18s cubic-bezier(0.25, 1, 0.5, 1);
+  overflow: hidden;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(26, 29, 51, 0.08);
+}
+
+.title {
+  margin: 0;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #1a1d33;
+}
+
+.close {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(26, 29, 51, 0.06);
+  color: #1a1d33;
+  cursor: pointer;
+  flex: 0 0 auto;
+  transition: background 0.15s ease;
+}
+
+.close:hover {
+  background: rgba(26, 29, 51, 0.12);
+}
+
+.close:focus-visible {
+  outline: 2px solid #5168ff;
+  outline-offset: 2px;
+}
+
+.body {
+  max-height: calc(90vh - 60px);
+  overflow-y: auto;
+}
+
+/* Let an embedded panel sit flush — the modal supplies the card chrome. */
+.body > * {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* ── Dark theme ── */
+:global([data-theme='dark']) .modal {
+  background: var(--color-surface-1);
+  border-color: var(--color-border-subtle);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+}
+
+:global([data-theme='dark']) .header {
+  border-bottom-color: var(--color-border-subtle);
+}
+
+:global([data-theme='dark']) .title {
+  color: #eef3ff;
+}
+
+:global([data-theme='dark']) .close {
+  background: rgba(226, 234, 255, 0.1);
+  color: #eef3ff;
+}
+
+:global([data-theme='dark']) .close:hover {
+  background: rgba(226, 234, 255, 0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .modal {
+    animation: none;
+  }
+}

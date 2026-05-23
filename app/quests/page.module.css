@@ -13,7 +13,7 @@
   box-sizing: border-box;
   min-height: 100vh;
   min-height: 100dvh;
-  max-width: 640px;
+  max-width: 860px;
   width: 100%;
   margin: 0 auto;
   padding: 0 0 calc(48px + max(env(safe-area-inset-bottom, 0px), 16px));
@@ -38,84 +38,11 @@
   }
 }
 
-/* ── Player banner ── */
-.hero {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding: 14px 16px;
-  border-radius: 14px;
-  border: 1px solid rgba(26, 29, 51, 0.08);
-  background: rgba(255, 255, 255, 0.85);
-  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
-  backdrop-filter: blur(8px);
-}
-
-.heroLeft {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
-
-.heroAvatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(81, 104, 255, 0.2);
-  background: color-mix(in oklch, var(--color-primary) 16%, var(--color-surface-2));
-  display: grid;
-  place-items: center;
-  flex: 0 0 auto;
-}
-
-.heroAvatarImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.heroAvatarFallback {
-  font-family: 'Poppins', sans-serif;
-  font-size: 20px;
-  font-weight: 800;
-  color: #ffffff;
-}
-
-.heroNameBlock {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  gap: 2px;
-}
-
-.heroEyebrow {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  color: rgba(26, 29, 51, 0.4);
-  text-transform: uppercase;
-}
-
-.heroName {
-  margin: 0;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.01em;
-  color: #1a1d33;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
+/* ── Player stats ── */
 .heroStats {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
 }
 
 .heroStat {
@@ -164,87 +91,57 @@
   color: #5168ff;
 }
 
-.heroStatIconBolt {
-  color: #ff9c51;
-}
-
 .questsBlueBubble {
   margin-bottom: 2px;
 }
 
-/* ── Admin / quest forge toggle ── */
-.adminSection {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+/* ── Member actions (VIP) — sized like the stat chips ── */
+.memberActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
 }
 
-.adminToggle {
+.memberAction {
   display: flex;
   align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 11px 13px;
-  border-radius: 12px;
-  border: 1px solid rgba(81, 104, 255, 0.18);
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(8px);
+  gap: 8px;
+  padding: 10px 11px;
+  border-radius: 10px;
+  border: 1px solid rgba(81, 104, 255, 0.2);
+  background: rgba(244, 245, 254, 0.7);
   cursor: pointer;
   text-align: left;
-  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 
-.adminToggle:hover {
+.memberAction:hover {
   background: #ffffff;
-  border-color: rgba(81, 104, 255, 0.32);
+  border-color: rgba(81, 104, 255, 0.4);
   transform: translateY(-1px);
 }
 
-.adminToggle:focus-visible {
+.memberAction:focus-visible {
   outline: 2px solid #5168ff;
   outline-offset: 2px;
 }
 
-.adminToggleIcon {
-  width: 26px;
-  height: 26px;
+.memberActionIcon {
   display: grid;
   place-items: center;
+  width: 24px;
+  height: 24px;
   border-radius: 999px;
-  background: color-mix(in oklch, var(--color-accent) 18%, white);
-  color: color-mix(in oklch, var(--color-accent) 60%, #5d3700);
+  background: color-mix(in oklch, var(--color-primary) 16%, white);
+  color: #5168ff;
   flex: 0 0 auto;
 }
 
-.adminToggleLabel {
-  flex: 1 1 auto;
+.memberActionLabel {
   font-family: 'Poppins', sans-serif;
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 700;
   color: #1a1d33;
-}
-
-.adminToggleHint {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--color-text-soft);
-  text-transform: uppercase;
-  padding: 3px 8px;
-  border-radius: 999px;
-  background: rgba(81, 104, 255, 0.12);
-}
-
-.adminToggleChevron {
-  width: 26px;
-  height: 26px;
-  display: grid;
-  place-items: center;
-  border-radius: 999px;
-  background: rgba(26, 29, 51, 0.06);
-  color: #1a1d33;
-  flex: 0 0 auto;
 }
 
 /* ── Heading + compact filter ── */
@@ -400,11 +297,16 @@
   flex-shrink: 0;
 }
 
-/* ── Flat quest list ── */
-.questList {
-  display: flex;
-  flex-direction: column;
+/* ── Two-column quest grid ── */
+.questGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+  align-items: start;
+}
+
+.questGrid > .emptyState {
+  grid-column: 1 / -1;
 }
 
 .boardFooter {
@@ -431,25 +333,6 @@
   margin: 0;
 }
 
-/* ── Wider: hero becomes a row ── */
-@media (min-width: 560px) {
-  .hero {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-  }
-
-  .heroLeft {
-    flex: 1 1 auto;
-  }
-
-  .heroStats {
-    flex: 0 0 auto;
-    grid-template-columns: repeat(3, minmax(78px, 1fr));
-  }
-}
-
 /* ── Sidebar collapse ── */
 @media (max-width: 900px) {
   .pageLayout {
@@ -465,18 +348,15 @@
   }
 }
 
+@media (max-width: 600px) {
+  .questGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 @media (max-width: 480px) {
   .content {
     padding: 16px 14px calc(110px + max(env(safe-area-inset-bottom, 0px), 16px));
-  }
-
-  .heroName {
-    font-size: 18px;
-  }
-
-  .heroAvatar {
-    width: 44px;
-    height: 44px;
   }
 
   .boardHeading {
@@ -485,22 +365,17 @@
 }
 
 /* ── Dark theme ── */
-:global([data-theme='dark']) .hero,
-:global([data-theme='dark']) .adminToggle,
 :global([data-theme='dark']) .filterTrigger {
   background: color-mix(in oklch, var(--color-surface-1) 95%, transparent);
   border-color: var(--color-border-subtle);
 }
 
-:global([data-theme='dark']) .heroEyebrow,
 :global([data-theme='dark']) .heroStatLabel {
   color: rgba(226, 234, 255, 0.55);
 }
 
-:global([data-theme='dark']) .heroName,
 :global([data-theme='dark']) .heroStatValue,
 :global([data-theme='dark']) .boardHeading,
-:global([data-theme='dark']) .adminToggleLabel,
 :global([data-theme='dark']) .filterTrigger,
 :global([data-theme='dark']) .filterOption {
   color: #eef3ff;
@@ -511,24 +386,27 @@
   border-color: rgba(150, 170, 255, 0.12);
 }
 
-:global([data-theme='dark']) .heroStatMuted {
-  color: rgba(226, 234, 255, 0.4);
+:global([data-theme='dark']) .memberAction {
+  background: rgba(226, 234, 255, 0.05);
+  border-color: rgba(99, 118, 255, 0.32);
 }
 
-:global([data-theme='dark']) .adminToggleIcon {
+:global([data-theme='dark']) .memberAction:hover {
+  background: rgba(226, 234, 255, 0.1);
+  border-color: rgba(99, 118, 255, 0.5);
+}
+
+:global([data-theme='dark']) .memberActionIcon {
   background: rgba(99, 118, 255, 0.22);
   color: #c2ccff;
 }
 
-:global([data-theme='dark']) .adminToggleHint {
-  background: rgba(99, 118, 255, 0.22);
-  border: 1px solid rgba(140, 158, 255, 0.45);
-  color: #c8d2ff;
+:global([data-theme='dark']) .memberActionLabel {
+  color: #eef3ff;
 }
 
-:global([data-theme='dark']) .adminToggleChevron {
-  background: rgba(226, 234, 255, 0.1);
-  color: #eef3ff;
+:global([data-theme='dark']) .heroStatMuted {
+  color: rgba(226, 234, 255, 0.4);
 }
 
 :global([data-theme='dark']) .filterTriggerCount,

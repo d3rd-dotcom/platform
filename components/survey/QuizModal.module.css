@@ -246,6 +246,11 @@
   text-align: center;
 }
 
+/* Large iPhone-style page heading — mobile only */
+.quizModalLikertHeading {
+  display: none;
+}
+
 .quizModalLikertQuestion {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 180px;
@@ -255,6 +260,16 @@
   background: rgba(81, 104, 255, 0.04);
   border: 1.5px solid rgba(81, 104, 255, 0.14);
   border-radius: 12px;
+  scroll-margin-top: 72px;
+}
+
+.quizModalLikertHead {
+  min-width: 0;
+}
+
+/* Tiny "Question N of M" indicator — mobile only */
+.quizModalLikertIndex {
+  display: none;
 }
 
 .quizModalLikertQuestionText {
@@ -264,6 +279,13 @@
   font-weight: 600;
   line-height: 1.45;
   color: #1A1D33;
+  text-wrap: pretty;
+}
+
+/* Per-option label + radio — mobile only; desktop shows the number */
+.quizModalLikertOptionLabel,
+.quizModalLikertRadio {
+  display: none;
 }
 
 .quizModalLikertOptions {
@@ -403,30 +425,133 @@
     font-size: 11px;
   }
 
+  /* Hide the centered header title — the big in-content heading takes over */
+  .quizModalTitle {
+    display: none;
+  }
+
+  /* iPhone-style large heading */
+  .quizModalLikertHeading {
+    display: block;
+    margin: 2px 0 6px;
+    font-family: var(--font-primary);
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    color: #1A1D33;
+    text-wrap: balance;
+  }
+
+  /* The legend is redundant once every option is fully labelled */
   .quizModalLikertLegend {
-    top: -16px;
-    gap: 4px;
-    padding: 8px;
+    display: none;
   }
 
-  .quizModalLikertLegend span {
-    font-size: 9px;
-  }
-
+  /* Each question becomes a self-contained card */
   .quizModalLikertQuestion {
-    grid-template-columns: 1fr;
-    gap: 10px;
-    padding: 12px;
+    display: block;
+    padding: 0;
+    gap: 0;
+    background: #ffffff;
+    border: 1.5px solid rgba(81, 104, 255, 0.16);
+    border-radius: 14px;
+    overflow: hidden;
+    scroll-margin-top: 16px;
   }
 
+  .quizModalLikertHead {
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid rgba(81, 104, 255, 0.12);
+  }
+
+  .quizModalLikertIndex {
+    display: block;
+    margin-bottom: 6px;
+    font-family: var(--font-departure-mono), 'Departure Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: rgba(26, 29, 51, 0.5);
+  }
+
+  .quizModalLikertQuestionText {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  /* Stack options as full-width rows */
   .quizModalLikertOptions {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    display: flex;
+    flex-direction: column;
+    grid-template-columns: none;
+    gap: 0;
     justify-content: stretch;
   }
 
   .quizModalLikertOption {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
     width: 100%;
-    height: 34px;
+    height: auto;
+    padding: 14px 16px;
+    border: 0;
+    border-bottom: 1px solid rgba(81, 104, 255, 0.1);
+    border-radius: 0;
+    background: transparent;
+    text-align: left;
+  }
+
+  .quizModalLikertOption:last-child {
+    border-bottom: 0;
+  }
+
+  .quizModalLikertOption:hover {
+    background: rgba(81, 104, 255, 0.04);
+  }
+
+  /* Departure Mono label is the tiny descriptor for "Very much like me" etc. */
+  .quizModalLikertOptionLabel {
+    display: block;
+    flex: 1;
+    min-width: 0;
+    font-family: var(--font-departure-mono), 'Departure Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.01em;
+    line-height: 1.3;
+    color: #1A1D33;
+  }
+
+  .quizModalLikertOptionNum {
+    display: none;
+  }
+
+  .quizModalLikertRadio {
+    display: block;
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid rgba(81, 104, 255, 0.35);
+    background: #ffffff;
+    transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .quizModalLikertOptionSelected {
+    background: rgba(81, 104, 255, 0.07);
+    color: inherit;
+  }
+
+  .quizModalLikertOptionSelected .quizModalLikertOptionLabel {
+    color: var(--color-primary);
+  }
+
+  .quizModalLikertOptionSelected .quizModalLikertRadio {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    box-shadow: inset 0 0 0 4px #ffffff;
   }
 }
 
@@ -574,4 +699,55 @@
 :global([data-theme="dark"]) .quizModalButtonSecondary:hover:not(:disabled) {
   background: rgba(81, 104, 255, 0.14);
   border-color: rgba(139, 149, 255, 0.56);
+}
+
+/* Dark mode — iPhone-style mobile cards */
+@media (max-width: 479px) {
+  :global([data-theme="dark"]) .quizModalLikertHeading {
+    color: #f3f4f8;
+  }
+
+  :global([data-theme="dark"]) .quizModalLikertIndex {
+    color: rgba(243, 244, 248, 0.5);
+  }
+
+  :global([data-theme="dark"]) .quizModalLikertQuestion {
+    background: #0c1028;
+    border-color: rgba(139, 149, 255, 0.22);
+  }
+
+  :global([data-theme="dark"]) .quizModalLikertHead {
+    border-bottom-color: rgba(139, 149, 255, 0.16);
+  }
+
+  :global([data-theme="dark"]) .quizModalLikertOption {
+    border-bottom-color: rgba(139, 149, 255, 0.14);
+  }
+
+  :global([data-theme="dark"]) .quizModalLikertOption:hover {
+    background: rgba(81, 104, 255, 0.12);
+  }
+
+  :global([data-theme="dark"]) .quizModalLikertOptionLabel {
+    color: rgba(243, 244, 248, 0.86);
+  }
+
+  :global([data-theme="dark"]) .quizModalLikertRadio {
+    border-color: rgba(139, 149, 255, 0.42);
+    background: transparent;
+  }
+
+  :global([data-theme="dark"]) .quizModalLikertOptionSelected {
+    background: rgba(81, 104, 255, 0.16);
+  }
+
+  :global([data-theme="dark"]) .quizModalLikertOptionSelected .quizModalLikertOptionLabel {
+    color: #c9ceff;
+  }
+
+  :global([data-theme="dark"]) .quizModalLikertOptionSelected .quizModalLikertRadio {
+    border-color: #8b95ff;
+    background: #8b95ff;
+    box-shadow: inset 0 0 0 4px #0c1028;
+  }
 }

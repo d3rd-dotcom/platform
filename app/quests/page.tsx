@@ -2,14 +2,14 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
-import Image from 'next/image';
-import { Trophy, Sparkle, Plus, Target, CaretDown, Check } from '@phosphor-icons/react';
+import { Trophy, Target, CaretDown, Check, Sparkle, Coins } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import QuestCard, { QuestCardKind } from '@/components/quest-card/QuestCard';
 import QuestAuthorPanel from '@/components/quest-author-panel/QuestAuthorPanel';
 import QuestDrawer, { DrawerQuest } from '@/components/quest-drawer/QuestDrawer';
 import AngelMintSection from '@/components/angel-mint-section/AngelMintSection';
 import MintModal from '@/components/mint-modal/MintModal';
+import QuestModal from '@/components/quest-modal/QuestModal';
 import UsdcReviewPanel from '@/components/usdc-review-panel/UsdcReviewPanel';
 import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
 
@@ -22,12 +22,6 @@ import styles from './page.module.css';
 interface WeekStatus {
   weekNumber: number;
   isSealed: boolean;
-}
-
-interface PlayerProfile {
-  username: string | null;
-  avatarUrl: string | null;
-  shardCount: number;
 }
 
 interface CustomQuest {
@@ -88,10 +82,10 @@ export default function QuestsPage() {
   const [customQuests, setCustomQuests] = useState<CustomQuest[]>([]);
   const [authoredQuests, setAuthoredQuests] = useState<CustomQuest[]>([]);
   const [isPro, setIsPro] = useState(false);
-  const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>(null);
-  const [authorPanelOpen, setAuthorPanelOpen] = useState(false);
   const [filter, setFilter] = useState<QuestFilter>('all');
   const [filterOpen, setFilterOpen] = useState(false);
+  const [forgeOpen, setForgeOpen] = useState(false);
+  const [claimOpen, setClaimOpen] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
   const { play } = useSound();
 
@@ -133,15 +127,13 @@ export default function QuestsPage() {
       setWeekStatuses([]);
       setQuestCounts({});
       setCustomQuests([]);
-      setAuthoredQuests([]);
       return;
     }
 
     try {
-      const [weeksRes, countsRes, meRes, visibleRes] = await Promise.all([
+      const [weeksRes, countsRes, visibleRes] = await Promise.all([
         fetchWithAuth('/api/ethereal-progress/all'),
         fetchWithAuth('/api/quests/progress'),
-        fetchWithAuth('/api/me'),
         fetchWithAuth('/api/admin/quests/visible'),
       ]);
 
@@ -155,17 +147,6 @@ export default function QuestsPage() {
         setQuestCounts(countData.counts ?? {});
       }
 
-      if (meRes.ok) {
-        const meData = await meRes.json();
-        if (meData.user) {
-          setPlayerProfile({
-            username: meData.user.username ?? null,
-            avatarUrl: meData.user.avatarUrl ?? null,
-            shardCount: meData.user.shardCount ?? 0,
-          });
-        }
-      }
-
       if (visibleRes.ok) {
         const data = await visibleRes.json();
         setCustomQuests(data.quests ?? []);
@@ -174,7 +155,6 @@ export default function QuestsPage() {
       setWeekStatuses([]);
       setQuestCounts({});
       setCustomQuests([]);
-      setPlayerProfile(null);
     }
   }, [ready, authenticated, fetchWithAuth]);
 
@@ -301,9 +281,6 @@ export default function QuestsPage() {
   const filterCount = (key: QuestFilter) =>
     key === 'all' ? totalQuestCount : countsByKind[key as QuestCardKind];
 
-  const playerName = playerProfile?.username?.trim() || 'Player One';
-  const playerInitial = playerName.charAt(0).toUpperCase();
-
   const handleAccept = (quest: UnifiedQuest) => {
     play('click');
     setSelectedQuest(quest);
@@ -348,100 +325,56 @@ export default function QuestsPage() {
               stackOnMobile
             />
 
-            {/* ── Player banner ── */}
-            <section className={styles.hero} aria-label="Player overview">
-              <div className={styles.heroLeft}>
-                <div className={styles.heroAvatar}>
-                  {playerProfile?.avatarUrl ? (
-                    <Image
-                      src={playerProfile.avatarUrl}
-                      alt={playerName}
-                      width={48}
-                      height={48}
-                      className={styles.heroAvatarImg}
-                    />
-                  ) : (
-                    <span className={styles.heroAvatarFallback}>{playerInitial}</span>
-                  )}
-                </div>
-                <div className={styles.heroNameBlock}>
-                  <span className={styles.heroEyebrow}>operative</span>
-                  <h1 className={styles.heroName}>{playerName}</h1>
-                </div>
+            {/* ── Player stats ── */}
+            <section className={styles.heroStats} aria-label="Player stats">
+              <div className={styles.heroStat}>
+                <span className={styles.heroStatLabel}>Cleared</span>
+                <span className={styles.heroStatValueRow}>
+                  <Trophy size={14} weight="fill" className={styles.heroStatIcon} />
+                  <span className={styles.heroStatValue}>
+                    {completedQuestCount}
+                    <span className={styles.heroStatMuted}>/{totalQuestCount}</span>
+                  </span>
+                </span>
               </div>
-
-              <div className={styles.heroStats}>
-                <div className={styles.heroStat}>
-                  <span className={styles.heroStatLabel}>Gems</span>
-                  <span className={styles.heroStatValueRow}>
-                    <Image src="/icons/ui-shard.svg" alt="" width={15} height={15} />
-                    <span className={styles.heroStatValue}>{playerProfile?.shardCount ?? 0}</span>
-                  </span>
-                </div>
-                <div className={styles.heroStat}>
-                  <span className={styles.heroStatLabel}>Cleared</span>
-                  <span className={styles.heroStatValueRow}>
-                    <Trophy size={14} weight="fill" className={styles.heroStatIcon} />
-                    <span className={styles.heroStatValue}>
-                      {completedQuestCount}
-                      <span className={styles.heroStatMuted}>/{totalQuestCount}</span>
-                    </span>
-                  </span>
-                </div>
-                <div className={styles.heroStat}>
-                  <span className={styles.heroStatLabel}>USDC</span>
-                  <span className={styles.heroStatValueRow}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                      <circle cx="12" cy="12" r="11" fill="#2775CA" />
-                      <text x="12" y="16.5" textAnchor="middle" fill="#fff" fontSize="13" fontWeight="700">$</text>
-                    </svg>
-                    <span className={styles.heroStatValue}>${usdcAvailable}</span>
-                  </span>
-                </div>
+              <div className={styles.heroStat}>
+                <span className={styles.heroStatLabel}>USDC</span>
+                <span className={styles.heroStatValueRow}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle cx="12" cy="12" r="11" fill="#2775CA" />
+                    <text x="12" y="16.5" textAnchor="middle" fill="#fff" fontSize="13" fontWeight="700">$</text>
+                  </svg>
+                  <span className={styles.heroStatValue}>${usdcAvailable}</span>
+                </span>
               </div>
             </section>
 
-            {/* ── Pro author rail ── */}
+            {/* ── Member actions (VIP) ── */}
             {isPro && (
-              <section className={styles.adminSection} aria-label="Quest authoring">
+              <div className={styles.memberActions} aria-label="Member actions">
                 <button
                   type="button"
-                  className={styles.adminToggle}
-                  onClick={() => setAuthorPanelOpen((v) => !v)}
-                  aria-expanded={authorPanelOpen}
+                  className={styles.memberAction}
+                  onClick={() => { play('click'); setForgeOpen(true); }}
+                  onMouseEnter={() => play('hover')}
                 >
-                  <span className={styles.adminToggleIcon} aria-hidden="true">
+                  <span className={styles.memberActionIcon} aria-hidden="true">
                     <Sparkle size={14} weight="fill" />
                   </span>
-                  <span className={styles.adminToggleLabel}>
-                    {authorPanelOpen ? 'Hide quest forge' : 'Open quest forge'}
-                  </span>
-                  <span className={styles.adminToggleHint}>Member Key</span>
-                  <span className={styles.adminToggleChevron} aria-hidden="true">
-                    <Plus
-                      size={14}
-                      weight="bold"
-                      style={{ transform: authorPanelOpen ? 'rotate(45deg)' : 'none', transition: 'transform 0.2s' }}
-                    />
-                  </span>
+                  <span className={styles.memberActionLabel}>Quest forge</span>
                 </button>
-
-                {authorPanelOpen && (
-                  <QuestAuthorPanel
-                    fetchWithAuth={fetchWithAuth}
-                    authoredQuests={authoredQuests}
-                    onCreated={handleQuestAuthored}
-                    onDelete={handleDeleteAuthored}
-                  />
-                )}
-              </section>
-            )}
-
-            {/* ── Staff USDC payout review (VIP members) ── */}
-            {isPro && (
-              <section className={styles.adminSection} aria-label="USDC payout review">
-                <UsdcReviewPanel fetchWithAuth={fetchWithAuth} />
-              </section>
+                <button
+                  type="button"
+                  className={styles.memberAction}
+                  onClick={() => { play('click'); setClaimOpen(true); }}
+                  onMouseEnter={() => play('hover')}
+                >
+                  <span className={styles.memberActionIcon} aria-hidden="true">
+                    <Coins size={14} weight="fill" />
+                  </span>
+                  <span className={styles.memberActionLabel}>Claims</span>
+                </button>
+              </div>
             )}
 
             {/* ── Heading + compact filter ── */}
@@ -493,8 +426,8 @@ export default function QuestsPage() {
               </div>
             </div>
 
-            {/* ── Flat quest list ── */}
-            <div className={styles.questList}>
+            {/* ── Two-column quest grid ── */}
+            <div className={styles.questGrid}>
               {filteredQuests.length === 0 ? (
                 <div className={styles.emptyState}>
                   <Target size={28} weight="duotone" />
@@ -511,6 +444,7 @@ export default function QuestsPage() {
                       points={quest.points}
                       kind={quest.kind}
                       usdcReward={quest.usdcReward}
+                      angelGated={(quest.usdcReward ?? 0) > 0}
                       onOpen={() => handleAccept(quest)}
                     />
                   </div>
@@ -531,6 +465,19 @@ export default function QuestsPage() {
         onClose={handleCloseDrawer}
         quest={selectedQuest}
       />
+
+      <QuestModal isOpen={forgeOpen} onClose={() => setForgeOpen(false)} title="Quest forge">
+        <QuestAuthorPanel
+          fetchWithAuth={fetchWithAuth}
+          authoredQuests={authoredQuests}
+          onCreated={handleQuestAuthored}
+          onDelete={handleDeleteAuthored}
+        />
+      </QuestModal>
+
+      <QuestModal isOpen={claimOpen} onClose={() => setClaimOpen(false)} title="USDC payouts to review">
+        <UsdcReviewPanel fetchWithAuth={fetchWithAuth} />
+      </QuestModal>
     </>
   );
 }

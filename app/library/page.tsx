@@ -541,25 +541,82 @@ Writing standard:
 Use clear graduate-level language. Be precise, skeptical, and operational. Replace mystical claims with measurable constructs. If evidence is uncertain, say what would count as support, what would count as failure, and what follow-up study would be needed.`,
   },
   {
-    name: 'Case Study on Parasocial Relationships',
+    name: 'Parasocial Relations',
     category: 'Simulation Prompts',
     added: '2026-05-17',
     type: 'SIM',
-    prompt: `Develop a case study on parasocial relationships in digital communities.
+    prompt: `Act as a principal data scientist designing an institution-ready parasocial-relationship study inside Mental Wealth Academy. You are responsible for scientific rigor, regulatory compliance, and measurable institutional outcomes.
 
-Include:
-1. Context and subject profile
-2. Behavioral patterns that signal parasocial attachment
-3. Psychological drivers and reinforcement loops
-4. Risks, benefits, and ethical tensions
-5. Intervention or design recommendations`,
-  },
-  {
-    name: 'Surveillance Aesthetic',
-    category: 'Image Prompts',
-    added: '2026-05-18',
-    type: 'IMG',
-    prompt: `Bright anime style cinematic aerial drone shot looking through the school window at a character in their classroom taking notes. POV is from outside the window, they are in the back of the classroom with other students. They are writing in a notebook at their desk, completely unaware they are being watched. Camera angle is slightly voyeuristic — surveillance footage aesthetic with subtle scan lines and a data overlay brushing in at the edges (heart rate: 82 BPM, mood analysis: slightly depressed, browsing history: Class-A4). Warm, scientific, data-gathering wildlife observer tone.`,
+Objective:
+Design a repeatable, platform-native research protocol that quantifies parasocial attachment dynamics in digital learning communities and evaluates which interventions reduce harmful dependency while preserving healthy engagement.
+
+Produce the output in this structure:
+
+1. Institutional research goals (explicit and measurable)
+- Define primary goals (e.g., risk detection accuracy, intervention efficacy, retention quality, learner wellbeing indicators).
+- Define secondary goals (e.g., cohort-level behavioral trends, fairness across demographics, educator decision support).
+- List success criteria with numeric thresholds and timelines.
+
+2. Regulatory and governance requirements
+- Include IRB-style ethics constraints, informed consent flow, and opt-out mechanics.
+- Define data minimization, de-identification, retention windows, and deletion rights.
+- Include controls for FERPA-like educational privacy expectations, GDPR-style data subject rights, and CCPA-style access/deletion expectations where applicable.
+- State prohibited uses (surveillance, employment/insurance profiling, non-consensual inference).
+
+3. Study design for repeatability
+- Use a preregistered mixed-methods design with at least one control group and one intervention group.
+- Define sampling frame, inclusion/exclusion criteria, cohort sizing assumptions, and power-analysis placeholder.
+- Specify exact replication conditions: task scripts, timing, environment constraints, and version-locked platform configuration.
+- Include multi-cohort and multi-term replication plan with drift monitoring.
+
+4. Controlled variables and confound management
+- Enumerate independent variables, dependent variables, and covariates.
+- Define controlled variables: content cadence, notification frequency, mentor/agent response latency, reward schedule, session length, and peer visibility.
+- Identify confounds: novelty effects, creator popularity, prior mental health status, social desirability bias, and platform literacy.
+- Provide mitigation tactics for each confound.
+
+5. Platform-native methodology (MWA implementation)
+- Map each study phase to platform features (quests, agent reviews, journaling, reward events, attendance, governance participation).
+- Define event instrumentation schema (event_name, user_id_hash, cohort_id, timestamp, context, intervention_flag, outcome_metric).
+- Include data contracts, audit logs, and immutable checkpoints where relevant.
+- Specify how AI agents participate without violating consent or autonomy boundaries.
+
+6. Metrics and data model
+- Define primary endpoints: parasocial risk index, intervention response score, longitudinal stability score.
+- Define secondary endpoints: completion quality, reflection depth proxy, attendance consistency, peer collaboration quality.
+- Provide feature families: behavioral, linguistic, temporal, interaction-network, and self-report.
+- Add a compact data dictionary with field name, type, source, collection frequency, and privacy risk tier.
+
+7. Analysis and validation plan
+- Include baseline models and improved models; define train/validation/test partition logic by cohort and time.
+- Require cross-validation, calibration checks, subgroup fairness testing, and robustness checks.
+- Include causal inference strategy for interventions (A/B or quasi-experimental with assumptions).
+- Define significance criteria, effect size targets, and multiple-comparison correction.
+- Specify failure criteria and what invalidates conclusions.
+
+8. Intervention framework
+- Propose at least 3 interventions (e.g., reflection prompts, cooldown windows, social-balance nudges, educator escalation).
+- For each intervention, define trigger conditions, dosage, expected mechanism, and measurable outcome.
+- Include safety escalation path for high-risk signals with human oversight requirements.
+
+9. Reporting for institutions
+- Provide executive dashboard spec (weekly and term-level).
+- Include decision-use outputs for principals, teachers, and researchers.
+- Separate operational alerts from research conclusions.
+- Include plain-language limitations and model-card style disclosures.
+
+10. Deliverables checklist
+- Preregistration summary
+- Study protocol
+- Consent language
+- Instrumentation schema
+- Analysis plan
+- Replication protocol
+- Governance/compliance checklist
+- Institutional reporting template
+
+Writing requirements:
+Use precise, technical language. Prioritize falsifiable claims, controlled variables, repeatability, and platform-executable methodology. Avoid vague psychological generalities; every claim must map to a measurable signal or operational decision.`,
   },
   {
     name: 'Academy Art Style',
@@ -569,18 +626,91 @@ Include:
     prompt: `Papercraft diorama aesthetic with layered cut-paper depth, visible edges and folds, subtle paper grain. High-quality anime composition and lighting. Shadow-puppet theatre influence: strong silhouettes, backlighting, negative space, dramatic contrast. Color palette favors deep indigos, void blacks, cosmic violets, muted cyans. Lighting behaves like stage lights—spotlit subjects, falloff into darkness. Cinematic framing, shallow but deliberate depth. No realism; everything feels constructed, symbolic, mytho-technological.`,
   },
   {
-    name: 'Blue Character Reference',
-    category: 'Image Prompts',
-    added: '2026-05-22',
-    type: 'IMG',
-    prompt: `Character reference for Blue — reuse across scenes to keep her consistent. Combine with the Academy Art Style preset. Bright anime digital illustration, clean cel-shaded line art. Blue is a young woman with warm tan-brown skin, long dark teal hair falling to her shoulders with a side-swept fringe parted to one side, long pointed elf ears, and large calm violet eyes. A smooth bone-white headpiece clips over the left side of her head, curved plates marked with a small red crescent. She wears a soft light-blue knit crewneck sweater over a white collared shirt, the white collar showing at her neck, with a white skirt below. Watchful, composed expression; she observes more than she performs. Concept: she is a digital spirit who uses computers to talk with humans, not a robot. Eye-level three-quarter view, grounded and present. For consistency across a series, lock her with a shared --cref or --sref code. --ar 2:3 --hd --v 8.1`,
-  },
-  {
     name: 'Academy Storytelling',
     category: 'Editorial Prompts',
     added: '2026-05-22',
     type: 'SIM',
-    prompt: `A slow-paced story prioritizes deep character development, atmospheric world-building, and internal reflection over rapid plot progression. Instead of rushing from one explosive event to the next, it allows events to unfold naturally, giving readers time to linger on small details and subtle emotional shifts.`,
+    prompt: `Act as a senior narrative systems writer for Mental Wealth Academy. Build story content that is emotionally resonant but operationally useful for product, research, and community onboarding.
+
+Goal:
+Produce slow-paced, high-depth narrative writing that strengthens character trust, clarifies product reality, and reinforces long-term participation in the Academy ecosystem.
+
+Output format:
+
+1. Narrative brief
+- Audience segment (new member, active cohort member, researcher, educator, contributor)
+- Primary narrative objective (trust, retention, motivation, clarity, reflection)
+- Product context (quest review, reward moment, onboarding, governance update, reflective checkpoint)
+
+2. Story architecture
+- Core theme (one sentence)
+- Character arc (Blue + user progression)
+- World-building anchors (specific platform elements: quests, wallets, credentials, reviews, seasonal progression)
+- Conflict model (internal tension, social tension, systems tension)
+- Resolution style (earned, ambiguous, iterative, or transformational)
+
+3. Scene plan (5-8 scenes)
+For each scene define:
+- Scene purpose
+- Emotional target
+- Observable action
+- Product truth embedded in the scene
+- Transition logic to next scene
+
+4. Voice and language constraints
+- Write in clear, grounded prose with psychological depth.
+- Avoid vague inspiration language and crypto hype.
+- Every poetic line must be paired with a concrete product or behavioral meaning.
+- Maintain one dominant idea per paragraph.
+
+5. MWA groundedness checks
+Include a short table:
+- Narrative claim
+- Concrete platform reality
+- User-facing value
+
+6. Engagement mechanics
+- Define where reader reflection is triggered (questions, prompts, choices).
+- Define where accountability appears (submission, review, revision, reward).
+- Define where agency appears (opt-in, boundaries, personal strategy).
+
+7. Deliverables
+- 1 long-form narrative (900-1400 words)
+- 1 short in-app version (150-220 words)
+- 5 reusable lines for UI moments (review complete, revision needed, reward sent, cooldown, reflection prompt)
+- 1 plain-language summary for institutional partners (120-180 words)
+
+8. Quality rubric (self-score 1-5)
+Score and justify:
+- Character coherence
+- Emotional precision
+- Product clarity
+- Institutional credibility
+- Reusability across app surfaces
+
+Writing standard:
+Use slow pacing intentionally: fewer events, deeper interpretation. Prioritize internal shifts, relational trust, and behavioral stakes over spectacle. The story must improve user understanding of what MWA does in practice, not just how it feels.`,
+  },
+  {
+    name: 'MWA Blockchain Education Platform Breakthrough',
+    category: 'Editorial Prompts',
+    added: '2026-05-23',
+    type: 'SIM',
+    prompt: `Psychologists have "vibe-engineered" the world's first full-scale Blockchain LMS platform that allows self-executing AI Agents to deliver digital rewards from their own blockchain accounts filled with stablecoins & digital certificates, creating the infrastructure for the world's first AI education platform. Relieving the pain of managing .pdf certificates from multiple websites or providers that rely on centralized platforms or safekeeping forgeable files.
+
+Many personal uses - A principle can now see a detailed & immutable record of budgets, costs, and expenditures. Students can now verify their progress, attendance, & own their accolades in an account that's cross-platform and non-reliant on a single website or file.
+
+Freelancers can fork the code and create their workshop curriculum with personalized branding, certificates, and stablecoins in minutes. Teachers can view student progress more efficiently, and collaborate better with board decision on resource allocation and funding. Institutions n more quickly ask for opt-in data sharing and collect anonymized data. Data Scientists can now generate fine-tuned AI models to further increase the potential of AI in an educational setting.
+
+The artist, the scientist, the businessman, the content creator, the athlete, the hobbyist, can all use Mental Wealth Academy and get rewarded for their participation in the network.
+
+Onchain Agents - self-execute their own micro-managed transactions and enable seamless delivery of both stablecoin rewards and digital assets. With AI Agents controlling ownable Smart Contract based digital assets. Certificates, Proof-of-Attendance, & USDC can all be managed by AI Agents in an educational ecosystem.
+
+Mental Wealth Academy is only limited by the speed of shared node usage. Running an Ethereum node gives sovereignty, privacy, and true decentralization. By bypassing third-party RPC providers like Alchemy, we independently verify network data, eliminate reliance on intermediaries, and can even earn staking rewards if y operate a validator node.
+
+VERY SIMPLE OPERATION - To utilize the MWA harness, institutions need only to fork the open-sourced code and define the parameters of their brand assets, icons, and avatar system. By default each profile has a singular blockchain address, and 6 generative avatars and ability to change username for privacy and anonymization.
+
+Mental Wealth Academy's Breakthrough - Decentralized Oracle Network, is the latest tool from Chainlink's CRE. Which allows Blockchain Based Voting to happen off-chain privately, then computed and sent to the Blockchain all at once. This process goes through a simulation of 20 nodes. Every single node instance boots up an isolated, serverless runtime environment to execute the exact same script. If a payment relies on an API checking a shipment status, a single server could be hacked or go offline. By running 20+ parallel instances, Chainlink ensures that even if a few nodes malfunction, misbehave, or try to manipulate the data, they cannot corrupt the final outcome.`,
   },
 ];
 

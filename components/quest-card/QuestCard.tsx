@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Check, Lock, Trash } from '@phosphor-icons/react';
+import { Check, Lock, Trash, Sparkle } from '@phosphor-icons/react';
 import styles from './QuestCard.module.css';
 
 export type QuestCardKind = 'course' | 'submit' | 'mission' | 'social' | 'custom';
@@ -15,6 +15,7 @@ interface QuestCardProps {
   points: number;
   kind: QuestCardKind;
   usdcReward?: number;
+  angelGated?: boolean;
   isLocked?: boolean;
   showDelete?: boolean;
   onOpen?: () => void;
@@ -29,6 +30,7 @@ const QuestCard: React.FC<QuestCardProps> = ({
   points,
   kind,
   usdcReward = 0,
+  angelGated = false,
   isLocked = false,
   showDelete = false,
   onOpen,
@@ -53,6 +55,12 @@ const QuestCard: React.FC<QuestCardProps> = ({
         <span className={styles.info}>
           <span className={styles.title}>{title}</span>
           <span className={styles.preview}>{description}</span>
+          {angelGated && (
+            <span className={styles.angelTag} title="Academic Angels only">
+              <Sparkle size={11} weight="fill" />
+              Academic Angels
+            </span>
+          )}
         </span>
 
         <span className={styles.right}>
