@@ -275,11 +275,15 @@
 html {
   height: auto;
   min-height: 100vh;
+  /* Stop document-level horizontal scroll (incl. from fixed elements like the
+     top nav / sidebar). `clip` instead of `hidden` so it does not create a
+     scroll container and break position: sticky. */
+  overflow-x: clip;
 }
 
 body {
   max-width: 100vw;
-  overflow-x: hidden;
+  overflow-x: clip;
   height: auto;
   min-height: 100vh;
 }

@@ -1,0 +1,17 @@
+services:
+  simulation:
+    build: .
+    # Build natively for Apple Silicon. On linux/arm64 there is no CUDA, so pip
+    # installs CPU-only torch and skips the multi-GB nvidia-*-cu* wheels that the
+    # emulated amd64 build pulled in. Drop this line to build amd64 for a server.
+    platform: linux/arm64
+    container_name: mwa-simulation
+    env_file:
+      - .env
+    ports:
+      - "5001:5001"
+    restart: unless-stopped
+    # State (projects, uploads, generated profiles, sim logs) lives at /app/uploads
+    # inside the container — persist it so a rebuild doesn't wipe worlds.
+    volumes:
+      - ./uploads:/app/uploads

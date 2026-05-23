@@ -57,3 +57,8 @@ secrets.json
 contracts/out/
 contracts/cache/
 contracts/broadcast/
+
+# Simulation backend runtime state / secrets
+simulation-backend/.env
+simulation-backend/uploads/
+simulation-backend/**/__pycache__/
