@@ -98,7 +98,7 @@ export default function SidebarInventoryCard({ shardCount, address, isCollapsed 
   if (isCollapsed) {
     return (
       <div className={styles.cardCollapsed} data-tour="shards">
-        <Image src="/icons/ui-shard.svg" alt="Gems" width={18} height={18} className={styles.shardIconSm} />
+        <Image src="/icons/ui-shard.svg" alt="Credits" width={18} height={18} className={styles.shardIconSm} />
         <span className={styles.shardCountSm}>{shardDisplay}</span>
       </div>
     );
@@ -109,7 +109,7 @@ export default function SidebarInventoryCard({ shardCount, address, isCollapsed 
       <div className={styles.shardsHero}>
         <div className={styles.shardsHeroLeft}>
           <Image src="/icons/ui-shard.svg" alt="" width={34} height={34} className={styles.shardsHeroIcon} />
-          <span className={styles.shardsHeroLabel}>Gems</span>
+          <span className={styles.shardsHeroLabel}>Credits</span>
         </div>
         <span className={styles.shardsHeroValue}>{shardDisplay}</span>
       </div>
