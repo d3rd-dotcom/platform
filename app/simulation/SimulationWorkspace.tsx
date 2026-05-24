@@ -104,27 +104,42 @@ export default function SimulationWorkspace() {
             <p className={styles.projectReq}>{wf.project.simulation_requirement}</p>
           )}
         </div>
-        <ol className={styles.stepper}>
-          {STEPS.map((s) => {
-            const reachable = canVisit(s.n);
-            return (
-              <li key={s.n}>
-                <button
-                  className={`${styles.stepChip} ${step === s.n ? styles.stepChipActive : ''}`}
-                  disabled={!reachable}
-                  onClick={() => reachable && setStep(s.n)}
-                >
-                  <span className={styles.stepNum}>{s.n}</span>
-                  <span>{s.label}</span>
-                </button>
-              </li>
-            );
-          })}
-        </ol>
       </div>
 
       <div className={styles.workflowBody}>
-        <section className={styles.stepColumn}>
+        <section className={styles.graphColumn} aria-label="Knowledge graph canvas">
+          <div className={styles.graphCard}>
+            <div className={styles.graphCardHeader}>
+              <div>
+                <p className={styles.graphEyebrow}>Temporal ontology map</p>
+                <h2 className={styles.graphHeading}>Directed relationship graph</h2>
+              </div>
+              <p className={styles.graphIntro}>
+                Entities, moments, and scored relationship paths rendered as source → relation → target.
+              </p>
+            </div>
+            <GraphPanel graph={graph} />
+          </div>
+        </section>
+
+        <aside className={styles.stepColumn} aria-label="Simulation workflow controls">
+          <ol className={`${styles.stepper} ${styles.stepperRail}`}>
+            {STEPS.map((s) => {
+              const reachable = canVisit(s.n);
+              return (
+                <li key={s.n}>
+                  <button
+                    className={`${styles.stepChip} ${step === s.n ? styles.stepChipActive : ''}`}
+                    disabled={!reachable}
+                    onClick={() => reachable && setStep(s.n)}
+                  >
+                    <span className={styles.stepNum}>{s.n}</span>
+                    <span>{s.label}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
           {step === 1 && (
             <Step1GraphBuild
               wf={wf}
@@ -156,13 +171,6 @@ export default function SimulationWorkspace() {
             />
           )}
           {step === 5 && <Step5Interaction wf={wf} />}
-        </section>
-
-        <aside className={styles.graphColumn}>
-          <div className={styles.graphCard}>
-            <h3 className={styles.graphHeading}>Knowledge graph</h3>
-            <GraphPanel graph={graph} />
-          </div>
         </aside>
       </div>
     </div>
