@@ -94,6 +94,15 @@ export default function SidebarInventoryCard({ shardCount, address, isCollapsed 
   const shardDisplay = shardCount !== null ? String(shardCount).padStart(3, '0') : '000';
   const isMember = tier === 'Angel' || tier === 'Staff';
   const tierStatusClass = tier === null ? '' : isMember ? styles.statValuePositive : styles.statValueNegative;
+  const creditsRow = (
+    <div className={styles.balanceRow}>
+      <div className={styles.tokenLeft}>
+        <Image src="/icons/ui-shard.svg" alt="" width={24} height={24} className={styles.creditsIcon} />
+        <span className={styles.tokenName}>Credits</span>
+      </div>
+      <span className={styles.balanceVal}>{shardDisplay}</span>
+    </div>
+  );
 
   if (isCollapsed) {
     return (
@@ -106,41 +115,35 @@ export default function SidebarInventoryCard({ shardCount, address, isCollapsed 
 
   return (
     <div className={styles.card} data-tour="shards">
-      <div className={styles.shardsHero}>
-        <div className={styles.shardsHeroLeft}>
-          <Image src="/icons/ui-shard.svg" alt="" width={34} height={34} className={styles.shardsHeroIcon} />
-          <span className={styles.shardsHeroLabel}>Credits</span>
-        </div>
-        <span className={styles.shardsHeroValue}>{shardDisplay}</span>
-      </div>
-
-      <div className={styles.balanceDivider} />
       <div className={styles.balanceList}>
         {loading ? (
           <>
-            {[0, 1, 2].map(i => (
-              <div key={i} className={styles.balanceRow}>
-                <div className={styles.tokenLeft}>
-                  <div className={`${styles.tokenIcon} ${styles.skeletonIcon}`} />
-                  <span className={styles.skeletonText} style={{ width: 36 }} />
-                </div>
-                <span className={styles.skeletonText} style={{ width: 28 }} />
+            <div className={styles.balanceRow}>
+              <div className={styles.tokenLeft}>
+                <div className={`${styles.tokenIcon} ${styles.skeletonIcon}`} />
+                <span className={styles.skeletonText} style={{ width: 72 }} />
               </div>
-            ))}
+              <span className={styles.skeletonText} style={{ width: 30 }} />
+            </div>
+            {creditsRow}
+            <div className={styles.balanceRow}>
+              <div className={styles.tokenLeft}>
+                <div className={`${styles.tokenIcon} ${styles.skeletonIcon}`} />
+                <span className={styles.skeletonText} style={{ width: 36 }} />
+              </div>
+              <span className={styles.skeletonText} style={{ width: 28 }} />
+            </div>
+            <div className={styles.balanceDivider} />
+            <div className={styles.balanceRow}>
+              <div className={styles.tokenLeft}>
+                <div className={`${styles.tokenIcon} ${styles.skeletonIcon}`} />
+                <span className={styles.skeletonText} style={{ width: 36 }} />
+              </div>
+              <span className={styles.skeletonText} style={{ width: 28 }} />
+            </div>
           </>
         ) : (
           <>
-            <div className={styles.balanceRow}>
-              <div className={styles.tokenLeft}>
-                <div className={`${styles.tokenIcon} ${styles.tokenVotes}`}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                    <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </div>
-                <span className={styles.tokenName}>Votes</span>
-              </div>
-              <span className={styles.balanceVal}>{votingPower ?? '0'}</span>
-            </div>
             <div className={styles.balanceRow}>
               <div className={styles.tokenLeft}>
                 <div className={`${styles.tokenIcon} ${isMember ? styles.tokenVipActive : styles.tokenVip}`}>
@@ -152,6 +155,19 @@ export default function SidebarInventoryCard({ shardCount, address, isCollapsed 
               </div>
               <span className={`${styles.balanceVal} ${tierStatusClass}`}>{tier === null ? '--' : tier}</span>
             </div>
+            {creditsRow}
+            <div className={styles.balanceRow}>
+              <div className={styles.tokenLeft}>
+                <div className={`${styles.tokenIcon} ${styles.tokenVotes}`}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <span className={styles.tokenName}>Votes</span>
+              </div>
+              <span className={styles.balanceVal}>{votingPower ?? '0'}</span>
+            </div>
+            <div className={styles.balanceDivider} />
             <div className={styles.balanceRow}>
               <div className={styles.tokenLeft}>
                 <div className={`${styles.tokenIcon} ${styles.tokenUsdc}`}>

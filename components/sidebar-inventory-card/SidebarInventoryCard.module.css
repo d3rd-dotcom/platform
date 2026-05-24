@@ -32,49 +32,12 @@
   letter-spacing: 0.05em;
 }
 
-.shardsHero {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  min-height: 48px;
-}
-
-.shardsHeroLeft {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-
-.shardsHeroIcon {
-  width: 34px;
-  height: 34px;
+.creditsIcon {
+  width: 24px;
+  height: 24px;
   object-fit: contain;
   filter: hue-rotate(230deg) saturate(1.15) drop-shadow(0 0 10px rgba(81, 104, 255, 0.35));
   flex-shrink: 0;
-}
-
-.shardsHeroValue {
-  font-size: 26px;
-  line-height: 1;
-  font-weight: 800;
-  color: rgba(227, 225, 238, 0.95);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0;
-  font-family: var(--font-mono, 'Departure Mono', monospace);
-  text-align: right;
-  flex-shrink: 0;
-}
-
-.shardsHeroLabel {
-  font-family: var(--font-primary);
-  font-size: 10px;
-  font-weight: 700;
-  color: rgba(227, 225, 238, 0.4);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  line-height: 1;
 }
 
 .statValuePositive {
@@ -180,14 +143,6 @@
 :global(:root:not([data-theme="dark"])) .card {
   background: #f4f5fe;
   border-color: rgba(26, 27, 36, 0.1);
-}
-
-:global(:root:not([data-theme="dark"])) .shardsHeroValue {
-  color: #1a1d33;
-}
-
-:global(:root:not([data-theme="dark"])) .shardsHeroLabel {
-  color: rgba(26, 29, 51, 0.45);
 }
 
 :global(:root:not([data-theme="dark"])) .statValuePositive {
