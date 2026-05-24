@@ -52,8 +52,14 @@ async function authorize(): Promise<NextResponse | null> {
 }
 
 async function forward(request: NextRequest, path: string[]): Promise<NextResponse> {
-  const denied = await authorize();
-  if (denied) return denied;
+  // The backend health endpoint is public and contains no user data. Keep it
+  // outside the membership gate so the UI reports connectivity, not auth state.
+  const isPublicHealthCheck =
+    request.method === 'GET' && path.length === 1 && path[0] === 'health';
+  if (!isPublicHealthCheck) {
+    const denied = await authorize();
+    if (denied) return denied;
+  }
 
   const target = `${BACKEND}/${path.join('/')}${request.nextUrl.search}`;
 
