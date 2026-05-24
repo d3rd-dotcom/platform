@@ -2506,24 +2506,21 @@ class ReportManager:
 
     @classmethod
     def get_report_by_simulation(cls, simulation_id: str) -> Optional[Report]:
-        """Get report by simulation ID"""
-        cls._ensure_reports_dir()
+        """Get the best report for a simulation.
 
-        for item in os.listdir(cls.REPORTS_DIR):
-            item_path = os.path.join(cls.REPORTS_DIR, item)
-            # New format: folder
-            if os.path.isdir(item_path):
-                report = cls.get_report(item)
-                if report and report.simulation_id == simulation_id:
-                    return report
-            # Backward compatible old format: JSON file
-            elif item.endswith('.json'):
-                report_id = item[:-5]
-                report = cls.get_report(report_id)
-                if report and report.simulation_id == simulation_id:
-                    return report
+        A simulation can have multiple reports because users may retry after a
+        failure or force-regenerate. Directory order is arbitrary, so prefer the
+        newest completed report; otherwise return the newest available attempt.
+        """
+        reports = cls.list_reports(simulation_id=simulation_id, limit=1000)
+        if not reports:
+            return None
 
-        return None
+        completed = [r for r in reports if r.status == ReportStatus.COMPLETED]
+        if completed:
+            return completed[0]
+
+        return reports[0]
 
     @classmethod
     def list_reports(cls, simulation_id: Optional[str] = None, limit: int = 50) -> List[Report]:

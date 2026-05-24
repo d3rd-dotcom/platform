@@ -25,6 +25,20 @@ export default function Step4Report({
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
 
+  const finishWithReport = async (id: string) => {
+    setReportId(id);
+    onReportId(id);
+    setDone(true);
+    setGenerating(false);
+    setTaskId(null);
+    try {
+      const full = await api.getReport(id);
+      setContent(full.data?.markdown_content || full.data?.content || '');
+    } catch {
+      setContent('');
+    }
+  };
+
   const generate = async (force = false) => {
     setError(null);
     setGenerating(true);
@@ -34,9 +48,17 @@ export default function Step4Report({
     try {
       const res = await api.generateReport({ simulation_id: simId, force_regenerate: force });
       const id = res.data?.report_id ?? null;
+      const nextTaskId = res.data?.task_id ?? null;
       setReportId(id);
-      setTaskId(res.data?.task_id ?? null);
+      setTaskId(nextTaskId);
       if (id) onReportId(id);
+      if (id && (res.data?.already_generated || res.data?.status === 'completed')) {
+        await finishWithReport(id);
+        return;
+      }
+      if (!id || !nextTaskId) {
+        throw new Error('Report generation did not return a task id.');
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to start report');
       setGenerating(false);
@@ -49,8 +71,8 @@ export default function Step4Report({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  usePolling(() => api.getReportStatus({ task_id: taskId || undefined, simulation_id: simId }), {
-    enabled: !!reportId && generating && !done,
+  const reportPoll = usePolling(() => api.getReportStatus({ task_id: taskId || undefined, simulation_id: simId }), {
+    enabled: !!taskId && generating && !done,
     intervalMs: 2500,
     stop: (res) => res.data?.status === 'completed' || res.data?.status === 'failed',
     onData: async (res) => {
@@ -66,7 +88,7 @@ export default function Step4Report({
         setDone(true);
         setGenerating(false);
         // On completion the real report id comes back under result.report_id.
-        const finalId = res.data?.result?.report_id || reportId;
+        const finalId = res.data?.result?.report_id || res.data?.report_id || reportId;
         if (finalId && finalId !== reportId) {
           setReportId(finalId);
           onReportId(finalId);
@@ -80,6 +102,12 @@ export default function Step4Report({
       }
     },
   });
+
+  useEffect(() => {
+    if (!reportPoll.error || !generating) return;
+    setError(reportPoll.error.message);
+    setGenerating(false);
+  }, [reportPoll.error, generating]);
 
   return (
     <div className={styles.panel}>

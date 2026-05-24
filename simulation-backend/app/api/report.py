@@ -19,6 +19,39 @@ from ..utils.logger import get_logger
 logger = get_logger('mirofish.api.report')
 
 
+def _report_status_payload(report):
+    """Build the status shape expected by the frontend from persisted report files."""
+    progress_info = ReportManager.get_progress(report.report_id) or {}
+    status = report.status.value if hasattr(report.status, 'value') else str(report.status)
+    progress = progress_info.get('progress')
+    if progress is None:
+        progress = 100 if report.status == ReportStatus.COMPLETED else 0
+
+    message = (
+        progress_info.get('message')
+        or ("Report generated" if report.status == ReportStatus.COMPLETED else None)
+        or report.error
+        or f"Report status: {status}"
+    )
+
+    payload = {
+        "simulation_id": report.simulation_id,
+        "report_id": report.report_id,
+        "status": status,
+        "progress": progress,
+        "message": message,
+        "already_completed": report.status == ReportStatus.COMPLETED,
+        "result": {
+            "report_id": report.report_id,
+            "simulation_id": report.simulation_id,
+            "status": status
+        }
+    }
+    if report.error:
+        payload["error"] = report.error
+    return payload
+
+
 # ============== Report Generation API ==============
 
 @report_bp.route('/generate', methods=['POST'])
@@ -223,41 +256,49 @@ def get_generate_status():
         task_id = data.get('task_id')
         simulation_id = data.get('simulation_id')
         
-        # If simulation_id provided, first check if completed report exists
-        if simulation_id:
-            existing_report = ReportManager.get_report_by_simulation(simulation_id)
-            if existing_report and existing_report.status == ReportStatus.COMPLETED:
+        task_manager = TaskManager()
+
+        # Prefer the explicit async task while it exists. This avoids returning
+        # an older completed report during a force-regenerate run.
+        if task_id:
+            task = task_manager.get_task(task_id)
+            if task:
                 return jsonify({
                     "success": True,
-                    "data": {
-                        "simulation_id": simulation_id,
-                        "report_id": existing_report.report_id,
-                        "status": "completed",
-                        "progress": 100,
-                        "message": "Report generated",
-                        "already_completed": True
-                    }
+                    "data": task.to_dict()
                 })
-        
-        if not task_id:
+
+        # Fallback by simulation is intentionally non-error: page reloads can
+        # lose the in-memory task_id, while report state is persisted on disk.
+        if simulation_id:
+            existing_report = ReportManager.get_report_by_simulation(simulation_id)
+            if existing_report:
+                return jsonify({
+                    "success": True,
+                    "data": _report_status_payload(existing_report)
+                })
+
+            if task_id:
+                return jsonify({
+                    "success": False,
+                    "error": f"Task not found: {task_id}"
+                }), 404
+
             return jsonify({
-                "success": False,
-                "error": "Please provide task_id or simulation_id"
-            }), 400
-        
-        task_manager = TaskManager()
-        task = task_manager.get_task(task_id)
-        
-        if not task:
-            return jsonify({
-                "success": False,
-                "error": f"Task not found: {task_id}"
-            }), 404
+                "success": True,
+                "data": {
+                    "simulation_id": simulation_id,
+                    "status": "not_started",
+                    "progress": 0,
+                    "message": "Report generation not started yet. Please call /api/report/generate",
+                    "already_completed": False
+                }
+            })
         
         return jsonify({
-            "success": True,
-            "data": task.to_dict()
-        })
+            "success": False,
+            "error": "Please provide task_id or simulation_id"
+        }), 400
         
     except Exception as e:
         logger.error(f"Failed to query task status: {str(e)}")

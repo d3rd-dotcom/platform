@@ -370,7 +370,13 @@ export const getSimulationHistory = (limit = 20) =>
 // ── Steps 4–5: Report ──
 
 export const generateReport = (data: { simulation_id: string; force_regenerate?: boolean }) =>
-  request<{ report_id: string; task_id: string; simulation_id: string }>(`/api/report/generate`, {
+  request<{
+    report_id: string;
+    task_id?: string;
+    simulation_id: string;
+    status?: string;
+    already_generated?: boolean;
+  }>(`/api/report/generate`, {
     method: 'POST',
     json: data,
   });
