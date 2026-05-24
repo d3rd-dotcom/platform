@@ -20,6 +20,10 @@ export default function Step1GraphBuild({
   const [building, setBuilding] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+  const [enrichmentContext, setEnrichmentContext] = useState('');
+  const [enrichmentTaskId, setEnrichmentTaskId] = useState<string | null>(null);
+  const [enriching, setEnriching] = useState(false);
+  const [enrichmentMessage, setEnrichmentMessage] = useState<string | null>(null);
 
   const ontology = wf.project.ontology;
   const alreadyBuilt = !!wf.graphId;
@@ -33,6 +37,26 @@ export default function Step1GraphBuild({
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to start graph build');
       setBuilding(false);
+    }
+  };
+
+  const enrich = async () => {
+    const context = enrichmentContext.trim();
+    if (!context) {
+      setError('Add at least one fact before updating the graph.');
+      return;
+    }
+    setError(null);
+    setEnrichmentMessage(null);
+    setEnriching(true);
+    try {
+      const res = await api.enrichGraph({ project_id: wf.project.project_id, context });
+      const nextTaskId = res.data?.task_id;
+      if (!nextTaskId) throw new Error('No enrichment task id returned');
+      setEnrichmentTaskId(nextTaskId);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to add context to the graph');
+      setEnriching(false);
     }
   };
 
@@ -59,6 +83,32 @@ export default function Step1GraphBuild({
           }
         } catch (e) {
           setError(e instanceof Error ? e.message : 'Graph built but could not be loaded');
+        }
+      }
+    },
+  });
+
+  usePolling(() => api.getGraphTaskStatus(enrichmentTaskId as string), {
+    enabled: !!enrichmentTaskId && enriching,
+    intervalMs: 2500,
+    stop: (res) => res.data?.status === 'completed' || res.data?.status === 'failed',
+    onData: async (res) => {
+      const st = res.data?.status;
+      if (st === 'failed') {
+        setError(res.data?.error || 'Graph enrichment failed');
+        setEnriching(false);
+        setEnrichmentTaskId(null);
+      } else if (st === 'completed' && wf.graphId) {
+        try {
+          const g = await api.getGraphData(wf.graphId);
+          if (g.data) onGraphData(g.data);
+          setEnrichmentContext('');
+          setEnrichmentMessage('New context added. The graph has been refreshed.');
+        } catch (e) {
+          setError(e instanceof Error ? e.message : 'Context added, but the graph could not be reloaded');
+        } finally {
+          setEnriching(false);
+          setEnrichmentTaskId(null);
         }
       }
     },
@@ -100,6 +150,35 @@ export default function Step1GraphBuild({
           </ul>
         </div>
       </div>
+
+      {alreadyBuilt && (
+        <section className={styles.enrichmentBox} aria-label="Add new context to ontology">
+          <h3 className={styles.enrichmentTitle}>Add new context</h3>
+          <p className={styles.enrichmentLead}>
+            Add people, events, or relationship facts that were not in the original documents.
+            The existing graph stays in place while new facts are extracted into it.
+          </p>
+          <textarea
+            className={styles.textarea}
+            value={enrichmentContext}
+            onChange={(e) => setEnrichmentContext(e.target.value)}
+            rows={6}
+            disabled={enriching}
+            placeholder={`Add one fact per line.\nJames -> WORKS_WITH -> Maya Chen\nMaya Chen -> REVIEWS -> Artizen application`}
+          />
+          <p className={styles.enrichmentNote}>
+            Existing setup runs and reports do not update until you rerun them.
+          </p>
+          {enrichmentMessage && <p className={styles.successText}>{enrichmentMessage}</p>}
+          <button
+            className={styles.secondaryBtn}
+            onClick={enrich}
+            disabled={enriching || !enrichmentContext.trim()}
+          >
+            {enriching ? 'Updating graph...' : 'Add context to graph'}
+          </button>
+        </section>
+      )}
 
       {error && <p className={styles.errorText}>{error}</p>}
 

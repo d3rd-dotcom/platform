@@ -19,6 +19,7 @@ export default function ProjectGallery({
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState('');
   const [requirement, setRequirement] = useState('');
+  const [additionalContext, setAdditionalContext] = useState('');
   const [files, setFiles] = useState<File[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -40,6 +41,9 @@ export default function ProjectGallery({
       files.forEach((f) => fd.append('files', f));
       fd.append('simulation_requirement', requirement);
       fd.append('project_name', name || 'Untitled world');
+      if (additionalContext.trim()) {
+        fd.append('additional_context', additionalContext.trim());
+      }
       const res = await api.generateOntology(fd);
       const projectId = res.data?.project_id;
       if (!projectId) throw new Error('No project id returned');
@@ -95,6 +99,20 @@ export default function ProjectGallery({
               rows={3}
               placeholder="Describe the scenario and the question you want answered."
             />
+          </label>
+          <label className={styles.field}>
+            <span>People, entities, and relationships (optional)</span>
+            <textarea
+              className={styles.textarea}
+              value={additionalContext}
+              onChange={(e) => setAdditionalContext(e.target.value)}
+              rows={8}
+              placeholder={`Add facts your documents may not include.\n\nPeople:\n- Maya Chen: grant reviewer and mentor.\n\nRelationships:\n- James -> WORKS_WITH -> Maya Chen\n- Maya Chen -> REVIEWS -> Artizen application`}
+            />
+            <small className={styles.fieldHint}>
+              Use one clear fact per line. These details become source context for graph entities
+              and directed relationships.
+            </small>
           </label>
           <label className={styles.field}>
             <span>Source documents</span>

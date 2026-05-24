@@ -106,6 +106,7 @@ def reset_project(project_id: str):
     
     project.graph_id = None
     project.graph_build_task_id = None
+    project.graph_enrichment_task_id = None
     project.error = None
     ProjectManager.save_project(project)
     
@@ -152,7 +153,7 @@ def generate_ontology():
         # Get parameters
         simulation_requirement = request.form.get('simulation_requirement', '')
         project_name = request.form.get('project_name', 'Unnamed Project')
-        additional_context = request.form.get('additional_context', '')
+        additional_context = TextProcessor.preprocess_text(request.form.get('additional_context', ''))
         
         logger.debug(f"Project name: {project_name}")
         logger.debug(f"Simulation requirement: {simulation_requirement[:100]}...")
@@ -174,6 +175,7 @@ def generate_ontology():
         # Create project
         project = ProjectManager.create_project(name=project_name)
         project.simulation_requirement = simulation_requirement
+        project.additional_context = additional_context or None
         logger.info(f"Created project: {project.project_id}")
         
         # Save files and extract text
@@ -198,6 +200,11 @@ def generate_ontology():
                 text = TextProcessor.preprocess_text(text)
                 document_texts.append(text)
                 all_text += f"\n\n=== {file_info['original_filename']} ===\n{text}"
+
+        if additional_context:
+            # Keep user-provided facts in the graph extraction corpus, not only
+            # in the ontology schema prompt.
+            all_text += f"\n\n=== Additional Context ===\n{additional_context}"
         
         if not document_texts:
             ProjectManager.delete_project(project.project_id)
@@ -333,6 +340,7 @@ def build_graph():
             project.status = ProjectStatus.ONTOLOGY_GENERATED
             project.graph_id = None
             project.graph_build_task_id = None
+            project.graph_enrichment_task_id = None
             project.error = None
         
         # Get configuration
@@ -516,6 +524,185 @@ def build_graph():
             }
         })
         
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e),
+            "traceback": traceback.format_exc()
+        }), 500
+
+
+# ============== API 3: Enrich Existing Graph ==============
+
+@graph_bp.route('/enrich', methods=['POST'])
+def enrich_graph():
+    """
+    Add new user context to an existing completed graph as Zep text episodes.
+
+    Request (JSON):
+        {
+            "project_id": "proj_xxxx",
+            "context": "Maya Chen -> REVIEWS -> Artizen application"
+        }
+    """
+    try:
+        if not Config.ZEP_API_KEY:
+            return jsonify({
+                "success": False,
+                "error": "Configuration error: ZEP_API_KEY not configured"
+            }), 500
+
+        data = request.get_json() or {}
+        project_id = data.get('project_id')
+        context = TextProcessor.preprocess_text(data.get('context', ''))
+
+        if not project_id:
+            return jsonify({
+                "success": False,
+                "error": "Please provide project_id"
+            }), 400
+
+        if not context:
+            return jsonify({
+                "success": False,
+                "error": "Please provide context to add to the graph"
+            }), 400
+
+        project = ProjectManager.get_project(project_id)
+        if not project:
+            return jsonify({
+                "success": False,
+                "error": f"Project not found: {project_id}"
+            }), 404
+
+        if not project.graph_id or project.status != ProjectStatus.GRAPH_COMPLETED:
+            return jsonify({
+                "success": False,
+                "error": "Build the knowledge graph before adding new context"
+            }), 400
+
+        task_manager = TaskManager()
+        if project.graph_enrichment_task_id:
+            current_task = task_manager.get_task(project.graph_enrichment_task_id)
+            if current_task and current_task.status in [TaskStatus.PENDING, TaskStatus.PROCESSING]:
+                return jsonify({
+                    "success": False,
+                    "error": "Graph enrichment is already running",
+                    "task_id": project.graph_enrichment_task_id
+                }), 400
+
+        graph_id = project.graph_id
+        enrichment_text = f"=== User Added Context ===\n{context}"
+        chunks = TextProcessor.split_text(
+            enrichment_text,
+            chunk_size=project.chunk_size or Config.DEFAULT_CHUNK_SIZE,
+            overlap=project.chunk_overlap or Config.DEFAULT_CHUNK_OVERLAP
+        )
+
+        task_id = task_manager.create_task(
+            "graph_enrichment",
+            metadata={"project_id": project_id, "graph_id": graph_id}
+        )
+        project.graph_enrichment_task_id = task_id
+        ProjectManager.save_project(project)
+
+        def enrich_task():
+            enrich_logger = get_logger('mirofish.enrich')
+            try:
+                task_manager.update_task(
+                    task_id,
+                    status=TaskStatus.PROCESSING,
+                    message="Adding context to knowledge graph...",
+                    progress=10
+                )
+                builder = GraphBuilderService(api_key=Config.ZEP_API_KEY)
+
+                def add_progress_callback(msg, progress_ratio):
+                    task_manager.update_task(
+                        task_id,
+                        message=msg,
+                        progress=10 + int(progress_ratio * 45)
+                    )
+
+                episode_uuids = builder.add_text_batches(
+                    graph_id,
+                    chunks,
+                    batch_size=3,
+                    progress_callback=add_progress_callback
+                )
+
+                task_manager.update_task(
+                    task_id,
+                    message="Extracting new entities and relationships...",
+                    progress=55
+                )
+
+                def wait_progress_callback(msg, progress_ratio):
+                    task_manager.update_task(
+                        task_id,
+                        message=msg,
+                        progress=55 + int(progress_ratio * 35)
+                    )
+
+                builder._wait_for_episodes(episode_uuids, wait_progress_callback)
+                graph_data = builder.get_graph_data(graph_id)
+
+                existing_context = project.additional_context or ""
+                project.additional_context = "\n\n".join(
+                    text for text in [existing_context, context] if text
+                )
+                extracted_text = ProjectManager.get_extracted_text(project_id) or ""
+                updated_text = (
+                    f"{extracted_text}\n\n=== Additional Context (enrichment) ===\n{context}"
+                    if extracted_text else enrichment_text
+                )
+                ProjectManager.save_extracted_text(project_id, updated_text)
+                project.total_text_length = len(updated_text)
+                project.error = None
+                ProjectManager.save_project(project)
+
+                node_count = graph_data.get("node_count", 0)
+                edge_count = graph_data.get("edge_count", 0)
+                task_manager.update_task(
+                    task_id,
+                    status=TaskStatus.COMPLETED,
+                    message="New context added to graph",
+                    progress=100,
+                    result={
+                        "project_id": project_id,
+                        "graph_id": graph_id,
+                        "node_count": node_count,
+                        "edge_count": edge_count,
+                        "chunk_count": len(chunks)
+                    }
+                )
+                enrich_logger.info(
+                    f"[{task_id}] Graph enrichment complete: graph_id={graph_id}, "
+                    f"nodes={node_count}, edges={edge_count}"
+                )
+            except Exception as e:
+                enrich_logger.error(f"[{task_id}] Graph enrichment failed: {str(e)}")
+                project.error = f"Graph enrichment failed: {str(e)}"
+                ProjectManager.save_project(project)
+                task_manager.update_task(
+                    task_id,
+                    status=TaskStatus.FAILED,
+                    message=f"Graph enrichment failed: {str(e)}",
+                    error=traceback.format_exc()
+                )
+
+        thread = threading.Thread(target=enrich_task, daemon=True)
+        thread.start()
+
+        return jsonify({
+            "success": True,
+            "data": {
+                "project_id": project_id,
+                "graph_id": graph_id,
+                "task_id": task_id,
+                "message": "Graph enrichment task started"
+            }
+        })
     except Exception as e:
         return jsonify({
             "success": False,

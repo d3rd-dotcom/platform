@@ -43,9 +43,11 @@ class Project:
     # Graph information (populated after API 2 completes)
     graph_id: Optional[str] = None
     graph_build_task_id: Optional[str] = None
+    graph_enrichment_task_id: Optional[str] = None
 
     # Configuration
     simulation_requirement: Optional[str] = None
+    additional_context: Optional[str] = None
     chunk_size: int = 500
     chunk_overlap: int = 50
 
@@ -66,7 +68,9 @@ class Project:
             "analysis_summary": self.analysis_summary,
             "graph_id": self.graph_id,
             "graph_build_task_id": self.graph_build_task_id,
+            "graph_enrichment_task_id": self.graph_enrichment_task_id,
             "simulation_requirement": self.simulation_requirement,
+            "additional_context": self.additional_context,
             "chunk_size": self.chunk_size,
             "chunk_overlap": self.chunk_overlap,
             "error": self.error
@@ -91,7 +95,9 @@ class Project:
             analysis_summary=data.get('analysis_summary'),
             graph_id=data.get('graph_id'),
             graph_build_task_id=data.get('graph_build_task_id'),
+            graph_enrichment_task_id=data.get('graph_enrichment_task_id'),
             simulation_requirement=data.get('simulation_requirement'),
+            additional_context=data.get('additional_context'),
             chunk_size=data.get('chunk_size', 500),
             chunk_overlap=data.get('chunk_overlap', 50),
             error=data.get('error')

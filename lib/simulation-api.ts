@@ -60,7 +60,9 @@ export interface Project {
   simulation_requirement?: string;
   ontology?: Ontology;
   graph_id?: string | null;
+  graph_enrichment_task_id?: string | null;
   files?: Array<{ filename: string; size: number }>;
+  additional_context?: string | null;
   error?: string | null;
   created_at?: string;
   updated_at?: string;
@@ -261,6 +263,12 @@ export const generateOntology = (formData: FormData) =>
 
 export const buildGraph = (data: { project_id: string; graph_name?: string }) =>
   request<{ task_id: string }>(`/api/graph/build`, { method: 'POST', json: data });
+
+export const enrichGraph = (data: { project_id: string; context: string }) =>
+  request<{ task_id: string; graph_id: string }>(`/api/graph/enrich`, {
+    method: 'POST',
+    json: data,
+  });
 
 export const getGraphTaskStatus = (taskId: string) =>
   request<TaskState>(`/api/graph/task/${taskId}`);
