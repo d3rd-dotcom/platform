@@ -205,11 +205,11 @@ export default function GraphPanel({ graph }: { graph: GraphData | null }) {
 
         {/* nodes */}
         <g>
-          {nodesRef.current.map((n) => {
+          {nodesRef.current.map((n, i) => {
             const c = colorOf(n.type);
             const showLabel = n.degree >= labelThreshold && n.degree > 0;
             return (
-              <g key={n.id} transform={`translate(${n.x},${n.y})`}>
+              <g key={`${n.id}-${i}`} transform={`translate(${n.x},${n.y})`}>
                 {/* glow halo */}
                 <circle r={n.r + 3} fill={c} opacity={0.22} filter="url(#nodeGlow)" />
                 {/* body */}
