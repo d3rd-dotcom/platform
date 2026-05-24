@@ -829,10 +829,87 @@ article.reportBody :global(h3) {
   width: 100%;
   height: auto;
   display: block;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.graphSvg:active {
+  cursor: grabbing;
+}
+.graphControls {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-surface-1, #fff) 86%, transparent);
+  border: 1px solid var(--color-border-subtle, rgba(0, 0, 0, 0.08));
+  box-shadow: 0 10px 24px rgba(10, 12, 24, 0.12);
+}
+.graphControls button {
+  border: none;
+  border-radius: 8px;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 8px;
+  background: var(--color-surface-2, rgba(125, 135, 200, 0.12));
+  color: var(--color-text-dark, #1a1b24);
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.graphControls button:hover {
+  background: rgba(81, 104, 255, 0.16);
+}
+.graphEdges {
+  pointer-events: stroke;
+}
+.graphEdge,
+.graphEdgeExpired {
+  fill: none;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+.graphEdge {
+  stroke: rgba(86, 100, 172, 0.58);
+}
+.graphEdgeExpired {
+  stroke: rgba(120, 125, 150, 0.32);
+  stroke-dasharray: 5 5;
+}
+.graphEdgeLabels {
+  pointer-events: none;
+}
+.graphEdgeLabels rect {
+  fill: color-mix(in srgb, var(--color-surface-1, #fff) 90%, transparent);
+  stroke: rgba(86, 100, 172, 0.2);
+}
+.graphEdgeLabels text {
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  fill: var(--color-text-dark, #1a1b24);
+}
+.graphNodes {
+  pointer-events: none;
+}
+.graphNodeInitial {
+  font-size: 13px;
+  font-weight: 900;
+  fill: #fff;
+  font-family: var(--font-headline, 'Space Grotesk', sans-serif);
+  paint-order: stroke;
+  stroke: rgba(10, 12, 24, 0.28);
+  stroke-width: 2px;
+  stroke-linejoin: round;
 }
 .graphNodeLabel {
-  font-size: 9px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 800;
   fill: var(--color-text-dark, #1a1b24);
   font-family: var(--font-body, 'Poppins', sans-serif);
   /* Halo so labels stay legible over nodes/edges */
@@ -840,6 +917,12 @@ article.reportBody :global(h3) {
   stroke: var(--color-surface-1, #fff);
   stroke-width: 3px;
   stroke-linejoin: round;
+}
+.graphHint {
+  text-align: center;
+  font-size: 11px;
+  opacity: 0.56;
+  margin-top: 6px;
 }
 
 .graphLegend {

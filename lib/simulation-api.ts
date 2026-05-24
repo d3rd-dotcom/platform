@@ -79,19 +79,32 @@ export interface TaskState {
 
 export interface GraphNode {
   id: string;
+  uuid?: string;
   name?: string;
   label?: string;
   labels?: string[];
   type?: string;
   summary?: string;
+  attributes?: Record<string, unknown>;
   [k: string]: unknown;
 }
 
 export interface GraphEdge {
   source: string;
   target: string;
+  id?: string;
+  uuid?: string;
+  source_node_uuid?: string;
+  target_node_uuid?: string;
+  source_node_name?: string;
+  target_node_name?: string;
+  fact?: string;
+  fact_type?: string;
+  expired_at?: string | null;
+  invalid_at?: string | null;
   type?: string;
   name?: string;
+  attributes?: Record<string, unknown>;
   [k: string]: unknown;
 }
 
