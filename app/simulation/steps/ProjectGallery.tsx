@@ -107,27 +107,35 @@ export default function ProjectGallery({
               value={additionalContext}
               onChange={(e) => setAdditionalContext(e.target.value)}
               rows={8}
-              placeholder={`Add facts your documents may not include.\n\nPeople:\n- Maya Chen: grant reviewer and mentor.\n\nRelationships:\n- James -> WORKS_WITH -> Maya Chen\n- Maya Chen -> REVIEWS -> Artizen application`}
+              placeholder="Add key people, groups, or connections."
             />
             <small className={styles.fieldHint}>
               Use one clear fact per line. These details become source context for graph entities
               and directed relationships.
             </small>
           </label>
-          <label className={styles.field}>
-            <span>Source documents</span>
+          <div className={styles.field}>
+            <span id="source-documents-label">Source documents</span>
             <input
               ref={fileInput}
               type="file"
               multiple
               accept=".pdf,.md,.markdown,.txt"
               className={styles.fileInput}
+              aria-labelledby="source-documents-label"
               onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
             />
+            <button
+              type="button"
+              className={styles.filePickerBtn}
+              onClick={() => fileInput.current?.click()}
+            >
+              Choose files
+            </button>
             {files.length > 0 && (
               <span className={styles.fileList}>{files.map((f) => f.name).join(', ')}</span>
             )}
-          </label>
+          </div>
           {error && <p className={styles.errorText}>{error}</p>}
           <button className={styles.primaryBtn} onClick={submit} disabled={busy}>
             {busy ? 'Analyzing documents…' : 'Build knowledge graph'}

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import Image from 'next/image';
 import Link from 'next/link';
 import { X } from '@phosphor-icons/react';
 import styles from './BalanceGuideModal.module.css';
@@ -12,22 +11,22 @@ type MembershipTier = 'Guest' | 'Angel' | 'Staff';
 interface BalanceGuideModalProps {
   isOpen: boolean;
   onClose: () => void;
-  credits: string;
   membership: MembershipTier | null;
-  usdc: string;
-  votingPower: string | null;
 }
 
 const membershipOptions = [
   {
+    id: 'Guest' as MembershipTier,
     name: 'Guest',
     description: 'Take the course and earn credits through Academy activity.',
   },
   {
+    id: 'Angel' as MembershipTier,
     name: 'Academic Angel',
     description: 'Hold an Angel NFT to request eligible USDC quest payouts.',
   },
   {
+    id: 'Staff' as MembershipTier,
     name: 'Staff / VIP',
     description: 'Hold the VIP Membership Card to access gated tools and review workflows.',
   },
@@ -36,10 +35,7 @@ const membershipOptions = [
 export default function BalanceGuideModal({
   isOpen,
   onClose,
-  credits,
   membership,
-  usdc,
-  votingPower,
 }: BalanceGuideModalProps) {
   const [mounted, setMounted] = useState(false);
 
@@ -73,77 +69,54 @@ export default function BalanceGuideModal({
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <section className={styles.modal} role="dialog" aria-modal="true" aria-labelledby="balance-guide-title">
+      <section className={styles.modal} role="dialog" aria-modal="true" aria-label="Credits and membership details">
         <button type="button" className={styles.close} onClick={onClose} aria-label="Close">
           <X size={18} weight="bold" />
         </button>
 
-        <header className={styles.hero}>
-          <span className={styles.eyebrow}>Your reward wallet</span>
-          <h2 className={styles.title} id="balance-guide-title">Participation can pay.</h2>
-          <p className={styles.subtitle}>
-            Complete Academy work to earn credits. Qualifying Academic Angels can submit marked quests for USDC review.
-          </p>
-        </header>
-
-        <div className={styles.snapshot} aria-label="Current balances">
-          <div className={`${styles.snapshotCard} ${styles.creditsCard}`}>
-            <Image src="/icons/ui-shard.svg" alt="" width={26} height={26} className={styles.creditsIcon} />
-            <span className={styles.snapshotLabel}>Credits</span>
-            <strong className={styles.snapshotValue}>{credits}</strong>
-          </div>
-          <div className={styles.snapshotCard}>
-            <span className={styles.snapshotLabel}>Membership</span>
-            <strong className={styles.snapshotValue}>{membership ?? '--'}</strong>
-          </div>
-          <div className={`${styles.snapshotCard} ${styles.usdcCard}`}>
-            <span className={styles.snapshotLabel}>Wallet USDC</span>
-            <strong className={styles.snapshotValue}>{usdc}</strong>
-          </div>
-          {votingPower && (
-            <div className={styles.snapshotCard}>
-              <span className={styles.snapshotLabel}>Votes</span>
-              <strong className={styles.snapshotValue}>{votingPower}</strong>
-            </div>
-          )}
-        </div>
-
-        <div className={styles.sections}>
-          <section className={styles.infoPanel}>
-            <h3 className={styles.sectionTitle}>What balances mean</h3>
-            <div className={styles.definition}>
-              <strong>Credits</strong>
-              <p>Earned through quests, course milestones, surveys, and check-ins. Spend them on Blue and Academy reward features.</p>
-            </div>
-            <div className={styles.definition}>
-              <strong>USDC</strong>
-              <p>A dollar-denominated token. Approved qualifying quest payouts are sent to your connected wallet.</p>
-            </div>
-            <div className={styles.definition}>
-              <strong>Votes</strong>
-              <p>Governance weight appears in your card only when your wallet holds voting power.</p>
-            </div>
-          </section>
-
-          <section className={styles.infoPanel}>
-            <h3 className={styles.sectionTitle}>Membership status</h3>
-            <div className={styles.tierList}>
-              {membershipOptions.map((option) => (
-                <div className={styles.tier} key={option.name}>
-                  <strong>{option.name}</strong>
-                  <p>{option.description}</p>
+        <section className={styles.membership} aria-label="Membership statuses">
+          <span className={styles.sectionLabel}>Membership</span>
+          <div className={styles.tierList}>
+            {membershipOptions.map((option, index) => {
+              const current = membership === option.id;
+              return (
+                <div className={`${styles.tier} ${current ? styles.tierCurrent : ''}`} key={option.id}>
+                  <span className={styles.tierIndex}>{String(index + 1).padStart(2, '0')}</span>
+                  <div className={styles.tierText}>
+                    <strong>{option.name}</strong>
+                    <p>{option.description}</p>
+                  </div>
+                  {current && <span className={styles.currentBadge}>Current</span>}
                 </div>
-              ))}
+              );
+            })}
+          </div>
+        </section>
+
+        <section className={styles.rewardList} aria-label="Balance definitions">
+          <span className={styles.sectionLabel}>Balances</span>
+          <dl className={styles.rewardLedger}>
+            <div className={styles.reward}>
+              <dt>Credits</dt>
+              <dd>Earn through quests, course milestones, surveys, and check-ins. Spend on Blue and Academy rewards.</dd>
             </div>
-          </section>
-        </div>
+            <div className={styles.reward}>
+              <dt>Votes</dt>
+              <dd>Governance weight. This balance appears only when your wallet holds voting power.</dd>
+            </div>
+            <div className={styles.reward}>
+              <dt>USDC</dt>
+              <dd>Dollar-denominated payouts sent to your connected wallet after approval.</dd>
+            </div>
+          </dl>
+        </section>
 
         <section className={styles.redeem}>
-          <h3 className={styles.sectionTitle}>How USDC payouts work</h3>
+          <span className={styles.sectionLabel}>USDC payouts</span>
           <ol className={styles.steps}>
             <li>Complete an eligible quest while holding an Academic Angel NFT.</li>
-            <li>Request the USDC payout. Staff reviews the submission and Blue sends approved USDC to your wallet.</li>
-            <li>Transfer received USDC to a compatible exchange or off-ramp to withdraw cash. Provider and network fees may apply.</li>
+            <li>Request a payout. Staff reviews it; Blue sends approved USDC to your connected wallet.</li>
+            <li>Move received USDC through a compatible exchange or off-ramp to withdraw cash.</li>
           </ol>
         </section>
 
