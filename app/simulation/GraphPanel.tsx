@@ -33,8 +33,8 @@ interface SimLink {
   pairOffset: number;
 }
 
-const W = 760;
-const H = 560;
+const W = 560;
+const H = 500;
 const MAX_NODES = 120;
 const MAX_EDGE_LABELS = 48;
 
