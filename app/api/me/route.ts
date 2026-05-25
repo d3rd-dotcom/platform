@@ -8,46 +8,54 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  if (!isDbConfigured()) {
-    return NextResponse.json({ user: null, dbConfigured: false });
-  }
-  await ensureForumSchema();
+  try {
+    if (!isDbConfigured()) {
+      return NextResponse.json({ user: null, dbConfigured: false });
+    }
+    await ensureForumSchema();
 
-  const user = await getCurrentUserFromRequestCookie();
-  if (!user) {
-    // Return WHY auth failed so the client can act on it
-    const wallet = await getWalletAddressFromRequest();
+    const user = await getCurrentUserFromRequestCookie();
+    if (!user) {
+      // Return WHY auth failed so the client can act on it
+      const wallet = await getWalletAddressFromRequest();
+      return NextResponse.json({
+        user: null,
+        dbConfigured: true,
+        authDebug: {
+          walletExtracted: !!wallet,
+          walletPrefix: wallet ? wallet.slice(0, 6) : null,
+          userNotFound: !!wallet, // wallet found but no DB row
+        },
+      });
+    }
+
+    // Get shard count and onboarding status from database
+    const userRows = await sqlQuery<Array<{ shard_count: number; selected_avatar_id: string | null; avatar_url: string | null }>>(
+      `SELECT shard_count, selected_avatar_id, avatar_url FROM users WHERE id = :id LIMIT 1`,
+      { id: user.id }
+    );
+    const shardCount = userRows[0]?.shard_count ?? 0;
+    // Onboarding is complete if user picked a platform avatar OR has an external avatar (e.g. Farcaster pfp)
+    const onboardingComplete = !!userRows[0]?.selected_avatar_id || !!userRows[0]?.avatar_url;
+
     return NextResponse.json({
-      user: null,
-      dbConfigured: true,
-      authDebug: {
-        walletExtracted: !!wallet,
-        walletPrefix: wallet ? wallet.slice(0, 6) : null,
-        userNotFound: !!wallet, // wallet found but no DB row
+      user: {
+        id: user.id,
+        username: user.username,
+        avatarUrl: user.avatarUrl,
+        shardCount,
+        onboardingComplete,
+        createdAt: user.createdAt,
       },
+      dbConfigured: true,
     });
+  } catch (error) {
+    console.error('[api/me] Failed to load current user:', error);
+    return NextResponse.json(
+      { error: 'Unable to load account details.', code: 'ME_UNAVAILABLE' },
+      { status: 500 }
+    );
   }
-
-  // Get shard count and onboarding status from database
-  const userRows = await sqlQuery<Array<{ shard_count: number; selected_avatar_id: string | null; avatar_url: string | null }>>(
-    `SELECT shard_count, selected_avatar_id, avatar_url FROM users WHERE id = :id LIMIT 1`,
-    { id: user.id }
-  );
-  const shardCount = userRows[0]?.shard_count ?? 0;
-  // Onboarding is complete if user picked a platform avatar OR has an external avatar (e.g. Farcaster pfp)
-  const onboardingComplete = !!userRows[0]?.selected_avatar_id || !!userRows[0]?.avatar_url;
-
-  return NextResponse.json({
-    user: {
-      id: user.id,
-      username: user.username,
-      avatarUrl: user.avatarUrl,
-      shardCount,
-      onboardingComplete,
-      createdAt: user.createdAt,
-    },
-    dbConfigured: true,
-  });
 }
 
 function isValidUsername(username: unknown): username is string {

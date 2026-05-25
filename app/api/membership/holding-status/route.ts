@@ -13,11 +13,19 @@ export const dynamic = 'force-dynamic';
  * purchases because membership cards can be transferred between accounts.
  */
 export async function GET() {
-  const buyerWallet = await getWalletAddressFromRequest();
-  if (!buyerWallet) {
-    return NextResponse.json({ error: 'Sign in to check membership status.' }, { status: 401 });
-  }
+  try {
+    const buyerWallet = await getWalletAddressFromRequest();
+    if (!buyerWallet) {
+      return NextResponse.json({ error: 'Sign in to check membership status.' }, { status: 401 });
+    }
 
-  const hasVipMembershipCard = await walletHoldsConfiguredVipMembershipCard(buyerWallet);
-  return NextResponse.json({ hasVipMembershipCard, walletAddress: buyerWallet });
+    const hasVipMembershipCard = await walletHoldsConfiguredVipMembershipCard(buyerWallet);
+    return NextResponse.json({ hasVipMembershipCard, walletAddress: buyerWallet });
+  } catch (error) {
+    console.error('[api/membership/holding-status] Membership read failed:', error);
+    return NextResponse.json(
+      { error: 'Membership status is temporarily unavailable.', code: 'MEMBERSHIP_STATUS_UNAVAILABLE' },
+      { status: 503 }
+    );
+  }
 }

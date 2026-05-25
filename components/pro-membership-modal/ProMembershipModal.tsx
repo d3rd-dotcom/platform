@@ -22,9 +22,14 @@ type TransferPhase = 'working' | 'done' | 'failed';
 type PaymentMethod = 'card' | 'crypto';
 
 const PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '';
-const stripePromise: Promise<Stripe | null> | null = PUBLISHABLE_KEY
-  ? loadStripe(PUBLISHABLE_KEY)
-  : null;
+const CARD_PAYMENTS_ENABLED = Boolean(PUBLISHABLE_KEY);
+let cachedStripePromise: Promise<Stripe | null> | null = null;
+
+function getStripePromise(): Promise<Stripe | null> | null {
+  if (!PUBLISHABLE_KEY) return null;
+  if (!cachedStripePromise) cachedStripePromise = loadStripe(PUBLISHABLE_KEY);
+  return cachedStripePromise;
+}
 
 const BLUE_AVATAR = '/uploads/blueagent.png';
 const MEMBERSHIP_IMAGE = '/uploads/vip-membership-card.png';
@@ -425,7 +430,8 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
   const [screen, setScreen] = useState<Screen>('intro');
   // No method is pre-selected when card is available — the buyer must choose,
   // so the Stripe PaymentIntent is not opened until they actually pick "Card".
-  const [method, setMethod] = useState<PaymentMethod | null>(stripePromise ? null : 'crypto');
+  const [method, setMethod] = useState<PaymentMethod | null>(CARD_PAYMENTS_ENABLED ? null : 'crypto');
+  const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
   const [intentLoading, setIntentLoading] = useState(false);
@@ -452,7 +458,8 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
   useEffect(() => {
     if (!isOpen) {
       setScreen('intro');
-      setMethod(stripePromise ? null : 'crypto');
+      setMethod(CARD_PAYMENTS_ENABLED ? null : 'crypto');
+      setStripePromise(null);
       setClientSecret(null);
       setOrderId(null);
       setIntentError(null);
@@ -542,7 +549,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
   useEffect(() => {
     if (!isOpen) return;
     let cancelled = false;
-    fetch('/api/me', { credentials: 'include' })
+    void authHeaders().then((headers) => fetch('/api/me', { credentials: 'include', headers }))
       .then((r) => r.json())
       .then((data) => {
         if (!cancelled && data?.user?.avatarUrl) setUserAvatar(data.user.avatarUrl);
@@ -551,7 +558,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
     return () => {
       cancelled = true;
     };
-  }, [isOpen]);
+  }, [authHeaders, isOpen]);
 
   // Open a Stripe payment intent — only for the card path.
   const ensureCardIntent = useCallback(async () => {
@@ -590,8 +597,9 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
 
   // Fetch the Stripe intent lazily once the card path is on screen.
   useEffect(() => {
-    if (screen === 'purchase' && method === 'card' && stripePromise) {
-      ensureCardIntent();
+    if (screen === 'purchase' && method === 'card' && CARD_PAYMENTS_ENABLED) {
+      setStripePromise(getStripePromise());
+      void ensureCardIntent();
     }
   }, [screen, method, ensureCardIntent]);
 
@@ -808,7 +816,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
 
               {/* Payment method picker — card path is only offered when Stripe
                   is configured; the crypto path always works. */}
-              {stripePromise && (
+              {CARD_PAYMENTS_ENABLED && (
                 <div className={styles.methodToggle}>
                   <button
                     type="button"
@@ -831,7 +839,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
                 </div>
               )}
 
-              {stripePromise && !method && (
+              {CARD_PAYMENTS_ENABLED && !method && (
                 <p className={styles.secureNote}>Choose how you would like to pay.</p>
               )}
 

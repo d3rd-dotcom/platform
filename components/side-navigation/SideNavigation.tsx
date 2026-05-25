@@ -379,7 +379,13 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
           credentials: 'include',
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
-        const data = await response.json();
+        const data = await response.json().catch(() => null);
+        if (!response.ok) {
+          throw new Error(data?.error || `/api/me request failed (${response.status})`);
+        }
+        if (!data) {
+          throw new Error('/api/me returned a non-JSON response.');
+        }
         if (cancelled) return;
         if (data?.user) {
           if (data.user.shardCount !== undefined) setShardCount(data.user.shardCount);

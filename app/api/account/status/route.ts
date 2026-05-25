@@ -51,7 +51,15 @@ export async function GET(request: Request) {
       { status: 503 }
     );
   }
-  await ensureForumSchema();
+  try {
+    await ensureForumSchema();
+  } catch (error) {
+    console.error('[api/account/status] Schema initialization failed:', error);
+    return NextResponse.json(
+      { error: 'Account status is temporarily unavailable.', code: 'ACCOUNT_STATUS_UNAVAILABLE' },
+      { status: 500 }
+    );
+  }
 
   // Get our internal user record (authenticated via wallet address)
   const user = await getCurrentUserFromRequestCookie();

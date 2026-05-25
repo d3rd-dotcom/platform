@@ -29,11 +29,6 @@ const WeekOneVisualNovel = dynamic(() => import('@/components/visual-novel/WeekO
 const MintModal = dynamic(() => import('@/components/mint-modal/MintModal'), {
   ssr: false,
 });
-const CreditScore = dynamic(() => import('@/components/credit-score/CreditScore'), {
-  ssr: false,
-  loading: () => null,
-});
-
 interface WeekStatus {
   weekNumber: number;
   isSealed: boolean;
@@ -459,8 +454,6 @@ export default function CoursePage() {
               onCompactClick={isDesktop ? () => setRightContent('daily-note') : undefined}
             />
           </div>
-
-          <CreditScore showLoader={false} />
 
           <div className={styles.weekHeader}>
             <button

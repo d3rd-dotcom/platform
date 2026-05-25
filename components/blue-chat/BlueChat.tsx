@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
+import { usePrivy } from '@privy-io/react-auth';
 import styles from './BlueChat.module.css';
 import { useSound } from '@/hooks/useSound';
 import TimeManagementInline from './TimeManagementInline';
@@ -178,6 +179,7 @@ function fileTypeLabel(mime: string): string {
 
 const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const { play } = useSound();
+  const { ready, authenticated, getAccessToken } = usePrivy();
   const currentPathname = usePathname();
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -229,6 +231,12 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const attachmentInputRef = useRef<HTMLInputElement>(null);
 
+  const authHeaders = useCallback(async (): Promise<HeadersInit> => {
+    if (!ready || !authenticated) return {};
+    const token = await getAccessToken().catch(() => null);
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  }, [authenticated, getAccessToken, ready]);
+
   // Fetch treasury context when chat opens
   const fetchTreasuryContext = useCallback(async () => {
     try {
@@ -271,8 +279,16 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
   // Fetch shard count
   const fetchShardCount = useCallback(async () => {
+    if (!ready || !authenticated) {
+      setShardCount(null);
+      setViewerProfile(null);
+      return;
+    }
     try {
-      const res = await fetch('/api/me', { credentials: 'include' });
+      const res = await fetch('/api/me', {
+        credentials: 'include',
+        headers: await authHeaders(),
+      });
       if (res.ok) {
         const data = await res.json();
         const nextShardCount = typeof data.user?.shardCount === 'number' ? data.user.shardCount : null;
@@ -280,18 +296,25 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         setViewerProfile(data.user ? { username: data.user.username ?? null } : null);
       }
     } catch { /* silent */ }
-  }, []);
+  }, [authHeaders, authenticated, ready]);
 
   // VIP membership card holders unlock research mode without spending shards.
   const fetchVipStatus = useCallback(async () => {
+    if (!ready || !authenticated) {
+      setIsVipMember(false);
+      return;
+    }
     try {
-      const res = await fetch('/api/membership/holding-status', { credentials: 'include' });
+      const res = await fetch('/api/membership/holding-status', {
+        credentials: 'include',
+        headers: await authHeaders(),
+      });
       if (res.ok) {
         const data = await res.json();
         setIsVipMember(!!data.hasVipMembershipCard);
       }
     } catch { /* silent */ }
-  }, []);
+  }, [authHeaders, authenticated, ready]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(max-width: 1024px)');
@@ -501,13 +524,18 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     mode?: 'research' | 'auto-distribution',
     attachments?: UploadedAttachment[]
   ) => {
+    if (!ready || !authenticated) {
+      addBlueMessage('sign in first so i can access your account and respond here.');
+      return;
+    }
+
     setIsTyping(true);
     setShardUpsell(null);
     showEmote('searching');
     try {
       const res = await fetch('/api/chat/blue', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
         credentials: 'include',
         body: JSON.stringify({ message: text, mode, attachments, pathname: currentPathname }),
       });
@@ -1019,7 +1047,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         "the world's first decentralized cohort for mental wellness. course, community, science — on-chain. you're early."
       );
     } else if (action === 'level-up') {
-      send('How do I level up?', 'happy');
+      send('Hi', 'happy');
       setPendingAttachments([]);
       setTimeManagementVisible(false);
       setAutoDistributionVisible(false);
@@ -1030,7 +1058,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
           : "quests, morning pages every day, seal course weeks. gems stack, you level. that's the loop."
       );
     } else if (action === 'bci-lore') {
-      send("What's the helmet?", 'happy');
+      send("What's new this week?", 'happy');
       setPendingAttachments([]);
       setTimeManagementVisible(false);
       setAutoDistributionVisible(false);
@@ -1378,14 +1406,11 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             <span>{shardCount}</span>
           </div>
         )}
-        <button className={styles.quickAction} onClick={() => handleQuickAction('what-is-this')} disabled={isTyping} type="button">
-          What is this place?
-        </button>
         <button className={styles.quickAction} onClick={() => handleQuickAction('level-up')} disabled={isTyping} type="button">
-          How do I level up?
+          Hi
         </button>
         <button className={styles.quickAction} onClick={() => handleQuickAction('bci-lore')} disabled={isTyping} type="button">
-          What&apos;s the helmet?
+          What&apos;s new this week?
         </button>
       </div>
 
