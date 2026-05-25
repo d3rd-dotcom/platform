@@ -226,7 +226,7 @@ export async function POST(request: Request) {
     const assignedAvatars = await getAssignedAvatars(userId);
     
     // Update the user profile and store all avatar choices
-    const WELCOME_SHARDS = hasExistingProfile ? undefined : 10; // Don't reset shards for existing profiles
+    const WELCOME_SHARDS = hasExistingProfile ? undefined : 10; // Don't reset credits for existing profiles
     await withTransaction(async (client) => {
       // Update user profile
       const updateParams: any = {

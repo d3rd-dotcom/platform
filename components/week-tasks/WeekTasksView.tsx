@@ -311,11 +311,11 @@ export default function WeekTasksView({
       // celebration rather than a now-locked editor.
       setExpandedSection(null);
       // Close the modal and hand off to the shared reward overlays
-      // (confetti + shard count-up), the same celebration Morning Pages uses.
+      // (confetti + credit count-up), the same celebration Morning Pages uses.
       setShowSealModal(false);
       setSealStep('confirm');
       setShowRewardAnimation(true);
-      // Tell the navbar shard counter (and anything else listening) to refresh.
+      // Tell the navbar credit counter (and anything else listening) to refresh.
       if (typeof window !== 'undefined') window.dispatchEvent(new Event('shardsUpdated'));
       if (onSealComplete) onSealComplete(weekNumber, data.txHash ?? null);
       if (typeof window !== 'undefined' && 'vibrate' in navigator) navigator.vibrate([50, 30, 50, 30, 100]);
@@ -690,7 +690,7 @@ export default function WeekTasksView({
               <>
                 <h3 className={styles.sealModalTitle}>Seal Week {weekNumber}?</h3>
                 <p className={styles.sealModalText}>
-                  This will finalize your work and award 700 gems. You won&apos;t be able to edit after sealing.
+                  This will finalize your work and award 700 credits. You won&apos;t be able to edit after sealing.
                 </p>
                 <div className={styles.sealModalButtons}>
                   <button className={styles.sealModalCancel} onClick={() => setShowSealModal(false)}>Cancel</button>

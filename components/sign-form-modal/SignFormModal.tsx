@@ -116,14 +116,14 @@ export default function SignFormModal({ difficulty, shardReward, onLaunch, onClo
             <div className={styles.legalSection}>
               <span className={styles.legalHeading}>Your Answers Count</span>
               <p className={styles.legalText}>
-                Your responses are saved to your account so Blue can grade them and credit your gems. They also help build better models for the community.
+                Your responses are saved to your account so Blue can grade them and award your credits. They also help build better models for the community.
               </p>
             </div>
 
             <div className={styles.legalSection}>
               <span className={styles.legalHeading}>This Is a Graded Test</span>
               <p className={styles.legalText}>
-                There are right and wrong answers, and Blue grades every one. Higher difficulty means harder questions and a bigger gem payout. It&apos;s for the Academy, not medical or clinical advice.
+                There are right and wrong answers, and Blue grades every one. Higher difficulty means harder questions and a bigger credit payout. It&apos;s for the Academy, not medical or clinical advice.
               </p>
             </div>
           </div>
@@ -178,7 +178,7 @@ export default function SignFormModal({ difficulty, shardReward, onLaunch, onClo
             disabled={!canLaunch}
             type="button"
           >
-            {canLaunch ? `Start Survey · +${shardReward} Gems` : 'Agree & sign to continue'}
+            {canLaunch ? `Start Survey · +${shardReward} credits` : 'Agree & sign to continue'}
           </button>
         </div>
       </div>

@@ -1,6 +1,6 @@
 # Financial Blockchain Map
 
-This map is derived from contracts, deployment broadcasts, API routes, and financial integration libraries in this repository. It describes coded or committed configuration paths, not current balances or a guarantee that each deployed integration is operational. Database-only gems/shards are excluded because they are not blockchain assets or treasury pools.
+This map is derived from contracts, deployment broadcasts, API routes, and financial integration libraries in this repository. It describes coded or committed configuration paths, not current balances or a guarantee that each deployed integration is operational. Database-only credits (stored under legacy `shard_count` fields) are excluded because they are not blockchain assets or treasury pools.
 
 ## System Map
 
@@ -55,12 +55,11 @@ flowchart TB
         APPLEHOLDERS["Eligible APPLE holders"]:::actor
     end
 
-    subgraph PAYMENTS["Membership, rewards, and paid research"]
+    subgraph PAYMENTS["Membership and rewards"]
         BUYER["Membership buyer"]:::actor
         FINALIZE["Proposal finalization route<br/>CDP governance-token transfer path"]:::control
         QUEST["Quest USDC claim<br/>staff approved"]:::control
         RECIPIENT["Quest reward recipient"]:::actor
-        X402["x402 paid research client<br/>library present; no caller found"]:::dormant
     end
 
     subgraph MARKET["External market desk - not an EVM pool"]
@@ -124,7 +123,6 @@ flowchart TB
     BUYER -->|USDC or ETH membership payment| BLUEEOA
     BLUEEOA -->|ERC-1155 inventory transfer after verification| BUYER
     VIPNFT -. inventory and ownership record .-> BLUEEOA
-    BLUEEOA -. signs paid fetch when called .-> X402
     BLUEEOA -->|owner key can seal weeks| PATHWAY
 
     DATA --> SCANNER
@@ -146,7 +144,6 @@ flowchart TB
 | APPLE liquidity / reward rail | APPLE paired with USDC through Clanker / optional Uniswap V3 pool | `ADMIN_SECRET` starts deploy/distribution; Blue CDP wallet is requested as token admin/rewards/vault recipient | USDC distributions to eligible APPLE holders; 80% distributed and 20% retained subject to caps. |
 | Membership sale rail | ETH or USDC paid to Blue private-key wallet; VIP ERC-1155 inventory | Buyer pays; server verifies payment; Blue signer sends NFT | One VIP Membership Card to buyer. VIP ownership gates staff review and live Kalshi ordering. |
 | Kalshi execution rail | External Kalshi account, outside Base contracts | Any authenticated VIP-card holder can call the endpoint; server Kalshi RSA credentials sign the order | Live Kalshi orders. No coded movement from `BlueMarketTrader` or a Base USDC pool into Kalshi. |
-| x402 research rail | Base EVM payment client using Blue private-key signer | Code path exists in `lib/x402-research.ts`; no importing caller was found | Paid external research resources if integrated later. |
 
 ## Networks And Deployed Addresses
 
@@ -172,7 +169,7 @@ flowchart TB
 | `cre-workflows/trade-execute/config.production.json` has `traderAddress` set to `0x0000000000000000000000000000000000000000`. | Governance-triggered on-chain trading is not configured for the deployed V2 trader in the committed file. |
 | No production deployment or committed setter transaction for `MockPredictionMarket` / `BlueMarketTrader.setPredictionMarket` is present in the V2 artifacts. | The on-chain market position rail is implemented and tested, but a live configured counterparty is not evidenced here. |
 | The Kalshi VIP endpoint directly places orders with Kalshi credentials, while the on-chain trader only calls `buyOutcome` on a configured EVM market. | Kalshi trading and `BlueMarketTrader` must be treated as separate rails, not a single treasury pool. |
-| `lib/pathway-contract.ts` provides an on-chain sealing writer, but current `app/api/ethereal-progress/route.ts` writes seals and shard rewards to the database without calling it. | The pathway contract is blockchain state, but not a current financial-transfer path from the app route. |
+| `lib/pathway-contract.ts` provides an on-chain sealing writer, but current `app/api/ethereal-progress/route.ts` writes seals and credit rewards to the database without calling it. | The pathway contract is blockchain state, but not a current financial-transfer path from the app route. |
 | `.env.example` and several scripts retain legacy Azura names and old deployment addresses. | Resolve operational configuration against V2 addresses before using scripts for balances or automation. |
 
 ## Primary Sources

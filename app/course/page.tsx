@@ -649,7 +649,7 @@ export default function CoursePage() {
                     </div>
                   )}
                   <span className={styles.leagueName}>{u.username}</span>
-                  <span className={styles.leagueShards}>{u.shards} Gems</span>
+                  <span className={styles.leagueShards}>{u.shards} credits</span>
                 </div>
               ))}
               {!leaderboardLoading && leaderboard.length === 0 && (

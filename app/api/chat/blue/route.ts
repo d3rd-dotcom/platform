@@ -531,7 +531,7 @@ export async function POST(request: Request) {
     }
   }
 
-  // Normal chat: check shard balance
+  // Normal chat: check credit balance
   const rows = await sqlQuery<Array<{ shard_count: number }>>(
     'SELECT shard_count FROM users WHERE id = :id LIMIT 1',
     { id: user.id }
@@ -552,7 +552,7 @@ export async function POST(request: Request) {
     }, { status: 402 });
   }
 
-  // Deduct shards atomically
+  // Deduct credits atomically
   const updated = await sqlQuery<Array<{ shard_count: number }>>(
     `UPDATE users SET shard_count = shard_count - :cost
      WHERE id = :id AND shard_count >= :cost
@@ -587,7 +587,7 @@ export async function POST(request: Request) {
       shardsDeducted: SHARD_COST,
     });
   } catch (err: unknown) {
-    // Refund shards on failure
+    // Refund credits on failure
     await sqlQuery(
       'UPDATE users SET shard_count = shard_count + :cost WHERE id = :id',
       { id: user.id, cost: SHARD_COST }

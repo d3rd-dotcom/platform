@@ -3067,7 +3067,7 @@
   pointer-events: none;
 }
 
-/* Decorative shard vector */
+/* Decorative credit vector */
 .treasuryBalanceCard::after {
   content: '';
   position: absolute;
@@ -3182,7 +3182,7 @@
   pointer-events: none;
 }
 
-/* Decorative shard vector */
+/* Decorative credit vector */
 .recentActivityCard::after {
   content: '';
   position: absolute;

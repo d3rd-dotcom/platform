@@ -322,14 +322,14 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
   const claimButtonLabel = !ready
     ? 'Loading...'
     : !authenticated
-      ? 'Sign in to claim 50 Shards'
+      ? 'Sign in to claim 50 credits'
       : isClaiming
         ? 'Claiming...'
         : claimStatus === 'claimed'
-          ? '50 Shards awarded'
+          ? '50 credits awarded'
           : claimStatus === 'already-claimed'
             ? 'Already completed'
-            : 'Complete check-in (+50 Shards)';
+            : 'Complete check-in (+50 credits)';
 
   return (
     <>

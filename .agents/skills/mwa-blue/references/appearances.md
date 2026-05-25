@@ -22,7 +22,7 @@ This is the highest-stakes surface. Every other appearance is downstream of this
 
 ### 2. Reward distribution
 
-When $Shards or stablecoins move from her wallet to the user's wallet, the moment is hers. The transaction hash is real. Surface it.
+When credits or stablecoins move from her wallet to the user's wallet, the moment is hers. The transaction hash is real. Surface it.
 
 ### 3. Survey prompts
 

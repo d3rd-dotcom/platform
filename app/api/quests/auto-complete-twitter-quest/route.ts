@@ -35,7 +35,7 @@ export async function POST() {
     );
 
     if (existingCompletion.length > 0) {
-      // Already completed, return current shard count
+      // Already completed, return current credit count
       const shardRows = await sqlQuery<Array<{ shard_count: number }>>(
         `SELECT shard_count FROM users WHERE id = :id LIMIT 1`,
         { id: user.id }
@@ -178,17 +178,17 @@ export async function POST() {
       });
     }
 
-    // User is following! Award shards and complete quest
+    // User is following! Award credits and complete quest
     const { v4: uuidv4 } = await import('uuid');
 
-    // Get current shard count before update
+    // Get current credit count before update
     const shardRowsBefore = await sqlQuery<Array<{ shard_count: number }>>(
       `SELECT shard_count FROM users WHERE id = :id LIMIT 1`,
       { id: user.id }
     );
     const startingShards = shardRowsBefore[0]?.shard_count ?? 0;
 
-    // Award shards and record completion
+    // Award credits and record completion
     await sqlQuery(
       `UPDATE users 
        SET shard_count = shard_count + :shards 
@@ -203,7 +203,7 @@ export async function POST() {
       { id: completionId, userId: user.id, questId: TWITTER_FOLLOW_QUEST_ID, shards: SHARD_REWARD }
     );
 
-    // Get updated shard count
+    // Get updated credit count
     const shardRowsAfter = await sqlQuery<Array<{ shard_count: number }>>(
       `SELECT shard_count FROM users WHERE id = :id LIMIT 1`,
       { id: user.id }
@@ -216,7 +216,7 @@ export async function POST() {
       startingShards,
       newShardCount,
       isFollowing: true,
-      message: `Congratulations! You're following @${TARGET_USERNAME} and have earned ${SHARD_REWARD} shards!`,
+      message: `Congratulations! You're following @${TARGET_USERNAME} and have earned ${SHARD_REWARD} credits!`,
     });
   } catch (err: any) {
     console.error('Error auto-completing twitter quest:', err);

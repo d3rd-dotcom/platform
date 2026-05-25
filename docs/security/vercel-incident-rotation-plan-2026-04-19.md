@@ -182,7 +182,6 @@ These are public or configuration-only and are not secrets:
 
 Used by:
 - `app/api/voting/proposal/review/route.ts`
-- `lib/x402-research.ts`
 
 Action:
 - create a new reviewer wallet

@@ -133,7 +133,7 @@ export async function POST(request: Request) {
 
   // ─── Seal Flow ─────────────────────────────────────────────────────
   if (seal) {
-    // Upsert progress, mark sealed, and award shards atomically.
+    // Upsert progress, mark sealed, and award credits atomically.
     // Sealing is a normal system action and does not depend on prior weeks
     // or an on-chain attestation.
     let newShardCount = 0;
@@ -158,7 +158,7 @@ export async function POST(request: Request) {
         { userId: user.id, weekNumber }
       );
 
-      // Award 700 shards for sealing a week
+      // Award 700 credits for sealing a week
       const shardRows = await sqlQueryWithClient<Array<{ shard_count: number }>>(
         client,
         `UPDATE users SET shard_count = COALESCE(shard_count, 0) + 700 WHERE id = :userId

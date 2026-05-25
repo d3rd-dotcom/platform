@@ -690,7 +690,7 @@
   height: 20px;
 }
 
-/* Shards/Daemon Counter in Dropdown */
+/* Credits/Daemon Counter in Dropdown */
 .mobileShardsInDropdown {
   display: flex;
   flex-direction: row;

@@ -277,7 +277,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     }
   }, []);
 
-  // Fetch shard count
+  // Fetch the credit balance from the existing endpoint.
   const fetchShardCount = useCallback(async () => {
     if (!ready || !authenticated) {
       setShardCount(null);
@@ -298,7 +298,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     } catch { /* silent */ }
   }, [authHeaders, authenticated, ready]);
 
-  // VIP membership card holders unlock research mode without spending shards.
+  // VIP membership card holders unlock research mode without spending credits.
   const fetchVipStatus = useCallback(async () => {
     if (!ready || !authenticated) {
       setIsVipMember(false);
@@ -753,22 +753,22 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       return "discord.gg/ZTRVCYwncs — come say hi, we're in there.";
     }
 
-    // Shards — how to earn
-    if (has('earn shard', 'get shard', 'how do i earn', 'how do i get shard', 'earn gem', 'get gem', 'how do i get gem') || (hasAll('earn', 'shard')) || (hasAll('get', 'shard', 'how')) || (hasAll('earn', 'gem')) || (hasAll('get', 'gem', 'how'))) {
+    // Credits - how to earn; legacy terms remain recognized.
+    if (has('earn credit', 'get credit', 'how do i earn', 'how do i get credit', 'earn shard', 'get shard', 'how do i get shard', 'earn gem', 'get gem', 'how do i get gem') || (hasAll('earn', 'credit')) || (hasAll('get', 'credit', 'how')) || (hasAll('earn', 'shard')) || (hasAll('get', 'shard', 'how')) || (hasAll('earn', 'gem')) || (hasAll('get', 'gem', 'how'))) {
       return "quests, morning pages, sealing course weeks, surveys. show up daily and it stacks.";
     }
 
-    // Gems — cost
-    if (has('how much', 'cost shard', 'shard cost', 'spend shard', 'how many shard', 'cost gem', 'gem cost', 'spend gem', 'how many gem') || (hasAll('cost', 'chat')) || (hasAll('shard', 'cost')) || (hasAll('gem', 'cost'))) {
-      return "10 gems per chat turn. earn them back from quests and morning pages.";
+    // Credits - cost; legacy terms remain recognized.
+    if (has('how much', 'cost credit', 'credit cost', 'spend credit', 'how many credit', 'cost shard', 'shard cost', 'spend shard', 'how many shard', 'cost gem', 'gem cost', 'spend gem', 'how many gem') || (hasAll('cost', 'chat')) || (hasAll('credit', 'cost')) || (hasAll('shard', 'cost')) || (hasAll('gem', 'cost'))) {
+      return "10 credits per chat turn. earn them back from quests and morning pages.";
     }
 
-    // Gems — balance / general
-    if (has('shard', 'gem') || (hasAll('my', 'balance')) || (hasAll('how many', 'point'))) {
+    // Credits - balance / general; legacy terms remain recognized.
+    if (has('credit', 'shard', 'gem') || (hasAll('my', 'balance')) || (hasAll('how many', 'point'))) {
       const bal = shardCount;
       return bal !== null
-        ? `you got ${bal.toLocaleString()} gems rn. keep stacking from quests and morning pages.`
-        : "your gem balance is on the home dashboard. quests and morning pages build it fastest.";
+        ? `you got ${bal.toLocaleString()} credits rn. keep stacking from quests and morning pages.`
+        : "your credit balance is on the home dashboard. quests and morning pages build it fastest.";
     }
 
     // Morning pages / journaling
@@ -788,7 +788,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
     // Quests
     if (has('quest', 'daily task', 'daily mission', 'daily quest', 'mission')) {
-      return "short daily tasks that earn gems — morning pages, X posts, course stuff. check quests for what's live rn.";
+      return "short daily tasks that earn credits - morning pages, X posts, course stuff. check quests for what's live rn.";
     }
 
     // Surveys / assessments
@@ -846,12 +846,12 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
     // Earning money / monetizing research
     if (has('earn money', 'make money', 'get paid', 'monetize', 'income', 'revenue', 'royalt')) {
-      return "gem payouts from contributions, validated surveys, or treasury proposals. pick a lane.";
+      return "credit payouts from contributions, validated surveys, or treasury proposals. pick a lane.";
     }
 
     // Rewards / shop / loot
-    if (has('reward', 'loot', 'loot box', 'prize', 'unlock') || (hasAll('shop', 'buy')) || (hasAll('spend', 'shard')) || (hasAll('spend', 'gem'))) {
-      return "where gems go — loot boxes, upgrades, season drops. check rewards.";
+    if (has('reward', 'loot', 'loot box', 'prize', 'unlock') || (hasAll('shop', 'buy')) || (hasAll('spend', 'credit')) || (hasAll('spend', 'shard')) || (hasAll('spend', 'gem'))) {
+      return "where credits go - loot boxes, upgrades, season drops. check rewards.";
     }
 
     // Library
@@ -941,7 +941,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
     // Season / seasons
     if (has('season')) {
-      return "seasons are the long arc — gem resets, loot cycles, leaderboard. stay consistent and it stacks.";
+      return "seasons are the long arc - credit resets, loot cycles, leaderboard. stay consistent and it stacks.";
     }
 
     // What can I do / features / general help
@@ -951,7 +951,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
     // Help / generic help request
     if (has('help') && t.length < 30) {
-      return "course, gems, research, markets, Discord — what do you need?";
+      return "course, credits, research, markets, Discord - what do you need?";
     }
 
     // BetterHelp / extractive wellness platforms
@@ -989,7 +989,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       return "tell me why. i'm more useful when you push back.";
     }
 
-    // Generic shard balance / treasury balance catch
+    // Generic credit balance / treasury balance catch
     if (has('balance', 'how much', 'treasury')) {
       return treasury.balance
         ? `treasury's at $${treasury.balance} USDC.`
@@ -1054,8 +1054,8 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       const bal = shardCount;
       addBlueMessage(
         bal !== null
-          ? `quests, morning pages every day, seal course weeks. you got ${bal.toLocaleString()} gems rn — keep stacking.`
-          : "quests, morning pages every day, seal course weeks. gems stack, you level. that's the loop."
+          ? `quests, morning pages every day, seal course weeks. you got ${bal.toLocaleString()} credits rn - keep stacking.`
+          : "quests, morning pages every day, seal course weeks. credits stack, you level. that's the loop."
       );
     } else if (action === 'bci-lore') {
       send("What's new this week?", 'happy');
@@ -1173,7 +1173,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     const lines = [
       `source: ${debug.source}`,
       `mode: ${debug.mode}`,
-      `gems spent: ${debug.shardsDeducted}`,
+      `credits spent: ${debug.shardsDeducted}`,
     ];
 
     if (typeof debug.shardBalance === 'number') {
@@ -1209,9 +1209,9 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     return lines;
   };
 
-  const shardUpsellTitle = 'You are out of gems';
+  const shardUpsellTitle = 'You are out of credits';
   const shardUpsellBody = shardUpsell
-    ? `You need ${shardUpsell.required.toLocaleString()} gems to continue. You currently have ${shardUpsell.current.toLocaleString()}. Purchase more to keep the conversation going.`
+    ? `You need ${shardUpsell.required.toLocaleString()} credits to continue. You currently have ${shardUpsell.current.toLocaleString()}. Purchase more to keep the conversation going.`
     : '';
 
   const chatContent = (

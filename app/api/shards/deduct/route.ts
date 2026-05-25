@@ -29,7 +29,7 @@ export async function POST(request: Request) {
   );
 
   if (rows.length === 0) {
-    return NextResponse.json({ error: 'Insufficient gems' }, { status: 402 });
+    return NextResponse.json({ error: 'Insufficient credits' }, { status: 402 });
   }
 
   return NextResponse.json({ shardsRemaining: rows[0].shard_count });

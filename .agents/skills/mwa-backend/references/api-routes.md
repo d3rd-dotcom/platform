@@ -16,7 +16,7 @@ app/api/
 ├── ethereal-progress/ — pathway state, weekly seals
 ├── leaderboard/     — streaks, rankings
 ├── quests/          — quest CRUD and submission
-├── shards/          — $Shards balance, transactions
+├── shards/          — credit balance, transactions
 ├── treasury/        — Kalshi prices, trades, balance, distribution
 ├── voice/           — TTS via Eliza
 └── webhooks/        — inbound from external services

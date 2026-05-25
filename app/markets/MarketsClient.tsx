@@ -443,7 +443,7 @@ export default function Markets() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isModelDetailsOpen]);
 
-  // Fetch SHARDS stats and execution logs
+  // Fetch credit stats and execution logs
   useEffect(() => {
     fetchShardStats();
     fetchExecutionLogs();
@@ -613,7 +613,7 @@ export default function Markets() {
       `price gap: ${derived.divergence >= 0 ? '+' : ''}${derived.divergence.toFixed(2)}%`,
       `size cap: 0.25x`,
       `USDC markets balance: ${balance ? '$' + balance.formatted : 'not loaded'}`,
-      `SHARDS price: ${shardStats ? formatPrice(shardStats.price) : 'not loaded'}`,
+      `Credits price: ${shardStats ? formatPrice(shardStats.price) : 'not loaded'}`,
       '',
       'Price snapshot:',
       priceSnapshot,

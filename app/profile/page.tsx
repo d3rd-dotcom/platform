@@ -248,7 +248,7 @@ export default function ProfilePage() {
 
       if (!res.ok) {
         const errorMessage = data?.error === 'insufficient_shards'
-          ? `You need ${REREAD_SHARD_COST} gems to reread this page.`
+          ? `You need ${REREAD_SHARD_COST} credits to reread this page.`
           : data?.error === 'note_not_found'
             ? 'This morning page is no longer available to reread.'
             : 'The reread could not be opened right now.';
@@ -455,7 +455,7 @@ export default function ProfilePage() {
                     className={dayClassName}
                     onClick={() => openRereadModal(day.dateKey)}
                     aria-label={`Reread morning page for ${formatReadableDate(day.dateKey)}`}
-                    title={`Reread ${formatReadableDate(day.dateKey)} for ${REREAD_SHARD_COST} gems`}
+                    title={`Reread ${formatReadableDate(day.dateKey)} for ${REREAD_SHARD_COST} credits`}
                   >
                     <span className={styles.dayNumber}>{day.date.getDate()}</span>
                   </button>
@@ -467,7 +467,7 @@ export default function ProfilePage() {
               <span className={styles.legendSwatch} />
               <span className={styles.legendText}>Morning pages completed</span>
             </div>
-            <p className={styles.calendarHint}>Tap a completed day to reread it for 50 gems.</p>
+            <p className={styles.calendarHint}>Tap a completed day to reread it for 50 credits.</p>
           </section>
 
           <section className={styles.tipCard}>
@@ -528,7 +528,7 @@ export default function ProfilePage() {
                 </div>
                 <div className={styles.rereadFooter}>
                   <span className={styles.rereadBalance}>
-                    {user?.shardCount ?? 0} shards remaining
+                    {user?.shardCount ?? 0} credits remaining
                   </span>
                   <button
                     type="button"
@@ -542,12 +542,12 @@ export default function ProfilePage() {
             ) : (
               <>
                 <p className={styles.rereadCopy}>
-                  Spend {REREAD_SHARD_COST} gems to reopen this completed morning page. Access lasts for this view only.
+                  Spend {REREAD_SHARD_COST} credits to reopen this completed morning page. Access lasts for this view only.
                 </p>
                 <div className={styles.rereadCostRow}>
                   <span className={styles.rereadCostBadge}>
                     <Image src="/icons/ui-shard.svg" alt="" width={16} height={16} />
-                    {REREAD_SHARD_COST} gems
+                    {REREAD_SHARD_COST} credits
                   </span>
                   <span className={styles.rereadBalance}>
                     {user?.shardCount ?? 0} available
@@ -571,7 +571,7 @@ export default function ProfilePage() {
                     onClick={unlockReread}
                     disabled={rereadModal.isLoading}
                   >
-                    {rereadModal.isLoading ? 'Opening...' : 'Spend 50 gems'}
+                    {rereadModal.isLoading ? 'Opening...' : 'Spend 50 credits'}
                   </button>
                 </div>
               </>

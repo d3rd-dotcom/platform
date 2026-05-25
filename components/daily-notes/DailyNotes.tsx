@@ -285,7 +285,7 @@ export default function DailyNotes({
             window.dispatchEvent(new Event('shardsUpdated'));
           }
         } catch (err) {
-          console.error('[DailyNotes] Shard award error:', err);
+          console.error('[DailyNotes] Credit award error:', err);
         }
       })();
     }
@@ -814,8 +814,8 @@ export default function DailyNotes({
                 </svg>
               </div>
             ) : (
-              <span className={styles.shardBadge} title="Earn 100 gems per day completed">
-                <Image src="/icons/ui-shard.svg" alt="gem" width={14} height={14} />
+              <span className={styles.shardBadge} title="Earn 100 credits per day completed">
+                <Image src="/icons/ui-shard.svg" alt="credits" width={14} height={14} />
                 +100
               </span>
             )}

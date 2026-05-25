@@ -229,9 +229,9 @@ export default function SurveyController({
         <section className={styles.scaleCard}>
           <div className={styles.row}>
             <span className={styles.eyebrow}>Test scale</span>
-            <div className={styles.shardBadge} aria-label={`${shardReward} gems earned for this test`}>
+            <div className={styles.shardBadge} aria-label={`${shardReward} credits earned for this test`}>
               <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} className={styles.shardIcon} />
-              +{shardReward} gems
+              +{shardReward} credits
             </div>
           </div>
 
@@ -250,7 +250,7 @@ export default function SurveyController({
             style={{ '--progress': `${progress}%` } as React.CSSProperties}
           />
           <p className={styles.helperText}>
-            Higher difficulty means harder questions and a larger gem payout.
+            Higher difficulty means harder questions and a larger credit payout.
           </p>
         </section>
       )}

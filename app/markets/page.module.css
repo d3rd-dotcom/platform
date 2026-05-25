@@ -158,7 +158,7 @@
   font-weight: var(--font-weight-bold);
 }
 
-/* ── SHARDS Stats Bar ── */
+/* Credit Stats Bar */
 .shardBar {
   display: flex;
   align-items: center;

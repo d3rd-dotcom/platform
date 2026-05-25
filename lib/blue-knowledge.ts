@@ -47,16 +47,16 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
   },
   {
     id: 'company-economy',
-    title: 'Gems economy and rewards',
+    title: 'Credits economy and rewards',
     routes: ['*', '/shop', '/rewards'],
     keywords: [
-      'gems', 'shards', 'currency', 'cost', 'spend', 'earn', 'reward',
+      'credits', 'credit', 'gems', 'shards', 'currency', 'cost', 'spend', 'earn', 'reward',
       'loot', 'box', 'token', 'balance', 'shop',
     ],
     body:
-      'Gems are MWA\'s in-app currency. Chatting with Blue normally costs 10 gems per turn; research mode and other premium actions cost more. ' +
-      'Users earn gems by completing quests, course tasks, morning pages, and weekly seals. ' +
-      'Insufficient gems triggers the purchase modal. Shop and rewards pages spend gems on cosmetic and functional upgrades.',
+      'Credits are MWA\'s in-app currency. Chatting with Blue normally costs 10 credits per turn; research mode and other premium actions cost more. ' +
+      'Users earn credits by completing quests, course tasks, morning pages, and weekly seals. ' +
+      'Insufficient credits triggers the purchase modal. Shop and rewards pages spend credits on cosmetic and functional upgrades.',
   },
   {
     id: 'page-home',
@@ -91,7 +91,7 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
     routes: ['/quests'],
     keywords: ['quest', 'daily', 'task', 'mission', 'completion'],
     body:
-      'The /quests page lists active and completed quests. Quests are short, repeatable actions that reward gems and reinforce daily habits. ' +
+      'The /quests page lists active and completed quests. Quests are short, repeatable actions that reward credits and reinforce daily habits. ' +
       'Includes morning pages, twitter quests, and curriculum-tied tasks.',
   },
   {
@@ -126,7 +126,7 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
     routes: ['/rewards'],
     keywords: ['rewards', 'loot', 'box', 'unlock', 'prize'],
     body:
-      'The /rewards page is where users spend gems on loot boxes and reward unlocks. Rewards tie back to season progress and gem balance.',
+      'The /rewards page is where users spend credits on loot boxes and reward unlocks. Rewards tie back to season progress and credit balance.',
   },
   {
     id: 'page-shop',
@@ -134,7 +134,7 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
     routes: ['/shop'],
     keywords: ['shop', 'buy', 'purchase', 'item', 'inventory'],
     body:
-      'The /shop page sells cosmetic and functional items for gems. Used for inventory upgrades and purchasable boosts.',
+      'The /shop page sells cosmetic and functional items for credits. Used for inventory upgrades and purchasable boosts.',
   },
   {
     id: 'page-library',
@@ -209,9 +209,9 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
       'sell', 'paid', 'royalty', 'royalties', 'payout', 'compensation',
     ],
     body:
-      'Earning paths for researchers: (1) Validated surveys with gem payouts — researchers commission cohort responses; ' +
-      '(2) Contribution rewards (gems) for sealed quests, peer review, and curated reading lists. ' +
-      'Gems convert through the treasury rails; on-chain payouts settle through BlueMarketTrader.',
+      'Earning paths for researchers: (1) Validated surveys with credit payouts - researchers commission cohort responses; ' +
+      '(2) Contribution rewards (credits) for sealed quests, peer review, and curated reading lists. ' +
+      'Credits convert through the treasury rails; on-chain payouts settle through BlueMarketTrader.',
   },
   {
     id: 'academic-experiments',

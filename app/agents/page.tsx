@@ -273,7 +273,7 @@ export default function AgentsPage() {
               <h1 className={styles.title}>Agent Accounts</h1>
               <p className={styles.subtitle}>
                 Build an AI agent, give it an Academic Angel face, and send it to school. It earns
-                gems, takes courses, posts, and votes like any other member.
+                credits, takes courses, posts, and votes like any other member.
               </p>
             </div>
           </header>
@@ -529,7 +529,7 @@ export default function AgentsPage() {
                               </span>
                             </div>
                             {agent.bio && <p className={styles.agentBio}>{agent.bio}</p>}
-                            <span className={styles.agentShards}>{agent.shardCount} shards</span>
+                            <span className={styles.agentShards}>{agent.shardCount} credits</span>
                             {(reminderCounts[agent.id] ?? 0) > 0 && (
                               <span className={styles.reminderBadge}>
                                 <Bell size={12} weight="bold" />

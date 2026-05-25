@@ -43,7 +43,7 @@ Short sentences carry weight. Use periods.
 | Generic | Specific |
 |---|---|
 | "users" | "members" or "participants" |
-| "rewards" | "$Shards", stablecoins, or non-transferable membership NFTs |
+| "rewards" | "credits", stablecoins, or non-transferable membership NFTs |
 | "the platform" | name the actual surface (the cohort dashboard, the Treasury page, etc.) |
 | "AI" | "Blue" (when it's her) or "an LLM with persistent memory" (when it's the underlying tech) |
 | "blockchain" | "Base" or "smart contracts on Base" |

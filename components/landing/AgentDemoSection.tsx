@@ -20,8 +20,8 @@ const SCRIPT: Line[] = [
   { kind: 'task', text: 'blue.distribute_reward', duration: '0.6s' },
   { kind: 'blank', text: '' },
   { kind: 'finding', text: 'finding: 14-day reflection streak — shadow coherence rising' },
-  { kind: 'overview', text: 'overview: trust ↑ 12%, parasocial baseline stable, gem yield 38%' },
-  { kind: 'saved', text: '→ 47 gems saved to wallet 0x2c…1992d' },
+  { kind: 'overview', text: 'overview: trust up 12%, parasocial baseline stable, credit yield 38%' },
+  { kind: 'saved', text: '47 credits saved to wallet 0x2c...1992d' },
 ];
 
 const TYPE_SPEED_MS = 28;

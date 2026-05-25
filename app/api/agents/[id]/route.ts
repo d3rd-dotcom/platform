@@ -18,7 +18,7 @@ export const dynamic = 'force-dynamic';
 
 /**
  * GET /api/agents/[id]
- * Per-agent detail for the owning operator: identity, shard balance, quests
+ * Per-agent detail for the owning operator: identity, credit balance, quests
  * completed, and tests/questions taken.
  */
 export async function GET(_request: Request, { params }: { params: { id: string } }) {

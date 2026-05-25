@@ -373,7 +373,7 @@ export default function AgentDetailPage({ params }: { params: { id: string } }) 
               <div className={styles.statGrid}>
                 <div className={styles.statCard}>
                   <span className={styles.statValue}>{detail.agent.shardCount}</span>
-                  <span className={styles.statLabel}>Gems earned</span>
+                  <span className={styles.statLabel}>Credits earned</span>
                 </div>
                 <div className={styles.statCard}>
                   <span className={styles.statValue}>{detail.morningPages.totalEntries}</span>
@@ -599,7 +599,7 @@ export default function AgentDetailPage({ params }: { params: { id: string } }) 
                       <li key={q.questId} className={styles.itemRow}>
                         <span className={styles.itemName}>{q.questId}</span>
                         <span className={styles.itemMeta}>
-                          {formatDate(q.completedAt)} · +{q.shardsAwarded} gems
+                          {formatDate(q.completedAt)} · +{q.shardsAwarded} credits
                         </span>
                       </li>
                     ))}

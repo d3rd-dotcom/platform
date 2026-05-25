@@ -32,7 +32,7 @@ const GameCard: React.FC<GameCardProps> = ({
         <div className={styles.shardBox}>
           <Image
             src={shardIcon}
-            alt="Gem"
+            alt="Credits"
             width={65}
             height={65}
             className={styles.shardIcon}

@@ -205,7 +205,7 @@ export const MembershipSection: React.FC = () => {
               </li>
               <li className={styles.tierFeature}>
                 <span className={styles.featureCheck}><CheckIcon /></span>
-                Gem rewards for study
+                Credit rewards for study
               </li>
             </ul>
             <a

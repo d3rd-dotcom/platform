@@ -379,7 +379,7 @@ const Navbar: React.FC = () => {
                       </Link>
                     </div>
                     <div className={styles.profileDropdownMenu}>
-                      {/* Mobile Shards Counter in Dropdown */}
+                      {/* Mobile Credits Counter in Dropdown */}
                       <div className={styles.mobileShardsInDropdown}>
                         <Image
                           src="/icons/ui-shard.svg"

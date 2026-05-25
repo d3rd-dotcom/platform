@@ -349,7 +349,7 @@ export async function POST(request: NextRequest) {
       if (recent.length > 0) {
         return NextResponse.json(
           {
-            error: 'You can only complete one survey per week. Check back soon to earn more gems.',
+            error: 'You can only complete one survey per week. Check back soon to earn more credits.',
             nextAvailable: recent[0].next_available,
           },
           { status: 429 }

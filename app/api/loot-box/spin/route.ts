@@ -36,7 +36,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    // Atomically deduct shards and return new count — eliminates race condition
+    // Atomically deduct credits and return the new count.
     const rows = await sqlQuery<Array<{ shard_count: number }>>(
       `UPDATE users
        SET shard_count = shard_count - :cost
@@ -47,7 +47,7 @@ export async function POST(request: Request) {
 
     if (rows.length === 0) {
       return NextResponse.json(
-        { error: 'Not enough gems to spin.' },
+        { error: 'Not enough credits to spin.' },
         { status: 400 }
       );
     }

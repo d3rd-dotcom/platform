@@ -146,7 +146,7 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
           </label>
 
           <label className={styles.field}>
-            <span className={styles.label}>Gems</span>
+            <span className={styles.label}>Credits</span>
             <input
               className={styles.input}
               type="number"
@@ -227,7 +227,7 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
                   <div className={styles.itemBody}>
                     <span className={styles.itemTitle}>{q.title}</span>
                     <span className={styles.itemMetaRow}>
-                      <span className={styles.itemMetaChip}>{q.points} gems</span>
+                      <span className={styles.itemMetaChip}>{q.points} credits</span>
                       <span className={styles.itemMetaChip}>{q.questType === 'no-proof' ? 'Mission' : 'Submit'}</span>
                       {q.targetCount > 1 && (
                         <span className={styles.itemMetaChip}>×{q.targetCount}</span>

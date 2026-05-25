@@ -29,7 +29,7 @@ export async function GET() {
       });
     }
 
-    // Get shard count and onboarding status from database
+    // Get credit count and onboarding status from database
     const userRows = await sqlQuery<Array<{ shard_count: number; selected_avatar_id: string | null; avatar_url: string | null }>>(
       `SELECT shard_count, selected_avatar_id, avatar_url FROM users WHERE id = :id LIMIT 1`,
       { id: user.id }

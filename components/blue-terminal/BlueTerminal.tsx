@@ -165,7 +165,7 @@ export default function BlueTerminal({
       setCompletionResult(result ?? null);
       setSubmitted(true);
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Gem award failed.';
+      const message = error instanceof Error ? error.message : 'Credit award failed.';
       setSubmissionError(message);
     } finally {
       setIsSubmitting(false);
@@ -343,11 +343,11 @@ export default function BlueTerminal({
           <h3 className={styles.statusTitle}>Survey submitted</h3>
           <p className={styles.statusText}>
             {completionResult
-              ? `You earned ${completionResult.shardsAwarded} $Gems for this submission.`
+              ? `You earned ${completionResult.shardsAwarded} credits for this submission.`
               : 'Your responses were recorded.'}
           </p>
           {completionResult?.newShardCount !== null && completionResult?.newShardCount !== undefined && (
-            <p className={styles.statusText}>Current balance: {completionResult.newShardCount} $Shards.</p>
+            <p className={styles.statusText}>Current balance: {completionResult.newShardCount} credits.</p>
           )}
           <p className={styles.statusNote}>Blue will use this submission to calibrate future reviews.</p>
         </div>

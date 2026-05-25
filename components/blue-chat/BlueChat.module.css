@@ -367,7 +367,7 @@
   }
 }
 
-/* Shard Confirmation */
+/* Credit Confirmation */
 .shardConfirm {
   display: flex;
   flex-direction: column;
@@ -489,7 +489,7 @@
   gap: 8px;
 }
 
-/* Shard Counter — inline with quick actions */
+/* Credit Counter - inline with quick actions */
 .shardCounter {
   display: flex;
   align-items: center;

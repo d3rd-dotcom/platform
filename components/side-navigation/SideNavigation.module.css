@@ -220,7 +220,7 @@
   overflow: hidden;
 }
 
-/* (topSection removed — wallet/gems/chat moved to bottomSection) */
+/* (topSection removed - wallet/credits/chat moved to bottomSection) */
 
 @keyframes chatGlow {
   0%   { border-color: rgba(81, 104, 255, 0.25); box-shadow: 0 0 8px rgba(81, 104, 255, 0.1); }
@@ -1005,7 +1005,7 @@
   gap: 8px;
 }
 
-/* Shards Counter */
+/* Credits Counter */
 .shardsCounter {
   flex: 1;
   display: flex;

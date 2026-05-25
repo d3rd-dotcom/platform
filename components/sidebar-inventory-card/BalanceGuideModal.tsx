@@ -69,7 +69,7 @@ export default function BalanceGuideModal({
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <section className={styles.modal} role="dialog" aria-modal="true" aria-label="Credits and membership details">
+      <section className={styles.modal} role="dialog" aria-modal="true" aria-label="Credits, tickets, and membership details">
         <button type="button" className={styles.close} onClick={onClose} aria-label="Close">
           <X size={18} weight="bold" />
         </button>
@@ -101,8 +101,8 @@ export default function BalanceGuideModal({
               <dd>Earn through quests, course milestones, surveys, and check-ins. Spend on Blue and Academy rewards.</dd>
             </div>
             <div className={styles.reward}>
-              <dt>Votes</dt>
-              <dd>Governance weight. This balance appears only when your wallet holds voting power.</dd>
+              <dt>Tickets</dt>
+              <dd>Governance weight from your connected wallet. The balance is zero until voting power is available.</dd>
             </div>
             <div className={styles.reward}>
               <dt>USDC</dt>

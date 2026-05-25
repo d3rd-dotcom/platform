@@ -60,7 +60,7 @@ export const ShardAnimation: React.FC<ShardAnimationProps> = ({ shards, onComple
         <div className={styles.shardIconContainer}>
           <Image
             src="/icons/ui-shard.svg"
-            alt="Gem"
+            alt="Credits"
             width={48}
             height={48}
             className={styles.shardIcon}
@@ -68,7 +68,7 @@ export const ShardAnimation: React.FC<ShardAnimationProps> = ({ shards, onComple
         </div>
         <div className={styles.shardText}>
           <div className={styles.shardLabel}>+{displayShards}</div>
-          <div className={styles.shardSubtext}>Gems Earned!</div>
+          <div className={styles.shardSubtext}>Credits earned!</div>
         </div>
       </div>
     </div>

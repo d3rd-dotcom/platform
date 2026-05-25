@@ -23,7 +23,7 @@ function needsProfile(user: MeUser | null) {
 /**
  * The platform is free to browse without an account. This component no longer
  * blocks any route — it only creates an account and surfaces profile onboarding
- * for users who choose to sign in (so shards, points, and rewards can be tracked).
+ * for users who choose to sign in (so credits, points, and rewards can be tracked).
  */
 export default function AcademyAccessGate({ children }: { children: ReactNode }) {
   const { ready, authenticated, getAccessToken } = usePrivy();

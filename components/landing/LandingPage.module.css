@@ -537,7 +537,7 @@
   pointer-events: none;
 }
 
-/* Decorative shard vector */
+/* Decorative credit vector */
 .heroValueCard::after {
   content: '';
   position: absolute;

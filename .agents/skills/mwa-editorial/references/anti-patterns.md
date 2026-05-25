@@ -66,7 +66,7 @@ Feature card titles, nav labels, and section headers should name the **category*
 |---|---|
 | Twelve-Week Cohort | A Cohort For Next-Gen Scientists |
 | Blue Reviews Your Work | Ascend with Paradigmic Research |
-| Shards You Actually Own | Universal Credit System |
+| Credits You Actually Own | Universal Credit System |
 | Disposable Apps, Lasting Value | Meta-Parasocial & Cybersecurity Research Programs |
 | Memory That Compounds | Certified Academic Labs |
 | One NFT, Full Access | Lifetime Membership |

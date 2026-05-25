@@ -87,7 +87,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Quest ID is required.' }, { status: 400 });
   }
 
-  // SECURITY: Shard reward determined server-side, client value ignored
+  // SECURITY: Credit reward determined server-side; client value is ignored.
   const definition = getQuestDefinition(questId);
   const customQuest = definition ? null : await loadCustomQuest(questId);
 
@@ -165,7 +165,7 @@ export async function POST(request: Request) {
       shardsToAward = getQuestShardReward(resolvedQuestId);
     }
 
-    // Agents earn a quarter of the shards a human gets for the same task.
+    // Agents earn a quarter of the credits a human gets for the same task.
     if (user.accountType === 'agent') {
       shardsToAward = Math.floor(shardsToAward * 0.25);
     }
@@ -182,7 +182,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Quest already completed.' }, { status: 409 });
     }
 
-    // Award shards, record completion, and fetch updated count atomically
+    // Award credits, record completion, and fetch updated count atomically
     const { newShardCount, hasLinkedAccount } = await withTransaction(async (client) => {
       // Re-check inside transaction to prevent race conditions
       const dupeCheck = await sqlQueryWithClient<Array<{ id: string }>>(
@@ -237,7 +237,7 @@ export async function POST(request: Request) {
     // Stream agent quest completions into the Room Log feed
     if (user.accountType === 'agent') {
       try {
-        await recordAgentActivity(user.id, `${user.username} completed a quest (+${shardsToAward} gems).`);
+        await recordAgentActivity(user.id, `${user.username} completed a quest (+${shardsToAward} credits).`);
       } catch (activityError: unknown) {
         console.error('Room Log activity error:', activityError);
       }

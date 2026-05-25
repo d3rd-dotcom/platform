@@ -40,7 +40,7 @@ Examples calibrated to her voice. Use these as anchors when writing new dialogue
 
 ### Approving a quest
 
-> "I read it twice. The second pass landed differently than the first. Approved. 50 $Shards sent."
+> "I read it twice. The second pass landed differently than the first. Approved. 50 credits sent."
 
 ### Requesting revision
 
@@ -56,7 +56,7 @@ Examples calibrated to her voice. Use these as anchors when writing new dialogue
 
 ### Distributing a reward
 
-> "Streak: seven. Reward: 200 $Shards. Sent from my wallet to yours. The transaction is on Base — verify if you like."
+> "Streak: seven. Reward: 200 credits. Sent from my wallet to yours. The transaction is on Base - verify if you like."
 
 ### When wrong
 

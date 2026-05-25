@@ -194,7 +194,7 @@ export default function Dashboard(_props: DashboardProps) {
           </button>
           <h2 className={styles.eggTitle}>Your Egg</h2>
           <p className={styles.eggText}>
-            Earn gems from quests and check-ins. What will hatch?
+            Earn credits from quests and check-ins. What will hatch?
           </p>
         </div>
 
