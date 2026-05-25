@@ -22,6 +22,19 @@
 // the real backend host is never exposed to the browser.
 const BASE_URL = '/api/sim-proxy';
 
+type AccessTokenProvider = () => Promise<string | null>;
+
+let accessTokenProvider: AccessTokenProvider | null = null;
+
+/**
+ * Registers the Privy token source for authenticated simulation operations.
+ * The gate sets this before rendering the workspace, so proxy requests can
+ * satisfy the same server-side auth check used for membership verification.
+ */
+export function setSimulationAccessTokenProvider(provider: AccessTokenProvider | null) {
+  accessTokenProvider = provider;
+}
+
 // ── Envelope + core types ──
 
 export interface Envelope<T> {
@@ -191,6 +204,10 @@ async function request<T = unknown>(
   if (json !== undefined) {
     headers.set('Content-Type', 'application/json');
     body = JSON.stringify(json);
+  }
+  if (!headers.has('Authorization') && accessTokenProvider) {
+    const token = await accessTokenProvider().catch(() => null);
+    if (token) headers.set('Authorization', `Bearer ${token}`);
   }
   const res = await fetch(`${BASE_URL}${path}`, {
     ...rest,

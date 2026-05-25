@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import ProMembershipModal from '@/components/pro-membership-modal/ProMembershipModal';
+import { setSimulationAccessTokenProvider } from '@/lib/simulation-api';
 import SimulationWorkspace from './SimulationWorkspace';
 import styles from './simulation.module.css';
 
@@ -26,9 +27,13 @@ export default function SimulationGate() {
   useEffect(() => {
     if (!ready) return;
     if (!authenticated) {
+      setSimulationAccessTokenProvider(null);
       setAccess('denied');
       return;
     }
+    // All workspace calls pass through the authenticated server-side proxy.
+    // Keep token retrieval live so longer simulations survive token refreshes.
+    setSimulationAccessTokenProvider(getAccessToken);
     let cancelled = false;
     (async () => {
       try {
@@ -46,6 +51,7 @@ export default function SimulationGate() {
     })();
     return () => {
       cancelled = true;
+      setSimulationAccessTokenProvider(null);
     };
   }, [ready, authenticated, getAccessToken]);
 

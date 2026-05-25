@@ -86,8 +86,24 @@ async function forward(request: NextRequest, path: string[]): Promise<NextRespon
     );
   }
 
-  const outHeaders = new Headers();
   const resContentType = res.headers.get('content-type');
+  if (!isPublicHealthCheck && !resContentType?.toLowerCase().includes('application/json')) {
+    console.error('[Simulation Proxy] Backend API returned a non-JSON response', {
+      path: `/${path.join('/')}`,
+      status: res.status,
+      contentType: resContentType,
+    });
+    return NextResponse.json(
+      {
+        success: false,
+        error:
+          'Simulation service returned an unexpected response. Check SIMULATION_API_URL and the backend deployment.',
+      },
+      { status: 502 },
+    );
+  }
+
+  const outHeaders = new Headers();
   if (resContentType) outHeaders.set('content-type', resContentType);
   const buf = Buffer.from(await res.arrayBuffer());
   return new NextResponse(buf, { status: res.status, headers: outHeaders });

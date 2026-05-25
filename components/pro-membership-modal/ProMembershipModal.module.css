@@ -2,17 +2,19 @@
 
 .overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2000;
-  padding: 20px;
+  padding:
+    calc(20px + env(safe-area-inset-top))
+    calc(20px + env(safe-area-inset-right))
+    calc(20px + env(safe-area-inset-bottom))
+    calc(20px + env(safe-area-inset-left));
+  overflow: hidden;
   animation: fadeIn 0.2s ease;
 }
 
@@ -30,8 +32,10 @@
   width: 100%;
   position: relative;
   animation: slideUp 0.3s ease;
-  max-height: 90vh;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  max-height: min(90dvh, calc(100dvh - 40px - env(safe-area-inset-top) - env(safe-area-inset-bottom)));
+  overflow: hidden;
 }
 
 @keyframes slideUp {
@@ -76,6 +80,10 @@
   flex-direction: column;
   align-items: center;
   padding: 24px;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
 }
 
 .imageWrapper {
@@ -259,13 +267,14 @@
   .overlay {
     padding: 16px;
     align-items: flex-start;
-    padding-top: 60px;
+    padding-top: calc(60px + env(safe-area-inset-top));
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
   }
 
   .modal {
     max-width: 100%;
     box-shadow: 4px 4px 0 #1A1D33;
-    max-height: calc(100vh - 80px);
+    max-height: calc(100dvh - 76px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
   }
 
   .content {
@@ -349,7 +358,8 @@
 @media (max-width: 380px) {
   .overlay {
     padding: 12px;
-    padding-top: 40px;
+    padding-top: calc(40px + env(safe-area-inset-top));
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
   }
 
   .content {
@@ -441,13 +451,16 @@
 }
 
 .backLink {
-  position: absolute;
-  top: 18px;
-  left: 18px;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  flex: 0 0 auto;
   z-index: 10;
-  background: none;
+  background: #ffffff;
+  border-radius: 999px;
   border: none;
   padding: 4px 6px;
+  margin: 0 0 12px -6px;
   font-family: var(--font-primary);
   font-size: 12px;
   font-weight: 700;
@@ -783,6 +796,10 @@
 :global([data-theme="dark"]) .loadingText,
 :global([data-theme="dark"]) .secureNote {
   color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .backLink {
+  background: #16171F;
 }
 
 :global([data-theme="dark"]) .orderSummary {
