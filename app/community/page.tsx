@@ -8,6 +8,7 @@ import type { TutorialStep } from '@/components/still-tutorial/StillTutorial';
 import TreasuryDisplay from '@/components/treasury-display/TreasuryDisplay';
 import ProposalCard from '@/components/proposal-card/ProposalCard';
 import ActivateVotesCard from '@/components/voting/ActivateVotesCard';
+import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
 
@@ -86,6 +87,9 @@ const SEED_POSTS: SeedPost[] = [
     replies: 7,
   },
 ];
+
+const COMMUNITY_BLUE_MESSAGE =
+  'Here is where I manage proposals for the treasury, and plans of action for Mental Wealth Academy organization. Transparently on the blockchain.';
 
 function relTime(ts: number): string {
   const s = Math.floor((Date.now() - ts) / 1000);
@@ -422,6 +426,12 @@ export default function VotingPage() {
                           </div>
                         </div>
                       </section>
+                      <BlueChatBubble
+                        className={styles.communityBlueBubble}
+                        message={COMMUNITY_BLUE_MESSAGE}
+                        variant="featured"
+                        stackOnMobile
+                      />
 
                       <div className={styles.communityCardRow}>
                         <article className={`${styles.dashCard} ${styles.fundingVillageCard}`}>

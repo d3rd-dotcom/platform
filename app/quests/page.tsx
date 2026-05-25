@@ -14,7 +14,7 @@ import UsdcReviewPanel from '@/components/usdc-review-panel/UsdcReviewPanel';
 import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
 
 const QUESTS_BLUE_MESSAGE =
-  'Quests unlock rewards — gems for everyone, and real USDC cash for Academic Angels.';
+  'Mental Wealth Academy provides credits and rewards for completionists dedicated to self-improvement and contribution to the ecosystem. Small steps make a difference.';
 import { useSound } from '@/hooks/useSound';
 import { QUEST_DEFINITIONS, QuestType } from '@/lib/quest-definitions';
 import styles from './page.module.css';

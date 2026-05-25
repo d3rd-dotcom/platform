@@ -37,7 +37,7 @@ const GEN_STEPS = [
 ];
 
 const HOME_BLUE_MESSAGE =
-  'I keep your plan, gems, agents, and daily work in one place. Pick the next task that can leave evidence today.';
+  'Mental Wealth Academy places unlimited positive belief that members can reach self-actualization and individual enlightenment through the courses, work, and tools we provide and make freely available.';
 
 export default function HomeBento() {
   const { ready, getAccessToken } = usePrivy();
@@ -164,11 +164,6 @@ export default function HomeBento() {
   // intake
   return (
     <div className={styles.bentoScroll}>
-      <BlueChatBubble
-        className={styles.homeBlueBubble}
-        message={HOME_BLUE_MESSAGE}
-        variant="featured"
-      />
       {errorMsg && (
         <div className={styles.intakeNotice} role="alert">
           {errorMsg}
