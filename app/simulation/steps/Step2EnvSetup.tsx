@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
 import * as api from '@/lib/simulation-api';
 import type { AgentProfile } from '@/lib/simulation-api';
 import { usePolling } from '../usePolling';
@@ -10,19 +11,35 @@ import styles from '../simulation.module.css';
 
 export default function Step2EnvSetup({
   wf,
+  onSimulationId,
   onReady,
 }: {
   wf: WorkflowState;
+  onSimulationId: (simulationId: string) => void;
   onReady: (simulationId: string) => void;
 }) {
   const [simId, setSimId] = useState<string | null>(wf.simulationId);
   const [taskId, setTaskId] = useState<string | null>(null);
   const [preparing, setPreparing] = useState(false);
   const [prepared, setPrepared] = useState(false);
+  const [checkingPreparation, setCheckingPreparation] = useState(Boolean(wf.simulationId));
   const [profiles, setProfiles] = useState<AgentProfile[]>([]);
   const [count, setCount] = useState(20);
   const [error, setError] = useState<string | null>(null);
   const ensuring = useRef(false);
+
+  const completePreparation = useCallback(async () => {
+    setPrepared(true);
+    setPreparing(false);
+    setTaskId(null);
+    if (!simId) return;
+    try {
+      const response = await api.getSimulationProfiles(simId, 'reddit');
+      setProfiles(response.data?.profiles ?? []);
+    } catch {
+      /* The setup is ready even if profile rendering fails temporarily. */
+    }
+  }, [simId]);
 
   // Ensure a simulation exists for this project.
   useEffect(() => {
@@ -36,29 +53,56 @@ export default function Step2EnvSetup({
           enable_reddit: true,
           enable_twitter: true,
         });
-        setSimId(res.data?.simulation_id ?? null);
+        const id = res.data?.simulation_id ?? null;
+        setCheckingPreparation(Boolean(id));
+        setSimId(id);
+        if (id) onSimulationId(id);
       } catch (e) {
         setError(e instanceof Error ? e.message : 'Could not create simulation');
       } finally {
         ensuring.current = false;
       }
     })();
-  }, [simId, wf.project.project_id, wf.graphId]);
+  }, [simId, wf.project.project_id, wf.graphId, onSimulationId]);
 
-  // Load any already-generated profiles.
+  // Restore preparation status when a world is reopened or a user visits another step.
   useEffect(() => {
     if (!simId) return;
-    api
-      .getSimulationProfiles(simId, 'reddit')
-      .then((res) => {
-        const list = res.data?.profiles ?? [];
-        if (list.length) {
-          setProfiles(list);
-          setPrepared(true);
+    let active = true;
+    setCheckingPreparation(true);
+    (async () => {
+      try {
+        const [simulation, preparation] = await Promise.all([
+          api.getSimulation(simId),
+          api.getPrepareStatus({ simulation_id: simId }),
+        ]);
+        if (!active) return;
+        const status = preparation.data?.status;
+        if (
+          preparation.data?.already_prepared ||
+          status === 'ready' ||
+          status === 'completed'
+        ) {
+          await completePreparation();
+        } else if (simulation.data?.status === 'preparing') {
+          setPreparing(true);
+          const partial = await api.getSimulationProfilesRealtime(simId, 'reddit').catch(() => null);
+          if (active && partial?.data?.profiles?.length) {
+            setProfiles(partial.data.profiles);
+          }
+        } else if (simulation.data?.status === 'failed') {
+          setError('World preparation failed');
         }
-      })
-      .catch(() => {});
-  }, [simId]);
+      } catch {
+        /* A newly created simulation may not have preparation data yet. */
+      } finally {
+        if (active) setCheckingPreparation(false);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [simId, completePreparation]);
 
   const prepare = async () => {
     if (!simId) return;
@@ -71,7 +115,17 @@ export default function Step2EnvSetup({
         use_llm_for_profiles: true,
         agent_count: count,
       });
-      setTaskId(res.data?.task_id ?? null);
+      if (
+        res.data?.already_prepared ||
+        res.data?.status === 'ready' ||
+        res.data?.status === 'completed'
+      ) {
+        await completePreparation();
+        return;
+      }
+      const nextTaskId = res.data?.task_id;
+      if (!nextTaskId) throw new Error('World preparation did not return a task id.');
+      setTaskId(nextTaskId);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to prepare world');
       setPreparing(false);
@@ -82,9 +136,17 @@ export default function Step2EnvSetup({
   usePolling(() => api.getPrepareStatus({ task_id: taskId || undefined, simulation_id: simId || undefined }), {
     enabled: !!simId && preparing && !prepared,
     intervalMs: 2500,
-    stop: (res) => res.data?.status === 'completed' || res.data?.status === 'failed',
+    stop: (res) =>
+      res.data?.status === 'ready' ||
+      res.data?.status === 'completed' ||
+      res.data?.status === 'failed' ||
+      Boolean(res.data?.already_prepared),
     onData: async (res) => {
       const st = res.data?.status;
+      if (st === 'ready' || st === 'completed' || res.data?.already_prepared) {
+        await completePreparation();
+        return;
+      }
       if (simId) {
         try {
           const p = await api.getSimulationProfilesRealtime(simId, 'reddit');
@@ -94,13 +156,6 @@ export default function Step2EnvSetup({
       if (st === 'failed') {
         setError(res.data?.error || 'World preparation failed');
         setPreparing(false);
-      } else if (st === 'completed') {
-        setPrepared(true);
-        setPreparing(false);
-        if (simId) {
-          const p = await api.getSimulationProfiles(simId, 'reddit');
-          if (p.data?.profiles?.length) setProfiles(p.data.profiles);
-        }
       }
     },
   });
@@ -127,9 +182,22 @@ export default function Step2EnvSetup({
               disabled={preparing}
             />
           </label>
-          <button className={styles.primaryBtn} onClick={prepare} disabled={!simId || preparing}>
-            {preparing ? 'Generating agents…' : 'Generate population'}
+          <button
+            className={styles.primaryBtn}
+            onClick={prepare}
+            disabled={!simId || preparing || checkingPreparation}
+          >
+            {checkingPreparation
+              ? 'Checking status...'
+              : preparing
+                ? 'Generating agents...'
+                : 'Generate population'}
           </button>
+          {preparing && (
+            <span className={styles.loaderInline} aria-hidden>
+              <DotmSquare15 speed={0.9} dotSize={4} gap={3} />
+            </span>
+          )}
         </div>
       )}
 
@@ -141,6 +209,11 @@ export default function Step2EnvSetup({
             <h4 className={styles.subhead}>
               Population {preparing ? `(generating… ${profiles.length})` : `(${profiles.length})`}
             </h4>
+            {preparing && (
+              <span className={styles.loaderInline} aria-hidden>
+                <DotmSquare15 speed={0.9} dotSize={4} gap={3} />
+              </span>
+            )}
           </div>
           <div className={styles.profileGrid}>
             {profiles.map((p, i) => {

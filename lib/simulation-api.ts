@@ -49,7 +49,9 @@ export type ProjectStatus =
   | 'created'
   | 'ontology_generated'
   | 'graph_building'
+  | 'graph_completed'
   | 'graph_built'
+  | 'failed'
   | 'error'
   | string;
 
@@ -73,6 +75,7 @@ export interface Project {
   simulation_requirement?: string;
   ontology?: Ontology;
   graph_id?: string | null;
+  graph_build_task_id?: string | null;
   graph_enrichment_task_id?: string | null;
   files?: Array<{ filename: string; size: number }>;
   additional_context?: string | null;
@@ -157,12 +160,16 @@ export interface SimulationInfo {
   status?: string;
   enable_twitter?: boolean;
   enable_reddit?: boolean;
+  created_at?: string;
+  updated_at?: string;
   [k: string]: unknown;
 }
 
 export interface RunStatus {
-  status: string;
+  status?: string;
+  runner_status?: string;
   current_round?: number;
+  total_rounds?: number;
   max_rounds?: number;
   progress?: number;
   message?: string;
@@ -213,6 +220,7 @@ async function request<T = unknown>(
     ...rest,
     headers,
     body,
+    cache: 'no-store',
     credentials: 'same-origin',
   });
   let payload: Envelope<T>;
@@ -244,7 +252,10 @@ export function getSimulationBaseUrl() {
 
 export async function checkHealth(): Promise<boolean> {
   try {
-    const res = await fetch(`${BASE_URL}/health`, { credentials: 'same-origin' });
+    const res = await fetch(`${BASE_URL}/health`, {
+      cache: 'no-store',
+      credentials: 'same-origin',
+    });
     return res.ok;
   } catch {
     return false;
@@ -309,7 +320,12 @@ export const prepareSimulation = (data: {
   agent_count?: number;
   parallel_profile_count?: number;
   force_regenerate?: boolean;
-}) => request<{ task_id: string }>(`/api/simulation/prepare`, { method: 'POST', json: data });
+}) =>
+  request<{
+    task_id?: string;
+    status?: string;
+    already_prepared?: boolean;
+  }>(`/api/simulation/prepare`, { method: 'POST', json: data });
 
 export const getPrepareStatus = (data: { task_id?: string; simulation_id?: string }) =>
   request<TaskState>(`/api/simulation/prepare/status`, { method: 'POST', json: data });

@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import * as api from '@/lib/simulation-api';
 import type { GraphData } from '@/lib/simulation-api';
+import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
 import { usePolling } from '../usePolling';
 import type { WorkflowState } from '../SimulationWorkspace';
 import styles from '../simulation.module.css';
@@ -16,24 +17,51 @@ export default function Step1GraphBuild({
   onGraph: (graphId: string) => void;
   onGraphData: (g: GraphData) => void;
 }) {
-  const [taskId, setTaskId] = useState<string | null>(null);
-  const [building, setBuilding] = useState(false);
+  const resumingBuild = !wf.graphId && wf.project.status === 'graph_building';
+  const [taskId, setTaskId] = useState<string | null>(
+    resumingBuild ? wf.project.graph_build_task_id ?? null : null,
+  );
+  const [building, setBuilding] = useState(resumingBuild);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
   const [enrichmentContext, setEnrichmentContext] = useState('');
   const [enrichmentTaskId, setEnrichmentTaskId] = useState<string | null>(null);
   const [enriching, setEnriching] = useState(false);
   const [enrichmentMessage, setEnrichmentMessage] = useState<string | null>(null);
+  const completingBuild = useRef(false);
 
   const ontology = wf.project.ontology;
   const alreadyBuilt = !!wf.graphId;
 
+  const finishBuild = useCallback(
+    (graphId: string) => {
+      if (completingBuild.current) return;
+      completingBuild.current = true;
+      setDone(true);
+      setBuilding(false);
+      setTaskId(null);
+      onGraph(graphId);
+    },
+    [onGraph],
+  );
+
+  const failBuild = useCallback((message: string) => {
+    setError(message);
+    setDone(true);
+    setBuilding(false);
+    setTaskId(null);
+  }, []);
+
   const start = async () => {
     setError(null);
+    setDone(false);
+    completingBuild.current = false;
     setBuilding(true);
     try {
       const res = await api.buildGraph({ project_id: wf.project.project_id });
-      setTaskId(res.data?.task_id ?? null);
+      const nextTaskId = res.data?.task_id;
+      if (!nextTaskId) throw new Error('No graph build task id returned');
+      setTaskId(nextTaskId);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to start graph build');
       setBuilding(false);
@@ -67,23 +95,40 @@ export default function Step1GraphBuild({
     onData: async (res) => {
       const st = res.data?.status;
       if (st === 'failed') {
-        setError(res.data?.error || 'Graph build failed');
-        setBuilding(false);
-        setTaskId(null);
+        failBuild(res.data?.error || 'Graph build failed');
       } else if (st === 'completed') {
-        setDone(true);
-        setBuilding(false);
-        try {
-          const proj = await api.getProject(wf.project.project_id);
-          const graphId = proj.data?.graph_id;
-          if (graphId) {
-            const g = await api.getGraphData(graphId);
-            if (g.data) onGraphData(g.data);
-            onGraph(graphId);
-          }
-        } catch (e) {
-          setError(e instanceof Error ? e.message : 'Graph built but could not be loaded');
+        const result = res.data?.result;
+        const graphId =
+          result && typeof result === 'object' && 'graph_id' in result
+            ? (result as { graph_id?: unknown }).graph_id
+            : null;
+        if (typeof graphId === 'string' && graphId) {
+          finishBuild(graphId);
         }
+      }
+    },
+  });
+
+  // Project state is persisted by the backend and is the durable fallback if a
+  // task status response is missed or a user reopens a build already in flight.
+  usePolling(() => api.getProject(wf.project.project_id), {
+    enabled: building && !done,
+    intervalMs: 2500,
+    stop: (res) =>
+      res.data?.status === 'failed' ||
+      Boolean(
+        res.data?.graph_id &&
+        (res.data.status === 'graph_completed' || res.data.status === 'graph_built'),
+      ),
+    onData: (res) => {
+      const project = res.data;
+      if (project?.status === 'failed') {
+        failBuild(project.error || 'Graph build failed');
+      } else if (
+        project?.graph_id &&
+        (project.status === 'graph_completed' || project.status === 'graph_built')
+      ) {
+        finishBuild(project.graph_id);
       }
     },
   });
@@ -192,7 +237,11 @@ export default function Step1GraphBuild({
             {building ? 'Building graph…' : 'Build knowledge graph'}
           </button>
         )}
-        {building && <span className={styles.spinnerInline} aria-hidden />}
+        {building && (
+          <span className={styles.graphBuildLoader} aria-hidden>
+            <DotmSquare15 speed={0.9} dotSize={4} gap={3} />
+          </span>
+        )}
       </div>
     </div>
   );

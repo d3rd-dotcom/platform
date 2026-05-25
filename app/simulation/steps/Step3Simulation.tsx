@@ -1,7 +1,8 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import * as api from '@/lib/simulation-api';
+import type { RunStatus } from '@/lib/simulation-api';
 import { usePolling } from '../usePolling';
 import type { WorkflowState } from '../SimulationWorkspace';
 import AgentAvatar from '../AgentAvatar';
@@ -17,6 +18,8 @@ interface Action {
   round_num?: number;
   timestamp?: string | number;
 }
+
+type RunDetail = RunStatus & { all_actions?: Action[] };
 
 const ACTION_LABELS: Record<string, string> = {
   CREATE_POST: 'posted',
@@ -60,12 +63,49 @@ export default function Step3Simulation({
   const [running, setRunning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [actions, setActions] = useState<Action[]>([]);
-  const [status, setStatus] = useState<Record<string, unknown>>({});
+  const [status, setStatus] = useState<RunDetail>({});
+  const [loadingRun, setLoadingRun] = useState(true);
+
+  const applyRunStatus = useCallback((detail: RunDetail | undefined) => {
+    const next = detail ?? {};
+    const runnerStatus = next.runner_status ?? 'idle';
+    setStatus(next);
+    setStarted(runnerStatus !== 'idle' && runnerStatus !== 'failed');
+    setRunning(['starting', 'running', 'stopping'].includes(runnerStatus));
+    if (Array.isArray(next.all_actions)) {
+      setActions(next.all_actions);
+    }
+    if (runnerStatus === 'failed') {
+      setError('Simulation failed');
+    } else {
+      setError(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    setLoadingRun(true);
+    api
+      .getRunStatusDetail(simId)
+      .then((res) => {
+        if (active) applyRunStatus(res.data as RunDetail | undefined);
+      })
+      .catch((e) => {
+        if (active) setError(e instanceof Error ? e.message : 'Could not load simulation state');
+      })
+      .finally(() => {
+        if (active) setLoadingRun(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [simId, applyRunStatus]);
 
   const start = async () => {
     setError(null);
     setStarted(true);
     setRunning(true);
+    setStatus({ runner_status: 'starting' });
     try {
       await api.startSimulation({
         simulation_id: simId,
@@ -73,16 +113,32 @@ export default function Step3Simulation({
         enable_graph_memory_update: true,
       });
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to start simulation');
+      const message = e instanceof Error ? e.message : 'Failed to start simulation';
+      try {
+        const current = await api.getRunStatusDetail(simId);
+        const detail = current.data as RunDetail | undefined;
+        if ((detail?.runner_status ?? 'idle') !== 'idle') {
+          applyRunStatus(detail);
+          return;
+        }
+      } catch {
+        // Fall through and restore the start controls when state cannot be resumed.
+      }
+      setError(message);
+      setStarted(false);
       setRunning(false);
+      setStatus({});
     }
   };
 
   const stop = async () => {
     try {
       await api.stopSimulation({ simulation_id: simId });
-    } catch {}
-    setRunning(false);
+      const current = await api.getRunStatusDetail(simId);
+      applyRunStatus(current.data as RunDetail | undefined);
+    } catch {
+      setRunning(false);
+    }
   };
 
   usePolling(() => api.getRunStatusDetail(simId), {
@@ -90,27 +146,11 @@ export default function Step3Simulation({
     intervalMs: 2000,
     stop: (res) => {
       // Backend field is `runner_status` (not `status`).
-      const s = (res.data?.runner_status as string) || '';
+      const s = res.data?.runner_status || '';
       return s === 'completed' || s === 'failed' || s === 'stopped';
     },
-    onData: async (res) => {
-      setStatus(res.data || {});
-      // The detail endpoint already includes all_actions; fall back to a fetch.
-      const inline = (res.data as { all_actions?: Action[] })?.all_actions;
-      if (Array.isArray(inline) && inline.length) {
-        setActions(inline);
-      } else {
-        try {
-          const act = await api.getSimulationActions(simId, { limit: 200 });
-          const raw = act.data as { actions?: Action[] } | Action[] | undefined;
-          setActions(Array.isArray(raw) ? raw : raw?.actions ?? []);
-        } catch {}
-      }
-      const s = (res.data?.runner_status as string) || '';
-      if (s === 'completed' || s === 'failed' || s === 'stopped') {
-        setRunning(false);
-        if (s === 'failed') setError('Simulation failed');
-      }
+    onData: (res) => {
+      applyRunStatus(res.data as RunDetail | undefined);
     },
   });
 
@@ -122,7 +162,7 @@ export default function Step3Simulation({
     };
   }, [actions]);
 
-  const completed = ['completed', 'stopped'].includes((status.runner_status as string) || '');
+  const completed = ['completed', 'stopped'].includes(status.runner_status || '');
 
   return (
     <div className={styles.panel}>
@@ -134,7 +174,8 @@ export default function Step3Simulation({
           </p>
         </div>
         <div className={styles.simControls}>
-          {!started && (
+          {loadingRun && <span className={styles.muted}>Loading run...</span>}
+          {!loadingRun && !started && (
             <>
               <label className={styles.inlineField}>
                 <span>Rounds</span>
@@ -167,7 +208,7 @@ export default function Step3Simulation({
 
       {started && (
         <div className={styles.runStats}>
-          <Stat label="Status" value={(status.runner_status as string) || 'starting'} />
+          <Stat label="Status" value={status.runner_status || 'starting'} />
           <Stat
             label="Round"
             value={`${status.current_round ?? status.reddit_current_round ?? 0}/${status.total_rounds ?? maxRounds}`}

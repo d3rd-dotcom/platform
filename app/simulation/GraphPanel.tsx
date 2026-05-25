@@ -509,17 +509,6 @@ export default function GraphPanel({ graph, worldName }: { graph: GraphData | nu
         onClick={() => setSelected(null)}
       >
         <defs>
-          <radialGradient id="graphVignette" cx="50%" cy="42%" r="70%">
-            <stop offset="0%" stopColor="rgba(81,104,255,0.12)" />
-            <stop offset="100%" stopColor="rgba(81,104,255,0)" />
-          </radialGradient>
-          <filter id="nodeGlow" x="-60%" y="-60%" width="220%" height="220%">
-            <feGaussianBlur stdDeviation="3.4" result="b" />
-            <feMerge>
-              <feMergeNode in="b" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
           <marker id="graphArrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
             <path d="M0 0 L10 5 L0 10 Z" fill="rgba(92,102,132,0.72)" />
           </marker>
@@ -528,7 +517,6 @@ export default function GraphPanel({ graph, worldName }: { graph: GraphData | nu
           </marker>
         </defs>
 
-        <rect x="0" y="0" width={W} height={H} fill="url(#graphVignette)" />
         <g transform={`translate(${view.x} ${view.y}) scale(${view.k})`}>
           <g className={styles.graphEdgeHits}>
             {links.map((l, i) => {
@@ -675,9 +663,7 @@ export default function GraphPanel({ graph, worldName }: { graph: GraphData | nu
                     setSelected({ kind: 'node', id: n.id });
                   }}
                 >
-                  <circle r={n.r + 4} fill={c} opacity={0.18} filter="url(#nodeGlow)" />
                   <circle className={styles.graphNodeBody} r={n.r} fill={c} />
-                  <circle cx={-n.r * 0.3} cy={-n.r * 0.34} r={n.r * 0.38} fill="rgba(255,255,255,0.42)" />
                   <text y="3" textAnchor="middle" className={styles.graphNodeInitial}>
                     {n.label.slice(0, 1).toUpperCase()}
                   </text>

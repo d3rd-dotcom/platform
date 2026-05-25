@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
+import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
 import * as api from '@/lib/simulation-api';
 import { usePolling } from '../usePolling';
 import type { WorkflowState } from '../SimulationWorkspace';
@@ -134,6 +135,11 @@ export default function Step4Report({
               {generating ? 'Generating…' : 'Generate report'}
             </button>
           )}
+          {generating && (
+            <span className={styles.loaderInline} aria-hidden>
+              <DotmSquare15 speed={0.9} dotSize={4} gap={3} />
+            </span>
+          )}
         </div>
       </div>
 
@@ -141,7 +147,12 @@ export default function Step4Report({
 
       {generating && (
         <div className={styles.logBox}>
-          {logs.length === 0 && <span className={styles.muted}>Report Agent is thinking…</span>}
+          {logs.length === 0 && (
+            <div className={styles.loaderBlock} aria-live="polite">
+              <DotmSquare15 speed={0.9} dotSize={5} gap={3} />
+              <span className={styles.muted}>Report Agent is thinking…</span>
+            </div>
+          )}
           {logs.slice(-40).map((l, i) => (
             <div key={i} className={styles.logLine}>
               {l}

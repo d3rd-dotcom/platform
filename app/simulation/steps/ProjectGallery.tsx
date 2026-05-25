@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
 import * as api from '@/lib/simulation-api';
 import type { Project } from '@/lib/simulation-api';
 import { useAsync } from '../usePolling';
@@ -144,7 +145,12 @@ export default function ProjectGallery({
       )}
 
       <section className={styles.projectGrid}>
-        {loading && <p className={styles.muted}>Loading worlds…</p>}
+        {loading && (
+          <div className={styles.loaderBlock} aria-live="polite">
+            <DotmSquare15 speed={0.9} dotSize={5} gap={3} />
+            <p className={styles.muted}>Loading worlds…</p>
+          </div>
+        )}
         {!loading && projects.length === 0 && (
           <p className={styles.muted}>No worlds yet. Create your first one above.</p>
         )}

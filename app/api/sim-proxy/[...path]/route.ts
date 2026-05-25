@@ -105,6 +105,7 @@ async function forward(request: NextRequest, path: string[]): Promise<NextRespon
 
   const outHeaders = new Headers();
   if (resContentType) outHeaders.set('content-type', resContentType);
+  outHeaders.set('cache-control', 'no-store');
   const buf = Buffer.from(await res.arrayBuffer());
   return new NextResponse(buf, { status: res.status, headers: outHeaders });
 }

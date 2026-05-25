@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
+import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
 import ProMembershipModal from '@/components/pro-membership-modal/ProMembershipModal';
 import { setSimulationAccessTokenProvider } from '@/lib/simulation-api';
 import SimulationWorkspace from './SimulationWorkspace';
@@ -80,7 +81,9 @@ export default function SimulationGate() {
   if (access === 'loading' || !ready) {
     return (
       <div className={styles.gateState}>
-        <span className={styles.spinnerInline} aria-hidden />
+        <span className={styles.loaderInline} aria-hidden>
+          <DotmSquare15 speed={0.9} dotSize={5} gap={3} />
+        </span>
       </div>
     );
   }

@@ -4,9 +4,11 @@
 .pageLayout {
   position: relative;
   margin-left: var(--sidebar-width, 265px);
-  min-height: 100vh;
+  height: calc(100dvh - 72px);
+  min-height: 0;
+  display: flex;
   max-width: 100%;
-  overflow-x: clip;
+  overflow: hidden;
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   color: var(--color-text-dark, #1a1b24);
   font-family: var(--font-body, 'Poppins', sans-serif);
@@ -25,10 +27,17 @@
     linear-gradient(90deg, rgba(81, 104, 255, 0.14) 1px, transparent 1px);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .pageLayout {
     margin-left: 0;
     max-width: 100vw;
+    height: 100dvh;
+  }
+}
+@media (max-width: 768px) {
+  .pageLayout {
+    --mobile-nav-clearance: calc(74px + max(env(safe-area-inset-bottom, 0px), 20px));
+    height: calc(100dvh - var(--mobile-nav-clearance));
   }
 }
 
@@ -184,6 +193,21 @@
   animation: spin 0.8s linear infinite;
   display: inline-block;
 }
+.loaderInline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+.loaderBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 0;
+}
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -227,16 +251,22 @@
 /* ── gallery ── */
 
 .gallery {
-  max-width: 1040px;
+  width: min(1040px, 100%);
+  height: 100%;
+  min-height: 0;
   margin: 0 auto;
-  padding: 40px 24px 80px;
+  padding: clamp(18px, 4vh, 40px) 24px clamp(16px, 3vh, 32px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 .galleryHeader {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: clamp(14px, 2.4vh, 24px);
+  flex: 0 0 auto;
 }
 .galleryTitle {
   font-family: var(--font-headline, 'Space Grotesk', sans-serif);
@@ -258,6 +288,7 @@
   font-size: 13px;
   line-height: 1.5;
   margin-bottom: 24px;
+  flex: 0 0 auto;
 }
 .warnBanner code {
   font-family: var(--font-mono, 'IBM Plex Mono', monospace);
@@ -276,12 +307,21 @@
   flex-direction: column;
   gap: 14px;
   margin-bottom: 28px;
+  flex: 0 1 auto;
+  min-height: 0;
+  max-height: min(58dvh, 620px);
+  overflow-y: auto;
 }
 
 .projectGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 16px;
+  flex: 1 1 220px;
+  min-height: 0;
+  align-content: start;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 .projectCard {
   text-align: left;
@@ -313,11 +353,13 @@
   opacity: 0.85;
 }
 .projectStatus[data-status='graph_built'],
+.projectStatus[data-status='graph_completed'],
 .projectStatus[data-status='completed'] {
   background: rgba(31, 170, 140, 0.18);
   color: #2fcfa9;
 }
-.projectStatus[data-status='error'] {
+.projectStatus[data-status='error'],
+.projectStatus[data-status='failed'] {
   background: rgba(186, 26, 26, 0.18);
   color: #ff7a7a;
 }
@@ -345,16 +387,22 @@
 /* ── workflow shell ── */
 
 .workflow {
+  width: 100%;
   max-width: none;
   margin: 0 auto;
-  padding: 18px clamp(14px, 1.6vw, 24px) 28px;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 14px clamp(14px, 1.6vw, 24px) 14px;
 }
 .workflowHeader {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 18px;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 .backLink {
   background: none;
@@ -369,6 +417,37 @@
 }
 .backLink:hover {
   opacity: 1;
+}
+.workflowHeaderSpacer {
+  width: 78px;
+  flex: 0 0 auto;
+}
+.viewModeToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  border: 1px solid rgba(125, 135, 200, 0.22);
+  background: color-mix(in srgb, var(--color-surface-1, #fff) 92%, transparent);
+}
+.viewModeBtn {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  border-radius: 999px;
+  padding: 8px 12px;
+  cursor: pointer;
+  opacity: 0.72;
+}
+.viewModeBtnActive {
+  opacity: 1;
+  color: #fff;
+  background: #5168ff;
 }
 .projectTitleRow {
   margin-bottom: 0;
@@ -399,8 +478,7 @@
   margin: 0;
 }
 .stepperRail {
-  position: sticky;
-  top: 0;
+  position: static;
   z-index: 3;
   display: grid;
   grid-template-columns: 1fr;
@@ -411,6 +489,7 @@
   background: color-mix(in srgb, var(--color-surface-1, #fff) 92%, transparent);
   border: 1px solid var(--color-border-subtle, rgba(125, 135, 200, 0.18));
   box-shadow: 0 14px 34px rgba(10, 12, 24, 0.08);
+  flex: 0 0 auto;
 }
 .stepChip {
   display: flex;
@@ -465,31 +544,49 @@
 
 .workflowBody {
   display: grid;
-  grid-template-columns: minmax(760px, 1fr) minmax(380px, 480px);
+  grid-template-columns: minmax(0, 1fr) clamp(340px, 34%, 480px);
   gap: clamp(16px, 1.5vw, 24px);
-  align-items: start;
-  min-height: calc(100vh - 128px);
+  align-items: stretch;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 @media (max-width: 1180px) {
   .workflowBody {
     grid-template-columns: 1fr;
   }
 }
+.workflowBodyGraphOnly {
+  grid-template-columns: 1fr;
+  grid-template-rows: minmax(0, 1fr);
+}
+.workflowBodyGraphOnly .stepColumn {
+  display: none;
+}
+.workflowBodyWorkspaceOnly {
+  grid-template-columns: 1fr;
+  grid-template-rows: minmax(0, 1fr);
+}
+.workflowBodyWorkspaceOnly .graphColumn {
+  display: none;
+}
 
 .stepColumn {
   min-width: 0;
-  position: sticky;
-  top: 14px;
-  max-height: calc(100vh - 96px);
-  overflow-y: auto;
-  padding-right: 4px;
+  min-height: 0;
+  overflow: hidden;
+  padding-right: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 .graphColumn {
   min-width: 0;
+  min-height: 0;
 }
 .graphCard {
-  height: calc(100vh - 128px);
-  min-height: 640px;
+  height: 100%;
+  min-height: 0;
   background: var(--color-surface-1, rgba(255, 255, 255, 0.94));
   border: 1px solid var(--color-border-subtle, rgba(125, 135, 200, 0.18));
   border-radius: 22px;
@@ -498,36 +595,41 @@
   overflow: hidden;
 }
 @media (max-width: 1180px) {
+  .workflowBody:not(.workflowBodyGraphOnly):not(.workflowBodyWorkspaceOnly) {
+    grid-template-rows: minmax(180px, 0.85fr) minmax(240px, 1fr);
+  }
   .workflowHeader {
     display: block;
+  }
+  .workflowHeaderSpacer {
+    display: none;
+  }
+  .viewModeToggle {
+    margin-top: 10px;
   }
   .projectReq {
     white-space: normal;
   }
   .stepColumn {
-    position: static;
     max-height: none;
-    overflow: visible;
+    overflow: hidden;
     padding-right: 0;
   }
   .graphCard {
-    height: min(72vh, 680px);
-    min-height: 460px;
-  }
-  .stepperRail {
-    position: static;
+    height: 100%;
+    min-height: 0;
   }
 }
 @media (max-width: 720px) {
   .workflow {
-    padding: 14px 12px 24px;
+    padding: 12px 12px 12px;
   }
   .stepperRail .stepChip {
     font-size: 12px;
   }
   .graphCard {
-    height: 560px;
-    min-height: 420px;
+    height: 100%;
+    min-height: 0;
   }
 }
 
@@ -538,6 +640,11 @@
   border: 1px solid rgba(125, 135, 200, 0.15);
   border-radius: 18px;
   padding: 24px;
+}
+.stepColumn > .panel {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
 }
 .panelTitle {
   font-family: var(--font-headline, 'Space Grotesk', sans-serif);
@@ -593,6 +700,11 @@
   align-items: center;
   gap: 12px;
   margin-top: 8px;
+}
+.graphBuildLoader {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 .enrichmentBox {
   background: rgba(81, 104, 255, 0.06);
@@ -963,7 +1075,7 @@ article.reportBody :global(h3) {
   position: relative;
   width: 100%;
   height: 100%;
-  min-height: 560px;
+  min-height: 0;
   overflow: hidden;
   background-color: #fafafa;
   background-image:
@@ -1459,13 +1571,13 @@ article.reportBody :global(h3) {
   justify-content: center;
   gap: 6px;
   height: 100%;
-  min-height: 420px;
+  min-height: 0;
   text-align: center;
-  opacity: 0.5;
+  color: color-mix(in srgb, var(--color-text-dark, #1a1b24) 74%, transparent);
   font-size: 13px;
   background:
-    radial-gradient(circle at center, rgba(81, 104, 255, 0.12), transparent 30%),
-    radial-gradient(#d6d6d6 1.3px, transparent 1.3px);
+    radial-gradient(circle at center, rgba(81, 104, 255, 0.07), transparent 42%),
+    radial-gradient(rgba(81, 104, 255, 0.2) 1.1px, transparent 1.1px);
   background-size: auto, 24px 24px;
 }
 .graphEmpty p {
@@ -1502,6 +1614,12 @@ article.reportBody :global(h3) {
 }
 :global([data-theme='dark']) .graphNodeLabel {
   stroke: rgba(16, 19, 29, 0.98);
+}
+:global([data-theme='dark']) .graphEmpty {
+  color: rgba(246, 247, 251, 0.8);
+  background:
+    radial-gradient(circle at center, rgba(81, 104, 255, 0.09), transparent 42%),
+    radial-gradient(rgba(246, 247, 251, 0.14) 1.1px, transparent 1.1px);
 }
 
 @media (max-width: 720px) {
