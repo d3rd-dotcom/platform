@@ -47,6 +47,19 @@ const MAX_NODES = 160;
 const MAX_EDGE_LABELS = 80;
 
 const TYPE_COLORS = ['#5168FF', '#9724A6', '#1FAA8C', '#E0701A', '#C73E6B', '#3B82F6', '#8B5CF6'];
+const META_NODE_PATTERNS = [
+  'additional relationship types',
+  'relationship type',
+  'relationship types',
+  'edge type',
+  'edge types',
+  'additional entity types',
+  'entity type',
+  'entity types',
+  'ontology',
+  'schema',
+  'metadata',
+];
 
 const str = (v: unknown) => (typeof v === 'string' && v.trim() ? v.trim() : '');
 
@@ -69,6 +82,18 @@ function nodeLabel(n: GraphNode, id: string) {
 
 function nodeType(n: GraphNode) {
   return str(n.type) || str(n.labels?.[0]) || str(n.attributes?.type) || 'Entity';
+}
+
+function isMetaNode(n: GraphNode) {
+  const labels = (n.labels || [])
+    .map((label) => str(label).toLowerCase())
+    .filter(Boolean);
+  const customLabels = labels.filter((label) => label !== 'entity' && label !== 'node');
+  if (!labels.length || !customLabels.length) return true;
+  if (customLabels.some((label) => label === 'uuid' || label === 'id')) return true;
+
+  const haystack = [str(n.name).toLowerCase(), ...customLabels].join(' ');
+  return META_NODE_PATTERNS.some((pattern) => haystack.includes(pattern));
 }
 
 function edgeSource(e: GraphEdge) {
@@ -228,7 +253,7 @@ export default function GraphPanel({ graph, worldName }: { graph: GraphData | nu
 
     const rawNodes = graph.nodes
       .map((n) => ({ raw: n, id: nodeId(n) }))
-      .filter((n) => n.id)
+      .filter((n) => n.id && !isMetaNode(n.raw))
       .slice(0, MAX_NODES);
     const ids = new Set(rawNodes.map((n) => n.id));
 
@@ -682,7 +707,7 @@ export default function GraphPanel({ graph, worldName }: { graph: GraphData | nu
       )}
 
       <div className={styles.graphMeta}>
-        <span>{graph.nodes.length}</span> entities · <span>{(graph.edges || []).length}</span> directed relations
+        <span>{nodesRef.current.length}</span> entities · <span>{links.length}</span> directed relations
         {links.length > MAX_EDGE_LABELS ? ` · showing ${MAX_EDGE_LABELS} edge labels` : ''}
       </div>
 

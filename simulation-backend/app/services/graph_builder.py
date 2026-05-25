@@ -49,6 +49,55 @@ class GraphBuilderService:
         
         self.client = Zep(api_key=self.api_key)
         self.task_manager = TaskManager()
+
+    @staticmethod
+    def _is_meta_node(node) -> bool:
+        """
+        Detect graph nodes that are schema/ontology artifacts rather than
+        actual entities. Zep occasionally surfaces these as nodes with labels
+        like "Additional Relationship Types" or "UUID", which should not be
+        rendered in the live graph.
+        """
+        labels = [str(label).strip() for label in (getattr(node, "labels", None) or []) if str(label).strip()]
+        if not labels:
+            return True
+
+        custom_labels = [label for label in labels if label not in {"Entity", "Node"}]
+        if not custom_labels:
+            return True
+
+        lowered_labels = [label.lower() for label in custom_labels]
+        lowered_name = str(getattr(node, "name", "") or "").strip().lower()
+
+        suspicious_patterns = (
+            "additional relationship types",
+            "relationship type",
+            "relationship types",
+            "edge type",
+            "edge types",
+            "additional entity types",
+            "entity type",
+            "entity types",
+            "ontology",
+            "schema",
+            "metadata",
+        )
+
+        if any(label in {"uuid", "id"} for label in lowered_labels):
+            return True
+
+        haystack = " ".join(lowered_labels + [lowered_name])
+        return any(pattern in haystack for pattern in suspicious_patterns)
+
+    def _filter_graph_nodes_and_edges(self, nodes, edges):
+        visible_nodes = [node for node in nodes if not self._is_meta_node(node)]
+        visible_ids = {node.uuid_ for node in visible_nodes}
+        visible_edges = [
+            edge
+            for edge in edges
+            if edge.source_node_uuid in visible_ids and edge.target_node_uuid in visible_ids
+        ]
+        return visible_nodes, visible_edges
     
     def build_graph_async(
         self,
@@ -402,6 +451,8 @@ class GraphBuilderService:
         # Get edges (paginated)
         edges = fetch_all_edges(self.client, graph_id)
 
+        nodes, edges = self._filter_graph_nodes_and_edges(nodes, edges)
+
         # Count entity types
         entity_types = set()
         for node in nodes:
@@ -429,6 +480,8 @@ class GraphBuilderService:
         """
         nodes = fetch_all_nodes(self.client, graph_id)
         edges = fetch_all_edges(self.client, graph_id)
+
+        nodes, edges = self._filter_graph_nodes_and_edges(nodes, edges)
 
         # Create node map for getting node names
         node_map = {}
@@ -497,4 +550,3 @@ class GraphBuilderService:
     def delete_graph(self, graph_id: str):
         """Delete graph"""
         self.client.graph.delete(graph_id=graph_id)
-
