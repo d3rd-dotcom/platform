@@ -7,7 +7,7 @@
   z-index: 200;
   height: 72px;
   padding: 0 24px;
-  background: rgba(244, 245, 254, 0.6);
+  background: #EDEDED;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 0;

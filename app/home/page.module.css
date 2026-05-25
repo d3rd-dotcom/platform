@@ -6,7 +6,7 @@
   height: calc(100dvh - 72px);
   min-height: 0;
   display: flex;
-  background-color: #fbf8ff;
+  background-color: #ffffff;
   background-image:
     linear-gradient(rgba(81, 104, 255, 0.08) 1px, transparent 1px),
     linear-gradient(90deg, rgba(81, 104, 255, 0.08) 1px, transparent 1px);

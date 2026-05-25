@@ -36,7 +36,7 @@ export const colors = {
   
   // Background Colors
   background: {
-    DEFAULT: '#FBF8FF',
+    DEFAULT: '#FFFFFF',
     card: 'rgba(255, 255, 255, 0.95)',
     dark: '#090A10',
     cardDark: '#11131B',
@@ -113,7 +113,7 @@ export const colors = {
   
   // Gradient Colors
   gradient: {
-    futuristicFlossStart: '#FBF8FF',
+    futuristicFlossStart: '#FFFFFF',
     futuristicFlossEnd: '#E1E1F4',
     futuristicFlossDarkStart: '#090A10',
     futuristicFlossDarkMid: '#11131B',

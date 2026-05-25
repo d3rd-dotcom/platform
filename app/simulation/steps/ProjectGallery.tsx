@@ -16,6 +16,7 @@ export default function ProjectGallery({
 }) {
   const { data, loading, refetch } = useAsync(() => api.listProjects(50), []);
   const projects = data?.data ?? [];
+  const loadingProjects = loading && projects.length === 0;
 
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState('');
@@ -144,8 +145,8 @@ export default function ProjectGallery({
         </div>
       )}
 
-      <section className={styles.projectGrid}>
-        {loading && (
+      <section className={`${styles.projectGrid} ${loadingProjects ? styles.projectGridLoading : ''}`}>
+        {loadingProjects && (
           <div className={styles.loaderBlock} aria-live="polite">
             <DotmSquare15 speed={0.9} dotSize={5} gap={3} />
             <p className={styles.muted}>Loading worlds…</p>

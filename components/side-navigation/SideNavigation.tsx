@@ -50,9 +50,9 @@ const desktopNavSections: NavSection[] = [
     id: 'extras',
     label: 'Community Resources',
     items: [
-      { id: 'markets', label: 'Markets', href: '/markets', iconSrc: '/icons/nav-markets.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'research', label: 'R-Tool', href: '/research', iconSrc: '/icons/nav-laboratory.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'simulations', label: 'Simulations', href: '/simulation', iconSrc: '/icons/nav-community.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'markets', label: 'Markets', href: '/markets', iconSrc: '/icons/nav-markets-v2.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'research', label: 'R-Tool', href: '/research', iconSrc: '/icons/nav-laboratory-v2.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'simulations', label: 'Simulations', href: '/simulation', iconSrc: '/icons/nav-community-v2.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
 ];
@@ -62,9 +62,9 @@ const mobileNavSections: NavSection[] = [
     id: 'extras',
     label: 'Community Resources',
     items: [
-      { id: 'markets', label: 'Markets', href: '/markets', iconSrc: '/icons/nav-markets.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'research', label: 'R-Tool', href: '/research', iconSrc: '/icons/nav-laboratory.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'simulations', label: 'Simulations', href: '/simulation', iconSrc: '/icons/nav-community.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'markets', label: 'Markets', href: '/markets', iconSrc: '/icons/nav-markets-v2.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'research', label: 'R-Tool', href: '/research', iconSrc: '/icons/nav-laboratory-v2.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'simulations', label: 'Simulations', href: '/simulation', iconSrc: '/icons/nav-community-v2.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
 ];
@@ -74,19 +74,19 @@ const primaryNavItems: NavItem[] = [
     id: 'morning-pages',
     label: 'Homework',
     href: '/course',
-    iconSrc: '/icons/nav-spiral.svg',
+    iconSrc: '/icons/nav-spiral-v2.svg',
   },
   {
     id: 'library',
     label: 'Library',
     href: '/library',
-    iconSrc: '/icons/ui-book.svg',
+    iconSrc: '/icons/ui-book-v2.svg',
   },
   {
     id: 'feedback',
     label: 'Surveys',
     href: '/surveys',
-    iconSrc: '/icons/nav-feedback.svg',
+    iconSrc: '/icons/nav-feedback-v2.svg',
   },
 ];
 
@@ -235,7 +235,6 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
       return;
     }
 
-    setHasVipMembershipCard(null);
     try {
       const token = await getAccessToken();
       const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};

@@ -351,12 +351,6 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
 
         {authStatus === 'needs-signin' && (
           <div className={styles.stepContent}>
-            <div className={styles.stepIcon}>
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2"/>
-                <path d="M5 20C5 16.134 8.134 13 12 13C15.866 13 19 16.134 19 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-            </div>
             <h2 className={styles.stepTitle}>Create your account</h2>
             <p className={styles.stepDescription}>
               Sign in with your wallet to create your Academy account. You&apos;ll set up your profile right after.
@@ -376,12 +370,6 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
 
         {step === 'details' ? (
           <div className={styles.stepContent}>
-            <div className={styles.stepIcon}>
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2"/>
-                <path d="M5 20C5 16.134 8.134 13 12 13C15.866 13 19 16.134 19 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-            </div>
             <h2 className={styles.stepTitle}>Profile Setup</h2>
             <p className={styles.stepDescription}>
               Choose your Academy name and tell us the basics we use to personalize research and rewards.
@@ -468,12 +456,6 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
           </div>
         ) : step === 'avatar' ? (
           <div className={styles.stepContent}>
-            <div className={styles.stepIcon}>
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2"/>
-                <path d="M5 20C5 16.134 8.134 13 12 13C15.866 13 19 16.134 19 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-            </div>
             <h2 className={styles.stepTitle}>Choose your avatar</h2>
             <p className={styles.stepDescription}>
               Select one of your assigned avatars. This becomes your Academy identity.

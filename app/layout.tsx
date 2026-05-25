@@ -121,8 +121,8 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} ${poppins.variable} ${spaceGrotesk.variable} ${ibmPlexMono.variable} ${spaceMono.variable} ${departureMono.variable}`}
-      data-sidebar-collapsed="false"
-      style={{ '--sidebar-width': '265px' } as CSSProperties}
+      data-sidebar-collapsed="true"
+      style={{ '--sidebar-width': '72px' } as CSSProperties}
       suppressHydrationWarning
     >
       <head>

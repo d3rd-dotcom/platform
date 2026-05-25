@@ -12,8 +12,8 @@ import SoundToggle from '@/components/sound/SoundToggle';
 
 const NAV_LINKS = [
   { label: 'Home',      href: '/home',      icon: '/icons/nav-home.svg' },
-  { label: 'Quests',    href: '/quests',    icon: '/icons/nav-teleport.svg' },
-  { label: 'Network',   href: '/community', icon: '/icons/nav-world.svg' },
+  { label: 'Quests',    href: '/quests',    icon: '/icons/nav-quests-v3.svg' },
+  { label: 'Network',   href: '/community', icon: '/icons/nav-world-v2.svg' },
 ];
 
 const TopNavigation: React.FC = () => {

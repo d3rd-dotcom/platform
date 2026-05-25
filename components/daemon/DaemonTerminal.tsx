@@ -230,7 +230,7 @@ export function DaemonTerminal() {
             <ToolCard
               title="Share Sheets"
               desc="Shared spreadsheets for MWA researchers."
-              icon="/icons/ui-book.svg"
+              icon="/icons/ui-book-v2.svg"
               variant="toolCardShareSheets"
               disabled
             />

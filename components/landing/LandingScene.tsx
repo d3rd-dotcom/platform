@@ -57,7 +57,7 @@ export const LandingScene: React.FC = () => {
   return (
     <LandingSceneErrorBoundary>
       <div className={styles.canvas}>
-        {webGlReady ? <CubesCanvas bgColor="#FBF8FF" /> : null}
+        {webGlReady ? <CubesCanvas bgColor="#FFFFFF" /> : null}
       </div>
     </LandingSceneErrorBoundary>
   );

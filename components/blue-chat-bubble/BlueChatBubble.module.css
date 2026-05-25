@@ -13,12 +13,20 @@
 
 .avatar {
   flex: 0 0 auto;
-  width: 56px;
-  height: 56px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
   overflow: hidden;
   border: 1px solid rgba(15, 20, 40, 0.1);
   background: #0c0d17;
+}
+
+.avatarColumn {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
 
 .avatar :global(img) {
@@ -31,14 +39,12 @@
 .body {
   flex: 1 1 auto;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 
 .sender {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   min-height: 18px;
   padding: 0 2px;
   font-family: var(--font-departure-mono), 'IBM Plex Mono', monospace;
@@ -58,7 +64,7 @@
   width: 100%;
   padding: 12px 15px;
   border-radius: 12px;
-  background: #f2f3f8;
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface-base));
   border: 1px solid rgba(15, 20, 40, 0.06);
 }
 
@@ -87,15 +93,6 @@
   gap: 10px;
   padding: 13px 14px;
   border-radius: 12px;
-}
-
-.compact .avatar {
-  width: 46px;
-  height: 46px;
-}
-
-.compact .body {
-  gap: 6px;
 }
 
 .compact .bubble {
@@ -154,8 +151,8 @@
   }
 
   .stackMobile .avatar {
-    width: 64px;
-    height: 64px;
+    width: 54px;
+    height: 54px;
   }
 
   .stackMobile .body {

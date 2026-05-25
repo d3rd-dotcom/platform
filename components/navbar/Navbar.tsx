@@ -262,7 +262,7 @@ const Navbar: React.FC = () => {
 
             {/* Markets Button */}
             <Link href="/markets" className={`${styles.navButton} ${isActive('/markets') ? styles.navButtonActive : ''}`}>
-              <Image src="/icons/nav-markets.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/markets') ? styles.navImgIconActive : ''}`} />
+              <Image src="/icons/nav-markets-v2.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/markets') ? styles.navImgIconActive : ''}`} />
               <span className={isActive('/markets') ? styles.buttonLabelActive : styles.buttonLabel}>
                 <span className={styles.slideWrap}><span className={styles.slideText}>Markets</span><span className={`${styles.slideText} ${styles.slideClone}`}>Markets</span></span>
               </span>
@@ -270,7 +270,7 @@ const Navbar: React.FC = () => {
 
             {/* Social Button */}
             <Link href="/community" className={`${styles.navButton} ${isActive('/community') ? styles.navButtonActive : ''}`}>
-              <Image src="/icons/nav-community.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/community') ? styles.navImgIconActive : ''}`} />
+              <Image src="/icons/nav-community-v2.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/community') ? styles.navImgIconActive : ''}`} />
               <span className={isActive('/community') ? styles.buttonLabelActive : styles.buttonLabel}>
                 <span className={styles.slideWrap}><span className={styles.slideText}>Social</span><span className={`${styles.slideText} ${styles.slideClone}`}>Social</span></span>
               </span>
@@ -278,7 +278,7 @@ const Navbar: React.FC = () => {
 
             {/* Knowledge Button */}
             <Link href="/library" className={`${styles.navButton} ${isActive('/library') ? styles.navButtonActive : ''}`}>
-              <Image src="/icons/ui-book.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/library') ? styles.navImgIconActive : ''}`} />
+              <Image src="/icons/ui-book-v2.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/library') ? styles.navImgIconActive : ''}`} />
               <span className={isActive('/library') ? styles.buttonLabelActive : styles.buttonLabel}>
                 <span className={styles.slideWrap}><span className={styles.slideText}>Knowledge</span><span className={`${styles.slideText} ${styles.slideClone}`}>Knowledge</span></span>
               </span>

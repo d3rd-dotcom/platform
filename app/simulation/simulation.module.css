@@ -13,7 +13,7 @@
   color: var(--color-text-dark, #1a1b24);
   font-family: var(--font-body, 'Poppins', sans-serif);
   /* Match the /home grid background (light) */
-  background-color: #fbf8ff;
+  background-color: #ffffff;
   background-image:
     linear-gradient(rgba(81, 104, 255, 0.08) 1px, transparent 1px),
     linear-gradient(90deg, rgba(81, 104, 255, 0.08) 1px, transparent 1px);
@@ -217,10 +217,13 @@
 /* ── pro gate ── */
 
 .gateState {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 60vh;
 }
 .lockedCard {
   max-width: 480px;
@@ -321,7 +324,15 @@
   min-height: 0;
   align-content: start;
   overflow-y: auto;
-  padding-right: 4px;
+  padding: 3px 4px 3px 0;
+}
+.projectGridLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.projectGridLoading .loaderBlock {
+  padding: 0;
 }
 .projectCard {
   text-align: left;

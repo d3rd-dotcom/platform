@@ -5,7 +5,7 @@
   margin-left: var(--sidebar-width, 265px);
   min-height: calc(100dvh - 72px);
   display: flex;
-  background-color: #fbf8ff;
+  background-color: #ffffff;
   background-image:
     linear-gradient(rgba(81, 104, 255, 0.08) 1px, transparent 1px),
     linear-gradient(90deg, rgba(81, 104, 255, 0.08) 1px, transparent 1px);
@@ -34,7 +34,7 @@
   flex-direction: column;
   gap: 24px;
   padding: 32px 28px;
-  background-color: #fbf8ff;
+  background-color: #ffffff;
   border: 1px solid var(--color-border-subtle);
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(81, 104, 255, 0.1);

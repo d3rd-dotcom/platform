@@ -13,7 +13,7 @@ interface RouteShellProps {
   initialCollapsed?: boolean;
 }
 
-export function RouteShell({ children, initialCollapsed = false }: RouteShellProps) {
+export function RouteShell({ children, initialCollapsed = true }: RouteShellProps) {
   const pathname = usePathname();
 
   if (pathname === '/') {

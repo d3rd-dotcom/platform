@@ -36,15 +36,18 @@ export default function BlueChatBubble({
   return (
     <div
       className={`${styles.shell} ${variantClass} ${stackOnMobile ? styles.stackMobile : ''} ${className}`}
+      data-blue-chat-bubble="true"
       aria-live={ariaLive}
     >
-      <div className={styles.avatar}>
-        <Image src={BLUE_AVATAR_SRC} alt="Blue" width={56} height={56} unoptimized />
-      </div>
-      <div className={styles.body}>
+      <div className={styles.avatarColumn}>
+        <div className={styles.avatar}>
+          <Image src={BLUE_AVATAR_SRC} alt="Blue" width={56} height={56} unoptimized />
+        </div>
         <span className={styles.sender}>
           Blue{context ? <span className={styles.context}> · {context}</span> : null}
         </span>
+      </div>
+      <div className={styles.body}>
         <div className={styles.bubble}>
           <p className={styles.message}>{message}</p>
         </div>

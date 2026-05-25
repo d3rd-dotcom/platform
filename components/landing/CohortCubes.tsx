@@ -162,7 +162,7 @@ type CohortCubesProps = {
   bgColor?: string;
 };
 
-const CohortCubes = memo(({ bgColor = '#FBF8FF' }: CohortCubesProps) => {
+const CohortCubes = memo(({ bgColor = '#FFFFFF' }: CohortCubesProps) => {
   const dpr = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2) : 1;
   const bgVec = new THREE.Color(bgColor);
   const bgVector3 = new THREE.Vector3(bgVec.r, bgVec.g, bgVec.b);
