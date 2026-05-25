@@ -234,7 +234,8 @@ class SimulationManager:
         defined_entity_types: Optional[List[str]] = None,
         use_llm_for_profiles: bool = True,
         progress_callback: Optional[callable] = None,
-        parallel_profile_count: int = 3
+        parallel_profile_count: int = 3,
+        agent_count: Optional[int] = None
     ) -> SimulationState:
         """
         Prepare simulation environment (fully automated)
@@ -282,6 +283,10 @@ class SimulationManager:
                 defined_entity_types=defined_entity_types,
                 enrich_with_edges=True
             )
+
+            if isinstance(agent_count, int) and agent_count > 0:
+                filtered.entities = filtered.entities[:agent_count]
+                filtered.filtered_count = len(filtered.entities)
             
             state.entities_count = filtered.filtered_count
             state.entity_types = list(filtered.entity_types)

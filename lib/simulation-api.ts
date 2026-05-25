@@ -306,6 +306,7 @@ export const prepareSimulation = (data: {
   simulation_id: string;
   entity_types?: string[];
   use_llm_for_profiles?: boolean;
+  agent_count?: number;
   parallel_profile_count?: number;
   force_regenerate?: boolean;
 }) => request<{ task_id: string }>(`/api/simulation/prepare`, { method: 'POST', json: data });

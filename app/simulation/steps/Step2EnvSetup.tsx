@@ -69,7 +69,7 @@ export default function Step2EnvSetup({
       const res = await api.prepareSimulation({
         simulation_id: simId,
         use_llm_for_profiles: true,
-        parallel_profile_count: count,
+        agent_count: count,
       });
       setTaskId(res.data?.task_id ?? null);
     } catch (e) {

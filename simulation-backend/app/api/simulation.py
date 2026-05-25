@@ -383,6 +383,7 @@ def prepare_simulation():
             "simulation_id": "sim_xxxx",                   // Required, Simulation ID
             "entity_types": ["Student", "PublicFigure"],  // Optional, specify entity types
             "use_llm_for_profiles": true,                 // Optional, whether to use LLM for persona generation
+            "agent_count": 40,                            // Optional, cap total generated agents to this number
             "parallel_profile_count": 5,                  // Optional, parallel persona generation count, default 5
             "force_regenerate": false                     // Optional, force regeneration, default false
         }
@@ -468,6 +469,7 @@ def prepare_simulation():
         
         entity_types_list = data.get('entity_types')
         use_llm_for_profiles = data.get('use_llm_for_profiles', True)
+        requested_agent_count = data.get('agent_count')
         parallel_profile_count = data.get('parallel_profile_count', 5)
         
         # ========== Synchronously get entity count (before background task starts) ==========
@@ -481,8 +483,13 @@ def prepare_simulation():
                 defined_entity_types=entity_types_list,
                 enrich_with_edges=False  # Skip edge info for speed
             )
-            # Save entity count to state (for frontend immediate access)
-            state.entities_count = filtered_preview.filtered_count
+            # Save the requested population cap, not the raw graph total.
+            # If the user wants fewer agents than the graph provides, we will
+            # generate only that subset in the background task.
+            if isinstance(requested_agent_count, int) and requested_agent_count > 0:
+                state.entities_count = min(requested_agent_count, filtered_preview.filtered_count)
+            else:
+                state.entities_count = filtered_preview.filtered_count
             state.entity_types = list(filtered_preview.entity_types)
             logger.info(f"Expected entity count: {filtered_preview.filtered_count}, types: {filtered_preview.entity_types}")
         except Exception as e:
@@ -585,7 +592,8 @@ def prepare_simulation():
                     defined_entity_types=entity_types_list,
                     use_llm_for_profiles=use_llm_for_profiles,
                     progress_callback=progress_callback,
-                    parallel_profile_count=parallel_profile_count
+                    parallel_profile_count=parallel_profile_count,
+                    agent_count=requested_agent_count
                 )
                 
                 # Task complete
@@ -618,7 +626,8 @@ def prepare_simulation():
                 "message": "Preparation task started. Use /api/simulation/prepare/status to check progress",
                 "already_prepared": False,
                 "expected_entities_count": state.entities_count,  # Expected total Agent count
-                "entity_types": state.entity_types  # Entity type list
+                "entity_types": state.entity_types,  # Entity type list
+                "requested_agent_count": requested_agent_count
             }
         })
         

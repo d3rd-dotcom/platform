@@ -200,6 +200,27 @@ export default function GraphPanel({ graph, worldName }: { graph: GraphData | nu
   const dragRef = useRef<{ x: number; y: number; viewX: number; viewY: number } | null>(null);
   const nodeDragRef = useRef<{ id: string; startX: number; startY: number; moved: boolean } | null>(null);
 
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+
+    // Wheel zoom must be non-passive because we intentionally block page
+    // scrolling while the cursor is over the graph canvas.
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const delta = Math.max(-120, Math.min(120, e.deltaY));
+      setView((current) => ({
+        ...current,
+        k: Math.max(0.45, Math.min(3.2, current.k * Math.exp(-delta * 0.00045))),
+      }));
+    };
+
+    svg.addEventListener('wheel', onWheel, { passive: false });
+    return () => {
+      svg.removeEventListener('wheel', onWheel);
+    };
+  }, []);
+
   const { nodes, links, types, colorOf } = useMemo(() => {
     if (!graph?.nodes?.length) {
       return { nodes: [] as SimNode[], links: [] as SimLink[], types: [] as string[], colorOf: () => '#5168FF' };
@@ -444,11 +465,6 @@ export default function GraphPanel({ graph, worldName }: { graph: GraphData | nu
         ref={svgRef}
         viewBox={`0 0 ${W} ${H}`}
         className={styles.graphSvg}
-        onWheel={(e) => {
-          e.preventDefault();
-          const delta = Math.max(-120, Math.min(120, e.deltaY));
-          zoom(view.k * Math.exp(-delta * 0.00045));
-        }}
         onPointerDown={(e) => {
           if (nodeDragRef.current) return;
           dragRef.current = { x: e.clientX, y: e.clientY, viewX: view.x, viewY: view.y };
