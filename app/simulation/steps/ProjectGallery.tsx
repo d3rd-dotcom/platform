@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
+import { useSound } from '@/hooks/useSound';
 import * as api from '@/lib/simulation-api';
 import type { Project } from '@/lib/simulation-api';
 import { useAsync } from '../usePolling';
@@ -14,6 +15,7 @@ export default function ProjectGallery({
   online: boolean | null;
   onOpen: (p: Project) => void;
 }) {
+  const { play } = useSound();
   const { data, loading, refetch } = useAsync(() => api.listProjects(50), []);
   const projects = data?.data ?? [];
   const loadingProjects = loading && projects.length === 0;
@@ -28,12 +30,15 @@ export default function ProjectGallery({
   const fileInput = useRef<HTMLInputElement>(null);
 
   const submit = async () => {
+    play('click');
     setError(null);
     if (!requirement.trim()) {
+      play('error');
       setError('Describe what you want to predict or simulate.');
       return;
     }
     if (!files.length) {
+      play('error');
       setError('Add at least one source document (pdf, md, or txt).');
       return;
     }
@@ -50,8 +55,12 @@ export default function ProjectGallery({
       const projectId = res.data?.project_id;
       if (!projectId) throw new Error('No project id returned');
       const full = await api.getProject(projectId);
-      if (full.data) onOpen(full.data);
+      if (full.data) {
+        play('success');
+        onOpen(full.data);
+      }
     } catch (e) {
+      play('error');
       setError(e instanceof Error ? e.message : 'Failed to create world');
     } finally {
       setBusy(false);
@@ -67,7 +76,14 @@ export default function ProjectGallery({
             Turn a document into a living world of autonomous agents, then read the future it produces.
           </p>
         </div>
-        <button className={styles.primaryBtn} onClick={() => setCreating((v) => !v)}>
+        <button
+          className={styles.primaryBtn}
+          onClick={() => {
+            play('click');
+            setCreating((v) => !v);
+          }}
+          onMouseEnter={() => play('hover')}
+        >
           {creating ? 'Close' : 'New world'}
         </button>
       </header>
@@ -130,7 +146,11 @@ export default function ProjectGallery({
             <button
               type="button"
               className={styles.filePickerBtn}
-              onClick={() => fileInput.current?.click()}
+              onClick={() => {
+                play('click');
+                fileInput.current?.click();
+              }}
+              onMouseEnter={() => play('hover')}
             >
               Choose files
             </button>
@@ -139,7 +159,7 @@ export default function ProjectGallery({
             )}
           </div>
           {error && <p className={styles.errorText}>{error}</p>}
-          <button className={styles.primaryBtn} onClick={submit} disabled={busy}>
+          <button className={styles.primaryBtn} onClick={submit} onMouseEnter={() => play('hover')} disabled={busy}>
             {busy ? 'Analyzing documents…' : 'Build knowledge graph'}
           </button>
         </div>
@@ -156,7 +176,15 @@ export default function ProjectGallery({
           <p className={styles.muted}>No worlds yet. Create your first one above.</p>
         )}
         {projects.map((p) => (
-          <button key={p.project_id} className={styles.projectCard} onClick={() => onOpen(p)}>
+          <button
+            key={p.project_id}
+            className={styles.projectCard}
+            onClick={() => {
+              play('navigation');
+              onOpen(p);
+            }}
+            onMouseEnter={() => play('hover')}
+          >
             <div className={styles.projectCardTop}>
               <span className={styles.projectStatus} data-status={p.status}>
                 {prettyStatus(p.status)}

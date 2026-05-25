@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
+import { useSound } from '@/hooks/useSound';
 import * as api from '@/lib/simulation-api';
 import { usePolling } from '../usePolling';
 import type { WorkflowState } from '../SimulationWorkspace';
@@ -17,6 +18,7 @@ export default function Step4Report({
   onReportId: (id: string) => void;
   onDone: () => void;
 }) {
+  const { play } = useSound();
   const simId = wf.simulationId as string;
   const [reportId, setReportId] = useState<string | null>(wf.reportId);
   const [taskId, setTaskId] = useState<string | null>(null);
@@ -32,6 +34,7 @@ export default function Step4Report({
     setDone(true);
     setGenerating(false);
     setTaskId(null);
+    play('success');
     try {
       const full = await api.getReport(id);
       setContent(full.data?.markdown_content || full.data?.content || '');
@@ -41,6 +44,7 @@ export default function Step4Report({
   };
 
   const generate = async (force = false) => {
+    if (force) play('click');
     setError(null);
     setGenerating(true);
     setContent('');
@@ -61,6 +65,7 @@ export default function Step4Report({
         throw new Error('Report generation did not return a task id.');
       }
     } catch (e) {
+      play('error');
       setError(e instanceof Error ? e.message : 'Failed to start report');
       setGenerating(false);
     }
@@ -83,9 +88,11 @@ export default function Step4Report({
         if (log.data?.lines?.length) setLogs((prev) => [...prev, ...log.data!.lines]);
       } catch {}
       if (st === 'failed') {
+        play('error');
         setError(res.data?.error || 'Report generation failed');
         setGenerating(false);
       } else if (st === 'completed') {
+        play('success');
         setDone(true);
         setGenerating(false);
         // On completion the real report id comes back under result.report_id.
@@ -106,9 +113,10 @@ export default function Step4Report({
 
   useEffect(() => {
     if (!reportPoll.error || !generating) return;
+    play('error');
     setError(reportPoll.error.message);
     setGenerating(false);
-  }, [reportPoll.error, generating]);
+  }, [generating, play, reportPoll.error]);
 
   return (
     <div className={styles.panel}>
@@ -123,15 +131,27 @@ export default function Step4Report({
         <div className={styles.simControls}>
           {done ? (
             <>
-              <button className={styles.secondaryBtn} onClick={() => generate(true)}>
+              <button className={styles.secondaryBtn} onClick={() => generate(true)} onMouseEnter={() => play('hover')}>
                 Regenerate
               </button>
-              <button className={styles.primaryBtn} onClick={onDone}>
+              <button
+                className={styles.primaryBtn}
+                onClick={() => {
+                  play('navigation');
+                  onDone();
+                }}
+                onMouseEnter={() => play('hover')}
+              >
                 Talk to the world →
               </button>
             </>
           ) : (
-            <button className={styles.primaryBtn} onClick={() => generate(true)} disabled={generating}>
+            <button
+              className={styles.primaryBtn}
+              onClick={() => generate(true)}
+              onMouseEnter={() => play('hover')}
+              disabled={generating}
+            >
               {generating ? 'Generating…' : 'Generate report'}
             </button>
           )}

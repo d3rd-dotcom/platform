@@ -4,6 +4,7 @@ import { useCallback, useRef, useState } from 'react';
 import * as api from '@/lib/simulation-api';
 import type { GraphData } from '@/lib/simulation-api';
 import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
+import { useSound } from '@/hooks/useSound';
 import { usePolling } from '../usePolling';
 import type { WorkflowState } from '../SimulationWorkspace';
 import styles from '../simulation.module.css';
@@ -17,6 +18,7 @@ export default function Step1GraphBuild({
   onGraph: (graphId: string) => void;
   onGraphData: (g: GraphData) => void;
 }) {
+  const { play } = useSound();
   const resumingBuild = !wf.graphId && wf.project.status === 'graph_building';
   const [taskId, setTaskId] = useState<string | null>(
     resumingBuild ? wf.project.graph_build_task_id ?? null : null,
@@ -40,19 +42,22 @@ export default function Step1GraphBuild({
       setDone(true);
       setBuilding(false);
       setTaskId(null);
+      play('success');
       onGraph(graphId);
     },
-    [onGraph],
+    [onGraph, play],
   );
 
   const failBuild = useCallback((message: string) => {
+    play('error');
     setError(message);
     setDone(true);
     setBuilding(false);
     setTaskId(null);
-  }, []);
+  }, [play]);
 
   const start = async () => {
+    play('click');
     setError(null);
     setDone(false);
     completingBuild.current = false;
@@ -63,14 +68,17 @@ export default function Step1GraphBuild({
       if (!nextTaskId) throw new Error('No graph build task id returned');
       setTaskId(nextTaskId);
     } catch (e) {
+      play('error');
       setError(e instanceof Error ? e.message : 'Failed to start graph build');
       setBuilding(false);
     }
   };
 
   const enrich = async () => {
+    play('click');
     const context = enrichmentContext.trim();
     if (!context) {
+      play('error');
       setError('Add at least one fact before updating the graph.');
       return;
     }
@@ -83,6 +91,7 @@ export default function Step1GraphBuild({
       if (!nextTaskId) throw new Error('No enrichment task id returned');
       setEnrichmentTaskId(nextTaskId);
     } catch (e) {
+      play('error');
       setError(e instanceof Error ? e.message : 'Failed to add context to the graph');
       setEnriching(false);
     }
@@ -149,7 +158,9 @@ export default function Step1GraphBuild({
           if (g.data) onGraphData(g.data);
           setEnrichmentContext('');
           setEnrichmentMessage('New context added. The graph has been refreshed.');
+          play('success');
         } catch (e) {
+          play('error');
           setError(e instanceof Error ? e.message : 'Context added, but the graph could not be reloaded');
         } finally {
           setEnriching(false);
@@ -218,6 +229,7 @@ export default function Step1GraphBuild({
           <button
             className={styles.secondaryBtn}
             onClick={enrich}
+            onMouseEnter={() => play('hover')}
             disabled={enriching || !enrichmentContext.trim()}
           >
             {enriching ? 'Updating graph...' : 'Add context to graph'}
@@ -229,11 +241,18 @@ export default function Step1GraphBuild({
 
       <div className={styles.actionRow}>
         {alreadyBuilt && !building ? (
-          <button className={styles.primaryBtn} onClick={() => onGraph(wf.graphId as string)}>
+          <button
+            className={styles.primaryBtn}
+            onClick={() => {
+              play('navigation');
+              onGraph(wf.graphId as string);
+            }}
+            onMouseEnter={() => play('hover')}
+          >
             Continue to world setup →
           </button>
         ) : (
-          <button className={styles.primaryBtn} onClick={start} disabled={building}>
+          <button className={styles.primaryBtn} onClick={start} onMouseEnter={() => play('hover')} disabled={building}>
             {building ? 'Building graph…' : 'Build knowledge graph'}
           </button>
         )}

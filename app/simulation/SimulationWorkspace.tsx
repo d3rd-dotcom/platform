@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import * as api from '@/lib/simulation-api';
 import type { GraphData, Project } from '@/lib/simulation-api';
+import { useSound } from '@/hooks/useSound';
 import styles from './simulation.module.css';
 import ProjectGallery from './steps/ProjectGallery';
 import Step1GraphBuild from './steps/Step1GraphBuild';
@@ -34,6 +35,7 @@ function hasCompletedGraph(project: Project) {
 }
 
 export default function SimulationWorkspace() {
+  const { play } = useSound();
   const [wf, setWf] = useState<WorkflowState | null>(null);
   const [step, setStep] = useState(1);
   const [viewMode, setViewMode] = useState<'graph' | 'split' | 'workspace'>('split');
@@ -104,10 +106,11 @@ export default function SimulationWorkspace() {
   }, []);
 
   const exit = useCallback(() => {
+    play('navigation');
     setWf(null);
     setGraph(null);
     setStep(1);
-  }, []);
+  }, [play]);
 
   if (!wf) {
     return (
@@ -125,7 +128,7 @@ export default function SimulationWorkspace() {
   return (
     <div className={styles.workflow}>
       <div className={styles.workflowHeader}>
-        <button className={styles.backLink} onClick={exit}>
+        <button className={styles.backLink} onClick={exit} onMouseEnter={() => play('hover')}>
           ← All worlds
         </button>
         <div className={styles.viewModeToggle} role="tablist" aria-label="Simulation layout mode">
@@ -134,7 +137,11 @@ export default function SimulationWorkspace() {
             role="tab"
             aria-selected={viewMode === 'graph'}
             className={`${styles.viewModeBtn} ${viewMode === 'graph' ? styles.viewModeBtnActive : ''}`}
-            onClick={() => setViewMode('graph')}
+            onClick={() => {
+              play('click');
+              setViewMode('graph');
+            }}
+            onMouseEnter={() => play('hover')}
           >
             Graph
           </button>
@@ -143,7 +150,11 @@ export default function SimulationWorkspace() {
             role="tab"
             aria-selected={viewMode === 'split'}
             className={`${styles.viewModeBtn} ${viewMode === 'split' ? styles.viewModeBtnActive : ''}`}
-            onClick={() => setViewMode('split')}
+            onClick={() => {
+              play('click');
+              setViewMode('split');
+            }}
+            onMouseEnter={() => play('hover')}
           >
             Split
           </button>
@@ -152,7 +163,11 @@ export default function SimulationWorkspace() {
             role="tab"
             aria-selected={viewMode === 'workspace'}
             className={`${styles.viewModeBtn} ${viewMode === 'workspace' ? styles.viewModeBtnActive : ''}`}
-            onClick={() => setViewMode('workspace')}
+            onClick={() => {
+              play('click');
+              setViewMode('workspace');
+            }}
+            onMouseEnter={() => play('hover')}
           >
             Workspace
           </button>
@@ -184,7 +199,13 @@ export default function SimulationWorkspace() {
                   <button
                     className={`${styles.stepChip} ${step === s.n ? styles.stepChipActive : ''}`}
                     disabled={!reachable}
-                    onClick={() => reachable && setStep(s.n)}
+                    onClick={() => {
+                      if (reachable) {
+                        play('navigation');
+                        setStep(s.n);
+                      }
+                    }}
+                    onMouseEnter={() => reachable && play('hover')}
                   >
                     <span className={styles.stepNum}>{s.n}</span>
                     <span>{s.label}</span>

@@ -1,8 +1,9 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as api from '@/lib/simulation-api';
 import type { RunStatus } from '@/lib/simulation-api';
+import { useSound } from '@/hooks/useSound';
 import { usePolling } from '../usePolling';
 import type { WorkflowState } from '../SimulationWorkspace';
 import AgentAvatar from '../AgentAvatar';
@@ -57,6 +58,7 @@ export default function Step3Simulation({
   wf: WorkflowState;
   onDone: () => void;
 }) {
+  const { play } = useSound();
   const simId = wf.simulationId as string;
   const [maxRounds, setMaxRounds] = useState(10);
   const [started, setStarted] = useState(false);
@@ -65,10 +67,13 @@ export default function Step3Simulation({
   const [actions, setActions] = useState<Action[]>([]);
   const [status, setStatus] = useState<RunDetail>({});
   const [loadingRun, setLoadingRun] = useState(true);
+  const previousRunnerStatus = useRef<string | undefined>();
 
   const applyRunStatus = useCallback((detail: RunDetail | undefined) => {
     const next = detail ?? {};
     const runnerStatus = next.runner_status ?? 'idle';
+    const previous = previousRunnerStatus.current;
+    previousRunnerStatus.current = runnerStatus;
     setStatus(next);
     setStarted(runnerStatus !== 'idle' && runnerStatus !== 'failed');
     setRunning(['starting', 'running', 'stopping'].includes(runnerStatus));
@@ -76,11 +81,13 @@ export default function Step3Simulation({
       setActions(next.all_actions);
     }
     if (runnerStatus === 'failed') {
+      if (previous && previous !== 'failed') play('error');
       setError('Simulation failed');
     } else {
+      if (runnerStatus === 'completed' && previous && previous !== 'completed') play('success');
       setError(null);
     }
-  }, []);
+  }, [play]);
 
   useEffect(() => {
     let active = true;
@@ -102,6 +109,7 @@ export default function Step3Simulation({
   }, [simId, applyRunStatus]);
 
   const start = async () => {
+    play('click');
     setError(null);
     setStarted(true);
     setRunning(true);
@@ -125,6 +133,7 @@ export default function Step3Simulation({
         // Fall through and restore the start controls when state cannot be resumed.
       }
       setError(message);
+      play('error');
       setStarted(false);
       setRunning(false);
       setStatus({});
@@ -132,11 +141,13 @@ export default function Step3Simulation({
   };
 
   const stop = async () => {
+    play('click');
     try {
       await api.stopSimulation({ simulation_id: simId });
       const current = await api.getRunStatusDetail(simId);
       applyRunStatus(current.data as RunDetail | undefined);
     } catch {
+      play('error');
       setRunning(false);
     }
   };
@@ -188,18 +199,25 @@ export default function Step3Simulation({
                   onChange={(e) => setMaxRounds(Math.max(1, Math.min(50, Number(e.target.value) || 1)))}
                 />
               </label>
-              <button className={styles.primaryBtn} onClick={start}>
+              <button className={styles.primaryBtn} onClick={start} onMouseEnter={() => play('hover')}>
                 Start
               </button>
             </>
           )}
           {running && (
-            <button className={styles.secondaryBtn} onClick={stop}>
+            <button className={styles.secondaryBtn} onClick={stop} onMouseEnter={() => play('hover')}>
               Stop
             </button>
           )}
           {completed && (
-            <button className={styles.primaryBtn} onClick={onDone}>
+            <button
+              className={styles.primaryBtn}
+              onClick={() => {
+                play('navigation');
+                onDone();
+              }}
+              onMouseEnter={() => play('hover')}
+            >
               Generate report →
             </button>
           )}

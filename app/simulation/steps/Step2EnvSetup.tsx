@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
 import * as api from '@/lib/simulation-api';
 import type { AgentProfile } from '@/lib/simulation-api';
+import { useSound } from '@/hooks/useSound';
 import { usePolling } from '../usePolling';
 import type { WorkflowState } from '../SimulationWorkspace';
 import AgentAvatar from '../AgentAvatar';
@@ -18,6 +19,7 @@ export default function Step2EnvSetup({
   onSimulationId: (simulationId: string) => void;
   onReady: (simulationId: string) => void;
 }) {
+  const { play } = useSound();
   const [simId, setSimId] = useState<string | null>(wf.simulationId);
   const [taskId, setTaskId] = useState<string | null>(null);
   const [preparing, setPreparing] = useState(false);
@@ -27,11 +29,16 @@ export default function Step2EnvSetup({
   const [count, setCount] = useState(20);
   const [error, setError] = useState<string | null>(null);
   const ensuring = useRef(false);
+  const requestedPreparation = useRef(false);
 
   const completePreparation = useCallback(async () => {
     setPrepared(true);
     setPreparing(false);
     setTaskId(null);
+    if (requestedPreparation.current) {
+      requestedPreparation.current = false;
+      play('success');
+    }
     if (!simId) return;
     try {
       const response = await api.getSimulationProfiles(simId, 'reddit');
@@ -39,7 +46,7 @@ export default function Step2EnvSetup({
     } catch {
       /* The setup is ready even if profile rendering fails temporarily. */
     }
-  }, [simId]);
+  }, [play, simId]);
 
   // Ensure a simulation exists for this project.
   useEffect(() => {
@@ -106,6 +113,8 @@ export default function Step2EnvSetup({
 
   const prepare = async () => {
     if (!simId) return;
+    play('click');
+    requestedPreparation.current = true;
     setError(null);
     setPreparing(true);
     setProfiles([]);
@@ -127,6 +136,8 @@ export default function Step2EnvSetup({
       if (!nextTaskId) throw new Error('World preparation did not return a task id.');
       setTaskId(nextTaskId);
     } catch (e) {
+      requestedPreparation.current = false;
+      play('error');
       setError(e instanceof Error ? e.message : 'Failed to prepare world');
       setPreparing(false);
     }
@@ -154,6 +165,8 @@ export default function Step2EnvSetup({
         } catch {}
       }
       if (st === 'failed') {
+        requestedPreparation.current = false;
+        play('error');
         setError(res.data?.error || 'World preparation failed');
         setPreparing(false);
       }
@@ -185,6 +198,7 @@ export default function Step2EnvSetup({
           <button
             className={styles.primaryBtn}
             onClick={prepare}
+            onMouseEnter={() => play('hover')}
             disabled={!simId || preparing || checkingPreparation}
           >
             {checkingPreparation
@@ -234,7 +248,16 @@ export default function Step2EnvSetup({
 
       {prepared && (
         <div className={styles.actionRow}>
-          <button className={styles.primaryBtn} onClick={() => simId && onReady(simId)}>
+          <button
+            className={styles.primaryBtn}
+            onClick={() => {
+              if (simId) {
+                play('navigation');
+                onReady(simId);
+              }
+            }}
+            onMouseEnter={() => play('hover')}
+          >
             Run the simulation →
           </button>
         </div>

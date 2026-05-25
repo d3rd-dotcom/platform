@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import * as api from '@/lib/simulation-api';
 import type { AgentProfile } from '@/lib/simulation-api';
+import { useSound } from '@/hooks/useSound';
 import type { WorkflowState } from '../SimulationWorkspace';
 import AgentAvatar from '../AgentAvatar';
 import styles from '../simulation.module.css';
@@ -14,6 +15,7 @@ interface Msg {
 }
 
 export default function Step5Interaction({ wf }: { wf: WorkflowState }) {
+  const { play } = useSound();
   const simId = wf.simulationId as string;
   const [mode, setMode] = useState<'report' | 'agent'>('report');
   const [profiles, setProfiles] = useState<AgentProfile[]>([]);
@@ -23,6 +25,7 @@ export default function Step5Interaction({ wf }: { wf: WorkflowState }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const targetId = target ? agentId(target) : undefined;
 
   useEffect(() => {
     api
@@ -39,7 +42,7 @@ export default function Step5Interaction({ wf }: { wf: WorkflowState }) {
 
   useEffect(() => {
     setMessages([]);
-  }, [mode, target && agentId(target)]);
+  }, [mode, targetId]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
@@ -48,6 +51,7 @@ export default function Step5Interaction({ wf }: { wf: WorkflowState }) {
   const send = async () => {
     const text = input.trim();
     if (!text || busy) return;
+    play('click');
     setError(null);
     setInput('');
     const next = [...messages, { role: 'user' as const, content: text }];
@@ -73,6 +77,7 @@ export default function Step5Interaction({ wf }: { wf: WorkflowState }) {
       }
       setMessages([...next, { role: 'assistant', content: reply || 'No response.' }]);
     } catch (e) {
+      play('error');
       setError(e instanceof Error ? e.message : 'Message failed');
     } finally {
       setBusy(false);
@@ -90,13 +95,21 @@ export default function Step5Interaction({ wf }: { wf: WorkflowState }) {
       <div className={styles.modeToggle}>
         <button
           className={`${styles.modeBtn} ${mode === 'report' ? styles.modeBtnActive : ''}`}
-          onClick={() => setMode('report')}
+          onClick={() => {
+            play('click');
+            setMode('report');
+          }}
+          onMouseEnter={() => play('hover')}
         >
           Report Agent
         </button>
         <button
           className={`${styles.modeBtn} ${mode === 'agent' ? styles.modeBtnActive : ''}`}
-          onClick={() => setMode('agent')}
+          onClick={() => {
+            play('click');
+            setMode('agent');
+          }}
+          onMouseEnter={() => play('hover')}
         >
           Interview an agent
         </button>
@@ -110,7 +123,11 @@ export default function Step5Interaction({ wf }: { wf: WorkflowState }) {
               <button
                 key={aid}
                 className={`${styles.agentPick} ${target && agentId(target) === agentId(p) ? styles.agentPickActive : ''}`}
-                onClick={() => setTarget(p)}
+                onClick={() => {
+                  play('click');
+                  setTarget(p);
+                }}
+                onMouseEnter={() => play('hover')}
                 title={p.name || p.username || `Agent ${aid}`}
               >
                 <AgentAvatar id={aid} size={32} />
@@ -154,7 +171,12 @@ export default function Step5Interaction({ wf }: { wf: WorkflowState }) {
           onKeyDown={(e) => e.key === 'Enter' && send()}
           disabled={busy || (mode === 'agent' && !target)}
         />
-        <button className={styles.primaryBtn} onClick={send} disabled={busy || !input.trim()}>
+        <button
+          className={styles.primaryBtn}
+          onClick={send}
+          onMouseEnter={() => play('hover')}
+          disabled={busy || !input.trim()}
+        >
           Send
         </button>
       </div>

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
 import ProMembershipModal from '@/components/pro-membership-modal/ProMembershipModal';
+import { useSound } from '@/hooks/useSound';
 import { setSimulationAccessTokenProvider } from '@/lib/simulation-api';
 import SimulationWorkspace from './SimulationWorkspace';
 import styles from './simulation.module.css';
@@ -22,6 +23,7 @@ const DEV_BYPASS =
 
 export default function SimulationGate() {
   const { ready, authenticated, getAccessToken, login } = usePrivy();
+  const { play } = useSound();
   const [access, setAccess] = useState<'loading' | 'allowed' | 'denied'>('loading');
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -68,12 +70,13 @@ export default function SimulationGate() {
   }, []);
 
   const unlock = useCallback(() => {
+    play('click');
     if (!authenticated) {
       login();
     } else {
       setModalOpen(true);
     }
-  }, [authenticated, login]);
+  }, [authenticated, login, play]);
 
   // All hooks above run unconditionally; this early return is safe.
   if (DEV_BYPASS) return <SimulationWorkspace />;
@@ -97,7 +100,7 @@ export default function SimulationGate() {
             Build living worlds of autonomous agents from any document, run them forward, and read
             the futures they produce. Available to Pro members.
           </p>
-          <button className={styles.primaryBtn} onClick={unlock}>
+          <button className={styles.primaryBtn} onClick={unlock} onMouseEnter={() => play('hover')}>
             {authenticated ? 'Unlock with Pro' : 'Sign in to continue'}
           </button>
         </div>
