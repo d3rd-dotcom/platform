@@ -22,8 +22,8 @@ export default function LandingEnterAcademyButton() {
       className={styles.heroButton}
     >
       <span className={styles.heroSlideWrap}>
-        <span className={styles.heroSlideText}>Enter The Academy</span>
-        <span className={`${styles.heroSlideText} ${styles.heroSlideClone}`}>Enter The Academy</span>
+        <span className={styles.heroSlideText}>Enter</span>
+        <span className={`${styles.heroSlideText} ${styles.heroSlideClone}`}>Enter</span>
       </span>
       <span className={styles.heroButtonArrow} aria-hidden="true">
         <ArrowRight size={22} weight="bold" />

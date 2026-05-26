@@ -113,7 +113,8 @@
 }
 
 .heroHeadlineSubline {
-  font-size: 0.93em;
+  font-size: 0.88em;
+  white-space: normal;
 }
 
 .heroHeadlineItalic {
@@ -185,7 +186,7 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  align-items: stretch;
+  align-items: center;
   justify-content: flex-start;
   gap: 12px;
   max-width: 100%;
@@ -193,55 +194,119 @@
 
 .heroButton {
   position: relative;
-  display: grid;
-  grid-template-columns: minmax(max-content, 1fr) auto;
+  display: inline-flex;
   align-items: center;
-  gap: 16px;
+  justify-content: center;
+  gap: 10px;
   flex: 0 0 auto;
-  width: max-content;
+  width: 330px;
   max-width: 100%;
-  padding: 18px 20px 18px 30px;
+  height: 56px;
+  padding: 0 28px;
+  line-height: 1;
   border-radius: 999px;
-  border: 1.5px solid rgba(255, 255, 255, 0.3);
-  background: var(--color-primary, #5168FF);
-  color: #ffffff;
-  font-size: clamp(0.88rem, 0.46vw + 0.55rem, 1rem);
+  border: 0.5px solid rgba(131, 131, 131, 0.55);
+  background:
+    linear-gradient(
+      135deg,
+      #1A29B8 7%,
+      #5168FF 24%,
+      #0E1A8A 43%,
+      #5A70FF 53%,
+      #0E1A8A 66%,
+      #1B2AB3 69%,
+      #14209B 72%,
+      #2638C7 86%,
+      #4358E8 92%
+    );
+  color: #F4FFFC;
+  font-size: 1rem;
   font-weight: 700;
   font-family: var(--font-primary);
-  text-transform: uppercase;
-  letter-spacing: clamp(0.08em, 0.18vw, 0.14em);
+  letter-spacing: 0.01em;
   cursor: pointer;
-  box-shadow: 0 6px 18px rgba(81, 104, 255, 0.28);
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow:
+    0 2px 12.6px rgba(35, 35, 35, 0.45),
+    inset 0 8px 0 rgba(255, 255, 255, 0.25);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
   animation: heroFadeUp 0.45s var(--hero-ease-out) 0.5s both;
-  overflow: hidden;
 }
 
 .heroButtonArrow {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.33);
-  color: #ffffff;
   flex: 0 0 auto;
-  transition: transform 0.3s ease, background 0.3s ease;
+  color: inherit;
+  transition: transform 0.25s ease;
 }
 
 .heroButton:hover:not(:disabled) .heroButtonArrow {
-  transform: translateX(4px);
-  background: rgba(0, 0, 0, 0.42);
+  transform: translateX(3px);
 }
 
 .heroButtonSecondary {
-  background: #202127;
-  box-shadow: 0 4px 14px rgba(15, 15, 18, 0.28);
+  background: rgba(255, 255, 255, 0.7);
+  color: #2A2B33;
+  border: 1.5px solid rgba(81, 104, 255, 0.35);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 14px -6px rgba(15, 15, 18, 0.18);
 }
 
-.heroButtonSecondary .heroButtonArrow {
-  background: #3C3D45;
+.githubBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 56px;
+  padding: 0 18px;
+  border-radius: 12px;
+  background: #18181B;
+  color: #ffffff;
+  font-family: var(--font-primary);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+  animation: heroFadeUp 0.45s var(--hero-ease-out) 0.55s both;
+}
+
+.githubBadge:hover {
+  transform: translateY(-2px);
+  background: #25252A;
+  box-shadow: 0 8px 22px -10px rgba(0, 0, 0, 0.55);
+}
+
+.githubBadgeLogo {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  flex: 0 0 auto;
+}
+
+.githubBadgeLabel {
+  line-height: 1;
+}
+
+.githubBadgeDivider {
+  width: 1px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.16);
+  margin: 0 4px;
+}
+
+.githubBadgeStar {
+  width: 16px;
+  height: 16px;
+  color: #F5C518;
+  flex: 0 0 auto;
+}
+
+.githubBadgeCount {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  line-height: 1;
 }
 
 .heroButton::before {
@@ -298,13 +363,17 @@
 
 .heroButton:hover:not(:disabled) {
   transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 6px 20px rgba(81, 104, 255, 0.35);
+  filter: brightness(1.08);
+  box-shadow:
+    0 6px 18px rgba(35, 35, 35, 0.5),
+    inset 0 8px 0 rgba(255, 255, 255, 0.28);
 }
 
 .heroButtonSecondary:hover:not(:disabled) {
-  background: #2B2C33;
-  box-shadow: 0 6px 20px rgba(15, 15, 18, 0.38);
+  background: #ffffff;
+  border-color: rgba(81, 104, 255, 0.6);
+  color: #5168FF;
+  box-shadow: 0 10px 24px -10px rgba(81, 104, 255, 0.35);
 }
 
 .heroButton:hover:not(:disabled)::before {
@@ -667,11 +736,13 @@
   transform: translateY(100%);
 }
 
-.heroButton:hover .heroSlideText {
+.heroButton:hover .heroSlideText,
+.githubBadge:hover .heroSlideText {
   transform: translateY(-100%);
 }
 
-.heroButton:hover .heroSlideClone {
+.heroButton:hover .heroSlideClone,
+.githubBadge:hover .heroSlideClone {
   transform: translateY(0);
 }
 
@@ -784,15 +855,10 @@
   }
 
   .heroButton {
-    gap: 12px;
-    padding: 16px 16px 16px 24px;
-    font-size: clamp(0.8rem, 0.64vw + 0.42rem, 0.92rem);
-    letter-spacing: clamp(0.06em, 0.14vw, 0.1em);
-  }
-
-  .heroButtonArrow {
-    width: 56px;
-    height: 56px;
+    gap: 10px;
+    height: 54px;
+    padding: 0 24px;
+    font-size: 0.98rem;
   }
 }
 
@@ -893,31 +959,6 @@
   .heroSubtextSecondary {
     width: auto;
     max-width: 100%;
-  }
-
-  .heroActions {
-    width: 100%;
-    max-width: 100%;
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .heroButton {
-    min-width: 0;
-    width: 100%;
-    max-width: 100%;
-    grid-template-columns: minmax(0, 1fr) auto;
-    padding: 12px 12px 12px 18px;
-    gap: 10px;
-    font-size: clamp(0.74rem, 1.2vw + 0.42rem, 0.84rem);
-    letter-spacing: clamp(0.05em, 0.28vw, 0.08em);
-    border-radius: 999px;
-  }
-
-  .heroButtonArrow {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
   }
 
   .heroVisualFrame {
@@ -1038,15 +1079,29 @@
   }
 
   .heroButton {
-    padding: 11px 11px 11px 14px;
-    font-size: 0.72rem;
-    letter-spacing: 0.06em;
+    height: 48px;
+    padding: 0 20px;
+    font-size: 0.92rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .heroActions {
+    width: 100%;
+    max-width: 100%;
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .heroButtonArrow {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
+  .heroButton {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .githubBadge {
+    width: 100%;
+    justify-content: center;
   }
 }
 

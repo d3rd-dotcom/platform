@@ -11,6 +11,7 @@ import type { IconProps } from '@phosphor-icons/react';
 import styles from './SideNavigation.module.css';
 import { useSound } from '@/hooks/useSound';
 import { useInitialSidebarCollapsed } from './SidebarStateProvider';
+import HoverSlideText from '@/components/shared/HoverSlideText';
 
 const BlueChat = dynamic(() => import('../blue-chat/BlueChat'), { ssr: false });
 const SidebarProfileCard = dynamic(() => import('../sidebar-profile-card/SidebarProfileCard'), { ssr: false });
@@ -557,11 +558,11 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
       <div className={styles.section}>
         {section.label && (
           <button
-            className={`${styles.sectionHeader} ${isExtras ? styles.sectionHeaderToggle : ''}`}
+            className={`${styles.sectionHeader} hover-slide-trigger ${isExtras ? styles.sectionHeaderToggle : ''}`}
             onClick={isExtras ? () => setAdminExpanded(!adminExpanded) : undefined}
             type="button"
           >
-            <span className={styles.sectionLabel}>{section.label}</span>
+            <span className={styles.sectionLabel}><HoverSlideText>{section.label}</HoverSlideText></span>
             {section.badge && (
               <span className={`${styles.sectionBadge} ${section.badgeType === 'pro' ? styles.sectionBadgePro : ''}`}>
                 {section.badge}
@@ -604,7 +605,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                 data-tour={item.id === 'markets' ? 'markets' : undefined}
               >
                 <NavIconMark icon={item.icon} iconSrc={item.iconSrc} />
-                <span className={styles.navItemLabel}>{item.label}</span>
+                <span className={styles.navItemLabel}><HoverSlideText>{item.label}</HoverSlideText></span>
                 <span className={`${styles.badge} ${styles.badgeChecking}`}>
                   Checking
                 </span>
@@ -613,17 +614,17 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
               <button
                 key={item.id}
                 onClick={() => {
-                  play('click');
+                  play('error');
                   setIsProModalOpen(true);
                   setIsMobileMenuOpen(false);
                 }}
                 onMouseEnter={() => play('hover')}
-                className={`${styles.navItem} ${styles.navItemButton}`}
+                className={`${styles.navItem} ${styles.navItemButton} hover-slide-trigger`}
                 title={isCollapsed ? item.label : undefined}
                 data-tour={item.id === 'markets' ? 'markets' : undefined}
               >
                 <NavIconMark icon={item.icon} iconSrc={item.iconSrc} />
-                <span className={styles.navItemLabel}>{item.label}</span>
+                <span className={styles.navItemLabel}><HoverSlideText>{item.label}</HoverSlideText></span>
                 <span className={`${styles.badge} ${styles.badgeLocked}`}>
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 3, verticalAlign: '-1px' }}>
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
@@ -640,7 +641,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                 data-tour={item.id === 'markets' ? 'markets' : undefined}
               >
                 <NavIconMark icon={item.icon} iconSrc={item.iconSrc} />
-                <span className={styles.navItemLabel}>{item.label}</span>
+                <span className={styles.navItemLabel}><HoverSlideText>{item.label}</HoverSlideText></span>
                 {item.badge && (
                   <span className={`${styles.badge} ${item.badgeType === 'muted' ? styles.badgeMuted : item.badgeType === 'highlight' ? styles.badgeHighlight : ''}`}>
                     {item.badge}
@@ -651,7 +652,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
               <Link
                 key={item.id}
                 href={item.href}
-                className={`${styles.navItem} ${active ? styles.navItemActive : ''}`}
+                className={`${styles.navItem} hover-slide-trigger ${active ? styles.navItemActive : ''}`}
                 {...(item.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                 onClick={() => {
                   play('navigation');
@@ -663,7 +664,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                 data-tour={item.id === 'markets' ? 'markets' : undefined}
               >
                 <NavIconMark icon={item.icon} iconSrc={item.iconSrc} isActive={active} />
-                <span className={styles.navItemLabel}>{item.label}</span>
+                <span className={styles.navItemLabel}><HoverSlideText>{item.label}</HoverSlideText></span>
                 {item.badge && (
                   <span className={`${styles.badge} ${item.requiresPro ? styles.badgeUnlocked : item.badgeType === 'highlight' ? styles.badgeHighlight : item.badgeType === 'green' ? styles.badgeGreen : item.badgeType === 'pro' ? styles.badgePro : ''}`}>
                     {item.requiresPro ? 'VIP' : item.badge}
@@ -786,7 +787,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                 <Link
                   key={item.id}
                   href={item.href}
-                  className={`${styles.navItem} ${active ? styles.navItemActive : ''}`}
+                  className={`${styles.navItem} hover-slide-trigger ${active ? styles.navItemActive : ''}`}
                   data-tour={item.id === 'morning-pages' ? 'journal' : item.id === 'events' ? 'quests' : undefined}
                   onClick={() => {
                     play('navigation');
@@ -802,7 +803,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                   isActive={active}
                   preserveColor={item.id === 'shop'}
                 />
-                <span className={styles.navItemLabel}>{item.label}</span>
+                <span className={styles.navItemLabel}><HoverSlideText>{item.label}</HoverSlideText></span>
               </Link>
               );
             })}

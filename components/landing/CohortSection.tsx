@@ -19,7 +19,7 @@ export const CohortSection = () => {
 
           <div className={styles.titlePanel}>
             <div className={styles.titlePanelText}>
-              <h2 className={styles.cohortTitle}>The Next-Gen Of Cyberculture</h2>
+              <h2 className={styles.cohortTitle}>A Cohort For Humanitarian AI Research</h2>
               <p className={styles.cohortSubtitle}>
                 An intellectual refreshment. Over 4–12 weeks, you will unlock rewards, access industry experts, run real experiments, and contribute to the future of scientific growth.
               </p>

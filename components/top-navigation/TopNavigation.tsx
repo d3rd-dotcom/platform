@@ -9,6 +9,7 @@ import styles from './TopNavigation.module.css';
 import { useSound } from '@/hooks/useSound';
 import { useTheme } from '@/components/theme/ThemeProvider';
 import SoundToggle from '@/components/sound/SoundToggle';
+import HoverSlideText from '@/components/shared/HoverSlideText';
 
 const NAV_LINKS = [
   { label: 'Home',      href: '/home',      icon: '/icons/nav-home.svg' },
@@ -90,7 +91,7 @@ const TopNavigation: React.FC = () => {
               <Link
                 key={href}
                 href={href}
-                className={`${styles.navLink} ${active ? styles.navLinkActive : ''}`}
+                className={`${styles.navLink} hover-slide-trigger ${active ? styles.navLinkActive : ''}`}
                 onMouseEnter={() => play('hover')}
                 onClick={() => play('navigation')}
                 aria-current={active ? 'page' : undefined}
@@ -102,7 +103,7 @@ const TopNavigation: React.FC = () => {
                   height={16}
                   className={`${styles.navLinkIcon} ${active ? styles.navLinkIconActive : ''}`}
                 />
-                {label}
+                <HoverSlideText>{label}</HoverSlideText>
               </Link>
             );
           })}
@@ -144,23 +145,23 @@ const TopNavigation: React.FC = () => {
                 type="button"
                 onClick={handleLogin}
                 onMouseEnter={() => play('hover')}
-                className={styles.loginButton}
+                className={`${styles.loginButton} hover-slide-trigger`}
               >
-                Login
+                <HoverSlideText>Login</HoverSlideText>
               </button>
               <button
                 type="button"
                 onClick={handleJoinNow}
                 onMouseEnter={() => play('hover')}
-                className={styles.joinButton}
+                className={`${styles.joinButton} hover-slide-trigger`}
               >
-                Join Now
+                <HoverSlideText>Join Now</HoverSlideText>
               </button>
             </>
           )}
           <button
             type="button"
-            className={styles.shinyCard}
+            className={`${styles.shinyCard} hover-slide-trigger`}
             data-tour="ask-blue"
             onClick={() => {
               play('click');
@@ -177,7 +178,9 @@ const TopNavigation: React.FC = () => {
                   <path d="M7.5 9.5h9M7.5 12.5h5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                 </svg>
               </div>
-              <span className={styles.shinyCardTitle}>Ask Blue</span>
+              <span className={styles.shinyCardTitle}>
+                <HoverSlideText>Ask Blue</HoverSlideText>
+              </span>
             </div>
           </button>
         </nav>

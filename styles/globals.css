@@ -915,3 +915,49 @@ h6 { font-size: var(--font-size-xs); }
 [data-theme="dark"] .introjs-progress {
   background-color: color-mix(in oklch, var(--color-primary) 18%, transparent);
 }
+
+/* ============================================
+   Hover slide-up text effect (reusable)
+   Wrap text:
+     <span class="hover-slide-wrap">
+       <span class="hover-slide-text">Label</span>
+       <span class="hover-slide-text hover-slide-clone">Label</span>
+     </span>
+   Trigger from any parent that has class `hover-slide-trigger` and :hover.
+   ============================================ */
+.hover-slide-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  min-width: 0;
+  max-width: 100%;
+  height: 1.12em;
+  line-height: 1.12;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.hover-slide-text {
+  display: block;
+  line-height: 1.12;
+  white-space: nowrap;
+  transition: transform 0.3s ease;
+  will-change: transform;
+}
+
+.hover-slide-clone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transform: translateY(100%);
+}
+
+.hover-slide-trigger:hover .hover-slide-text {
+  transform: translateY(-100%);
+}
+
+.hover-slide-trigger:hover .hover-slide-clone {
+  transform: translateY(0);
+}
