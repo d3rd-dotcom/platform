@@ -605,7 +605,7 @@
   font-family: var(--font-departure-mono), 'Departure Mono', monospace;
   font-size: 11px;
   font-weight: 700;
-  color: #999999;
+  color: #555770;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -927,15 +927,15 @@
 /* Badge */
 .badge {
   font-family: var(--font-departure-mono), 'Departure Mono', monospace;
-  font-size: 10px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 3px 6px;
+  letter-spacing: 0.06em;
+  padding: 3px 7px;
   border-radius: 4px;
   background: rgba(26, 29, 51, 0.08);
-  color: #666666;
-  border: 1px solid rgba(26, 29, 51, 0.15);
+  color: #3a3d52;
+  border: 1px solid rgba(26, 29, 51, 0.18);
   margin-left: auto;
   flex-shrink: 0;
 }
@@ -960,31 +960,27 @@
 }
 
 .badgePro {
-  background: linear-gradient(135deg, rgba(255, 119, 41, 0.2) 0%, rgba(255, 154, 92, 0.2) 100%);
-  color: #B0470C;
-  border-color: rgba(176, 71, 12, 0.55);
-  font-size: 9px;
+  background: linear-gradient(135deg, rgba(255, 119, 41, 0.22) 0%, rgba(255, 154, 92, 0.22) 100%);
+  color: #8a3408;
+  border-color: rgba(138, 52, 8, 0.6);
 }
 
 .badgeLocked {
-  background: linear-gradient(135deg, rgba(255, 119, 41, 0.2) 0%, rgba(255, 154, 92, 0.2) 100%);
-  color: #B0470C;
-  border-color: rgba(176, 71, 12, 0.55);
-  font-size: 9px;
+  background: linear-gradient(135deg, rgba(255, 119, 41, 0.22) 0%, rgba(255, 154, 92, 0.22) 100%);
+  color: #8a3408;
+  border-color: rgba(138, 52, 8, 0.6);
 }
 
 .badgeUnlocked {
-  background: rgba(31, 122, 58, 0.16);
-  color: #146030;
-  border-color: rgba(20, 96, 48, 0.55);
-  font-size: 9px;
+  background: rgba(31, 122, 58, 0.18);
+  color: #0d4a23;
+  border-color: rgba(13, 74, 35, 0.6);
 }
 
 .badgeChecking {
   background: rgba(26, 29, 51, 0.08);
-  color: rgba(26, 29, 51, 0.7);
-  border-color: rgba(26, 29, 51, 0.2);
-  font-size: 9px;
+  color: rgba(26, 29, 51, 0.78);
+  border-color: rgba(26, 29, 51, 0.22);
 }
 
 /* Bottom Section */
@@ -1540,8 +1536,8 @@
   }
 
   .badge {
-    font-size: 9px;
-    padding: 2px 4px;
+    font-size: 10px;
+    padding: 2px 5px;
   }
 
   /* Account Menu - fixed positioning applied via JS to escape sidenav overflow clipping */
@@ -1811,9 +1807,9 @@
 }
 
 :global([data-theme="dark"]) .badgeUnlocked {
-  background: rgba(68, 233, 144, 0.12);
-  color: #44e990;
-  border-color: rgba(68, 233, 144, 0.35);
+  background: rgba(68, 233, 144, 0.18);
+  color: #6cf5a8;
+  border-color: rgba(68, 233, 144, 0.55);
 }
 
 :global([data-theme="dark"]) .badgeChecking {

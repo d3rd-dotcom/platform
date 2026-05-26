@@ -29,6 +29,20 @@ const WEEK_COLORS: Record<number, string> = {
   12: '#EC4899', 13: '#EC4899',
 };
 
+// Per-task "calm rainbow" palette — mirrors the onboarding/intake survey hues
+// (indigo → violet → sky → green), no warning reds/oranges. Tasks 1–8 flow
+// top-to-bottom; cycles past index 7 if a week has more than 8 sections.
+const TASK_ACCENTS = [
+  '#5168FF', // 1 — indigo (brand)
+  '#7C8FFF', // 2 — soft indigo
+  '#8B5CF6', // 3 — violet
+  '#A855F7', // 4 — purple
+  '#38BDF8', // 5 — sky
+  '#22D3EE', // 6 — cyan
+  '#2DD4BF', // 7 — teal
+  '#34D399', // 8 — emerald
+];
+
 interface BlurtEntry { id: string; blurt: string; affirmation: string; }
 
 type TaskArtVariant = 'aurora' | 'sunrise' | 'orbit' | 'bloom' | 'ribbon' | 'prism';
@@ -575,12 +589,17 @@ export default function WeekTasksView({
       data-week-number={weekNumber}
       style={{ '--week-color': weekColor } as React.CSSProperties}
     >
-{visibleSections.map(section => {
+{visibleSections.map((section, idx) => {
         const isOpen = expandedSection === section.id;
         const isDone = completedSections.has(section.id);
         const artVariant = getTaskArtVariant(section);
+        const taskAccent = TASK_ACCENTS[idx % TASK_ACCENTS.length];
         return (
-          <div key={section.id} className={`${styles.taskCard} ${isDone ? styles.taskCardDone : ''} ${isSealed ? styles.taskCardSealed : ''}`}>
+          <div
+            key={section.id}
+            className={`${styles.taskCard} ${isDone ? styles.taskCardDone : ''} ${isSealed ? styles.taskCardSealed : ''}`}
+            style={{ '--task-accent': taskAccent } as React.CSSProperties}
+          >
             <button
               type="button"
               className={styles.taskCardHeader}

@@ -45,9 +45,9 @@ interface LeaderboardUser {
 const WEEKLY_READINGS = [
   { title: 'Art as Creative Practice', author: '', description: 'This week introduces the habits behind creative recovery.', category: 'Introduction', imageUrl: 'https://i.imgur.com/KkpN9as.png', slug: 'art-is-spiritual-warfare', markdownPath: '/readings/art-is-spiritual-warfare.md' },
   { title: 'A Sense of Safety', author: '', description: 'Establish a foundation of safety to explore your creativity without fear.', category: 'Week 1', imageUrl: '/stories/week-01/1.png', slug: 'sense-of-safety', markdownPath: '/readings/sense-of-safety.md' },
-  { title: 'A Sense of Identity', author: '', description: 'The gap between human perception and machine processing. What lives in that space, and how to close it.', category: 'Week 2', imageUrl: 'https://i.imgur.com/0gghyGS.jpeg', slug: 'sense-of-identity', markdownPath: '/readings/sense-of-identity.md' },
-  { title: 'A Sense of Power', author: '', description: 'Anger, shame, and useful signals surface here. This week asks you to reclaim your power and act on it.', category: 'Week 3', imageUrl: 'https://i.imgur.com/MMb9MTw.png', slug: 'sense-of-power', markdownPath: '/readings/sense-of-power.md' },
-  { title: 'A Sense of Integrity', author: '', description: 'Align your actions with your deepest values. Integrity is the bridge between vision and reality.', category: 'Week 4', imageUrl: 'https://i.imgur.com/sRNfQyg.png', slug: 'sense-of-integrity', markdownPath: '/readings/sense-of-integrity.md' },
+  { title: 'A Sense of Identity', author: '', description: 'The gap between human perception and machine processing. What lives in that space, and how to close it.', category: 'Week 2', imageUrl: '/stories/week-01/8.png', slug: 'sense-of-identity', markdownPath: '/readings/sense-of-identity.md' },
+  { title: 'A Sense of Power', author: '', description: 'Anger, shame, and useful signals surface here. This week asks you to reclaim your power and act on it.', category: 'Week 3', imageUrl: '/stories/week-01/12.png', slug: 'sense-of-power', markdownPath: '/readings/sense-of-power.md' },
+  { title: 'A Sense of Integrity', author: '', description: 'Align your actions with your deepest values. Integrity is the bridge between vision and reality.', category: 'Week 4', imageUrl: '/stories/week-01/11.png', slug: 'sense-of-integrity', markdownPath: '/readings/sense-of-integrity.md' },
   { title: 'A Sense of Possibility', author: '', description: 'Dismantle the limits you inherited. Possibility is not given — it is reclaimed.', category: 'Week 5', imageUrl: '/stories/week-01/4.png', slug: 'sense-of-possibility', markdownPath: '/readings/sense-of-possibility.md' },
   { title: 'A Sense of Abundance', author: '', description: 'Study the money stories shaping your creative choices, then test better ones.', category: 'Week 6', imageUrl: 'https://i.imgur.com/DqnZ4P5.jpeg', slug: 'sense-of-abundance', markdownPath: '/readings/sense-of-abundance.md' },
   { title: 'A Sense of Connection', author: '', description: 'Creativity is not solitary. Learn to receive support and give it without losing yourself.', category: 'Week 7', imageUrl: '/stories/week-01/5.png', slug: 'sense-of-connection', markdownPath: '/readings/sense-of-connection.md' },
@@ -531,7 +531,6 @@ export default function CoursePage() {
                 <button
                   type="button"
                   className={`${styles.readingCard} ${isDesktop && rightContent === 'reading' ? styles.readingCardActive : ''}`}
-                  style={{ '--reading-card-bg': `url(${JSON.stringify(weekReading.imageUrl)})` } as React.CSSProperties}
                   onClick={() => {
                     play('click');
                     const idx = Math.min(resolvedViewWeek, WEEKLY_READINGS.length - 1);
@@ -545,9 +544,14 @@ export default function CoursePage() {
                   }}
                   onMouseEnter={() => play('hover')}
                 >
+                  <span
+                    className={styles.readingThumb}
+                    style={{ backgroundImage: `url(${JSON.stringify(weekReading.imageUrl)})` }}
+                    aria-hidden="true"
+                  />
                   <div className={styles.readingInfo}>
+                    <span className={styles.readingCategory}>{weekReading.category}</span>
                     <span className={styles.readingTitle}>{weekReading.title}</span>
-                    <span className={styles.readingAuthor}>{weekReading.author}</span>
                   </div>
                   <svg className={styles.readingArrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M9 18l6-6-6-6"/>

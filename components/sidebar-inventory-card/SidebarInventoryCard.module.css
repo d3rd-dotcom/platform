@@ -196,7 +196,7 @@
 }
 
 :global(:root:not([data-theme="dark"])) .tokenName {
-  color: rgba(26, 29, 51, 0.65);
+  color: rgba(26, 29, 51, 0.85);
 }
 
 :global(:root:not([data-theme="dark"])) .balanceVal {
@@ -204,5 +204,5 @@
 }
 
 :global(:root:not([data-theme="dark"])) .shardCountSm {
-  color: rgba(26, 29, 51, 0.55);
+  color: rgba(26, 29, 51, 0.78);
 }

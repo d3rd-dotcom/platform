@@ -58,18 +58,23 @@
 /* ─── Task Card ─── */
 
 .taskCard {
+  --task-accent: #5168FF;
   width: 100%;
   background: #FFFFFF;
   border: 1px solid rgba(26, 29, 51, 0.08);
+  border-left: 3px solid var(--task-accent);
   border-radius: 14px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
-  transition: all 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .taskCard:hover {
-  box-shadow: 0 4px 16px rgba(81, 104, 255, 0.08);
-  border-color: rgba(81, 104, 255, 0.15);
+  box-shadow:
+    0 4px 16px color-mix(in srgb, var(--task-accent) 22%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--task-accent) 22%, transparent);
+  border-color: color-mix(in srgb, var(--task-accent) 32%, rgba(26, 29, 51, 0.08));
+  border-left-color: var(--task-accent);
 }
 
 .taskCardDone .taskArtwork {
@@ -111,9 +116,6 @@
 }
 
 .taskArtwork {
-  --art-base: color-mix(in srgb, var(--week-color, #5168FF) 66%, #0f172a 34%);
-  --art-accent: color-mix(in srgb, var(--week-color, #5168FF) 38%, #ffffff 62%);
-  --art-highlight: rgba(255, 255, 255, 0.72);
   width: 40px;
   height: 40px;
   position: relative;
@@ -121,73 +123,87 @@
   border-radius: 8px;
   flex-shrink: 0;
   box-shadow:
-    0 0 0 1px rgba(81, 104, 255, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.24),
-    0 4px 10px rgba(81, 104, 255, 0.12);
-  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+    0 0 0 1px color-mix(in srgb, var(--task-accent) 28%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 4px 10px color-mix(in srgb, var(--task-accent) 22%, transparent);
+  transition: box-shadow 0.25s cubic-bezier(0.25, 1, 0.5, 1), transform 0.25s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .taskCard:hover .taskArtwork {
   box-shadow:
-    0 0 0 1px rgba(81, 104, 255, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.28),
-    0 6px 14px rgba(81, 104, 255, 0.18);
+    0 0 0 1px color-mix(in srgb, var(--task-accent) 42%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34),
+    0 6px 14px color-mix(in srgb, var(--task-accent) 32%, transparent);
   transform: translateY(-1px) scale(1.02);
 }
 
-.taskArtworkAurora {
+/* Variant base — all share the same accent-driven color spine; the
+   radial-overlay below adds subtle per-variant texture. */
+.taskArtworkAurora,
+.taskArtworkSunrise,
+.taskArtworkOrbit,
+.taskArtworkBloom,
+.taskArtworkRibbon,
+.taskArtworkPrism {
   background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--task-accent) 68%, #0f172a 32%) 0%,
+      var(--task-accent) 48%,
+      color-mix(in srgb, var(--task-accent) 42%, #ffffff 58%) 100%);
+}
+
+.taskArtworkAurora {
+  background-image:
     radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.42), transparent 28%),
-    linear-gradient(135deg, #2a3b8f 0%, var(--week-color, #5168FF) 38%, #67d5ff 100%);
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--task-accent) 68%, #0f172a 32%) 0%,
+      var(--task-accent) 48%,
+      color-mix(in srgb, var(--task-accent) 42%, #ffffff 58%) 100%);
 }
 
 .taskArtworkSunrise {
-  background:
-    radial-gradient(circle at 75% 24%, rgba(224, 242, 254, 0.72), transparent 20%),
-    linear-gradient(140deg, #0f3d91 0%, #2563eb 42%, #7dd3fc 100%);
+  background-image:
+    radial-gradient(circle at 75% 24%, rgba(255, 255, 255, 0.52), transparent 22%),
+    linear-gradient(140deg,
+      color-mix(in srgb, var(--task-accent) 70%, #0f172a 30%) 0%,
+      var(--task-accent) 50%,
+      color-mix(in srgb, var(--task-accent) 38%, #ffffff 62%) 100%);
 }
 
 .taskArtworkOrbit {
-  background:
-    radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.16), transparent 25%),
-    linear-gradient(135deg, #15213f 0%, #243d7b 40%, #5dd4c4 100%);
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.22), transparent 28%),
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--task-accent) 60%, #0f172a 40%) 0%,
+      var(--task-accent) 52%,
+      color-mix(in srgb, var(--task-accent) 46%, #ffffff 54%) 100%);
 }
 
 .taskArtworkBloom {
-  background:
-    radial-gradient(circle at 24% 22%, rgba(255, 248, 252, 0.45), transparent 26%),
-    linear-gradient(135deg, #6346d8 0%, #b14ff2 52%, #ff8eb1 100%);
+  background-image:
+    radial-gradient(circle at 24% 22%, rgba(255, 255, 255, 0.46), transparent 26%),
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--task-accent) 72%, #1a1336 28%) 0%,
+      var(--task-accent) 50%,
+      color-mix(in srgb, var(--task-accent) 35%, #ffffff 65%) 100%);
 }
 
 .taskArtworkRibbon {
-  background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.16), transparent 48%),
-    linear-gradient(140deg, #1e254e 0%, #4550a7 42%, #86a1ff 100%);
+  background-image:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.18), transparent 48%),
+    linear-gradient(140deg,
+      color-mix(in srgb, var(--task-accent) 64%, #0f172a 36%) 0%,
+      var(--task-accent) 48%,
+      color-mix(in srgb, var(--task-accent) 44%, #ffffff 56%) 100%);
 }
 
 .taskArtworkPrism {
-  background:
-    radial-gradient(circle at 15% 18%, rgba(255, 255, 255, 0.24), transparent 20%),
-    linear-gradient(135deg, #1b2f63 0%, #4963ff 35%, #78e0ff 100%);
-}
-
-.container[data-week-number='7'] .taskArtwork {
-  box-shadow:
-    0 0 0 1px rgba(81, 104, 255, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.26),
-    0 8px 18px rgba(81, 104, 255, 0.18);
-}
-
-.container[data-week-number='7'] .taskArtworkAurora,
-.container[data-week-number='7'] .taskArtworkSunrise,
-.container[data-week-number='7'] .taskArtworkOrbit,
-.container[data-week-number='7'] .taskArtworkBloom,
-.container[data-week-number='7'] .taskArtworkRibbon,
-.container[data-week-number='7'] .taskArtworkPrism {
-  background:
-    radial-gradient(circle at 24% 20%, rgba(255, 255, 255, 0.46), transparent 26%),
-    radial-gradient(circle at 82% 82%, rgba(122, 224, 255, 0.28), transparent 34%),
-    linear-gradient(135deg, #4f46e5 0%, #5168ff 48%, #38bdf8 100%);
+  background-image:
+    radial-gradient(circle at 15% 18%, rgba(255, 255, 255, 0.26), transparent 22%),
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--task-accent) 66%, #0f172a 34%) 0%,
+      var(--task-accent) 46%,
+      color-mix(in srgb, var(--task-accent) 38%, #ffffff 62%) 100%);
 }
 
 .taskArtworkGlow,
@@ -317,24 +333,24 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--week-color, #5168FF);
-  background: color-mix(in srgb, var(--week-color, #5168FF) 10%, transparent);
-  border: 1px solid color-mix(in srgb, var(--week-color, #5168FF) 28%, transparent);
+  color: var(--task-accent, var(--week-color, #5168FF));
+  background: color-mix(in srgb, var(--task-accent, var(--week-color, #5168FF)) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--task-accent, var(--week-color, #5168FF)) 28%, transparent);
   border-radius: 10px;
   cursor: pointer;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   box-shadow:
-    0 4px 14px color-mix(in srgb, var(--week-color, #5168FF) 18%, transparent),
+    0 4px 14px color-mix(in srgb, var(--task-accent, var(--week-color, #5168FF)) 18%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
   transition: all 0.15s ease;
 }
 
 .markDoneBtn:hover {
-  background: color-mix(in srgb, var(--week-color, #5168FF) 20%, transparent);
-  border-color: color-mix(in srgb, var(--week-color, #5168FF) 48%, transparent);
+  background: color-mix(in srgb, var(--task-accent, var(--week-color, #5168FF)) 20%, transparent);
+  border-color: color-mix(in srgb, var(--task-accent, var(--week-color, #5168FF)) 48%, transparent);
   box-shadow:
-    0 6px 22px color-mix(in srgb, var(--week-color, #5168FF) 30%, transparent),
+    0 6px 22px color-mix(in srgb, var(--task-accent, var(--week-color, #5168FF)) 30%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.18);
   transform: translateY(-1px);
 }
@@ -614,6 +630,7 @@
 :global([data-theme="dark"]) .taskCard {
   background: #1E1F2C;
   border-color: rgba(255, 255, 255, 0.1);
+  border-left-color: var(--task-accent);
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.08),
     0 6px 24px rgba(0, 0, 0, 0.65),
@@ -621,11 +638,12 @@
 }
 
 :global([data-theme="dark"]) .taskCard:hover {
-  border-color: rgba(107, 128, 255, 0.28);
+  border-color: color-mix(in srgb, var(--task-accent) 38%, rgba(255, 255, 255, 0.1));
+  border-left-color: var(--task-accent);
   box-shadow:
-    0 0 0 1px rgba(107, 128, 255, 0.22),
+    0 0 0 1px color-mix(in srgb, var(--task-accent) 28%, transparent),
     0 8px 32px rgba(0, 0, 0, 0.7),
-    0 0 16px rgba(81, 104, 255, 0.1),
+    0 0 18px color-mix(in srgb, var(--task-accent) 22%, transparent),
     0 1px 0 rgba(255, 255, 255, 0.08) inset;
 }
 
