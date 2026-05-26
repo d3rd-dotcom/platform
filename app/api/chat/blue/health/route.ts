@@ -5,6 +5,7 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const PING_TIMEOUT_MS = 8000;
+const PING_MODEL = process.env.ELIZA_CHAT_MODEL || 'anthropic/claude-sonnet-4.6';
 
 function maskKey(key: string | undefined | null): string {
   if (!key) return 'missing';
@@ -34,6 +35,7 @@ export async function GET() {
     baseUrlRaw: rawBase || null,
     baseUrlNormalized: baseUrl,
     pingUrl: url,
+    model: PING_MODEL,
     apiKeyPresent: Boolean(rawKey),
     apiKeyMasked: maskKey(rawKey),
     apiKeyHasWhitespace: rawKey ? rawKey !== rawKey.trim() : false,
@@ -71,10 +73,12 @@ export async function GET() {
         'X-API-Key': rawKey,
       },
       body: JSON.stringify({
-        model: 'gemini-2.0-flash',
+        model: PING_MODEL,
         messages: [
-          { role: 'user', content: 'ping' },
+          { role: 'user', content: 'Reply with exactly: ok' },
         ],
+        max_tokens: 8,
+        stream: true,
       }),
     });
 

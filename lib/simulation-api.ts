@@ -289,7 +289,7 @@ export const generateOntology = (formData: FormData) =>
     total_text_length: number;
   }>(`/api/graph/ontology/generate`, { method: 'POST', body: formData });
 
-export const buildGraph = (data: { project_id: string; graph_name?: string }) =>
+export const buildGraph = (data: { project_id: string; graph_name?: string; force?: boolean }) =>
   request<{ task_id: string }>(`/api/graph/build`, { method: 'POST', json: data });
 
 export const enrichGraph = (data: { project_id: string; context: string }) =>
@@ -303,6 +303,14 @@ export const getGraphTaskStatus = (taskId: string) =>
 
 export const getGraphData = (graphId: string) =>
   request<GraphData>(`/api/graph/data/${graphId}`);
+
+export const correctGraphEdge = (data: {
+  project_id: string;
+  edge_uuid: string;
+  operation: 'delete' | 'replace';
+  fact_name?: string;
+  fact?: string;
+}) => request<GraphData>(`/api/graph/edge/correct`, { method: 'POST', json: data });
 
 // ── Steps 2–3: Simulation ──
 
@@ -413,6 +421,9 @@ export interface InterviewResult {
 export const interviewAgents = (data: {
   simulation_id: string;
   interviews: Array<{ agent_id: string | number; prompt: string }>;
+  platform?: SimPlatform;
+  timeout?: number;
+  use_interview_model?: boolean;
 }) =>
   request<{ result: InterviewResult }>(`/api/simulation/interview/batch`, {
     method: 'POST',

@@ -32,9 +32,12 @@ Copy `.env.example` to `.env` and fill in:
 
 | Var | Required | Notes |
 |-----|----------|-------|
-| `LLM_API_KEY` | yes | Any OpenAI-SDK-compatible key |
-| `LLM_BASE_URL` | yes | e.g. `https://api.openai.com/v1` or DeepSeek/Qwen endpoint |
-| `LLM_MODEL_NAME` | yes | e.g. `gpt-4o-mini` |
+| `LLM_API_KEY` | yes | Eliza Cloud API key for primary simulation inference |
+| `LLM_BASE_URL` | yes | Set to `https://www.elizacloud.ai/api/v1` for Eliza Cloud |
+| `LLM_MODEL_NAME` | yes | Main simulation model; use `anthropic/claude-opus-4.7` |
+| `LLM_FALLBACK_*` | recommended | Secondary provider/model; use DeepSeek for fallback |
+| `REPORT_LLM_MODEL_NAME` | recommended | Report generation/chat model; use `anthropic/claude-haiku-4.5` |
+| `INTERVIEW_LLM_MODEL_NAME` | recommended | Step 5 persona interview model; use `anthropic/claude-haiku-4.5` |
 | `ZEP_API_KEY` | yes | Zep Cloud (long-term agent memory) |
 | `SIMULATION_API_SECRET` | yes (prod) | Shared secret; must match the main app's `SIMULATION_API_SECRET`. `openssl rand -hex 32` |
 | `SIMULATION_ALLOWED_ORIGINS` | optional | Comma-separated CORS allowlist; leave empty (proxy is server-to-server) |
@@ -91,3 +94,6 @@ docker run -p 5001:5001 --env-file ./simulation-backend/.env mwa-simulation
 - **Long requests:** ontology generation and simulation runs take minutes. The
   frontend polls task-status endpoints rather than blocking; keep the platform's
   request timeout generous for the few synchronous calls.
+- **Live OASIS interviews:** actions executed inside a running simulation share
+  its initialized `LLM_MODEL_NAME`. Step 5 interactive persona interviews use
+  the lighter `INTERVIEW_LLM_MODEL_NAME` path instead.

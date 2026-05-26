@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import * as api from '@/lib/simulation-api';
 import type { GraphData, GraphEdge, GraphNode } from '@/lib/simulation-api';
 import styles from './simulation.module.css';
 
@@ -214,11 +215,26 @@ function edgePath(a: SimNode, b: SimNode, offset: number, pairTotal: number) {
   };
 }
 
-export default function GraphPanel({ graph, worldName }: { graph: GraphData | null; worldName?: string }) {
+export default function GraphPanel({
+  graph,
+  worldName,
+  projectId,
+  onGraphData,
+}: {
+  graph: GraphData | null;
+  worldName?: string;
+  projectId: string;
+  onGraphData: (graph: GraphData) => void;
+}) {
   const [, force] = useState(0);
   const [view, setView] = useState({ x: 0, y: 0, k: 1 });
   const [showEdgeLabels, setShowEdgeLabels] = useState(true);
   const [selected, setSelected] = useState<GraphSelection>(null);
+  const [replacingEdge, setReplacingEdge] = useState(false);
+  const [replacementType, setReplacementType] = useState('');
+  const [replacementFact, setReplacementFact] = useState('');
+  const [correctingEdge, setCorrectingEdge] = useState(false);
+  const [correctionError, setCorrectionError] = useState<string | null>(null);
   const nodesRef = useRef<SimNode[]>([]);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const rafRef = useRef<number>();
@@ -456,6 +472,48 @@ export default function GraphPanel({ graph, worldName }: { graph: GraphData | nu
       y: (svgY - view.y) / view.k,
     };
   };
+  const selectEdge = (id: string) => {
+    setSelected({ kind: 'edge', id });
+    setReplacingEdge(false);
+    setCorrectionError(null);
+  };
+  const beginReplacement = () => {
+    if (!selectedEdge) return;
+    setReplacementType(selectedEdge.label);
+    setReplacementFact(
+      selectedEdge.fact ||
+        `${selectedEdgeSource?.label || selectedEdge.source} ${selectedEdge.label} ${selectedEdgeTarget?.label || selectedEdge.target}`,
+    );
+    setCorrectionError(null);
+    setReplacingEdge(true);
+  };
+  const applyCorrection = async (operation: 'delete' | 'replace') => {
+    if (!selectedEdgeUuid) return;
+    if (
+      operation === 'delete' &&
+      !window.confirm('Remove this relationship from the knowledge graph?')
+    ) {
+      return;
+    }
+    setCorrectingEdge(true);
+    setCorrectionError(null);
+    try {
+      const response = await api.correctGraphEdge({
+        project_id: projectId,
+        edge_uuid: selectedEdgeUuid,
+        operation,
+        fact_name: operation === 'replace' ? replacementType : undefined,
+        fact: operation === 'replace' ? replacementFact : undefined,
+      });
+      if (response.data) onGraphData(response.data);
+      setSelected(null);
+      setReplacingEdge(false);
+    } catch (e) {
+      setCorrectionError(e instanceof Error ? e.message : 'Could not update relationship');
+    } finally {
+      setCorrectingEdge(false);
+    }
+  };
 
   return (
     <div className={styles.graphWrap}>
@@ -506,7 +564,10 @@ export default function GraphPanel({ graph, worldName }: { graph: GraphData | nu
         onPointerLeave={() => {
           dragRef.current = null;
         }}
-        onClick={() => setSelected(null)}
+        onClick={() => {
+          setSelected(null);
+          setReplacingEdge(false);
+        }}
       >
         <defs>
           <marker id="graphArrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -531,7 +592,7 @@ export default function GraphPanel({ graph, worldName }: { graph: GraphData | nu
                   className={styles.graphEdgeHit}
                   onClick={(e) => {
                     e.stopPropagation();
-                    setSelected({ kind: 'edge', id: l.id });
+                    selectEdge(l.id);
                   }}
                 />
               );
@@ -581,7 +642,7 @@ export default function GraphPanel({ graph, worldName }: { graph: GraphData | nu
                     transform={`translate(${path.labelX},${path.labelY})`}
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSelected({ kind: 'edge', id: l.id });
+                      selectEdge(l.id);
                     }}
                   >
                     <rect
@@ -706,7 +767,10 @@ export default function GraphPanel({ graph, worldName }: { graph: GraphData | nu
                 {selectedNode.type}
               </span>
             )}
-            <button type="button" onClick={() => setSelected(null)}>×</button>
+            <button type="button" onClick={() => {
+              setSelected(null);
+              setReplacingEdge(false);
+            }}>×</button>
           </div>
           {selected.kind === 'node' && selectedNode && (
             <div className={styles.graphDetailBody}>
@@ -757,6 +821,12 @@ export default function GraphPanel({ graph, worldName }: { graph: GraphData | nu
                   </div>
                 </div>
               )}
+              <div className={styles.graphDetailSection}>
+                <span className={styles.graphDetailSectionTitle}>Correction</span>
+                <p className={styles.graphCorrectionHelp}>
+                  To correct an entity, create a new world from corrected source documents.
+                </p>
+              </div>
             </div>
           )}
           {selected.kind === 'edge' && selectedEdge && (
@@ -823,6 +893,76 @@ export default function GraphPanel({ graph, worldName }: { graph: GraphData | nu
                   </div>
                 </div>
               )}
+              <div className={styles.graphDetailSection}>
+                <span className={styles.graphDetailSectionTitle}>Correction</span>
+                <p className={styles.graphCorrectionHelp}>
+                  Replace a relationship type or fact here. If an endpoint is wrong, remove this
+                  path and add the corrected fact in Knowledge graph. A later rebuild reads the
+                  saved source again.
+                </p>
+                {!replacingEdge ? (
+                  <div className={styles.graphCorrectionActions}>
+                    <button
+                      type="button"
+                      className={styles.secondaryBtn}
+                      onClick={beginReplacement}
+                      disabled={correctingEdge}
+                    >
+                      Replace
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.dangerBtn}
+                      onClick={() => void applyCorrection('delete')}
+                      disabled={correctingEdge}
+                    >
+                      {correctingEdge ? 'Removing...' : 'Remove'}
+                    </button>
+                  </div>
+                ) : (
+                  <div className={styles.graphCorrectionForm}>
+                    <label className={styles.field}>
+                      <span>Relationship type</span>
+                      <input
+                        className={styles.input}
+                        value={replacementType}
+                        onChange={(e) => setReplacementType(e.target.value)}
+                        disabled={correctingEdge}
+                      />
+                    </label>
+                    <label className={styles.field}>
+                      <span>Corrected fact</span>
+                      <textarea
+                        className={styles.textarea}
+                        value={replacementFact}
+                        onChange={(e) => setReplacementFact(e.target.value)}
+                        rows={3}
+                        disabled={correctingEdge}
+                      />
+                    </label>
+                    {correctionError && <p className={styles.errorText}>{correctionError}</p>}
+                    <div className={styles.graphCorrectionActions}>
+                      <button
+                        type="button"
+                        className={styles.primaryBtn}
+                        onClick={() => void applyCorrection('replace')}
+                        disabled={correctingEdge || !replacementType.trim() || !replacementFact.trim()}
+                      >
+                        {correctingEdge ? 'Replacing...' : 'Save replacement'}
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.secondaryBtn}
+                        onClick={() => setReplacingEdge(false)}
+                        disabled={correctingEdge}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
+                {!replacingEdge && correctionError && <p className={styles.errorText}>{correctionError}</p>}
+              </div>
             </div>
           )}
         </div>

@@ -78,6 +78,29 @@
 .secondaryBtn:hover {
   background: rgba(125, 135, 200, 0.2);
 }
+.secondaryBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.dangerBtn {
+  font-family: var(--font-body, 'Poppins', sans-serif);
+  font-weight: 500;
+  font-size: 14px;
+  color: #b53045;
+  background: rgba(197, 56, 78, 0.08);
+  border: 1px solid rgba(197, 56, 78, 0.25);
+  border-radius: 10px;
+  padding: 9px 16px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.dangerBtn:hover:not(:disabled) {
+  background: rgba(197, 56, 78, 0.16);
+}
+.dangerBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 .input,
 .textarea,
@@ -699,6 +722,7 @@
   margin: 0;
 }
 .tag {
+  font-family: var(--font-mono, 'Departure Mono', monospace);
   font-size: 12px;
   font-weight: 500;
   padding: 5px 11px;
@@ -723,6 +747,17 @@
   border-radius: 14px;
   padding: 16px;
   margin: 4px 0 18px;
+}
+.correctionBox,
+.regenerationBox {
+  background: rgba(31, 170, 140, 0.06);
+  border: 1px solid rgba(31, 170, 140, 0.18);
+  border-radius: 14px;
+  padding: 16px;
+  margin: 4px 0 18px;
+}
+.regenerationBox .setupControls {
+  margin-bottom: 0;
 }
 .enrichmentTitle {
   font-family: var(--font-headline, 'Space Grotesk', sans-serif);
@@ -1074,6 +1109,14 @@ article.reportBody :global(h3) {
   background: #5168ff;
   color: #fff;
 }
+.bubbleUser :global(p),
+.bubbleUser :global(li),
+.bubbleUser :global(a),
+.bubbleUser :global(code),
+.bubbleUser :global(strong),
+.bubbleUser :global(em) {
+  color: #fff;
+}
 .chatInputRow {
   display: flex;
   gap: 10px;
@@ -1390,6 +1433,7 @@ article.reportBody :global(h3) {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  font-family: var(--font-mono, 'Departure Mono', monospace);
   font-size: 12px;
   font-weight: 600;
   color: color-mix(in srgb, var(--color-text-dark, #1a1b24) 72%, transparent);
@@ -1426,7 +1470,8 @@ article.reportBody :global(h3) {
   top: 118px;
   z-index: 7;
   width: min(430px, calc(100% - 44px));
-  overflow: visible;
+  max-height: calc(100% - 142px);
+  overflow-y: auto;
   border: 1px solid rgba(128, 136, 160, 0.22);
   border-radius: 14px;
   background: color-mix(in srgb, var(--color-surface-1, #fff) 96%, transparent);
@@ -1450,6 +1495,7 @@ article.reportBody :global(h3) {
   padding: 4px 8px;
   border-radius: 999px;
   color: #fff;
+  font-family: var(--font-mono, 'Departure Mono', monospace);
   font-size: 10px;
   font-weight: 900;
   letter-spacing: 0.02em;
@@ -1570,6 +1616,35 @@ article.reportBody :global(h3) {
   font-size: 12px;
   line-height: 1.45;
   overflow-wrap: anywhere;
+}
+.graphCorrectionHelp {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text-dark, #1a1b24) 66%, transparent);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.graphCorrectionActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.graphCorrectionActions .primaryBtn,
+.graphCorrectionActions .secondaryBtn,
+.graphCorrectionActions .dangerBtn {
+  padding: 7px 11px;
+  font-size: 12px;
+}
+.graphCorrectionForm {
+  display: grid;
+  gap: 9px;
+}
+.graphCorrectionForm .field {
+  font-size: 11px;
+}
+.graphCorrectionForm .input,
+.graphCorrectionForm .textarea {
+  padding: 8px 9px;
+  font-size: 12px;
 }
 .graphDetailBody p {
   margin: 2px 0 0;

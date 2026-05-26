@@ -181,7 +181,8 @@ export default function Step3Simulation({
         <div>
           <h2 className={styles.panelTitle}>Simulation</h2>
           <p className={styles.panelLead}>
-            The world is live. Agents post, react, and influence each other across two spaces.
+            The same agents participate in both channels: public broadcasts in Info Plaza and
+            threaded discussion in Topic Community.
           </p>
         </div>
         <div className={styles.simControls}>
@@ -238,8 +239,8 @@ export default function Step3Simulation({
       {error && <p className={styles.errorText}>{error}</p>}
 
       <div className={styles.spaces}>
-        <Feed title="Info Plaza" subtitle="fast, public broadcast" actions={plaza} empty={started} />
-        <Feed title="Topic Community" subtitle="threaded discussion" actions={community} empty={started} />
+        <Feed title="Info Plaza" subtitle="same agents, public broadcast" actions={plaza} empty={started} />
+        <Feed title="Topic Community" subtitle="same agents, threaded discussion" actions={community} empty={started} />
       </div>
     </div>
   );

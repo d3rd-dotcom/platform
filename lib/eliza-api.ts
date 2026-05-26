@@ -10,7 +10,7 @@ interface ElizaChatMessage {
 
 interface ElizaChatRequest {
   messages: ElizaChatMessage[];
-  id?: string; // Model ID (optional, defaults to gemini-2.0-flash)
+  id?: string; // Model ID (optional, defaults to Claude Sonnet through Eliza Cloud)
   maxTokens?: number; // Output token cap (optional)
 }
 
@@ -67,7 +67,9 @@ class ElizaAPIClient {
   async chat(request: ElizaChatRequest): Promise<string> {
     try {
       const url = `${this.baseUrl}/api/v1/chat/completions`;
-      const model = request.id || 'gemini-2.0-flash';
+      // Sonnet is a live, tested Eliza Cloud model ID; the previous Gemini alias
+      // billed requests but could return an empty stream.
+      const model = request.id || process.env.ELIZA_CHAT_MODEL || 'anthropic/claude-sonnet-4.6';
       console.log('Calling Eliza API:', { url, hasApiKey: !!this.apiKey, modelId: model });
 
       // stream:true is required — the non-streaming path on Eliza Cloud 500s

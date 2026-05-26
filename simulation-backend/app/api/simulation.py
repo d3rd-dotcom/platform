@@ -2326,6 +2326,7 @@ def interview_agents_batch():
         interviews = data.get('interviews')
         platform = data.get('platform')  # Optional: twitter/reddit/None
         timeout = data.get('timeout', 120)
+        use_interview_model = bool(data.get('use_interview_model', False))
 
         if not simulation_id:
             return jsonify({
@@ -2369,7 +2370,7 @@ def interview_agents_batch():
         # Check environment status — if not alive, fall back to offline LLM interview
         env_alive = SimulationRunner is not None and SimulationRunner.check_env_alive(simulation_id)
 
-        if env_alive:
+        if env_alive and not use_interview_model:
             # Live interview via OASIS IPC
             optimized_interviews = []
             for interview in interviews:
@@ -2389,7 +2390,8 @@ def interview_agents_batch():
                 "data": result
             })
         else:
-            # Offline interview: use stored profiles + LLM to simulate responses
+            # Interactive/offline interview: use stored personas with the
+            # dedicated lightweight model rather than the live simulation model.
             from ..utils.llm_client import LLMClient
             from ..services.simulation_manager import SimulationManager
 
@@ -2417,7 +2419,11 @@ def interview_agents_batch():
                         reader = csv.DictReader(f)
                         profiles = list(reader)
 
-            llm = LLMClient()
+            llm = LLMClient(
+                api_key=Config.INTERVIEW_LLM_API_KEY,
+                base_url=Config.INTERVIEW_LLM_BASE_URL,
+                model=Config.INTERVIEW_LLM_MODEL_NAME,
+            )
             results = {}
 
             for interview in interviews:

@@ -49,6 +49,20 @@ class Config:
     LLM_API_KEY = os.environ.get('LLM_API_KEY')
     LLM_BASE_URL = os.environ.get('LLM_BASE_URL', 'https://api.openai.com/v1')
     LLM_MODEL_NAME = os.environ.get('LLM_MODEL_NAME', 'gpt-4o-mini')
+    # Secondary provider used when the primary gateway fails. Configure this
+    # as DeepSeek while the primary Eliza model handles simulation generation.
+    LLM_FALLBACK_API_KEY = os.environ.get('LLM_FALLBACK_API_KEY')
+    LLM_FALLBACK_BASE_URL = os.environ.get('LLM_FALLBACK_BASE_URL', 'https://api.deepseek.com/v1')
+    LLM_FALLBACK_MODEL_NAME = os.environ.get('LLM_FALLBACK_MODEL_NAME', 'deepseek-chat')
+
+    # Report and interview surfaces are high-volume interactive work; they can
+    # use Haiku while setup/simulation work remains on the primary Opus model.
+    REPORT_LLM_API_KEY = os.environ.get('REPORT_LLM_API_KEY') or LLM_API_KEY
+    REPORT_LLM_BASE_URL = os.environ.get('REPORT_LLM_BASE_URL') or LLM_BASE_URL
+    REPORT_LLM_MODEL_NAME = os.environ.get('REPORT_LLM_MODEL_NAME') or LLM_MODEL_NAME
+    INTERVIEW_LLM_API_KEY = os.environ.get('INTERVIEW_LLM_API_KEY') or LLM_API_KEY
+    INTERVIEW_LLM_BASE_URL = os.environ.get('INTERVIEW_LLM_BASE_URL') or LLM_BASE_URL
+    INTERVIEW_LLM_MODEL_NAME = os.environ.get('INTERVIEW_LLM_MODEL_NAME') or LLM_MODEL_NAME
 
     # Zep configuration
     ZEP_API_KEY = os.environ.get('ZEP_API_KEY')

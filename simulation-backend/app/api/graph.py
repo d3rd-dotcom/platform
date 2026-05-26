@@ -4,6 +4,7 @@ Uses project context mechanism with server-side persistent state
 """
 
 import os
+import re
 import traceback
 import threading
 from flask import request, jsonify
@@ -542,7 +543,7 @@ def enrich_graph():
     Request (JSON):
         {
             "project_id": "proj_xxxx",
-            "context": "Maya Chen -> REVIEWS -> Artizen application"
+            "context": "Jordan Lee -> WORKS_WITH -> Civic Lab"
         }
     """
     try:
@@ -769,6 +770,101 @@ def get_graph_data(graph_id: str):
         })
         
     except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e),
+            "traceback": traceback.format_exc()
+        }), 500
+
+
+@graph_bp.route('/edge/correct', methods=['POST'])
+def correct_graph_edge():
+    """
+    Remove or replace a relationship selected in the graph viewer.
+
+    Node mutation is intentionally not offered here: a wrong extracted entity
+    should be corrected in source material and rebuilt as a fresh graph.
+    """
+    try:
+        if not Config.ZEP_API_KEY:
+            return jsonify({
+                "success": False,
+                "error": "ZEP_API_KEY not configured"
+            }), 500
+
+        data = request.get_json() or {}
+        project_id = data.get('project_id')
+        edge_uuid = data.get('edge_uuid')
+        operation = data.get('operation', 'delete')
+
+        if not project_id or not edge_uuid:
+            return jsonify({
+                "success": False,
+                "error": "Please provide project_id and edge_uuid"
+            }), 400
+
+        project = ProjectManager.get_project(project_id)
+        if not project or not project.graph_id:
+            return jsonify({
+                "success": False,
+                "error": "Project graph not found"
+            }), 404
+
+        builder = GraphBuilderService(api_key=Config.ZEP_API_KEY)
+        graph_data = builder.get_graph_data(project.graph_id)
+        edge = next(
+            (candidate for candidate in graph_data.get("edges", [])
+             if candidate.get("uuid") == edge_uuid),
+            None
+        )
+        if not edge:
+            return jsonify({
+                "success": False,
+                "error": "Relationship not found in this graph"
+            }), 404
+
+        if operation == 'delete':
+            builder.delete_edge(edge_uuid)
+            message = "Relationship removed"
+        elif operation == 'replace':
+            fact = TextProcessor.preprocess_text(data.get('fact', ''))
+            raw_fact_name = TextProcessor.preprocess_text(data.get('fact_name', ''))
+            fact_name = re.sub(r'[^A-Za-z0-9_]+', '_', raw_fact_name.upper()).strip('_')
+            if not fact or not fact_name:
+                return jsonify({
+                    "success": False,
+                    "error": "Please provide a relationship type and corrected fact"
+                }), 400
+
+            builder.replace_edge(
+                graph_id=project.graph_id,
+                edge_uuid=edge_uuid,
+                fact_name=fact_name,
+                fact=fact,
+                source_node_uuid=edge.get("source_node_uuid", ""),
+                source_node_name=edge.get("source_node_name", ""),
+                target_node_uuid=edge.get("target_node_uuid", ""),
+                target_node_name=edge.get("target_node_name", ""),
+            )
+            message = "Relationship replaced"
+        else:
+            return jsonify({
+                "success": False,
+                "error": "Unsupported correction operation"
+            }), 400
+
+        # A simulation prepared before this edit is based on stale graph data.
+        # Saving the project updates its revision timestamp for the web client.
+        project.error = None
+        ProjectManager.save_project(project)
+
+        return jsonify({
+            "success": True,
+            "message": message,
+            "data": builder.get_graph_data(project.graph_id)
+        })
+    except Exception as e:
+        logger.error(f"Failed to correct graph relationship: {str(e)}")
         return jsonify({
             "success": False,
             "error": str(e),

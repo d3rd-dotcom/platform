@@ -550,3 +550,30 @@ class GraphBuilderService:
     def delete_graph(self, graph_id: str):
         """Delete graph"""
         self.client.graph.delete(graph_id=graph_id)
+
+    def delete_edge(self, edge_uuid: str):
+        """Delete one extracted relationship from the graph."""
+        self.client.graph.edge.delete(uuid_=edge_uuid)
+
+    def replace_edge(
+        self,
+        graph_id: str,
+        edge_uuid: str,
+        fact_name: str,
+        fact: str,
+        source_node_uuid: str,
+        source_node_name: str,
+        target_node_uuid: str,
+        target_node_name: str,
+    ):
+        """Add a corrected relationship, then remove the superseded edge."""
+        self.client.graph.add_fact_triple(
+            graph_id=graph_id,
+            fact=fact,
+            fact_name=fact_name,
+            source_node_uuid=source_node_uuid,
+            source_node_name=source_node_name,
+            target_node_uuid=target_node_uuid,
+            target_node_name=target_node_name,
+        )
+        self.client.graph.edge.delete(uuid_=edge_uuid)

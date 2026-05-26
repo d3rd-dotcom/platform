@@ -5,9 +5,14 @@ Detects which provider to use based on the API key prefix.
 
 import json
 import re
+import time
 from typing import Optional, Dict, Any, List
 
 from ..config import Config
+from .logger import get_logger
+
+
+logger = get_logger('mirofish.llm_client')
 
 
 class LLMClient:
@@ -17,18 +22,43 @@ class LLMClient:
         self,
         api_key: Optional[str] = None,
         base_url: Optional[str] = None,
-        model: Optional[str] = None
+        model: Optional[str] = None,
+        fallback_api_key: Optional[str] = None,
+        fallback_base_url: Optional[str] = None,
+        fallback_model: Optional[str] = None,
     ):
         self.api_key = api_key or Config.LLM_API_KEY
         self.base_url = base_url or Config.LLM_BASE_URL
         self.model = model or Config.LLM_MODEL_NAME
+        self.fallback_api_key = fallback_api_key or Config.LLM_FALLBACK_API_KEY
+        self.fallback_base_url = fallback_base_url or Config.LLM_FALLBACK_BASE_URL
+        self.fallback_model = fallback_model or Config.LLM_FALLBACK_MODEL_NAME
 
         if not self.api_key:
             raise ValueError("LLM_API_KEY not configured")
 
-        # Auto-detect provider from API key
-        self.is_anthropic = self.api_key.startswith('sk-ant-')
+        self.client, self.is_anthropic = self._create_client(self.api_key, self.base_url)
+        self.stream_primary = self._requires_streaming(self.api_key, self.base_url)
 
+        self.fallback_client = None
+        self.fallback_is_anthropic = False
+        self.stream_fallback = False
+        if self.fallback_api_key and (
+            self.fallback_api_key,
+            self.fallback_base_url,
+            self.fallback_model,
+        ) != (self.api_key, self.base_url, self.model):
+            self.fallback_client, self.fallback_is_anthropic = self._create_client(
+                self.fallback_api_key,
+                self.fallback_base_url,
+            )
+            self.stream_fallback = self._requires_streaming(
+                self.fallback_api_key,
+                self.fallback_base_url,
+            )
+
+    @staticmethod
+    def _create_client(api_key: str, base_url: str):
         # Some OpenAI-compatible gateways (e.g. Eliza Cloud, behind Cloudflare)
         # 403 "Your request was blocked" for non-browser User-Agents — including
         # the default OpenAI SDK UA. Send a browser UA so the edge lets us through.
@@ -37,19 +67,24 @@ class LLMClient:
             "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
         )
 
-        if self.is_anthropic:
+        if api_key.startswith('sk-ant-'):
             from anthropic import Anthropic
-            self.client = Anthropic(
-                api_key=self.api_key,
+            return Anthropic(
+                api_key=api_key,
                 default_headers={"User-Agent": browser_ua},
-            )
-        else:
-            from openai import OpenAI
-            self.client = OpenAI(
-                api_key=self.api_key,
-                base_url=self.base_url,
-                default_headers={"User-Agent": browser_ua},
-            )
+            ), True
+
+        from openai import OpenAI
+        return OpenAI(
+            api_key=api_key,
+            base_url=base_url,
+            default_headers={"User-Agent": browser_ua},
+        ), False
+
+    @staticmethod
+    def _requires_streaming(api_key: str, base_url: str) -> bool:
+        """Eliza Cloud's completion gateway bills correctly only in stream mode."""
+        return api_key.startswith('eliza_') or 'elizacloud.ai' in (base_url or '').lower()
 
     def chat(
         self,
@@ -70,13 +105,60 @@ class LLMClient:
         Returns:
             Model response text
         """
-        if self.is_anthropic:
-            return self._chat_anthropic(messages, temperature, max_tokens, response_format)
-        else:
-            return self._chat_openai(messages, temperature, max_tokens, response_format)
+        try:
+            return self._chat_with_client(
+                self.client,
+                self.is_anthropic,
+                self.model,
+                self.stream_primary,
+                messages,
+                temperature,
+                max_tokens,
+                response_format,
+            )
+        except Exception as exc:
+            if not self.fallback_client:
+                raise
+            logger.warning(
+                "Primary LLM request failed for model %s: %s. Falling back to %s.",
+                self.model,
+                str(exc)[:200],
+                self.fallback_model,
+            )
+            return self._chat_with_client(
+                self.fallback_client,
+                self.fallback_is_anthropic,
+                self.fallback_model,
+                self.stream_fallback,
+                messages,
+                temperature,
+                max_tokens,
+                response_format,
+            )
+
+    def _chat_with_client(
+        self,
+        client,
+        is_anthropic: bool,
+        model: str,
+        stream: bool,
+        messages: List[Dict[str, str]],
+        temperature: float,
+        max_tokens: int,
+        response_format: Optional[Dict] = None,
+    ) -> str:
+        if is_anthropic:
+            return self._chat_anthropic(
+                client, model, messages, temperature, max_tokens, response_format
+            )
+        return self._chat_openai(
+            client, model, stream, messages, temperature, max_tokens, response_format
+        )
 
     def _chat_anthropic(
         self,
+        client,
+        model: str,
         messages: List[Dict[str, str]],
         temperature: float,
         max_tokens: int,
@@ -97,7 +179,7 @@ class LLMClient:
             system_msg += json_instruction
 
         kwargs = {
-            "model": self.model,
+            "model": model,
             "messages": chat_messages,
             "temperature": temperature,
             "max_tokens": max_tokens,
@@ -106,19 +188,22 @@ class LLMClient:
         if system_msg:
             kwargs["system"] = system_msg
 
-        response = self.client.messages.create(**kwargs)
+        response = client.messages.create(**kwargs)
         content = response.content[0].text
         return content
 
     def _chat_openai(
         self,
+        client,
+        model: str,
+        stream: bool,
         messages: List[Dict[str, str]],
         temperature: float,
         max_tokens: int,
         response_format: Optional[Dict] = None
     ) -> str:
         kwargs = {
-            "model": self.model,
+            "model": model,
             "messages": messages,
             "temperature": temperature,
             "max_tokens": max_tokens,
@@ -127,11 +212,65 @@ class LLMClient:
         if response_format:
             kwargs["response_format"] = response_format
 
-        response = self.client.chat.completions.create(**kwargs)
-        content = response.choices[0].message.content
+        response = None
+        for attempt in range(3):
+            try:
+                response = client.chat.completions.create(**kwargs, stream=stream)
+                if stream:
+                    content = ''.join(
+                        chunk.choices[0].delta.content or ''
+                        for chunk in response
+                        if chunk.choices and chunk.choices[0].delta
+                    ).strip()
+                    if not content:
+                        raise RuntimeError("Streaming completion returned empty content")
+                    return content
+                break
+            except Exception as exc:
+                if attempt == 2 or not self._is_retryable_openai_error(exc):
+                    raise
+                delay = 2 ** attempt
+                logger.warning(
+                    "OpenAI-compatible request failed transiently (attempt %s/3): %s. "
+                    "Retrying in %ss.",
+                    attempt + 1,
+                    str(exc)[:200],
+                    delay,
+                )
+                time.sleep(delay)
+
+        if response is None:
+            raise RuntimeError("OpenAI-compatible request completed without a response")
+
+        content = response.choices[0].message.content or ''
         # Strip <think> tags from reasoning models
         content = re.sub(r'<think>[\s\S]*?</think>', '', content).strip()
+        if not content:
+            raise RuntimeError("Completion returned empty content")
         return content
+
+    @staticmethod
+    def _is_retryable_openai_error(error: Exception) -> bool:
+        """Retry transient upstream failures without retrying invalid user input."""
+        status_code = getattr(error, "status_code", None)
+        if isinstance(status_code, int):
+            return status_code in (408, 409, 429) or status_code >= 500
+
+        message = str(error).lower()
+        return any(
+            marker in message
+            for marker in (
+                "timeout",
+                "timed out",
+                "connection",
+                "rate limit",
+                "error code: 429",
+                "error code: 500",
+                "error code: 502",
+                "error code: 503",
+                "error code: 504",
+            )
+        )
 
     def chat_json(
         self,

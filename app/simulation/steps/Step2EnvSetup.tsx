@@ -31,7 +31,7 @@ export default function Step2EnvSetup({
   const ensuring = useRef(false);
   const requestedPreparation = useRef(false);
 
-  const completePreparation = useCallback(async () => {
+  const completePreparation = useCallback(async (targetSimId: string | null = simId) => {
     setPrepared(true);
     setPreparing(false);
     setTaskId(null);
@@ -39,9 +39,9 @@ export default function Step2EnvSetup({
       requestedPreparation.current = false;
       play('success');
     }
-    if (!simId) return;
+    if (!targetSimId) return;
     try {
-      const response = await api.getSimulationProfiles(simId, 'reddit');
+      const response = await api.getSimulationProfiles(targetSimId, 'reddit');
       setProfiles(response.data?.profiles ?? []);
     } catch {
       /* The setup is ready even if profile rendering fails temporarily. */
@@ -111,16 +111,13 @@ export default function Step2EnvSetup({
     };
   }, [simId, completePreparation]);
 
-  const prepare = async () => {
-    if (!simId) return;
-    play('click');
-    requestedPreparation.current = true;
+  const generatePopulation = async (targetSimId: string) => {
     setError(null);
     setPreparing(true);
     setProfiles([]);
     try {
       const res = await api.prepareSimulation({
-        simulation_id: simId,
+        simulation_id: targetSimId,
         use_llm_for_profiles: true,
         agent_count: count,
       });
@@ -129,7 +126,7 @@ export default function Step2EnvSetup({
         res.data?.status === 'ready' ||
         res.data?.status === 'completed'
       ) {
-        await completePreparation();
+        await completePreparation(targetSimId);
         return;
       }
       const nextTaskId = res.data?.task_id;
@@ -140,6 +137,47 @@ export default function Step2EnvSetup({
       play('error');
       setError(e instanceof Error ? e.message : 'Failed to prepare world');
       setPreparing(false);
+    }
+  };
+
+  const prepare = () => {
+    if (!simId) return;
+    play('click');
+    requestedPreparation.current = true;
+    void generatePopulation(simId);
+  };
+
+  const regenerate = async () => {
+    if (!wf.graphId) return;
+    const confirmed = window.confirm(
+      'Generate a replacement population from the current graph? Existing simulation results and reports will remain unchanged.',
+    );
+    if (!confirmed) return;
+
+    play('click');
+    const existingProfiles = profiles;
+    requestedPreparation.current = true;
+    setPrepared(false);
+    setError(null);
+    setProfiles([]);
+    try {
+      const res = await api.createSimulation({
+        project_id: wf.project.project_id,
+        graph_id: wf.graphId,
+        enable_reddit: true,
+        enable_twitter: true,
+      });
+      const id = res.data?.simulation_id;
+      if (!id) throw new Error('No replacement simulation id returned');
+      setSimId(id);
+      onSimulationId(id);
+      await generatePopulation(id);
+    } catch (e) {
+      requestedPreparation.current = false;
+      play('error');
+      setPrepared(true);
+      setProfiles(existingProfiles);
+      setError(e instanceof Error ? e.message : 'Failed to regenerate population');
     }
   };
 
@@ -177,14 +215,14 @@ export default function Step2EnvSetup({
     <div className={styles.panel}>
       <h2 className={styles.panelTitle}>World setup</h2>
       <p className={styles.panelLead}>
-        Generate the population. Each agent gets a persona, a backstory, and long-term memory drawn
-        from the knowledge graph.
+        Generate one agent for each eligible entity found in the knowledge graph, up to your
+        selected maximum. Each agent receives a persona and graph-based memory.
       </p>
 
       {!prepared && (
         <div className={styles.setupControls}>
           <label className={styles.field}>
-            <span>Number of agents</span>
+            <span>Maximum agents</span>
             <input
               type="number"
               min={5}
@@ -194,6 +232,9 @@ export default function Step2EnvSetup({
               onChange={(e) => setCount(Math.max(5, Math.min(200, Number(e.target.value) || 5)))}
               disabled={preparing}
             />
+            <small className={styles.fieldHint}>
+              Your graph may contain fewer eligible entities than this maximum.
+            </small>
           </label>
           <button
             className={styles.primaryBtn}
@@ -247,20 +288,54 @@ export default function Step2EnvSetup({
       )}
 
       {prepared && (
-        <div className={styles.actionRow}>
-          <button
-            className={styles.primaryBtn}
-            onClick={() => {
-              if (simId) {
-                play('navigation');
-                onReady(simId);
-              }
-            }}
-            onMouseEnter={() => play('hover')}
-          >
-            Run the simulation →
-          </button>
-        </div>
+        <>
+          <section className={styles.regenerationBox} aria-label="Regenerate generated population">
+            <h3 className={styles.enrichmentTitle}>Incorrect population?</h3>
+            <p className={styles.enrichmentLead}>
+              Generate replacement agents from the current graph. Existing runs and reports stay
+              unchanged.
+            </p>
+            <div className={styles.setupControls}>
+              <label className={styles.field}>
+                <span>Maximum agents</span>
+                <input
+                  type="number"
+                  min={5}
+                  max={200}
+                  className={styles.input}
+                  value={count}
+                  onChange={(e) => setCount(Math.max(5, Math.min(200, Number(e.target.value) || 5)))}
+                  disabled={preparing}
+                />
+                <small className={styles.fieldHint}>
+                  Your graph may contain fewer eligible entities than this maximum.
+                </small>
+              </label>
+              <button
+                className={styles.secondaryBtn}
+                onClick={regenerate}
+                onMouseEnter={() => play('hover')}
+                disabled={preparing}
+              >
+                Regenerate population
+              </button>
+            </div>
+          </section>
+          <div className={styles.actionRow}>
+            <button
+              className={styles.primaryBtn}
+              onClick={() => {
+                if (simId) {
+                  play('navigation');
+                  onReady(simId);
+                }
+              }}
+              onMouseEnter={() => play('hover')}
+            >
+              Run the simulation →
+            </button>
+          </div>
+        </>
       )}
     </div>
   );

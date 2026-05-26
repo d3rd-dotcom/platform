@@ -16,6 +16,8 @@ const ELIZA_API_KEY = process.env.ELIZA_API_KEY || '';
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || '';
 const DEEPSEEK_MODEL = process.env.DEEPSEEK_MODEL || 'deepseek-chat';
 const DEEPSEEK_BASE_URL = (process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com').replace(/\/+$/, '');
+// Standard Blue turns use the tested cost/quality option through Eliza Cloud.
+const CHAT_MODEL = process.env.ELIZA_CHAT_MODEL || 'anthropic/claude-sonnet-4.6';
 // Model used for research mode — the strongest model that tested cleanly
 // through the Eliza Cloud gateway for long-form academic drafting.
 const RESEARCH_MODEL = process.env.RESEARCH_MODEL || 'anthropic/claude-opus-4.7';
@@ -119,18 +121,18 @@ async function callDeepSeek(messages: ElizaMessage[], maxTokens = 8000): Promise
 }
 
 interface ElizaCloudOptions {
-  // Run on Eliza Cloud first (with `model`), fall back to DeepSeek on error.
-  // Used by research mode to reach a frontier model. Default path stays
-  // DeepSeek-first since Eliza Cloud's default model is weaker for chat.
-  preferEliza?: boolean;
   model?: string;
   maxTokens?: number;
 }
 
 async function callElizaCloud(messages: ElizaMessage[], opts?: ElizaCloudOptions): Promise<string> {
-  const callEliza = () => elizaAPI.chat({ messages, id: opts?.model, maxTokens: opts?.maxTokens });
+  const callEliza = () => elizaAPI.chat({
+    messages,
+    id: opts?.model || CHAT_MODEL,
+    maxTokens: opts?.maxTokens,
+  });
 
-  if (opts?.preferEliza && ELIZA_API_KEY) {
+  if (ELIZA_API_KEY) {
     try {
       return await callEliza();
     } catch (err: unknown) {
@@ -141,19 +143,8 @@ async function callElizaCloud(messages: ElizaMessage[], opts?: ElizaCloudOptions
     }
   }
 
-  if (!DEEPSEEK_API_KEY) {
-    if (ELIZA_API_KEY) return callEliza();
-    throw new Error('No AI provider configured (DEEPSEEK_API_KEY or ELIZA_API_KEY)');
-  }
-
-  try {
-    return await callDeepSeek(messages, opts?.maxTokens);
-  } catch (err: unknown) {
-    if (!ELIZA_API_KEY) throw err;
-    const msg = err instanceof Error ? err.message : 'deepseek error';
-    console.warn('DeepSeek failed, falling back to Eliza:', msg);
-    return callEliza();
-  }
+  if (DEEPSEEK_API_KEY) return callDeepSeek(messages, opts?.maxTokens);
+  throw new Error('No AI provider configured (ELIZA_API_KEY or DEEPSEEK_API_KEY)');
 }
 
 interface BlueDebugInfo {
@@ -389,7 +380,7 @@ async function runBlueMemoryAwareTurn(args: {
     }),
     // Research mode runs on the frontier model via Eliza Cloud.
     args.mode === 'research'
-      ? { preferEliza: true, model: RESEARCH_MODEL, maxTokens: RESEARCH_MAX_TOKENS }
+      ? { model: RESEARCH_MODEL, maxTokens: RESEARCH_MAX_TOKENS }
       : undefined
   );
 

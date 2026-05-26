@@ -11,10 +11,12 @@ import styles from '../simulation.module.css';
 
 export default function Step1GraphBuild({
   wf,
+  onRebuildStart,
   onGraph,
   onGraphData,
 }: {
   wf: WorkflowState;
+  onRebuildStart: () => void;
   onGraph: (graphId: string) => void;
   onGraphData: (g: GraphData) => void;
 }) {
@@ -24,6 +26,7 @@ export default function Step1GraphBuild({
     resumingBuild ? wf.project.graph_build_task_id ?? null : null,
   );
   const [building, setBuilding] = useState(resumingBuild);
+  const [rebuilding, setRebuilding] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
   const [enrichmentContext, setEnrichmentContext] = useState('');
@@ -41,6 +44,7 @@ export default function Step1GraphBuild({
       completingBuild.current = true;
       setDone(true);
       setBuilding(false);
+      setRebuilding(false);
       setTaskId(null);
       play('success');
       onGraph(graphId);
@@ -53,25 +57,36 @@ export default function Step1GraphBuild({
     setError(message);
     setDone(true);
     setBuilding(false);
+    setRebuilding(false);
     setTaskId(null);
   }, [play]);
 
-  const start = async () => {
+  const start = async (force = false) => {
     play('click');
     setError(null);
     setDone(false);
     completingBuild.current = false;
     setBuilding(true);
+    setRebuilding(force);
     try {
-      const res = await api.buildGraph({ project_id: wf.project.project_id });
+      const res = await api.buildGraph({ project_id: wf.project.project_id, force });
       const nextTaskId = res.data?.task_id;
       if (!nextTaskId) throw new Error('No graph build task id returned');
       setTaskId(nextTaskId);
+      if (force) onRebuildStart();
     } catch (e) {
       play('error');
       setError(e instanceof Error ? e.message : 'Failed to start graph build');
       setBuilding(false);
+      setRebuilding(false);
     }
+  };
+
+  const rebuild = () => {
+    const confirmed = window.confirm(
+      'Rebuild this graph from its saved documents and added context? Existing simulations and reports will remain unchanged.',
+    );
+    if (confirmed) void start(true);
   };
 
   const enrich = async () => {
@@ -157,7 +172,7 @@ export default function Step1GraphBuild({
           const g = await api.getGraphData(wf.graphId);
           if (g.data) onGraphData(g.data);
           setEnrichmentContext('');
-          setEnrichmentMessage('New context added. The graph has been refreshed.');
+          setEnrichmentMessage('Context added. Generate a new population to use the updated graph.');
           play('success');
         } catch (e) {
           play('error');
@@ -211,8 +226,8 @@ export default function Step1GraphBuild({
         <section className={styles.enrichmentBox} aria-label="Add new context to ontology">
           <h3 className={styles.enrichmentTitle}>Add new context</h3>
           <p className={styles.enrichmentLead}>
-            Add people, events, or relationship facts that were not in the original documents.
-            The existing graph stays in place while new facts are extracted into it.
+            Add facts missing from the source documents. The graph extracts new entities and
+            relationships from this text.
           </p>
           <textarea
             className={styles.textarea}
@@ -220,10 +235,10 @@ export default function Step1GraphBuild({
             onChange={(e) => setEnrichmentContext(e.target.value)}
             rows={6}
             disabled={enriching}
-            placeholder={`Add one fact per line.\nJames -> WORKS_WITH -> Maya Chen\nMaya Chen -> REVIEWS -> Artizen application`}
+            placeholder={`Add one fact per line.\nJordan Lee -> WORKS_WITH -> Civic Lab\nCivic Lab -> FUNDS -> Community garden`}
           />
           <p className={styles.enrichmentNote}>
-            Existing setup runs and reports do not update until you rerun them.
+            Existing populations, runs, and reports keep their original data.
           </p>
           {enrichmentMessage && <p className={styles.successText}>{enrichmentMessage}</p>}
           <button
@@ -233,6 +248,27 @@ export default function Step1GraphBuild({
             disabled={enriching || !enrichmentContext.trim()}
           >
             {enriching ? 'Updating graph...' : 'Add context to graph'}
+          </button>
+        </section>
+      )}
+
+      {alreadyBuilt && (
+        <section className={styles.correctionBox} aria-label="Correct generated graph data">
+          <h3 className={styles.enrichmentTitle}>Correct generated data</h3>
+          <p className={styles.enrichmentLead}>
+            Select a relationship in the graph to replace or remove it. If an entity or source
+            document is wrong, create a new world from corrected documents.
+          </p>
+          <p className={styles.enrichmentNote}>
+            Rebuild reruns extraction from this world&apos;s saved documents and added context.
+          </p>
+          <button
+            className={styles.secondaryBtn}
+            onClick={rebuild}
+            onMouseEnter={() => play('hover')}
+            disabled={building || enriching}
+          >
+            Rebuild graph
           </button>
         </section>
       )}
@@ -252,8 +288,8 @@ export default function Step1GraphBuild({
             Continue to world setup →
           </button>
         ) : (
-          <button className={styles.primaryBtn} onClick={start} onMouseEnter={() => play('hover')} disabled={building}>
-            {building ? 'Building graph…' : 'Build knowledge graph'}
+          <button className={styles.primaryBtn} onClick={() => start(false)} onMouseEnter={() => play('hover')} disabled={building}>
+            {building ? (rebuilding ? 'Rebuilding graph…' : 'Building graph…') : 'Build knowledge graph'}
           </button>
         )}
         {building && (

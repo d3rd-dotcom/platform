@@ -70,6 +70,13 @@ export default function Step5Interaction({ wf }: { wf: WorkflowState }) {
         const res = await api.interviewAgents({
           simulation_id: simId,
           interviews: [{ agent_id: agentId(target) ?? 0, prompt: text }],
+          // The selected cards are Reddit profiles. Querying both platform
+          // personas doubles work and can outlive the 60-second proxy route.
+          platform: 'reddit',
+          timeout: 45,
+          // Interactive chat uses the lightweight interview model rather than
+          // executing another action in the already-running simulation model.
+          use_interview_model: true,
         });
         const results = res.data?.result?.results || {};
         const first = Object.values(results)[0];

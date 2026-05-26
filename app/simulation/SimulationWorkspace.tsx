@@ -77,9 +77,15 @@ export default function SimulationWorkspace() {
       let resumeRun = false;
       try {
         const sims = await api.listSimulations(project.project_id);
-        const simulation = [...(sims.data ?? [])].sort((a, b) =>
-          (b.created_at ?? '').localeCompare(a.created_at ?? ''),
-        )[0];
+        const simulation = [...(sims.data ?? [])]
+          .filter(
+            (candidate) =>
+              (!graphId || candidate.graph_id === graphId) &&
+              (!project.updated_at ||
+                !candidate.created_at ||
+                candidate.created_at >= project.updated_at),
+          )
+          .sort((a, b) => (b.created_at ?? '').localeCompare(a.created_at ?? ''))[0];
         simulationId = simulation?.simulation_id ?? null;
         if (simulationId) {
           const run = await api.getRunStatusDetail(simulationId);
@@ -186,7 +192,16 @@ export default function SimulationWorkspace() {
       >
         <section className={styles.graphColumn} aria-label="Knowledge graph canvas">
           <div className={styles.graphCard}>
-            <GraphPanel graph={graph} worldName={wf.project.name} />
+            <GraphPanel
+              graph={graph}
+              worldName={wf.project.name}
+              projectId={wf.project.project_id}
+              onGraphData={(nextGraph) => {
+                setGraph(nextGraph);
+                patch({ simulationId: null, simulationReady: false, reportId: null });
+                setStep(1);
+              }}
+            />
           </div>
         </section>
 
@@ -217,18 +232,27 @@ export default function SimulationWorkspace() {
           {step === 1 && (
             <Step1GraphBuild
               wf={wf}
+              onRebuildStart={() => {
+                setGraph(null);
+                patch({ graphId: null, simulationId: null, simulationReady: false, reportId: null });
+              }}
               onGraph={(graphId) => {
-                patch({ graphId });
+                patch({ graphId, simulationId: null, simulationReady: false, reportId: null });
                 loadGraph(graphId);
                 setStep(2);
               }}
-              onGraphData={setGraph}
+              onGraphData={(nextGraph) => {
+                setGraph(nextGraph);
+                patch({ simulationId: null, simulationReady: false, reportId: null });
+              }}
             />
           )}
           {step === 2 && (
             <Step2EnvSetup
               wf={wf}
-              onSimulationId={(simulationId) => patch({ simulationId, simulationReady: false })}
+              onSimulationId={(simulationId) =>
+                patch({ simulationId, simulationReady: false, reportId: null })
+              }
               onReady={(simulationId) => {
                 patch({ simulationId, simulationReady: true });
                 setStep(3);
