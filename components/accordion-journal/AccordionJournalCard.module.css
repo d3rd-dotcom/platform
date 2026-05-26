@@ -324,18 +324,18 @@
   font-size: 14px;
   color: #1A1D33;
   background: #FFFFFF;
-  border: 2px solid #1A1D33;
-  border-radius: 4px;
+  border: 1px solid rgba(26, 29, 51, 0.12);
+  border-radius: 12px;
   resize: vertical;
   min-height: 100px;
-  transition: all 0.15s ease;
-  box-shadow: 2px 2px 0 #1A1D33;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 1px 2px rgba(26, 29, 51, 0.04);
 }
 
 .textarea:focus {
   outline: none;
   border-color: var(--color-primary, #5168FF);
-  box-shadow: 3px 3px 0 var(--color-primary, #5168FF);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary, #5168FF) 18%, transparent);
 }
 
 .textarea::placeholder {
@@ -349,16 +349,16 @@
   font-size: 14px;
   color: #1A1D33;
   background: #FFFFFF;
-  border: 2px solid #1A1D33;
-  border-radius: 4px;
-  transition: all 0.15s ease;
-  box-shadow: 2px 2px 0 #1A1D33;
+  border: 1px solid rgba(26, 29, 51, 0.12);
+  border-radius: 12px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 1px 2px rgba(26, 29, 51, 0.04);
 }
 
 .input:focus {
   outline: none;
   border-color: var(--color-primary, #5168FF);
-  box-shadow: 3px 3px 0 var(--color-primary, #5168FF);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary, #5168FF) 18%, transparent);
 }
 
 .input::placeholder {
@@ -426,32 +426,34 @@
   font-size: 13px;
   color: #1A1D33;
   background: #FFFFFF;
-  border: 2px solid #1A1D33;
-  border-radius: 4px;
-  transition: all 0.15s ease;
-  box-shadow: 2px 2px 0 #1A1D33;
+  border: 1px solid rgba(26, 29, 51, 0.12);
+  border-radius: 12px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 1px 2px rgba(26, 29, 51, 0.04);
 }
 
 .blurtInput {
-  background: #FFF5F5;
-  border-color: #E53E3E;
-  box-shadow: 2px 2px 0 #E53E3E;
+  background: #FFF6F6;
+  border-color: rgba(229, 62, 62, 0.28);
+  box-shadow: 0 1px 2px rgba(229, 62, 62, 0.08);
 }
 
 .blurtInput:focus {
   outline: none;
-  box-shadow: 3px 3px 0 #E53E3E;
+  border-color: #E53E3E;
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.18);
 }
 
 .affirmationInput {
-  background: #F0FFF4;
-  border-color: #22C55E;
-  box-shadow: 2px 2px 0 #22C55E;
+  background: #F1FBF4;
+  border-color: rgba(34, 197, 94, 0.28);
+  box-shadow: 0 1px 2px rgba(34, 197, 94, 0.08);
 }
 
 .affirmationInput:focus {
   outline: none;
-  box-shadow: 3px 3px 0 #22C55E;
+  border-color: #22C55E;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.18);
 }
 
 .blurtArrow {
@@ -463,22 +465,23 @@
 
 .addBlurtButton {
   align-self: flex-start;
-  padding: 8px 16px;
+  padding: 9px 18px;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
   font-weight: 600;
   color: var(--color-primary, #5168FF);
-  background: transparent;
-  border: 2px dashed var(--color-primary, #5168FF);
-  border-radius: 4px;
+  background: color-mix(in srgb, var(--color-primary, #5168FF) 8%, transparent);
+  border: 1px dashed color-mix(in srgb, var(--color-primary, #5168FF) 45%, transparent);
+  border-radius: 999px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .addBlurtButton:hover {
   background: var(--color-primary, #5168FF);
   color: #FFFFFF;
   border-style: solid;
+  border-color: var(--color-primary, #5168FF);
 }
 
 /* Lives Container */
@@ -505,9 +508,10 @@
   font-family: 'IBM Plex Mono', monospace;
   font-size: 14px;
   font-weight: 700;
-  border: 2px solid #1A1D33;
-  border-radius: 4px;
+  border: none;
+  border-radius: 50%;
   flex-shrink: 0;
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--color-primary, #5168FF) 28%, transparent);
 }
 
 .lifeInput {
@@ -517,16 +521,16 @@
   font-size: 14px;
   color: #1A1D33;
   background: #FFFFFF;
-  border: 2px solid #1A1D33;
-  border-radius: 4px;
-  transition: all 0.15s ease;
-  box-shadow: 2px 2px 0 #1A1D33;
+  border: 1px solid rgba(26, 29, 51, 0.12);
+  border-radius: 12px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 1px 2px rgba(26, 29, 51, 0.04);
 }
 
 .lifeInput:focus {
   outline: none;
   border-color: var(--color-primary, #5168FF);
-  box-shadow: 3px 3px 0 var(--color-primary, #5168FF);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary, #5168FF) 18%, transparent);
 }
 
 .lifeAction {
@@ -549,14 +553,15 @@
   gap: 12px;
   padding: 12px 16px;
   background: #F4F5FE;
-  border: 2px solid #1A1D33;
-  border-radius: 4px;
+  border: 1px solid rgba(26, 29, 51, 0.08);
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
 .checklistItem:hover {
   background: #EBEEFF;
+  border-color: color-mix(in srgb, var(--color-primary, #5168FF) 24%, transparent);
 }
 
 .checkbox {
@@ -613,11 +618,11 @@
   font-size: 13px;
   color: #1A1D33;
   background: #FFFFFF;
-  border: 2px solid #1A1D33;
-  border-radius: 4px;
+  border: 1px solid rgba(26, 29, 51, 0.12);
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.15s ease;
-  box-shadow: 2px 2px 0 #1A1D33;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 1px 2px rgba(26, 29, 51, 0.04);
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%231A1D33' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
@@ -628,7 +633,7 @@
 .select:focus {
   outline: none;
   border-color: var(--color-primary, #5168FF);
-  box-shadow: 3px 3px 0 var(--color-primary, #5168FF);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary, #5168FF) 18%, transparent);
 }
 
 .safetyMapSection {
@@ -702,8 +707,8 @@
   font-family: 'IBM Plex Mono', monospace;
   font-size: 12px;
   font-weight: 600;
-  border: 2px solid #1A1D33;
-  border-radius: 4px;
+  border: 1px solid rgba(26, 29, 51, 0.08);
+  border-radius: 50%;
   flex-shrink: 0;
 }
 
@@ -714,16 +719,16 @@
   font-size: 13px;
   color: #1A1D33;
   background: #FFFFFF;
-  border: 2px solid #1A1D33;
-  border-radius: 4px;
-  transition: all 0.15s ease;
-  box-shadow: 2px 2px 0 #1A1D33;
+  border: 1px solid rgba(26, 29, 51, 0.12);
+  border-radius: 12px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 1px 2px rgba(26, 29, 51, 0.04);
 }
 
 .dateInput:focus {
   outline: none;
   border-color: var(--color-primary, #5168FF);
-  box-shadow: 3px 3px 0 var(--color-primary, #5168FF);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary, #5168FF) 18%, transparent);
 }
 
 /* Affirmations Container */
@@ -739,16 +744,17 @@
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
   color: #1A1D33;
-  background: #F0FFF4;
-  border: 2px solid #22C55E;
-  border-radius: 4px;
-  transition: all 0.15s ease;
-  box-shadow: 2px 2px 0 #22C55E;
+  background: #F1FBF4;
+  border: 1px solid rgba(34, 197, 94, 0.32);
+  border-radius: 12px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 1px 2px rgba(34, 197, 94, 0.08);
 }
 
 .affirmationInputGreen:focus {
   outline: none;
-  box-shadow: 3px 3px 0 #22C55E;
+  border-color: #22C55E;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.18);
 }
 
 .affirmationInputGreen::placeholder {
@@ -758,8 +764,8 @@
 .affirmationReminder {
   padding: 12px 16px;
   background: #FFFBEB;
-  border: 2px solid #F59E0B;
-  border-radius: 4px;
+  border: 1px solid rgba(245, 158, 11, 0.32);
+  border-radius: 12px;
 }
 
 .affirmationReminder p {
@@ -825,26 +831,27 @@
   appearance: none;
   width: 20px;
   height: 20px;
-  border-radius: 4px;
+  border-radius: 50%;
   background: var(--color-primary, #5168FF);
-  border: 2px solid #1A1D33;
+  border: none;
   cursor: pointer;
-  box-shadow: 2px 2px 0 #1A1D33;
-  transition: all 0.15s ease;
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--color-primary, #5168FF) 32%, transparent);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .slider::-webkit-slider-thumb:hover {
-  transform: scale(1.1);
+  transform: scale(1.12);
+  box-shadow: 0 3px 10px color-mix(in srgb, var(--color-primary, #5168FF) 42%, transparent);
 }
 
 .slider::-moz-range-thumb {
   width: 20px;
   height: 20px;
-  border-radius: 4px;
+  border-radius: 50%;
   background: var(--color-primary, #5168FF);
-  border: 2px solid #1A1D33;
+  border: none;
   cursor: pointer;
-  box-shadow: 2px 2px 0 #1A1D33;
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--color-primary, #5168FF) 32%, transparent);
 }
 
 /* Complete Button */
