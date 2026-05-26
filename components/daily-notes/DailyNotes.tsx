@@ -5,7 +5,6 @@ import { createPortal } from 'react-dom';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
-import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
 import { useSound } from '@/hooks/useSound';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import styles from './DailyNotes.module.css';
@@ -43,8 +42,6 @@ interface DailyNotesProps {
 }
 
 const MOBILE_PROMPT_MESSAGE = 'Dumping out my brain...';
-const WRITING_BLUE_MESSAGE =
-  'This refreshing morning ritual is like spiritual chiropracting, let it flow.';
 
 const WEEK_COLORS = [
   '#5168FF', // Week 1 — indigo
@@ -516,13 +513,6 @@ export default function DailyNotes({
               {isPaused ? 'paused' : formatTimer(timerSeconds)}
             </span>
             <span className={styles.modalHeaderEnd} aria-hidden="true" />
-          </div>
-
-          <div className={styles.sessionBubbleWrap}>
-            <BlueChatBubble
-              message={WRITING_BLUE_MESSAGE}
-              variant="compact"
-            />
           </div>
 
           <div className={styles.writeArea}>
