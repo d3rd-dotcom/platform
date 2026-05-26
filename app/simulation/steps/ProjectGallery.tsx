@@ -27,6 +27,7 @@ export default function ProjectGallery({
   const [files, setFiles] = useState<File[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [contextOpen, setContextOpen] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
 
   const submit = async () => {
@@ -114,54 +115,74 @@ export default function ProjectGallery({
               className={styles.textarea}
               value={requirement}
               onChange={(e) => setRequirement(e.target.value)}
-              rows={3}
+              rows={2}
               placeholder="Describe the scenario and the question you want answered."
             />
           </label>
-          <label className={styles.field}>
-            <span>People, entities, and relationships (optional)</span>
-            <textarea
-              className={styles.textarea}
-              value={additionalContext}
-              onChange={(e) => setAdditionalContext(e.target.value)}
-              rows={8}
-              placeholder="Add key people, groups, or connections."
-            />
-            <small className={styles.fieldHint}>
-              Use one clear fact per line. These details become source context for graph entities
-              and directed relationships.
-            </small>
-          </label>
           <div className={styles.field}>
-            <span id="source-documents-label">Source documents</span>
-            <input
-              ref={fileInput}
-              type="file"
-              multiple
-              accept=".pdf,.md,.markdown,.txt"
-              className={styles.fileInput}
-              aria-labelledby="source-documents-label"
-              onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
-            />
             <button
               type="button"
-              className={styles.filePickerBtn}
+              className={styles.accordionToggle}
               onClick={() => {
                 play('click');
-                fileInput.current?.click();
+                setContextOpen((v) => !v);
               }}
               onMouseEnter={() => play('hover')}
+              aria-expanded={contextOpen}
             >
-              Choose files
+              <span>People, entities, and relationships (optional)</span>
+              <span className={styles.accordionChevron} aria-hidden>
+                {contextOpen ? '−' : '+'}
+              </span>
             </button>
-            {files.length > 0 && (
-              <span className={styles.fileList}>{files.map((f) => f.name).join(', ')}</span>
+            {contextOpen && (
+              <>
+                <textarea
+                  className={styles.textarea}
+                  value={additionalContext}
+                  onChange={(e) => setAdditionalContext(e.target.value)}
+                  rows={4}
+                  placeholder="Add key people, groups, or connections."
+                />
+                <small className={styles.fieldHint}>
+                  Use one clear fact per line. These details become source context for graph entities
+                  and directed relationships.
+                </small>
+              </>
             )}
           </div>
-          {error && <p className={styles.errorText}>{error}</p>}
-          <button className={styles.primaryBtn} onClick={submit} onMouseEnter={() => play('hover')} disabled={busy}>
-            {busy ? 'Analyzing documents…' : 'Build knowledge graph'}
-          </button>
+          <div className={styles.createCardFooter}>
+            <div className={styles.field}>
+              <span id="source-documents-label">Source documents</span>
+              <input
+                ref={fileInput}
+                type="file"
+                multiple
+                accept=".pdf,.md,.markdown,.txt"
+                className={styles.fileInput}
+                aria-labelledby="source-documents-label"
+                onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
+              />
+              <button
+                type="button"
+                className={styles.filePickerBtn}
+                onClick={() => {
+                  play('click');
+                  fileInput.current?.click();
+                }}
+                onMouseEnter={() => play('hover')}
+              >
+                Choose files
+              </button>
+              {files.length > 0 && (
+                <span className={styles.fileList}>{files.map((f) => f.name).join(', ')}</span>
+              )}
+            </div>
+            {error && <p className={styles.errorText}>{error}</p>}
+            <button className={styles.primaryBtn} onClick={submit} onMouseEnter={() => play('hover')} disabled={busy}>
+              {busy ? 'Analyzing documents…' : 'Build knowledge graph'}
+            </button>
+          </div>
         </div>
       )}
 
