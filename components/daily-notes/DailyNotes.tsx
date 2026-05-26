@@ -668,13 +668,6 @@ export default function DailyNotes({
                 Close
               </button>
             </div>
-            <BlueChatBubble
-              className={styles.panelStatusBubble}
-              message={panelBlueMessage}
-              variant="featured"
-              context="Review"
-              ariaLive="polite"
-            />
           </div>
         )}
 
