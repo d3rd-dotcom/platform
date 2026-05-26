@@ -1706,6 +1706,7 @@
 
 :global([data-theme="dark"]) .navItemImageIcon {
   opacity: 1;
+  filter: invert(1) brightness(1.4);
 }
 
 :global([data-theme="dark"]) .navItemImageIconOriginal,
@@ -1721,6 +1722,7 @@
 
 :global([data-theme="dark"]) .navItemActive .navItemImageIcon {
   filter:
+    invert(1) brightness(1.4)
     drop-shadow(0 0 10px rgba(226, 229, 245, 0.3))
     drop-shadow(0 0 22px rgba(81, 104, 255, 0.22));
 }
