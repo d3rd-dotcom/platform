@@ -28,13 +28,13 @@ export default function Step4Report({
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
 
-  const finishWithReport = async (id: string) => {
+  const finishWithReport = async (id: string, announceSuccess = true) => {
     setReportId(id);
     onReportId(id);
     setDone(true);
     setGenerating(false);
     setTaskId(null);
-    play('success');
+    if (announceSuccess) play('success');
     try {
       const full = await api.getReport(id);
       setContent(full.data?.markdown_content || full.data?.content || '');
@@ -71,41 +71,72 @@ export default function Step4Report({
     }
   };
 
-  // Auto-start the first time.
+  // Start new work or restore an in-progress/completed report when returning to this step.
   useEffect(() => {
-    if (!reportId && !generating && !done) generate(false);
+    let active = true;
+
+    const initialize = async () => {
+      if (!reportId) {
+        await generate(false);
+        return;
+      }
+
+      setGenerating(true);
+      setError(null);
+      try {
+        const res = await api.getReportStatus({ simulation_id: simId });
+        if (!active) return;
+
+        const status = res.data?.status;
+        const finalId = res.data?.result?.report_id || res.data?.report_id || reportId;
+        if (status === 'completed' && finalId) {
+          await finishWithReport(finalId, false);
+        } else if (status === 'failed') {
+          setError(res.data?.error || 'Report generation failed');
+          setGenerating(false);
+        } else if (status === 'not_started') {
+          setReportId(null);
+          await generate(false);
+        }
+        // Pending/processing/planning/generating states continue through polling below.
+      } catch (e) {
+        if (!active) return;
+        setError(e instanceof Error ? e.message : 'Could not restore report status');
+        setGenerating(false);
+      }
+    };
+
+    initialize();
+    return () => {
+      active = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const reportPoll = usePolling(() => api.getReportStatus({ task_id: taskId || undefined, simulation_id: simId }), {
-    enabled: !!taskId && generating && !done,
+    enabled: !!(taskId || reportId) && generating && !done,
     intervalMs: 2500,
     stop: (res) => res.data?.status === 'completed' || res.data?.status === 'failed',
     onData: async (res) => {
       const st = res.data?.status;
-      try {
-        const log = await api.getAgentLog(reportId as string, logs.length);
-        if (log.data?.lines?.length) setLogs((prev) => [...prev, ...log.data!.lines]);
-      } catch {}
+      if (reportId) {
+        try {
+          const log = await api.getAgentLog(reportId, logs.length);
+          if (log.data?.lines?.length) setLogs((prev) => [...prev, ...log.data!.lines]);
+        } catch {}
+      }
       if (st === 'failed') {
         play('error');
         setError(res.data?.error || 'Report generation failed');
         setGenerating(false);
       } else if (st === 'completed') {
-        play('success');
-        setDone(true);
-        setGenerating(false);
         // On completion the real report id comes back under result.report_id.
         const finalId = res.data?.result?.report_id || res.data?.report_id || reportId;
-        if (finalId && finalId !== reportId) {
-          setReportId(finalId);
-          onReportId(finalId);
-        }
-        try {
-          const full = await api.getReport(finalId as string);
-          setContent(full.data?.markdown_content || full.data?.content || '');
-        } catch {
-          setContent('');
+        if (finalId) {
+          await finishWithReport(finalId);
+        } else {
+          setError('Report generation completed without a report id.');
+          setGenerating(false);
         }
       }
     },

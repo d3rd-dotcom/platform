@@ -173,6 +173,7 @@ export interface RunStatus {
   max_rounds?: number;
   progress?: number;
   message?: string;
+  error?: string;
   [k: string]: unknown;
 }
 

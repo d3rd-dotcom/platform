@@ -268,9 +268,21 @@ def get_generate_status():
                     "data": task.to_dict()
                 })
 
-        # Fallback by simulation is intentionally non-error: page reloads can
-        # lose the in-memory task_id, while report state is persisted on disk.
+        # A step remount loses the task_id stored in browser state. Prefer the
+        # latest task before persisted reports, especially during regeneration.
         if simulation_id:
+            matching_tasks = [
+                task for task in task_manager.list_tasks(task_type="report_generate")
+                if task.get("metadata", {}).get("simulation_id") == simulation_id
+            ]
+            if matching_tasks:
+                return jsonify({
+                    "success": True,
+                    "data": matching_tasks[0]
+                })
+
+            # Fallback by simulation is intentionally non-error: a backend
+            # restart loses in-memory tasks, while report state is persisted.
             existing_report = ReportManager.get_report_by_simulation(simulation_id)
             if existing_report:
                 return jsonify({

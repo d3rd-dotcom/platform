@@ -82,7 +82,7 @@ export default function Step3Simulation({
     }
     if (runnerStatus === 'failed') {
       if (previous && previous !== 'failed') play('error');
-      setError('Simulation failed');
+      setError(next.error?.trim() || 'Simulation failed');
     } else {
       if (runnerStatus === 'completed' && previous && previous !== 'completed') play('success');
       setError(null);
