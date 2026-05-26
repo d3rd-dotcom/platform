@@ -24,9 +24,9 @@ const APP_CASCADE_STEP = 0.2; // seconds between each shot dropping in
 export const EcosystemSection: React.FC = () => (
   <section id="value" className={styles.ecosystemSection} aria-label="Academy ecosystem">
     <div className={styles.ecosystemInner}>
-      <h2 className={styles.ecosystemHeadline}>Cross-Platform Apps, Shared Rewards.</h2>
+      <h2 className={styles.ecosystemHeadline}>Redefining Mental Health As Fun & Interactive</h2>
       <p className={styles.ecosystemSubtext}>
-        Weekly apps. One reward layer across the ecosystem.
+        New goals each week, variety of events across the ecosystem.
       </p>
       <div className={styles.appsLayout}>
         <div className={styles.appsImageCol}>
@@ -66,14 +66,14 @@ export const HeroSection: React.FC = () => {
           <p className={styles.heroTextBadge}>No endless scrolling. Structured growth.</p>
           <h1 className={styles.heroHeadline}>
             <span className={styles.heroHeadlineLead}>
-              <span>The Blue Age</span>
+              <span>New-Age Wellness</span>
             </span>
             <span className={styles.heroHeadlineSubline}>
-              Of Human Evolution
+              FOR PERSONAL GROWTH
             </span>
           </h1>
           <p className={styles.heroSubtext}>
-            A new-age infrastructure reshaping human growth and potential — we combine psychology and gaming, to unlock your unlimited potential.
+            Mental Wealth Academy turns mental wellness into an engaging, trackable, collaborative experience instead of passive content.
           </p>
           <p className={styles.heroSubtextSecondary}>
             Universal Credit System, Cross-Platform Rewards
