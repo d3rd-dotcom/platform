@@ -7,7 +7,7 @@
   z-index: 200;
   height: 72px;
   padding: 0 24px;
-  background: #EDEDED;
+  background: #ffffff;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 0;
@@ -108,7 +108,7 @@
   font-family: var(--font-primary);
   font-size: 13px;
   font-weight: var(--font-weight-semibold, 600);
-  color: #2d3142;
+  color: var(--color-text-soft);
   text-decoration: none;
   white-space: nowrap;
   transition: background 0.2s ease, color 0.2s ease;
@@ -133,16 +133,19 @@
   width: 16px;
   height: 16px;
   flex-shrink: 0;
-  filter: brightness(0) invert(0.22);
-  transition: filter 0.2s ease;
+  filter: brightness(0);
+  opacity: 0.64;
+  transition: filter 0.2s ease, opacity 0.2s ease;
 }
 
 .navLink:hover .navLinkIcon {
   filter: brightness(0) saturate(100%) invert(37%) sepia(84%) saturate(1100%) hue-rotate(218deg) brightness(100%);
+  opacity: 1;
 }
 
 .navLinkIconActive {
   filter: brightness(0) invert(1);
+  opacity: 1;
 }
 
 .navLinkActive:hover .navLinkIcon {
@@ -279,7 +282,8 @@
   color: rgba(255, 255, 255, 0.92);
 }
 
-/* Theme toggle */
+/* Utility icon controls */
+.shopLink,
 .themeToggle {
   display: flex;
   align-items: center;
@@ -291,9 +295,12 @@
   border-radius: 8px;
   cursor: pointer;
   color: #1a1d33;
+  text-decoration: none;
   transition: all 0.2s ease;
 }
 
+.shopLink:hover,
+.shopLinkActive,
 .themeToggle:hover {
   background: rgba(81, 104, 255, 0.08);
   border-color: var(--color-primary);
@@ -327,6 +334,7 @@
 
 :global([data-theme="dark"]) .navLinkIcon {
   filter: brightness(0) invert(0.4);
+  opacity: 1;
 }
 
 :global([data-theme="dark"]) .navLink:hover .navLinkIcon {
@@ -350,11 +358,14 @@
   background: color-mix(in oklch, var(--color-primary) 14%, transparent);
 }
 
+:global([data-theme="dark"]) .shopLink,
 :global([data-theme="dark"]) .themeToggle {
   color: var(--color-text-soft);
   border-color: var(--color-border-subtle);
 }
 
+:global([data-theme="dark"]) .shopLink:hover,
+:global([data-theme="dark"]) .shopLinkActive,
 :global([data-theme="dark"]) .themeToggle:hover {
   background: color-mix(in oklch, var(--color-primary) 14%, transparent);
 }

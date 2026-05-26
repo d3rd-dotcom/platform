@@ -69,7 +69,6 @@ const VotingIcon: React.FC<{ size?: number; className?: string }> = ({ size = 20
   );
 };
 
-// Library Icon - Using Library Icon.svg
 const Navbar: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
@@ -253,16 +252,16 @@ const Navbar: React.FC = () => {
             </Link>
 
             {/* Surveys Button */}
-            <Link href="/home" className={`${styles.navButton} ${isActive('/surveys') ? styles.navButtonActive : ''}`}>
-              <Image src="/icons/nav-home.svg" alt="" width={18} height={18} className={styles.navImgIcon} />
-              <span className={styles.buttonLabel}>
+            <Link href="/surveys" className={`${styles.navButton} ${isActive('/surveys') ? styles.navButtonActive : ''}`}>
+              <Image src="/icons/nav-surveys-v3.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/surveys') ? styles.navImgIconActive : ''}`} />
+              <span className={isActive('/surveys') ? styles.buttonLabelActive : styles.buttonLabel}>
                 <span className={styles.slideWrap}><span className={styles.slideText}>Surveys</span><span className={`${styles.slideText} ${styles.slideClone}`}>Surveys</span></span>
               </span>
             </Link>
 
             {/* Markets Button */}
             <Link href="/markets" className={`${styles.navButton} ${isActive('/markets') ? styles.navButtonActive : ''}`}>
-              <Image src="/icons/nav-markets-v2.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/markets') ? styles.navImgIconActive : ''}`} />
+              <Image src="/icons/nav-markets-v3.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/markets') ? styles.navImgIconActive : ''}`} />
               <span className={isActive('/markets') ? styles.buttonLabelActive : styles.buttonLabel}>
                 <span className={styles.slideWrap}><span className={styles.slideText}>Markets</span><span className={`${styles.slideText} ${styles.slideClone}`}>Markets</span></span>
               </span>
@@ -276,11 +275,11 @@ const Navbar: React.FC = () => {
               </span>
             </Link>
 
-            {/* Knowledge Button */}
-            <Link href="/library" className={`${styles.navButton} ${isActive('/library') ? styles.navButtonActive : ''}`}>
-              <Image src="/icons/ui-book-v2.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/library') ? styles.navImgIconActive : ''}`} />
-              <span className={isActive('/library') ? styles.buttonLabelActive : styles.buttonLabel}>
-                <span className={styles.slideWrap}><span className={styles.slideText}>Knowledge</span><span className={`${styles.slideText} ${styles.slideClone}`}>Knowledge</span></span>
+            {/* Prompts Button */}
+            <Link href="/prompts" className={`${styles.navButton} ${isActive('/prompts') ? styles.navButtonActive : ''}`}>
+              <Image src="/icons/nav-prompts-v3.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/prompts') ? styles.navImgIconActive : ''}`} />
+              <span className={isActive('/prompts') ? styles.buttonLabelActive : styles.buttonLabel}>
+                <span className={styles.slideWrap}><span className={styles.slideText}>Prompts</span><span className={`${styles.slideText} ${styles.slideClone}`}>Prompts</span></span>
               </span>
             </Link>
 

@@ -50,10 +50,12 @@ const desktopNavSections: NavSection[] = [
   {
     id: 'extras',
     label: 'Community Resources',
+    badge: 'Pro',
+    badgeType: 'pro',
     items: [
-      { id: 'markets', label: 'Markets', href: '/markets', iconSrc: '/icons/nav-markets-v2.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'research', label: 'R-Tool', href: '/research', iconSrc: '/icons/nav-laboratory-v2.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'simulations', label: 'Simulations', href: '/simulation', iconSrc: '/icons/nav-community-v2.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'markets', label: 'Markets', href: '/markets', iconSrc: '/icons/nav-markets-v3.svg', requiresPro: true },
+      { id: 'research', label: 'R-Tool', href: '/research', iconSrc: '/icons/nav-laboratory-v3.svg', requiresPro: true },
+      { id: 'simulations', label: 'Simulations', href: '/simulation', iconSrc: '/icons/nav-simulations-v2.svg', requiresPro: true },
     ],
   },
 ];
@@ -62,10 +64,12 @@ const mobileNavSections: NavSection[] = [
   {
     id: 'extras',
     label: 'Community Resources',
+    badge: 'Pro',
+    badgeType: 'pro',
     items: [
-      { id: 'markets', label: 'Markets', href: '/markets', iconSrc: '/icons/nav-markets-v2.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'research', label: 'R-Tool', href: '/research', iconSrc: '/icons/nav-laboratory-v2.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'simulations', label: 'Simulations', href: '/simulation', iconSrc: '/icons/nav-community-v2.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'markets', label: 'Markets', href: '/markets', iconSrc: '/icons/nav-markets-v3.svg', requiresPro: true },
+      { id: 'research', label: 'R-Tool', href: '/research', iconSrc: '/icons/nav-laboratory-v3.svg', requiresPro: true },
+      { id: 'simulations', label: 'Simulations', href: '/simulation', iconSrc: '/icons/nav-simulations-v2.svg', requiresPro: true },
     ],
   },
 ];
@@ -75,19 +79,19 @@ const primaryNavItems: NavItem[] = [
     id: 'morning-pages',
     label: 'Journal',
     href: '/course',
-    iconSrc: '/icons/nav-spiral-v2.svg',
+    iconSrc: '/icons/nav-journal-v3.svg',
   },
   {
-    id: 'library',
-    label: 'Library',
-    href: '/library',
-    iconSrc: '/icons/ui-book-v2.svg',
+    id: 'prompts',
+    label: 'Prompts',
+    href: '/prompts',
+    iconSrc: '/icons/nav-prompts-v3.svg',
   },
   {
-    id: 'feedback',
+    id: 'surveys',
     label: 'Surveys',
     href: '/surveys',
-    iconSrc: '/icons/nav-feedback-v2.svg',
+    iconSrc: '/icons/nav-surveys-v3.svg',
   },
 ];
 
@@ -606,9 +610,6 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
               >
                 <NavIconMark icon={item.icon} iconSrc={item.iconSrc} />
                 <span className={styles.navItemLabel}><HoverSlideText>{item.label}</HoverSlideText></span>
-                <span className={`${styles.badge} ${styles.badgeChecking}`}>
-                  Checking
-                </span>
               </div>
             ) : proState === 'locked' ? (
               <button
@@ -621,17 +622,11 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                 onMouseEnter={() => play('hover')}
                 className={`${styles.navItem} ${styles.navItemButton} hover-slide-trigger`}
                 title={isCollapsed ? item.label : undefined}
+                aria-label={`${item.label}, locked; VIP membership required`}
                 data-tour={item.id === 'markets' ? 'markets' : undefined}
               >
                 <NavIconMark icon={item.icon} iconSrc={item.iconSrc} />
                 <span className={styles.navItemLabel}><HoverSlideText>{item.label}</HoverSlideText></span>
-                <span className={`${styles.badge} ${styles.badgeLocked}`}>
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 3, verticalAlign: '-1px' }}>
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                  </svg>
-                  Locked
-                </span>
               </button>
             ) : item.disabled ? (
               <div

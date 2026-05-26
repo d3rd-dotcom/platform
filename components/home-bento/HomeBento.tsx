@@ -5,7 +5,6 @@ import { usePrivy } from '@privy-io/react-auth';
 import CourseIntake from '@/components/course-intake/CourseIntake';
 import Dashboard from '@/components/dashboard/Dashboard';
 import AgentRosterCard from '@/components/room-log/AgentRosterCard';
-import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
 import { DotmSquare3 } from '@/components/dot-matrix/DotmSquare3';
 import HomeLoader from './HomeLoader';
 import type { CourseData, IntakeAnswers } from '@/lib/personal-course';
@@ -23,7 +22,7 @@ interface CourseRecord {
 // Module-level cache so navigating away and back doesn't re-show the loader.
 // Persists for the SPA session (cleared on a full page reload), giving us a
 // stale-while-revalidate flow: render the last result instantly, refresh quietly.
-let courseCache: { record: CourseRecord | null } | null = null;
+let courseCache: { record: CourseRecord | null; persisted: boolean } | null = null;
 
 function phaseFromRecord(record: CourseRecord | null): Phase {
   return record?.status === 'ready' && record.courseData ? 'ready' : 'intake';
@@ -36,11 +35,8 @@ const GEN_STEPS = [
   'Putting the finishing touches on it…',
 ];
 
-const HOME_BLUE_MESSAGE =
-  'Mental Wealth Academy places power tools for self-actualization and individual enlightenment through the freely available course, earn credits to connect to live events with experts, and unlimited AI tools for VIP Members.';
-
 export default function HomeBento() {
-  const { ready, getAccessToken } = usePrivy();
+  const { ready, authenticated, getAccessToken } = usePrivy();
 
   // Every authenticated endpoint reads the Privy JWT from the Authorization
   // header first (cookie is only a fallback). Without this, a refresh often
@@ -57,6 +53,7 @@ export default function HomeBento() {
   // Seed from the session cache so a revisit renders instantly instead of flashing the loader.
   const [phase, setPhase] = useState<Phase>(() => (courseCache ? phaseFromRecord(courseCache.record) : 'loading'));
   const [course, setCourse] = useState<CourseRecord | null>(() => courseCache?.record ?? null);
+  const [hasPersistedCourse, setHasPersistedCourse] = useState(() => courseCache?.persisted ?? false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [genStep, setGenStep] = useState(0);
 
@@ -70,14 +67,17 @@ export default function HomeBento() {
       });
       const data = await res.json().catch(() => ({}));
       const record: CourseRecord | null = data.course ?? null;
-      courseCache = { record };
+      const persisted = Boolean(record && !data.guest);
+      courseCache = { record, persisted };
       setCourse(record);
+      setHasPersistedCourse(persisted);
       setPhase(phaseFromRecord(record));
     } catch {
       // Keep any cached data on a transient failure; only fall to intake on a cold load.
       if (!courseCache) {
-        courseCache = { record: null };
+        courseCache = { record: null, persisted: false };
         setCourse(null);
+        setHasPersistedCourse(false);
         setPhase('intake');
       }
     }
@@ -116,8 +116,10 @@ export default function HomeBento() {
         setPhase('intake');
         return;
       }
-      courseCache = { record: data.course };
+      const persisted = !data.guest;
+      courseCache = { record: data.course, persisted };
       setCourse(data.course);
+      setHasPersistedCourse(persisted);
       setPhase('ready');
     } catch {
       setCourse((prev) => (prev ? { ...prev, intakeData: answers } : { status: 'intake', intakeData: answers, courseData: null, progressData: {} }));
@@ -147,14 +149,10 @@ export default function HomeBento() {
   if (phase === 'ready' && course?.courseData) {
     return (
       <div className={styles.bentoScroll}>
-        <BlueChatBubble
-          className={styles.homeBlueBubble}
-          message={HOME_BLUE_MESSAGE}
-          variant="featured"
-        />
         <Dashboard
           course={course.courseData}
           initialIntake={course.intakeData}
+          enableMorningPagesPersistence={authenticated && hasPersistedCourse}
         />
         <AgentRosterCard />
       </div>

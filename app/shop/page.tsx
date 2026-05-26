@@ -18,12 +18,9 @@ interface ShopItem {
   image: string;
   category: string;
   badge?: BadgeType;
-  size: 'hero' | 'large' | 'medium' | 'small' | 'wide';
-  transparent?: boolean;
 }
 
 const shopItems: ShopItem[] = [
-  // ── HERO: Academy Blazer ──
   {
     id: 'blazer',
     title: 'The Academy Blazer',
@@ -33,9 +30,7 @@ const shopItems: ShopItem[] = [
     image: 'https://i.imgur.com/S3AMvJA.png',
     category: 'Uniforms',
     badge: 'exclusive',
-    size: 'hero',
   },
-  // ── LARGE: Field Journal ──
   {
     id: 'journal',
     title: 'Glitch Field Journal',
@@ -45,10 +40,7 @@ const shopItems: ShopItem[] = [
     image: 'https://i.imgur.com/57ahVVX.png',
     category: 'Accessories',
     badge: 'new',
-    size: 'large',
-    transparent: true,
   },
-  // ── MEDIUM ──
   {
     id: 'hoodie',
     title: 'Cipher Hoodie',
@@ -57,7 +49,6 @@ const shopItems: ShopItem[] = [
     price: '85 USDC',
     image: 'https://i.imgur.com/TPujE2j.png',
     category: 'Uniforms',
-    size: 'medium',
   },
   {
     id: 'pin-set',
@@ -68,9 +59,7 @@ const shopItems: ShopItem[] = [
     image: 'https://i.imgur.com/yUCxnDX.png',
     category: 'Accessories',
     badge: 'new',
-    size: 'medium',
   },
-  // ── SMALL ──
   {
     id: 'beanie',
     title: 'Neural Beanie',
@@ -79,7 +68,6 @@ const shopItems: ShopItem[] = [
     price: '32 USDC',
     image: 'https://i.imgur.com/fO2vF5f.png',
     category: 'Accessories',
-    size: 'small',
   },
   {
     id: 'patch',
@@ -90,9 +78,7 @@ const shopItems: ShopItem[] = [
     image: 'https://i.imgur.com/yImR5DJ.png',
     category: 'Accessories',
     badge: 'free',
-    size: 'small',
   },
-  // ── WIDE: Magazine ──
   {
     id: 'magazine',
     title: 'MWA Quarterly — Issue 01',
@@ -102,9 +88,7 @@ const shopItems: ShopItem[] = [
     image: '/images/angel-investing.png',
     category: 'Publications',
     badge: 'limited',
-    size: 'wide',
   },
-  // ── WIDE: Lab Coat ──
   {
     id: 'labcoat',
     title: 'Research Lab Coat',
@@ -114,9 +98,7 @@ const shopItems: ShopItem[] = [
     image: 'https://i.imgur.com/S3AMvJA.png',
     category: 'Uniforms',
     badge: 'exclusive',
-    size: 'wide',
   },
-  // ── MEDIUM ──
   {
     id: 'tote',
     title: 'Archive Tote',
@@ -125,7 +107,6 @@ const shopItems: ShopItem[] = [
     price: '22 USDC',
     image: 'https://i.imgur.com/yUCxnDX.png',
     category: 'Accessories',
-    size: 'medium',
   },
   {
     id: 'headphones',
@@ -136,10 +117,7 @@ const shopItems: ShopItem[] = [
     image: 'https://yeezy.com/cdn-cgi/image/width=1024,height=1024,quality=100,compression=fast,slow-connection-quality=80,fit=pad,gravity=center,background=transparent,format=avif/https://cdn.swell.store/yzy-prod/6949ed1f80c01300127beab9/b64116f133b7f192bb91b291e8dd14c7/HD-01-B-1.png',
     category: 'Tech',
     badge: 'limited',
-    size: 'medium',
-    transparent: true,
   },
-  // ── SMALL ──
   {
     id: 'keycard',
     title: 'Access Keycard',
@@ -149,7 +127,6 @@ const shopItems: ShopItem[] = [
     image: 'https://i.imgur.com/yImR5DJ.png',
     category: 'Tech',
     badge: 'new',
-    size: 'small',
   },
   {
     id: 'sticker-pack',
@@ -160,9 +137,7 @@ const shopItems: ShopItem[] = [
     image: 'https://i.imgur.com/fO2vF5f.png',
     category: 'Accessories',
     badge: 'free',
-    size: 'small',
   },
-  // ── LARGE: Sneakers ──
   {
     id: 'sneakers',
     title: 'JC-10 Scholar Edition',
@@ -172,10 +147,7 @@ const shopItems: ShopItem[] = [
     image: 'https://yeezy.com/cdn-cgi/image/width=1024,height=1024,quality=100,compression=fast,slow-connection-quality=80,fit=pad,gravity=center,background=transparent,format=avif/https://cdn.swell.store/yzy-prod/694d83925095a200120c13c0/a15e70f2904c7fdb11f10bbe48f3f5b1/JC-10-BLACK-1.png',
     category: 'Footwear',
     badge: 'limited',
-    size: 'large',
-    transparent: true,
   },
-  // ── MEDIUM ──
   {
     id: 'lanyard',
     title: 'Scholar Lanyard',
@@ -184,7 +156,6 @@ const shopItems: ShopItem[] = [
     price: '14 USDC',
     image: 'https://i.imgur.com/yUCxnDX.png',
     category: 'Accessories',
-    size: 'medium',
   },
   {
     id: 'notebook',
@@ -194,9 +165,7 @@ const shopItems: ShopItem[] = [
     price: '16 USDC',
     image: 'https://i.imgur.com/57ahVVX.png',
     category: 'Publications',
-    size: 'medium',
   },
-  // ── WIDE: Bundle ──
   {
     id: 'starter-kit',
     title: 'New Scholar Starter Kit',
@@ -206,19 +175,10 @@ const shopItems: ShopItem[] = [
     image: 'https://i.imgur.com/S3AMvJA.png',
     category: 'Bundles',
     badge: 'exclusive',
-    size: 'wide',
   },
 ];
 
 const ALL_CATEGORIES = ['All', ...Array.from(new Set(shopItems.map((i) => i.category)))];
-
-const sizeClassMap: Record<string, string> = {
-  hero: 'cardHero',
-  large: 'cardLarge',
-  medium: 'cardMedium',
-  small: 'cardSmall',
-  wide: 'cardWide',
-};
 
 const badgeClassMap: Record<BadgeType, string> = {
   new: 'badgeNew',
@@ -231,13 +191,11 @@ export default function ShopPage() {
   const { play } = useSound();
   const [selectedItem, setSelectedItem] = useState<ShopItem | null>(null);
   const [activeCategory, setActiveCategory] = useState('All');
-  const [isLoaded, setIsLoaded] = useState(false);
   const [isContentLoading, setIsContentLoading] = useState(true);
 
   const filtered = activeCategory === 'All' ? shopItems : shopItems.filter((i) => i.category === activeCategory);
 
   useEffect(() => {
-    setIsLoaded(true);
     // Show skeleton briefly, then reveal content
     const timer = setTimeout(() => {
       setIsContentLoading(false);
@@ -281,98 +239,39 @@ export default function ShopPage() {
           ))}
         </div>
 
-        {/* Bento Grid */}
-        <div className={styles.bentoGrid}>
-          {/* Featured banner at top */}
-          {activeCategory === 'All' && (
-            <div className={styles.featuredBanner}>
-              <div className={styles.bannerLeft}>
-                <span className={styles.bannerTitle}>The Cohort Starter Collection</span>
-                <span className={styles.bannerSub}>Everything you need to begin the cohort: blazer, journal, pins, and keycard.</span>
-              </div>
-              <button
-                className={styles.bannerButton}
-                onClick={() => play('click')}
-                onMouseEnter={() => play('hover')}
-              >
-                View Bundle
-              </button>
-            </div>
-          )}
-
-          {filtered.map((item, i) => {
-            const isHero = item.size === 'hero';
-            const showLoreAfter = i === 3 && activeCategory === 'All';
-            const showStatsAfter = false;
-
-            return (
-              <ItemGroup key={item.id}>
-                <div
-                  className={`${styles.productCard} ${styles[sizeClassMap[item.size]]}`}
-                  onClick={() => { play('click'); setSelectedItem(item); }}
-                  onMouseEnter={() => play('hover')}
-                >
-                  <div className={styles.frame}>
-                    <div className={`${styles.frameInner} ${item.transparent ? styles.frameTransparent : ''}`}>
-                      <img src={item.image} alt={item.title} loading="lazy" draggable={false} referrerPolicy="no-referrer" />
-                      {isHero && (
-                        <>
-                          <div className={styles.frameGradient} />
-                          <div className={styles.heroOverlay}>
-                            <span className={styles.heroOverlayTitle}>{item.title}</span>
-                            <span className={styles.heroOverlaySub}>{item.sub}</span>
-                            <span className={styles.heroOverlayPrice}>{item.price}</span>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                  {!isHero && (
-                    <div className={styles.cardMeta}>
-                      <div className={styles.metaText}>
-                        <span className={styles.metaTitle}>{item.title}</span>
-                        <span className={styles.metaSub}>{item.sub}</span>
-                      </div>
-                      {item.badge ? (
-                        <span className={`${styles.metaBadge} ${styles[badgeClassMap[item.badge]]}`}>
-                          {item.badge}
-                        </span>
-                      ) : (
-                        <span className={styles.metaPrice}>{item.price}</span>
-                      )}
-                    </div>
-                  )}
-                </div>
-
-                {showLoreAfter && (
-                  <div className={styles.loreCard}>
-                    <span className={styles.loreText}>
-                      &ldquo;The uniform is not compliance. It is camouflage — so they never see us thinking.&rdquo;
+        <div className={styles.productGrid}>
+          {filtered.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              className={styles.productCard}
+              onClick={() => { play('click'); setSelectedItem(item); }}
+              onMouseEnter={() => play('hover')}
+            >
+              <img
+                className={styles.productImage}
+                src={item.image}
+                alt={item.title}
+                loading="lazy"
+                draggable={false}
+                referrerPolicy="no-referrer"
+              />
+              <span className={styles.cardMeta}>
+                <span className={styles.metaText}>
+                  <span className={styles.metaTitle}>{item.title}</span>
+                  <span className={styles.metaSub}>{item.sub}</span>
+                </span>
+                <span className={styles.metaFooter}>
+                  <span className={styles.metaPrice}>{item.price}</span>
+                  {item.badge && (
+                    <span className={`${styles.metaBadge} ${styles[badgeClassMap[item.badge]]}`}>
+                      {item.badge}
                     </span>
-                    <span className={styles.loreAuthor}>Headmaster&apos;s Address, Year One</span>
-                  </div>
-                )}
-
-              </ItemGroup>
-            );
-          })}
-
-          {/* Bottom CTA */}
-          {activeCategory === 'All' && (
-            <div className={styles.bottomCta}>
-              <div className={styles.bottomCtaLeft}>
-                <span className={styles.bottomCtaTitle}>Custom Orders</span>
-                <span className={styles.bottomCtaSub}>Need bulk uniforms for your cohort? Reach out to the quartermaster.</span>
-              </div>
-              <button
-                className={styles.bottomCtaButton}
-                onClick={() => play('click')}
-                onMouseEnter={() => play('hover')}
-              >
-                Contact Us
-              </button>
-            </div>
-          )}
+                  )}
+                </span>
+              </span>
+            </button>
+          ))}
         </div>
 
         {/* Detail Modal */}
@@ -425,8 +324,4 @@ export default function ShopPage() {
       </main>
     </div>
   );
-}
-
-function ItemGroup({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
 }

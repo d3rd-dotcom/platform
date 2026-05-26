@@ -181,14 +181,14 @@
 }
 
 .userMessage .messageContent {
-  background: linear-gradient(148deg, #6f59c8 0%, #433455 46%, #22252d 100%);
-  border: 1px solid rgba(212, 198, 255, 0.18);
-  color: #ffffff;
+  background: linear-gradient(148deg, #eeeaff 0%, #dfe4ff 50%, #cad7ff 100%);
+  border: 1px solid rgba(81, 104, 255, 0.2);
+  color: #28335f;
   border-bottom-right-radius: 4px;
   box-shadow:
-    inset 0 1.5px 0 rgba(255, 255, 255, 0.22),
-    inset -2px -2px 5px rgba(0, 0, 0, 0.26),
-    0 8px 22px rgba(39, 29, 59, 0.34);
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.7),
+    inset -2px -2px 5px rgba(81, 104, 255, 0.08),
+    0 8px 22px rgba(81, 104, 255, 0.16);
 }
 
 .blueMessage .messageContent {
@@ -1982,13 +1982,13 @@
 }
 
 :global(:root:not([data-theme="dark"])) .userMessage .messageContent {
-  background: linear-gradient(148deg, #7a67c9 0%, #4a405d 48%, #2a2d35 100%);
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  color: #ffffff;
+  background: linear-gradient(148deg, #eeeaff 0%, #dfe4ff 50%, #cad7ff 100%);
+  border: 1px solid rgba(81, 104, 255, 0.2);
+  color: #28335f;
   box-shadow:
-    inset 0 1.5px 0 rgba(255, 255, 255, 0.24),
-    inset -2px -2px 5px rgba(0, 0, 0, 0.22),
-    0 8px 24px rgba(49, 38, 78, 0.24);
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.7),
+    inset -2px -2px 5px rgba(81, 104, 255, 0.08),
+    0 8px 24px rgba(81, 104, 255, 0.14);
 }
 
 :global(:root:not([data-theme="dark"])) .blueMessage .messageContent {

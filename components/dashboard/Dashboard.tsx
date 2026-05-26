@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
+import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
+import DailyNotes from '@/components/daily-notes/DailyNotes';
 import type { CourseData } from '@/lib/personal-course';
 import styles from './Dashboard.module.css';
 
@@ -15,6 +17,7 @@ interface DashboardProps {
   course: CourseData;
   initialProgress?: Record<string, unknown>;
   initialIntake?: Record<string, string>;
+  enableMorningPagesPersistence?: boolean;
 }
 
 interface LeaderUser {
@@ -86,7 +89,10 @@ const EVENTS: EventItem[] = [
   },
 ];
 
-export default function Dashboard(_props: DashboardProps) {
+const HOME_BLUE_MESSAGE =
+  'Mental Wealth Academy places power tools for self-actualization and individual enlightenment through the freely available course, earn credits to connect to live events with experts, and unlimited AI tools for VIP Members.';
+
+export default function Dashboard({ enableMorningPagesPersistence = false }: DashboardProps) {
   const [leaderboard, setLeaderboard] = useState<LeaderUser[]>([]);
   const [eggShaking, setEggShaking] = useState(false);
   const [reserved, setReserved] = useState<Record<string, boolean>>({});
@@ -179,9 +185,13 @@ export default function Dashboard(_props: DashboardProps) {
             </article>
           ))}
         </div>
+        <BlueChatBubble
+          message={HOME_BLUE_MESSAGE}
+          variant="featured"
+        />
       </section>
 
-      {/* ── Side: egg, leaderboard, Blue ── */}
+      {/* ── Side: egg, morning note, leaderboard, membership ── */}
       <aside className={styles.sideStack}>
         <div className={styles.eventsHeader}>
           <span className={styles.cardLabel}>Your progress</span>
@@ -211,6 +221,11 @@ export default function Dashboard(_props: DashboardProps) {
             Earn credits from quests and check-ins. What will hatch?
           </p>
         </div>
+
+        <DailyNotes
+          enablePersistence={enableMorningPagesPersistence}
+          compact
+        />
 
         <button
           type="button"

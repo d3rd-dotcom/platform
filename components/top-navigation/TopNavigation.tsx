@@ -8,7 +8,6 @@ import { usePrivy } from '@privy-io/react-auth';
 import styles from './TopNavigation.module.css';
 import { useSound } from '@/hooks/useSound';
 import { useTheme } from '@/components/theme/ThemeProvider';
-import SoundToggle from '@/components/sound/SoundToggle';
 import HoverSlideText from '@/components/shared/HoverSlideText';
 
 const NAV_LINKS = [
@@ -110,7 +109,20 @@ const TopNavigation: React.FC = () => {
         </nav>
 
         <nav className={styles.nav}>
-          <SoundToggle />
+          <Link
+            href="/shop"
+            className={`${styles.shopLink} ${pathname === '/shop' || pathname?.startsWith('/shop/') ? styles.shopLinkActive : ''}`}
+            onClick={() => play('navigation')}
+            onMouseEnter={() => play('hover')}
+            aria-label="Shop"
+            aria-current={pathname === '/shop' || pathname?.startsWith('/shop/') ? 'page' : undefined}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="9" cy="20" r="1" />
+              <circle cx="19" cy="20" r="1" />
+              <path d="M3 4h2l2.4 11.1a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 1.9-1.4L22 8H7" />
+            </svg>
+          </Link>
           <button
             type="button"
             className={styles.themeToggle}

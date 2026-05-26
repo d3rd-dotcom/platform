@@ -110,7 +110,7 @@ export function HomePageSkeleton() {
 
 // ==================== LIBRARY PAGE SKELETONS ====================
 
-export function LibraryTabsSkeleton() {
+export function PromptsTabsSkeleton() {
   return (
     <div className={styles.tabsSkeleton}>
       {[...Array(3)].map((_, i) => (
@@ -120,7 +120,7 @@ export function LibraryTabsSkeleton() {
   );
 }
 
-export function LibraryBookCardSkeleton() {
+export function PromptsCardSkeleton() {
   return (
     <div className={styles.bookCardSkeleton}>
       <div className={`${styles.skeleton} ${styles.bookImageSkeleton}`} />
@@ -134,13 +134,13 @@ export function LibraryBookCardSkeleton() {
   );
 }
 
-export function LibraryPageSkeleton() {
+export function PromptsPageSkeleton() {
   return (
     <div className={styles.libraryPageSkeleton}>
-      <LibraryTabsSkeleton />
+      <PromptsTabsSkeleton />
       <div className={styles.booksGridSkeleton}>
         {[...Array(6)].map((_, i) => (
-          <LibraryBookCardSkeleton key={i} />
+          <PromptsCardSkeleton key={i} />
         ))}
       </div>
     </div>
@@ -470,49 +470,35 @@ export function MarketsPageSkeleton() {
 
 // ==================== SHOP PAGE SKELETONS ====================
 
-export function ShopProductCardSkeleton({ size = 'medium' }: { size?: string }) {
+export function ShopProductCardSkeleton() {
   const s = styles.skeletonMwa;
-  const cls = size === 'hero' ? styles.shopCardHeroSkeleton
-    : size === 'large' ? styles.shopCardLargeSkeleton
-    : size === 'wide' ? styles.shopCardWideSkeleton
-    : size === 'small' ? styles.shopCardSmallSkeleton
-    : styles.shopCardMediumSkeleton;
 
   return (
-    <div className={`${styles.shopCardSkeleton} ${cls}`}>
+    <div className={styles.shopCardSkeleton}>
       <div className={`${s} ${styles.shopImageSkeleton}`} />
-      {size !== 'hero' && (
-        <div className={styles.shopCardMetaSkeleton}>
-          <div className={styles.shopCardMetaTextSkeleton}>
-            <div className={`${s} ${styles.shopCardTitleSkeleton}`} />
-            <div className={`${s} ${styles.shopCardSubSkeleton}`} />
-          </div>
-          <div className={`${s} ${styles.shopCardPriceSkeleton}`} />
+      <div className={styles.shopCardMetaSkeleton}>
+        <div className={styles.shopCardMetaTextSkeleton}>
+          <div className={`${s} ${styles.shopCardTitleSkeleton}`} />
+          <div className={`${s} ${styles.shopCardSubSkeleton}`} />
         </div>
-      )}
+        <div className={`${s} ${styles.shopCardPriceSkeleton}`} />
+      </div>
     </div>
   );
 }
 
 export function ShopPageSkeleton() {
   const s = styles.skeletonMwa;
-  const sizes = ['hero', 'large', 'medium', 'medium', 'small', 'small', 'wide', 'wide', 'medium', 'medium'];
   return (
     <div className={styles.shopPageSkeleton}>
-      <div className={styles.shopHeaderSkeleton}>
-        <div className={`${s} ${styles.shopTagSkeleton}`} />
-        <div className={`${s} ${styles.shopTitleSkeleton}`} />
-        <div className={`${s} ${styles.shopSubSkeleton}`} />
-      </div>
       <div className={styles.shopCategoriesSkeleton}>
-        {[...Array(5)].map((_, i) => (
+        {[...Array(7)].map((_, i) => (
           <div key={i} className={`${s} ${styles.shopCategorySkeleton}`} />
         ))}
       </div>
-      <div className={`${s} ${styles.shopBannerSkeleton}`} />
       <div className={styles.shopGridSkeleton}>
-        {sizes.map((sz, i) => (
-          <ShopProductCardSkeleton key={i} size={sz} />
+        {[...Array(16)].map((_, i) => (
+          <ShopProductCardSkeleton key={i} />
         ))}
       </div>
     </div>

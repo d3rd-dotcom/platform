@@ -854,9 +854,9 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       return "where credits go - loot boxes, upgrades, season drops. check rewards.";
     }
 
-    // Library
-    if (has('library', 'reading', 'article', 'blog', 'book')) {
-      return "curated reads in the library — articles and papers that actually matter, no algorithm.";
+    // Prompts and selected essays
+    if (has('prompt', 'library', 'reading', 'article', 'blog', 'book')) {
+      return "Prompts holds reusable instructions and selected essays. Copy what fits the work.";
     }
 
     // Livestream / events
@@ -1046,24 +1046,21 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       addBlueMessage(
         "the world's first decentralized cohort for mental wellness. course, community, science — on-chain. you're early."
       );
-    } else if (action === 'level-up') {
-      send('Hi', 'happy');
+    } else if (action === 'next-move') {
+      send('Focus my next move.', 'happy');
       setPendingAttachments([]);
       setTimeManagementVisible(false);
       setAutoDistributionVisible(false);
-      const bal = shardCount;
       addBlueMessage(
-        bal !== null
-          ? `quests, morning pages every day, seal course weeks. you got ${bal.toLocaleString()} credits rn - keep stacking.`
-          : "quests, morning pages every day, seal course weeks. credits stack, you level. that's the loop."
+        "name the work, the deadline, and what you've avoided. i'll cut it to one next move."
       );
-    } else if (action === 'bci-lore') {
-      send("What's new this week?", 'happy');
+    } else if (action === 'read-resistance') {
+      send("Read what I'm avoiding.", 'happy');
       setPendingAttachments([]);
       setTimeManagementVisible(false);
       setAutoDistributionVisible(false);
       addBlueMessage(
-        "brain-computer interface. the helmet is a research object for reading signals, prompting reflection, and studying feedback loops."
+        "show me the task you keep circling. one sentence is enough. i'll name the pattern and the first move."
       );
     } else if (action === 'time') {
       send('Help me time block', 'happy');
@@ -1406,11 +1403,11 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             <span>{shardCount}</span>
           </div>
         )}
-        <button className={styles.quickAction} onClick={() => handleQuickAction('level-up')} disabled={isTyping} type="button">
-          Hi
+        <button className={styles.quickAction} onClick={() => handleQuickAction('next-move')} disabled={isTyping} type="button">
+          Focus my next move
         </button>
-        <button className={styles.quickAction} onClick={() => handleQuickAction('bci-lore')} disabled={isTyping} type="button">
-          What&apos;s new this week?
+        <button className={styles.quickAction} onClick={() => handleQuickAction('read-resistance')} disabled={isTyping} type="button">
+          Read my resistance
         </button>
       </div>
 

@@ -112,8 +112,8 @@
 .name {
   font-family: var(--font-primary);
   font-size: 13px;
-  font-weight: 600;
-  color: rgba(227, 225, 238, 0.95);
+  font-weight: 400;
+  color: rgba(227, 225, 238, 0.78);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -122,7 +122,7 @@
 .nameMuted {
   font-family: var(--font-primary);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 400;
   color: rgba(227, 225, 238, 0.35);
 }
 
@@ -221,12 +221,12 @@
 
 /* Light mode */
 :global(:root:not([data-theme="dark"])) .card {
-  background: #ffffff;
-  border-color: rgb(26 23 66 / 10%);
+  background: #f4f5fe;
+  border-color: rgba(26, 27, 36, 0.1);
 }
 
 :global(:root:not([data-theme="dark"])) .name {
-  color: #1a1d33;
+  color: var(--color-text-soft);
 }
 
 :global(:root:not([data-theme="dark"])) .nameMuted {

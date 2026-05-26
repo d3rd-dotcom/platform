@@ -137,12 +137,12 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
       'The /shop page sells cosmetic and functional items for credits. Used for inventory upgrades and purchasable boosts.',
   },
   {
-    id: 'page-library',
-    title: 'Library',
-    routes: ['/library'],
-    keywords: ['library', 'reading', 'book', 'article', 'blog'],
+    id: 'page-prompts',
+    title: 'Prompts',
+    routes: ['/prompts', '/library'],
+    keywords: ['prompts', 'prompt', 'reading', 'book', 'article', 'blog', 'library'],
     body:
-      'The /library page collects readings, articles, and blog posts (Paragraph integration). Curated material that supports the curriculum and DeSci themes.',
+      'The /prompts page collects reusable prompts and recent essays from the Academy blog. Participants can preview and copy prompts for their work.',
   },
   {
     id: 'page-community',
