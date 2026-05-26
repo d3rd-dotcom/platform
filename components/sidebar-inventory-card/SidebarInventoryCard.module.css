@@ -2,8 +2,8 @@
   width: calc(100% - 20px);
   margin: 8px 10px 0;
   padding: 12px;
-  background: var(--color-grey-900, #1a1b24);
-  border: 1px solid var(--color-grey-700, #2a2b36);
+  background: #ffffff;
+  border: 1px solid rgb(26 23 66 / 10%);
   border-radius: 12px;
   flex-shrink: 0;
   color: inherit;
@@ -161,8 +161,8 @@
 
 /* Light mode */
 :global(:root:not([data-theme="dark"])) .card {
-  background: #f4f5fe;
-  border-color: rgba(26, 27, 36, 0.1);
+  background: #ffffff;
+  border-color: rgb(26 23 66 / 10%);
 }
 
 :global(:root:not([data-theme="dark"])) .statValuePositive {

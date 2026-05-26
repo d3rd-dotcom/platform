@@ -64,7 +64,7 @@
   width: 100%;
   padding: 12px 15px;
   border-radius: 12px;
-  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface-base));
+  background: color-mix(in srgb, var(--color-primary) 30%, var(--color-surface-base));
   border: 1px solid rgba(15, 20, 40, 0.06);
 }
 

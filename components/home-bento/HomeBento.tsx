@@ -37,7 +37,7 @@ const GEN_STEPS = [
 ];
 
 const HOME_BLUE_MESSAGE =
-  'Mental Wealth Academy places unlimited positive belief that members can reach self-actualization and individual enlightenment through the courses, work, and tools we provide and make freely available.';
+  'Mental Wealth Academy places power tools for self-actualization and individual enlightenment through the freely available course, earn credits to connect to live events with experts, and unlimited AI tools for VIP Members.';
 
 export default function HomeBento() {
   const { ready, getAccessToken } = usePrivy();
