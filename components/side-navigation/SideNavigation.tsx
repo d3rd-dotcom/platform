@@ -73,7 +73,7 @@ const mobileNavSections: NavSection[] = [
 const primaryNavItems: NavItem[] = [
   {
     id: 'morning-pages',
-    label: 'Homework',
+    label: 'Journal',
     href: '/course',
     iconSrc: '/icons/nav-spiral-v2.svg',
   },
