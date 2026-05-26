@@ -602,7 +602,7 @@
 }
 
 .sectionLabel {
-  font-family: var(--font-primary);
+  font-family: var(--font-departure-mono), 'Departure Mono', monospace;
   font-size: 11px;
   font-weight: 700;
   color: #999999;
@@ -611,7 +611,7 @@
 }
 
 .sectionBadge {
-  font-family: var(--font-primary);
+  font-family: var(--font-departure-mono), 'Departure Mono', monospace;
   font-size: 9px;
   font-weight: 600;
   padding: 2px 6px;
@@ -926,7 +926,7 @@
 
 /* Badge */
 .badge {
-  font-family: var(--font-primary);
+  font-family: var(--font-departure-mono), 'Departure Mono', monospace;
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
@@ -941,49 +941,49 @@
 }
 
 .badgeHighlight {
-  background: rgba(255, 119, 41, 0.15);
-  color: var(--color-accent);
-  border-color: var(--color-accent);
+  background: rgba(255, 119, 41, 0.18);
+  color: #C2500F;
+  border-color: rgba(194, 80, 15, 0.5);
 }
 
 .badgeGreen {
-  background: rgba(98, 190, 143, 0.15);
-  color: #62BE8F;
-  border-color: #62BE8F;
+  background: rgba(31, 122, 58, 0.16);
+  color: #166634;
+  border-color: rgba(22, 102, 52, 0.5);
 }
 
 .badgeMuted {
-  background: rgba(26, 29, 51, 0.06);
-  color: #999999;
-  border-color: rgba(26, 29, 51, 0.12);
+  background: rgba(26, 29, 51, 0.08);
+  color: #555770;
+  border-color: rgba(26, 29, 51, 0.18);
   font-size: 9px;
 }
 
 .badgePro {
-  background: linear-gradient(135deg, rgba(255, 119, 41, 0.15) 0%, rgba(255, 154, 92, 0.15) 100%);
-  color: var(--color-accent);
-  border-color: var(--color-accent);
+  background: linear-gradient(135deg, rgba(255, 119, 41, 0.2) 0%, rgba(255, 154, 92, 0.2) 100%);
+  color: #B0470C;
+  border-color: rgba(176, 71, 12, 0.55);
   font-size: 9px;
 }
 
 .badgeLocked {
-  background: linear-gradient(135deg, rgba(255, 119, 41, 0.15) 0%, rgba(255, 154, 92, 0.15) 100%);
-  color: var(--color-accent);
-  border-color: var(--color-accent);
+  background: linear-gradient(135deg, rgba(255, 119, 41, 0.2) 0%, rgba(255, 154, 92, 0.2) 100%);
+  color: #B0470C;
+  border-color: rgba(176, 71, 12, 0.55);
   font-size: 9px;
 }
 
 .badgeUnlocked {
-  background: rgba(31, 122, 58, 0.12);
-  color: #1f7a3a;
-  border-color: rgba(31, 122, 58, 0.35);
+  background: rgba(31, 122, 58, 0.16);
+  color: #146030;
+  border-color: rgba(20, 96, 48, 0.55);
   font-size: 9px;
 }
 
 .badgeChecking {
-  background: rgba(26, 29, 51, 0.06);
-  color: rgba(26, 29, 51, 0.5);
-  border-color: rgba(26, 29, 51, 0.12);
+  background: rgba(26, 29, 51, 0.08);
+  color: rgba(26, 29, 51, 0.7);
+  border-color: rgba(26, 29, 51, 0.2);
   font-size: 9px;
 }
 
@@ -1705,7 +1705,6 @@
 }
 
 :global([data-theme="dark"]) .navItemImageIcon {
-  filter: brightness(0) saturate(100%) invert(89%) sepia(8%) saturate(306%) hue-rotate(206deg) brightness(99%) contrast(91%);
   opacity: 1;
 }
 
@@ -1722,7 +1721,6 @@
 
 :global([data-theme="dark"]) .navItemActive .navItemImageIcon {
   filter:
-    brightness(0) saturate(100%) invert(94%) sepia(6%) saturate(279%) hue-rotate(206deg) brightness(101%) contrast(95%)
     drop-shadow(0 0 10px rgba(226, 229, 245, 0.3))
     drop-shadow(0 0 22px rgba(81, 104, 255, 0.22));
 }
@@ -1745,9 +1743,7 @@
 }
 
 :global([data-theme="dark"]) .navItem:hover .navItemImageIcon {
-  filter:
-    brightness(0) saturate(100%) invert(57%) sepia(94%) saturate(1853%) hue-rotate(210deg) brightness(103%) contrast(101%)
-    drop-shadow(0 0 10px rgba(81, 104, 255, 0.28));
+  filter: drop-shadow(0 0 10px rgba(81, 104, 255, 0.28));
 }
 
 :global([data-theme="dark"]) .navItemActive {

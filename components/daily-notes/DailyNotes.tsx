@@ -44,7 +44,7 @@ interface DailyNotesProps {
 
 const MOBILE_PROMPT_MESSAGE = 'Dumping out my brain...';
 const WRITING_BLUE_MESSAGE =
-  'Write without polishing. I keep proof you showed up, not a score for the prose.';
+  'This refreshing morning ritual is like spiritual chiropracting, you massage the inner self in this encrypted journal. Do your best to let it flow, only do what you feel is neccesary.';
 
 const WEEK_COLORS = [
   '#5168FF', // Week 1 — indigo

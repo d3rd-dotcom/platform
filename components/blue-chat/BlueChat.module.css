@@ -465,7 +465,7 @@
 }
 
 .shardUpsellIcon {
-  filter: hue-rotate(230deg) saturate(1.15) drop-shadow(0 0 10px rgba(81, 104, 255, 0.35));
+  filter: drop-shadow(0 0 10px rgba(81, 104, 255, 0.35));
 }
 
 .shardUpsellCopy {
@@ -510,7 +510,7 @@
 }
 
 .shardCounterIcon {
-  filter: hue-rotate(230deg) saturate(1.15) contrast(1.15) brightness(1.1);
+  filter: none;
 }
 
 /* Quick Actions */

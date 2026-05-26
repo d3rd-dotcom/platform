@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import type { CSSProperties, ReactNode } from 'react';
-import { Poppins, Space_Grotesk, IBM_Plex_Mono, Space_Mono, Inter } from 'next/font/google';
+import { Poppins, Space_Grotesk, IBM_Plex_Mono, Space_Mono, Inter, Patrick_Hand } from 'next/font/google';
 import localFont from 'next/font/local';
 import '@/styles/globals.css';
 import { RouteShell } from '@/components/layout/RouteShell';
@@ -37,6 +37,13 @@ const spaceMono = Space_Mono({
   subsets: ['latin'],
   weight: ['400', '700'],
   variable: '--font-space-mono',
+  display: 'swap',
+});
+
+const patrickHand = Patrick_Hand({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-patrick-hand',
   display: 'swap',
 });
 
@@ -120,7 +127,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${poppins.variable} ${spaceGrotesk.variable} ${ibmPlexMono.variable} ${spaceMono.variable} ${departureMono.variable}`}
+      className={`${inter.variable} ${poppins.variable} ${spaceGrotesk.variable} ${ibmPlexMono.variable} ${spaceMono.variable} ${patrickHand.variable} ${departureMono.variable}`}
       data-sidebar-collapsed="true"
       style={{ '--sidebar-width': '72px' } as CSSProperties}
       suppressHydrationWarning

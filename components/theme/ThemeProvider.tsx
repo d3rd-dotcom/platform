@@ -30,10 +30,12 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const stored = getStorageItem('mwa-theme') as Theme | null;
     if (stored === 'dark' || stored === 'light') {
       setThemeState(stored);
-    } else {
-      setThemeState('dark');
-      setStorageItem('mwa-theme', 'dark');
+      return;
     }
+    const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
+    const initial: Theme = isMobile ? 'light' : 'dark';
+    setThemeState(initial);
+    setStorageItem('mwa-theme', initial);
   }, []);
 
   useEffect(() => {

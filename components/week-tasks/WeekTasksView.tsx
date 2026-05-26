@@ -597,11 +597,6 @@ export default function WeekTasksView({
               </div>
               <div className={styles.taskInfo}>
                 <span className={styles.taskTitle}>{section.title}</span>
-                {!isOpen && (
-                  <span className={styles.taskPreview}>
-                    {section.instructions.slice(0, 60)}...
-                  </span>
-                )}
               </div>
               <div className={styles.taskRight}>
                 {isDone ? (

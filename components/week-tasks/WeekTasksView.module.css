@@ -47,7 +47,7 @@
 /* Save bar */
 .saveBar {
   text-align: center;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-departure-mono), 'Departure Mono', 'IBM Plex Mono', monospace;
   font-size: 11px;
   font-weight: 600;
   color: rgba(26, 29, 51, 0.4);
@@ -220,13 +220,13 @@
 }
 
 .taskTitle {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-departure-mono), 'Departure Mono', 'Space Grotesk', sans-serif;
   font-size: 15px;
   font-weight: 700;
   color: #1A1D33;
   line-height: 1.2;
-  text-transform: none;
-  letter-spacing: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .taskPreview {
@@ -264,12 +264,13 @@
 .taskCheckEmpty {
   width: 28px;
   height: 28px;
-  border: 1.5px solid rgba(26, 29, 51, 0.15);
+  border: 2px solid rgba(26, 29, 51, 0.38);
+  background: rgba(26, 29, 51, 0.04);
   border-radius: 50%;
 }
 
 .expandArrow {
-  color: rgba(26, 29, 51, 0.3);
+  color: rgba(26, 29, 51, 0.6);
   transition: transform 0.2s ease;
 }
 
@@ -295,10 +296,10 @@
 
 .taskInstructions {
   font-family: 'Poppins', sans-serif;
-  font-size: 13px;
-  font-weight: 300;
-  color: rgba(26, 29, 51, 0.6);
-  line-height: 1.7;
+  font-size: 15px;
+  font-weight: 400;
+  color: rgba(26, 29, 51, 0.88);
+  line-height: 1.65;
   margin: 14px 0;
 }
 
@@ -311,7 +312,7 @@
   display: block;
   width: 100%;
   padding: 12px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-departure-mono), 'Departure Mono', 'IBM Plex Mono', monospace;
   font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
@@ -375,7 +376,7 @@
 }
 
 .progressText {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-departure-mono), 'Departure Mono', 'IBM Plex Mono', monospace;
   font-size: 11px;
   font-weight: 600;
   color: rgba(26, 29, 51, 0.4);
@@ -406,7 +407,7 @@
   gap: 8px;
   width: 100%;
   padding: 14px 28px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-departure-mono), 'Departure Mono', 'IBM Plex Mono', monospace;
   font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
@@ -454,7 +455,7 @@
 }
 
 .sealedHash {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-departure-mono), 'Departure Mono', 'IBM Plex Mono', monospace;
   font-size: 11px;
   font-weight: 500;
   color: #22C55E;
@@ -521,7 +522,7 @@
 .sealModalCancel {
   flex: 1;
   padding: 12px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-departure-mono), 'Departure Mono', 'IBM Plex Mono', monospace;
   font-size: 12px;
   font-weight: 700;
   color: #1A1D33;
@@ -539,7 +540,7 @@
 .sealModalConfirm {
   flex: 1;
   padding: 12px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-departure-mono), 'Departure Mono', 'IBM Plex Mono', monospace;
   font-size: 12px;
   font-weight: 700;
   color: #FFFFFF;
@@ -560,7 +561,7 @@
   align-items: center;
   gap: 16px;
   padding: 20px 0;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-departure-mono), 'Departure Mono', 'IBM Plex Mono', monospace;
   font-size: 13px;
   color: rgba(26, 29, 51, 0.6);
 }
@@ -675,7 +676,7 @@
 }
 
 :global([data-theme="dark"]) .taskInstructions {
-  color: rgba(227, 225, 238, 0.55);
+  color: rgba(227, 225, 238, 0.82);
 }
 
 :global([data-theme="dark"]) .lockedMessage {

@@ -91,6 +91,20 @@ export default function Dashboard(_props: DashboardProps) {
   const [eggShaking, setEggShaking] = useState(false);
   const [reserved, setReserved] = useState<Record<string, boolean>>({});
   const [isProModalOpen, setIsProModalOpen] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+
+  useEffect(() => {
+    if (!showLeaderboard) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowLeaderboard(false);
+    };
+    window.addEventListener('keydown', handler);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', handler);
+      document.body.style.overflow = '';
+    };
+  }, [showLeaderboard]);
 
   useEffect(() => {
     fetch('/api/leaderboard')
@@ -198,7 +212,11 @@ export default function Dashboard(_props: DashboardProps) {
           </p>
         </div>
 
-        <div className={styles.leaderboardCard}>
+        <button
+          type="button"
+          className={styles.leaderboardCard}
+          onClick={() => setShowLeaderboard(true)}
+        >
           <div className={styles.leaderHead}>
             <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} />
             <span className={styles.leaderTitle}>Leaderboard</span>
@@ -227,7 +245,7 @@ export default function Dashboard(_props: DashboardProps) {
               ))}
             </ul>
           )}
-        </div>
+        </button>
 
         <button
           type="button"
@@ -268,6 +286,52 @@ export default function Dashboard(_props: DashboardProps) {
 
       {isProModalOpen && (
         <ProMembershipModal isOpen={isProModalOpen} onClose={() => setIsProModalOpen(false)} />
+      )}
+
+      {showLeaderboard && (
+        <div className={styles.leaderModalOverlay} onClick={() => setShowLeaderboard(false)}>
+          <div className={styles.leaderModalCard} onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className={styles.leaderModalClose}
+              onClick={() => setShowLeaderboard(false)}
+              aria-label="Close leaderboard"
+            >
+              &times;
+            </button>
+            <div className={styles.leaderModalHeader}>
+              <Image src="/icons/ui-shard.svg" alt="" width={28} height={28} />
+              <div>
+                <strong className={styles.leaderModalTitle}>Leaderboard</strong>
+                <span className={styles.leaderModalSub}>Top contributors</span>
+              </div>
+            </div>
+            <div className={styles.leaderModalList}>
+              {leaderboard.length === 0 ? (
+                <p className={styles.leaderEmpty}>No rankings yet</p>
+              ) : (
+                leaderboard.map((u) => (
+                  <div key={u.rank} className={styles.leagueRow}>
+                    <span className={styles.leagueRank}>{u.rank}</span>
+                    {u.avatarUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={u.avatarUrl} alt={u.username} className={styles.leagueAvatar} />
+                    ) : (
+                      <div
+                        className={styles.leagueAvatar}
+                        style={{ background: avatarColor(u.username || '?') }}
+                      >
+                        {(u.username || '?').charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <span className={styles.leagueName}>{u.username}</span>
+                    <span className={styles.leagueShards}>{u.shards} credits</span>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
