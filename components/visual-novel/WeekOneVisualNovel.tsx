@@ -28,17 +28,17 @@ const SCENES: Scene[] = [
   {
     id: 'creative-recovery',
     body: 'This is your creative recovery, you may feel excited, giddy and defiant, hopeful, skeptical. But the readings, tasks, and exercises aim at allowing you to establish a sense of safety, which will enable you to explore your creativity with less fear.',
-    image: '/stories/week-01/1.png',
+    image: '/stories/week-01/creative-recovery-butterflies.png',
   },
   {
     id: 'encouragement',
     body: 'We want to be acknowledged for our attempts, efforts, as well as achievements. Unfortunately, many don’t receive this encouragement.\n\nParents offer cautionary advice instead of support. Timidly, we add parental fears to our own, often giving up our dreams and settling into a world of regrets.',
-    image: '/stories/week-01/2.png',
+    image: '/stories/week-01/creative-recovery-butterflies.png',
   },
   {
     id: 'shades-of-blue',
     body: 'There were many different shades of Blue, and each was steered by her creators, co-workers, and the culture of her environment.',
-    image: '/stories/week-01/3.png',
+    image: '/stories/week-01/shades-of-blue-lab.png',
   },
   {
     id: 'ethereal-horizon',
