@@ -5,8 +5,13 @@ import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import { ConfettiCelebration } from '@/components/quests/ConfettiCelebration';
 import { ShardAnimation } from '@/components/quests/ShardAnimation';
-import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
 import styles from './WeekOneVisualNovel.module.css';
+
+const CHECK_IN_QUESTIONS = [
+  'How many days did you do your morning pages?',
+  'Did you take your artist date? What did you do, and how did it feel?',
+  'Were there any other significant moments this week?',
+];
 
 interface WeekOneVisualNovelProps {
   isOpen: boolean;
@@ -373,31 +378,48 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
         {showCheckIn ? (
           <div className={styles.checkInScreen}>
             <div className={styles.checkInCard}>
-              <BlueChatBubble
-                variant="featured"
-                context="Check-In"
-                stackOnMobile
-                message="At the end of the week, answer these questions by hand: How many days did you do your morning pages? A delicious morning ritual. Did you do your artist date? What did you do and how did it feel? Were there any other significant issues this week?"
-              />
-              <div className={styles.checkInActions}>
-                <button type="button" className={styles.backButton} onClick={goPrev}>
-                  Back to story
-                </button>
-                <button
-                  type="button"
-                  className={styles.completeButton}
-                  onClick={claimCheckInReward}
-                  disabled={!ready || isClaiming || claimStatus === 'claimed' || claimStatus === 'already-claimed'}
-                >
-                  {claimButtonLabel}
-                </button>
+              <div className={styles.checkInHeader}>
+                <div className={styles.checkInAvatar}>
+                  <Image src="/images/blue-portrait.png" alt="Blue" width={56} height={56} unoptimized />
+                </div>
+                <div className={styles.checkInHeading}>
+                  <span className={styles.checkInEyebrow}>Week 1 · Check-in</span>
+                  <h2 className={styles.checkInTitle}>You made it to the end of the week.</h2>
+                </div>
               </div>
+
+              <p className={styles.checkInIntro}>
+                Take a moment with your journal and answer these by hand before claiming your reward.
+              </p>
+
+              <ol className={styles.checkInList}>
+                {CHECK_IN_QUESTIONS.map((q, i) => (
+                  <li key={i} className={styles.checkInItem}>
+                    <span className={styles.checkInNumber}>{i + 1}</span>
+                    <span className={styles.checkInQuestion}>{q}</span>
+                  </li>
+                ))}
+              </ol>
+
+              <button
+                type="button"
+                className={styles.completeButton}
+                onClick={claimCheckInReward}
+                disabled={!ready || isClaiming || claimStatus === 'claimed' || claimStatus === 'already-claimed'}
+              >
+                {claimButtonLabel}
+              </button>
+
               {claimStatus === 'error' && (
                 <p className={styles.claimMessage}>The reward did not post. Try again in a moment.</p>
               )}
               {claimStatus === 'already-claimed' && (
                 <p className={styles.claimMessage}>This check-in has already been completed.</p>
               )}
+
+              <button type="button" className={styles.backLink} onClick={goPrev}>
+                Back to story
+              </button>
             </div>
           </div>
         ) : (
