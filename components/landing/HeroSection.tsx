@@ -5,6 +5,7 @@ import Image from 'next/image';
 import styles from './LandingPage.module.css';
 import LandingEnterAcademyButton from './LandingEnterAcademyButton';
 import { KeyFiguresSection } from './KeyFiguresSection';
+import ShardsAltar from './ShardsAltar';
 
 // One cluster = the 6 screenshots of a single app. We only have 6 shots for
 // now, so the cluster is recycled each cycle; the animation cascades them in
@@ -23,19 +24,13 @@ const APP_CASCADE_STEP = 0.2; // seconds between each shot dropping in
 export const EcosystemSection: React.FC = () => (
   <section id="value" className={styles.ecosystemSection} aria-label="Academy ecosystem">
     <div className={styles.ecosystemInner}>
-      <h2 className={styles.ecosystemHeadline}>Redefining Mental Health As Fun & Interactive</h2>
+      <h2 className={styles.ecosystemHeadline}>One Ecosystem, One Point System, Many Activities</h2>
       <p className={styles.ecosystemSubtext}>
-        New goals each week, variety of events across the ecosystem.
+        Earn cash and credits from activities as you level-up. Earned progress rewards are entirely owned by you and immutable through a decentralized blockchain account.
       </p>
       <div className={styles.appsLayout}>
         <div className={styles.appsImageCol}>
-          <Image
-            src="/images/academy-blockchain.png"
-            alt="A blockchain node powering the Academy credit system"
-            width={1698}
-            height={1625}
-            className={styles.appsImage}
-          />
+          <ShardsAltar />
         </div>
         <div className={styles.appsScrollCol} aria-hidden="true">
           <div className={styles.appGroupRow}>
