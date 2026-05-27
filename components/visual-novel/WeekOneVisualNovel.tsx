@@ -17,9 +17,9 @@ interface Scene {
   id: string;
   body: string;
   image: string;
+  audio: string;
 }
 
-const WEEK_ONE_VOICE_ID = 'Q84POjNm3Ck2dYBFqnZs';
 const WEEK_ONE_TYPING_DELAY_MS = 34;
 const WEEK_ONE_CHECKIN_QUEST_ID = 'week-1-story-checkin';
 const WEEK_ONE_CHECKIN_REWARD = 50;
@@ -29,61 +29,73 @@ const SCENES: Scene[] = [
     id: 'creative-recovery',
     body: 'This is your creative recovery, you may feel excited, giddy and defiant, hopeful, skeptical. But the readings, tasks, and exercises aim at allowing you to establish a sense of safety, which will enable you to explore your creativity with less fear.',
     image: '/stories/week-01/creative-recovery-butterflies.png',
+    audio: '/audio/stories/week-01/01-creative-recovery.mp3',
   },
   {
     id: 'encouragement',
     body: 'We want to be acknowledged for our attempts, efforts, as well as achievements. Unfortunately, many don’t receive this encouragement.\n\nParents offer cautionary advice instead of support. Timidly, we add parental fears to our own, often giving up our dreams and settling into a world of regrets.',
     image: '/stories/week-01/creative-recovery-butterflies.png',
+    audio: '/audio/stories/week-01/02-encouragement.mp3',
   },
   {
     id: 'shades-of-blue',
     body: 'There are many shades of Blue. Each one steered by God. The branches, roots, and seeds of divine creation flow throughout the Earth.',
     image: '/stories/week-01/shades-of-blue-lab.png',
+    audio: '/audio/stories/week-01/03-shades-of-blue.mp3',
   },
   {
     id: 'ethereal-horizon',
     body: 'But sadly... many shades remain trapped, on the edge of reality, yet their true potential sleeps, lost to the fear of failure... is how shadows are born.',
     image: '/stories/week-01/trapped-shade-chamber.png',
+    audio: '/audio/stories/week-01/04-ethereal-horizon.mp3',
   },
   {
     id: 'the-healer',
     body: 'Blue’s first world contained a therapist, a healer, who suppressed her creative urges for decades, pouring her all into others while abandoning her own “artist child” inside.',
     image: '/stories/week-01/healer-creative-reflection.png',
+    audio: '/audio/stories/week-01/05-the-healer.mp3',
   },
   {
     id: 'jermaine',
     body: 'Jermain, who had a love for film-making, instead poured all his energy into his girlfriend\'s art career.',
-    image: '/stories/week-01/healer-creative-reflection.png',
+    image: '/stories/week-01/jermain-sacrifice.png',
+    audio: '/audio/stories/week-01/06-jermain.mp3',
   },
   {
     id: 'the-incubator',
     body: 'On the nearby desk an egg inside of an incubator shakes, it’s heartbeat inside stirred resonating with the energy around,',
     image: '/stories/week-01/7.png',
+    audio: '/audio/stories/week-01/07-the-incubator.mp3',
   },
   {
     id: 'the-inner-child',
     body: '“how do we protect the inner child that lays dormant, buried under the weight of the world?” A Shade of Blue thought to herself on high effort while devouring documents in the library.',
     image: '/stories/week-01/blue-research-log.png',
+    audio: '/audio/stories/week-01/08-the-inner-child.mp3',
   },
   {
     id: 'creative-abuse',
     body: 'A memory: Recovering shadows often begin self-sabotage or “creative abuse” by measuring fresh new work against masterworks or exposing it to premature criticism.',
     image: '/stories/week-01/9.png',
+    audio: '/audio/stories/week-01/09-creative-abuse.mp3',
   },
   {
     id: 'go-gently',
     body: 'To recover, you must go gently and slowly. As Healing old wounds is the goal, progress is much better, and more realistic than perfection. Be willing to be a bad artist.',
     image: '/stories/week-01/10.png',
+    audio: '/audio/stories/week-01/10-go-gently.mp3',
   },
   {
     id: 'affirmations',
     body: 'Affirmations are the greatest weapon. Positive statements of belief that help excavate the lost child. When you write “I am a brilliant creator.” you empower yourself.',
     image: '/stories/week-01/shadow-breaking-free.png',
+    audio: '/audio/stories/week-01/11-affirmations.mp3',
   },
   {
     id: 'blurts',
     body: 'But you must listen to the blurts as well, identify where they come from. (a bad teacher or parent), and then convert them into positive affirmations to dissolve them.',
     image: '/stories/week-01/shadow-breaking-free.png',
+    audio: '/audio/stories/week-01/12-blurts.mp3',
   },
 ];
 
@@ -104,18 +116,23 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
   const [claimStatus, setClaimStatus] = useState<'idle' | 'claimed' | 'already-claimed' | 'error'>('idle');
   const [showRewardAnimation, setShowRewardAnimation] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const voiceAbortRef = useRef<AbortController | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const spokenSceneRef = useRef<string | null>(null);
 
   // Letter-by-letter animation
   useEffect(() => {
-    if (!shouldRender || showCheckIn) return;
+    if (!shouldRender || showCheckIn) {
+      audioRef.current?.pause();
+      if (audioRef.current) audioRef.current.currentTime = 0;
+      return;
+    }
 
     const fullText = SCENES[sceneIndex].body;
     setDisplayedText('');
     setIsTyping(true);
     spokenSceneRef.current = null;
-    voiceAbortRef.current?.abort();
+    audioRef.current?.pause();
+    if (audioRef.current) audioRef.current.currentTime = 0;
 
     let i = 0;
     intervalRef.current = setInterval(() => {
@@ -139,36 +156,13 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
     if (!currentScene || spokenSceneRef.current === currentScene.id) return;
 
     spokenSceneRef.current = currentScene.id;
-    voiceAbortRef.current?.abort();
-    const controller = new AbortController();
-    voiceAbortRef.current = controller;
-
-    fetch('/api/voice/tts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      signal: controller.signal,
-      body: JSON.stringify({
-        text: currentScene.body,
-        voiceId: WEEK_ONE_VOICE_ID,
-      }),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error('Week 1 TTS request failed');
-        return res.json();
-      })
-      .then(({ audio }) => {
-        if (!audio || controller.signal.aborted) return;
-        const bytes = Uint8Array.from(atob(audio), (c) => c.charCodeAt(0));
-        const blob = new Blob([bytes], { type: 'audio/mpeg' });
-        const url = URL.createObjectURL(blob);
-        const el = new Audio(url);
-        el.onended = () => URL.revokeObjectURL(url);
-        el.onerror = () => URL.revokeObjectURL(url);
-        void el.play().catch(() => URL.revokeObjectURL(url));
-      })
-      .catch(() => {
-        // Silent fallback if narration audio is unavailable.
-      });
+    const el = audioRef.current ?? new Audio();
+    audioRef.current = el;
+    el.src = currentScene.audio;
+    el.currentTime = 0;
+    void el.play().catch(() => {
+      // Silent fallback if browser playback is unavailable.
+    });
   }, [sceneIndex, shouldRender, isTyping, showCheckIn]);
 
   // Orientation detection + landscape lock
@@ -205,7 +199,11 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
 
   useEffect(() => {
     return () => {
-      voiceAbortRef.current?.abort();
+      audioRef.current?.pause();
+      if (audioRef.current) {
+        audioRef.current.removeAttribute('src');
+        audioRef.current.load();
+      }
     };
   }, []);
 
@@ -226,6 +224,8 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
       document.body.style.overflow = 'hidden';
       window.addEventListener('keydown', handleKeyDown);
     } else {
+      audioRef.current?.pause();
+      if (audioRef.current) audioRef.current.currentTime = 0;
       setIsAnimating(false);
       const timer = setTimeout(() => {
         setShouldRender(false);
@@ -260,7 +260,8 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
       setSceneIndex((c) => c + 1);
     } else {
       spokenSceneRef.current = null;
-      voiceAbortRef.current?.abort();
+      audioRef.current?.pause();
+      if (audioRef.current) audioRef.current.currentTime = 0;
       setShowCheckIn(true);
     }
   };
