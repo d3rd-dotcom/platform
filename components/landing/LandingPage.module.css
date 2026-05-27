@@ -253,62 +253,6 @@
   box-shadow: 0 4px 14px -6px rgba(15, 15, 18, 0.18);
 }
 
-.githubBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  height: 56px;
-  padding: 0 18px;
-  border-radius: 12px;
-  background: #18181B;
-  color: #ffffff;
-  font-family: var(--font-primary);
-  font-size: 0.88rem;
-  font-weight: 600;
-  text-decoration: none;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
-  white-space: nowrap;
-  animation: heroFadeUp 0.45s var(--hero-ease-out) 0.55s both;
-}
-
-.githubBadge:hover {
-  transform: translateY(-2px);
-  background: #25252A;
-  box-shadow: 0 8px 22px -10px rgba(0, 0, 0, 0.55);
-}
-
-.githubBadgeLogo {
-  width: 18px;
-  height: 18px;
-  fill: currentColor;
-  flex: 0 0 auto;
-}
-
-.githubBadgeLabel {
-  line-height: 1;
-}
-
-.githubBadgeDivider {
-  width: 1px;
-  height: 18px;
-  background: rgba(255, 255, 255, 0.16);
-  margin: 0 4px;
-}
-
-.githubBadgeStar {
-  width: 16px;
-  height: 16px;
-  color: #F5C518;
-  flex: 0 0 auto;
-}
-
-.githubBadgeCount {
-  font-variant-numeric: tabular-nums;
-  font-weight: 600;
-  line-height: 1;
-}
-
 .heroButton::before {
   content: '';
   position: absolute;
@@ -736,13 +680,11 @@
   transform: translateY(100%);
 }
 
-.heroButton:hover .heroSlideText,
-.githubBadge:hover .heroSlideText {
+.heroButton:hover .heroSlideText {
   transform: translateY(-100%);
 }
 
-.heroButton:hover .heroSlideClone,
-.githubBadge:hover .heroSlideClone {
+.heroButton:hover .heroSlideClone {
   transform: translateY(0);
 }
 
@@ -1099,10 +1041,6 @@
     max-width: 100%;
   }
 
-  .githubBadge {
-    width: 100%;
-    justify-content: center;
-  }
 }
 
 .loginHeader {

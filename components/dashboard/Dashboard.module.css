@@ -121,6 +121,8 @@
 }
 
 .eventBtn {
+  display: inline-flex;
+  align-items: center;
   flex-shrink: 0;
   padding: 7px 14px;
   font-size: 0.78rem;
@@ -130,6 +132,7 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  text-decoration: none;
   transition: background 0.15s ease;
 }
 

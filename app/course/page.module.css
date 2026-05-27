@@ -41,24 +41,6 @@
   padding: 24px 24px 48px;
 }
 
-/* ============================================ */
-/* HERO — Top Leaderboard                       */
-/* ============================================ */
-
-.hero {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 12px;
-  padding: 0 0 16px;
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-.heroLoaded {
-  animation: fadeIn 0.5s ease forwards;
-}
-
 .skeletonBlock {
   position: relative;
   overflow: hidden;
@@ -94,107 +76,6 @@
 
 .skeletonTextWide {
   width: 150px;
-}
-
-/* ============================================ */
-/* TOP LEADERBOARD (compact, inside hero row)  */
-/* ============================================ */
-
-.topLeaderboard {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  width: 100%;
-  padding: 12px 14px;
-  box-sizing: border-box;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(26, 29, 51, 0.06);
-  border-radius: 14px;
-  cursor: pointer;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-  flex-shrink: 0;
-}
-
-.topLeaderboard:hover {
-  border-color: rgba(81, 104, 255, 0.15);
-  box-shadow: 0 8px 24px rgba(81, 104, 255, 0.08);
-  transform: translateY(-1px);
-}
-
-.topLeaderboardHeader {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-  min-width: 0;
-}
-
-.topLeaderboardTitle {
-  font-family: var(--font-departure-mono), 'Departure Mono', 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  font-weight: 700;
-  color: #1A1D33;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  line-height: 1;
-}
-
-.topLeaderboardIcon {
-  width: 12px;
-  height: 12px;
-  flex-shrink: 0;
-}
-
-.topLeaderboardPodium {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 6px;
-  flex-wrap: nowrap;
-  min-width: 0;
-}
-
-.podiumSlot {
-  display: flex;
-  align-items: center;
-  flex: 0 0 auto;
-}
-
-.podiumFirst { order: 1; }
-.podiumSecond { order: 2; }
-.podiumThird { order: 3; }
-
-.podiumAvatarRing {
-  border-radius: 50%;
-  padding: 1.5px;
-  background: rgba(26, 29, 51, 0.08);
-}
-
-.podiumFirst .podiumAvatarRing { background: #D4A843; }
-.podiumSecond .podiumAvatarRing { background: #b0b8c9; }
-.podiumThird .podiumAvatarRing { background: #c47a3a; }
-
-.podiumAvatar {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 9px;
-  font-weight: 700;
-  color: #FFFFFF;
-}
-
-.podiumAvatarImg {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  object-fit: cover;
-  display: block;
 }
 
 /* ============================================ */
@@ -526,305 +407,12 @@
 }
 
 /* ============================================ */
-/* LEADERBOARD MODAL                            */
-/* ============================================ */
-
-.modalOverlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px 16px;
-  overflow: hidden;
-  z-index: 2200;
-  animation: overlayIn 0.2s ease;
-}
-
-@keyframes overlayIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.modalCard {
-  background: #FFFFFF;
-  border: 1px solid rgba(26, 29, 51, 0.08);
-  border-radius: 20px;
-  width: 90%;
-  max-width: 420px;
-  max-height: min(80vh, 720px);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  position: relative;
-  animation: modalSlideIn 0.25s ease;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
-}
-
-@keyframes modalSlideIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.modalClose {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 36px;
-  height: 36px;
-  background: rgba(26, 29, 51, 0.04);
-  border: none;
-  font-size: 24px;
-  color: rgba(26, 29, 51, 0.35);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  transition: background 0.15s;
-}
-
-.modalClose:hover { background: rgba(26, 29, 51, 0.05); }
-
-.modalHeader {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 24px 56px 18px 24px;
-  border-bottom: 1px solid rgba(26, 29, 51, 0.06);
-  flex-shrink: 0;
-}
-
-.modalTitle {
-  display: block;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  color: #1A1D33;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.modalSub {
-  display: block;
-  font-family: 'Poppins', sans-serif;
-  font-size: 13px;
-  font-weight: 400;
-  color: rgba(26, 29, 51, 0.45);
-}
-
-.modalList {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-  padding: 14px 24px 22px;
-  min-height: 0;
-}
-
-.leagueRow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 4px 0;
-}
-
-.leagueRank {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
-  font-weight: 600;
-  color: rgba(26, 29, 51, 0.35);
-  width: 22px;
-  text-align: right;
-}
-
-.leagueAvatar {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  color: #FFFFFF;
-  flex-shrink: 0;
-}
-
-.leagueAvatarImg {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  object-fit: cover;
-  flex-shrink: 0;
-}
-
-.leagueName {
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  color: #1A1D33;
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.leagueShards {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  font-weight: 600;
-  color: rgba(26, 29, 51, 0.4);
-  flex-shrink: 0;
-}
-
-.emptyText {
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  color: rgba(26, 29, 51, 0.4);
-  text-align: center;
-  padding: 20px 0;
-  margin: 0;
-}
-
-@media (max-width: 768px) {
-  .modalOverlay {
-    align-items: flex-end;
-    padding:
-      max(10px, env(safe-area-inset-top, 0px) + 10px)
-      10px
-      max(10px, env(safe-area-inset-bottom, 0px) + 10px);
-  }
-
-  .modalCard {
-    width: 100%;
-    max-width: none;
-    max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 20px);
-    border-radius: 22px 22px 18px 18px;
-  }
-
-  .modalHeader {
-    padding: 18px 56px 14px 18px;
-  }
-
-  .modalClose {
-    top: 14px;
-    right: 14px;
-    width: 34px;
-    height: 34px;
-  }
-
-  .modalTitle {
-    font-size: 15px;
-  }
-
-  .modalSub {
-    font-size: 12px;
-  }
-
-  .modalList {
-    padding: 12px 18px calc(18px + env(safe-area-inset-bottom, 0px));
-  }
-
-  .leagueRow {
-    gap: 9px;
-    padding: 6px 0;
-  }
-
-  .leagueRank {
-    width: 20px;
-    font-size: 12px;
-  }
-
-  .leagueAvatar,
-  .leagueAvatarImg {
-    width: 26px;
-    height: 26px;
-  }
-
-  .leagueName {
-    font-size: 13px;
-  }
-
-  .leagueShards {
-    font-size: 11px;
-  }
-}
-
-/* ============================================ */
 /* ANIMATIONS                                   */
 /* ============================================ */
-
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
 @keyframes shimmer {
   100% {
     transform: translateX(100%);
-  }
-}
-
-/* ============================================ */
-/* MORNING PAGES FLOAT (mobile fixed above nav) */
-/* ============================================ */
-
-/* Desktop: inline card, mobile: dock above bottom nav */
-.morningPagesShell {
-  display: block;
-  --morning-pages-pad: 14px;
-  --mobile-nav-height: calc(74px + max(env(safe-area-inset-bottom, 0px), 16px));
-  --morning-pages-gap: 16px;
-  --morning-pages-filter-light: 251 248 255;
-  --morning-pages-filter-dark: 13 14 22;
-}
-
-.morningPagesGradient { display: none; }
-
-@media (max-width: 768px) {
-  .morningPagesShell {
-    display: block;
-    --morning-pages-pad: 12px;
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: calc(var(--mobile-nav-height) + var(--morning-pages-gap));
-    z-index: 1002;
-    padding: 0 var(--morning-pages-pad) 10px;
-    pointer-events: none;
-    isolation: isolate;
-  }
-
-  .morningPagesGradient {
-    display: block;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: calc(-1 * var(--morning-pages-gap));
-    z-index: 0;
-    pointer-events: none;
-    background: linear-gradient(
-      180deg,
-      rgb(var(--morning-pages-filter-light) / 0%) 0%,
-      rgb(var(--morning-pages-filter-light) / 0%) 50%,
-      rgb(var(--morning-pages-filter-light) / 100%) 100%
-    );
-  }
-
-  .morningPagesShell > :last-child {
-    position: relative;
-    z-index: 1;
-    pointer-events: auto;
   }
 }
 
@@ -860,11 +448,6 @@
 }
 
 .rightPanel > :first-child {
-  margin-top: 0;
-}
-
-.leftCol > .hero {
-  align-self: start;
   margin-top: 0;
 }
 
@@ -975,43 +558,13 @@
 
 @media (max-width: 768px) {
   .content {
-    /* 74px nav + safe area + morning pages card */
-    padding-bottom: 200px;
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
   }
 }
 
 @media (max-width: 480px) {
   .content {
-    /* 74px nav + ~16px safe area + ~80px morning pages card + 16px gap */
-    padding: 16px 14px 200px;
-  }
-
-  .hero {
-    flex-direction: row;
-    align-items: stretch;
-    gap: 8px;
-    padding: 0 0 12px;
-  }
-
-  .topLeaderboard {
-    width: 100%;
-    padding: 10px 12px;
-    gap: 8px;
-  }
-
-  .topLeaderboardTitle {
-    font-size: 9px;
-    letter-spacing: 0.08em;
-  }
-
-  .podiumAvatar,
-  .podiumAvatarImg {
-    width: 20px;
-    height: 20px;
-  }
-
-  .topLeaderboardPodium {
-    gap: 4px;
+    padding: 16px 14px calc(96px + env(safe-area-inset-bottom, 0px));
   }
 
   .weekHeader {
@@ -1064,21 +617,12 @@
   color: var(--color-text-faint);
 }
 
-:global([data-theme="dark"]) .topLeaderboard {
-  background: color-mix(in oklch, var(--color-surface-1) 95%, transparent);
-  border-color: var(--color-border-subtle);
-}
-
 :global([data-theme="dark"]) .skeletonBlock {
   background: var(--color-surface-2);
 }
 
 :global([data-theme="dark"]) .skeletonBlock::after {
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
-}
-
-:global([data-theme="dark"]) .topLeaderboardTitle {
-  color: var(--color-text-dark);
 }
 
 :global([data-theme="dark"]) .weekArrow {
@@ -1150,52 +694,4 @@
 
 :global([data-theme="dark"]) .readingArrow {
   color: var(--color-text-faint);
-}
-
-@media (max-width: 768px) {
-  :global([data-theme="dark"]) .morningPagesGradient {
-    background: linear-gradient(
-      180deg,
-      rgb(var(--morning-pages-filter-dark) / 0%) 0%,
-      rgb(var(--morning-pages-filter-dark) / 0%) 50%,
-      rgb(var(--morning-pages-filter-dark) / 100%) 100%
-    );
-  }
-}
-
-:global([data-theme="dark"]) .modalCard {
-  background: var(--color-surface-1);
-  border-color: var(--color-border-subtle);
-}
-
-:global([data-theme="dark"]) .modalClose {
-  color: var(--color-text-muted);
-}
-
-:global([data-theme="dark"]) .modalClose:hover {
-  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
-}
-
-:global([data-theme="dark"]) .modalTitle {
-  color: var(--color-text-dark);
-}
-
-:global([data-theme="dark"]) .modalSub {
-  color: var(--color-text-muted);
-}
-
-:global([data-theme="dark"]) .leagueRank {
-  color: var(--color-text-faint);
-}
-
-:global([data-theme="dark"]) .leagueName {
-  color: var(--color-text-dark);
-}
-
-:global([data-theme="dark"]) .leagueShards {
-  color: var(--color-text-muted);
-}
-
-:global([data-theme="dark"]) .emptyText {
-  color: var(--color-text-muted);
 }

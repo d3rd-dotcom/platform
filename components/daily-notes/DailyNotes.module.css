@@ -1051,8 +1051,17 @@
 
 .modalFooter {
   display: flex;
+  flex-direction: column;
+  gap: 8px;
   padding: 10px 14px 14px;
   background: transparent;
+}
+
+.submitError {
+  margin: 0;
+  color: #f59a8a;
+  font-size: 12px;
+  text-align: center;
 }
 
 .submitBtn {
@@ -1085,6 +1094,11 @@
 
 .submitBtn:hover {
   background: #4459e6;
+}
+
+.submitBtn:disabled {
+  cursor: wait;
+  opacity: 0.72;
 }
 
 :global(:root:not([data-theme="dark"])) .submitBtn {

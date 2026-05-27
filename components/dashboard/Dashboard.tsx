@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
@@ -44,18 +45,25 @@ interface EventItem {
   date: string;
   time: string;
   description: string;
+  href?: string;
+  ctaLabel?: string;
 }
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+const PATHWAY_EVENT_ID = 'ethereal-pathway';
 
 const EVENTS: EventItem[] = [
   {
-    id: 'governance-workshop',
+    id: PATHWAY_EVENT_ID,
     imageUrl: '/images/academy-blockchain.png',
-    heading: 'Blockchain Governance Workshop',
-    category: 'Workshop',
-    date: 'May 24, 2026',
-    time: '5:00 PM UTC',
+    heading: 'Ethereal Pathway',
+    category: 'Course',
+    date: 'Season 1',
+    time: 'May 25 - Aug 16, 2026',
     description:
-      'A hands-on session on how the Academy treasury votes, funds proposals, and keeps Blue accountable.',
+      'Follow the 12-week course through readings and missions. Complete each week to unlock the next step.',
+    href: '/course',
+    ctaLabel: 'Start course',
   },
   {
     id: 'angel-investing-circle',
@@ -92,8 +100,22 @@ const EVENTS: EventItem[] = [
 const HOME_BLUE_MESSAGE =
   'Mental Wealth Academy places power tools for self-actualization and individual enlightenment through the freely available course, earn credits to connect to live events with experts, and unlimited AI tools for VIP Members.';
 
+function formatSeasonPeriod(seasonStartDate: string): string | null {
+  const start = new Date(seasonStartDate);
+  if (Number.isNaN(start.getTime())) return null;
+
+  const end = new Date(start.getTime() + (12 * 7 - 1) * DAY_MS);
+  const format = new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'UTC',
+  });
+  return `${format.format(start)} - ${format.format(end)}, ${end.getUTCFullYear()}`;
+}
+
 export default function Dashboard({ enableMorningPagesPersistence = false }: DashboardProps) {
   const [leaderboard, setLeaderboard] = useState<LeaderUser[]>([]);
+  const [seasonPeriod, setSeasonPeriod] = useState(EVENTS[0].time);
   const [eggShaking, setEggShaking] = useState(false);
   const [reserved, setReserved] = useState<Record<string, boolean>>({});
   const [isProModalOpen, setIsProModalOpen] = useState(false);
@@ -117,6 +139,16 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
       .then((r) => r.json())
       .then((d) => setLeaderboard(Array.isArray(d.users) ? d.users : []))
       .catch(() => {/* leaderboard is best-effort */});
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/season', { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((data) => {
+        const period = formatSeasonPeriod(data.seasonStartDate);
+        if (period) setSeasonPeriod(period);
+      })
+      .catch(() => {/* static season copy is a safe fallback */});
   }, []);
 
   const pokeEgg = useCallback(() => {
@@ -169,17 +201,25 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
                 <h3 className={styles.eventTitle}>{ev.heading}</h3>
                 <p className={styles.eventText}>{ev.description}</p>
                 <div className={styles.eventFoot}>
-                  <span className={styles.eventTime}>{ev.time}</span>
-                  <button
-                    type="button"
-                    className={styles.eventBtn}
-                    onClick={() =>
-                      setReserved((prev) => ({ ...prev, [ev.id]: true }))
-                    }
-                    disabled={!!reserved[ev.id]}
-                  >
-                    {reserved[ev.id] ? 'Reserved' : 'Register'}
-                  </button>
+                  <span className={styles.eventTime}>
+                    {ev.id === PATHWAY_EVENT_ID ? seasonPeriod : ev.time}
+                  </span>
+                  {ev.href ? (
+                    <Link href={ev.href} className={styles.eventBtn}>
+                      {ev.ctaLabel}
+                    </Link>
+                  ) : (
+                    <button
+                      type="button"
+                      className={styles.eventBtn}
+                      onClick={() =>
+                        setReserved((prev) => ({ ...prev, [ev.id]: true }))
+                      }
+                      disabled={!!reserved[ev.id]}
+                    >
+                      {reserved[ev.id] ? 'Reserved' : 'Register'}
+                    </button>
+                  )}
                 </div>
               </div>
             </article>

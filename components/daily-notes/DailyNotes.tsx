@@ -82,9 +82,10 @@ export default function DailyNotes({
   const [introDayIndex, setIntroDayIndex] = useState<number | null>(null);
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
   const [showSaveConfirm, setShowSaveConfirm] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const loadedWeeksRef = useRef<Set<number>>(new Set());
-  const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
   const saveConfirmTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const [dataReady, setDataReady] = useState(false);
@@ -183,14 +184,15 @@ export default function DailyNotes({
     }, 1000);
   }, []);
 
-  const beginWritingSession = (dayIndex: number) => {
+  const beginWritingSession = useCallback((dayIndex: number) => {
+    setSubmitError(null);
     setActiveDayIndex(dayIndex);
     setTimerSeconds(900);
     setTimerText('');
     setTimerActive(true);
     setIsPaused(false);
     startTimerInterval();
-  };
+  }, [startTimerInterval]);
 
   const startTimer = useCallback((dayIndex: number) => {
     setIntroDayIndex(dayIndex);
@@ -204,6 +206,8 @@ export default function DailyNotes({
 
   const closeSession = () => {
     if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+    setSubmitError(null);
+    setIsSubmitting(false);
     setTimerActive(false);
     setIsPaused(false);
     setShowConfirmDialog(false);
@@ -212,29 +216,55 @@ export default function DailyNotes({
     setTimerText('');
   };
 
-  const requestClose = () => {
+  const requestClose = useCallback(() => {
+    if (isSubmitting) return;
     if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
     setIsPaused(true);
     setShowConfirmDialog(true);
-  };
+  }, [isSubmitting]);
 
   const submitMorningPages = async () => {
-    if (activeDayIndex === null) return;
+    if (activeDayIndex === null || isSubmitting) return;
     if (!enablePersistence) {
       closeSession();
       if (!devBypass) setShowAuthPrompt(true);
       return;
     }
-    if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
     const newEntry: MorningPageEntry = {
       day: activeDayIndex + 1,
       date: todayDateStr,
       content: timerText,
       submittedAt: Date.now(),
     };
+    const nextEntries = [...(allWeekPages[currentWeek] ?? []), newEntry];
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+    try {
+      const token = await getAccessToken();
+      const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+      const res = await fetch('/api/daily-notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
+        credentials: 'include',
+        body: JSON.stringify({
+          weekNumber: currentWeek,
+          entries: nextEntries,
+        }),
+      });
+      if (!res.ok) {
+        throw new Error(`Daily note save failed: ${res.status}`);
+      }
+    } catch {
+      setIsSubmitting(false);
+      setSubmitError('Your note could not be saved. Please try again.');
+      return;
+    }
+
+    if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
     setAllWeekPages(prev => ({
       ...prev,
-      [currentWeek]: [...(prev[currentWeek] ?? []), newEntry],
+      [currentWeek]: nextEntries,
     }));
     setPreviousWeekCounts(prev => ({
       ...prev,
@@ -246,6 +276,7 @@ export default function DailyNotes({
     setActiveDayIndex(null);
     setTimerSeconds(900);
     setTimerText('');
+    setIsSubmitting(false);
 
     play('success');
 
@@ -344,31 +375,6 @@ export default function DailyNotes({
     };
   }, [currentWeek, enablePersistence, loadWeek]);
 
-  useEffect(() => {
-    if (!dataReady || !enablePersistence) return;
-
-    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-    saveTimerRef.current = setTimeout(async () => {
-      try {
-        const token = await getAccessToken();
-        const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
-        await fetch('/api/daily-notes', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', ...authHeaders },
-          credentials: 'include',
-          body: JSON.stringify({
-            weekNumber: currentWeek,
-            entries: allWeekPages[currentWeek] ?? [],
-          }),
-        });
-      } catch {
-        // silent
-      }
-    }, 1500);
-
-    return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current); };
-  }, [allWeekPages, currentWeek, enablePersistence, dataReady, getAccessToken]);
-
   // Pause timer and show confirm dialog when user leaves tab
   useEffect(() => {
     const handleVisibility = () => {
@@ -379,7 +385,7 @@ export default function DailyNotes({
     };
     document.addEventListener('visibilitychange', handleVisibility);
     return () => document.removeEventListener('visibilitychange', handleVisibility);
-  }, [timerActive, isPaused]);
+  }, [timerActive, isPaused, requestClose]);
 
   // Warn on unload
   useEffect(() => {
@@ -492,6 +498,7 @@ export default function DailyNotes({
             <button
               type="button"
               className={styles.modalCloseBtn}
+              disabled={isSubmitting}
               onClick={() => {
                 play('click');
                 if (embedded && onPanelClose) {
@@ -522,19 +529,21 @@ export default function DailyNotes({
               value={timerText}
               onChange={(e) => setTimerText(e.target.value)}
               autoFocus
-              disabled={isPaused}
+              disabled={isPaused || isSubmitting}
             />
           </div>
         </div>
 
         <div className={styles.modalFooter}>
+          {submitError && <p className={styles.submitError} role="alert">{submitError}</p>}
           <button
             type="button"
             className={styles.submitBtn}
+            disabled={isSubmitting}
             onClick={() => submitMorningPages()}
             onMouseEnter={() => play('hover')}
           >
-            Submit
+            {isSubmitting ? 'Saving...' : 'Submit'}
           </button>
         </div>
       </div>

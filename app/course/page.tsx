@@ -2,10 +2,8 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import dynamic from 'next/dynamic';
-import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
-import DailyNotes from '@/components/daily-notes/DailyNotes';
 import WeekTasksView from '@/components/week-tasks/WeekTasksView';
 import HomeWelcomeFlow from '@/components/home-welcome/HomeWelcomeFlow';
 import MobileSplash from '@/components/mobile-splash/MobileSplash';
@@ -33,13 +31,6 @@ interface WeekStatus {
   weekNumber: number;
   isSealed: boolean;
   sealTxHash: string | null;
-}
-
-interface LeaderboardUser {
-  rank: number;
-  username: string;
-  avatarUrl: string | null;
-  shards: number;
 }
 
 const WEEKLY_READINGS = [
@@ -127,10 +118,8 @@ function CourseInlineReader({ reading, onBack }: CourseInlineReaderProps) {
 
 export default function CoursePage() {
   const { ready, authenticated, getAccessToken } = usePrivy();
-  const [isLoaded, setIsLoaded] = useState(false);
   const [showAmbientViz, setShowAmbientViz] = useState(false);
   const [seasonLoading, setSeasonLoading] = useState(true);
-  const [leaderboardLoading, setLeaderboardLoading] = useState(true);
   const [weekStatuses, setWeekStatuses] = useState<WeekStatus[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authFlowSettled, setAuthFlowSettled] = useState(false);
@@ -140,22 +129,14 @@ export default function CoursePage() {
   const [activeWeek, setActiveWeek] = useState<number>(0);
   const [viewWeek, setViewWeek] = useState<number | null>(null);
   const [weekEndsAt, setWeekEndsAt] = useState<string | null>(null);
-  const [seasonActive, setSeasonActive] = useState(false);
-  const [leaderboard, setLeaderboard] = useState<LeaderboardUser[]>([]);
-  const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [swipeAnim, setSwipeAnim] = useState<'none' | 'left' | 'right'>('none');
   const [showMintModal, setShowMintModal] = useState(false);
   const { play } = useSound();
   const currentReading = WEEKLY_READINGS[readerIndex];
-  const canPersistMorningPages = isAuthenticated || (authFlowSettled && ready && authenticated);
 
   const touchStartX = useRef(0);
   const touchCurrentX = useRef(0);
   const isSwiping = useRef(false);
-
-  useEffect(() => {
-    requestAnimationFrame(() => setIsLoaded(true));
-  }, []);
 
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
@@ -187,7 +168,6 @@ export default function CoursePage() {
         setActiveWeek(week);
         setViewWeek(Math.max(week, 1));
         setWeekEndsAt(data.weekEndsAt ?? null);
-        setSeasonActive(data.seasonActive ?? false);
       })
       .catch(() => {
         setViewWeek(1);
@@ -227,32 +207,6 @@ export default function CoursePage() {
       window.removeEventListener('userLoggedIn', handler);
     };
   }, [refreshAuth]);
-
-  useEffect(() => {
-    fetch('/api/leaderboard')
-      .then(r => r.json())
-      .then(d => setLeaderboard(d.users ?? []))
-      .catch(() => {})
-      .finally(() => setLeaderboardLoading(false));
-  }, []);
-
-  useEffect(() => {
-    if (!showLeaderboard) return;
-
-    const originalBodyOverflow = document.body.style.overflow;
-    const originalDocumentOverflow = document.documentElement.style.overflow;
-    const originalBodyTouchAction = document.body.style.touchAction;
-
-    document.body.style.overflow = 'hidden';
-    document.documentElement.style.overflow = 'hidden';
-    document.body.style.touchAction = 'none';
-
-    return () => {
-      document.body.style.overflow = originalBodyOverflow;
-      document.documentElement.style.overflow = originalDocumentOverflow;
-      document.body.style.touchAction = originalBodyTouchAction;
-    };
-  }, [showLeaderboard]);
 
   const handleSealComplete = useCallback((weekNumber: number, txHash: string | null) => {
     // Close any open task panel so the user lands on the sealed week
@@ -303,13 +257,6 @@ export default function CoursePage() {
       } catch {}
     })();
   }, [getAccessToken]);
-
-  const avatarColor = (name: string) => {
-    const colors = ['#5168FF', '#E85D3A', '#62BE8F', '#9B7ED9', '#F5A623'];
-    let hash = 0;
-    for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-    return colors[Math.abs(hash) % colors.length];
-  };
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -374,7 +321,7 @@ export default function CoursePage() {
     setIsReaderOpen(true);
   }, []);
 
-  const [rightContent, setRightContent] = useState<'daily-note' | 'reading' | 'task' | null>(null);
+  const [rightContent, setRightContent] = useState<'reading' | 'task' | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [isDesktop, setIsDesktop] = useState(false);
 
@@ -401,59 +348,6 @@ export default function CoursePage() {
 
         {/* ── Left / main column — identical to original ── */}
         <div className={isDesktop ? styles.leftCol : undefined}>
-
-          <section className={`${styles.hero} ${isLoaded ? styles.heroLoaded : ''}`}>
-            <button
-              type="button"
-              className={styles.topLeaderboard}
-              onClick={() => { play('click'); setShowLeaderboard(true); }}
-            >
-              <div className={styles.topLeaderboardHeader}>
-                <Image src="/icons/ui-shard.svg" alt="" width={12} height={12} className={styles.topLeaderboardIcon} />
-                <span className={styles.topLeaderboardTitle}>WEEKLY LEADERBOARD</span>
-              </div>
-              <div className={styles.topLeaderboardPodium}>
-                {leaderboardLoading ? (
-                  [1, 2, 3, 4, 5].map(rank => (
-                    <div key={rank} className={styles.podiumSlot}>
-                      <div className={styles.podiumAvatarRing}>
-                        <div className={`${styles.podiumAvatar} ${styles.skeletonBlock}`} />
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  leaderboard.slice(0, 5).map(u => (
-                    <div
-                      key={u.rank}
-                      className={`${styles.podiumSlot} ${u.rank === 1 ? styles.podiumFirst : u.rank === 2 ? styles.podiumSecond : u.rank === 3 ? styles.podiumThird : ''}`}
-                    >
-                      <div className={styles.podiumAvatarRing}>
-                        {u.avatarUrl ? (
-                          <>
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={u.avatarUrl} alt={u.username} className={styles.podiumAvatarImg} />
-                          </>
-                        ) : (
-                          <div className={styles.podiumAvatar} style={{ background: avatarColor(u.username) }}>
-                            {u.username[0]?.toUpperCase() ?? '?'}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </button>
-          </section>
-
-          <div className={styles.morningPagesShell}>
-            <div className={styles.morningPagesGradient} />
-            <DailyNotes
-              enablePersistence={canPersistMorningPages}
-              compact
-              onCompactClick={isDesktop ? () => setRightContent('daily-note') : undefined}
-            />
-          </div>
 
           <div className={styles.weekHeader}>
             <button
@@ -585,13 +479,6 @@ export default function CoursePage() {
         {/* ── Right panel (desktop only) ── */}
         {isDesktop && rightContent !== null && (
           <div className={styles.rightPanel}>
-            {rightContent === 'daily-note' && (
-              <DailyNotes
-                enablePersistence={canPersistMorningPages}
-                panelMode
-                onPanelClose={() => setRightContent(null)}
-              />
-            )}
             {rightContent === 'reading' && (
               <CourseInlineReader
                 reading={WEEKLY_READINGS[readerIndex]}
@@ -615,54 +502,6 @@ export default function CoursePage() {
         )}
 
       </main>
-
-      {showLeaderboard && (
-        <div className={styles.modalOverlay} onClick={() => setShowLeaderboard(false)}>
-          <div className={styles.modalCard} onClick={e => e.stopPropagation()}>
-            <button className={styles.modalClose} onClick={() => setShowLeaderboard(false)}>&times;</button>
-            <div className={styles.modalHeader}>
-              <Image src="/icons/ui-shard.svg" alt="" width={28} height={28} />
-              <div>
-                <strong className={styles.modalTitle}>Leaderboard</strong>
-                <span className={styles.modalSub}>
-                  {seasonActive ? `Week ${activeWeek} of 12` : 'Season inactive'}
-                </span>
-              </div>
-            </div>
-            <div className={styles.modalList}>
-              {leaderboardLoading ? (
-                Array.from({ length: 8 }, (_, index) => (
-                  <div key={index} className={styles.leagueRow}>
-                    <span className={`${styles.leagueRank} ${styles.skeletonTextShort} ${styles.skeletonBlock}`} />
-                    <div className={`${styles.leagueAvatar} ${styles.skeletonBlock}`} />
-                    <span className={`${styles.leagueName} ${styles.skeletonTextWide} ${styles.skeletonBlock}`} />
-                    <span className={`${styles.leagueShards} ${styles.skeletonText} ${styles.skeletonBlock}`} />
-                  </div>
-                ))
-              ) : leaderboard.map(u => (
-                <div key={u.rank} className={styles.leagueRow}>
-                  <span className={styles.leagueRank}>{u.rank}</span>
-                  {u.avatarUrl ? (
-                    <>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={u.avatarUrl} alt={u.username} className={styles.leagueAvatarImg} />
-                    </>
-                  ) : (
-                    <div className={styles.leagueAvatar} style={{ background: avatarColor(u.username) }}>
-                      {u.username[0]?.toUpperCase() ?? '?'}
-                    </div>
-                  )}
-                  <span className={styles.leagueName}>{u.username}</span>
-                  <span className={styles.leagueShards}>{u.shards} credits</span>
-                </div>
-              ))}
-              {!leaderboardLoading && leaderboard.length === 0 && (
-                <p className={styles.emptyText}>No rankings yet</p>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
 
       {isReaderOpen && (
         <BookReaderModal
