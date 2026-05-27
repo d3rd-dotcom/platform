@@ -9,6 +9,7 @@ import TreasuryDisplay from '@/components/treasury-display/TreasuryDisplay';
 import ProposalCard from '@/components/proposal-card/ProposalCard';
 import ActivateVotesCard from '@/components/voting/ActivateVotesCard';
 import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
+import Button from '@/components/button/Button';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
 
@@ -507,17 +508,18 @@ export default function VotingPage() {
                             </svg>
                             Active Proposals
                           </div>
-                          <button
-                            className={styles.submitProposalButton}
+                          <Button
+                            size="compact"
                             onClick={() => { play('click'); setIsSubmitModalOpen(true); }}
                             onMouseEnter={() => play('hover')}
-                            type="button"
+                            startIcon={
+                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <path d="M12 5v14M5 12h14" />
+                              </svg>
+                            }
                           >
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                              <path d="M12 5v14M5 12h14" />
-                            </svg>
                             Submit a Proposal
-                          </button>
+                          </Button>
                         </div>
                         <ActivateVotesCard />
                         {isPageLoading || (loading && proposals.length > 0) ? (

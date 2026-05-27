@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as api from '@/lib/simulation-api';
 import type { RunStatus } from '@/lib/simulation-api';
+import Button from '@/components/button/Button';
 import { useSound } from '@/hooks/useSound';
 import { usePolling } from '../usePolling';
 import type { WorkflowState } from '../SimulationWorkspace';
@@ -200,9 +201,9 @@ export default function Step3Simulation({
                   onChange={(e) => setMaxRounds(Math.max(1, Math.min(50, Number(e.target.value) || 1)))}
                 />
               </label>
-              <button className={styles.primaryBtn} onClick={start} onMouseEnter={() => play('hover')}>
+              <Button size="compact" onClick={start} onMouseEnter={() => play('hover')}>
                 Start
-              </button>
+              </Button>
             </>
           )}
           {running && (
@@ -211,8 +212,7 @@ export default function Step3Simulation({
             </button>
           )}
           {completed && (
-            <button
-              className={styles.primaryBtn}
+            <Button
               onClick={() => {
                 play('navigation');
                 onDone();
@@ -220,7 +220,7 @@ export default function Step3Simulation({
               onMouseEnter={() => play('hover')}
             >
               Generate report →
-            </button>
+            </Button>
           )}
         </div>
       </div>

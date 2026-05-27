@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import * as api from '@/lib/simulation-api';
 import type { GraphData, GraphEdge, GraphNode } from '@/lib/simulation-api';
+import Button from '@/components/button/Button';
 import styles from './simulation.module.css';
 
 /**
@@ -942,14 +943,13 @@ export default function GraphPanel({
                     </label>
                     {correctionError && <p className={styles.errorText}>{correctionError}</p>}
                     <div className={styles.graphCorrectionActions}>
-                      <button
-                        type="button"
-                        className={styles.primaryBtn}
+                      <Button
+                        size="compact"
                         onClick={() => void applyCorrection('replace')}
                         disabled={correctingEdge || !replacementType.trim() || !replacementFact.trim()}
                       >
                         {correctingEdge ? 'Replacing...' : 'Save replacement'}
-                      </button>
+                      </Button>
                       <button
                         type="button"
                         className={styles.secondaryBtn}

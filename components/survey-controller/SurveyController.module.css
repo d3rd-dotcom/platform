@@ -383,35 +383,9 @@
   opacity: 0.9;
 }
 
-/* ----- CTA (kit btn--primary) ----- */
+/* Pushes the shared Button to the bottom of the controller column. */
 .cta {
   margin-top: auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  width: 100%;
-  height: clamp(48px, 7.5vh, 60px);
-  font-family: var(--f-button);
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #fff;
-  background: var(--c-blue);
-  border: 0;
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: var(--shadow-primary, 0 8px 18px rgba(81, 105, 255, 0.3));
-  transition: transform 0.2s var(--ease), background 0.2s var(--ease);
-}
-.cta:hover {
-  transform: translateY(-2px);
-  background: var(--c-blue-hover);
-}
-.cta:active {
-  transform: translateY(0);
-  opacity: 0.9;
 }
 
 /* ===== Light Mode ===== */

@@ -1,0 +1,103 @@
+/* Shared bulky CTA button — Figma "Button Bulky, 9sp/Variant5" (id 1683:8947).
+   #5168FF Academy Blue fill, 1px black stroke, 6px radius, drop shadow plus
+   top white + bottom dark inner-shadow bevels for the chunky 3D look. */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 28px;
+  min-height: 60px;
+  border: 1px solid #000000;
+  border-radius: 6px;
+  background: var(--color-primary, #5168ff);
+  color: #ffffff;
+  font-family: var(--font-body, 'Poppins', sans-serif);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow:
+    0 4px 4px rgba(0, 0, 0, 0.25),
+    inset 0 4px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -6px 0 rgba(0, 0, 0, 0.5);
+  transition:
+    background 0.15s ease,
+    transform 0.12s ease,
+    box-shadow 0.15s ease;
+}
+
+.button:hover:not(:disabled):not([aria-disabled='true']) {
+  background: var(--color-primary-hover, #324be4);
+  transform: translateY(-1px);
+  box-shadow:
+    0 6px 6px rgba(0, 0, 0, 0.28),
+    inset 0 4px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -6px 0 rgba(0, 0, 0, 0.5);
+}
+
+.button:active:not(:disabled):not([aria-disabled='true']) {
+  transform: translateY(1px);
+  box-shadow:
+    0 2px 2px rgba(0, 0, 0, 0.22),
+    inset 0 4px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -4px 0 rgba(0, 0, 0, 0.5);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-primary, #5168ff);
+  outline-offset: 3px;
+}
+
+.button:disabled,
+.button[aria-disabled='true'] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+.label {
+  display: inline-block;
+}
+
+/* Compact variant — same look, smaller scale for in-flow CTAs (step panels). */
+.compact {
+  padding: 10px 18px;
+  min-height: 44px;
+  font-size: 14px;
+  gap: 8px;
+  box-shadow:
+    0 3px 3px rgba(0, 0, 0, 0.22),
+    inset 0 3px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -4px 0 rgba(0, 0, 0, 0.5);
+}
+
+.compact:hover:not(:disabled):not([aria-disabled='true']) {
+  box-shadow:
+    0 4px 4px rgba(0, 0, 0, 0.26),
+    inset 0 3px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -4px 0 rgba(0, 0, 0, 0.5);
+}
+
+.compact:active:not(:disabled):not([aria-disabled='true']) {
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.2),
+    inset 0 3px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -3px 0 rgba(0, 0, 0, 0.5);
+}

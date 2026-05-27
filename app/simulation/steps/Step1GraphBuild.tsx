@@ -4,6 +4,7 @@ import { useCallback, useRef, useState } from 'react';
 import * as api from '@/lib/simulation-api';
 import type { GraphData } from '@/lib/simulation-api';
 import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
+import Button from '@/components/button/Button';
 import { useSound } from '@/hooks/useSound';
 import { usePolling } from '../usePolling';
 import type { WorkflowState } from '../SimulationWorkspace';
@@ -277,8 +278,7 @@ export default function Step1GraphBuild({
 
       <div className={styles.actionRow}>
         {alreadyBuilt && !building ? (
-          <button
-            className={styles.primaryBtn}
+          <Button
             onClick={() => {
               play('navigation');
               onGraph(wf.graphId as string);
@@ -286,11 +286,11 @@ export default function Step1GraphBuild({
             onMouseEnter={() => play('hover')}
           >
             Continue to world setup →
-          </button>
+          </Button>
         ) : (
-          <button className={styles.primaryBtn} onClick={() => start(false)} onMouseEnter={() => play('hover')} disabled={building}>
+          <Button onClick={() => start(false)} onMouseEnter={() => play('hover')} disabled={building}>
             {building ? (rebuilding ? 'Rebuilding graph…' : 'Building graph…') : 'Build knowledge graph'}
-          </button>
+          </Button>
         )}
         {building && (
           <span className={styles.graphBuildLoader} aria-hidden>

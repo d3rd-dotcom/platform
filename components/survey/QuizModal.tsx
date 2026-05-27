@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { createPortal } from 'react-dom'
+import Button from '@/components/button/Button'
 import type { Survey, SurveyAnswers, SurveyQuestion } from './types'
 import styles from './QuizModal.module.css'
 
@@ -263,13 +264,14 @@ export default function QuizModal({ isOpen, onClose, survey, variant = 'modal', 
           >
             Previous
           </button>
-          <button
+          <Button
+            size="compact"
             onClick={handleNext}
             disabled={!hasPageAnswers || isSubmitting}
-            className={`${styles.quizModalButton} ${styles.quizModalButtonPrimary}`}
+            className={styles.quizModalPrimary}
           >
             {isSubmitting ? 'Submitting...' : isLastPage ? 'Submit' : 'Next'}
-          </button>
+          </Button>
         </div>
       </div>
 

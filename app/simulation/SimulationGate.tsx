@@ -6,6 +6,7 @@ import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
 import ProMembershipModal from '@/components/pro-membership-modal/ProMembershipModal';
 import { useSound } from '@/hooks/useSound';
 import { setSimulationAccessTokenProvider } from '@/lib/simulation-api';
+import Button from '@/components/button/Button';
 import SimulationWorkspace from './SimulationWorkspace';
 import styles from './simulation.module.css';
 
@@ -100,9 +101,9 @@ export default function SimulationGate() {
             Build living worlds of autonomous agents from any document, run them forward, and read
             the futures they produce. Available to Pro members.
           </p>
-          <button className={styles.primaryBtn} onClick={unlock} onMouseEnter={() => play('hover')}>
+          <Button onClick={unlock} onMouseEnter={() => play('hover')}>
             {authenticated ? 'Unlock with Pro' : 'Sign in to continue'}
-          </button>
+          </Button>
         </div>
         <ProMembershipModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
       </>

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
+import Button from '@/components/button/Button';
 import SubmitProposalModal from '@/components/voting/SubmitProposalModal';
 import styles from './HomeDashboard.module.css';
 
@@ -58,12 +58,16 @@ function ScannerCTA({ onSubmit }: { onSubmit: () => void }) {
           />
         ))}
       </div>
-      <button onClick={onSubmit} className={styles.scannerButton} type="button">
+      <Button
+        onClick={onSubmit}
+        endIcon={
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        }
+      >
         Submit Proposal for Review
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M5 12h14M12 5l7 7-7 7" />
-        </svg>
-      </button>
+      </Button>
     </div>
   );
 }
@@ -298,12 +302,17 @@ export const HomeDashboard: React.FC = () => {
         </div>
       </div>
       <ScannerCTA onSubmit={() => setIsSubmitModalOpen(true)} />
-      <Link href="/home" className={styles.viewTreasuryCta}>
+      <Button
+        href="/home"
+        fullWidth
+        endIcon={
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        }
+      >
         View Treasury
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M5 12h14M12 5l7 7-7 7" />
-        </svg>
-      </Link>
+      </Button>
       <SubmitProposalModal
         isOpen={isSubmitModalOpen}
         onClose={() => setIsSubmitModalOpen(false)}

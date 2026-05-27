@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
+import Button from '@/components/button/Button';
 import { useSound } from '@/hooks/useSound';
 import * as api from '@/lib/simulation-api';
 import type { Project } from '@/lib/simulation-api';
@@ -77,8 +78,7 @@ export default function ProjectGallery({
             Turn a document into a living world of autonomous agents, then read the future it produces.
           </p>
         </div>
-        <button
-          className={styles.primaryBtn}
+        <Button
           onClick={() => {
             play('click');
             setCreating((v) => !v);
@@ -86,7 +86,7 @@ export default function ProjectGallery({
           onMouseEnter={() => play('hover')}
         >
           {creating ? 'Close' : 'New world'}
-        </button>
+        </Button>
       </header>
 
       {online === false && (
@@ -179,9 +179,9 @@ export default function ProjectGallery({
               )}
             </div>
             {error && <p className={styles.errorText}>{error}</p>}
-            <button className={styles.primaryBtn} onClick={submit} onMouseEnter={() => play('hover')} disabled={busy}>
+            <Button onClick={submit} onMouseEnter={() => play('hover')} disabled={busy}>
               {busy ? 'Analyzing documents…' : 'Build knowledge graph'}
-            </button>
+            </Button>
           </div>
         </div>
       )}

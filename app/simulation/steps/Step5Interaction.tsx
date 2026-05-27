@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import * as api from '@/lib/simulation-api';
 import type { AgentProfile } from '@/lib/simulation-api';
+import Button from '@/components/button/Button';
 import { useSound } from '@/hooks/useSound';
 import type { WorkflowState } from '../SimulationWorkspace';
 import AgentAvatar from '../AgentAvatar';
@@ -178,14 +179,14 @@ export default function Step5Interaction({ wf }: { wf: WorkflowState }) {
           onKeyDown={(e) => e.key === 'Enter' && send()}
           disabled={busy || (mode === 'agent' && !target)}
         />
-        <button
-          className={styles.primaryBtn}
+        <Button
+          size="compact"
           onClick={send}
           onMouseEnter={() => play('hover')}
           disabled={busy || !input.trim()}
         >
           Send
-        </button>
+        </Button>
       </div>
     </div>
   );

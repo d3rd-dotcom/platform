@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
+import Button from '@/components/button/Button';
 import * as api from '@/lib/simulation-api';
 import type { AgentProfile } from '@/lib/simulation-api';
 import { useSound } from '@/hooks/useSound';
@@ -236,8 +237,7 @@ export default function Step2EnvSetup({
               Your graph may contain fewer eligible entities than this maximum.
             </small>
           </label>
-          <button
-            className={styles.primaryBtn}
+          <Button
             onClick={prepare}
             onMouseEnter={() => play('hover')}
             disabled={!simId || preparing || checkingPreparation}
@@ -247,7 +247,7 @@ export default function Step2EnvSetup({
               : preparing
                 ? 'Generating agents...'
                 : 'Generate population'}
-          </button>
+          </Button>
           {preparing && (
             <span className={styles.loaderInline} aria-hidden>
               <DotmSquare15 speed={0.9} dotSize={4} gap={3} />
@@ -322,8 +322,7 @@ export default function Step2EnvSetup({
             </div>
           </section>
           <div className={styles.actionRow}>
-            <button
-              className={styles.primaryBtn}
+            <Button
               onClick={() => {
                 if (simId) {
                   play('navigation');
@@ -333,7 +332,7 @@ export default function Step2EnvSetup({
               onMouseEnter={() => play('hover')}
             >
               Run the simulation →
-            </button>
+            </Button>
           </div>
         </>
       )}

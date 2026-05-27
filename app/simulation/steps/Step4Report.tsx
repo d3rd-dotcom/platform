@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
+import Button from '@/components/button/Button';
 import { useSound } from '@/hooks/useSound';
 import * as api from '@/lib/simulation-api';
 import { usePolling } from '../usePolling';
@@ -165,8 +166,7 @@ export default function Step4Report({
               <button className={styles.secondaryBtn} onClick={() => generate(true)} onMouseEnter={() => play('hover')}>
                 Regenerate
               </button>
-              <button
-                className={styles.primaryBtn}
+              <Button
                 onClick={() => {
                   play('navigation');
                   onDone();
@@ -174,17 +174,16 @@ export default function Step4Report({
                 onMouseEnter={() => play('hover')}
               >
                 Talk to the world →
-              </button>
+              </Button>
             </>
           ) : (
-            <button
-              className={styles.primaryBtn}
+            <Button
               onClick={() => generate(true)}
               onMouseEnter={() => play('hover')}
               disabled={generating}
             >
               {generating ? 'Generating…' : 'Generate report'}
-            </button>
+            </Button>
           )}
           {generating && (
             <span className={styles.loaderInline} aria-hidden>
