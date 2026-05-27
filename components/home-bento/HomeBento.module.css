@@ -167,3 +167,9 @@
     padding: 14px 12px 32px;
   }
 }
+
+@media (max-width: 768px) {
+  .bentoScrollWithMorningNote {
+    padding-bottom: 128px;
+  }
+}

@@ -262,10 +262,13 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
           </p>
         </div>
 
-        <DailyNotes
-          enablePersistence={enableMorningPagesPersistence}
-          compact
-        />
+        <div className={styles.morningPagesShell}>
+          <div className={styles.morningPagesGradient} aria-hidden="true" />
+          <DailyNotes
+            enablePersistence={enableMorningPagesPersistence}
+            compact
+          />
+        </div>
 
         <button
           type="button"

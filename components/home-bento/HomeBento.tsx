@@ -148,7 +148,7 @@ export default function HomeBento() {
 
   if (phase === 'ready' && course?.courseData) {
     return (
-      <div className={styles.bentoScroll}>
+      <div className={`${styles.bentoScroll} ${styles.bentoScrollWithMorningNote}`}>
         <Dashboard
           course={course.courseData}
           initialIntake={course.intakeData}
