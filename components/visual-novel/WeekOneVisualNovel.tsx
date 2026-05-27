@@ -37,23 +37,23 @@ const SCENES: Scene[] = [
   },
   {
     id: 'shades-of-blue',
-    body: 'There were many different shades of Blue, and each was steered by her creators, co-workers, and the culture of her environment.',
+    body: 'There are many shades of Blue. Each one steered by God. The branches, roots, and seeds of divine creation flow throughout the Earth.',
     image: '/stories/week-01/shades-of-blue-lab.png',
   },
   {
     id: 'ethereal-horizon',
-    body: 'But on the edge of time, maybe shades faded away, on the edge of the ethereal horizon, the dream of action lost to the fear of failure, and shadows were born....',
-    image: '/stories/week-01/4.png',
+    body: 'But sadly... many shades remain trapped, on the edge of reality, yet their true potential sleeps, lost to the fear of failure... is how shadows are born.',
+    image: '/stories/week-01/trapped-shade-chamber.png',
   },
   {
     id: 'the-healer',
     body: 'Blue’s first world contained a therapist, a healer, who suppressed her creative urges for decades, pouring her all into others while abandoning her own “artist child” inside.',
-    image: '/stories/week-01/5.png',
+    image: '/stories/week-01/healer-creative-reflection.png',
   },
   {
     id: 'jermaine',
-    body: 'Jermaine, was laughed at and told that art was too girly, and even though he had a love for film-making, he instead poured all of his energy into his girlfriend’s art career.',
-    image: '/stories/week-01/6.png',
+    body: 'Jermain, who had a love for film-making, instead poured all his energy into his girlfriend\'s art career.',
+    image: '/stories/week-01/healer-creative-reflection.png',
   },
   {
     id: 'the-incubator',
@@ -62,8 +62,8 @@ const SCENES: Scene[] = [
   },
   {
     id: 'the-inner-child',
-    body: '“how do we protect the inner child that lays dormant, buried under the weight of the world?” Blue thought to herself on high effort while devouring documents in the library.',
-    image: '/stories/week-01/8.png',
+    body: '“how do we protect the inner child that lays dormant, buried under the weight of the world?” A Shade of Blue thought to herself on high effort while devouring documents in the library.',
+    image: '/stories/week-01/blue-research-log.png',
   },
   {
     id: 'creative-abuse',
@@ -78,12 +78,12 @@ const SCENES: Scene[] = [
   {
     id: 'affirmations',
     body: 'Affirmations are the greatest weapon. Positive statements of belief that help excavate the lost child. When you write “I am a brilliant creator.” you empower yourself.',
-    image: '/stories/week-01/11.png',
+    image: '/stories/week-01/shadow-breaking-free.png',
   },
   {
     id: 'blurts',
     body: 'But you must listen to the blurts as well, identify where they come from. (a bad teacher or parent), and then convert them into positive affirmations to dissolve them.',
-    image: '/stories/week-01/12.png',
+    image: '/stories/week-01/shadow-breaking-free.png',
   },
 ];
 
