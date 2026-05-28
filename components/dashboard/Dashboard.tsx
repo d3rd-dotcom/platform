@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
+import LiveNow from '@/components/live-now/LiveNow';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
 import type { CourseData } from '@/lib/personal-course';
 import styles from './Dashboard.module.css';
@@ -49,7 +50,6 @@ interface EventItem {
   ctaLabel?: string;
 }
 
-const DAY_MS = 24 * 60 * 60 * 1000;
 const PATHWAY_EVENT_ID = 'ethereal-pathway';
 
 const EVENTS: EventItem[] = [
@@ -59,21 +59,21 @@ const EVENTS: EventItem[] = [
     heading: 'Ethereal Pathway',
     category: 'Course',
     date: 'Season 1',
-    time: 'May 25 - Aug 16, 2026',
+    time: 'May 5 - Aug 16',
     description:
       'Follow the 12-week course through readings and missions. Complete each week to unlock the next step.',
     href: '/course',
     ctaLabel: 'Start course',
   },
   {
-    id: 'angel-investing-circle',
+    id: 'shadow-artists',
     imageUrl: '/images/angel-investing.png',
-    heading: 'Angel Investing Circle',
+    heading: 'Shadow Artists',
     category: 'Discussion',
     date: 'May 28, 2026',
     time: '6:30 PM UTC',
     description:
-      'Members walk through real deals together and learn to read a cap table without the jargon.',
+      'A circle for the quietly creative — people who pour energy into supporting everyone around them but have yet to make their own work. Step out of the wings and create.',
   },
   {
     id: 'cohort-campfire',
@@ -86,36 +86,22 @@ const EVENTS: EventItem[] = [
       'An informal end-of-week gathering to share wins, blockers, and what the next week looks like.',
   },
   {
-    id: 'funding-village-tour',
+    id: 'crypto-tutorial',
     imageUrl: '/images/funding-village-bg.jpg',
-    heading: 'Funding Village Live Tour',
+    heading: 'Crypto Tutorial',
     category: 'Event',
     date: 'June 4, 2026',
     time: '4:00 PM UTC',
     description:
-      'See newly funded projects, meet the builders, and learn how to put your own proposal forward.',
+      'A hands-on walkthrough of wallets, gas, and your first onchain transaction — get set up safely and learn the ropes alongside the cohort.',
   },
 ];
 
 const HOME_BLUE_MESSAGE =
   'Mental Wealth Academy places power tools for self-actualization and individual enlightenment through the freely available course, earn credits to connect to live events with experts, and unlimited AI tools for VIP Members.';
 
-function formatSeasonPeriod(seasonStartDate: string): string | null {
-  const start = new Date(seasonStartDate);
-  if (Number.isNaN(start.getTime())) return null;
-
-  const end = new Date(start.getTime() + (12 * 7 - 1) * DAY_MS);
-  const format = new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: 'numeric',
-    timeZone: 'UTC',
-  });
-  return `${format.format(start)} - ${format.format(end)}, ${end.getUTCFullYear()}`;
-}
-
 export default function Dashboard({ enableMorningPagesPersistence = false }: DashboardProps) {
   const [leaderboard, setLeaderboard] = useState<LeaderUser[]>([]);
-  const [seasonPeriod, setSeasonPeriod] = useState(EVENTS[0].time);
   const [eggShaking, setEggShaking] = useState(false);
   const [reserved, setReserved] = useState<Record<string, boolean>>({});
   const [isProModalOpen, setIsProModalOpen] = useState(false);
@@ -139,16 +125,6 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
       .then((r) => r.json())
       .then((d) => setLeaderboard(Array.isArray(d.users) ? d.users : []))
       .catch(() => {/* leaderboard is best-effort */});
-  }, []);
-
-  useEffect(() => {
-    fetch('/api/season', { cache: 'no-store' })
-      .then((r) => r.json())
-      .then((data) => {
-        const period = formatSeasonPeriod(data.seasonStartDate);
-        if (period) setSeasonPeriod(period);
-      })
-      .catch(() => {/* static season copy is a safe fallback */});
   }, []);
 
   const pokeEgg = useCallback(() => {
@@ -202,7 +178,7 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
                 <p className={styles.eventText}>{ev.description}</p>
                 <div className={styles.eventFoot}>
                   <span className={styles.eventTime}>
-                    {ev.id === PATHWAY_EVENT_ID ? seasonPeriod : ev.time}
+                    {ev.time}
                   </span>
                   {ev.href ? (
                     <Link href={ev.href} className={styles.eventBtn}>
@@ -229,6 +205,8 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
           message={HOME_BLUE_MESSAGE}
           variant="featured"
         />
+
+        <LiveNow />
       </section>
 
       {/* ── Side: egg, morning note, leaderboard, membership ── */}
