@@ -51,7 +51,7 @@ const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, hori
     ucolor1: { value: new THREE.Vector3(0.32, 0.41, 1.00) },
     ucolor2: { value: new THREE.Vector3(1.00, 0.47, 0.16) },
     ucolor3: { value: new THREE.Vector3(0.59, 0.14, 0.65) },
-    ucolor4: { value: new THREE.Vector3(1.00, 0.84, 0.42) },
+    ucolor4: { value: new THREE.Vector3(0.051, 0.580, 0.533) },
     ucolor5: { value: new THREE.Vector3(0.91, 0.33, 0.43) },
     ucolor6: { value: new THREE.Vector3(0.45, 0.77, 0.40) },
     asciicode: { value: 100.0 },

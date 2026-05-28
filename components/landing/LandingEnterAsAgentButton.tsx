@@ -19,14 +19,16 @@ export default function LandingEnterAsAgentButton() {
       type="button"
       onClick={handleEnterAsAgent}
       onMouseEnter={() => play('hover')}
-      className={`${styles.heroButton} ${styles.heroButtonSecondary}`}
+      className={`${styles.fancyButton} ${styles.fancyButtonAgent}`}
     >
-      <span className={styles.heroSlideWrap}>
-        <span className={styles.heroSlideText}>Enter As Agent</span>
-        <span className={`${styles.heroSlideText} ${styles.heroSlideClone}`}>Enter As Agent</span>
-      </span>
-      <span className={styles.heroButtonArrow} aria-hidden="true">
-        <Robot size={22} weight="bold" />
+      <span className={styles.fancyButtonInner}>
+        <span className={styles.heroSlideWrap}>
+          <span className={styles.heroSlideText}>Enter As Agent</span>
+          <span className={`${styles.heroSlideText} ${styles.heroSlideClone}`}>Enter As Agent</span>
+        </span>
+        <span className={styles.fancyButtonIcon} aria-hidden="true">
+          <Robot size={20} weight="regular" />
+        </span>
       </span>
     </button>
   );

@@ -4,7 +4,8 @@ import React from 'react';
 import Image from 'next/image';
 import styles from './LandingPage.module.css';
 import LandingEnterAcademyButton from './LandingEnterAcademyButton';
-import { KeyFiguresSection } from './KeyFiguresSection';
+import LandingEnterAsAgentButton from './LandingEnterAsAgentButton';
+import CompanyLogos from './CompanyLogos';
 import ShardsAltar from './ShardsAltar';
 
 // One cluster = the 6 screenshots of a single app. We only have 6 shots for
@@ -57,40 +58,32 @@ export const HeroSection: React.FC = () => {
     <>
       <div className={styles.heroSection}>
         <div className={styles.heroContent}>
-          <p className={styles.heroTextBadge}>No endless scrolling. Structured growth.</p>
+          <p className={styles.heroTextBadge}>No more endless scrolling.</p>
           <h1 className={styles.heroHeadline}>
-            <span className={styles.heroHeadlineLead}>
-              <span>New-Age Wellness</span>
-            </span>
-            <span className={styles.heroHeadlineSubline}>
-              FOR PERSONAL GROWTH
-            </span>
+            <span>Unlock Your </span>
+            <span className={styles.heroHeadlineAccent}>New Horizon</span>
           </h1>
           <p className={styles.heroSubtext}>
-            Mental Wealth Academy turns mental wellness into an engaging, trackable, collaborative experience instead of passive content.
-          </p>
-          <p className={styles.heroSubtextSecondary}>
-            Universal Credit System, Cross-Platform Rewards
+            Turn mental wealth goals into trackable, goal-driven & engaging quests designed by psychologists to help you level-up.
           </p>
           <div className={styles.heroActions}>
             <LandingEnterAcademyButton />
+            <LandingEnterAsAgentButton />
           </div>
         </div>
-        <div className={styles.heroVisualColumn} aria-hidden="true">
-          <div className={styles.heroVisualFrame}>
-            <Image
-              src="/images/a.png"
-              alt=""
-              width={1408}
-              height={2000}
-              className={styles.heroVisualImage}
-              priority
-            />
-          </div>
+        <div className={styles.heroAppShotFrame} aria-hidden="true">
+          <Image
+            src="/images/hero-app-shot.png"
+            alt=""
+            width={1600}
+            height={900}
+            className={styles.heroAppShotImage}
+            priority
+          />
         </div>
       </div>
 
-      <KeyFiguresSection />
+      <CompanyLogos />
     </>
   );
 };
