@@ -29,27 +29,11 @@ const BACKGROUND_COLORS = ImageData.bgcolors;
 // Number of avatars to assign per user
 const AVATARS_PER_USER = 6;
 
-// MWA monochrome tint: maps each pixel's luminance onto a #404FAB → #C0D0FF ramp.
-// Lifted floor + brighter ceiling so the Noun reads clearly against the card —
-// the previous black → #5168FF ramp crushed shadows and drowned the figure.
-// Bakes into the SVG so every consumer (img, inline svg, og previews) tints uniformly.
-const MWA_TINT_FILTER =
-  '<defs><filter id="mwaTint" color-interpolation-filters="sRGB">' +
-  '<feColorMatrix type="matrix" values="' +
-  '0.1501 0.2947 0.0572 0 0.251 ' +
-  '0.1513 0.2970 0.0577 0 0.310 ' +
-  '0.0984 0.1931 0.0375 0 0.671 ' +
-  '0 0 0 1 0"/></filter></defs>';
-
-/**
- * Wraps a Nouns SVG with the MWA monochrome blue tint filter.
- * Inserts a <defs> block after <svg ...> and wraps the body in a filtered <g>.
- */
-export function applyMwaTint(svg: string): string {
-  return svg
-    .replace(/(<svg[^>]*>)/, `$1${MWA_TINT_FILTER}<g filter="url(#mwaTint)">`)
-    .replace(/<\/svg>\s*$/, '</g></svg>');
-}
+// Academy blue (without leading # — buildSVG adds it). Every avatar gets this
+// as its background rect, so the figure sits on the brand color directly
+// instead of going through a luminance-mapped tint filter that drowned the
+// body or washed the whole image out depending on the ramp.
+export const MWA_BRAND_BG = '5168ff';
 
 /**
  * Avatar interface representing a single avatar
@@ -112,10 +96,9 @@ function generateSeed(rng: () => number): NounSeed {
  * Builds an SVG data URI from a NounSeed
  */
 function buildAvatarSvgDataUri(seed: NounSeed): string {
-  const { parts, background } = getNounData(seed);
-  const svg = buildSVG(parts, ImageData.palette, background);
-  const tinted = applyMwaTint(svg);
-  const base64 = Buffer.from(tinted).toString('base64');
+  const { parts } = getNounData(seed);
+  const svg = buildSVG(parts, ImageData.palette, MWA_BRAND_BG);
+  const base64 = Buffer.from(svg).toString('base64');
   return `data:image/svg+xml;base64,${base64}`;
 }
 

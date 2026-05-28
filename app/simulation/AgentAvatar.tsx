@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { ImageData } from '@nouns/assets';
 import { buildSVG } from '@nouns/sdk';
-import { applyMwaTint } from '@/lib/avatars';
+import { MWA_BRAND_BG } from '@/lib/avatars';
 
 /**
  * Avatar for a simulated agent, rendered as a deterministic Nouns avatar.
@@ -21,7 +21,7 @@ export interface AgentAvatarProps {
 }
 
 const { bodies, accessories, heads, glasses } = ImageData.images;
-const { palette, bgcolors } = ImageData;
+const { palette } = ImageData;
 
 /** FNV-1a hash with a salt so we can derive several independent indices per id. */
 function hashWithSalt(s: string, salt: number): number {
@@ -46,8 +46,7 @@ function buildNounSvg(id: string): string {
     heads[hashWithSalt(id, 3) % heads.length],
     glasses[hashWithSalt(id, 4) % glasses.length],
   ];
-  const bg = bgcolors[hashWithSalt(id, 5) % bgcolors.length];
-  const svg = applyMwaTint(buildSVG(parts, palette, bg));
+  const svg = buildSVG(parts, palette, MWA_BRAND_BG);
   svgCache.set(id, svg);
   return svg;
 }
