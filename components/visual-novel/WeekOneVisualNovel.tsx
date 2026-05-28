@@ -5,7 +5,10 @@ import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import { ConfettiCelebration } from '@/components/quests/ConfettiCelebration';
 import { ShardAnimation } from '@/components/quests/ShardAnimation';
+import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 import styles from './WeekOneVisualNovel.module.css';
+
+const NARRATION_PREF_KEY = 'weekOneVN.narrationEnabled';
 
 const CHECK_IN_QUESTIONS = [
   'How many days did you do your morning pages?',
@@ -123,6 +126,41 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const spokenSceneRef = useRef<string | null>(null);
+  const [narrationEnabled, setNarrationEnabled] = useState(false);
+  const narrationEnabledRef = useRef(false);
+
+  useEffect(() => {
+    const stored = getStorageItem(NARRATION_PREF_KEY);
+    if (stored === '1') {
+      setNarrationEnabled(true);
+      narrationEnabledRef.current = true;
+    }
+  }, []);
+
+  const toggleNarration = () => {
+    setNarrationEnabled((prev) => {
+      const next = !prev;
+      narrationEnabledRef.current = next;
+      setStorageItem(NARRATION_PREF_KEY, next ? '1' : '0');
+      if (!next) {
+        audioRef.current?.pause();
+        if (audioRef.current) audioRef.current.currentTime = 0;
+        spokenSceneRef.current = null;
+      } else {
+        // Turning on mid-scene: start the current scene's narration immediately.
+        const currentScene = SCENES[sceneIndex];
+        if (currentScene && !isTyping && !showCheckIn) {
+          spokenSceneRef.current = currentScene.id;
+          const el = audioRef.current ?? new Audio();
+          audioRef.current = el;
+          el.src = currentScene.audio;
+          el.currentTime = 0;
+          void el.play().catch(() => {});
+        }
+      }
+      return next;
+    });
+  };
 
   // Letter-by-letter animation
   useEffect(() => {
@@ -156,6 +194,7 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
 
   useEffect(() => {
     if (!shouldRender || isTyping || showCheckIn) return;
+    if (!narrationEnabledRef.current) return;
 
     const currentScene = SCENES[sceneIndex];
     if (!currentScene || spokenSceneRef.current === currentScene.id) return;
@@ -168,7 +207,7 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
     void el.play().catch(() => {
       // Silent fallback if browser playback is unavailable.
     });
-  }, [sceneIndex, shouldRender, isTyping, showCheckIn]);
+  }, [sceneIndex, shouldRender, isTyping, showCheckIn, narrationEnabled]);
 
   // Orientation detection + landscape lock
   useEffect(() => {
@@ -361,6 +400,32 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
             {/* Shading gradients */}
             <div className={styles.shade} />
           </>
+        )}
+
+        {/* Narration toggle — opt-in, off by default */}
+        {!showCheckIn && (
+          <button
+            type="button"
+            className={`${styles.audioButton} ${narrationEnabled ? styles.audioButtonOn : ''}`}
+            onClick={toggleNarration}
+            aria-pressed={narrationEnabled}
+            aria-label={narrationEnabled ? 'Turn off narration' : 'Turn on narration'}
+            title={narrationEnabled ? 'Narration on' : 'Narration off — tap to enable'}
+          >
+            {narrationEnabled ? (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M11 5L6 9H2v6h4l5 4z" fill="currentColor" stroke="none" />
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+              </svg>
+            ) : (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M11 5L6 9H2v6h4l5 4z" fill="currentColor" stroke="none" />
+                <line x1="22" y1="9" x2="16" y2="15" />
+                <line x1="16" y1="9" x2="22" y2="15" />
+              </svg>
+            )}
+          </button>
         )}
 
         {/* Close */}

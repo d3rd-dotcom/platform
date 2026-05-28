@@ -512,14 +512,17 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       ]);
       setIsTyping(false);
 
-      // Auto-speak Blue's responses via Eliza ElevenLabs TTS — opt-in only.
+      // Auto-speak Blue's responses via ElevenLabs TTS — opt-in only.
       voiceAbortRef.current?.abort();
       if (voiceEnabledRef.current && spokenText) {
         const controller = new AbortController();
         voiceAbortRef.current = controller;
         setIsSpeaking(true);
         speakBlue(spokenText, controller.signal)
-          .catch(() => {/* aborted or TTS unavailable — silent */})
+          .catch((err) => {
+            if (err?.name === 'AbortError') return;
+            console.warn('[BlueChat] TTS failed:', err);
+          })
           .finally(() => setIsSpeaking(false));
       } else {
         setIsSpeaking(false);
