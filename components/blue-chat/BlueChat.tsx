@@ -7,6 +7,9 @@ import { usePathname } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
 import styles from './BlueChat.module.css';
 import { useSound } from '@/hooks/useSound';
+import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
+
+const VOICE_PREF_KEY = 'blueChat.voiceEnabled';
 import TimeManagementInline from './TimeManagementInline';
 import AutoDistributionInline from './AutoDistributionInline';
 import type { AutoDistributionRequest } from './AutoDistributionInline';
@@ -213,6 +216,8 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const emoteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [voiceEnabled, setVoiceEnabled] = useState(false);
+  const voiceEnabledRef = useRef(false);
   const [isUploadingAttachment, setIsUploadingAttachment] = useState(false);
   const [pendingAttachments, setPendingAttachments] = useState<UploadedAttachment[]>([]);
   const [timeManagementVisible, setTimeManagementVisible] = useState(false);
@@ -403,6 +408,28 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    const stored = getStorageItem(VOICE_PREF_KEY);
+    if (stored === '1') {
+      setVoiceEnabled(true);
+      voiceEnabledRef.current = true;
+    }
+  }, []);
+
+  const toggleVoice = useCallback(() => {
+    setVoiceEnabled((prev) => {
+      const next = !prev;
+      voiceEnabledRef.current = next;
+      setStorageItem(VOICE_PREF_KEY, next ? '1' : '0');
+      if (!next) {
+        // Turning off: cut any in-progress speech immediately.
+        voiceAbortRef.current?.abort();
+        setIsSpeaking(false);
+      }
+      return next;
+    });
+  }, []);
+
   const startVoiceChat = () => {
     const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognitionAPI) {
@@ -485,12 +512,12 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       ]);
       setIsTyping(false);
 
-      // Auto-speak Blue's responses via Eliza ElevenLabs TTS
+      // Auto-speak Blue's responses via Eliza ElevenLabs TTS — opt-in only.
       voiceAbortRef.current?.abort();
-      const controller = new AbortController();
-      voiceAbortRef.current = controller;
-      setIsSpeaking(true);
-      if (spokenText) {
+      if (voiceEnabledRef.current && spokenText) {
+        const controller = new AbortController();
+        voiceAbortRef.current = controller;
+        setIsSpeaking(true);
         speakBlue(spokenText, controller.signal)
           .catch(() => {/* aborted or TTS unavailable — silent */})
           .finally(() => setIsSpeaking(false));
@@ -1467,6 +1494,28 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             <div className={styles.expandedTitle} />
             <Image src="/icons/logo-mwa-horizontal.png" alt="Mental Wealth Academy" width={160} height={58} className={styles.topBarLogo} />
             <div className={styles.expandedControls}>
+              <button
+                className={`${styles.voiceToggleButton} ${voiceEnabled ? styles.voiceToggleActive : ''}`}
+                onClick={toggleVoice}
+                type="button"
+                aria-pressed={voiceEnabled}
+                aria-label={voiceEnabled ? 'Turn off Blue voice' : 'Turn on Blue voice'}
+                title={voiceEnabled ? 'Voice on — Blue speaks responses aloud' : 'Voice off — tap to let Blue speak responses'}
+              >
+                {voiceEnabled ? (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M11 5L6 9H2v6h4l5 4z" fill="currentColor" stroke="none" />
+                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                  </svg>
+                ) : (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M11 5L6 9H2v6h4l5 4z" fill="currentColor" stroke="none" />
+                    <line x1="22" y1="9" x2="16" y2="15" />
+                    <line x1="16" y1="9" x2="22" y2="15" />
+                  </svg>
+                )}
+              </button>
               <button className={styles.expandButton} onClick={() => setIsExpanded(false)} type="button" aria-label="Collapse">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                   <path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7" />
@@ -1681,6 +1730,28 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
       <div className={styles.chatContainer}>
         <div className={styles.compactControls}>
+          <button
+            className={`${styles.voiceToggleButton} ${voiceEnabled ? styles.voiceToggleActive : ''}`}
+            onClick={toggleVoice}
+            type="button"
+            aria-pressed={voiceEnabled}
+            aria-label={voiceEnabled ? 'Turn off Blue voice' : 'Turn on Blue voice'}
+            title={voiceEnabled ? 'Voice on — Blue speaks responses aloud' : 'Voice off — tap to let Blue speak responses'}
+          >
+            {voiceEnabled ? (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M11 5L6 9H2v6h4l5 4z" fill="currentColor" stroke="none" />
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+              </svg>
+            ) : (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M11 5L6 9H2v6h4l5 4z" fill="currentColor" stroke="none" />
+                <line x1="22" y1="9" x2="16" y2="15" />
+                <line x1="16" y1="9" x2="22" y2="15" />
+              </svg>
+            )}
+          </button>
           {!isMobile && (
             <button className={styles.expandButton} onClick={() => setIsExpanded(true)} type="button" aria-label="Expand to fullscreen">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
