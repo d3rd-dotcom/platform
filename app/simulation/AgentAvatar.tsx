@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import { ImageData } from '@nouns/assets';
 import { buildSVG } from '@nouns/sdk';
+import { applyMwaTint } from '@/lib/avatars';
 
 /**
  * Avatar for a simulated agent, rendered as a deterministic Nouns avatar.
@@ -46,7 +47,7 @@ function buildNounSvg(id: string): string {
     glasses[hashWithSalt(id, 4) % glasses.length],
   ];
   const bg = bgcolors[hashWithSalt(id, 5) % bgcolors.length];
-  const svg = buildSVG(parts, palette, bg);
+  const svg = applyMwaTint(buildSVG(parts, palette, bg));
   svgCache.set(id, svg);
   return svg;
 }

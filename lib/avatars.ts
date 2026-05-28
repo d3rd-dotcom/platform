@@ -29,6 +29,26 @@ const BACKGROUND_COLORS = ImageData.bgcolors;
 // Number of avatars to assign per user
 const AVATARS_PER_USER = 6;
 
+// MWA monochrome tint: maps each pixel's luminance onto a black → #5168FF ramp.
+// Bakes into the SVG so every consumer (img, inline svg, og previews) tints uniformly.
+const MWA_TINT_FILTER =
+  '<defs><filter id="mwaTint" color-interpolation-filters="sRGB">' +
+  '<feColorMatrix type="matrix" values="' +
+  '0.0950 0.1866 0.0362 0 0 ' +
+  '0.1220 0.2395 0.0465 0 0 ' +
+  '0.2990 0.5870 0.1140 0 0 ' +
+  '0 0 0 1 0"/></filter></defs>';
+
+/**
+ * Wraps a Nouns SVG with the MWA monochrome blue tint filter.
+ * Inserts a <defs> block after <svg ...> and wraps the body in a filtered <g>.
+ */
+export function applyMwaTint(svg: string): string {
+  return svg
+    .replace(/(<svg[^>]*>)/, `$1${MWA_TINT_FILTER}<g filter="url(#mwaTint)">`)
+    .replace(/<\/svg>\s*$/, '</g></svg>');
+}
+
 /**
  * Avatar interface representing a single avatar
  */
@@ -92,7 +112,8 @@ function generateSeed(rng: () => number): NounSeed {
 function buildAvatarSvgDataUri(seed: NounSeed): string {
   const { parts, background } = getNounData(seed);
   const svg = buildSVG(parts, ImageData.palette, background);
-  const base64 = Buffer.from(svg).toString('base64');
+  const tinted = applyMwaTint(svg);
+  const base64 = Buffer.from(tinted).toString('base64');
   return `data:image/svg+xml;base64,${base64}`;
 }
 

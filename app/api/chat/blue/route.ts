@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { randomUUID } from 'crypto';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { getWalletAddressFromRequest } from '@/lib/wallet-auth';
 import { walletHoldsVipMembershipCard } from '@/lib/vip-membership-card';
@@ -6,7 +7,7 @@ import { buildBlueContext, storeBlueChatMessage, touchBlueRelationship, upsertBl
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { elizaAPI } from '@/lib/eliza-api';
 import bluePersona from '@/lib/bluepersonality.json';
-import { retrieveBlueKnowledge, formatKnowledgeForPrompt, type RetrievedEntry } from '@/lib/blue-knowledge';
+import { runBlueRagGraph, type BlueRagResult } from '@/lib/blue-rag-graph';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -163,13 +164,23 @@ interface BlueDebugInfo {
   extractedFactsCount: number;
   rag: {
     pathname: string | null;
+    query: string;
+    expandedQueries: string[];
+    intent: string;
+    trusted: boolean;
+    quality: BlueRagResult['quality'];
+    retrievalMode: BlueRagResult['retrievalMode'];
+    traceId?: string | null;
     entriesRetrieved: number;
     entries: Array<{
       id: string;
+      sourceId?: string;
+      chunkId?: string;
       title: string;
       score: number;
-      pageMatch: boolean;
-      matchedKeywords: string[];
+      rerankScore: number;
+      source: string;
+      matchedTerms: string[];
     }>;
   };
 }
@@ -307,7 +318,7 @@ function buildBlueDebugInfo(args: {
   contextValues: Awaited<ReturnType<typeof buildBlueContext>>['values'];
   extractedFactsCount: number;
   pathname: string | null;
-  retrievedEntries: RetrievedEntry[];
+  rag: BlueRagResult;
 }): BlueDebugInfo {
   return {
     source: 'eliza',
@@ -325,13 +336,23 @@ function buildBlueDebugInfo(args: {
     extractedFactsCount: args.extractedFactsCount,
     rag: {
       pathname: args.pathname,
-      entriesRetrieved: args.retrievedEntries.length,
-      entries: args.retrievedEntries.map((entry) => ({
+      query: args.rag.query.normalized,
+      expandedQueries: args.rag.query.expandedQueries,
+      intent: args.rag.query.intent,
+      trusted: args.rag.quality.trusted,
+      quality: args.rag.quality,
+      retrievalMode: args.rag.retrievalMode,
+      traceId: args.rag.traceId,
+      entriesRetrieved: args.rag.entries.length,
+      entries: args.rag.entries.map((entry) => ({
         id: entry.id,
+        sourceId: entry.sourceId,
+        chunkId: entry.chunkId,
         title: entry.title,
         score: Number(entry.score.toFixed(2)),
-        pageMatch: entry.pageMatch,
-        matchedKeywords: entry.matchedKeywords,
+        rerankScore: Number(entry.rerankScore.toFixed(2)),
+        source: entry.source,
+        matchedTerms: entry.matchedTerms,
       })),
     },
   };
@@ -352,12 +373,16 @@ async function runBlueMemoryAwareTurn(args: {
     username: args.username ?? null,
   });
 
-  const retrievedEntries = retrieveBlueKnowledge({
+  const rag = await runBlueRagGraph({
     message: args.userMessage,
+    userId: args.userId,
+    requestId: randomUUID(),
     pathname: args.pathname,
-    limit: 5,
+    recentFacts: blueContext.values.recentFacts,
+    recentMessages: blueContext.values.recentMessages,
+    limit: 6,
+    persistTrace: true,
   });
-  const knowledgeText = formatKnowledgeForPrompt(retrievedEntries);
 
   // Fold any uploaded reference text into the message sent to the model.
   // The plain userMessage is still what gets stored in memory.
@@ -375,7 +400,7 @@ async function runBlueMemoryAwareTurn(args: {
             : BLUE_SYSTEM_PROMPT,
       userMessage: promptUserMessage,
       contextText: blueContext.contextText,
-      knowledgeText,
+      knowledgeText: rag.contextText,
       pathname: args.pathname,
       recentMessages: blueContext.values.recentMessages,
     }),
@@ -440,7 +465,7 @@ async function runBlueMemoryAwareTurn(args: {
       contextValues: blueContext.values,
       extractedFactsCount,
       pathname: args.pathname,
-      retrievedEntries,
+      rag,
     }),
   };
 }

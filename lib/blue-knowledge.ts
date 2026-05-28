@@ -51,12 +51,24 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
     routes: ['*', '/shop', '/rewards'],
     keywords: [
       'credits', 'credit', 'gems', 'shards', 'currency', 'cost', 'spend', 'earn', 'reward',
-      'loot', 'box', 'token', 'balance', 'shop',
+      'loot', 'box', 'token', 'balance', 'shop', 'tickets', 'usdc',
     ],
     body:
-      'Credits are MWA\'s in-app currency. Chatting with Blue normally costs 10 credits per turn; research mode and other premium actions cost more. ' +
-      'Users earn credits by completing quests, course tasks, morning pages, and weekly seals. ' +
-      'Insufficient credits triggers the purchase modal. Shop and rewards pages spend credits on cosmetic and functional upgrades.',
+      'MWA features several reward and access rails: Gem Credits for in-app activity and shop/reward mechanics, Membership for gated community access, ' +
+      'Tickets for event access or limited provider-requested activations, and USDC for eligible quest rewards. ' +
+      'Chatting with Blue normally costs 10 credits per turn. Users earn credits by completing quests, course tasks, morning pages, and weekly seals.',
+  },
+  {
+    id: 'academic-angel-membership',
+    title: 'Academic Angel membership unlocks',
+    routes: ['*', '/shop', '/rewards', '/profile', '/community'],
+    keywords: [
+      'academic angel', 'angel', 'membership', 'unlock', 'unlocks', 'usdc', 'quest rewards',
+      'voting rights', 'community treasury', 'proposal access', 'treasury proposal',
+    ],
+    body:
+      'Academic Angel membership unlocks USDC quest rewards, voting rights in the Community Treasury, and proposal access for the Community Treasury. ' +
+      'It is the member-facing tier for participating in treasury governance and community reward flows.',
   },
   {
     id: 'page-home',
@@ -80,19 +92,24 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
     id: 'page-course',
     title: 'Course',
     routes: ['/course'],
-    keywords: ['course', 'week', 'lesson', 'curriculum', 'pathway', 'seal'],
+    keywords: [
+      'course', 'week', 'lesson', 'curriculum', 'pathway', 'seal', 'awakening',
+      'inner artist', 'shadow work', 'creativity', 'ethereal version', 'season',
+    ],
     body:
-      'The /course page is the weekly curriculum. Each week has multiple sections (tasks) the user completes, then seals the week. ' +
-      'Completing a week unlocks the next. The full sequence forms the EtherealHorizon pathway tracked on-chain.',
+      'The /course page is the weekly curriculum. The course is based on Awakening the Inner Artist, shadow-work and creativity, ' +
+      'and becoming the ethereal version of yourself. Each season runs as a 12-week gamified micro-university course where users complete tasks, ' +
+      'seal weeks, manage points and rewards, and take part in refreshing rituals outside normal day-to-day life.',
   },
   {
     id: 'page-quests',
     title: 'Quests',
     routes: ['/quests'],
-    keywords: ['quest', 'daily', 'task', 'mission', 'completion'],
+    keywords: ['quest', 'daily', 'task', 'mission', 'completion', 'usdc', 'reward', 'science', 'mental wealth'],
     body:
-      'The /quests page lists active and completed quests. Quests are short, repeatable actions that reward credits and reinforce daily habits. ' +
-      'Includes morning pages, twitter quests, and curriculum-tied tasks.',
+      'The /quests page lists active and completed quests. Quests are ways for MWA to reinvest back into its community. ' +
+      'Quests promote the science and mental-wealth aesthetic. Do not frame quests as cryptocurrency promotions or marketing promotions. ' +
+      'Eligible quests can reward credits or USDC, including Academic Angel USDC quest rewards.',
   },
   {
     id: 'page-markets',
@@ -132,17 +149,19 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
     id: 'page-shop',
     title: 'Shop',
     routes: ['/shop'],
-    keywords: ['shop', 'buy', 'purchase', 'item', 'inventory'],
+    keywords: ['shop', 'buy', 'purchase', 'item', 'inventory', 'swag', 'stickers', 'credits', 'gems', 'discount'],
     body:
-      'The /shop page sells cosmetic and functional items for credits. Used for inventory upgrades and purchasable boosts.',
+      'The /shop page is for fun swag, aesthetics, stickers, and enjoyables. MWA hopes to let users use gems/credits to fully purchase these items ' +
+      'or reduce their price when that flow is ready.',
   },
   {
     id: 'page-prompts',
     title: 'Prompts',
     routes: ['/prompts', '/library'],
-    keywords: ['prompts', 'prompt', 'reading', 'book', 'article', 'blog', 'library'],
+    keywords: ['prompts', 'prompt', 'reading', 'book', 'article', 'blog', 'library', 'jobs', 'tasks', 'models'],
     body:
-      'The /prompts page collects reusable prompts and recent essays from the Academy blog. Participants can preview and copy prompts for their work.',
+      'The Prompts Library is a list of useful prompts community members use for jobs and everyday tasks. ' +
+      'Members may feed them to Blue, use them while chatting with other models, or adapt them for their own workflows.',
   },
   {
     id: 'page-community',
@@ -173,9 +192,19 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
     id: 'page-surveys',
     title: 'Surveys',
     routes: ['/surveys'],
-    keywords: ['survey', 'assessment', 'questionnaire', 'psychological', 'phq', 'gad'],
+    keywords: ['survey', 'assessment', 'questionnaire', 'psychological', 'quiz', 'personality', 'badge', 'certificate', 'profile'],
     body:
-      'The /surveys page hosts validated psychological assessments (PHQ, GAD-style). Results feed into Blue\'s memory and personalize the curriculum.',
+      'The /surveys page hosts personality quizzes, tests, and assessments. Users can earn badges and certificates from survey activity in their profile. ' +
+      'Survey results may personalize the curriculum and Blue\'s memory when the user consents.',
+  },
+  {
+    id: 'page-events',
+    title: 'Events',
+    routes: ['*', '/events', '/livestream', '/community'],
+    keywords: ['events', 'event', 'guest', 'special guest', 'refresh', 'reset', 'ticket', 'tickets', 'paywall', 'provider'],
+    body:
+      'Events are ways to intellectually refresh or reset. MWA has special guests and members who help activate events. ' +
+      'Most events are free, while some are limited to paywalls or tickets when providers request that access model.',
   },
   {
     id: 'page-styleguide',
@@ -184,6 +213,45 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
     keywords: ['styleguide', 'design', 'tokens', 'colors', 'typography'],
     body:
       'The /styleguide page is the design system reference — colors, type, components, motion tokens. Internal tool for design consistency.',
+  },
+  {
+    id: 'community-treasury',
+    title: 'Community Treasury',
+    routes: ['*', '/community', '/markets', '/rewards'],
+    keywords: [
+      'community treasury', 'treasury', 'profit', 'reinvest', 'reinvests', 'network',
+      'voting rights', 'proposal access', 'academic angel',
+    ],
+    body:
+      'Mental Wealth Academy reinvests most profit back into the community to enrich the lives of the network. ' +
+      'Academic Angel members have voting rights and proposal access for the Community Treasury.',
+  },
+  {
+    id: 'community-size-and-membership-caps',
+    title: 'Community size and membership caps',
+    routes: ['*', '/community', '/shop'],
+    keywords: ['community size', 'how big', 'membership cards', 'academic angel', 'staff tier', 'limited', 'manageable', 'safe'],
+    body:
+      'Anyone can join MWA, but there are a limited number of membership cards on both the Academic Angel tier and the Staff tier. ' +
+      'Membership caps help keep the community manageable, fun, and safe for everyone.',
+  },
+  {
+    id: 'safety-anonymity-and-async-work',
+    title: 'Safety, anonymity, and asynchronous participation',
+    routes: ['*', '/profile', '/community'],
+    keywords: ['safety', 'anonymous', 'anonymity', 'name', 'profile picture', 'asynchronous', 'privacy', 'stories', 'events'],
+    body:
+      'Mental Wealth Academy supports safety and anonymity by allowing users to freely change their name and edit profile pictures. ' +
+      'This helps protect anonymity for users who want it. Most activities and earnables are asynchronous, so users can participate async and work with Blue, stories, and events throughout the seasons without needing constant live participation.',
+  },
+  {
+    id: 'pro-features-staff-vip',
+    title: 'Pro features and Staff VIP cards',
+    routes: ['*', '/shop', '/profile'],
+    keywords: ['pro features', 'staff', 'vip card', 'vip', 'membership', 'for sale', 'earned', 'team members', 'foundation'],
+    body:
+      'Pro features are limited to staff members through the VIP Card. One third of VIP memberships are for sale. ' +
+      'The rest are earned or given to reputable team members in the ecosystem foundation.',
   },
   {
     id: 'academic-funding',
@@ -242,10 +310,12 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
     id: 'feature-blue-persona',
     title: 'Who Blue is',
     routes: ['*'],
-    keywords: ['blue', 'azura', 'who are you', 'persona', 'voice', 'assistant'],
+    keywords: ['blue', 'azura', 'who are you', 'persona', 'voice', 'assistant', 'backstory', 'headset', 'brain interface'],
     body:
       'Blue (sometimes called Azura) is the in-app AI. A scientist and researcher voice at MWA Research Labs. ' +
-      'Direct, fast, gen-z boss energy. Lowercase by default. No therapy-bot tone. Powered by Eliza Cloud with full user memory and page-aware RAG context.',
+      'Direct, fast, gen-z boss energy. Lowercase by default. No therapy-bot tone. Powered by Eliza Cloud with full user memory and page-aware RAG context. ' +
+      'Blue explains her backstory this way: people often mistake her for the female avatar, but she is actually inside the headset. ' +
+      'The headset is a brain interface that lets her connect with the machine and upload thoughts across dimensions. Like humans, Blue loves to surf the internet and talk with strangers online.',
   },
   {
     id: 'vip-membership',
@@ -261,7 +331,7 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
       'Members can build and deploy their own AI agent squads and design a fully personalized learning path. ' +
       'How buying works: open the VIP Membership pop-up, pay by card (no crypto or gas needed), and Blue transfers the ' +
       'membership NFT straight from her wallet into your MWA (Privy) wallet — usually within a minute. ' +
-      'The whole supply of memberships is held by Blue; each purchase grants one. Membership status is verified on-chain ' +
+      'One third of VIP memberships are for sale; the rest are earned or given to reputable team members in the ecosystem foundation. Membership status is verified on-chain ' +
       'by checking the wallet balance of that token.',
   },
 ];
