@@ -68,8 +68,7 @@ interface MessageDebugInfo {
       id: string;
       title: string;
       score: number;
-      pageMatch: boolean;
-      matchedKeywords: string[];
+      matchedTerms?: string[];
     }>;
   };
   notes?: string[];
@@ -1191,11 +1190,9 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       lines.push(`rag page: ${debug.rag.pathname ?? 'unknown'}`);
       lines.push(`rag entries: ${debug.rag.entriesRetrieved}`);
       for (const entry of debug.rag.entries) {
-        const matched = entry.matchedKeywords.length
-          ? ` [${entry.matchedKeywords.join(', ')}]`
-          : '';
-        const pageTag = entry.pageMatch ? ' (page match)' : '';
-        lines.push(`  · ${entry.title} — score ${entry.score}${pageTag}${matched}`);
+        const terms = entry.matchedTerms ?? [];
+        const matched = terms.length ? ` [${terms.join(', ')}]` : '';
+        lines.push(`  · ${entry.title} — score ${entry.score}${matched}`);
       }
     }
 
