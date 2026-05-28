@@ -2,52 +2,35 @@
 
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import styles from './LandingPage.module.css';
 import LandingEnterAcademyButton from './LandingEnterAcademyButton';
 import LandingEnterAsAgentButton from './LandingEnterAsAgentButton';
 import CompanyLogos from './CompanyLogos';
-import ShardsAltar from './ShardsAltar';
-
-// One cluster = the 6 screenshots of a single app. We only have 6 shots for
-// now, so the cluster is recycled each cycle; the animation cascades them in
-// one by one, holds the group, then transitions out before the next cluster.
-const appGroupScreens = [
-  '/images/app1.png',
-  '/images/app2.png',
-  '/images/app3.png',
-  '/images/app4.png',
-  '/images/app5.png',
-  '/images/app6.png',
-] as const;
-
-const APP_CASCADE_STEP = 0.2; // seconds between each shot dropping in
+import OrbitalDiagram from './OrbitalDiagram';
 
 export const EcosystemSection: React.FC = () => (
   <section id="value" className={styles.ecosystemSection} aria-label="Academy ecosystem">
     <div className={styles.ecosystemInner}>
-      <h2 className={styles.ecosystemHeadline}>One Ecosystem, One Point System, Many Activities</h2>
+      <h2 className={styles.ecosystemHeadline}>
+        One ecosystem. <span className={styles.ecosystemHeadlineAccent}>One point system.</span> Many ways in.
+      </h2>
       <p className={styles.ecosystemSubtext}>
-        Earn cash and credits from activities as you level-up. Earned progress rewards are entirely owned by you and immutable through a decentralized blockchain account.
+        Every quest, course, simulation, and trade adds to the same balance — yours, kept on-chain so it travels with you. No siloed scores, no resets.
       </p>
-      <div className={styles.appsLayout}>
-        <div className={styles.appsImageCol}>
-          <ShardsAltar />
+
+      <OrbitalDiagram />
+
+      <div className={styles.ecosystemBanner}>
+        <div className={styles.ecosystemBannerCopy}>
+          <p className={styles.ecosystemBannerHeadline}>Pick any door. They all earn the same points.</p>
+          <p className={styles.ecosystemBannerSubtext}>
+            Start with a daily quest, drop into a livestream, or run a simulation — your progress compounds in one wallet.
+          </p>
         </div>
-        <div className={styles.appsScrollCol} aria-hidden="true">
-          <div className={styles.appGroupRow}>
-            {appGroupScreens.map((src, i) => (
-              <Image
-                key={src}
-                src={src}
-                alt=""
-                width={490}
-                height={1060}
-                className={styles.appWaveShot}
-                style={{ animationDelay: `${i * APP_CASCADE_STEP}s` }}
-              />
-            ))}
-          </div>
-        </div>
+        <Link href="/home" className={styles.ecosystemBannerCta}>
+          Enter the Academy
+        </Link>
       </div>
     </div>
   </section>
