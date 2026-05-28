@@ -29,14 +29,16 @@ const BACKGROUND_COLORS = ImageData.bgcolors;
 // Number of avatars to assign per user
 const AVATARS_PER_USER = 6;
 
-// MWA monochrome tint: maps each pixel's luminance onto a black → #5168FF ramp.
+// MWA monochrome tint: maps each pixel's luminance onto a #404FAB → #C0D0FF ramp.
+// Lifted floor + brighter ceiling so the Noun reads clearly against the card —
+// the previous black → #5168FF ramp crushed shadows and drowned the figure.
 // Bakes into the SVG so every consumer (img, inline svg, og previews) tints uniformly.
 const MWA_TINT_FILTER =
   '<defs><filter id="mwaTint" color-interpolation-filters="sRGB">' +
   '<feColorMatrix type="matrix" values="' +
-  '0.0950 0.1866 0.0362 0 0 ' +
-  '0.1220 0.2395 0.0465 0 0 ' +
-  '0.2990 0.5870 0.1140 0 0 ' +
+  '0.1501 0.2947 0.0572 0 0.251 ' +
+  '0.1513 0.2970 0.0577 0 0.310 ' +
+  '0.0984 0.1931 0.0375 0 0.671 ' +
   '0 0 0 1 0"/></filter></defs>';
 
 /**
