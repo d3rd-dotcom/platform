@@ -2324,7 +2324,7 @@
   position: absolute;
   inset: -2px;
   z-index: 0;
-  background: url('/images/community-hero-bg.png') top / cover no-repeat;
+  background: url('/images/community-hero-bg.webp') top / cover no-repeat;
   transform: scaleX(-1);
   transform-origin: center;
   pointer-events: none;
@@ -2344,7 +2344,7 @@
 }
 
 :global(:root:not([data-theme="dark"])) .communityHero::after {
-  background: url('/images/community-hero-bg-light.png') top / cover no-repeat;
+  background: url('/images/community-hero-bg-light.webp') top / cover no-repeat;
 }
 
 :global(:root:not([data-theme="dark"])) .communityHero .dashboardTitle {
@@ -2674,7 +2674,7 @@
 }
 
 :global(:root:not([data-theme="dark"])) .fundingVillageCard::after {
-  background: url('/images/funding-village-bg-light.png') bottom center / cover no-repeat;
+  background: url('/images/funding-village-bg-light.webp') bottom center / cover no-repeat;
 }
 
 :global(:root:not([data-theme="dark"])) .fundingVillageCard::before {

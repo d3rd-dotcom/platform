@@ -1,0 +1,82 @@
+.shell {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  min-height: 100vh;
+  z-index: 0;
+  background:
+    radial-gradient(circle at top left, rgba(81, 104, 255, 0.14), transparent 34%),
+    radial-gradient(circle at top right, rgba(232, 85, 109, 0.12), transparent 30%),
+    linear-gradient(180deg, #090b11 0%, #05070b 100%);
+}
+
+.rail {
+  flex: 0 0 var(--sidebar-width, 72px);
+  border-right: 1px solid rgba(243, 244, 248, 0.06);
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.topbar {
+  height: 64px;
+  border-bottom: 1px solid rgba(243, 244, 248, 0.06);
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.content {
+  flex: 1;
+  display: grid;
+  place-items: center;
+}
+
+.pulse {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(81, 104, 255, 0.55), rgba(81, 104, 255, 0.12) 60%, transparent 72%);
+  animation: shellPulse 1.4s ease-in-out infinite;
+}
+
+@keyframes shellPulse {
+  0%, 100% {
+    transform: scale(0.82);
+    opacity: 0.45;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.9;
+  }
+}
+
+/* Light theme */
+:global(:root:not([data-theme="dark"])) .shell {
+  background:
+    radial-gradient(circle at top left, rgba(81, 104, 255, 0.12), transparent 34%),
+    radial-gradient(circle at top right, rgba(232, 85, 109, 0.1), transparent 30%),
+    linear-gradient(180deg, #f8faff 0%, #eef3ff 100%);
+}
+
+:global(:root:not([data-theme="dark"])) .rail,
+:global(:root:not([data-theme="dark"])) .topbar {
+  border-color: rgba(26, 27, 36, 0.08);
+  background: rgba(8, 11, 17, 0.015);
+}
+
+@media (max-width: 768px) {
+  .rail {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse {
+    animation: none;
+    opacity: 0.7;
+  }
+}

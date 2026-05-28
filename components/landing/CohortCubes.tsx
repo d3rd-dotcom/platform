@@ -167,9 +167,16 @@ BgColor.displayName = 'BgColor';
 
 type CohortCubesProps = {
   bgColor?: string;
+  /**
+   * When false, the render loop is paused (frameloop="demand") so the cubes
+   * render a single static frame instead of animating every rAF tick. Used to
+   * respect prefers-reduced-motion and to stop burning the main thread while
+   * the canvas is scrolled out of view — both major INP wins.
+   */
+  animate?: boolean;
 };
 
-const CohortCubes = memo(({ bgColor = '#FFFFFF' }: CohortCubesProps) => {
+const CohortCubes = memo(({ bgColor = '#FFFFFF', animate = true }: CohortCubesProps) => {
   const dpr = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2) : 1;
   const bgVec = new THREE.Color(bgColor);
   const bgVector3 = new THREE.Vector3(bgVec.r, bgVec.g, bgVec.b);
@@ -180,7 +187,7 @@ const CohortCubes = memo(({ bgColor = '#FFFFFF' }: CohortCubesProps) => {
       dpr={[dpr, dpr]}
       style={{ width: '100%', height: '100%' }}
       gl={{ antialias: true, powerPreference: 'high-performance', alpha: false, stencil: false, depth: true }}
-      frameloop="always"
+      frameloop={animate ? 'always' : 'demand'}
       performance={{ min: 0.5 }}
       onCreated={({ gl }) => {
         gl.setClearColor(bgColor, 1);
