@@ -57,7 +57,7 @@ export const HeroSection: React.FC = () => {
         </div>
         <div className={styles.heroAppShotFrame} aria-hidden="true">
           <Image
-            src="/images/hero-app-shot.png"
+            src="/images/hero-app-shot.webp"
             alt=""
             width={1600}
             height={900}
