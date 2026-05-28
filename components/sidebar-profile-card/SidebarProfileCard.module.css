@@ -112,8 +112,8 @@
 .name {
   font-family: var(--font-primary);
   font-size: 13px;
-  font-weight: 400;
-  color: rgba(227, 225, 238, 0.78);
+  font-weight: 600;
+  color: rgba(238, 237, 247, 0.96);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -122,14 +122,14 @@
 .nameMuted {
   font-family: var(--font-primary);
   font-size: 13px;
-  font-weight: 400;
-  color: rgba(227, 225, 238, 0.35);
+  font-weight: 500;
+  color: rgba(227, 225, 238, 0.55);
 }
 
 .wallet {
   font-family: var(--font-mono, monospace);
-  font-size: 10px;
-  color: rgba(227, 225, 238, 0.4);
+  font-size: 11px;
+  color: rgba(227, 225, 238, 0.62);
   letter-spacing: 0.02em;
 }
 
@@ -226,15 +226,15 @@
 }
 
 :global(:root:not([data-theme="dark"])) .name {
-  color: var(--color-text-soft);
+  color: var(--color-text-dark);
 }
 
 :global(:root:not([data-theme="dark"])) .nameMuted {
-  color: rgba(26, 29, 51, 0.35);
+  color: rgba(26, 29, 51, 0.55);
 }
 
 :global(:root:not([data-theme="dark"])) .wallet {
-  color: rgba(26, 29, 51, 0.45);
+  color: rgba(26, 29, 51, 0.62);
 }
 
 :global(:root:not([data-theme="dark"])) .menuBtn {

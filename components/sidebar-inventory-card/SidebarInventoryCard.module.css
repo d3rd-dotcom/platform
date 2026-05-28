@@ -45,9 +45,9 @@
 
 .shardCountSm {
   font-family: var(--font-mono, monospace);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 400;
-  color: rgba(227, 225, 238, 0.6);
+  color: rgba(227, 225, 238, 0.85);
   letter-spacing: 0.05em;
 }
 
@@ -124,18 +124,18 @@
 }
 
 .tokenName {
-  font-family: var(--font-mono, monospace);
-  font-size: 11px;
-  font-weight: 400;
-  color: rgba(227, 225, 238, 0.58);
-  letter-spacing: 0.04em;
+  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(227, 225, 238, 0.85);
+  letter-spacing: 0.01em;
 }
 
 .balanceVal {
   font-family: var(--font-mono, monospace);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 400;
-  color: rgba(227, 225, 238, 0.7);
+  color: rgba(238, 237, 247, 0.96);
   font-variant-numeric: tabular-nums;
 }
 
@@ -196,13 +196,13 @@
 }
 
 :global(:root:not([data-theme="dark"])) .tokenName {
-  color: var(--color-text-muted);
-}
-
-:global(:root:not([data-theme="dark"])) .balanceVal {
   color: var(--color-text-soft);
 }
 
+:global(:root:not([data-theme="dark"])) .balanceVal {
+  color: var(--color-text-dark);
+}
+
 :global(:root:not([data-theme="dark"])) .shardCountSm {
-  color: var(--color-text-muted);
+  color: var(--color-text-soft);
 }
