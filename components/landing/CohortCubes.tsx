@@ -115,20 +115,27 @@ const CubesScene = memo(({ bgColor }: { bgColor: THREE.Vector3 }) => {
   const visibleHeight = 2 * Math.tan(fovRad / 2) * cameraZ;
   const visibleWidth = visibleHeight * aspect;
 
-  // Spread cubes across the viewport using a fixed 5x2 grid (10 slots, 10 cubes).
-  // Every slot is filled and jitter is small enough that cubes can't drift toward the center.
-  const cols = aspect >= 1 ? 5 : 2;
-  const rows = Math.ceil(count / cols);
-  const jitterX = visibleWidth / cols * 0.18;
-  const jitterY = visibleHeight / rows * 0.18;
+  // Place cubes in two flanking columns so they frame the center content.
+  // On landscape: 5 left, 5 right — x stays in the outer 25-45% of half-width.
+  // On portrait: 5 top, 5 bottom — y stays in the outer 28-46% of half-height.
+  const half = count / 2; // 5
+  const isLandscape = aspect >= 1;
 
   for (let i = 0; i < count; i++) {
-    const col = i % cols;
-    const row = Math.floor(i / cols);
-    const gridX = col / (cols - 1);
-    const gridY = row / (rows - 1);
-    const x = (gridX - 0.5) * visibleWidth * 0.92 + (Math.random() - 0.5) * jitterX;
-    const y = (gridY - 0.5) * visibleHeight * 0.78 + (Math.random() - 0.5) * jitterY;
+    const side = i < half ? -1 : 1;
+    const idx = i % half;
+    const t = idx / (half - 1); // 0..1 along the main axis
+
+    let x: number, y: number;
+    if (isLandscape) {
+      const xBase = visibleWidth * (0.27 + Math.random() * 0.16);
+      x = side * (xBase + (Math.random() - 0.5) * visibleWidth * 0.04);
+      y = (t - 0.5) * visibleHeight * 0.92 + (Math.random() - 0.5) * visibleHeight * 0.10;
+    } else {
+      x = (t - 0.5) * visibleWidth * 0.88 + (Math.random() - 0.5) * visibleWidth * 0.08;
+      const yBase = visibleHeight * (0.28 + Math.random() * 0.18);
+      y = side * yBase;
+    }
 
     cubes.push({
       position: [x, y, (Math.random() - 0.5) * 6] as [number, number, number],

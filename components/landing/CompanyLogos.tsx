@@ -58,7 +58,6 @@ export default function CompanyLogos() {
           aria-hidden="true"
           className={`${styles.stickyLogosBar} ${phase === 'merging' ? styles.stickyLogosBarMerging : ''}`}
         >
-          <p className={styles.trustedByText}>Partners and Ecosystem Foundation</p>
           <div className={styles.stickyLogosGrid}>
             {LOGOS.map((logo) => (
               <div key={logo.src} className={styles.stickyLogoItem}>
