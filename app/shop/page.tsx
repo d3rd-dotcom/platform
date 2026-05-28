@@ -7,7 +7,7 @@ import { ShopPageSkeleton } from '@/components/skeleton/Skeleton';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
 
-type BadgeType = 'new' | 'limited' | 'exclusive' | 'free';
+type BadgeType = 'new' | 'limited' | 'exclusive' | 'free' | 'sold-out';
 
 interface ShopItem {
   id: string;
@@ -22,18 +22,18 @@ interface ShopItem {
 
 const shopItems: ShopItem[] = [
   {
-    id: 'blazer',
-    title: 'The Academy Blazer',
+    id: 'shirt',
+    title: 'The Academy Shirt',
     sub: 'Official MWA Uniform',
-    desc: 'Midnight navy with embroidered crest and hidden inner pocket for your field journal. Tailored cut, unisex, runs true to size.',
-    price: '120 USDC',
+    desc: 'Heavyweight cotton tee in midnight navy with the embroidered Academy crest on the chest. Boxy unisex cut, ribbed crew neck, runs true to size.',
+    price: '42 USDC',
     image: 'https://i.imgur.com/S3AMvJA.png',
     category: 'Uniforms',
     badge: 'exclusive',
   },
   {
     id: 'journal',
-    title: 'Glitch Field Journal',
+    title: 'Magazine 01',
     sub: 'Leather-bound, grid pages',
     desc: 'A 200-page leather field journal with dot-grid pages, gilded edges, and the Academy sigil debossed on the cover. Includes a ribbon bookmark and pen loop. Built for notes, reflections, and research sketches.',
     price: '45 USDC',
@@ -49,6 +49,7 @@ const shopItems: ShopItem[] = [
     price: '85 USDC',
     image: 'https://i.imgur.com/TPujE2j.png',
     category: 'Uniforms',
+    badge: 'sold-out',
   },
   {
     id: 'pin-set',
@@ -58,26 +59,26 @@ const shopItems: ShopItem[] = [
     price: '28 USDC',
     image: 'https://i.imgur.com/yUCxnDX.png',
     category: 'Accessories',
+    badge: 'sold-out',
+  },
+  {
+    id: 'snapback',
+    title: 'MWA Snapback',
+    sub: 'Six-panel, embroidered crest',
+    desc: 'Structured six-panel snapback in matte black with the Academy crest embroidered on the front and a tonal woven label on the side. Flat brim, adjustable plastic closure, one-size-fits-most.',
+    price: '38 USDC',
+    image: '/images/shop/mwa-snapback.webp',
+    category: 'Accessories',
+  },
+  {
+    id: 'blue-world',
+    title: 'Blue World Magazine',
+    sub: 'Issue 01, perfect-bound',
+    desc: 'The first print issue of Blue World — a 96-page magazine from inside the Academy. Field reports from Blue, essays on autonomous governance, scholar interviews, and the visual archive of Cohort 01. Printed on uncoated stock with a soft-touch cover.',
+    price: '24 USDC',
+    image: '/images/shop/blue-world-magazine.webp',
+    category: 'Accessories',
     badge: 'new',
-  },
-  {
-    id: 'beanie',
-    title: 'Neural Beanie',
-    sub: 'Merino wool blend',
-    desc: 'Ribbed merino-blend beanie in Academy black with a woven label. Warm enough for late study sessions and early walks.',
-    price: '32 USDC',
-    image: 'https://i.imgur.com/fO2vF5f.png',
-    category: 'Accessories',
-  },
-  {
-    id: 'patch',
-    title: 'Division Patch',
-    sub: 'Iron-on, 3" diameter',
-    desc: 'Embroidered patch for your chosen division. Attach to your blazer, bag, or jacket. Each division has a mark derived from systems diagrams and Academy iconography.',
-    price: '12 USDC',
-    image: 'https://i.imgur.com/yImR5DJ.png',
-    category: 'Accessories',
-    badge: 'free',
   },
   {
     id: 'magazine',
@@ -114,7 +115,7 @@ const shopItems: ShopItem[] = [
     sub: 'Active noise cancelling',
     desc: 'Over-ear headphones designed for deep study sessions. 40-hour battery, spatial audio, and a custom "Focus Mode" EQ tuned for lecture playback and lo-fi concentration.',
     price: '180 USDC',
-    image: 'https://yeezy.com/cdn-cgi/image/width=1024,height=1024,quality=100,compression=fast,slow-connection-quality=80,fit=pad,gravity=center,background=transparent,format=avif/https://cdn.swell.store/yzy-prod/6949ed1f80c01300127beab9/b64116f133b7f192bb91b291e8dd14c7/HD-01-B-1.png',
+    image: '/images/shop/hd-01-focus-cans.webp',
     category: 'Tech',
     badge: 'limited',
   },
@@ -144,7 +145,7 @@ const shopItems: ShopItem[] = [
     sub: 'Triple black, cushioned sole',
     desc: 'Minimalist triple-black sneakers with custom insole bearing the Academy coordinates. Comfortable enough for all-day lectures, sharp enough for governance ceremonies.',
     price: '220 USDC',
-    image: 'https://yeezy.com/cdn-cgi/image/width=1024,height=1024,quality=100,compression=fast,slow-connection-quality=80,fit=pad,gravity=center,background=transparent,format=avif/https://cdn.swell.store/yzy-prod/694d83925095a200120c13c0/a15e70f2904c7fdb11f10bbe48f3f5b1/JC-10-BLACK-1.png',
+    image: '/images/shop/jc-10-scholar.webp',
     category: 'Footwear',
     badge: 'limited',
   },
@@ -169,8 +170,8 @@ const shopItems: ShopItem[] = [
   {
     id: 'starter-kit',
     title: 'New Scholar Starter Kit',
-    sub: 'Blazer + Journal + Pin Set + Keycard',
-    desc: 'Everything you need to begin the cohort. The official Academy blazer, glitch field journal, full scholar pin set, and your NFC access keycard bundled at a discount.',
+    sub: 'Shirt + Magazine + Pin Set + Keycard',
+    desc: 'Everything you need to begin the cohort. The official Academy shirt, Magazine 01, full scholar pin set, and your NFC access keycard bundled at a discount.',
     price: '185 USDC',
     image: '/images/shop/new-scholar-starter-kit.webp',
     category: 'Bundles',
@@ -185,7 +186,10 @@ const badgeClassMap: Record<BadgeType, string> = {
   limited: 'badgeLimited',
   exclusive: 'badgeExclusive',
   free: 'badgeFree',
+  'sold-out': 'badgeSoldOut',
 };
+
+const badgeLabel = (badge: BadgeType) => badge.replace('-', ' ');
 
 export default function ShopPage() {
   const { play } = useSound();
@@ -240,13 +244,16 @@ export default function ShopPage() {
         </div>
 
         <div className={styles.productGrid}>
-          {filtered.map((item) => (
+          {filtered.map((item) => {
+            const isSoldOut = item.badge === 'sold-out';
+            return (
             <button
               key={item.id}
               type="button"
               className={styles.productCard}
-              onClick={() => { play('click'); setSelectedItem(item); }}
-              onMouseEnter={() => play('hover')}
+              onClick={() => { if (isSoldOut) return; play('click'); setSelectedItem(item); }}
+              onMouseEnter={() => { if (!isSoldOut) play('hover'); }}
+              aria-disabled={isSoldOut}
             >
               <img
                 className={styles.productImage}
@@ -265,13 +272,14 @@ export default function ShopPage() {
                   <span className={styles.metaPrice}>{item.price}</span>
                   {item.badge && (
                     <span className={`${styles.metaBadge} ${styles[badgeClassMap[item.badge]]}`}>
-                      {item.badge}
+                      {badgeLabel(item.badge)}
                     </span>
                   )}
                 </span>
               </span>
             </button>
-          ))}
+            );
+          })}
         </div>
 
         {/* Detail Modal */}
@@ -284,7 +292,7 @@ export default function ShopPage() {
               <div className={styles.detailInfo}>
                 {selectedItem.badge && (
                   <span className={`${styles.detailBadge} ${styles[badgeClassMap[selectedItem.badge]]}`}>
-                    {selectedItem.badge}
+                    {badgeLabel(selectedItem.badge)}
                   </span>
                 )}
                 <span className={styles.detailTitle}>{selectedItem.title}</span>
@@ -295,10 +303,11 @@ export default function ShopPage() {
                 <div className={styles.detailActions}>
                   <button
                     className={styles.detailMintButton}
-                    onClick={() => play('click')}
-                    onMouseEnter={() => play('hover')}
+                    onClick={() => selectedItem.badge !== 'sold-out' && play('click')}
+                    onMouseEnter={() => selectedItem.badge !== 'sold-out' && play('hover')}
+                    disabled={selectedItem.badge === 'sold-out'}
                   >
-                    Mint Now
+                    {selectedItem.badge === 'sold-out' ? 'Sold Out' : 'Mint Now'}
                   </button>
                   <button
                     className={styles.detailSaveButton}
