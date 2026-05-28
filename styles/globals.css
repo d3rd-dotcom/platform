@@ -1,6 +1,7 @@
-/* Primary font loading via next/font/google in layout.tsx */
-/* Fallback @import ensures hardcoded font-family references still resolve */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
+/* Primary fonts: self-hosted via next/font/google in layout.tsx (--font-* vars).
+   Literal font-family names (e.g. 'Poppins') used in page CSS are served by the
+   Google Fonts <link> in layout.tsx <head> — loaded there instead of via a
+   render-blocking CSS @import so it stays off the critical render path. */
 
 /**
  * Academy V3 Design System

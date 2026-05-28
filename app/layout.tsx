@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import type { CSSProperties, ReactNode } from 'react';
-import { Poppins, Space_Grotesk, IBM_Plex_Mono, Space_Mono, Inter, Patrick_Hand } from 'next/font/google';
+import { Poppins, Space_Grotesk, IBM_Plex_Mono, Inter, Patrick_Hand } from 'next/font/google';
 import localFont from 'next/font/local';
 import '@/styles/globals.css';
 import { RouteShell } from '@/components/layout/RouteShell';
@@ -30,13 +30,6 @@ const ibmPlexMono = IBM_Plex_Mono({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
   variable: '--font-ibm-plex-mono',
-  display: 'swap',
-});
-
-const spaceMono = Space_Mono({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-  variable: '--font-space-mono',
   display: 'swap',
 });
 
@@ -127,12 +120,22 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${poppins.variable} ${spaceGrotesk.variable} ${ibmPlexMono.variable} ${spaceMono.variable} ${patrickHand.variable} ${departureMono.variable}`}
+      className={`${inter.variable} ${poppins.variable} ${spaceGrotesk.variable} ${ibmPlexMono.variable} ${patrickHand.variable} ${departureMono.variable}`}
       data-sidebar-collapsed="true"
       style={{ '--sidebar-width': '72px' } as CSSProperties}
       suppressHydrationWarning
     >
       <head>
+        {/* Google Fonts for literal-name font-family references in page CSS.
+            Loaded via <link> + preconnect (not a CSS @import) so it is discovered
+            immediately in the HTML and fetched in parallel, off the critical path.
+            Variable-based refs (--font-*) are self-hosted via next/font above. */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap"
+        />
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
