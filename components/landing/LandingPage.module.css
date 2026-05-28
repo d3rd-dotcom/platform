@@ -27,7 +27,7 @@
   min-height: calc(100vh - 172px);
   width: min(1280px, var(--landing-content-width));
   margin: 0 auto;
-  padding: clamp(136px, 16vh, 176px) 0 0;
+  padding: clamp(88px, 9vh, 108px) 0 0;
   z-index: 10;
   display: flex;
   flex-direction: column;
@@ -72,6 +72,35 @@
   height: auto;
   border-radius: 12px;
   border: 1px solid rgba(81, 104, 255, 0.22);
+}
+
+/* Rainbow spotlight beam — tip at top center, widens downward */
+.heroBeam {
+  position: absolute;
+  top: -56px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100%, 1100px);
+  height: 320px;
+  clip-path: polygon(50% 0%, 15% 100%, 85% 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.0) 0%,
+    rgba(195, 170, 255, 0.13) 14%,
+    rgba(100, 130, 255, 0.17) 32%,
+    rgba(50, 195, 185, 0.13) 52%,
+    rgba(105, 225, 155, 0.08) 72%,
+    rgba(255, 230, 100, 0.04) 90%,
+    rgba(255, 255, 255, 0.0) 100%
+  );
+  pointer-events: none;
+  z-index: -1;
+  animation: heroBeamFadeIn 1.8s ease 0.1s both;
+}
+
+@keyframes heroBeamFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 .heroVisualColumn {
@@ -951,7 +980,7 @@
   .heroSection {
     width: min(1180px, var(--landing-content-width));
     gap: clamp(20px, 3vw, 44px);
-    padding-top: clamp(132px, 15vh, 164px);
+    padding-top: clamp(84px, 9vh, 104px);
   }
 
   .heroContent {
@@ -2864,6 +2893,7 @@
   .heroSubtext,
   .heroButton,
   .fancyButton,
+  .heroBeam,
   .heroQuote {
     animation: none !important;
     opacity: 1 !important;

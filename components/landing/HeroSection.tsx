@@ -57,6 +57,7 @@ export const HeroSection: React.FC = () => {
   return (
     <>
       <div className={styles.heroSection}>
+        <div className={styles.heroBeam} aria-hidden="true" />
         <div className={styles.heroContent}>
           <p className={styles.heroTextBadge}>No more endless scrolling.</p>
           <h1 className={styles.heroHeadline}>
