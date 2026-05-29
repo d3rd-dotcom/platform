@@ -552,6 +552,74 @@
   font-weight: 800;
 }
 
+/* ── Library card ── */
+.libraryCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  text-decoration: none;
+  padding: 16px 16px 14px;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid rgba(81, 104, 255, 0.18);
+  box-shadow: 0 16px 34px rgba(26, 29, 51, 0.08);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.libraryCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(81, 104, 255, 0.4);
+  box-shadow: 0 20px 40px rgba(26, 29, 51, 0.12);
+}
+
+.libraryHead {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.libraryIcon {
+  display: block;
+  color: #5168ff;
+}
+
+.libraryTitle {
+  font-size: 0.98rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #1a1d33;
+}
+
+.libraryText {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #6b7194;
+}
+
+.libraryCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  align-self: flex-start;
+  margin-top: 2px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #5168ff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .libraryCard {
+    transition: none;
+  }
+  .libraryCard:hover {
+    transform: none;
+  }
+}
+
 /* ── Dark theme ── */
 :global([data-theme="dark"]) .leaderboardCard {
   background: #15172a;
@@ -582,6 +650,20 @@
 
 :global([data-theme="dark"]) .vipCard {
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+}
+
+:global([data-theme="dark"]) .libraryCard {
+  background: #15172a;
+  border-color: rgba(81, 104, 255, 0.28);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .libraryTitle {
+  color: #f0f1fa;
+}
+
+:global([data-theme="dark"]) .libraryText {
+  color: #9aa0c0;
 }
 
 :global([data-theme="dark"]) .eggTitle {
@@ -643,6 +725,28 @@
 }
 
 @media (max-width: 768px) {
+  /* Event cards become a horizontal, swipeable row to save vertical space. */
+  .eventsGrid {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 12px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+
+  .eventsGrid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .eventCard {
+    flex: 0 0 78%;
+    max-width: 290px;
+    scroll-snap-align: start;
+  }
+
   .morningPagesShell {
     position: fixed;
     left: 0;
