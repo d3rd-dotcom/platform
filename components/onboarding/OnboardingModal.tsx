@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import Image from 'next/image';
 import { useAccount } from 'wagmi';
 import { usePrivy } from '@privy-io/react-auth';
+import { setStorageItem } from '@/lib/safe-storage';
 import styles from './OnboardingModal.module.css';
 
 interface Avatar {
@@ -298,6 +299,10 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
       if (profileResponse.ok) {
         const avatarUrl = profileData.user?.avatarUrl || null;
         window.dispatchEvent(new Event('profileUpdated'));
+        // Signal the home first-run guide that this user just onboarded. Only
+        // freshly onboarded users ever set this, so the Daily Note intro never
+        // shows for existing accounts.
+        setStorageItem('mwa-home-intro-pending', '1');
         if (onComplete) {
           onComplete(username, avatarUrl);
         } else {

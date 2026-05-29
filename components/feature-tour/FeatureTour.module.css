@@ -43,9 +43,44 @@
   transition: top 0.28s ease, left 0.28s ease, opacity 0.2s ease;
 }
 
-.stepCount {
-  display: block;
-  margin-bottom: 8px;
+/* Phase B card has a touch more room for the two-paragraph copy. */
+.calloutCentered {
+  width: 360px;
+}
+
+/* Blue identity header at the top of every callout. */
+.blueHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.blueAvatar {
+  position: relative;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--card-border, rgba(255, 255, 255, 0.14));
+}
+
+.blueAvatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.blueName {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-dark, #1a1b24);
+}
+
+.stepBadge {
+  margin-left: auto;
   font-size: 12px;
   letter-spacing: 0.02em;
   color: var(--color-text-faint, #8a8f9c);
@@ -63,6 +98,14 @@
   font-size: 14px;
   line-height: 1.55;
   color: var(--color-text-soft, #c2c6d0);
+}
+
+/* Secondary line (e.g. the Ask Blue pointer) — quieter than the main body. */
+.bodyFaint {
+  margin: -8px 0 18px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text-faint, #8a8f9c);
 }
 
 .actions {
@@ -124,9 +167,53 @@
   background: var(--color-primary-hover, #5b7bf0);
 }
 
-/* Tour is tablet + desktop only — never paint on phones. */
-@media (max-width: 767px) {
-  .root {
-    display: none;
+/* The guide runs on every device. On phones the Daily Note card is fixed near
+   the bottom, so give the callout a little breathing room. */
+@media (max-width: 600px) {
+  .callout,
+  .calloutCentered {
+    width: calc(100vw - 32px);
   }
+}
+
+/* Dev-only launcher. Sits above the overlay so it stays clickable mid-phase.
+   Compiled out of production builds (see FeatureTour.tsx). */
+.devPanel {
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  z-index: 9500;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  max-width: 220px;
+  padding: 8px 10px;
+  background: rgba(8, 10, 16, 0.92);
+  border: 1px dashed rgba(255, 255, 255, 0.28);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  pointer-events: auto;
+}
+
+.devPanelLabel {
+  width: 100%;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.devBtn {
+  padding: 4px 9px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #e8eaf2;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.devBtn:hover {
+  background: rgba(255, 255, 255, 0.16);
 }

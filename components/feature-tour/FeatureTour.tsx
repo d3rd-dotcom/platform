@@ -1,153 +1,178 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { getStorageItem, setStorageItem, removeStorageItem } from '@/lib/safe-storage';
 import styles from './FeatureTour.module.css';
 
 /**
- * A one-time spotlight tour of the home dashboard. Runs after onboarding,
- * tablet and desktop only. Each step dims the screen and highlights one
- * feature with a callout. Targets are marked with `data-tour="<id>"`.
+ * The home first-run guide. A focused, two-phase walkthrough that runs after
+ * onboarding on every device:
+ *
+ *   Phase A ("intro")  — right after onboarding, dim the page, spotlight the
+ *     Daily Note card, and let Blue introduce the core daily loop, ending with
+ *     a "Start your first note" call to action.
+ *   Phase B ("course") — after the user finishes their first note, a centered
+ *     Blue card points them to the course (weekly tasks + seasonal activities)
+ *     and reminds them they can ask Blue anything about the Academy.
+ *
+ * The spotlight target is marked with `data-tour="daily-note"`.
  */
 
-const SEEN_KEY = 'mwa-feature-tour-seen';
-const MIN_WIDTH = 768; // tablet + desktop only
+// Set by OnboardingModal the moment a profile is created — the only signal that
+// a user *just* onboarded, so the guide never shows for existing accounts.
+const PENDING_KEY = 'mwa-home-intro-pending';
+// Set once Phase A is skipped, finished, or the user taps Start.
+const INTRO_SEEN_KEY = 'mwa-home-intro-seen';
+// Set by DailyNotes on the user's first successful note save.
+const FIRST_NOTE_KEY = 'mwa-first-daily-note-done';
+// Set once Phase B is dismissed/finished.
+const COURSE_NUDGE_KEY = 'mwa-home-course-nudge-seen';
 
-interface TourStep {
-  /** data-tour id of the element to highlight. Omit for a centered card. */
-  target?: string;
+const TARGET = 'daily-note';
+const BLUE_AVATAR_SRC = '/images/blue-portrait.png';
+
+type Phase = 'idle' | 'intro' | 'course';
+
+interface IntroStep {
   title: string;
   body: string;
 }
 
-const STEPS: TourStep[] = [
+const INTRO_STEPS: IntroStep[] = [
   {
-    title: 'Welcome to Mental Wealth Academy',
-    body: "Here's a 30-second tour of the parts that matter most. You can skip it anytime.",
+    title: 'Start with your Morning Note',
+    body: 'This is the heart of your day here. Take a few quiet minutes to write, and you earn 100 credits each time.',
   },
   {
-    target: 'shards',
-    title: 'Credits are your rewards',
-    body: 'You earn credits for real activity - surveys, course milestones, streaks, and quests. This is your running balance.',
-  },
-  {
-    target: 'journal',
-    title: 'Journal to earn',
-    body: 'Morning pages are quick reflective writing that builds your streak and earns credits. A few minutes pays off.',
-  },
-  {
-    target: 'markets',
-    title: 'VIP markets desk',
-    body: 'VIP members can open the markets desk to review Blue signals, treasury routing, and live execution history.',
-  },
-  {
-    target: 'quests',
-    title: 'Take on quests',
-    body: 'Quests are bite-size challenges. Complete them to earn credits and keep your momentum going.',
-  },
-  {
-    target: 'vip',
-    title: 'VIP membership',
-    body: 'VIP unlocks research tools, grants, and community funds — built for members doing serious science.',
-  },
-  {
-    target: 'ask-blue',
-    title: 'Ask Blue anytime',
-    body: 'Blue is your AI research partner. Open her whenever you have a question — she knows MWA and remembers your past chats.',
+    title: 'A little every day',
+    body: 'Come back daily to keep your streak going — it is the simplest way to grow your credits over time. Ready to write your first one?',
   },
 ];
 
 export default function FeatureTour() {
-  const [active, setActive] = useState(false);
+  const router = useRouter();
+  const [phase, setPhase] = useState<Phase>('idle');
   const [stepIndex, setStepIndex] = useState(0);
   const [rect, setRect] = useState<DOMRect | null>(null);
   const calloutRef = useRef<HTMLDivElement>(null);
 
-  const step = STEPS[stepIndex];
-  const isLast = stepIndex === STEPS.length - 1;
+  const introStep = INTRO_STEPS[stepIndex];
+  const isLastIntro = stepIndex === INTRO_STEPS.length - 1;
 
-  const finish = useCallback(() => {
-    setStorageItem(SEEN_KEY, '1');
-    setActive(false);
+  // ── Phase A controls ──
+  const finishIntro = useCallback(() => {
+    setStorageItem(INTRO_SEEN_KEY, '1');
+    setRect(null);
+    setPhase('idle');
   }, []);
 
-  const next = useCallback(() => {
-    setStepIndex((s) => {
-      if (s >= STEPS.length - 1) {
-        finish();
-        return s;
-      }
-      return s + 1;
-    });
-  }, [finish]);
+  const startFirstNote = useCallback(() => {
+    setStorageItem(INTRO_SEEN_KEY, '1');
+    setRect(null);
+    setPhase('idle');
+    // Open the writing session by activating the card's button. A short delay
+    // lets the overlay tear down first so focus lands cleanly in the editor.
+    window.setTimeout(() => {
+      const btn = document.querySelector<HTMLElement>(`[data-tour="${TARGET}"] button`);
+      btn?.click();
+    }, 80);
+  }, []);
 
-  const back = useCallback(() => {
+  const nextIntro = useCallback(() => {
+    setStepIndex((s) => Math.min(s + 1, INTRO_STEPS.length - 1));
+  }, []);
+
+  const backIntro = useCallback(() => {
     setStepIndex((s) => Math.max(0, s - 1));
   }, []);
 
-  // Run once, tablet+desktop only, after the dashboard has rendered.
-  useEffect(() => {
-    if (getStorageItem(SEEN_KEY)) return;
-    if (typeof window === 'undefined' || window.innerWidth < MIN_WIDTH) return;
-
-    let cancelled = false;
-    let tries = 0;
-    const poll = () => {
-      if (cancelled) return;
-      // The VIP card is the last target to mount, so it gates "ready".
-      if (document.querySelector('[data-tour="vip"]')) {
-        setActive(true);
-        return;
-      }
-      if (tries++ > 50) return; // ~20s, then give up quietly
-      window.setTimeout(poll, 400);
-    };
-    poll();
-    return () => {
-      cancelled = true;
-    };
+  // ── Phase B controls ──
+  const finishCourseNudge = useCallback(() => {
+    setStorageItem(COURSE_NUDGE_KEY, '1');
+    setPhase('idle');
   }, []);
 
-  // Locate the current target and scroll it into view.
+  const goToCourse = useCallback(() => {
+    setStorageItem(COURSE_NUDGE_KEY, '1');
+    setPhase('idle');
+    router.push('/course');
+  }, [router]);
+
+  // Decide what (if anything) to show, once on mount.
   useEffect(() => {
-    if (!active) return;
-    if (!step.target) {
-      setRect(null);
-      return;
+    if (typeof window === 'undefined') return;
+
+    const introPending = getStorageItem(PENDING_KEY) === '1';
+    const introSeen = getStorageItem(INTRO_SEEN_KEY) === '1';
+    const firstNoteDone = getStorageItem(FIRST_NOTE_KEY) === '1';
+    const courseNudgeSeen = getStorageItem(COURSE_NUDGE_KEY) === '1';
+
+    // Phase A — a brand-new onboarded user who hasn't seen the intro yet.
+    if (introPending && !introSeen) {
+      let cancelled = false;
+      let tries = 0;
+      const poll = () => {
+        if (cancelled) return;
+        if (document.querySelector(`[data-tour="${TARGET}"]`)) {
+          setStepIndex(0);
+          setPhase('intro');
+          return;
+        }
+        if (tries++ > 50) return; // ~20s, then give up quietly
+        window.setTimeout(poll, 400);
+      };
+      poll();
+      return () => {
+        cancelled = true;
+      };
     }
 
+    // Phase B fallback — they saw the intro and already wrote their first note
+    // (possibly elsewhere); nudge them toward the course now.
+    if (introSeen && firstNoteDone && !courseNudgeSeen) {
+      setPhase('course');
+    }
+  }, []);
+
+  // Live Phase B trigger: fired by DailyNotes on the first completed note. A
+  // small delay lets the credit/reward animation play before Blue chimes in.
+  useEffect(() => {
+    const onCompleted = () => {
+      if (getStorageItem(INTRO_SEEN_KEY) !== '1') return;
+      if (getStorageItem(COURSE_NUDGE_KEY) === '1') return;
+      window.setTimeout(() => setPhase('course'), 1600);
+    };
+    window.addEventListener('dailyNoteCompleted', onCompleted);
+    return () => window.removeEventListener('dailyNoteCompleted', onCompleted);
+  }, []);
+
+  // Locate the spotlight target and scroll it into view (Phase A only).
+  useEffect(() => {
+    if (phase !== 'intro') return;
     let cancelled = false;
-    let tries = 0;
     const locate = () => {
       if (cancelled) return;
-      const el = document.querySelector<HTMLElement>(`[data-tour="${step.target}"]`);
-      if (el) {
-        el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-        window.setTimeout(() => {
-          if (!cancelled) setRect(el.getBoundingClientRect());
-        }, 300);
-        return;
-      }
-      if (tries++ > 12) {
-        // Target never appeared (e.g. hidden at this width) — move on.
-        if (stepIndex < STEPS.length - 1) setStepIndex((s) => s + 1);
-        else finish();
-        return;
-      }
-      window.setTimeout(locate, 120);
+      const el = document.querySelector<HTMLElement>(`[data-tour="${TARGET}"]`);
+      if (!el) return;
+      el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      window.setTimeout(() => {
+        if (!cancelled) setRect(el.getBoundingClientRect());
+      }, 300);
     };
     locate();
     return () => {
       cancelled = true;
     };
-  }, [active, step.target, stepIndex, finish]);
+  }, [phase]);
 
-  // Keep the highlight aligned as the page scrolls or resizes.
+  // Keep the spotlight aligned as the page scrolls or resizes (Phase A only).
   useEffect(() => {
-    if (!active || !step.target) return;
+    if (phase !== 'intro') return;
     const sync = () => {
-      const el = document.querySelector<HTMLElement>(`[data-tour="${step.target}"]`);
+      const el = document.querySelector<HTMLElement>(`[data-tour="${TARGET}"]`);
       if (el) setRect(el.getBoundingClientRect());
     };
     window.addEventListener('resize', sync);
@@ -156,32 +181,25 @@ export default function FeatureTour() {
       window.removeEventListener('resize', sync);
       window.removeEventListener('scroll', sync, true);
     };
-  }, [active, step.target]);
+  }, [phase]);
 
-  // Close the tour if the viewport drops below tablet size.
+  // Keyboard controls for the intro phase.
   useEffect(() => {
-    if (!active) return;
-    const onResize = () => {
-      if (window.innerWidth < MIN_WIDTH) finish();
-    };
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, [active, finish]);
-
-  // Keyboard controls.
-  useEffect(() => {
-    if (!active) return;
+    if (phase !== 'intro') return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') finish();
-      else if (e.key === 'ArrowRight' || e.key === 'Enter') next();
-      else if (e.key === 'ArrowLeft') back();
+      if (e.key === 'Escape') finishIntro();
+      else if (e.key === 'ArrowRight' || e.key === 'Enter') {
+        if (isLastIntro) startFirstNote();
+        else nextIntro();
+      } else if (e.key === 'ArrowLeft') backIntro();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [active, next, back, finish]);
+  }, [phase, isLastIntro, finishIntro, startFirstNote, nextIntro, backIntro]);
 
   // Position the callout near the target, or centered when there is none.
   useEffect(() => {
+    if (phase === 'idle') return;
     const el = calloutRef.current;
     if (!el) return;
     const margin = 16;
@@ -203,11 +221,11 @@ export default function FeatureTour() {
     } else if (rect.left >= cw + gap + margin) {
       left = rect.left - gap - cw;
       top = rect.top + rect.height / 2 - ch / 2;
-    } else if (vh - rect.bottom >= ch + gap + margin) {
-      top = rect.bottom + gap;
+    } else if (rect.top >= ch + gap + margin) {
+      top = rect.top - gap - ch;
       left = rect.left + rect.width / 2 - cw / 2;
     } else {
-      top = rect.top - gap - ch;
+      top = rect.bottom + gap;
       left = rect.left + rect.width / 2 - cw / 2;
     }
 
@@ -216,12 +234,59 @@ export default function FeatureTour() {
     el.style.top = `${top}px`;
     el.style.left = `${left}px`;
     el.style.opacity = '1';
-  }, [rect, stepIndex, active]);
+  }, [rect, stepIndex, phase]);
 
-  if (!active || typeof document === 'undefined') return null;
+  if (typeof document === 'undefined') return null;
 
-  return createPortal(
-    <div className={styles.root} role="dialog" aria-modal="true" aria-label="Feature tour">
+  const blueHeader = (extra?: ReactNode) => (
+    <div className={styles.blueHead}>
+      <span className={styles.blueAvatar}>
+        <Image
+          className={styles.blueAvatarImg}
+          src={BLUE_AVATAR_SRC}
+          alt=""
+          width={36}
+          height={36}
+          unoptimized
+        />
+      </span>
+      <span className={styles.blueName}>Blue</span>
+      {extra}
+    </div>
+  );
+
+  const courseNode = (
+    <div className={styles.root} role="dialog" aria-modal="true" aria-label="What's next">
+      <div className={`${styles.scrim} ${styles.scrimSolid}`} />
+      <div ref={calloutRef} className={`${styles.callout} ${styles.calloutCentered}`}>
+        {blueHeader()}
+        <h3 className={styles.title}>Your first note is in</h3>
+        <p className={styles.body}>
+          That is your daily loop — one note a day keeps your credits and streak
+          climbing. Next up is your course, where the weekly tasks and seasonal
+          activities live.
+        </p>
+        <p className={styles.bodyFaint}>
+          Anytime you want to know more about the Academy, just ask me.
+        </p>
+        <div className={styles.actions}>
+          <span className={styles.skipSlot}>
+            <button type="button" className={styles.skip} onClick={finishCourseNudge}>
+              Maybe later
+            </button>
+          </span>
+          <span className={styles.navBtns}>
+            <button type="button" className={styles.next} onClick={goToCourse}>
+              Go to your course
+            </button>
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+
+  const introNode = (
+    <div className={styles.root} role="dialog" aria-modal="true" aria-label="Daily Note intro">
       <div className={`${styles.scrim} ${rect ? '' : styles.scrimSolid}`} />
 
       {rect && (
@@ -237,32 +302,100 @@ export default function FeatureTour() {
       )}
 
       <div ref={calloutRef} className={styles.callout}>
-        <span className={styles.stepCount}>
-          {stepIndex + 1} of {STEPS.length}
-        </span>
-        <h3 className={styles.title}>{step.title}</h3>
-        <p className={styles.body}>{step.body}</p>
+        {blueHeader(
+          <span className={styles.stepBadge}>
+            {stepIndex + 1} of {INTRO_STEPS.length}
+          </span>
+        )}
+        <h3 className={styles.title}>{introStep.title}</h3>
+        <p className={styles.body}>{introStep.body}</p>
         <div className={styles.actions}>
           <span className={styles.skipSlot}>
-            {!isLast && (
-              <button type="button" className={styles.skip} onClick={finish}>
-                Skip tour
-              </button>
-            )}
+            <button type="button" className={styles.skip} onClick={finishIntro}>
+              Skip
+            </button>
           </span>
           <span className={styles.navBtns}>
             {stepIndex > 0 && (
-              <button type="button" className={styles.back} onClick={back}>
+              <button type="button" className={styles.back} onClick={backIntro}>
                 Back
               </button>
             )}
-            <button type="button" className={styles.next} onClick={next}>
-              {isLast ? 'Got it' : 'Next'}
-            </button>
+            {isLastIntro ? (
+              <button type="button" className={styles.next} onClick={startFirstNote}>
+                Start your first note
+              </button>
+            ) : (
+              <button type="button" className={styles.next} onClick={nextIntro}>
+                Next
+              </button>
+            )}
           </span>
         </div>
       </div>
-    </div>,
-    document.body
+    </div>
+  );
+
+  const overlayNode = phase === 'course' ? courseNode : phase === 'intro' ? introNode : null;
+
+  // Dev-only launcher so the guide can be triggered on localhost without going
+  // through onboarding/auth. Compiled out of production builds.
+  const showDevPanel = process.env.NODE_ENV !== 'production';
+
+  const armAndReload = () => {
+    setStorageItem(PENDING_KEY, '1');
+    removeStorageItem(INTRO_SEEN_KEY);
+    removeStorageItem(FIRST_NOTE_KEY);
+    removeStorageItem(COURSE_NUDGE_KEY);
+    window.location.reload();
+  };
+
+  const resetGuide = () => {
+    removeStorageItem(PENDING_KEY);
+    removeStorageItem(INTRO_SEEN_KEY);
+    removeStorageItem(FIRST_NOTE_KEY);
+    removeStorageItem(COURSE_NUDGE_KEY);
+    setRect(null);
+    setPhase('idle');
+  };
+
+  const devPanel = (
+    <div className={styles.devPanel}>
+      <span className={styles.devPanelLabel}>First-run guide (dev)</span>
+      <button
+        type="button"
+        className={styles.devBtn}
+        onClick={() => {
+          setStepIndex(0);
+          setRect(null);
+          setPhase('intro');
+        }}
+      >
+        Intro
+      </button>
+      <button
+        type="button"
+        className={styles.devBtn}
+        onClick={() => {
+          setRect(null);
+          setPhase('course');
+        }}
+      >
+        Course
+      </button>
+      <button type="button" className={styles.devBtn} onClick={armAndReload}>
+        Arm + reload
+      </button>
+      <button type="button" className={styles.devBtn} onClick={resetGuide}>
+        Reset
+      </button>
+    </div>
+  );
+
+  return (
+    <>
+      {overlayNode && createPortal(overlayNode, document.body)}
+      {showDevPanel && createPortal(devPanel, document.body)}
+    </>
   );
 }

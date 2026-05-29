@@ -238,7 +238,7 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
           </p>
         </div>
 
-        <div className={styles.morningPagesShell}>
+        <div className={styles.morningPagesShell} data-tour="daily-note">
           <div className={styles.morningPagesGradient} aria-hidden="true" />
           <DailyNotes
             enablePersistence={enableMorningPagesPersistence}
