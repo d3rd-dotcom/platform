@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
+import LibraryCard from '@/components/library-card/LibraryCard';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
 import type { CourseData } from '@/lib/personal-course';
 import styles from './Dashboard.module.css';
@@ -280,40 +281,8 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
           )}
         </button>
 
-        <Link href="/prompts" className={styles.libraryCard}>
-          <div className={styles.libraryHead}>
-            <svg
-              className={styles.libraryIcon}
-              width="15"
-              height="15"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-            </svg>
-            <span className={styles.libraryTitle}>Library</span>
-          </div>
-          <p className={styles.libraryText}>
-            Prompts for Academy-style art and the essays behind the thinking.
-          </p>
-          <span className={styles.libraryCta}>
-            Browse the library
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path
-                d="M6 3L11 8L6 13"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </span>
+        <Link href="/prompts" className={styles.libraryCardLink}>
+          <LibraryCard />
         </Link>
 
         <button
