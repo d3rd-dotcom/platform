@@ -43,12 +43,12 @@ interface IntroStep {
 
 const INTRO_STEPS: IntroStep[] = [
   {
-    title: 'Start with your Morning Note',
-    body: 'This is the heart of your day here. Take a few quiet minutes to write, and you earn 100 credits each time.',
+    title: 'Write your Morning Note',
+    body: 'A few lines each morning earns you 100 credits.',
   },
   {
-    title: 'A little every day',
-    body: 'Come back daily to keep your streak going — it is the simplest way to grow your credits over time. Ready to write your first one?',
+    title: 'Your first note',
+    body: 'Write one every day to build your streak and credits.',
   },
 ];
 
@@ -260,14 +260,13 @@ export default function FeatureTour() {
       <div className={`${styles.scrim} ${styles.scrimSolid}`} />
       <div ref={calloutRef} className={`${styles.callout} ${styles.calloutCentered}`}>
         {blueHeader()}
-        <h3 className={styles.title}>Your first note is in</h3>
+        <h3 className={styles.title}>First note done</h3>
         <p className={styles.body}>
-          That is your daily loop — one note a day keeps your credits and streak
-          climbing. Next up is your course, where the weekly tasks and seasonal
-          activities live.
+          Do that once a day to keep your streak. Your course is next — that is
+          where the weekly tasks and activities live.
         </p>
         <p className={styles.bodyFaint}>
-          Anytime you want to know more about the Academy, just ask me.
+          Want to know how something works? Just ask me.
         </p>
         <div className={styles.actions}>
           <span className={styles.skipSlot}>
