@@ -296,6 +296,13 @@ export default function DailyNotes({
       setRewardData({ shards: 100 });
       setShowRewardAnimation(true);
 
+      // First successful note ever: let the home first-run guide pick it up and
+      // point the user to the course. Fires once per browser.
+      if (getStorageItem('mwa-first-daily-note-done') !== '1') {
+        setStorageItem('mwa-first-daily-note-done', '1');
+        window.dispatchEvent(new CustomEvent('dailyNoteCompleted'));
+      }
+
       const dayIndex = activeDayIndex;
       (async () => {
         try {
@@ -706,7 +713,7 @@ export default function DailyNotes({
                     <div className={styles.authPromptAvatarHalo} />
                     <div className={styles.authPromptAvatarBase} />
                     <Image
-                      src="/images/blue-portrait.png"
+                      src="/exxie.png"
                       alt=""
                       width={220}
                       height={260}
@@ -924,7 +931,7 @@ export default function DailyNotes({
                   <div className={styles.authPromptAvatarHalo} />
                   <div className={styles.authPromptAvatarBase} />
                   <Image
-                    src="/images/blue-portrait.png"
+                    src="/exxie.png"
                     alt=""
                     width={220}
                     height={260}
