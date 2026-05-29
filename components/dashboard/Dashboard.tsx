@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
-import LiveNow from '@/components/live-now/LiveNow';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
 import type { CourseData } from '@/lib/personal-course';
 import styles from './Dashboard.module.css';
@@ -205,8 +204,6 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
           message={HOME_BLUE_MESSAGE}
           variant="featured"
         />
-
-        <LiveNow />
       </section>
 
       {/* ── Side: egg, morning note, leaderboard, membership ── */}
