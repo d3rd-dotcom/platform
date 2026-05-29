@@ -32,7 +32,7 @@ const FIRST_NOTE_KEY = 'mwa-first-daily-note-done';
 const COURSE_NUDGE_KEY = 'mwa-home-course-nudge-seen';
 
 const TARGET = 'daily-note';
-const BLUE_AVATAR_SRC = '/images/blue-portrait.png';
+const BLUE_AVATAR_SRC = '/exxie.png';
 
 type Phase = 'idle' | 'intro' | 'course';
 
@@ -44,11 +44,7 @@ interface IntroStep {
 const INTRO_STEPS: IntroStep[] = [
   {
     title: 'Write your Morning Note',
-    body: 'A few lines each morning earns you 100 credits.',
-  },
-  {
-    title: 'Your first note',
-    body: 'Write one every day to build your streak and credits.',
+    body: 'A few lines each morning earns you 100 credits and builds your daily streak.',
   },
 ];
 
@@ -302,9 +298,11 @@ export default function FeatureTour() {
 
       <div ref={calloutRef} className={styles.callout}>
         {blueHeader(
-          <span className={styles.stepBadge}>
-            {stepIndex + 1} of {INTRO_STEPS.length}
-          </span>
+          INTRO_STEPS.length > 1 ? (
+            <span className={styles.stepBadge}>
+              {stepIndex + 1} of {INTRO_STEPS.length}
+            </span>
+          ) : undefined
         )}
         <h3 className={styles.title}>{introStep.title}</h3>
         <p className={styles.body}>{introStep.body}</p>
