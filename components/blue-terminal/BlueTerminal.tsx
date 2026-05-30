@@ -85,7 +85,7 @@ export default function BlueTerminal({
   idleText = 'Choose a survey on the left. Blue will read the pattern, but the fun part is the answers you give before she gets involved.',
   idleMeta = 'Personality lab',
   idleNote = 'No wrong answers. Only suspiciously revealing ones.',
-  idleImageSrc = '/exxie.png',
+  idleImageSrc = '/exxies.png',
   onSubmitQuest,
 }: BlueTerminalProps) {
   const [currentQ, setCurrentQ] = useState(0);
@@ -205,7 +205,7 @@ export default function BlueTerminal({
                 src={idleImageSrc}
                 alt=""
                 fill
-                sizes="(max-width: 900px) 220px, 32vw"
+                sizes="100vw"
                 className={styles.idleImage}
                 priority
               />

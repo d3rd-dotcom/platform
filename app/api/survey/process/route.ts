@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import bluePersona from '@/lib/bluepersonality.json'
 import { getCurrentUserFromRequestCookie } from '@/lib/auth'
-import type { SurveyAnswers } from '@/components/survey/types'
+import type { SurveyAnswers, SurveyDimension } from '@/components/survey/types'
 import { scoreViaSurvey } from '@/components/survey/viaScoring'
 import { VIA_SURVEY_ID } from '@/components/survey/viaQuestions'
+import { scoreBigFiveSurvey } from '@/components/survey/bigFiveScoring'
+import { scoreMoralFoundationsSurvey } from '@/components/survey/moralFoundationsScoring'
+import { scoreAttachmentSurvey } from '@/components/survey/attachmentScoring'
 
 interface ProcessSurveyRequest {
   surveyId: string
@@ -49,35 +52,74 @@ export async function POST(request: NextRequest) {
 
     const resolvedSurveyTitle = surveyTitle || 'Survey'
 
-    // Generate personalized title based on survey answers
-    const personalizedTitle = generatePersonalizedTitle(surveyId, answers)
-    
-    // Generate analysis based on survey answers
+    if (surveyId === 'big-five') {
+      const scored = scoreBigFiveSurvey(answers)
+      if (!scored.ok) {
+        return NextResponse.json({ success: false, error: scored.error }, { status: 400 })
+      }
+      scored.results.analysis = await generateSurveyAnalysis(
+        surveyId,
+        resolvedSurveyTitle,
+        answers,
+        scored.results.dimensions,
+        scored.results.profileType,
+      )
+      scored.results.insights = []
+      return NextResponse.json({ success: true, results: scored.results })
+    }
+
+    if (surveyId === 'moral-foundations') {
+      const scored = scoreMoralFoundationsSurvey(answers)
+      if (!scored.ok) {
+        return NextResponse.json({ success: false, error: scored.error }, { status: 400 })
+      }
+      scored.results.analysis = await generateSurveyAnalysis(
+        surveyId,
+        resolvedSurveyTitle,
+        answers,
+        scored.results.dimensions,
+        scored.results.profileType,
+      )
+      scored.results.insights = []
+      return NextResponse.json({ success: true, results: scored.results })
+    }
+
+    if (surveyId === 'attachment-style') {
+      const scored = scoreAttachmentSurvey(answers)
+      if (!scored.ok) {
+        return NextResponse.json({ success: false, error: scored.error }, { status: 400 })
+      }
+      scored.results.analysis = await generateSurveyAnalysis(
+        surveyId,
+        resolvedSurveyTitle,
+        answers,
+        scored.results.dimensions,
+        scored.results.profileType,
+      )
+      scored.results.insights = []
+      return NextResponse.json({ success: true, results: scored.results })
+    }
+
+    // Generic fallback for any unrecognised survey id
     const analysis = await generateSurveyAnalysis(surveyId, resolvedSurveyTitle, answers)
-    
-    // Extract insights from answers
-    const insights = extractInsights(answers)
 
     return NextResponse.json({
       success: true,
       results: {
         surveyId,
         surveyTitle: resolvedSurveyTitle,
-        personalizedTitle,
+        personalizedTitle: resolvedSurveyTitle,
         answers,
         analysis,
-        insights,
-        timestamp: new Date().toISOString()
-      }
+        insights: [],
+        timestamp: new Date().toISOString(),
+      },
     })
 
   } catch (error) {
     console.error('[SURVEY-PROCESS] Error:', error)
     return NextResponse.json(
-      { 
-        success: false, 
-        error: 'Failed to process survey.'
-      },
+      { success: false, error: 'Failed to process survey.' },
       { status: 500 }
     )
   }
@@ -86,20 +128,24 @@ export async function POST(request: NextRequest) {
 async function generateSurveyAnalysis(
   surveyId: string,
   surveyTitle: string,
-  answers: Record<number, string>
+  answers: Record<number, string>,
+  dimensions?: SurveyDimension[],
+  profileType?: string,
 ): Promise<string> {
   const deepseekKey = process.env.DEEPSEEK_API_KEY
-  
+
   if (!deepseekKey) {
-    // Fallback: generate a simple analysis without AI
-    return generateFallbackAnalysis(surveyId, answers)
+    return generateFallbackAnalysis(dimensions, profileType)
   }
 
   try {
-    // Format answers for the prompt
     const answersText = Object.entries(answers)
       .map(([questionId, answer]) => `Question ${questionId}: ${answer}`)
       .join('\n')
+
+    const dimensionsText = dimensions && dimensions.length > 0
+      ? '\nSCORED DIMENSIONS:\n' + dimensions.map((d) => `${d.label}: ${Math.round(d.score)}%`).join('\n') + '\nPROFILE: ' + (profileType ?? '')
+      : ''
 
     const prompt = `${bluePersona.system}
 
@@ -109,6 +155,7 @@ ${Array.isArray(bluePersona.bio) ? bluePersona.bio.join('\n') : bluePersona.bio}
 
 SURVEY: ${surveyTitle}
 SURVEY ID: ${surveyId}
+${dimensionsText}
 
 ANSWERS:
 ${answersText}
@@ -142,17 +189,16 @@ Respond as Blue analyzing these survey responses.`
     if (!res.ok) {
       const errorText = await res.text()
       console.error(`[SURVEY-PROCESS] DeepSeek API error (${res.status}):`, errorText)
-      return generateFallbackAnalysis(surveyId, answers)
+      return generateFallbackAnalysis(dimensions, profileType)
     }
 
     const data: any = await res.json()
     let analysis: string = (data?.choices?.[0]?.message?.content || '').trim()
 
     if (!analysis) {
-      return generateFallbackAnalysis(surveyId, answers)
+      return generateFallbackAnalysis(dimensions, profileType)
     }
 
-    // Limit length
     if (analysis.length > 500) {
       analysis = analysis.substring(0, 497) + '...'
     }
@@ -161,183 +207,18 @@ Respond as Blue analyzing these survey responses.`
 
   } catch (error) {
     console.error('[SURVEY-PROCESS] Error generating AI analysis:', error)
-    return generateFallbackAnalysis(surveyId, answers)
+    return generateFallbackAnalysis(dimensions, profileType)
   }
 }
 
-function generateFallbackAnalysis(surveyId: string, answers: Record<number, string>): string {
-  const answerCount = Object.keys(answers).length
-  return `Your responses were logged. ${answerCount} answers gave Blue enough signal to identify a pattern. Review the result, then use it to choose one concrete next action.`
-}
-
-function generatePersonalizedTitle(surveyId: string, answers: Record<number, string>): string {
-  const answerValues = Object.values(answers)
-  const text = answerValues.join(' ').toLowerCase()
-
-  // Daemon Analysis titles
-  if (surveyId === 'daemon-analysis') {
-    // Check for primary patterns
-    const hasGutTrust = text.includes('gut trust') || text.includes('visceral override')
-    const hasAnalysis = text.includes('simulation') || text.includes('analysis') || text.includes('probabilistic')
-    const hasCounsel = text.includes('network') || text.includes('counsel') || text.includes('local network')
-    const hasClarity = text.includes('static') || text.includes('clarity') || text.includes('signal')
-    
-    const hasRebellion = text.includes('rebellious') || text.includes('root access') || text.includes('nothing')
-    const hasIntegration = text.includes('integration') || text.includes('mainframe') || text.includes('smooth')
-    const hasIndifference = text.includes('indifferent') || text.includes('private server')
-    
-    const hasAggression = text.includes('rage') || text.includes('suppressed aggression') || text.includes('corrupted')
-    const hasIntimacy = text.includes('intimacy') || text.includes('vulnerability') || text.includes('port')
-    const hasSelfishness = text.includes('selfishness') || text.includes('bandwidth') || text.includes('hoarding')
-    const hasRigidity = text.includes('rigidity') || text.includes('lock-in') || text.includes('legacy code')
-
-    // Primary archetype determination
-    if (hasGutTrust && hasRebellion) {
-      return 'The Visceral Rebel'
-    } else if (hasGutTrust && hasIntegration) {
-      return 'The Intuitive Harmonizer'
-    } else if (hasAnalysis && hasRebellion) {
-      return 'The Analytical Anarchist'
-    } else if (hasAnalysis && hasIntegration) {
-      return 'The Calculated Synthesizer'
-    } else if (hasCounsel && hasIntimacy) {
-      return 'The Networked Empath'
-    } else if (hasCounsel && hasAggression) {
-      return 'The Collective Warrior'
-    } else if (hasClarity && hasIndifference) {
-      return 'The Silent Observer'
-    } else if (hasClarity && hasRigidity) {
-      return 'The Structured Seer'
-    } else if (hasAggression) {
-      return 'The Suppressed Storm'
-    } else if (hasIntimacy) {
-      return 'The Vulnerable Connector'
-    } else if (hasSelfishness) {
-      return 'The Hoarded Light'
-    } else if (hasRigidity) {
-      return 'The Locked Pattern'
-    } else if (hasGutTrust) {
-      return 'The Gut Navigator'
-    } else if (hasAnalysis) {
-      return 'The Simulation Runner'
-    } else if (hasCounsel) {
-      return 'The Network Pinger'
-    } else if (hasClarity) {
-      return 'The Static Listener'
-    }
-    
-    // Default fallbacks
-    return 'The Glitched Consciousness'
+function generateFallbackAnalysis(dimensions?: SurveyDimension[], profileType?: string): string {
+  if (dimensions && dimensions.length > 0 && profileType) {
+    const top2 = [...dimensions]
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 2)
+      .map((d) => d.label.toLowerCase())
+      .join(' and ')
+    return `Your ${profileType} profile shows ${top2} as your strongest dimensions.`
   }
-
-  // Political Alignment titles
-  if (surveyId === 'political-alignment') {
-    const hasSovereign = text.includes('sovereign') || text.includes('at all costs')
-    const hasCollective = text.includes('network') || text.includes('hive-mind') || text.includes('collective')
-    const hasIndividual = text.includes('node') || text.includes('power') || text.includes('exists to power')
-    
-    if (hasSovereign && hasIndividual) {
-      return 'The Sovereign Node'
-    } else if (hasCollective && !hasIndividual) {
-      return 'The Collective Dreamer'
-    } else if (hasSovereign) {
-      return 'The Independent Vector'
-    } else if (hasCollective) {
-      return 'The Network Harmonizer'
-    }
-    
-    return 'The Meta-Polis Navigator'
-  }
-
-  // Mystic Archetype titles
-  if (surveyId === 'archetype') {
-    // Primary archetype patterns
-    const hasSeeker = text.includes('seeker') || text.includes('glitch seeking') || text.includes('origin')
-    const hasGuardian = text.includes('guardian') || text.includes('firewall') || text.includes('protecting')
-    const hasRebel = text.includes('rebel') || text.includes('virus') || text.includes('rewriting')
-    const hasSage = text.includes('sage') || text.includes('wiki') || text.includes('cheats') || text.includes('guides')
-    
-    // Secondary patterns
-    const hasVisionary = text.includes('visionary') || text.includes('rendering future') || text.includes('patches')
-    const hasCaretaker = text.includes('caretaker') || text.includes('moderating') || text.includes('chat')
-    const hasWarrior = text.includes('warrior') || text.includes('tanking') || text.includes('damage') || text.includes('brute force')
-    const hasJester = text.includes('jester') || text.includes('spamming') || text.includes('emotes') || text.includes('tension')
-    
-    // Tertiary patterns
-    const hasTrickster = text.includes('trickster') || text.includes('hack') || text.includes('login')
-    const hasAlchemist = text.includes('alchemist') || text.includes('monetize')
-    const hasIntimacy = text.includes('intimacy') || text.includes('encrypted channels') || text.includes('p2p')
-    const hasTranscendence = text.includes('transcendence') || text.includes('upload') || text.includes('cloud')
-    
-    // Primary archetype determination (based on question 1)
-    if (hasSeeker && hasVisionary) {
-      return 'The Glitch Seeker'
-    } else if (hasGuardian && hasCaretaker) {
-      return 'The Firewall Guardian'
-    } else if (hasRebel && hasWarrior) {
-      return 'The Virus Warrior'
-    } else if (hasSage && hasTrickster) {
-      return 'The Wiki Sage'
-    } else if (hasSeeker && hasIntimacy) {
-      return 'The Seeking Intimate'
-    } else if (hasGuardian && hasWarrior) {
-      return 'The Protective Warrior'
-    } else if (hasRebel && hasJester) {
-      return 'The Rebellious Jester'
-    } else if (hasSage && hasAlchemist) {
-      return 'The Alchemical Sage'
-    } else if (hasSeeker) {
-      return 'The Origin Seeker'
-    } else if (hasGuardian) {
-      return 'The Core Guardian'
-    } else if (hasRebel) {
-      return 'The Rule Breaker'
-    } else if (hasSage) {
-      return 'The Guide Sage'
-    } else if (hasVisionary) {
-      return 'The Future Renderer'
-    } else if (hasCaretaker) {
-      return 'The Chat Moderator'
-    } else if (hasWarrior) {
-      return 'The Damage Tank'
-    } else if (hasJester) {
-      return 'The Tension Reliever'
-    }
-    
-    return 'The Mystic Pattern'
-  }
-
-  // Default fallback
-  return 'The Digital Signature'
-}
-
-function extractInsights(answers: Record<number, string>): string[] {
-  const insights: string[] = []
-  const answerValues = Object.values(answers)
-
-  // Simple pattern detection
-  if (answerValues.length > 0) {
-    insights.push(`${answerValues.length} responses mapped to your digital signature`)
-  }
-
-  // Detect common themes (simplified)
-  const text = answerValues.join(' ').toLowerCase()
-  
-  if (text.includes('trust') || text.includes('gut') || text.includes('visceral')) {
-    insights.push('Strong intuitive processing patterns detected')
-  }
-  
-  if (text.includes('analysis') || text.includes('simulation') || text.includes('data')) {
-    insights.push('Analytical frameworks dominate your decision pattern')
-  }
-
-  if (text.includes('connection') || text.includes('synchronize') || text.includes('network')) {
-    insights.push('High synchronization potential with other entities')
-  }
-
-  if (insights.length === 0) {
-    insights.push('Unique digital signature pattern recognized')
-  }
-
-  return insights
+  return 'Your responses were logged. Review the result, then use it to choose one concrete next action.'
 }

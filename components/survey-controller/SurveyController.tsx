@@ -6,11 +6,13 @@ import Button from '@/components/button/Button';
 import { getTestShardReward, TEST_DIFFICULTY_MAX, TEST_DIFFICULTY_MIN } from '@/lib/test-rewards';
 import styles from './SurveyController.module.css';
 
+const OPTION_COLORS = ['#5168ff', '#8b5cf6', '#2dd4bf', '#34d399'];
+
 const SURVEY_TYPES = [
-  { id: 'via-character-strengths', label: 'Via Character Quiz', sub: '240-item strengths inventory' },
-  { id: 'daemon-analysis', label: 'Decision Pattern Analysis', sub: 'Decision-making under pressure' },
-  { id: 'political-alignment', label: 'Political Alignment', sub: 'Agency, responsibility, and change' },
-  { id: 'archetype', label: 'Mystic Archetype', sub: 'Narrative pattern mapping' },
+  { id: 'via-character-strengths', label: 'Character Strengths', sub: '240-item VIA inventory' },
+  { id: 'big-five', label: 'Big Five Personality', sub: 'Validated OCEAN model' },
+  { id: 'moral-foundations', label: 'Moral Foundations', sub: "Haidt's 5-foundation model" },
+  { id: 'attachment-style', label: 'Attachment Style', sub: 'Secure, anxious, or avoidant' },
 ] as const;
 
 type SurveyType = (typeof SURVEY_TYPES)[number];
@@ -38,7 +40,7 @@ interface SurveyControllerProps {
 export default function SurveyController({
   userName = 'Welcome',
   version = 'V.e1-MWA36B',
-  characterImageSrc = '/uploads/blueavatar.mp4',
+  characterImageSrc = '/videos/bluehome.mp4',
   characterPosterSrc = '/uploads/blue-landing-avatar.png',
   deferVideo = true,
   difficulty: initialDifficulty = 101,
@@ -52,22 +54,10 @@ export default function SurveyController({
 }: SurveyControllerProps) {
   const [difficulty, setDifficulty] = useState(initialDifficulty);
   const [selectedSurvey, setSelectedSurvey] = useState<SurveyType>(() => getSurveyTypeById(selectedSurveyId));
-  const [isOpen, setIsOpen] = useState(false);
   const [shouldLoadVideo, setShouldLoadVideo] = useState(!deferVideo);
   const [isVideoReady, setIsVideoReady] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const imagePanelRef = useRef<HTMLDivElement>(null);
   const shardReward = getTestShardReward(difficulty);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
 
   useEffect(() => {
     if (!deferVideo || shouldLoadVideo || !characterImageSrc.endsWith('.mp4')) return;
@@ -97,7 +87,7 @@ export default function SurveyController({
 
   useEffect(() => {
     setIsVideoReady(false);
-  }, [characterImageSrc, selectedSurvey.id]);
+  }, [characterImageSrc]);
 
   useEffect(() => {
     setSelectedSurvey(getSurveyTypeById(selectedSurveyId));
@@ -111,7 +101,6 @@ export default function SurveyController({
 
   const handleSelectSurvey = (survey: SurveyType) => {
     setSelectedSurvey(survey);
-    setIsOpen(false);
     onSurveyTypeChange?.(survey.id);
   };
 
@@ -172,7 +161,7 @@ export default function SurveyController({
         <div className={styles.videoReview}>
           <div className={styles.videoReviewEyebrow}>{selectedSurvey.label} · review</div>
           <p className={styles.videoReviewText}>
-            I will read every answer and score this attempt. Pick your survey type, answer honestly, and we begin.
+            Pick something. Answer it. I'll try to figure out what it means before you do. If I win, I get some credits.
           </p>
         </div>
       </div>
@@ -180,49 +169,21 @@ export default function SurveyController({
       {/* Survey type selector */}
       <div className={styles.persona}>
         <span className={styles.eyebrow}>Survey type</span>
-        <div className={styles.dropdownOuter} ref={dropdownRef}>
-          <button
-            type="button"
-            className={styles.dropdownInner}
-            onClick={() => setIsOpen(o => !o)}
-            aria-haspopup="listbox"
-            aria-expanded={isOpen}
-          >
-            <span className={styles.dropdownText}>{selectedSurvey.label}</span>
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              className={`${styles.chevronIcon} ${isOpen ? styles.chevronOpen : ''}`}
-              aria-hidden="true"
+        <ul className={styles.surveyList} role="listbox">
+          {SURVEY_TYPES.map((survey, i) => (
+            <li
+              key={survey.id}
+              role="option"
+              aria-selected={survey.id === selectedSurvey.id}
+              className={`${styles.surveyItem} ${survey.id === selectedSurvey.id ? styles.surveyItemActive : ''}`}
+              style={{ '--accent': OPTION_COLORS[i] } as React.CSSProperties}
+              onClick={() => handleSelectSurvey(survey)}
             >
-              <path
-                d="M4 6L8 10L12 6"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-          {isOpen && (
-            <ul className={styles.dropdownMenu} role="listbox">
-              {SURVEY_TYPES.map(survey => (
-                <li
-                  key={survey.id}
-                  role="option"
-                  aria-selected={survey.id === selectedSurvey.id}
-                  className={`${styles.dropdownItem} ${survey.id === selectedSurvey.id ? styles.dropdownItemActive : ''}`}
-                  onClick={() => handleSelectSurvey(survey)}
-                >
-                  <span className={styles.dropdownItemLabel}>{survey.label}</span>
-                  <span className={styles.dropdownItemSub}>{survey.sub}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+              <span className={styles.surveyItemLabel}>{survey.label}</span>
+              <span className={styles.surveyItemSub}>{survey.sub}</span>
+            </li>
+          ))}
+        </ul>
       </div>
 
       {/* Difficulty scale */}

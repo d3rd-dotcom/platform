@@ -31,6 +31,13 @@ export interface ViaStrengthRanking {
   description: string
 }
 
+export interface SurveyDimension {
+  id: string
+  label: string
+  score: number
+  description: string
+}
+
 export interface SurveyResults {
   surveyId: string
   surveyTitle: string
@@ -39,7 +46,9 @@ export interface SurveyResults {
   analysis: string
   insights: string[]
   timestamp: string
-  resultType?: 'standard' | 'via'
+  resultType?: 'standard' | 'via' | 'bigfive' | 'moral-foundations' | 'attachment'
   strengthRankings?: ViaStrengthRanking[]
   topStrengths?: ViaStrengthRanking[]
+  dimensions?: SurveyDimension[]
+  profileType?: string
 }

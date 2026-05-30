@@ -252,10 +252,9 @@
 }
 
 .quizModalLikertQuestion {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 180px;
-  gap: 14px;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   padding: 14px;
   background: rgba(81, 104, 255, 0.04);
   border: 1.5px solid rgba(81, 104, 255, 0.14);
@@ -290,20 +289,19 @@
 
 .quizModalLikertOptions {
   display: grid;
-  grid-template-columns: repeat(5, 32px);
-  gap: 5px;
-  justify-content: end;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
 }
 
 .quizModalLikertOption {
-  width: 32px;
-  height: 32px;
-  border-radius: 999px;
+  width: 100%;
+  height: 48px;
+  border-radius: 10px;
   border: 1.5px solid rgba(81, 104, 255, 0.24);
   background: #ffffff;
   color: #1A1D33;
   font-family: var(--font-primary);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s ease;

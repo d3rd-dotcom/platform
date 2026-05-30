@@ -75,25 +75,29 @@
   flex: 1;
   max-width: none;
   padding-top: 0;
-  justify-content: center;
+  justify-content: flex-start;
+  overflow: hidden;
 }
 
 .idleIntro {
   min-height: 0;
-  display: grid;
-  grid-template-columns: minmax(260px, 560px) minmax(220px, 1fr);
-  align-items: center;
-  gap: clamp(18px, 4vw, 52px);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 2vh, 24px);
+  overflow: hidden;
 }
 
 .idleCopy {
+  flex-shrink: 0;
   min-width: 0;
 }
 
 .idleImageWrap {
   position: relative;
-  align-self: stretch;
-  min-height: clamp(260px, 58vh, 620px);
+  flex: 1;
+  min-height: clamp(300px, 55vh, 680px);
+  width: 100%;
 }
 
 .idleImage {
@@ -609,20 +613,9 @@
   }
 }
 
-@media (max-width: 900px) {
-  .idleIntro {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-
-  .idleImageWrap {
-    min-height: 220px;
-  }
-}
-
 @media (max-width: 560px) {
   .idleImageWrap {
-    min-height: 180px;
+    min-height: 240px;
   }
 }
 

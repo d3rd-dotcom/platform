@@ -139,6 +139,26 @@ export default function SurveyResultsModal({ isOpen, onClose, results, variant =
           </div>
         )}
 
+        {results.dimensions && results.dimensions.length > 0 && (
+          <div className={`${styles.resultsModalDimensions} ${showContent ? styles.resultsModalDimensionsVisible : ''}`}>
+            <h4 className={styles.resultsModalInsightsTitle}>
+              {results.resultType === 'attachment' ? 'Your scores' : 'Trait scores'}
+            </h4>
+            {results.dimensions.map((dim) => (
+              <div key={dim.id} className={styles.dimensionRow}>
+                <div className={styles.dimensionMeta}>
+                  <span className={styles.dimensionLabel}>{dim.label}</span>
+                  <span className={styles.dimensionPct}>{Math.round(dim.score)}%</span>
+                </div>
+                <div className={styles.dimensionTrack}>
+                  <div className={styles.dimensionFill} style={{ width: `${dim.score}%` }} />
+                </div>
+                <p className={styles.dimensionDesc}>{dim.description}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
         {hasStrengthRankings && (
           <div className={`${styles.resultsModalRankings} ${showContent ? styles.resultsModalRankingsVisible : ''}`}>
             <h4 className={styles.resultsModalInsightsTitle}>

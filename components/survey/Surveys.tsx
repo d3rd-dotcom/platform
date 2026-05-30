@@ -5,330 +5,91 @@ import Image from 'next/image'
 import QuizModal from './QuizModal'
 import SurveyResultsModal from './SurveyResultsModal'
 import type { Survey, SurveyAnswers, SurveyResults } from './types'
+import { BIG_FIVE_LIKERT_OPTIONS } from './bigFiveScoring'
+import { MORAL_FOUNDATIONS_OPTIONS } from './moralFoundationsScoring'
+import { ATTACHMENT_OPTIONS } from './attachmentScoring'
 import styles from './Surveys.module.css'
 
 export const STANDARD_SURVEYS: Survey[] = [
   {
-    id: "daemon-analysis",
-    title: "Decision Pattern Analysis",
-    description: "Map how you make decisions under pressure: instinct, analysis, counsel, or waiting for more clarity.",
+    id: 'big-five',
+    title: 'Big Five Personality',
+    description: 'Measure the five core dimensions of personality: openness, conscientiousness, extraversion, agreeableness, and neuroticism.',
+    questionType: 'likert',
+    pageSize: 10,
     questions: [
-      {
-        id: 1,
-        text: "When the path forks in the dark, my navigation system:",
-        options: [
-          "Executes immediate visceral override (Gut Trust)",
-          "Runs a full probabilistic simulation (Analysis)",
-          "Pings the local network for data (Counsel)",
-          "Waits for a signal in the static (Clarity)"
-        ]
-      },
-      {
-        id: 2,
-        text: "System Failure / Crisis State detected. I initiate:",
-        options: [
-          "Force-quit and restart (Immediate Action)",
-          "Safe Mode / Diagnostic repair (Inward Retreat)",
-          "Dynamic code rewriting (Fluid Adaptation)",
-          "Firewall hardening (Principle Defense)"
-        ]
-      },
-      {
-        id: 3,
-        text: "My voltage is highest when:",
-        options: [
-          "Rendering new maps of the unknown",
-          "Compiling order from chaos",
-          "Building trust with another person",
-          "Optimizing my own source code"
-        ]
-      },
-      {
-        id: 4,
-        text: "Relationship to the Admin / Architect:",
-        options: [
-          "Verify signatures before accepting updates",
-          "Root access or nothing (Rebellious)",
-          "Smooth integration with the mainframe",
-          "Running on a private server (Indifferent)"
-        ]
-      },
-      {
-        id: 5,
-        text: "During sleep mode, my rendering engine produces:",
-        options: [
-          "Vivid story-driven dreams",
-          "Raw data streams and fractals",
-          "Visceral connection simulations",
-          "Null output / Black screen"
-        ]
-      },
-      {
-        id: 6,
-        text: "The glitch I cannot seem to patch:",
-        options: [
-          "Corrupted rage files (Suppressed Aggression)",
-          "Port vulnerability anxiety (Fear of Intimacy)",
-          "Bandwidth hoarding (Selfishness)",
-          "Legacy code lock-in (Rigidity)"
-        ]
-      },
-      {
-        id: 7,
-        text: "My strongest aesthetic signal is found in:",
-        options: [
-          "Verticality / The High ISO peaks",
-          "Density / The overgrown dark mode",
-          "Fluidity / The infinite blue screen",
-          "Empty Cache / The vast silence"
-        ]
-      },
-      {
-        id: 8,
-        text: "Runtime performance metrics:",
-        options: [
-          "Overclocked bursts vs. System cooling",
-          "Linear processing stability",
-          "Night-mode optimization",
-          "Stochastic / RNG based"
-        ]
-      },
-      {
-        id: 9,
-        text: "Upon detecting a logic error in the world (Injustice):",
-        options: [
-          "Deploy counter-measures immediately",
-          "System wide error-logging (Emotional pain)",
-          "Analyze root access for a patch",
-          "Acknowledge the bug as a feature of duality"
-        ]
-      },
-      {
-        id: 10,
-        text: "Prime Directive:",
-        options: [
-          "Decrypt the hidden file (Truth)",
-          "Preserve the saved state (Protection)",
-          "Reach Level 99 (Mastery)",
-          "Jailbreak the system (Freedom)"
-        ]
-      }
-    ]
+      { id: 1, text: 'I have an active imagination', options: BIG_FIVE_LIKERT_OPTIONS },
+      { id: 2, text: 'I am curious about many different things', options: BIG_FIVE_LIKERT_OPTIONS },
+      { id: 3, text: 'I have few artistic interests', options: BIG_FIVE_LIKERT_OPTIONS, reverseScore: true },
+      { id: 4, text: 'I enjoy coming up with new and original ideas', options: BIG_FIVE_LIKERT_OPTIONS },
+      { id: 5, text: 'I do a thorough job', options: BIG_FIVE_LIKERT_OPTIONS },
+      { id: 6, text: 'I tend to be lazy', options: BIG_FIVE_LIKERT_OPTIONS, reverseScore: true },
+      { id: 7, text: 'I do things efficiently and follow through', options: BIG_FIVE_LIKERT_OPTIONS },
+      { id: 8, text: 'I make plans and stick to them', options: BIG_FIVE_LIKERT_OPTIONS },
+      { id: 9, text: 'I am talkative', options: BIG_FIVE_LIKERT_OPTIONS },
+      { id: 10, text: 'I tend to be reserved and quiet', options: BIG_FIVE_LIKERT_OPTIONS, reverseScore: true },
+      { id: 11, text: 'I am full of energy', options: BIG_FIVE_LIKERT_OPTIONS },
+      { id: 12, text: 'I generate a lot of enthusiasm in others', options: BIG_FIVE_LIKERT_OPTIONS },
+      { id: 13, text: 'I am sometimes rude or short with others', options: BIG_FIVE_LIKERT_OPTIONS, reverseScore: true },
+      { id: 14, text: 'I have a forgiving nature', options: BIG_FIVE_LIKERT_OPTIONS },
+      { id: 15, text: 'I am considerate and kind to almost everyone', options: BIG_FIVE_LIKERT_OPTIONS },
+      { id: 16, text: 'I tend to find fault with others', options: BIG_FIVE_LIKERT_OPTIONS, reverseScore: true },
+      { id: 17, text: 'I worry a lot', options: BIG_FIVE_LIKERT_OPTIONS },
+      { id: 18, text: 'I am emotionally stable and not easily upset', options: BIG_FIVE_LIKERT_OPTIONS, reverseScore: true },
+      { id: 19, text: 'I can be moody', options: BIG_FIVE_LIKERT_OPTIONS },
+      { id: 20, text: 'I remain calm in tense situations', options: BIG_FIVE_LIKERT_OPTIONS, reverseScore: true },
+    ],
   },
   {
-    id: "political-alignment",
-    title: "Political Alignment",
-    description: "Map how you balance individual agency, group responsibility, tradition, and change.",
+    id: 'moral-foundations',
+    title: 'Moral Foundations',
+    description: "Identify which moral foundations — care, fairness, loyalty, authority, and sanctity — drive your ethical intuitions.",
+    questionType: 'likert',
+    pageSize: 10,
     questions: [
-      {
-        id: 1,
-        text: "The node vs. The network:",
-        options: [
-          "The node must remain sovereign at all costs",
-          "The network's hum creates the node's meaning",
-          "The hive-mind is the only true organism",
-          "The network exists to power the nodes"
-        ]
-      },
-      {
-        id: 2,
-        text: "Handling legacy data (Tradition):",
-        options: [
-          "Backups are critical for system integrity",
-          "Refactor the code, keep the useful functions",
-          "Deprecate everything / rewrite from scratch",
-          "Use different versions for different environments"
-        ]
-      },
-      {
-        id: 3,
-        text: "Source of Admin privileges:",
-        options: [
-          "High-resolution moral clarity (Virtue)",
-          "Consensus of the connected peers (Democracy)",
-          "Uptime and stability metrics (Results)",
-          "The encryption of basic rights (Liberty)"
-        ]
-      },
-      {
-        id: 4,
-        text: "Bandwidth (Resource) allocation:",
-        options: [
-          "Priority queuing based on throughput (Merit)",
-          "Guaranteed packet delivery for all (Needs)",
-          "Open protocol competition (Market)",
-          "Shared server space (Collective)"
-        ]
-      },
-      {
-        id: 5,
-        text: "When the firewall of Order blocks the port of Freedom:",
-        options: [
-          "Maintain the firewall (Order > Freedom)",
-          "Open the port, risk the virus (Freedom > Order)",
-          "Tunneling protocol (Synthesis)",
-          "Let the users vote on the settings"
-        ]
-      },
-      {
-        id: 6,
-        text: "The Architect's role:",
-        options: [
-          "To code virtue into the user base",
-          "To prevent hardware damage only",
-          "To optimize the social algorithm actively",
-          "To keep the servers running, nothing more"
-        ]
-      },
-      {
-        id: 7,
-        text: "Vertical scaling (Hierarchy) is:",
-        options: [
-          "Necessary architecture for complex apps",
-          "A bug that creates latency",
-          "Acceptable if dynamic and permeable",
-          "A file-system structure, not a value judgment"
-        ]
-      },
-      {
-        id: 8,
-        text: "Version updates (Change) should be:",
-        options: [
-          "Incremental patches (Gradual)",
-          "Hard fork / System wipe (Revolution)",
-          "Optimization of current build (Reform)",
-          "Continuous deployment / A/B testing (Evolution)"
-        ]
-      },
-      {
-        id: 9,
-        text: "The tutorial mode (Education) is for:",
-        options: [
-          "Installing civic drivers",
-          "Enabling independent processing",
-          "Job-class specialization",
-          "Network compatibility protocols"
-        ]
-      },
-      {
-        id: 10,
-        text: "Inter-generational bandwidth:",
-        options: [
-          "Seeders (Elders) demand priority respect",
-          "Peer-to-peer equality",
-          "Leechers (Youth) drive the new meta",
-          "Separate subnets entirely"
-        ]
-      }
-    ]
+      { id: 1, text: 'It is wrong to cause emotional pain in others, even unintentionally', options: MORAL_FOUNDATIONS_OPTIONS },
+      { id: 2, text: "Compassion for those who suffer is one of the most important virtues", options: MORAL_FOUNDATIONS_OPTIONS },
+      { id: 3, text: 'I am deeply troubled when innocent people are harmed', options: MORAL_FOUNDATIONS_OPTIONS },
+      { id: 4, text: "A person's suffering matters morally, regardless of who caused it", options: MORAL_FOUNDATIONS_OPTIONS },
+      { id: 5, text: 'Fairness and equal treatment are the foundation of a good society', options: MORAL_FOUNDATIONS_OPTIONS },
+      { id: 6, text: 'People should be judged by their own merits, not their group', options: MORAL_FOUNDATIONS_OPTIONS },
+      { id: 7, text: 'Justice and equal rights matter more than social harmony', options: MORAL_FOUNDATIONS_OPTIONS },
+      { id: 8, text: 'It is morally important that people get what they deserve', options: MORAL_FOUNDATIONS_OPTIONS },
+      { id: 9, text: "Loyalty to one's group is a core moral value", options: MORAL_FOUNDATIONS_OPTIONS },
+      { id: 10, text: "People should stand by their group even when it's difficult", options: MORAL_FOUNDATIONS_OPTIONS },
+      { id: 11, text: 'Being a team player matters more than personal recognition', options: MORAL_FOUNDATIONS_OPTIONS },
+      { id: 12, text: 'Betraying your group or country is one of the worst things a person can do', options: MORAL_FOUNDATIONS_OPTIONS },
+      { id: 13, text: 'Respecting authority is an important virtue', options: MORAL_FOUNDATIONS_OPTIONS },
+      { id: 14, text: 'Traditions and customs deserve respect even when we disagree', options: MORAL_FOUNDATIONS_OPTIONS },
+      { id: 15, text: 'Social order depends on people respecting those in authority', options: MORAL_FOUNDATIONS_OPTIONS },
+      { id: 16, text: 'Children should be taught to respect and obey those above them', options: MORAL_FOUNDATIONS_OPTIONS },
+      { id: 17, text: 'Some acts are morally wrong because they violate standards of purity', options: MORAL_FOUNDATIONS_OPTIONS },
+      { id: 18, text: 'The human body should be treated with dignity and not degraded', options: MORAL_FOUNDATIONS_OPTIONS },
+      { id: 19, text: 'It is wrong to do things that are unnatural, even if no one is harmed', options: MORAL_FOUNDATIONS_OPTIONS },
+      { id: 20, text: 'Acting with moral purity and spiritual integrity matters to me', options: MORAL_FOUNDATIONS_OPTIONS },
+    ],
   },
   {
-    id: "archetype",
-    title: "Mystic Archetype",
-    description: "Which story is trying to tell itself through you? Identify the narrative thread woven into your DNA.",
+    id: 'attachment-style',
+    title: 'Attachment Style',
+    description: 'Assess your patterns of attachment anxiety and avoidance to identify whether your style is secure, anxious, avoidant, or fearful.',
+    questionType: 'likert',
+    pageSize: 12,
     questions: [
-      {
-        id: 1,
-        text: "In the Great Simulation, I play:",
-        options: [
-          "The Glitch seeking its origin (Seeker)",
-          "The Firewall protecting the core (Guardian)",
-          "The Virus rewriting the rules (Rebel)",
-          "The Wiki offering cheats/guides (Sage)"
-        ]
-      },
-      {
-        id: 2,
-        text: "In the server lobby (Group Dynamics), I am:",
-        options: [
-          "Rendering future patches (Visionary)",
-          "Moderating the chat (Caretaker)",
-          "Tanking the damage (Warrior)",
-          "Spamming emotes / relieving tension (Jester)"
-        ]
-      },
-      {
-        id: 3,
-        text: "System Error / Fear:",
-        options: [
-          "Infinite loop / Soft-lock (Trapped)",
-          "Data corruption / Entropy (Chaos)",
-          "Connection timeout (Abandonment)",
-          "Zero bitrate (Insignificance)"
-        ]
-      },
-      {
-        id: 4,
-        text: "Encountering a paywall (Obstacle):",
-        options: [
-          "Hack the login (Trickster)",
-          "Brute force the password (Warrior)",
-          "Monetize the problem (Alchemist)",
-          "Play the free demo (Realist)"
-        ]
-      },
-      {
-        id: 5,
-        text: "I recharge by:",
-        options: [
-          "Downloading new DLC (Adventure)",
-          "P2P Encrypted Channels (Intimacy)",
-          "Climbing the leaderboard (Achievement)",
-          "Data mining (Discovery)"
-        ]
-      },
-      {
-        id: 6,
-        text: "The metadata others tag me with:",
-        options: [
-          "High Contrast / Saturation (Intensity)",
-          "99.9% Uptime (Reliability)",
-          "Procedural Generation (Creativity)",
-          "Hardened Kernel (Strength)"
-        ]
-      },
-      {
-        id: 7,
-        text: "Terms of Service (Rules):",
-        options: [
-          "I write the EULA",
-          "I accept but don't read",
-          "I violate TOS for fun",
-          "I understand the code behind the rules"
-        ]
-      },
-      {
-        id: 8,
-        text: "My favorite lore text:",
-        options: [
-          "The Chosen One's save file",
-          "The Exploit found by the underdog",
-          "Two players, one controller",
-          "The Easter Egg hidden in the map"
-        ]
-      },
-      {
-        id: 9,
-        text: "My loot drop for the world:",
-        options: [
-          "Shield buff (Protection)",
-          "Patch update (Innovation)",
-          "High-res texture pack (Beauty)",
-          "Health potion (Healing)"
-        ]
-      },
-      {
-        id: 10,
-        text: "End-game goal:",
-        options: [
-          "Upload to the cloud (Transcendence)",
-          "Link accounts permanently (Belonging)",
-          "Offline mode mastery (Freedom)",
-          "High score on the leaderboard (Legacy)"
-        ]
-      }
-    ]
-  }
+      { id: 1, text: 'I worry that people I care about will eventually leave me', options: ATTACHMENT_OPTIONS },
+      { id: 2, text: 'I need frequent reassurance that I am loved', options: ATTACHMENT_OPTIONS },
+      { id: 3, text: 'I feel anxious when someone close to me is unavailable', options: ATTACHMENT_OPTIONS },
+      { id: 4, text: 'I worry that I want closeness more than others want it with me', options: ATTACHMENT_OPTIONS },
+      { id: 5, text: 'I fear being rejected by people who matter to me', options: ATTACHMENT_OPTIONS },
+      { id: 6, text: "I get upset when my partner or close friend doesn't prioritize me", options: ATTACHMENT_OPTIONS },
+      { id: 7, text: 'I prefer not to share my true feelings with others', options: ATTACHMENT_OPTIONS },
+      { id: 8, text: 'I find it difficult to depend on other people', options: ATTACHMENT_OPTIONS },
+      { id: 9, text: 'I feel uncomfortable when others get emotionally close to me', options: ATTACHMENT_OPTIONS },
+      { id: 10, text: 'I prefer to handle problems alone rather than rely on others', options: ATTACHMENT_OPTIONS },
+      { id: 11, text: 'I find it natural to turn to others for comfort', options: ATTACHMENT_OPTIONS, reverseScore: true },
+      { id: 12, text: 'I feel comfortable showing affection to people I care about', options: ATTACHMENT_OPTIONS, reverseScore: true },
+    ],
+  },
 ]
 
 export const SURVEYS = STANDARD_SURVEYS
