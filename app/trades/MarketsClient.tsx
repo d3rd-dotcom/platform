@@ -85,20 +85,6 @@ function MarketListSkeleton() {
   );
 }
 
-function ExecutionLogSkeleton() {
-  return (
-    <>
-      {[60, 36, 52, 44, 56].map((actionWidth, i) => (
-        <div key={i} className={`${styles.logEntry} ${styles.logEntrySkeleton}`}>
-          <SkeletonLine className={styles.logTimeSkeleton} />
-          <SkeletonLine style={{ width: actionWidth, height: 11, flexShrink: 0 }} />
-          <SkeletonLine className={styles.logDetailsSkeleton} />
-        </div>
-      ))}
-    </>
-  );
-}
-
 function TreasuryQuickSkeleton() {
   return (
     <>
@@ -319,7 +305,7 @@ export default function Markets() {
   const [isMembershipOpen, setIsMembershipOpen] = useState(false);
   const [isModelDetailsOpen, setIsModelDetailsOpen] = useState(false);
   const [hasVipMembershipCard, setHasVipMembershipCard] = useState<boolean | null>(null);
-  const [isHistoryHighlighted, setIsHistoryHighlighted] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [visibleMarketCounts, setVisibleMarketCounts] = useState<Record<MarketCategory, number>>({
     elections: INITIAL_VISIBLE_MARKETS,
     politics: INITIAL_VISIBLE_MARKETS,
@@ -327,8 +313,6 @@ export default function Markets() {
     science: INITIAL_VISIBLE_MARKETS,
   });
   const tradeChatScrollRef = useRef<HTMLDivElement | null>(null);
-  const tradeHistoryRef = useRef<HTMLDivElement | null>(null);
-  const historyHighlightTimeoutRef = useRef<number | null>(null);
   const deferredKalshiMarkets = useDeferredValue(kalshiMarkets);
 
   const fetchPrices = useCallback(async () => {
@@ -548,30 +532,6 @@ export default function Markets() {
     node.scrollTop = node.scrollHeight;
   }, [tradeChatMessages, isTradeChatSending]);
 
-  useEffect(() => {
-    return () => {
-      if (historyHighlightTimeoutRef.current !== null) {
-        window.clearTimeout(historyHighlightTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  const focusTradeHistory = useCallback(() => {
-    const node = tradeHistoryRef.current;
-    if (!node) return;
-
-    node.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    setIsHistoryHighlighted(true);
-
-    if (historyHighlightTimeoutRef.current !== null) {
-      window.clearTimeout(historyHighlightTimeoutRef.current);
-    }
-
-    historyHighlightTimeoutRef.current = window.setTimeout(() => {
-      setIsHistoryHighlighted(false);
-      historyHighlightTimeoutRef.current = null;
-    }, 1600);
-  }, []);
 
   const buildBlueTradingMessage = useCallback((userMessage: string) => {
     const priceSnapshot = prices?.slice(0, 6).map((coin) => (
@@ -736,7 +696,6 @@ export default function Markets() {
         ...current,
         { role: 'blue', text: confirmation, timestamp: Date.now() },
       ]);
-      focusTradeHistory();
     } catch {
       setTradeChatMessages((current) => [
         ...current,
@@ -749,7 +708,7 @@ export default function Markets() {
     } finally {
       setIsTradeExecuting(false);
     }
-  }, [focusTradeHistory, hasVipMembershipCard, isTradeExecuting]);
+  }, [hasVipMembershipCard, isTradeExecuting]);
 
   return (
     <main className={styles.main}>
@@ -1105,37 +1064,8 @@ export default function Markets() {
             </div>
           </div>
 
-          {/* Execution Log */}
-          <div
-            ref={tradeHistoryRef}
-            className={`${styles.panel} ${styles.logPanel} ${isHistoryHighlighted ? styles.logPanelHighlighted : ''}`}
-          >
-            <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>Execution Log</span>
-            </div>
-            <div className={styles.logEntries}>
-              {executionLogs.length === 0 && (
-                <ExecutionLogSkeleton />
-              )}
-              {executionLogs.map((log, i) => (
-                <div key={i} className={styles.logEntry}>
-                  <span className={styles.logTime}>{formatTradeTime(String(log.timestamp / 1000))}</span>
-                  <span className={`${styles.logAction} ${
-                    log.action === 'TRADE' ? styles.logTrade
-                    : log.action === 'SKIP' ? styles.logSkip
-                    : log.action === 'ERROR' ? styles.logSkip
-                    : styles.logScan
-                  }`}>{log.action}</span>
-                  <span className={styles.logDetails}>
-                    {log.asset ? `${log.asset} ` : ''}{log.details}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* Treasury Quick Data */}
-          <div className={`${styles.panel} ${styles.chartPanel} ${styles.treasuryPanel}`}>
+          <div className={`${styles.panel} ${styles.treasuryPanel}`}>
             <div className={styles.panelHeader}>
               <span className={styles.panelTitle}>Trades Treasury</span>
             </div>
@@ -1161,8 +1091,38 @@ export default function Markets() {
             </div>
           </div>
 
-          {/* ════ RIGHT COLUMN: Blue Trading Chat ════ */}
-          <section className={styles.blueTradeColumn} aria-label="Blue trading chat">
+          {/* ════ Blue Trading Chat — floating button + panel ════ */}
+          <button
+            type="button"
+            className={styles.chatFab}
+            onClick={() => setIsChatOpen((open) => !open)}
+            aria-expanded={isChatOpen}
+            aria-label={isChatOpen ? 'Close Blue trading chat' : 'Ask Blue about trades'}
+          >
+            <span className={styles.chatFabAvatar} aria-hidden="true">
+              <Image src="/uploads/blueagent.png" alt="" width={28} height={28} />
+            </span>
+            <span>{isChatOpen ? 'Close chat' : 'Ask Blue'}</span>
+          </button>
+
+          <section
+            className={`${styles.blueTradeColumn} ${isChatOpen ? styles.blueTradeColumnOpen : ''}`}
+            aria-label="Blue trading chat"
+            aria-hidden={!isChatOpen}
+          >
+            <div className={styles.blueChatHeader}>
+              <span className={styles.blueChatTitle}>Ask Blue</span>
+              <button
+                type="button"
+                className={styles.blueChatClose}
+                onClick={() => setIsChatOpen(false)}
+                aria-label="Close chat"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
             <div className={styles.blueChatMessages} ref={tradeChatScrollRef}>
               {tradeChatMessages.map((message, index) => {
                 const canExecute = message.role === 'blue' && index > 0 && tradeChatMessages[index - 1].role === 'user';
