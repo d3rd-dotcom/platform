@@ -1564,14 +1564,16 @@
   font-family: var(--font-mono);
   color: #2b2a27;
   background:
-    repeating-linear-gradient(180deg, transparent 0 23px, rgba(0, 0, 0, 0.03) 23px 24px),
-    #faf7ee;
+    repeating-linear-gradient(180deg, transparent 0 23px, rgba(0, 0, 0, 0.025) 23px 24px),
+    #ffffff;
   padding: 12px 14px calc(10px + var(--tooth));
   display: flex;
   flex-direction: column;
   gap: 8px;
-  /* drop-shadow traces the masked shape so the torn teeth read on any backdrop */
-  filter: drop-shadow(0 3px 2px rgba(26, 29, 51, 0.22));
+  /* tight shadow defines the torn teeth; soft shadow lifts the card off the feed */
+  filter:
+    drop-shadow(0 2px 1px rgba(26, 29, 51, 0.22))
+    drop-shadow(0 8px 14px rgba(26, 29, 51, 0.12));
   /* torn bottom edge: a row of downward triangle teeth */
   -webkit-mask:
     linear-gradient(#000 0 0) top / 100% calc(100% - var(--tooth)) no-repeat,
