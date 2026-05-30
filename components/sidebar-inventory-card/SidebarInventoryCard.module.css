@@ -159,8 +159,8 @@
 
 /* Light mode */
 :global(:root:not([data-theme="dark"])) .card {
-  background: #f4f5fe;
-  border-color: rgba(26, 27, 36, 0.1);
+  background: #ffffff;
+  border-color: rgba(26, 27, 36, 0.12);
 }
 
 :global(:root:not([data-theme="dark"])) .statValuePositive {

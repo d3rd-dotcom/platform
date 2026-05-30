@@ -7,7 +7,7 @@
   z-index: 200;
   height: 72px;
   padding: 0 24px;
-  background: #ffffff;
+  background: #f4f5fe;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 0;
@@ -248,7 +248,7 @@
   gap: 7px;
   padding: 5px 14px 5px 6px;
   border-radius: 18px;
-  background: rgba(244, 245, 254, 0.96);
+  background: rgba(255, 255, 255, 0.97);
   backdrop-filter: blur(4px);
 }
 :global([data-theme="dark"]) .shinyCardContent {

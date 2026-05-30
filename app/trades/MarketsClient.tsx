@@ -1,6 +1,7 @@
 'use client';
 
 import { useDeferredValue, useEffect, useState, useCallback, useRef, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import type { CSSProperties, FormEvent } from 'react';
 import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
@@ -306,6 +307,7 @@ export default function Markets() {
   const [isModelDetailsOpen, setIsModelDetailsOpen] = useState(false);
   const [hasVipMembershipCard, setHasVipMembershipCard] = useState<boolean | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [selectedMarket, setSelectedMarket] = useState<{ category: MarketCategory; market: MarketRow } | null>(null);
   const [visibleMarketCounts, setVisibleMarketCounts] = useState<Record<MarketCategory, number>>({
     elections: INITIAL_VISIBLE_MARKETS,
     politics: INITIAL_VISIBLE_MARKETS,
@@ -639,6 +641,17 @@ export default function Markets() {
       setIsTradeChatSending(false);
     }
   }, [buildBlueTradingMessage, generateLocalTradeResponse, isTradeChatSending]);
+
+  // Open the chat with Blue already analyzing the clicked market.
+  const askBlueAboutMarket = useCallback((entry: { category: MarketCategory; market: MarketRow }) => {
+    const [yes, no] = parseOutcomePrices(entry.market.outcomePrices);
+    const question =
+      `What's your read on this market: "${entry.market.question}"? ` +
+      `It's trading Yes ${Math.round(yes * 100)}% / No ${Math.round(no * 100)}%. Is there an edge?`;
+    setSelectedMarket(null);
+    setIsChatOpen(true);
+    void sendTradeChatMessage(question);
+  }, [sendTradeChatMessage]);
 
   const handleTradeChatSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -993,6 +1006,7 @@ export default function Markets() {
               <span className={styles.panelTitle}>Trades</span>
             </div>
             <div className={styles.marketArena}>
+              <div className={styles.treasuryCluster}>
               <aside className={styles.treasuryFloat} aria-label="Trades treasury">
                 <span className={styles.treasuryFloatTitle}>Trades Treasury</span>
                 {!balance && !balanceError && (
@@ -1015,6 +1029,25 @@ export default function Markets() {
                   </>
                 )}
               </aside>
+                <button
+                  type="button"
+                  className={styles.chatFab}
+                  onClick={() => setIsChatOpen((open) => !open)}
+                  aria-expanded={isChatOpen}
+                  aria-label={isChatOpen ? 'Close Blue trading chat' : 'Trade using Blue'}
+                >
+                  <span className={styles.chatFabShine} aria-hidden="true" />
+                  <span className={styles.chatFabContent}>
+                    <span className={styles.chatFabIcon} aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M5.5 16.5H5a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3h14a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3h-7l-5.5 4v-4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M7.5 9.5h9M7.5 12.5h5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                      </svg>
+                    </span>
+                    <span className={styles.chatFabTitle}>{isChatOpen ? 'Close chat' : 'Trade Using Blue'}</span>
+                  </span>
+                </button>
+              </div>
               {!deferredKalshiMarkets && !kalshiError && (
                 <MarketListSkeleton />
               )}
@@ -1031,7 +1064,12 @@ export default function Markets() {
                       const iconSrc = market.iconUrl || CATEGORY_AVATARS[category];
 
                       return (
-                        <div key={market.id} className={styles.marketItem}>
+                        <button
+                          key={market.id}
+                          type="button"
+                          className={styles.marketItem}
+                          onClick={() => setSelectedMarket({ category, market })}
+                        >
                           <div className={styles.marketItemTop}>
                             <div className={styles.marketItemHeader}>
                               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -1060,7 +1098,7 @@ export default function Markets() {
                           <div className={styles.marketMeta}>
                             <span>Volume {formatVol(market.volume)}</span>
                           </div>
-                        </div>
+                        </button>
                       );
                     })}
                   </div>
@@ -1086,26 +1124,7 @@ export default function Markets() {
             </div>
           </div>
 
-          {/* ════ Blue Trading Chat — floating button + panel ════ */}
-          <button
-            type="button"
-            className={styles.chatFab}
-            onClick={() => setIsChatOpen((open) => !open)}
-            aria-expanded={isChatOpen}
-            aria-label={isChatOpen ? 'Close Blue trading chat' : 'Trade using Blue'}
-          >
-            <span className={styles.chatFabShine} aria-hidden="true" />
-            <span className={styles.chatFabContent}>
-              <span className={styles.chatFabIcon} aria-hidden="true">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path d="M5.5 16.5H5a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3h14a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3h-7l-5.5 4v-4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M7.5 9.5h9M7.5 12.5h5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                </svg>
-              </span>
-              <span className={styles.chatFabTitle}>{isChatOpen ? 'Close chat' : 'Trade Using Blue'}</span>
-            </span>
-          </button>
-
+          {/* ════ Blue Trading Chat panel ════ */}
           <section
             className={`${styles.blueTradeColumn} ${isChatOpen ? styles.blueTradeColumnOpen : ''}`}
             aria-label="Blue trading chat"
@@ -1205,6 +1224,62 @@ export default function Markets() {
         </div>
       </div>
       <ProMembershipModal isOpen={isMembershipOpen} onClose={() => setIsMembershipOpen(false)} />
+
+      {selectedMarket && typeof document !== 'undefined' && createPortal(
+        (() => {
+          const [yes, no] = parseOutcomePrices(selectedMarket.market.outcomePrices);
+          const yesPct = Math.round(yes * 100);
+          const noPct = Math.round(no * 100);
+          const iconSrc = selectedMarket.market.iconUrl || CATEGORY_AVATARS[selectedMarket.category];
+          return (
+            <div className={styles.marketModalOverlay} onClick={() => setSelectedMarket(null)}>
+              <div
+                className={styles.marketModalCard}
+                role="dialog"
+                aria-modal="true"
+                aria-label="Market detail"
+                onClick={(event) => event.stopPropagation()}
+              >
+                <button
+                  type="button"
+                  className={styles.marketModalClose}
+                  onClick={() => setSelectedMarket(null)}
+                  aria-label="Close"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  </svg>
+                </button>
+                <div className={styles.marketModalHead}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={iconSrc} alt="" className={styles.marketModalIcon} width={56} height={56} />
+                  <span className={styles.marketPill}>{CATEGORY_LABELS[selectedMarket.category]}</span>
+                </div>
+                <h2 className={styles.marketModalTitle}>{selectedMarket.market.question}</h2>
+                <div className={styles.marketBar}>
+                  <div className={styles.marketYes} style={{ width: `${yesPct}%` }} />
+                  <div className={styles.marketNo} style={{ width: `${noPct}%` }} />
+                </div>
+                <div className={styles.marketModalValues}>
+                  <span className={styles.marketBarValueYes}>Yes {yesPct}%</span>
+                  <span className={styles.marketBarValueNo}>No {noPct}%</span>
+                </div>
+                <div className={styles.marketModalMeta}>
+                  <span>Volume {formatVol(selectedMarket.market.volume)}</span>
+                </div>
+                <button
+                  type="button"
+                  className={styles.marketModalCta}
+                  onClick={() => askBlueAboutMarket(selectedMarket)}
+                >
+                  Trade this with Blue
+                </button>
+              </div>
+            </div>
+          );
+        })(),
+        document.body,
+      )}
     </main>
   );
 }

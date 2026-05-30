@@ -8,8 +8,8 @@
 .sideNav {
   width: var(--sidebar-width, 265px);
   height: calc(100vh - 72px);
-  background: #ffffff;
-  border-right: 1px solid #C8C8C8;
+  background: #f4f5fe;
+  border-right: 1px solid #d0d2e8;
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -403,7 +403,7 @@
 }
 
 :global(:root:not([data-theme="dark"])) .profileSkeletonCard {
-  background: #f4f5fe;
+  background: #ffffff;
   border-color: rgba(26, 27, 36, 0.1);
 }
 
@@ -414,7 +414,7 @@
 }
 
 :global(:root:not([data-theme="dark"])) .inventorySkeletonCard {
-  background: #f4f5fe;
+  background: #ffffff;
   border-color: rgba(26, 27, 36, 0.1);
 }
 
@@ -991,11 +991,11 @@
 .bottomSection {
   margin-top: auto;
   padding: 12px;
-  border-top: 2px solid rgba(26, 29, 51, 0.15);
+  border-top: 2px solid rgba(26, 29, 51, 0.1);
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background: #ffffff;
+  background: #f4f5fe;
   flex-shrink: 0;
 }
 
@@ -1504,7 +1504,7 @@
 
   .sideNavOpen {
     transform: translateX(0);
-    border-right: 1px solid #C8C8C8;
+    border-right: 1px solid #d0d2e8;
     box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
   }
 
