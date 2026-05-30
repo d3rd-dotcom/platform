@@ -49,11 +49,11 @@ interface NavSection {
 const desktopNavSections: NavSection[] = [
   {
     id: 'extras',
-    label: 'Community Resources',
+    label: 'Pro Features',
     badge: 'Pro',
     badgeType: 'pro',
     items: [
-      { id: 'markets', label: 'Markets', href: '/markets', iconSrc: '/icons/nav-markets-v3.svg', requiresPro: true },
+      { id: 'markets', label: 'Trades', href: '/trades', iconSrc: '/icons/nav-markets-v3.svg', requiresPro: true },
       { id: 'research', label: 'R-Tool', href: '/research', iconSrc: '/icons/nav-laboratory-v3.svg', requiresPro: true },
       { id: 'simulations', label: 'Simulations', href: '/simulation', iconSrc: '/icons/nav-simulations-v2.svg', requiresPro: true },
     ],
@@ -63,11 +63,11 @@ const desktopNavSections: NavSection[] = [
 const mobileNavSections: NavSection[] = [
   {
     id: 'extras',
-    label: 'Community Resources',
+    label: 'Pro Features',
     badge: 'Pro',
     badgeType: 'pro',
     items: [
-      { id: 'markets', label: 'Markets', href: '/markets', iconSrc: '/icons/nav-markets-v3.svg', requiresPro: true },
+      { id: 'markets', label: 'Trades', href: '/trades', iconSrc: '/icons/nav-markets-v3.svg', requiresPro: true },
       { id: 'research', label: 'R-Tool', href: '/research', iconSrc: '/icons/nav-laboratory-v3.svg', requiresPro: true },
       { id: 'simulations', label: 'Simulations', href: '/simulation', iconSrc: '/icons/nav-simulations-v2.svg', requiresPro: true },
     ],

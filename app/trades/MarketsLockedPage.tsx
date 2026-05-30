@@ -48,10 +48,10 @@ export default function MarketsLockedPage() {
         <section className={styles.lockedPanel} aria-labelledby="markets-locked-title">
           <span className={styles.lockedEyebrow}>VIP Access</span>
           <h1 id="markets-locked-title" className={styles.lockedTitle}>
-            Markets is reserved for VIP members.
+            Trades is reserved for VIP members.
           </h1>
           <p className={styles.lockedCopy}>
-            The live markets desk, Blue trading chat, execution history, and treasury routing
+            The live trading desk, Blue trading chat, execution history, and treasury routing
             unlock when your signed-in wallet holds the VIP Membership Card.
           </p>
           <div className={styles.lockedActions}>

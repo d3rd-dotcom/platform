@@ -197,13 +197,13 @@ function formatTradeTime(ts: string): string {
 }
 
 const CATEGORY_LABELS: Record<MarketCategory, string> = {
-  commodities: 'Commodities',
-  economics: 'Economics',
-  ai: 'AI',
+  elections: 'Elections',
   politics: 'Politics',
+  culture: 'Culture',
+  science: 'Science',
 };
 
-const MARKET_CATEGORIES: MarketCategory[] = ['commodities', 'economics', 'ai', 'politics'];
+const MARKET_CATEGORIES: MarketCategory[] = ['elections', 'politics', 'culture', 'science'];
 
 const TRADE_CHAT_SUGGESTIONS = [
   "What's the estimate?",
@@ -220,10 +220,10 @@ const INITIAL_TRADE_CHAT: TradeChatMessage[] = [
 ];
 
 const CATEGORY_AVATARS: Record<MarketCategory, string> = {
-  commodities: '/icons/treasury.svg',
-  economics: '/icons/governance.svg',
-  ai: '/icons/atom.svg',
+  elections: '/icons/governance.svg',
   politics: '/icons/debate.svg',
+  culture: '/icons/nav-gallery.svg',
+  science: '/icons/atom.svg',
 };
 
 // ── Live Ticker Line ──
@@ -321,10 +321,10 @@ export default function Markets() {
   const [hasVipMembershipCard, setHasVipMembershipCard] = useState<boolean | null>(null);
   const [isHistoryHighlighted, setIsHistoryHighlighted] = useState(false);
   const [visibleMarketCounts, setVisibleMarketCounts] = useState<Record<MarketCategory, number>>({
-    commodities: INITIAL_VISIBLE_MARKETS,
-    economics: INITIAL_VISIBLE_MARKETS,
-    ai: INITIAL_VISIBLE_MARKETS,
+    elections: INITIAL_VISIBLE_MARKETS,
     politics: INITIAL_VISIBLE_MARKETS,
+    culture: INITIAL_VISIBLE_MARKETS,
+    science: INITIAL_VISIBLE_MARKETS,
   });
   const tradeChatScrollRef = useRef<HTMLDivElement | null>(null);
   const tradeHistoryRef = useRef<HTMLDivElement | null>(null);
@@ -425,10 +425,10 @@ export default function Markets() {
 
   useEffect(() => {
     setVisibleMarketCounts({
-      commodities: INITIAL_VISIBLE_MARKETS,
-      economics: INITIAL_VISIBLE_MARKETS,
-      ai: INITIAL_VISIBLE_MARKETS,
+      elections: INITIAL_VISIBLE_MARKETS,
       politics: INITIAL_VISIBLE_MARKETS,
+      culture: INITIAL_VISIBLE_MARKETS,
+      science: INITIAL_VISIBLE_MARKETS,
     });
   }, [kalshiMarkets]);
 
@@ -764,7 +764,7 @@ export default function Markets() {
           </div>
           <div className={styles.statusItem}>
             <span className={styles.statusLabel}>markets:</span>
-            <span className={styles.statusValue}>GOLD OIL GAS CPI FED GDP</span>
+            <span className={styles.statusValue}>ELECTIONS POLITICS CULTURE SCIENCE</span>
           </div>
           <div className={styles.statusItem}>
             <span className={styles.statusLabel}>simulations:</span>
@@ -1002,7 +1002,7 @@ export default function Markets() {
               </div>
               <div
                 className={styles.signalRow}
-                style={derived.signal === 'SKIP' ? { background: 'rgba(226, 86, 123, 0.08)', borderColor: 'rgba(226, 86, 123, 0.2)' } : undefined}
+                style={derived.signal === 'SKIP' ? { background: 'rgba(26, 27, 36, 0.05)', borderColor: 'rgba(26, 27, 36, 0.12)' } : undefined}
               >
                 <span className={styles.signalLabel}>next step</span>
                 <span className={derived.signal === 'TRADE' ? styles.signalValue : styles.signalSkip}>
@@ -1031,7 +1031,7 @@ export default function Markets() {
           {/* Kalshi Signal Markets */}
           <div className={`${styles.panel} ${styles.chartPanel} ${styles.kalshiPanel}`}>
             <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>Markets</span>
+              <span className={styles.panelTitle}>Trades</span>
             </div>
             <div className={styles.marketArena}>
               {!deferredKalshiMarkets && !kalshiError && (
@@ -1137,7 +1137,7 @@ export default function Markets() {
           {/* Treasury Quick Data */}
           <div className={`${styles.panel} ${styles.chartPanel} ${styles.treasuryPanel}`}>
             <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>Markets Treasury</span>
+              <span className={styles.panelTitle}>Trades Treasury</span>
             </div>
             <div className={styles.treasuryQuickGrid}>
               {!balance && !balanceError && (
@@ -1150,7 +1150,7 @@ export default function Markets() {
                 <>
                   <div className={styles.treasuryQuickPrimary}>
                     <div className={styles.balanceHero}>${balance.formatted}</div>
-                    <div className={styles.balanceLabel}>USDC Markets Balance</div>
+                    <div className={styles.balanceLabel}>USDC Trades Balance</div>
                   </div>
                   <div className={styles.treasuryQuickSpark}>
                     <TickerLine stroke="var(--color-primary)" />

@@ -190,7 +190,7 @@ const PAGE_LABELS: Record<string, string> = {
   '/home': 'the home dashboard',
   '/course': 'the course',
   '/research': 'research mode',
-  '/markets': 'markets',
+  '/trades': 'trades',
   '/community': 'community',
   '/prompts': 'Prompts',
   '/library': 'Prompts',

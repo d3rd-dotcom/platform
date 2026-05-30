@@ -96,13 +96,13 @@ export interface RecentTrade {
   outcome: string;
 }
 
-export type MarketCategory = 'commodities' | 'economics' | 'ai' | 'politics';
+export type MarketCategory = 'elections' | 'politics' | 'culture' | 'science';
 
 export interface CategorizedMarkets {
-  commodities: MarketRow[];
-  economics: MarketRow[];
-  ai: MarketRow[];
+  elections: MarketRow[];
   politics: MarketRow[];
+  culture: MarketRow[];
+  science: MarketRow[];
 }
 
 // ── Cache ──
@@ -238,59 +238,28 @@ function toRow(eventTitle: string, m: KalshiMarket, seriesTicker?: string): Mark
   };
 }
 
-// AI-relevant subset of "Science and Technology" — that category includes
-// space launches, Mars colonization, etc. We only want AI-flavored markets.
-const AI_TITLE_REGEX =
-  /\bai\b|artificial intelligence|openai|gpt|chatgpt|anthropic|claude|deepseek|llm|machine learning|gemini|frontier model|copilot|grok|xai|meta ai/i;
-
-const BLOCKLIST =
-  /elon.*tweet|tweet.*count|musk.*post|big brother|love island|reality tv|influencer|celebrity|jersey number|kanye|kardashian|tier list|zodiac|astrology|onlyfans|stranger things|jesus christ|\bgta\b|greenland/i;
+// Light junk filter — keep legitimate culture/politics markets, drop spam.
+const BLOCKLIST = /tweet count|number of (?:tweets|posts)|zodiac|astrology|onlyfans/i;
 
 const PER_CATEGORY = 5;
-const MAX_DAYS_OUT = 90;
-const INITIAL_SERIES_PER_CATEGORY = 6;
-const SERIES_FETCH_CHUNK = 3;
+const MAX_DAYS_OUT = 730;
+const EVENTS_PAGE_LIMIT = 200;
+const MAX_EVENT_PAGES = 4;
 
-const MARKET_CATEGORIES: MarketCategory[] = ['commodities', 'economics', 'ai', 'politics'];
+const MARKET_CATEGORIES: MarketCategory[] = ['elections', 'politics', 'culture', 'science'];
 
-// Curated high-volume series tickers per output bucket. /series?category=
-// returns the full series catalog including dead/test series — these were
-// hand-picked from live data and ordered so current/recurring markets are tried first.
-const CURATED_SERIES: Record<MarketCategory, string[]> = {
-  commodities: [
-    'KXAAAGASD', 'KXAAAGASM', 'KXAAAGASY',
-    'KXDIESELM', 'KXOIL', 'WTIW',
-    'NGAS', 'KXWHEAT', 'GOLD',
-    'KXSPRLVL', 'CPIGAS',
-  ],
-  economics: [
-    'FED', 'KXFEDDECISION', 'KXEFFR', 'LOWESTRATE',
-    'KXPCECORE', 'PCECORE', 'LCPIMAXYOY', 'KXCOREUND',
-    'KXHPI', 'HOMEUS', 'HOMEUSY', 'KXHOUSELENGTH',
-    'KXU3MAX', 'KXU3MIN', 'NFPDELAY',
-    'GDP', 'KXGDPYEAR', 'GDPUSMAX',
-    'KXTNOTE', 'KXTNOTED', 'KX10Y2Y',
-  ],
-  politics: [
-    'KXKASHOUT', 'KXIMPEACHCABINET', 'KXLEAVEHOUSECOMBO', 'KXLEAVEBONDI',
-    'KXTRANSSPORTS', 'KXMINWAGE', 'KXSCOTUSPOWER', 'KXFENT',
-    'KXTIKTOKCOURT', 'KXNATIONALE', 'KXDCEIL', 'KXMUNIBONDTAX',
-    'KXICERENAME', 'KXTAIWANLVL4', 'KXZELENSKYPUTIN', 'KXINSURRECTION',
-    'KXVOTEFEDCHAIR', 'KXIPCGAZA',
-  ],
-  ai: [
-    'KXOAIAGI', 'KXGPT', 'KXOAISCREEN', 'KXAIPAUSE', 'KXOAIHARDWARE',
-    'KXTOPLLM', 'KXLEAVEOPENAI', 'KXJOINANTHROPIC', 'KXCLAUDE5', 'KXCLAUDE4',
-    'KXAIOPEN', 'KXFRONTIER', 'KXTOP3AI',
-  ],
+// Map Kalshi's native event categories onto our four display buckets.
+const KALSHI_CATEGORY_MAP: Record<string, MarketCategory> = {
+  Elections: 'elections',
+  Politics: 'politics',
+  Entertainment: 'culture',
+  Social: 'culture',
+  'Science and Technology': 'science',
 };
 
-const PRIORITY_SERIES: Record<MarketCategory, string[]> = {
-  commodities: ['KXAAAGASD', 'KXAAAGASM', 'KXOIL', 'WTIW', 'NGAS', 'GOLD'],
-  economics: ['FED', 'KXFEDDECISION', 'KXPCECORE', 'KXEFFR', 'KXHPI', 'KXTNOTE'],
-  politics: ['KXKASHOUT', 'KXMINWAGE', 'KXSCOTUSPOWER', 'KXTIKTOKCOURT', 'KXVOTEFEDCHAIR', 'KXTAIWANLVL4'],
-  ai: ['KXOAIAGI', 'KXGPT', 'KXTOPLLM', 'KXCLAUDE5', 'KXFRONTIER', 'KXTOP3AI'],
-};
+// Categories are discovered live from Kalshi's event taxonomy (see
+// KALSHI_CATEGORY_MAP) rather than hand-curated series tickers, so the desk
+// always reflects whatever is currently open in each category.
 
 /**
  * Score: 40% balance (closer to 50/50), 25% volume (capped), 35% end-date proximity.
@@ -318,13 +287,13 @@ function score(m: MarketRow): number {
 
 // ── Fetchers ──
 
-async function fetchEventsForSeries(seriesTicker: string): Promise<KalshiEvent[]> {
+async function fetchOpenEventsPage(cursor?: string): Promise<{ events: KalshiEvent[]; cursor: string | null }> {
   const params = new URLSearchParams({
     status: 'open',
     with_nested_markets: 'true',
-    series_ticker: seriesTicker,
-    limit: '20',
+    limit: String(EVENTS_PAGE_LIMIT),
   });
+  if (cursor) params.set('cursor', cursor);
   // Retry once on 429 with a short backoff — Kalshi rate-limits modest bursts.
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
@@ -333,48 +302,38 @@ async function fetchEventsForSeries(seriesTicker: string): Promise<KalshiEvent[]
         await new Promise((r) => setTimeout(r, 250 + Math.random() * 250));
         continue;
       }
-      if (!res.ok) return [];
+      if (!res.ok) return { events: [], cursor: null };
       const json = await res.json();
-      return json.events || [];
+      return { events: json.events || [], cursor: json.cursor || null };
     } catch {
-      return [];
+      return { events: [], cursor: null };
     }
   }
-  return [];
-}
-
-async function fetchInChunks<T, R>(items: T[], chunk: number, fn: (item: T) => Promise<R>): Promise<R[]> {
-  const out: R[] = [];
-  for (let i = 0; i < items.length; i += chunk) {
-    const slice = items.slice(i, i + chunk);
-    const results = await Promise.all(slice.map(fn));
-    out.push(...results);
-  }
-  return out;
+  return { events: [], cursor: null };
 }
 
 /**
- * Fetch curated markets across commodities / economics / AI / politics.
- * 60s in-memory cache; returns stale on failure.
+ * Fetch markets across Elections / Politics / Culture / Science. Pages Kalshi's
+ * open events, buckets them by Kalshi's native category, then keeps the
+ * highest-scoring near-term markets per bucket.
+ * 5-min in-memory cache; returns stale on failure.
  */
 export async function fetchCategorizedMarkets(): Promise<CategorizedMarkets> {
   if (_grouped && Date.now() - _grouped.ts < MARKETS_CACHE_MS) return _grouped.data;
 
   try {
     const buckets: Record<MarketCategory, { row: MarketRow; score: number }[]> = {
-      commodities: [], economics: [], ai: [], politics: [],
+      elections: [], politics: [], culture: [], science: [],
     };
 
-    await Promise.all(MARKET_CATEGORIES.map(async (ours) => {
-      const preferred = PRIORITY_SERIES[ours];
-      const fallback = CURATED_SERIES[ours].filter((ticker) => !preferred.includes(ticker));
-      const series = [...preferred, ...fallback].slice(0, INITIAL_SERIES_PER_CATEGORY);
-      const eventLists = await fetchInChunks(series, SERIES_FETCH_CHUNK, fetchEventsForSeries);
-      const events = eventLists.flat();
+    let cursor: string | undefined;
+    for (let page = 0; page < MAX_EVENT_PAGES; page++) {
+      const { events, cursor: next } = await fetchOpenEventsPage(cursor);
 
       for (const evt of events) {
+        const ours = KALSHI_CATEGORY_MAP[evt.category];
+        if (!ours) continue;
         if (BLOCKLIST.test(evt.title || '')) continue;
-        if (ours === 'ai' && !AI_TITLE_REGEX.test(evt.title || '')) continue;
 
         for (const m of evt.markets || []) {
           const row = toRow(evt.title, m, evt.series_ticker);
@@ -383,9 +342,12 @@ export async function fetchCategorizedMarkets(): Promise<CategorizedMarkets> {
           buckets[ours].push({ row, score: s });
         }
       }
-    }));
 
-    const result: CategorizedMarkets = { commodities: [], economics: [], ai: [], politics: [] };
+      if (!next) break;
+      cursor = next;
+    }
+
+    const result: CategorizedMarkets = { elections: [], politics: [], culture: [], science: [] };
     for (const cat of MARKET_CATEGORIES) {
       buckets[cat].sort((a, b) => b.score - a.score);
       result[cat] = buckets[cat].slice(0, PER_CATEGORY).map((x) => x.row);

@@ -106,7 +106,7 @@ export async function scanForEdge(): Promise<{ signals: EdgeSignal[]; logs: Trad
   const signals: EdgeSignal[] = [];
 
   const [prices, markets] = await Promise.all([fetchPrices(), fetchCategorizedMarkets()]);
-  const scanMarkets = [...markets.commodities, ...markets.economics];
+  const scanMarkets = Object.values(markets).flat();
 
   for (const market of scanMarkets) {
     const [yesPrice] = parseOutcomePrices(market.outcomePrices);

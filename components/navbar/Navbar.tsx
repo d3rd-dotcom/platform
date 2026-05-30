@@ -259,11 +259,11 @@ const Navbar: React.FC = () => {
               </span>
             </Link>
 
-            {/* Markets Button */}
-            <Link href="/markets" className={`${styles.navButton} ${isActive('/markets') ? styles.navButtonActive : ''}`}>
-              <Image src="/icons/nav-markets-v3.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/markets') ? styles.navImgIconActive : ''}`} />
-              <span className={isActive('/markets') ? styles.buttonLabelActive : styles.buttonLabel}>
-                <span className={styles.slideWrap}><span className={styles.slideText}>Markets</span><span className={`${styles.slideText} ${styles.slideClone}`}>Markets</span></span>
+            {/* Trades Button */}
+            <Link href="/trades" className={`${styles.navButton} ${isActive('/trades') ? styles.navButtonActive : ''}`}>
+              <Image src="/icons/nav-markets-v3.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/trades') ? styles.navImgIconActive : ''}`} />
+              <span className={isActive('/trades') ? styles.buttonLabelActive : styles.buttonLabel}>
+                <span className={styles.slideWrap}><span className={styles.slideText}>Trades</span><span className={`${styles.slideText} ${styles.slideClone}`}>Trades</span></span>
               </span>
             </Link>
 

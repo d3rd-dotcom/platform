@@ -2,8 +2,10 @@
   --markets-status-height: 42px;
   --markets-shard-height: 0px;
   --markets-top-bars-height: calc(var(--markets-status-height) + var(--markets-shard-height));
-  --color-secondary: #23864f;
-  --color-secondary-hover: #176c3d;
+  /* Map the desk's bespoke accent + "down" colors onto design-system tokens so
+     the page stays on-palette (no off-system forest green, orange, or red). */
+  --color-secondary: var(--color-tertiary);
+  --color-secondary-hover: var(--color-tertiary-hover);
   --markets-light-gutter: #DDE2F2;
   --markets-light-panel-low: #EEF1FA;
   --markets-light-panel: #F8FAFF;
@@ -13,7 +15,7 @@
   --markets-light-tint: #F3F7FF;
   --markets-light-border: rgba(26, 29, 51, 0.08);
   --markets-light-border-strong: rgba(26, 29, 51, 0.12);
-  --markets-skip: #B56C2F;
+  --markets-skip: var(--color-text-muted);
   height: calc(100dvh - 72px);
   min-height: calc(100dvh - 72px);
   max-height: calc(100dvh - 72px);
@@ -44,20 +46,20 @@
 .lockedPanel {
   width: min(620px, 100%);
   padding: 32px;
-  border: 2px solid #1A1D33;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow: 8px 8px 0 rgba(26, 29, 51, 0.12);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  background: var(--card-background);
+  box-shadow: var(--shadow-lg);
 }
 
 .lockedEyebrow {
   display: inline-flex;
   margin-bottom: 14px;
   padding: 5px 9px;
-  border: 1px solid rgba(255, 119, 41, 0.32);
+  border: 1px solid rgba(81, 104, 255, 0.28);
   border-radius: 999px;
-  background: rgba(255, 119, 41, 0.12);
-  color: var(--color-accent);
+  background: rgba(81, 104, 255, 0.1);
+  color: var(--color-primary);
   font-family: var(--font-button);
   font-size: 10px;
   font-weight: var(--font-weight-bold);
@@ -67,7 +69,7 @@
 
 .lockedTitle {
   margin: 0;
-  color: #1A1D33;
+  color: var(--color-text-dark);
   font-family: var(--font-primary);
   font-size: 40px;
   line-height: 1.05;
@@ -76,7 +78,7 @@
 
 .lockedCopy {
   margin: 16px 0 0;
-  color: #4B5065;
+  color: var(--color-text-soft);
   font-family: var(--font-primary);
   font-size: 16px;
   line-height: 1.6;
@@ -93,7 +95,7 @@
 .lockedSecondaryButton {
   min-height: 44px;
   padding: 0 18px;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   font-family: var(--font-button);
   font-size: 12px;
   font-weight: var(--font-weight-bold);
@@ -103,10 +105,10 @@
 }
 
 .lockedPrimaryButton {
-  border: 2px solid #1A1D33;
+  border: 1px solid transparent;
   background: var(--color-primary);
   color: #FFFFFF;
-  box-shadow: 3px 3px 0 #1A1D33;
+  box-shadow: var(--shadow-primary);
 }
 
 .lockedPrimaryButton:disabled {
@@ -115,9 +117,9 @@
 }
 
 .lockedSecondaryButton {
-  border: 1px solid rgba(26, 29, 51, 0.2);
-  background: #FFFFFF;
-  color: #1A1D33;
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-surface-base);
+  color: var(--color-text-dark);
 }
 
 /* ── Top Status Bar ── */
@@ -129,10 +131,10 @@
   gap: 24px;
   padding: 10px 20px;
   background: rgba(255, 255, 255, 0.95);
-  border-bottom: 2px solid #1A1D33;
+  border-bottom: 1px solid var(--color-border-subtle);
   font-family: var(--font-button);
   font-size: 11px;
-  color: var(--color-secondary);
+  color: var(--color-text-muted);
   overflow-x: auto;
   white-space: nowrap;
 }
@@ -144,7 +146,7 @@
 }
 
 .statusLabel {
-  color: var(--color-secondary);
+  color: var(--color-text-muted);
   font-weight: var(--font-weight-regular);
 }
 
@@ -251,7 +253,7 @@
   font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--color-secondary);
+  color: var(--color-text-muted);
 }
 
 .panelBadge {
@@ -463,7 +465,7 @@
 .signalLabel {
   font-family: var(--font-button);
   font-size: 11px;
-  color: var(--color-secondary);
+  color: var(--color-text-muted);
 }
 
 .signalValue {
@@ -474,7 +476,7 @@
 }
 
 .signalSkip {
-  color: var(--markets-skip);
+  color: var(--color-text-muted);
   font-weight: bold;
   font-size: 12px;
 }
@@ -863,7 +865,7 @@
 .marketMeta {
   font-family: var(--font-button);
   font-size: 9px;
-  color: var(--color-secondary);
+  color: var(--color-text-faint);
   text-align: right;
   margin-top: 2px;
 }
@@ -899,7 +901,7 @@
 }
 
 .logTime {
-  color: var(--color-secondary);
+  color: var(--color-text-faint);
   white-space: nowrap;
   min-width: 60px;
 }
@@ -909,7 +911,7 @@
 }
 
 .logScan {
-  color: var(--color-secondary);
+  color: var(--color-text-faint);
 }
 
 .logTrade {
@@ -917,11 +919,11 @@
 }
 
 .logSkip {
-  color: var(--markets-skip);
+  color: var(--color-text-faint);
 }
 
 .logDetails {
-  color: var(--color-secondary);
+  color: var(--color-text-soft);
 }
 
 /* ── Order Flow Panel ── */
@@ -1154,14 +1156,14 @@
 .loadingText {
   font-family: var(--font-button);
   font-size: 11px;
-  color: var(--color-secondary);
+  color: var(--color-text-faint);
   animation: pulse 1.5s ease-in-out infinite;
 }
 
 .errorText {
   font-family: var(--font-button);
   font-size: 11px;
-  color: #E2567B;
+  color: var(--color-text-muted);
 }
 
 @keyframes pulse {
@@ -1406,9 +1408,9 @@
 }
 
 .marketItem:hover {
-  transform: translateY(-3px) rotate(-0.4deg);
-  box-shadow: 0 18px 34px rgba(26, 29, 51, 0.1);
-  border-color: rgba(81, 104, 255, 0.16);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px rgba(26, 29, 51, 0.08);
+  border-color: rgba(81, 104, 255, 0.18);
 }
 
 .marketLoadMore {
@@ -1486,7 +1488,7 @@
   justify-content: flex-start;
   font-family: var(--font-button);
   font-size: 10px;
-  color: var(--color-secondary);
+  color: var(--color-text-faint);
 }
 
 .marketBarWrap {
@@ -1515,21 +1517,22 @@
 }
 
 .marketYes {
-  background: var(--color-tertiary);
+  background: var(--color-primary);
   transition: width 0.3s ease;
 }
 
 .marketNo {
-  background: rgba(81, 104, 255, 0.72);
+  background: rgba(26, 27, 36, 0.2);
   transition: width 0.3s ease;
 }
 
 .marketBarValueYes {
-  color: var(--color-secondary);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
 }
 
 .marketBarValueNo {
-  color: var(--color-text-soft);
+  color: var(--color-text-faint);
 }
 
 /* ── Last Updated Badge ── */
@@ -1687,7 +1690,7 @@
 :global([data-theme="dark"]) .lockedPanel {
   background: color-mix(in oklch, var(--markets-dark-panel-raised) 88%, transparent);
   border-color: var(--color-border-strong);
-  box-shadow: 8px 8px 0 color-mix(in oklch, var(--color-background) 42%, transparent);
+  box-shadow: var(--shadow-lg);
 }
 
 :global([data-theme="dark"]) .lockedTitle {
