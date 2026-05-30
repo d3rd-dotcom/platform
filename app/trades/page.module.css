@@ -596,6 +596,7 @@
 /* Matches the top-nav "Ask Blue" shiny card: rotating conic-gradient border
    with an inner content chip. */
 .chatFab {
+  position: relative;
   align-self: center;
   display: inline-flex;
   align-items: center;
@@ -1557,6 +1558,105 @@
   color: var(--color-text-muted);
 }
 
+/* Executed-trades history styled like a thermal-paper receipt. */
+.receipt {
+  --tooth: 9px;
+  font-family: var(--font-mono);
+  color: #2b2a27;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 23px, rgba(0, 0, 0, 0.03) 23px 24px),
+    #faf7ee;
+  padding: 12px 14px calc(12px + var(--tooth));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* torn / perforated bottom edge */
+  -webkit-mask:
+    linear-gradient(#000 0 0) top / 100% calc(100% - var(--tooth)) no-repeat,
+    conic-gradient(from 135deg at bottom, #0000, #000 1deg 90deg, #0000 91deg) bottom / var(--tooth) var(--tooth) repeat-x;
+  mask:
+    linear-gradient(#000 0 0) top / 100% calc(100% - var(--tooth)) no-repeat,
+    conic-gradient(from 135deg at bottom, #0000, #000 1deg 90deg, #0000 91deg) bottom / var(--tooth) var(--tooth) repeat-x;
+}
+
+.receiptHead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.receiptShop {
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.04em;
+}
+
+.receiptSub {
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #6f6a5f;
+}
+
+.receiptRule {
+  height: 0;
+  border-top: 1px dashed rgba(43, 42, 39, 0.4);
+}
+
+.receiptBody {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  max-height: 220px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.receiptItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.receiptItemTop {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 10px;
+}
+
+.receiptAction {
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.06em;
+}
+
+.receiptItemDetail {
+  font-size: 10px;
+  line-height: 1.4;
+  color: #4a4740;
+  word-break: break-word;
+}
+
+.receiptEmpty {
+  margin: 6px 0;
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: #8a857a;
+}
+
+.receiptFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: #4a4740;
+}
+
 .marketItem:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
@@ -1912,6 +2012,10 @@
 
   .treasuryFloat {
     min-height: 0;
+  }
+
+  .receipt {
+    display: none;
   }
 
   .balanceHero {

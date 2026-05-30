@@ -653,6 +653,8 @@ export default function Markets() {
     void sendTradeChatMessage(question);
   }, [sendTradeChatMessage]);
 
+  const executedTrades = executionLogs.filter((log) => log.action === 'TRADE');
+
   const handleTradeChatSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     void sendTradeChatMessage(tradeChatInput);
@@ -1047,6 +1049,36 @@ export default function Markets() {
                     <span className={styles.chatFabTitle}>{isChatOpen ? 'Close chat' : 'Trade Using Blue'}</span>
                   </span>
                 </button>
+
+                <div className={styles.receipt} aria-label="Executed trades history">
+                  <div className={styles.receiptHead}>
+                    <span className={styles.receiptShop}>MWA Trading Desk</span>
+                    <span className={styles.receiptSub}>execution receipts</span>
+                  </div>
+                  <div className={styles.receiptRule} />
+                  <div className={styles.receiptBody}>
+                    {executedTrades.length === 0 ? (
+                      <p className={styles.receiptEmpty}>- awaiting first execution -</p>
+                    ) : (
+                      executedTrades.map((log, i) => (
+                        <div key={`${log.timestamp}-${i}`} className={styles.receiptItem}>
+                          <div className={styles.receiptItemTop}>
+                            <span>{formatTradeTime(String(log.timestamp / 1000))}</span>
+                            <span className={styles.receiptAction}>{log.action}</span>
+                          </div>
+                          <div className={styles.receiptItemDetail}>
+                            {log.asset ? `${log.asset} ` : ''}{log.details}
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                  <div className={styles.receiptRule} />
+                  <div className={styles.receiptFoot}>
+                    <span>{executedTrades.length} fill{executedTrades.length === 1 ? '' : 's'}</span>
+                    <span aria-hidden="true">* * *</span>
+                  </div>
+                </div>
               </div>
               {!deferredKalshiMarkets && !kalshiError && (
                 <MarketListSkeleton />
