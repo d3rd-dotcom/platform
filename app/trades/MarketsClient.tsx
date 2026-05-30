@@ -1083,8 +1083,11 @@ export default function Markets() {
                     <div className={styles.balanceLabel}>USDC Trades Balance</div>
                   </div>
                   <div className={styles.treasuryQuickSpark}>
-                    <TickerLine stroke="var(--color-primary)" />
-                    <TickerLine drift={0.18} vol={0.8} stroke="var(--color-tertiary)" strokeWidth={1.5} opacity={0.5} speed={350} />
+                    <TickerLine stroke="var(--color-primary)" strokeWidth={2} opacity={0.85} />
+                    <TickerLine drift={0.18} vol={0.8} stroke="var(--color-tertiary)" strokeWidth={1.5} opacity={0.55} speed={350} />
+                    <TickerLine drift={-0.1} vol={0.6} stroke="var(--color-primary)" strokeWidth={1.5} opacity={0.4} speed={420} />
+                    <TickerLine drift={0.24} vol={1.1} stroke="var(--color-tertiary)" strokeWidth={1.5} opacity={0.45} speed={300} />
+                    <TickerLine drift={0.05} vol={0.5} stroke="var(--color-primary)" strokeWidth={1.5} opacity={0.6} speed={500} />
                   </div>
                 </>
               )}
@@ -1097,12 +1100,12 @@ export default function Markets() {
             className={styles.chatFab}
             onClick={() => setIsChatOpen((open) => !open)}
             aria-expanded={isChatOpen}
-            aria-label={isChatOpen ? 'Close Blue trading chat' : 'Ask Blue about trades'}
+            aria-label={isChatOpen ? 'Close Blue trading chat' : 'Trade using Blue'}
           >
             <span className={styles.chatFabAvatar} aria-hidden="true">
               <Image src="/uploads/blueagent.png" alt="" width={28} height={28} />
             </span>
-            <span>{isChatOpen ? 'Close chat' : 'Ask Blue'}</span>
+            <span>{isChatOpen ? 'Close chat' : 'Trade Using Blue'}</span>
           </button>
 
           <section
@@ -1111,7 +1114,7 @@ export default function Markets() {
             aria-hidden={!isChatOpen}
           >
             <div className={styles.blueChatHeader}>
-              <span className={styles.blueChatTitle}>Ask Blue</span>
+              <span className={styles.blueChatTitle}>Trade Using Blue</span>
               <button
                 type="button"
                 className={styles.blueChatClose}
