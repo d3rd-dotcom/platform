@@ -993,6 +993,28 @@ export default function Markets() {
               <span className={styles.panelTitle}>Trades</span>
             </div>
             <div className={styles.marketArena}>
+              <aside className={styles.treasuryFloat} aria-label="Trades treasury">
+                <span className={styles.treasuryFloatTitle}>Trades Treasury</span>
+                {!balance && !balanceError && (
+                  <TreasuryQuickSkeleton />
+                )}
+                {balanceError && !balance && (
+                  <span className={styles.errorText}>Failed to load balance</span>
+                )}
+                {balance && (
+                  <>
+                    <div className={styles.treasuryQuickPrimary}>
+                      <div className={styles.balanceHero}>${balance.formatted}</div>
+                      <div className={styles.balanceLabel}>USDC Trades Balance</div>
+                    </div>
+                    <div className={styles.treasuryQuickSpark}>
+                      <TickerLine stroke="var(--color-primary)" strokeWidth={2} opacity={0.85} />
+                      <TickerLine drift={0.18} vol={0.8} stroke="var(--color-tertiary)" strokeWidth={1.5} opacity={0.55} speed={350} />
+                      <TickerLine drift={0.05} vol={0.5} stroke="var(--color-primary)" strokeWidth={1.5} opacity={0.5} speed={500} />
+                    </div>
+                  </>
+                )}
+              </aside>
               {!deferredKalshiMarkets && !kalshiError && (
                 <MarketListSkeleton />
               )}
@@ -1064,36 +1086,6 @@ export default function Markets() {
             </div>
           </div>
 
-          {/* Treasury Quick Data */}
-          <div className={`${styles.panel} ${styles.treasuryPanel}`}>
-            <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>Trades Treasury</span>
-            </div>
-            <div className={styles.treasuryQuickGrid}>
-              {!balance && !balanceError && (
-                <TreasuryQuickSkeleton />
-              )}
-              {balanceError && !balance && (
-                <span className={styles.errorText}>Failed to load balance</span>
-              )}
-              {balance && (
-                <>
-                  <div className={styles.treasuryQuickPrimary}>
-                    <div className={styles.balanceHero}>${balance.formatted}</div>
-                    <div className={styles.balanceLabel}>USDC Trades Balance</div>
-                  </div>
-                  <div className={styles.treasuryQuickSpark}>
-                    <TickerLine stroke="var(--color-primary)" strokeWidth={2} opacity={0.85} />
-                    <TickerLine drift={0.18} vol={0.8} stroke="var(--color-tertiary)" strokeWidth={1.5} opacity={0.55} speed={350} />
-                    <TickerLine drift={-0.1} vol={0.6} stroke="var(--color-primary)" strokeWidth={1.5} opacity={0.4} speed={420} />
-                    <TickerLine drift={0.24} vol={1.1} stroke="var(--color-tertiary)" strokeWidth={1.5} opacity={0.45} speed={300} />
-                    <TickerLine drift={0.05} vol={0.5} stroke="var(--color-primary)" strokeWidth={1.5} opacity={0.6} speed={500} />
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-
           {/* ════ Blue Trading Chat — floating button + panel ════ */}
           <button
             type="button"
@@ -1102,10 +1094,16 @@ export default function Markets() {
             aria-expanded={isChatOpen}
             aria-label={isChatOpen ? 'Close Blue trading chat' : 'Trade using Blue'}
           >
-            <span className={styles.chatFabAvatar} aria-hidden="true">
-              <Image src="/uploads/blueagent.png" alt="" width={28} height={28} />
+            <span className={styles.chatFabShine} aria-hidden="true" />
+            <span className={styles.chatFabContent}>
+              <span className={styles.chatFabIcon} aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M5.5 16.5H5a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3h14a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3h-7l-5.5 4v-4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M7.5 9.5h9M7.5 12.5h5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              </span>
+              <span className={styles.chatFabTitle}>{isChatOpen ? 'Close chat' : 'Trade Using Blue'}</span>
             </span>
-            <span>{isChatOpen ? 'Close chat' : 'Trade Using Blue'}</span>
           </button>
 
           <section
