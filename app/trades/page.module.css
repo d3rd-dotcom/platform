@@ -1566,17 +1566,19 @@
   background:
     repeating-linear-gradient(180deg, transparent 0 23px, rgba(0, 0, 0, 0.03) 23px 24px),
     #faf7ee;
-  padding: 12px 14px calc(12px + var(--tooth));
+  padding: 12px 14px calc(10px + var(--tooth));
   display: flex;
   flex-direction: column;
   gap: 8px;
-  /* torn / perforated bottom edge */
+  /* drop-shadow traces the masked shape so the torn teeth read on any backdrop */
+  filter: drop-shadow(0 3px 2px rgba(26, 29, 51, 0.22));
+  /* torn bottom edge: a row of downward triangle teeth */
   -webkit-mask:
     linear-gradient(#000 0 0) top / 100% calc(100% - var(--tooth)) no-repeat,
-    conic-gradient(from 135deg at bottom, #0000, #000 1deg 90deg, #0000 91deg) bottom / var(--tooth) var(--tooth) repeat-x;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='9'%3E%3Cpath d='M0 0H12L6 9Z' fill='%23000'/%3E%3C/svg%3E") left bottom / 12px var(--tooth) repeat-x;
   mask:
     linear-gradient(#000 0 0) top / 100% calc(100% - var(--tooth)) no-repeat,
-    conic-gradient(from 135deg at bottom, #0000, #000 1deg 90deg, #0000 91deg) bottom / var(--tooth) var(--tooth) repeat-x;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='9'%3E%3Cpath d='M0 0H12L6 9Z' fill='%23000'/%3E%3C/svg%3E") left bottom / 12px var(--tooth) repeat-x;
 }
 
 .receiptHead {
@@ -2165,10 +2167,37 @@
     linear-gradient(180deg, var(--markets-dark-panel-low) 0%, color-mix(in oklch, var(--markets-dark-panel) 72%, var(--color-background)) 100%);
 }
 
-:global([data-theme="dark"]) .treasuryPanel {
+:global([data-theme="dark"]) .treasuryPanel,
+:global([data-theme="dark"]) .treasuryFloat {
   background:
     linear-gradient(180deg, var(--markets-dark-panel-raised) 0%, var(--markets-dark-panel) 100%);
   border-color: var(--color-border-subtle);
+}
+
+/* Receipt becomes dark warm "paper" with light mono ink. */
+:global([data-theme="dark"]) .receipt {
+  color: #d9d4c6;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 23px, rgba(255, 255, 255, 0.035) 23px 24px),
+    #211f1a;
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.5));
+}
+
+:global([data-theme="dark"]) .receiptSub {
+  color: rgba(217, 212, 198, 0.55);
+}
+
+:global([data-theme="dark"]) .receiptItemDetail,
+:global([data-theme="dark"]) .receiptFoot {
+  color: rgba(217, 212, 198, 0.78);
+}
+
+:global([data-theme="dark"]) .receiptEmpty {
+  color: rgba(217, 212, 198, 0.5);
+}
+
+:global([data-theme="dark"]) .receiptRule {
+  border-top-color: rgba(217, 212, 198, 0.32);
 }
 
 :global([data-theme="dark"]) .panelTitle,
