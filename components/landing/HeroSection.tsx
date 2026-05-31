@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import styles from './LandingPage.module.css';
 import LandingEnterAcademyButton from './LandingEnterAcademyButton';
 import LandingEnterAsAgentButton from './LandingEnterAsAgentButton';
@@ -12,25 +11,35 @@ import OrbitalDiagram from './OrbitalDiagram';
 export const EcosystemSection: React.FC = () => (
   <section id="value" className={styles.ecosystemSection} aria-label="Academy ecosystem">
     <div className={styles.ecosystemInner}>
-      <h2 className={styles.ecosystemHeadline}>
-        One ecosystem. <span className={styles.ecosystemHeadlineAccent}>One point system.</span> Many ways in.
-      </h2>
-      <p className={styles.ecosystemSubtext}>
-        Every quest, course, simulation, and trade adds to the same balance — yours, kept on-chain so it travels with you. No siloed scores, no resets.
-      </p>
-
-      <OrbitalDiagram />
-
-      <div className={styles.ecosystemBanner}>
-        <div className={styles.ecosystemBannerCopy}>
-          <p className={styles.ecosystemBannerHeadline}>Pick any door. They all earn the same points.</p>
-          <p className={styles.ecosystemBannerSubtext}>
-            Start with a daily quest, drop into a livestream, or run a simulation — your progress compounds in one wallet.
+      <div className={styles.ecosystemLayout}>
+        <div className={styles.ecosystemCopy}>
+          <p className={styles.ecosystemKicker}>PhD-designed curriculum</p>
+          <h2 className={styles.ecosystemHeadline}>
+            How Digital Education<br />
+            <span className={styles.ecosystemHeadlineAccent}>Should Have Been.</span>
+          </h2>
+          <p className={styles.ecosystemSubtext}>
+            A gamified experience built to feel as engaging as a video game — optimized for real learning and the generation that grew up in it. Every step is a quest full of meaning.
           </p>
+          <ul className={styles.ecosystemFeatureList}>
+            <li className={styles.ecosystemFeatureItem}>
+              <span className={styles.ecosystemFeatureDot} style={{ background: '#5168FF' }} />
+              Build mental wealth with daily notes and weekly quests.
+            </li>
+            <li className={styles.ecosystemFeatureItem}>
+              <span className={styles.ecosystemFeatureDot} style={{ background: '#8B6BFF' }} />
+              Curriculums backed by neuroscientists, psychologists, & academia-grade research.
+            </li>
+            <li className={styles.ecosystemFeatureItem}>
+              <span className={styles.ecosystemFeatureDot} style={{ background: '#3CC9B4' }} />
+              Leaderboard for those who love a great challenge.
+            </li>
+          </ul>
+          <LandingEnterAcademyButton />
         </div>
-        <Link href="/home" className={styles.ecosystemBannerCta}>
-          Enter the Academy
-        </Link>
+        <div className={styles.ecosystemDiagramWrap}>
+          <OrbitalDiagram />
+        </div>
       </div>
     </div>
   </section>

@@ -11,8 +11,8 @@ type Activity = {
 const ACTIVITIES: Activity[] = [
   { label: 'Quests',      color: '#5168FF' },
   { label: 'Courses',     color: '#6A7CFF' },
-  { label: 'Simulations', color: '#8B6BFF' },
-  { label: 'Markets',     color: '#B65BFF' },
+  { label: 'Surveys',     color: '#8B6BFF' },
+  { label: 'Trade',        color: '#B65BFF' },
   { label: 'Donations',   color: '#FF6BB6' },
   { label: 'Library',     color: '#FF8A4C' },
   { label: 'Community',   color: '#3CC9B4' },
@@ -39,18 +39,19 @@ export default function OrbitalDiagram() {
         role="img"
       >
         <defs>
-          <radialGradient id="hubGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#5168FF" stopOpacity="0.32" />
-            <stop offset="60%" stopColor="#5168FF" stopOpacity="0.08" />
+          {/* Base: forest green → MWA blue — matches fancyButton bottom layer */}
+          <linearGradient id="hubFill" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#37A375" />
+            <stop offset="100%" stopColor="#5168FF" />
+          </linearGradient>
+          {/* Highlight: bright cyan → violet — matches fancyButton top radial layer */}
+          <radialGradient id="hubHighlight" cx="38%" cy="42%" r="70%">
+            <stop offset="0%"  stopColor="#45FED6" stopOpacity="0.55" />
+            <stop offset="78%" stopColor="#837DFA" stopOpacity="0.85" />
             <stop offset="100%" stopColor="#5168FF" stopOpacity="0" />
           </radialGradient>
-          <linearGradient id="hubFill" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#6A7CFF" />
-            <stop offset="100%" stopColor="#3F4FD6" />
-          </linearGradient>
         </defs>
 
-        <circle cx={CENTER} cy={CENTER} r={ORBIT_R * 1.6} fill="url(#hubGlow)" />
 
         <circle
           cx={CENTER}
@@ -109,13 +110,32 @@ export default function OrbitalDiagram() {
           );
         })}
 
+        {/* Outer border ring — near-white like fancyButton outer border */}
+        <circle
+          cx={CENTER}
+          cy={CENTER}
+          r={HUB_R + 5}
+          fill="none"
+          stroke="#FCFFFE"
+          strokeWidth="1.5"
+          strokeOpacity="0.9"
+        />
+        {/* Filled hub with inner mint stroke — like fancyButtonInner border */}
         <circle
           cx={CENTER}
           cy={CENTER}
           r={HUB_R}
           fill="url(#hubFill)"
-          stroke="rgba(255,255,255,0.7)"
-          strokeWidth="2"
+          stroke="#ABE8C2"
+          strokeWidth="1.5"
+        />
+        {/* Cyan→violet highlight overlay — matches fancyButton top radial layer */}
+        <circle
+          cx={CENTER}
+          cy={CENTER}
+          r={HUB_R}
+          fill="url(#hubHighlight)"
+          stroke="none"
         />
         <circle
           cx={CENTER}
@@ -125,8 +145,8 @@ export default function OrbitalDiagram() {
           stroke="rgba(81,104,255,0.35)"
           strokeWidth="1"
         >
-          <animate attributeName="r" values={`${HUB_R};${HUB_R + 16};${HUB_R}`} dur="3.6s" repeatCount="indefinite" />
-          <animate attributeName="opacity" values="0.55;0;0.55" dur="3.6s" repeatCount="indefinite" />
+          <animate attributeName="r" values={`${HUB_R};${HUB_R + 14};${HUB_R}`} dur="3.6s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.22;0;0.22" dur="3.6s" repeatCount="indefinite" />
         </circle>
 
         <image
@@ -135,7 +155,7 @@ export default function OrbitalDiagram() {
           y={CENTER - HUB_R * 0.62}
           width={HUB_R * 1.24}
           height={HUB_R * 1.24}
-          style={{ filter: 'drop-shadow(0 4px 12px rgba(255, 57, 151, 0.45))' }}
+          style={{ filter: 'drop-shadow(0 2px 6px rgba(255, 57, 151, 0.18))' }}
         />
 
         {ACTIVITIES.map((act, i) => {

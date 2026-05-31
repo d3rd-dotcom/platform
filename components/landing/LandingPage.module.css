@@ -554,16 +554,72 @@
   }
 }
 
+.ecosystemLayout {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: clamp(48px, 6vw, 96px);
+  align-items: center;
+  width: 100%;
+}
+
+.ecosystemCopy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.ecosystemKicker {
+  font-family: var(--font-primary);
+  font-size: clamp(0.68rem, 0.82vw, 0.8rem);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #5168FF;
+  margin: 0 0 18px;
+}
+
+.ecosystemDiagramWrap {
+  width: 100%;
+  min-width: 0;
+}
+
+.ecosystemFeatureList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ecosystemFeatureItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-family: var(--font-primary);
+  font-size: clamp(0.9rem, 1.05vw, 1rem);
+  line-height: 1.55;
+  color: rgba(17, 19, 27, 0.76);
+}
+
+.ecosystemFeatureDot {
+  flex: 0 0 auto;
+  width: 7px;
+  height: 7px;
+  margin-top: 8px;
+  border-radius: 50%;
+}
+
 .ecosystemHeadline {
   font-family: var(--font-primary);
-  font-size: clamp(1.6rem, 2.6vw, 2.3rem);
+  font-size: clamp(1.8rem, 3.1vw, 2.9rem);
   font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.01em;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
   color: #11131B;
-  margin: 0 0 14px 0;
+  margin: 0 0 20px 0;
   text-shadow: none;
-  text-align: center;
+  text-align: left;
 }
 
 .ecosystemHeadlineAccent {
@@ -572,13 +628,13 @@
 
 .ecosystemSubtext {
   font-family: var(--font-primary);
-  font-size: 1.05rem;
+  font-size: clamp(0.96rem, 1.1vw, 1.06rem);
   font-weight: 400;
   line-height: 1.6;
   color: rgba(17, 19, 27, 0.7);
-  max-width: 680px;
-  margin: 0 auto 48px;
-  text-align: center;
+  max-width: none;
+  margin: 0 0 28px;
+  text-align: left;
 }
 
 .ecosystemBanner {
@@ -1098,9 +1154,18 @@
     padding: 48px 0 16px;
   }
 
+  .ecosystemLayout {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .ecosystemDiagramWrap {
+    order: -1;
+  }
+
   .ecosystemHeadline {
     margin-top: 0;
-    font-size: clamp(1.3rem, 6.6vw, 1.9rem);
+    font-size: clamp(1.5rem, 6.6vw, 2rem);
   }
 
   .ecosystemSubtext {
@@ -1108,20 +1173,7 @@
   }
 
   .orbitalWrap {
-    max-height: 420px;
-  }
-
-  .ecosystemBanner {
-    margin-top: 32px;
-    padding: 18px 20px;
-  }
-
-  .ecosystemBannerHeadline {
-    font-size: 0.95rem;
-  }
-
-  .ecosystemBannerSubtext {
-    font-size: 0.88rem;
+    max-height: 380px;
   }
 
   .heroValueIconBox {
