@@ -141,22 +141,6 @@
 }
 
 :global(:root:not([data-theme="dark"])) .innerPanel {
-  isolation: isolate;
   background: #f7fbff;
   border-color: rgba(37, 99, 235, 0.18);
-}
-
-:global(:root:not([data-theme="dark"])) .innerPanel > * {
-  position: relative;
-  z-index: 1;
-}
-
-:global(:root:not([data-theme="dark"])) .innerPanel::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 2;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(255, 255, 255, 0.24) 55%, rgba(255, 255, 255, 0.30) 100%);
 }

@@ -19,19 +19,38 @@ function getSurveyById(id: string): Survey {
 }
 
 function getSurveyIntroCopy(survey: Survey): { meta: string; text: string; note: string } {
-  if (survey.questionType === 'likert') {
-    return {
-      meta: 'Character strengths quiz',
-      text: 'Research shows that applying your strengths can increase confidence, happiness, positive relationships and reduces stress and anxiety. Discover your strengths today!',
-      note: '',
-    };
+  switch (survey.id) {
+    case 'via-character-strengths':
+      return {
+        meta: '240-item strengths inventory',
+        text: 'The VIA is a peer-reviewed instrument used in clinical psychology and positive psychology research worldwide. It maps 24 character strengths across 6 virtues and ranks them from your highest to lowest.',
+        note: 'Developed by Martin Seligman and Christopher Peterson at UPenn.',
+      };
+    case 'big-five':
+      return {
+        meta: '20-question personality model',
+        text: 'The most replicated personality framework in psychological science. Your scores on Openness, Conscientiousness, Extraversion, Agreeableness, and Neuroticism describe how you actually operate — not how you wish you did.',
+        note: 'Used in clinical research, hiring science, and relationship psychology worldwide.',
+      };
+    case 'moral-foundations':
+      return {
+        meta: 'Values mapping',
+        text: "Jonathan Haidt's research found that moral disagreements run deeper than opinion — people weight different foundations entirely. This shows which of the five foundations are driving your sense of right and wrong.",
+        note: 'Care, Fairness, Loyalty, Authority, Sanctity.',
+      };
+    case 'attachment-style':
+      return {
+        meta: 'Relationship psychology',
+        text: 'Your attachment style shapes how you connect, communicate, and respond under relational stress. Secure, Anxious, Avoidant, or Fearful-Avoidant — knowing yours is one of the most practically useful things in mental health.',
+        note: 'Based on decades of research by Fraley, Hazan, and Shaver.',
+      };
+    default:
+      return {
+        meta: '10 question personality read',
+        text: 'A short personality quiz with sharper teeth. Pick the answer with the strongest charge and let Blue turn the pattern into a clean read.',
+        note: 'No wrong answers. Only suspiciously revealing ones.',
+      };
   }
-
-  return {
-    meta: '10 question personality read',
-    text: 'A short personality quiz with sharper teeth. Pick the answer with the strongest charge and let Blue turn the pattern into a clean read.',
-    note: 'No wrong answers. Only suspiciously revealing ones.',
-  };
 }
 
 export default function SurveysPage() {

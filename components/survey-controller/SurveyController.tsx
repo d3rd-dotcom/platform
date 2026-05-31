@@ -116,7 +116,10 @@ export default function SurveyController({
           <span className={styles.eyebrow}>Assessment engine</span>
           <h1 className={styles.heroTitle}>{userName}</h1>
         </div>
-        <span className={styles.heroVersion}>{version}</span>
+        <span className={styles.heroVersion}>
+          <Image src="/icons/ui-shard.svg" alt="" width={10} height={10} className={styles.shardIcon} />
+          {version}
+        </span>
       </section>
 
       {/* Character video / blue panel */}
@@ -161,7 +164,7 @@ export default function SurveyController({
         <div className={styles.videoReview}>
           <div className={styles.videoReviewEyebrow}>{selectedSurvey.label} · review</div>
           <p className={styles.videoReviewText}>
-            Pick something. Answer it. I'll try to figure out what it means before you do. If I win, I get some credits.
+            Pick something. Answer it. I'll try to figure out what it means before you do. If I win, I'll give you some credits.
           </p>
         </div>
       </div>

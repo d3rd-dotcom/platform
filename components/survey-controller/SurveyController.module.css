@@ -88,6 +88,9 @@
 .heroVersion {
   margin-left: auto;
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-family: var(--f-mono);
   font-size: 9px;
   letter-spacing: 0.14em;
