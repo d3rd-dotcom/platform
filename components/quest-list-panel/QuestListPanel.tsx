@@ -56,7 +56,7 @@ interface QuestListPanelProps {
 }
 
 const MSG_DEFAULT = 'Credits and rewards for completionists dedicated to self-improvement. Small steps make a difference.';
-const MSG_USDC = '$1 USDC per qualifying quest, paid on-chain to your wallet. Gated to Academic Angels — hold the NFT on Base to unlock.';
+const MSG_USDC = '$1 USDC per quest, paid on-chain to your wallet. Academic Angels only — hold the NFT on Base to unlock.';
 
 export default function QuestListPanel({
   quests,
