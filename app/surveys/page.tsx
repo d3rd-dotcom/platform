@@ -7,6 +7,7 @@ import SurveySpace from '@/components/survey-space/SurveySpace';
 import BlueTerminal from '@/components/blue-terminal/BlueTerminal';
 import QuizModal from '@/components/survey/QuizModal';
 import SurveyResultsModal from '@/components/survey/SurveyResultsModal';
+import AttachmentCertificateMint from '@/components/survey/AttachmentCertificateMint';
 import { STANDARD_SURVEYS } from '@/components/survey/Surveys';
 import type { Survey, SurveyAnswers, SurveyResults } from '@/components/survey/types';
 import { VIA_SURVEY } from '@/components/survey/viaQuestions';
@@ -57,8 +58,10 @@ export default function SurveysPage() {
   const [selectedSurveyId, setSelectedSurveyId] = useState(AVAILABLE_SURVEYS[0].id);
   const [activeSurvey, setActiveSurvey] = useState<Survey | null>(null);
   const [showQuizModal, setShowQuizModal] = useState(false);
+  const [showMintInterstitial, setShowMintInterstitial] = useState(false);
   const [showResultsModal, setShowResultsModal] = useState(false);
   const [surveyResults, setSurveyResults] = useState<SurveyResults | null>(null);
+  const [mintInfo, setMintInfo] = useState<{ username: string; walletAddress: string; profileType: string } | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const selectedSurvey = useMemo(() => getSurveyById(selectedSurveyId), [selectedSurveyId]);
@@ -68,16 +71,20 @@ export default function SurveysPage() {
     setSelectedSurveyId(surveyId);
     setErrorMessage(null);
     setShowQuizModal(false);
+    setShowMintInterstitial(false);
     setShowResultsModal(false);
     setActiveSurvey(null);
     setSurveyResults(null);
+    setMintInfo(null);
   }, []);
 
   const handleStartSurvey = useCallback(() => {
     setActiveSurvey(selectedSurvey);
     setShowQuizModal(true);
+    setShowMintInterstitial(false);
     setShowResultsModal(false);
     setSurveyResults(null);
+    setMintInfo(null);
     setErrorMessage(null);
   }, [selectedSurvey]);
 
@@ -98,8 +105,12 @@ export default function SurveysPage() {
         }),
       });
 
-      const processData: { success?: boolean; results?: SurveyResults; error?: string } =
-        await processResponse.json().catch(() => ({}));
+      const processData: {
+        success?: boolean;
+        results?: SurveyResults;
+        error?: string;
+        mintInfo?: { username: string; walletAddress: string; profileType: string };
+      } = await processResponse.json().catch(() => ({}));
 
       if (!processResponse.ok || !processData.success || !processData.results) {
         throw new Error(processData.error || 'Failed to process survey results.');
@@ -107,8 +118,14 @@ export default function SurveysPage() {
 
       setSurveyResults(processData.results);
       setShowQuizModal(false);
-      setShowResultsModal(true);
       setErrorMessage(null);
+
+      if (processData.mintInfo && activeSurvey?.id === 'attachment-style') {
+        setMintInfo(processData.mintInfo);
+        setShowMintInterstitial(true);
+      } else {
+        setShowResultsModal(true);
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to complete survey. Please try again.';
       setErrorMessage(message);
@@ -116,6 +133,11 @@ export default function SurveysPage() {
       throw error;
     }
   }, [activeSurvey]);
+
+  const handleMintDone = useCallback(() => {
+    setShowMintInterstitial(false);
+    setShowResultsModal(true);
+  }, []);
 
   return (
     <div className={styles.pageLayout}>
@@ -139,6 +161,14 @@ export default function SurveysPage() {
               survey={activeSurvey}
               variant="inline"
               onComplete={handleSurveyComplete}
+            />
+          ) : showMintInterstitial && mintInfo ? (
+            <AttachmentCertificateMint
+              profileType={mintInfo.profileType}
+              username={mintInfo.username}
+              walletAddress={mintInfo.walletAddress}
+              onMintComplete={handleMintDone}
+              onSkip={handleMintDone}
             />
           ) : showResultsModal ? (
             <SurveyResultsModal

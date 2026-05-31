@@ -97,7 +97,15 @@ export async function POST(request: NextRequest) {
         scored.results.profileType,
       )
       scored.results.insights = []
-      return NextResponse.json({ success: true, results: scored.results })
+      return NextResponse.json({
+        success: true,
+        results: scored.results,
+        mintInfo: {
+          username: user.username,
+          walletAddress: user.walletAddress,
+          profileType: scored.results.profileType,
+        },
+      })
     }
 
     // Generic fallback for any unrecognised survey id

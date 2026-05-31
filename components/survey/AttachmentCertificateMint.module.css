@@ -1,0 +1,128 @@
+.shell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-8) var(--space-6);
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.certWrap {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+}
+
+.certImage {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  display: block;
+}
+
+.namePreview {
+  position: absolute;
+  bottom: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Departure Mono', monospace;
+  font-size: clamp(10px, 2.2vw, 18px);
+  color: inherit;
+  white-space: nowrap;
+  pointer-events: none;
+  letter-spacing: 0.04em;
+}
+
+.copy {
+  text-align: center;
+  max-width: 480px;
+}
+
+.heading {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  margin: 0 0 var(--space-2);
+  color: var(--color-text-primary);
+}
+
+.sub {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  max-width: 320px;
+}
+
+.successBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  max-width: 320px;
+}
+
+.successText {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.txLink {
+  font-size: var(--text-sm);
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.primaryBtn {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-primary);
+  color: var(--color-background);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--duration-fast) var(--ease-default);
+}
+
+.primaryBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.primaryBtn:not(:disabled):hover {
+  opacity: 0.85;
+}
+
+.skipBtn {
+  background: none;
+  border: none;
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.skipBtn:hover {
+  color: var(--color-text-secondary);
+}
+
+.errorText {
+  font-size: var(--text-xs);
+  color: var(--color-error, #e05a5a);
+  text-align: center;
+  margin: 0;
+}

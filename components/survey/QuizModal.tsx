@@ -21,6 +21,7 @@ export default function QuizModal({ isOpen, onClose, survey, variant = 'modal', 
   const [mounted, setMounted] = useState(false)
   const questionRefs = useRef<Record<number, HTMLDivElement | null>>({})
   const footerRef = useRef<HTMLDivElement | null>(null)
+  const contentRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     setMounted(true)
@@ -99,12 +100,14 @@ export default function QuizModal({ isOpen, onClose, survey, variant = 'modal', 
       handleSubmit()
     } else {
       setCurrentPageIndex(currentPageIndex + 1)
+      contentRef.current?.scrollTo({ top: 0 })
     }
   }
 
   const handlePrevious = () => {
     if (currentPageIndex > 0) {
       setCurrentPageIndex(currentPageIndex - 1)
+      contentRef.current?.scrollTo({ top: 0 })
     }
   }
 
@@ -155,7 +158,7 @@ export default function QuizModal({ isOpen, onClose, survey, variant = 'modal', 
       </div>
 
       {/* Question Content */}
-      <div className={styles.quizModalContent}>
+      <div className={styles.quizModalContent} ref={contentRef}>
         {isLikertSurvey ? (
           <div className={styles.quizModalLikertList}>
             <h2 className={styles.quizModalLikertHeading}>{survey.title}</h2>
