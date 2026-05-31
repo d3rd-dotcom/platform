@@ -125,6 +125,9 @@ export default function SidebarInventoryCard({ shardCount, address, isCollapsed 
           isOpen={isGuideOpen}
           onClose={() => setIsGuideOpen(false)}
           membership={tier}
+          credits={shardDisplay}
+          cakes={votingPower ?? '0'}
+          usdc={usdcBalance ?? '0.00'}
         />
       </>
     );
@@ -202,6 +205,9 @@ export default function SidebarInventoryCard({ shardCount, address, isCollapsed 
         isOpen={isGuideOpen}
         onClose={() => setIsGuideOpen(false)}
         membership={tier}
+        credits={shardDisplay}
+        cakes={votingPower ?? '0'}
+        usdc={usdcBalance ?? '0.00'}
       />
     </>
   );

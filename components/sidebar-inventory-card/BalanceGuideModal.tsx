@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import Image from 'next/image';
 import Link from 'next/link';
 import { X } from '@phosphor-icons/react';
 import styles from './BalanceGuideModal.module.css';
@@ -12,13 +13,28 @@ interface BalanceGuideModalProps {
   isOpen: boolean;
   onClose: () => void;
   membership: MembershipTier | null;
+  credits: string;
+  cakes: string;
+  usdc: string;
 }
 
+interface SlotDef {
+  label: string;
+  icon: string;
+  unoptimized?: boolean;
+  value: string;
+  tooltip: string;
+}
+
+const EMPTY_VALUES = new Set(['0', '0.00', '000']);
 
 export default function BalanceGuideModal({
   isOpen,
   onClose,
   membership,
+  credits,
+  cakes,
+  usdc,
 }: BalanceGuideModalProps) {
   const [mounted, setMounted] = useState(false);
 
@@ -29,58 +45,80 @@ export default function BalanceGuideModal({
 
   useEffect(() => {
     if (!isOpen) return;
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose();
-    };
-    const previousOverflow = document.body.style.overflow;
+    const onKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     window.addEventListener('keydown', onKeyDown);
-
     return () => {
       window.removeEventListener('keydown', onKeyDown);
-      document.body.style.overflow = previousOverflow;
+      document.body.style.overflow = prev;
     };
   }, [isOpen, onClose]);
 
   if (!isOpen || !mounted || typeof document === 'undefined') return null;
 
+  const tierFilled = membership === 'Angel' || membership === 'Staff';
+  const tierLabel =
+    membership === 'Staff' ? 'Staff / VIP' :
+    membership === 'Angel' ? 'Academic Angel' : 'Guest';
+
+  const slots: SlotDef[] = [
+    { label: 'Credits',      icon: '/icons/ui-shard.svg',     value: credits,  tooltip: 'Earned through quests, lessons, and check-ins.' },
+    { label: 'Cakes',        icon: '/icons/cake.webp',        value: cakes,    tooltip: 'Awarded for participation. Used for governance.', unoptimized: true },
+    { label: 'USDC',         icon: '/icons/usdc.svg',         value: usdc,     tooltip: 'Quest payouts sent to your connected wallet.' },
+    { label: 'Certificates', icon: '/icons/ui-seal.svg',      value: '0',      tooltip: 'Awarded for completing Academy milestones.' },
+    { label: 'Badges',       icon: '/icons/badge-academy.png', value: '0',     tooltip: 'Earned for special achievements.', unoptimized: true },
+    { label: 'Awards',       icon: '/icons/rewards.svg',      value: '0',      tooltip: 'Granted by staff for outstanding participation.' },
+  ];
+
   return createPortal(
     <div
       className={styles.overlay}
-      onClick={(event) => {
-        if (event.target === event.currentTarget) onClose();
-      }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <section className={styles.modal} role="dialog" aria-modal="true" aria-label="Balance details">
-        <button type="button" className={styles.close} onClick={onClose} aria-label="Close">
-          <X size={18} weight="bold" />
-        </button>
+      <section className={styles.modal} role="dialog" aria-modal="true" aria-label="Inventory">
+        <div className={styles.header}>
+          <span className={styles.title}>Inventory</span>
+          <button type="button" className={styles.close} onClick={onClose} aria-label="Close">
+            <X size={15} weight="bold" />
+          </button>
+        </div>
 
-        <section className={styles.rewardList} aria-label="Balance definitions">
-          <dl className={styles.rewardLedger}>
-            <div className={styles.reward}>
-              <dt>Credits</dt>
-              <dd>Earned through quests, lessons, and check-ins. Spend on Blue and Academy rewards.</dd>
-            </div>
-            <div className={styles.reward}>
-              <dt>Cakes</dt>
-              <dd>Awarded for participation and streaks. Used for governance and future drops.</dd>
-            </div>
-            <div className={styles.reward}>
-              <dt>USDC</dt>
-              <dd>Quest payouts sent to your connected wallet. Requires Academic Angel membership.</dd>
-            </div>
-            <div className={styles.reward}>
-              <dt>Membership</dt>
-              <dd>
-                {membership === 'Staff' && 'Staff / VIP — access to gated tools and review workflows.'}
-                {membership === 'Angel' && 'Academic Angel — eligible to request USDC quest payouts.'}
-                {(membership === 'Guest' || membership === null) && 'Guest — take the course and earn credits through Academy activity.'}
-              </dd>
-            </div>
-          </dl>
-        </section>
+        <div className={styles.grid}>
+          {slots.map((slot) => {
+            const empty = EMPTY_VALUES.has(slot.value);
+            return (
+              <div
+                key={slot.label}
+                className={`${styles.slot} ${empty ? styles.slotEmpty : styles.slotFilled}`}
+                title={slot.tooltip}
+              >
+                <div className={styles.iconWrap}>
+                  <Image
+                    src={slot.icon}
+                    alt={slot.label}
+                    width={28}
+                    height={28}
+                    className={styles.icon}
+                    unoptimized={slot.unoptimized}
+                  />
+                  {!empty && <span className={styles.count}>{slot.value}</span>}
+                </div>
+                <span className={styles.label}>{slot.label}</span>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className={`${styles.membershipSlot} ${tierFilled ? styles.membershipFilled : ''}`}>
+          <Image src="/icons/governance.svg" alt="" width={16} height={16} className={styles.membershipIcon} />
+          <div className={styles.membershipInfo}>
+            <span className={styles.membershipMeta}>Membership</span>
+            <span className={`${styles.membershipTier} ${tierFilled ? styles.membershipTierActive : ''}`}>
+              {tierLabel}
+            </span>
+          </div>
+        </div>
 
         <div className={styles.actions}>
           <Link href="/quests" className={styles.primaryAction} onClick={onClose}>Explore quests</Link>

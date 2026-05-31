@@ -7,39 +7,53 @@
   justify-content: center;
   padding: max(18px, 4vh) 16px;
   overflow-y: auto;
-  background: rgba(10, 12, 25, 0.58);
+  background: rgba(10, 12, 25, 0.62);
   backdrop-filter: blur(5px);
   animation: fadeIn 0.16s ease;
 }
 
 .modal {
   position: relative;
-  width: min(510px, 100%);
+  width: min(390px, 100%);
   margin: auto 0;
-  padding: 18px;
+  padding: 16px;
   border: 1px solid var(--color-border-strong);
-  border-radius: 18px;
+  border-radius: 16px;
   background: var(--color-surface-1);
-  box-shadow: 0 18px 50px rgba(10, 12, 25, 0.2);
+  box-shadow: 0 20px 56px rgba(10, 12, 25, 0.28);
   color: var(--color-text-dark);
   animation: riseIn 0.18s ease;
 }
 
+/* ── Header ─────────────────────────────────── */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.title {
+  font-family: var(--font-button);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
 .close {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  z-index: 1;
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border: 1px solid var(--color-border-strong);
-  border-radius: 8px;
+  border-radius: 7px;
   background: var(--color-surface-2);
   color: var(--color-text-soft);
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: background 0.12s, color 0.12s;
 }
 
 .close:hover {
@@ -47,182 +61,159 @@
   color: var(--color-text-dark);
 }
 
-.close:focus-visible,
-.primaryAction:focus-visible,
-.secondaryAction:focus-visible {
+.close:focus-visible {
   outline: 2px solid var(--color-primary, #5168ff);
   outline-offset: 2px;
 }
 
-.membership {
-  padding-top: 3px;
+/* ── Inventory grid ──────────────────────────── */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
 }
 
-.sectionLabel {
-  display: block;
-  margin: 0 42px 10px 2px;
-  color: var(--color-text-faint);
-  font-family: var(--font-button);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-}
-
-.tierList {
+.slot {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 7px;
-}
-
-.tier {
-  display: grid;
-  grid-template-columns: 31px 1fr auto;
   align-items: center;
-  gap: 10px;
-  min-height: 58px;
-  padding: 9px 10px;
+  gap: 6px;
+  padding: 12px 6px 9px;
   border: 1px solid var(--color-border-subtle);
-  border-radius: 12px;
+  border-radius: 7px;
   background: var(--color-surface-2);
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.06),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.22);
+  cursor: default;
+  transition: border-color 0.12s, box-shadow 0.12s;
 }
 
-.tierCurrent {
-  border-color: color-mix(in srgb, var(--color-primary) 44%, var(--color-border-strong));
-  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-surface-2));
+.slotFilled {
+  border-color: var(--color-border-strong);
 }
 
-.tierIndex {
-  display: grid;
-  place-items: center;
-  width: 31px;
-  height: 31px;
-  border: 1px solid var(--color-border-strong);
-  border-radius: 8px;
-  color: var(--color-text-muted);
+.slotFilled:hover {
+  border-color: color-mix(in srgb, var(--color-primary) 38%, var(--color-border-strong));
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.06),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.22),
+    0 0 0 1px color-mix(in srgb, var(--color-primary) 20%, transparent);
+}
+
+.slotEmpty {
+  opacity: 0.35;
+}
+
+.iconWrap {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  object-fit: contain;
+}
+
+.count {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
   font-family: var(--font-mono, monospace);
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.tierCurrent .tierIndex {
-  border-color: var(--color-primary);
-  background: var(--color-primary);
-  color: #ffffff;
-}
-
-.tierText strong,
-.reward dt {
-  color: var(--color-text-dark);
-  font-family: var(--font-button);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-}
-
-.tierText p,
-.reward dd {
-  margin: 3px 0 0;
-  color: var(--color-text-muted);
-  font-family: var(--font-primary);
-  font-size: 11px;
-  line-height: 1.4;
-}
-
-.currentBadge {
-  padding: 4px 7px;
-  border: 1px solid color-mix(in srgb, var(--color-primary) 28%, transparent);
-  border-radius: 6px;
-  background: color-mix(in srgb, var(--color-primary) 9%, transparent);
-  color: var(--color-primary);
-  font-family: var(--font-button);
   font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  color: #fff;
+  line-height: 1;
+  text-shadow:
+    1px 0 0 rgba(0, 0, 0, 0.9),
+    -1px 0 0 rgba(0, 0, 0, 0.9),
+    0 1px 0 rgba(0, 0, 0, 0.9),
+    0 -1px 0 rgba(0, 0, 0, 0.9);
 }
 
-.rewardList {
-  display: flex;
-  flex-direction: column;
-  margin-top: 14px;
-}
-
-.rewardList .sectionLabel {
-  margin-bottom: 0;
-}
-
-.rewardLedger {
-  margin: 0;
-}
-
-.reward {
-  display: grid;
-  grid-template-columns: 62px 1fr;
-  gap: 10px;
-  padding: 9px 2px;
-}
-
-.reward + .reward {
-  border-top: 1px solid var(--color-border-subtle);
-}
-
-.reward dd {
-  margin-top: 0;
-}
-
-.redeem {
-  margin-top: 14px;
-  padding: 12px;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 12px;
-  background: var(--color-surface-2);
-}
-
-.redeem .sectionLabel {
-  margin-bottom: 9px;
-}
-
-.steps {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  counter-reset: payout-step;
-}
-
-.steps li {
-  display: grid;
-  grid-template-columns: 21px 1fr;
-  align-items: start;
-  gap: 9px;
-  color: var(--color-text-soft);
-  font-family: var(--font-primary);
-  font-size: 11px;
-  line-height: 1.45;
-  counter-increment: payout-step;
-}
-
-.steps li::before {
-  content: counter(payout-step);
-  display: grid;
-  place-items: center;
-  width: 21px;
-  height: 21px;
-  border: 1px solid var(--color-border-strong);
-  border-radius: 6px;
-  color: var(--color-text-muted);
-  font-family: var(--font-mono, monospace);
-  font-size: 10px;
+.label {
+  font-family: var(--font-button);
+  font-size: 8px;
   font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  text-align: center;
 }
+
+.slotFilled .label {
+  color: var(--color-text-muted);
+}
+
+/* ── Membership row ─────────────────────────── */
+
+.membershipSlot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 5px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 7px;
+  background: var(--color-surface-2);
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.06),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.22);
+  opacity: 0.45;
+  transition: border-color 0.12s;
+}
+
+.membershipFilled {
+  opacity: 1;
+  border-color: color-mix(in srgb, var(--color-primary) 38%, var(--color-border-strong));
+}
+
+.membershipIcon {
+  opacity: 0.55;
+  flex-shrink: 0;
+}
+
+.membershipInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.membershipMeta {
+  font-family: var(--font-button);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+.membershipTier {
+  font-family: var(--font-button);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-soft);
+}
+
+.membershipTierActive {
+  color: var(--color-primary);
+}
+
+/* ── Actions ────────────────────────────────── */
 
 .actions {
   display: flex;
-  gap: 8px;
-  margin-top: 14px;
+  gap: 7px;
+  margin-top: 12px;
 }
 
 .primaryAction,
@@ -230,27 +221,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 38px;
-  padding: 0 16px;
+  min-height: 36px;
+  padding: 0 14px;
   border: 1px solid var(--color-border-strong);
-  border-radius: 10px;
+  border-radius: 9px;
   font-family: var(--font-button);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-decoration: none;
   cursor: pointer;
+  transition: background 0.12s, color 0.12s;
 }
 
 .primaryAction {
   flex: 1;
   border-color: var(--color-primary);
   background: var(--color-primary);
-  color: #ffffff;
+  color: #fff;
 }
 
 .primaryAction:hover {
-  background: var(--color-primary-hover);
+  background: var(--color-primary-hover, color-mix(in srgb, var(--color-primary) 85%, #fff));
 }
 
 .secondaryAction {
@@ -263,50 +255,42 @@
   color: var(--color-text-dark);
 }
 
+.primaryAction:focus-visible,
+.secondaryAction:focus-visible {
+  outline: 2px solid var(--color-primary, #5168ff);
+  outline-offset: 2px;
+}
+
+/* ── Dark theme ─────────────────────────────── */
+
 :global([data-theme="dark"]) .overlay {
-  background: rgba(5, 6, 13, 0.72);
+  background: rgba(5, 6, 13, 0.75);
 }
 
 :global([data-theme="dark"]) .modal {
-  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.5);
 }
 
-:global([data-theme="dark"]) .tierCurrent {
-  background: color-mix(in oklch, var(--color-primary) 12%, var(--color-surface-2));
+:global([data-theme="dark"]) .grid {
+  background: rgba(0, 0, 0, 0.35);
 }
 
-:global([data-theme="dark"]) .currentBadge {
-  background: color-mix(in oklch, var(--color-primary) 17%, transparent);
+:global([data-theme="dark"]) .membershipFilled {
+  background: color-mix(in oklch, var(--color-primary) 10%, var(--color-surface-2));
 }
+
+/* ── Motion ─────────────────────────────────── */
 
 @keyframes fadeIn {
   from { opacity: 0; }
-  to { opacity: 1; }
+  to   { opacity: 1; }
 }
 
 @keyframes riseIn {
   from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@media (max-width: 540px) {
-  .modal {
-    padding: 15px;
-  }
-
-  .tier {
-    grid-template-columns: 29px 1fr;
-  }
-
-  .currentBadge {
-    grid-column: 2;
-    justify-self: start;
-  }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .overlay,
-  .modal {
-    animation: none;
-  }
+  .overlay, .modal { animation: none; }
 }
