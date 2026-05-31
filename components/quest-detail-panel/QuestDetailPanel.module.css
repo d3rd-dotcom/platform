@@ -24,6 +24,70 @@
 .panel[data-tone='mission'] { --tone: #4ea968; --tone-soft: rgba(78, 169, 104, 0.16); --tone-tint: rgba(78, 169, 104, 0.07); }
 .panel[data-tone='social'] { --tone: #a871f4; --tone-soft: rgba(168, 113, 244, 0.16); --tone-tint: rgba(168, 113, 244, 0.07); }
 
+/* ── Quest Board header ── */
+.boardHeader {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px 8px;
+  border-bottom: 1px solid rgba(81, 104, 255, 0.13);
+  background: linear-gradient(180deg, rgba(81, 104, 255, 0.055) 0%, transparent 100%);
+}
+
+
+.boardRailLeft,
+.boardRailRight {
+  flex: 1;
+  height: 1px;
+  position: relative;
+}
+
+.boardRailLeft {
+  background: linear-gradient(90deg, transparent 0%, rgba(81, 104, 255, 0.38) 100%);
+}
+
+.boardRailRight {
+  background: linear-gradient(90deg, rgba(81, 104, 255, 0.38) 0%, transparent 100%);
+}
+
+.boardRailLeft::before,
+.boardRailLeft::after,
+.boardRailRight::before,
+.boardRailRight::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  width: 1px;
+  height: 7px;
+  background: rgba(81, 104, 255, 0.40);
+}
+
+.boardRailLeft::before { right: 38%; }
+.boardRailLeft::after  { right: 12%; }
+.boardRailRight::before { left: 12%; }
+.boardRailRight::after  { left: 38%; }
+
+.boardNode {
+  width: 6px;
+  height: 6px;
+  background: #5168ff;
+  transform: rotate(45deg);
+  flex-shrink: 0;
+  box-shadow: 0 0 7px rgba(81, 104, 255, 0.70), 0 0 14px rgba(81, 104, 255, 0.26);
+}
+
+.boardTitle {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(18, 25, 53, 0.62);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 /* ── Idle state ── */
 .idle {
   flex: 1;
@@ -31,17 +95,20 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
   border-radius: 16px;
   border: 1px solid rgba(26, 29, 51, 0.08);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(246, 248, 255, 0.90) 100%);
+  overflow: hidden;
 }
 
 .idleInner {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  align-self: center;
   gap: 10px;
   padding: 32px 24px;
   text-align: center;
@@ -505,6 +572,35 @@
 }
 
 /* ── Dark mode ── */
+:global([data-theme='dark']) .boardHeader {
+  background: linear-gradient(180deg, rgba(81, 104, 255, 0.10) 0%, transparent 100%);
+  border-bottom-color: rgba(81, 104, 255, 0.22);
+}
+
+
+:global([data-theme='dark']) .boardTitle {
+  color: rgba(226, 234, 255, 0.70);
+}
+
+:global([data-theme='dark']) .boardRailLeft {
+  background: linear-gradient(90deg, transparent 0%, rgba(81, 104, 255, 0.50) 100%);
+}
+
+:global([data-theme='dark']) .boardRailRight {
+  background: linear-gradient(90deg, rgba(81, 104, 255, 0.50) 0%, transparent 100%);
+}
+
+:global([data-theme='dark']) .boardRailLeft::before,
+:global([data-theme='dark']) .boardRailLeft::after,
+:global([data-theme='dark']) .boardRailRight::before,
+:global([data-theme='dark']) .boardRailRight::after {
+  background: rgba(81, 104, 255, 0.55);
+}
+
+:global([data-theme='dark']) .boardNode {
+  box-shadow: 0 0 9px rgba(81, 104, 255, 0.88), 0 0 20px rgba(81, 104, 255, 0.38);
+}
+
 :global([data-theme='dark']) .panel {
   background:
     radial-gradient(120% 80% at 100% 0%, var(--tone-soft) 0%, transparent 44%),
@@ -515,6 +611,7 @@
 :global([data-theme='dark']) .idle {
   background: linear-gradient(180deg, #161c2f 0%, #0f1426 100%);
   border-color: rgba(150, 170, 255, 0.14);
+  overflow: hidden;
 }
 
 :global([data-theme='dark']) .idleTitle { color: #eef3ff; }

@@ -267,6 +267,13 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
   if (!quest) {
     return (
       <div className={styles.idle}>
+        <div className={styles.boardHeader}>
+          <span className={styles.boardRailLeft} aria-hidden="true" />
+          <span className={styles.boardNode} aria-hidden="true" />
+          <span className={styles.boardTitle}>Quest Board</span>
+          <span className={styles.boardNode} aria-hidden="true" />
+          <span className={styles.boardRailRight} aria-hidden="true" />
+        </div>
         <div className={styles.idleInner}>
           <Target size={36} weight="duotone" className={styles.idleIcon} />
           <p className={styles.idleTitle}>Select a quest</p>
@@ -288,6 +295,13 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
 
   return (
     <div className={styles.panel} data-tone={kindMeta.tone}>
+      <div className={styles.boardHeader}>
+        <span className={styles.boardRailLeft} aria-hidden="true" />
+        <span className={styles.boardNode} aria-hidden="true" />
+        <span className={styles.boardTitle}>Quest Board</span>
+        <span className={styles.boardNode} aria-hidden="true" />
+        <span className={styles.boardRailRight} aria-hidden="true" />
+      </div>
       <div className={styles.scrollArea}>
         <section className={styles.heroPanel}>
           {quest.authorLabel && <span className={styles.authorTag}>{quest.authorLabel}</span>}
