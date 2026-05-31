@@ -13,11 +13,8 @@
   border-radius: 16px;
   overflow: hidden;
   background:
-    linear-gradient(rgba(81, 104, 255, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(81, 104, 255, 0.06) 1px, transparent 1px),
     radial-gradient(120% 80% at 100% 0%, var(--tone-soft) 0%, transparent 38%),
-    linear-gradient(180deg, #ffffff 0%, #f6f9ff 100%);
-  background-size: 28px 28px, 28px 28px, auto, auto;
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(246, 248, 255, 0.90) 100%);
   border: 1px solid rgba(26, 29, 51, 0.10);
   box-shadow: 0 18px 48px rgba(38, 45, 84, 0.08);
 }
@@ -38,11 +35,7 @@
   justify-content: center;
   border-radius: 16px;
   border: 1px solid rgba(26, 29, 51, 0.08);
-  background:
-    linear-gradient(rgba(81, 104, 255, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(81, 104, 255, 0.06) 1px, transparent 1px),
-    linear-gradient(180deg, #ffffff 0%, #f6f9ff 100%);
-  background-size: 28px 28px, 28px 28px, auto;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(246, 248, 255, 0.90) 100%);
 }
 
 .idleInner {
@@ -514,20 +507,13 @@
 /* ── Dark mode ── */
 :global([data-theme='dark']) .panel {
   background:
-    linear-gradient(rgba(81, 104, 255, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(81, 104, 255, 0.08) 1px, transparent 1px),
     radial-gradient(120% 80% at 100% 0%, var(--tone-soft) 0%, transparent 44%),
     linear-gradient(180deg, #161c2f 0%, #0f1426 100%);
-  background-size: 28px 28px, 28px 28px, auto, auto;
   border-color: rgba(150, 170, 255, 0.14);
 }
 
 :global([data-theme='dark']) .idle {
-  background:
-    linear-gradient(rgba(81, 104, 255, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(81, 104, 255, 0.08) 1px, transparent 1px),
-    linear-gradient(180deg, #161c2f 0%, #0f1426 100%);
-  background-size: 28px 28px, 28px 28px, auto;
+  background: linear-gradient(180deg, #161c2f 0%, #0f1426 100%);
   border-color: rgba(150, 170, 255, 0.14);
 }
 

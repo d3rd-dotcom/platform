@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
-import { Trophy, Sparkle, Coins, Check } from '@phosphor-icons/react';
+import { Trophy, Sparkle, Coins, Check, Info } from '@phosphor-icons/react';
 import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
 import type { DrawerQuest } from '@/components/quest-drawer/QuestDrawer';
 import type { QuestCardKind } from '@/components/quest-card/QuestCard';
@@ -55,7 +55,8 @@ interface QuestListPanelProps {
   onClaims: () => void;
 }
 
-const BLUE_MESSAGE = 'Credits and rewards for completionists dedicated to self-improvement. Small steps make a difference.';
+const MSG_DEFAULT = 'Credits and rewards for completionists dedicated to self-improvement. Small steps make a difference.';
+const MSG_USDC = 'USDC bounties are real on-chain payouts — $1 per qualifying quest. They\'re gated to Academic Angels (holders of the Angel NFT on Base). Complete the quest, request a payout, and Blue sends it straight to your wallet once a staff member approves.';
 
 export default function QuestListPanel({
   quests,
@@ -71,6 +72,13 @@ export default function QuestListPanel({
   onClaims,
 }: QuestListPanelProps) {
   const { play } = useSound();
+  const [blueMessage, setBlueMessage] = useState(MSG_DEFAULT);
+  const usdcInfoActive = blueMessage === MSG_USDC;
+
+  const handleUsdcInfo = () => {
+    play('click');
+    setBlueMessage(usdcInfoActive ? MSG_DEFAULT : MSG_USDC);
+  };
 
   const countsByKind = React.useMemo(() => {
     const acc: Record<QuestCardKind, number> = { course: 0, mission: 0, submit: 0, social: 0, custom: 0 };
@@ -104,12 +112,20 @@ export default function QuestListPanel({
           </div>
           {usdcAvailable > 0 && (
             <div className={styles.stat}>
-              <span className={styles.statLabel}>USDC available</span>
+              <span className={styles.statLabelRow}>
+                <span className={styles.statLabel}>USDC available</span>
+                <button
+                  type="button"
+                  className={`${styles.infoBtn} ${usdcInfoActive ? styles.infoBtnActive : ''}`}
+                  onClick={handleUsdcInfo}
+                  aria-label="What are USDC bounties?"
+                  title="What are USDC bounties?"
+                >
+                  <Info size={11} weight="fill" />
+                </button>
+              </span>
               <span className={styles.statValue}>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <circle cx="12" cy="12" r="11" fill="#2775CA" />
-                  <text x="12" y="16.5" textAnchor="middle" fill="#fff" fontSize="13" fontWeight="700">$</text>
-                </svg>
+                <Image src="/icons/usdc.svg" alt="USDC" width={14} height={14} />
                 ${usdcAvailable}
               </span>
             </div>
@@ -119,7 +135,7 @@ export default function QuestListPanel({
 
       <BlueChatBubble
         className={styles.blueBubble}
-        message={BLUE_MESSAGE}
+        message={blueMessage}
         variant="compact"
       />
 
