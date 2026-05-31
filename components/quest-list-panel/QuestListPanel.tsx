@@ -154,7 +154,6 @@ export default function QuestListPanel({
               onClick={() => { play('click'); onFilterChange(key); }}
             >
               {FILTER_LABEL[key]}
-              <span className={styles.filterCount}>{count}</span>
             </button>
           );
         })}
