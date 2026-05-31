@@ -302,30 +302,6 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
           )}
         </section>
 
-        <section className={styles.metricRow}>
-          <div className={styles.metricCell}>
-            <span className={styles.metricLabel}>Progress</span>
-            <span className={styles.metricValue}>
-              {progressCount}<span className={styles.metricMuted}>/{targetCount}</span>
-            </span>
-            <div className={styles.metricBar}>
-              <div className={styles.metricBarFill} style={{ width: `${progressPct}%` }} />
-            </div>
-          </div>
-          <div className={styles.metricCell}>
-            <span className={styles.metricLabel}>Status</span>
-            <span className={`${styles.metricValue} ${styles.metricValueStatus}`} data-status={questIsComplete ? 'done' : progressCount > 0 ? 'active' : 'idle'}>
-              {statusLabel}
-            </span>
-          </div>
-          <div className={styles.metricCell}>
-            <span className={styles.metricLabel}>Claims</span>
-            <span className={styles.metricValue}>
-              {claimedCount}<span className={styles.metricMuted}>/{targetCount}</span>
-            </span>
-          </div>
-        </section>
-
         <section className={styles.actionPanel}>
           <div className={styles.actionHeading}>
             <span className={styles.actionEyebrow}>{'// objective'}</span>
