@@ -11,7 +11,7 @@ export const CohortSection = () => {
   return (
     <section id="cohort" className={styles.cohortSection}>
       <div className={styles.cubesBackground}>
-        <CubesCanvas />
+        <CubesCanvas bgColor="#202127" />
       </div>
 
       <div className={styles.cohortContainer}>

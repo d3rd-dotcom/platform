@@ -1,55 +1,33 @@
 .cohortSection {
   position: relative;
   width: 100%;
-  background-color: #f4f5fe;
-  padding: 48px 0;
+  background-color: #202127;
+  padding: 0;
   z-index: 1;
   overflow: hidden;
-}
-
-.cohortSection::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(244, 245, 254, 0.82);
-  z-index: 0;
-  pointer-events: none;
 }
 
 .cubesBackground {
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: 0;
   pointer-events: none;
-}
-
-@media (min-width: 768px) {
-  .cohortSection {
-    padding: 80px 0;
-  }
 }
 
 .cohortContainer {
   position: relative;
   z-index: 1;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 16px;
+  width: 100%;
+  padding: 0;
 }
 
-@media (min-width: 768px) {
-  .cohortContainer {
-    padding: 0 24px;
-  }
-}
-
-/* Soft rounded board — dark card on the light section */
+/* Full-bleed dark board */
 .board {
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 28px;
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   overflow: hidden;
   background: #202127;
-  box-shadow: 0 34px 80px -34px rgba(15, 15, 18, 0.6);
 }
 
 /* Title panel */
@@ -58,7 +36,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 32px;
-  padding: 36px 40px 32px;
+  padding: 52px 64px 44px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -93,7 +71,7 @@
 
 @media (min-width: 1024px) {
   .cohortContentGrid {
-    grid-template-columns: minmax(0, 520px) 1fr;
+    grid-template-columns: 1fr 1.4fr;
   }
 }
 
@@ -107,12 +85,12 @@
 
 .cohortDivider {
   height: 1px;
-  margin: 0 28px;
+  margin: 0 48px;
   background-color: rgba(255, 255, 255, 0.08);
 }
 
 .cohortFeatureBlock {
-  padding: 24px 28px;
+  padding: 32px 48px;
 }
 
 .cohortFeatureHeader {
@@ -164,7 +142,7 @@
   .cohortDiamonds {
     display: block;
     position: relative;
-    padding: 20px;
+    padding: 28px 40px 28px 24px;
   }
 }
 
@@ -172,15 +150,16 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  gap: 12px;
+  gap: 14px;
   height: 100%;
+  min-height: 380px;
 }
 
 .cohortImgCell {
   position: relative;
-  min-height: 200px;
+  min-height: 160px;
   overflow: hidden;
-  border-radius: 18px;
+  border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 12px 28px -14px rgba(0, 0, 0, 0.6);
 }
@@ -247,7 +226,7 @@
   .titlePanel {
     flex-direction: column;
     gap: 22px;
-    padding: 24px 20px 22px;
+    padding: 28px 24px 24px;
   }
 
   .cohortTitle {
@@ -259,7 +238,7 @@
   }
 
   .cohortFeatureBlock {
-    padding: 18px 20px;
+    padding: 20px 24px;
   }
 
   .boardFooter {
