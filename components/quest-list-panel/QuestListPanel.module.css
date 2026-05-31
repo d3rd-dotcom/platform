@@ -348,6 +348,7 @@
     linear-gradient(rgba(81, 104, 255, 0.07) 1px, transparent 1px),
     linear-gradient(90deg, rgba(81, 104, 255, 0.07) 1px, transparent 1px),
     linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(246, 248, 255, 0.82) 100%);
+  background-size: 28px 28px, 28px 28px, auto;
   box-shadow: 0 18px 48px rgba(38, 45, 84, 0.12);
 }
 
