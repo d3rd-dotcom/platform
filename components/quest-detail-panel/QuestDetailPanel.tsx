@@ -290,19 +290,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
     <div className={styles.panel} data-tone={kindMeta.tone}>
       <div className={styles.scrollArea}>
         <section className={styles.heroPanel}>
-          <div className={styles.heroIcon}>
-            <Image
-              src={quest.icon || '/icons/ui-shard.svg'}
-              alt=""
-              width={40}
-              height={40}
-              className={styles.heroIconImg}
-            />
-          </div>
-          <div className={styles.heroMeta}>
-            <span className={styles.heroKind}>{kindMeta.label}</span>
-            {quest.authorLabel && <span className={styles.authorTag}>{quest.authorLabel}</span>}
-          </div>
+          {quest.authorLabel && <span className={styles.authorTag}>{quest.authorLabel}</span>}
           <h1 className={styles.heroTitle}>{quest.title}</h1>
           <p className={styles.heroDesc}>{quest.desc}</p>
           {usdcReward === 0 && (
