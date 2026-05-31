@@ -146,75 +146,56 @@ export default function SidebarInventoryCard({ shardCount, address, isCollapsed 
         tabIndex={0}
         aria-haspopup="dialog"
         aria-expanded={isGuideOpen}
-        aria-label="Open credits, tickets, membership, and payout information"
+        aria-label="Open credits, cakes, membership, and payout information"
       >
         <div className={styles.balanceList}>
-          {loading ? (
-            <>
-              {creditsRow}
-              <div className={styles.balanceRow}>
-                <div className={styles.tokenLeft}>
+          {creditsRow}
+          <div className={styles.balanceRow}>
+            <div className={styles.tokenLeft}>
+              <div className={`${styles.tokenIcon} ${styles.tokenVotes}`}>
+                <Image src="/icons/cake.webp" alt="Cakes" width={14} height={14} unoptimized />
+              </div>
+              <span className={styles.tokenName}>Cakes</span>
+            </div>
+            <span className={styles.balanceVal}>{votingPower ?? '0'}</span>
+          </div>
+          <div className={styles.balanceRow}>
+            <div className={styles.tokenLeft}>
+              <div className={`${styles.tokenIcon} ${styles.tokenUsdc}`}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" fill="#2775CA" />
+                  <text x="12" y="16" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">$</text>
+                </svg>
+              </div>
+              <span className={styles.tokenName}>USDC</span>
+            </div>
+            <span className={styles.balanceVal}>{usdcBalance ?? '0.00'}</span>
+          </div>
+          <div className={styles.balanceDivider} />
+          <div className={styles.balanceRow}>
+            <div className={styles.tokenLeft}>
+              {loading ? (
+                <>
                   <div className={`${styles.tokenIcon} ${styles.skeletonIcon}`} />
                   <span className={styles.skeletonText} style={{ width: 72 }} />
-                </div>
-                <span className={styles.skeletonText} style={{ width: 30 }} />
-              </div>
-              <div className={styles.balanceRow}>
-                <div className={styles.tokenLeft}>
-                  <div className={`${styles.tokenIcon} ${styles.skeletonIcon}`} />
-                  <span className={styles.skeletonText} style={{ width: 72 }} />
-                </div>
-                <span className={styles.skeletonText} style={{ width: 30 }} />
-              </div>
-              <div className={styles.balanceDivider} />
-              <div className={styles.balanceRow}>
-                <div className={styles.tokenLeft}>
-                  <div className={`${styles.tokenIcon} ${styles.skeletonIcon}`} />
-                  <span className={styles.skeletonText} style={{ width: 36 }} />
-                </div>
-                <span className={styles.skeletonText} style={{ width: 28 }} />
-              </div>
-            </>
-          ) : (
-            <>
-              {creditsRow}
-              <div className={styles.balanceRow}>
-                <div className={styles.tokenLeft}>
+                </>
+              ) : (
+                <>
                   <div className={`${styles.tokenIcon} ${isMember ? styles.tokenVipActive : styles.tokenVip}`}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                       <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </div>
                   <span className={styles.tokenName}>Membership</span>
-                </div>
-                <span className={`${styles.balanceVal} ${tierStatusClass}`}>{tier === null ? '--' : tier}</span>
-              </div>
-              <div className={styles.balanceDivider} />
-              <div className={styles.balanceRow}>
-                <div className={styles.tokenLeft}>
-                  <div className={`${styles.tokenIcon} ${styles.tokenVotes}`}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                      <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </div>
-                  <span className={styles.tokenName}>Tickets</span>
-                </div>
-                <span className={styles.balanceVal}>{votingPower ?? '0'}</span>
-              </div>
-              <div className={styles.balanceRow}>
-                <div className={styles.tokenLeft}>
-                  <div className={`${styles.tokenIcon} ${styles.tokenUsdc}`}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                      <circle cx="12" cy="12" r="10" fill="#2775CA" />
-                      <text x="12" y="16" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">$</text>
-                    </svg>
-                  </div>
-                  <span className={styles.tokenName}>USDC</span>
-                </div>
-                <span className={styles.balanceVal}>{usdcBalance ?? '0.00'}</span>
-              </div>
-            </>
-          )}
+                </>
+              )}
+            </div>
+            {loading ? (
+              <span className={styles.skeletonText} style={{ width: 30 }} />
+            ) : (
+              <span className={`${styles.balanceVal} ${tierStatusClass}`}>{tier === null ? '--' : tier}</span>
+            )}
+          </div>
         </div>
       </div>
       <BalanceGuideModal

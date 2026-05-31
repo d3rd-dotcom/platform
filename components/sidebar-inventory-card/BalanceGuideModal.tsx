@@ -14,23 +14,6 @@ interface BalanceGuideModalProps {
   membership: MembershipTier | null;
 }
 
-const membershipOptions = [
-  {
-    id: 'Guest' as MembershipTier,
-    name: 'Guest',
-    description: 'Take the course and earn credits through Academy activity.',
-  },
-  {
-    id: 'Angel' as MembershipTier,
-    name: 'Academic Angel',
-    description: 'Hold an Angel NFT to request eligible USDC quest payouts.',
-  },
-  {
-    id: 'Staff' as MembershipTier,
-    name: 'Staff / VIP',
-    description: 'Hold the VIP Membership Card to access gated tools and review workflows.',
-  },
-];
 
 export default function BalanceGuideModal({
   isOpen,
@@ -69,55 +52,34 @@ export default function BalanceGuideModal({
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <section className={styles.modal} role="dialog" aria-modal="true" aria-label="Credits, tickets, and membership details">
+      <section className={styles.modal} role="dialog" aria-modal="true" aria-label="Balance details">
         <button type="button" className={styles.close} onClick={onClose} aria-label="Close">
           <X size={18} weight="bold" />
         </button>
 
-        <section className={styles.membership} aria-label="Membership statuses">
-          <span className={styles.sectionLabel}>Membership</span>
-          <div className={styles.tierList}>
-            {membershipOptions.map((option, index) => {
-              const current = membership === option.id;
-              return (
-                <div className={`${styles.tier} ${current ? styles.tierCurrent : ''}`} key={option.id}>
-                  <span className={styles.tierIndex}>{String(index + 1).padStart(2, '0')}</span>
-                  <div className={styles.tierText}>
-                    <strong>{option.name}</strong>
-                    <p>{option.description}</p>
-                  </div>
-                  {current && <span className={styles.currentBadge}>Current</span>}
-                </div>
-              );
-            })}
-          </div>
-        </section>
-
         <section className={styles.rewardList} aria-label="Balance definitions">
-          <span className={styles.sectionLabel}>Balances</span>
           <dl className={styles.rewardLedger}>
             <div className={styles.reward}>
               <dt>Credits</dt>
-              <dd>Earn through quests, course milestones, surveys, and check-ins. Spend on Blue and Academy rewards.</dd>
+              <dd>Earned through quests, lessons, and check-ins. Spend on Blue and Academy rewards.</dd>
             </div>
             <div className={styles.reward}>
-              <dt>Tickets</dt>
-              <dd>Governance weight from your connected wallet. The balance is zero until voting power is available.</dd>
+              <dt>Cakes</dt>
+              <dd>Awarded for participation and streaks. Used for governance and future drops.</dd>
             </div>
             <div className={styles.reward}>
               <dt>USDC</dt>
-              <dd>Dollar-denominated payouts sent to your connected wallet after approval.</dd>
+              <dd>Quest payouts sent to your connected wallet. Requires Academic Angel membership.</dd>
+            </div>
+            <div className={styles.reward}>
+              <dt>Membership</dt>
+              <dd>
+                {membership === 'Staff' && 'Staff / VIP — access to gated tools and review workflows.'}
+                {membership === 'Angel' && 'Academic Angel — eligible to request USDC quest payouts.'}
+                {(membership === 'Guest' || membership === null) && 'Guest — take the course and earn credits through Academy activity.'}
+              </dd>
             </div>
           </dl>
-        </section>
-
-        <section className={styles.redeem}>
-          <span className={styles.sectionLabel}>USDC payouts</span>
-          <ol className={styles.steps}>
-            <li>Complete an eligible quest while holding an Academic Angel NFT.</li>
-            <li>Request a payout. Staff reviews it; Blue sends approved USDC to your connected wallet.</li>
-            <li>Move received USDC through a compatible exchange or off-ramp to withdraw cash.</li>
-          </ol>
         </section>
 
         <div className={styles.actions}>
