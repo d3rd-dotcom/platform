@@ -266,20 +266,22 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
 
   if (!quest) {
     return (
-      <div className={styles.idle}>
+      <div className={styles.wrapper}>
         <div className={styles.boardHeader}>
-          <span className={styles.boardRailLeft} aria-hidden="true" />
-          <span className={styles.boardNode} aria-hidden="true" />
-          <span className={styles.boardTitle}>Quest Board</span>
-          <span className={styles.boardNode} aria-hidden="true" />
-          <span className={styles.boardRailRight} aria-hidden="true" />
+          <div className={styles.boardHeaderInner}>
+            <span className={styles.boardNode} aria-hidden="true" />
+            <span className={styles.boardTitle}>Quest Board</span>
+            <span className={styles.boardNode} aria-hidden="true" />
+          </div>
         </div>
-        <div className={styles.idleInner}>
-          <Target size={36} weight="duotone" className={styles.idleIcon} />
-          <p className={styles.idleTitle}>Select a quest</p>
-          <p className={styles.idleDesc}>Choose any quest from the list to see details and claim your rewards.</p>
+        <div className={styles.idle}>
+          <div className={styles.idleInner}>
+            <Target size={36} weight="duotone" className={styles.idleIcon} />
+            <p className={styles.idleTitle}>Select a quest</p>
+            <p className={styles.idleDesc}>Choose any quest from the list to see details and claim your rewards.</p>
+          </div>
+          <ConfettiCelebration trigger={false} />
         </div>
-        <ConfettiCelebration trigger={false} />
       </div>
     );
   }
@@ -294,14 +296,15 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
   const statusLabel = questIsComplete ? 'Cleared' : progressCount > 0 ? 'In progress' : 'Available';
 
   return (
-    <div className={styles.panel} data-tone={kindMeta.tone}>
+    <div className={styles.wrapper}>
       <div className={styles.boardHeader}>
-        <span className={styles.boardRailLeft} aria-hidden="true" />
-        <span className={styles.boardNode} aria-hidden="true" />
-        <span className={styles.boardTitle}>Quest Board</span>
-        <span className={styles.boardNode} aria-hidden="true" />
-        <span className={styles.boardRailRight} aria-hidden="true" />
+        <div className={styles.boardHeaderInner}>
+          <span className={styles.boardNode} aria-hidden="true" />
+          <span className={styles.boardTitle}>Quest Board</span>
+          <span className={styles.boardNode} aria-hidden="true" />
+        </div>
       </div>
+      <div className={styles.panel} data-tone={kindMeta.tone}>
       <div className={styles.scrollArea}>
         <section className={styles.heroPanel}>
           {quest.authorLabel && <span className={styles.authorTag}>{quest.authorLabel}</span>}
@@ -547,6 +550,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
         <ShardAnimation shards={shardsAwarded} onComplete={() => setShowShardAnimation(false)} />
       )}
       <XConnectingModal isOpen={showConnectingModal} />
+      </div>
     </div>
   );
 }
