@@ -56,7 +56,7 @@ interface QuestListPanelProps {
 }
 
 const MSG_DEFAULT = 'Credits and rewards for completionists dedicated to self-improvement. Small steps make a difference.';
-const MSG_USDC = 'USDC bounties are real on-chain payouts — $1 per qualifying quest. They\'re gated to Academic Angels (holders of the Angel NFT on Base). Complete the quest, request a payout, and Blue sends it straight to your wallet once a staff member approves.';
+const MSG_USDC = '$1 USDC per qualifying quest, paid on-chain to your wallet. Gated to Academic Angels — hold the NFT on Base to unlock.';
 
 export default function QuestListPanel({
   quests,
