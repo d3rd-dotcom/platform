@@ -780,6 +780,46 @@ export const week12Sections: JournalSection[] = [
     instructions: 'Use your container. Start with your fear list from above. When worried, remind yourself it is recorded, then take the next concrete action. Write about your experience.',
     placeholder: 'Write about using your worry container...',
   },
+  {
+    id: 'mending',
+    title: 'Mending',
+    icon: PenIcon,
+    type: 'text',
+    instructions: 'Mend any mending.',
+    placeholder: 'What did you mend? How did it feel to tend to it?',
+  },
+  {
+    id: 'core-negative-beliefs',
+    title: 'Core Negative Beliefs',
+    icon: TextIcon,
+    type: 'text',
+    instructions: 'Sneak a peek at Week One, Core Negative Beliefs. Laugh. Yes, the nasty critters are still there. Note your progress. Read yourself the affirmations from Week One. Write some affirmations about your continued creativity as you end the course.',
+    placeholder: 'Note your progress and write new affirmations...',
+  },
+  {
+    id: 'god-jar',
+    title: 'God Jar',
+    icon: GemIcon,
+    type: 'text',
+    instructions: 'Select a God jar — a jar, a box, a vase, a container. Something to put your fears, your resentments, your hopes, your dreams, your worries into.',
+    placeholder: 'Describe your God jar...',
+  },
+  {
+    id: 'use-god-jar',
+    title: 'Use God Jar',
+    icon: SparkleIcon,
+    type: 'text',
+    instructions: 'Use your God jar. Start with your fear list from above. When worried, remind yourself it\'s in the jar — "God\'s got it." Then take the next action.',
+    placeholder: 'Write about using your God jar...',
+  },
+  {
+    id: 'dare-to-try',
+    title: 'Dare to Try',
+    icon: CompassIcon,
+    type: 'text',
+    instructions: 'Honestly, what would you most like to create? Open-minded, what oddball paths would you dare to try? Willing, what appearances are you willing to shed to pursue your dream?',
+    placeholder: 'Write what you most want to create and the paths you\'d dare to try...',
+  },
 ];
 
 // ─── Week 13: Epilogue ───────────────────────────────────────────────
