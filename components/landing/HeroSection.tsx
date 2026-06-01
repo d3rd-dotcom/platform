@@ -57,8 +57,7 @@ export const HeroSection: React.FC = () => {
             <span className={styles.heroHeadlineAccent}>Peak Potential</span>
           </h1>
           <p className={styles.heroSubtext}>
-            Ultra-successful mental wealth curriculums built by a team of PhD Researchers, Psychologists, & Scientists. Activate goal-driven & engaging quests designed to help you level-up.
-          </p>
+          Ultra-successful mental wealth curriculums built by a team of PhD Researchers, Psychologists, & Scientists. Activate goal-driven & engaging quests and level-up.</p>
           <div className={styles.heroActions}>
             <LandingEnterAcademyButton />
             <LandingEnterAsAgentButton />
