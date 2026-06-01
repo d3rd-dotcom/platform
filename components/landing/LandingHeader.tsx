@@ -41,8 +41,8 @@ export const LandingHeader: React.FC = () => {
   const { play } = useSound();
   const sectionLinks = [
     { href: '#value', label: 'Value' },
-    { href: '#how-it-works', label: 'How it works' },
     { href: '#cohort', label: 'Cohort' },
+    { href: '#how-it-works', label: 'How it works' },
     { href: '#faqs', label: 'FAQs' },
   ];
 
