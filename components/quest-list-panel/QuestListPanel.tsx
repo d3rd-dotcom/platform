@@ -125,7 +125,7 @@ export default function QuestListPanel({
                 </button>
               </span>
               <span className={styles.statValue}>
-                <Image src="/icons/usdc.svg" alt="USDC" width={14} height={14} />
+                <Image src="/icons/usdc-logo.svg" alt="USDC" width={14} height={14} />
                 ${usdcAvailable}
               </span>
             </div>

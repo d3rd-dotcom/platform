@@ -65,7 +65,7 @@ export default function BalanceGuideModal({
   const slots: SlotDef[] = [
     { label: 'Credits',      icon: '/icons/ui-shard.svg',     value: credits,  tooltip: 'Earned through quests, lessons, and check-ins.' },
     { label: 'Cakes',        icon: '/icons/cake.webp',        value: cakes,    tooltip: 'Awarded for participation. Used for governance.', unoptimized: true },
-    { label: 'USDC',         icon: '/icons/usdc.svg',         value: usdc,     tooltip: 'Quest payouts sent to your connected wallet.', unoptimized: true },
+    { label: 'USDC',         icon: '/icons/usdc-logo.svg',         value: usdc,     tooltip: 'Quest payouts sent to your connected wallet.', unoptimized: true },
     { label: 'Certificates', icon: '/icons/ui-seal.svg',      value: '0',      tooltip: 'Awarded for completing Academy milestones.' },
     { label: 'Badges',       icon: '/icons/badge-academy.png', value: '0',     tooltip: 'Earned for special achievements.', unoptimized: true },
     { label: 'Awards',       icon: '/icons/rewards.svg',      value: '0',      tooltip: 'Granted by staff for outstanding participation.' },
