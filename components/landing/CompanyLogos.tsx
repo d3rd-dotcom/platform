@@ -11,13 +11,26 @@ const LOGOS = [
   { src: '/companylogos/charmverse.png', alt: 'CharmVerse logo', width: 120 },
   { src: '/companylogos/artizen.svg', alt: 'Artizen logo', width: 96 },
   { src: '/companylogos/foundation-dark.webp', alt: 'Foundation logo', width: 120 },
-  { src: '/companylogos/full-aragon-logo.webp', alt: 'Aragon logo', width: 120 },
-  { src: '/companylogos/gitcoin.webp', alt: 'Gitcoin logo', width: 120 },
+  { src: '/companylogos/irb.png', alt: 'Institutional Review Board logo', width: 210 },
   { src: '/companylogos/Logo_ElizaOS_Blue_RGB.webp', alt: 'ElizaOS logo', width: 120 },
-  { src: '/companylogos/ndW713QDOQJJBgB-aJvrIJ8U2HfKTYL4-h3RRtYNgX9DMzlziKfCVRdTnq4mHGltuCtutlq37GKdfB90YKodWg.webp', alt: 'Arbitrum logo', width: 130 },
+  { src: '/companylogos/anthropic.png', alt: 'Anthropic logo', width: 165 },
   { src: '/companylogos/Base-Logo-New-1.png', alt: 'Base logo', width: 120 },
-  { src: '/companylogos/OP_vertical_1200px.webp', alt: 'Optimism logo', width: 120, className: styles.optimismLogo },
+  { src: '/companylogos/supabase.svg', alt: 'Supabase logo', width: 120 },
   { src: '/companylogos/chainlink.png', alt: 'Chainlink logo', width: 120 },
+];
+
+const STICKY_LOGOS = [
+  { src: '/companylogos/ethereum-logo-dark.svg', alt: 'Ethereum logo', width: 50 },
+  { src: '/companylogos/American_Psychological_Association_logo.svg.png', alt: 'American Psychological Association logo', width: 240, className: styles.apaLogo },
+  { src: '/companylogos/charmverse.png', alt: 'CharmVerse logo', width: 120 },
+  { src: '/companylogos/foundation-dark.webp', alt: 'Foundation logo', width: 120 },
+  { src: '/companylogos/irb.png', alt: 'Institutional Review Board logo', width: 210 },
+  { src: '/companylogos/Logo_ElizaOS_Blue_RGB.webp', alt: 'ElizaOS logo', width: 120 },
+  { src: '/companylogos/anthropic.png', alt: 'Anthropic logo', width: 165 },
+  { src: '/companylogos/Base-Logo-New-1.png', alt: 'Base logo', width: 120 },
+  { src: '/companylogos/supabase.svg', alt: 'Supabase logo', width: 120 },
+  { src: '/companylogos/chainlink.png', alt: 'Chainlink logo', width: 120 },
+  { src: '/companylogos/artizen.svg', alt: 'Artizen logo', width: 96 },
 ];
 
 type Phase = 'sticky' | 'merging' | 'settled';
@@ -59,8 +72,8 @@ export default function CompanyLogos() {
           className={`${styles.stickyLogosBar} ${phase === 'merging' ? styles.stickyLogosBarMerging : ''}`}
         >
           <div className={styles.stickyLogosGrid}>
-            {LOGOS.map((logo) => (
-              <div key={logo.src} className={styles.stickyLogoItem}>
+            {STICKY_LOGOS.map((logo, i) => (
+              <div key={`${logo.src}-${i}`} className={styles.stickyLogoItem}>
                 <Image
                   src={logo.src}
                   alt=""
