@@ -155,18 +155,14 @@ export default function SidebarInventoryCard({ shardCount, address, isCollapsed 
           {creditsRow}
           <div className={styles.balanceRow}>
             <div className={styles.tokenLeft}>
-              <div className={`${styles.tokenIcon} ${styles.tokenVotes}`}>
-                <Image src="/icons/cake.webp" alt="Cakes" width={14} height={14} unoptimized />
-              </div>
+              <Image src="/icons/cake.webp" alt="Cakes" width={24} height={24} unoptimized className={styles.creditsIcon} />
               <span className={styles.tokenName}>Cakes</span>
             </div>
             <span className={styles.balanceVal}>{votingPower ?? '0'}</span>
           </div>
           <div className={styles.balanceRow}>
             <div className={styles.tokenLeft}>
-              <div className={`${styles.tokenIcon} ${styles.tokenUsdc}`}>
-                <Image src="/icons/usdc.svg" alt="USDC" width={14} height={14} />
-              </div>
+              <Image src="/icons/usdc.svg" alt="USDC" width={24} height={24} unoptimized className={styles.creditsIcon} />
               <span className={styles.tokenName}>USDC</span>
             </div>
             <span className={styles.balanceVal}>{usdcBalance ?? '0.00'}</span>
