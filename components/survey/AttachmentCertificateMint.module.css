@@ -24,8 +24,9 @@
 
 .namePreview {
   position: absolute;
-  top: 61%;
-  left: 42.6%;
+  top: 62%;
+  left: 50%;
+  transform: translateX(-50%);
   font-family: 'Departure Mono', monospace;
   font-size: clamp(10px, 2.2vw, 18px);
   color: #ffffff;

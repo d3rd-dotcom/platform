@@ -61,12 +61,12 @@ async function generateCertificateImage(
         </style>
       </defs>
       <text
-        x="2176"
-        y="2088"
+        x="2552"
+        y="2100"
         font-family="'Departure Mono', monospace"
         font-size="145"
         fill="#ffffff"
-        text-anchor="start"
+        text-anchor="middle"
         dominant-baseline="auto"
       >${safeUsername}</text>
     </svg>
