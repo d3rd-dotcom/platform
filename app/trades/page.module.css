@@ -618,17 +618,18 @@
 
 .chatFabShine {
   position: absolute;
-  inset: -100%;
+  top: 50%;
+  left: 50%;
   width: 300%;
-  height: 300%;
+  aspect-ratio: 1;
   background: conic-gradient(#5168FF, #74C465, #E8556D, #F2A0B5, #a78bfa, #5168FF);
   animation: chatFabRotate 4s linear infinite;
   pointer-events: none;
 }
 
 @keyframes chatFabRotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 .chatFabContent {
@@ -1525,13 +1526,13 @@
 /* The treasury card + the "Trade Using Blue" button float top-right together
    and stay in view (sticky) while markets scroll beside and below them. */
 .treasuryCluster {
-  float: right;
+  float: left;
   position: sticky;
   top: 0;
   z-index: 2;
   width: 280px;
   max-width: 58%;
-  margin: 0 0 12px 14px;
+  margin: 0 14px 12px 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -1775,7 +1776,7 @@
 
 .marketCards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: 1fr;
   gap: 10px;
 }
 
