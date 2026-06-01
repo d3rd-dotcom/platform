@@ -54,10 +54,10 @@ export const HeroSection: React.FC = () => {
           <p className={styles.heroTextBadge}>No more endless scrolling.</p>
           <h1 className={styles.heroHeadline}>
             <span>Unlock Your </span>
-            <span className={styles.heroHeadlineAccent}>New Horizon</span>
+            <span className={styles.heroHeadlineAccent}>Peak Potential</span>
           </h1>
           <p className={styles.heroSubtext}>
-            Turn mental wealth goals into trackable, goal-driven & engaging quests designed by psychologists to help you level-up.
+            Ultra-successful mental wealth curriculums built by a team of PhD Researchers, Psychologists, & Scientists. Activate goal-driven & engaging quests designed to help you level-up.
           </p>
           <div className={styles.heroActions}>
             <LandingEnterAcademyButton />
