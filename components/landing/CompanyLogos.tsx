@@ -10,22 +10,24 @@ const LOGOS = [
   { src: '/companylogos/American_Psychological_Association_logo.svg.png', alt: 'American Psychological Association logo', width: 240, className: styles.apaLogo },
   { src: '/companylogos/artizen.png', alt: 'Artizen logo', width: 192 },
   { src: '/companylogos/foundation-dark.webp', alt: 'Foundation logo', width: 120 },
+  { src: '/companylogos/full-aragon-logo.webp', alt: 'Aragon logo', width: 120 },
+  { src: '/companylogos/gitcoin.webp', alt: 'Gitcoin logo', width: 120 },
   { src: '/companylogos/irb.png', alt: 'Institutional Review Board logo', width: 210 },
   { src: '/companylogos/Logo_ElizaOS_Blue_RGB.webp', alt: 'ElizaOS logo', width: 120 },
   { src: '/companylogos/anthropic.png', alt: 'Anthropic logo', width: 165 },
   { src: '/companylogos/Base-Logo-New-1.png', alt: 'Base logo', width: 120 },
   { src: '/companylogos/supabase.svg', alt: 'Supabase logo', width: 120 },
-  { src: '/companylogos/chainlink.png', alt: 'Chainlink logo', width: 120 },
+  { src: '/companylogos/chainlink-new.png', alt: 'Chainlink logo', width: 195 },
 ];
 
 const STICKY_LOGOS = [
   { src: '/companylogos/American_Psychological_Association_logo.svg.png', alt: 'American Psychological Association logo', width: 240, className: styles.apaLogo },
+  { src: '/companylogos/full-aragon-logo.webp', alt: 'Aragon logo', width: 120 },
+  { src: '/companylogos/gitcoin.webp', alt: 'Gitcoin logo', width: 120 },
   { src: '/companylogos/irb.png', alt: 'Institutional Review Board logo', width: 210 },
   { src: '/companylogos/Logo_ElizaOS_Blue_RGB.webp', alt: 'ElizaOS logo', width: 120 },
   { src: '/companylogos/anthropic.png', alt: 'Anthropic logo', width: 165 },
-  { src: '/companylogos/Base-Logo-New-1.png', alt: 'Base logo', width: 120 },
-  { src: '/companylogos/chainlink.png', alt: 'Chainlink logo', width: 120 },
-  { src: '/companylogos/supabase.svg', alt: 'Supabase logo', width: 120 },
+  { src: '/companylogos/chainlink-new.png', alt: 'Chainlink logo', width: 195 },
   { src: '/companylogos/artizen.png', alt: 'Artizen logo', width: 192 },
 ];
 
