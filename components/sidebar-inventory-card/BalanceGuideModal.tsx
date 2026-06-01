@@ -102,8 +102,8 @@ export default function BalanceGuideModal({
                     className={styles.icon}
                     unoptimized={slot.unoptimized}
                   />
-                  {!empty && <span className={styles.count}>{slot.value}</span>}
                 </div>
+                {!empty && <span className={styles.count}>{slot.value}</span>}
                 <span className={styles.label}>{slot.label}</span>
               </div>
             );

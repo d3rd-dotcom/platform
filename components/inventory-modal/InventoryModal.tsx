@@ -235,10 +235,7 @@ export default function InventoryModal({ isOpen, onClose, shardCount, username, 
               <div className={styles.balanceRow}>
                 <div className={styles.balanceLeft}>
                   <div className={`${styles.tokenIcon} ${styles.tokenUsdc}`}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                      <circle cx="12" cy="12" r="10" fill="#2775CA" />
-                      <text x="12" y="16" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">$</text>
-                    </svg>
+                    <Image src="/icons/usdc.svg" alt="USDC" width={18} height={18} />
                   </div>
                   <div className={styles.tokenInfo}>
                     <span className={styles.tokenName}>USD Coin</span>

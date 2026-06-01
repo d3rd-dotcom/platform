@@ -165,10 +165,7 @@ export default function SidebarInventoryCard({ shardCount, address, isCollapsed 
           <div className={styles.balanceRow}>
             <div className={styles.tokenLeft}>
               <div className={`${styles.tokenIcon} ${styles.tokenUsdc}`}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="10" fill="#2775CA" />
-                  <text x="12" y="16" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">$</text>
-                </svg>
+                <Image src="/icons/usdc.svg" alt="USDC" width={14} height={14} />
               </div>
               <span className={styles.tokenName}>USDC</span>
             </div>
