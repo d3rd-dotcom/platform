@@ -24,12 +24,11 @@
 
 .namePreview {
   position: absolute;
-  bottom: 18%;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 61%;
+  left: 42.6%;
   font-family: 'Departure Mono', monospace;
   font-size: clamp(10px, 2.2vw, 18px);
-  color: inherit;
+  color: #ffffff;
   white-space: nowrap;
   pointer-events: none;
   letter-spacing: 0.04em;
@@ -84,26 +83,117 @@
   text-decoration: underline;
 }
 
-.primaryBtn {
-  width: 100%;
-  padding: var(--space-3) var(--space-4);
-  background: var(--color-primary);
-  color: var(--color-background);
-  border: none;
-  border-radius: var(--radius-md);
-  font-size: var(--text-sm);
-  font-weight: 600;
+.fancyButton {
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  justify-content: stretch;
+  flex: 0 0 auto;
+  width: 304px;
+  max-width: 100%;
+  height: 46px;
+  padding: 3px;
+  border-radius: 11px;
+  border: 1px solid #FCFFFE;
+  background: #5168FF;
   cursor: pointer;
-  transition: opacity var(--duration-fast) var(--ease-default);
+  box-sizing: border-box;
+  transition: transform 0.25s ease, filter 0.25s ease;
 }
 
-.primaryBtn:disabled {
-  opacity: 0.5;
+.fancyButtonInner {
+  position: relative;
+  display: inline-flex;
+  flex: 1 1 auto;
+  align-self: stretch;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 16px;
+  border-radius: 8px;
+  border: 0.5px solid #ABE8C2;
+  box-shadow: 0 2px 12.6px rgba(117, 139, 239, 1);
+  background-color: #5168FF;
+  background-image:
+    radial-gradient(120% 140% at 38% 42%, rgba(69, 254, 214, 0.4) 0%, rgba(131, 125, 250, 0.8) 78%),
+    radial-gradient(130% 140% at 100% 0%, rgba(246, 80, 80, 0.15) 0%, rgba(74, 227, 202, 0.3) 85%),
+    linear-gradient(95deg, rgba(55, 163, 117, 0.6) 0%, rgba(81, 104, 255, 0.6) 100%);
+  background-blend-mode: hard-light, hard-light, normal;
+  box-sizing: border-box;
+  color: #E8E8E8;
+  font-family: var(--font-departure-mono), 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-size: 0.88rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  overflow: hidden;
+  text-transform: none;
+}
+
+.heroSlideWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  min-width: 0;
+  max-width: 100%;
+  height: 1.12em;
+  line-height: 1.12;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.heroSlideText {
+  display: block;
+  line-height: 1.12;
+  white-space: nowrap;
+  transition: transform 0.3s ease;
+  will-change: transform;
+}
+
+.heroSlideClone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transform: translateY(100%);
+}
+
+.fancyButtonIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  color: #E8E8E8;
+  transition: transform 0.25s ease;
+}
+
+.fancyButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.04);
+}
+
+.fancyButton:hover:not(:disabled) .fancyButtonIcon {
+  transform: scale(1.06);
+}
+
+.fancyButton:hover:not(:disabled) .heroSlideText {
+  transform: translateY(-100%);
+}
+
+.fancyButton:hover:not(:disabled) .heroSlideClone {
+  transform: translateY(0);
+}
+
+.fancyButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.fancyButton:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
-}
-
-.primaryBtn:not(:disabled):hover {
-  opacity: 0.85;
+  transform: none;
 }
 
 .skipBtn {

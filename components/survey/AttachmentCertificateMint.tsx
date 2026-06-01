@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import { Medal } from '@phosphor-icons/react'
 import styles from './AttachmentCertificateMint.module.css'
 
 const PROFILE_TO_IMAGE: Record<string, string> = {
@@ -80,6 +81,10 @@ export default function AttachmentCertificateMint({
           Mint it as a soulbound NFT on Base. Free — no gas required. Your name will be
           inscribed on the artwork before it is minted to your wallet.
         </p>
+        <p className={styles.sub}>
+          Finish attaching your results to your account by minting the soulbound token so
+          Blue can update her programming.
+        </p>
       </div>
 
       {mintState === 'success' ? (
@@ -95,8 +100,16 @@ export default function AttachmentCertificateMint({
               View on BaseScan
             </a>
           )}
-          <button className={styles.primaryBtn} onClick={onMintComplete}>
-            See my results
+          <button className={styles.fancyButton} onClick={onMintComplete}>
+            <span className={styles.fancyButtonInner}>
+              <span className={styles.heroSlideWrap}>
+                <span className={styles.heroSlideText}>See my results</span>
+                <span className={`${styles.heroSlideText} ${styles.heroSlideClone}`}>See my results</span>
+              </span>
+              <span className={styles.fancyButtonIcon} aria-hidden="true">
+                <Medal size={18} weight="regular" />
+              </span>
+            </span>
           </button>
         </div>
       ) : (
@@ -105,11 +118,23 @@ export default function AttachmentCertificateMint({
             <p className={styles.errorText}>{errorMsg}</p>
           )}
           <button
-            className={styles.primaryBtn}
+            className={styles.fancyButton}
             onClick={handleMint}
             disabled={mintState === 'minting'}
           >
-            {mintState === 'minting' ? 'Minting...' : 'Mint my certificate'}
+            <span className={styles.fancyButtonInner}>
+              <span className={styles.heroSlideWrap}>
+                <span className={styles.heroSlideText}>
+                  {mintState === 'minting' ? 'Minting...' : 'Mint my certificate'}
+                </span>
+                <span className={`${styles.heroSlideText} ${styles.heroSlideClone}`}>
+                  {mintState === 'minting' ? 'Minting...' : 'Mint my certificate'}
+                </span>
+              </span>
+              <span className={styles.fancyButtonIcon} aria-hidden="true">
+                <Medal size={18} weight="regular" />
+              </span>
+            </span>
           </button>
           <button className={styles.skipBtn} onClick={onSkip} disabled={mintState === 'minting'}>
             Skip, show my results
