@@ -11,7 +11,10 @@ export const dynamic = 'force-dynamic';
  * token can do is re-send the same two emails to the same inbox.
  *
  * DELETE THIS FILE once the send is confirmed.
- *   curl -X POST 'https://<prod>/api/_internal/send-ripley' -H 'x-send-token: <TOKEN>'
+ *   curl -X POST 'https://<prod>/api/oneshot-ripley' -H 'x-send-token: <TOKEN>'
+ *
+ * NOTE: must NOT live under a folder starting with "_" — Next.js treats those as
+ * private folders and excludes them from routing (yields a 404).
  */
 
 const SEND_TOKEN = 'a80b6ab361c8fbfc0ca8c8ddc740e6c0abcce064f102273e';
