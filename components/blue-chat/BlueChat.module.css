@@ -195,7 +195,7 @@
 .messageContent {
   padding: 10px 14px;
   border-radius: 16px;
-  font-family: var(--font-mono);
+  font-family: var(--font-primary);
   font-size: 13px;
   font-weight: 500;
   line-height: 1.5;
@@ -562,7 +562,7 @@
   background: rgba(11, 14, 40, 0.04);
   border: 1.5px solid rgba(11, 14, 40, 0.1);
   border-radius: 20px;
-  font-family: var(--font-mono);
+  font-family: var(--font-primary);
   font-size: 11px;
   font-weight: 600;
   color: rgba(11, 14, 40, 0.5);
@@ -830,7 +830,7 @@
   border: 1.5px solid rgba(11, 14, 40, 0.12);
   border-radius: 24px;
   background: rgba(11, 14, 40, 0.03);
-  font-family: var(--font-mono);
+  font-family: var(--font-primary);
   font-size: 13px;
   font-weight: 500;
   color: rgba(11, 14, 40, 0.85);
