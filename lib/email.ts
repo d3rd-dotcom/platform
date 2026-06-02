@@ -87,3 +87,59 @@ export async function sendEventReminderEmail(to: string, ev: EventItem): Promise
     return false;
   }
 }
+
+/**
+ * Instant "hello from Blue" intro email — powers the Meet Blue card's button.
+ * Doubles as a live prod check that the email pipeline reaches an inbox.
+ * Returns true if Resend accepted the message.
+ */
+export async function sendMeetBlueEmail(to: string): Promise<boolean> {
+  const resend = getResend();
+  if (!resend) {
+    console.warn('[email] RESEND_API_KEY not set — skipping Meet Blue email ->', to);
+    return false;
+  }
+
+  const homeUrl = `${SITE_URL}/home`;
+  // Structured like a short letter from the Academy, signed off by Blue with a
+  // cursive signature in the footer (font stack degrades gracefully per client).
+  const html = `
+    <div style="font-family: Georgia, 'Times New Roman', serif; max-width: 520px; margin: 0 auto; color: #1a1a1a; line-height: 1.62;">
+      <p style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; letter-spacing: 0.08em; color: #5168ff; margin: 0 0 20px;">Mental Wealth Academy</p>
+
+      <p style="font-size: 16px; margin: 0 0 14px;">Dear scholar,</p>
+
+      <p style="font-size: 15px; margin: 0 0 14px;">Welcome. I am Blue, your guide and study companion here at the Academy. It is a quiet pleasure to make your acquaintance.</p>
+
+      <p style="font-size: 15px; margin: 0 0 14px;">My role is a simple one: to keep your learning on course. I will share the sessions and circles on our calendar, and remind you the day before anything you choose to attend, so the work never slips past you.</p>
+
+      <p style="font-size: 15px; margin: 0 0 22px;">Consider this short letter your first piece of correspondence, and proof that my notes will reach your inbox when they matter.</p>
+
+      <p style="font-size: 15px; margin: 0 0 4px;">Warmly, and in study,</p>
+
+      <p style="font-family: 'Snell Roundhand', 'Brush Script MT', 'Segoe Script', cursive; font-size: 32px; line-height: 1; color: #5168ff; margin: 6px 0 4px;">Blue</p>
+      <p style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; color: #777; margin: 0 0 26px;">Your guide at Mental Wealth Academy</p>
+
+      <a href="${homeUrl}" style="display: inline-block; background: #5168ff; color: #ffffff; text-decoration: none; padding: 11px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">Open your dashboard</a>
+
+      <p style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; color: #999; margin: 28px 0 0;">You received this because you asked Blue to say hello from your Mental Wealth Academy dashboard.</p>
+    </div>
+  `;
+
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: 'A welcome from Blue — Mental Wealth Academy',
+      html,
+    });
+    if (error) {
+      console.error('[email] Resend error for Meet Blue ->', to, error);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error('[email] Failed to send Meet Blue email ->', to, err);
+    return false;
+  }
+}

@@ -23,6 +23,13 @@ export interface EventItem {
   /** Link-style item (opens a page) instead of a register button. */
   href?: string;
   ctaLabel?: string;
+  /**
+   * Action-style item: the button triggers a one-off action instead of an RSVP.
+   * 'email-test' fires an instant "hello from Blue" email — a live prod check
+   * that our email pipeline reaches the user's inbox.
+   */
+  action?: 'email-test';
+  actionLabel?: string;
   /** Where it happens — included in the reminder email. */
   location?: string;
 }
@@ -44,37 +51,41 @@ export const EVENTS: EventItem[] = [
     ctaLabel: 'Start course',
   },
   {
-    id: 'shadow-artists',
-    imageUrl: '/images/angel-investing.png',
-    heading: 'Shadow Artists',
-    category: 'Discussion',
-    startsAt: '2026-05-28T18:30:00Z',
-    dateLabel: 'May 28, 2026',
-    timeLabel: '6:30 PM UTC',
+    id: 'crypto-tutorial',
+    imageUrl: '/images/funding-village-bg.jpg',
+    heading: 'Crypto Tutorial',
+    category: 'Workshop',
+    // Thursday, June 4, 2026 — 4:00 PM EST (UTC-5).
+    startsAt: '2026-06-04T21:00:00Z',
+    dateLabel: 'Thursday, June 4',
+    timeLabel: '4:00 PM EST',
     description:
-      'A circle for the quietly creative — people who pour energy into supporting everyone around them but have yet to make their own work. Step out of the wings and create.',
+      'A hands-on walkthrough of wallets, gas, and your first onchain transaction — get set up safely and learn the ropes alongside the cohort.',
   },
   {
     id: 'cohort-campfire',
     imageUrl: '/images/campfire.jpg',
     heading: 'Cohort Campfire Check-in',
     category: 'Community',
-    startsAt: '2026-05-31T19:00:00Z',
-    dateLabel: 'May 31, 2026',
-    timeLabel: '7:00 PM UTC',
+    // Friday, June 5, 2026 — 7:00 PM EST (UTC-5).
+    startsAt: '2026-06-06T00:00:00Z',
+    dateLabel: 'Friday, June 5',
+    timeLabel: '7:00 PM EST',
     description:
       'An informal end-of-week gathering to share wins, blockers, and what the next week looks like.',
   },
   {
-    id: 'crypto-tutorial',
-    imageUrl: '/images/funding-village-bg.jpg',
-    heading: 'Crypto Tutorial',
-    category: 'Event',
-    startsAt: '2026-06-04T16:00:00Z',
-    dateLabel: 'June 4, 2026',
-    timeLabel: '4:00 PM UTC',
+    id: 'meet-blue',
+    imageUrl: '/images/blue-portrait.png',
+    heading: 'Meet Blue',
+    category: 'Introduction',
+    startsAt: null,
+    dateLabel: 'Anytime',
+    timeLabel: 'Instant email',
     description:
-      'A hands-on walkthrough of wallets, gas, and your first onchain transaction — get set up safely and learn the ropes alongside the cohort.',
+      'Say hello to Blue, your guide. Get an instant intro email — and a quick check that our reminders land in your inbox.',
+    action: 'email-test',
+    actionLabel: 'Email me a hello',
   },
 ];
 

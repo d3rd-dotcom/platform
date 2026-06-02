@@ -54,6 +54,8 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
   const [emailDraft, setEmailDraft] = useState('');
   const [registerBusy, setRegisterBusy] = useState<Record<string, boolean>>({});
   const [registerError, setRegisterError] = useState<string | null>(null);
+  // Which action-cards (e.g. Meet Blue) have fired their email this session.
+  const [testSent, setTestSent] = useState<Record<string, boolean>>({});
   const [isProModalOpen, setIsProModalOpen] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
 
@@ -156,6 +158,53 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
     [authHeaders],
   );
 
+  // Fire the instant "hello from Blue" email once we have an address.
+  const submitEmailTest = useCallback(
+    async (eventId: string, email: string) => {
+      setRegisterError(null);
+      setRegisterBusy((b) => ({ ...b, [eventId]: true }));
+      try {
+        const res = await fetch('/api/events/test-email', {
+          method: 'POST',
+          headers: await authHeaders(),
+          body: JSON.stringify({ email }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          setRegisterError(data?.error || 'Could not send the email. Try again.');
+          return;
+        }
+        setTestSent((s) => ({ ...s, [eventId]: true }));
+        setEmailPromptFor(null);
+        setEmailDraft('');
+      } catch {
+        setRegisterError('Something interrupted that. Try again.');
+      } finally {
+        setRegisterBusy((b) => ({ ...b, [eventId]: false }));
+      }
+    },
+    [authHeaders],
+  );
+
+  // Meet Blue click: login if needed, send straight away when we know the email,
+  // otherwise open the same inline email prompt the register flow uses.
+  const handleEmailTest = useCallback(
+    (eventId: string) => {
+      if (!authenticated) {
+        login();
+        return;
+      }
+      if (privyEmail) {
+        submitEmailTest(eventId, privyEmail);
+        return;
+      }
+      setRegisterError(null);
+      setEmailDraft('');
+      setEmailPromptFor(eventId);
+    },
+    [authenticated, privyEmail, login, submitEmailTest],
+  );
+
   useEffect(() => {
     if (!showLeaderboard) return;
     const handler = (e: KeyboardEvent) => {
@@ -233,6 +282,19 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
                     <Link href={ev.href} className={styles.eventBtn}>
                       {ev.ctaLabel}
                     </Link>
+                  ) : ev.action === 'email-test' ? (
+                    <button
+                      type="button"
+                      className={`${styles.eventBtn}${testSent[ev.id] ? ` ${styles.eventBtnDone}` : ''}`}
+                      onClick={() => handleEmailTest(ev.id)}
+                      disabled={!!registerBusy[ev.id]}
+                    >
+                      {registerBusy[ev.id]
+                        ? 'Sending…'
+                        : testSent[ev.id]
+                          ? 'Sent — check your inbox'
+                          : ev.actionLabel || 'Email me'}
+                    </button>
                   ) : reserved[ev.id] ? (
                     <button
                       type="button"
@@ -258,11 +320,17 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
                     className={styles.eventEmailPrompt}
                     onSubmit={(e) => {
                       e.preventDefault();
-                      submitRegistration(ev.id, emailDraft.trim());
+                      if (ev.action === 'email-test') {
+                        submitEmailTest(ev.id, emailDraft.trim());
+                      } else {
+                        submitRegistration(ev.id, emailDraft.trim());
+                      }
                     }}
                   >
                     <label className={styles.eventEmailLabel} htmlFor={`event-email-${ev.id}`}>
-                      Where should we send your reminder?
+                      {ev.action === 'email-test'
+                        ? 'Where should Blue say hello?'
+                        : 'Where should we send your reminder?'}
                     </label>
                     <div className={styles.eventEmailRow}>
                       <input
