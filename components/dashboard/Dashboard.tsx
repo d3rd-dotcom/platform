@@ -265,8 +265,8 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
         <div className={styles.eventsGrid}>
           {EVENTS.map((ev) => (
             <article key={ev.id} className={styles.eventCard}>
-              <div className={styles.eventImage}>
-                <Image src={ev.imageUrl} alt="" fill style={{ objectFit: 'cover' }} />
+              <div className={styles.eventImage} style={{ backgroundImage: ev.gradient }}>
+                <span className={styles.eventNoise} aria-hidden="true" />
               </div>
               <div className={styles.eventBody}>
                 <span className={styles.eventMeta}>

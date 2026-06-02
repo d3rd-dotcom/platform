@@ -12,7 +12,12 @@
  */
 export interface EventItem {
   id: string;
-  imageUrl: string;
+  /**
+   * CSS background for the card header — a noisy mesh gradient (MagicPattern
+   * style). The grain itself is an SVG overlay applied in CSS (.eventNoise);
+   * this just sets the colour mesh, one per event.
+   */
+  gradient: string;
   heading: string;
   category: string;
   /** ISO-8601 UTC start time, or null for evergreen/link items. */
@@ -39,7 +44,8 @@ export const PATHWAY_EVENT_ID = 'ethereal-pathway';
 export const EVENTS: EventItem[] = [
   {
     id: PATHWAY_EVENT_ID,
-    imageUrl: '/images/academy-blockchain.png',
+    gradient:
+      'radial-gradient(at 18% 22%, #6f8bff 0px, transparent 55%), radial-gradient(at 82% 8%, #a98bff 0px, transparent 50%), radial-gradient(at 50% 100%, #4150c8 0px, transparent 55%), linear-gradient(135deg, #5168ff, #3a2f8f)',
     heading: 'Ethereal Pathway',
     category: 'Course',
     startsAt: null,
@@ -52,7 +58,8 @@ export const EVENTS: EventItem[] = [
   },
   {
     id: 'crypto-tutorial',
-    imageUrl: '/images/funding-village-bg.jpg',
+    gradient:
+      'radial-gradient(at 16% 20%, #4fd4d4 0px, transparent 55%), radial-gradient(at 86% 12%, #5fa8ff 0px, transparent 50%), radial-gradient(at 60% 100%, #2f7fe0 0px, transparent 55%), linear-gradient(135deg, #2bb3c9, #3a5bd0)',
     heading: 'Crypto Tutorial',
     category: 'Workshop',
     // Thursday, June 4, 2026 — 4:00 PM EST (UTC-5).
@@ -64,7 +71,8 @@ export const EVENTS: EventItem[] = [
   },
   {
     id: 'cohort-campfire',
-    imageUrl: '/images/campfire.jpg',
+    gradient:
+      'radial-gradient(at 18% 18%, #ffb15b 0px, transparent 55%), radial-gradient(at 84% 16%, #ff6f91 0px, transparent 50%), radial-gradient(at 55% 100%, #e85d3a 0px, transparent 55%), linear-gradient(135deg, #ff9a5b, #e0492f)',
     heading: 'Cohort Campfire Check-in',
     category: 'Community',
     // Friday, June 5, 2026 — 7:00 PM EST (UTC-5).
@@ -76,7 +84,8 @@ export const EVENTS: EventItem[] = [
   },
   {
     id: 'meet-blue',
-    imageUrl: '/images/blue-portrait.png',
+    gradient:
+      'radial-gradient(at 20% 22%, #6fe3df 0px, transparent 55%), radial-gradient(at 82% 10%, #b39bff 0px, transparent 50%), radial-gradient(at 50% 100%, #5168ff 0px, transparent 55%), linear-gradient(135deg, #58d0d0, #7d6bf0)',
     heading: 'Meet Blue',
     category: 'Introduction',
     startsAt: null,
@@ -85,7 +94,7 @@ export const EVENTS: EventItem[] = [
     description:
       'Say hello to Blue, your guide. Get an instant intro email — and a quick check that our reminders land in your inbox.',
     action: 'email-test',
-    actionLabel: 'Email me a hello',
+    actionLabel: 'Say hello',
   },
 ];
 
