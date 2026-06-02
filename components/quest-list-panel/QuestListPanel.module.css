@@ -29,10 +29,8 @@
   gap: 8px;
   padding: 10px 14px;
   border-radius: 12px;
-  border: 1px solid rgba(81, 104, 255, 0.30);
-  background:
-    linear-gradient(135deg, rgba(81, 104, 255, 0.22) 0%, rgba(151, 36, 166, 0.10) 60%, rgba(12, 13, 23, 0.6) 100%),
-    rgba(17, 19, 27, 0.92);
+  border: 1px solid rgba(235, 232, 247, 0.10);
+  background: rgba(235, 232, 247, 0.04);
 }
 
 .headerRow {
@@ -138,8 +136,8 @@
   color: var(--c-blue);
 }
 
-/* ── Blue bubble ── */
-.blueBubble {
+/* ── Blue video piece ── */
+.blueVideo {
   flex-shrink: 0;
 }
 
@@ -295,20 +293,18 @@
   flex-shrink: 0;
 }
 
+/* Reward count — kept minimal (no pill) so it doesn't orphan on the row. */
 .questBadge {
   --bc: #5168ff;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 3px 8px;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--bc) 38%, transparent);
-  background: color-mix(in srgb, var(--bc) 14%, transparent);
-  color: color-mix(in srgb, var(--bc) 80%, white 20%);
+  gap: 3px;
+  color: color-mix(in srgb, var(--bc) 76%, white 24%);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+  opacity: 0.92;
 }
 
 .questCheck {
@@ -379,10 +375,8 @@
 }
 
 :global(:root:not([data-theme="dark"])) .header {
-  border-color: rgba(81, 104, 255, 0.22);
-  background:
-    linear-gradient(135deg, rgba(81, 104, 255, 0.14) 0%, rgba(249, 250, 255, 0.9) 68%),
-    #ffffff;
+  border-color: rgba(30, 34, 54, 0.12);
+  background: rgba(81, 104, 255, 0.05);
 }
 
 :global(:root:not([data-theme="dark"])) .versionBadge {

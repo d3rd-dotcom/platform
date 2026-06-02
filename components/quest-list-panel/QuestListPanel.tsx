@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Trophy, Sparkle, Coins, Check, Info } from '@phosphor-icons/react';
-import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
+import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
 import type { DrawerQuest } from '@/components/quest-drawer/QuestDrawer';
 import type { QuestCardKind } from '@/components/quest-card/QuestCard';
 import { useSound } from '@/hooks/useSound';
@@ -113,7 +113,7 @@ export default function QuestListPanel({
           {usdcAvailable > 0 && (
             <div className={styles.stat}>
               <span className={styles.statLabelRow}>
-                <span className={styles.statLabel}>USDC available</span>
+                <span className={styles.statLabel}>USDC bounties</span>
                 <button
                   type="button"
                   className={`${styles.infoBtn} ${usdcInfoActive ? styles.infoBtnActive : ''}`}
@@ -133,10 +133,9 @@ export default function QuestListPanel({
         </div>
       </section>
 
-      <BlueChatBubble
-        className={styles.blueBubble}
+      <BlueVideoPanel
+        className={styles.blueVideo}
         message={blueMessage}
-        variant="compact"
       />
 
       <div className={styles.filters} role="tablist">

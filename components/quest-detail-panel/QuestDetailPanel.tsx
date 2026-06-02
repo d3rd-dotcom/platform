@@ -292,8 +292,90 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
   const claimedCount = quest.claimedCount ?? 0;
   const questIsComplete = claimedCount >= targetCount;
   const canClaimSealedWeek = quest.rewardType === 'sealed-week' && progressCount >= targetCount && !questIsComplete;
-  const progressPct = targetCount > 0 ? Math.min(100, (progressCount / targetCount) * 100) : 0;
-  const statusLabel = questIsComplete ? 'Cleared' : progressCount > 0 ? 'In progress' : 'Available';
+
+  // The status / eligibility line ("grey stuff") sits directly under the quest
+  // description — it's the most relevant "what's next / what's blocking me" note.
+  const statusCallout = (() => {
+    if (quest.rewardType === 'sealed-week') {
+      const sealed = progressCount >= targetCount;
+      return (
+        <div className={styles.callout} data-state={sealed ? 'ready' : 'waiting'}>
+          <span className={styles.calloutDot} aria-hidden="true" />
+          <span>
+            {sealed
+              ? `Week ${quest.weekNumber} is sealed — your credits are ready to claim.`
+              : `Week ${quest.weekNumber} is not sealed yet. Finish that week on your home dashboard, then come back to claim.`}
+          </span>
+        </div>
+      );
+    }
+    if (quest.rewardType === 'twitter-follow' && !isConnected) {
+      return (
+        <div className={styles.callout} data-state="waiting">
+          <span className={styles.calloutDot} aria-hidden="true" />
+          <span>Sign in to start this quest.</span>
+        </div>
+      );
+    }
+    if (quest.rewardType === 'proof-required' && usdcReward > 0 && usdcClaim) {
+      if (usdcClaim.loading) {
+        return (
+          <div className={styles.callout} data-state="info">
+            <span className={styles.calloutDot} aria-hidden="true" />
+            <span>Checking your USDC eligibility...</span>
+          </div>
+        );
+      }
+      if (usdcClaim.status === 'paid') {
+        return (
+          <div className={styles.callout} data-state="ready">
+            <span className={styles.calloutDot} aria-hidden="true" />
+            <span>
+              Paid. ${usdcClaim.reward} USDC was sent to your wallet.
+              {usdcClaim.txHash && (
+                <> <a href={`https://basescan.org/tx/${usdcClaim.txHash}`} target="_blank" rel="noopener noreferrer" className={styles.usdcTxLink}>
+                  View transaction <ArrowSquareOut size={12} weight="bold" />
+                </a></>
+              )}
+            </span>
+          </div>
+        );
+      }
+      if (usdcClaim.status === 'approved') {
+        return (
+          <div className={styles.callout} data-state="info">
+            <span className={styles.calloutDot} aria-hidden="true" />
+            <span>Approved. Your USDC payout is on its way.</span>
+          </div>
+        );
+      }
+      if (usdcClaim.status === 'pending') {
+        return (
+          <div className={styles.callout} data-state="info">
+            <span className={styles.calloutDot} aria-hidden="true" />
+            <span>Submitted. A staff member will review your work and release the USDC.</span>
+          </div>
+        );
+      }
+      if (usdcClaim.status === 'rejected') {
+        return (
+          <div className={styles.callout} data-state="waiting">
+            <span className={styles.calloutDot} aria-hidden="true" />
+            <span>{usdcClaim.note || 'This USDC bounty was not approved.'}</span>
+          </div>
+        );
+      }
+      if (!usdcClaim.eligible) {
+        return (
+          <div className={styles.callout} data-state="waiting">
+            <span className={styles.calloutDot} aria-hidden="true" />
+            <span>Hold an Academic Angel NFT to unlock the ${usdcClaim.reward} USDC bounty.</span>
+          </div>
+        );
+      }
+    }
+    return null;
+  })();
 
   return (
     <div className={styles.wrapper}>
@@ -306,243 +388,207 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
       </div>
       <div className={styles.panel} data-tone={kindMeta.tone}>
       <div className={styles.scrollArea}>
-        <section className={styles.heroPanel}>
-          {quest.authorLabel && <span className={styles.authorTag}>{quest.authorLabel}</span>}
+        <section className={styles.hero}>
           <h1 className={styles.heroTitle}>{quest.title}</h1>
+          {quest.authorLabel && <span className={styles.byline}>{quest.authorLabel}</span>}
           <p className={styles.heroDesc}>{quest.desc}</p>
-          {usdcReward === 0 && (
-            <div className={styles.rewardChip}>
-              <Image src="/icons/ui-shard.svg" alt="" width={15} height={15} />
-              <span className={styles.rewardValue}>{quest.points}</span>
-              <span className={styles.rewardLabel}>credits</span>
-            </div>
-          )}
+          {statusCallout}
         </section>
 
-        <section className={styles.actionPanel}>
-          <div className={styles.actionHeading}>
-            <span className={styles.actionEyebrow}>{'// objective'}</span>
-            <h2 className={styles.actionTitle}>
-              {quest.rewardType === 'sealed-week' && 'Seal the week'}
-              {quest.rewardType === 'proof-required' && 'Submit your entry'}
-              {quest.rewardType === 'no-proof' && 'Mark as complete'}
-              {quest.rewardType === 'twitter-follow' && 'Connect & follow'}
-              {quest.rewardType === 'follow-and-own' && 'Verify ownership'}
-            </h2>
-          </div>
-
-          {quest.rewardType === 'sealed-week' && (
-            <>
-              <p className={styles.actionDesc}>
-                This quest reads your seal status for Week {quest.weekNumber}. Once that week is sealed on the home dashboard, you can claim the credits here.
-              </p>
-              <div className={styles.callout} data-state={progressCount >= targetCount ? 'ready' : 'waiting'}>
-                <span className={styles.calloutDot} aria-hidden="true" />
-                <span>
-                  {progressCount >= targetCount
-                    ? `Week ${quest.weekNumber} is sealed. Claim is unlocked.`
-                    : `Week ${quest.weekNumber} is not sealed yet. Finish the course on home first.`}
-                </span>
-              </div>
-              <button
-                type="button"
-                className={styles.primaryButton}
-                onClick={handleCompleteReward}
-                disabled={!canClaimSealedWeek || isCompleting}
-              >
-                {questIsComplete ? 'Quest cleared' : isCompleting ? 'Claiming...' : `Claim ${quest.points} credits`}
-              </button>
-            </>
-          )}
-
-          {quest.rewardType === 'proof-required' && (
-            <>
-              <p className={styles.actionDesc}>
-                Each submission advances this quest by one entry. Stack {targetCount} entries to fully clear it.
-              </p>
-              <label className={styles.uploadZone}>
-                <UploadSimple size={26} weight="duotone" className={styles.uploadIcon} />
-                <span className={styles.uploadText}>{selectedFile || 'Drop a file or click to choose'}</span>
-                <span className={styles.uploadHint}>Images, video, PDF, or docs</span>
-                <input
-                  type="file"
-                  className={styles.uploadInput}
-                  accept="image/*,video/*,.pdf,.doc,.docx"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) setSelectedFile(file.name);
-                  }}
-                />
-              </label>
-              <div className={styles.callout} data-state="info">
-                <span className={styles.calloutDot} aria-hidden="true" />
-                <span>Submissions are queued for review. Approved entries receive credits automatically.</span>
-              </div>
-              <button
-                type="button"
-                className={styles.primaryButton}
-                onClick={handleCompleteReward}
-                disabled={isCompleting || questIsComplete}
-              >
-                {questIsComplete ? 'Quest cleared' : isCompleting ? 'Submitting...' : `Submit entry (${progressCount}/${targetCount})`}
-              </button>
-
-              {usdcReward > 0 && usdcClaim && (
-                <div className={styles.usdcPanel}>
-                  <div className={styles.usdcHeader}>
-                    <span className={styles.usdcBadge}>${usdcClaim.reward} USDC bounty</span>
-                    <span className={styles.usdcHeaderHint}>Academic Angels only</span>
-                  </div>
-                  {usdcClaim.loading ? (
-                    <div className={styles.callout} data-state="info">
-                      <span className={styles.calloutDot} aria-hidden="true" />
-                      <span>Checking your USDC eligibility...</span>
-                    </div>
-                  ) : usdcClaim.status === 'paid' ? (
-                    <div className={styles.callout} data-state="ready">
-                      <span className={styles.calloutDot} aria-hidden="true" />
-                      <span>
-                        Paid. ${usdcClaim.reward} USDC was sent to your wallet.
-                        {usdcClaim.txHash && (
-                          <> <a href={`https://basescan.org/tx/${usdcClaim.txHash}`} target="_blank" rel="noopener noreferrer" className={styles.usdcTxLink}>
-                            View transaction <ArrowSquareOut size={12} weight="bold" />
-                          </a></>
-                        )}
-                      </span>
-                    </div>
-                  ) : usdcClaim.status === 'approved' ? (
-                    <div className={styles.callout} data-state="info">
-                      <span className={styles.calloutDot} aria-hidden="true" />
-                      <span>Approved. Your USDC payout is on its way.</span>
-                    </div>
-                  ) : usdcClaim.status === 'pending' ? (
-                    <div className={styles.callout} data-state="info">
-                      <span className={styles.calloutDot} aria-hidden="true" />
-                      <span>Submitted. A staff member will review your work and release the USDC.</span>
-                    </div>
-                  ) : usdcClaim.status === 'rejected' ? (
-                    <div className={styles.callout} data-state="waiting">
-                      <span className={styles.calloutDot} aria-hidden="true" />
-                      <span>{usdcClaim.note || 'This USDC bounty was not approved.'}</span>
-                    </div>
-                  ) : usdcClaim.eligible ? (
-                    <>
-                      <p className={styles.actionDesc}>
-                        Submit your work for staff review. Once approved, Blue sends ${usdcClaim.reward} USDC straight to your wallet.
-                      </p>
-                      <button
-                        type="button"
-                        className={styles.primaryButton}
-                        onClick={handleRequestUsdc}
-                        disabled={isSubmittingUsdc}
-                      >
-                        {isSubmittingUsdc ? 'Submitting...' : `Request $${usdcClaim.reward} USDC payout`}
-                      </button>
-                    </>
-                  ) : (
-                    <div className={styles.callout} data-state="waiting">
-                      <span className={styles.calloutDot} aria-hidden="true" />
-                      <span>Hold an Academic Angel NFT to unlock the ${usdcClaim.reward} USDC bounty.</span>
-                    </div>
-                  )}
+        {quest.rewardType !== 'sealed-week' && (
+          <section className={styles.action}>
+            {quest.rewardType === 'proof-required' && (
+              <>
+                <p className={styles.actionDesc}>
+                  {targetCount === 1
+                    ? 'Share your entry whenever you are ready — a staff member will read it, and approval clears the quest. Take your time; there is no rush.'
+                    : `Every entry you share moves you one step closer — submit all ${targetCount} to fully clear it. Take your time; there is no rush.`}
+                </p>
+                <label className={styles.uploadZone}>
+                  <UploadSimple size={26} weight="duotone" className={styles.uploadIcon} />
+                  <span className={styles.uploadText}>{selectedFile || 'Drop a file or click to choose'}</span>
+                  <span className={styles.uploadHint}>Images, video, PDF, or docs</span>
+                  <input
+                    type="file"
+                    className={styles.uploadInput}
+                    accept="image/*,video/*,.pdf,.doc,.docx"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) setSelectedFile(file.name);
+                    }}
+                  />
+                </label>
+                <div className={styles.callout} data-state="info">
+                  <span className={styles.calloutDot} aria-hidden="true" />
+                  <span>Submissions are queued for review. Approved entries receive credits automatically.</span>
                 </div>
-              )}
-            </>
-          )}
+                {usdcReward > 0 && usdcClaim && !usdcClaim.loading && !usdcClaim.status && usdcClaim.eligible && (
+                  <>
+                    <p className={styles.actionDesc}>
+                      Once your work is in, request your payout and a staff member will release ${usdcClaim.reward} USDC straight to your wallet.
+                    </p>
+                    <button
+                      type="button"
+                      className={styles.secondaryButton}
+                      onClick={handleRequestUsdc}
+                      disabled={isSubmittingUsdc}
+                    >
+                      {isSubmittingUsdc ? 'Submitting...' : `Request $${usdcClaim.reward} USDC payout`}
+                    </button>
+                  </>
+                )}
+              </>
+            )}
 
-          {quest.rewardType === 'no-proof' && (
-            <>
+            {quest.rewardType === 'no-proof' && (
               <p className={styles.actionDesc}>
                 Finish the task above on your own, then claim your credits. This one uses self-attestation.
               </p>
-              <button
-                type="button"
-                className={styles.primaryButton}
-                onClick={handleCompleteReward}
-                disabled={isCompleting || questIsComplete}
-              >
-                {questIsComplete ? 'Quest cleared' : isCompleting ? 'Claiming...' : `Claim ${quest.points} credits`}
-              </button>
-            </>
-          )}
+            )}
 
-          {quest.rewardType === 'twitter-follow' && (
-            <>
-              <p className={styles.actionDesc}>
-                Two steps: link your X account, then follow @MentalWealthDAO. The panel will auto-verify when you return.
-              </p>
-              <div className={styles.stepList}>
-                <div className={`${styles.stepItem} ${step1Completed ? styles.stepItemDone : ''}`}>
-                  <span className={styles.stepCheck}>
-                    {step1Completed ? <CheckCircle size={20} weight="fill" /> : <Circle size={20} weight="bold" />}
-                  </span>
-                  <div className={styles.stepContent}>
-                    <span className={styles.stepTitle}>Connect your X account</span>
-                    <span className={styles.stepDesc}>Link your X profile through Privy</span>
-                  </div>
-                  {!step1Completed && isConnected && (
-                    <button type="button" className={styles.smallButton} onClick={handleConnectTwitter}>Connect</button>
-                  )}
-                </div>
-                <div className={`${styles.stepItem} ${step2Completed ? styles.stepItemDone : ''}`}>
-                  <span className={styles.stepCheck}>
-                    {step2Completed ? <CheckCircle size={20} weight="fill" /> : <Circle size={20} weight="bold" />}
-                  </span>
-                  <div className={styles.stepContent}>
-                    <span className={styles.stepTitle}>Follow @MentalWealthDAO</span>
-                    <span className={styles.stepDesc}>We verify the follow automatically</span>
-                  </div>
-                  {step1Completed && !step2Completed && (
-                    <div className={styles.stepActions}>
-                      <a href="https://twitter.com/MentalWealthDAO" target="_blank" rel="noopener noreferrer" className={styles.smallButton}>
-                        Open <ArrowSquareOut size={12} weight="bold" />
-                      </a>
-                      <button type="button" className={styles.smallButton} onClick={handleCheckFollow} disabled={isCheckingFollow}>
-                        {isCheckingFollow ? 'Checking...' : 'Verify'}
-                      </button>
+            {quest.rewardType === 'twitter-follow' && (
+              <>
+                <p className={styles.actionDesc}>
+                  Two steps: link your X account, then follow @MentalWealthDAO. The panel will auto-verify when you return.
+                </p>
+                <div className={styles.stepList}>
+                  <div className={`${styles.stepItem} ${step1Completed ? styles.stepItemDone : ''}`}>
+                    <span className={styles.stepCheck}>
+                      {step1Completed ? <CheckCircle size={20} weight="fill" /> : <Circle size={20} weight="bold" />}
+                    </span>
+                    <div className={styles.stepContent}>
+                      <span className={styles.stepTitle}>Connect your X account</span>
+                      <span className={styles.stepDesc}>Link your X profile through Privy</span>
                     </div>
-                  )}
+                    {!step1Completed && isConnected && (
+                      <button type="button" className={styles.smallButton} onClick={handleConnectTwitter}>Connect</button>
+                    )}
+                  </div>
+                  <div className={`${styles.stepItem} ${step2Completed ? styles.stepItemDone : ''}`}>
+                    <span className={styles.stepCheck}>
+                      {step2Completed ? <CheckCircle size={20} weight="fill" /> : <Circle size={20} weight="bold" />}
+                    </span>
+                    <div className={styles.stepContent}>
+                      <span className={styles.stepTitle}>Follow @MentalWealthDAO</span>
+                      <span className={styles.stepDesc}>We verify the follow automatically</span>
+                    </div>
+                    {step1Completed && !step2Completed && (
+                      <div className={styles.stepActions}>
+                        <a href="https://twitter.com/MentalWealthDAO" target="_blank" rel="noopener noreferrer" className={styles.smallButton}>
+                          Open <ArrowSquareOut size={12} weight="bold" />
+                        </a>
+                        <button type="button" className={styles.smallButton} onClick={handleCheckFollow} disabled={isCheckingFollow}>
+                          {isCheckingFollow ? 'Checking...' : 'Verify'}
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-              {step1Completed && step2Completed && (
-                <button type="button" className={styles.primaryButton} onClick={handleCompleteReward} disabled={isCompleting || questIsComplete}>
-                  {questIsComplete ? 'Quest cleared' : isCompleting ? 'Claiming...' : 'Claim credits'}
-                </button>
-              )}
-              {!isConnected && (
-                <div className={styles.callout} data-state="waiting">
-                  <span className={styles.calloutDot} aria-hidden="true" />
-                  <span>Sign in to start this quest.</span>
-                </div>
-              )}
-            </>
-          )}
+              </>
+            )}
 
-          {quest.rewardType === 'follow-and-own' && (
-            <>
-              <p className={styles.actionDesc}>
-                Follow @daemonagent on Farcaster and verify ownership of an Academic Angel.
-              </p>
-              <div className={styles.stepList}>
-                <div className={styles.stepItem}>
-                  <span className={styles.stepCheck}><Circle size={20} weight="bold" /></span>
-                  <div className={styles.stepContent}>
-                    <span className={styles.stepTitle}>Follow @daemonagent</span>
-                    <span className={styles.stepDesc}>Farcaster account on Warpcast</span>
+            {quest.rewardType === 'follow-and-own' && (
+              <>
+                <p className={styles.actionDesc}>
+                  Follow @daemonagent on Farcaster and verify ownership of an Academic Angel.
+                </p>
+                <div className={styles.stepList}>
+                  <div className={styles.stepItem}>
+                    <span className={styles.stepCheck}><Circle size={20} weight="bold" /></span>
+                    <div className={styles.stepContent}>
+                      <span className={styles.stepTitle}>Follow @daemonagent</span>
+                      <span className={styles.stepDesc}>Farcaster account on Warpcast</span>
+                    </div>
+                  </div>
+                  <div className={styles.stepItem}>
+                    <span className={styles.stepCheck}><Circle size={20} weight="bold" /></span>
+                    <div className={styles.stepContent}>
+                      <span className={styles.stepTitle}>Own an Academic Angel</span>
+                      <span className={styles.stepDesc}>Verified on Base</span>
+                    </div>
                   </div>
                 </div>
-                <div className={styles.stepItem}>
-                  <span className={styles.stepCheck}><Circle size={20} weight="bold" /></span>
-                  <div className={styles.stepContent}>
-                    <span className={styles.stepTitle}>Own an Academic Angel</span>
-                    <span className={styles.stepDesc}>Verified on Base</span>
-                  </div>
-                </div>
-              </div>
-              <button type="button" className={styles.primaryButton} disabled>Verification coming soon</button>
-            </>
-          )}
+              </>
+            )}
+          </section>
+        )}
+
+        <section className={styles.rewards}>
+          <span className={styles.rewardsLabel}>Rewards</span>
+          <ul className={styles.rewardsList}>
+            <li className={styles.rewardItem}>
+              <Image src="/icons/ui-shard.svg" alt="" width={18} height={18} />
+              <span className={styles.rewardItemValue}>{quest.points}</span>
+              <span className={styles.rewardItemName}>Credits</span>
+            </li>
+            {usdcReward > 0 && (
+              <li className={styles.rewardItem}>
+                <Image src="/icons/usdc-logo.svg" alt="" width={18} height={18} />
+                <span className={styles.rewardItemValue}>${usdcReward}</span>
+                <span className={styles.rewardItemName}>USDC bounty</span>
+                <span className={styles.rewardItemNote}>Academic Angels only</span>
+              </li>
+            )}
+          </ul>
         </section>
+      </div>
+
+      <div className={styles.footer}>
+        {quest.rewardType === 'sealed-week' && (
+          <button
+            type="button"
+            className={styles.primaryButton}
+            onClick={handleCompleteReward}
+            disabled={!canClaimSealedWeek || isCompleting}
+          >
+            {questIsComplete ? 'Quest cleared' : isCompleting ? 'Claiming...' : `Claim ${quest.points} credits`}
+          </button>
+        )}
+        {quest.rewardType === 'proof-required' && (
+          <button
+            type="button"
+            className={styles.primaryButton}
+            onClick={handleCompleteReward}
+            disabled={isCompleting || questIsComplete}
+          >
+            {questIsComplete
+              ? 'Quest cleared'
+              : isCompleting
+                ? 'Submitting...'
+                : targetCount === 1
+                  ? 'Submit entry'
+                  : `Submit entry (${progressCount}/${targetCount})`}
+          </button>
+        )}
+        {quest.rewardType === 'no-proof' && (
+          <button
+            type="button"
+            className={styles.primaryButton}
+            onClick={handleCompleteReward}
+            disabled={isCompleting || questIsComplete}
+          >
+            {questIsComplete ? 'Quest cleared' : isCompleting ? 'Claiming...' : `Claim ${quest.points} credits`}
+          </button>
+        )}
+        {quest.rewardType === 'twitter-follow' && (
+          <button
+            type="button"
+            className={styles.primaryButton}
+            onClick={handleCompleteReward}
+            disabled={isCompleting || questIsComplete || !step1Completed || !step2Completed}
+          >
+            {questIsComplete
+              ? 'Quest cleared'
+              : isCompleting
+                ? 'Claiming...'
+                : step1Completed && step2Completed
+                  ? 'Claim credits'
+                  : 'Complete the steps above'}
+          </button>
+        )}
+        {quest.rewardType === 'follow-and-own' && (
+          <button type="button" className={styles.primaryButton} disabled>Verification coming soon</button>
+        )}
       </div>
 
       <ConfettiCelebration trigger={showConfetti} />
