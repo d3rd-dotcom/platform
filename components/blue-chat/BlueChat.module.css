@@ -45,15 +45,67 @@
   }
 }
 
+/* Compact top bar — Blue identity on the left, control buttons on the right */
+.compactTopBar {
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 12px 10px;
+  background: linear-gradient(135deg, #5c6fff 0%, #3a7fff 55%, #6a4fff 100%);
+}
+
+.compactTopBar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    #5168FF,
+    #74C465,
+    #E8556D,
+    #F2A0B5,
+    #a78bfa,
+    #5168FF
+  );
+  background-size: 200% 100%;
+  animation: rainbowShift 6s linear infinite;
+}
+
+.compactTopBarBrand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.compactTopBarFace {
+  width: 40px;
+  height: auto;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 5px rgba(11, 14, 40, 0.3));
+}
+
+.compactTopBarName {
+  font-family: var(--font-primary);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+}
+
 /* Compact controls row */
 .compactControls {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 10;
   display: flex;
   gap: 6px;
   align-items: center;
+  flex-shrink: 0;
 }
 
 /* Close button */
@@ -145,6 +197,12 @@
   scroll-behavior: smooth;
 }
 
+/* Compact layout owns a real top bar now, so the messages don't need the
+   tall top padding that used to clear the floating control buttons. */
+.chatContainer > .messagesArea {
+  padding-top: 16px;
+}
+
 .messagesArea::-webkit-scrollbar {
   width: 4px;
 }
@@ -165,10 +223,28 @@
 /* Message bubbles */
 .messageBubble {
   display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 84%;
+  animation: messageSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Blue's face avatar to the left of her messages */
+.blueAvatar {
+  width: 44px;
+  height: auto;
+  flex-shrink: 0;
+  margin-top: 1px;
+  filter: drop-shadow(0 2px 4px rgba(11, 14, 40, 0.18));
+}
+
+/* Column holding the bubble, attachments, timestamp and debug panel */
+.messageBody {
+  display: flex;
   flex-direction: column;
   gap: 4px;
-  max-width: 80%;
-  animation: messageSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  min-width: 0;
 }
 
 @keyframes messageSlideIn {
@@ -184,11 +260,17 @@
 
 .userMessage {
   align-self: flex-end;
+}
+
+.userMessage .messageBody {
   align-items: flex-end;
 }
 
 .blueMessage {
   align-self: flex-start;
+}
+
+.blueMessage .messageBody {
   align-items: flex-start;
 }
 
@@ -2686,4 +2768,44 @@
   font-size: 11px;
   line-height: 1.5;
   color: #ff8080;
+}
+
+/* ── Compact top-bar control buttons sit on the brand-blue bar in both themes,
+   so they share a translucent-white treatment. Scoped under the theme roots to
+   outrank the per-theme button overrides defined above. ──────────────────── */
+:global(:root:not([data-theme="dark"])) .compactTopBar .voiceToggleButton,
+:global(:root:not([data-theme="dark"])) .compactTopBar .expandButton,
+:global(:root:not([data-theme="dark"])) .compactTopBar .closeButton,
+:global(:root[data-theme="dark"]) .compactTopBar .voiceToggleButton,
+:global(:root[data-theme="dark"]) .compactTopBar .expandButton,
+:global(:root[data-theme="dark"]) .compactTopBar .closeButton {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.34);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+:global(:root:not([data-theme="dark"])) .compactTopBar .voiceToggleButton:hover,
+:global(:root:not([data-theme="dark"])) .compactTopBar .expandButton:hover,
+:global(:root:not([data-theme="dark"])) .compactTopBar .closeButton:hover,
+:global(:root[data-theme="dark"]) .compactTopBar .voiceToggleButton:hover,
+:global(:root[data-theme="dark"]) .compactTopBar .expandButton:hover,
+:global(:root[data-theme="dark"]) .compactTopBar .closeButton:hover {
+  background: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.55);
+  color: #ffffff;
+}
+
+:global(:root:not([data-theme="dark"])) .compactTopBar .voiceToggleActive,
+:global(:root[data-theme="dark"]) .compactTopBar .voiceToggleActive {
+  background: rgba(45, 212, 191, 0.42);
+  border-color: rgba(153, 246, 228, 0.8);
+  color: #ffffff;
+}
+
+:global(:root:not([data-theme="dark"])) .compactTopBar .voiceToggleActive:hover,
+:global(:root[data-theme="dark"]) .compactTopBar .voiceToggleActive:hover {
+  background: rgba(45, 212, 191, 0.55);
+  border-color: rgba(153, 246, 228, 0.95);
+  color: #ffffff;
 }

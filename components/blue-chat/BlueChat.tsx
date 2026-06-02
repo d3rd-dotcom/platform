@@ -1216,7 +1216,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         "the world's first decentralized cohort for mental wellness. course, community, science — on-chain. you're early."
       );
     } else if (action === 'next-move') {
-      send('Focus my next move.');
+      send("What's my next move?");
       setPendingAttachments([]);
       setTimeManagementVisible(false);
       setAutoDistributionVisible(false);
@@ -1388,63 +1388,88 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     <>
       {/* Messages */}
       <div className={styles.messagesArea}>
-        {messages.map((message) => (
+        {messages.map((message) => {
+          const isBlue = message.sender === 'blue';
+          return (
           <div
             key={message.id}
             className={`${styles.messageBubble} ${
-              message.sender === 'user' ? styles.userMessage : styles.blueMessage
+              isBlue ? styles.blueMessage : styles.userMessage
             }`}
           >
-            <div
-              className={`${styles.messageContentWrap} ${
-                message.sender === 'blue' && message.debug ? styles.messageContentWrapDebug : ''
-              }`}
-            >
-              <div className={styles.messageContent}>{message.text}</div>
-              {message.sender === 'blue' && message.debug && (
-                <button
-                  type="button"
-                  className={styles.debugInfoButton}
-                  aria-label="Show debug info"
-                  aria-expanded={openDebugMessageId === message.id}
-                  onClick={() => toggleDebugMessage(message.id)}
-                >
-                  i
-                </button>
+            {isBlue && (
+              <Image
+                src="/splashlogo.png"
+                alt="Blue"
+                width={44}
+                height={29}
+                className={styles.blueAvatar}
+                unoptimized
+              />
+            )}
+            <div className={styles.messageBody}>
+              <div
+                className={`${styles.messageContentWrap} ${
+                  isBlue && message.debug ? styles.messageContentWrapDebug : ''
+                }`}
+              >
+                <div className={styles.messageContent}>{message.text}</div>
+                {isBlue && message.debug && (
+                  <button
+                    type="button"
+                    className={styles.debugInfoButton}
+                    aria-label="Show debug info"
+                    aria-expanded={openDebugMessageId === message.id}
+                    onClick={() => toggleDebugMessage(message.id)}
+                  >
+                    i
+                  </button>
+                )}
+              </div>
+              {message.attachments && message.attachments.length > 0 && (
+                <div className={styles.messageAttachments}>
+                  {message.attachments.map((attachment) => (
+                    <div key={attachment.id} className={styles.messageAttachmentChip}>
+                      <span className={styles.messageAttachmentIcon} aria-hidden="true">
+                        {fileTypeLabel(attachment.mime)}
+                      </span>
+                      <span className={styles.messageAttachmentName}>{attachment.name}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div className={styles.messageTime}>
+                {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </div>
+              {isBlue && message.debug && openDebugMessageId === message.id && (
+                <div className={styles.debugPanel}>
+                  {formatDebugSummary(message.debug).map((line) => (
+                    <div key={line} className={styles.debugLine}>{line}</div>
+                  ))}
+                </div>
               )}
             </div>
-            {message.attachments && message.attachments.length > 0 && (
-              <div className={styles.messageAttachments}>
-                {message.attachments.map((attachment) => (
-                  <div key={attachment.id} className={styles.messageAttachmentChip}>
-                    <span className={styles.messageAttachmentIcon} aria-hidden="true">
-                      {fileTypeLabel(attachment.mime)}
-                    </span>
-                    <span className={styles.messageAttachmentName}>{attachment.name}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-            <div className={styles.messageTime}>
-              {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-            </div>
-            {message.sender === 'blue' && message.debug && openDebugMessageId === message.id && (
-              <div className={styles.debugPanel}>
-                {formatDebugSummary(message.debug).map((line) => (
-                  <div key={line} className={styles.debugLine}>{line}</div>
-                ))}
-              </div>
-            )}
           </div>
-        ))}
+          );
+        })}
 
         {isTyping && (
           <div className={`${styles.messageBubble} ${styles.blueMessage} ${styles.typingIndicator}`}>
-            <div className={styles.messageContent}>
-              <div className={styles.typingDots}>
-                <span className={styles.typingDot} />
-                <span className={styles.typingDot} />
-                <span className={styles.typingDot} />
+            <Image
+              src="/splashlogo.png"
+              alt="Blue"
+              width={44}
+              height={29}
+              className={styles.blueAvatar}
+              unoptimized
+            />
+            <div className={styles.messageBody}>
+              <div className={styles.messageContent}>
+                <div className={styles.typingDots}>
+                  <span className={styles.typingDot} />
+                  <span className={styles.typingDot} />
+                  <span className={styles.typingDot} />
+                </div>
               </div>
             </div>
           </div>
@@ -1585,10 +1610,10 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
           </div>
         )}
         <button className={styles.quickAction} onClick={() => handleQuickAction('next-move')} disabled={isTyping} type="button">
-          Focus my next move
+          Next Move
         </button>
         <button className={styles.quickAction} onClick={() => handleQuickAction('read-resistance')} disabled={isTyping} type="button">
-          Read my resistance
+          Shadow
         </button>
         {isVipMember && (
           <button className={styles.quickAction} onClick={() => handleQuickAction('forge-quest')} disabled={isTyping} type="button">
@@ -1910,7 +1935,12 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       <div className={styles.backdrop} onClick={onClose} />
 
       <div className={styles.chatContainer}>
-        <div className={styles.compactControls}>
+        <div className={styles.compactTopBar}>
+          <div className={styles.compactTopBarBrand}>
+            <Image src="/splashlogo.png" alt="" width={44} height={29} className={styles.compactTopBarFace} unoptimized />
+            <span className={styles.compactTopBarName}>Blue</span>
+          </div>
+          <div className={styles.compactControls}>
           <button
             className={`${styles.voiceToggleButton} ${voiceEnabled ? styles.voiceToggleActive : ''}`}
             onClick={toggleVoice}
@@ -1945,6 +1975,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
               <path d="M18 6L6 18M6 6l12 12" />
             </svg>
           </button>
+          </div>
         </div>
 
         {chatContent}
