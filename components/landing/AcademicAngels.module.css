@@ -30,7 +30,7 @@
 
 .sectionHeading {
   text-align: center;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 2.25rem;
   font-weight: 700;
   color: #1a1d33;
@@ -40,7 +40,7 @@
 
 .sectionSubheading {
   text-align: center;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 1.05rem;
   font-weight: 400;
   color: rgba(26, 29, 51, 0.55);
@@ -76,7 +76,7 @@
   position: absolute;
   top: -8px;
   right: 16px;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 5.5rem;
   font-weight: 700;
   color: rgba(81, 104, 255, 0.06);
@@ -87,7 +87,7 @@
 
 .benefitTitle {
   position: relative;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 1.15rem;
   font-weight: 700;
   color: #1a1d33;
@@ -96,7 +96,7 @@
 
 .benefitDescription {
   position: relative;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 0.9rem;
   font-weight: 400;
   color: rgba(26, 29, 51, 0.55);
@@ -114,7 +114,7 @@
 }
 
 .ctaPrice {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 1.75rem;
   font-weight: 700;
   color: #1a1d33;
@@ -122,7 +122,7 @@
 }
 
 .ctaPriceLabel {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 0.9rem;
   font-weight: 500;
   color: rgba(26, 29, 51, 0.4);
@@ -134,7 +134,7 @@
   padding: 16px 40px;
   background: #5168FF;
   color: #FFFFFF;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 15px;
   font-weight: 700;
   text-transform: uppercase;
@@ -198,7 +198,7 @@
 }
 
 .modalTitle {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 17px;
   font-weight: 700;
   color: #1A1D33;
@@ -231,7 +231,7 @@
 }
 
 .price {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 36px;
   font-weight: 700;
   color: #1A1D33;
@@ -240,7 +240,7 @@
 }
 
 .priceNote {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 13px;
   font-weight: 500;
   color: rgba(26, 29, 51, 0.45);
@@ -263,7 +263,7 @@
 }
 
 .benefitItem {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 14px;
   font-weight: 500;
   color: #1A1D33;
@@ -288,7 +288,7 @@
   padding: 15px;
   background: #1A1D33;
   color: #FFFFFF;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
@@ -326,14 +326,14 @@
 }
 
 .successText {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 14px;
   font-weight: 700;
   color: #38A169;
 }
 
 .txLink {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 12px;
   font-weight: 500;
   color: #5168FF;
@@ -345,7 +345,7 @@
 }
 
 .error {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 12px;
   color: #E53E3E;
   margin: 8px 0 0;

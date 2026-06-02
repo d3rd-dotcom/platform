@@ -13,7 +13,7 @@
 }
 
 .headerTitle {
-  font-family: var(--font-headline, 'Space Grotesk', sans-serif);
+  font-family: var(--font-secondary);
   font-size: 24px;
   font-weight: 700;
   color: var(--color-text-dark, #E3E1EE);
@@ -21,7 +21,7 @@
 }
 
 .headerSub {
-  font-family: var(--font-body, 'Poppins', sans-serif);
+  font-family: var(--font-primary);
   font-size: 14px;
   font-weight: 300;
   color: rgba(227, 225, 238, 0.45);
@@ -179,7 +179,7 @@
 
 /* -- Label -- */
 .toolLabel {
-  font-family: var(--font-headline, 'Space Grotesk', sans-serif);
+  font-family: var(--font-secondary);
   font-size: 16px;
   font-weight: 700;
   color: rgba(227, 225, 238, 0.95);
@@ -189,7 +189,7 @@
 
 /* -- Description -- */
 .toolDesc {
-  font-family: var(--font-body, 'Poppins', sans-serif);
+  font-family: var(--font-primary);
   font-size: 12px;
   font-weight: 300;
   color: rgba(227, 225, 238, 0.45);
@@ -222,7 +222,7 @@
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
-  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;

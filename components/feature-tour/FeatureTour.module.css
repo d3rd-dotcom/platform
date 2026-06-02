@@ -181,7 +181,7 @@
 .next {
   flex-shrink: 0;
   padding: 9px 18px;
-  font-family: var(--font-departure-mono), 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.85rem;
   font-weight: 400;
   letter-spacing: 0.02em;

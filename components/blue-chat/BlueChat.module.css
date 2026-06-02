@@ -195,7 +195,7 @@
 .messageContent {
   padding: 10px 14px;
   border-radius: 16px;
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 500;
   line-height: 1.5;
@@ -237,7 +237,7 @@
 }
 
 .messageTime {
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 400;
   color: rgba(11, 14, 40, 0.32);
@@ -260,7 +260,7 @@
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.16);
   color: rgba(255, 255, 255, 0.94);
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
   cursor: pointer;
@@ -285,7 +285,7 @@
 }
 
 .debugLine {
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 10px;
   line-height: 1.45;
   color: rgba(11, 14, 40, 0.64);
@@ -311,7 +311,7 @@
 
 .messageAttachmentIcon {
   flex-shrink: 0;
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -323,7 +323,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   color: rgba(11, 14, 40, 0.75);
@@ -358,7 +358,7 @@
 }
 
 .reclaimBubbleText {
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -415,7 +415,7 @@
 }
 
 .shardConfirmText {
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 600;
   color: rgba(11, 14, 40, 0.8);
@@ -441,7 +441,7 @@
   background: var(--color-primary, #5168FF);
   border: 1.5px solid var(--color-primary, #5168FF);
   border-radius: 8px;
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
   color: #ffffff;
@@ -460,7 +460,7 @@
   background: rgba(11, 14, 40, 0.04);
   border: 1.5px solid rgba(11, 14, 40, 0.1);
   border-radius: 8px;
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   color: rgba(11, 14, 40, 0.45);
@@ -509,14 +509,14 @@
 }
 
 .shardUpsellTitle {
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 700;
   color: rgba(11, 14, 40, 0.86);
 }
 
 .shardUpsellBody {
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   line-height: 1.5;
   color: rgba(11, 14, 40, 0.58);
@@ -533,7 +533,7 @@
   align-items: center;
   gap: 4px;
   padding: 6px 10px;
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
   color: rgba(140, 80, 220, 0.8);
@@ -562,7 +562,7 @@
   background: rgba(11, 14, 40, 0.04);
   border: 1.5px solid rgba(11, 14, 40, 0.1);
   border-radius: 20px;
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   color: rgba(11, 14, 40, 0.5);
@@ -629,7 +629,7 @@
   border-radius: 8px;
   background: rgba(11, 14, 40, 0.03);
   color: rgba(11, 14, 40, 0.4);
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
@@ -664,7 +664,7 @@
   border: 2px solid rgba(116, 196, 101, 0.3);
   border-radius: 8px;
   background: rgba(116, 196, 101, 0.04);
-  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 14px;
   font-weight: 600;
   color: rgba(11, 14, 40, 0.85);
@@ -699,7 +699,7 @@
   background: #74C465;
   border: 2px solid #5daa50;
   border-radius: 8px;
-  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 700;
   color: #ffffff;
@@ -784,7 +784,7 @@
 
 .pendingAttachmentType {
   flex-shrink: 0;
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -796,7 +796,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   color: rgba(11, 14, 40, 0.75);
@@ -830,7 +830,7 @@
   border: 1.5px solid rgba(11, 14, 40, 0.12);
   border-radius: 24px;
   background: rgba(11, 14, 40, 0.03);
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 500;
   color: rgba(11, 14, 40, 0.85);
@@ -1165,7 +1165,7 @@
 }
 
 .panelHeading {
-  font-family: var(--font-headline, 'Space Grotesk', sans-serif);
+  font-family: var(--font-secondary);
   font-size: 10px;
   font-weight: 700;
   color: #4a5568;
@@ -1210,7 +1210,7 @@
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 6px;
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 500;
   color: rgba(220, 210, 230, 0.45);
@@ -1219,7 +1219,7 @@
 .radarLabel {
   position: absolute;
   transform: translate(-50%, -50%);
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 9px;
   font-weight: 600;
   color: rgba(220, 210, 230, 0.45);
@@ -1306,7 +1306,7 @@
 }
 
 .toolCardTitle {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 14px;
   font-weight: 600;
   line-height: 1.2;
@@ -1336,7 +1336,7 @@
 }
 
 .toolCardMeta {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 11px;
   line-height: 1.35;
   color: rgba(255, 255, 255, 0.52);
@@ -1347,7 +1347,7 @@
   align-items: center;
   gap: 5px;
   margin-top: 4px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10.5px;
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -1466,7 +1466,7 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(81, 104, 255, 0.09);
   backdrop-filter: blur(8px);
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   color: rgba(220, 228, 255, 0.6);
@@ -1564,7 +1564,7 @@
 }
 
 .researchLabel {
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.5);
@@ -1601,7 +1601,7 @@
 }
 
 .researchCardTitle {
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.85);
@@ -1609,14 +1609,14 @@
 }
 
 .researchCardDesc {
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 10px;
   color: rgba(255, 255, 255, 0.4);
   line-height: 1.4;
 }
 
 .researchCardPrice {
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
   color: var(--color-primary, #5168FF);
@@ -1624,7 +1624,7 @@
 }
 
 .researchCost {
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.9);
@@ -1696,7 +1696,7 @@
 }
 
 .autoDistributionTitle {
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -1706,7 +1706,7 @@
 
 .autoDistributionDesc {
   margin: 0;
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 12px;
   line-height: 1.55;
   color: rgba(255, 255, 255, 0.76);
@@ -1736,14 +1736,14 @@
 }
 
 .autoDistributionChannel {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 13px;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.92);
 }
 
 .autoDistributionStatus {
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.05em;
@@ -1768,7 +1768,7 @@
 }
 
 .autoDistributionMeta {
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   line-height: 1.45;
   color: rgba(255, 255, 255, 0.62);
@@ -1776,7 +1776,7 @@
 
 .autoDistributionHint,
 .autoDistributionError {
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 10px;
   line-height: 1.45;
 }
@@ -1801,7 +1801,7 @@
   background: rgba(81, 104, 255, 0.14);
   border: 1.5px solid rgba(81, 104, 255, 0.3);
   border-radius: 8px;
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
   color: #dce1ff;
@@ -1826,7 +1826,7 @@
 }
 
 .autoDistributionLabel {
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -1845,7 +1845,7 @@
   background: rgba(255, 255, 255, 0.05);
   border: 1.5px solid rgba(255, 255, 255, 0.08);
   border-radius: 999px;
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.62);
@@ -1877,7 +1877,7 @@
   background: rgba(255, 255, 255, 0.04);
   border: 1.5px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 12px;
   color: rgba(255, 255, 255, 0.88);
   outline: none;
@@ -2418,7 +2418,7 @@
   background: var(--color-primary, #5168FF);
   border: 1.5px solid var(--color-primary, #5168FF);
   border-radius: 8px;
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
   color: #ffffff;
@@ -2442,7 +2442,7 @@
   background: rgba(255, 255, 255, 0.05);
   border: 1.5px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.38);
@@ -2488,7 +2488,7 @@
 }
 
 .researchUploaderTitle {
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.92);
@@ -2515,7 +2515,7 @@
 }
 
 .researchUploaderDesc {
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.66);
@@ -2540,7 +2540,7 @@
 }
 
 .researchUploaderChipIcon {
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -2548,7 +2548,7 @@
 }
 
 .researchUploaderChipName {
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   color: rgba(255, 255, 255, 0.85);
   white-space: nowrap;
@@ -2583,7 +2583,7 @@
   background: rgba(81, 104, 255, 0.16);
   border: 1.5px solid rgba(81, 104, 255, 0.4);
   border-radius: 9px;
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.92);

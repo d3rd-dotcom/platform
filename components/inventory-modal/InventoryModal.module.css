@@ -114,7 +114,7 @@
 }
 
 .walletAddress {
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 12px;
   color: #8E8E93;
   letter-spacing: 0.02em;

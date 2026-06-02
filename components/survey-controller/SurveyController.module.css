@@ -19,7 +19,7 @@
   --c-fg-faint: rgba(235, 232, 247, 0.36);
   --f-headline: var(--font-secondary, 'Space Grotesk', sans-serif);
   --f-mono: var(--font-mono, 'Departure Mono', monospace);
-  --f-button: var(--font-button, 'IBM Plex Mono', monospace);
+  --f-button: var(--font-button, 'Departure Mono', monospace);
   --ease: var(--ease-default, cubic-bezier(0.4, 0, 0.2, 1));
 
   position: relative;

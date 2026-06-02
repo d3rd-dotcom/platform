@@ -117,7 +117,7 @@
 
 .leadEyebrow,
 .rosterEyebrow {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   line-height: 1;
   letter-spacing: 0.14em;
@@ -167,7 +167,7 @@
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.07);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -217,7 +217,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-family: var(--font-secondary);
   font-size: 34px;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.82);
@@ -228,7 +228,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -273,7 +273,7 @@
 }
 
 .votingPowerValue {
-  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-family: var(--font-secondary);
   font-size: 22px;
   font-weight: 800;
   color: #ffffff;
@@ -342,7 +342,7 @@
 }
 
 .treasuryBadgeAmount {
-  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-family: var(--font-secondary);
   font-size: 28px;
   font-weight: 800;
   line-height: 1;

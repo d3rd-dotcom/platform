@@ -38,7 +38,7 @@
   font-weight: 800;
   letter-spacing: -0.02em;
   color: #1a1d33;
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
 }
 
 .hint {

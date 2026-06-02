@@ -113,7 +113,7 @@
 }
 
 .title {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 15px;
   font-weight: 700;
   color: #1a1d33;
@@ -124,7 +124,7 @@
 }
 
 .preview {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 12px;
   font-weight: 300;
   color: rgba(26, 29, 51, 0.5);
@@ -143,7 +143,7 @@
   align-items: center;
   gap: 4px;
   margin-top: 1px;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 11px;
   font-weight: 600;
   line-height: 1;
@@ -173,7 +173,7 @@
 }
 
 .pointsValue {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 700;
   color: #1a234a;
@@ -197,7 +197,7 @@
 }
 
 .usdcValue {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 700;
   color: #1f5c9e;

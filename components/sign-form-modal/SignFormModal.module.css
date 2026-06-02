@@ -61,7 +61,7 @@
 }
 
 .headerLabel {
-  font-family: var(--font-departure-mono), 'Departure Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.14em;
   color: rgba(255, 255, 255, 0.7);
@@ -137,7 +137,7 @@
 }
 
 .legalText {
-  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 14px;
   line-height: 1.6;
   color: rgba(26, 29, 51, 0.7);
@@ -173,7 +173,7 @@
 }
 
 .agreeLabel {
-  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 14px;
   line-height: 1.5;
   color: #1a1d33;
@@ -196,7 +196,7 @@
 }
 
 .signatureLabelText {
-  font-family: var(--font-departure-mono), 'Departure Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.1em;
   color: rgba(26, 29, 51, 0.55);
@@ -204,7 +204,7 @@
 }
 
 .clearBtn {
-  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 13px;
   color: rgba(81, 104, 255, 0.7);
   background: transparent;
@@ -250,7 +250,7 @@
 }
 
 .signatureHintText {
-  font-family: var(--font-departure-mono), 'Departure Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
   color: rgba(81, 104, 255, 0.25);
   letter-spacing: 0.08em;

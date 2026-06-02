@@ -697,7 +697,7 @@
   margin: 0;
   white-space: pre-wrap;
   word-break: break-word;
-  font-family: var(--font-patrick-hand), 'Patrick Hand', var(--font-primary);
+  font-family: var(--font-patrick-hand);
   font-size: 18px;
   line-height: 1.75;
   color: #2f2b3d;

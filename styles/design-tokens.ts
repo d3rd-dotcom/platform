@@ -155,7 +155,7 @@ export const gradients = {
 export const fontFamilies = {
   primary: "'Poppins', sans-serif",
   secondary: "'Space Grotesk', sans-serif",
-  mono: "'IBM Plex Mono', monospace",
+  mono: "'Departure Mono', monospace",
 } as const;
 
 /**

@@ -28,7 +28,7 @@
 }
 
 .cardLabel {
-  font-family: var(--font-departure-mono), 'Departure Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -334,7 +334,7 @@
 }
 
 .leagueRank {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.85rem;
   font-weight: 700;
   color: rgba(26, 29, 51, 0.5);
@@ -363,7 +363,7 @@
 }
 
 .leagueShards {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.8rem;
   font-weight: 600;
   color: #5168ff;
@@ -387,7 +387,7 @@
 }
 
 .leaderTitle {
-  font-family: var(--font-departure-mono), 'Departure Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.08em;

@@ -55,7 +55,7 @@
 .title {
   font-size: 16px;
   font-weight: 700;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   color: #ffffff;
   margin: 0;
 }
@@ -76,7 +76,7 @@
   border: 1px solid rgba(255, 255, 255, 0.22);
   background: rgba(255, 255, 255, 0.14);
   color: #ffffff;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 700;
   cursor: help;
@@ -102,7 +102,7 @@
   border: 1px solid rgba(179, 205, 255, 0.2);
   box-shadow: 0 16px 36px rgba(8, 12, 28, 0.4);
   color: rgba(235, 241, 255, 0.9);
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 12px;
   line-height: 1.5;
   opacity: 0;
@@ -122,7 +122,7 @@
 .balance {
   font-size: 36px;
   font-weight: 700;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   color: #ffffff;
   margin: 0;
   position: relative;
@@ -194,12 +194,12 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 600;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   color: rgba(231, 239, 255, 0.7);
 }
 
 .powerValue {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 22px;
   font-weight: 800;
   color: #ffffff;

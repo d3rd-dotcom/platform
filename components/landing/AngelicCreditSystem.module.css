@@ -116,7 +116,7 @@
 }
 
 .walletAddress {
-  font-family: var(--font-ibm-plex-mono);
+  font-family: var(--font-mono);
   font-size: 0.875rem;
   font-weight: 500;
   color: #1e4890;
@@ -130,7 +130,7 @@
 }
 
 .walletBalance {
-  font-family: var(--font-ibm-plex-mono);
+  font-family: var(--font-mono);
   font-size: 0.875rem;
   font-weight: 500;
   color: #1e4890;

@@ -25,7 +25,7 @@
 }
 
 .eyebrow {
-  font-family: var(--font-poppins), 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: clamp(1.4rem, 2.6vw, 2rem);
   font-style: normal;
   font-weight: 700;

@@ -96,7 +96,7 @@
 .content {
   padding: 20px 24px;
   overflow-y: auto;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 13px;
   font-weight: 400;
   color: #666666;

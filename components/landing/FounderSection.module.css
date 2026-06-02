@@ -41,7 +41,7 @@
 
 .eyebrow {
   margin: 0 0 10px 0;
-  font-family: var(--font-ibm-plex-mono);
+  font-family: var(--font-mono);
   font-size: 0.7rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -51,7 +51,7 @@
 
 .heading {
   margin: 0 0 16px 0;
-  font-family: var(--font-poppins), 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: clamp(1.4rem, 3.4vw, 2rem);
   font-weight: 700;
   line-height: 1.1;
@@ -68,7 +68,7 @@
 
 .body p {
   margin: 0;
-  font-family: var(--font-poppins), 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 0.95rem;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.74);

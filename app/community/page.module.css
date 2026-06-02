@@ -437,7 +437,7 @@
 .reserveAmount {
   font-size: 30px;
   font-weight: 700;
-  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-family: var(--font-secondary);
   color: var(--color-text-dark);
   margin: 0;
   line-height: 1;
@@ -488,7 +488,7 @@
 }
 
 .reservePulseValue {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 30px;
   line-height: 1;
   letter-spacing: -0.04em;
@@ -519,7 +519,7 @@
 }
 
 .reserveBalanceValue {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 30px;
   line-height: 1;
   letter-spacing: -0.04em;
@@ -588,7 +588,7 @@
 .fundingPodMiniTitle {
   font-size: 12px;
   font-weight: 700;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   color: rgba(255, 255, 255, 0.75);
   min-width: 0;
 }
@@ -596,7 +596,7 @@
 .fundingPodMiniAmount {
   font-size: 15px;
   font-weight: 700;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   color: #fff;
   letter-spacing: -0.02em;
   flex-shrink: 0;
@@ -694,7 +694,7 @@
 }
 
 .reserveAllocationValue {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 20px;
   line-height: 1;
   letter-spacing: -0.03em;
@@ -911,7 +911,7 @@
 }
 
 .reserveSentimentValue {
-  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -1020,7 +1020,7 @@
 }
 
 .reserveSignalValue {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 24px;
   line-height: 1;
   letter-spacing: -0.03em;
@@ -1242,7 +1242,7 @@
 }
 
 .treasuryAmount {
-  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-family: var(--font-secondary);
   font-size: 64px;
   font-weight: 800;
   color: #ffffff;
@@ -1724,7 +1724,7 @@
 }
 
 .dashboardBrandName {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 600;
   color: var(--dashboard-text-color);
@@ -1732,7 +1732,7 @@
 }
 
 .dashboardBrandMeta {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 11px;
   font-weight: 500;
   color: var(--dashboard-faint-color);
@@ -1748,7 +1748,7 @@
   background: var(--dashboard-control-bg);
   border: 1px solid var(--dashboard-control-border);
   color: var(--dashboard-faint-color);
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 12px;
   min-width: 0;
 }
@@ -1784,7 +1784,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
   color: #ffffff;
@@ -1833,14 +1833,14 @@
 }
 
 .weeklyReviewKicker {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 13px;
   font-weight: 700;
   color: var(--dashboard-title-color);
 }
 
 .weeklyReviewTime {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   color: var(--dashboard-faint-color);
   white-space: nowrap;
@@ -1864,14 +1864,14 @@
 }
 
 .weeklyReviewMetricValue {
-  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 18px;
   line-height: 1;
   color: var(--dashboard-title-color);
 }
 
 .weeklyReviewMetricLabel {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 9px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1904,7 +1904,7 @@
 }
 
 .weeklyReviewStoryTopic {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -1916,7 +1916,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 11px;
   color: var(--dashboard-muted-color);
   transition: color 0.12s ease;
@@ -1924,7 +1924,7 @@
 
 .weeklyReviewSummary {
   margin: 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 11px;
   line-height: 1.5;
   color: var(--dashboard-muted-color);
@@ -1942,7 +1942,7 @@
 
 .weeklyReviewFocusLabel {
   flex: 0 0 auto;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -1955,7 +1955,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 10.5px;
   color: var(--dashboard-muted-color);
 }
@@ -1988,7 +1988,7 @@
 
 .dashboardTitle {
   margin: 0;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 32px;
   font-weight: 700;
   letter-spacing: -0.03em;
@@ -2001,7 +2001,7 @@
 
 .dashboardSubtitle {
   margin: 6px 0 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 13px;
   color: var(--dashboard-muted-color);
 }
@@ -2025,7 +2025,7 @@
   border: 1px solid var(--dashboard-control-border);
   background: var(--dashboard-control-bg);
   color: var(--dashboard-text-color);
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -2050,7 +2050,7 @@
   border-radius: 999px;
   background: var(--dashboard-control-bg);
   color: var(--dashboard-text-color);
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -2079,7 +2079,7 @@
   padding: 10px 16px 12px;
   border: 0;
   background: transparent;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
@@ -2111,7 +2111,7 @@
   border: 1px solid var(--dashboard-control-border);
   border-radius: 999px;
   background: var(--dashboard-control-bg);
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
@@ -2184,7 +2184,7 @@
 }
 
 .proposalsEntryLabel {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 16px;
   font-weight: 700;
   line-height: 1.15;
@@ -2238,7 +2238,7 @@
 }
 
 .dashboardMetricLabel {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
@@ -2247,7 +2247,7 @@
 }
 
 .dashboardMetricValue {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 40px;
   line-height: 1;
   letter-spacing: -0.04em;
@@ -2255,7 +2255,7 @@
 }
 
 .dashboardMetricDetail {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 12px;
   color: rgba(26, 27, 36, 0.62);
 }
@@ -2373,7 +2373,7 @@
 }
 
 .communityHeroEyebrow {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: clamp(13px, 1.3vw, 18px);
   font-weight: 700;
   line-height: 0.95;
@@ -2390,7 +2390,7 @@
 }
 
 .communityHero .dashboardTitle {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: clamp(22px, 2.4vw, 32px);
   font-weight: 400;
   line-height: 1.1;
@@ -2400,7 +2400,7 @@
 
 .communityHero .dashboardSubtitle {
   margin: 0;
-  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   color: rgba(255, 255, 255, 0.76);
   font-size: 13px;
 }
@@ -2410,7 +2410,7 @@
   align-items: center;
   gap: 13px;
   margin-top: 10px;
-  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -2461,7 +2461,7 @@
 .dashCardEyebrow {
   display: block;
   margin-bottom: 5px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -2471,7 +2471,7 @@
 
 .dashCardTitle {
   margin: 0;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 18px;
   font-weight: 700;
   letter-spacing: 0;
@@ -2569,7 +2569,7 @@
 }
 
 .treasuryDonutValue {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 17px;
   font-weight: 700;
   letter-spacing: -0.01em;
@@ -2577,7 +2577,7 @@
 }
 
 .treasuryDonutLabel {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -2597,7 +2597,7 @@
   grid-template-columns: auto minmax(0, 1fr);
   gap: 8px;
   align-items: center;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 12px;
   color: var(--dashboard-muted-color);
 }
@@ -2609,7 +2609,7 @@
 
 .treasuryBreakdownLegendItem strong {
   grid-column: 2;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   color: var(--dashboard-text-color);
 }
@@ -2705,7 +2705,7 @@
 }
 
 .fundingVillageAmount {
-  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-family: var(--font-secondary);
   font-size: clamp(40px, 5vw, 58px);
   font-weight: 700;
   line-height: 1;
@@ -2788,7 +2788,7 @@
   justify-content: center;
   border-radius: 999px;
   background: rgba(26, 27, 36, 0.06);
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
   color: var(--dashboard-muted-color);
@@ -2799,14 +2799,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 12px;
   font-weight: 700;
   color: var(--dashboard-title-color);
 }
 
 .topContributorRow strong {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   color: var(--color-primary);
 }
@@ -2857,7 +2857,7 @@
 
 .communityChatTitle {
   margin: 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 22px;
   font-weight: 700;
   line-height: 1.15;
@@ -2874,7 +2874,7 @@
   border: 1px solid rgba(129, 144, 255, 0.14);
   background: rgba(22, 27, 48, 0.74);
   color: rgba(255, 255, 255, 0.78);
-  font-family: 'Space Grotesk', 'Poppins', sans-serif;
+  font-family: var(--font-secondary);
 }
 
 .chatChannelButton {
@@ -2962,7 +2962,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 14px;
   color: rgba(255, 255, 255, 0.94);
 }
@@ -2970,7 +2970,7 @@
 .chatMeta time,
 .chatMeta span {
   flex-shrink: 0;
-  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   color: rgba(255, 255, 255, 0.48);
 }
@@ -2986,7 +2986,7 @@
 .chatMessage p {
   margin: 0;
   max-width: 58ch;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 13px;
   line-height: 1.55;
   color: rgba(255, 255, 255, 0.68);
@@ -3004,7 +3004,7 @@
   gap: 18px;
   padding: 0 22px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
-  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   color: rgba(255, 255, 255, 0.52);
 }
 
@@ -3098,7 +3098,7 @@
 }
 
 .treasuryBalanceValue {
-  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: clamp(28px, 3.2vw, 42px);
   font-weight: 700;
   line-height: 0.9;
@@ -3115,7 +3115,7 @@
   border-radius: 999px;
   background: rgba(47, 183, 160, 0.12);
   color: #1a8f7d;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
 }
 
@@ -3146,7 +3146,7 @@
 }
 
 .activeMembersCard strong {
-  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: clamp(38px, 4.6vw, 52px);
   line-height: 0.95;
   letter-spacing: 0;
@@ -3240,14 +3240,14 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 13px;
   line-height: 1.4;
   color: var(--dashboard-text-color);
 }
 
 .recentActivityItem time {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   color: var(--dashboard-faint-color);
   white-space: nowrap;
@@ -3257,7 +3257,7 @@
   display: inline-flex;
   width: fit-content;
   margin-top: 16px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -3366,7 +3366,7 @@
 }
 
 .fundingStateCard .exchangePrice {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 28px;
   font-weight: 700;
   line-height: 1;

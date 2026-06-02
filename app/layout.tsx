@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import type { CSSProperties, ReactNode } from 'react';
-import { Poppins, Space_Grotesk, IBM_Plex_Mono, Inter, Patrick_Hand } from 'next/font/google';
-import localFont from 'next/font/local';
+import { Poppins, Space_Grotesk, Inter, Patrick_Hand } from 'next/font/google';
 import '@/styles/globals.css';
 import { RouteShell } from '@/components/layout/RouteShell';
 
@@ -26,23 +25,10 @@ const spaceGrotesk = Space_Grotesk({
   display: 'swap',
 });
 
-const ibmPlexMono = IBM_Plex_Mono({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-ibm-plex-mono',
-  display: 'swap',
-});
-
 const patrickHand = Patrick_Hand({
   subsets: ['latin'],
   weight: ['400'],
   variable: '--font-patrick-hand',
-  display: 'swap',
-});
-
-const departureMono = localFont({
-  src: './fonts/DepartureMono-Regular.otf',
-  variable: '--font-departure-mono',
   display: 'swap',
 });
 
@@ -120,21 +106,21 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${poppins.variable} ${spaceGrotesk.variable} ${ibmPlexMono.variable} ${patrickHand.variable} ${departureMono.variable}`}
+      className={`${inter.variable} ${poppins.variable} ${spaceGrotesk.variable} ${patrickHand.variable}`}
       data-sidebar-collapsed="true"
       style={{ '--sidebar-width': '72px' } as CSSProperties}
       suppressHydrationWarning
     >
       <head>
-        {/* Google Fonts for literal-name font-family references in page CSS.
-            Loaded via <link> + preconnect (not a CSS @import) so it is discovered
-            immediately in the HTML and fetched in parallel, off the critical path.
-            Variable-based refs (--font-*) are self-hosted via next/font above. */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* Departure Mono is self-hosted via @font-face in globals.css; preload it
+            so it is available early for canvas/SVG that reference it by name.
+            All other fonts are self-hosted by next/font (no external requests). */}
         <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap"
+          rel="preload"
+          href="/fonts/DepartureMono-Regular.otf"
+          as="font"
+          type="font/otf"
+          crossOrigin="anonymous"
         />
         <meta
           name="viewport"

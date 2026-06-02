@@ -124,7 +124,7 @@
 }
 
 .tokenName {
-  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-family: var(--font-secondary);
   font-size: 12px;
   font-weight: 600;
   color: rgba(227, 225, 238, 0.85);

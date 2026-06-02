@@ -15,7 +15,7 @@
 }
 
 .bulletinTitle {
-  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-family: var(--font-primary);
   font-size: var(--font-size-xl, 1.618rem);
   font-weight: var(--font-weight-semibold, 600);
   color: var(--color-text-dark, #1A1B24);
@@ -24,7 +24,7 @@
 }
 
 .bulletinDescription {
-  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-family: var(--font-secondary);
   font-size: var(--font-size-base, 0.875rem);
   color: var(--color-text-muted, rgba(26, 27, 36, 0.6));
   margin: 0;
@@ -37,7 +37,7 @@
   color: var(--color-text-light, #FFFFFF);
   border: none;
   border-radius: var(--radius-md, 8px);
-  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: var(--font-size-base, 0.875rem);
   font-weight: var(--font-weight-medium, 500);
   letter-spacing: var(--letter-spacing-wider, 0.05em);
@@ -77,7 +77,7 @@
 
 .label {
   display: block;
-  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-family: var(--font-primary);
   font-size: var(--font-size-sm, 0.75rem);
   font-weight: var(--font-weight-medium, 500);
   color: var(--color-text-dark, #1A1B24);
@@ -96,7 +96,7 @@
   padding: var(--space-3, 12px) var(--space-4, 16px);
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: var(--radius-md, 8px);
-  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-family: var(--font-primary);
   font-size: var(--font-size-base, 0.875rem);
   color: var(--color-text-dark, #1A1B24);
   background: var(--color-background, #FBF8FF);
@@ -114,7 +114,7 @@
 .textarea {
   resize: vertical;
   min-height: 100px;
-  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-family: var(--font-secondary);
   line-height: var(--line-height-relaxed, 1.6);
 }
 
@@ -157,7 +157,7 @@
   padding: var(--space-3, 12px) var(--space-5, 24px);
   border: none;
   border-radius: var(--radius-md, 8px);
-  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: var(--font-size-base, 0.875rem);
   font-weight: var(--font-weight-medium, 500);
   letter-spacing: var(--letter-spacing-wider, 0.05em);
@@ -215,7 +215,7 @@
 }
 
 .postTitle {
-  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-family: var(--font-primary);
   font-size: var(--font-size-lg, 1.125rem);
   font-weight: var(--font-weight-semibold, 600);
   color: var(--color-text-dark, #1A1B24);
@@ -224,7 +224,7 @@
 }
 
 .postContent {
-  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-family: var(--font-secondary);
   font-size: var(--font-size-base, 0.875rem);
   color: var(--color-text-dark, #1A1B24);
   line-height: var(--line-height-relaxed, 1.6);
@@ -237,7 +237,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-family: var(--font-primary);
   font-size: var(--font-size-xs, 0.618rem);
   color: var(--color-text-muted, rgba(26, 27, 36, 0.6));
   padding-top: var(--space-3, 12px);
@@ -287,7 +287,7 @@
   gap: var(--space-2, 8px);
   color: var(--color-primary, #5168FF);
   text-decoration: none;
-  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-family: var(--font-primary);
   font-size: var(--font-size-sm, 0.75rem);
   font-weight: var(--font-weight-medium, 500);
   padding: var(--space-2, 8px) var(--space-3, 12px);
@@ -308,7 +308,7 @@
   text-align: center;
   padding: var(--space-8, 64px) var(--space-5, 24px);
   color: var(--color-text-muted, rgba(26, 27, 36, 0.6));
-  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-family: var(--font-secondary);
   font-size: var(--font-size-base, 0.875rem);
 }
 
@@ -317,7 +317,7 @@
   text-align: center;
   padding: var(--space-8, 64px) var(--space-5, 24px);
   color: var(--color-text-muted, rgba(26, 27, 36, 0.6));
-  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-family: var(--font-secondary);
   font-size: var(--font-size-base, 0.875rem);
 }
 
@@ -339,7 +339,7 @@
   color: var(--color-text-light, #FFFFFF);
   border: none;
   border-radius: var(--radius-md, 8px);
-  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: var(--font-size-base, 0.875rem);
   font-weight: var(--font-weight-medium, 500);
   cursor: pointer;
@@ -357,7 +357,7 @@
   padding: var(--space-3, 12px) var(--space-4, 16px);
   margin-bottom: var(--space-5, 24px);
   color: var(--color-semantic-error, #BA1A1A);
-  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-family: var(--font-primary);
   font-size: var(--font-size-sm, 0.75rem);
   display: flex;
   justify-content: space-between;

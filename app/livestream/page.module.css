@@ -21,7 +21,7 @@
 
 .eyebrow {
   display: block;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 500;
   text-transform: uppercase;
@@ -31,7 +31,7 @@
 }
 
 .title {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 32px;
   font-weight: 700;
   color: #000000;
@@ -40,7 +40,7 @@
 }
 
 .subtitle {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 14px;
   font-weight: 300;
   color: rgba(0, 0, 0, 0.7);
@@ -96,7 +96,7 @@
   padding: 8px 16px;
   background: #ff4444;
   border-radius: 4px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 600;
   color: #ffffff;
@@ -144,7 +144,7 @@
 }
 
 .offlineTitle {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 20px;
   font-weight: 600;
   color: #ffffff;
@@ -152,7 +152,7 @@
 }
 
 .offlineText {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 14px;
   font-weight: 300;
   color: rgba(255, 255, 255, 0.7);
@@ -173,7 +173,7 @@
 }
 
 .nextStreamLabel {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 500;
   text-transform: uppercase;
@@ -182,7 +182,7 @@
 }
 
 .nextStreamTime {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 16px;
   font-weight: 600;
   color: #5168FF;
@@ -215,7 +215,7 @@
   padding: 4px 10px;
   background: #ff4444;
   border-radius: 2px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
   color: #ffffff;
@@ -270,7 +270,7 @@
 }
 
 .streamTitle {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 18px;
   font-weight: 600;
   color: #000000;
@@ -278,7 +278,7 @@
 }
 
 .streamHost {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 12px;
   font-weight: 400;
   color: rgba(0, 0, 0, 0.5);
@@ -292,14 +292,14 @@
   padding: 6px 12px;
   background: rgba(81, 104, 255, 0.1);
   border-radius: 4px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 500;
   color: #5168FF;
 }
 
 .streamDescription {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 14px;
   font-weight: 300;
   color: rgba(0, 0, 0, 0.7);
@@ -318,7 +318,7 @@
   background: #F4F5FE;
   border: 2px solid #e0e0e0;
   border-radius: 4px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 500;
   color: rgba(0, 0, 0, 0.6);
@@ -357,7 +357,7 @@
 }
 
 .chatTitle {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 14px;
   font-weight: 600;
   color: #000000;
@@ -405,7 +405,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 12px;
   font-weight: 600;
   color: #ffffff;
@@ -420,14 +420,14 @@
 }
 
 .chatUsername {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 12px;
   font-weight: 600;
   color: #000000;
 }
 
 .chatText {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 13px;
   font-weight: 300;
   color: rgba(0, 0, 0, 0.8);
@@ -449,7 +449,7 @@
   background: #ffffff;
   border: 2px solid #000000;
   border-radius: 4px;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 13px;
   color: #000000;
   outline: none;
@@ -501,7 +501,7 @@
 }
 
 .sectionTitle {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 20px;
   font-weight: 600;
   color: #000000;
@@ -543,14 +543,14 @@
 }
 
 .upcomingDay {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 14px;
   font-weight: 600;
   color: #000000;
 }
 
 .upcomingHour {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 500;
   color: rgba(0, 0, 0, 0.5);
@@ -563,7 +563,7 @@
 }
 
 .upcomingTitle {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 15px;
   font-weight: 600;
   color: #000000;
@@ -571,7 +571,7 @@
 }
 
 .upcomingDescription {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 12px;
   font-weight: 300;
   color: rgba(0, 0, 0, 0.6);
@@ -584,7 +584,7 @@
   background: #ffffff;
   border: 2px solid #000000;
   border-radius: 4px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 500;
   color: #000000;

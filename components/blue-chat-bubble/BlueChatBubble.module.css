@@ -47,7 +47,7 @@
   justify-content: center;
   min-height: 18px;
   padding: 0 2px;
-  font-family: var(--font-departure-mono), 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -70,7 +70,7 @@
 
 .message {
   margin: 0;
-  font-family: var(--font-poppins), 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 13px;
   font-weight: 500;
   line-height: 1.55;

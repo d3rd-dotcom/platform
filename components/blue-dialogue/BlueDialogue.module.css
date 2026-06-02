@@ -63,7 +63,7 @@
   border: 1px solid rgba(122, 141, 227, 0.28);
   background: rgba(255, 255, 255, 0.55);
   color: rgba(72, 88, 152, 0.94);
-  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -110,7 +110,7 @@
   z-index: 1;
   height: 100%;
   margin: 0;
-  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-weight: 400;
   font-size: 14px;
   line-height: 1.55;
@@ -184,7 +184,7 @@
   border: 1px solid rgba(112, 130, 224, 0.24);
   background: rgba(255, 255, 255, 0.54);
   color: rgba(60, 74, 138, 0.96);
-  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-weight: 700;
   font-size: 11px;
   text-transform: uppercase;

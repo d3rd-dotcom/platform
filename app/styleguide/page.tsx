@@ -165,7 +165,7 @@ export default function StyleGuidePage() {
           <h2 className={styles.sectionTitle}>✏️ Typography</h2>
           <p className={styles.sectionDescription}>
             Typography sets the tone for knowledge transfer and community trust.
-            Space Grotesk for headlines, Poppins for body text, IBM Plex Mono for buttons and technical data.
+            Space Grotesk for headlines, Poppins for body text, Departure Mono for buttons and technical data.
           </p>
 
           {/* Font Families */}
@@ -205,7 +205,7 @@ export default function StyleGuidePage() {
               </div>
               <div className={styles.fontFamilyCard}>
                 <div className={styles.fontFamilyName} style={{ fontFamily: fontFamilies.mono }}>
-                  IBM Plex Mono
+                  Departure Mono
                 </div>
                 <div className={styles.fontFamilyUsage}>Mono — Buttons, Code, Technical Data</div>
                 <div className={styles.fontFamilySample} style={{ fontFamily: fontFamilies.mono }}>
@@ -271,13 +271,13 @@ export default function StyleGuidePage() {
                 label="Button — Actions" 
                 text="CONNECT WALLET" 
                 style={{ ...typography.button, fontSize: fontSizes.base }}
-                meta={`${fontSizes.base} / Medium / IBM Plex Mono / Uppercase`}
+                meta={`${fontSizes.base} / Medium / Departure Mono / Uppercase`}
               />
               <TypographySample 
                 label="Mono — Technical Data" 
                 text="0x1234...5678 | Block #18,942,156" 
                 style={{ ...typography.mono, fontSize: fontSizes.base }}
-                meta={`${fontSizes.base} / Regular / IBM Plex Mono / Tabular Nums`}
+                meta={`${fontSizes.base} / Regular / Departure Mono / Tabular Nums`}
               />
             </div>
           </div>
@@ -459,7 +459,7 @@ export default function StyleGuidePage() {
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>🔘 Buttons</h2>
           <p className={styles.sectionDescription}>
-            All buttons use IBM Plex Mono font with uppercase text and 0.05em letter-spacing.
+            All buttons use Departure Mono font with uppercase text and 0.05em letter-spacing.
           </p>
           <div className={styles.buttonGrid}>
             <button className={styles.buttonPrimary}>Primary Button</button>

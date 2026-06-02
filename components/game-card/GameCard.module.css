@@ -107,7 +107,7 @@
 }
 
 .taskName {
-  font-family: var(--font-headline, 'Space Grotesk', sans-serif);
+  font-family: var(--font-secondary);
   font-size: 15px;
   font-weight: 700;
   color: #1A1B24;
@@ -121,7 +121,7 @@
 }
 
 .taskDescription {
-  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-family: var(--font-primary);
   font-size: 13px;
   font-weight: 400;
   color: rgba(26, 27, 36, 0.7);
@@ -155,7 +155,7 @@
 }
 
 .tickerText {
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 600;
   color: #1A1B24;
@@ -220,7 +220,7 @@
 .acceptText {
   position: relative;
   z-index: 2;
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.12em;

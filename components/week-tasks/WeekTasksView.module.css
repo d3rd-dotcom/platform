@@ -39,7 +39,7 @@
   gap: 12px;
   padding: 48px 24px;
   color: rgba(26, 29, 51, 0.35);
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 14px;
   font-weight: 600;
 }
@@ -47,7 +47,7 @@
 /* Save bar */
 .saveBar {
   text-align: center;
-  font-family: var(--font-departure-mono), 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   color: rgba(26, 29, 51, 0.4);
@@ -236,7 +236,7 @@
 }
 
 .taskTitle {
-  font-family: var(--font-departure-mono), 'Departure Mono', 'Space Grotesk', sans-serif;
+  font-family: var(--font-mono);
   font-size: 15px;
   font-weight: 700;
   color: #1A1D33;
@@ -246,7 +246,7 @@
 }
 
 .taskPreview {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 12px;
   font-weight: 300;
   color: rgba(26, 29, 51, 0.4);
@@ -311,7 +311,7 @@
 }
 
 .taskInstructions {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 15px;
   font-weight: 400;
   color: rgba(26, 29, 51, 0.88);
@@ -328,7 +328,7 @@
   display: block;
   width: 100%;
   padding: 12px;
-  font-family: var(--font-departure-mono), 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
@@ -392,7 +392,7 @@
 }
 
 .progressText {
-  font-family: var(--font-departure-mono), 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   color: rgba(26, 29, 51, 0.4);
@@ -423,7 +423,7 @@
   gap: 8px;
   width: 100%;
   padding: 14px 28px;
-  font-family: var(--font-departure-mono), 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
@@ -449,7 +449,7 @@
 }
 
 .sealHint {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 11px;
   color: rgba(26, 29, 51, 0.35);
 }
@@ -464,14 +464,14 @@
   background: #F0FFF4;
   border: 1px solid rgba(34, 197, 94, 0.25);
   border-radius: 12px;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 14px;
   font-weight: 700;
   color: #166534;
 }
 
 .sealedHash {
-  font-family: var(--font-departure-mono), 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 500;
   color: #22C55E;
@@ -515,7 +515,7 @@
 }
 
 .sealModalTitle {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 18px;
   font-weight: 700;
   color: #1A1D33;
@@ -523,7 +523,7 @@
 }
 
 .sealModalText {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 13px;
   color: rgba(26, 29, 51, 0.6);
   line-height: 1.6;
@@ -538,7 +538,7 @@
 .sealModalCancel {
   flex: 1;
   padding: 12px;
-  font-family: var(--font-departure-mono), 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 700;
   color: #1A1D33;
@@ -556,7 +556,7 @@
 .sealModalConfirm {
   flex: 1;
   padding: 12px;
-  font-family: var(--font-departure-mono), 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 700;
   color: #FFFFFF;
@@ -577,7 +577,7 @@
   align-items: center;
   gap: 16px;
   padding: 20px 0;
-  font-family: var(--font-departure-mono), 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 13px;
   color: rgba(26, 29, 51, 0.6);
 }

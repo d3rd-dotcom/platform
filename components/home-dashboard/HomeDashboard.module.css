@@ -72,7 +72,7 @@
 }
 
 .scannerPowered {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
@@ -84,7 +84,7 @@
   padding: 4px 10px;
   background: var(--color-primary, #5168FF);
   color: #fff;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
@@ -112,7 +112,7 @@
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 4px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
@@ -151,7 +151,7 @@
   background: #ffffff;
   border: none;
   border-right: 3px solid #1A1D33;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
@@ -210,7 +210,7 @@
 }
 
 .statLabel {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
@@ -245,7 +245,7 @@
   padding: 3px 10px;
   background: var(--color-primary, #5168FF);
   color: #fff;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
@@ -259,7 +259,7 @@
   padding: 3px 10px;
   background: var(--color-tertiary, #74C465);
   color: #fff;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
@@ -269,7 +269,7 @@
 }
 
 .proposalId {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
   color: rgba(26, 27, 36, 0.5);
 }
@@ -302,7 +302,7 @@
   display: flex;
   justify-content: space-between;
   margin-top: 6px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
   color: rgba(26, 27, 36, 0.6);
@@ -320,7 +320,7 @@
 }
 
 .impactBannerText {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.8);
@@ -413,7 +413,7 @@
   background: rgba(81, 104, 255, 0.08);
   border: 1px solid rgba(81, 104, 255, 0.2);
   border-radius: 2px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
@@ -426,7 +426,7 @@
   background: rgba(116, 196, 101, 0.1);
   border: 1px solid rgba(116, 196, 101, 0.3);
   border-radius: 2px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
@@ -445,7 +445,7 @@
   background: #ffffff;
   border: 2px solid #1A1D33;
   border-radius: 4px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
@@ -488,7 +488,7 @@
   padding: 3px 10px;
   background: var(--color-accent, #FF7729);
   color: #fff;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
@@ -544,7 +544,7 @@
 }
 
 .questProgressLabel {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
@@ -569,7 +569,7 @@
 }
 
 .questProgressText {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   color: #1A1D33;
@@ -599,7 +599,7 @@
 }
 
 .questReward {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   color: var(--color-primary, #5168FF);
@@ -615,7 +615,7 @@
 }
 
 .questMeta {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
   color: rgba(26, 27, 36, 0.5);
@@ -632,7 +632,7 @@
   border: 2px solid #1A1D33;
   border-radius: 4px;
   box-shadow: 2px 2px 0 #1A1D33;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;

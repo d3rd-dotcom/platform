@@ -460,7 +460,7 @@
   .quizModalLikertIndex {
     display: block;
     margin-bottom: 6px;
-    font-family: var(--font-departure-mono), 'Departure Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: 0.04em;
     color: rgba(26, 29, 51, 0.5);
@@ -509,7 +509,7 @@
     display: block;
     flex: 1;
     min-width: 0;
-    font-family: var(--font-departure-mono), 'Departure Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 13px;
     letter-spacing: 0.01em;
     line-height: 1.3;

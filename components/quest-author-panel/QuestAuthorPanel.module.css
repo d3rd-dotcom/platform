@@ -23,7 +23,7 @@
 
 .formTitle {
   margin: 0;
-  font-family: var(--font-headline, 'Space Grotesk', sans-serif);
+  font-family: var(--font-secondary);
   font-size: 16px;
   font-weight: 700;
   color: #121935;
@@ -31,7 +31,7 @@
 
 .formSubtitle {
   margin: 0;
-  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-family: var(--font-primary);
   font-size: 13px;
   color: rgba(18, 25, 53, 0.6);
 }
@@ -43,7 +43,7 @@
 }
 
 .label {
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -66,7 +66,7 @@
   border: 1px solid rgba(81, 104, 255, 0.2);
   background: #ffffff;
   color: #121935;
-  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-family: var(--font-primary);
   font-size: 14px;
   line-height: 1.4;
   transition: border-color 0.18s ease, box-shadow 0.18s ease;
@@ -84,7 +84,7 @@
 .textarea {
   resize: vertical;
   min-height: 78px;
-  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-family: var(--font-primary);
 }
 
 .grid2 {
@@ -99,7 +99,7 @@
   border-radius: 10px;
   background: rgba(255, 100, 142, 0.1);
   color: #b62a52;
-  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-family: var(--font-primary);
   font-size: 13px;
 }
 
@@ -117,7 +117,7 @@
   gap: 6px;
   padding: 10px 16px;
   border-radius: 999px;
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -171,7 +171,7 @@
 
 .listTitle {
   margin: 0;
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -180,7 +180,7 @@
 }
 
 .listMeta {
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
   color: rgba(18, 25, 53, 0.46);
@@ -192,7 +192,7 @@
   padding: 14px 12px;
   border-radius: 12px;
   background: rgba(18, 25, 53, 0.04);
-  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-family: var(--font-primary);
   font-size: 13px;
   color: rgba(18, 25, 53, 0.54);
   text-align: center;
@@ -226,7 +226,7 @@
 }
 
 .itemTitle {
-  font-family: var(--font-headline, 'Space Grotesk', sans-serif);
+  font-family: var(--font-secondary);
   font-size: 14px;
   font-weight: 700;
   color: #121935;
@@ -249,7 +249,7 @@
   border-radius: 999px;
   background: rgba(81, 104, 255, 0.1);
   color: rgba(18, 25, 53, 0.7);
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -262,7 +262,7 @@
   border-radius: 999px;
   background: rgba(255, 100, 142, 0.16);
   color: #b62a52;
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.06em;

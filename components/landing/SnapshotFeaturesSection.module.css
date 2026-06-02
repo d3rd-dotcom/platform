@@ -22,7 +22,7 @@
 
 .eyebrow {
   margin: 0;
-  font-family: var(--font-ibm-plex-mono);
+  font-family: var(--font-mono);
   font-size: 0.78rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -126,7 +126,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-family: var(--font-ibm-plex-mono);
+  font-family: var(--font-mono);
   font-size: 0.78rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;

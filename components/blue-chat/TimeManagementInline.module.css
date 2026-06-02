@@ -27,7 +27,7 @@
 
 .title {
   margin: 0;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-secondary);
   font-size: 14px;
   font-weight: 700;
   color: rgba(227, 225, 238, 0.95);
@@ -35,7 +35,7 @@
 
 .subtitle {
   margin: 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 12px;
   line-height: 1.45;
   color: rgba(227, 225, 238, 0.56);
@@ -90,7 +90,7 @@
   min-height: 20px;
   padding: 0 8px;
   border-radius: 999px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -123,7 +123,7 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
   color: rgba(227, 225, 238, 0.94);
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 13px;
   outline: none;
   box-sizing: border-box;
@@ -183,14 +183,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 12px;
   font-weight: 600;
   color: rgba(227, 225, 238, 0.78);
 }
 
 .activeTime {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 700;
   color: #ffffff;
@@ -224,7 +224,7 @@
   min-height: 42px;
   border-radius: 8px;
   border: none;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;

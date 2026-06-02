@@ -15,7 +15,7 @@
 
 /* ── Header ──────────────────────────────────────── */
 .eyebrow {
-  font-family: var(--font-ibm-plex-mono);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
@@ -125,7 +125,7 @@
   padding: 4px 14px;
   background: var(--color-primary, #5168FF);
   color: #FFFFFF;
-  font-family: var(--font-ibm-plex-mono);
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
@@ -143,7 +143,7 @@
 }
 
 .tierName {
-  font-family: var(--font-ibm-plex-mono);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
