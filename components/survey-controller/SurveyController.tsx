@@ -41,7 +41,7 @@ export default function SurveyController({
   userName = 'Welcome',
   version = 'V.e1-MWA36B',
   characterImageSrc = '/videos/bluehome.mp4',
-  characterPosterSrc = '/uploads/blue-landing-avatar.png',
+  characterPosterSrc,
   deferVideo = true,
   difficulty: initialDifficulty = 101,
   showDifficulty = true,

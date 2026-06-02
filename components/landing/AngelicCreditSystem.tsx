@@ -18,14 +18,6 @@ const EthIcon = () => (
 export default function AngelicCreditSystem() {
   return (
     <section className={styles.section} aria-label="Mental Wealth Academy">
-      <Image
-        src="/images/angelic-credit-bg.webp"
-        alt=""
-        fill
-        className={styles.bgImage}
-        priority={false}
-        aria-hidden="true"
-      />
       <div className={styles.innerLayout}>
         <div className={styles.innerLeft}>
           <Image

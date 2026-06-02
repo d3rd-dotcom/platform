@@ -116,16 +116,6 @@ interface TreasuryContext {
   topMarkets: { question: string; yes: number }[];
 }
 
-const BLUE_EMOTES = {
-  default: '/images/blue-happy.png',
-  surprised: '/images/blue-surprised.png',
-  angry: '/images/blue-angry.png',
-  searching: '/images/blue-searching.png',
-  happy: '/images/blue-happy.png',
-  joyful: '/images/blue-joyful.png',
-  dead: '/images/blue-dead.png',
-} as const;
-
 const KNOWLEDGE_DOMAINS = [
   'Psychology', 'Wellness', 'Creativity', 'Habits',
   'Science', 'CBT', 'Stress', 'Sleep', 'Nutrition',
@@ -210,10 +200,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     prices: [],
     topMarkets: [],
   });
-  const [emoteA, setEmoteA] = useState<keyof typeof BLUE_EMOTES>('default');
-  const [emoteB, setEmoteB] = useState<keyof typeof BLUE_EMOTES>('default');
-  const [activeLayer, setActiveLayer] = useState<'a' | 'b'>('a');
-  const emoteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(false);
@@ -468,7 +454,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
           };
           setMessages((prev) => [...prev, userMessage]);
           setInputText('');
-          showEmote('dead');
           if (researchMode) {
             sendToEliza(text, 'research');
           } else if (autoDistributionVisible) {
@@ -560,7 +545,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
     setIsTyping(true);
     setShardUpsell(null);
-    showEmote('searching');
     try {
       const res = await fetch('/api/chat/blue', {
         method: 'POST',
@@ -700,7 +684,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     setMessages((prev) => [...prev, userMessage]);
     setInputText('');
     setPendingAttachments([]);
-    showEmote('dead');
 
     if (researchMode) {
       setResearchUploaderVisible(false);
@@ -1036,29 +1019,10 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     return fallbacks[Math.floor(Math.random() * fallbacks.length)];
   };
 
-  const switchEmote = useCallback((emote: keyof typeof BLUE_EMOTES) => {
-    setActiveLayer((prev) => {
-      if (prev === 'a') {
-        setEmoteB(emote);
-        return 'b';
-      } else {
-        setEmoteA(emote);
-        return 'a';
-      }
-    });
-  }, []);
-
-  const showEmote = useCallback((emote: keyof typeof BLUE_EMOTES, durationMs = 6000) => {
-    if (emoteTimerRef.current) clearTimeout(emoteTimerRef.current);
-    switchEmote(emote);
-    emoteTimerRef.current = setTimeout(() => switchEmote('default'), durationMs);
-  }, [switchEmote]);
-
   const handleQuickAction = (action: string) => {
     if (isTyping) return;
 
-    const send = (text: string, emote: keyof typeof BLUE_EMOTES = 'happy') => {
-      showEmote(emote);
+    const send = (text: string) => {
       setMessages((prev) => [...prev, {
         id: Date.now().toString(),
         text,
@@ -1068,7 +1032,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     };
 
     if (action === 'what-is-this') {
-      send('What is this place?', 'happy');
+      send('What is this place?');
       setPendingAttachments([]);
       setTimeManagementVisible(false);
       setAutoDistributionVisible(false);
@@ -1076,7 +1040,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         "the world's first decentralized cohort for mental wellness. course, community, science — on-chain. you're early."
       );
     } else if (action === 'next-move') {
-      send('Focus my next move.', 'happy');
+      send('Focus my next move.');
       setPendingAttachments([]);
       setTimeManagementVisible(false);
       setAutoDistributionVisible(false);
@@ -1084,7 +1048,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         "name the work, the deadline, and what you've avoided. i'll cut it to one next move."
       );
     } else if (action === 'read-resistance') {
-      send("Read what I'm avoiding.", 'happy');
+      send("Read what I'm avoiding.");
       setPendingAttachments([]);
       setTimeManagementVisible(false);
       setAutoDistributionVisible(false);
@@ -1092,7 +1056,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         "show me the task you keep circling. one sentence is enough. i'll name the pattern and the first move."
       );
     } else if (action === 'time') {
-      send('Help me time block', 'happy');
+      send('Help me time block');
       setPendingAttachments([]);
       setAutoDistributionVisible(false);
       setTimeManagementVisible(true);
@@ -1104,11 +1068,11 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setPendingAttachments([]);
       setTimeManagementVisible(false);
       if (autoDistributionVisible) {
-        send('Open auto-distribution', 'searching');
+        send('Open auto-distribution');
         addBlueMessage("auto-distribution is already open. connect your channels and tell me what you're pushing.");
         return;
       }
-      send('Open auto-distribution', 'searching');
+      send('Open auto-distribution');
       setAutoDistributionVisible(true);
       addBlueMessage(
         "auto-distribution is live. connect approved channels, tell me the campaign, and i'll draft posts, image prompts, video concepts, ad angles, and engagement targets."
@@ -1117,11 +1081,11 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setPendingAttachments([]);
       setAutoDistributionVisible(false);
       if (researchMode) {
-        send('Open research mode', 'searching');
+        send('Open research mode');
         addBlueMessage("research mode is already open. tell me the document — grant, proposal, thesis chapter — the topic, and any constraints.");
         return;
       }
-      send('Open research mode', 'searching');
+      send('Open research mode');
       activateResearchMode();
     }
   };
@@ -1320,15 +1284,12 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       {timeManagementVisible && (
         <TimeManagementInline
           onTimerStarted={(taskTitle, durationMinutes) => {
-            showEmote('happy', 5000);
             addBlueMessage(`timer's live. ${taskTitle} for ${durationMinutes} minutes.`);
           }}
           onNextTask={(taskTitle, durationMinutes) => {
-            showEmote('surprised', 4500);
             addBlueMessage(`next up: ${taskTitle}. ${durationMinutes} minutes. go.`);
           }}
           onSessionComplete={() => {
-            showEmote('joyful', 5000);
             addBlueMessage("clean run. you're done.");
           }}
         />
