@@ -773,6 +773,7 @@ export default function DailyNotes({
       <div
         className={`${styles.card} ${compact ? styles.cardCompact : ''} ${compact && todayDone ? styles.cardDone : ''}`}
         style={{ '--week-color': weekColor } as React.CSSProperties}
+        data-daily-note-status={!dataReady ? 'loading' : todayDone ? 'done' : 'pending'}
       >
         <div className={styles.cardBorder} aria-hidden="true" />
         <div className={styles.cardSurface} aria-hidden="true" />
