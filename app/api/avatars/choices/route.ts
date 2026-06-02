@@ -1,7 +1,7 @@
 /**
  * GET /api/avatars/choices
  *
- * Returns 6 deterministically assigned Noun avatars for the authenticated user.
+ * Returns 6 deterministically assigned toon avatars for the authenticated user.
  * All avatars are generated locally — no network calls, instant response.
  */
 

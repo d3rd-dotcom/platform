@@ -1,117 +1,63 @@
 /**
- * Avatar System with Deterministic Selection
+ * Avatar System — DiceBear "toon-head"
  *
- * Generates unique Noun avatars for each user using @nouns/assets + @nouns/sdk.
- * All avatars are generated locally with zero network calls.
+ * Generates unique toon avatars for each user with @dicebear/core + the
+ * toon-head style from @dicebear/styles. Generation is fully local (no network
+ * calls) and deterministic per seed.
  *
- * Legacy Academic Angel avatars (angel_NNN) are still supported for existing users
- * who already have one selected, but new selections are Nouns only.
+ * Each user gets 6 deterministic options derived from their user id; the same
+ * seed always returns the same 6. Selecting one stores its seed as
+ * selected_avatar_id and the rendered SVG data URI as avatar_url.
  *
- * Uses deterministic seeded RNG (Mulberry32) for stable assignment.
- * The same user seed will ALWAYS return the same 6 avatars.
+ * Legacy Academic Angel avatars (angel_NNN) are still supported — agents use
+ * them (so they stay visually distinct from humans), and they cover any
+ * existing lookups. Angel images are hosted on IPFS, not generated.
+ *
+ * Toon Head style: a remix of "ToonHead" by Johan Melin, licensed CC BY 4.0.
  */
 
-import { ImageData, getNounData } from '@nouns/assets';
-import { buildSVG } from '@nouns/sdk';
+import { Style, Avatar as DiceBearAvatar } from '@dicebear/core';
+import toonHeadDefinition from '@dicebear/styles/toon-head.json';
 
-// Academic Angels NFT config (legacy — kept for existing avatar lookups)
+// Academic Angels NFT config (legacy — agents + existing avatar lookups)
 const ANGELS_METADATA_BASE = 'https://nftstorage.link/ipfs/QmWag7KqqDs7yyXzzPxg3xS3jWGgZcPRd2YAS7Whd1L6Xd';
 const IPFS_GATEWAY = 'https://nftstorage.link/ipfs/';
 const TOTAL_ANGELS = 550;
 
-// Trait counts from @nouns/assets
-const BODY_COUNT = ImageData.images.bodies.length;
-const ACCESSORY_COUNT = ImageData.images.accessories.length;
-const HEAD_COUNT = ImageData.images.heads.length;
-const GLASSES_COUNT = ImageData.images.glasses.length;
-const BACKGROUND_COLORS = ImageData.bgcolors;
-
 // Number of avatars to assign per user
 const AVATARS_PER_USER = 6;
 
-// Academy blue (without leading # — buildSVG adds it). Every avatar gets this
-// as its background rect, so the figure sits on the brand color directly
-// instead of going through a luminance-mapped tint filter that drowned the
-// body or washed the whole image out depending on the ramp.
+// Academy blue. Kept for components that still tint Noun-based agent artwork
+// (e.g. app/simulation/AgentAvatar.tsx); toon-head avatars don't use it.
 export const MWA_BRAND_BG = '5168ff';
 
 /**
  * Avatar interface representing a single avatar
  */
 export interface Avatar {
-  id: string;           // Unique avatar identifier (e.g., "noun_00_11_042_200_06")
-  image_url: string;    // SVG data URI
-  metadata_url: string; // Empty for nouns, IPFS URL for legacy angels
+  id: string;           // DiceBear seed (e.g. "<userId>#2") or legacy "angel_NNN"
+  image_url: string;    // SVG data URI (toon) or IPFS image URL (legacy angel)
+  metadata_url: string; // Empty for toons, IPFS URL for legacy angels
 }
 
-/**
- * Noun seed matching @nouns/assets NounSeed interface
- */
-interface NounSeed {
-  background: number;
-  body: number;
-  accessory: number;
-  head: number;
-  glasses: number;
-}
+// Build the toon-head style once at module load.
+const toonStyle = new Style(toonHeadDefinition as unknown as ConstructorParameters<typeof Style>[0]);
 
 /**
- * Mulberry32 - A fast, high-quality 32-bit seeded PRNG
+ * Renders a toon-head SVG data URI from a seed string.
  */
-function mulberry32(seed: number): () => number {
-  return function() {
-    let t = seed += 0x6D2B79F5;
-    t = Math.imul(t ^ t >>> 15, t | 1);
-    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
-    return ((t ^ t >>> 14) >>> 0) / 4294967296;
-  };
-}
-
-/**
- * Converts a string to a 32-bit integer hash (djb2 variant)
- */
-function stringToSeed(str: string): number {
-  let hash = 5381;
-  for (let i = 0; i < str.length; i++) {
-    hash = ((hash << 5) + hash) ^ str.charCodeAt(i);
-    hash = hash >>> 0;
-  }
-  return hash;
-}
-
-/**
- * Generates a deterministic NounSeed from a numeric RNG
- */
-function generateSeed(rng: () => number): NounSeed {
-  return {
-    background: Math.floor(rng() * BACKGROUND_COLORS.length),
-    body: Math.floor(rng() * BODY_COUNT),
-    accessory: Math.floor(rng() * ACCESSORY_COUNT),
-    head: Math.floor(rng() * HEAD_COUNT),
-    glasses: Math.floor(rng() * GLASSES_COUNT),
-  };
-}
-
-/**
- * Builds an SVG data URI from a NounSeed
- */
-function buildAvatarSvgDataUri(seed: NounSeed): string {
-  const { parts } = getNounData(seed);
-  const svg = buildSVG(parts, ImageData.palette, MWA_BRAND_BG);
+function buildToonDataUri(seed: string): string {
+  const svg = new DiceBearAvatar(toonStyle, { seed }).toString();
   const base64 = Buffer.from(svg).toString('base64');
   return `data:image/svg+xml;base64,${base64}`;
 }
 
 /**
- * Creates a stable ID from a seed
+ * Deterministic seed for the Nth avatar option of a given user/base seed.
+ * The seed IS the avatar id, so an id alone is enough to re-render the avatar.
  */
-function seedToId(seed: NounSeed): string {
-  const bg = String(seed.background).padStart(2, '0');
-  const bo = String(seed.body).padStart(2, '0');
-  const ac = String(seed.accessory).padStart(3, '0');
-  const he = String(seed.head).padStart(3, '0');
-  const gl = String(seed.glasses).padStart(2, '0');
-  return `noun_${bg}_${bo}_${ac}_${he}_${gl}`;
+function optionSeed(userSeed: string, index: number): string {
+  return `${userSeed}#${index}`;
 }
 
 /**
@@ -129,7 +75,7 @@ const angelImageCache = new Map<number, string>();
 
 /**
  * Fetches the image URL for an Academic Angel token from IPFS metadata.
- * Legacy — only used for existing users who already have an angel avatar selected.
+ * Legacy — used for agents and existing users who have an angel avatar.
  */
 async function fetchAngelImageUrl(tokenId: number): Promise<string> {
   const cached = angelImageCache.get(tokenId);
@@ -154,31 +100,20 @@ async function fetchAngelImageUrl(tokenId: number): Promise<string> {
 
 /**
  * Gets deterministically assigned avatars for a user.
- * Returns 6 unique Nouns — all generated locally, no network calls.
+ * Returns 6 unique toons — all generated locally, no network calls.
  *
  * Same user seed always returns the same 6 avatars.
  */
 export function getAssignedAvatars(userSeed: string): Avatar[] {
-  const seed = stringToSeed(userSeed);
-  const rng = mulberry32(seed);
-
   const avatars: Avatar[] = [];
-  const seenIds = new Set<string>();
-
-  while (avatars.length < AVATARS_PER_USER) {
-    const nounSeed = generateSeed(rng);
-    const id = seedToId(nounSeed);
-
-    if (seenIds.has(id)) continue;
-    seenIds.add(id);
-
+  for (let i = 0; i < AVATARS_PER_USER; i++) {
+    const seed = optionSeed(userSeed, i);
     avatars.push({
-      id,
-      image_url: buildAvatarSvgDataUri(nounSeed),
+      id: seed,
+      image_url: buildToonDataUri(seed),
       metadata_url: '',
     });
   }
-
   return avatars;
 }
 
@@ -186,16 +121,20 @@ export function getAssignedAvatars(userSeed: string): Avatar[] {
  * Validates that an avatar ID is in the user's assigned set
  */
 export function isAvatarValidForUser(userSeed: string, avatarId: string): boolean {
-  const assignedAvatars = getAssignedAvatars(userSeed);
-  return assignedAvatars.some(avatar => avatar.id === avatarId);
+  for (let i = 0; i < AVATARS_PER_USER; i++) {
+    if (optionSeed(userSeed, i) === avatarId) return true;
+  }
+  return false;
 }
 
 /**
  * Gets a single avatar by its ID.
- * Supports both noun IDs and legacy angel IDs (for existing users).
+ * Supports toon seeds (any non-empty string) and legacy angel IDs (angel_NNN).
  */
 export async function getAvatarByAvatarId(avatarId: string): Promise<Avatar | null> {
-  // Legacy Academic Angel format: angel_NNN (for existing users)
+  if (!avatarId) return null;
+
+  // Legacy Academic Angel format: angel_NNN (agents + existing users)
   const angelMatch = avatarId.match(/^angel_(\d{2,3})$/);
   if (angelMatch) {
     const tokenId = parseInt(angelMatch[1], 10);
@@ -213,34 +152,10 @@ export async function getAvatarByAvatarId(avatarId: string): Promise<Avatar | nu
     }
   }
 
-  // Lil Noun format
-  const match = avatarId.match(/^noun_(\d{2})_(\d{2})_(\d{3})_(\d{3})_(\d{2})$/);
-  if (!match) {
-    // Legacy format — return null to trigger re-selection
-    if (avatarId.startsWith('avatar_')) return null;
-    return null;
-  }
-
-  const nounSeed: NounSeed = {
-    background: parseInt(match[1], 10),
-    body: parseInt(match[2], 10),
-    accessory: parseInt(match[3], 10),
-    head: parseInt(match[4], 10),
-    glasses: parseInt(match[5], 10),
-  };
-
-  // Validate ranges
-  if (nounSeed.background >= BACKGROUND_COLORS.length ||
-      nounSeed.body >= BODY_COUNT ||
-      nounSeed.accessory >= ACCESSORY_COUNT ||
-      nounSeed.head >= HEAD_COUNT ||
-      nounSeed.glasses >= GLASSES_COUNT) {
-    return null;
-  }
-
+  // Otherwise the id is a DiceBear seed — render the toon deterministically.
   return {
     id: avatarId,
-    image_url: buildAvatarSvgDataUri(nounSeed),
+    image_url: buildToonDataUri(avatarId),
     metadata_url: '',
   };
 }
@@ -248,10 +163,9 @@ export async function getAvatarByAvatarId(avatarId: string): Promise<Avatar | nu
 /**
  * Returns a sample of Academic Angel avatars for the agent avatar picker.
  *
- * Agents use Academic Angel artwork (legacy for human members) so they are
- * visually distinct from humans, who get Nouns. Angel images live on IPFS, so
- * this oversamples random token ids, resolves them in parallel, and returns up
- * to `count` that successfully loaded.
+ * Agents use Academic Angel artwork so they are visually distinct from humans,
+ * who get toons. Angel images live on IPFS, so this oversamples random token
+ * ids, resolves them in parallel, and returns up to `count` that loaded.
  */
 export async function getAngelAvatars(count = 8): Promise<Avatar[]> {
   const target = Math.min(count, TOTAL_ANGELS);
@@ -273,14 +187,3 @@ export async function getAngelAvatars(count = 8): Promise<Avatar[]> {
   }
   return avatars;
 }
-
-/**
- * Constants exported for use in other modules
- */
-export const AVATAR_CONFIG = {
-  BODY_COUNT,
-  ACCESSORY_COUNT,
-  HEAD_COUNT,
-  GLASSES_COUNT,
-  AVATARS_PER_USER,
-} as const;
