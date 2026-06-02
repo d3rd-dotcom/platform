@@ -47,7 +47,14 @@ const toonStyle = new Style(toonHeadDefinition as unknown as ConstructorParamete
  * Renders a toon-head SVG data URI from a seed string.
  */
 function buildToonDataUri(seed: string): string {
-  const svg = new DiceBearAvatar(toonStyle, { seed }).toString();
+  const raw = new DiceBearAvatar(toonStyle, { seed }).toString();
+  // toon-head has no backgroundColor option, so bake the Academy-blue
+  // background behind the figure (matching how the old Noun avatars sat on
+  // brand blue). The rect is inserted right after the opening <svg> tag.
+  const svg = raw.replace(
+    /(<svg[^>]*>)/,
+    `$1<rect width="100%" height="100%" fill="#${MWA_BRAND_BG}"/>`,
+  );
   const base64 = Buffer.from(svg).toString('base64');
   return `data:image/svg+xml;base64,${base64}`;
 }
