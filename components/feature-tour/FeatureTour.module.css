@@ -197,7 +197,7 @@
     radial-gradient(130% 140% at 100% 0%, rgba(246, 80, 80, 0.15) 0%, rgba(74, 227, 202, 0.3) 85%),
     linear-gradient(95deg, rgba(55, 163, 117, 0.6) 0%, rgba(81, 104, 255, 0.6) 100%);
   background-blend-mode: hard-light, hard-light, normal;
-  box-shadow: 0 2px 12.6px rgba(117, 139, 239, 0.85), 0 0 0 1px rgba(252, 255, 254, 0.45);
+  box-shadow: 0 0 0 1px rgba(252, 255, 254, 0.45);
   transition: transform 0.2s ease, filter 0.2s ease;
 }
 

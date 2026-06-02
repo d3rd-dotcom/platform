@@ -302,7 +302,7 @@ export default function FeatureTour() {
 
   if (typeof document === 'undefined') return null;
 
-  const blueHeader = (extra?: ReactNode) => (
+  const blueHeader = (extra?: ReactNode, name: string = 'Blue') => (
     <div className={styles.blueHead}>
       <span className={styles.blueAvatar}>
         <Image
@@ -314,7 +314,7 @@ export default function FeatureTour() {
           unoptimized
         />
       </span>
-      <span className={styles.blueName}>Blue</span>
+      <span className={styles.blueName}>{name}</span>
       {extra}
     </div>
   );
@@ -418,13 +418,13 @@ export default function FeatureTour() {
       )}
 
       <div ref={calloutRef} className={styles.callout}>
-        {blueHeader()}
+        {blueHeader(undefined, 'Daemon')}
         {remindMode === 'done' ? (
           <>
             <h3 className={styles.title}>All done today</h3>
             <p className={styles.body}>
-              Today&rsquo;s note is in — nice work keeping the streak going. Come
-              back tomorrow for the next one.
+              Today&rsquo;s note is in — nice work keeping the streak. Come back
+              tmr for the next one.
             </p>
             <div className={styles.actions}>
               <span className={styles.skipSlot} />
