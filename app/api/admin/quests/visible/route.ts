@@ -19,6 +19,8 @@ interface VisibleRow {
   assignee_wallet: string | null;
   expires_at: string | null;
   created_at: string;
+  reward_kind: string | null;
+  reward_amount: string | null;
 }
 
 export async function GET() {
@@ -36,9 +38,10 @@ export async function GET() {
 
   const rows = await sqlQuery<VisibleRow[]>(
     `SELECT id, title, description, points, quest_type, target_count, creator_wallet,
-            creator_handle, assignee_wallet, expires_at, created_at
+            creator_handle, assignee_wallet, expires_at, created_at, reward_kind, reward_amount
      FROM custom_quests
      WHERE archived_at IS NULL
+       AND escrow_status = 'funded'
        AND (expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP)
        AND (assignee_wallet IS NULL OR LOWER(assignee_wallet) = LOWER(:wallet))
      ORDER BY created_at DESC`,
@@ -68,6 +71,8 @@ export async function GET() {
     assigneeWallet: row.assignee_wallet,
     expiresAt: row.expires_at,
     createdAt: row.created_at,
+    rewardKind: (row.reward_kind ?? 'credits') as 'credits' | 'usdc',
+    rewardAmount: row.reward_amount != null ? Number(row.reward_amount) : row.points,
     progressCount: Math.min(completionCounts[row.id] ?? 0, row.target_count),
   }));
 

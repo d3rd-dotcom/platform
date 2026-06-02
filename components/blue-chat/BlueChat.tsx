@@ -5,6 +5,7 @@ import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
+import { useAccount } from 'wagmi';
 import styles from './BlueChat.module.css';
 import { useSound } from '@/hooks/useSound';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
@@ -13,6 +14,9 @@ const VOICE_PREF_KEY = 'blueChat.voiceEnabled';
 import TimeManagementInline from './TimeManagementInline';
 import AutoDistributionInline from './AutoDistributionInline';
 import type { AutoDistributionRequest } from './AutoDistributionInline';
+import QuestForgeInline from './QuestForgeInline';
+import type { QuestForgeDraft, QuestForgeRequest } from './QuestForgeInline';
+import { sendUsdcOnBase, type Eip1193Provider } from '@/lib/usdc-base-transfer';
 
 const ProMembershipModal = dynamic(() => import('../pro-membership-modal/ProMembershipModal'), { ssr: false });
 
@@ -116,6 +120,15 @@ interface TreasuryContext {
   topMarkets: { question: string; yes: number }[];
 }
 
+// Detects when a typed message is asking Blue to CREATE a quest (vs. asking
+// what quests are). Conservative on purpose so normal chat isn't hijacked.
+function isQuestForgeIntent(text: string): boolean {
+  const t = text.toLowerCase().trim();
+  if (!/\bquest(s)?\b/.test(t)) return false;
+  if (/^(what|how|why|where|when|who)\b/.test(t)) return false;
+  return /\b(make|create|build|forge|set ?up|launch|design|spin up|publish)\b/.test(t) || /\bnew quest\b/.test(t);
+}
+
 const KNOWLEDGE_DOMAINS = [
   'Psychology', 'Wellness', 'Creativity', 'Habits',
   'Science', 'CBT', 'Stress', 'Sleep', 'Nutrition',
@@ -172,6 +185,7 @@ function fileTypeLabel(mime: string): string {
 const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const { play } = useSound();
   const { ready, authenticated, getAccessToken } = usePrivy();
+  const { connector, isConnected } = useAccount();
   const currentPathname = usePathname();
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -208,6 +222,10 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const [pendingAttachments, setPendingAttachments] = useState<UploadedAttachment[]>([]);
   const [timeManagementVisible, setTimeManagementVisible] = useState(false);
   const [autoDistributionVisible, setAutoDistributionVisible] = useState(false);
+  const [questForgeVisible, setQuestForgeVisible] = useState(false);
+  const [questDraft, setQuestDraft] = useState<QuestForgeDraft | null>(null);
+  const [questDraftNonce, setQuestDraftNonce] = useState(0);
+  const [questForgeBusy, setQuestForgeBusy] = useState(false);
   const [autoDistributionXConnection, setAutoDistributionXConnection] = useState<AutoDistributionXConnection>({
     loading: false,
     connected: false,
@@ -685,6 +703,12 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     setInputText('');
     setPendingAttachments([]);
 
+    // "make a quest…" — draft and open the forge instead of a normal reply.
+    if (!researchMode && !autoDistributionVisible && isQuestForgeIntent(text)) {
+      draftQuestFromPrompt(text);
+      return;
+    }
+
     if (researchMode) {
       setResearchUploaderVisible(false);
       sendToEliza(text, 'research', attachments);
@@ -726,6 +750,158 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       addBlueMessage("research mode is live — unlocked with your VIP membership. tell me what you're writing — a grant, a proposal, a thesis chapter — plus the topic and any constraints (funder, length, deadline). drop any reference material in the card above. i'll draft it in full report form and we can refine section by section.");
     } catch {
       addBlueMessage("something went wrong unlocking research mode. try again.");
+    }
+  };
+
+  // ── Quest forge (VIP) ──────────────────────────────────────
+  // A membership-NFT holder can have Blue draft and publish a community quest,
+  // funding the reward (credits or USDC) up front so Blue holds it in escrow.
+  const closeInlinePanels = () => {
+    setResearchMode(false);
+    setAutoDistributionVisible(false);
+    setTimeManagementVisible(false);
+    setPendingAttachments([]);
+  };
+
+  const openQuestForge = () => {
+    if (!isVipMember) {
+      addBlueMessage("forging quests is a VIP membership perk. grab a membership card and i can spin up quests with credit or USDC rewards for you.");
+      setShowMembershipModal(true);
+      return;
+    }
+    closeInlinePanels();
+    setQuestForgeVisible(true);
+  };
+
+  const draftQuestFromPrompt = async (prompt: string) => {
+    if (!ready || !authenticated) {
+      addBlueMessage('sign in first and i can forge quests for you.');
+      return;
+    }
+    if (!isVipMember) {
+      addBlueMessage("forging quests is a VIP membership perk. grab a membership card and i'll draft quests for you on the spot.");
+      setShowMembershipModal(true);
+      return;
+    }
+    closeInlinePanels();
+    setQuestForgeVisible(true);
+    setQuestForgeBusy(true);
+    setIsTyping(true);
+    try {
+      const res = await fetch('/api/quests/draft', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
+        credentials: 'include',
+        body: JSON.stringify({ prompt }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.status === 403) {
+        setIsVipMember(false);
+        setShowMembershipModal(true);
+        addBlueMessage('forging quests needs an active VIP membership.');
+        return;
+      }
+      if (!res.ok || !data.draft) {
+        addBlueMessage("i couldn't draft that one — fill the quest in below and i'll forge it.");
+        return;
+      }
+      setQuestDraft(data.draft as QuestForgeDraft);
+      setQuestDraftNonce((n) => n + 1);
+      addBlueMessage('drafted it below. tweak anything, set the reward, and forge it.');
+    } catch {
+      addBlueMessage("something glitched drafting that — fill it in below and i'll forge it.");
+    } finally {
+      setQuestForgeBusy(false);
+    }
+  };
+
+  const submitQuestForge = async (req: QuestForgeRequest) => {
+    if (!ready || !authenticated) {
+      addBlueMessage('sign in first so i can forge this quest.');
+      return;
+    }
+    setQuestForgeBusy(true);
+    setIsTyping(true);
+    try {
+      const res = await fetch('/api/admin/quests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
+        credentials: 'include',
+        body: JSON.stringify(req),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (res.status === 403) {
+        setIsVipMember(false);
+        setShowMembershipModal(true);
+        addBlueMessage('forging quests needs an active VIP membership.');
+        return;
+      }
+      if (res.status === 402) {
+        addBlueMessage(data.error || "you don't have enough credits to fund that one.");
+        return;
+      }
+      if (!res.ok) {
+        addBlueMessage(data.error || "couldn't forge that quest. try again.");
+        return;
+      }
+
+      if (req.rewardKind === 'credits') {
+        setQuestForgeVisible(false);
+        setQuestDraft(null);
+        fetchShardCount();
+        window.dispatchEvent(new Event('shardsUpdated'));
+        addBlueMessage(`done — "${req.title}" is live on the quests board. ${req.rewardAmount} credits each${req.targetCount > 1 ? `, up to ${req.targetCount} people` : ''}.`);
+        return;
+      }
+
+      // USDC: fund the escrow on-chain from the creator's own wallet.
+      const funding = data.funding;
+      const questId = data.quest?.id;
+      if (!funding || !questId) {
+        addBlueMessage("the escrow wallet isn't set up, so i can't take USDC quests right now. ping the team.");
+        return;
+      }
+      if (!isConnected || !connector) {
+        addBlueMessage(`"${req.title}" is saved but stays hidden until it's funded. connect your wallet, then forge it again to send $${funding.amountDisplay} USDC into escrow.`);
+        return;
+      }
+
+      addBlueMessage(`confirm the $${funding.amountDisplay} USDC transfer in your wallet — that funds the escrow i hold for "${req.title}".`);
+      let txHash: string;
+      try {
+        const eip1193 = (await connector.getProvider()) as Eip1193Provider;
+        txHash = await sendUsdcOnBase(eip1193, funding.usdcAddress, funding.blueWallet, funding.amount);
+      } catch (err) {
+        const code = (err as { code?: string | number })?.code;
+        if (code === 'ACTION_REJECTED' || code === 4001) {
+          addBlueMessage(`no worries — "${req.title}" is saved but stays hidden until it's funded. forge it again when you're ready to send the USDC.`);
+        } else {
+          addBlueMessage("that transfer didn't go through. the quest's saved but unfunded — try forging it again.");
+        }
+        return;
+      }
+
+      addBlueMessage('got the transfer — confirming it on Base...');
+      const confirm = await fetch('/api/quests/forge/confirm-funding', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
+        credentials: 'include',
+        body: JSON.stringify({ questId, txHash }),
+      });
+      const cdata = await confirm.json().catch(() => ({}));
+      if (!confirm.ok) {
+        addBlueMessage(cdata.error || "i got the transfer but couldn't confirm it yet — give it a minute and it'll go live once it settles.");
+        return;
+      }
+
+      setQuestForgeVisible(false);
+      setQuestDraft(null);
+      addBlueMessage(`funded and live — "${req.title}" pays $${req.rewardAmount} USDC each. you approve every completion before i release the money.`);
+    } catch {
+      addBlueMessage('something went wrong forging that quest. try again.');
+    } finally {
+      setQuestForgeBusy(false);
     }
   };
 
@@ -1059,6 +1235,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       send('Help me time block');
       setPendingAttachments([]);
       setAutoDistributionVisible(false);
+      setQuestForgeVisible(false);
       setTimeManagementVisible(true);
       addBlueMessage(
         "drop in your blocks. keep it lean. hit start and i'll keep the flow moving."
@@ -1067,6 +1244,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setResearchMode(false);
       setPendingAttachments([]);
       setTimeManagementVisible(false);
+      setQuestForgeVisible(false);
       if (autoDistributionVisible) {
         send('Open auto-distribution');
         addBlueMessage("auto-distribution is already open. connect your channels and tell me what you're pushing.");
@@ -1086,7 +1264,11 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         return;
       }
       send('Open research mode');
+      setQuestForgeVisible(false);
       activateResearchMode();
+    } else if (action === 'forge-quest') {
+      send('Forge a quest');
+      openQuestForge();
     }
   };
 
@@ -1278,6 +1460,17 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
           />
         )}
 
+        {questForgeVisible && (
+          <QuestForgeInline
+            isBusy={questForgeBusy}
+            draft={questDraft}
+            draftNonce={questDraftNonce}
+            creditBalance={shardCount}
+            onSubmit={submitQuestForge}
+            onClose={() => { setQuestForgeVisible(false); setQuestDraft(null); }}
+          />
+        )}
+
         <div ref={messagesEndRef} />
       </div>
 
@@ -1397,6 +1590,11 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         <button className={styles.quickAction} onClick={() => handleQuickAction('read-resistance')} disabled={isTyping} type="button">
           Read my resistance
         </button>
+        {isVipMember && (
+          <button className={styles.quickAction} onClick={() => handleQuickAction('forge-quest')} disabled={isTyping} type="button">
+            Forge a quest
+          </button>
+        )}
       </div>
 
       {/* Chat Input */}
@@ -1673,6 +1871,25 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
                       </span>
                       <span className={styles.toolCardIcon} aria-hidden="true">
                         <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.11-.9-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+                      </span>
+                    </span>
+                    <span className={styles.toolCardBottom} aria-hidden="true" />
+                  </button>
+                  <button className={styles.expandedQuickCard} onClick={() => { play('click'); handleQuickAction('forge-quest'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
+                    <span className={styles.toolCardTop}>
+                      <span className={styles.toolCardText}>
+                        <span className={styles.toolSlideWrap}>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Quest Forge</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Quest Forge</span>
+                        </span>
+                        <span className={styles.toolCardMeta}>Describe a quest and I draft, fund, and publish it. Reward in credits or USDC, held in escrow until you approve the payout.</span>
+                        <span className={styles.toolCardCost}>
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z"/></svg>
+                          {isVipMember ? 'Included with VIP membership' : 'VIP membership required'}
+                        </span>
+                      </span>
+                      <span className={styles.toolCardIcon} aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4.5 12.5h6L9 22l9.5-12h-6L13 2z"/></svg>
                       </span>
                     </span>
                     <span className={styles.toolCardBottom} aria-hidden="true" />

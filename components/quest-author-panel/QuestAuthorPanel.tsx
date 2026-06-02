@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Trash, ArrowRight } from '@phosphor-icons/react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Trash, ArrowRight, Check, X } from '@phosphor-icons/react';
 import styles from './QuestAuthorPanel.module.css';
 
 interface AuthoredQuest {
@@ -14,6 +14,20 @@ interface AuthoredQuest {
   assigneeWallet: string | null;
   expiresAt: string | null;
   createdAt: string;
+  rewardKind?: 'credits' | 'usdc';
+  rewardAmount?: number;
+  escrowStatus?: string;
+}
+
+interface PendingClaim {
+  id: string;
+  questId: string;
+  questTitle: string;
+  recipientWallet: string;
+  usdcAmount: number;
+  username: string | null;
+  createdAt: string;
+  escrowRemaining: number | null;
 }
 
 interface QuestAuthorPanelProps {
@@ -25,7 +39,7 @@ interface QuestAuthorPanelProps {
 
 const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
   authoredQuests,
-  fetchWithAuth: _fetchWithAuth,
+  fetchWithAuth,
   onCreated,
   onDelete,
 }) => {
@@ -38,6 +52,47 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
   const [expiresAt, setExpiresAt] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [pendingClaims, setPendingClaims] = useState<PendingClaim[]>([]);
+  const [reviewingClaimId, setReviewingClaimId] = useState<string | null>(null);
+  const [claimError, setClaimError] = useState<string | null>(null);
+
+  const loadClaims = useCallback(async () => {
+    try {
+      const res = await fetchWithAuth('/api/quests/usdc/creator-review');
+      if (res.ok) {
+        const data = await res.json();
+        setPendingClaims(data.claims ?? []);
+      }
+    } catch {
+      // silent — the approvals list just won't show
+    }
+  }, [fetchWithAuth]);
+
+  useEffect(() => { loadClaims(); }, [loadClaims]);
+
+  const reviewClaim = async (claimId: string, action: 'approve' | 'reject') => {
+    setReviewingClaimId(claimId);
+    setClaimError(null);
+    try {
+      const res = await fetchWithAuth('/api/quests/usdc/creator-review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ claimId, action }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setClaimError(data.error || 'Could not process that claim.');
+        return;
+      }
+      await loadClaims();
+      onCreated();
+    } catch {
+      setClaimError('Network error processing the claim.');
+    } finally {
+      setReviewingClaimId(null);
+    }
+  };
 
   const reset = () => {
     setTitle('');
@@ -102,7 +157,7 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
         <div className={styles.formHeader}>
           <h3 className={styles.formTitle}>Create a quest</h3>
           <p className={styles.formSubtitle}>
-            Publish to everyone or assign to a specific wallet.
+            Publish to everyone or assign to a wallet. The credits are held in escrow and paid out as people complete it. For USDC-funded quests, ask Blue in chat to forge one.
           </p>
         </div>
 
@@ -210,6 +265,56 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
         </div>
       </form>
 
+      {pendingClaims.length > 0 && (
+        <div className={styles.list}>
+          <div className={styles.listHeader}>
+            <h4 className={styles.listTitle}>USDC payouts to approve</h4>
+            <span className={styles.listMeta}>{pendingClaims.length}</span>
+          </div>
+          {claimError && <p className={styles.errorText}>{claimError}</p>}
+          <ul className={styles.listItems}>
+            {pendingClaims.map((claim) => (
+              <li key={claim.id} className={styles.listItem}>
+                <div className={styles.itemBody}>
+                  <span className={styles.itemTitle}>{claim.questTitle}</span>
+                  <span className={styles.itemMetaRow}>
+                    <span className={styles.itemMetaChip}>${claim.usdcAmount} USDC</span>
+                    <span className={styles.itemMetaChip}>
+                      {claim.username
+                        ? `@${claim.username}`
+                        : `${claim.recipientWallet.slice(0, 6)}…${claim.recipientWallet.slice(-4)}`}
+                    </span>
+                    {claim.escrowRemaining != null && (
+                      <span className={styles.itemMetaChip}>${claim.escrowRemaining} left</span>
+                    )}
+                  </span>
+                </div>
+                <div className={styles.claimActions}>
+                  <button
+                    type="button"
+                    className={styles.claimApprove}
+                    onClick={() => reviewClaim(claim.id, 'approve')}
+                    disabled={reviewingClaimId === claim.id}
+                    aria-label={`Approve and pay ${claim.questTitle}`}
+                  >
+                    <Check size={14} weight="bold" />
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.claimReject}
+                    onClick={() => reviewClaim(claim.id, 'reject')}
+                    disabled={reviewingClaimId === claim.id}
+                    aria-label={`Reject ${claim.questTitle}`}
+                  >
+                    <X size={14} weight="bold" />
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className={styles.list}>
         <div className={styles.listHeader}>
           <h4 className={styles.listTitle}>Your published quests</h4>
@@ -227,7 +332,14 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
                   <div className={styles.itemBody}>
                     <span className={styles.itemTitle}>{q.title}</span>
                     <span className={styles.itemMetaRow}>
-                      <span className={styles.itemMetaChip}>{q.points} credits</span>
+                      <span className={styles.itemMetaChip}>
+                        {q.rewardKind === 'usdc'
+                          ? `$${q.rewardAmount ?? 0} USDC`
+                          : `${q.rewardAmount ?? q.points} credits`}
+                      </span>
+                      {q.escrowStatus === 'pending_funding' && (
+                        <span className={styles.itemExpired}>Awaiting funding</span>
+                      )}
                       <span className={styles.itemMetaChip}>{q.questType === 'no-proof' ? 'Mission' : 'Submit'}</span>
                       {q.targetCount > 1 && (
                         <span className={styles.itemMetaChip}>×{q.targetCount}</span>

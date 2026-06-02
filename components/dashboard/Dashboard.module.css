@@ -158,6 +158,57 @@
   cursor: default;
 }
 
+/* Registered state — quieter than the primary action, with a check-y tint. */
+.eventBtnDone {
+  background: rgba(98, 190, 143, 0.16);
+  color: #2f9e6b;
+}
+
+.eventBtnDone:hover {
+  background: rgba(98, 190, 143, 0.26);
+}
+
+/* Inline email prompt for wallet-only users with no Privy email. */
+.eventEmailPrompt {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.eventEmailLabel {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #9aa0c0;
+}
+
+.eventEmailRow {
+  display: flex;
+  gap: 8px;
+}
+
+.eventEmailInput {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 7px 10px;
+  font-size: 0.8rem;
+  color: inherit;
+  background: rgba(120, 130, 170, 0.08);
+  border: 1px solid rgba(120, 130, 170, 0.28);
+  border-radius: 8px;
+}
+
+.eventEmailInput:focus {
+  outline: none;
+  border-color: #5168ff;
+}
+
+.eventEmailError {
+  font-size: 0.72rem;
+  color: #e85d3a;
+  margin: 0;
+}
+
 /* ── Egg card — matches the /course missions card shades ── */
 .eggCard {
   display: flex;

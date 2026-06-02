@@ -395,3 +395,45 @@
   background: rgba(255, 100, 142, 0.22);
   color: #ff96b3;
 }
+
+/* ── USDC payout approval actions ── */
+.claimActions {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 6px;
+}
+
+.claimApprove,
+.claimReject {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+
+.claimApprove {
+  border: 1px solid rgba(64, 196, 140, 0.4);
+  background: rgba(64, 196, 140, 0.12);
+  color: #2e9d6e;
+}
+.claimApprove:hover:not(:disabled) {
+  background: rgba(64, 196, 140, 0.22);
+}
+
+.claimReject {
+  border: 1px solid rgba(255, 100, 142, 0.32);
+  background: rgba(255, 100, 142, 0.1);
+  color: #d4456b;
+}
+.claimReject:hover:not(:disabled) {
+  background: rgba(255, 100, 142, 0.2);
+}
+
+.claimApprove:disabled,
+.claimReject:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

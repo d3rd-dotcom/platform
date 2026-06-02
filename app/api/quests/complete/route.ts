@@ -6,6 +6,7 @@ import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { recordBlueQuestCompletion } from '@/lib/blue-memory';
 import { isDbConfigured, sqlQuery, withTransaction, sqlQueryWithClient } from '@/lib/db';
 import { getQuestDefinition, getQuestDefinitionForStoredQuestId } from '@/lib/quest-definitions';
+import { ensureQuestUsdcClaimsSchema } from '@/lib/ensureQuestUsdcClaimsSchema';
 import { recordAgentActivity } from '@/lib/room-log';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -17,13 +18,18 @@ interface CustomQuestRow {
   assignee_wallet: string | null;
   archived_at: string | null;
   expires_at: string | null;
+  reward_kind: string | null;
+  reward_amount: string | null;
+  escrow_remaining: string | null;
+  escrow_status: string | null;
 }
 
 async function loadCustomQuest(questId: string): Promise<CustomQuestRow | null> {
   const baseId = questId.replace(/-\d+$/, '');
   if (!/^cq_[a-f0-9]+$/i.test(baseId)) return null;
   const rows = await sqlQuery<CustomQuestRow[]>(
-    `SELECT id, points, target_count, quest_type, assignee_wallet, archived_at, expires_at
+    `SELECT id, points, target_count, quest_type, assignee_wallet, archived_at, expires_at,
+            reward_kind, reward_amount, escrow_remaining, escrow_status
      FROM custom_quests WHERE id = :id LIMIT 1`,
     { id: baseId }
   );
@@ -106,6 +112,61 @@ export async function POST(request: Request) {
     }
   }
 
+  // USDC custom quests pay real money out of the creator's escrow, and the
+  // creator must approve every payout. Completing one here just files a pending
+  // claim — no credits are minted and no `quests` row is written until the
+  // creator approves it via /api/quests/usdc/creator-review.
+  if (customQuest && customQuest.reward_kind === 'usdc') {
+    if (customQuest.escrow_status !== 'funded') {
+      return NextResponse.json({ error: 'This quest is not funded yet.' }, { status: 409 });
+    }
+    if (!user.walletAddress) {
+      return NextResponse.json({ error: 'Link a wallet to receive USDC.' }, { status: 400 });
+    }
+    const rewardAmount = Number(customQuest.reward_amount ?? 0);
+    if (!(rewardAmount > 0)) {
+      return NextResponse.json({ error: 'This quest has no reward configured.' }, { status: 400 });
+    }
+
+    await ensureQuestUsdcClaimsSchema();
+
+    // Cap outstanding + paid claims at the target so a public quest can't
+    // amass more pending claims than its escrow could ever cover.
+    const activeClaims = await sqlQuery<Array<{ n: string }>>(
+      `SELECT COUNT(*)::text AS n FROM quest_usdc_claims
+       WHERE quest_id = :qid AND status <> 'rejected'`,
+      { qid: customQuest.id },
+    );
+    if (Number(activeClaims[0]?.n ?? 0) >= customQuest.target_count) {
+      return NextResponse.json({ error: 'All reward slots for this quest are taken.' }, { status: 409 });
+    }
+
+    try {
+      await sqlQuery(
+        `INSERT INTO quest_usdc_claims (id, user_id, quest_id, recipient_wallet, usdc_amount, status)
+         VALUES (:id, :userId, :questId, :wallet, :amount, 'pending')`,
+        {
+          id: uuidv4(),
+          userId: user.id,
+          questId: customQuest.id,
+          wallet: user.walletAddress,
+          amount: rewardAmount,
+        },
+      );
+    } catch (err: any) {
+      if (String(err?.message || '').includes('uq_quest_usdc_claim_user_quest')) {
+        return NextResponse.json(
+          { error: 'You already submitted this quest for review.', claim: { status: 'pending' } },
+          { status: 409 },
+        );
+      }
+      console.error('Error creating custom USDC claim:', err);
+      return NextResponse.json({ error: 'Failed to submit quest.' }, { status: 500 });
+    }
+
+    return NextResponse.json({ ok: true, status: 'pending_review', usdcAmount: rewardAmount });
+  }
+
   try {
     if (definition?.questType === 'sealed-week') {
       const sealedRows = await sqlQuery<Array<{ is_sealed: boolean }>>(
@@ -170,6 +231,15 @@ export async function POST(request: Request) {
       shardsToAward = Math.floor(shardsToAward * 0.25);
     }
 
+    // Creator-funded credit quests draw the reward from the creator's escrow.
+    // Legacy custom quests (escrow_remaining NULL) keep minting credits as
+    // before, so nothing changes for quests that predate escrow. The full
+    // per-slot reward is drawn even when an agent earns a reduced payout.
+    const usesCreditEscrow = !!(
+      customQuest && customQuest.reward_kind !== 'usdc' && customQuest.escrow_remaining != null
+    );
+    const escrowDraw = customQuest ? Number(customQuest.reward_amount ?? customQuest.points) : 0;
+
     // Check if quest already completed (outside transaction for early exit)
     const existingCompletion = await sqlQuery<Array<{ id: string }>>(
       `SELECT id FROM quests
@@ -194,6 +264,21 @@ export async function POST(request: Request) {
       );
       if (dupeCheck.length > 0) {
         throw new Error('QUEST_ALREADY_COMPLETED');
+      }
+
+      if (usesCreditEscrow) {
+        const drawn = await sqlQueryWithClient<Array<{ escrow_remaining: string }>>(
+          client,
+          `UPDATE custom_quests
+           SET escrow_remaining = escrow_remaining - :amt,
+               escrow_status = CASE WHEN escrow_remaining - :amt <= 0 THEN 'depleted' ELSE escrow_status END
+           WHERE id = :qid AND escrow_remaining >= :amt
+           RETURNING escrow_remaining`,
+          { qid: customQuest!.id, amt: escrowDraw }
+        );
+        if (drawn.length === 0) {
+          throw new Error('QUEST_REWARD_DEPLETED');
+        }
       }
 
       await sqlQueryWithClient(
@@ -252,6 +337,9 @@ export async function POST(request: Request) {
   } catch (err: any) {
     if (err.message === 'QUEST_ALREADY_COMPLETED') {
       return NextResponse.json({ error: 'Quest already completed.' }, { status: 409 });
+    }
+    if (err.message === 'QUEST_REWARD_DEPLETED') {
+      return NextResponse.json({ error: 'This quest reward has been fully claimed.' }, { status: 409 });
     }
     console.error('Error completing quest:', err);
     return NextResponse.json({ error: 'Failed to complete quest.' }, { status: 500 });
