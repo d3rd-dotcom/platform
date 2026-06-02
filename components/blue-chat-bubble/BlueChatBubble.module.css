@@ -13,8 +13,8 @@
 
 .avatar {
   flex: 0 0 auto;
-  width: 46px;
-  height: 46px;
+  width: 72px;
+  height: auto;
 }
 
 .avatarColumn {
@@ -27,8 +27,7 @@
 
 .avatar :global(img) {
   width: 100%;
-  height: 100%;
-  object-fit: contain;
+  height: auto;
   display: block;
 }
 
@@ -143,8 +142,8 @@
   }
 
   .stackMobile .avatar {
-    width: 54px;
-    height: 54px;
+    width: 88px;
+    height: auto;
   }
 
   .stackMobile .body {

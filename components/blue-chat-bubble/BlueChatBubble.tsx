@@ -41,7 +41,7 @@ export default function BlueChatBubble({
     >
       <div className={styles.avatarColumn}>
         <div className={styles.avatar}>
-          <Image src={BLUE_AVATAR_SRC} alt="Blue" width={56} height={56} unoptimized />
+          <Image src={BLUE_AVATAR_SRC} alt="Blue" width={72} height={48} unoptimized />
         </div>
         <span className={styles.sender}>
           Blue{context ? <span className={styles.context}> · {context}</span> : null}
