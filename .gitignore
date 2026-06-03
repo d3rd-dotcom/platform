@@ -62,3 +62,4 @@ contracts/broadcast/
 simulation-backend/.env
 simulation-backend/uploads/
 simulation-backend/**/__pycache__/
+data/kalshi-snapshots.csv

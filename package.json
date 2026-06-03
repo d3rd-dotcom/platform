@@ -17,7 +17,8 @@
     "check-blue-wallet": "tsx scripts/check-blue-wallet.ts",
     "check-interactions": "tsx scripts/check-contract-interactions.ts",
     "seed:blue-rag": "tsx scripts/seed-blue-rag.ts",
-    "eval:blue-rag": "tsx scripts/evaluate-blue-rag.ts"
+    "eval:blue-rag": "tsx scripts/evaluate-blue-rag.ts",
+    "collect:kalshi": "tsx scripts/collect-kalshi-snapshot.ts"
   },
   "dependencies": {
     "@coinbase/coinbase-sdk": "^0.25.0",

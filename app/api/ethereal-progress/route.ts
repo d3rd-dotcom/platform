@@ -117,8 +117,8 @@ export async function POST(request: Request) {
   }
 
   // Check if week is already sealed
-  const existing = await sqlQuery<Array<{ is_sealed: boolean; progress_data: any }>>(
-    `SELECT is_sealed, progress_data FROM weeks
+  const existing = await sqlQuery<Array<{ is_sealed: boolean; progress_data: any; credited_sections: string[] | null }>>(
+    `SELECT is_sealed, progress_data, credited_sections FROM weeks
      WHERE user_id = :userId AND week_number = :weekNumber
      LIMIT 1`,
     { userId: user.id, weekNumber }
@@ -130,6 +130,10 @@ export async function POST(request: Request) {
 
   const previousCompletedSections = parseCompletedSections(existing[0]?.progress_data);
   const currentCompletedSections = parseCompletedSections(progressData);
+  // Sections that have already been credited — persists even if user unmarks a task.
+  const alreadyCredited: string[] = Array.isArray(existing[0]?.credited_sections)
+    ? existing[0].credited_sections
+    : [];
 
   // ─── Seal Flow ─────────────────────────────────────────────────────
   if (seal) {
@@ -220,6 +224,25 @@ export async function POST(request: Request) {
     { userId: user.id, weekNumber, progressData: JSON.stringify(progressData) }
   );
 
+  // Award 50 credits only for sections never credited before — toggle-proof.
+  const newlyCompleted = currentCompletedSections.filter(
+    s => !alreadyCredited.includes(s)
+  );
+  let creditsAwarded = 0;
+  if (newlyCompleted.length > 0) {
+    creditsAwarded = newlyCompleted.length * 50;
+    const updatedCredited = [...alreadyCredited, ...newlyCompleted];
+    await sqlQuery(
+      `UPDATE users SET shard_count = COALESCE(shard_count, 0) + :credits WHERE id = :userId`,
+      { userId: user.id, credits: creditsAwarded }
+    );
+    await sqlQuery(
+      `UPDATE weeks SET credited_sections = :credited::jsonb
+       WHERE user_id = :userId AND week_number = :weekNumber`,
+      { userId: user.id, weekNumber, credited: JSON.stringify(updatedCredited) }
+    );
+  }
+
   try {
     await recordBlueWeekProgressEvent({
       userId: user.id,
@@ -233,5 +256,5 @@ export async function POST(request: Request) {
     console.error('Blue week progress memory error:', message);
   }
 
-  return NextResponse.json({ ok: true, weekNumber });
+  return NextResponse.json({ ok: true, weekNumber, creditsAwarded });
 }

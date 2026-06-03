@@ -8,6 +8,7 @@ import WeekTasksView from '@/components/week-tasks/WeekTasksView';
 import HomeWelcomeFlow from '@/components/home-welcome/HomeWelcomeFlow';
 import MobileSplash from '@/components/mobile-splash/MobileSplash';
 import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
+import CourseTour from '@/components/feature-tour/CourseTour';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
 
@@ -430,6 +431,7 @@ export default function CoursePage() {
               <>
                 <button
                   type="button"
+                  data-tour="course-reading"
                   className={`${styles.readingCard} ${isDesktop && rightContent === 'reading' ? styles.readingCardActive : ''}`}
                   onClick={() => {
                     play('click');
@@ -527,6 +529,8 @@ export default function CoursePage() {
         />
       )}
       {showMintModal && <MintModal isOpen={showMintModal} onClose={() => setShowMintModal(false)} />}
+
+      <CourseTour />
 
     </div>
     </HomeWelcomeFlow>

@@ -111,6 +111,7 @@ const TopNavigation: React.FC = () => {
         <nav className={styles.nav}>
           <Link
             href="/shop"
+            data-tour="shop"
             className={`${styles.shopLink} ${pathname === '/shop' || pathname?.startsWith('/shop/') ? styles.shopLinkActive : ''}`}
             onClick={() => play('navigation')}
             onMouseEnter={() => play('hover')}

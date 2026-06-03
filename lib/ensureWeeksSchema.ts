@@ -2,11 +2,11 @@ import { sqlQuery } from './db';
 
 declare global {
   // eslint-disable-next-line no-var
-  var __mwaWeeksSchemaEnsured: boolean | undefined;
+  var __mwaWeeksSchemaEnsured_v2: boolean | undefined;
 }
 
 export async function ensureWeeksSchema() {
-  if (globalThis.__mwaWeeksSchemaEnsured) return;
+  if (globalThis.__mwaWeeksSchemaEnsured_v2) return;
 
   // Migrate from old table name if it exists
   try {
@@ -47,6 +47,13 @@ export async function ensureWeeksSchema() {
     // constraint may already be correct
   }
 
+  // Track which sections have ever been credited — never shrinks so toggle-exploit is impossible.
+  try {
+    await sqlQuery(`ALTER TABLE weeks ADD COLUMN IF NOT EXISTS credited_sections JSONB NOT NULL DEFAULT '[]'::jsonb`);
+  } catch {
+    // column may already exist
+  }
+
   try {
     await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_weeks_user_id ON weeks(user_id)`);
     await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_weeks_user_week ON weeks(user_id, week_number)`);
@@ -64,5 +71,5 @@ export async function ensureWeeksSchema() {
     // trigger may already exist
   }
 
-  globalThis.__mwaWeeksSchemaEnsured = true;
+  globalThis.__mwaWeeksSchemaEnsured_v2 = true;
 }

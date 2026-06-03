@@ -329,7 +329,10 @@
 
 /* Mark Complete Button */
 .markDoneBtn {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   width: 100%;
   padding: 12px;
   font-family: var(--font-mono);
@@ -348,6 +351,16 @@
     0 4px 14px color-mix(in srgb, var(--task-accent, var(--week-color, #5168FF)) 18%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
   transition: all 0.15s ease;
+}
+
+.markDoneCredits {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.7;
+  letter-spacing: 0.03em;
 }
 
 .markDoneBtn:hover {

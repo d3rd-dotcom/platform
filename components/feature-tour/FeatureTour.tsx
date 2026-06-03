@@ -30,6 +30,9 @@ const INTRO_SEEN_KEY = 'mwa-home-intro-seen';
 const FIRST_NOTE_KEY = 'mwa-first-daily-note-done';
 // Set once Phase B is dismissed/finished.
 const COURSE_NUDGE_KEY = 'mwa-home-course-nudge-seen';
+// Armed when the user accepts the Phase B nudge — tells the course page's
+// CourseTour to pick the walkthrough back up the moment they land there.
+const COURSE_TOUR_PENDING_KEY = 'mwa-course-tour-pending';
 // Recurring daily-note nudge: shown once per calendar day, on the first /home
 // visit of the day, regardless of time of day (no "morning only" gate).
 const DAILY_SPOTLIGHT_PREFIX = 'mwa-daily-spotlight-shown';
@@ -100,6 +103,9 @@ export default function FeatureTour() {
 
   const goToCourse = useCallback(() => {
     setStorageItem(COURSE_NUDGE_KEY, '1');
+    // Hand the walkthrough off to the course page so the spotlight continues
+    // there (chapter → first mission) instead of ending at the door.
+    setStorageItem(COURSE_TOUR_PENDING_KEY, '1');
     setPhase('idle');
     router.push('/course');
   }, [router]);
@@ -209,10 +215,10 @@ export default function FeatureTour() {
       if (cancelled) return;
       const el = document.querySelector<HTMLElement>(`[data-tour="${TARGET}"]`);
       if (!el) return;
-      el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-      window.setTimeout(() => {
-        if (!cancelled) setRect(el.getBoundingClientRect());
-      }, 300);
+      // Instant scroll so the rect is settled when we read it — capturing it
+      // mid-smooth-scroll is what makes the spotlight jitter into place.
+      el.scrollIntoView({ block: 'nearest', behavior: 'auto' });
+      if (!cancelled) setRect(el.getBoundingClientRect());
     };
     locate();
     return () => {
@@ -302,7 +308,7 @@ export default function FeatureTour() {
 
   if (typeof document === 'undefined') return null;
 
-  const blueHeader = (extra?: ReactNode, name: string = 'Blue') => (
+  const blueHeader = (extra?: ReactNode, name: string = 'Daemon') => (
     <div className={styles.blueHead}>
       <span className={styles.blueAvatar}>
         <Image
@@ -478,6 +484,7 @@ export default function FeatureTour() {
     removeStorageItem(INTRO_SEEN_KEY);
     removeStorageItem(FIRST_NOTE_KEY);
     removeStorageItem(COURSE_NUDGE_KEY);
+    removeStorageItem(COURSE_TOUR_PENDING_KEY);
     window.location.reload();
   };
 
@@ -486,6 +493,7 @@ export default function FeatureTour() {
     removeStorageItem(INTRO_SEEN_KEY);
     removeStorageItem(FIRST_NOTE_KEY);
     removeStorageItem(COURSE_NUDGE_KEY);
+    removeStorageItem(COURSE_TOUR_PENDING_KEY);
     removeStorageItem(dailySpotlightKey());
     setRect(null);
     setPhase('idle');

@@ -132,10 +132,13 @@ export default function WeekTasksView({
   const [showSealModal, setShowSealModal] = useState(false);
   const [shardsAwarded, setShardsAwarded] = useState(700);
   const [showRewardAnimation, setShowRewardAnimation] = useState(false);
+  const [showMissionReward, setShowMissionReward] = useState(false);
+  const [missionRewardKey, setMissionRewardKey] = useState(0);
   const [sealTxHash, setSealTxHash] = useState<string | null>(initialSealTxHash ?? null);
   const [isLoading, setIsLoading] = useState(true);
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
   const hasLoadedRef = useRef(false);
+  const lastSliderSoundRef = useRef(0);
 
   useEffect(() => {
     if (initialIsSealed !== undefined) setIsSealed(initialIsSealed);
@@ -204,12 +207,18 @@ export default function WeekTasksView({
   const persistProgress = useCallback(async () => {
     try {
       const authHeaders = await getAuthHeaders();
-      await fetch('/api/ethereal-progress', {
+      const res = await fetch('/api/ethereal-progress', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...authHeaders },
         credentials: 'include',
         body: JSON.stringify({ weekNumber, progressData: collectProgressData() }),
       });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.creditsAwarded > 0 && typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('shardsUpdated'));
+        }
+      }
     } catch { /* silent */ }
   }, [weekNumber, collectProgressData, getAuthHeaders]);
   const persistRef = useRef(persistProgress);
@@ -261,7 +270,16 @@ export default function WeekTasksView({
   };
 
   const markComplete = (id: string) => {
-    play('click');
+    const isCurrentlyDone = completedSections.has(id);
+    if (isCurrentlyDone) {
+      play('click');
+    } else {
+      setShowMissionReward(true);
+      setMissionRewardKey(k => k + 1);
+      // Let the first-run course walkthrough know a mission was just finished,
+      // so it can surface its closing spotlights (shop + Ask Blue).
+      if (typeof window !== 'undefined') window.dispatchEvent(new Event('missionCompleted'));
+    }
     setCompletedSections(prev => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id); else next.add(id);
@@ -302,6 +320,11 @@ export default function WeekTasksView({
 
   const handleLifePieChange = (area: string, value: number) => {
     setLifePieValues(prev => ({ ...prev, [area]: value }));
+    const now = Date.now();
+    if (now - lastSliderSoundRef.current > 80) {
+      lastSliderSoundRef.current = now;
+      play('hum');
+    }
   };
 
   const handleSealWeek = async () => {
@@ -401,7 +424,10 @@ export default function WeekTasksView({
                   value={entry.affirmation} onChange={e => handleBlurtChange(entry.id, 'affirmation', e.target.value)} disabled={disabled} />
               </div>
             ))}
-            <button type="button" className={jStyles.addBlurtButton} onClick={addBlurtEntry} disabled={disabled}>
+            <button type="button" className={jStyles.addBlurtButton}
+              onClick={() => { play('click'); addBlurtEntry(); }}
+              onMouseEnter={() => play('hover')}
+              disabled={disabled}>
               + Add another blurt
             </button>
           </div>
@@ -436,7 +462,10 @@ export default function WeekTasksView({
             {section.checkItems?.map((item, idx) => (
               <label key={idx} className={jStyles.checklistItem}>
                 <input type="checkbox" checked={checklistStates[section.id]?.[idx] || false}
-                  onChange={() => handleChecklistToggle(section.id, idx)} className={jStyles.checkbox} disabled={disabled} />
+                  onChange={() => {
+                    play(checklistStates[section.id]?.[idx] ? 'click' : 'success');
+                    handleChecklistToggle(section.id, idx);
+                  }} className={jStyles.checkbox} disabled={disabled} />
                 <span className={jStyles.checklistText}>{item}</span>
               </label>
             ))}
@@ -456,11 +485,13 @@ export default function WeekTasksView({
                   <input type="text" className={jStyles.input} placeholder="Hours"
                     value={a.time} onChange={e => handleTimeMapChange(idx, 'time', e.target.value)} disabled={disabled} />
                   <select className={jStyles.select} value={a.wantOrShould}
-                    onChange={e => handleTimeMapChange(idx, 'wantOrShould', e.target.value)} disabled={disabled}>
+                    onPointerDown={() => play('click')}
+                    onChange={e => { play('navigation'); handleTimeMapChange(idx, 'wantOrShould', e.target.value); }} disabled={disabled}>
                     <option value="">Select</option><option value="want">Want to</option><option value="should">Should</option>
                   </select>
                   <select className={jStyles.select} value={a.forWhom}
-                    onChange={e => handleTimeMapChange(idx, 'forWhom', e.target.value)} disabled={disabled}>
+                    onPointerDown={() => play('click')}
+                    onChange={e => { play('navigation'); handleTimeMapChange(idx, 'forWhom', e.target.value); }} disabled={disabled}>
                     <option value="">Select</option><option value="me">For me</option><option value="others">For others</option>
                   </select>
                 </div>
@@ -597,6 +628,7 @@ export default function WeekTasksView({
         return (
           <div
             key={section.id}
+            data-tour={idx === 0 && !focusedSectionId ? 'course-mission' : undefined}
             className={`${styles.taskCard} ${isDone ? styles.taskCardDone : ''} ${isSealed ? styles.taskCardSealed : ''}`}
             style={{ '--task-accent': taskAccent } as React.CSSProperties}
           >
@@ -643,7 +675,13 @@ export default function WeekTasksView({
             {isOpen && (
               <div className={styles.taskCardContent}>
                 <p className={styles.taskInstructions}>{section.instructions}</p>
-                <div className={styles.taskEditor}>
+                <div
+                  className={styles.taskEditor}
+                  onFocus={(e) => {
+                    // Selects have their own onPointerDown sound; skip to avoid double-play.
+                    if ((e.target as HTMLElement).tagName !== 'SELECT') play('hover');
+                  }}
+                >
                   {renderSectionContent(section)}
                 </div>
                 {!isSealed && (
@@ -653,7 +691,17 @@ export default function WeekTasksView({
                     onClick={() => markComplete(section.id)}
                     onMouseEnter={() => play('hover')}
                   >
-                    {isDone ? 'Completed' : 'Mark Complete'}
+                    {isDone ? (
+                      'Completed'
+                    ) : (
+                      <>
+                        Complete Task
+                        <span className={styles.markDoneCredits}>
+                          <Image src="/icons/ui-shard.svg" alt="" width={12} height={12} />
+                          +50 credits
+                        </span>
+                      </>
+                    )}
                   </button>
                 )}
               </div>
@@ -699,7 +747,7 @@ export default function WeekTasksView({
 
       {/* Seal Confirmation Modal */}
       {showSealModal && (
-        <div className={styles.sealModalOverlay} onClick={() => { if (sealStep === 'confirm') setShowSealModal(false); }}>
+        <div className={styles.sealModalOverlay} onClick={() => { if (sealStep === 'confirm') { play('toggle-off'); setShowSealModal(false); } }}>
           <div className={styles.sealModal} onClick={e => e.stopPropagation()}>
             {sealStep === 'confirm' && (
               <>
@@ -708,8 +756,12 @@ export default function WeekTasksView({
                   This will finalize your work and award 700 credits. You won&apos;t be able to edit after sealing.
                 </p>
                 <div className={styles.sealModalButtons}>
-                  <button className={styles.sealModalCancel} onClick={() => setShowSealModal(false)}>Cancel</button>
-                  <button className={styles.sealModalConfirm} onClick={handleSealWeek}>Seal</button>
+                  <button className={styles.sealModalCancel}
+                    onClick={() => { play('toggle-off'); setShowSealModal(false); }}
+                    onMouseEnter={() => play('hover')}>Cancel</button>
+                  <button className={styles.sealModalConfirm}
+                    onClick={() => { play('celebration'); handleSealWeek(); }}
+                    onMouseEnter={() => play('hover')}>Seal</button>
                 </div>
               </>
             )}
@@ -721,6 +773,15 @@ export default function WeekTasksView({
             )}
           </div>
         </div>
+      )}
+
+      {/* Per-mission +50 credit pop-up */}
+      {showMissionReward && (
+        <ShardAnimation
+          key={missionRewardKey}
+          shards={50}
+          onComplete={() => setShowMissionReward(false)}
+        />
       )}
 
       {/* Reward celebration — shared with Morning Pages */}
