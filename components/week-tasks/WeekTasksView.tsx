@@ -610,6 +610,7 @@ export default function WeekTasksView({
               }}
               onMouseEnter={() => play('hover')}
             >
+              <span className={styles.taskAccent} aria-hidden="true" />
               <div className={`${styles.taskArtwork} ${styles[`taskArtwork${artVariant[0].toUpperCase()}${artVariant.slice(1)}` as keyof typeof styles]}`} aria-hidden="true">
                 <div className={styles.taskArtworkGlow} />
                 <div className={styles.taskArtworkLine} />

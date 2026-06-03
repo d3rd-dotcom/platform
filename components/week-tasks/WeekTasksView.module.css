@@ -60,20 +60,27 @@
 .taskCard {
   --task-accent: #5168FF;
   width: 100%;
-  background: #FFFFFF;
-  border: none;
-  border-left: 3px solid var(--task-accent);
+  background: color-mix(in srgb, var(--task-accent) 7%, #ffffff);
+  border: 1px solid color-mix(in srgb, var(--task-accent) 22%, rgba(26, 29, 51, 0.06));
   border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(26, 29, 51, 0.07);
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .taskCard:hover {
-  box-shadow:
-    0 4px 16px color-mix(in srgb, var(--task-accent) 22%, transparent),
-    0 0 0 1px color-mix(in srgb, var(--task-accent) 18%, transparent);
-  border-left-color: var(--task-accent);
+  background: color-mix(in srgb, var(--task-accent) 11%, #ffffff);
+  border-color: color-mix(in srgb, var(--task-accent) 38%, rgba(26, 29, 51, 0.06));
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--task-accent) 20%, transparent);
+}
+
+.taskAccent {
+  width: 3px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--task-accent);
+  flex-shrink: 0;
+  opacity: 0.85;
 }
 
 .taskCardDone .taskArtwork {
@@ -625,21 +632,20 @@
 /* ============================================ */
 
 :global([data-theme="dark"]) .taskCard {
-  background: #1E1F2C;
-  border: none;
-  border-left: 3px solid var(--task-accent);
+  background: color-mix(in srgb, var(--task-accent) 10%, #1E1F2C);
+  border: 1px solid color-mix(in srgb, var(--task-accent) 28%, rgba(255, 255, 255, 0.06));
   box-shadow:
-    0 6px 24px rgba(0, 0, 0, 0.55),
-    0 1px 0 rgba(255, 255, 255, 0.05) inset;
+    0 6px 24px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 :global([data-theme="dark"]) .taskCard:hover {
-  border-left-color: var(--task-accent);
+  background: color-mix(in srgb, var(--task-accent) 16%, #1E1F2C);
+  border-color: color-mix(in srgb, var(--task-accent) 45%, rgba(255, 255, 255, 0.08));
   box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--task-accent) 22%, transparent),
-    0 8px 32px rgba(0, 0, 0, 0.65),
+    0 8px 32px rgba(0, 0, 0, 0.6),
     0 0 18px color-mix(in srgb, var(--task-accent) 18%, transparent),
-    0 1px 0 rgba(255, 255, 255, 0.07) inset;
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 :global([data-theme="dark"]) .taskIcon {

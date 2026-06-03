@@ -444,6 +444,7 @@ export default function CoursePage() {
                   }}
                   onMouseEnter={() => play('hover')}
                 >
+                  <span className={styles.readingAccent} aria-hidden="true" />
                   <span
                     className={styles.readingThumb}
                     style={{ backgroundImage: `url(${JSON.stringify(weekReading.imageUrl)})` }}

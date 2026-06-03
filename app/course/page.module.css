@@ -215,19 +215,27 @@
   overflow: hidden;
   width: 100%;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 14px;
   min-height: 92px;
   padding: 14px 16px;
-  background: #ffffff;
-  border: none;
-  border-left: 3px solid #5168FF;
+  background: color-mix(in srgb, #5168FF 7%, #ffffff);
+  border: 1px solid color-mix(in srgb, #5168FF 22%, rgba(26, 29, 51, 0.06));
   border-radius: 14px;
-  box-shadow: 0 2px 10px rgba(26, 29, 51, 0.07);
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
   cursor: pointer;
   text-align: left;
-  transition: border-color 0.15s ease, border-left-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.readingAccent {
+  width: 3px;
+  height: 28px;
+  border-radius: 999px;
+  background: #5168FF;
+  flex-shrink: 0;
+  opacity: 0.85;
 }
 
 .readingThumb {
@@ -254,8 +262,9 @@
 }
 
 .readingCard:hover {
-  border-left-color: #5168FF;
-  box-shadow: 0 4px 16px rgba(81, 104, 255, 0.12);
+  background: color-mix(in srgb, #5168FF 11%, #ffffff);
+  border-color: color-mix(in srgb, #5168FF 38%, rgba(26, 29, 51, 0.06));
+  box-shadow: 0 4px 16px rgba(81, 104, 255, 0.14);
   transform: translateY(-1px);
 }
 
@@ -271,12 +280,11 @@
   align-items: center;
   gap: 14px;
   padding: 14px 16px;
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(81, 104, 255, 0.05);
   backdrop-filter: blur(8px);
-  border: none;
-  border-left: 3px solid rgba(81, 104, 255, 0.28);
+  border: 1px solid rgba(81, 104, 255, 0.14);
   border-radius: 14px;
-  box-shadow: 0 2px 10px rgba(26, 29, 51, 0.07);
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
 }
 
 .readingMediaSkeleton {
@@ -455,9 +463,9 @@
 
 /* Reading card highlight when open in right panel */
 .readingCardActive {
-  border-color: rgba(81, 104, 255, 0.18) !important;
-  border-left-color: #5168FF !important;
-  box-shadow: 0 0 0 2px rgba(81, 104, 255, 0.08), 0 4px 16px rgba(81, 104, 255, 0.06) !important;
+  background: color-mix(in srgb, #5168FF 13%, #ffffff) !important;
+  border-color: color-mix(in srgb, #5168FF 45%, rgba(26, 29, 51, 0.06)) !important;
+  box-shadow: 0 4px 16px rgba(81, 104, 255, 0.14) !important;
 }
 
 /* ============================================ */
@@ -638,9 +646,8 @@
 }
 
 :global([data-theme="dark"]) .readingCard {
-  background: var(--color-surface-1);
-  border: none;
-  border-left: 3px solid var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface-1));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, rgba(255, 255, 255, 0.06));
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
 }
 
@@ -655,14 +662,14 @@
 }
 
 :global([data-theme="dark"]) .readingCardSkeleton {
-  background: var(--color-surface-1);
-  border: none;
-  border-left: 3px solid color-mix(in oklch, var(--color-primary) 40%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 10%, var(--color-surface-1));
+  border: 1px solid color-mix(in oklch, var(--color-primary) 28%, rgba(255, 255, 255, 0.06));
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.32);
 }
 
 :global([data-theme="dark"]) .readingCard:hover {
-  border-left-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface-1));
+  border-color: color-mix(in srgb, var(--color-primary) 45%, rgba(255, 255, 255, 0.08));
   box-shadow: 0 4px 20px rgba(139, 149, 255, 0.16);
 }
 
