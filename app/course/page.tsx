@@ -352,7 +352,7 @@ export default function CoursePage() {
 
           <BlueVideoPanel
             className={styles.blueVideo}
-            message="Twelve weeks. One creative life reclaimed. Pick up where you left off."
+            message="12 weeks. One creative life reclaimed. Pick up where you left off."
           />
 
           <div className={styles.weekNav}>
