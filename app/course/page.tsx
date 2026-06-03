@@ -7,6 +7,7 @@ import SideNavigation from '@/components/side-navigation/SideNavigation';
 import WeekTasksView from '@/components/week-tasks/WeekTasksView';
 import HomeWelcomeFlow from '@/components/home-welcome/HomeWelcomeFlow';
 import MobileSplash from '@/components/mobile-splash/MobileSplash';
+import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
 
@@ -346,55 +347,60 @@ export default function CoursePage() {
       <SideNavigation />
       <main className={`${styles.content} ${isDesktop ? styles.contentDesktop : ''}`} onFocus={handleFocus}>
 
-        {/* ── Left / main column — identical to original ── */}
+        {/* ── Left / main column ── */}
         <div className={isDesktop ? styles.leftCol : undefined}>
 
-          <div className={styles.weekHeader}>
+          <BlueVideoPanel
+            className={styles.blueVideo}
+            message="Twelve weeks. One creative life reclaimed. Pick up where you left off."
+          />
+
+          <div className={styles.weekNav}>
             <button
-              className={styles.weekArrow}
+              className={styles.weekNavArrow}
               onClick={() => goToWeek('prev')}
               onMouseEnter={() => play('hover')}
               disabled={seasonLoading || resolvedViewWeek <= 1}
               aria-label="Previous week"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M15 18l-6-6 6-6"/>
               </svg>
             </button>
-            <div className={styles.weekHeaderCenter}>
-              {seasonLoading ? (
-                <span className={`${styles.weekTitle} ${styles.skeletonTextWide} ${styles.skeletonBlock}`} />
-              ) : (
-                <span className={styles.weekTitle}>{WEEK_TITLES[resolvedViewWeek]}</span>
-              )}
+
+            <div className={styles.weekNavDots}>
+              {Array.from({ length: 12 }, (_, i) => {
+                const w = i + 1;
+                const status = getWeekStatus(w);
+                return (
+                  <button
+                    key={w}
+                    className={`${styles.weekDot} ${!seasonLoading && w === resolvedViewWeek ? styles.weekDotActive : ''} ${status?.isSealed ? styles.weekDotSealed : ''} ${seasonLoading ? styles.weekDotLoading : ''}`}
+                    onClick={() => { play('click'); setViewWeek(w); }}
+                    title={`Week ${w}: ${WEEK_TITLES[w]}`}
+                    disabled={seasonLoading}
+                  />
+                );
+              })}
             </div>
+
             <button
-              className={styles.weekArrow}
+              className={styles.weekNavArrow}
               onClick={() => goToWeek('next')}
               onMouseEnter={() => play('hover')}
               disabled={seasonLoading || resolvedViewWeek >= 12}
               aria-label="Next week"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M9 18l6-6-6-6"/>
               </svg>
             </button>
-          </div>
 
-          <div className={styles.weekDots}>
-            {Array.from({ length: 12 }, (_, i) => {
-              const w = i + 1;
-              const status = getWeekStatus(w);
-              return (
-                <button
-                  key={w}
-                  className={`${styles.weekDot} ${!seasonLoading && w === resolvedViewWeek ? styles.weekDotActive : ''} ${status?.isSealed ? styles.weekDotSealed : ''} ${seasonLoading ? styles.weekDotLoading : ''}`}
-                  onClick={() => { play('click'); setViewWeek(w); }}
-                  title={`Week ${w}: ${WEEK_TITLES[w]}`}
-                  disabled={seasonLoading}
-                />
-              );
-            })}
+            {seasonLoading ? (
+              <span className={`${styles.weekNavLabel} ${styles.skeletonTextWide} ${styles.skeletonBlock}`} />
+            ) : (
+              <span className={styles.weekNavLabel}>{WEEK_TITLES[resolvedViewWeek]}</span>
+            )}
           </div>
 
           <div

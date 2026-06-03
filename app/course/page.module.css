@@ -79,78 +79,78 @@
 }
 
 /* ============================================ */
-/* WEEK HEADER — Navigation between weeks       */
+/* BLUE VIDEO                                   */
 /* ============================================ */
 
-.weekHeader {
+.blueVideo {
+  margin: 16px 0 0;
+}
+
+/* ============================================ */
+/* WEEK NAV — compact single-row navigation     */
+/* ============================================ */
+
+.weekNav {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin: 20px 0 8px;
-  padding: 0 4px;
+  gap: 8px;
+  margin: 12px 0 12px;
+  padding: 0 2px;
 }
 
-.weekHeaderCenter {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.weekLabel {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 700;
-  color: rgba(26, 29, 51, 0.35);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-.weekTitle {
-  font-family: var(--font-secondary);
-  font-size: 20px;
-  font-weight: 700;
-  color: #1A1D33;
-  letter-spacing: -0.01em;
-}
-
-.weekArrow {
-  width: 34px;
-  height: 34px;
+.weekNavArrow {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(6px);
   border: 1px solid rgba(26, 29, 51, 0.1);
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
   color: #1A1D33;
   transition: all 0.15s ease;
 }
 
-.weekArrow:hover:not(:disabled) {
+.weekNavArrow:hover:not(:disabled) {
   background: #fff;
   border-color: rgba(81, 104, 255, 0.25);
-  box-shadow: 0 2px 8px rgba(81, 104, 255, 0.08);
+  box-shadow: 0 2px 6px rgba(81, 104, 255, 0.1);
 }
 
-.weekArrow:active:not(:disabled) {
-  transform: scale(0.95);
+.weekNavArrow:active:not(:disabled) {
+  transform: scale(0.93);
 }
 
-.weekArrow:disabled {
-  opacity: 0.25;
+.weekNavArrow:disabled {
+  opacity: 0.22;
   cursor: not-allowed;
 }
 
-/* Week Dots */
-.weekDots {
+.weekNavDots {
+  flex: 1;
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 6px;
-  margin-bottom: 16px;
+  gap: 5px;
 }
+
+.weekNavLabel {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(26, 29, 51, 0.55);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  min-width: 48px;
+  text-align: right;
+}
+
+/* Week Dots */
 
 .weekDot {
   width: 10px;
@@ -221,12 +221,13 @@
   min-height: 92px;
   padding: 14px 16px;
   background: #ffffff;
-  border: 1px solid rgba(26, 29, 51, 0.08);
+  border: 1px solid rgba(26, 29, 51, 0.06);
+  border-left: 3px solid #5168FF;
   border-radius: 14px;
   box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
   cursor: pointer;
   text-align: left;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  transition: border-color 0.15s ease, border-left-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
 }
 
 .readingThumb {
@@ -253,8 +254,9 @@
 }
 
 .readingCard:hover {
-  border-color: rgba(81, 104, 255, 0.22);
-  box-shadow: 0 4px 16px rgba(81, 104, 255, 0.08);
+  border-color: rgba(81, 104, 255, 0.14);
+  border-left-color: #5168FF;
+  box-shadow: 0 4px 16px rgba(81, 104, 255, 0.10);
   transform: translateY(-1px);
 }
 
@@ -272,7 +274,8 @@
   padding: 14px 16px;
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(26, 29, 51, 0.08);
+  border: 1px solid rgba(26, 29, 51, 0.06);
+  border-left: 3px solid rgba(81, 104, 255, 0.28);
   border-radius: 14px;
   box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
 }
@@ -453,8 +456,9 @@
 
 /* Reading card highlight when open in right panel */
 .readingCardActive {
-  border-color: rgba(81, 104, 255, 0.3) !important;
-  box-shadow: 0 0 0 3px rgba(81, 104, 255, 0.08), 0 4px 16px rgba(81, 104, 255, 0.06) !important;
+  border-color: rgba(81, 104, 255, 0.18) !important;
+  border-left-color: #5168FF !important;
+  box-shadow: 0 0 0 2px rgba(81, 104, 255, 0.08), 0 4px 16px rgba(81, 104, 255, 0.06) !important;
 }
 
 /* ============================================ */
@@ -567,27 +571,19 @@
     padding: 16px 14px calc(96px + env(safe-area-inset-bottom, 0px));
   }
 
-  .weekHeader {
-    margin: 14px 0 6px;
+  .weekNav {
+    gap: 6px;
+    margin: 10px 0 10px;
   }
 
-  .weekTitle {
-    font-size: 18px;
-  }
-
-  .weekArrow {
-    width: 30px;
-    height: 30px;
-  }
-
-  .weekDots {
-    gap: 5px;
-    margin-bottom: 12px;
+  .weekNavLabel {
+    font-size: 10px;
+    min-width: 40px;
   }
 
   .weekDot {
-    width: 8px;
-    height: 8px;
+    width: 7px;
+    height: 7px;
   }
 
   .readingCard {
@@ -609,12 +605,8 @@
 /* DARK MODE OVERRIDES                          */
 /* ============================================ */
 
-:global([data-theme="dark"]) .weekTitle {
-  color: var(--color-text-dark);
-}
-
-:global([data-theme="dark"]) .weekLabel {
-  color: var(--color-text-faint);
+:global([data-theme="dark"]) .weekNavLabel {
+  color: var(--color-text-muted);
 }
 
 :global([data-theme="dark"]) .skeletonBlock {
@@ -625,13 +617,13 @@
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
 }
 
-:global([data-theme="dark"]) .weekArrow {
+:global([data-theme="dark"]) .weekNavArrow {
   background: color-mix(in oklch, var(--color-surface-1) 95%, transparent);
   border-color: var(--color-border-subtle);
   color: var(--color-text-dark);
 }
 
-:global([data-theme="dark"]) .weekArrow:hover:not(:disabled) {
+:global([data-theme="dark"]) .weekNavArrow:hover:not(:disabled) {
   background: color-mix(in oklch, var(--color-primary) 14%, transparent);
 }
 
@@ -649,6 +641,7 @@
 :global([data-theme="dark"]) .readingCard {
   background: var(--color-surface-1);
   border-color: var(--color-border-subtle);
+  border-left-color: var(--color-primary);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
@@ -665,11 +658,13 @@
 :global([data-theme="dark"]) .readingCardSkeleton {
   background: var(--color-surface-1);
   border-color: var(--color-border-subtle);
+  border-left-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 :global([data-theme="dark"]) .readingCard:hover {
-  border-color: color-mix(in oklch, var(--color-primary) 34%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 22%, transparent);
+  border-left-color: var(--color-primary);
   box-shadow: 0 4px 20px rgba(139, 149, 255, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
