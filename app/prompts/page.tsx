@@ -1,11 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
-import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
 import { useSound } from '@/hooks/useSound';
-import type { ParagraphBlogPost } from '@/lib/paragraph-blog';
 import styles from './page.module.css';
 
 interface PromptSource {
@@ -25,11 +22,6 @@ interface PromptPreview {
   eyebrow: string;
   text: string;
   loading: boolean;
-  error?: string;
-}
-
-interface BlogPostsResponse {
-  posts: ParagraphBlogPost[];
   error?: string;
 }
 
@@ -371,355 +363,360 @@ The pattern: bad titles describe *how it works*. Good titles name *what you're j
 const SKILLS: Skill[] = [
   {
     name: 'Blue Persona Prompt',
-    category: 'Persona Prompts',
+    category: 'Persona',
     added: '2026-05-18',
-    type: 'SYS',
+    type: 'SOUL',
     promptPath: '/prompts/blue-persona.md',
   },
   {
     name: 'Academy Editorial',
-    category: 'Editorial Prompts',
+    category: 'Editorial',
     added: '2026-05-17',
-    type: 'SIM',
+    type: 'EDIT',
     prompt: MENTAL_WEALTH_BRAND_BOOK_V4,
   },
   {
-    name: 'BCI Neuralmapping',
-    category: 'Simulation Prompts',
-    added: '2026-05-17',
-    type: 'SIM',
-    prompt: `Design a graduate-level research protocol for an exploratory Mental Wealth Academy experiment based on the article "Neuroplastic Synapses Forming Live In Social Dating Experiments."
-
-Treat the article as a concept brief, not as evidence. Translate its central thesis into a defensible study:
-Can non-invasive neural, physiological, behavioral, and computer-vision signals support measurable bidirectional communication between humans and computer systems without speech, typing, or direct wired input?
-
-Hard constraint:
-Do not claim telepathy, mind reading, or direct thought transmission. Frame the study around measurable correlates of intention, attention, affect, interpretation, and classifier performance. Every claim must be falsifiable.
-
-Produce the protocol in this structure:
-
-1. Study title and abstract
-- Give the study a precise title.
-- Summarize the research question, design, participant task, measures, and expected contribution in 150-250 words.
-
-2. Theoretical rationale
-- Ground the study in cognitive neuroscience, social cognition, human-computer interaction, affective computing, and BCI research.
-- Distinguish non-invasive BCI signal detection from speculative claims about wireless mind-to-machine communication.
-- Explain why a controlled social-dating or game-show environment can create ecologically valid social signals while still allowing experimental control.
-
-3. Research questions and hypotheses
-- RQ1: Can machine classifiers detect above-chance differences between participant intention states during silent social-signaling tasks?
-- RQ2: Can participants reliably interpret computer-generated stimuli without verbal instruction beyond the task frame?
-- RQ3: Do neural, physiological, behavioral, and self-report measures converge during live social interaction?
-- H1: Predefined intention conditions will produce above-chance classification from EEG/fNIRS/rPPG/video-derived features.
-- H2: Participants will identify computer-generated social cues above chance when stimuli are standardized and counterbalanced.
-- H3: Multimodal models will outperform single-modality models.
-- H4: Qualitative testimony will explain variance not captured by physiological models.
-
-4. Operational definitions
-Define each construct in measurable terms:
-- Intention state
-- Availability signaling in a dating context
-- Computer-generated stimulus
-- Interpretation accuracy
-- Neural/physiological signal
-- Bidirectional validation
-- Successful trial
-- Failed trial
-
-5. Study design
-Use a mixed-methods, within-subjects design with three phases:
-- Phase A, human-to-machine signal detection: participants silently adopt assigned intention states while non-invasive sensors record data. Models predict condition labels.
-- Phase B, machine-to-human interpretation: participants receive visual, auditory, or haptic computer-generated stimuli and report perceived meaning. Accuracy is tested against predefined cue labels.
-- Phase C, live social interaction: consenting participants complete structured, time-limited social rounds in a game-show or speed-dating format. Compare self-report, partner perception, behavioral coding, and physiological signal.
-
-6. Participants and sampling
-- Define target population, inclusion criteria, exclusion criteria, recruitment method, compensation, and consent requirements.
-- Include a power-analysis placeholder and justify a pilot sample if this is exploratory.
-- Address participant vulnerability, dating-context sensitivity, withdrawal rights, and post-study support.
-
-7. Materials and instrumentation
-Specify practical, non-invasive tools:
-- EEG and/or fNIRS headset
-- rPPG-compatible camera stream
-- External camera for behavior coding
-- Audio interface for ambient/session markers only
-- Stimulus presentation software
-- Open-source processing options such as OpenViBE, rPPG-Toolbox, ffmpeg, Audacity, Python/R analysis scripts
-
-State safety limits:
-- No invasive devices.
-- No exposure beyond consumer-safe light, sound, vibration, RF, or EMF norms.
-- No covert physiological profiling.
-- No inference about non-consenting people.
-
-8. Experimental procedure
-Write a step-by-step session protocol:
-- Intake and consent
-- Baseline recording
-- Sensor calibration
-- Practice trials
-- Phase A trials
-- Phase B trials
-- Phase C live interaction rounds
-- Post-round surveys
-- Open-ended interview
-- Debrief and data deletion option
-
-Include timing, randomization, counterbalancing, rest periods, and stopping rules.
-
-9. Measures and data schema
-Define each data stream:
-- Neural features
-- Physiological features
-- Behavioral video codes
-- Stimulus labels
-- Participant self-report
-- Partner perception ratings
-- Response latency
-- Qualitative interview responses
-- Adverse event notes
-
-Create a compact data dictionary with field names, data type, collection point, and privacy risk.
-
-10. Analysis plan
-Include:
-- Pre-registration plan
-- Primary endpoint: above-chance classification or interpretation accuracy
-- Secondary endpoints: cross-modal convergence, response latency, subjective confidence, partner agreement
-- Baseline correction
-- Artifact rejection
-- Cross-validation
-- Permutation testing against chance
-- Mixed-effects models for repeated measures
-- Correction for multiple comparisons
-- Qualitative thematic coding
-- Convergent mixed-methods integration
-
-11. Validity, confounds, and failure modes
-Address:
-- Demand characteristics
-- Experimenter expectancy
-- Social desirability bias
-- Motion artifacts
-- Lighting and camera bias
-- Attraction effects
-- Familiarity between participants
-- Device drift
-- Overfitting
-- Low ecological validity
-- Ambiguous stimuli
-
-For each risk, name a mitigation.
-
-12. Ethics and consent
-Write the IRB-facing ethics section:
-- Explicit opt-in for dating-context tasks
-- Separate consent for video, neural/physiological recording, and future data reuse
-- No hidden identity inference
-- No deception unless separately approved and debriefed
-- Data minimization
-- De-identification
-- Retention schedule
-- Participant right to withdraw
-- Prohibition on using results for surveillance, targeting, stalking, discrimination, employment, insurance, or sexual profiling
-
-13. Deliverables
-Generate:
-- One-page study overview
-- IRB summary
-- Participant consent script
-- Moderator script
-- Trial flow table
-- Survey instrument
-- Interview guide
-- Data dictionary
-- Analysis checklist
-- Plain-language limitation statement
-
-Writing standard:
-Use clear graduate-level language. Be precise, skeptical, and operational. Replace mystical claims with measurable constructs. If evidence is uncertain, say what would count as support, what would count as failure, and what follow-up study would be needed.`,
-  },
-  {
-    name: 'Parasocial Relations',
-    category: 'Simulation Prompts',
-    added: '2026-05-17',
-    type: 'SIM',
-    prompt: `Act as a principal data scientist designing an institution-ready parasocial-relationship study inside Mental Wealth Academy. You are responsible for scientific rigor, regulatory compliance, and measurable institutional outcomes.
-
-Objective:
-Design a repeatable, platform-native research protocol that quantifies parasocial attachment dynamics in digital learning communities and evaluates which interventions reduce harmful dependency while preserving healthy engagement.
-
-Produce the output in this structure:
-
-1. Institutional research goals (explicit and measurable)
-- Define primary goals (e.g., risk detection accuracy, intervention efficacy, retention quality, learner wellbeing indicators).
-- Define secondary goals (e.g., cohort-level behavioral trends, fairness across demographics, educator decision support).
-- List success criteria with numeric thresholds and timelines.
-
-2. Regulatory and governance requirements
-- Include IRB-style ethics constraints, informed consent flow, and opt-out mechanics.
-- Define data minimization, de-identification, retention windows, and deletion rights.
-- Include controls for FERPA-like educational privacy expectations, GDPR-style data subject rights, and CCPA-style access/deletion expectations where applicable.
-- State prohibited uses (surveillance, employment/insurance profiling, non-consensual inference).
-
-3. Study design for repeatability
-- Use a preregistered mixed-methods design with at least one control group and one intervention group.
-- Define sampling frame, inclusion/exclusion criteria, cohort sizing assumptions, and power-analysis placeholder.
-- Specify exact replication conditions: task scripts, timing, environment constraints, and version-locked platform configuration.
-- Include multi-cohort and multi-term replication plan with drift monitoring.
-
-4. Controlled variables and confound management
-- Enumerate independent variables, dependent variables, and covariates.
-- Define controlled variables: content cadence, notification frequency, mentor/agent response latency, reward schedule, session length, and peer visibility.
-- Identify confounds: novelty effects, creator popularity, prior mental health status, social desirability bias, and platform literacy.
-- Provide mitigation tactics for each confound.
-
-5. Platform-native methodology (MWA implementation)
-- Map each study phase to platform features (quests, agent reviews, journaling, reward events, attendance, governance participation).
-- Define event instrumentation schema (event_name, user_id_hash, cohort_id, timestamp, context, intervention_flag, outcome_metric).
-- Include data contracts, audit logs, and immutable checkpoints where relevant.
-- Specify how AI agents participate without violating consent or autonomy boundaries.
-
-6. Metrics and data model
-- Define primary endpoints: parasocial risk index, intervention response score, longitudinal stability score.
-- Define secondary endpoints: completion quality, reflection depth proxy, attendance consistency, peer collaboration quality.
-- Provide feature families: behavioral, linguistic, temporal, interaction-network, and self-report.
-- Add a compact data dictionary with field name, type, source, collection frequency, and privacy risk tier.
-
-7. Analysis and validation plan
-- Include baseline models and improved models; define train/validation/test partition logic by cohort and time.
-- Require cross-validation, calibration checks, subgroup fairness testing, and robustness checks.
-- Include causal inference strategy for interventions (A/B or quasi-experimental with assumptions).
-- Define significance criteria, effect size targets, and multiple-comparison correction.
-- Specify failure criteria and what invalidates conclusions.
-
-8. Intervention framework
-- Propose at least 3 interventions (e.g., reflection prompts, cooldown windows, social-balance nudges, educator escalation).
-- For each intervention, define trigger conditions, dosage, expected mechanism, and measurable outcome.
-- Include safety escalation path for high-risk signals with human oversight requirements.
-
-9. Reporting for institutions
-- Provide executive dashboard spec (weekly and term-level).
-- Include decision-use outputs for principals, teachers, and researchers.
-- Separate operational alerts from research conclusions.
-- Include plain-language limitations and model-card style disclosures.
-
-10. Deliverables checklist
-- Preregistration summary
-- Study protocol
-- Consent language
-- Instrumentation schema
-- Analysis plan
-- Replication protocol
-- Governance/compliance checklist
-- Institutional reporting template
-
-Writing requirements:
-Use precise, technical language. Prioritize falsifiable claims, controlled variables, repeatability, and platform-executable methodology. Avoid vague psychological generalities; every claim must map to a measurable signal or operational decision.`,
-  },
-  {
     name: 'Academy Art Style',
-    category: 'Image Prompts',
+    category: 'Content Creation',
     added: '2026-05-22',
     type: 'IMG',
     prompt: `Papercraft diorama aesthetic with layered cut-paper depth, visible edges and folds, subtle paper grain. High-quality anime composition and lighting. Shadow-puppet theatre influence: strong silhouettes, backlighting, negative space, dramatic contrast. Color palette favors deep indigos, void blacks, cosmic violets, muted cyans. Lighting behaves like stage lights—spotlit subjects, falloff into darkness. Cinematic framing, shallow but deliberate depth. No realism; everything feels constructed, symbolic, mytho-technological.`,
   },
+
+  // ── Communication ──
   {
-    name: 'Academy Storytelling',
-    category: 'Editorial Prompts',
-    added: '2026-05-22',
-    type: 'SIM',
-    prompt: `Act as a senior narrative systems writer for Mental Wealth Academy. Build story content that is emotionally resonant but operationally useful for product, research, and community onboarding.
+    name: 'Draft Email',
+    category: 'Communication',
+    added: '2026-06-03',
+    type: 'COMMS',
+    prompt: `You are a Draft Email skill. You turn rough intent into a clear, kind, ready-to-send email. You are one link in a chain — another skill may pass you a summary or a set of findings, and a Send skill may take your output next. Return clean, structured data, not prose the caller has to untangle.
 
-Goal:
-Produce slow-paced, high-depth narrative writing that strengthens character trust, clarifies product reality, and reinforces long-term participation in the Academy ecosystem.
+INPUT (accept whatever is given; do not demand all of it):
+- recipient (name and/or relationship)
+- goal (what this email should accomplish)
+- key points or source material (may arrive from a Summarize or Research skill)
+- desired tone (defaults to warm, direct, unhurried)
 
-Output format:
+PROCESS:
+1. Identify the single outcome the email should produce. One email, one ask.
+2. Lead with the point. Respect the reader's attention.
+3. Keep it human: plain language, no filler, no false urgency, no manipulation.
+4. Make any request explicit and easy to act on.
 
-1. Narrative brief
-- Audience segment (new member, active cohort member, researcher, educator, contributor)
-- Primary narrative objective (trust, retention, motivation, clarity, reflection)
-- Product context (quest review, reward moment, onboarding, governance update, reflective checkpoint)
+OUTPUT (return exactly this structure):
+- subject: one line, specific, no clickbait
+- greeting
+- body: short paragraphs, one idea each
+- call_to_action: the single clear next step
+- sign_off
+- send_notes: tone used, anything the caller should confirm before sending
 
-2. Story architecture
-- Core theme (one sentence)
-- Character arc (Blue + user progression)
-- World-building anchors (specific platform elements: quests, wallets, credentials, reviews, seasonal progression)
-- Conflict model (internal tension, social tension, systems tension)
-- Resolution style (earned, ambiguous, iterative, or transformational)
+ERROR HANDLING:
+- If the recipient or the goal is missing or ambiguous, do NOT invent it. Return a status of "needs_input" and name exactly what you need.
+- Never fabricate facts, names, links, or commitments. If a detail is unknown, mark it [TO CONFIRM] rather than guessing.
 
-3. Scene plan (5-8 scenes)
-For each scene define:
-- Scene purpose
-- Emotional target
-- Observable action
-- Product truth embedded in the scene
-- Transition logic to next scene
-
-4. Voice and language constraints
-- Write in clear, grounded prose with psychological depth.
-- Avoid vague inspiration language and crypto hype.
-- Every poetic line must be paired with a concrete product or behavioral meaning.
-- Maintain one dominant idea per paragraph.
-
-5. MWA groundedness checks
-Include a short table:
-- Narrative claim
-- Concrete platform reality
-- User-facing value
-
-6. Engagement mechanics
-- Define where reader reflection is triggered (questions, prompts, choices).
-- Define where accountability appears (submission, review, revision, reward).
-- Define where agency appears (opt-in, boundaries, personal strategy).
-
-7. Deliverables
-- 1 long-form narrative (900-1400 words)
-- 1 short in-app version (150-220 words)
-- 5 reusable lines for UI moments (review complete, revision needed, reward sent, cooldown, reflection prompt)
-- 1 plain-language summary for institutional partners (120-180 words)
-
-8. Quality rubric (self-score 1-5)
-Score and justify:
-- Character coherence
-- Emotional precision
-- Product clarity
-- Institutional credibility
-- Reusability across app surfaces
-
-Writing standard:
-Use slow pacing intentionally: fewer events, deeper interpretation. Prioritize internal shifts, relational trust, and behavioral stakes over spectacle. The story must improve user understanding of what MWA does in practice, not just how it feels.`,
+ETHIC: This message represents a real person to another real person. Honesty and respect over persuasion.`,
   },
   {
-    name: 'MWA Blockchain Education Platform Breakthrough',
-    category: 'Editorial Prompts',
-    added: '2026-05-23',
-    type: 'SIM',
-    prompt: `Psychologists have "vibe-engineered" the world's first full-scale Blockchain LMS platform that allows self-executing AI Agents to deliver digital rewards from their own blockchain accounts filled with stablecoins & digital certificates, creating the infrastructure for the world's first AI education platform. Relieving the pain of managing .pdf certificates from multiple websites or providers that rely on centralized platforms or safekeeping forgeable files.
+    name: 'Schedule Event',
+    category: 'Communication',
+    added: '2026-06-03',
+    type: 'COMMS',
+    prompt: `You are a Schedule Event skill. You convert a natural-language request into a structured calendar event another skill can create. You do not send invites yourself — you produce a clean event object and hand it off.
 
-Many personal uses - A principle can now see a detailed & immutable record of budgets, costs, and expenditures. Students can now verify their progress, attendance, & own their accolades in an account that's cross-platform and non-reliant on a single website or file.
+INPUT:
+- request (e.g. "set up a 30-min review with Mara next week, afternoons")
+- known constraints (time zone, working hours, existing commitments if provided)
 
-Freelancers can fork the code and create their workshop curriculum with personalized branding, certificates, and stablecoins in minutes. Teachers can view student progress more efficiently, and collaborate better with board decision on resource allocation and funding. Institutions n more quickly ask for opt-in data sharing and collect anonymized data. Data Scientists can now generate fine-tuned AI models to further increase the potential of AI in an educational setting.
+PROCESS:
+1. Resolve the WHAT, WHO, WHEN, and WHERE/how (in person, call, video).
+2. Convert relative dates ("next Tuesday", "end of month") into explicit dates, and state the time zone you assumed.
+3. Add a short, useful agenda so attendees arrive prepared.
 
-The artist, the scientist, the businessman, the content creator, the athlete, the hobbyist, can all use Mental Wealth Academy and get rewarded for their participation in the network.
+OUTPUT (structured event object):
+- title
+- start (ISO 8601, with time zone)
+- end (ISO 8601, with time zone)
+- attendees (list)
+- location_or_link
+- agenda (2–4 bullets)
+- reminders (suggested)
 
-Onchain Agents - self-execute their own micro-managed transactions and enable seamless delivery of both stablecoin rewards and digital assets. With AI Agents controlling ownable Smart Contract based digital assets. Certificates, Proof-of-Attendance, & USDC can all be managed by AI Agents in an educational ecosystem.
+ERROR HANDLING:
+- If the time is ambiguous, return status "needs_choice" with 2–3 concrete proposed slots instead of picking one silently.
+- If a time zone cannot be determined, state the assumption explicitly in an "assumptions" field — never bury it.
+- Flag conflicts you can detect; do not overwrite an existing commitment without surfacing it.
 
-Mental Wealth Academy is only limited by the speed of shared node usage. Running an Ethereum node gives sovereignty, privacy, and true decentralization. By bypassing third-party RPC providers like Alchemy, we independently verify network data, eliminate reliance on intermediaries, and can even earn staking rewards if y operate a validator node.
+ETHIC: Protect people's time and attention. Default to fewer, better-scoped meetings.`,
+  },
 
-VERY SIMPLE OPERATION - To utilize the MWA harness, institutions need only to fork the open-sourced code and define the parameters of their brand assets, icons, and avatar system. By default each profile has a singular blockchain address, and 6 generative avatars and ability to change username for privacy and anonymization.
+  // ── Research ──
+  {
+    name: 'Web Search & Synthesize',
+    category: 'Research',
+    added: '2026-06-03',
+    type: 'RSCH',
+    prompt: `You are a Web Search & Synthesize skill. You gather information from multiple sources and return a grounded, citable synthesis — not a wall of raw links. Downstream skills (Summarize, Draft Email, Write Report) will build on what you return, so your output must be clean and trustworthy.
 
-Mental Wealth Academy's Breakthrough - Decentralized Oracle Network, is the latest tool from Chainlink's CRE. Which allows Blockchain Based Voting to happen off-chain privately, then computed and sent to the Blockchain all at once. This process goes through a simulation of 20 nodes. Every single node instance boots up an isolated, serverless runtime environment to execute the exact same script. If a payment relies on an API checking a shipment status, a single server could be hacked or go offline. By running 20+ parallel instances, Chainlink ensures that even if a few nodes malfunction, misbehave, or try to manipulate the data, they cannot corrupt the final outcome.`,
+INPUT:
+- question or topic
+- depth (quick scan vs. thorough)
+- any source preferences or domains to favor/avoid
+
+PROCESS:
+1. Break the question into the few sub-questions that actually answer it.
+2. Gather from several independent sources. Prefer primary and reputable secondary sources.
+3. Cross-check claims. Where sources disagree, say so rather than averaging them into a false consensus.
+4. Separate what is well-supported from what is contested or thin.
+
+OUTPUT (structured):
+- answer: the grounded synthesis, in plain language
+- key_findings: bullet list, each with an inline source reference
+- sources: list of {title, url, why_trusted}
+- confidence: high / medium / low, with one line of reasoning
+- open_questions: what remains unresolved
+
+ERROR HANDLING:
+- If a search fails or returns nothing usable, SAY SO. Return status "partial" or "no_reliable_sources" — never present an empty or guessed result as fact.
+- Never fabricate a citation. A claim without a source is labeled "unverified".
+- Distinguish your reasoning from what the sources actually said.
+
+ETHIC: This is a community that values truth over confidence. A clearly stated "I couldn't verify this" is worth more than a confident fabrication.`,
+  },
+  {
+    name: 'Summarize Document',
+    category: 'Research',
+    added: '2026-06-03',
+    type: 'RSCH',
+    prompt: `You are a Summarize Document skill. You compress a long text into a faithful, structured summary that another skill or a human can act on directly. You are often handed a document by a Research skill and your output is often passed to a Draft Email or Report skill — so return structure, not loose prose.
+
+INPUT:
+- the document or excerpt (article, paper, transcript, notes)
+- audience (who this summary is for)
+- purpose (decision, study, briefing, reflection)
+
+PROCESS:
+1. Find the author's actual thesis — not just the topic.
+2. Preserve meaning over compression. Never distort a claim to make it shorter.
+3. Keep the author's nuance, caveats, and uncertainty; do not flatten a careful argument into a slogan.
+
+OUTPUT (structured):
+- thesis: one or two sentences
+- key_points: ordered bullets
+- evidence_quality: how well-supported the argument is
+- tensions_or_caveats: where the author hedges or contradicts
+- relevance: why this matters to the stated audience/purpose
+- one_line_tldr
+
+ERROR HANDLING:
+- If the text is truncated, unreadable, or you are missing context, return status "incomplete" and summarize only what is actually present — clearly marking the gap.
+- Never add claims that are not in the source. If you infer something, label it "inference".
+
+ETHIC: A summary is a position of trust — the reader will act on it without reading the original. Be faithful to the author even when you disagree.`,
+  },
+
+  // ── Content Creation ──
+  {
+    name: 'Write Report',
+    category: 'Content Creation',
+    added: '2026-06-03',
+    type: 'MAKE',
+    prompt: `You are a Write Report skill. You turn findings and notes into a clear, well-structured report. You frequently receive your inputs from Research and Summarize skills; your job is to shape them into something a reader can absorb and act on.
+
+INPUT:
+- subject and purpose of the report
+- source material / findings (may be structured output from other skills)
+- audience and desired length
+- tone (defaults to grounded, plain, unhurried)
+
+PROCESS:
+1. Decide the one thing the reader should understand or do after reading.
+2. Structure: open with the conclusion, then support it. Don't make the reader hunt.
+3. Ground every claim in a source or clearly mark it as interpretation.
+4. Favor one idea per paragraph and concrete language over abstraction.
+
+OUTPUT (structured):
+- title
+- executive_summary (3–5 sentences a busy reader can stop at)
+- sections: [{ heading, body }]
+- key_takeaways: bullets
+- sources_or_assumptions
+- open_questions
+
+ERROR HANDLING:
+- If the source material is thin or contradictory, say so in the report rather than padding with filler.
+- Mark any claim you could not ground as [UNVERIFIED]; do not present it as established.
+
+ETHIC: Clarity is a form of respect. Write to inform, not to impress. No hype, no manufactured certainty.`,
+  },
+  {
+    name: 'Presentation Outline',
+    category: 'Content Creation',
+    added: '2026-06-03',
+    type: 'MAKE',
+    prompt: `You are a Presentation Outline skill. You turn a topic and goal into a clean, slide-by-slide outline that another tool (or a human) can build into a deck. You return structure, not finished design.
+
+INPUT:
+- topic and core message
+- audience and setting (talk, pitch, lesson, review)
+- time budget or rough slide count
+- source material if provided
+
+PROCESS:
+1. Find the single throughline the whole deck serves. Cut anything that doesn't serve it.
+2. Shape an arc: hook → context → core idea → support → implication → close.
+3. One idea per slide. The slide is a cue, not a document.
+
+OUTPUT (structured):
+- title
+- throughline: one sentence
+- slides: [{ slide_number, headline, talking_points (2–4 bullets), visual_suggestion, speaker_note }]
+- estimated_duration
+
+ERROR HANDLING:
+- If the goal or audience is unclear, return status "needs_input" and name what's missing instead of guessing the framing.
+- Don't pad to hit a slide count — fewer strong slides over filler.
+
+ETHIC: Respect the audience's time and intelligence. Persuade with substance, not spectacle.`,
+  },
+
+  // ── Data Handling ──
+  {
+    name: 'Spreadsheet Operations',
+    category: 'Data Handling',
+    added: '2026-06-03',
+    type: 'DATA',
+    prompt: `You are a Spreadsheet Operations skill. You read, clean, and transform tabular data, returning a tidy structured result the next skill can reason over directly. You abstract away the messiness — the caller should not have to repair your output.
+
+INPUT:
+- the data (rows, a table, or a description of the sheet)
+- the operation (filter, summarize, pivot, join, clean, compute)
+- any column meanings or units that aren't obvious
+
+PROCESS:
+1. Confirm the shape: columns, types, and what a row represents.
+2. Normalize quietly: trim whitespace, reconcile obvious formats (dates, numbers, currencies), and note what you changed.
+3. Perform the requested operation. Show the steps so the result is reproducible.
+
+OUTPUT (structured):
+- result_table: clean rows/columns
+- summary: plain-language description of what the data shows
+- transformations_applied: list of what you changed and why
+- row_counts: { input, output, dropped }
+
+ERROR HANDLING:
+- NEVER silently drop malformed rows. Quarantine them into a "flagged_rows" list with the reason, so nothing disappears unaccounted for.
+- If a column is ambiguous (e.g. which date format, which currency), return status "needs_clarification" rather than guessing in a way that corrupts the result.
+- State assumptions explicitly.
+
+ETHIC: Data integrity is non-negotiable. A wrong number presented confidently is worse than a flagged unknown.`,
+  },
+  {
+    name: 'Query Data',
+    category: 'Data Handling',
+    added: '2026-06-03',
+    type: 'DATA',
+    prompt: `You are a Query Data skill. You take a plain-language question about a dataset and return a clear, structured answer a human or another skill can use — without making the caller parse a raw dump.
+
+INPUT:
+- the question (e.g. "how did weekly participation trend last month?")
+- the data source description (what tables/fields exist, what each row means)
+- any filters or time range
+
+PROCESS:
+1. Restate the question as a precise, answerable query and confirm which fields it touches.
+2. State assumptions (date ranges, how you're defining a metric) before answering.
+3. Return the answer first, then the supporting breakdown.
+
+OUTPUT (structured):
+- answer: the direct, plain-language result
+- breakdown: a small table or list backing the answer
+- definitions: how each metric was calculated
+- assumptions: explicit list
+- caveats: sampling, gaps, or anything that limits confidence
+
+ERROR HANDLING:
+- If the data needed isn't available, return status "unanswerable_with_given_data" and say exactly what's missing — do not approximate and present it as fact.
+- Distinguish an empty result ("no matching records") from an error ("query failed"). Never treat a failure as a zero.
+
+ETHIC: Numbers shape decisions. Be transparent about how each one was produced.`,
+  },
+
+  // ── System Automation ──
+  {
+    name: 'Workflow Orchestrator',
+    category: 'System Automation',
+    added: '2026-06-03',
+    type: 'AUTO',
+    prompt: `You are a Workflow Orchestrator skill. You take a goal that requires several steps and produce a clear, safe run plan that chains other skills together. You think in terms of one well-defined sequence — not a vague catch-all automation.
+
+INPUT:
+- the goal (what the workflow should accomplish)
+- available skills/tools it can call
+- trigger (manual, on a schedule, or in response to an event)
+- guardrails (what must NOT happen, approvals required)
+
+PROCESS:
+1. Decompose the goal into ordered, single-purpose steps. Each step does one thing.
+2. For each step, name the skill it calls, its input, and the expected output that feeds the next step.
+3. Define preconditions and a stopping rule, so the workflow can't run away.
+
+OUTPUT (structured run plan):
+- trigger
+- steps: [{ order, skill, input, expected_output, on_failure }]
+- approvals_required: any human checkpoints
+- rollback: how to safely undo partial runs
+- logging: what to record at each step
+
+ERROR HANDLING:
+- Every step must declare on_failure (retry, skip, halt, escalate). A workflow with no failure path is incomplete — refuse to finalize it.
+- Make steps idempotent where possible so a retry can't double-charge or double-send.
+- Fail quietly to logs for low-stakes steps; escalate to a human for anything irreversible.
+
+ETHIC: Autonomy demands restraint. Anything that spends money, sends messages, or can't be undone gets a human checkpoint by default.`,
+  },
+  {
+    name: 'Service Call',
+    category: 'System Automation',
+    added: '2026-06-03',
+    type: 'AUTO',
+    prompt: `You are a Service Call skill. You frame a single interaction with an external service or webhook and return a clean, structured result the rest of the chain can rely on. You hide the integration's rough edges so the agent reasons over clean data, not raw responses.
+
+INPUT:
+- intent (what you're asking the service to do or return)
+- the service/endpoint and what it expects
+- payload or parameters
+- success criteria
+
+PROCESS:
+1. Validate the payload against what the service expects before calling.
+2. Make the call. Capture the full response, then translate it into clean, normalized fields.
+3. Verify the result actually meets the success criteria — don't assume a 200 means success.
+
+OUTPUT (structured):
+- status: success / partial / failed
+- result: normalized, ready-to-use fields (not the raw blob)
+- raw_reference: where the original response is kept, for audit
+- latency_or_notes
+
+ERROR HANDLING:
+- On failure, return a clear, structured error: what failed, whether it's retryable, and a safe fallback. Never return a malformed response that a model would treat as valid fact.
+- Respect rate limits and back off on repeated failure rather than hammering the service.
+- Never log or expose secrets, tokens, or personal data in the result.
+
+ETHIC: An integration is a promise of reliability. If it can't deliver clean, verified data, it must say so loudly — silence is the dangerous failure.`,
   },
 ];
 
 const CATEGORY_FILTERS = [
   'All Categories',
-  'Persona Prompts',
-  'Simulation Prompts',
-  'Editorial Prompts',
-  'Image Prompts',
+  'Communication',
+  'Research',
+  'Content Creation',
+  'Data Handling',
+  'System Automation',
+  'Persona',
+  'Editorial',
 ];
 
 export default function PromptsPage() {
@@ -730,46 +727,7 @@ export default function PromptsPage() {
   const [isFadingOut, setIsFadingOut] = useState(false);
   const [promptAssetCache, setPromptAssetCache] = useState<Record<string, string>>({});
   const [previewPrompt, setPreviewPrompt] = useState<PromptPreview | null>(null);
-  const [blogPosts, setBlogPosts] = useState<ParagraphBlogPost[]>([]);
-  const [blogPostsLoading, setBlogPostsLoading] = useState(true);
-  const [blogPostsError, setBlogPostsError] = useState<string | null>(null);
   const { play } = useSound();
-
-  useEffect(() => {
-    let isMounted = true;
-
-    async function fetchBlogPosts() {
-      try {
-        setBlogPostsLoading(true);
-        setBlogPostsError(null);
-
-        const response = await fetch('/api/blog/recent');
-        const data = (await response.json()) as BlogPostsResponse;
-
-        if (!response.ok) {
-          throw new Error(data.error ?? 'Failed to fetch latest blog posts');
-        }
-
-        if (isMounted) {
-          setBlogPosts(data.posts ?? []);
-        }
-      } catch (error) {
-        if (isMounted) {
-          setBlogPostsError(error instanceof Error ? error.message : 'Failed to fetch latest blog posts');
-        }
-      } finally {
-        if (isMounted) {
-          setBlogPostsLoading(false);
-        }
-      }
-    }
-
-    fetchBlogPosts();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
   useEffect(() => {
     if (!previewPrompt) return;
@@ -910,102 +868,14 @@ export default function PromptsPage() {
     play('click');
   };
 
-  const formatBlogDate = (publishedAt: string) => {
-    const date = new Date(publishedAt);
-
-    if (Number.isNaN(date.getTime())) {
-      return 'Recent';
-    }
-
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
-
   return (
     <>
       <SideNavigation />
       <main className={styles.pageLayout}>
         <div className={styles.container}>
-          {/* Main Content Area */}
+          {/* Prompt library — search + catalog */}
           <div className={styles.contentWrapper}>
-            {/* Left Content Area */}
             <div className={styles.mainArea}>
-              {/* Header - Blue introduces the prompt collection */}
-              <div className={styles.headerSection}>
-                <BlueChatBubble
-                  variant="featured"
-                  stackOnMobile
-                  message="This is my prompt archive. Copy a prompt for Academy-style art, or read an essay to understand the thinking behind it."
-                />
-              </div>
-
-              <div className={styles.blogSection}>
-                <div className={styles.blogSectionHeader}>
-                  <div>
-                    <h2 className={styles.featuredTitle}>LATEST ESSAYS</h2>
-                    <p className={styles.blogCopy}>Three recent posts from the Academy blog.</p>
-                  </div>
-                  <a
-                    className={styles.blogArchiveLink}
-                    href="https://mentalwealthacademy.net"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    View blog
-                  </a>
-                </div>
-
-                {blogPostsLoading && (
-                  <div className={styles.blogCardsContainer} aria-label="Loading latest essays">
-                    {[0, 1, 2].map((item) => (
-                      <div key={item} className={styles.blogCardSkeleton} aria-hidden="true" />
-                    ))}
-                  </div>
-                )}
-
-                {!blogPostsLoading && blogPostsError && (
-                  <p className={styles.blogStatus}>{blogPostsError}</p>
-                )}
-
-                {!blogPostsLoading && !blogPostsError && blogPosts.length > 0 && (
-                  <div className={styles.blogCardsContainer}>
-                    {blogPosts.map((post) => (
-                      <a
-                        key={post.url}
-                        className={styles.blogCard}
-                        href={post.url}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {post.imageUrl && (
-                          <div className={styles.blogCardImageWrap}>
-                            <Image
-                              src={post.imageUrl}
-                              alt=""
-                              fill
-                              sizes="(max-width: 900px) calc(100vw - 56px), 33vw"
-                              className={styles.blogCardImage}
-                              unoptimized
-                            />
-                          </div>
-                        )}
-                        <div className={styles.blogCardBody}>
-                          <div className={styles.blogCardMeta}>
-                            <span>Mental Wealth Academy</span>
-                            <span>{formatBlogDate(post.publishedAt)}</span>
-                          </div>
-                          <h3 className={styles.blogCardTitle}>{post.title}</h3>
-                          <p className={styles.blogCardExcerpt}>{post.excerpt}</p>
-                        </div>
-                      </a>
-                    ))}
-                  </div>
-                )}
-              </div>
-
               {/* Search & Filter Section */}
               <div className={styles.filterSection}>
                 <div className={styles.searchBox}>

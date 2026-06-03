@@ -938,18 +938,22 @@
 }
 
 .filterOption:hover {
-  background: rgba(81, 104, 255, 0.08);
+  background: rgba(81, 104, 255, 0.06);
 }
 
 .filterOptionActive {
-  background: rgba(81, 104, 255, 0.15);
   color: #5168ff;
   font-weight: 600;
+  box-shadow: inset 2px 0 0 #5168ff;
+}
+
+.filterOptionActive:hover {
+  background: transparent;
 }
 
 [data-theme='dark'] .filterOptionActive {
-  background: rgba(81, 104, 255, 0.2);
   color: #93c5fd;
+  box-shadow: inset 2px 0 0 #93c5fd;
 }
 
 .filterOptionActive svg {
@@ -973,11 +977,11 @@
   font-family: var(--font-primary);
   font-size: 11px;
   font-weight: 500;
-  color: #9ca3af;
+  color: #6b7280;
 }
 
 [data-theme='dark'] .resultsText {
-  color: rgba(228, 228, 228, 0.5);
+  color: rgba(228, 228, 228, 0.62);
 }
 
 /* Table Container */
@@ -1080,12 +1084,12 @@
 }
 
 .categoryCell {
-  color: #737373 !important;
+  color: #4b5563 !important;
   font-weight: 500;
 }
 
 [data-theme='dark'] .categoryCell {
-  color: rgba(228, 228, 228, 0.7) !important;
+  color: rgba(228, 228, 228, 0.82) !important;
 }
 
 .tableRow:hover td {

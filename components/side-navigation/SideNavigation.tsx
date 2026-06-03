@@ -83,7 +83,7 @@ const primaryNavItems: NavItem[] = [
   },
   {
     id: 'prompts',
-    label: 'Prompts',
+    label: 'Library',
     href: '/prompts',
     iconSrc: '/icons/nav-prompts-v3.svg',
   },
