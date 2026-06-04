@@ -128,8 +128,16 @@ const CubesScene = memo(({ bgColor }: { bgColor: THREE.Vector3 }) => {
 
     let x: number, y: number;
     if (isLandscape) {
-      const xBase = visibleWidth * (0.27 + Math.random() * 0.16);
-      x = side * (xBase + (Math.random() - 0.5) * visibleWidth * 0.04);
+      if (side === -1) {
+        // Push left-column cubes past the viewport's left edge so they only peek in as
+        // partial shapes — their bodies won't float over the hero copy column.
+        const xBase = visibleWidth * (0.48 + Math.random() * 0.06);
+        // Jitter outward only so no cube drifts back toward the text.
+        x = -(xBase + Math.random() * visibleWidth * 0.04);
+      } else {
+        const xBase = visibleWidth * (0.27 + Math.random() * 0.16);
+        x = xBase + (Math.random() - 0.5) * visibleWidth * 0.04;
+      }
       y = (t - 0.5) * visibleHeight * 0.92 + (Math.random() - 0.5) * visibleHeight * 0.10;
     } else {
       x = (t - 0.5) * visibleWidth * 0.88 + (Math.random() - 0.5) * visibleWidth * 0.08;

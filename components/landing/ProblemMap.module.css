@@ -71,7 +71,7 @@
 }
 
 .zoneRed {
-  background: #e5484d;
+  background: #5168FF;
 }
 
 .zoneGreen {
@@ -112,7 +112,7 @@
   white-space: nowrap;
 }
 .budgetLabel[data-zone='red'] {
-  color: #ff6b6f;
+  color: #7A8FFF;
 }
 .budgetLabel[data-zone='green'] {
   color: #5fbf78;
@@ -139,6 +139,12 @@
   line-height: 1.4;
   color: rgba(255, 255, 255, 0.4);
   text-align: center;
+}
+
+/* Tint the basemap tiles toward Academy Blue without touching the GeoJSON overlays
+   or markers (which live in separate Leaflet panes). */
+.map :global(.leaflet-tile-pane) {
+  filter: sepia(0.5) hue-rotate(190deg) saturate(1.6) brightness(0.85);
 }
 
 /* ---- Leaflet bits inside the map container (scoped under a local class so the
@@ -231,7 +237,7 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-.map :global(.rl-red .rl-cap) { background: #e5484d; }
+.map :global(.rl-red .rl-cap) { background: #5168FF; }
 .map :global(.rl-green .rl-cap) { background: #3e8e54; }
-.map :global(.rl-red .rl-pin) { background: #e5484d; }
+.map :global(.rl-red .rl-pin) { background: #5168FF; }
 .map :global(.rl-green .rl-pin) { background: #3e8e54; }

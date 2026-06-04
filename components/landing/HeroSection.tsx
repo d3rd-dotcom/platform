@@ -14,7 +14,7 @@ export const EcosystemSection: React.FC = () => (
         <div className={styles.ecosystemCopy}>
           <p className={styles.ecosystemKicker}>Knowledge inequality</p>
           <h2 className={styles.ecosystemHeadline}>
-          The Ability To Think Clearly Is Priceless<br />
+          The Tax On Our Mental Wealth Is Heavy<br />
           </h2>
           <p className={styles.ecosystemSubtext}>
             American Education is rooted in racism. As redlining inherits properties of segregation, separation of capital & resources remain dependent upon area-based income taxes. Low-income communities suffer and remain trapped by an invisible ceiling. By untethering world-class learning.
@@ -22,15 +22,15 @@ export const EcosystemSection: React.FC = () => (
           <ul className={styles.ecosystemFeatureList}>
             <li className={styles.ecosystemFeatureItem}>
               <span className={styles.ecosystemFeatureDot} style={{ background: '#5168FF' }} />
-              Increase mental wealth through digitally accessible curricula.
+              Increase mental wealth through virtually accessible curricula.
             </li>
             <li className={styles.ecosystemFeatureItem}>
               <span className={styles.ecosystemFeatureDot} style={{ background: '#8B6BFF' }} />
-              Engaging Quests tied to real rewards increase accountability.
+              Engaging Quests tied to USDC for accountability and growth.
             </li>
             <li className={styles.ecosystemFeatureItem}>
               <span className={styles.ecosystemFeatureDot} style={{ background: '#3CC9B4' }} />
-              Blockchain-verified credentials that go anywhere you do.
+              Blockchain-verified credentials and capable routes of learning.
             </li>
           </ul>
           <LandingEnterAcademyButton />
@@ -50,13 +50,13 @@ export const HeroSection: React.FC = () => {
         <div className={styles.heroContent}>
           <p className={styles.heroTextBadge}>A New-Age Philosophy For Education</p>
           <h1 className={styles.heroHeadline}>
-            yOur Reality is
-            <span className={styles.heroHeadlineAccent}>Programmed.</span>
+            Our Reality is
+            <span className={styles.heroHeadlineAccent}>Programmable.</span>
           </h1>
           <p className={styles.heroSubtext}>
-          Any reality or tool you need is accessible in cyberspace. It's a Pocket-World connecting you to infinite possibilities.</p>
+          Any reality you wish to create is accessible in cyberspace. A Pocket-World with infinite possibilities.</p>
           <div className={styles.heroActions}>
-            <LandingEnterAcademyButton showIcon={false} />
+            <LandingEnterAcademyButton dark />
           </div>
         </div>
         <div className={styles.heroVisualColumn} aria-hidden="true">
