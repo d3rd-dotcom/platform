@@ -4,7 +4,6 @@ import React from 'react';
 import Image from 'next/image';
 import styles from './LandingPage.module.css';
 import LandingEnterAcademyButton from './LandingEnterAcademyButton';
-import LandingEnterAsAgentButton from './LandingEnterAsAgentButton';
 import { KeyFiguresSection } from './KeyFiguresSection';
 import ProblemMap from './ProblemMap';
 
@@ -13,22 +12,21 @@ export const EcosystemSection: React.FC = () => (
     <div className={styles.ecosystemInner}>
       <div className={styles.ecosystemLayout}>
         <div className={styles.ecosystemCopy}>
-          <p className={styles.ecosystemKicker}>The access problem</p>
+          <p className={styles.ecosystemKicker}>Knowledge inequality</p>
           <h2 className={styles.ecosystemHeadline}>
-            Education That<br />
-            <span className={styles.ecosystemHeadlineAccent}>Reaches Everyone.</span>
+          The Ability To Think Clearly Is Priceless<br />
           </h2>
           <p className={styles.ecosystemSubtext}>
-            Your zip code shouldn&apos;t limit your education. Decentralization breaks down those barriers, receive intellectually refreshing lessons on things that truly matter in the real world.
+            American Education is rooted in racism. As redlining inherits properties of segregation, separation of capital & resources remain dependent upon area-based income taxes. Low-income communities suffer and remain trapped by an invisible ceiling. By untethering world-class learning.
           </p>
           <ul className={styles.ecosystemFeatureList}>
             <li className={styles.ecosystemFeatureItem}>
               <span className={styles.ecosystemFeatureDot} style={{ background: '#5168FF' }} />
-              Free EQ curriculums built by neuroscientists and published researchers.
+              Increase mental wealth through digitally accessible curricula.
             </li>
             <li className={styles.ecosystemFeatureItem}>
               <span className={styles.ecosystemFeatureDot} style={{ background: '#8B6BFF' }} />
-              Quests tied to real goals — track progress, not just completions.
+              Engaging Quests tied to real rewards increase accountability.
             </li>
             <li className={styles.ecosystemFeatureItem}>
               <span className={styles.ecosystemFeatureDot} style={{ background: '#3CC9B4' }} />
@@ -49,18 +47,16 @@ export const HeroSection: React.FC = () => {
   return (
     <>
       <div className={styles.heroSection}>
-        <div className={styles.heroBeam} aria-hidden="true" />
         <div className={styles.heroContent}>
-          <p className={styles.heroTextBadge}>Mental Wealth Academy</p>
+          <p className={styles.heroTextBadge}>A New-Age Philosophy For Education</p>
           <h1 className={styles.heroHeadline}>
-            <span className={styles.heroHeadlineAccent}>The Next Gen</span>
-            <span>Of Education</span>
+            yOur Reality is
+            <span className={styles.heroHeadlineAccent}>Programmed.</span>
           </h1>
           <p className={styles.heroSubtext}>
-          Decentralized curriculums &amp; experiments led by a team of Neuroscientists. Unlocking human potential through goal-driven &amp; engaging quests.</p>
+          Any reality or tool you need is accessible in cyberspace. It's a Pocket-World connecting you to infinite possibilities.</p>
           <div className={styles.heroActions}>
-            <LandingEnterAcademyButton />
-            <LandingEnterAsAgentButton />
+            <LandingEnterAcademyButton showIcon={false} />
           </div>
         </div>
         <div className={styles.heroVisualColumn} aria-hidden="true">

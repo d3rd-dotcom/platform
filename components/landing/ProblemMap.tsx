@@ -11,21 +11,25 @@ const GEOJSON_URL = '/data/redlining-oakland.geojson';
 // faint so the map reads as a real graded gradient, not a binary two-box split.
 const HIDDEN: L.PathOptions = { weight: 0, fillOpacity: 0, interactive: false };
 const GRADE_STYLE: Record<string, L.PathOptions> = {
-  D: { color: '#e5484d', weight: 1, fillColor: '#e5484d', fillOpacity: 0.5, interactive: false },
-  A: { color: '#3e8e54', weight: 1, fillColor: '#5aa469', fillOpacity: 0.42, interactive: false },
-  B: { color: '#5168ff', weight: 0, fillColor: '#5168ff', fillOpacity: 0.08, interactive: false },
-  C: { color: '#e0a53b', weight: 0, fillColor: '#e0a53b', fillOpacity: 0.1, interactive: false },
+  D: { color: '#ff5a5f', weight: 1, fillColor: '#e5484d', fillOpacity: 0.55, interactive: false },
+  A: { color: '#5fbf78', weight: 1, fillColor: '#5aa469', fillOpacity: 0.48, interactive: false },
+  B: { color: '#6f86ff', weight: 0, fillColor: '#6f86ff', fillOpacity: 0.16, interactive: false },
+  C: { color: '#e0a53b', weight: 0, fillColor: '#e0a53b', fillOpacity: 0.18, interactive: false },
 };
 
 const SCHOOL_SVG =
   '<svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true">' +
   '<path d="M12 3 1 8l11 5 9-4.09V14h2V8L12 3zM5 13.18v2.5L12 19l7-3.32v-2.5L12 16 5 13.18z"/></svg>';
 
-function markerHtml(variant: 'red' | 'green', badge: string): string {
+function coinStack(coins: number): string {
+  return `<span class="rl-stack">${'<i class="rl-coin"></i>'.repeat(coins)}</span>`;
+}
+
+function markerHtml(variant: 'red' | 'green', coins: number): string {
+  const stack = coins > 0 ? coinStack(coins) : '';
   return (
-    `<div class="rl-zoneMarker rl-${variant}">` +
-    `<span class="rl-badge">${badge}</span>` +
-    `<span class="rl-school">${SCHOOL_SVG}<span>Public school</span></span>` +
+    `<div class="rl-mk rl-${variant}">` +
+    `<span class="rl-mkBody"><span class="rl-cap">${SCHOOL_SVG}</span>${stack}</span>` +
     `<span class="rl-pin"></span>` +
     `</div>`
   );
@@ -80,6 +84,7 @@ export const ProblemMap: React.FC = () => {
 
       map = LR.map(containerRef.current, {
         zoomControl: false,
+        attributionControl: false,
         dragging: false,
         touchZoom: false,
         scrollWheelZoom: false,
@@ -88,15 +93,13 @@ export const ProblemMap: React.FC = () => {
         keyboard: false,
         zoomSnap: 0,
       });
-      map.attributionControl.setPrefix(false);
 
       const tiles = LR.tileLayer(
-        'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+        'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
         {
           subdomains: 'abcd',
           maxZoom: 19,
           detectRetina: true,
-          attribution: '&copy; OpenStreetMap &copy; CARTO',
         },
       ).addTo(map);
       tiles.on('load', reveal);
@@ -106,15 +109,19 @@ export const ProblemMap: React.FC = () => {
         interactive: false,
       }).addTo(map);
 
-      const icon = (variant: 'red' | 'green', badge: string) =>
-        LR.divIcon({ html: markerHtml(variant, badge), className: '', iconSize: [0, 0], iconAnchor: [0, 0] });
+      const icon = (variant: 'red' | 'green', coins: number) =>
+        LR.divIcon({ html: markerHtml(variant, coins), className: '', iconSize: [0, 0], iconAnchor: [0, 0] });
 
+      const liveMap = map;
       const m = data.metadata.markers || {};
-      if (m.redlined) {
-        LR.marker([m.redlined[1], m.redlined[0]], { icon: icon('red', 'Redlined'), interactive: false, keyboard: false }).addTo(map);
-      }
+      const redlined: number[][] = Array.isArray(m.redlined)
+        ? (Array.isArray(m.redlined[0]) ? m.redlined : [m.redlined])
+        : [];
+      redlined.forEach((pt) => {
+        LR.marker([pt[1], pt[0]], { icon: icon('red', 2), interactive: false, keyboard: false }).addTo(liveMap);
+      });
       if (m.wealthy) {
-        LR.marker([m.wealthy[1], m.wealthy[0]], { icon: icon('green', 'Wealthy'), interactive: false, keyboard: false }).addTo(map);
+        LR.marker([m.wealthy[1], m.wealthy[0]], { icon: icon('green', 6), interactive: false, keyboard: false }).addTo(map);
       }
 
       const fit = () => {
@@ -152,11 +159,33 @@ export const ProblemMap: React.FC = () => {
         role="img"
         aria-label="Map of Oakland, California from the 1930s federal Home Owners' Loan Corporation survey. Neighborhoods shaded red were graded hazardous and redlined; neighborhoods shaded green were graded best. A public school sits in each."
       />
-      <p className={styles.caption}>
-        Same city, two public schools &mdash; opposite fortunes, set by a line drawn on a
-        map in the 1930s. Your zip code still shapes the education you can reach.
-        <span className={styles.source}>Redlining grades: Mapping Inequality, University of Richmond.</span>
-      </p>
+
+      <div className={styles.mechanism}>
+        <p className={styles.lead}>
+          Public schools run on local property taxes &mdash; so the line drawn on this
+          1930s map became a school-funding line.
+        </p>
+        <div className={styles.budget}>
+          <span className={styles.budgetTitle}>Annual funding per school</span>
+          <div className={styles.budgetTable}>
+            <span className={styles.budgetLabel} data-zone="red">Redlined</span>
+            <span className={styles.budgetCoins} aria-hidden="true">
+              {Array.from({ length: 2 }).map((_, i) => (
+                <i key={i} className={styles.budgetCoin} />
+              ))}
+            </span>
+            <span className={styles.budgetLabel} data-zone="green">High-income</span>
+            <span className={styles.budgetCoins} aria-hidden="true">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <i key={i} className={styles.budgetCoin} />
+              ))}
+            </span>
+          </div>
+        </div>
+        <p className={styles.source}>
+          Map &copy; OpenStreetMap, &copy; CARTO.
+        </p>
+      </div>
     </div>
   );
 };

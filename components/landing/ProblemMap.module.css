@@ -6,17 +6,18 @@
   padding: clamp(12px, 2vw, 24px) 0;
 }
 
+/* A wide map region that melts into the dark section: dark basemap, no card
+   chrome, and the side edges feathered into the background. */
 .map {
   position: relative;
   width: 100%;
-  max-width: 520px;
-  aspect-ratio: 1 / 1;
-  border-radius: 16px;
+  aspect-ratio: 4 / 3;
+  border-radius: 10px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
-  background: #eceef3;
+  background: #10111b;
   font-family: var(--font-primary);
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
   opacity: 0;
   transition: opacity 0.5s ease;
 }
@@ -25,22 +26,119 @@
   opacity: 1;
 }
 
-.caption {
+/* ---- Mechanism + budget indicator ---- */
+.mechanism {
+  width: 100%;
+  max-width: 540px;
+  margin: 18px auto 0;
   font-family: var(--font-primary);
-  font-size: clamp(0.78rem, 0.9vw, 0.86rem);
-  font-weight: 400;
+}
+
+.lead {
+  margin: 0 0 14px;
+  font-size: clamp(0.82rem, 0.98vw, 0.92rem);
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 255, 255, 0.82);
   text-align: center;
-  max-width: 440px;
-  margin: 16px 0 0;
+}
+
+.flow {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.flowItem {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  font-size: clamp(0.72rem, 0.86vw, 0.8rem);
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.74);
+}
+
+.zoneTag {
+  flex: 0 0 auto;
+  padding: 1px 9px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #fff;
+}
+
+.zoneRed {
+  background: #e5484d;
+}
+
+.zoneGreen {
+  background: #3e8e54;
+}
+
+.arrow {
+  color: rgba(255, 255, 255, 0.32);
+  padding: 0 4px;
+}
+
+/* gold = annual funding per school; redlined gets some, high-income far more */
+.budget {
+  margin-top: 16px;
+}
+
+.budgetTitle {
+  display: block;
+  margin-bottom: 9px;
+  font-size: clamp(0.7rem, 0.82vw, 0.76rem);
+  color: rgba(255, 255, 255, 0.55);
+  text-align: center;
+}
+
+.budgetTable {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  gap: 8px 12px;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.budgetLabel {
+  justify-self: start;
+  font-size: clamp(0.72rem, 0.84vw, 0.8rem);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.budgetLabel[data-zone='red'] {
+  color: #ff6b6f;
+}
+.budgetLabel[data-zone='green'] {
+  color: #5fbf78;
+}
+
+.budgetCoins {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  filter: drop-shadow(0 0 4px rgba(240, 190, 70, 0.5));
+}
+
+.budgetCoin {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff2bf, #f4cf6c 45%, #e3ab36 75%, #c6881f);
+  box-shadow: inset 0 0.6px 0 rgba(255, 255, 255, 0.85), 0 1px 1px rgba(0, 0, 0, 0.35);
 }
 
 .source {
-  display: block;
-  margin-top: 5px;
-  font-size: 0.78em;
-  color: rgba(255, 255, 255, 0.45);
+  margin: 14px 0 0;
+  font-size: clamp(0.68rem, 0.8vw, 0.74rem);
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: center;
 }
 
 /* ---- Leaflet bits inside the map container (scoped under a local class so the
@@ -50,69 +148,90 @@
   border: none;
 }
 
-.map :global(.leaflet-control-attribution) {
-  background: rgba(255, 255, 255, 0.72);
-  font-size: 9px;
-  line-height: 1.4;
-  color: rgba(17, 19, 27, 0.45);
-  padding: 1px 5px;
-}
-.map :global(.leaflet-control-attribution a) {
-  color: rgba(17, 19, 27, 0.6);
-}
-
-.map :global(.rl-zoneMarker) {
+.map :global(.rl-mk) {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   transform: translate(-50%, -100%);
-  white-space: nowrap;
   pointer-events: none;
-  line-height: 1;
   font-family: var(--font-primary);
 }
 
-.map :global(.rl-badge) {
-  padding: 2px 9px;
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  color: #fff;
+.map :global(.rl-cap) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.92);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+.map :global(.rl-cap svg) {
+  display: block;
+  width: 13px;
+  height: 13px;
+  fill: #fff;
 }
 
-.map :global(.rl-school) {
-  display: inline-flex;
-  align-items: center;
+/* school cap + its gold budget stack, sharing a ground line */
+.map :global(.rl-mkBody) {
+  display: flex;
+  align-items: flex-end;
   gap: 4px;
-  margin-top: 4px;
-  padding: 2px 7px 2px 6px;
-  border-radius: 7px;
-  background: #fff;
-  border: 1px solid rgba(17, 19, 27, 0.1);
-  box-shadow: 0 2px 6px rgba(17, 19, 27, 0.14);
-  font-size: 10px;
-  font-weight: 600;
-  color: #21242e;
 }
-.map :global(.rl-school svg) {
-  display: block;
-  fill: currentColor;
+
+.map :global(.rl-stack) {
+  position: relative;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 1.5px;
+  padding-bottom: 1px;
+  /* soft gold aura = wealth */
+  filter: drop-shadow(0 0 5px rgba(240, 190, 70, 0.55));
+}
+
+.map :global(.rl-coin) {
+  position: relative;
+  overflow: hidden;
+  width: 17px;
+  height: 5px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #fff2bf 0%, #f4cf6c 40%, #e3ab36 72%, #c6881f 100%);
+  box-shadow: 0 1px 0 rgba(110, 70, 10, 0.5), inset 0 0.6px 0 rgba(255, 255, 255, 0.85);
+}
+/* a glint that sweeps the pile in sync */
+.map :global(.rl-coin)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, 0.95) 50%, transparent 58%);
+  background-size: 260% 100%;
+  background-position: 150% 0;
+  animation: rlGlint 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes rlGlint {
+  0%, 62% { background-position: 150% 0; }
+  84%, 100% { background-position: -70% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .map :global(.rl-coin)::after { animation: none; opacity: 0; }
 }
 
 .map :global(.rl-pin) {
   width: 9px;
   height: 9px;
-  margin-top: 4px;
+  margin-top: 3px;
   border-radius: 50%;
   border: 2px solid #fff;
-  box-shadow: 0 1px 3px rgba(17, 19, 27, 0.3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-.map :global(.rl-red .rl-badge) { background: #e5484d; }
-.map :global(.rl-green .rl-badge) { background: #3e8e54; }
-.map :global(.rl-red .rl-school svg) { color: #e5484d; }
-.map :global(.rl-green .rl-school svg) { color: #3e8e54; }
+.map :global(.rl-red .rl-cap) { background: #e5484d; }
+.map :global(.rl-green .rl-cap) { background: #3e8e54; }
 .map :global(.rl-red .rl-pin) { background: #e5484d; }
 .map :global(.rl-green .rl-pin) { background: #3e8e54; }
