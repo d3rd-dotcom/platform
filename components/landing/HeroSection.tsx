@@ -14,7 +14,7 @@ export const EcosystemSection: React.FC = () => (
         <div className={styles.ecosystemCopy}>
           <p className={styles.ecosystemKicker}>Knowledge inequality</p>
           <h2 className={styles.ecosystemHeadline}>
-          The Tax On Our Mental Wealth Is Heavy<br />
+          The Heavy Tax On Our Mental Wealth<br />
           </h2>
           <p className={styles.ecosystemSubtext}>
             American Education is rooted in racism. As redlining inherits properties of segregation, separation of capital & resources remain dependent upon area-based income taxes. Low-income communities suffer and remain trapped by an invisible ceiling. By untethering world-class learning.
