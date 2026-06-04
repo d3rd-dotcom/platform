@@ -80,16 +80,16 @@ const primaryNavItems: NavItem[] = [
     iconSrc: '/icons/nav-course-v2.svg',
   },
   {
-    id: 'prompts',
-    label: 'Database',
-    href: '/prompts',
-    iconSrc: '/icons/nav-surveys-v4.svg',
-  },
-  {
     id: 'surveys',
     label: 'Surveys',
     href: '/surveys',
     iconSrc: '/icons/nav-surveys-v5.svg',
+  },
+  {
+    id: 'prompts',
+    label: 'Database',
+    href: '/prompts',
+    iconSrc: '/icons/nav-prompts-v3.svg',
   },
 ];
 
@@ -808,22 +808,13 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
       {/* Modals */}
       {isChatOpen && <BlueChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />}
       {isInventoryOpen && (
-        <div className={styles.inventoryPopupBackdrop} onClick={() => setIsInventoryOpen(false)}>
-          <div className={styles.inventoryPopupBody} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.inventoryPopupHeader}>
-              <span className={styles.inventoryPopupTitle}>Inventory</span>
-              <button
-                type="button"
-                className={styles.inventoryPopupClose}
-                onClick={() => setIsInventoryOpen(false)}
-                aria-label="Close inventory"
-              >
-                ×
-              </button>
-            </div>
-            <SidebarInventoryCard shardCount={shardCount} address={address} isCollapsed={false} />
-          </div>
-        </div>
+        <SidebarInventoryCard
+          shardCount={shardCount}
+          address={address}
+          isCollapsed={false}
+          modalOnly
+          onModalClose={() => setIsInventoryOpen(false)}
+        />
       )}
       {isLootBoxOpen && (
         <LootBoxModal

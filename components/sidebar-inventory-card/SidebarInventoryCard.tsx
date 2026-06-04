@@ -10,6 +10,9 @@ interface SidebarInventoryCardProps {
   shardCount: number | null;
   address: string | undefined;
   isCollapsed: boolean;
+  // When true, render only the grid inventory modal (no card), opened immediately.
+  modalOnly?: boolean;
+  onModalClose?: () => void;
 }
 
 const CONTRACT_ADDRESS =
@@ -37,12 +40,12 @@ function fmt(raw: unknown, decimals: number, max = 4): string {
 // Membership tier shown in the profile card. Staff (VIP card) outranks Angel.
 type MembershipTier = 'Guest' | 'Angel' | 'Staff';
 
-export default function SidebarInventoryCard({ shardCount, address, isCollapsed }: SidebarInventoryCardProps) {
+export default function SidebarInventoryCard({ shardCount, address, isCollapsed, modalOnly = false, onModalClose }: SidebarInventoryCardProps) {
   const [usdcBalance, setUsdcBalance] = useState<string | null>(null);
   const [votingPower, setVotingPower] = useState<string | null>(null);
   const [tier, setTier] = useState<MembershipTier | null>(null);
   const [loading, setLoading] = useState(false);
-  const [isGuideOpen, setIsGuideOpen] = useState(false);
+  const [isGuideOpen, setIsGuideOpen] = useState(modalOnly);
 
   const fetch = useCallback(async () => {
     setLoading(true);
@@ -105,6 +108,19 @@ export default function SidebarInventoryCard({ shardCount, address, isCollapsed 
       <span className={styles.balanceVal}>{shardDisplay}</span>
     </div>
   );
+
+  if (modalOnly) {
+    return (
+      <BalanceGuideModal
+        isOpen={isGuideOpen}
+        onClose={() => { setIsGuideOpen(false); onModalClose?.(); }}
+        membership={tier}
+        credits={shardDisplay}
+        cakes={votingPower ?? '0'}
+        usdc={usdcBalance ?? '0.00'}
+      />
+    );
+  }
 
   if (isCollapsed) {
     return (
