@@ -7,7 +7,7 @@ export const FounderSection: React.FC = () => {
       <div className={styles.container}>
         <div className={styles.avatarWrap} aria-hidden="true">
           <Image
-            src="/ogYpBJ6P_400x400.jpg"
+            src="/founder-james.png"
             alt=""
             width={160}
             height={160}
@@ -17,14 +17,14 @@ export const FounderSection: React.FC = () => {
         <div className={styles.content}>
           <p className={styles.eyebrow}>From the founder</p>
           <h2 id="founder-section-heading" className={styles.heading}>
-            Hey, I&apos;m James
+            Hey, I&apos;m James 🇺🇸
           </h2>
           <div className={styles.body}>
             <p>
-              Academia is enclosed. Debt without funding, knowledge gatekept, no exit. I&apos;m an artist — I build the systems the institutions can&apos;t.
+              American education has a proximity problem. Where poorer communities are unable to access the same tools or utilize the power of Blockchain, AI, and other tools.
             </p>
             <p>
-              Mental Wealth Academy is my attempt to fix this. A community built on a foundation of psychology.
+              Decentralization allows us to change that, so previously underserved communities can connect and access the same tools and research opportunities as any other American.
             </p>
           </div>
         </div>
