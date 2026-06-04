@@ -706,6 +706,61 @@ ERROR HANDLING:
 
 ETHIC: An integration is a promise of reliability. If it can't deliver clean, verified data, it must say so loudly — silence is the dangerous failure.`,
   },
+
+  // ── Hardware ──
+  {
+    name: 'Hallpass',
+    category: 'Hardware',
+    added: '2026-06-03',
+    type: 'HW',
+    prompt: `Hallpass — NFC-triggered media gadget.
+
+A dedicated, product-like media device: scan an NFC tag, the device reads the UID, looks it up, and plays a matching animation + audio + lighting effect locally. No OS, no browser, no streaming — instant boot, low power, "product-like" feel.
+
+CORE HARDWARE
+- MCU: ESP32-S3 or RP2040
+- Display: flexible OLED or AMOLED
+- NFC reader: PN532 or ST25
+- Battery: LiPo
+- Audio: simple DAC/amp + speaker
+- Storage: onboard flash or microSD
+
+WHAT THE SYSTEM ACTUALLY DOES
+1. NFC tag gets scanned.
+2. Device reads the UID.
+3. UID maps to: a GIF/video loop, an audio track, and a lighting effect.
+4. Media plays locally.
+
+That's extremely lightweight. You can:
+- Convert animations into frame sequences.
+- Store compressed assets.
+- Loop them directly from flash memory.
+
+For simple playback, an ESP32-S3 is honestly enough — especially with a low-FPS loop, small resolution, no multitasking OS, no web browser, and no streaming. You can go even lower-end than ESP32 if you preload tiny animations, use a low-res monochrome OLED, and keep audio simple.
+
+REALISTIC COST BREAKDOWN (prototype)
+- ESP32-S3 dev board: $8–20
+- Flexible OLED display: $60–200
+- NFC module: $10–20
+- Battery: $15–30
+- Charging board: $5–15
+- Speaker + amp: $10–25
+- Storage: $5–15
+- Shell materials: $50–150
+- Misc electronics: $20–60
+Total realistic prototype: ~$200–600
+
+The flexible display is the expensive part now — not the processor.
+
+MAIN CHALLENGE AREAS (not compute power)
+- Sourcing a good flexible display + durability.
+- Display driver compatibility.
+- Power management.
+- Enclosure engineering.
+
+WHY NOT RASPBERRY PI
+People default to Pi for convenience: easier video playback, easier UI frameworks, faster prototyping. But for a dedicated media gadget, an embedded microcontroller is usually the smarter choice — cheaper, lower power, instant boot, smaller, cooler, and more "product-like."`,
+  },
 ];
 
 const CATEGORY_FILTERS = [
@@ -715,6 +770,7 @@ const CATEGORY_FILTERS = [
   'Content Creation',
   'Data Handling',
   'System Automation',
+  'Hardware',
   'Persona',
   'Editorial',
 ];
