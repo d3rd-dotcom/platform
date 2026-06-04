@@ -17,7 +17,7 @@ export const EcosystemSection: React.FC = () => (
           The Heavy Tax On Your Mental Wealth<br />
           </h2>
           <p className={styles.ecosystemSubtext}>
-            American Education is rooted in racism. As redlining inherits properties of segregation, separation of capital & resources remain dependent upon area-based income taxes. Low-income communities suffer and remain trapped by an invisible ceiling. By untethering world-class learning.
+          As redlining inherits properties of segregation, capital & resources remain dependent upon area-based income taxes. Low-income communities suffer and remain trapped by an invisible ceiling. By untethering world-class learning we:
           </p>
           <ul className={styles.ecosystemFeatureList}>
             <li className={styles.ecosystemFeatureItem}>
