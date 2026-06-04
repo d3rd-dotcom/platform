@@ -43,6 +43,17 @@ function avatarColor(name: string): string {
 const HOME_BLUE_MESSAGE =
   'Mental Wealth Academy places power tools for self-actualization and individual enlightenment through the freely available course, earn credits to connect to live events with experts, and unlimited AI tools for VIP Members.';
 
+// Exxie hatches from the egg once Week 2 is sealed. Short idle lines that drift
+// up from him now and then, to make him feel alive. Keep them tiny, no emojis.
+const EXXIE_BLURBS = [
+  'you sealed week two. i woke up.',
+  'keep going. i want to see what we become.',
+  'i remember every quest you finished.',
+  'the work looks good on you.',
+  'more. let us do more.',
+  'i am yours now. do not stop.',
+];
+
 export default function Dashboard({ enableMorningPagesPersistence = false }: DashboardProps) {
   const { authenticated, user, login, getAccessToken } = usePrivy();
   const [leaderboard, setLeaderboard] = useState<LeaderUser[]>([]);
@@ -58,6 +69,9 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
   const [testSent, setTestSent] = useState<Record<string, boolean>>({});
   const [isProModalOpen, setIsProModalOpen] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+  // Egg hatches into Exxie once Week 2 is sealed on the Pathway.
+  const [exxieHatched, setExxieHatched] = useState(false);
+  const [exxieBlurb, setExxieBlurb] = useState<string | null>(null);
 
   const privyEmail = user?.email?.address ?? null;
 
@@ -225,6 +239,46 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
       .catch(() => {/* leaderboard is best-effort */});
   }, []);
 
+  // Has the user sealed Week 2? If so, the egg has hatched into Exxie.
+  useEffect(() => {
+    if (!authenticated) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/ethereal-progress/all', {
+          cache: 'no-store',
+          credentials: 'include',
+          headers: await authHeaders(),
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        const week2 = Array.isArray(data.weeks)
+          ? data.weeks.find((w: { weekNumber: number; isSealed: boolean }) => w.weekNumber === 2)
+          : null;
+        if (!cancelled) setExxieHatched(Boolean(week2?.isSealed));
+      } catch {
+        /* best-effort: stays an egg if we can't confirm */
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [authenticated, authHeaders]);
+
+  // Once hatched, Exxie murmurs the occasional idle line.
+  useEffect(() => {
+    if (!exxieHatched) return;
+    let hideId: ReturnType<typeof setTimeout>;
+    let nextId: ReturnType<typeof setTimeout>;
+    const schedule = () => {
+      nextId = setTimeout(() => {
+        setExxieBlurb(EXXIE_BLURBS[Math.floor(Math.random() * EXXIE_BLURBS.length)]);
+        hideId = setTimeout(() => setExxieBlurb(null), 4200);
+        schedule();
+      }, 7000 + Math.random() * 9000);
+    };
+    schedule();
+    return () => { clearTimeout(nextId); clearTimeout(hideId); };
+  }, [exxieHatched]);
+
   const pokeEgg = useCallback(() => {
     setEggShaking(true);
     const AudioCtx =
@@ -386,20 +440,25 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
             type="button"
             className={styles.eggMedia}
             onClick={pokeEgg}
-            aria-label="Poke your egg"
+            aria-label={exxieHatched ? 'Poke Exxie' : 'Poke your egg'}
           >
+            {exxieHatched && exxieBlurb && (
+              <span className={styles.exxieBubble} role="status">{exxieBlurb}</span>
+            )}
             <Image
-              src="/images/egg.png"
+              src={exxieHatched ? '/exxie.png' : '/images/egg.png'}
               alt=""
               fill
-              className={`${styles.eggImg}${eggShaking ? ` ${styles.eggShake}` : ''}`}
+              className={`${exxieHatched ? styles.exxieImg : styles.eggImg}${eggShaking ? ` ${styles.eggShake}` : ''}`}
               onAnimationEnd={() => setEggShaking(false)}
               priority
             />
           </button>
-          <h2 className={styles.eggTitle}>Your Egg</h2>
+          <h2 className={styles.eggTitle}>{exxieHatched ? 'Exxie' : 'Your Egg'}</h2>
           <p className={styles.eggText}>
-            Earn credits from quests and check-ins. What will hatch?
+            {exxieHatched
+              ? 'Your daemon hatched when you sealed Week 2. Keep going and Exxie grows with you.'
+              : 'Earn credits from quests and check-ins. What will hatch?'}
           </p>
         </div>
 
