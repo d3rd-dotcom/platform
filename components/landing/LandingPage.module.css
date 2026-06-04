@@ -107,7 +107,12 @@
   overflow: visible;
 }
 
-/* decorative orb/rock shape sitting behind the Blue character */
+/* Mobile-only orb backdrop — anchored to viewport right (see heroShapeBackdrop) */
+.heroShapeBackdrop {
+  display: none;
+}
+
+/* decorative orb/rock shape sitting behind the Blue character (desktop) */
 .heroVisualFrame::before {
   content: '';
   position: absolute;
@@ -1091,35 +1096,76 @@
   .container {
     --landing-shell-width: calc(100% - 32px);
     --landing-shell-padding: 16px;
+    /* Let hero orb bleed to the viewport edge without clipping */
+    overflow-x: visible;
   }
 
   .heroSection {
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     min-height: auto;
-    width: var(--landing-content-width);
-    margin: 0 auto;
-    padding: 122px 0 0;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 122px 0 0 var(--landing-shell-padding);
     gap: 28px;
+    overflow: visible;
   }
 
   .heroContent {
+    position: relative;
+    z-index: 2;
     width: 100%;
     max-width: 100%;
     flex: 1 1 100%;
     align-items: center;
     text-align: center;
-    padding: 0;
+    padding: 0 var(--landing-shell-padding);
+    box-sizing: border-box;
     transform: none;
   }
 
   .heroVisualColumn {
+    position: relative;
+    z-index: 1;
     width: 100%;
-    max-width: 100%;
-    justify-content: center;
+    max-width: none;
+    justify-content: flex-end;
     align-items: flex-end;
     align-self: stretch;
     order: 2;
+    overflow: visible;
+  }
+
+  .heroVisualFrame::before {
+    display: none;
+  }
+
+  .heroShapeBackdrop {
+    display: block;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    width: min(92vw, 500px);
+    height: auto;
+    max-height: min(52vh, 420px);
+    object-fit: contain;
+    object-position: right bottom;
+    pointer-events: none;
+  }
+
+  .heroVisualFrame {
+    width: fit-content;
+    max-width: 100%;
+    margin-left: auto;
+  }
+
+  .heroVisualFrame :global(span) {
+    display: block !important;
+    width: fit-content !important;
+    max-width: 100% !important;
+    margin-left: auto !important;
   }
 
   .heroTextBadge {
@@ -1164,13 +1210,13 @@
     max-width: 100%;
   }
 
-  .heroVisualFrame {
-    width: 100%;
-  }
-
   .heroVisualImage {
+    width: auto !important;
+    max-width: min(88vw, 420px);
+    height: auto !important;
     max-height: 58vh;
-    margin: 0;
+    margin: 0 0 0 auto;
+    object-position: right bottom;
   }
 
   .heroValueCards {
@@ -1191,11 +1237,15 @@
 
   .ecosystemLayout {
     grid-template-columns: 1fr;
-    gap: 8px;
+    gap: 28px;
+  }
+
+  .ecosystemCopy {
+    order: 1;
   }
 
   .ecosystemDiagramWrap {
-    order: -1;
+    order: 2;
   }
 
   .ecosystemHeadline {
@@ -1247,13 +1297,20 @@
   }
 
   .heroSection {
-    width: var(--landing-content-width);
-    padding-top: 108px;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 108px 0 0 var(--landing-shell-padding);
     gap: 12px;
   }
 
   .heroContent {
-    padding: 0;
+    padding: 0 var(--landing-shell-padding);
+  }
+
+  .heroShapeBackdrop {
+    width: min(96vw, 480px);
+    max-height: min(48vh, 380px);
   }
 
   .heroTextBadge {

@@ -50,7 +50,7 @@ export const HeroSection: React.FC = () => {
         <div className={styles.heroContent}>
           <p className={styles.heroTextBadge}>A New-Age Philosophy For Education</p>
           <h1 className={styles.heroHeadline}>
-            Our Reality is
+            Your Reality is
             <span className={styles.heroHeadlineAccent}>Programmable.</span>
           </h1>
           <p className={styles.heroSubtext}>
@@ -71,6 +71,13 @@ export const HeroSection: React.FC = () => {
             />
           </div>
         </div>
+        {/* Mobile: viewport-anchored backdrop (frame ::before clips inside shell) */}
+        <img
+          src="/images/hero-shape.webp"
+          alt=""
+          className={styles.heroShapeBackdrop}
+          aria-hidden
+        />
       </div>
 
       <KeyFiguresSection />
