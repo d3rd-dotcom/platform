@@ -73,7 +73,7 @@ export const EVENTS: EventItem[] = [
     id: 'cohort-campfire',
     gradient:
       'radial-gradient(at 18% 18%, #ffb15b 0px, transparent 55%), radial-gradient(at 84% 16%, #ff6f91 0px, transparent 50%), radial-gradient(at 55% 100%, #e85d3a 0px, transparent 55%), linear-gradient(135deg, #ff9a5b, #e0492f)',
-    heading: 'Cohort Campfire Check-in',
+    heading: 'Cohort Campfire',
     category: 'Community',
     // Friday, June 5, 2026 — 7:00 PM EST (UTC-5).
     startsAt: '2026-06-06T00:00:00Z',
@@ -90,7 +90,7 @@ export const EVENTS: EventItem[] = [
     category: 'Introduction',
     startsAt: null,
     dateLabel: 'Anytime',
-    timeLabel: 'Instant email',
+    timeLabel: 'Email',
     description:
       'Say hello to Blue, your guide. Get an instant intro email — and a quick check that our reminders land in your inbox.',
     action: 'email-test',

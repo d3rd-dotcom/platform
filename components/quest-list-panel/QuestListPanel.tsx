@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Trophy, Sparkle, Coins, Check, Info } from '@phosphor-icons/react';
+import { Sparkle, Coins, Check, Info } from '@phosphor-icons/react';
 import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
 import type { DrawerQuest } from '@/components/quest-drawer/QuestDrawer';
 import type { QuestCardKind } from '@/components/quest-card/QuestCard';
@@ -105,7 +105,7 @@ export default function QuestListPanel({
           <div className={styles.stat}>
             <span className={styles.statLabel}>Cleared</span>
             <span className={styles.statValue}>
-              <Trophy size={12} weight="fill" className={styles.statIcon} />
+              <Image src="/icons/money.svg" alt="" width={13} height={13} className={styles.statIcon} />
               {completedCount}
               <span className={styles.statMuted}>/{totalCount}</span>
             </span>

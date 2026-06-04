@@ -95,6 +95,7 @@
 
 .idleIcon {
   color: rgba(81, 104, 255, 0.42);
+  opacity: 0.5;
 }
 
 .idleTitle {

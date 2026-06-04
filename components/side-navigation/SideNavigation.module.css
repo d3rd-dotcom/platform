@@ -1905,3 +1905,58 @@
   background: color-mix(in oklch, var(--color-primary) 20%, transparent);
   color: var(--color-text-light);
 }
+
+/* ── Inventory popup (opened from the profile dropdown) ── */
+.inventoryPopupBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(8, 9, 16, 0.55);
+  backdrop-filter: blur(4px);
+}
+
+.inventoryPopupBody {
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.inventoryPopupHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.inventoryPopupTitle {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--color-text-light);
+}
+
+.inventoryPopupClose {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-text-light);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.inventoryPopupClose:hover {
+  background: rgba(255, 255, 255, 0.16);
+}

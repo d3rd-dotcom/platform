@@ -6,9 +6,9 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { usePrivy } from '@privy-io/react-auth';
 import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
-import LibraryCard from '@/components/library-card/LibraryCard';
+import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
-import { EVENTS } from '@/lib/events';
+import { EVENTS, PATHWAY_EVENT_ID } from '@/lib/events';
 import type { CourseData } from '@/lib/personal-course';
 import styles from './Dashboard.module.css';
 
@@ -256,6 +256,14 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
     <div className={styles.dashboard}>
       {/* ── Upcoming events ── */}
       <section className={styles.eventsSection}>
+        {/* The 12-week course, as a looping Blue hero (replaces the old course card). */}
+        <Link href="/course" className={styles.courseVideoLink} aria-label="Open the Ethereal Pathway course">
+          <BlueVideoPanel
+            eyebrow="Ethereal Pathway · Season 1"
+            message="A 12-week pathway through readings and missions. Complete each week to unlock the next — pick up where you left off."
+            ariaLive="off"
+          />
+        </Link>
         <div className={styles.eventsHeader}>
           <span className={styles.cardLabel}>Upcoming events</span>
           <p className={styles.eventsHint}>
@@ -263,7 +271,7 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
           </p>
         </div>
         <div className={styles.eventsGrid}>
-          {EVENTS.map((ev) => (
+          {EVENTS.filter((ev) => ev.id !== PATHWAY_EVENT_ID).map((ev) => (
             <article key={ev.id} className={styles.eventCard}>
               <div className={styles.eventImage} style={{ backgroundImage: ev.gradient }}>
                 <span className={styles.eventNoise} aria-hidden="true" />
@@ -437,10 +445,6 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
             </ul>
           )}
         </button>
-
-        <Link href="/prompts" className={styles.libraryCardLink}>
-          <LibraryCard />
-        </Link>
 
         <button
           type="button"

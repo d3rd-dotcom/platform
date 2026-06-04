@@ -62,9 +62,13 @@ function buildToonDataUri(seed: string): string {
 /**
  * Deterministic seed for the Nth avatar option of a given user/base seed.
  * The seed IS the avatar id, so an id alone is enough to re-render the avatar.
+ *
+ * `generation` shifts the set: generation 0 yields the original ids
+ * (`<userSeed>#<index>`) so existing selections keep working, while each paid
+ * reroll bumps the generation to produce a fresh, distinct set of 6.
  */
-function optionSeed(userSeed: string, index: number): string {
-  return `${userSeed}#${index}`;
+function optionSeed(userSeed: string, index: number, generation = 0): string {
+  return generation > 0 ? `${userSeed}#r${generation}#${index}` : `${userSeed}#${index}`;
 }
 
 /**
@@ -109,12 +113,13 @@ async function fetchAngelImageUrl(tokenId: number): Promise<string> {
  * Gets deterministically assigned avatars for a user.
  * Returns 6 unique toons — all generated locally, no network calls.
  *
- * Same user seed always returns the same 6 avatars.
+ * Same user seed + generation always returns the same 6 avatars. Pass the
+ * user's `avatar_reroll_count` as `generation` so paid rerolls surface a new set.
  */
-export function getAssignedAvatars(userSeed: string): Avatar[] {
+export function getAssignedAvatars(userSeed: string, generation = 0): Avatar[] {
   const avatars: Avatar[] = [];
   for (let i = 0; i < AVATARS_PER_USER; i++) {
-    const seed = optionSeed(userSeed, i);
+    const seed = optionSeed(userSeed, i, generation);
     avatars.push({
       id: seed,
       image_url: buildToonDataUri(seed),
@@ -125,11 +130,12 @@ export function getAssignedAvatars(userSeed: string): Avatar[] {
 }
 
 /**
- * Validates that an avatar ID is in the user's assigned set
+ * Validates that an avatar ID is in the user's assigned set for the given
+ * generation (the user's current `avatar_reroll_count`).
  */
-export function isAvatarValidForUser(userSeed: string, avatarId: string): boolean {
+export function isAvatarValidForUser(userSeed: string, avatarId: string, generation = 0): boolean {
   for (let i = 0; i < AVATARS_PER_USER; i++) {
-    if (optionSeed(userSeed, i) === avatarId) return true;
+    if (optionSeed(userSeed, i, generation) === avatarId) return true;
   }
   return false;
 }

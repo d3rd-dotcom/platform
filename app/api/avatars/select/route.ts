@@ -9,7 +9,7 @@
 import { NextResponse } from 'next/server';
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
-import { isDbConfigured, withTransaction, sqlQueryWithClient } from '@/lib/db';
+import { isDbConfigured, withTransaction, sqlQueryWithClient, sqlQuery } from '@/lib/db';
 import { isAvatarValidForUser, getAvatarByAvatarId } from '@/lib/avatars';
 
 export const runtime = 'nodejs';
@@ -60,8 +60,14 @@ export async function POST(request: Request) {
   }
 
   // CRITICAL: Recompute the user's assigned avatars server-side
-  // This ensures a client cannot spoof an avatar_id that wasn't assigned to them
-  if (!(await isAvatarValidForUser(user.id, avatar_id))) {
+  // This ensures a client cannot spoof an avatar_id that wasn't assigned to them.
+  // Validate against the user's current reroll generation.
+  const genRows = await sqlQuery<Array<{ avatar_reroll_count: number }>>(
+    `SELECT avatar_reroll_count FROM users WHERE id = :id`,
+    { id: user.id }
+  );
+  const generation = genRows[0]?.avatar_reroll_count ?? 0;
+  if (!isAvatarValidForUser(user.id, avatar_id, generation)) {
     return NextResponse.json(
       { 
         error: 'Invalid avatar selection.',

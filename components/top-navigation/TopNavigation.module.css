@@ -254,22 +254,10 @@
 :global([data-theme="dark"]) .shinyCardContent {
   background: var(--color-shell-background, #0f1020);
 }
-.shinyCardIcon {
+.shinyCardIconSvg {
   width: 24px;
   height: 24px;
-  border-radius: 50%;
   flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  color: #5168FF;
-  background: rgba(81, 104, 255, 0.12);
-  border: 1px solid rgba(81, 104, 255, 0.18);
-}
-.shinyCardIconSvg {
-  width: 15px;
-  height: 15px;
 }
 .shinyCardTitle {
   font-family: var(--font-primary);

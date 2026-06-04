@@ -253,7 +253,7 @@ const Navbar: React.FC = () => {
 
             {/* Surveys Button */}
             <Link href="/surveys" className={`${styles.navButton} ${isActive('/surveys') ? styles.navButtonActive : ''}`}>
-              <Image src="/icons/nav-surveys-v3.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/surveys') ? styles.navImgIconActive : ''}`} />
+              <Image src="/icons/nav-surveys-v5.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/surveys') ? styles.navImgIconActive : ''}`} />
               <span className={isActive('/surveys') ? styles.buttonLabelActive : styles.buttonLabel}>
                 <span className={styles.slideWrap}><span className={styles.slideText}>Surveys</span><span className={`${styles.slideText} ${styles.slideClone}`}>Surveys</span></span>
               </span>
@@ -261,7 +261,7 @@ const Navbar: React.FC = () => {
 
             {/* Trades Button */}
             <Link href="/trades" className={`${styles.navButton} ${isActive('/trades') ? styles.navButtonActive : ''}`}>
-              <Image src="/icons/nav-markets-v3.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/trades') ? styles.navImgIconActive : ''}`} />
+              <Image src="/icons/nav-trades-v1.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/trades') ? styles.navImgIconActive : ''}`} />
               <span className={isActive('/trades') ? styles.buttonLabelActive : styles.buttonLabel}>
                 <span className={styles.slideWrap}><span className={styles.slideText}>Trades</span><span className={`${styles.slideText} ${styles.slideClone}`}>Trades</span></span>
               </span>
@@ -277,7 +277,7 @@ const Navbar: React.FC = () => {
 
             {/* Prompts Button */}
             <Link href="/prompts" className={`${styles.navButton} ${isActive('/prompts') ? styles.navButtonActive : ''}`}>
-              <Image src="/icons/nav-prompts-v3.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/prompts') ? styles.navImgIconActive : ''}`} />
+              <Image src="/icons/nav-surveys-v4.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/prompts') ? styles.navImgIconActive : ''}`} />
               <span className={isActive('/prompts') ? styles.buttonLabelActive : styles.buttonLabel}>
                 <span className={styles.slideWrap}><span className={styles.slideText}>Prompts</span><span className={`${styles.slideText} ${styles.slideClone}`}>Prompts</span></span>
               </span>

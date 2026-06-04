@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import { useAccount } from 'wagmi';
-import { Target, CheckCircle, Circle, UploadSimple, ArrowSquareOut } from '@phosphor-icons/react';
+import { CheckCircle, Circle, UploadSimple, ArrowSquareOut } from '@phosphor-icons/react';
 import { ConfettiCelebration } from '../quests/ConfettiCelebration';
 import { ShardAnimation } from '../quests/ShardAnimation';
 import { XConnectingModal } from '../x-connecting/XConnectingModal';
@@ -276,7 +276,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
         </div>
         <div className={styles.idle}>
           <div className={styles.idleInner}>
-            <Target size={36} weight="duotone" className={styles.idleIcon} />
+            <Image src="/icons/money.svg" alt="" width={40} height={40} className={styles.idleIcon} />
             <p className={styles.idleTitle}>Select a quest</p>
             <p className={styles.idleDesc}>Choose any quest from the list to see details and claim your rewards.</p>
           </div>

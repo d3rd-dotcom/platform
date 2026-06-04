@@ -19,12 +19,10 @@ const SidebarInventoryCard = dynamic(() => import('../sidebar-inventory-card/Sid
 const AvatarSelectorModal = dynamic(() => import('../avatar-selector/AvatarSelectorModal'), { ssr: false });
 const UsernameChangeModal = dynamic(() => import('../username-change/UsernameChangeModal'), { ssr: false });
 const ProMembershipModal = dynamic(() => import('../pro-membership-modal/ProMembershipModal'), { ssr: false });
-const InventoryModal = dynamic(() => import('../inventory-modal/InventoryModal'), { ssr: false });
 const YourAccountsModal = dynamic(() => import('../nav-buttons/YourAccountsModal'), { ssr: false });
 const OnboardingModal = dynamic(() => import('../onboarding/OnboardingModal'), { ssr: false });
 const LootBoxModal = dynamic(() => import('../loot-box/LootBoxModal'), { ssr: false });
 const ProfilePopup = dynamic(() => import('../profile-popup/ProfilePopup'), { ssr: false });
-const SoulModal = dynamic(() => import('../soul-modal/SoulModal'), { ssr: false });
 
 interface NavItem {
   id: string;
@@ -53,7 +51,7 @@ const desktopNavSections: NavSection[] = [
     badge: 'Pro',
     badgeType: 'pro',
     items: [
-      { id: 'markets', label: 'Trades', href: '/trades', iconSrc: '/icons/nav-markets-v3.svg', requiresPro: true },
+      { id: 'markets', label: 'Trades', href: '/trades', iconSrc: '/icons/nav-trades-v1.svg', requiresPro: true },
       { id: 'research', label: 'R-Tool', href: '/research', iconSrc: '/icons/nav-laboratory-v3.svg', requiresPro: true },
       { id: 'simulations', label: 'Simulations', href: '/simulation', iconSrc: '/icons/nav-simulations-v2.svg', requiresPro: true },
     ],
@@ -67,7 +65,7 @@ const mobileNavSections: NavSection[] = [
     badge: 'Pro',
     badgeType: 'pro',
     items: [
-      { id: 'markets', label: 'Trades', href: '/trades', iconSrc: '/icons/nav-markets-v3.svg', requiresPro: true },
+      { id: 'markets', label: 'Trades', href: '/trades', iconSrc: '/icons/nav-trades-v1.svg', requiresPro: true },
       { id: 'research', label: 'R-Tool', href: '/research', iconSrc: '/icons/nav-laboratory-v3.svg', requiresPro: true },
       { id: 'simulations', label: 'Simulations', href: '/simulation', iconSrc: '/icons/nav-simulations-v2.svg', requiresPro: true },
     ],
@@ -77,21 +75,21 @@ const mobileNavSections: NavSection[] = [
 const primaryNavItems: NavItem[] = [
   {
     id: 'morning-pages',
-    label: 'Course',
+    label: 'Courses',
     href: '/course',
-    iconSrc: '/icons/nav-journal-v3.svg',
+    iconSrc: '/icons/nav-course-v2.svg',
   },
   {
     id: 'prompts',
-    label: 'Library',
+    label: 'Database',
     href: '/prompts',
-    iconSrc: '/icons/nav-prompts-v3.svg',
+    iconSrc: '/icons/nav-surveys-v4.svg',
   },
   {
     id: 'surveys',
     label: 'Surveys',
     href: '/surveys',
-    iconSrc: '/icons/nav-surveys-v3.svg',
+    iconSrc: '/icons/nav-surveys-v5.svg',
   },
 ];
 
@@ -185,7 +183,6 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [isLootBoxOpen, setIsLootBoxOpen] = useState(false);
   const [isProfilePopupOpen, setIsProfilePopupOpen] = useState(false);
-  const [isSoulModalOpen, setIsSoulModalOpen] = useState(false);
   const [userLoadComplete, setUserLoadComplete] = useState(false);
   const [hasVipMembershipCard, setHasVipMembershipCard] = useState<boolean | null>(null);
   const { play } = useSound();
@@ -722,14 +719,9 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
             onChangeAvatar={handleAvatarClick}
             onChangeUsername={handleUsernameClick}
             onConnections={() => setIsYourAccountsModalOpen(true)}
-            onSoul={() => setIsSoulModalOpen(true)}
+            onInventory={() => setIsInventoryOpen(true)}
             onSignOut={handleSignOut}
             onViewProfile={() => setIsProfilePopupOpen(true)}
-          />
-          <SidebarInventoryCard
-            shardCount={shardCount}
-            address={address}
-            isCollapsed={isCollapsed}
           />
         </>
       );
@@ -816,13 +808,22 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
       {/* Modals */}
       {isChatOpen && <BlueChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />}
       {isInventoryOpen && (
-        <InventoryModal
-          isOpen={isInventoryOpen}
-          onClose={() => setIsInventoryOpen(false)}
-          shardCount={shardCount}
-          username={username}
-          avatarUrl={avatarUrl}
-        />
+        <div className={styles.inventoryPopupBackdrop} onClick={() => setIsInventoryOpen(false)}>
+          <div className={styles.inventoryPopupBody} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.inventoryPopupHeader}>
+              <span className={styles.inventoryPopupTitle}>Inventory</span>
+              <button
+                type="button"
+                className={styles.inventoryPopupClose}
+                onClick={() => setIsInventoryOpen(false)}
+                aria-label="Close inventory"
+              >
+                ×
+              </button>
+            </div>
+            <SidebarInventoryCard shardCount={shardCount} address={address} isCollapsed={false} />
+          </div>
+        </div>
       )}
       {isLootBoxOpen && (
         <LootBoxModal
@@ -866,10 +867,6 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
           address={address}
           onClose={() => setIsProfilePopupOpen(false)}
         />
-      )}
-
-      {isSoulModalOpen && (
-        <SoulModal onClose={() => setIsSoulModalOpen(false)} />
       )}
 
     </>

@@ -252,10 +252,23 @@ async function _ensureForumSchemaImpl() {
     }
   }
 
+  // Add avatar_reroll_count column if it doesn't exist. Each paid reroll bumps
+  // this, which shifts the user's deterministic set of 6 avatar options.
+  try {
+    await sqlQuery(`
+      ALTER TABLE users
+      ADD COLUMN avatar_reroll_count INTEGER NOT NULL DEFAULT 0
+    `);
+  } catch (err: any) {
+    if (!err?.message?.includes('already exists') && !err?.message?.includes('duplicate')) {
+      console.warn('Error adding avatar_reroll_count column:', err);
+    }
+  }
+
   // Add gender column if it doesn't exist
   try {
     await sqlQuery(`
-      ALTER TABLE users 
+      ALTER TABLE users
       ADD COLUMN gender VARCHAR(10) NULL
     `);
   } catch (err: any) {

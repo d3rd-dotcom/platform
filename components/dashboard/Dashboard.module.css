@@ -44,6 +44,23 @@
   min-width: 0;
 }
 
+.courseVideoLink {
+  display: block;
+  text-decoration: none;
+  border-radius: 14px;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.courseVideoLink:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(81, 104, 255, 0.18);
+}
+
+.courseVideoLink:focus-visible {
+  outline: 2px solid #5168ff;
+  outline-offset: 3px;
+}
+
 .eventsHeader {
   display: flex;
   flex-direction: column;
