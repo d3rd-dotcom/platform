@@ -165,9 +165,11 @@ const CubesScene = memo(({ bgColor }: { bgColor: THREE.Vector3 }) => {
 
 CubesScene.displayName = 'CubesScene';
 
-const BgColor = memo(({ color }: { color: string }) => {
+const BgColor = memo(() => {
   const { scene } = useThree();
-  useEffect(() => { scene.background = new THREE.Color(color); }, [scene, color]);
+  useEffect(() => {
+    scene.background = null;
+  }, [scene]);
   return null;
 });
 
@@ -194,14 +196,14 @@ const CohortCubes = memo(({ bgColor = '#FFFFFF', animate = true }: CohortCubesPr
       camera={{ position: [0, 0, 10], fov: 75 }}
       dpr={[dpr, dpr]}
       style={{ width: '100%', height: '100%' }}
-      gl={{ antialias: true, powerPreference: 'high-performance', alpha: false, stencil: false, depth: true }}
+      gl={{ antialias: true, powerPreference: 'high-performance', alpha: true, stencil: false, depth: true }}
       frameloop={animate ? 'always' : 'demand'}
       performance={{ min: 0.5 }}
       onCreated={({ gl }) => {
-        gl.setClearColor(bgColor, 1);
+        gl.setClearColor(0x000000, 0);
       }}
     >
-      <BgColor color={bgColor} />
+      <BgColor />
       <Suspense fallback={null}>
         <CubesScene bgColor={bgVector3} />
       </Suspense>

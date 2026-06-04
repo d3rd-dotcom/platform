@@ -4,7 +4,11 @@
   min-height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(rgba(81, 104, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(81, 104, 255, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
   --hero-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --landing-shell-width: calc(100% - 144px);
   --landing-shell-padding: 24px;
@@ -24,6 +28,7 @@
 /* Hero Section - Centered text stack with framed app screenshot below */
 .heroSection {
   position: relative;
+  --hero-inner-max: min(1280px, var(--landing-content-width));
   min-height: calc(100vh - 172px);
   width: min(1280px, var(--landing-content-width));
   margin: 0 auto;
@@ -35,6 +40,7 @@
   align-items: center;
   gap: clamp(28px, 4vw, 72px);
   box-sizing: border-box;
+  overflow: visible;
 }
 
 .heroContent {
@@ -96,17 +102,58 @@
   width: min(100%, 620px);
   display: flex;
   align-items: flex-end;
-  justify-content: center;
+  justify-content: flex-end;
   line-height: 0;
+  overflow: visible;
+}
+
+/* decorative orb/rock shape sitting behind the Blue character */
+.heroVisualFrame::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: clamp(380px, 46vw, 820px);
+  aspect-ratio: 1212 / 1449;
+  background: url('/images/hero-shape.webp') right bottom / contain no-repeat;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@media (min-width: 769px) {
+  .heroSection {
+    width: 100%;
+    max-width: 100vw;
+    margin: 0;
+    padding-left: max(var(--landing-shell-padding), calc((100vw - var(--hero-inner-max)) / 2));
+    padding-right: 0;
+  }
+
+  .heroContent {
+    flex: 0 1 calc(var(--hero-inner-max) * 0.54);
+    max-width: calc(var(--hero-inner-max) * 0.54);
+  }
+
+  .heroVisualColumn {
+    flex: 1 1 auto;
+    max-width: none;
+  }
+
+  .heroVisualFrame {
+    width: 100%;
+    max-width: none;
+  }
 }
 
 .heroVisualImage {
+  position: relative;
+  z-index: 1;
   display: block;
   width: 100%;
   height: auto;
   max-height: min(76vh, 920px);
   object-fit: contain;
-  object-position: center;
+  object-position: right bottom;
   filter: none;
 }
 
@@ -1007,7 +1054,7 @@
   }
 
   .heroSection {
-    width: min(1180px, var(--landing-content-width));
+    --hero-inner-max: min(1180px, var(--landing-content-width));
     gap: clamp(20px, 3vw, 44px);
     padding-top: clamp(84px, 9vh, 104px);
   }
@@ -1016,12 +1063,27 @@
     width: 100%;
   }
 
+  @media (min-width: 769px) {
+    .heroContent {
+      flex: 0 1 calc(var(--hero-inner-max) * 0.54);
+      max-width: calc(var(--hero-inner-max) * 0.54);
+      width: auto;
+    }
+  }
+
   .heroHeadline {
     font-size: clamp(2.2rem, 5vw, 4.4rem);
   }
 
   .heroVisualFrame {
     width: min(100%, 540px);
+  }
+
+  @media (min-width: 769px) {
+    .heroVisualFrame {
+      width: 100%;
+      max-width: none;
+    }
   }
 }
 
@@ -1036,6 +1098,7 @@
     align-items: center;
     min-height: auto;
     width: var(--landing-content-width);
+    margin: 0 auto;
     padding: 122px 0 0;
     gap: 28px;
   }
@@ -1169,6 +1232,14 @@
   }
 }
 
+@media (max-width: 520px) {
+  .container,
+  .canvas,
+  .canvasFallback {
+    background-size: 32px 32px;
+  }
+}
+
 @media (max-width: 480px) {
   .container {
     --landing-shell-width: calc(100% - 24px);
@@ -1263,15 +1334,20 @@
   width: 100%;
   height: 100vh;
   z-index: 0;
-  background-color: #FFFFFF;
+  background-color: transparent;
+  background-image:
+    linear-gradient(rgba(81, 104, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(81, 104, 255, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
   overflow: hidden;
 }
 
 .canvasFallback {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.68) 0%, rgba(255, 255, 255, 0.96) 58%, #FFFFFF 100%),
-    repeating-linear-gradient(135deg, rgba(26, 29, 51, 0.035) 0 1px, transparent 1px 18px),
-    #FFFFFF;
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(rgba(81, 104, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(81, 104, 255, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
 }
 
 /* Crosshair cursor */
