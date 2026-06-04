@@ -5,8 +5,8 @@ import Image from 'next/image';
 import styles from './LandingPage.module.css';
 import LandingEnterAcademyButton from './LandingEnterAcademyButton';
 import LandingEnterAsAgentButton from './LandingEnterAsAgentButton';
-import CompanyLogos from './CompanyLogos';
-import ProblemPyramid from './ProblemPyramid';
+import { KeyFiguresSection } from './KeyFiguresSection';
+import ProblemMap from './ProblemMap';
 
 export const EcosystemSection: React.FC = () => (
   <section id="value" className={styles.ecosystemSection} aria-label="Academy ecosystem">
@@ -38,7 +38,7 @@ export const EcosystemSection: React.FC = () => (
           <LandingEnterAcademyButton />
         </div>
         <div className={styles.ecosystemDiagramWrap}>
-          <ProblemPyramid />
+          <ProblemMap />
         </div>
       </div>
     </div>
@@ -53,8 +53,8 @@ export const HeroSection: React.FC = () => {
         <div className={styles.heroContent}>
           <p className={styles.heroTextBadge}>Mental Wealth Academy</p>
           <h1 className={styles.heroHeadline}>
-            <span>Next-Gen </span>
-            <span className={styles.heroHeadlineAccent}>Education</span>
+            <span className={styles.heroHeadlineAccent}>The Next Gen</span>
+            <span>Of Education</span>
           </h1>
           <p className={styles.heroSubtext}>
           Decentralized curriculums &amp; experiments led by a team of Neuroscientists. Unlocking human potential through goal-driven &amp; engaging quests.</p>
@@ -63,19 +63,21 @@ export const HeroSection: React.FC = () => {
             <LandingEnterAsAgentButton />
           </div>
         </div>
-        <div className={styles.heroAppShotFrame} aria-hidden="true">
-          <Image
-            src="/images/hero-app-shot.webp"
-            alt=""
-            width={1600}
-            height={900}
-            className={styles.heroAppShotImage}
-            priority
-          />
+        <div className={styles.heroVisualColumn} aria-hidden="true">
+          <div className={styles.heroVisualFrame}>
+            <Image
+              src="/images/a.png"
+              alt=""
+              width={1254}
+              height={1254}
+              className={styles.heroVisualImage}
+              priority
+            />
+          </div>
         </div>
       </div>
 
-      <CompanyLogos />
+      <KeyFiguresSection />
     </>
   );
 };

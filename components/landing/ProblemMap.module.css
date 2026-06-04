@@ -1,0 +1,118 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: clamp(12px, 2vw, 24px) 0;
+}
+
+.map {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  aspect-ratio: 1 / 1;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+  background: #eceef3;
+  font-family: var(--font-primary);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.mapReady {
+  opacity: 1;
+}
+
+.caption {
+  font-family: var(--font-primary);
+  font-size: clamp(0.78rem, 0.9vw, 0.86rem);
+  font-weight: 400;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.72);
+  text-align: center;
+  max-width: 440px;
+  margin: 16px 0 0;
+}
+
+.source {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.78em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* ---- Leaflet bits inside the map container (scoped under a local class so the
+   CSS-module "pure selector" rule is satisfied) ---- */
+.map :global(.leaflet-div-icon) {
+  background: transparent;
+  border: none;
+}
+
+.map :global(.leaflet-control-attribution) {
+  background: rgba(255, 255, 255, 0.72);
+  font-size: 9px;
+  line-height: 1.4;
+  color: rgba(17, 19, 27, 0.45);
+  padding: 1px 5px;
+}
+.map :global(.leaflet-control-attribution a) {
+  color: rgba(17, 19, 27, 0.6);
+}
+
+.map :global(.rl-zoneMarker) {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translate(-50%, -100%);
+  white-space: nowrap;
+  pointer-events: none;
+  line-height: 1;
+  font-family: var(--font-primary);
+}
+
+.map :global(.rl-badge) {
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #fff;
+}
+
+.map :global(.rl-school) {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  padding: 2px 7px 2px 6px;
+  border-radius: 7px;
+  background: #fff;
+  border: 1px solid rgba(17, 19, 27, 0.1);
+  box-shadow: 0 2px 6px rgba(17, 19, 27, 0.14);
+  font-size: 10px;
+  font-weight: 600;
+  color: #21242e;
+}
+.map :global(.rl-school svg) {
+  display: block;
+  fill: currentColor;
+}
+
+.map :global(.rl-pin) {
+  width: 9px;
+  height: 9px;
+  margin-top: 4px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(17, 19, 27, 0.3);
+}
+
+.map :global(.rl-red .rl-badge) { background: #e5484d; }
+.map :global(.rl-green .rl-badge) { background: #3e8e54; }
+.map :global(.rl-red .rl-school svg) { color: #e5484d; }
+.map :global(.rl-green .rl-school svg) { color: #3e8e54; }
+.map :global(.rl-red .rl-pin) { background: #e5484d; }
+.map :global(.rl-green .rl-pin) { background: #3e8e54; }

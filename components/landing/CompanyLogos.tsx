@@ -90,7 +90,6 @@ export default function CompanyLogos() {
         ref={sectionRef}
         className={`${styles.companyLogosSection} ${phase === 'sticky' ? styles.companyLogosSectionPending : ''}`}
       >
-        <p className={styles.trustedByText}>Partners and Ecosystem Foundation</p>
         <div className={styles.logosGrid}>
           {LOGOS.map((logo) => (
             <div
