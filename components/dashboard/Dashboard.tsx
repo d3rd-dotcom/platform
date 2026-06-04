@@ -9,6 +9,7 @@ import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
 import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
 import { EVENTS, PATHWAY_EVENT_ID } from '@/lib/events';
+import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 import type { CourseData } from '@/lib/personal-course';
 import styles from './Dashboard.module.css';
 
@@ -16,6 +17,14 @@ const ProMembershipModal = dynamic(
   () => import('../pro-membership-modal/ProMembershipModal'),
   { ssr: false },
 );
+
+const ConfettiCelebration = dynamic(
+  () => import('@/components/quests/ConfettiCelebration').then((m) => m.ConfettiCelebration),
+  { ssr: false },
+);
+
+// One-time flag so the hatch reveal only ever plays once per device.
+const EXXIE_HATCH_SEEN_KEY = 'exxie-hatch-seen';
 
 interface DashboardProps {
   course: CourseData;
@@ -72,6 +81,8 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
   // Egg hatches into Exxie once Week 2 is sealed on the Pathway.
   const [exxieHatched, setExxieHatched] = useState(false);
   const [exxieBlurb, setExxieBlurb] = useState<string | null>(null);
+  // First-time hatch celebration (egg cracks open into Exxie).
+  const [showHatchReveal, setShowHatchReveal] = useState(false);
 
   const privyEmail = user?.email?.address ?? null;
 
@@ -255,7 +266,13 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
         const week2 = Array.isArray(data.weeks)
           ? data.weeks.find((w: { weekNumber: number; isSealed: boolean }) => w.weekNumber === 2)
           : null;
-        if (!cancelled) setExxieHatched(Boolean(week2?.isSealed));
+        const hatched = Boolean(week2?.isSealed);
+        if (cancelled) return;
+        setExxieHatched(hatched);
+        // First time we ever see the hatch, play the reveal once.
+        if (hatched && getStorageItem(EXXIE_HATCH_SEEN_KEY) !== 'true') {
+          setShowHatchReveal(true);
+        }
       } catch {
         /* best-effort: stays an egg if we can't confirm */
       }
@@ -278,6 +295,11 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
     schedule();
     return () => { clearTimeout(nextId); clearTimeout(hideId); };
   }, [exxieHatched]);
+
+  const dismissHatchReveal = useCallback(() => {
+    setStorageItem(EXXIE_HATCH_SEEN_KEY, 'true');
+    setShowHatchReveal(false);
+  }, []);
 
   const pokeEgg = useCallback(() => {
     setEggShaking(true);
@@ -544,6 +566,26 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
 
       {isProModalOpen && (
         <ProMembershipModal isOpen={isProModalOpen} onClose={() => setIsProModalOpen(false)} />
+      )}
+
+      {showHatchReveal && (
+        <div className={styles.hatchOverlay} onClick={dismissHatchReveal}>
+          <ConfettiCelebration trigger={showHatchReveal} />
+          <div className={styles.hatchCard} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.hatchMedia}>
+              <Image src="/exxie.png" alt="Exxie" width={170} height={170} className={styles.hatchImg} priority />
+            </div>
+            <span className={styles.cardLabel}>Your egg hatched</span>
+            <h2 className={styles.hatchTitle}>Meet Exxie</h2>
+            <p className={styles.hatchText}>
+              You sealed Week 2, and your daemon woke up. Exxie stays with you on the Pathway and
+              grows as you seal more weeks. Look for him on your progress card.
+            </p>
+            <button type="button" className={styles.hatchBtn} onClick={dismissHatchReveal}>
+              Say hello
+            </button>
+          </div>
+        </div>
       )}
 
       {showLeaderboard && (
