@@ -17,20 +17,20 @@ export const EcosystemSection: React.FC = () => (
           How The Human Mind Was Conquered<br />
           </h2>
           <p className={styles.ecosystemSubtext}>
-          As redlining inherits properties of segregation, capital & resources remain dependent upon area-based income taxes. Low-income communities suffer and remain trapped by an invisible ceiling. By untethering world-class learning we:
+          As redlining inherits properties of segregation, capital & resources remain dependent upon area-based income taxes. Low-income communities suffer and remain trapped by an invisible ceiling. To untether from systemic plight we must:
           </p>
           <ul className={styles.ecosystemFeatureList}>
             <li className={styles.ecosystemFeatureItem}>
               <span className={styles.ecosystemFeatureDot} style={{ background: '#5168FF' }} />
-              Increase mental wealth through virtually accessible curricula.
-            </li>
+              Accelerate the transition to a sustainable food source.
+              </li>
             <li className={styles.ecosystemFeatureItem}>
               <span className={styles.ecosystemFeatureDot} style={{ background: '#8B6BFF' }} />
-              Engaging Quests tied to USDC for accountability and growth.
-            </li>
+              Mutually reinforce complementary impact and financial returns
+              </li>
             <li className={styles.ecosystemFeatureItem}>
               <span className={styles.ecosystemFeatureDot} style={{ background: '#3CC9B4' }} />
-              Blockchain-verified credentials and capable routes of learning.
+              Blockchain-verify credentials and digitize qualityknowledge sources for self-learning.
             </li>
           </ul>
           <LandingEnterAcademyButton />
@@ -54,7 +54,7 @@ export const HeroSection: React.FC = () => {
             <span className={styles.heroHeadlineAccent}>Programmable.</span>
           </h1>
           <p className={styles.heroSubtext}>
-          We generate impact with a philosophy called ethereal horizon. God-level insight for people and measurable impact for the planet, humans and animals.</p>
+          We generate impact with a philosophy called ethereal horizon. God-level insight and measurable impact for the planet, humans, machines, and animals.</p>
           <div className={styles.heroActions}>
             <LandingEnterAcademyButton dark />
           </div>
