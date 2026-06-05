@@ -23,6 +23,7 @@ export default function CoursesPage() {
         <div className={styles.grid}>
 
           <Link href="/course" className={styles.courseCard}>
+            <div className={styles.courseNoise} aria-hidden="true" />
             <div className={styles.courseCardInner}>
               <div className={styles.courseCardTop}>
                 <span className={styles.courseWeeks}>12 weeks</span>
