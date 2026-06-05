@@ -55,6 +55,7 @@ const desktopNavSections: NavSection[] = [
       { id: 'markets', label: 'Trades', href: '/trades', iconSrc: '/icons/nav-trades-v1.svg', requiresPro: true },
       { id: 'research', label: 'R-Tool', href: '/research', iconSrc: '/icons/nav-laboratory-v3.svg', requiresPro: true },
       { id: 'simulations', label: 'Simulations', href: '/simulation', iconSrc: '/icons/nav-simulations-v2.svg', requiresPro: true },
+      { id: 'genetics', label: 'Genetics', href: '/genetics', iconSrc: '/icons/genetics.svg', requiresPro: true },
     ],
   },
 ];
@@ -69,6 +70,7 @@ const mobileNavSections: NavSection[] = [
       { id: 'markets', label: 'Trades', href: '/trades', iconSrc: '/icons/nav-trades-v1.svg', requiresPro: true },
       { id: 'research', label: 'R-Tool', href: '/research', iconSrc: '/icons/nav-laboratory-v3.svg', requiresPro: true },
       { id: 'simulations', label: 'Simulations', href: '/simulation', iconSrc: '/icons/nav-simulations-v2.svg', requiresPro: true },
+      { id: 'genetics', label: 'Genetics', href: '/genetics', iconSrc: '/icons/genetics.svg', requiresPro: true },
     ],
   },
 ];
