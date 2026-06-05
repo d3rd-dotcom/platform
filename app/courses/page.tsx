@@ -23,17 +23,21 @@ export default function CoursesPage() {
         <div className={styles.grid}>
 
           <Link href="/course" className={styles.courseCard}>
-            <div className={styles.courseNoise} aria-hidden="true" />
-            <div className={styles.courseCardInner}>
-              <div className={styles.courseCardTop}>
-                <span className={styles.courseWeeks}>12 weeks</span>
-                <BookOpen size={22} weight="duotone" className={styles.courseIcon} />
+            <div className={styles.courseImage}>
+              <div className={styles.courseNoise} aria-hidden="true" />
+              <div className={styles.courseIconBadge}>
+                <BookOpen size={16} weight="duotone" />
               </div>
+            </div>
+            <div className={styles.courseBody}>
               <h2 className={styles.courseTitle}>Artist&apos;s Awakening</h2>
               <p className={styles.courseDesc}>
                 A journey through rediscovering your creative energy and excavating it to reach your highest horizon.
               </p>
-              <span className={styles.courseStart}>Start course →</span>
+              <div className={styles.courseFoot}>
+                <span className={styles.courseFootMeta}>12 weeks · Season 1</span>
+                <span className={styles.courseStart}>Start →</span>
+              </div>
             </div>
           </Link>
 

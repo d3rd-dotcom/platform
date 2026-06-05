@@ -42,95 +42,113 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
+  align-items: start;
 }
 
-/* Artist's Awakening — mesh gradient + film grain */
+/* ── Artist's Awakening — image-header card ── */
 .courseCard {
-  position: relative;
   display: flex;
   flex-direction: column;
   border-radius: 16px;
-  background-color: #0c0e1d;
-  background-image:
-    radial-gradient(110% 90% at 15% 0%, rgba(81, 104, 255, 0.38) 0%, transparent 58%),
-    radial-gradient(70% 80% at 95% 110%, rgba(138, 80, 230, 0.28) 0%, transparent 52%),
-    radial-gradient(55% 60% at 55% 45%, rgba(40, 185, 165, 0.10) 0%, transparent 65%);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 8px 32px rgba(0, 0, 0, 0.50);
-  padding: 32px;
+  background: var(--color-surface-base);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.06);
   text-decoration: none;
   color: inherit;
   overflow: hidden;
   transition: transform 0.18s ease, box-shadow 0.18s ease;
-  min-height: 260px;
 }
 
 .courseCard:hover {
   transform: translateY(-2px);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.10), 0 12px 40px rgba(81, 104, 255, 0.22);
+  box-shadow: 0 8px 28px rgba(26, 29, 51, 0.10);
 }
 
-/* Film-grain noise overlay — same technique as event card headers */
+/* Image header — colorful illustration as background */
+.courseImage {
+  position: relative;
+  width: 100%;
+  height: 148px;
+  background-color: #3d2e7c;
+  background-image: url('/stories/week-01/creative-recovery-butterflies.png');
+  background-size: cover;
+  background-position: center top;
+  overflow: hidden;
+}
+
+/* Film grain over image — same as event card headers */
 .courseNoise {
   position: absolute;
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: 0.13;
+  opacity: 0.12;
   mix-blend-mode: overlay;
   pointer-events: none;
-  border-radius: inherit;
 }
 
-.courseCardInner {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  height: 100%;
-}
-
-.courseCardTop {
+/* Icon badge — top-right of image */
+.courseIconBadge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  background: linear-gradient(135deg, #f5a623 0%, #e07b0a 100%);
+  border-radius: 9px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(224, 123, 10, 0.45);
 }
 
-.courseWeeks {
-  font-family: var(--font-body, sans-serif);
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.42);
-}
-
-.courseIcon {
-  color: rgba(255, 255, 255, 0.35);
+/* Content area below image */
+.courseBody {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 18px 18px;
 }
 
 .courseTitle {
   font-family: var(--font-display, sans-serif);
-  font-size: 1.625rem;
-  font-weight: 600;
-  color: #ffffff;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text-dark);
   letter-spacing: -0.02em;
   margin: 0;
+  line-height: 1.25;
 }
 
 .courseDesc {
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.6);
-  line-height: 1.6;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  line-height: 1.55;
   margin: 0;
-  flex: 1;
+}
+
+.courseFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.courseFootMeta {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.75rem;
+  color: var(--color-text-faint);
 }
 
 .courseStart {
+  font-family: var(--font-body, sans-serif);
   font-size: 0.8125rem;
-  color: rgba(81, 104, 255, 0.9);
-  margin-top: 8px;
-  font-weight: 500;
+  font-weight: 600;
+  color: var(--color-primary);
 }
 
-/* Blue Course */
+/* ── Blue Course — plus card, untouched ── */
 .buildCard {
   display: flex;
   flex-direction: column;
@@ -155,19 +173,6 @@
   color: var(--color-primary);
 }
 
-:global([data-theme="dark"]) .buildCard {
-  background: #1e1f2c;
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 6px 20px rgba(0, 0, 0, 0.45);
-  color: #9aa0c0;
-}
-
-:global([data-theme="dark"]) .buildCard:hover {
-  border-color: rgba(255, 255, 255, 0.22);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 8px 28px rgba(0, 0, 0, 0.55);
-  color: #f0f1fa;
-}
-
 .buildIcon {
   opacity: 0.5;
   transition: opacity 0.18s ease;
@@ -177,12 +182,30 @@
   opacity: 1;
 }
 
-.buildLabel {
-  font-family: var(--font-display, sans-serif);
-  font-size: 1.125rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--color-text-dark);
+:global([data-theme="dark"]) .buildCard {
+  background: #1e1f2c;
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 6px 20px rgba(0, 0, 0, 0.45);
+  color: #9aa0c0;
+}
+
+:global([data-theme="dark"]) .buildCard:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  color: #f0f1fa;
+}
+
+:global([data-theme="dark"]) .courseCard {
+  background: #1e1f2c;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 6px 20px rgba(0, 0, 0, 0.45);
+}
+
+:global([data-theme="dark"]) .courseTitle {
+  color: #f0f1fa;
+}
+
+:global([data-theme="dark"]) .courseDesc {
+  color: #9aa0c0;
 }
 
 @media (max-width: 900px) {
@@ -192,5 +215,5 @@
 @media (max-width: 640px) {
   .main { padding: 32px 20px 48px; }
   .grid { grid-template-columns: 1fr; }
-  .buildCard, .courseCard { min-height: 200px; }
+  .buildCard { min-height: 200px; }
 }
