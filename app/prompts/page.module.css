@@ -281,6 +281,15 @@
   overflow-x: clip;
 }
 
+/* Agent roster, relocated from the home dashboard to the page bottom */
+.agentRosterFooter {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 24px 40px;
+  box-sizing: border-box;
+}
+
 /* Main Area */
 .mainArea {
   flex: 1;

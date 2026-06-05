@@ -6,10 +6,9 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { usePrivy } from '@privy-io/react-auth';
 import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
-import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
+import ProfileHeroBanner from '@/components/profile-hero-banner/ProfileHeroBanner';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
 import { EVENTS, PATHWAY_EVENT_ID } from '@/lib/events';
-import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 import type { CourseData } from '@/lib/personal-course';
 import styles from './Dashboard.module.css';
 
@@ -17,14 +16,6 @@ const ProMembershipModal = dynamic(
   () => import('../pro-membership-modal/ProMembershipModal'),
   { ssr: false },
 );
-
-const ConfettiCelebration = dynamic(
-  () => import('@/components/quests/ConfettiCelebration').then((m) => m.ConfettiCelebration),
-  { ssr: false },
-);
-
-// One-time flag so the hatch reveal only ever plays once per device.
-const EXXIE_HATCH_SEEN_KEY = 'exxie-hatch-seen';
 
 interface DashboardProps {
   course: CourseData;
@@ -52,21 +43,9 @@ function avatarColor(name: string): string {
 const HOME_BLUE_MESSAGE =
   'Mental Wealth Academy places power tools for self-actualization and individual enlightenment through the freely available course, earn credits to connect to live events with experts, and unlimited AI tools for VIP Members.';
 
-// Exxie hatches from the egg once Week 2 is sealed. Short idle lines that drift
-// up from him now and then, to make him feel alive. Keep them tiny, no emojis.
-const EXXIE_BLURBS = [
-  'you sealed week two. i woke up.',
-  'keep going. i want to see what we become.',
-  'i remember every quest you finished.',
-  'the work looks good on you.',
-  'more. let us do more.',
-  'i am yours now. do not stop.',
-];
-
 export default function Dashboard({ enableMorningPagesPersistence = false }: DashboardProps) {
   const { authenticated, user, login, getAccessToken } = usePrivy();
   const [leaderboard, setLeaderboard] = useState<LeaderUser[]>([]);
-  const [eggShaking, setEggShaking] = useState(false);
   // Which events the user is registered for (hydrated from the server on mount).
   const [reserved, setReserved] = useState<Record<string, boolean>>({});
   // eventId currently asking for an email, the typed value, and in-flight state.
@@ -78,11 +57,6 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
   const [testSent, setTestSent] = useState<Record<string, boolean>>({});
   const [isProModalOpen, setIsProModalOpen] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
-  // Egg hatches into Exxie once Week 2 is sealed on the Pathway.
-  const [exxieHatched, setExxieHatched] = useState(false);
-  const [exxieBlurb, setExxieBlurb] = useState<string | null>(null);
-  // First-time hatch celebration (egg cracks open into Exxie).
-  const [showHatchReveal, setShowHatchReveal] = useState(false);
 
   const privyEmail = user?.email?.address ?? null;
 
@@ -250,96 +224,12 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
       .catch(() => {/* leaderboard is best-effort */});
   }, []);
 
-  // Has the user sealed Week 2? If so, the egg has hatched into Exxie.
-  useEffect(() => {
-    if (!authenticated) return;
-    let cancelled = false;
-    (async () => {
-      try {
-        const res = await fetch('/api/ethereal-progress/all', {
-          cache: 'no-store',
-          credentials: 'include',
-          headers: await authHeaders(),
-        });
-        if (!res.ok) return;
-        const data = await res.json();
-        const week2 = Array.isArray(data.weeks)
-          ? data.weeks.find((w: { weekNumber: number; isSealed: boolean }) => w.weekNumber === 2)
-          : null;
-        const hatched = Boolean(week2?.isSealed);
-        if (cancelled) return;
-        setExxieHatched(hatched);
-        // First time we ever see the hatch, play the reveal once.
-        if (hatched && getStorageItem(EXXIE_HATCH_SEEN_KEY) !== 'true') {
-          setShowHatchReveal(true);
-        }
-      } catch {
-        /* best-effort: stays an egg if we can't confirm */
-      }
-    })();
-    return () => { cancelled = true; };
-  }, [authenticated, authHeaders]);
-
-  // Once hatched, Exxie murmurs the occasional idle line.
-  useEffect(() => {
-    if (!exxieHatched) return;
-    let hideId: ReturnType<typeof setTimeout>;
-    let nextId: ReturnType<typeof setTimeout>;
-    const schedule = () => {
-      nextId = setTimeout(() => {
-        setExxieBlurb(EXXIE_BLURBS[Math.floor(Math.random() * EXXIE_BLURBS.length)]);
-        hideId = setTimeout(() => setExxieBlurb(null), 4200);
-        schedule();
-      }, 7000 + Math.random() * 9000);
-    };
-    schedule();
-    return () => { clearTimeout(nextId); clearTimeout(hideId); };
-  }, [exxieHatched]);
-
-  const dismissHatchReveal = useCallback(() => {
-    setStorageItem(EXXIE_HATCH_SEEN_KEY, 'true');
-    setShowHatchReveal(false);
-  }, []);
-
-  const pokeEgg = useCallback(() => {
-    setEggShaking(true);
-    const AudioCtx =
-      window.AudioContext ||
-      (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-    if (!AudioCtx) return;
-    const ctx = new AudioCtx();
-    const doonga = (start: number) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(160, start);
-      osc.frequency.exponentialRampToValueAtTime(68, start + 0.2);
-      gain.gain.setValueAtTime(0.0001, start);
-      gain.gain.exponentialRampToValueAtTime(0.5, start + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.34);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(start);
-      osc.stop(start + 0.36);
-    };
-    const now = ctx.currentTime;
-    doonga(now + 0.02);
-    doonga(now + 0.34);
-    window.setTimeout(() => ctx.close(), 900);
-  }, []);
-
   return (
     <div className={styles.dashboard}>
       {/* ── Upcoming events ── */}
       <section className={styles.eventsSection}>
-        {/* The 12-week course, as a looping Blue hero (replaces the old course card). */}
-        <Link href="/courses" className={styles.courseVideoLink} aria-label="Open courses">
-          <BlueVideoPanel
-            eyebrow="Shadow Work · Season 1"
-            message="A 12-week pathway through readings and missions. Complete each week to unlock the next — pick up where you left off."
-            ariaLive="off"
-          />
-        </Link>
+        {/* Profile hero banner — a hero-banner take on the profile pop-up. */}
+        <ProfileHeroBanner />
         <div className={styles.eventsHeader}>
           <span className={styles.cardLabel}>Upcoming events</span>
           <p className={styles.eventsHint}>
@@ -448,39 +338,12 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
         />
       </section>
 
-      {/* ── Side: egg, morning note, leaderboard, membership ── */}
+      {/* ── Side: morning note, leaderboard, membership ── */}
       <aside className={styles.sideStack}>
         <div className={styles.eventsHeader}>
           <span className={styles.cardLabel}>Your progress</span>
           <p className={styles.eventsHint}>
-            Hatch your egg and see where you stand.
-          </p>
-        </div>
-
-        <div className={styles.eggCard}>
-          <button
-            type="button"
-            className={styles.eggMedia}
-            onClick={pokeEgg}
-            aria-label={exxieHatched ? 'Poke Exxie' : 'Poke your egg'}
-          >
-            {exxieHatched && exxieBlurb && (
-              <span className={styles.exxieBubble} role="status">{exxieBlurb}</span>
-            )}
-            <Image
-              src={exxieHatched ? '/exxie.png' : '/images/egg.png'}
-              alt=""
-              fill
-              className={`${exxieHatched ? styles.exxieImg : styles.eggImg}${eggShaking ? ` ${styles.eggShake}` : ''}`}
-              onAnimationEnd={() => setEggShaking(false)}
-              priority
-            />
-          </button>
-          <h2 className={styles.eggTitle}>{exxieHatched ? 'Exxie' : 'Your Egg'}</h2>
-          <p className={styles.eggText}>
-            {exxieHatched
-              ? 'Your daemon hatched when you sealed Week 2. Keep going and Exxie grows with you.'
-              : 'Earn credits from quests and check-ins. What will hatch?'}
+            Keep your streak and see where you stand.
           </p>
         </div>
 
@@ -566,26 +429,6 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
 
       {isProModalOpen && (
         <ProMembershipModal isOpen={isProModalOpen} onClose={() => setIsProModalOpen(false)} />
-      )}
-
-      {showHatchReveal && (
-        <div className={styles.hatchOverlay} onClick={dismissHatchReveal}>
-          <ConfettiCelebration trigger={showHatchReveal} />
-          <div className={styles.hatchCard} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.hatchMedia}>
-              <Image src="/exxie.png" alt="Exxie" width={170} height={170} className={styles.hatchImg} priority />
-            </div>
-            <span className={styles.cardLabel}>Your egg hatched</span>
-            <h2 className={styles.hatchTitle}>Meet Exxie</h2>
-            <p className={styles.hatchText}>
-              You sealed Week 2, and your daemon woke up. Exxie stays with you on the Pathway and
-              grows as you seal more weeks. Look for him on your progress card.
-            </p>
-            <button type="button" className={styles.hatchBtn} onClick={dismissHatchReveal}>
-              Say hello
-            </button>
-          </div>
-        </div>
       )}
 
       {showLeaderboard && (

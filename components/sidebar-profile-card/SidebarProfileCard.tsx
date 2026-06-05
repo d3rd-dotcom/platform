@@ -116,7 +116,7 @@ export default function SidebarProfileCard({
           title="View profile"
         >
           {avatarUrl ? (
-            <Image src={avatarUrl} alt={displayName || 'Profile'} width={40} height={40} className={styles.avatar} unoptimized />
+            <Image src={avatarUrl} alt={displayName || 'Profile'} width={32} height={32} className={styles.avatar} unoptimized />
           ) : (
             <div className={styles.avatarFallback}>{initials}</div>
           )}

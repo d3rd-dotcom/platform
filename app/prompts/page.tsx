@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
+import AgentRosterCard from '@/components/room-log/AgentRosterCard';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
 
@@ -1254,6 +1255,9 @@ export default function PromptsPage() {
                 </div>
               </div>
             </div>
+          </div>
+          <div className={styles.agentRosterFooter}>
+            <AgentRosterCard />
           </div>
         </div>
 
