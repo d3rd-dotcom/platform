@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import styles from './BlueChat.module.css';
 import type { CourseData } from '@/lib/personal-course';
 import type { SoundType } from '@/lib/sound-engine';
@@ -83,27 +82,22 @@ const CourseBuilderInline: React.FC<CourseBuilderInlineProps> = ({
   return (
     <div className={styles.courseBuilderPanel}>
 
-      {/* Board header — mirrors quest board header style */}
+      {/* Board tab — mirrors QuestDetailPanel boardHeader */}
       <div className={styles.courseBuilderBoardHeader}>
-        <div className={styles.courseBuilderBoardRow}>
-          <span className={styles.courseBuilderEyebrow}>Course builder</span>
-          <div className={styles.courseBuilderBoardRight}>
-            <span className={styles.courseBuilderBadge}>
-              <Image src="/icons/ui-shard.svg" alt="" width={9} height={9} />
-              MWA
-            </span>
-            <button
-              type="button"
-              className={styles.autoDistributionMinimizeBtn}
-              onClick={() => { onPlay?.('click'); onClose(); }}
-              aria-label="Close course builder"
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
+        <div className={styles.courseBuilderBoardInner}>
+          <span className={styles.courseBuilderBoardNode} />
+          <span className={styles.courseBuilderBoardTitle}>Course builder</span>
         </div>
+        <button
+          type="button"
+          className={styles.courseBuilderCloseBtn}
+          onClick={() => { onPlay?.('click'); onClose(); }}
+          aria-label="Close course builder"
+        >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </button>
       </div>
 
       {phase === 'collect' && (

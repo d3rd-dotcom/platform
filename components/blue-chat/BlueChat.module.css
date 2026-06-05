@@ -2772,56 +2772,61 @@
 
 /* ── Course builder inline ── */
 
-/* ── Course builder board header (mirrors quest board header) ── */
+/* ── Course builder board header (mirrors QuestDetailPanel boardHeader tab) ── */
 .courseBuilderBoardHeader {
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid rgba(235, 232, 247, 0.10);
-  background: rgba(235, 232, 247, 0.04);
-}
-
-:global(:root:not([data-theme="dark"])) .courseBuilderBoardHeader {
-  border-color: rgba(81, 104, 255, 0.12);
-  background: rgba(81, 104, 255, 0.03);
-}
-
-.courseBuilderBoardRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-radius: 8px 8px 0 0;
+  background: #1b2245;
+  border-bottom: 1px solid rgba(26, 29, 51, 0.14);
+  margin: -14px -16px 0;
+  padding: 7px 12px 7px 16px;
 }
 
-.courseBuilderBoardRight {
+.courseBuilderBoardInner {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.courseBuilderEyebrow {
+.courseBuilderBoardNode {
+  display: block;
+  width: 5px;
+  height: 5px;
+  background: rgba(155, 175, 255, 0.55);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+
+.courseBuilderBoardTitle {
   font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.16em;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.20em;
   text-transform: uppercase;
-  color: rgba(235, 232, 247, 0.48);
+  color: rgba(205, 218, 255, 0.85);
+  white-space: nowrap;
 }
 
-:global(:root:not([data-theme="dark"])) .courseBuilderEyebrow {
-  color: rgba(26, 29, 51, 0.4);
-}
-
-.courseBuilderBadge {
-  display: inline-flex;
+.courseBuilderCloseBtn {
+  display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 3px 7px;
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #7586ff;
-  background: rgba(81, 104, 255, 0.10);
-  border: 1px solid rgba(81, 104, 255, 0.28);
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: rgba(205, 218, 255, 0.45);
+  cursor: pointer;
   border-radius: 4px;
+  transition: color 0.15s;
+  flex-shrink: 0;
+}
+
+.courseBuilderCloseBtn:hover {
+  color: rgba(205, 218, 255, 0.9);
 }
 
 /* Clean panel — same layout as autoDistributionPanel but no radial gradient */
