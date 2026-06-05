@@ -2843,14 +2843,36 @@
   animation: messageSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Light mode — 3-shade hierarchy mirroring dark layers, all tokens */
 :global(:root:not([data-theme="dark"])) .courseBuilderPanel {
-  background: #ffffff;
-  border-color: rgba(81, 104, 255, 0.18);
+  background: var(--color-surface-2);
+  border-color: var(--color-border-subtle);
   box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
 }
 
 :global(:root:not([data-theme="dark"])) .courseBuilderBoardHeader {
-  background: #1e1f2c;
+  background: var(--color-surface-3);
+  border-bottom-color: var(--color-border-subtle);
+}
+
+:global(:root:not([data-theme="dark"])) .courseBuilderBoardNode {
+  background: var(--color-text-faint);
+}
+
+:global(:root:not([data-theme="dark"])) .courseBuilderBoardTitle {
+  color: var(--color-text-muted);
+}
+
+:global(:root:not([data-theme="dark"])) .courseBuilderCloseBtn {
+  color: var(--color-text-faint);
+}
+
+:global(:root:not([data-theme="dark"])) .courseBuilderCloseBtn:hover {
+  color: var(--color-text-dark);
+}
+
+:global(:root:not([data-theme="dark"])) .courseBuilderWeek {
+  background: var(--color-surface-1);
 }
 
 /* Plain body-font description — no mono */
@@ -2891,9 +2913,6 @@
   padding: 8px 10px;
 }
 
-:global(:root:not([data-theme="dark"])) .courseBuilderWeek {
-  background: rgba(81, 104, 255, 0.05);
-}
 
 .courseBuilderWeekLabel {
   font-family: var(--font-mono);
