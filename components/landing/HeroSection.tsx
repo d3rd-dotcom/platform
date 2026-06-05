@@ -14,7 +14,7 @@ export const EcosystemSection: React.FC = () => (
         <div className={styles.ecosystemCopy}>
           <p className={styles.ecosystemKicker}>Knowledge inequality</p>
           <h2 className={styles.ecosystemHeadline}>
-          The Heavy Tax On Your Mental Wealth<br />
+          How The Human Mind Was Conquered<br />
           </h2>
           <p className={styles.ecosystemSubtext}>
           As redlining inherits properties of segregation, capital & resources remain dependent upon area-based income taxes. Low-income communities suffer and remain trapped by an invisible ceiling. By untethering world-class learning we:
@@ -54,7 +54,7 @@ export const HeroSection: React.FC = () => {
             <span className={styles.heroHeadlineAccent}>Programmable.</span>
           </h1>
           <p className={styles.heroSubtext}>
-          Any reality you wish to create is accessible in cyberspace. A Pocket-World with infinite possibilities.</p>
+          We generate impact with a philosophy called ethereal horizon. God-level insight for people and measurable impact for the planet, humans and animals.</p>
           <div className={styles.heroActions}>
             <LandingEnterAcademyButton dark />
           </div>

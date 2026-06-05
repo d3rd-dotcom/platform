@@ -17,14 +17,11 @@ export const FounderSection: React.FC = () => {
         <div className={styles.content}>
           <p className={styles.eyebrow}>From the founder</p>
           <h2 id="founder-section-heading" className={styles.heading}>
-            Hey, I&apos;m James 🇺🇸
+          A Story By Jhinn Bay 🇨🇳
           </h2>
           <div className={styles.body}>
             <p>
-              American education has a proximity problem. Where poorer communities are unable to access the same tools or utilize the power of Blockchain, AI, and other tools.
-            </p>
-            <p>
-              Decentralization allows us to change that, so previously underserved communities can connect and access the same tools and research opportunities as any other American.
+            Decentralization allows us to change how we've been serving underserved communities. We can connect and access the same tools and research opportunities as any other American.
             </p>
           </div>
         </div>
