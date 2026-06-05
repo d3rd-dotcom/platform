@@ -71,10 +71,20 @@
   height: 100%;
 }
 
+.courseCardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .courseWeeks {
   font-family: var(--font-body, sans-serif);
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.42);
+}
+
+.courseIcon {
+  color: rgba(255, 255, 255, 0.35);
 }
 
 .courseTitle {

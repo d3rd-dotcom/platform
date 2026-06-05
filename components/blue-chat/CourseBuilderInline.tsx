@@ -82,7 +82,6 @@ const CourseBuilderInline: React.FC<CourseBuilderInlineProps> = ({
   return (
     <div className={styles.courseBuilderPanel}>
 
-      {/* Board tab — mirrors QuestDetailPanel boardHeader */}
       <div className={styles.courseBuilderBoardHeader}>
         <div className={styles.courseBuilderBoardInner}>
           <span className={styles.courseBuilderBoardNode} />
@@ -92,6 +91,7 @@ const CourseBuilderInline: React.FC<CourseBuilderInlineProps> = ({
           type="button"
           className={styles.courseBuilderCloseBtn}
           onClick={() => { onPlay?.('click'); onClose(); }}
+          onMouseEnter={() => onPlay?.('hover')}
           aria-label="Close course builder"
         >
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -132,8 +132,21 @@ const CourseBuilderInline: React.FC<CourseBuilderInlineProps> = ({
           {error && <div className={styles.questForgeError}>{error}</div>}
           <div className={styles.autoDistributionFooter}>
             <div className={styles.autoDistributionButtons}>
-              <button type="button" className={styles.inlineFormCancel} onClick={() => { onPlay?.('click'); onClose(); }}>Close</button>
-              <button type="button" className={styles.inlineFormProceed} onClick={draft} disabled={!topic.trim()}>
+              <button
+                type="button"
+                className={styles.inlineFormCancel}
+                onClick={() => { onPlay?.('click'); onClose(); }}
+                onMouseEnter={() => onPlay?.('hover')}
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                className={styles.inlineFormProceed}
+                onClick={draft}
+                onMouseEnter={() => onPlay?.('hover')}
+                disabled={!topic.trim()}
+              >
                 Draft course
               </button>
             </div>
@@ -172,6 +185,7 @@ const CourseBuilderInline: React.FC<CourseBuilderInlineProps> = ({
                 type="button"
                 className={styles.inlineFormCancel}
                 onClick={() => { onPlay?.('click'); setPhase('collect'); setCourse(null); }}
+                onMouseEnter={() => onPlay?.('hover')}
                 disabled={phase === 'saving'}
               >
                 Back
@@ -180,6 +194,7 @@ const CourseBuilderInline: React.FC<CourseBuilderInlineProps> = ({
                 type="button"
                 className={styles.inlineFormProceed}
                 onClick={save}
+                onMouseEnter={() => onPlay?.('hover')}
                 disabled={phase === 'saving'}
               >
                 {phase === 'saving' ? 'Creating...' : 'Create course'}

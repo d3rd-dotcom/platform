@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { BookOpen } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import styles from './page.module.css';
 
@@ -23,10 +24,13 @@ export default function CoursesPage() {
 
           <Link href="/course" className={styles.courseCard}>
             <div className={styles.courseCardInner}>
-              <span className={styles.courseWeeks}>12 weeks</span>
-              <h2 className={styles.courseTitle}>Shadow Work</h2>
+              <div className={styles.courseCardTop}>
+                <span className={styles.courseWeeks}>12 weeks</span>
+                <BookOpen size={22} weight="duotone" className={styles.courseIcon} />
+              </div>
+              <h2 className={styles.courseTitle}>Artist&apos;s Awakening</h2>
               <p className={styles.courseDesc}>
-                A journey through safety, identity, power, and trust. Built on creative recovery practices.
+                A journey through rediscovering your creative energy and excavating it to reach your highest horizon.
               </p>
               <span className={styles.courseStart}>Start course →</span>
             </div>
@@ -40,7 +44,6 @@ export default function CoursesPage() {
                 <line x1="14" y1="24" x2="34" y2="24" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
               </svg>
             </div>
-            <span className={styles.buildLabel}>Blue Course</span>
           </button>
 
         </div>
