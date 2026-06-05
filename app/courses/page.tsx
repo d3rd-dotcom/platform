@@ -6,6 +6,12 @@ import { BookOpen } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import styles from './page.module.css';
 
+function getCourseEndDate() {
+  const d = new Date();
+  d.setDate(d.getDate() + 84); // 12 weeks
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
 function openCourseBuilder() {
   (window as Window & { __blueCourseBuilderOnOpen?: boolean }).__blueCourseBuilderOnOpen = true;
   window.dispatchEvent(new Event('toggleBlueChat'));
@@ -35,7 +41,7 @@ export default function CoursesPage() {
                 A journey through rediscovering your creative energy and excavating it to reach your highest horizon.
               </p>
               <div className={styles.courseFoot}>
-                <span className={styles.courseFootMeta}>12 weeks · Season 1</span>
+                <span className={styles.courseEndBadge}>End date: {getCourseEndDate()}</span>
                 <span className={styles.courseStart}>Start →</span>
               </div>
             </div>
