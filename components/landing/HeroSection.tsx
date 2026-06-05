@@ -30,7 +30,7 @@ export const EcosystemSection: React.FC = () => (
               </li>
             <li className={styles.ecosystemFeatureItem}>
               <span className={styles.ecosystemFeatureDot} style={{ background: '#3CC9B4' }} />
-              Blockchain-verify credentials and digitize qualityknowledge sources for self-learning.
+              Sustainable digital knowledge sources for self-learning.
             </li>
           </ul>
           <LandingEnterAcademyButton />
