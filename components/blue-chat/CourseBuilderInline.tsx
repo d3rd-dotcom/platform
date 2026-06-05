@@ -113,7 +113,7 @@ const CourseBuilderInline: React.FC<CourseBuilderInlineProps> = ({
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') draft(); }}
-              placeholder="e.g. drawing, public speaking, morning routine"
+              placeholder="Science"
               maxLength={120}
             />
           </div>
@@ -125,7 +125,7 @@ const CourseBuilderInline: React.FC<CourseBuilderInlineProps> = ({
               value={goal}
               onChange={(e) => setGoal(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') draft(); }}
-              placeholder="e.g. sketch daily, speak confidently in meetings"
+              placeholder="Learn base level Physics"
               maxLength={200}
             />
           </div>
