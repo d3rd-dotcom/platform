@@ -23,13 +23,12 @@ export default function CoursesPage() {
       <SideNavigation />
       <main className={styles.main}>
         <div className={styles.header}>
-          <h1 className={styles.heading}>Courses</h1>
-          <p className={styles.subtext}>Choose a path or build your own with Blue.</p>
+          <h1 className={styles.heading}>Popular Courses</h1>
         </div>
         <div className={styles.grid}>
 
           <Link href="/course" className={styles.courseCard}>
-            <div className={styles.courseImage}>
+            <div className={styles.courseImageWrap}>
               <div className={styles.courseNoise} aria-hidden="true" />
               <div className={styles.courseIconBadge}>
                 <BookOpen size={16} weight="duotone" />
@@ -37,13 +36,7 @@ export default function CoursesPage() {
             </div>
             <div className={styles.courseBody}>
               <h2 className={styles.courseTitle}>Artist&apos;s Awakening</h2>
-              <p className={styles.courseDesc}>
-                A journey through rediscovering your creative energy and excavating it to reach your highest horizon.
-              </p>
-              <div className={styles.courseFoot}>
-                <span className={styles.courseEndBadge}>End date: {getCourseEndDate()}</span>
-                <span className={styles.courseStart}>Start →</span>
-              </div>
+              <span className={styles.courseEndBadge}>End date: {getCourseEndDate()}</span>
             </div>
           </Link>
 
