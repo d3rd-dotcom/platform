@@ -333,9 +333,9 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
       {/* ── Upcoming events ── */}
       <section className={styles.eventsSection}>
         {/* The 12-week course, as a looping Blue hero (replaces the old course card). */}
-        <Link href="/course" className={styles.courseVideoLink} aria-label="Open the Ethereal Pathway course">
+        <Link href="/courses" className={styles.courseVideoLink} aria-label="Open courses">
           <BlueVideoPanel
-            eyebrow="Ethereal Pathway · Season 1"
+            eyebrow="Shadow Work · Season 1"
             message="A 12-week pathway through readings and missions. Complete each week to unlock the next — pick up where you left off."
             ariaLive="off"
           />

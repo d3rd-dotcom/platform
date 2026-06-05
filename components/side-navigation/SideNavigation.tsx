@@ -76,7 +76,7 @@ const primaryNavItems: NavItem[] = [
   {
     id: 'morning-pages',
     label: 'Courses',
-    href: '/course',
+    href: '/courses',
     iconSrc: '/icons/nav-course-v2.svg',
   },
   {

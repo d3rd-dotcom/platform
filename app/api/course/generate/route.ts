@@ -3,7 +3,7 @@ import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured } from '@/lib/db';
 import { getPersonalCourse, saveGeneratedCourse, saveIntake } from '@/lib/personal-course-db';
 import { buildCourse } from '@/lib/personal-course';
-import type { IntakeAnswers } from '@/lib/personal-course';
+import type { IntakeAnswers, CourseData } from '@/lib/personal-course';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -20,14 +20,26 @@ function parseAnswers(raw: unknown): IntakeAnswers {
   return answers;
 }
 
+function isValidCourseData(data: unknown): data is CourseData {
+  if (!data || typeof data !== 'object') return false;
+  const d = data as Record<string, unknown>;
+  return (
+    typeof d.title === 'string' &&
+    typeof d.focus === 'string' &&
+    Array.isArray(d.weeks) &&
+    (d.weeks as unknown[]).length === 4
+  );
+}
+
 export async function POST(request: Request) {
-  let body: { answers?: unknown } = {};
+  let body: { answers?: unknown; courseData?: unknown } = {};
   try {
     body = await request.json();
   } catch {
     // body optional for signed-in users with saved intake
   }
   const inlineAnswers = parseAnswers(body.answers);
+  const prebuiltCourse = isValidCourseData(body.courseData) ? body.courseData : null;
 
   let userId: string | null = null;
   if (isDbConfigured()) {
@@ -41,6 +53,15 @@ export async function POST(request: Request) {
 
   // ── Signed-in: persist ──
   if (userId) {
+    // Path A: pre-built course data from Blue's course builder
+    if (prebuiltCourse) {
+      const syntheticIntake: IntakeAnswers = { goal: prebuiltCourse.focus, source: 'blue-generated' };
+      await saveIntake(userId, syntheticIntake);
+      const course = await saveGeneratedCourse(userId, prebuiltCourse);
+      return NextResponse.json({ course });
+    }
+
+    // Path B: classic intake answers
     const existing = await getPersonalCourse(userId);
     let intake: IntakeAnswers = existing?.intakeData ?? {};
     if (Object.keys(inlineAnswers).length) {
@@ -59,6 +80,12 @@ export async function POST(request: Request) {
   }
 
   // ── Guest: ephemeral course ──
+  if (prebuiltCourse) {
+    return NextResponse.json({
+      course: { status: 'ready', intakeData: {}, courseData: prebuiltCourse, progressData: {} },
+      guest: true,
+    });
+  }
   if (Object.keys(inlineAnswers).length === 0) {
     return NextResponse.json(
       { error: 'no_intake', message: 'Complete the intake first.' },

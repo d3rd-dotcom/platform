@@ -16,6 +16,7 @@ import AutoDistributionInline from './AutoDistributionInline';
 import type { AutoDistributionRequest } from './AutoDistributionInline';
 import QuestForgeInline from './QuestForgeInline';
 import type { QuestForgeDraft, QuestForgeRequest } from './QuestForgeInline';
+import CourseBuilderInline from './CourseBuilderInline';
 import { sendUsdcOnBase, type Eip1193Provider } from '@/lib/usdc-base-transfer';
 
 const ProMembershipModal = dynamic(() => import('../pro-membership-modal/ProMembershipModal'), { ssr: false });
@@ -226,6 +227,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const [questDraft, setQuestDraft] = useState<QuestForgeDraft | null>(null);
   const [questDraftNonce, setQuestDraftNonce] = useState(0);
   const [questForgeBusy, setQuestForgeBusy] = useState(false);
+  const [courseBuilderVisible, setCourseBuilderVisible] = useState(false);
   const [autoDistributionXConnection, setAutoDistributionXConnection] = useState<AutoDistributionXConnection>({
     loading: false,
     connected: false,
@@ -349,6 +351,19 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       fetchVipStatus();
     }
   }, [isOpen, fetchTreasuryContext, fetchShardCount, fetchVipStatus]);
+
+  useEffect(() => {
+    const handler = () => {
+      closeInlinePanels();
+      setQuestForgeVisible(false);
+      setCourseBuilderVisible(true);
+      addBlueMessage("what do you want to learn? fill in the topic below — i'll design a 4-week course around it.");
+    };
+    window.addEventListener('openCourseBuilder', handler);
+    return () => window.removeEventListener('openCourseBuilder', handler);
+    // addBlueMessage and closeInlinePanels are stable refs — safe to omit
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -760,6 +775,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     setResearchMode(false);
     setAutoDistributionVisible(false);
     setTimeManagementVisible(false);
+    setCourseBuilderVisible(false);
     setPendingAttachments([]);
   };
 
@@ -1493,6 +1509,17 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             creditBalance={shardCount}
             onSubmit={submitQuestForge}
             onClose={() => { setQuestForgeVisible(false); setQuestDraft(null); }}
+          />
+        )}
+
+        {courseBuilderVisible && (
+          <CourseBuilderInline
+            authHeaders={authHeaders}
+            onClose={() => setCourseBuilderVisible(false)}
+            onCourseCreated={() => {
+              setCourseBuilderVisible(false);
+              addBlueMessage("course saved. head to your home dashboard to start week one.");
+            }}
           />
         )}
 
