@@ -3,10 +3,10 @@
   margin-left: var(--sidebar-width, 265px);
   min-height: 100dvh;
   display: flex;
-  background-color: #ffffff;
+  background-color: var(--color-surface-base);
   background-image:
-    linear-gradient(rgba(81, 104, 255, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(81, 104, 255, 0.08) 1px, transparent 1px);
+    linear-gradient(var(--color-border-subtle) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-border-subtle) 1px, transparent 1px);
   background-size: 32px 32px;
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
@@ -27,14 +27,14 @@
   font-family: var(--font-display, sans-serif);
   font-size: 2rem;
   font-weight: 600;
-  color: var(--color-text-primary, #0b0e28);
+  color: var(--color-text-dark);
   letter-spacing: -0.02em;
   margin: 0 0 8px;
 }
 
 .subtext {
   font-size: 0.9375rem;
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted);
   margin: 0;
 }
 
@@ -44,160 +44,140 @@
   gap: 20px;
 }
 
-/* Shadow Work — primary course card */
-.courseCard {
+/* ── Shared card base — both cards use the same structure ── */
+.courseCard,
+.buildCard {
   display: flex;
   flex-direction: column;
-  border-radius: 16px;
+  gap: 10px;
+  border-radius: 14px;
+  padding: 28px 28px 24px;
+  min-height: 240px;
+  transition: box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+/* Shadow Work — intentionally dark */
+.courseCard {
   background: #0f1126;
   border: 1px solid rgba(255, 255, 255, 0.07);
-  padding: 32px;
   text-decoration: none;
   color: inherit;
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
-  min-height: 260px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .courseCard:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(81, 104, 255, 0.18);
+  box-shadow: 0 8px 28px rgba(81, 104, 255, 0.16);
 }
 
-.courseCardInner {
+/* Blue Course — surface-2 with primary border accent */
+.buildCard {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border-subtle);
+  cursor: pointer;
+  text-align: left;
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
+}
+
+.buildCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(81, 104, 255, 0.22);
+  box-shadow: 0 8px 28px rgba(81, 104, 255, 0.08);
+}
+
+/* ── Card inner layout ── */
+.cardMeta {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  height: 100%;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.courseWeeks {
-  font-family: var(--font-mono, monospace);
+.cardMetaLeft {
+  font-family: var(--font-body, sans-serif);
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.45);
-  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.cardMetaLeftDark {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.75rem;
+  color: var(--color-text-faint);
+}
+
+.plusIcon {
+  color: var(--color-primary);
+  opacity: 0.7;
+  transition: opacity 0.18s ease;
+}
+
+.buildCard:hover .plusIcon {
+  opacity: 1;
 }
 
 .courseTitle {
   font-family: var(--font-display, sans-serif);
-  font-size: 1.625rem;
+  font-size: 1.5rem;
   font-weight: 600;
   color: #ffffff;
   letter-spacing: -0.02em;
   margin: 0;
 }
 
+.buildTitle {
+  font-family: var(--font-display, sans-serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
 .courseDesc {
+  font-family: var(--font-body, sans-serif);
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.6;
+  margin: 0;
+  flex: 1;
+}
+
+.buildDesc {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
   line-height: 1.6;
   margin: 0;
   flex: 1;
 }
 
 .courseStart {
+  font-family: var(--font-body, sans-serif);
   font-size: 0.8125rem;
-  color: rgba(81, 104, 255, 0.9);
-  margin-top: 8px;
+  color: rgba(81, 104, 255, 0.85);
   font-weight: 500;
+  margin-top: 4px;
 }
 
-/* Build Your Own — plus card */
-.buildCard {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  border-radius: 16px;
-  background: #ffffff;
-  border: 1.5px dashed rgba(81, 104, 255, 0.28);
-  padding: 32px;
-  cursor: pointer;
-  text-align: center;
-  min-height: 260px;
-  transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
-  color: var(--color-text-muted, #6b7280);
-}
-
-.buildCard:hover {
-  border-color: rgba(81, 104, 255, 0.7);
-  background: rgba(81, 104, 255, 0.04);
-  transform: translateY(-2px);
-  color: var(--color-primary, #5168ff);
-}
-
-.buildIcon {
-  opacity: 0.5;
+.buildStart {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.8125rem;
+  color: var(--color-primary);
+  font-weight: 500;
+  margin-top: 4px;
+  opacity: 0.7;
   transition: opacity 0.18s ease;
 }
 
-.buildCard:hover .buildIcon {
+.buildCard:hover .buildStart {
   opacity: 1;
 }
 
-.buildLabel {
-  font-family: var(--font-display, sans-serif);
-  font-size: 1.125rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--color-text-primary, #0b0e28);
-}
-
-.buildSub {
-  font-family: var(--font-body, var(--font-sans, sans-serif));
-  font-size: 0.8125rem;
-  color: var(--color-text-muted, #6b7280);
-  line-height: 1.5;
-  max-width: 200px;
-}
-
-/* Dark mode */
-:global([data-theme="dark"]) .layout {
-  background-color: var(--color-surface-base);
-  background-image:
-    linear-gradient(rgba(81, 104, 255, 0.14) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(81, 104, 255, 0.14) 1px, transparent 1px);
-}
-
-:global([data-theme="dark"]) .heading {
-  color: var(--color-text-primary, #f1f2f6);
-}
-
-:global([data-theme="dark"]) .courseCard {
-  background: #0f1126;
-  border-color: rgba(255, 255, 255, 0.07);
-}
-
-:global([data-theme="dark"]) .courseTitle {
-  color: #f1f2f6;
-}
-
-:global([data-theme="dark"]) .buildCard {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(81, 104, 255, 0.25);
-}
-
-:global([data-theme="dark"]) .buildLabel {
-  color: var(--color-text-primary, #f1f2f6);
-}
-
 @media (max-width: 900px) {
-  .layout {
-    margin-left: 0;
-  }
+  .layout { margin-left: 0; }
 }
 
 @media (max-width: 640px) {
-  .main {
-    padding: 32px 20px 48px;
-  }
-
-  .grid {
-    grid-template-columns: 1fr;
-  }
-
-  .buildCard,
-  .courseCard {
-    min-height: 200px;
-  }
+  .main { padding: 32px 20px 48px; }
+  .grid { grid-template-columns: 1fr; }
+  .courseCard, .buildCard { min-height: 180px; }
 }

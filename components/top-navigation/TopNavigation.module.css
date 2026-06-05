@@ -224,9 +224,10 @@
 }
 .shinyCardShine {
   position: absolute;
-  inset: -100%;
+  top: 50%;
+  left: 50%;
   width: 300%;
-  height: 300%;
+  aspect-ratio: 1;
   background: conic-gradient(
     #5168FF,
     #74C465,
@@ -239,14 +240,14 @@
   pointer-events: none;
 }
 @keyframes shinyCardRotate {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
 }
 .shinyCardContent {
   display: flex;
   align-items: center;
   gap: 7px;
-  padding: 5px 14px 5px 6px;
+  padding: 5px 14px;
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.97);
   backdrop-filter: blur(4px);
@@ -255,9 +256,13 @@
   background: var(--color-shell-background, #0f1020);
 }
 .shinyCardIconSvg {
-  width: 24px;
-  height: 24px;
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
+  color: #2d3142;
+}
+:global([data-theme="dark"]) .shinyCardIconSvg {
+  color: rgba(255, 255, 255, 0.92);
 }
 .shinyCardTitle {
   font-family: var(--font-primary);
