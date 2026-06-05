@@ -2778,8 +2778,8 @@
   align-items: center;
   justify-content: space-between;
   border-radius: 8px 8px 0 0;
-  background: #1b2245;
-  border-bottom: 1px solid rgba(26, 29, 51, 0.14);
+  background: #14151f;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   margin: -14px -16px 0;
   padding: 7px 12px 7px 16px;
 }
@@ -2836,8 +2836,9 @@
   gap: 12px;
   padding: 14px 16px;
   margin: 0 16px 4px;
-  background: rgba(18, 20, 40, 0.97);
-  border: 1.5px solid rgba(81, 104, 255, 0.2);
+  background: #1e1f2c;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 6px 20px rgba(0, 0, 0, 0.45);
   border-radius: 14px;
   animation: messageSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -2845,6 +2846,11 @@
 :global(:root:not([data-theme="dark"])) .courseBuilderPanel {
   background: #ffffff;
   border-color: rgba(81, 104, 255, 0.18);
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
+}
+
+:global(:root:not([data-theme="dark"])) .courseBuilderBoardHeader {
+  background: #1e1f2c;
 }
 
 /* Plain body-font description — no mono */
