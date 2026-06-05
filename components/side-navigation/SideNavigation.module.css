@@ -179,15 +179,8 @@
   padding: 10px 6px;
 }
 
-.sideNavCollapsed .profileSkeletonCard,
 .sideNavCollapsed .profileSyncCard {
   margin: 12px 8px 0;
-}
-
-.sideNavCollapsed .profileSkeletonCard {
-  justify-content: center;
-  padding: 8px 0;
-  min-height: 54px;
 }
 
 .sideNavCollapsed .profileSyncButton {
@@ -226,131 +219,6 @@
   0%   { border-color: rgba(81, 104, 255, 0.25); box-shadow: 0 0 8px rgba(81, 104, 255, 0.1); }
   50%  { border-color: rgba(167, 139, 250, 0.4); box-shadow: 0 0 12px rgba(167, 139, 250, 0.15); }
   100% { border-color: rgba(81, 104, 255, 0.25); box-shadow: 0 0 8px rgba(81, 104, 255, 0.1); }
-}
-
-@keyframes profileSkeletonPulse {
-  0% { opacity: 0.45; }
-  50% { opacity: 0.9; }
-  100% { opacity: 0.45; }
-}
-
-.profileSkeletonCard {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 12px 10px 0;
-  min-height: 62px;
-  padding: 10px 12px;
-  background: var(--color-grey-900, #1a1b24);
-  border: 1px solid var(--color-grey-700, #2a2b36);
-  border-radius: 12px;
-  flex-shrink: 0;
-  box-sizing: border-box;
-}
-
-.profileSkeletonAvatar,
-.profileSkeletonLineWide,
-.profileSkeletonLineShort {
-  display: block;
-  background: rgba(227, 225, 238, 0.14);
-  animation: profileSkeletonPulse 1.25s ease-in-out infinite;
-}
-
-.profileSkeletonAvatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.profileSkeletonLines {
-  display: flex;
-  flex: 1;
-  min-width: 0;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.profileSkeletonLineWide {
-  width: 78%;
-  height: 12px;
-  border-radius: 999px;
-}
-
-.profileSkeletonLineShort {
-  width: 52%;
-  height: 10px;
-  border-radius: 999px;
-}
-
-/* Inventory card skeleton (shown while profile loads) */
-.inventorySkeletonCard {
-  margin: 8px 10px 0;
-  padding: 12px;
-  background: var(--color-grey-900, #1a1b24);
-  border: 1px solid var(--color-grey-700, #2a2b36);
-  border-radius: 12px;
-  flex-shrink: 0;
-}
-
-.inventorySkeletonHero {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 48px;
-}
-
-.inventorySkeletonDivider {
-  height: 1px;
-  background: rgba(255, 255, 255, 0.06);
-  margin: 10px 0 8px;
-}
-
-.inventorySkeletonRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 3px 2px;
-}
-
-.inventorySkeletonRow + .inventorySkeletonRow {
-  margin-top: 4px;
-}
-
-.inventorySkeletonCircle,
-.inventorySkeletonCircleSm,
-.inventorySkeletonLine {
-  display: block;
-  background: rgba(227, 225, 238, 0.14);
-  animation: profileSkeletonPulse 1.25s ease-in-out infinite;
-  flex-shrink: 0;
-}
-
-.inventorySkeletonCircle {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-}
-
-.inventorySkeletonCircleSm {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-}
-
-.inventorySkeletonLine {
-  height: 10px;
-  border-radius: 4px;
-}
-
-.inventorySkeletonCardCollapsed {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  margin: 6px 8px 0;
-  padding: 8px 0;
-  flex-shrink: 0;
 }
 
 .profileSyncCard {
@@ -400,32 +268,6 @@
 .profileSyncIcon {
   flex-shrink: 0;
   filter: invert(1);
-}
-
-:global(:root:not([data-theme="dark"])) .profileSkeletonCard {
-  background: #ffffff;
-  border-color: rgba(26, 27, 36, 0.1);
-}
-
-:global(:root:not([data-theme="dark"])) .profileSkeletonAvatar,
-:global(:root:not([data-theme="dark"])) .profileSkeletonLineWide,
-:global(:root:not([data-theme="dark"])) .profileSkeletonLineShort {
-  background: rgba(26, 29, 51, 0.1);
-}
-
-:global(:root:not([data-theme="dark"])) .inventorySkeletonCard {
-  background: #ffffff;
-  border-color: rgba(26, 27, 36, 0.1);
-}
-
-:global(:root:not([data-theme="dark"])) .inventorySkeletonCircle,
-:global(:root:not([data-theme="dark"])) .inventorySkeletonCircleSm,
-:global(:root:not([data-theme="dark"])) .inventorySkeletonLine {
-  background: rgba(26, 29, 51, 0.1);
-}
-
-:global(:root:not([data-theme="dark"])) .inventorySkeletonDivider {
-  background: rgba(26, 27, 36, 0.08);
 }
 
 .blueChatButton {
@@ -1770,17 +1612,6 @@
   background: color-mix(in oklch, var(--color-surface-base) 82%, transparent);
 }
 
-:global([data-theme="dark"]) .profileSkeletonCard {
-  background: var(--color-grey-900, #1a1b24);
-  border-color: var(--color-border-subtle);
-}
-
-:global([data-theme="dark"]) .profileSkeletonAvatar,
-:global([data-theme="dark"]) .profileSkeletonLineWide,
-:global([data-theme="dark"]) .profileSkeletonLineShort {
-  background: rgba(227, 225, 238, 0.14);
-}
-
 :global([data-theme="dark"]) .profileSyncButton {
   border-color: var(--color-border-subtle);
   box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
@@ -1959,4 +1790,102 @@
 
 .inventoryPopupClose:hover {
   background: rgba(255, 255, 255, 0.16);
+}
+
+/* ── Profile card placement ── */
+/* Desktop: profile card lives in the top nav, hide the in-drawer copy. */
+.mobileProfileSlot {
+  display: none;
+}
+
+/* ── Floating Ask Blue button (desktop) ── */
+.askBlueFab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  padding: 2px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(81, 104, 255, 0.28);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.askBlueFab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(81, 104, 255, 0.38);
+}
+
+.askBlueFab:active {
+  transform: translateY(0);
+}
+
+.askBlueFabRing {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200%;
+  aspect-ratio: 1;
+  background: conic-gradient(
+    #5168FF,
+    #74C465,
+    #E8556D,
+    #F2A0B5,
+    #a78bfa,
+    #5168FF
+  );
+  animation: askBlueFabRotate 4s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes askBlueFabRotate {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.askBlueFabInner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(4px);
+}
+
+:global([data-theme="dark"]) .askBlueFabInner {
+  background: var(--color-shell-background, #0f1020);
+}
+
+.askBlueFabIcon {
+  width: 26px;
+  height: 26px;
+  color: #2d3142;
+}
+
+:global([data-theme="dark"]) .askBlueFabIcon {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+@media (max-width: 900px) {
+  /* Mobile drawer: show the profile card at the top of the drawer. */
+  .mobileProfileSlot {
+    display: block;
+  }
+
+  /* Bottom nav already exposes Ask Blue on mobile. */
+  .askBlueFab {
+    display: none;
+  }
 }

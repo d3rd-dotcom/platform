@@ -73,6 +73,25 @@
   flex-shrink: 0;
 }
 
+/* Personal course — no artwork, branded gradient instead of a photo */
+.personalImageWrap {
+  background-image: linear-gradient(135deg, #5168ff 0%, #9b7ed9 55%, #e85d3a 120%);
+  background-color: #5168ff;
+}
+
+.coursePersonalTag {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #5168ff;
+  width: fit-content;
+}
+
+:global([data-theme="dark"]) .coursePersonalTag {
+  color: #8f9bff;
+}
+
 /* Film grain over image */
 .courseNoise {
   position: absolute;

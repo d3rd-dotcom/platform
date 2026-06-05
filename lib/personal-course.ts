@@ -5,9 +5,15 @@
 export type CourseStatus = 'intake' | 'generating' | 'ready';
 export type IntakeAnswers = Record<string, string>;
 
+export interface CourseRead {
+  title: string;
+  body: string;
+}
+
 export interface CourseWeek {
   weekNumber: number;
   theme: string;
+  read?: CourseRead;
   tasks: string[];
 }
 

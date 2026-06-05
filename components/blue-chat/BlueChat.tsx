@@ -309,10 +309,10 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   }, [authHeaders, authenticated, ready]);
 
   // VIP membership card holders unlock research mode without spending credits.
-  const fetchVipStatus = useCallback(async () => {
+  const fetchVipStatus = useCallback(async (): Promise<boolean> => {
     if (!ready || !authenticated) {
       setIsVipMember(false);
-      return;
+      return false;
     }
     try {
       const res = await fetch('/api/membership/holding-status', {
@@ -321,9 +321,12 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       });
       if (res.ok) {
         const data = await res.json();
-        setIsVipMember(!!data.hasVipMembershipCard);
+        const holds = !!data.hasVipMembershipCard;
+        setIsVipMember(holds);
+        return holds;
       }
     } catch { /* silent */ }
+    return false;
   }, [authHeaders, authenticated, ready]);
 
   useEffect(() => {
@@ -352,12 +355,22 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       // Course builder triggered from /courses page before BlueChat mounted
       if (typeof window !== 'undefined' && (window as Window & { __blueCourseBuilderOnOpen?: boolean }).__blueCourseBuilderOnOpen) {
         (window as Window & { __blueCourseBuilderOnOpen?: boolean }).__blueCourseBuilderOnOpen = false;
-        setResearchMode(false);
-        setAutoDistributionVisible(false);
-        setTimeManagementVisible(false);
-        setQuestForgeVisible(false);
-        setCourseBuilderVisible(true);
-        addBlueMessage("what do you want to learn? fill in the topic below — i'll design a 4-week course around it.");
+        // Course creation is a VIP-membership perk. Confirm holdings fresh —
+        // isVipMember state may not have settled on this first open.
+        (async () => {
+          const holds = await fetchVipStatus();
+          if (!holds) {
+            addBlueMessage("building a course is a VIP membership perk. grab a membership card and i'll design a 4-week course around any goal you bring me.");
+            setShowMembershipModal(true);
+            return;
+          }
+          setResearchMode(false);
+          setAutoDistributionVisible(false);
+          setTimeManagementVisible(false);
+          setQuestForgeVisible(false);
+          setCourseBuilderVisible(true);
+          addBlueMessage("what do you want to learn? fill in the topic below — i'll design a 4-week course around it.");
+        })();
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1517,7 +1530,10 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             onClose={() => setCourseBuilderVisible(false)}
             onCourseCreated={() => {
               setCourseBuilderVisible(false);
-              addBlueMessage("course saved. head to your home dashboard to start week one.");
+              if (typeof window !== 'undefined') {
+                window.dispatchEvent(new Event('personalCourseUpdated'));
+              }
+              addBlueMessage("done. your 4-week course is live on the Courses page whenever you want to start week one.");
             }}
           />
         )}

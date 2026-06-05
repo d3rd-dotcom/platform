@@ -1,0 +1,196 @@
+/* Personal 4-week course — reuses the 12-week page layout (../page.module.css)
+   and adds the task checklist + read-thumb treatment specific to it. */
+
+.courseHead {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.backLink {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  width: fit-content;
+  transition: color 0.15s ease;
+}
+
+.backLink:hover {
+  color: var(--color-primary);
+}
+
+.courseTitle {
+  font-family: var(--font-display, sans-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-text-dark);
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* Read card has no artwork — branded gradient stands in for the photo */
+.readThumb {
+  background-image: linear-gradient(135deg, #5168ff 0%, #9b7ed9 60%, #e85d3a 130%);
+  background-color: #5168ff;
+}
+
+/* ── Task checklist ── */
+.taskList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.taskItem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: var(--color-surface-base);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.05);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.taskItem:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(26, 29, 51, 0.08);
+  border-color: rgba(81, 104, 255, 0.35);
+}
+
+.taskItemDone {
+  background: color-mix(in srgb, #5168ff 5%, var(--color-surface-base));
+  border-color: rgba(81, 104, 255, 0.28);
+}
+
+.taskCheck {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  border: 2px solid var(--color-border-strong, rgba(26, 29, 51, 0.2));
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.taskCheckDone {
+  background: #5168ff;
+  border-color: #5168ff;
+}
+
+.taskLabel {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: var(--color-text-dark);
+}
+
+.taskItemDone .taskLabel {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+  text-decoration-color: rgba(81, 104, 255, 0.5);
+}
+
+.taskProgress {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin: 18px 0 0;
+  text-align: center;
+}
+
+/* ── Swipe transitions (mirror the 12-week page feel) ── */
+.swipeLeft {
+  animation: slideLeft 0.16s ease;
+}
+
+.swipeRight {
+  animation: slideRight 0.16s ease;
+}
+
+@keyframes slideLeft {
+  from { opacity: 0.5; transform: translateX(14px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideRight {
+  from { opacity: 0.5; transform: translateX(-14px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Empty / loading states ── */
+.stateWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 60vh;
+  text-align: center;
+  padding: 40px 24px;
+}
+
+.stateHeading {
+  font-family: var(--font-display, sans-serif);
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  margin: 0;
+}
+
+.stateText {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+  margin: 0;
+  max-width: 380px;
+}
+
+.stateBtn {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--color-primary, #5168ff);
+  border-radius: 10px;
+  padding: 10px 20px;
+  text-decoration: none;
+  margin-top: 4px;
+  transition: opacity 0.15s ease;
+}
+
+.stateBtn:hover {
+  opacity: 0.9;
+}
+
+:global([data-theme="dark"]) .taskItem {
+  background: #1e1f2c;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 6px 20px rgba(0, 0, 0, 0.45);
+}
+
+:global([data-theme="dark"]) .taskItemDone {
+  background: color-mix(in srgb, #5168ff 16%, #1e1f2c);
+  border-color: rgba(81, 104, 255, 0.4);
+}
+
+:global([data-theme="dark"]) .courseTitle,
+:global([data-theme="dark"]) .stateHeading {
+  color: #f0f1fa;
+}
+
+:global([data-theme="dark"]) .taskLabel {
+  color: #e6e8f5;
+}

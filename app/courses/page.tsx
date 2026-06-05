@@ -1,14 +1,22 @@
 'use client';
 
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { BookOpen } from '@phosphor-icons/react';
+import { usePrivy } from '@privy-io/react-auth';
+import { BookOpen, Sparkle } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
+import type { CourseData } from '@/lib/personal-course';
 import styles from './page.module.css';
 
 function getCourseEndDate() {
   const d = new Date();
   d.setDate(d.getDate() + 84); // 12 weeks
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function getPersonalEndDate() {
+  const d = new Date();
+  d.setDate(d.getDate() + 28); // 4 weeks
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
@@ -18,6 +26,38 @@ function openCourseBuilder() {
 }
 
 export default function CoursesPage() {
+  const { ready, getAccessToken } = usePrivy();
+  const [personalCourse, setPersonalCourse] = useState<CourseData | null>(null);
+
+  const loadPersonalCourse = useCallback(async () => {
+    try {
+      const token = await getAccessToken();
+      const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+      const res = await fetch('/api/course/personal', { cache: 'no-store', headers });
+      const data = await res.json().catch(() => ({}));
+      const record = data?.course;
+      if (record?.status === 'ready' && record?.courseData?.weeks?.length) {
+        setPersonalCourse(record.courseData as CourseData);
+      } else {
+        setPersonalCourse(null);
+      }
+    } catch {
+      setPersonalCourse(null);
+    }
+  }, [getAccessToken]);
+
+  useEffect(() => {
+    if (!ready) return;
+    loadPersonalCourse();
+  }, [ready, loadPersonalCourse]);
+
+  // A course built in Blue's chat should appear here without a manual refresh.
+  useEffect(() => {
+    const handler = () => loadPersonalCourse();
+    window.addEventListener('personalCourseUpdated', handler);
+    return () => window.removeEventListener('personalCourseUpdated', handler);
+  }, [loadPersonalCourse]);
+
   return (
     <div className={styles.layout}>
       <SideNavigation />
@@ -42,6 +82,25 @@ export default function CoursesPage() {
               <span className={styles.courseEndBadge}>End date: {getCourseEndDate()}</span>
             </div>
           </Link>
+
+          {personalCourse && (
+            <Link href="/course/personal" className={styles.courseCard}>
+              <div className={`${styles.courseImageWrap} ${styles.personalImageWrap}`}>
+                <div className={styles.courseNoise} aria-hidden="true" />
+                <div className={styles.courseIconBadge}>
+                  <Sparkle size={16} weight="duotone" />
+                </div>
+              </div>
+              <div className={styles.courseBody}>
+                <span className={styles.coursePersonalTag}>Your course</span>
+                <h2 className={styles.courseTitle}>{personalCourse.title}</h2>
+                <p className={styles.courseDesc}>
+                  A personal 4-week track built around {personalCourse.focus.toLowerCase()} — a weekly read and tasks tuned to your goal.
+                </p>
+                <span className={styles.courseEndBadge}>End date: {getPersonalEndDate()}</span>
+              </div>
+            </Link>
+          )}
 
           <button type="button" onClick={openCourseBuilder} className={styles.buildCard}>
             <div className={styles.buildIcon}>

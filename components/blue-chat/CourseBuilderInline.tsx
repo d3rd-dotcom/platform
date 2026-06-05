@@ -33,9 +33,11 @@ const CourseBuilderInline: React.FC<CourseBuilderInlineProps> = ({
     setPhase('generating');
     try {
       const prompt = `Topic: ${topic.trim()}${goal.trim() ? `\nGoal: ${goal.trim()}` : ''}`;
+      const headers = await authHeaders();
       const res = await fetch('/api/course/draft', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...headers },
+        credentials: 'include',
         body: JSON.stringify({ prompt }),
       });
       const data = await res.json().catch(() => ({})) as { course?: CourseData; error?: string };

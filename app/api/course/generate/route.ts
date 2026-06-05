@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured } from '@/lib/db';
 import { getPersonalCourse, saveGeneratedCourse, saveIntake } from '@/lib/personal-course-db';
+import { walletHoldsVipMembershipCard } from '@/lib/vip-membership-card';
 import { buildCourse } from '@/lib/personal-course';
 import type { IntakeAnswers, CourseData } from '@/lib/personal-course';
 
@@ -42,10 +43,12 @@ export async function POST(request: Request) {
   const prebuiltCourse = isValidCourseData(body.courseData) ? body.courseData : null;
 
   let userId: string | null = null;
+  let userWallet: string | null = null;
   if (isDbConfigured()) {
     try {
       const user = await getCurrentUserFromRequestCookie();
       userId = user?.id ?? null;
+      userWallet = user?.walletAddress ?? null;
     } catch {
       userId = null;
     }
@@ -53,8 +56,16 @@ export async function POST(request: Request) {
 
   // ── Signed-in: persist ──
   if (userId) {
-    // Path A: pre-built course data from Blue's course builder
+    // Path A: pre-built course data from Blue's course builder.
+    // Building a real course is a VIP-membership perk — gate the save fail-closed.
     if (prebuiltCourse) {
+      const hasMembership = await walletHoldsVipMembershipCard(userWallet);
+      if (!hasMembership) {
+        return NextResponse.json(
+          { error: 'A VIP membership is required to build a course.', code: 'vip_required' },
+          { status: 403 },
+        );
+      }
       const syntheticIntake: IntakeAnswers = { goal: prebuiltCourse.focus, source: 'blue-generated' };
       await saveIntake(userId, syntheticIntake);
       const course = await saveGeneratedCourse(userId, prebuiltCourse);
