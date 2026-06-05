@@ -12,7 +12,6 @@ interface SidebarProfileCardProps {
   onChangeAvatar: () => void;
   onChangeUsername: () => void;
   onConnections: () => void;
-  onInventory: () => void;
   onSignOut: () => void;
   onViewProfile?: () => void;
 }
@@ -29,7 +28,6 @@ export default function SidebarProfileCard({
   onChangeAvatar,
   onChangeUsername,
   onConnections,
-  onInventory,
   onSignOut,
   onViewProfile,
 }: SidebarProfileCardProps) {
@@ -159,7 +157,6 @@ export default function SidebarProfileCard({
             </button>
           )}
           <button className={styles.menuItem} onClick={() => { setMenuOpen(false); onConnections(); }} type="button">Connections</button>
-          <button className={styles.menuItem} onClick={() => { setMenuOpen(false); onInventory(); }} type="button">Inventory</button>
           <div className={styles.menuDivider} />
           <button className={`${styles.menuItem} ${styles.menuItemDanger}`} onClick={() => { setMenuOpen(false); onSignOut(); }} type="button">Sign Out</button>
         </div>

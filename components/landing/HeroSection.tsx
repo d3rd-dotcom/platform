@@ -26,11 +26,11 @@ export const EcosystemSection: React.FC = () => (
               </li>
             <li className={styles.ecosystemFeatureItem}>
               <span className={styles.ecosystemFeatureDot} style={{ background: '#8B6BFF' }} />
-              Mutually reinforce complementary impact and financial returns
+              Mutually reinforce complementary impact and financial returns.
               </li>
             <li className={styles.ecosystemFeatureItem}>
               <span className={styles.ecosystemFeatureDot} style={{ background: '#3CC9B4' }} />
-              Sustainable digital knowledge sources for self-learning.
+              Preserve digital knowledge bases for self-efficacy.
             </li>
           </ul>
           <LandingEnterAcademyButton />

@@ -16,7 +16,6 @@ import HoverSlideText from '@/components/shared/HoverSlideText';
 
 const BlueChat = dynamic(() => import('../blue-chat/BlueChat'), { ssr: false });
 const SidebarProfileCard = dynamic(() => import('../sidebar-profile-card/SidebarProfileCard'), { ssr: false });
-const SidebarInventoryCard = dynamic(() => import('../sidebar-inventory-card/SidebarInventoryCard'), { ssr: false });
 const AvatarSelectorModal = dynamic(() => import('../avatar-selector/AvatarSelectorModal'), { ssr: false });
 const UsernameChangeModal = dynamic(() => import('../username-change/UsernameChangeModal'), { ssr: false });
 const ProMembershipModal = dynamic(() => import('../pro-membership-modal/ProMembershipModal'), { ssr: false });
@@ -179,7 +178,6 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   }, [externalMobileOpen]);
   const [isProModalOpen, setIsProModalOpen] = useState(false);
   const [adminExpanded, setAdminExpanded] = useState(true);
-  const [isInventoryOpen, setIsInventoryOpen] = useState(false);
   const [isYourAccountsModalOpen, setIsYourAccountsModalOpen] = useState(false);
   const [isCreatingSession, setIsCreatingSession] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(initialCollapsed);
@@ -689,7 +687,6 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
         onChangeAvatar={handleAvatarClick}
         onChangeUsername={handleUsernameClick}
         onConnections={() => setIsYourAccountsModalOpen(true)}
-        onInventory={() => setIsInventoryOpen(true)}
         onSignOut={handleSignOut}
         onViewProfile={() => setIsProfilePopupOpen(true)}
       />
@@ -807,15 +804,6 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
 
       {/* Modals */}
       {isChatOpen && <BlueChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />}
-      {isInventoryOpen && (
-        <SidebarInventoryCard
-          shardCount={shardCount}
-          address={address}
-          isCollapsed={false}
-          modalOnly
-          onModalClose={() => setIsInventoryOpen(false)}
-        />
-      )}
       {isLootBoxOpen && (
         <LootBoxModal
           isOpen={isLootBoxOpen}

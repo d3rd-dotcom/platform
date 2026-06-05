@@ -1,0 +1,194 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 12px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 12px;
+  background: var(--color-surface-1);
+}
+
+.title {
+  font-family: var(--font-button);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  padding: 0 2px;
+  margin-bottom: 4px;
+}
+
+/* ── Grid ─────────────────────────────────────── */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 6px 9px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 7px;
+  background: var(--color-surface-2);
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.06),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.22);
+  cursor: default;
+  transition: border-color 0.12s, box-shadow 0.12s;
+}
+
+.slotFilled {
+  border-color: var(--color-border-strong);
+}
+
+.slotFilled:hover {
+  border-color: color-mix(in srgb, var(--color-primary) 38%, var(--color-border-strong));
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.06),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.22),
+    0 0 0 1px color-mix(in srgb, var(--color-primary) 20%, transparent);
+}
+
+.slotEmpty {
+  opacity: 0.35;
+}
+
+.iconWrap {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  object-fit: contain;
+}
+
+.count {
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  line-height: 1;
+  text-align: center;
+  margin-top: -2px;
+}
+
+.label {
+  font-family: var(--font-button);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  text-align: center;
+}
+
+.slotFilled .label {
+  color: var(--color-text-muted);
+}
+
+/* ── Membership row ─────────────────────────── */
+
+.membershipSlot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 2px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 7px;
+  background: var(--color-surface-2);
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.06),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.22);
+  opacity: 0.45;
+  transition: border-color 0.12s;
+}
+
+.membershipFilled {
+  opacity: 1;
+  border-color: color-mix(in srgb, var(--color-primary) 38%, var(--color-border-strong));
+}
+
+.membershipIcon {
+  opacity: 0.55;
+  flex-shrink: 0;
+}
+
+.membershipInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.membershipMeta {
+  font-family: var(--font-button);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+.membershipTier {
+  font-family: var(--font-button);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-soft);
+}
+
+.membershipTierActive {
+  color: var(--color-primary);
+}
+
+/* ── Quests link ──────────────────────────────── */
+
+.questsLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  margin-top: 4px;
+  border: 1px solid var(--color-primary);
+  border-radius: 9px;
+  background: var(--color-primary);
+  font-family: var(--font-button);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #fff;
+  text-decoration: none;
+  transition: background 0.12s;
+}
+
+.questsLink:hover {
+  background: color-mix(in srgb, var(--color-primary) 85%, #fff);
+}
+
+.questsLink:focus-visible {
+  outline: 2px solid var(--color-primary, #5168ff);
+  outline-offset: 2px;
+}
+
+/* ── Dark theme ─────────────────────────────── */
+
+:global([data-theme="dark"]) .grid {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+:global([data-theme="dark"]) .membershipFilled {
+  background: color-mix(in oklch, var(--color-primary) 10%, var(--color-surface-2));
+}

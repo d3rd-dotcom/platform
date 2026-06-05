@@ -6,8 +6,8 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { usePrivy } from '@privy-io/react-auth';
 import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
-import ProfileHeroBanner from '@/components/profile-hero-banner/ProfileHeroBanner';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
+import InventoryPanel from '@/components/inventory-panel/InventoryPanel';
 import { EVENTS, PATHWAY_EVENT_ID } from '@/lib/events';
 import type { CourseData } from '@/lib/personal-course';
 import styles from './Dashboard.module.css';
@@ -228,8 +228,6 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
     <div className={styles.dashboard}>
       {/* ── Upcoming events ── */}
       <section className={styles.eventsSection}>
-        {/* Profile hero banner — a hero-banner take on the profile pop-up. */}
-        <ProfileHeroBanner />
         <div className={styles.eventsHeader}>
           <span className={styles.cardLabel}>Upcoming events</span>
           <p className={styles.eventsHint}>
@@ -354,6 +352,8 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
             compact
           />
         </div>
+
+        <InventoryPanel />
 
         <button
           type="button"
