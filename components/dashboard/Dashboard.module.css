@@ -8,6 +8,10 @@
   align-items: start;
 }
 
+.mainArea {
+  min-width: 0;
+}
+
 .sideStack {
   display: flex;
   flex-direction: column;

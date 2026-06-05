@@ -63,6 +63,9 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
 
   return (
     <div className={styles.dashboard}>
+      {/* ── Main content area ── */}
+      <main className={styles.mainArea} />
+
       {/* ── Side: morning note, leaderboard, membership ── */}
       <aside className={styles.sideStack}>
         <div className={styles.eventsHeader}>
