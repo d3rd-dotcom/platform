@@ -36,6 +36,9 @@ export default function CoursesPage() {
             </div>
             <div className={styles.courseBody}>
               <h2 className={styles.courseTitle}>Artist&apos;s Awakening</h2>
+              <p className={styles.courseDesc}>
+                A journey through rediscovering your creative energy and excavating it to reach your highest horizon.
+              </p>
               <span className={styles.courseEndBadge}>End date: {getCourseEndDate()}</span>
             </div>
           </Link>
