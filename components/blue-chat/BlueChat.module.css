@@ -2772,6 +2772,58 @@
 
 /* ── Course builder inline ── */
 
+/* ── Course builder board header (mirrors quest board header) ── */
+.courseBuilderBoardHeader {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(235, 232, 247, 0.10);
+  background: rgba(235, 232, 247, 0.04);
+}
+
+:global(:root:not([data-theme="dark"])) .courseBuilderBoardHeader {
+  border-color: rgba(81, 104, 255, 0.12);
+  background: rgba(81, 104, 255, 0.03);
+}
+
+.courseBuilderBoardRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.courseBuilderBoardRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.courseBuilderEyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(235, 232, 247, 0.48);
+}
+
+:global(:root:not([data-theme="dark"])) .courseBuilderEyebrow {
+  color: rgba(26, 29, 51, 0.4);
+}
+
+.courseBuilderBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 7px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7586ff;
+  background: rgba(81, 104, 255, 0.10);
+  border: 1px solid rgba(81, 104, 255, 0.28);
+  border-radius: 4px;
+}
+
 /* Clean panel — same layout as autoDistributionPanel but no radial gradient */
 .courseBuilderPanel {
   display: flex;
@@ -2862,12 +2914,18 @@
 .courseBuilderWarning {
   font-family: var(--font-body, var(--font-sans, sans-serif));
   font-size: 11px;
-  color: rgba(255, 180, 60, 0.85);
+  color: rgba(255, 180, 60, 0.88);
   background: rgba(255, 180, 60, 0.07);
-  border: 1px solid rgba(255, 180, 60, 0.15);
+  border: 1px solid rgba(255, 180, 60, 0.18);
   border-radius: 6px;
   padding: 7px 10px;
   line-height: 1.5;
+}
+
+:global(:root:not([data-theme="dark"])) .courseBuilderWarning {
+  color: #7a4900;
+  background: rgba(255, 160, 20, 0.08);
+  border-color: rgba(255, 160, 20, 0.22);
 }
 
 /* ── Compact top-bar control buttons sit on the brand-blue bar in both themes,
