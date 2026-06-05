@@ -4,8 +4,6 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { usePrivy } from '@privy-io/react-auth';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
-import AngelMintSection from '@/components/angel-mint-section/AngelMintSection';
-import MintModal from '@/components/mint-modal/MintModal';
 import { useSNPMatcherWorker, proxy } from '@/hooks/useSNPMatcherWorker';
 import { FileUpload } from '@/components/genetics/FileUpload';
 import { ResultsDisplay } from '@/components/genetics/ResultsDisplay';
@@ -20,11 +18,12 @@ const ProMembershipModal = dynamic(
 );
 
 type AppMode = 'upload' | 'browse';
+type SpaceView = 'explore' | 'chat';
 type AccessState = 'checking' | 'granted' | 'locked';
 
 function GeneticsLab() {
-  const [showMintModal, setShowMintModal] = useState(false);
   const [mode, setMode] = useState<AppMode>('upload');
+  const [spaceView, setSpaceView] = useState<SpaceView>('explore');
   const [isDbLoading, setIsDbLoading] = useState(true);
   const [dbError, setDbError] = useState<Error | null>(null);
   const [dbStats, setDbStats] = useState<{ totalSNPs: number } | null>(null);
@@ -80,6 +79,7 @@ function GeneticsLab() {
 
       try {
         const content = await file.text();
+        setSpaceView('explore');
         setIsParsing(true);
         setMatchError(null);
 
@@ -141,160 +141,197 @@ function GeneticsLab() {
     setGenosets(null);
     setMatchError(null);
     setMode('upload');
+    setSpaceView('explore');
   }, []);
 
-  const hasResults = matches && matches.length >= 0 && genosets !== null;
+  const hasResults = !!matches && genosets !== null;
   const hasError = dbError || matchError || workerError;
   const isProcessing = isParsing || isMatching || isMatchingGenosets;
 
-  return (
-    <>
-      <main className={styles.pageLayout}>
-        <div className={styles.content}>
-          {/* Hero */}
-          <div className={styles.hero}>
-            {dbStats && !isDbLoading && (
-              <div className={styles.statBadge}>
-                {dbStats.totalSNPs.toLocaleString()} SNPs in database
-              </div>
-            )}
-            <div className={styles.heroContent}>
-              <p className={styles.eyebrow}>Genomics Lab</p>
-              <h1 className={styles.title}>Genetics Browser</h1>
-              <p className={styles.subtitle}>
-                Explore genetic variants from SNPedia and match with your DNA data. All processing happens in your browser — no data is sent to any server.
-              </p>
-            </div>
+  const spaceLabel = (() => {
+    if (spaceView === 'chat') return 'Ask Blue';
+    if (mode === 'browse') return 'SNPedia database';
+    if (hasResults) return 'Your results';
+    return 'Upload your data';
+  })();
 
-            {!isDbLoading && !hasError && !hasResults && !isProcessing && (
-              <div className={styles.modeToggle}>
-                <button
-                  onClick={() => setMode('browse')}
-                  className={`${styles.modeButton} ${mode === 'browse' ? styles.modeButtonActive : ''}`}
-                >
-                  Browse Database
-                </button>
-                <button
-                  onClick={() => setMode('upload')}
-                  className={`${styles.modeButton} ${mode === 'upload' ? styles.modeButtonActive : ''}`}
-                >
-                  Upload Your Data
-                </button>
-              </div>
-            )}
+  return (
+    <main className={styles.content}>
+        {/* Controller */}
+        <aside className={styles.controller}>
+          <div>
+            <p className={styles.eyebrow}>Genomics Lab</p>
+            <h1 className={styles.title}>Genetics Browser</h1>
+            <p className={styles.subtitle}>
+              Match your raw DNA against SNPedia, surface genosets, and flag
+              pharmacogenomic interactions — processed entirely in your browser.
+            </p>
           </div>
 
-          {/* Loading State */}
-          {isDbLoading && (
-            <div className={styles.loadingCard}>
-              <div className={styles.loadingIcon}>
-                <div className={styles.spinner} />
-              </div>
-              <h2 className={styles.loadingTitle}>Loading SNP Database...</h2>
-              <div className={styles.progressBar}>
-                <div ref={progressBarRef} className={styles.progressFill} style={{ width: '0%' }} />
-              </div>
-              <p ref={progressTextRef} className={styles.progressText}>0% complete</p>
-              <p className={styles.loadingHint}>Loading 155MB database (~30-60 seconds)</p>
-            </div>
-          )}
+          <span className={styles.statusPill}>
+            <span className={`${styles.statusDot} ${isDbLoading ? styles.statusDotLoading : ''}`} />
+            {isDbLoading
+              ? 'Loading SNP database…'
+              : dbStats
+                ? `${dbStats.totalSNPs.toLocaleString()} SNPs ready`
+                : 'Database idle'}
+          </span>
 
-          {/* Error State */}
-          {hasError && !isDbLoading && (
-            <div className={styles.errorCard}>
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="15" y1="9" x2="9" y2="15" />
-                <line x1="9" y1="9" x2="15" y2="15" />
-              </svg>
-              <h2 className={styles.errorTitle}>Error</h2>
-              <p className={styles.errorText}>
-                {dbError?.message || matchError?.message || workerError?.message || 'An unknown error occurred'}
+          <div className={styles.controllerSection}>
+            <span className={styles.sectionLabel}>Source</span>
+            <div className={styles.segmented}>
+              <button
+                type="button"
+                onClick={() => { setMode('browse'); setSpaceView('explore'); }}
+                disabled={isProcessing}
+                className={`${styles.segmentBtn} ${mode === 'browse' && spaceView === 'explore' ? styles.segmentBtnActive : ''}`}
+              >
+                Browse database
+              </button>
+              <button
+                type="button"
+                onClick={() => { setMode('upload'); setSpaceView('explore'); }}
+                disabled={isProcessing}
+                className={`${styles.segmentBtn} ${mode === 'upload' && spaceView === 'explore' ? styles.segmentBtnActive : ''}`}
+              >
+                {hasResults ? 'Your results' : 'Upload data'}
+              </button>
+            </div>
+          </div>
+
+          <div className={styles.controllerSection}>
+            <span className={styles.sectionLabel}>Workspace</span>
+            <div className={styles.segmented}>
+              <button
+                type="button"
+                onClick={() => setSpaceView('explore')}
+                className={`${styles.segmentBtn} ${spaceView === 'explore' ? styles.segmentBtnActive : ''}`}
+              >
+                Explore
+              </button>
+              <button
+                type="button"
+                onClick={() => setSpaceView('chat')}
+                className={`${styles.segmentBtn} ${spaceView === 'chat' ? styles.segmentBtnActive : ''}`}
+              >
+                Ask Blue
+              </button>
+            </div>
+          </div>
+
+          {hasResults && (
+            <div className={styles.controllerSection}>
+              <span className={styles.sectionLabel}>Loaded file</span>
+              <p className={styles.fileSummary}>
+                {parseResult?.genotypes.length.toLocaleString()} SNPs
+                {detectedFormat && <> · <strong>{detectedFormat.replace('-', ' ')}</strong></>}
+                {parseResult && parseResult.errors.length > 0 && ` · ${parseResult.errors.length} skipped`}
               </p>
-              <button onClick={() => window.location.reload()} className={styles.retryButton}>
-                Reload Page
+              <button type="button" onClick={handleReset} className={styles.resetButton}>
+                Upload new file
               </button>
             </div>
           )}
 
-          {/* Main Content */}
-          {!isDbLoading && !hasError && !hasResults && !isProcessing && (
-            <>
-              {mode === 'browse' && workerApi && <SNPBrowser workerApi={workerApi} />}
-              {mode === 'upload' && <FileUpload onFileSelect={handleFileSelect} />}
-            </>
-          )}
+          <p className={styles.privacyNote}>
+            <strong>Your DNA never leaves this device.</strong> Parsing and matching run
+            locally in a Web Worker; the only network request downloads the public
+            SNPedia database.
+          </p>
+        </aside>
 
-          {/* Processing States */}
-          {isParsing && (
-            <div className={styles.processingCard}>
-              <div className={styles.spinner} />
-              <h2 className={styles.processingTitle}>Parsing your file...</h2>
-              <div className={styles.progressBar}>
-                <div ref={progressBarRef} className={styles.progressFill} style={{ width: '0%' }} />
+        {/* Space */}
+        <section className={styles.space}>
+          <header className={styles.spaceHeader}>
+            <span className={styles.spaceLabel}>{spaceLabel}</span>
+            {hasResults && spaceView === 'explore' && mode !== 'browse' && (
+              <span className={styles.spaceBadge}>
+                {matches!.length.toLocaleString()} matched
+              </span>
+            )}
+          </header>
+
+          <div className={styles.spaceBody}>
+            {spaceView === 'chat' ? (
+              <div className={styles.output}>
+                <GeneticsChat matches={matches} genosets={genosets} />
               </div>
-              <p ref={progressTextRef} className={styles.progressText}>0 / 0 lines processed</p>
-            </div>
-          )}
-
-          {isMatching && (
-            <div className={styles.processingCard}>
-              <div className={styles.spinner} />
-              <h2 className={styles.processingTitle}>Matching SNPs with database...</h2>
-              {parseResult && (
-                <p className={styles.processingSubtext}>Found {parseResult.genotypes.length.toLocaleString()} SNPs in your file</p>
-              )}
-              <div className={styles.progressBar}>
-                <div ref={progressBarRef} className={`${styles.progressFill} ${styles.progressGreen}`} style={{ width: '0%' }} />
+            ) : isDbLoading ? (
+              <div className={styles.stateCard}>
+                <div className={styles.spinner} />
+                <h2 className={styles.stateTitle}>Loading SNP database</h2>
+                <div className={styles.progressBar}>
+                  <div ref={progressBarRef} className={styles.progressFill} style={{ width: '0%' }} />
+                </div>
+                <p ref={progressTextRef} className={styles.progressText}>0% complete</p>
+                <p className={styles.stateHint}>Fetching ~155MB of SNPedia data (about 30–60 seconds)</p>
               </div>
-              <p ref={progressTextRef} className={styles.progressText}>0 / 0 SNPs processed</p>
-            </div>
-          )}
-
-          {isMatchingGenosets && (
-            <div className={styles.processingCard}>
-              <div className={styles.spinner} />
-              <h2 className={styles.processingTitle}>Finding matching genosets...</h2>
-              {matches && (
-                <p className={styles.processingSubtext}>Checking genosets against {matches.length.toLocaleString()} matched SNPs</p>
-              )}
-              <div className={styles.progressBar}>
-                <div ref={progressBarRef} className={`${styles.progressFill} ${styles.progressPurple}`} style={{ width: '0%' }} />
+            ) : hasError ? (
+              <div className={styles.stateCard}>
+                <svg className={styles.errorIcon} width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="15" y1="9" x2="9" y2="15" />
+                  <line x1="9" y1="9" x2="15" y2="15" />
+                </svg>
+                <h2 className={styles.errorTitle}>Something went wrong</h2>
+                <p className={styles.errorText}>
+                  {dbError?.message || matchError?.message || workerError?.message || 'An unknown error occurred'}
+                </p>
+                <button onClick={() => window.location.reload()} className={styles.retryButton}>
+                  Reload
+                </button>
               </div>
-              <p ref={progressTextRef} className={styles.progressText}>0 / 0 genosets checked</p>
-            </div>
-          )}
-
-          {/* Results */}
-          {hasResults && matches && genosets && !isMatching && !isMatchingGenosets && (
-            <>
-              <div className={styles.resultsHeader}>
+            ) : isParsing ? (
+              <div className={styles.stateCard}>
+                <div className={styles.spinner} />
+                <h2 className={styles.stateTitle}>Parsing your file</h2>
+                <div className={styles.progressBar}>
+                  <div ref={progressBarRef} className={styles.progressFill} style={{ width: '0%' }} />
+                </div>
+                <p ref={progressTextRef} className={styles.progressText}>0 / 0 lines processed</p>
+              </div>
+            ) : isMatching ? (
+              <div className={styles.stateCard}>
+                <div className={styles.spinner} />
+                <h2 className={styles.stateTitle}>Matching SNPs against SNPedia</h2>
                 {parseResult && (
-                  <p className={styles.resultsText}>
-                    Processed {parseResult.genotypes.length.toLocaleString()} SNPs from your file
-                    {parseResult.errors.length > 0 && ` (${parseResult.errors.length} errors)`}
-                  </p>
+                  <p className={styles.stateSubtext}>Found {parseResult.genotypes.length.toLocaleString()} SNPs in your file</p>
                 )}
-                {detectedFormat && (
-                  <p className={styles.formatText}>
-                    Detected format: <strong>{detectedFormat.replace('-', ' ')}</strong>
-                  </p>
-                )}
-                <button onClick={handleReset} className={styles.resetButton}>Upload New File</button>
+                <div className={styles.progressBar}>
+                  <div ref={progressBarRef} className={`${styles.progressFill} ${styles.progressGreen}`} style={{ width: '0%' }} />
+                </div>
+                <p ref={progressTextRef} className={styles.progressText}>0 / 0 SNPs processed</p>
               </div>
-              <ResultsDisplay matches={matches} genosets={genosets} />
-            </>
-          )}
-
-          {/* Chat */}
-          <GeneticsChat matches={matches} genosets={genosets} />
-
-          {/* Angel Mint */}
-          <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
-        </div>
-      </main>
-      <MintModal isOpen={showMintModal} onClose={() => setShowMintModal(false)} />
-    </>
+            ) : isMatchingGenosets ? (
+              <div className={styles.stateCard}>
+                <div className={styles.spinner} />
+                <h2 className={styles.stateTitle}>Finding matching genosets</h2>
+                {matches && (
+                  <p className={styles.stateSubtext}>Checking genosets against {matches.length.toLocaleString()} matched SNPs</p>
+                )}
+                <div className={styles.progressBar}>
+                  <div ref={progressBarRef} className={`${styles.progressFill} ${styles.progressPurple}`} style={{ width: '0%' }} />
+                </div>
+                <p ref={progressTextRef} className={styles.progressText}>0 / 0 genosets checked</p>
+              </div>
+            ) : mode === 'browse' && workerApi ? (
+              <div className={styles.output}>
+                <SNPBrowser workerApi={workerApi} />
+              </div>
+            ) : hasResults && matches && genosets ? (
+              <div className={styles.output}>
+                <ResultsDisplay matches={matches} genosets={genosets} />
+              </div>
+            ) : (
+              <div className={styles.stateCard}>
+                <div className={styles.emptyDropzone}>
+                  <FileUpload onFileSelect={handleFileSelect} />
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+    </main>
   );
 }
 
@@ -331,7 +368,6 @@ export default function GeneticsPage() {
     checkAccess();
   }, [checkAccess]);
 
-  // Re-check when the membership modal closes — the user may have just minted.
   const handleProModalClose = useCallback(() => {
     setShowProModal(false);
     setAccess('checking');
@@ -339,35 +375,57 @@ export default function GeneticsPage() {
   }, [checkAccess]);
 
   return (
-    <div className={styles.layout}>
+    <div className={styles.pageLayout}>
       <SideNavigation />
       {access === 'granted' ? (
         <GeneticsLab />
       ) : (
-        <main className={styles.pageLayout}>
-          <div className={styles.content}>
-            <div className={styles.hero}>
-              <div className={styles.heroContent}>
-                <p className={styles.eyebrow}>Genomics Lab — Members only</p>
-                <h1 className={styles.title}>Genetics Browser</h1>
-                <p className={styles.subtitle}>
-                  The Genetics Lab is a VIP membership perk. Match your raw DNA file
-                  (23andMe, AncestryDNA, MyHeritage, FamilyTreeDNA) against 110k+ SNPs from
-                  SNPedia, detect genosets, and flag pharmacogenomic interactions — all
-                  processed in your browser. Your DNA never leaves your device.
+        <main className={styles.content}>
+          <aside className={styles.controller}>
+            <div>
+              <p className={styles.eyebrow}>Genomics Lab · Members only</p>
+              <h1 className={styles.title}>Genetics Browser</h1>
+              <p className={styles.subtitle}>
+                A VIP membership perk. Match your raw DNA file (23andMe, AncestryDNA,
+                MyHeritage, FamilyTreeDNA) against 110k+ SNPs from SNPedia, detect
+                genosets, and flag pharmacogenomic interactions.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowProModal(true)}
+              disabled={access === 'checking'}
+              className={styles.unlockButton}
+            >
+              {access === 'checking' ? 'Checking membership…' : 'Unlock with VIP membership'}
+            </button>
+            <p className={styles.privacyNote}>
+              <strong>Your DNA never leaves this device.</strong> All parsing and matching
+              run locally in your browser — nothing is uploaded.
+            </p>
+          </aside>
+          <section className={styles.space}>
+            <header className={styles.spaceHeader}>
+              <span className={styles.spaceLabel}>Locked</span>
+              <span className={styles.spaceBadge}>VIP</span>
+            </header>
+            <div className={styles.spaceBody}>
+              <div className={styles.stateCard}>
+                <h2 className={styles.stateTitle}>Genetics Lab is a Pro feature</h2>
+                <p className={styles.stateSubtext}>
+                  Hold a VIP membership card to unlock browser-native genomics analysis.
                 </p>
-                <div className={styles.modeToggle}>
-                  <button
-                    onClick={() => setShowProModal(true)}
-                    className={`${styles.modeButton} ${styles.modeButtonActive}`}
-                    disabled={access === 'checking'}
-                  >
-                    {access === 'checking' ? 'Checking membership…' : 'Unlock with VIP membership'}
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowProModal(true)}
+                  disabled={access === 'checking'}
+                  className={styles.retryButton}
+                >
+                  {access === 'checking' ? 'Checking…' : 'View membership'}
+                </button>
               </div>
             </div>
-          </div>
+          </section>
         </main>
       )}
       <ProMembershipModal isOpen={showProModal} onClose={handleProModalClose} />

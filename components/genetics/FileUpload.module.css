@@ -1,27 +1,22 @@
 .dropzone {
-  background: #ffffff;
-  border: 3px dashed rgba(81, 104, 255, 0.4);
+  background: var(--color-surface-2);
+  border: 2px dashed color-mix(in oklch, var(--color-primary) 40%, transparent);
   border-radius: var(--radius-xl);
-  padding: 48px 24px;
+  padding: 40px 24px;
   text-align: center;
-  transition: all 0.2s ease;
+  transition: border-color 0.18s ease, background 0.18s ease;
   cursor: pointer;
-  box-shadow: 4px 4px 0 rgba(81, 104, 255, 0.1);
 }
 
 .dropzone:hover {
   border-color: var(--color-primary);
-  background: rgba(81, 104, 255, 0.03);
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 rgba(81, 104, 255, 0.15);
+  background: color-mix(in oklch, var(--color-primary) 6%, var(--color-surface-2));
 }
 
 .dropzoneDragging {
   border-color: var(--color-primary);
-  background: rgba(81, 104, 255, 0.08);
+  background: color-mix(in oklch, var(--color-primary) 10%, var(--color-surface-2));
   border-style: solid;
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 rgba(81, 104, 255, 0.2);
 }
 
 .dropzoneDisabled {
@@ -52,32 +47,31 @@
 
 .uploadTitle {
   font-family: var(--font-primary);
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
-  color: #1A1D33;
+  color: var(--color-text-dark);
   margin-bottom: 4px;
 }
 
 .uploadSubtitle {
   font-family: var(--font-primary);
   font-size: 14px;
-  color: #666666;
+  color: var(--color-text-soft);
   margin-bottom: 24px;
 }
 
 .formatsSection {
   margin-top: 16px;
   padding-top: 16px;
-  border-top: 2px solid rgba(26, 29, 51, 0.08);
+  border-top: 1px solid var(--color-border-subtle);
 }
 
 .formatsTitle {
   font-family: var(--font-primary);
   font-size: 11px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #666666;
+  letter-spacing: 0.04em;
+  color: var(--color-text-soft);
   margin-bottom: 10px;
 }
 
@@ -94,8 +88,8 @@
   align-items: center;
   gap: 4px;
   padding: 6px 12px;
-  background: rgba(81, 104, 255, 0.06);
-  border: 2px solid rgba(81, 104, 255, 0.15);
+  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
   border-radius: var(--radius-md);
   font-size: 12px;
 }
@@ -103,17 +97,17 @@
 .formatName {
   font-family: var(--font-primary);
   font-weight: 700;
-  color: #1A1D33;
+  color: var(--color-text-dark);
 }
 
 .formatExt {
   font-family: var(--font-primary);
-  color: #666666;
+  color: var(--color-text-soft);
   font-size: 11px;
 }
 
 .autoDetect {
   font-family: var(--font-primary);
   font-size: 11px;
-  color: #999999;
+  color: var(--color-text-faint);
 }

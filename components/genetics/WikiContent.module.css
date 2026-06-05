@@ -5,8 +5,8 @@
 .templateBox {
   margin-bottom: 16px;
   padding: 12px;
-  background: rgba(81, 104, 255, 0.06);
-  border: 2px solid rgba(81, 104, 255, 0.2);
+  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
   border-radius: var(--radius-lg);
 }
 
@@ -14,8 +14,7 @@
   font-size: 12px;
   font-weight: 700;
   color: var(--color-primary);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
   margin-bottom: 8px;
 }
 
@@ -30,7 +29,7 @@
   margin-left: 16px;
   margin-top: 8px;
   padding-left: 12px;
-  border-left: 2px solid rgba(81, 104, 255, 0.2);
+  border-left: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
   font-size: 13px;
 }
 
@@ -40,20 +39,20 @@
 
 .templateKey {
   font-weight: 600;
-  color: #666666;
+  color: var(--color-text-soft);
 }
 
 .value {
-  color: #1A1D33;
+  color: var(--color-text-dark);
 }
 
 .valueNA {
-  color: #999999;
+  color: var(--color-text-faint);
   font-style: italic;
 }
 
 .valueBad {
-  color: #BA1A1A;
+  color: #d05050;
   font-weight: 600;
 }
 
@@ -65,7 +64,7 @@
 .magnitudeValue {
   display: inline-block;
   padding: 2px 8px;
-  background: rgba(81, 104, 255, 0.12);
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
   color: var(--color-primary);
   border-radius: var(--radius-sm);
   font-weight: 700;
@@ -75,7 +74,7 @@
 .htmlContent {
   font-size: 13px;
   line-height: 1.7;
-  color: #444444;
+  color: var(--color-text-soft);
 }
 
 .htmlContent p {
