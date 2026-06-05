@@ -3,9 +3,11 @@
 import React, { useState } from 'react';
 import styles from './BlueChat.module.css';
 import type { CourseData } from '@/lib/personal-course';
+import type { SoundType } from '@/lib/sound-engine';
 
 interface CourseBuilderInlineProps {
   authHeaders: () => Promise<HeadersInit>;
+  onPlay?: (sound: SoundType) => void;
   onClose: () => void;
   onCourseCreated: () => void;
 }
@@ -14,6 +16,7 @@ type Phase = 'collect' | 'generating' | 'preview' | 'saving';
 
 const CourseBuilderInline: React.FC<CourseBuilderInlineProps> = ({
   authHeaders,
+  onPlay,
   onClose,
   onCourseCreated,
 }) => {
@@ -22,13 +25,13 @@ const CourseBuilderInline: React.FC<CourseBuilderInlineProps> = ({
   const [goal, setGoal] = useState('');
   const [course, setCourse] = useState<CourseData | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [isMinimized, setIsMinimized] = useState(false);
 
   const draft = async () => {
     if (!topic.trim()) {
       setError('Give Blue a topic to work with.');
       return;
     }
+    onPlay?.('click');
     setError(null);
     setPhase('generating');
     try {
@@ -54,6 +57,7 @@ const CourseBuilderInline: React.FC<CourseBuilderInlineProps> = ({
 
   const save = async () => {
     if (!course) return;
+    onPlay?.('click');
     setPhase('saving');
     setError(null);
     try {
@@ -70,6 +74,7 @@ const CourseBuilderInline: React.FC<CourseBuilderInlineProps> = ({
         setPhase('preview');
         return;
       }
+      onPlay?.('success');
       onCourseCreated();
     } catch {
       setError('Something went wrong saving the course.');
@@ -77,49 +82,25 @@ const CourseBuilderInline: React.FC<CourseBuilderInlineProps> = ({
     }
   };
 
-  if (isMinimized) {
-    return (
-      <div className={styles.autoDistributionMinimizedChip}>
-        <span className={styles.autoDistributionTitle}>Course builder</span>
-        <button
-          type="button"
-          className={styles.autoDistributionMinimizeBtn}
-          onClick={() => setIsMinimized(false)}
-          aria-label="Expand course builder"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="15 3 21 3 21 9" />
-            <polyline points="9 21 3 21 3 15" />
-            <line x1="21" y1="3" x2="14" y2="10" />
-            <line x1="3" y1="21" x2="10" y2="14" />
-          </svg>
-        </button>
-      </div>
-    );
-  }
-
   return (
-    <div className={styles.autoDistributionPanel}>
+    <div className={styles.courseBuilderPanel}>
       <div className={styles.autoDistributionHeader}>
         <span className={styles.autoDistributionTitle}>Course builder</span>
         <button
           type="button"
           className={styles.autoDistributionMinimizeBtn}
-          onClick={() => setIsMinimized(true)}
-          aria-label="Minimize course builder"
+          onClick={() => { onPlay?.('click'); onClose(); }}
+          aria-label="Close course builder"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="4 14 10 14 10 20" />
-            <polyline points="20 10 14 10 14 4" />
-            <line x1="14" y1="10" x2="21" y2="3" />
-            <line x1="3" y1="21" x2="10" y2="14" />
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <path d="M18 6L6 18M6 6l12 12" />
           </svg>
         </button>
       </div>
 
       {phase === 'collect' && (
         <>
-          <p className={styles.autoDistributionDesc}>
+          <p className={styles.courseBuilderDesc}>
             Tell me what you want to learn and I&apos;ll design a 4-week course around it.
           </p>
           <div className={styles.autoDistributionSection}>
@@ -129,6 +110,7 @@ const CourseBuilderInline: React.FC<CourseBuilderInlineProps> = ({
               type="text"
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') draft(); }}
               placeholder="e.g. drawing, public speaking, morning routine"
               maxLength={120}
             />
@@ -140,6 +122,7 @@ const CourseBuilderInline: React.FC<CourseBuilderInlineProps> = ({
               type="text"
               value={goal}
               onChange={(e) => setGoal(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') draft(); }}
               placeholder="e.g. sketch daily, speak confidently in meetings"
               maxLength={200}
             />
@@ -147,7 +130,7 @@ const CourseBuilderInline: React.FC<CourseBuilderInlineProps> = ({
           {error && <div className={styles.questForgeError}>{error}</div>}
           <div className={styles.autoDistributionFooter}>
             <div className={styles.autoDistributionButtons}>
-              <button type="button" className={styles.inlineFormCancel} onClick={onClose}>Close</button>
+              <button type="button" className={styles.inlineFormCancel} onClick={() => { onPlay?.('click'); onClose(); }}>Close</button>
               <button type="button" className={styles.inlineFormProceed} onClick={draft} disabled={!topic.trim()}>
                 Draft course
               </button>
@@ -157,7 +140,7 @@ const CourseBuilderInline: React.FC<CourseBuilderInlineProps> = ({
       )}
 
       {phase === 'generating' && (
-        <p className={styles.autoDistributionDesc} style={{ padding: '12px 0' }}>
+        <p className={styles.courseBuilderDesc} style={{ padding: '8px 0' }}>
           Generating your course...
         </p>
       )}
@@ -184,7 +167,7 @@ const CourseBuilderInline: React.FC<CourseBuilderInlineProps> = ({
             </div>
           </div>
           <div className={styles.courseBuilderWarning}>
-            AI-generated courses may have gaps or errors. Use this as a starting framework, not a certified curriculum.
+            AI-generated — treat this as a starting framework, not a certified curriculum.
           </div>
           {error && <div className={styles.questForgeError}>{error}</div>}
           <div className={styles.autoDistributionFooter}>
@@ -192,7 +175,7 @@ const CourseBuilderInline: React.FC<CourseBuilderInlineProps> = ({
               <button
                 type="button"
                 className={styles.inlineFormCancel}
-                onClick={() => { setPhase('collect'); setCourse(null); }}
+                onClick={() => { onPlay?.('click'); setPhase('collect'); setCourse(null); }}
                 disabled={phase === 'saving'}
               >
                 Back

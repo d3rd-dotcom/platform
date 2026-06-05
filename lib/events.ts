@@ -57,17 +57,17 @@ export const EVENTS: EventItem[] = [
     ctaLabel: 'Start course',
   },
   {
-    id: 'crypto-tutorial',
+    id: 'alchemy-session',
     gradient:
-      'radial-gradient(at 16% 20%, #4fd4d4 0px, transparent 55%), radial-gradient(at 86% 12%, #5fa8ff 0px, transparent 50%), radial-gradient(at 60% 100%, #2f7fe0 0px, transparent 55%), linear-gradient(135deg, #2bb3c9, #3a5bd0)',
-    heading: 'Crypto Tutorial',
-    category: 'Workshop',
+      'radial-gradient(at 16% 20%, #c084fc 0px, transparent 55%), radial-gradient(at 86% 12%, #f59e0b 0px, transparent 50%), radial-gradient(at 60% 100%, #7c3aed 0px, transparent 55%), linear-gradient(135deg, #a855f7, #d97706)',
+    heading: 'Alchemy',
+    category: 'Wellness',
     // Thursday, June 4, 2026 — 4:00 PM EST (UTC-5).
     startsAt: '2026-06-04T21:00:00Z',
     dateLabel: 'Thursday, June 4',
     timeLabel: '4:00 PM EST',
     description:
-      'A hands-on walkthrough of wallets, gas, and your first onchain transaction — get set up safely and learn the ropes alongside the cohort.',
+      'Turn pressure into clarity. A guided session on transforming stress, limiting beliefs, and mental static into the raw material for a wealthier life.',
   },
   {
     id: 'cohort-campfire',

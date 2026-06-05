@@ -6,10 +6,8 @@ import SideNavigation from '@/components/side-navigation/SideNavigation';
 import styles from './page.module.css';
 
 function openCourseBuilder() {
+  (window as Window & { __blueCourseBuilderOnOpen?: boolean }).__blueCourseBuilderOnOpen = true;
   window.dispatchEvent(new Event('toggleBlueChat'));
-  setTimeout(() => {
-    window.dispatchEvent(new Event('openCourseBuilder'));
-  }, 120);
 }
 
 export default function CoursesPage() {
@@ -27,7 +25,7 @@ export default function CoursesPage() {
               <span className={styles.courseWeeks}>12 weeks</span>
               <h2 className={styles.courseTitle}>Shadow Work</h2>
               <p className={styles.courseDesc}>
-                A structured journey through safety, identity, power, and trust. Built on creative recovery practices.
+                A journey through safety, identity, power, and trust. Built on creative recovery practices.
               </p>
               <span className={styles.courseStart}>Start course →</span>
             </div>

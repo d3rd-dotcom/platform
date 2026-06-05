@@ -2771,33 +2771,74 @@
 }
 
 /* ── Course builder inline ── */
+
+/* Clean panel — same layout as autoDistributionPanel but no radial gradient */
+.courseBuilderPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px;
+  margin: 0 16px 4px;
+  background: rgba(18, 20, 40, 0.97);
+  border: 1.5px solid rgba(81, 104, 255, 0.2);
+  border-radius: 14px;
+  animation: messageSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:global(:root:not([data-theme="dark"])) .courseBuilderPanel {
+  background: #ffffff;
+  border-color: rgba(81, 104, 255, 0.18);
+}
+
+/* Plain body-font description — no mono */
+.courseBuilderDesc {
+  margin: 0;
+  font-family: var(--font-body, var(--font-sans, sans-serif));
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+:global(:root:not([data-theme="dark"])) .courseBuilderDesc {
+  color: rgba(26, 29, 51, 0.78);
+}
+
 .courseBuilderTitle {
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--color-text-primary);
-  margin: 4px 0 0;
+  color: rgba(255, 255, 255, 0.92);
+  margin: 2px 0 0;
+  font-family: var(--font-body, var(--font-sans, sans-serif));
+}
+
+:global(:root:not([data-theme="dark"])) .courseBuilderTitle {
+  color: rgba(26, 29, 51, 0.92);
 }
 
 .courseBuilderWeeks {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 4px;
+  gap: 6px;
+  margin-top: 2px;
 }
 
 .courseBuilderWeek {
-  background: rgba(81, 104, 255, 0.06);
+  background: rgba(81, 104, 255, 0.07);
   border-radius: 8px;
   padding: 8px 10px;
 }
 
+:global(:root:not([data-theme="dark"])) .courseBuilderWeek {
+  background: rgba(81, 104, 255, 0.05);
+}
+
 .courseBuilderWeekLabel {
   font-family: var(--font-mono);
-  font-size: 10px;
-  color: rgba(81, 104, 255, 0.9);
-  letter-spacing: 0.04em;
+  font-size: 9.5px;
+  color: rgba(81, 104, 255, 0.85);
+  letter-spacing: 0.05em;
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
 }
 
 .courseBuilderTasks {
@@ -2807,21 +2848,26 @@
 }
 
 .courseBuilderTasks li {
-  font-size: 11px;
-  color: var(--color-text-secondary);
+  font-family: var(--font-body, var(--font-sans, sans-serif));
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.65);
   line-height: 1.55;
   padding: 1px 0;
 }
 
+:global(:root:not([data-theme="dark"])) .courseBuilderTasks li {
+  color: rgba(26, 29, 51, 0.7);
+}
+
 .courseBuilderWarning {
-  font-size: 10.5px;
-  color: rgba(255, 180, 60, 0.9);
-  background: rgba(255, 180, 60, 0.08);
-  border: 1px solid rgba(255, 180, 60, 0.18);
+  font-family: var(--font-body, var(--font-sans, sans-serif));
+  font-size: 11px;
+  color: rgba(255, 180, 60, 0.85);
+  background: rgba(255, 180, 60, 0.07);
+  border: 1px solid rgba(255, 180, 60, 0.15);
   border-radius: 6px;
   padding: 7px 10px;
   line-height: 1.5;
-  margin: 4px 0;
 }
 
 /* ── Compact top-bar control buttons sit on the brand-blue bar in both themes,

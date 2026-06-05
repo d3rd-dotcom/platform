@@ -349,21 +349,19 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       fetchTreasuryContext();
       fetchShardCount();
       fetchVipStatus();
+      // Course builder triggered from /courses page before BlueChat mounted
+      if (typeof window !== 'undefined' && (window as Window & { __blueCourseBuilderOnOpen?: boolean }).__blueCourseBuilderOnOpen) {
+        (window as Window & { __blueCourseBuilderOnOpen?: boolean }).__blueCourseBuilderOnOpen = false;
+        setResearchMode(false);
+        setAutoDistributionVisible(false);
+        setTimeManagementVisible(false);
+        setQuestForgeVisible(false);
+        setCourseBuilderVisible(true);
+        addBlueMessage("what do you want to learn? fill in the topic below — i'll design a 4-week course around it.");
+      }
     }
-  }, [isOpen, fetchTreasuryContext, fetchShardCount, fetchVipStatus]);
-
-  useEffect(() => {
-    const handler = () => {
-      closeInlinePanels();
-      setQuestForgeVisible(false);
-      setCourseBuilderVisible(true);
-      addBlueMessage("what do you want to learn? fill in the topic below — i'll design a 4-week course around it.");
-    };
-    window.addEventListener('openCourseBuilder', handler);
-    return () => window.removeEventListener('openCourseBuilder', handler);
-    // addBlueMessage and closeInlinePanels are stable refs — safe to omit
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isOpen, fetchTreasuryContext, fetchShardCount, fetchVipStatus]);
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -1515,6 +1513,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         {courseBuilderVisible && (
           <CourseBuilderInline
             authHeaders={authHeaders}
+            onPlay={play}
             onClose={() => setCourseBuilderVisible(false)}
             onCourseCreated={() => {
               setCourseBuilderVisible(false);
