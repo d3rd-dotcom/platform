@@ -87,12 +87,6 @@ const primaryNavItems: NavItem[] = [
     href: '/surveys',
     iconSrc: '/icons/nav-surveys-v5.svg',
   },
-  {
-    id: 'prompts',
-    label: 'Database',
-    href: '/prompts',
-    iconSrc: '/icons/nav-prompts-v3.svg',
-  },
 ];
 
 interface SideNavigationProps {
