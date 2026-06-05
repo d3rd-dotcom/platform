@@ -144,6 +144,8 @@
   border-radius: 6px;
   padding: 3px 8px;
   white-space: nowrap;
+  display: inline-flex;
+  width: fit-content;
 }
 
 :global([data-theme="dark"]) .courseEndBadge {
