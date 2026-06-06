@@ -76,24 +76,37 @@
 }
 
 .bookingLink {
-  display: inline-block;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
   margin-top: 8px;
-  padding: 12px 24px;
-  background-color: var(--color-accent, #00d4ff);
-  color: var(--color-primary, #0a0c10);
-  font-family: var(--font-primary);
-  font-size: 0.95rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 8px;
-  text-decoration: none;
+  padding: 10px 24px;
+  border-radius: 9px;
+  border: 0.5px solid #ABE8C2;
+  background-color: #5168FF;
+  background-image:
+    radial-gradient(120% 140% at 38% 42%, rgba(69, 254, 214, 0.4) 0%, rgba(131, 125, 250, 0.8) 78%),
+    radial-gradient(130% 140% at 100% 0%, rgba(246, 80, 80, 0.15) 0%, rgba(74, 227, 202, 0.3) 85%),
+    linear-gradient(95deg, rgba(55, 163, 117, 0.6) 0%, rgba(81, 104, 255, 0.6) 100%);
+  background-blend-mode: hard-light, hard-light, normal;
+  box-shadow: 0 2px 12.6px rgba(117, 139, 239, 1);
   cursor: pointer;
-  transition: all 0.2s ease;
+  box-sizing: border-box;
+  transition: transform 0.25s ease, filter 0.25s ease;
+  text-decoration: none;
+  color: #E8E8E8;
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1;
 }
 
 .bookingLink:hover {
-  opacity: 0.9;
-  transform: translateY(-2px);
+  transform: translateY(-1px);
+  filter: brightness(1.04);
 }
 
 @media (max-width: 720px) {
