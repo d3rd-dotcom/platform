@@ -14,10 +14,10 @@ export const EcosystemSection: React.FC = () => (
         <div className={styles.ecosystemCopy}>
           <p className={styles.ecosystemKicker}>Knowledge inequality</p>
           <h2 className={styles.ecosystemHeadline}>
-          How The Human Mind Was Conquered<br />
+          We Want To Grow<br />
           </h2>
           <p className={styles.ecosystemSubtext}>
-          As redlining inherits properties of segregation, capital & resources remain dependent upon area-based income taxes. Low-income communities suffer and remain trapped by an invisible ceiling. To untether from systemic plight we must:
+          But the systems keep us marginalized. Trapped in toxic environments, with little resources to serve our communities.
           </p>
           <ul className={styles.ecosystemFeatureList}>
             <li className={styles.ecosystemFeatureItem}>
@@ -26,11 +26,11 @@ export const EcosystemSection: React.FC = () => (
               </li>
             <li className={styles.ecosystemFeatureItem}>
               <span className={styles.ecosystemFeatureDot} style={{ background: '#8B6BFF' }} />
-              Mutually reinforce complementary impact and financial returns.
+              Build regenerative communities and reinforce sensibility.
               </li>
             <li className={styles.ecosystemFeatureItem}>
               <span className={styles.ecosystemFeatureDot} style={{ background: '#3CC9B4' }} />
-              Preserve digital knowledge bases for self-efficacy.
+              Preserve knowledge bases & equal digital opportunity.
             </li>
           </ul>
           <LandingEnterAcademyButton />

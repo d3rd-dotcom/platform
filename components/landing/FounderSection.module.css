@@ -75,53 +75,6 @@
   font-weight: 400;
 }
 
-.bookingLink {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  flex: 0 0 auto;
-  margin-top: 8px;
-  padding: 0 28px;
-  line-height: 1;
-  border-radius: 999px;
-  border: 0.5px solid rgba(131, 131, 131, 0.55);
-  background:
-    linear-gradient(
-      135deg,
-      #1A29B8 7%,
-      #5168FF 24%,
-      #0E1A8A 43%,
-      #5A70FF 53%,
-      #0E1A8A 66%,
-      #1B2AB3 69%,
-      #14209B 72%,
-      #2638C7 86%,
-      #4358E8 92%
-    );
-  color: #F4FFFC;
-  font-size: 1rem;
-  font-weight: 700;
-  font-family: var(--font-primary);
-  letter-spacing: 0.01em;
-  cursor: pointer;
-  box-shadow:
-    0 2px 12.6px rgba(35, 35, 35, 0.45),
-    inset 0 8px 0 rgba(255, 255, 255, 0.25);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
-  text-decoration: none;
-  height: 56px;
-}
-
-.bookingLink:hover:not(:disabled) {
-  transform: translateY(-2px);
-  filter: brightness(1.08);
-  box-shadow:
-    0 6px 18px rgba(35, 35, 35, 0.5),
-    inset 0 8px 0 rgba(255, 255, 255, 0.28);
-}
-
 @media (max-width: 720px) {
   .section {
     padding: 56px 20px 40px;

@@ -291,6 +291,7 @@
   box-sizing: border-box;
   transition: transform 0.25s ease, filter 0.25s ease;
   animation: heroFadeUp 0.45s var(--hero-ease-out) 0.5s both;
+  text-decoration: none;
 }
 
 .fancyButtonInner {
