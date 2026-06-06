@@ -17,12 +17,20 @@ export const FounderSection: React.FC = () => {
         <div className={styles.content}>
           <p className={styles.eyebrow}>From the founder</p>
           <h2 id="founder-section-heading" className={styles.heading}>
-          A Story By Jhinn Bay 🇨🇳
+          Hey, I'm James
           </h2>
           <div className={styles.body}>
             <p>
             Decentralization allows us to change how we've been serving underserved communities. We can connect and access the same tools and research opportunities as any other American.
             </p>
+            <a
+              href="https://cal.com/james.mwa/strategy?overlayCalendar=true"
+              className={styles.bookingLink}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Book a Strategy Call
+            </a>
           </div>
         </div>
       </div>

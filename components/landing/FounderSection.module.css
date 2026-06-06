@@ -75,13 +75,45 @@
   font-weight: 400;
 }
 
+.bookingLink {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 12px 24px;
+  background-color: var(--color-accent, #00d4ff);
+  color: var(--color-primary, #0a0c10);
+  font-family: var(--font-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.bookingLink:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
 @media (max-width: 720px) {
   .section {
     padding: 56px 20px 40px;
   }
 
   .container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
     gap: 14px;
+  }
+
+  .avatarWrap {
+    margin-bottom: 8px;
+  }
+
+  .content {
+    width: 100%;
   }
 
   .eyebrow {
@@ -96,6 +128,7 @@
 
   .body {
     gap: 10px;
+    align-items: center;
   }
 
   .body p {
