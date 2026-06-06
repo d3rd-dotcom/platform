@@ -162,8 +162,8 @@ export const ProblemMap: React.FC = () => {
 
       <div className={styles.mechanism}>
         <p className={styles.lead}>
-          Public schools run on local property taxes &mdash; so the line drawn on this
-          1930s map became a school-funding line.
+          Public schools operate on local property taxes; so the line drawn in
+          1930s ends up dictating so much more than one's ability to learn.
         </p>
         <div className={styles.budget}>
           <span className={styles.budgetTitle}>Annual funding per school</span>
