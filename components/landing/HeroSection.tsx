@@ -14,7 +14,7 @@ export const EcosystemSection: React.FC = () => (
         <div className={styles.ecosystemCopy}>
           <p className={styles.ecosystemKicker}>Knowledge inequality</p>
           <h2 className={styles.ecosystemHeadline}>
-          We Want To Grow<br />
+          We Want Growth<br />
           </h2>
           <p className={styles.ecosystemSubtext}>
           But the systems keep us marginalized. Trapped in toxic environments, with little resources to serve our communities.
