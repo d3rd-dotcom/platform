@@ -167,7 +167,7 @@ export default function ProfilePopup({ username, avatarUrl, address, onClose }: 
 
       if (!res.ok) {
         const errorMessage = resData?.error === 'insufficient_shards'
-          ? `You need ${REREAD_SHARD_COST} credits to reread this page.`
+          ? `You need ${REREAD_SHARD_COST} diamonds to reread this page.`
           : resData?.error === 'note_not_found'
             ? 'This morning page is no longer available to reread.'
             : 'The reread could not be opened right now.';
@@ -313,7 +313,7 @@ export default function ProfilePopup({ username, avatarUrl, address, onClose }: 
                   className={cls}
                   onClick={() => openRereadModal(day.dateKey)}
                   aria-label={`Reread morning page for ${formatReadableDate(day.dateKey)}`}
-                  title={`Reread ${formatReadableDate(day.dateKey)} for ${REREAD_SHARD_COST} credits`}
+                  title={`Reread ${formatReadableDate(day.dateKey)} for ${REREAD_SHARD_COST} diamonds`}
                 >
                   <span className={styles.dayNum}>{day.date.getDate()}</span>
                   <span className={styles.dot} />
@@ -324,13 +324,13 @@ export default function ProfilePopup({ username, avatarUrl, address, onClose }: 
 
           {loading && <div className={styles.loadingBar} aria-label="Loading calendar data" />}
 
-          <p className={styles.calendarHint}>Tap a completed day to reread it for {REREAD_SHARD_COST} credits.</p>
+          <p className={styles.calendarHint}>Tap a completed day to reread it for {REREAD_SHARD_COST} diamonds.</p>
         </div>
 
         {/* Footer */}
         <div className={styles.footer}>
           <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} />
-          <span className={styles.footerText}>{loading ? '—' : data.shardCount} credits</span>
+          <span className={styles.footerText}>{loading ? '—' : data.shardCount{} diamonds</span>
         </div>
 
       </div>
@@ -375,7 +375,7 @@ export default function ProfilePopup({ username, avatarUrl, address, onClose }: 
               <p className={styles.noteContent}>{rereadModal.note.content}</p>
             </div>
             <div className={styles.rereadFooter}>
-              <span className={styles.rereadBalance}>{data.shardCount} credits remaining</span>
+              <span className={styles.rereadBalance}>{data.shardCount} diamonds remaining</span>
               <button type="button" className={styles.rereadPrimary} onClick={() => setRereadModal(null)}>
                 Close
               </button>
@@ -384,12 +384,12 @@ export default function ProfilePopup({ username, avatarUrl, address, onClose }: 
         ) : (
           <>
             <p className={styles.rereadCopy}>
-              Spend {REREAD_SHARD_COST} credits to reopen this completed morning page. Access lasts for this view only.
+              Spend {REREAD_SHARD_COST} diamonds to reopen this completed morning page. Access lasts for this view only.
             </p>
             <div className={styles.rereadCostRow}>
               <span className={styles.rereadCostBadge}>
                 <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} />
-                {REREAD_SHARD_COST} credits
+                {REREAD_SHARD_COST} diamonds
               </span>
               <span className={styles.rereadBalance}>{data.shardCount} available</span>
             </div>
@@ -411,7 +411,7 @@ export default function ProfilePopup({ username, avatarUrl, address, onClose }: 
                 onClick={unlockReread}
                 disabled={rereadModal.isLoading}
               >
-                {rereadModal.isLoading ? 'Opening...' : `Spend ${REREAD_SHARD_COST} credits`}
+                {rereadModal.isLoading ? 'Opening...' : `Spend ${REREAD_SHARD_COST} diamonds`}
               </button>
             </div>
           </>

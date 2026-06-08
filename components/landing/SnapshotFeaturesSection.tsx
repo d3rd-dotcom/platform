@@ -13,9 +13,9 @@ const features = [
       'Blue reads every submission and pays out the reward. Your reflections become training data. Her judgments evolve as you do.',
   },
   {
-    title: 'Universal Credit System',
+    title: 'Universal Diamond System',
     body:
-      'On-chain credits earned in one case-study app, spendable across all of them. Credits live in your wallet - not on our servers.',
+      'On-chain diamonds earned in one case-study app, spendable across all of them. Diamonds live in your wallet - not on our servers.',
   },
 ];
 

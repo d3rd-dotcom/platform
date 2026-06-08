@@ -698,7 +698,7 @@ export default function WeekTasksView({
                         Complete Task
                         <span className={styles.markDoneCredits}>
                           <Image src="/icons/ui-shard.svg" alt="" width={12} height={12} />
-                          +50 credits
+                          +50 diamonds
                         </span>
                       </>
                     )}
@@ -753,7 +753,7 @@ export default function WeekTasksView({
               <>
                 <h3 className={styles.sealModalTitle}>Seal Week {weekNumber}?</h3>
                 <p className={styles.sealModalText}>
-                  This will finalize your work and award 700 credits. You won&apos;t be able to edit after sealing.
+                  This will finalize your work and award 700 diamonds. You won&apos;t be able to edit after sealing.
                 </p>
                 <div className={styles.sealModalButtons}>
                   <button className={styles.sealModalCancel}

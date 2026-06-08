@@ -258,7 +258,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
           </div>
           <Image
             src="/icons/badge-academy.png"
-            alt="Credits"
+            alt="Diamonds"
             width={44}
             height={44}
             className={`${styles.headerGem} ${styles[`gem_${statusClass}`]}`}

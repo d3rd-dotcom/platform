@@ -303,7 +303,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
           <span className={styles.calloutDot} aria-hidden="true" />
           <span>
             {sealed
-              ? `Week ${quest.weekNumber} is sealed — your credits are ready to claim.`
+              ? `Week ${quest.weekNumber} is sealed — your diamonds are ready to claim.`
               : `Week ${quest.weekNumber} is not sealed yet. Finish that week on your home dashboard, then come back to claim.`}
           </span>
         </div>
@@ -420,7 +420,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
                 </label>
                 <div className={styles.callout} data-state="info">
                   <span className={styles.calloutDot} aria-hidden="true" />
-                  <span>Submissions are queued for review. Approved entries receive credits automatically.</span>
+                  <span>Submissions are queued for review. Approved entries receive diamonds automatically.</span>
                 </div>
                 {usdcReward > 0 && usdcClaim && !usdcClaim.loading && !usdcClaim.status && usdcClaim.eligible && (
                   <>
@@ -442,7 +442,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
 
             {quest.rewardType === 'no-proof' && (
               <p className={styles.actionDesc}>
-                Finish the task above on your own, then claim your credits. This one uses self-attestation.
+                Finish the task above on your own, then claim your diamonds. This one uses self-attestation.
               </p>
             )}
 
@@ -519,7 +519,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
             <li className={styles.rewardItem}>
               <Image src="/icons/ui-shard.svg" alt="" width={18} height={18} />
               <span className={styles.rewardItemValue}>{quest.points}</span>
-              <span className={styles.rewardItemName}>Credits</span>
+              <span className={styles.rewardItemName}>Diamonds</span>
             </li>
             {usdcReward > 0 && (
               <li className={styles.rewardItem}>
@@ -541,7 +541,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
             onClick={handleCompleteReward}
             disabled={!canClaimSealedWeek || isCompleting}
           >
-            {questIsComplete ? 'Quest cleared' : isCompleting ? 'Claiming...' : `Claim ${quest.points} credits`}
+            {questIsComplete ? 'Quest cleared' : isCompleting ? 'Claiming...' : `Claim ${quest.points} diamonds`}
           </button>
         )}
         {quest.rewardType === 'proof-required' && (
@@ -567,7 +567,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
             onClick={handleCompleteReward}
             disabled={isCompleting || questIsComplete}
           >
-            {questIsComplete ? 'Quest cleared' : isCompleting ? 'Claiming...' : `Claim ${quest.points} credits`}
+            {questIsComplete ? 'Quest cleared' : isCompleting ? 'Claiming...' : `Claim ${quest.points} diamonds`}
           </button>
         )}
         {quest.rewardType === 'twitter-follow' && (
@@ -582,7 +582,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
               : isCompleting
                 ? 'Claiming...'
                 : step1Completed && step2Completed
-                  ? 'Claim credits'
+                  ? 'Claim diamonds'
                   : 'Complete the steps above'}
           </button>
         )}

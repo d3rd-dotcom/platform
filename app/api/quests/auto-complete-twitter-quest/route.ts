@@ -216,7 +216,7 @@ export async function POST() {
       startingShards,
       newShardCount,
       isFollowing: true,
-      message: `Congratulations! You're following @${TARGET_USERNAME} and have earned ${SHARD_REWARD} credits!`,
+      message: `Congratulations! You're following @${TARGET_USERNAME} and have earned ${SHARD_REWARD} diamonds!`,
     });
   } catch (err: any) {
     console.error('Error auto-completing twitter quest:', err);

@@ -55,7 +55,7 @@ interface QuestListPanelProps {
   onClaims: () => void;
 }
 
-const MSG_DEFAULT = 'Credits and rewards for completionists dedicated to self-improvement. Small steps make a difference.';
+const MSG_DEFAULT = 'Diamonds and rewards for completionists dedicated to self-improvement. Small steps make a difference.';
 const MSG_USDC = '$1 USDC per quest, paid on-chain to your wallet. Academic Angels only — hold the NFT on Base to unlock.';
 
 export default function QuestListPanel({

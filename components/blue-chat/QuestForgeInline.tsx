@@ -189,7 +189,7 @@ const QuestForgeInline: React.FC<QuestForgeInlineProps> = ({
       <div className={styles.autoDistributionSection}>
         <span className={styles.autoDistributionLabel}>Reward</span>
         <div className={styles.autoDistributionPills}>
-          {([['credits', 'Credits'], ['usdc', 'USDC']] as Array<[RewardKind, string]>).map(([value, label]) => (
+          {([['credits', 'Diamonds'], ['usdc', 'USDC']] as Array<[RewardKind, string]>).map(([value, label]) => (
             <button
               key={value}
               type="button"
@@ -206,7 +206,7 @@ const QuestForgeInline: React.FC<QuestForgeInlineProps> = ({
       <div className={styles.questForgeRow}>
         <div className={styles.autoDistributionSection}>
           <span className={styles.autoDistributionLabel}>
-            {rewardKind === 'usdc' ? 'USDC each ($)' : 'Credits each'}
+            {rewardKind === 'usdc' ? 'USDC each ($)' : 'Diamonds each'}
           </span>
           <input
             className={styles.questForgeInput}
@@ -278,12 +278,12 @@ const QuestForgeInline: React.FC<QuestForgeInlineProps> = ({
       <div className={styles.questForgeEscrowNote}>
         {rewardKind === 'usdc'
           ? `I'll hold $${escrowTotal} USDC in escrow — you send it from your wallet next.`
-          : `I'll hold ${escrowTotal} credits in escrow${creditBalance != null ? ` (you have ${creditBalance.toLocaleString()})` : ''}.`}
+          : `I'll hold ${escrowTotal} diamonds in escrow${creditBalance != null ? ` (you have ${creditBalance.toLocaleString()})` : ''}.`}
       </div>
 
       {creditsShort && (
         <div className={styles.questForgeError}>
-          Not enough credits — this quest needs {escrowTotal.toLocaleString()}.
+          Not enough diamonds — this quest needs {escrowTotal.toLocaleString()}.
         </div>
       )}
       {error && <div className={styles.questForgeError}>{error}</div>}

@@ -64,7 +64,7 @@ const OUTRO_STEPS: TourStep[] = [
   {
     target: 'shop',
     title: 'Spend what you earn',
-    body: 'Those credits are good for more than a number. The shop trades them for custom merch and tools — some physical, some digital, some that live in both worlds.',
+    body: 'Those diamonds are good for more than a number. The shop trades them for custom merch and tools — some physical, some digital, some that live in both worlds.',
     cta: 'Next',
   },
   {

@@ -52,7 +52,7 @@ export async function POST() {
 
     if (!result) {
       return NextResponse.json(
-        { error: 'Insufficient credits', message: `Rerolling costs ${REROLL_COST} credits.` },
+        { error: 'Insufficient diamonds', message: `Rerolling costs ${REROLL_COST} diamonds.` },
         { status: 402 }
       );
     }

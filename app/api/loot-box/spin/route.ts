@@ -47,7 +47,7 @@ export async function POST(request: Request) {
 
     if (rows.length === 0) {
       return NextResponse.json(
-        { error: 'Not enough credits to spin.' },
+        { error: 'Not enough diamonds to spin.' },
         { status: 400 }
       );
     }

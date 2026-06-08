@@ -529,7 +529,7 @@ export default function AgentsPage() {
                               </span>
                             </div>
                             {agent.bio && <p className={styles.agentBio}>{agent.bio}</p>}
-                            <span className={styles.agentShards}>{agent.shardCount} credits</span>
+                            <span className={styles.agentShards}>{agent.shardCount} diamonds</span>
                             {(reminderCounts[agent.id] ?? 0) > 0 && (
                               <span className={styles.reminderBadge}>
                                 <Bell size={12} weight="bold" />

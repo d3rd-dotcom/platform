@@ -157,7 +157,7 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
         <div className={styles.formHeader}>
           <h3 className={styles.formTitle}>Create a quest</h3>
           <p className={styles.formSubtitle}>
-            Publish to everyone or assign to a wallet. The credits are held in escrow and paid out as people complete it. For USDC-funded quests, ask Blue in chat to forge one.
+            Publish to everyone or assign to a wallet. The diamonds are held in escrow and paid out as people complete it. For USDC-funded quests, ask Blue in chat to forge one.
           </p>
         </div>
 
@@ -201,7 +201,7 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
           </label>
 
           <label className={styles.field}>
-            <span className={styles.label}>Credits</span>
+            <span className={styles.label}>Diamonds</span>
             <input
               className={styles.input}
               type="number"
@@ -335,7 +335,7 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
                       <span className={styles.itemMetaChip}>
                         {q.rewardKind === 'usdc'
                           ? `$${q.rewardAmount ?? 0} USDC`
-                          : `${q.rewardAmount ?? q.points} credits`}
+                          : `${q.rewardAmount ?? q.points} diamonds`}
                       </span>
                       {q.escrowStatus === 'pending_funding' && (
                         <span className={styles.itemExpired}>Awaiting funding</span>

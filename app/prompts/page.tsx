@@ -80,7 +80,7 @@ const MENTAL_WEALTH_BRAND_BOOK_V4 = JSON.stringify({
 | 1. **Enroll** | Become an Academic VIP Member ($90) | Access the cohort, platform, and virtual labs |
 | 2. **Complete Quests** | Weekly reflective and practical tasks | Case-studies, challenges, and prizes |
 | 3. **Utilize Blue** | AI companion for research and decision-making | Memory, data, and agent growth via research |
-| 4. **Earn Currency** | Collect credits to build reputation | Blockchain-based credits - user-owned and transferable across all MWA apps |
+| 4. **Earn Currency** | Collect diamonds to build reputation | Blockchain-based diamonds - user-owned and transferable across all MWA apps |
 | 5. **Evolve Blue** | Your data and participation improve Blue | Memory increases real-world use cases |
 
 ### Disposable Case Studies
@@ -132,9 +132,9 @@ Most educational content competes with entertainment and loses. MWA doesn't comp
 | Component | Description |
 |-----------|-------------|
 | **VIP Membership** | $90 non-transferable NFT. One purchase = full platform access for the cohort season. No subscriptions, no tiers. |
-| **Credits** | In-game currency earned through quests. Used for non-essential digital items and activated during trades with Blue |
+| **Diamonds** | In-game currency earned through quests. Used for non-essential digital items and activated during trades with Blue |
 | **Stablecoins** | Achievement-based reward currency. Grants stakeholder participation in multi-sig treasury coordination and research funding. |
-| **IRL Prizes** | End-of-season rewards, redeemable through credits plus completion requirements. |
+| **IRL Prizes** | End-of-season rewards, redeemable through diamonds plus completion requirements. |
 
 ### Revenue Streams
 
@@ -316,7 +316,7 @@ Most current content jumps straight to #4 without establishing #1–3.`,
 |---|---|
 | Twelve-Week Cohort | A Cohort For Next-Gen Scientists |
 | Blue Reviews Your Work | Ascend with Paradigmic Research |
-| Credits You Actually Own | Universal Credit System |
+| Diamonds You Actually Own | Universal Diamond System |
 | Disposable Apps, Lasting Value | Meta-Parasocial & Cybersecurity Research Programs |
 | Memory That Compounds | Certified Academic Labs |
 | One NFT, Full Access | Lifetime Membership |

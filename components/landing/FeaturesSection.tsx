@@ -31,8 +31,8 @@ const featureCards = [
     title: 'Get Rewarded For Showing Up',
     badge: 'Onchain',
     description:
-      "Earn cross-platform rewards for meaningful participation. Your credits live in your wallet — not on our servers — and compound the more you contribute.",
-    details: ['Earn shards on-chain', 'Credits in your wallet', 'Convert to real value'],
+      "Earn cross-platform rewards for meaningful participation. Your diamonds live in your wallet — not on our servers — and compound the more you contribute.",
+    details: ['Earn diamonds on-chain', 'Diamonds in your wallet', 'Convert to real value'],
     footerLabel: 'On Base blockchain',
     footerValue: 'User-owned',
   },

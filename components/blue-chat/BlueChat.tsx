@@ -865,7 +865,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         return;
       }
       if (res.status === 402) {
-        addBlueMessage(data.error || "you don't have enough credits to fund that one.");
+        addBlueMessage(data.error || "you don't have enough diamonds to fund that one.");
         return;
       }
       if (!res.ok) {
@@ -878,7 +878,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         setQuestDraft(null);
         fetchShardCount();
         window.dispatchEvent(new Event('shardsUpdated'));
-        addBlueMessage(`done — "${req.title}" is live on the quests board. ${req.rewardAmount} credits each${req.targetCount > 1 ? `, up to ${req.targetCount} people` : ''}.`);
+        addBlueMessage(`done — "${req.title}" is live on the quests board. ${req.rewardAmount} diamonds each${req.targetCount > 1 ? `, up to ${req.targetCount} people` : ''}.`);
         return;
       }
 
@@ -975,15 +975,15 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
     // Credits - cost; legacy terms remain recognized.
     if (has('how much', 'cost credit', 'credit cost', 'spend credit', 'how many credit', 'cost shard', 'shard cost', 'spend shard', 'how many shard', 'cost gem', 'gem cost', 'spend gem', 'how many gem') || (hasAll('cost', 'chat')) || (hasAll('credit', 'cost')) || (hasAll('shard', 'cost')) || (hasAll('gem', 'cost'))) {
-      return "10 credits per chat turn. earn them back from quests and morning pages.";
+      return "10 diamonds per chat turn. earn them back from quests and morning pages.";
     }
 
     // Credits - balance / general; legacy terms remain recognized.
     if (has('credit', 'shard', 'gem') || (hasAll('my', 'balance')) || (hasAll('how many', 'point'))) {
       const bal = shardCount;
       return bal !== null
-        ? `you got ${bal.toLocaleString()} credits rn. keep stacking from quests and morning pages.`
-        : "your credit balance is on the home dashboard. quests and morning pages build it fastest.";
+        ? `you got ${bal.toLocaleString()} diamonds rn. keep stacking from quests and morning pages.`
+        : "your diamond balance is on the home dashboard. quests and morning pages build it fastest.";
     }
 
     // Morning pages / journaling
@@ -1003,7 +1003,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
     // Quests
     if (has('quest', 'daily task', 'daily mission', 'daily quest', 'mission')) {
-      return "short daily tasks that earn credits - morning pages, X posts, course stuff. check quests for what's live rn.";
+      return "short daily tasks that earn diamonds - morning pages, X posts, course stuff. check quests for what's live rn.";
     }
 
     // Surveys / assessments
@@ -1066,7 +1066,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
     // Rewards / shop / loot
     if (has('reward', 'loot', 'loot box', 'prize', 'unlock') || (hasAll('shop', 'buy')) || (hasAll('spend', 'credit')) || (hasAll('spend', 'shard')) || (hasAll('spend', 'gem'))) {
-      return "where credits go - loot boxes, upgrades, season drops. check rewards.";
+      return "where diamonds go - loot boxes, upgrades, season drops. check rewards.";
     }
 
     // Prompts and selected essays
@@ -1406,9 +1406,9 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     return lines;
   };
 
-  const shardUpsellTitle = 'You are out of credits';
+  const shardUpsellTitle = 'You are out of diamonds';
   const shardUpsellBody = shardUpsell
-    ? `You need ${shardUpsell.required.toLocaleString()} credits to continue. You currently have ${shardUpsell.current.toLocaleString()}. Purchase more to keep the conversation going.`
+    ? `You need ${shardUpsell.required.toLocaleString()} diamonds to continue. You currently have ${shardUpsell.current.toLocaleString()}. Purchase more to keep the conversation going.`
     : '';
 
   const chatContent = (
@@ -1949,7 +1949,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
                           <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Quest Forge</span>
                           <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Quest Forge</span>
                         </span>
-                        <span className={styles.toolCardMeta}>Describe a quest and I draft, fund, and publish it. Reward in credits or USDC, held in escrow until you approve the payout.</span>
+                        <span className={styles.toolCardMeta}>Describe a quest and I draft, fund, and publish it. Reward in diamonds or USDC, held in escrow until you approve the payout.</span>
                         <span className={styles.toolCardCost}>
                           <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z"/></svg>
                           {isVipMember ? 'Included with VIP membership' : 'VIP membership required'}

@@ -90,7 +90,7 @@ export default function AgentRosterCard() {
                     )}
                   </span>
                   <span className={styles.agentName}>{agent.username}</span>
-                  <span className={styles.agentShards}>{agent.shardCount} credits</span>
+                  <span className={styles.agentShards}>{agent.shardCount} diamonds</span>
                   <CaretRight size={15} weight="bold" className={styles.caret} />
                 </button>
               </li>

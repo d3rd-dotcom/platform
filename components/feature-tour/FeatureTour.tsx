@@ -53,7 +53,7 @@ interface IntroStep {
 const INTRO_STEPS: IntroStep[] = [
   {
     title: 'Write your Morning Note',
-    body: 'A few lines each morning earns you 100 credits and builds your daily streak.',
+    body: 'A few lines each morning earns you 100 diamonds and builds your daily streak.',
   },
 ];
 
@@ -445,7 +445,7 @@ export default function FeatureTour() {
           <>
             <h3 className={styles.title}>Time for today&rsquo;s note</h3>
             <p className={styles.body}>
-              A few lines keeps your streak alive and earns 100 credits — any time
+              A few lines keeps your streak alive and earns 100 diamonds — any time
               of day works.
             </p>
             <div className={styles.actions}>

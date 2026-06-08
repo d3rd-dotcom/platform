@@ -164,7 +164,7 @@ export default function SurveyController({
         <div className={styles.videoReview}>
           <div className={styles.videoReviewEyebrow}>{selectedSurvey.label} · review</div>
           <p className={styles.videoReviewText}>
-            Pick something. Answer it. I'll try to figure out what it means before you do. If I win, I'll give you some credits.
+            Pick something. Answer it. I'll try to figure out what it means before you do. If I win, I'll give you some diamonds.
           </p>
         </div>
       </div>
@@ -194,9 +194,9 @@ export default function SurveyController({
         <section className={styles.scaleCard}>
           <div className={styles.row}>
             <span className={styles.eyebrow}>Test scale</span>
-            <div className={styles.shardBadge} aria-label={`${shardReward} credits earned for this test`}>
+            <div className={styles.shardBadge} aria-label={`${shardReward} diamonds earned for this test`}>
               <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} className={styles.shardIcon} />
-              +{shardReward} credits
+              +{shardReward} diamonds
             </div>
           </div>
 

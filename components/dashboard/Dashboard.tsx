@@ -198,7 +198,7 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
                       </div>
                     )}
                     <span className={styles.leagueName}>{u.username}</span>
-                    <span className={styles.leagueShards}>{u.shards} credits</span>
+                    <span className={styles.leagueShards}>{u.shards} diamonds</span>
                   </div>
                 ))
               )}

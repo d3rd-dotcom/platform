@@ -116,7 +116,7 @@ export default function SignFormModal({ difficulty, shardReward, onLaunch, onClo
             <div className={styles.legalSection}>
               <span className={styles.legalHeading}>Your Answers Count</span>
               <p className={styles.legalText}>
-                Your responses are saved to your account so Blue can grade them and award your credits. They also help build better models for the community.
+                Your responses are saved to your account so Blue can grade them and award your diamonds. They also help build better models for the community.
               </p>
             </div>
 
@@ -178,7 +178,7 @@ export default function SignFormModal({ difficulty, shardReward, onLaunch, onClo
             disabled={!canLaunch}
             type="button"
           >
-            {canLaunch ? `Start Survey · +${shardReward} credits` : 'Agree & sign to continue'}
+            {canLaunch ? `Start Survey · +${shardReward} diamonds` : 'Agree & sign to continue'}
           </button>
         </div>
       </div>

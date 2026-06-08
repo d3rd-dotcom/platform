@@ -186,7 +186,7 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
                   disabled={rerolling || saving || (credits !== null && credits < rerollCost)}
                   type="button"
                 >
-                  {rerolling ? 'Rerolling…' : `Reroll for ${rerollCost} credits`}
+                  {rerolling ? 'Rerolling…' : `Reroll for ${rerollCost} diamonds`}
                 </button>
                 {credits !== null && (
                   <span className={styles.creditsNote}>

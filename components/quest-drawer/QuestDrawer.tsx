@@ -425,7 +425,7 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
               <div className={styles.rewardChip}>
                 <Image src="/icons/ui-shard.svg" alt="" width={16} height={16} />
                 <span className={styles.rewardValue}>{quest.points}</span>
-                <span className={styles.rewardLabel}>credits</span>
+                <span className={styles.rewardLabel}>diamonds</span>
               </div>
             )}
           </section>
@@ -470,7 +470,7 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
             {quest.rewardType === 'sealed-week' && (
               <>
                 <p className={styles.actionDesc}>
-                  This quest reads your seal status for Week {quest.weekNumber}. Once that week is sealed on the home dashboard, you can claim the credits here.
+                  This quest reads your seal status for Week {quest.weekNumber}. Once that week is sealed on the home dashboard, you can claim the diamonds here.
                 </p>
                 <div className={styles.callout} data-state={progressCount >= targetCount ? 'ready' : 'waiting'}>
                   <span className={styles.calloutDot} aria-hidden="true" />
@@ -486,7 +486,7 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
                   onClick={handleCompleteReward}
                   disabled={!canClaimSealedWeek || isCompleting}
                 >
-                  {questIsComplete ? 'Quest cleared' : isCompleting ? 'Claiming...' : `Claim ${quest.points} credits`}
+                  {questIsComplete ? 'Quest cleared' : isCompleting ? 'Claiming...' : `Claim ${quest.points} diamonds`}
                 </button>
               </>
             )}
@@ -514,7 +514,7 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
                 </label>
                 <div className={styles.callout} data-state="info">
                   <span className={styles.calloutDot} aria-hidden="true" />
-                  <span>Submissions are queued for review. Approved entries receive credits automatically.</span>
+                  <span>Submissions are queued for review. Approved entries receive diamonds automatically.</span>
                 </div>
                 <button
                   type="button"
@@ -605,7 +605,7 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
             {quest.rewardType === 'no-proof' && (
               <>
                 <p className={styles.actionDesc}>
-                  Finish the task above on your own, then claim your credits. This one uses self-attestation.
+                  Finish the task above on your own, then claim your diamonds. This one uses self-attestation.
                 </p>
                 <button
                   type="button"
@@ -613,7 +613,7 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
                   onClick={handleCompleteReward}
                   disabled={isCompleting || questIsComplete}
                 >
-                  {questIsComplete ? 'Quest cleared' : isCompleting ? 'Claiming...' : `Claim ${quest.points} credits`}
+                  {questIsComplete ? 'Quest cleared' : isCompleting ? 'Claiming...' : `Claim ${quest.points} diamonds`}
                 </button>
               </>
             )}
@@ -679,7 +679,7 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
                     onClick={handleCompleteReward}
                     disabled={isCompleting || questIsComplete}
                   >
-                    {questIsComplete ? 'Quest cleared' : isCompleting ? 'Claiming...' : 'Claim credits'}
+                    {questIsComplete ? 'Quest cleared' : isCompleting ? 'Claiming...' : 'Claim diamonds'}
                   </button>
                 )}
 

@@ -106,7 +106,7 @@ export default function InventoryPanel() {
     tier === 'Staff' ? 'Staff / VIP' : tier === 'Angel' ? 'Academic Angel' : 'Guest';
 
   const slots = [
-    { label: 'Credits',      icon: '/icons/ui-shard.svg',      value: credits, tooltip: 'Earned through quests, lessons, and check-ins.' },
+    { label: 'Diamonds',      icon: '/icons/ui-shard.svg',      value: credits, tooltip: 'Earned through quests, lessons, and check-ins.' },
     { label: 'Cakes',        icon: '/icons/cake.webp',          value: cakes,   tooltip: 'Awarded for participation. Used for governance.', unoptimized: true },
     { label: 'USDC',         icon: '/icons/usdc-logo.svg',      value: usdc,    tooltip: 'Quest payouts sent to your connected wallet.', unoptimized: true },
     { label: 'Certificates', icon: '/icons/ui-seal.svg',        value: '0',     tooltip: 'Awarded for completing Academy milestones.' },

@@ -236,7 +236,7 @@ export async function POST(request: Request) {
     } catch (err: any) {
       if (err?.message === 'INSUFFICIENT_CREDITS') {
         return NextResponse.json(
-          { error: `Not enough credits to fund this quest. It needs ${reward.escrowTotal} credits held in escrow.` },
+          { error: `Not enough diamonds to fund this quest. It needs ${reward.escrowTotal} diamonds held in escrow.` },
           { status: 402 },
         );
       }

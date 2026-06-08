@@ -343,11 +343,11 @@ export default function BlueTerminal({
           <h3 className={styles.statusTitle}>Survey submitted</h3>
           <p className={styles.statusText}>
             {completionResult
-              ? `You earned ${completionResult.shardsAwarded} credits for this submission.`
+              ? `You earned ${completionResult.shardsAwarded} diamonds for this submission.`
               : 'Your responses were recorded.'}
           </p>
           {completionResult?.newShardCount !== null && completionResult?.newShardCount !== undefined && (
-            <p className={styles.statusText}>Current balance: {completionResult.newShardCount} credits.</p>
+            <p className={styles.statusText}>Current balance: {completionResult.newShardCount} diamonds.</p>
           )}
           <p className={styles.statusNote}>Blue will use this submission to calibrate future reviews.</p>
         </div>

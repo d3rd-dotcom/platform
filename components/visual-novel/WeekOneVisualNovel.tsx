@@ -367,11 +367,11 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
   const claimButtonLabel = !ready
     ? 'Loading...'
     : !authenticated
-      ? 'Sign in to claim 50 credits'
+      ? 'Sign in to claim 50 diamonds'
       : isClaiming
         ? 'Claiming...'
         : claimStatus === 'claimed'
-          ? '50 credits awarded'
+          ? '50 diamonds awarded'
           : claimStatus === 'already-claimed'
             ? 'Already completed'
             : 'Complete check-in (+50 credits)';
