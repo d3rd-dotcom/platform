@@ -330,7 +330,7 @@ export default function ProfilePopup({ username, avatarUrl, address, onClose }: 
         {/* Footer */}
         <div className={styles.footer}>
           <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} />
-          <span className={styles.footerText}>{loading ? '—' : data.shardCount{} diamonds</span>
+          <span className={styles.footerText}>{loading ? '—' : data.shardCount} diamonds</span>
         </div>
 
       </div>
