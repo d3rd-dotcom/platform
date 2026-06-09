@@ -7,6 +7,7 @@ import { ConditionalWeb3Provider } from '@/components/web3/ConditionalWeb3Provid
 import TopNavigation from '@/components/top-navigation/TopNavigation';
 import MobileBottomNav from '@/components/mobile-bottom-nav/MobileBottomNav';
 import AcademyAccessGate from '@/components/auth/AcademyAccessGate';
+import MiniAppAutoAuth from '@/components/miniapp/MiniAppAutoAuth';
 
 interface AuthenticatedAppShellProps {
   children: ReactNode;
@@ -21,6 +22,7 @@ export function AuthenticatedAppShell({
     <SidebarStateProvider initialCollapsed={initialCollapsed}>
       <ConditionalWeb3Provider>
         <ThemeProvider>
+          <MiniAppAutoAuth />
           <TopNavigation />
           <AcademyAccessGate>{children}</AcademyAccessGate>
           <MobileBottomNav />

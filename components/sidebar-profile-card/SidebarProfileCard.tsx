@@ -109,9 +109,11 @@ export default function SidebarProfileCard({
         <button
           type="button"
           className={styles.profileArea}
-          onClick={onViewProfile}
-          aria-label="View profile"
-          title="View profile"
+          onClick={() => setMenuOpen(v => !v)}
+          aria-label="Profile options"
+          aria-haspopup="true"
+          aria-expanded={menuOpen}
+          title="Profile options"
         >
           {avatarUrl ? (
             <Image src={avatarUrl} alt={displayName || 'Profile'} width={32} height={32} className={styles.avatar} unoptimized />

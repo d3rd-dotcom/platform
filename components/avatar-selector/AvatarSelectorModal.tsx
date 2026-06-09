@@ -102,7 +102,7 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
     setError(null);
     try {
       const token = await getAccessToken();
-      const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
+      const authHeaders: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
 
       const fd = new FormData();
       fd.append('file', file);

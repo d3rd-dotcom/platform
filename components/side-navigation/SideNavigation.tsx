@@ -22,7 +22,6 @@ const ProMembershipModal = dynamic(() => import('../pro-membership-modal/ProMemb
 const YourAccountsModal = dynamic(() => import('../nav-buttons/YourAccountsModal'), { ssr: false });
 const OnboardingModal = dynamic(() => import('../onboarding/OnboardingModal'), { ssr: false });
 const LootBoxModal = dynamic(() => import('../loot-box/LootBoxModal'), { ssr: false });
-const ProfilePopup = dynamic(() => import('../profile-popup/ProfilePopup'), { ssr: false });
 
 interface NavItem {
   id: string;
@@ -177,7 +176,6 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const [isCollapsed, setIsCollapsed] = useState(initialCollapsed);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [isLootBoxOpen, setIsLootBoxOpen] = useState(false);
-  const [isProfilePopupOpen, setIsProfilePopupOpen] = useState(false);
   const [userLoadComplete, setUserLoadComplete] = useState(false);
   const [hasVipMembershipCard, setHasVipMembershipCard] = useState<boolean | null>(null);
   const { play } = useSound();
@@ -682,7 +680,6 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
         onChangeUsername={handleUsernameClick}
         onConnections={() => setIsYourAccountsModalOpen(true)}
         onSignOut={handleSignOut}
-        onViewProfile={() => setIsProfilePopupOpen(true)}
       />
     );
   };
@@ -830,15 +827,6 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
           isOpen={isOnboardingOpen}
           onClose={() => setIsOnboardingOpen(false)}
           onComplete={handleOnboardingComplete}
-        />
-      )}
-
-      {isProfilePopupOpen && (
-        <ProfilePopup
-          username={username}
-          avatarUrl={avatarUrl}
-          address={address}
-          onClose={() => setIsProfilePopupOpen(false)}
         />
       )}
 
