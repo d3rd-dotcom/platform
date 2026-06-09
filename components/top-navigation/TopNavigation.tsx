@@ -8,6 +8,7 @@ import { usePrivy } from '@privy-io/react-auth';
 import styles from './TopNavigation.module.css';
 import { useSound } from '@/hooks/useSound';
 import { useTheme } from '@/components/theme/ThemeProvider';
+import ColorThemePicker from '@/components/theme/ColorThemePicker';
 import HoverSlideText from '@/components/shared/HoverSlideText';
 
 const NAV_LINKS = [
@@ -123,6 +124,7 @@ const TopNavigation: React.FC = () => {
               <path d="M3 4h2l2.4 11.1a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 1.9-1.4L22 8H7" />
             </svg>
           </Link>
+          <ColorThemePicker />
           <button
             type="button"
             className={styles.themeToggle}

@@ -274,6 +274,64 @@
 }
 
 /* ============================================
+   Color Themes (accessibility accent tinting)
+   Orthogonal to light/dark. Each theme sets an accent hue (--accent-h) and
+   chroma (--accent-c); the shared rules below derive the primary accent and a
+   soft, low-stimulation page wash from them. Calmer, desaturated palettes help
+   light-sensitive and neurodivergent users. Selected via [data-color] on <html>.
+   Placed AFTER the dark block so these (equal-specificity) accent overrides win
+   in both modes; dark-specific tints use [data-theme="dark"][data-color].
+   ============================================ */
+
+[data-color="teal"]     { --accent-h: 195; --accent-c: 0.12; }
+[data-color="sage"]     { --accent-h: 150; --accent-c: 0.10; }
+[data-color="lavender"] { --accent-h: 295; --accent-c: 0.11; }
+[data-color="rose"]     { --accent-h: 12;  --accent-c: 0.12; }
+[data-color="amber"]    { --accent-h: 70;  --accent-c: 0.12; }
+[data-color="neutral"]  { --accent-h: 270; --accent-c: 0.02; }
+
+/* Accent — same in light & dark; overrides :root and the dark block by source order */
+[data-color] {
+  --color-primary: oklch(60% var(--accent-c) var(--accent-h));
+  --color-primary-hover: oklch(52% var(--accent-c) var(--accent-h));
+  --color-primary-muted: oklch(60% var(--accent-c) var(--accent-h) / 0.6);
+  --shadow-primary: 0 4px 12px oklch(60% var(--accent-c) var(--accent-h) / 0.3);
+  --gradient-primary: linear-gradient(
+    135deg,
+    oklch(60% var(--accent-c) var(--accent-h)) 0%,
+    oklch(70% calc(var(--accent-c) * 0.85) var(--accent-h)) 100%
+  );
+
+  /* Soft light-mode page wash — very low chroma so it reads as a tint, not a flood */
+  --color-background: oklch(98.8% calc(var(--accent-c) * 0.16) var(--accent-h));
+  --color-surface-base: var(--color-background);
+  --color-surface-1: oklch(99% calc(var(--accent-c) * 0.14) var(--accent-h));
+  --color-surface-2: oklch(96.5% calc(var(--accent-c) * 0.22) var(--accent-h));
+  --color-surface-3: oklch(93.5% calc(var(--accent-c) * 0.28) var(--accent-h));
+  --color-shell-background: oklch(96.5% calc(var(--accent-c) * 0.22) var(--accent-h) / 0.6);
+  --gradient-futuristic-floss-start: var(--color-background);
+  --gradient-futuristic-floss-end: oklch(95% calc(var(--accent-c) * 0.3) var(--accent-h));
+}
+
+/* Dark-mode tint — higher specificity wins over the light wash above */
+[data-theme="dark"][data-color] {
+  --color-background: oklch(15% calc(var(--accent-c) * 0.18) var(--accent-h));
+  --color-surface-base: var(--color-background);
+  --color-surface-1: oklch(19.5% calc(var(--accent-c) * 0.2) var(--accent-h));
+  --color-surface-2: oklch(24% calc(var(--accent-c) * 0.22) var(--accent-h));
+  --color-surface-3: oklch(29% calc(var(--accent-c) * 0.24) var(--accent-h));
+  --color-shell-background: oklch(12% calc(var(--accent-c) * 0.18) var(--accent-h) / 0.9);
+  --gradient-futuristic-floss-start: var(--color-background);
+  --gradient-futuristic-floss-end: oklch(19% calc(var(--accent-c) * 0.22) var(--accent-h));
+  --gradient-futuristic-floss: linear-gradient(
+    180deg,
+    var(--color-background) 0%,
+    oklch(17.5% calc(var(--accent-c) * 0.2) var(--accent-h)) 54%,
+    oklch(15% calc(var(--accent-c) * 0.16) var(--accent-h)) 100%
+  );
+}
+
+/* ============================================
    Base Styles
    ============================================ */
 
