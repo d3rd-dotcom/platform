@@ -104,12 +104,13 @@ export default function InventoryPanel() {
   const isMember = tier === 'Angel' || tier === 'Staff';
   const tierLabel =
     tier === 'Staff' ? 'Staff / VIP' : tier === 'Angel' ? 'Academic Angel' : 'Guest';
+  const tierEmoji = tier === 'Staff' ? '👑' : tier === 'Angel' ? '😇' : '🧑';
 
   const slots = [
     { label: 'Diamonds',      icon: '/icons/ui-shard.svg',      value: credits, tooltip: 'Earned through quests, lessons, and check-ins.' },
     { label: 'Cakes',        icon: '/icons/cake.webp',          value: cakes,   tooltip: 'Awarded for participation. Used for governance.', unoptimized: true },
     { label: 'USDC',         icon: '/icons/usdc-logo.svg',      value: usdc,    tooltip: 'Quest payouts sent to your connected wallet.', unoptimized: true },
-    { label: 'Certificates', icon: '/icons/ui-seal.svg',        value: '0',     tooltip: 'Awarded for completing Academy milestones.' },
+    { label: 'Certificates', icon: '/icons/badge-academy.png',  value: '0',     tooltip: 'Awarded for completing Academy milestones.', unoptimized: true },
     { label: 'Badges',       icon: '/icons/badge-academy.png',  value: '0',     tooltip: 'Earned for special achievements.', unoptimized: true },
     { label: 'Awards',       icon: '/icons/rewards.svg',        value: '0',     tooltip: 'Granted by staff for outstanding participation.' },
   ];
@@ -145,7 +146,7 @@ export default function InventoryPanel() {
       </div>
 
       <div className={`${styles.membershipSlot} ${isMember ? styles.membershipFilled : ''}`}>
-        <Image src="/icons/governance.svg" alt="" width={16} height={16} className={styles.membershipIcon} />
+        <span className={styles.membershipIcon} role="img" aria-label={tierLabel}>{tierEmoji}</span>
         <div className={styles.membershipInfo}>
           <span className={styles.membershipMeta}>Membership</span>
           <span className={`${styles.membershipTier} ${isMember ? styles.membershipTierActive : ''}`}>

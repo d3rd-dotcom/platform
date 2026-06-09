@@ -124,8 +124,9 @@
 }
 
 .membershipIcon {
-  opacity: 0.55;
   flex-shrink: 0;
+  font-size: 16px;
+  line-height: 1;
 }
 
 .membershipInfo {

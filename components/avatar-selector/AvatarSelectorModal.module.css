@@ -246,6 +246,31 @@
   cursor: not-allowed;
 }
 
+.uploadButton {
+  display: block;
+  margin: 12px auto 0;
+  padding: 10px 22px;
+  border-radius: 10px;
+  font-family: var(--font-button);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--color-primary);
+  color: #fff;
+  border: 2px solid var(--color-primary);
+}
+
+.uploadButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(81, 104, 255, 0.25);
+}
+
+.uploadButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .creditsNote {
   font-family: var(--font-primary);
   font-size: 12px;

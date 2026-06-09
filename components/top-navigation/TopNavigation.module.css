@@ -72,7 +72,7 @@
 }
 
 .menuButton:hover {
-  background: rgba(81, 104, 255, 0.08);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
   border-color: var(--color-primary);
   color: var(--color-primary);
 }
@@ -115,17 +115,17 @@
 }
 
 .navLink:hover {
-  background: rgba(81, 104, 255, 0.1);
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
   color: var(--color-primary);
 }
 
 .navLinkActive {
-  background: #5168FF;
+  background: var(--color-primary);
   color: #ffffff;
 }
 
 .navLinkActive:hover {
-  background: #5168FF;
+  background: var(--color-primary);
   color: #ffffff;
 }
 
@@ -177,7 +177,7 @@
 }
 
 .loginButton:hover {
-  background: rgba(81, 104, 255, 0.1);
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
   border-color: var(--color-primary-hover);
   color: var(--color-primary-hover);
 }
@@ -238,7 +238,7 @@
 .shopLink:hover,
 .shopLinkActive,
 .themeToggle:hover {
-  background: rgba(81, 104, 255, 0.08);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
   border-color: var(--color-primary);
   color: var(--color-primary);
 }
@@ -259,12 +259,12 @@
 }
 
 :global([data-theme="dark"]) .navLinkActive {
-  background: #5168FF;
+  background: var(--color-primary);
   color: #ffffff;
 }
 
 :global([data-theme="dark"]) .navLinkActive:hover {
-  background: #5168FF;
+  background: var(--color-primary);
   color: #ffffff;
 }
 
