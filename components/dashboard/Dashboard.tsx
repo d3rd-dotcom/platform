@@ -66,7 +66,7 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
       {/* ── Main content area ── */}
       <main className={styles.mainArea} />
 
-      {/* ── Side: morning note, leaderboard, membership ── */}
+      {/* ── Side: leaderboard, morning note, membership ── */}
       <aside className={styles.sideStack}>
         <div className={styles.eventsHeader}>
           <span className={styles.cardLabel}>Your progress</span>
@@ -74,16 +74,6 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
             Keep your streak and see where you stand.
           </p>
         </div>
-
-        <div className={styles.morningPagesShell} data-tour="daily-note">
-          <div className={styles.morningPagesGradient} aria-hidden="true" />
-          <DailyNotes
-            enablePersistence={enableMorningPagesPersistence}
-            compact
-          />
-        </div>
-
-        <InventoryPanel />
 
         <button
           type="button"
@@ -119,6 +109,16 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
             </ul>
           )}
         </button>
+
+        <div className={styles.morningPagesShell} data-tour="daily-note">
+          <div className={styles.morningPagesGradient} aria-hidden="true" />
+          <DailyNotes
+            enablePersistence={enableMorningPagesPersistence}
+            compact
+          />
+        </div>
+
+        <InventoryPanel />
 
         <button
           type="button"
