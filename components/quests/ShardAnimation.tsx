@@ -59,7 +59,7 @@ export const ShardAnimation: React.FC<ShardAnimationProps> = ({ shards, onComple
       <div className={styles.shardBubble}>
         <div className={styles.shardIconContainer}>
           <Image
-            src="/icons/ui-shard.svg"
+            src="/icons/ui-diamond.svg"
             alt="Diamonds"
             width={48}
             height={48}

@@ -59,7 +59,7 @@ export const SoulGemDisplay: React.FC<SoulGemDisplayProps> = ({
   return (
     <div className={styles.container}>
       <div className={styles.gemIcon}>
-        <Image src="/icons/ui-shard.svg" alt="Diamonds" width={24} height={24} unoptimized />
+        <Image src="/icons/ui-diamond.svg" alt="Diamonds" width={24} height={24} unoptimized />
       </div>
       <span className={styles.amount}>{formatAmount(amount)}</span>
       {showLabel && <span className={styles.label}>{label || 'Diamonds'}</span>}

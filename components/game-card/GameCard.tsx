@@ -19,7 +19,7 @@ const GameCard: React.FC<GameCardProps> = ({
   progressCurrent,
   progressTotal,
   onOpenQuest,
-  shardIcon = '/icons/ui-shard.svg',
+  shardIcon = '/icons/ui-diamond.svg',
 }) => {
   return (
     <button

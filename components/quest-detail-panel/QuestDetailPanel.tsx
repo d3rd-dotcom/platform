@@ -517,7 +517,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
           <span className={styles.rewardsLabel}>Rewards</span>
           <ul className={styles.rewardsList}>
             <li className={styles.rewardItem}>
-              <Image src="/icons/ui-shard.svg" alt="" width={18} height={18} />
+              <Image src="/icons/ui-diamond.svg" alt="" width={18} height={18} />
               <span className={styles.rewardItemValue}>{quest.points}</span>
               <span className={styles.rewardItemName}>Diamonds</span>
             </li>

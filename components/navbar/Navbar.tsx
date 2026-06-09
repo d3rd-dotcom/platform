@@ -381,7 +381,7 @@ const Navbar: React.FC = () => {
                       {/* Mobile Credits Counter in Dropdown */}
                       <div className={styles.mobileShardsInDropdown}>
                         <Image
-                          src="/icons/ui-shard.svg"
+                          src="/icons/ui-diamond.svg"
                           alt="Daemon"
                           width={20}
                           height={20}

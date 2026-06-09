@@ -91,7 +91,7 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
           onClick={() => setShowLeaderboard(true)}
         >
           <div className={styles.leaderHead}>
-            <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} />
+            <Image src="/icons/ui-diamond.svg" alt="" width={14} height={14} />
             <span className={styles.leaderTitle}>Leaderboard</span>
           </div>
           {leaderboard.length === 0 ? (
@@ -173,7 +173,7 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
               &times;
             </button>
             <div className={styles.leaderModalHeader}>
-              <Image src="/icons/ui-shard.svg" alt="" width={28} height={28} />
+              <Image src="/icons/ui-diamond.svg" alt="" width={28} height={28} />
               <div>
                 <strong className={styles.leaderModalTitle}>Leaderboard</strong>
                 <span className={styles.leaderModalSub}>Top contributors</span>

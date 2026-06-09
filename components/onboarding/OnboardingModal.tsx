@@ -522,7 +522,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
           <div className={styles.stepContent}>
             <div className={styles.shardHero}>
               <Image
-                src="/icons/ui-shard.svg"
+                src="/icons/ui-diamond.svg"
                 alt="Diamonds"
                 width={88}
                 height={88}

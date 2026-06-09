@@ -329,7 +329,7 @@ export default function ProfilePopup({ username, avatarUrl, address, onClose }: 
 
         {/* Footer */}
         <div className={styles.footer}>
-          <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} />
+          <Image src="/icons/ui-diamond.svg" alt="" width={14} height={14} />
           <span className={styles.footerText}>{loading ? '—' : data.shardCount} diamonds</span>
         </div>
 
@@ -388,7 +388,7 @@ export default function ProfilePopup({ username, avatarUrl, address, onClose }: 
             </p>
             <div className={styles.rereadCostRow}>
               <span className={styles.rereadCostBadge}>
-                <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} />
+                <Image src="/icons/ui-diamond.svg" alt="" width={14} height={14} />
                 {REREAD_SHARD_COST} diamonds
               </span>
               <span className={styles.rereadBalance}>{data.shardCount} available</span>

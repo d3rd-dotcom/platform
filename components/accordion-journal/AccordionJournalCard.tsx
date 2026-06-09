@@ -1004,7 +1004,7 @@ export default function AccordionJournalCard({
         <div className={styles.cardFaceRight}>
           {!isSealed && !isLocked && (
             <span className={styles.shardBadge} title="Earn 700 diamonds for sealing this week">
-              <Image src="/icons/ui-shard.svg" alt="diamonds" width={14} height={14} />
+              <Image src="/icons/ui-diamond.svg" alt="diamonds" width={14} height={14} />
               +700
             </span>
           )}

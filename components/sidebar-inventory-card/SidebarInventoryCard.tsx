@@ -102,7 +102,7 @@ export default function SidebarInventoryCard({ shardCount, address, isCollapsed,
   const creditsRow = (
     <div className={styles.balanceRow}>
       <div className={styles.tokenLeft}>
-        <Image src="/icons/ui-shard.svg" alt="" width={24} height={24} className={styles.creditsIcon} />
+        <Image src="/icons/ui-diamond.svg" alt="" width={24} height={24} className={styles.creditsIcon} />
         <span className={styles.tokenName}>Diamonds</span>
       </div>
       <span className={styles.balanceVal}>{shardDisplay}</span>
@@ -134,7 +134,7 @@ export default function SidebarInventoryCard({ shardCount, address, isCollapsed,
           aria-expanded={isGuideOpen}
           aria-label={`Diamonds balance ${shardDisplay}. Learn about balances and rewards.`}
         >
-          <Image src="/icons/ui-shard.svg" alt="" width={18} height={18} className={styles.shardIconSm} />
+          <Image src="/icons/ui-diamond.svg" alt="" width={18} height={18} className={styles.shardIconSm} />
           <span className={styles.shardCountSm}>{shardDisplay}</span>
         </button>
         <BalanceGuideModal

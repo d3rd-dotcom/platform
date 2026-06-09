@@ -117,7 +117,7 @@ export default function SurveyController({
           <h1 className={styles.heroTitle}>{userName}</h1>
         </div>
         <span className={styles.heroVersion}>
-          <Image src="/icons/ui-shard.svg" alt="" width={10} height={10} className={styles.shardIcon} />
+          <Image src="/icons/ui-diamond.svg" alt="" width={10} height={10} className={styles.shardIcon} />
           {version}
         </span>
       </section>
@@ -195,7 +195,7 @@ export default function SurveyController({
           <div className={styles.row}>
             <span className={styles.eyebrow}>Test scale</span>
             <div className={styles.shardBadge} aria-label={`${shardReward} diamonds earned for this test`}>
-              <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} className={styles.shardIcon} />
+              <Image src="/icons/ui-diamond.svg" alt="" width={14} height={14} className={styles.shardIcon} />
               +{shardReward} diamonds
             </div>
           </div>

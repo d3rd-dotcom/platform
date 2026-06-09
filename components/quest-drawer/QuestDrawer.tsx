@@ -408,7 +408,7 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
           <section className={styles.heroPanel} data-tone={kindMeta.tone}>
             <div className={styles.heroIcon}>
               <Image
-                src={quest.icon || '/icons/ui-shard.svg'}
+                src={quest.icon || '/icons/ui-diamond.svg'}
                 alt=""
                 width={40}
                 height={40}
@@ -423,7 +423,7 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
 
             {usdcReward === 0 && (
               <div className={styles.rewardChip}>
-                <Image src="/icons/ui-shard.svg" alt="" width={16} height={16} />
+                <Image src="/icons/ui-diamond.svg" alt="" width={16} height={16} />
                 <span className={styles.rewardValue}>{quest.points}</span>
                 <span className={styles.rewardLabel}>diamonds</span>
               </div>

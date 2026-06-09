@@ -296,7 +296,7 @@ export default function TopNavProfileButton() {
           <div className={styles.inventory}>
             <div className={styles.shardsRow}>
               <div className={styles.shardsLeft}>
-                <Image src="/icons/ui-shard.svg" alt="" width={28} height={28} className={styles.shardsIcon} />
+                <Image src="/icons/ui-diamond.svg" alt="" width={28} height={28} className={styles.shardsIcon} />
                 <span className={styles.shardsLabel}>Diamonds</span>
               </div>
               <span className={styles.shardsValue}>{shardCount !== null ? shardCount : '—'}</span>

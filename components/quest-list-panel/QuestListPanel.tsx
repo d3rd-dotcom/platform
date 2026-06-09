@@ -97,7 +97,7 @@ export default function QuestListPanel({
         <div className={styles.headerRow}>
           <span className={styles.eyebrow}>Quest board</span>
           <span className={styles.versionBadge}>
-            <Image src="/icons/ui-shard.svg" alt="" width={9} height={9} />
+            <Image src="/icons/ui-diamond.svg" alt="" width={9} height={9} />
             MWA
           </span>
         </div>
@@ -196,7 +196,7 @@ export default function QuestListPanel({
                     </span>
                   ) : (
                     <span className={styles.questBadge} style={{ '--bc': color } as React.CSSProperties}>
-                      <Image src="/icons/ui-shard.svg" alt="" width={9} height={9} />
+                      <Image src="/icons/ui-diamond.svg" alt="" width={9} height={9} />
                       {quest.points}
                     </span>
                   )}

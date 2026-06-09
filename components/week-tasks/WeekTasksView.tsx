@@ -697,7 +697,7 @@ export default function WeekTasksView({
                       <>
                         Complete Task
                         <span className={styles.markDoneCredits}>
-                          <Image src="/icons/ui-shard.svg" alt="" width={12} height={12} />
+                          <Image src="/icons/ui-diamond.svg" alt="" width={12} height={12} />
                           +50 diamonds
                         </span>
                       </>

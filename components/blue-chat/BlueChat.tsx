@@ -1559,7 +1559,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       {shardUpsell && (
         <div className={styles.shardUpsell} role="dialog" aria-modal="true" aria-label={shardUpsellTitle}>
           <div className={styles.shardUpsellIconWrap} aria-hidden="true">
-            <Image src="/icons/ui-shard.svg" alt="" width={24} height={24} className={styles.shardUpsellIcon} />
+            <Image src="/icons/ui-diamond.svg" alt="" width={24} height={24} className={styles.shardUpsellIcon} />
           </div>
           <div className={styles.shardUpsellCopy}>
             <span className={styles.shardUpsellTitle}>{shardUpsellTitle}</span>
@@ -1647,7 +1647,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       <div className={styles.quickActions}>
         {shardCount !== null && (
           <div className={styles.shardCounter}>
-            <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} className={styles.shardCounterIcon} />
+            <Image src="/icons/ui-diamond.svg" alt="" width={14} height={14} className={styles.shardCounterIcon} />
             <span>{shardCount}</span>
           </div>
         )}

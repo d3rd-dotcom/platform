@@ -546,7 +546,7 @@ export default function ProfilePage() {
                 </p>
                 <div className={styles.rereadCostRow}>
                   <span className={styles.rereadCostBadge}>
-                    <Image src="/icons/ui-shard.svg" alt="" width={16} height={16} />
+                    <Image src="/icons/ui-diamond.svg" alt="" width={16} height={16} />
                     {REREAD_SHARD_COST} diamonds
                   </span>
                   <span className={styles.rereadBalance}>

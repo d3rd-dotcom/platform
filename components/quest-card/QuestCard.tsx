@@ -82,7 +82,7 @@ const QuestCard: React.FC<QuestCardProps> = ({
             </span>
           ) : (
             <span className={styles.points}>
-              <Image src="/icons/ui-shard.svg" alt="" width={13} height={13} />
+              <Image src="/icons/ui-diamond.svg" alt="" width={13} height={13} />
               <span className={styles.pointsValue}>{points}</span>
             </span>
           )}

@@ -150,7 +150,7 @@ export default function OrbitalDiagram() {
         </circle>
 
         <image
-          href="/icons/ui-shard.svg"
+          href="/icons/ui-diamond.svg"
           x={CENTER - HUB_R * 0.62}
           y={CENTER - HUB_R * 0.62}
           width={HUB_R * 1.24}
