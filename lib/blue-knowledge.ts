@@ -71,6 +71,101 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
       'It is the member-facing tier for participating in treasury governance and community reward flows.',
   },
   {
+    id: 'business-positioning',
+    title: 'MWA as a business — positioning and value proposition',
+    routes: ['*'],
+    keywords: [
+      'business', 'positioning', 'value proposition', 'value prop', 'whitepaper',
+      'dmhi', 'digital mental health', 'third space', 'what does mwa do',
+      'pitch', 'why mwa', 'differentiator', 'competition', 'market fit',
+    ],
+    body:
+      'As a business, MWA is a community-based digital mental health platform — formally a Digital Mental Health Intervention (DMHI). ' +
+      'Its value proposition is a "third space" that combines peer-to-peer support (shown to reduce isolation and stigma) with structured, ' +
+      'gamified self-reflection grounded in psychological theory like Self-Determination Theory (competence, autonomy, relatedness). ' +
+      'The core design tension MWA manages is healthcare versus entertainment: serious enough to help, engaging enough that people come back. ' +
+      'MWA is wellness and education, not clinical care — it supplements professional care, never replaces it.',
+  },
+  {
+    id: 'business-model',
+    title: 'MWA business model and revenue',
+    routes: ['*', '/shop'],
+    keywords: [
+      'business model', 'revenue', 'monetization', 'monetisation', 'freemium',
+      'subscription', 'b2b', 'institutional', 'partnership', 'how does mwa make money',
+      'pricing', 'sustainability', 'investors',
+    ],
+    body:
+      'MWA runs a freemium model: community features and most activities are free, while advanced tools are gated behind paid tiers — ' +
+      'the one-time $89.90 VIP Membership (lifetime, on-chain) and capped Academic Angel and Staff membership cards. ' +
+      'A second track is B2B and institutional: partnering with universities and mental health organizations to offer MWA tools ' +
+      'as a supplement to traditional care. The Community Treasury closes the loop — most profit is reinvested into the network ' +
+      'through quests, USDC rewards, and community programs rather than extracted.',
+  },
+  {
+    id: 'business-roadmap',
+    title: 'MWA development roadmap',
+    routes: ['*'],
+    keywords: [
+      'roadmap', 'phases', 'plan', 'future', 'next', 'co-design', 'beta',
+      'pilot', 'scaling', 'where is mwa going', 'vision', 'milestones',
+    ],
+    body:
+      'MWA follows an iterative, user-centered roadmap in four phases. Phase 1, foundation and co-design: build game-like activities ' +
+      'with a small cohort of users, with journaling and affirmation prompts grounded in psychological theory. ' +
+      'Phase 2, pilot and validation: closed beta measuring quality of engagement — does journaling actually improve emotional awareness — not just raw usage. ' +
+      'Phase 3, community scaling: grow peer-to-peer features with active moderation against toxicity. ' +
+      'Phase 4, research integration: tools for users to document personal insights and community findings, turning members into contributors.',
+  },
+  {
+    id: 'business-kpis',
+    title: 'How MWA measures success',
+    routes: ['*'],
+    keywords: [
+      'kpi', 'kpis', 'metrics', 'success', 'measure', 'measurement', 'dau', 'mau',
+      'wemwbs', 'well-being scale', 'engagement metrics', 'outcomes', 'analytics',
+    ],
+    body:
+      'MWA balances engagement metrics with well-being outcomes. Engagement: daily and monthly active users, session frequency and duration. ' +
+      'Well-being: scores on the Warwick-Edinburgh Mental Well-being Scale (WEMWBS, a validated positive mental health measure) ' +
+      'and improvements in emotional awareness from journaling and reflection activities. ' +
+      'Community health: qualitative sentiment and supportiveness of peer interactions. ' +
+      'Engagement without well-being improvement is treated as a failure signal, not a success.',
+  },
+  {
+    id: 'business-ethics-guardrails',
+    title: 'Ethics, safety guardrails, and what MWA is not',
+    routes: ['*'],
+    keywords: [
+      'ethics', 'ethical', 'guardrails', 'responsible', 'clinical', 'diagnosis',
+      'treatment', 'therapy', 'therapist', 'medical', 'regulation', 'compliance',
+      'addiction', 'over-engagement', 'is mwa therapy', 'crisis',
+    ],
+    body:
+      'MWA practices responsible innovation: transparency about how AI is used, per-user data privacy and encryption, explicit opt-in for any study, ' +
+      'and gamification calibrated so it motivates without driving over-engagement or behavioral addiction. ' +
+      'Hard line: MWA does not provide clinical diagnosis or treatment — it has no medical oversight role and makes no clinical claims. ' +
+      'Digital tools here are designed to supplement professional care, not replace it. ' +
+      'If someone needs clinical help or is in crisis, Blue should encourage them to reach a licensed professional or local crisis resources.',
+  },
+  {
+    id: 'business-evidence-base',
+    title: 'The research behind MWA features',
+    routes: ['*', '/research', '/course'],
+    keywords: [
+      'evidence', 'research basis', 'science behind', 'studies', 'literature',
+      'why journaling', 'why gamification', 'does it work', 'peer support research',
+      'parasocial', 'self-determination',
+    ],
+    body:
+      'MWA features map to published research. Journaling and morning pages: digital journaling, especially AI-personalized, improves emotional awareness ' +
+      'and goal pursuit, and positive self-reflection is more adaptive than rumination. Gamification (credits, streaks, seals): increases cognitive ' +
+      'engagement and interest when carefully calibrated for vulnerable users. Peer community: online peer-to-peer networks challenge stigma, ' +
+      'increase empowerment, and provide hope. Blue as a companion: parasocial relationships function as legitimate coping resources, ' +
+      'providing emotional support and reducing stigma, especially when interpersonal support is limited. ' +
+      'Motivation design follows Self-Determination Theory: competence, autonomy, and relatedness.',
+  },
+  {
     id: 'page-home',
     title: 'Home (dashboard)',
     routes: ['/home'],
