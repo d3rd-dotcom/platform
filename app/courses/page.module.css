@@ -75,8 +75,8 @@
 
 /* Personal course — no artwork, branded gradient instead of a photo */
 .personalImageWrap {
-  background-image: linear-gradient(135deg, #5168ff 0%, #9b7ed9 55%, #e85d3a 120%);
-  background-color: #5168ff;
+  background-image: linear-gradient(135deg, var(--color-primary) 0%, #9b7ed9 55%, #e85d3a 120%);
+  background-color: var(--color-primary);
 }
 
 .coursePersonalTag {
@@ -84,7 +84,7 @@
   font-size: 0.625rem;
   font-weight: 700;
   letter-spacing: 0.04em;
-  color: #5168ff;
+  color: var(--color-primary);
   width: fit-content;
 }
 
@@ -157,9 +157,9 @@
   font-family: var(--font-body, sans-serif);
   font-size: 0.6875rem;
   font-weight: 600;
-  color: #5168ff;
-  background: color-mix(in srgb, #5168ff 8%, #ffffff);
-  border: 1px solid color-mix(in srgb, #5168ff 22%, rgba(26, 29, 51, 0.06));
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 8%, #ffffff);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, rgba(26, 29, 51, 0.06));
   border-radius: 6px;
   padding: 3px 8px;
   white-space: nowrap;
@@ -169,8 +169,8 @@
 
 :global([data-theme="dark"]) .courseEndBadge {
   color: #8f9bff;
-  background: color-mix(in srgb, #5168ff 14%, transparent);
-  border-color: color-mix(in srgb, #5168ff 28%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 28%, transparent);
 }
 
 .courseStart {
@@ -189,7 +189,7 @@
   gap: 14px;
   border-radius: 16px;
   background: var(--color-surface-2);
-  border: 1.5px dashed rgba(81, 104, 255, 0.28);
+  border: 1.5px dashed color-mix(in oklch, var(--color-primary) 28%, transparent);
   padding: 32px;
   cursor: pointer;
   text-align: center;
@@ -199,8 +199,8 @@
 }
 
 .buildCard:hover {
-  border-color: rgba(81, 104, 255, 0.7);
-  background: rgba(81, 104, 255, 0.04);
+  border-color: color-mix(in oklch, var(--color-primary) 70%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 4%, transparent);
   transform: translateY(-2px);
   color: var(--color-primary);
 }

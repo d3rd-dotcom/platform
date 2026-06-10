@@ -9,7 +9,7 @@
   width: var(--dot-size, 6px);
   height: var(--dot-size, 6px);
   border-radius: 50%;
-  background: var(--dot-color, var(--color-primary, #5168ff));
+  background: var(--dot-color, var(--color-primary));
   transition: opacity 0.08s linear;
   flex-shrink: 0;
 }

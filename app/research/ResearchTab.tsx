@@ -842,7 +842,7 @@ export default function ResearchTab() {
                         onChange={e => setCsvText(e.target.value)}
                         placeholder="Paste CSV here or drag & drop a .csv file&#10;&#10;name,age,group,score&#10;Alice,28,A,82&#10;Bob,35,B,67"
                         rows={6}
-                        style={dragging ? { borderColor: '#5168FF', background: 'rgba(81,104,255,0.05)' } : undefined}
+                        style={dragging ? { borderColor: 'var(--color-primary)', background: 'color-mix(in oklch, var(--color-primary) 5%, transparent)' } : undefined}
                       />
                     </div>
                     <div className={styles.buttonRow}>

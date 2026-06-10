@@ -71,7 +71,7 @@
 
 :global(:root:not([data-theme="dark"])) .content {
   background: rgba(247, 249, 255, 0.7);
-  border-color: rgba(81, 104, 255, 0.12);
+  border-color: color-mix(in oklch, var(--color-primary) 12%, transparent);
   box-shadow:
     0 18px 50px rgba(74, 93, 160, 0.14),
     inset 0 1px 0 rgba(255, 255, 255, 0.75);

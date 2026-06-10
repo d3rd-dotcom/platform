@@ -37,7 +37,7 @@
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #5168ff;
+  color: var(--color-primary);
 }
 
 /* ── Events grid ── */
@@ -112,7 +112,7 @@
   font-size: 0.74rem;
   font-weight: 700;
   letter-spacing: 0.01em;
-  color: #5168ff;
+  color: var(--color-primary);
 }
 
 .eventTitle {
@@ -158,7 +158,7 @@
   font-size: 0.78rem;
   font-weight: 700;
   color: #ffffff;
-  background: #5168ff;
+  background: var(--color-primary);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -171,8 +171,8 @@
 }
 
 .eventBtn:disabled {
-  background: rgba(81, 104, 255, 0.16);
-  color: #5168ff;
+  background: color-mix(in oklch, var(--color-primary) 16%, transparent);
+  color: var(--color-primary);
   cursor: default;
 }
 
@@ -218,7 +218,7 @@
 
 .eventEmailInput:focus {
   outline: none;
-  border-color: #5168ff;
+  border-color: var(--color-primary);
 }
 
 .eventEmailError {
@@ -234,7 +234,7 @@
   text-align: left;
   font: inherit;
   background: #ffffff;
-  border: 1px solid rgba(81, 104, 255, 0.18);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
   border-radius: 18px;
   box-shadow: 0 16px 34px rgba(26, 29, 51, 0.08);
   padding: 16px 16px 14px;
@@ -244,8 +244,8 @@
 
 .leaderboardCard:hover {
   transform: translateY(-1px);
-  border-color: rgba(81, 104, 255, 0.32);
-  box-shadow: 0 18px 38px rgba(81, 104, 255, 0.14);
+  border-color: color-mix(in oklch, var(--color-primary) 32%, transparent);
+  box-shadow: 0 18px 38px color-mix(in oklch, var(--color-primary) 14%, transparent);
 }
 
 /* ── Leaderboard modal ── */
@@ -338,7 +338,7 @@
 }
 
 .leagueRow:hover {
-  background: rgba(81, 104, 255, 0.06);
+  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
 }
 
 .leagueRank {
@@ -374,7 +374,7 @@
   font-family: var(--font-mono);
   font-size: 0.8rem;
   font-weight: 600;
-  color: #5168ff;
+  color: var(--color-primary);
 }
 
 @keyframes leaderModalFade {
@@ -400,7 +400,7 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #5168ff;
+  color: var(--color-primary);
 }
 
 .leaderList {
@@ -421,7 +421,7 @@
 }
 
 .leaderRow:first-child {
-  background: rgba(81, 104, 255, 0.07);
+  background: color-mix(in oklch, var(--color-primary) 7%, transparent);
 }
 
 .leaderRank {
@@ -434,7 +434,7 @@
 }
 
 .leaderRow:first-child .leaderRank {
-  color: #5168ff;
+  color: var(--color-primary);
 }
 
 .leaderAvatar {
@@ -466,7 +466,7 @@
   flex-shrink: 0;
   font-size: 0.82rem;
   font-weight: 700;
-  color: #5168ff;
+  color: var(--color-primary);
 }
 
 .leaderEmpty {
@@ -486,9 +486,9 @@
   cursor: pointer;
   padding: 16px 16px 14px;
   border-radius: 18px;
-  border: 1px solid rgba(81, 104, 255, 0.5);
-  background: linear-gradient(150deg, #5168ff 0%, #6a52d9 100%);
-  box-shadow: 0 16px 34px rgba(81, 104, 255, 0.28);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 50%, transparent);
+  background: linear-gradient(150deg, var(--color-primary) 0%, #6a52d9 100%);
+  box-shadow: 0 16px 34px color-mix(in oklch, var(--color-primary) 28%, transparent);
   -webkit-tap-highlight-color: transparent;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   position: relative;
@@ -510,7 +510,7 @@
 
 .vipCard:hover {
   transform: translateY(-2px);
-  box-shadow: 0 20px 40px rgba(81, 104, 255, 0.36);
+  box-shadow: 0 20px 40px color-mix(in oklch, var(--color-primary) 36%, transparent);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -555,7 +555,7 @@
   padding: 7px 13px;
   border-radius: 999px;
   background: #ffffff;
-  color: #5168ff;
+  color: var(--color-primary);
   font-size: 0.82rem;
   font-weight: 800;
 }
@@ -569,7 +569,7 @@
 /* ── Dark theme ── */
 :global([data-theme="dark"]) .leaderboardCard {
   background: #15172a;
-  border-color: rgba(81, 104, 255, 0.28);
+  border-color: color-mix(in oklch, var(--color-primary) 28%, transparent);
   box-shadow: 0 18px 44px rgba(0, 0, 0, 0.4);
 }
 
@@ -578,7 +578,7 @@
 }
 
 :global([data-theme="dark"]) .leaderRow:first-child {
-  background: rgba(81, 104, 255, 0.16);
+  background: color-mix(in oklch, var(--color-primary) 16%, transparent);
 }
 
 :global([data-theme="dark"]) .vipCard {

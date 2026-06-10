@@ -22,7 +22,7 @@
 
 .signInButton:hover:not(:disabled) {
   background-color: #f8f9fa;
-  box-shadow: 0 4px 12px rgba(81, 104, 255, 0.3);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 30%, transparent);
   transform: translateY(-2px);
 }
 

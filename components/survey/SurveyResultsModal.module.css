@@ -22,7 +22,7 @@
   flex-direction: column;
   background: var(--color-background);
   border-radius: var(--radius-xl);
-  border: 1px solid rgba(81, 104, 255, 0.3);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
   box-shadow: var(--shadow-primary);
   overflow: hidden;
   opacity: 0;
@@ -57,7 +57,7 @@
 .resultsModalHeader {
   flex-shrink: 0;
   padding: var(--space-4);
-  border-bottom: 1px solid rgba(81, 104, 255, 0.1);
+  border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 10%, transparent);
   background: var(--color-background);
 }
 
@@ -119,8 +119,8 @@
   margin-left: auto;
   margin-right: auto;
   border-radius: var(--radius-full);
-  background: linear-gradient(135deg, rgba(81, 104, 255, 0.2) 0%, rgba(80, 89, 155, 0.15) 100%);
-  border: 3px solid rgba(81, 104, 255, 0.4);
+  background: linear-gradient(135deg, color-mix(in oklch, var(--color-primary) 20%, transparent) 0%, rgba(80, 89, 155, 0.15) 100%);
+  border: 3px solid color-mix(in oklch, var(--color-primary) 40%, transparent);
   align-items: center;
   justify-content: center;
   box-shadow: var(--shadow-primary);
@@ -169,8 +169,8 @@
 .resultsModalAnalysis {
   margin-bottom: var(--space-6);
   padding: var(--space-4);
-  background: rgba(81, 104, 255, 0.05);
-  border: 1px solid rgba(81, 104, 255, 0.15);
+  background: color-mix(in oklch, var(--color-primary) 5%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 15%, transparent);
   border-radius: var(--radius-lg);
   opacity: 0;
   transform: translateY(20px);
@@ -221,8 +221,8 @@
 
 .resultsModalInsightItem {
   padding: var(--space-3);
-  background: rgba(81, 104, 255, 0.05);
-  border: 1px solid rgba(81, 104, 255, 0.15);
+  background: color-mix(in oklch, var(--color-primary) 5%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 15%, transparent);
   border-radius: var(--radius-md);
 }
 
@@ -275,7 +275,7 @@
 .dimensionTrack {
   width: 100%;
   height: 6px;
-  background: rgba(81, 104, 255, 0.12);
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
   border-radius: var(--radius-full);
   overflow: hidden;
   margin-bottom: var(--space-1);
@@ -321,8 +321,8 @@
   gap: 12px;
   align-items: center;
   padding: 12px;
-  background: rgba(81, 104, 255, 0.04);
-  border: 1px solid rgba(81, 104, 255, 0.14);
+  background: color-mix(in oklch, var(--color-primary) 4%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 14%, transparent);
   border-radius: var(--radius-md);
 }
 
@@ -333,7 +333,7 @@
   width: 34px;
   height: 34px;
   border-radius: var(--radius-full);
-  background: rgba(81, 104, 255, 0.12);
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
   color: var(--color-primary);
   font-family: var(--font-button);
   font-size: var(--font-size-sm);
@@ -375,7 +375,7 @@
 .resultsModalFooter {
   flex-shrink: 0;
   padding: var(--space-4);
-  border-top: 1px solid rgba(81, 104, 255, 0.1);
+  border-top: 1px solid color-mix(in oklch, var(--color-primary) 10%, transparent);
   background: var(--color-background);
   opacity: 0;
   transform: translateY(20px);
@@ -396,8 +396,8 @@
   font-weight: var(--font-weight-medium);
   text-transform: uppercase;
   letter-spacing: var(--letter-spacing-wider, 0.05em);
-  background: rgba(81, 104, 255, 0.15);
-  border: 1px solid rgba(81, 104, 255, 0.3);
+  background: color-mix(in oklch, var(--color-primary) 15%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
   border-radius: var(--radius-md);
   color: var(--color-primary);
   cursor: pointer;
@@ -405,7 +405,7 @@
 }
 
 .resultsModalCloseButton:hover {
-  background: rgba(81, 104, 255, 0.25);
+  background: color-mix(in oklch, var(--color-primary) 25%, transparent);
   border-color: var(--color-primary);
   transform: translateY(-1px);
   box-shadow: var(--shadow-primary);
@@ -555,17 +555,17 @@
 
 :global([data-theme="dark"]) .resultsModalSuccessIcon,
 :global([data-theme="dark"]) .resultsModalStrengthRank {
-  background: rgba(81, 104, 255, 0.18);
+  background: color-mix(in oklch, var(--color-primary) 18%, transparent);
   border-color: rgba(139, 149, 255, 0.36);
 }
 
 :global([data-theme="dark"]) .resultsModalCloseButton {
-  background: rgba(81, 104, 255, 0.18);
+  background: color-mix(in oklch, var(--color-primary) 18%, transparent);
   border-color: rgba(139, 149, 255, 0.36);
 }
 
 :global([data-theme="dark"]) .resultsModalCloseButton:hover {
-  background: rgba(81, 104, 255, 0.28);
+  background: color-mix(in oklch, var(--color-primary) 28%, transparent);
   border-color: rgba(139, 149, 255, 0.58);
 }
 

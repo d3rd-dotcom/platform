@@ -17,7 +17,7 @@
   padding: 40px 32px 32px;
   border-radius: 20px;
   background: linear-gradient(180deg, #161726 0%, #0e0f1a 100%);
-  border: 1px solid rgba(81, 104, 255, 0.28);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 28%, transparent);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
   text-align: center;
 }
@@ -36,7 +36,7 @@
   width: 260px;
   height: 260px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(81, 104, 255, 0.45) 0%, rgba(81, 104, 255, 0) 70%);
+  background: radial-gradient(circle, color-mix(in oklch, var(--color-primary) 45%, transparent) 0%, color-mix(in oklch, var(--color-primary) 0%, transparent) 70%);
   filter: blur(6px);
 }
 
@@ -82,7 +82,7 @@
   padding: 14px 20px;
   border: none;
   border-radius: 10px;
-  background: #5168ff;
+  background: var(--color-primary);
   color: #fff;
   font-size: 15px;
   font-weight: 600;

@@ -11,12 +11,12 @@
   background: rgba(251, 248, 255, 0.92);
   backdrop-filter: blur(20px) saturate(160%);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border-top: 1px solid rgba(81, 104, 255, 0.12);
+  border-top: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
   align-items: stretch;
   justify-content: space-between;
   padding: 0;
   padding-bottom: max(env(safe-area-inset-bottom, 0px), 20px);
-  box-shadow: 0 -4px 24px rgba(81, 104, 255, 0.06);
+  box-shadow: 0 -4px 24px color-mix(in oklch, var(--color-primary) 6%, transparent);
   overflow: hidden;
 }
 
@@ -29,7 +29,7 @@
   height: 2px;
   background: linear-gradient(
     90deg,
-    #5168ff 0%,
+    var(--color-primary) 0%,
     #6fd3ff 18%,
     #74c465 36%,
     #f3cf5a 56%,
@@ -104,8 +104,8 @@
 .iconSvgActive {
   color: var(--color-primary);
   filter:
-    drop-shadow(0 0 10px rgba(81, 104, 255, 0.42))
-    drop-shadow(0 0 22px rgba(81, 104, 255, 0.2));
+    drop-shadow(0 0 10px color-mix(in oklch, var(--color-primary) 42%, transparent))
+    drop-shadow(0 0 22px color-mix(in oklch, var(--color-primary) 20%, transparent));
   transform: scale(1.04);
 }
 

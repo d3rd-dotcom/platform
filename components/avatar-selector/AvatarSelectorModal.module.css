@@ -27,7 +27,7 @@
   border-radius: 24px;
   box-shadow:
     0 24px 48px rgba(0, 0, 0, 0.2),
-    0 0 0 1px rgba(81, 104, 255, 0.1);
+    0 0 0 1px color-mix(in oklch, var(--color-primary) 10%, transparent);
   max-height: 90vh;
   display: flex;
   flex-direction: column;
@@ -52,7 +52,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 24px 28px;
-  border-bottom: 1px solid rgba(81, 104, 255, 0.1);
+  border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 10%, transparent);
 }
 
 .modalTitle {
@@ -71,7 +71,7 @@
   align-items: center;
   justify-content: center;
   background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(81, 104, 255, 0.2);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
   border-radius: 10px;
   cursor: pointer;
   color: var(--color-text-dark);
@@ -131,7 +131,7 @@
 .avatarOption {
   position: relative;
   background: #ffffff;
-  border: 3px solid rgba(81, 104, 255, 0.15);
+  border: 3px solid color-mix(in oklch, var(--color-primary) 15%, transparent);
   border-radius: 16px;
   padding: 8px;
   cursor: pointer;
@@ -144,14 +144,14 @@
 }
 
 .avatarOption:hover {
-  border-color: rgba(81, 104, 255, 0.4);
+  border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(81, 104, 255, 0.15);
+  box-shadow: 0 8px 24px color-mix(in oklch, var(--color-primary) 15%, transparent);
 }
 
 .avatarOption.selected {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(81, 104, 255, 0.15);
+  box-shadow: 0 0 0 4px color-mix(in oklch, var(--color-primary) 15%, transparent);
   transform: scale(1.03);
 }
 
@@ -231,14 +231,14 @@
   transition: all 0.2s ease;
   background: transparent;
   color: var(--color-primary);
-  border: 2px solid rgba(81, 104, 255, 0.3);
+  border: 2px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
 }
 
 .rerollButton:hover:not(:disabled) {
-  background: rgba(81, 104, 255, 0.06);
-  border-color: rgba(81, 104, 255, 0.5);
+  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 50%, transparent);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(81, 104, 255, 0.15);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 15%, transparent);
 }
 
 .rerollButton:disabled {
@@ -263,7 +263,7 @@
 
 .uploadButton:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(81, 104, 255, 0.25);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 25%, transparent);
 }
 
 .uploadButton:disabled {
@@ -286,7 +286,7 @@
   display: flex;
   gap: 12px;
   padding: 24px 28px;
-  border-top: 1px solid rgba(81, 104, 255, 0.1);
+  border-top: 1px solid color-mix(in oklch, var(--color-primary) 10%, transparent);
 }
 
 .cancelButton,
@@ -311,26 +311,26 @@
 .cancelButton {
   background: transparent;
   color: var(--color-text-dark);
-  border: 2px solid rgba(81, 104, 255, 0.2);
+  border: 2px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
 }
 
 .cancelButton:hover:not(:disabled) {
-  background: rgba(81, 104, 255, 0.05);
-  border-color: rgba(81, 104, 255, 0.4);
+  background: color-mix(in oklch, var(--color-primary) 5%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(81, 104, 255, 0.15);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 15%, transparent);
 }
 
 .selectButton {
   background: var(--color-primary);
   color: var(--color-text-light);
-  box-shadow: 0 4px 16px rgba(81, 104, 255, 0.3);
+  box-shadow: 0 4px 16px color-mix(in oklch, var(--color-primary) 30%, transparent);
 }
 
 .selectButton:hover:not(:disabled) {
   background: var(--color-primary-hover, #3d52e6);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(81, 104, 255, 0.4);
+  box-shadow: 0 6px 20px color-mix(in oklch, var(--color-primary) 40%, transparent);
 }
 
 .selectButton:disabled,

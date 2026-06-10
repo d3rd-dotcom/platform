@@ -5,8 +5,8 @@
   gap: 4px;
   margin-bottom: 16px;
   padding: 16px 14px;
-  background: rgba(81, 104, 255, 0.05);
-  border: 1px solid rgba(81, 104, 255, 0.12);
+  background: color-mix(in oklch, var(--color-primary) 5%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
   border-radius: var(--radius-lg);
 }
 
@@ -28,7 +28,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid rgba(81, 104, 255, 0.2);
+  border: 2px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
   background: #ffffff;
 }
 
@@ -47,7 +47,7 @@
 
 .recipientAvatar {
   color: var(--color-primary);
-  background: rgba(81, 104, 255, 0.08);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
 }
 
 .blankAvatar {
@@ -85,7 +85,7 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  color: var(--color-primary-muted, rgba(81, 104, 255, 0.6));
+  color: var(--color-primary-muted, color-mix(in oklch, var(--color-primary) 60%, transparent));
   margin-top: 14px;
   min-width: 28px;
 }

@@ -10,7 +10,7 @@
   padding: 8px;
   border-radius: 14px;
   overflow: hidden;
-  border: 1px solid rgba(81, 104, 255, 0.24);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 24%, transparent);
   background: rgba(8, 9, 16, 0.55);
 }
 
@@ -80,7 +80,7 @@
 .review {
   margin: 2px;
   padding-left: 12px;
-  border-left: 2px solid rgba(81, 104, 255, 0.42);
+  border-left: 2px solid color-mix(in oklch, var(--color-primary) 42%, transparent);
 }
 
 .reviewEyebrow {
@@ -104,7 +104,7 @@
 
 /* ── Light mode ── */
 :global(:root:not([data-theme="dark"])) .panel {
-  border-color: rgba(81, 104, 255, 0.20);
+  border-color: color-mix(in oklch, var(--color-primary) 20%, transparent);
   background: #eef3ff;
 }
 
@@ -115,7 +115,7 @@
 }
 
 :global(:root:not([data-theme="dark"])) .reviewEyebrow {
-  color: #5168ff;
+  color: var(--color-primary);
 }
 
 :global(:root:not([data-theme="dark"])) .reviewText {

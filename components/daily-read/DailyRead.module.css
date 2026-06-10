@@ -41,7 +41,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--week-color, #5168FF);
+  background: var(--week-color, var(--color-primary));
   color: #FFFFFF;
   border: 2px solid #1A1D33;
   border-radius: 8px;
@@ -136,7 +136,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--week-color, #5168FF);
+  color: var(--week-color, var(--color-primary));
   margin: 0 0 4px;
 }
 
@@ -177,7 +177,7 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: #FFFFFF;
-  background: var(--week-color, #5168FF);
+  background: var(--week-color, var(--color-primary));
   border: 2px solid #1A1D33;
   border-radius: 4px;
   cursor: pointer;
@@ -220,7 +220,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--week-color, #5168FF);
+  background: var(--week-color, var(--color-primary));
   color: #ffffff;
   border: 2px solid #1A1D33;
   border-radius: 6px;
@@ -306,7 +306,7 @@
   box-shadow:
     0 0 0 1px rgba(107, 128, 255, 0.28),
     0 10px 40px rgba(0, 0, 0, 0.75),
-    0 0 20px rgba(81, 104, 255, 0.1),
+    0 0 20px color-mix(in oklch, var(--color-primary) 10%, transparent),
     0 1px 0 rgba(255, 255, 255, 0.08) inset;
 }
 

@@ -107,7 +107,7 @@
 .registerButton:hover {
   background-color: #3d52e6;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(81, 104, 255, 0.3);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 30%, transparent);
 }
 
 .registerButton:active {
@@ -138,7 +138,7 @@
   background-color: var(--color-primary);
   color: var(--color-text-light);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(81, 104, 255, 0.3);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 30%, transparent);
 }
 
 .secondaryButton:active {

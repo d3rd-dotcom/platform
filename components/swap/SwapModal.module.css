@@ -25,7 +25,7 @@
   width: 100%;
   max-width: 400px;
   background: linear-gradient(165deg, #1a1d33 0%, #171a2e 40%, #1d1f35 100%);
-  border: 1px solid rgba(81, 104, 255, 0.15);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 15%, transparent);
   border-radius: 20px;
   overflow: hidden;
   display: flex;
@@ -118,8 +118,8 @@
 }
 
 .tokenCard:focus-within {
-  border-color: rgba(81, 104, 255, 0.3);
-  background: rgba(81, 104, 255, 0.04);
+  border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 4%, transparent);
 }
 
 .tokenHeader {
@@ -165,8 +165,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 12px;
-  background: linear-gradient(135deg, rgba(81, 104, 255, 0.2), rgba(81, 104, 255, 0.08));
-  border: 1px solid rgba(81, 104, 255, 0.15);
+  background: linear-gradient(135deg, color-mix(in oklch, var(--color-primary) 20%, transparent), color-mix(in oklch, var(--color-primary) 8%, transparent));
+  border: 1px solid color-mix(in oklch, var(--color-primary) 15%, transparent);
   font-family: var(--font-primary);
   font-size: 14px;
   font-weight: 700;
@@ -233,8 +233,8 @@
 }
 
 .swapDirectionBtn:hover {
-  background: rgba(81, 104, 255, 0.15);
-  border-color: rgba(81, 104, 255, 0.3);
+  background: color-mix(in oklch, var(--color-primary) 15%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
   color: var(--color-primary);
   transform: rotate(180deg);
 }
@@ -283,18 +283,18 @@
   letter-spacing: 0.02em;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 16px rgba(81, 104, 255, 0.3);
+  box-shadow: 0 4px 16px color-mix(in oklch, var(--color-primary) 30%, transparent);
 }
 
 .swapCta:hover {
   background: #6179FF;
-  box-shadow: 0 6px 24px rgba(81, 104, 255, 0.45);
+  box-shadow: 0 6px 24px color-mix(in oklch, var(--color-primary) 45%, transparent);
   transform: translateY(-1px);
 }
 
 .swapCta:active {
   transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(81, 104, 255, 0.3);
+  box-shadow: 0 2px 8px color-mix(in oklch, var(--color-primary) 30%, transparent);
 }
 
 /* Responsive */
@@ -373,8 +373,8 @@
 }
 
 :global(:root:not([data-theme="dark"])) .tokenCard:focus-within {
-  border-color: rgba(81, 104, 255, 0.35);
-  background: rgba(81, 104, 255, 0.03);
+  border-color: color-mix(in oklch, var(--color-primary) 35%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 3%, transparent);
 }
 
 :global(:root:not([data-theme="dark"])) .tokenLabel {
@@ -404,8 +404,8 @@
 }
 
 :global(:root:not([data-theme="dark"])) .swapDirectionBtn:hover {
-  background: rgba(81, 104, 255, 0.08);
-  border-color: rgba(81, 104, 255, 0.2);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 20%, transparent);
   color: var(--color-primary);
 }
 

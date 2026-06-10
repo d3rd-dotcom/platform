@@ -65,12 +65,12 @@
   padding: 2px;
   background: linear-gradient(
     90deg,
-    #5168FF,
+    var(--color-primary),
     #74C465,
     #E8556D,
     #F2A0B5,
     #a78bfa,
-    #5168FF
+    var(--color-primary)
   );
   background-size: 200% 100%;
   animation: cardBorderShift 6s linear infinite;
@@ -99,7 +99,7 @@
     repeating-linear-gradient(
       87deg,
       transparent 0px,
-      rgba(81, 104, 255, 0.3) 1px,
+      color-mix(in oklch, var(--color-primary) 30%, transparent) 1px,
       transparent 2px,
       transparent 7px
     ),
@@ -118,7 +118,7 @@
       transparent 10deg 20deg
     ),
     radial-gradient(ellipse 60% 40% at 20% 30%, rgba(232, 85, 109, 0.5) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 50% at 75% 25%, rgba(81, 104, 255, 0.45) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 75% 25%, color-mix(in oklch, var(--color-primary) 45%, transparent) 0%, transparent 70%),
     radial-gradient(ellipse 45% 55% at 50% 75%, rgba(116, 196, 101, 0.4) 0%, transparent 70%),
     radial-gradient(ellipse 55% 35% at 85% 70%, rgba(167, 139, 250, 0.4) 0%, transparent 70%),
     radial-gradient(ellipse 40% 45% at 10% 80%, rgba(242, 160, 181, 0.35) 0%, transparent 70%);
@@ -135,7 +135,7 @@
 
 .toolCard:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 32px rgba(81, 104, 255, 0.12);
+  box-shadow: 0 8px 32px color-mix(in oklch, var(--color-primary) 12%, transparent);
   border-color: transparent;
 }
 

@@ -6,7 +6,7 @@
   margin-bottom: 16px;
   background: var(--color-primary);
   border-radius: var(--radius-lg);
-  box-shadow: 0 8px 24px rgba(81, 104, 255, 0.18);
+  box-shadow: 0 8px 24px color-mix(in oklch, var(--color-primary) 18%, transparent);
 }
 
 .body {

@@ -66,8 +66,8 @@
 }
 
 .taskRowActive {
-  border-color: rgba(81, 104, 255, 0.45);
-  background: rgba(81, 104, 255, 0.1);
+  border-color: color-mix(in oklch, var(--color-primary) 45%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
 }
 
 .taskRowDone {
@@ -98,8 +98,8 @@
 }
 
 .taskPill {
-  background: rgba(81, 104, 255, 0.12);
-  color: #5168ff;
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  color: var(--color-primary);
 }
 
 .taskState {
@@ -135,7 +135,7 @@
 
 .taskInput:focus,
 .taskSelect:focus {
-  border-color: rgba(81, 104, 255, 0.4);
+  border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
 }
 
 .taskSelect {
@@ -208,8 +208,8 @@
 }
 
 .addTaskButton:hover:not(:disabled) {
-  border-color: rgba(81, 104, 255, 0.36);
-  background: rgba(81, 104, 255, 0.08);
+  border-color: color-mix(in oklch, var(--color-primary) 36%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
   color: #ffffff;
 }
 
@@ -232,7 +232,7 @@
 }
 
 .primaryButton {
-  background: #5168ff;
+  background: var(--color-primary);
   color: #ffffff;
 }
 

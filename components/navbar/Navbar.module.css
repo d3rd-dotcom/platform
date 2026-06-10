@@ -104,7 +104,7 @@
 }
 
 .navButton:hover {
-  background: #5168FF;
+  background: var(--color-primary);
 }
 
 .navButton:hover .buttonLabel {
@@ -121,8 +121,8 @@
 }
 
 .navButtonActive {
-  background: #5168FF;
-  border: 1px solid #5168FF;
+  background: var(--color-primary);
+  border: 1px solid var(--color-primary);
 }
 
 .buttonLabel {
@@ -185,8 +185,8 @@
 }
 
 .menuToggleButton:hover {
-  background: rgba(81, 104, 255, 0.12);
-  border-color: rgba(81, 104, 255, 0.3);
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
   color: #ffffff;
 }
 
@@ -316,20 +316,20 @@
   gap: 8px;
   padding: 8px 12px;
   border-radius: 12px;
-  background: rgba(81, 104, 255, 0.06);
-  border: 1px solid rgba(81, 104, 255, 0.12);
+  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
 }
 
 .userInfo:hover {
-  background: rgba(81, 104, 255, 0.12);
-  border-color: rgba(81, 104, 255, 0.25);
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 25%, transparent);
 }
 
 .userInfoOpen {
-  background: rgba(81, 104, 255, 0.15);
+  background: color-mix(in oklch, var(--color-primary) 15%, transparent);
   border-color: var(--color-primary);
 }
 
@@ -345,7 +345,7 @@
   height: 32px;
   border-radius: 50%;
   object-fit: cover;
-  border: 1.5px solid rgba(81, 104, 255, 0.3);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
   transition: transform 0.3s ease, opacity 0.3s ease;
   position: relative;
   z-index: 1;
@@ -359,7 +359,7 @@
   height: 32px;
   border-radius: 50%;
   object-fit: cover;
-  border: 1.5px solid rgba(81, 104, 255, 0.3);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
   transform: translateY(25px) scale(0.8);
   opacity: 0;
   transition: transform 0.3s ease, opacity 0.3s ease;
@@ -424,7 +424,7 @@
 }
 
 .miniProfileCard:hover {
-  background: rgba(81, 104, 255, 0.05);
+  background: color-mix(in oklch, var(--color-primary) 5%, transparent);
 }
 
 .miniProfilePicture {
@@ -489,7 +489,7 @@
 }
 
 .dropdownItem:hover {
-  background: rgba(81, 104, 255, 0.05);
+  background: color-mix(in oklch, var(--color-primary) 5%, transparent);
 }
 
 .dropdownItemInfo {
@@ -553,16 +553,16 @@
   align-items: center;
   gap: 10px;
   border-radius: 12px;
-  border: 1px solid rgba(81, 104, 255, 0.15);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 15%, transparent);
   cursor: pointer;
   transition: all 0.3s ease;
-  background: rgba(81, 104, 255, 0.08);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
   position: relative;
 }
 
 .messageButton:hover {
-  background: rgba(81, 104, 255, 0.15);
-  border-color: rgba(81, 104, 255, 0.25);
+  background: color-mix(in oklch, var(--color-primary) 15%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 25%, transparent);
 }
 
 .messageIcon {
@@ -642,7 +642,7 @@
 }
 
 .searchButton:hover {
-  background: rgba(81, 104, 255, 0.1);
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
   border-color: var(--color-primary);
 }
 
@@ -697,7 +697,7 @@
   align-items: center;
   gap: 8px;
   padding: 12px;
-  background: rgba(81, 104, 255, 0.05);
+  background: color-mix(in oklch, var(--color-primary) 5%, transparent);
   border-radius: 8px;
   margin-bottom: 4px;
 }

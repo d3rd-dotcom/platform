@@ -15,16 +15,16 @@
   /* Match the /home grid background (light) */
   background-color: #ffffff;
   background-image:
-    linear-gradient(rgba(81, 104, 255, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(81, 104, 255, 0.08) 1px, transparent 1px);
+    linear-gradient(color-mix(in oklch, var(--color-primary) 8%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 8%, transparent) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 
 :global([data-theme='dark']) .pageLayout {
   background-color: var(--color-surface-base);
   background-image:
-    linear-gradient(rgba(81, 104, 255, 0.14) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(81, 104, 255, 0.14) 1px, transparent 1px);
+    linear-gradient(color-mix(in oklch, var(--color-primary) 14%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 14%, transparent) 1px, transparent 1px);
 }
 
 @media (max-width: 900px) {
@@ -99,7 +99,7 @@
 .input:focus,
 .textarea:focus,
 .inputSmall:focus {
-  border-color: #5168ff;
+  border-color: var(--color-primary);
 }
 .textarea {
   resize: vertical;
@@ -149,19 +149,19 @@
   font-family: var(--font-primary);
   font-size: 15px;
   font-weight: 600;
-  color: #5168ff;
-  background: rgba(81, 104, 255, 0.08);
-  border: 1px dashed rgba(81, 104, 255, 0.46);
+  color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  border: 1px dashed color-mix(in oklch, var(--color-primary) 46%, transparent);
   border-radius: 12px;
   cursor: pointer;
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 .filePickerBtn:hover {
-  background: rgba(81, 104, 255, 0.14);
-  border-color: #5168ff;
+  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
+  border-color: var(--color-primary);
 }
 .filePickerBtn:focus-visible {
-  outline: 2px solid #5168ff;
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 .fileList {
@@ -192,7 +192,7 @@
   height: 16px;
   border-radius: 50%;
   border: 2px solid rgba(125, 135, 200, 0.3);
-  border-top-color: #5168ff;
+  border-top-color: var(--color-primary);
   animation: spin 0.8s linear infinite;
   display: inline-block;
 }
@@ -398,7 +398,7 @@
 }
 .projectCard:hover {
   transform: translateY(-2px);
-  border-color: rgba(81, 104, 255, 0.5);
+  border-color: color-mix(in oklch, var(--color-primary) 50%, transparent);
 }
 .projectCardTop {
   display: flex;
@@ -507,7 +507,7 @@
 .viewModeBtnActive {
   opacity: 1;
   color: #fff;
-  background: #5168ff;
+  background: var(--color-primary);
 }
 .projectTitleRow {
   margin-bottom: 0;
@@ -577,8 +577,8 @@
   cursor: not-allowed;
 }
 .stepChipActive {
-  background: rgba(81, 104, 255, 0.15);
-  border-color: #5168ff;
+  background: color-mix(in oklch, var(--color-primary) 15%, transparent);
+  border-color: var(--color-primary);
 }
 .stepNum {
   display: inline-flex;
@@ -587,7 +587,7 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: rgba(81, 104, 255, 0.25);
+  background: color-mix(in oklch, var(--color-primary) 25%, transparent);
   font-size: 12px;
   font-weight: 700;
 }
@@ -598,7 +598,7 @@
   font-size: 11px;
 }
 .stepChipActive .stepNum {
-  background: #5168ff;
+  background: var(--color-primary);
   color: #fff;
 }
 
@@ -721,7 +721,7 @@
 }
 .summaryBox {
   background: rgba(125, 135, 200, 0.08);
-  border-left: 3px solid #5168ff;
+  border-left: 3px solid var(--color-primary);
   border-radius: 8px;
   padding: 12px 14px;
   font-size: 13px;
@@ -779,8 +779,8 @@
   justify-content: center;
 }
 .enrichmentBox {
-  background: rgba(81, 104, 255, 0.06);
-  border: 1px solid rgba(81, 104, 255, 0.18);
+  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
   border-radius: 14px;
   padding: 16px;
   margin: 4px 0 18px;
@@ -1096,7 +1096,7 @@ article.reportBody :global(h3) {
   opacity: 0.7;
 }
 .modeBtnActive {
-  background: rgba(81, 104, 255, 0.25);
+  background: color-mix(in oklch, var(--color-primary) 25%, transparent);
   opacity: 1;
 }
 .agentPicker {
@@ -1116,7 +1116,7 @@ article.reportBody :global(h3) {
   line-height: 0;
 }
 .agentPickActive {
-  border-color: #5168ff;
+  border-color: var(--color-primary);
 }
 .chatWindow {
   display: flex;
@@ -1154,7 +1154,7 @@ article.reportBody :global(h3) {
   background: rgba(125, 135, 200, 0.12);
 }
 .bubbleUser {
-  background: #5168ff;
+  background: var(--color-primary);
   color: #fff;
 }
 .bubbleUser :global(p),
@@ -1192,7 +1192,7 @@ article.reportBody :global(h3) {
   overflow: hidden;
   background-color: #fafafa;
   background-image:
-    radial-gradient(circle at 30% 18%, rgba(81, 104, 255, 0.08), transparent 28%),
+    radial-gradient(circle at 30% 18%, color-mix(in oklch, var(--color-primary) 8%, transparent), transparent 28%),
     radial-gradient(circle at 76% 76%, rgba(31, 170, 140, 0.08), transparent 24%),
     radial-gradient(#d6d6d6 1.3px, transparent 1.3px);
   background-size: auto, auto, 24px 24px;
@@ -1200,7 +1200,7 @@ article.reportBody :global(h3) {
 :global([data-theme='dark']) .graphWrap {
   background-color: #10131d;
   background-image:
-    radial-gradient(circle at 30% 18%, rgba(81, 104, 255, 0.16), transparent 28%),
+    radial-gradient(circle at 30% 18%, color-mix(in oklch, var(--color-primary) 16%, transparent), transparent 28%),
     radial-gradient(circle at 76% 76%, rgba(31, 170, 140, 0.14), transparent 24%),
     radial-gradient(rgba(255, 255, 255, 0.12) 1.2px, transparent 1.2px);
 }
@@ -1226,7 +1226,7 @@ article.reportBody :global(h3) {
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #5168ff;
+  color: var(--color-primary);
 }
 .graphPanelTitle {
   margin: 0;
@@ -1257,7 +1257,7 @@ article.reportBody :global(h3) {
 }
 .graphHeaderTools button:hover {
   background: #fff;
-  border-color: rgba(81, 104, 255, 0.36);
+  border-color: color-mix(in oklch, var(--color-primary) 36%, transparent);
 }
 :global([data-theme='dark']) .graphHeaderTools button {
   background: rgba(24, 28, 42, 0.88);
@@ -1306,7 +1306,7 @@ article.reportBody :global(h3) {
   transition: transform 0.18s ease;
 }
 .graphEdgeToggle input:checked + .graphToggleTrack {
-  background: #5168ff;
+  background: var(--color-primary);
 }
 .graphEdgeToggle input:checked + .graphToggleTrack::after {
   transform: translateX(16px);
@@ -1720,8 +1720,8 @@ article.reportBody :global(h3) {
   color: color-mix(in srgb, var(--color-text-dark, #1a1b24) 74%, transparent);
   font-size: 13px;
   background:
-    radial-gradient(circle at center, rgba(81, 104, 255, 0.07), transparent 42%),
-    radial-gradient(rgba(81, 104, 255, 0.2) 1.1px, transparent 1.1px);
+    radial-gradient(circle at center, color-mix(in oklch, var(--color-primary) 7%, transparent), transparent 42%),
+    radial-gradient(color-mix(in oklch, var(--color-primary) 20%, transparent) 1.1px, transparent 1.1px);
   background-size: auto, 24px 24px;
 }
 .graphEmpty p {
@@ -1762,7 +1762,7 @@ article.reportBody :global(h3) {
 :global([data-theme='dark']) .graphEmpty {
   color: rgba(246, 247, 251, 0.8);
   background:
-    radial-gradient(circle at center, rgba(81, 104, 255, 0.09), transparent 42%),
+    radial-gradient(circle at center, color-mix(in oklch, var(--color-primary) 9%, transparent), transparent 42%),
     radial-gradient(rgba(246, 247, 251, 0.14) 1.1px, transparent 1.1px);
 }
 
@@ -1810,7 +1810,7 @@ article.reportBody :global(h3) {
 .lockedCard {
   background: var(--color-surface-1);
   border-color: var(--color-border-subtle);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 10px 30px rgba(81, 104, 255, 0.07);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 10px 30px color-mix(in oklch, var(--color-primary) 7%, transparent);
   backdrop-filter: blur(4px);
 }
 
@@ -1822,7 +1822,7 @@ article.reportBody :global(h3) {
 }
 .projectCard:hover {
   background: var(--color-surface-2);
-  border-color: rgba(81, 104, 255, 0.5);
+  border-color: color-mix(in oklch, var(--color-primary) 50%, transparent);
 }
 
 .actionCard,
@@ -1849,18 +1849,18 @@ article.reportBody :global(h3) {
 
 /* Keep accent states crisp after the overrides */
 .stepChipActive {
-  background: rgba(81, 104, 255, 0.16);
-  border-color: #5168ff;
+  background: color-mix(in oklch, var(--color-primary) 16%, transparent);
+  border-color: var(--color-primary);
 }
 .modeBtnActive {
-  background: rgba(81, 104, 255, 0.22);
+  background: color-mix(in oklch, var(--color-primary) 22%, transparent);
 }
 .bubbleUser {
-  background: #5168ff;
+  background: var(--color-primary);
 }
 
 /* Console keeps its dark terminal look in both themes */
 .logBox {
   background: #0b0c14;
-  border-color: rgba(81, 104, 255, 0.18);
+  border-color: color-mix(in oklch, var(--color-primary) 18%, transparent);
 }

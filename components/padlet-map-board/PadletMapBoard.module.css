@@ -14,12 +14,12 @@
   position: relative;
   width: 100%;
   background: var(--color-background, #FBF8FF);
-  box-shadow: var(--shadow-card, 0 4px 16px rgba(81, 104, 255, 0.08));
+  box-shadow: var(--shadow-card, 0 4px 16px color-mix(in oklch, var(--color-primary) 8%, transparent));
   transition: box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1), transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .padletEmbed:hover {
-  box-shadow: var(--shadow-card-hover, 0 8px 24px rgba(81, 104, 255, 0.15));
+  box-shadow: var(--shadow-card-hover, 0 8px 24px color-mix(in oklch, var(--color-primary) 15%, transparent));
   transform: translateY(-2px);
 }
 

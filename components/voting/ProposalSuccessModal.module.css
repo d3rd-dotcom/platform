@@ -92,7 +92,7 @@
 }
 
 .detailsCard {
-  background: rgba(81, 104, 255, 0.08);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
   border: 2px solid #1A1D33;
   border-radius: 4px;
   padding: 16px;
@@ -159,7 +159,7 @@
   height: 32px;
   border-radius: 4px;
   border: 2px solid #1A1D33;
-  background: linear-gradient(135deg, #74C465, #5168FF);
+  background: linear-gradient(135deg, #74C465, var(--color-primary));
   display: flex;
   align-items: center;
   justify-content: center;

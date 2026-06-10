@@ -9,8 +9,8 @@
   overflow: hidden;
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   background:
-    linear-gradient(rgba(81, 104, 255, 0.065) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(81, 104, 255, 0.065) 1px, transparent 1px),
+    linear-gradient(color-mix(in oklch, var(--color-primary) 6.5%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 6.5%, transparent) 1px, transparent 1px),
     #f7f8ff;
   background-size: 28px 28px, 28px 28px, auto;
 }
@@ -28,8 +28,8 @@
 
 :global([data-theme="dark"]) .pageLayout {
   background:
-    linear-gradient(rgba(81, 104, 255, 0.10) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(81, 104, 255, 0.10) 1px, transparent 1px),
+    linear-gradient(color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px),
     var(--color-surface-base);
   background-size: 28px 28px, 28px 28px, auto;
 }

@@ -40,10 +40,10 @@
   font-size: var(--font-size-xs);
   font-weight: 500;
   color: rgba(139, 149, 255, 0.9);
-  border: 1px solid rgba(81, 104, 255, 0.3);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
   border-radius: var(--radius-full);
   padding: 4px 14px;
-  background: rgba(81, 104, 255, 0.08);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
   white-space: nowrap;
 }
 
@@ -60,7 +60,7 @@
   height: 100%;
   min-height: 200px;
   background: linear-gradient(160deg, #0d1240 0%, #0a0e2e 40%, #06091c 100%);
-  border: 1px solid rgba(81, 104, 255, 0.22);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
   border-radius: var(--radius-lg);
   overflow: hidden;
 }

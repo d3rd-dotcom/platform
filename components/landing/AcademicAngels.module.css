@@ -68,8 +68,8 @@
 }
 
 .benefitCard:hover {
-  border-color: rgba(81, 104, 255, 0.18);
-  box-shadow: 0 12px 40px rgba(81, 104, 255, 0.07);
+  border-color: color-mix(in oklch, var(--color-primary) 18%, transparent);
+  box-shadow: 0 12px 40px color-mix(in oklch, var(--color-primary) 7%, transparent);
 }
 
 .benefitNumber {
@@ -79,7 +79,7 @@
   font-family: var(--font-secondary);
   font-size: 5.5rem;
   font-weight: 700;
-  color: rgba(81, 104, 255, 0.06);
+  color: color-mix(in oklch, var(--color-primary) 6%, transparent);
   line-height: 1;
   pointer-events: none;
   user-select: none;
@@ -132,14 +132,14 @@
 /* ── Purchase Button ── */
 .purchaseBtn {
   padding: 16px 40px;
-  background: #5168FF;
+  background: var(--color-primary);
   color: #FFFFFF;
   font-family: var(--font-secondary);
   font-size: 15px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border: 2px solid #5168FF;
+  border: 2px solid var(--color-primary);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -148,7 +148,7 @@
 .purchaseBtn:hover {
   background: #3d51e0;
   border-color: #3d51e0;
-  box-shadow: 0 4px 16px rgba(81, 104, 255, 0.3);
+  box-shadow: 0 4px 16px color-mix(in oklch, var(--color-primary) 30%, transparent);
 }
 
 .purchaseBtn:active {
@@ -280,7 +280,7 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #5168FF;
+  background: var(--color-primary);
 }
 
 .mintBtn {
@@ -300,8 +300,8 @@
 }
 
 .mintBtn:hover {
-  background: #5168FF;
-  border-color: #5168FF;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 .mintBtn:active {
@@ -336,7 +336,7 @@
   font-family: var(--font-primary);
   font-size: 12px;
   font-weight: 500;
-  color: #5168FF;
+  color: var(--color-primary);
   text-decoration: none;
 }
 

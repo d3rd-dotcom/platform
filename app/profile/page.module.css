@@ -109,10 +109,10 @@
 .tipCard,
 .calendarCard {
   background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(81, 104, 255, 0.12);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
   border-radius: 28px;
   box-shadow:
-    0 8px 24px rgba(81, 104, 255, 0.08),
+    0 8px 24px color-mix(in oklch, var(--color-primary) 8%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
@@ -122,11 +122,11 @@
   align-items: center;
   gap: 10px;
   padding: 8px 14px 8px 8px;
-  border: 1px solid rgba(81, 104, 255, 0.16);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 16%, transparent);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.92);
   box-shadow:
-    0 8px 24px rgba(81, 104, 255, 0.08),
+    0 8px 24px color-mix(in oklch, var(--color-primary) 8%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
   cursor: pointer;
   transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
@@ -134,7 +134,7 @@
 
 .accountBadge:hover:not(:disabled) {
   transform: translateY(-1px);
-  border-color: rgba(81, 104, 255, 0.28);
+  border-color: color-mix(in oklch, var(--color-primary) 28%, transparent);
   background: rgba(255, 255, 255, 0.98);
 }
 
@@ -155,14 +155,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(180deg, rgba(81, 104, 255, 0.14), rgba(81, 104, 255, 0.08));
-  color: #5168FF;
-  border: 1px solid rgba(81, 104, 255, 0.14);
+  background: linear-gradient(180deg, color-mix(in oklch, var(--color-primary) 14%, transparent), color-mix(in oklch, var(--color-primary) 8%, transparent));
+  color: var(--color-primary);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 14%, transparent);
 }
 
 .accountAvatar {
   object-fit: cover;
-  border: 2px solid rgba(81, 104, 255, 0.16);
+  border: 2px solid color-mix(in oklch, var(--color-primary) 16%, transparent);
 }
 
 .accountBadgeLabel {
@@ -172,13 +172,13 @@
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #5168FF;
+  color: var(--color-primary);
   white-space: nowrap;
   min-width: 0;
 }
 
 .accountBadgeCaret {
-  color: rgba(81, 104, 255, 0.78);
+  color: color-mix(in oklch, var(--color-primary) 78%, transparent);
   flex-shrink: 0;
 }
 
@@ -214,7 +214,7 @@
   line-height: 0.9;
   font-weight: 800;
   letter-spacing: -0.05em;
-  color: #5168FF;
+  color: var(--color-primary);
 }
 
 .streakUnit {
@@ -222,7 +222,7 @@
   font-size: 28px;
   line-height: 1;
   font-weight: 700;
-  color: #5168FF;
+  color: var(--color-primary);
 }
 
 .stickerShell {
@@ -234,7 +234,7 @@
 .sticker {
   width: 100%;
   height: auto;
-  filter: drop-shadow(0 8px 16px rgba(81, 104, 255, 0.16));
+  filter: drop-shadow(0 8px 16px color-mix(in oklch, var(--color-primary) 16%, transparent));
 }
 
 .tipCard {
@@ -253,8 +253,8 @@
   justify-content: center;
   overflow: hidden;
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(81, 104, 255, 0.14), rgba(81, 104, 255, 0.08));
-  border: 1px solid rgba(81, 104, 255, 0.14);
+  background: linear-gradient(180deg, color-mix(in oklch, var(--color-primary) 14%, transparent), color-mix(in oklch, var(--color-primary) 8%, transparent));
+  border: 1px solid color-mix(in oklch, var(--color-primary) 14%, transparent);
 }
 
 .tipIcon {
@@ -278,7 +278,7 @@
 .calendarCard {
   padding: 20px 18px 18px;
   background: #09090f;
-  border: 1px solid rgba(81, 104, 255, 0.14);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 14%, transparent);
   border-radius: 12px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
 }
@@ -342,7 +342,7 @@
 }
 
 .calendarStat {
-  background: rgba(81, 104, 255, 0.08);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
 }
 
 .calendarStatMuted {
@@ -430,7 +430,7 @@
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background: var(--color-primary, #5168FF);
+  background: var(--color-primary);
   flex-shrink: 0;
 }
 
@@ -448,7 +448,7 @@
 }
 
 .dayInteractive:focus-visible {
-  outline: 1px solid rgba(81, 104, 255, 0.6);
+  outline: 1px solid color-mix(in oklch, var(--color-primary) 60%, transparent);
   outline-offset: 2px;
 }
 
@@ -477,7 +477,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--color-primary, #5168FF);
+  background: var(--color-primary);
   flex-shrink: 0;
 }
 
@@ -515,9 +515,9 @@
   overflow: auto;
   padding: 26px 22px 22px;
   border-radius: 28px;
-  border: 1px solid rgba(81, 104, 255, 0.16);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 16%, transparent);
   background:
-    radial-gradient(circle at top right, rgba(81, 104, 255, 0.12), transparent 38%),
+    radial-gradient(circle at top right, color-mix(in oklch, var(--color-primary) 12%, transparent), transparent 38%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(246, 248, 255, 0.98) 100%);
   box-shadow:
     0 30px 80px rgba(16, 24, 58, 0.28),
@@ -530,7 +530,7 @@
   right: 16px;
   width: 38px;
   height: 38px;
-  border: 1px solid rgba(81, 104, 255, 0.12);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.9);
   color: #615d6b;
@@ -543,7 +543,7 @@
 
 .rereadClose:hover:not(:disabled) {
   transform: translateY(-1px);
-  border-color: rgba(81, 104, 255, 0.24);
+  border-color: color-mix(in oklch, var(--color-primary) 24%, transparent);
 }
 
 .rereadClose:disabled {
@@ -558,7 +558,7 @@
   font-weight: 800;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #5168FF;
+  color: var(--color-primary);
 }
 
 .rereadTitle {
@@ -614,8 +614,8 @@
   font-size: 13px;
   font-weight: 800;
   color: #3448c9;
-  background: rgba(81, 104, 255, 0.08);
-  border: 1px solid rgba(81, 104, 255, 0.12);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
 }
 
 .rereadBalance {
@@ -657,12 +657,12 @@
   border: 0;
   padding: 0 18px;
   color: #ffffff;
-  background: linear-gradient(180deg, #6b7fff 0%, #5168FF 50%, #3d55f0 100%);
-  box-shadow: 0 14px 30px rgba(81, 104, 255, 0.22);
+  background: linear-gradient(180deg, #6b7fff 0%, var(--color-primary) 50%, #3d55f0 100%);
+  box-shadow: 0 14px 30px color-mix(in oklch, var(--color-primary) 22%, transparent);
 }
 
 .rereadSecondary {
-  border: 1px solid rgba(81, 104, 255, 0.14);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 14%, transparent);
   padding: 0 16px;
   color: #5b5767;
   background: rgba(255, 255, 255, 0.74);
@@ -685,12 +685,12 @@
   margin-top: 18px;
   padding: 18px;
   border-radius: 24px;
-  border: 1px solid rgba(81, 104, 255, 0.12);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(244, 247, 255, 0.96) 100%);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.82),
-    0 10px 24px rgba(81, 104, 255, 0.08);
+    0 10px 24px color-mix(in oklch, var(--color-primary) 8%, transparent);
 }
 
 .noteContent {
@@ -905,7 +905,7 @@
 }
 
 :global([data-theme="dark"]) .accountIconWrap {
-  background: linear-gradient(180deg, rgba(81, 104, 255, 0.22), rgba(81, 104, 255, 0.12));
+  background: linear-gradient(180deg, color-mix(in oklch, var(--color-primary) 22%, transparent), color-mix(in oklch, var(--color-primary) 12%, transparent));
   border-color: rgba(150, 170, 255, 0.18);
   color: #d9e2ff;
 }
@@ -924,7 +924,7 @@
 }
 
 :global([data-theme="dark"]) .tipIconWrap {
-  background: linear-gradient(180deg, rgba(81, 104, 255, 0.18), rgba(81, 104, 255, 0.1));
+  background: linear-gradient(180deg, color-mix(in oklch, var(--color-primary) 18%, transparent), color-mix(in oklch, var(--color-primary) 10%, transparent));
   border: 1px solid rgba(150, 170, 255, 0.18);
 }
 
@@ -979,7 +979,7 @@
 :global([data-theme="dark"]) .rereadModal {
   border-color: rgba(150, 170, 255, 0.18);
   background:
-    radial-gradient(circle at top right, rgba(81, 104, 255, 0.16), transparent 38%),
+    radial-gradient(circle at top right, color-mix(in oklch, var(--color-primary) 16%, transparent), transparent 38%),
     linear-gradient(180deg, rgba(14, 19, 39, 0.98) 0%, rgba(20, 28, 54, 0.98) 100%);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.06),
@@ -1004,7 +1004,7 @@
 
 :global([data-theme="dark"]) .rereadCostBadge {
   color: #d9e2ff;
-  background: rgba(81, 104, 255, 0.14);
+  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
   border-color: rgba(150, 170, 255, 0.18);
 }
 
@@ -1064,7 +1064,7 @@
   }
 
   :global([data-theme="system"]) .accountIconWrap {
-    background: linear-gradient(180deg, rgba(81, 104, 255, 0.22), rgba(81, 104, 255, 0.12));
+    background: linear-gradient(180deg, color-mix(in oklch, var(--color-primary) 22%, transparent), color-mix(in oklch, var(--color-primary) 12%, transparent));
     border-color: rgba(150, 170, 255, 0.18);
     color: #d9e2ff;
   }
@@ -1083,7 +1083,7 @@
   }
 
   :global([data-theme="system"]) .tipIconWrap {
-    background: linear-gradient(180deg, rgba(81, 104, 255, 0.18), rgba(81, 104, 255, 0.1));
+    background: linear-gradient(180deg, color-mix(in oklch, var(--color-primary) 18%, transparent), color-mix(in oklch, var(--color-primary) 10%, transparent));
     border: 1px solid rgba(150, 170, 255, 0.18);
   }
 
@@ -1138,7 +1138,7 @@
   :global([data-theme="system"]) .rereadModal {
     border-color: rgba(150, 170, 255, 0.18);
     background:
-      radial-gradient(circle at top right, rgba(81, 104, 255, 0.16), transparent 38%),
+      radial-gradient(circle at top right, color-mix(in oklch, var(--color-primary) 16%, transparent), transparent 38%),
       linear-gradient(180deg, rgba(14, 19, 39, 0.98) 0%, rgba(20, 28, 54, 0.98) 100%);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.06),
@@ -1163,7 +1163,7 @@
 
   :global([data-theme="system"]) .rereadCostBadge {
     color: #d9e2ff;
-    background: rgba(81, 104, 255, 0.14);
+    background: color-mix(in oklch, var(--color-primary) 14%, transparent);
     border-color: rgba(150, 170, 255, 0.18);
   }
 

@@ -127,7 +127,7 @@
 }
 
 .highlightNumberBlue {
-  color: #5168FF;
+  color: var(--color-primary);
 }
 
 .highlightNumberOrange {

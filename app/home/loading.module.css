@@ -2,7 +2,7 @@
   min-height: 100vh;
   display: flex;
   background:
-    radial-gradient(circle at top left, rgba(81, 104, 255, 0.14), transparent 34%),
+    radial-gradient(circle at top left, color-mix(in oklch, var(--color-primary) 14%, transparent), transparent 34%),
     radial-gradient(circle at top right, rgba(232, 85, 109, 0.12), transparent 30%),
     linear-gradient(180deg, #090b11 0%, #05070b 100%);
 }
@@ -23,7 +23,7 @@
 
 :global(:root:not([data-theme="dark"])) .pageLayout {
   background:
-    radial-gradient(circle at top left, rgba(81, 104, 255, 0.12), transparent 34%),
+    radial-gradient(circle at top left, color-mix(in oklch, var(--color-primary) 12%, transparent), transparent 34%),
     radial-gradient(circle at top right, rgba(232, 85, 109, 0.1), transparent 30%),
     linear-gradient(180deg, #f8faff 0%, #eef3ff 100%);
 }

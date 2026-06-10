@@ -191,7 +191,7 @@
   align-items: center;
   gap: 10px;
   padding: 14px 32px;
-  background-color: #5168FF;
+  background-color: var(--color-primary);
   color: #F6F8ED;
   border: 1px solid #3a4ecc;
   border-radius: 0;

@@ -22,12 +22,12 @@
     linear-gradient(transparent, transparent) padding-box,
     linear-gradient(
       90deg,
-      #5168FF,
+      var(--color-primary),
       #74C465,
       #E8556D,
       #F2A0B5,
       #a78bfa,
-      #5168FF
+      var(--color-primary)
     ) border-box;
   background-size: 200% 100%;
   background-origin: border-box;
@@ -49,7 +49,7 @@
     repeating-linear-gradient(
       87deg,
       transparent 0px,
-      rgba(81, 104, 255, 0.3) 1px,
+      color-mix(in oklch, var(--color-primary) 30%, transparent) 1px,
       transparent 2px,
       transparent 7px
     ),
@@ -68,7 +68,7 @@
       transparent 10deg 20deg
     ),
     radial-gradient(ellipse 60% 40% at 20% 30%, rgba(232, 85, 109, 0.5) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 50% at 75% 25%, rgba(81, 104, 255, 0.45) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 75% 25%, color-mix(in oklch, var(--color-primary) 45%, transparent) 0%, transparent 70%),
     radial-gradient(ellipse 45% 55% at 50% 75%, rgba(116, 196, 101, 0.4) 0%, transparent 70%),
     radial-gradient(ellipse 55% 35% at 85% 70%, rgba(167, 139, 250, 0.4) 0%, transparent 70%),
     radial-gradient(ellipse 40% 45% at 10% 80%, rgba(242, 160, 181, 0.35) 0%, transparent 70%);
@@ -208,8 +208,8 @@
 }
 
 .cardCompact:hover {
-  box-shadow: 0 4px 16px rgba(81, 104, 255, 0.08);
-  border-color: rgba(81, 104, 255, 0.15);
+  box-shadow: 0 4px 16px color-mix(in oklch, var(--color-primary) 8%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 15%, transparent);
 }
 
 :global(:root:not([data-theme="dark"])) .card {
@@ -222,7 +222,7 @@
     repeating-linear-gradient(
       87deg,
       transparent 0px,
-      rgba(81, 104, 255, 0.08) 1px,
+      color-mix(in oklch, var(--color-primary) 8%, transparent) 1px,
       transparent 2px,
       transparent 10px
     ),
@@ -234,7 +234,7 @@
       transparent 14px
     ),
     radial-gradient(ellipse 58% 42% at 18% 28%, rgba(242, 160, 181, 0.16) 0%, transparent 68%),
-    radial-gradient(ellipse 48% 48% at 76% 24%, rgba(81, 104, 255, 0.14) 0%, transparent 70%),
+    radial-gradient(ellipse 48% 48% at 76% 24%, color-mix(in oklch, var(--color-primary) 14%, transparent) 0%, transparent 70%),
     radial-gradient(ellipse 44% 52% at 52% 76%, rgba(116, 196, 101, 0.12) 0%, transparent 68%);
   filter: saturate(1.02);
   opacity: 1;
@@ -249,14 +249,14 @@
 }
 
 :global(:root:not([data-theme="dark"])) .cardButton:hover {
-  background: linear-gradient(180deg, rgba(81, 104, 255, 0.08) 0%, rgba(81, 104, 255, 0.04) 100%);
+  background: linear-gradient(180deg, color-mix(in oklch, var(--color-primary) 8%, transparent) 0%, color-mix(in oklch, var(--color-primary) 4%, transparent) 100%);
 }
 
 :global(:root:not([data-theme="dark"])) .icon {
   background: linear-gradient(180deg, #ffffff 0%, #eef3ff 100%);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.92),
-    0 8px 18px rgba(81, 104, 255, 0.12);
+    0 8px 18px color-mix(in oklch, var(--color-primary) 12%, transparent);
 }
 
 :global(:root:not([data-theme="dark"])) .label {
@@ -272,12 +272,12 @@
 }
 
 :global(:root:not([data-theme="dark"])) .dayDot {
-  background: rgba(81, 104, 255, 0.08);
-  border-color: rgba(81, 104, 255, 0.12);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 12%, transparent);
 }
 
 :global(:root:not([data-theme="dark"])) .cardCompact:hover {
-  box-shadow: 0 18px 38px rgba(81, 104, 255, 0.16);
+  box-shadow: 0 18px 38px color-mix(in oklch, var(--color-primary) 16%, transparent);
 }
 
 :global(:root:not([data-theme="dark"])) .shardBadge {
@@ -337,22 +337,22 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: #FFFFFF;
-  background: var(--week-color, #5168FF);
+  background: var(--week-color, var(--color-primary));
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(81, 104, 255, 0.25);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 25%, transparent);
   transition: all 0.15s ease;
 }
 
 .startBtn:hover:not(:disabled) {
-  box-shadow: 0 6px 20px rgba(81, 104, 255, 0.35);
+  box-shadow: 0 6px 20px color-mix(in oklch, var(--color-primary) 35%, transparent);
   transform: translateY(-1px);
 }
 
 .startBtn:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(81, 104, 255, 0.2);
+  box-shadow: 0 2px 8px color-mix(in oklch, var(--color-primary) 20%, transparent);
 }
 
 .startBtnDisabled {
@@ -405,15 +405,15 @@
 }
 
 .dayBtnAvailable {
-  background: var(--week-color, #5168FF);
+  background: var(--week-color, var(--color-primary));
   color: #FFFFFF;
-  border-color: var(--week-color, #5168FF);
-  box-shadow: 0 2px 8px rgba(81, 104, 255, 0.2);
+  border-color: var(--week-color, var(--color-primary));
+  box-shadow: 0 2px 8px color-mix(in oklch, var(--color-primary) 20%, transparent);
   cursor: pointer;
 }
 
 .dayBtnAvailable:hover {
-  box-shadow: 0 4px 12px rgba(81, 104, 255, 0.3);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 30%, transparent);
   transform: translateY(-1px);
 }
 
@@ -450,7 +450,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--week-color, #5168FF);
+  background: var(--week-color, var(--color-primary));
   color: #ffffff;
   border: none;
   border-radius: 8px;
@@ -460,7 +460,7 @@
 
 .weekNavBtn:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(81, 104, 255, 0.25);
+  box-shadow: 0 2px 8px color-mix(in oklch, var(--color-primary) 25%, transparent);
 }
 
 .weekNavBtn:disabled {
@@ -517,10 +517,10 @@
   width: min(100%, 520px);
   border-radius: 24px;
   background: linear-gradient(180deg, #f9fafe 0%, #f3f5fc 100%);
-  border: 1px solid rgba(81, 104, 255, 0.08);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 8%, transparent);
   box-shadow:
-    0 20px 48px rgba(81, 104, 255, 0.12),
-    0 0 40px rgba(81, 104, 255, 0.04);
+    0 20px 48px color-mix(in oklch, var(--color-primary) 12%, transparent),
+    0 0 40px color-mix(in oklch, var(--color-primary) 4%, transparent);
   overflow: hidden;
 }
 
@@ -548,7 +548,7 @@
   height: 280px;
   transform: translateX(-50%);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(81, 104, 255, 0.28) 0%, rgba(81, 104, 255, 0.06) 52%, rgba(81, 104, 255, 0) 82%);
+  background: radial-gradient(circle, color-mix(in oklch, var(--color-primary) 28%, transparent) 0%, color-mix(in oklch, var(--color-primary) 6%, transparent) 52%, color-mix(in oklch, var(--color-primary) 0%, transparent) 82%);
   filter: blur(14px);
   animation: authPromptOrbFloat 5.8s ease-in-out infinite;
   z-index: 1;
@@ -566,7 +566,7 @@
   box-shadow:
     inset 0 1.5px 0 rgba(255, 255, 255, 0.4),
     inset -2px -2px 5px rgba(0, 0, 0, 0.12),
-    0 8px 24px rgba(81, 104, 255, 0.28);
+    0 8px 24px color-mix(in oklch, var(--color-primary) 28%, transparent);
   animation: authPromptBubbleBob 4.6s ease-in-out infinite;
   z-index: 3;
 }
@@ -620,7 +620,7 @@
   inset: auto 20px 28px;
   height: 100px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(81, 104, 255, 0.22) 0%, rgba(81, 104, 255, 0.04) 64%, rgba(81, 104, 255, 0) 100%);
+  background: radial-gradient(circle, color-mix(in oklch, var(--color-primary) 22%, transparent) 0%, color-mix(in oklch, var(--color-primary) 4%, transparent) 64%, color-mix(in oklch, var(--color-primary) 0%, transparent) 100%);
   filter: blur(12px);
 }
 
@@ -632,9 +632,9 @@
   height: 36px;
   border-radius: 999px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(240, 246, 255, 0.92) 100%);
-  border: 1px solid rgba(81, 104, 255, 0.1);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 10%, transparent);
   box-shadow:
-    0 16px 32px rgba(81, 104, 255, 0.14),
+    0 16px 32px color-mix(in oklch, var(--color-primary) 14%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.94);
 }
 
@@ -646,7 +646,7 @@
   max-width: 240px;
   object-fit: contain;
   object-position: center 75%;
-  filter: drop-shadow(0 12px 20px rgba(81, 104, 255, 0.18));
+  filter: drop-shadow(0 12px 20px color-mix(in oklch, var(--color-primary) 18%, transparent));
   animation: authPromptAvatarFloat 5s ease-in-out infinite;
 }
 
@@ -660,21 +660,21 @@
   align-items: center;
   justify-content: center;
   background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(81, 104, 255, 0.12);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
   border-radius: 12px;
   cursor: pointer;
   color: #3a3d4d;
   transition: all 0.2s ease;
   z-index: 10;
   padding: 0;
-  box-shadow: 0 4px 12px rgba(81, 104, 255, 0.06);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 6%, transparent);
 }
 
 .authPromptClose:hover:not(:disabled) {
   background: #ffffff;
-  border-color: rgba(81, 104, 255, 0.2);
-  color: #5168FF;
-  box-shadow: 0 6px 16px rgba(81, 104, 255, 0.12);
+  border-color: color-mix(in oklch, var(--color-primary) 20%, transparent);
+  color: var(--color-primary);
+  box-shadow: 0 6px 16px color-mix(in oklch, var(--color-primary) 12%, transparent);
 }
 
 .authPromptTitle {
@@ -726,11 +726,11 @@
 
 .authPromptPrimary {
   color: #ffffff;
-  background: linear-gradient(135deg, #5168FF 0%, #6F7DFF 48%, #7B63FF 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, #6F7DFF 48%, #7B63FF 100%);
   border: none;
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.24),
-    0 8px 20px rgba(81, 104, 255, 0.28),
+    0 8px 20px color-mix(in oklch, var(--color-primary) 28%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
@@ -746,14 +746,14 @@
 .authPromptPrimary:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow:
-    0 12px 28px rgba(81, 104, 255, 0.36),
+    0 12px 28px color-mix(in oklch, var(--color-primary) 36%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 .authPromptPrimary:active:not(:disabled) {
   transform: translateY(0);
   box-shadow:
-    0 6px 16px rgba(81, 104, 255, 0.22),
+    0 6px 16px color-mix(in oklch, var(--color-primary) 22%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
@@ -765,15 +765,15 @@
 .authPromptSecondary {
   color: #3a3d4d;
   background-color: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(81, 104, 255, 0.12);
-  box-shadow: 0 4px 12px rgba(81, 104, 255, 0.06);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 6%, transparent);
 }
 
 .authPromptSecondary:hover:not(:disabled) {
   background-color: rgba(255, 255, 255, 0.8);
-  border-color: rgba(81, 104, 255, 0.2);
+  border-color: color-mix(in oklch, var(--color-primary) 20%, transparent);
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(81, 104, 255, 0.12);
+  box-shadow: 0 6px 16px color-mix(in oklch, var(--color-primary) 12%, transparent);
 }
 
 @keyframes authPromptAvatarFloat {
@@ -831,8 +831,8 @@
   border-radius: 24px;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(246, 248, 255, 0.94) 100%);
-  border: 1px solid rgba(81, 104, 255, 0.12);
-  box-shadow: 0 18px 44px rgba(81, 104, 255, 0.12);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
+  box-shadow: 0 18px 44px color-mix(in oklch, var(--color-primary) 12%, transparent);
 }
 
 .panelStatusHeader {
@@ -1078,7 +1078,7 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: #FFFFFF;
-  background: var(--color-primary, #5168FF);
+  background: var(--color-primary);
   border: none;
   overflow: hidden;
   border-radius: 16px;
@@ -1102,10 +1102,10 @@
 }
 
 :global(:root:not([data-theme="dark"])) .submitBtn {
-  border-color: rgba(81, 104, 255, 0.16);
+  border-color: color-mix(in oklch, var(--color-primary) 16%, transparent);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.18),
-    0 10px 18px rgba(81, 104, 255, 0.14);
+    0 10px 18px color-mix(in oklch, var(--color-primary) 14%, transparent);
 }
 
 /* ─── Confirm Close Dialog ─── */
@@ -1124,7 +1124,7 @@
   width: 100%;
   max-width: 400px;
   background: #1A1D33;
-  border: 1px solid rgba(81, 104, 255, 0.3);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
   border-radius: 16px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   overflow: hidden;
@@ -1134,7 +1134,7 @@
 .confirmTitleBar {
   padding: 12px 16px;
   background: rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid rgba(81, 104, 255, 0.2);
+  border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
 }
 
 .confirmTitleText {
@@ -1188,7 +1188,7 @@
   font-weight: 700;
   color: #FFFFFF;
   background: transparent;
-  border: 1px solid rgba(81, 104, 255, 0.4);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 40%, transparent);
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -1666,7 +1666,7 @@
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.1),
     0 8px 32px rgba(0, 0, 0, 0.7),
-    0 0 0 3px rgba(81, 104, 255, 0.08);
+    0 0 0 3px color-mix(in oklch, var(--color-primary) 8%, transparent);
 }
 
 :global([data-theme="dark"]) .cardSurface {
@@ -1681,7 +1681,7 @@
   box-shadow:
     0 0 0 1px rgba(107, 128, 255, 0.3),
     0 10px 40px rgba(0, 0, 0, 0.75),
-    0 0 20px rgba(81, 104, 255, 0.12);
+    0 0 20px color-mix(in oklch, var(--color-primary) 12%, transparent);
 }
 
 :global([data-theme="dark"]) .cardCompact .icon {
@@ -1698,8 +1698,8 @@
 @media (prefers-color-scheme: dark) {
   .authPromptDialog {
     background: linear-gradient(180deg, #1a1f35 0%, #141923 100%) !important;
-    border-color: rgba(81, 104, 255, 0.12) !important;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(81, 104, 255, 0.08) !important;
+    border-color: color-mix(in oklch, var(--color-primary) 12%, transparent) !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px color-mix(in oklch, var(--color-primary) 8%, transparent) !important;
   }
 
   .authPromptTitle {
@@ -1711,11 +1711,11 @@
   }
 
   .authPromptGlowOrb {
-    background: radial-gradient(circle, rgba(81, 104, 255, 0.36) 0%, rgba(81, 104, 255, 0.08) 48%, rgba(81, 104, 255, 0) 78%);
+    background: radial-gradient(circle, color-mix(in oklch, var(--color-primary) 36%, transparent) 0%, color-mix(in oklch, var(--color-primary) 8%, transparent) 48%, color-mix(in oklch, var(--color-primary) 0%, transparent) 78%);
   }
 
   .authPromptBubble {
-    box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 0.4), inset -2px -2px 5px rgba(0, 0, 0, 0.2), 0 8px 24px rgba(81, 104, 255, 0.32) !important;
+    box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 0.4), inset -2px -2px 5px rgba(0, 0, 0, 0.2), 0 8px 24px color-mix(in oklch, var(--color-primary) 32%, transparent) !important;
   }
 
   .authPromptBubbleSender {
@@ -1728,7 +1728,7 @@
 
   .authPromptAvatarBase {
     background: linear-gradient(180deg, rgba(32, 40, 55, 0.96) 0%, rgba(28, 34, 48, 0.94) 100%);
-    border-color: rgba(81, 104, 255, 0.14);
+    border-color: color-mix(in oklch, var(--color-primary) 14%, transparent);
     box-shadow: 0 16px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 
@@ -1741,9 +1741,9 @@
 
   .authPromptClose:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.12) !important;
-    border-color: rgba(81, 104, 255, 0.24) !important;
+    border-color: color-mix(in oklch, var(--color-primary) 24%, transparent) !important;
     color: rgba(255, 255, 255, 0.94) !important;
-    box-shadow: 0 6px 16px rgba(81, 104, 255, 0.18) !important;
+    box-shadow: 0 6px 16px color-mix(in oklch, var(--color-primary) 18%, transparent) !important;
   }
 
   .authPromptSecondary {
@@ -1755,8 +1755,8 @@
 
   .authPromptSecondary:hover {
     background-color: rgba(255, 255, 255, 0.12) !important;
-    border-color: rgba(81, 104, 255, 0.24) !important;
-    box-shadow: 0 6px 16px rgba(81, 104, 255, 0.18) !important;
+    border-color: color-mix(in oklch, var(--color-primary) 24%, transparent) !important;
+    box-shadow: 0 6px 16px color-mix(in oklch, var(--color-primary) 18%, transparent) !important;
   }
 }
 
@@ -1816,7 +1816,7 @@
   .authPromptPrimary {
     box-shadow:
       inset 0 0 0 1px rgba(255, 255, 255, 0.2),
-      0 8px 18px rgba(81, 104, 255, 0.22);
+      0 8px 18px color-mix(in oklch, var(--color-primary) 22%, transparent);
   }
 
   .authPromptPrimary::before {
@@ -1832,7 +1832,7 @@
   :global([data-theme="dark"]) .authPromptPrimary {
     box-shadow:
       inset 0 0 0 1px rgba(255, 255, 255, 0.16),
-      0 8px 18px rgba(81, 104, 255, 0.18);
+      0 8px 18px color-mix(in oklch, var(--color-primary) 18%, transparent);
   }
 
   :global([data-theme="dark"]) .textarea {
@@ -1856,12 +1856,12 @@
 }
 
 :global([data-theme="dark"]) .submitBtn {
-  background: #5168FF;
+  background: var(--color-primary);
   color: #FFFFFF;
   border-color: rgba(255, 255, 255, 0.08);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 12px 24px rgba(81, 104, 255, 0.24);
+    0 12px 24px color-mix(in oklch, var(--color-primary) 24%, transparent);
 }
 
 :global([data-theme="dark"]) .submitBtn:hover {
@@ -1880,9 +1880,9 @@
 
 :global(:root:not([data-theme="dark"])) .modal {
   background: linear-gradient(180deg, #ffffff 0%, #f6f8ff 100%);
-  border-color: rgba(81, 104, 255, 0.12);
+  border-color: color-mix(in oklch, var(--color-primary) 12%, transparent);
   box-shadow:
-    0 30px 80px rgba(81, 104, 255, 0.18),
+    0 30px 80px color-mix(in oklch, var(--color-primary) 18%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
@@ -1906,8 +1906,8 @@
 :global(:root:not([data-theme="dark"])) .textarea {
   background: #ffffff;
   color: #1a1d33;
-  border-color: rgba(81, 104, 255, 0.16);
-  box-shadow: inset 0 1px 2px rgba(81, 104, 255, 0.04);
+  border-color: color-mix(in oklch, var(--color-primary) 16%, transparent);
+  box-shadow: inset 0 1px 2px color-mix(in oklch, var(--color-primary) 4%, transparent);
 }
 
 :global(:root:not([data-theme="dark"])) .textarea::placeholder {
@@ -1915,7 +1915,7 @@
 }
 
 :global(:root:not([data-theme="dark"])) .textarea:focus {
-  border-color: rgba(81, 104, 255, 0.36);
+  border-color: color-mix(in oklch, var(--color-primary) 36%, transparent);
 }
 
 :global(:root:not([data-theme="dark"])) .confirmOverlay {
@@ -1924,13 +1924,13 @@
 
 :global(:root:not([data-theme="dark"])) .confirmDialog {
   background: #ffffff;
-  border-color: rgba(81, 104, 255, 0.18);
-  box-shadow: 0 20px 60px rgba(81, 104, 255, 0.18);
+  border-color: color-mix(in oklch, var(--color-primary) 18%, transparent);
+  box-shadow: 0 20px 60px color-mix(in oklch, var(--color-primary) 18%, transparent);
 }
 
 :global(:root:not([data-theme="dark"])) .confirmTitleBar {
-  background: rgba(81, 104, 255, 0.06);
-  border-bottom-color: rgba(81, 104, 255, 0.14);
+  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
+  border-bottom-color: color-mix(in oklch, var(--color-primary) 14%, transparent);
 }
 
 :global(:root:not([data-theme="dark"])) .confirmTitleText {
@@ -1944,11 +1944,11 @@
 :global(:root:not([data-theme="dark"])) .confirmBtnResume {
   color: #1a1d33;
   background: transparent;
-  border-color: rgba(81, 104, 255, 0.32);
+  border-color: color-mix(in oklch, var(--color-primary) 32%, transparent);
 }
 
 :global(:root:not([data-theme="dark"])) .confirmBtnResume:hover {
-  background: rgba(81, 104, 255, 0.08);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
 }
 
 :global(:root:not([data-theme="dark"])) .confirmBtnClose {

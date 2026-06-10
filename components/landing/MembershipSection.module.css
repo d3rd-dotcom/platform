@@ -98,13 +98,13 @@
 }
 
 .tierCardPrimary {
-  border-color: var(--color-primary, #5168FF);
-  box-shadow: 0 8px 32px rgba(81, 104, 255, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 8px 32px color-mix(in oklch, var(--color-primary) 10%, transparent);
 }
 
 .tierCardPrimary:hover {
-  border-color: var(--color-primary, #5168FF);
-  box-shadow: 0 12px 40px rgba(81, 104, 255, 0.16);
+  border-color: var(--color-primary);
+  box-shadow: 0 12px 40px color-mix(in oklch, var(--color-primary) 16%, transparent);
 }
 
 .tierCardValue {
@@ -123,7 +123,7 @@
   top: -12px;
   left: 32px;
   padding: 4px 14px;
-  background: var(--color-primary, #5168FF);
+  background: var(--color-primary);
   color: #FFFFFF;
   font-family: var(--font-mono);
   font-size: 10px;
@@ -223,8 +223,8 @@
 }
 
 .featureCheckPrimary {
-  background: rgba(81, 104, 255, 0.1);
-  color: var(--color-primary, #5168FF);
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
+  color: var(--color-primary);
 }
 
 /* ── Buttons ─────────────────────────────────────── */
@@ -258,7 +258,7 @@
   width: 100%;
   margin-top: 28px;
   padding: 14px 24px;
-  background: #5168FF;
+  background: var(--color-primary);
   color: #FFFFFF;
   font-family: var(--font-secondary);
   font-size: 14px;
@@ -266,7 +266,7 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   text-align: center;
-  border: 2px solid #5168FF;
+  border: 2px solid var(--color-primary);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -275,7 +275,7 @@
 .tierBtnPrimary:hover {
   background: #3d51e0;
   border-color: #3d51e0;
-  box-shadow: 0 4px 16px rgba(81, 104, 255, 0.3);
+  box-shadow: 0 4px 16px color-mix(in oklch, var(--color-primary) 30%, transparent);
 }
 
 .tierBtnPrimary:active {
@@ -407,7 +407,7 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #5168FF;
+  background: var(--color-primary);
 }
 
 .mintBtn {
@@ -427,8 +427,8 @@
 }
 
 .mintBtn:hover {
-  background: #5168FF;
-  border-color: #5168FF;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 .mintBtn:active {
@@ -463,7 +463,7 @@
   font-family: var(--font-primary);
   font-size: 12px;
   font-weight: 500;
-  color: #5168FF;
+  color: var(--color-primary);
   text-decoration: none;
 }
 

@@ -58,8 +58,8 @@
   font-size: 0.65rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #5168FF;
-  border: 2px solid #5168FF;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
   padding: 2px 8px;
 }
 
@@ -363,7 +363,7 @@
   height: 4px;
 }
 
-.statTilePrimary::before { background: #5168FF; }
+.statTilePrimary::before { background: var(--color-primary); }
 .statTileAccent::before { background: #FF7729; }
 .statTileTertiary::before { background: #74C465; }
 .statTileSecondary::before { background: #50599B; }
@@ -461,14 +461,14 @@
 }
 
 .dataTable tr:nth-child(even) td {
-  background: rgba(81,104,255,0.03);
+  background: color-mix(in oklch, var(--color-primary) 3%, transparent);
 }
 
 .dataTable tr:hover td {
-  background: rgba(81,104,255,0.07);
+  background: color-mix(in oklch, var(--color-primary) 7%, transparent);
 }
 
-.tdN { color: #5168FF; font-weight: 700; }
+.tdN { color: var(--color-primary); font-weight: 700; }
 .tdMean { color: #1A1B24; }
 .tdSd { color: #50599B; }
 .tdMin { color: #5FA852; }
@@ -501,8 +501,8 @@
 }
 
 .groupControl {
-  background: rgba(81,104,255,0.1);
-  border: 1px solid #5168FF;
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
+  border: 1px solid var(--color-primary);
 }
 
 .groupWaitlist {
@@ -615,7 +615,7 @@
   letter-spacing: 0.1em;
 }
 
-.matrixDiag { background: rgba(81,104,255,0.1); color: #5168FF; }
+.matrixDiag { background: color-mix(in oklch, var(--color-primary) 10%, transparent); color: var(--color-primary); }
 .matrixHighPos { background: rgba(116,196,101,0.25); color: #2d7a1f; }
 .matrixModPos { background: rgba(116,196,101,0.12); color: #3d8a2f; }
 .matrixNeg { background: rgba(255,119,41,0.15); color: #E5631A; }
@@ -699,7 +699,7 @@
 .blueGlyph {
   width: 56px;
   height: 56px;
-  background: #5168FF;
+  background: var(--color-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -713,7 +713,7 @@
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  border: 3px solid rgba(81,104,255,0.5);
+  border: 3px solid color-mix(in oklch, var(--color-primary) 50%, transparent);
   margin-bottom: 8px;
   object-fit: cover;
 }
@@ -723,7 +723,7 @@
   font-size: 0.6rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #5168FF;
+  color: var(--color-primary);
 }
 
 .blueOutputLabel {
@@ -741,7 +741,7 @@
   font-size: 0.88rem;
   color: rgba(255,255,255,0.85);
   line-height: 1.7;
-  border-left: 3px solid #5168FF;
+  border-left: 3px solid var(--color-primary);
   padding-left: 16px;
 }
 
@@ -936,8 +936,8 @@
 }
 
 .btnExport:hover {
-  border-color: #5168FF;
-  color: #5168FF;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 /* ── BOX PLOT ───────────────────────────────────────── */
@@ -964,9 +964,9 @@
 
 .btnGenerate {
   padding: 10px 24px;
-  background: #5168FF;
+  background: var(--color-primary);
   color: #fff;
-  border: 2px solid #5168FF;
+  border: 2px solid var(--color-primary);
   font-family: var(--font-mono);
   font-weight: 600;
   font-size: 0.72rem;
@@ -975,18 +975,18 @@
   cursor: pointer;
   transition: all 200ms ease;
   border-radius: 0;
-  box-shadow: 3px 3px 0 rgba(81,104,255,0.3);
+  box-shadow: 3px 3px 0 color-mix(in oklch, var(--color-primary) 30%, transparent);
 }
 
 .btnGenerate:hover {
   background: #3d52e0;
   transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0 rgba(81,104,255,0.4);
+  box-shadow: 4px 4px 0 color-mix(in oklch, var(--color-primary) 40%, transparent);
 }
 
 .btnGenerate:active {
   transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0 rgba(81,104,255,0.2);
+  box-shadow: 1px 1px 0 color-mix(in oklch, var(--color-primary) 20%, transparent);
 }
 
 /* ── BLUE RATING ───────────────────────────────────── */

@@ -19,7 +19,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--week-color, #5168FF);
+  background: var(--week-color, var(--color-primary));
   animation: loadPulse 1.2s ease-in-out infinite;
 }
 
@@ -58,7 +58,7 @@
 /* ─── Task Card ─── */
 
 .taskCard {
-  --task-accent: #5168FF;
+  --task-accent: var(--color-primary);
   width: 100%;
   background: color-mix(in srgb, var(--task-accent) 7%, #ffffff);
   border: 1px solid color-mix(in srgb, var(--task-accent) 22%, rgba(26, 29, 51, 0.06));
@@ -340,15 +340,15 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--task-accent, var(--week-color, #5168FF));
-  background: color-mix(in srgb, var(--task-accent, var(--week-color, #5168FF)) 10%, transparent);
-  border: 1px solid color-mix(in srgb, var(--task-accent, var(--week-color, #5168FF)) 28%, transparent);
+  color: var(--task-accent, var(--week-color, var(--color-primary)));
+  background: color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 28%, transparent);
   border-radius: 10px;
   cursor: pointer;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   box-shadow:
-    0 4px 14px color-mix(in srgb, var(--task-accent, var(--week-color, #5168FF)) 18%, transparent),
+    0 4px 14px color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 18%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
   transition: all 0.15s ease;
 }
@@ -364,10 +364,10 @@
 }
 
 .markDoneBtn:hover {
-  background: color-mix(in srgb, var(--task-accent, var(--week-color, #5168FF)) 20%, transparent);
-  border-color: color-mix(in srgb, var(--task-accent, var(--week-color, #5168FF)) 48%, transparent);
+  background: color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 20%, transparent);
+  border-color: color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 48%, transparent);
   box-shadow:
-    0 6px 22px color-mix(in srgb, var(--task-accent, var(--week-color, #5168FF)) 30%, transparent),
+    0 6px 22px color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 30%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.18);
   transform: translateY(-1px);
 }
@@ -428,7 +428,7 @@
 
 .progressBarFill {
   height: 100%;
-  background: var(--week-color, #5168FF);
+  background: var(--week-color, var(--color-primary));
   border-radius: 3px;
   transition: width 0.3s ease;
 }
@@ -454,14 +454,14 @@
 
 .sealBtnReady {
   color: #FFFFFF;
-  background: var(--week-color, #5168FF);
-  border-color: var(--week-color, #5168FF);
+  background: var(--week-color, var(--color-primary));
+  border-color: var(--week-color, var(--color-primary));
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(81, 104, 255, 0.25);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 25%, transparent);
 }
 
 .sealBtnReady:hover {
-  box-shadow: 0 6px 20px rgba(81, 104, 255, 0.35);
+  box-shadow: 0 6px 20px color-mix(in oklch, var(--color-primary) 35%, transparent);
   transform: translateY(-1px);
 }
 
@@ -577,7 +577,7 @@
   font-size: 12px;
   font-weight: 700;
   color: #FFFFFF;
-  background: var(--week-color, #5168FF);
+  background: var(--week-color, var(--color-primary));
   border: none;
   border-radius: 10px;
   cursor: pointer;
@@ -603,7 +603,7 @@
   width: 32px;
   height: 32px;
   border: 3px solid #E8E9F0;
-  border-top-color: var(--week-color, #5168FF);
+  border-top-color: var(--week-color, var(--color-primary));
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -664,23 +664,23 @@
 :global([data-theme="dark"]) .taskIcon {
   background: linear-gradient(
     135deg,
-    rgba(81, 104, 255, 0.15) 0%,
+    color-mix(in oklch, var(--color-primary) 15%, transparent) 0%,
     rgba(140, 120, 200, 0.08) 50%,
-    rgba(81, 104, 255, 0.05) 100%
+    color-mix(in oklch, var(--color-primary) 5%, transparent) 100%
   );
   box-shadow:
-    0 0 0 1px rgba(81, 104, 255, 0.15),
+    0 0 0 1px color-mix(in oklch, var(--color-primary) 15%, transparent),
     inset 0 1px 2px rgba(255, 255, 255, 0.06),
-    inset 0 -1px 1px rgba(81, 104, 255, 0.06),
-    0 4px 16px rgba(81, 104, 255, 0.08);
+    inset 0 -1px 1px color-mix(in oklch, var(--color-primary) 6%, transparent),
+    0 4px 16px color-mix(in oklch, var(--color-primary) 8%, transparent);
 }
 
 :global([data-theme="dark"]) .taskCard:hover .taskIcon {
   box-shadow:
-    0 0 0 1px rgba(81, 104, 255, 0.25),
+    0 0 0 1px color-mix(in oklch, var(--color-primary) 25%, transparent),
     inset 0 1px 2px rgba(255, 255, 255, 0.08),
-    inset 0 -1px 1px rgba(81, 104, 255, 0.08),
-    0 6px 20px rgba(81, 104, 255, 0.15);
+    inset 0 -1px 1px color-mix(in oklch, var(--color-primary) 8%, transparent),
+    0 6px 20px color-mix(in oklch, var(--color-primary) 15%, transparent);
 }
 
 :global([data-theme="dark"]) .taskCardHeader:hover {

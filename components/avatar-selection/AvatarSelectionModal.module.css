@@ -102,7 +102,7 @@
 
 .avatarSelected {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(81, 104, 255, 0.2);
+  box-shadow: 0 0 0 4px color-mix(in oklch, var(--color-primary) 20%, transparent);
 }
 
 .avatarImage {
@@ -149,7 +149,7 @@
 .primaryButton:hover:not(:disabled) {
   background: var(--color-primary-hover, #4058e6);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(81, 104, 255, 0.3);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 30%, transparent);
 }
 
 .primaryButton:disabled {

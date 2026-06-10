@@ -25,8 +25,8 @@
   height: 28px;
   border-radius: 50%;
   overflow: hidden;
-  background: rgba(81,104,255,0.12);
-  border: 1.5px solid rgba(81,104,255,0.25);
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 25%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -41,7 +41,7 @@
 .chipInitials {
   font-size: 11px;
   font-weight: 700;
-  color: var(--color-primary, #5168FF);
+  color: var(--color-primary);
   line-height: 1;
 }
 .chipInfo {
@@ -72,7 +72,7 @@
   gap: 3px;
   font-size: 11px;
   font-weight: 600;
-  color: var(--color-primary, #5168FF);
+  color: var(--color-primary);
   flex-shrink: 0;
 }
 
@@ -131,7 +131,7 @@
   height: 40px;
   border-radius: 50%;
   overflow: hidden;
-  background: rgba(81,104,255,0.12);
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -146,7 +146,7 @@
 .drawerInitials {
   font-size: 14px;
   font-weight: 700;
-  color: var(--color-primary, #5168FF);
+  color: var(--color-primary);
 }
 .drawerIdentityText {
   display: flex;
@@ -279,29 +279,29 @@
   flex-shrink: 0;
 }
 .tokenVotes {
-  background: rgba(81,104,255,0.12);
-  color: #5168FF;
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  color: var(--color-primary);
 }
 .tokenVip {
   background: rgba(0,0,0,0.07);
   color: rgba(0,0,0,0.4);
 }
 .tokenVipActive {
-  background: rgba(81,104,255,0.12);
-  color: #5168FF;
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  color: var(--color-primary);
 }
 .tokenUsdc {
   background: rgba(39,117,202,0.10);
 }
 [data-theme="dark"] .tokenVotes {
-  background: rgba(81,104,255,0.18);
+  background: color-mix(in oklch, var(--color-primary) 18%, transparent);
 }
 [data-theme="dark"] .tokenVip {
   background: rgba(255,255,255,0.08);
   color: rgba(255,255,255,0.3);
 }
 [data-theme="dark"] .tokenVipActive {
-  background: rgba(81,104,255,0.20);
+  background: color-mix(in oklch, var(--color-primary) 20%, transparent);
   color: #7B93FF;
 }
 .tokenName {
@@ -449,11 +449,11 @@
 }
 .dayCellOut { opacity: 0.25; }
 .dayCellToday {
-  background: rgba(81,104,255,0.08);
-  outline: 1px solid rgba(81,104,255,0.30);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  outline: 1px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
 }
 .dayCellDone {
-  background: rgba(81,104,255,0.10);
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
 }
 .dayNum {
   font-size: 10px;
@@ -468,6 +468,6 @@
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #5168FF;
+  background: var(--color-primary);
   flex-shrink: 0;
 }

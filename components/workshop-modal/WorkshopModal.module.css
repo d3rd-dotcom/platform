@@ -106,18 +106,18 @@
 }
 
 .tab:hover {
-  background: rgba(81, 104, 255, 0.04);
+  background: color-mix(in oklch, var(--color-primary) 4%, transparent);
   color: #1A1D33;
 }
 
 .tabActive {
-  background: var(--color-primary, #5168FF);
+  background: var(--color-primary);
   color: #FFFFFF;
   font-weight: 700;
 }
 
 .tabActive:hover {
-  background: var(--color-primary, #5168FF);
+  background: var(--color-primary);
   color: #FFFFFF;
 }
 
@@ -189,7 +189,7 @@
 
 .seatBarFill {
   height: 100%;
-  background: var(--color-primary, #5168FF);
+  background: var(--color-primary);
   border-radius: 3px;
   transition: width 0.4s ease;
 }
@@ -252,7 +252,7 @@
 }
 
 .seatOpen:hover:not(:disabled) {
-  background: rgba(81, 104, 255, 0.08);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
   transform: translate(-1px, -1px);
   box-shadow: 3px 3px 0 #1A1D33;
 }
@@ -265,7 +265,7 @@
 }
 
 .seatMine {
-  background: var(--color-primary, #5168FF) !important;
+  background: var(--color-primary) !important;
   border-color: #1A1D33 !important;
   box-shadow: 2px 2px 0 #1A1D33 !important;
 }
@@ -343,7 +343,7 @@
 }
 
 .legendMine {
-  background: var(--color-primary, #5168FF);
+  background: var(--color-primary);
 }
 
 /* Responsive */

@@ -23,7 +23,7 @@
   background: #ffffff;
   border: 1.5px solid var(--color-primary);
   border-radius: 16px;
-  box-shadow: 0 8px 40px rgba(81, 104, 255, 0.18), 0 2px 12px rgba(26, 27, 36, 0.08);
+  box-shadow: 0 8px 40px color-mix(in oklch, var(--color-primary) 18%, transparent), 0 2px 12px rgba(26, 27, 36, 0.08);
   overflow: hidden;
 }
 
@@ -49,7 +49,7 @@
 .quizModalHeader {
   flex-shrink: 0;
   padding: 16px 20px;
-  border-bottom: 1px solid rgba(81, 104, 255, 0.14);
+  border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 14%, transparent);
   background: #ffffff;
 }
 
@@ -101,7 +101,7 @@
 .quizModalProgressContainer {
   width: 100%;
   height: 6px;
-  background: rgba(81, 104, 255, 0.14);
+  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
   border-radius: 99px;
   overflow: hidden;
 }
@@ -135,8 +135,8 @@
 .quizModalQuestion {
   margin-bottom: 20px;
   padding: 16px;
-  background: rgba(81, 104, 255, 0.06);
-  border: 1.5px solid rgba(81, 104, 255, 0.18);
+  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
   border-radius: 12px;
 }
 
@@ -160,7 +160,7 @@
   text-align: left;
   padding: 14px 16px;
   background: #ffffff;
-  border: 1.5px solid rgba(81, 104, 255, 0.2);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
   border-radius: 10px;
   color: #1A1D33;
   cursor: pointer;
@@ -169,19 +169,19 @@
 }
 
 .quizModalOption:hover {
-  background: rgba(81, 104, 255, 0.06);
+  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
   border-color: var(--color-primary);
 }
 
 .quizModalOptionSelected {
-  background: rgba(81, 104, 255, 0.08);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
   border-color: var(--color-primary);
   border-width: 2px;
   color: #1A1D33;
 }
 
 .quizModalOptionSelected:hover {
-  background: rgba(81, 104, 255, 0.1);
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
 }
 
 .quizModalOptionContent {
@@ -196,7 +196,7 @@
   height: 20px;
   border-radius: 50%;
   background: #ffffff;
-  border: 2px solid rgba(81, 104, 255, 0.3);
+  border: 2px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -233,7 +233,7 @@
   gap: 6px;
   padding: 10px;
   background: rgba(246, 247, 255, 0.96);
-  border: 1.5px solid rgba(81, 104, 255, 0.16);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 16%, transparent);
   border-radius: 10px;
 }
 
@@ -256,8 +256,8 @@
   flex-direction: column;
   gap: 12px;
   padding: 14px;
-  background: rgba(81, 104, 255, 0.04);
-  border: 1.5px solid rgba(81, 104, 255, 0.14);
+  background: color-mix(in oklch, var(--color-primary) 4%, transparent);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 14%, transparent);
   border-radius: 12px;
   scroll-margin-top: 72px;
 }
@@ -297,7 +297,7 @@
   width: 100%;
   height: 48px;
   border-radius: 10px;
-  border: 1.5px solid rgba(81, 104, 255, 0.24);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 24%, transparent);
   background: #ffffff;
   color: #1A1D33;
   font-family: var(--font-primary);
@@ -308,7 +308,7 @@
 }
 
 .quizModalLikertOption:hover {
-  background: rgba(81, 104, 255, 0.08);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
   border-color: var(--color-primary);
 }
 
@@ -321,7 +321,7 @@
 .quizModalFooter {
   flex-shrink: 0;
   padding: 16px 20px;
-  border-top: 1.5px solid rgba(81, 104, 255, 0.12);
+  border-top: 1.5px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
   background: rgba(244, 245, 254, 0.6);
 }
 
@@ -351,11 +351,11 @@
 .quizModalButtonSecondary {
   background: #ffffff;
   color: #1A1D33;
-  border-color: rgba(81, 104, 255, 0.2);
+  border-color: color-mix(in oklch, var(--color-primary) 20%, transparent);
 }
 
 .quizModalButtonSecondary:hover:not(:disabled) {
-  background: rgba(81, 104, 255, 0.06);
+  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
   border-color: var(--color-primary);
 }
 
@@ -446,7 +446,7 @@
     padding: 0;
     gap: 0;
     background: #ffffff;
-    border: 1.5px solid rgba(81, 104, 255, 0.16);
+    border: 1.5px solid color-mix(in oklch, var(--color-primary) 16%, transparent);
     border-radius: 14px;
     overflow: hidden;
     scroll-margin-top: 16px;
@@ -454,7 +454,7 @@
 
   .quizModalLikertHead {
     padding: 14px 16px 12px;
-    border-bottom: 1px solid rgba(81, 104, 255, 0.12);
+    border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
   }
 
   .quizModalLikertIndex {
@@ -490,7 +490,7 @@
     height: auto;
     padding: 14px 16px;
     border: 0;
-    border-bottom: 1px solid rgba(81, 104, 255, 0.1);
+    border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 10%, transparent);
     border-radius: 0;
     background: transparent;
     text-align: left;
@@ -501,7 +501,7 @@
   }
 
   .quizModalLikertOption:hover {
-    background: rgba(81, 104, 255, 0.04);
+    background: color-mix(in oklch, var(--color-primary) 4%, transparent);
   }
 
   /* Departure Mono label is the tiny descriptor for "Very much like me" etc. */
@@ -526,13 +526,13 @@
     width: 22px;
     height: 22px;
     border-radius: 50%;
-    border: 2px solid rgba(81, 104, 255, 0.35);
+    border: 2px solid color-mix(in oklch, var(--color-primary) 35%, transparent);
     background: #ffffff;
     transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
   }
 
   .quizModalLikertOptionSelected {
-    background: rgba(81, 104, 255, 0.07);
+    background: color-mix(in oklch, var(--color-primary) 7%, transparent);
     color: inherit;
   }
 
@@ -646,14 +646,14 @@
 
 :global([data-theme="dark"]) .quizModalOption:hover,
 :global([data-theme="dark"]) .quizModalLikertOption:hover {
-  background: rgba(81, 104, 255, 0.14);
+  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
   border-color: rgba(139, 149, 255, 0.56);
   color: #ffffff;
 }
 
 :global([data-theme="dark"]) .quizModalOptionSelected,
 :global([data-theme="dark"]) .quizModalLikertOptionSelected {
-  background: rgba(81, 104, 255, 0.38);
+  background: color-mix(in oklch, var(--color-primary) 38%, transparent);
   border-color: #8b95ff;
   color: #ffffff;
 }
@@ -689,7 +689,7 @@
 }
 
 :global([data-theme="dark"]) .quizModalButtonSecondary:hover:not(:disabled) {
-  background: rgba(81, 104, 255, 0.14);
+  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
   border-color: rgba(139, 149, 255, 0.56);
 }
 
@@ -717,7 +717,7 @@
   }
 
   :global([data-theme="dark"]) .quizModalLikertOption:hover {
-    background: rgba(81, 104, 255, 0.12);
+    background: color-mix(in oklch, var(--color-primary) 12%, transparent);
   }
 
   :global([data-theme="dark"]) .quizModalLikertOptionLabel {
@@ -730,7 +730,7 @@
   }
 
   :global([data-theme="dark"]) .quizModalLikertOptionSelected {
-    background: rgba(81, 104, 255, 0.16);
+    background: color-mix(in oklch, var(--color-primary) 16%, transparent);
   }
 
   :global([data-theme="dark"]) .quizModalLikertOptionSelected .quizModalLikertOptionLabel {

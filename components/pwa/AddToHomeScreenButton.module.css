@@ -128,14 +128,14 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
   flex: 1 1 auto;
   border: 1px solid rgba(255, 255, 255, 0.18);
-  background: linear-gradient(135deg, #5168ff 0%, #7b8fff 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, #7b8fff 100%);
   color: #ffffff;
-  box-shadow: 0 10px 24px rgba(81, 104, 255, 0.28);
+  box-shadow: 0 10px 24px color-mix(in oklch, var(--color-primary) 28%, transparent);
 }
 
 .sheetPrimary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 14px 28px rgba(81, 104, 255, 0.34);
+  box-shadow: 0 14px 28px color-mix(in oklch, var(--color-primary) 34%, transparent);
 }
 
 @media (max-width: 768px) {

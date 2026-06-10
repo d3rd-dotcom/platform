@@ -71,7 +71,7 @@
 }
 
 .zoneRed {
-  background: #5168FF;
+  background: var(--color-primary);
 }
 
 .zoneGreen {
@@ -237,7 +237,7 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-.map :global(.rl-red .rl-cap) { background: #5168FF; }
+.map :global(.rl-red .rl-cap) { background: var(--color-primary); }
 .map :global(.rl-green .rl-cap) { background: #3e8e54; }
-.map :global(.rl-red .rl-pin) { background: #5168FF; }
+.map :global(.rl-red .rl-pin) { background: var(--color-primary); }
 .map :global(.rl-green .rl-pin) { background: #3e8e54; }

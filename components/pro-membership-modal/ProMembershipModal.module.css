@@ -163,8 +163,8 @@
   align-items: flex-start;
   gap: 10px;
   padding: 10px 12px;
-  background: rgba(81, 104, 255, 0.06);
-  border: 1px solid rgba(81, 104, 255, 0.15);
+  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 15%, transparent);
   border-radius: 16px;
   margin-bottom: 8px;
   font-family: var(--font-primary);
@@ -237,12 +237,12 @@
   padding: 2px;
   background: conic-gradient(
     from var(--mwa-rb-angle),
-    #5168FF,
+    var(--color-primary),
     #74C465,
     #E8556D,
     #F2A0B5,
     #a78bfa,
-    #5168FF
+    var(--color-primary)
   );
   animation: rainbowSpin 7s linear infinite;
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -709,7 +709,7 @@
   font-size: 13px;
   font-weight: 700;
   color: #666666;
-  background: rgba(81, 104, 255, 0.08);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
 }
 
 .nodeCheck {

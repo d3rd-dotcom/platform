@@ -166,7 +166,7 @@
 }
 
 .prose blockquote {
-  border-left: 3px solid var(--color-primary, #5168FF);
+  border-left: 3px solid var(--color-primary);
   padding-left: 16px;
   margin: 20px 0;
   font-style: italic;
@@ -213,7 +213,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--color-primary, #5168FF);
+  background: var(--color-primary);
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -228,7 +228,7 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: var(--color-primary, #5168FF);
+  background: var(--color-primary);
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -267,7 +267,7 @@
 }
 
 .commentTextarea:focus {
-  border-color: var(--color-primary, #5168FF);
+  border-color: var(--color-primary);
 }
 
 .commentFormFooter {
@@ -290,7 +290,7 @@
 
 .commentSubmit {
   padding: 8px 20px;
-  background: var(--color-primary, #5168FF);
+  background: var(--color-primary);
   color: #ffffff;
   border: 2px solid #1A1D33;
   border-radius: 8px;

@@ -125,7 +125,7 @@
 }
 
 .secondaryCta:hover {
-  background: rgba(81, 104, 255, 0.04);
+  background: color-mix(in oklch, var(--color-primary) 4%, transparent);
   color: #1A1D33;
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
@@ -176,12 +176,12 @@
   padding: 2px;
   background: linear-gradient(
     90deg,
-    #5168FF,
+    var(--color-primary),
     #74C465,
     #E8556D,
     #F2A0B5,
     #a78bfa,
-    #5168FF
+    var(--color-primary)
   );
   background-size: 200% 100%;
   animation: exchangeBorderShift 6s linear infinite;
@@ -205,7 +205,7 @@
     repeating-linear-gradient(
       87deg,
       transparent 0px,
-      rgba(81, 104, 255, 0.3) 1px,
+      color-mix(in oklch, var(--color-primary) 30%, transparent) 1px,
       transparent 2px,
       transparent 7px
     ),
@@ -226,7 +226,7 @@
     ),
     /* hot spots — larger bleeds */
     radial-gradient(ellipse 60% 40% at 20% 30%, rgba(232, 85, 109, 0.5) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 50% at 75% 25%, rgba(81, 104, 255, 0.45) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 75% 25%, color-mix(in oklch, var(--color-primary) 45%, transparent) 0%, transparent 70%),
     radial-gradient(ellipse 45% 55% at 50% 75%, rgba(116, 196, 101, 0.4) 0%, transparent 70%),
     radial-gradient(ellipse 55% 35% at 85% 70%, rgba(167, 139, 250, 0.4) 0%, transparent 70%),
     radial-gradient(ellipse 40% 45% at 10% 80%, rgba(242, 160, 181, 0.35) 0%, transparent 70%);
@@ -251,7 +251,7 @@
 }
 
 :global(:root:not([data-theme="dark"])) .secondaryCta {
-  box-shadow: 0 18px 38px rgba(81, 104, 255, 0.16);
+  box-shadow: 0 18px 38px color-mix(in oklch, var(--color-primary) 16%, transparent);
 }
 
 :global(:root:not([data-theme="dark"])) .secondaryCta::after {
@@ -260,7 +260,7 @@
     repeating-linear-gradient(
       87deg,
       transparent 0px,
-      rgba(81, 104, 255, 0.08) 1px,
+      color-mix(in oklch, var(--color-primary) 8%, transparent) 1px,
       transparent 2px,
       transparent 10px
     ),
@@ -272,7 +272,7 @@
       transparent 14px
     ),
     radial-gradient(ellipse 58% 42% at 18% 28%, rgba(242, 160, 181, 0.16) 0%, transparent 68%),
-    radial-gradient(ellipse 48% 48% at 76% 24%, rgba(81, 104, 255, 0.14) 0%, transparent 70%),
+    radial-gradient(ellipse 48% 48% at 76% 24%, color-mix(in oklch, var(--color-primary) 14%, transparent) 0%, transparent 70%),
     radial-gradient(ellipse 44% 52% at 52% 76%, rgba(116, 196, 101, 0.12) 0%, transparent 68%);
   filter: saturate(1.02);
   opacity: 1;
@@ -308,8 +308,8 @@
 }
 
 :global(:root:not([data-theme="dark"])) .treasuryHeroCard :global(.icon) {
-  background: rgba(81, 104, 255, 0.1);
-  border-color: rgba(81, 104, 255, 0.18);
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 18%, transparent);
 }
 
 :global(:root:not([data-theme="dark"])) .treasuryHeroCard :global(.title) {
@@ -321,7 +321,7 @@
 }
 
 :global(:root:not([data-theme="dark"])) .treasuryHeroCard :global(.currency) {
-  color: rgba(81, 104, 255, 0.72);
+  color: color-mix(in oklch, var(--color-primary) 72%, transparent);
 }
 
 :global(:root:not([data-theme="dark"])) .treasuryHeroCard :global(.label),
@@ -335,16 +335,16 @@
 
 :global(:root:not([data-theme="dark"])) .votingPowerCard {
   background: linear-gradient(135deg, #ffffff 0%, #f4f6ff 100%);
-  border-color: rgba(81, 104, 255, 0.16);
+  border-color: color-mix(in oklch, var(--color-primary) 16%, transparent);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.94),
-    0 12px 28px rgba(81, 104, 255, 0.1);
+    0 12px 28px color-mix(in oklch, var(--color-primary) 10%, transparent);
 }
 
 :global(:root:not([data-theme="dark"])) .votingPowerCard:hover {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.94),
-    0 16px 32px rgba(81, 104, 255, 0.14);
+    0 16px 32px color-mix(in oklch, var(--color-primary) 14%, transparent);
 }
 
 .reserveCard {
@@ -366,8 +366,8 @@
 }
 
 [data-theme='dark'] .reserveCard {
-  background: linear-gradient(135deg, rgba(81, 104, 255, 0.06) 0%, rgba(116, 196, 101, 0.03) 100%);
-  border: 1px solid rgba(81, 104, 255, 0.12);
+  background: linear-gradient(135deg, color-mix(in oklch, var(--color-primary) 6%, transparent) 0%, rgba(116, 196, 101, 0.03) 100%);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
 }
 
 .reserveHeader {
@@ -391,19 +391,19 @@
 .reserveIcon {
   width: 32px;
   height: 32px;
-  background: rgba(81, 104, 255, 0.12);
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(81, 104, 255, 0.25);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 25%, transparent);
   flex-shrink: 0;
 }
 
 .reserveIcon svg {
   width: 18px;
   height: 18px;
-  color: var(--color-primary, #5168FF);
+  color: var(--color-primary);
 }
 
 .reserveTitleText {
@@ -449,7 +449,7 @@
   font-size: 10px;
   font-weight: 700;
   font-family: var(--font-button);
-  color: rgba(81, 104, 255, 0.85);
+  color: color-mix(in oklch, var(--color-primary) 85%, transparent);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -553,8 +553,8 @@
 }
 
 [data-theme='dark'] .reserveInsightCard {
-  background: linear-gradient(135deg, rgba(81, 104, 255, 0.08) 0%, rgba(116, 196, 101, 0.04) 100%);
-  border: 1px solid rgba(81, 104, 255, 0.12);
+  background: linear-gradient(135deg, color-mix(in oklch, var(--color-primary) 8%, transparent) 0%, rgba(116, 196, 101, 0.04) 100%);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
 }
 
 .reserveInsightCardWide {
@@ -709,8 +709,8 @@
   min-height: 24px;
   padding: 0 8px;
   border-radius: 999px;
-  background: rgba(81, 104, 255, 0.1);
-  color: rgba(81, 104, 255, 0.9);
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
+  color: color-mix(in oklch, var(--color-primary) 90%, transparent);
   font-family: var(--font-button);
   font-size: 10px;
   font-weight: 700;
@@ -841,7 +841,7 @@
 }
 
 .reserveAvatarBlue {
-  background: linear-gradient(135deg, #5168FF 0%, #79c6ff 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, #79c6ff 100%);
 }
 
 .reserveAvatarViolet {
@@ -880,7 +880,7 @@
 
 .recentVotesBar {
   flex: 1;
-  background: linear-gradient(180deg, #5168FF 0%, #79c6ff 100%);
+  background: linear-gradient(180deg, var(--color-primary) 0%, #79c6ff 100%);
   border-radius: 3px 3px 0 0;
   min-height: 4px;
   opacity: 0.8;
@@ -893,7 +893,7 @@
 }
 
 [data-theme='dark'] .recentVotesBar {
-  background: linear-gradient(180deg, #5168FF 0%, #6b7dff 100%);
+  background: linear-gradient(180deg, var(--color-primary) 0%, #6b7dff 100%);
 }
 
 .reserveInsightText {
@@ -1039,7 +1039,7 @@
   flex-direction: column;
   gap: 10px;
   padding: 14px 0 0;
-  border-top: 2px solid rgba(81, 104, 255, 0.15);
+  border-top: 2px solid color-mix(in oklch, var(--color-primary) 15%, transparent);
 }
 
 .reserveFundingList {
@@ -1057,8 +1057,8 @@
   padding: 18px 20px;
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(81, 104, 255, 0.12);
-  border-left: 4px solid var(--funding-accent, #5168FF);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
+  border-left: 4px solid var(--funding-accent, var(--color-primary));
   position: relative;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -1088,7 +1088,7 @@
   top: 0;
   bottom: 0;
   width: 4px;
-  background: linear-gradient(180deg, var(--funding-accent, #5168FF), rgba(81, 104, 255, 0.4));
+  background: linear-gradient(180deg, var(--funding-accent, var(--color-primary)), color-mix(in oklch, var(--color-primary) 40%, transparent));
   border-radius: 10px 0 0 10px;
   opacity: 0;
 }
@@ -1097,7 +1097,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 600px 400px at var(--funding-x, 100%) var(--funding-y, 0%), var(--funding-accent, #5168FF) 0%, transparent 70%);
+  background: radial-gradient(ellipse 600px 400px at var(--funding-x, 100%) var(--funding-y, 0%), var(--funding-accent, var(--color-primary)) 0%, transparent 70%);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -1105,12 +1105,12 @@
 }
 
 .reserveFundingItem:hover {
-  border-color: var(--funding-accent, #5168FF);
+  border-color: var(--funding-accent, var(--color-primary));
   border-left-width: 6px;
   transform: translateY(-2px);
   box-shadow:
-    0 0 32px var(--funding-accent, #5168FF),
-    0 16px 48px rgba(81, 104, 255, 0.24);
+    0 0 32px var(--funding-accent, var(--color-primary)),
+    0 16px 48px color-mix(in oklch, var(--color-primary) 24%, transparent);
   background: rgba(255, 255, 255, 0.98);
 }
 
@@ -1152,14 +1152,14 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--color-primary);
-  background: rgba(81, 104, 255, 0.14);
+  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
   padding: 10px 16px;
   border-radius: 10px;
   min-width: 100px;
   text-align: right;
   position: relative;
   z-index: 2;
-  border: 2px solid rgba(81, 104, 255, 0.2);
+  border: 2px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
 }
 
 @media (max-width: 768px) {
@@ -1448,14 +1448,14 @@
 .demoContainer {
   width: min(350px, 90vw);
   background: #0a0a12;
-  border: 2px solid #5168FF;
+  border: 2px solid var(--color-primary);
   border-radius: 4px;
   position: relative;
   overflow: hidden;
   box-shadow:
-    0 0 40px rgba(81, 104, 255, 0.35),
-    0 0 80px rgba(81, 104, 255, 0.15),
-    inset 0 0 40px rgba(81, 104, 255, 0.05);
+    0 0 40px color-mix(in oklch, var(--color-primary) 35%, transparent),
+    0 0 80px color-mix(in oklch, var(--color-primary) 15%, transparent),
+    inset 0 0 40px color-mix(in oklch, var(--color-primary) 5%, transparent);
   animation: demoSlideIn 0.25s ease;
 }
 
@@ -1469,8 +1469,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 16px;
-  background: linear-gradient(90deg, rgba(81, 104, 255, 0.15) 0%, transparent 100%);
-  border-bottom: 1px solid rgba(81, 104, 255, 0.3);
+  background: linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 15%, transparent) 0%, transparent 100%);
+  border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
 }
 
 .demoLabel {
@@ -1479,14 +1479,14 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #5168FF;
+  color: var(--color-primary);
 }
 
 .demoClose {
   background: none;
-  border: 1px solid rgba(81, 104, 255, 0.3);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
   border-radius: 2px;
-  color: #5168FF;
+  color: var(--color-primary);
   font-size: 18px;
   line-height: 1;
   width: 28px;
@@ -1499,8 +1499,8 @@
 }
 
 .demoClose:hover {
-  background: rgba(81, 104, 255, 0.2);
-  border-color: #5168FF;
+  background: color-mix(in oklch, var(--color-primary) 20%, transparent);
+  border-color: var(--color-primary);
 }
 
 .demoVideoWrapper {
@@ -1531,8 +1531,8 @@
     0deg,
     transparent,
     transparent 2px,
-    rgba(81, 104, 255, 0.03) 2px,
-    rgba(81, 104, 255, 0.03) 4px
+    color-mix(in oklch, var(--color-primary) 3%, transparent) 2px,
+    color-mix(in oklch, var(--color-primary) 3%, transparent) 4px
   );
   z-index: 1;
 }
@@ -1641,7 +1641,7 @@
 
 .dashboardChrome {
   --dashboard-bg:
-    radial-gradient(circle at 100% 0%, rgba(81, 104, 255, 0.08), transparent 34%),
+    radial-gradient(circle at 100% 0%, color-mix(in oklch, var(--color-primary) 8%, transparent), transparent 34%),
     linear-gradient(180deg, rgba(246, 247, 252, 0.96) 0%, rgba(236, 238, 248, 0.92) 100%);
   --dashboard-border: var(--community-light-card-border-strong);
   --dashboard-divider: rgba(26, 27, 36, 0.08);
@@ -1651,7 +1651,7 @@
   --dashboard-control-bg: rgba(26, 27, 36, 0.035);
   --dashboard-control-border: rgba(102, 86, 185, 0.24);
   --dashboard-panel-bg:
-    radial-gradient(circle at 100% 0%, rgba(81, 104, 255, 0.12), transparent 38%),
+    radial-gradient(circle at 100% 0%, color-mix(in oklch, var(--color-primary) 12%, transparent), transparent 38%),
     rgba(255, 255, 255, 0.72);
   --dashboard-panel-border: var(--community-light-card-border);
   --dashboard-panel-shadow:
@@ -2060,8 +2060,8 @@
   width: 8px;
   height: 8px;
   border-radius: 999px;
-  background: #5168FF;
-  box-shadow: 0 0 0 4px rgba(81, 104, 255, 0.14);
+  background: var(--color-primary);
+  box-shadow: 0 0 0 4px color-mix(in oklch, var(--color-primary) 14%, transparent);
 }
 
 .communityTabs {
@@ -3039,7 +3039,7 @@
   flex-direction: column;
   gap: 12px;
   border-color: rgba(255, 255, 255, 0.12);
-  background: linear-gradient(150deg, #6175ff 0%, #5168ff 48%, #3f4fd6 100%);
+  background: linear-gradient(150deg, #6175ff 0%, var(--color-primary) 48%, #3f4fd6 100%);
   box-shadow: 0 9px 20px rgba(94, 88, 214, 0.2);
   color: #ffffff;
 }
@@ -3161,7 +3161,7 @@
   position: relative;
   overflow: hidden;
   border-color: rgba(255, 255, 255, 0.12);
-  background: linear-gradient(150deg, #6175ff 0%, #5168ff 48%, #3f4fd6 100%);
+  background: linear-gradient(150deg, #6175ff 0%, var(--color-primary) 48%, #3f4fd6 100%);
   box-shadow: 0 9px 20px rgba(94, 88, 214, 0.2);
 }
 
@@ -3322,7 +3322,7 @@
   width: 100%;
   background:
     radial-gradient(circle at top right, rgba(140, 196, 255, 0.18), transparent 42%),
-    linear-gradient(160deg, #5168FF 0%, #3A4ACC 100%);
+    linear-gradient(160deg, var(--color-primary) 0%, #3A4ACC 100%);
   border: 1px solid rgba(198, 220, 255, 0.22);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.24),
@@ -3493,7 +3493,7 @@
   flex-shrink: 0;
   padding: 4px 10px;
   border-radius: var(--radius-md);
-  background: rgba(81, 104, 255, 0.12);
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
   color: var(--color-primary);
   font-family: var(--font-primary);
   font-size: 12px;
@@ -3586,7 +3586,7 @@
   margin-top: 12px;
   padding: 12px 16px;
   border-radius: var(--radius-lg);
-  background: rgba(81, 104, 255, 0.08);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
   border: 2px solid #1A1D33;
 }
 
@@ -3669,7 +3669,7 @@
 }
 
 .linkGhost:hover {
-  background: rgba(81, 104, 255, 0.1);
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
   transform: translate(-1px, -1px);
   box-shadow: 3px 3px 0 #1A1D33;
 }
@@ -3881,7 +3881,7 @@
 .submissionQuote {
   position: relative;
   padding: 16px;
-  background: rgba(81, 104, 255, 0.08);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
   border: 2px solid #1A1D33;
   border-radius: var(--radius-lg);
 }
@@ -4103,7 +4103,7 @@
 .loadingState .spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid rgba(81, 104, 255, 0.2);
+  border: 3px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
   border-top-color: var(--color-primary);
   border-radius: var(--radius-full);
   animation: spin 1s linear infinite;
@@ -4281,7 +4281,7 @@
   font-size: 12px;
   font-weight: 700;
   color: var(--color-primary);
-  background: rgba(81, 104, 255, 0.1);
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
   padding: 6px 12px;
   border-radius: var(--radius-md);
   border: 2px solid #1A1D33;
@@ -4331,7 +4331,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
-  background: rgba(81, 104, 255, 0.08);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
   border: 2px solid #1A1D33;
   border-radius: var(--radius-lg);
   gap: 12px;
@@ -5140,7 +5140,7 @@
 }
 
 :global([data-theme="dark"]) .reserveAllocationShare {
-  background: rgba(81, 104, 255, 0.16);
+  background: color-mix(in oklch, var(--color-primary) 16%, transparent);
   color: rgba(166, 180, 255, 0.98);
 }
 
@@ -5534,7 +5534,7 @@
 
 :global([data-theme="dark"]) .dashCard {
   background:
-    linear-gradient(145deg, rgba(81, 104, 255, 0.06) 0%, rgba(47, 183, 160, 0.03) 100%),
+    linear-gradient(145deg, color-mix(in oklch, var(--color-primary) 6%, transparent) 0%, rgba(47, 183, 160, 0.03) 100%),
     color-mix(in oklch, var(--color-surface-1) 96%, var(--color-primary));
   border-color: rgba(129, 144, 255, 0.14);
   box-shadow:
@@ -5545,9 +5545,9 @@
 /* Keep the restyled blue cards blue in dark mode */
 :global([data-theme="dark"]) .treasuryBalanceCard,
 :global([data-theme="dark"]) .recentActivityCard {
-  background: linear-gradient(150deg, #6175ff 0%, #5168ff 48%, #3f4fd6 100%);
+  background: linear-gradient(150deg, #6175ff 0%, var(--color-primary) 48%, #3f4fd6 100%);
   border-color: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 12px 28px rgba(81, 104, 255, 0.28);
+  box-shadow: 0 12px 28px color-mix(in oklch, var(--color-primary) 28%, transparent);
 }
 
 :global([data-theme="dark"]) .treasuryBalanceCard .treasuryBalanceDelta {

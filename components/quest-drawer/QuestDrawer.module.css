@@ -18,9 +18,9 @@
 }
 
 .drawer {
-  --tone: #5168ff;
-  --tone-soft: rgba(81, 104, 255, 0.12);
-  --tone-tint: rgba(81, 104, 255, 0.06);
+  --tone: var(--color-primary);
+  --tone-soft: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  --tone-tint: color-mix(in oklch, var(--color-primary) 6%, transparent);
   position: fixed;
   top: 0;
   right: 0;
@@ -44,9 +44,9 @@
 }
 
 .drawer[data-tone='course'] {
-  --tone: #5168ff;
-  --tone-soft: rgba(81, 104, 255, 0.14);
-  --tone-tint: rgba(81, 104, 255, 0.06);
+  --tone: var(--color-primary);
+  --tone-soft: color-mix(in oklch, var(--color-primary) 14%, transparent);
+  --tone-tint: color-mix(in oklch, var(--color-primary) 6%, transparent);
 }
 
 .drawer[data-tone='submit'] {
@@ -622,7 +622,7 @@
 }
 
 :global([data-theme='dark']) .closeButton:hover {
-  background: rgba(81, 104, 255, 0.18);
+  background: color-mix(in oklch, var(--color-primary) 18%, transparent);
   color: #eaf0ff;
 }
 
@@ -691,17 +691,17 @@
 }
 
 :global([data-theme='dark']) .uploadZone {
-  background: rgba(81, 104, 255, 0.12);
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
   border-color: rgba(150, 170, 255, 0.28);
 }
 
 :global([data-theme='dark']) .primaryButton {
-  background: linear-gradient(180deg, #5168ff 0%, #3e51d8 100%);
-  box-shadow: 0 16px 30px rgba(81, 104, 255, 0.32);
+  background: linear-gradient(180deg, var(--color-primary) 0%, #3e51d8 100%);
+  box-shadow: 0 16px 30px color-mix(in oklch, var(--color-primary) 32%, transparent);
 }
 
 :global([data-theme='dark']) .primaryButton:hover:not(:disabled) {
-  box-shadow: 0 22px 38px rgba(81, 104, 255, 0.38);
+  box-shadow: 0 22px 38px color-mix(in oklch, var(--color-primary) 38%, transparent);
 }
 
 :global([data-theme='dark']) .smallButton {
@@ -711,7 +711,7 @@
 }
 
 :global([data-theme='dark']) .smallButton:hover:not(:disabled) {
-  background: rgba(81, 104, 255, 0.16);
+  background: color-mix(in oklch, var(--color-primary) 16%, transparent);
 }
 
 @media (prefers-reduced-motion: reduce) {

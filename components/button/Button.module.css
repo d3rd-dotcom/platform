@@ -1,5 +1,5 @@
 /* Shared bulky CTA button — Figma "Button Bulky, 9sp/Variant5" (id 1683:8947).
-   #5168FF Academy Blue fill, 1px black stroke, 6px radius, drop shadow plus
+   var(--color-primary) Academy Blue fill, 1px black stroke, 6px radius, drop shadow plus
    top white + bottom dark inner-shadow bevels for the chunky 3D look. */
 
 .button {
@@ -11,7 +11,7 @@
   min-height: 60px;
   border: 1px solid #000000;
   border-radius: 6px;
-  background: var(--color-primary, #5168ff);
+  background: var(--color-primary);
   color: #ffffff;
   font-family: var(--font-primary);
   font-size: 16px;
@@ -34,7 +34,7 @@
 }
 
 .button:hover:not(:disabled):not([aria-disabled='true']) {
-  background: var(--color-primary-hover, #324be4);
+  background: var(--color-primary-hover);
   transform: translateY(-1px);
   box-shadow:
     0 6px 6px rgba(0, 0, 0, 0.28),
@@ -51,7 +51,7 @@
 }
 
 .button:focus-visible {
-  outline: 2px solid var(--color-primary, #5168ff);
+  outline: 2px solid var(--color-primary);
   outline-offset: 3px;
 }
 

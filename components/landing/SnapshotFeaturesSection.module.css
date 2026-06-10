@@ -10,7 +10,7 @@
   position: relative;
   max-width: 1280px;
   margin: 0 auto;
-  background-color: rgba(81, 104, 255, 0.2);
+  background-color: color-mix(in oklch, var(--color-primary) 20%, transparent);
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-top: 0;
 }

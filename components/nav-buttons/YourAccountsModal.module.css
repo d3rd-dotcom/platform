@@ -52,7 +52,7 @@
   width: 48px;
   height: 5px;
   border-radius: 999px;
-  background: rgba(81, 104, 255, 0.24);
+  background: color-mix(in oklch, var(--color-primary) 24%, transparent);
 }
 
 .modalHeader {
@@ -60,7 +60,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
-  border-bottom: 1px solid rgba(81, 104, 255, 0.2);
+  border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
 }
 
 .modalTitle {
@@ -132,8 +132,8 @@
 
 .bgPluses {
   background-image: 
-    repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(81, 104, 255, 0.03) 20px, rgba(81, 104, 255, 0.03) 21px),
-    repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(81, 104, 255, 0.03) 20px, rgba(81, 104, 255, 0.03) 21px);
+    repeating-linear-gradient(0deg, transparent, transparent 20px, color-mix(in oklch, var(--color-primary) 3%, transparent) 20px, color-mix(in oklch, var(--color-primary) 3%, transparent) 21px),
+    repeating-linear-gradient(90deg, transparent, transparent 20px, color-mix(in oklch, var(--color-primary) 3%, transparent) 20px, color-mix(in oklch, var(--color-primary) 3%, transparent) 21px);
 }
 
 .connectionsModal {
@@ -173,7 +173,7 @@
   align-items: center;
   padding: 16px 20px;
   background: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(81, 104, 255, 0.2);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
   border-radius: 12px;
   transition: all 0.3s ease;
 }
@@ -195,12 +195,12 @@
 }
 
 .shadowInnerGlow {
-  box-shadow: inset 0 2px 8px rgba(81, 104, 255, 0.1);
+  box-shadow: inset 0 2px 8px color-mix(in oklch, var(--color-primary) 10%, transparent);
 }
 
 .animatedButton {
   background: transparent;
-  border: 1px solid rgba(81, 104, 255, 0.3);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
   border-radius: 8px;
   padding: 8px 16px;
   cursor: pointer;
@@ -216,7 +216,7 @@
 }
 
 .animatedButton:hover {
-  background: rgba(81, 104, 255, 0.1);
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
   border-color: var(--color-primary);
 }
 
@@ -247,7 +247,7 @@
   align-items: center;
   padding: 16px 20px;
   background: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(81, 104, 255, 0.2);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
   border-radius: 12px;
 }
 
@@ -279,7 +279,7 @@
   justify-content: center;
   padding: 40px 20px;
   background: rgba(255, 255, 255, 0.4);
-  border: 1px dashed rgba(81, 104, 255, 0.3);
+  border: 1px dashed color-mix(in oklch, var(--color-primary) 30%, transparent);
   border-radius: 12px;
   text-align: center;
   gap: 8px;
@@ -337,7 +337,7 @@
 .btn.wide:hover {
   background: #3d52e6;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(81, 104, 255, 0.3);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 30%, transparent);
 }
 
 .socialConnectButton {

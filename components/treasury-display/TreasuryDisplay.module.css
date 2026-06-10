@@ -221,7 +221,7 @@
   border-radius: 999px;
   background: linear-gradient(
     90deg,
-    #5168FF 0%,
+    var(--color-primary) 0%,
     #74C465 28%,
     #E8556D 56%,
     #F2A0B5 78%,

@@ -5,7 +5,7 @@
   min-height: 100vh;
   z-index: 0;
   background:
-    radial-gradient(circle at top left, rgba(81, 104, 255, 0.14), transparent 34%),
+    radial-gradient(circle at top left, color-mix(in oklch, var(--color-primary) 14%, transparent), transparent 34%),
     radial-gradient(circle at top right, rgba(232, 85, 109, 0.12), transparent 30%),
     linear-gradient(180deg, #090b11 0%, #05070b 100%);
 }
@@ -39,7 +39,7 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: radial-gradient(circle at center, rgba(81, 104, 255, 0.55), rgba(81, 104, 255, 0.12) 60%, transparent 72%);
+  background: radial-gradient(circle at center, color-mix(in oklch, var(--color-primary) 55%, transparent), color-mix(in oklch, var(--color-primary) 12%, transparent) 60%, transparent 72%);
   animation: shellPulse 1.4s ease-in-out infinite;
 }
 
@@ -57,7 +57,7 @@
 /* Light theme */
 :global(:root:not([data-theme="dark"])) .shell {
   background:
-    radial-gradient(circle at top left, rgba(81, 104, 255, 0.12), transparent 34%),
+    radial-gradient(circle at top left, color-mix(in oklch, var(--color-primary) 12%, transparent), transparent 34%),
     radial-gradient(circle at top right, rgba(232, 85, 109, 0.1), transparent 30%),
     linear-gradient(180deg, #f8faff 0%, #eef3ff 100%);
 }

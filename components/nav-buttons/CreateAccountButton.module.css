@@ -4,7 +4,7 @@
   background: linear-gradient(
     90deg,
     #EBEBEB 0%,
-    #5168FF 50%,
+    var(--color-primary) 50%,
     #EBEBEB 100%
   );
   border: 1.17px solid;
@@ -25,7 +25,7 @@
 
 .createAccountButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(81, 104, 255, 0.3);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 30%, transparent);
 }
 
 .buttonText {
@@ -89,7 +89,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 14px 16px;
-  border-bottom: 1px solid rgba(81, 104, 255, 0.2);
+  border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
 }
 
 .modalTitle {
@@ -129,7 +129,7 @@
 
 .input {
   width: 100%;
-  border: 1px solid rgba(81, 104, 255, 0.25);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 25%, transparent);
   border-radius: 12px;
   padding: 10px 12px;
   font-family: var(--font-primary);
@@ -149,7 +149,7 @@
   justify-content: flex-end;
   align-items: center;
   padding: 14px 16px;
-  border-top: 1px solid rgba(81, 104, 255, 0.2);
+  border-top: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
   flex-wrap: wrap;
 }
 
@@ -157,7 +157,7 @@
 .secondaryButton {
   padding: 10px 14px;
   border-radius: 12px;
-  border: 1px solid rgba(81, 104, 255, 0.35);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 35%, transparent);
   cursor: pointer;
   font-family: var(--font-button);
 }
@@ -191,7 +191,7 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: rgba(81, 104, 255, 0.2);
+  background: color-mix(in oklch, var(--color-primary) 20%, transparent);
 }
 
 .dividerText {

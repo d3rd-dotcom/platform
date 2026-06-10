@@ -85,7 +85,8 @@ export default function CreditScore({ showLoader = true }: CreditScoreProps) {
             cy="50"
             r="45"
             fill="none"
-            stroke="rgba(81, 104, 255, 0.1)"
+            stroke="var(--color-primary)"
+            strokeOpacity="0.1"
             strokeWidth="8"
           />
           <circle
@@ -93,7 +94,7 @@ export default function CreditScore({ showLoader = true }: CreditScoreProps) {
             cy="50"
             r="45"
             fill="none"
-            stroke="#5168FF"
+            stroke="var(--color-primary)"
             strokeWidth="8"
             strokeDasharray={`${scorePercentage * 2.827} 282.7`}
             strokeDashoffset="0"

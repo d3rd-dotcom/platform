@@ -136,7 +136,7 @@
 .toolCard:not(.toolCardDisabled):hover {
   transform: translate(-2px, -2px);
   box-shadow: 6px 6px 0 #1A1D33;
-  background: rgba(81, 104, 255, 0.25);
+  background: color-mix(in oklch, var(--color-primary) 25%, transparent);
 }
 
 .toolCardDisabled {
@@ -180,12 +180,12 @@
 }
 
 .toolCardReviser {
-  background: rgba(81, 104, 255, 0.15);
+  background: color-mix(in oklch, var(--color-primary) 15%, transparent);
   border-color: #1A1D33;
 }
 
 .toolCardReviser:hover {
-  background: rgba(81, 104, 255, 0.25);
+  background: color-mix(in oklch, var(--color-primary) 25%, transparent);
 }
 
 .toolCardWeeklyReflection {
@@ -254,12 +254,12 @@
 .agentCard:hover {
   transform: translate(-2px, -2px);
   box-shadow: 6px 6px 0 #1A1D33;
-  background: rgba(81, 104, 255, 0.1);
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
 }
 
 .agentCardActive {
   border-color: var(--color-primary);
-  background: rgba(81, 104, 255, 0.15);
+  background: color-mix(in oklch, var(--color-primary) 15%, transparent);
   box-shadow: 4px 4px 0 var(--color-primary);
 }
 
@@ -351,14 +351,14 @@
 }
 
 .actionCard:hover {
-  background: rgba(81, 104, 255, 0.25);
+  background: color-mix(in oklch, var(--color-primary) 25%, transparent);
   transform: translate(-1px, -1px);
   box-shadow: 3px 3px 0 #1A1D33;
 }
 
 .actionCardActive {
   border-color: var(--color-primary);
-  background: rgba(81, 104, 255, 0.2);
+  background: color-mix(in oklch, var(--color-primary) 20%, transparent);
   box-shadow: 3px 3px 0 var(--color-primary);
 }
 
@@ -515,7 +515,7 @@
 }
 
 .secondary:hover {
-  background: rgba(81, 104, 255, 0.25);
+  background: color-mix(in oklch, var(--color-primary) 25%, transparent);
 }
 
 .output {

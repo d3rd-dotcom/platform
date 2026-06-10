@@ -3,9 +3,9 @@
   flex-direction: column;
   gap: 12px;
   padding: 16px;
-  background: rgba(81, 104, 255, 0.04);
+  background: color-mix(in oklch, var(--color-primary) 4%, transparent);
   border-radius: 12px;
-  border: 1px solid rgba(81, 104, 255, 0.1);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 10%, transparent);
   margin: 16px 0;
 }
 
@@ -31,13 +31,13 @@
   padding: 12px;
   background: rgba(255, 255, 255, 0.6);
   border-radius: 8px;
-  border: 1px solid rgba(81, 104, 255, 0.08);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 8%, transparent);
   transition: all 0.2s ease;
 }
 
 .item:hover {
-  background: rgba(81, 104, 255, 0.08);
-  border-color: rgba(81, 104, 255, 0.15);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 15%, transparent);
 }
 
 .item.skeleton {
@@ -70,7 +70,7 @@
 
 .amount {
   font-size: 12px;
-  color: #5168FF;
+  color: var(--color-primary);
   font-weight: 600;
 }
 
