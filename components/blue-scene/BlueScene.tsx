@@ -182,7 +182,10 @@ export default function BlueScene() {
       <div className={styles.sky} aria-hidden="true" />
 
       <header className={styles.header}>
-        <h2 className={styles.title}>POP THE BALLOON</h2>
+        <h2 className={styles.title}>The balloon experiment</h2>
+        <p className={styles.subtitle}>
+          Every balloon popped here, by anyone, adds to one shared number.
+        </p>
       </header>
 
       <div className={styles.counters}>
