@@ -10,6 +10,9 @@
 
 .mainArea {
   min-width: 0;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
 }
 
 .sideStack {

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
+import BlueScene from '@/components/blue-scene/BlueScene';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
 import InventoryPanel from '@/components/inventory-panel/InventoryPanel';
 import type { CourseData } from '@/lib/personal-course';
@@ -64,7 +65,9 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
   return (
     <div className={styles.dashboard}>
       {/* ── Main content area ── */}
-      <main className={styles.mainArea} />
+      <main className={styles.mainArea}>
+        <BlueScene />
+      </main>
 
       {/* ── Side: leaderboard, morning note, membership ── */}
       <aside className={styles.sideStack}>

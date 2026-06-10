@@ -1,0 +1,267 @@
+.scene {
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+  min-height: 620px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface-1);
+}
+
+.sky {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--color-primary) 14%, var(--color-surface-1)) 0%,
+    color-mix(in oklch, var(--color-primary) 5%, var(--color-surface-1)) 55%,
+    var(--color-surface-1) 100%
+  );
+}
+
+.header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  padding: 20px 22px;
+  max-width: 60%;
+  pointer-events: none;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-dark);
+}
+
+.subtitle {
+  margin: 4px 0 0;
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.counters {
+  position: absolute;
+  top: 20px;
+  right: 22px;
+  z-index: 3;
+  display: flex;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.counterChip {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 6px 11px;
+  background: color-mix(in oklch, var(--color-surface-1) 86%, transparent);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.counterLabel {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-faint);
+}
+
+.counterValue {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-md);
+  color: var(--color-text-dark);
+}
+
+/* ── Balloons ── */
+
+.balloon {
+  position: absolute;
+  bottom: -150px;
+  z-index: 2;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.balloonRising {
+  animation: rise var(--rise-duration) linear forwards;
+}
+
+/* Pause the rise so the burst plays where the balloon was popped. */
+.balloonPopped {
+  animation-play-state: paused;
+  pointer-events: none;
+}
+
+.balloon svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.12));
+  animation: sway 2.4s ease-in-out var(--sway-delay) infinite alternate;
+}
+
+.balloon:hover svg {
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.2)) brightness(1.06);
+}
+
+@keyframes rise {
+  to {
+    transform: translateY(-1100px);
+  }
+}
+
+@keyframes sway {
+  from {
+    transform: translateX(-8px) rotate(-3deg);
+  }
+  to {
+    transform: translateX(8px) rotate(3deg);
+  }
+}
+
+/* Reduced motion: balloons fade in at fixed spots instead of rising. */
+.balloonStatic {
+  bottom: auto;
+  animation: balloonFadeIn 0.5s ease;
+}
+
+.balloonStatic svg {
+  animation: none;
+}
+
+@keyframes balloonFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── Pop burst ── */
+
+.burst {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 60 / 108;
+}
+
+.particle {
+  position: absolute;
+  left: 50%;
+  top: 26%;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: burstFly 0.4s var(--ease-out) forwards;
+}
+
+@keyframes burstFly {
+  from {
+    transform: rotate(var(--angle)) translateX(4px);
+    opacity: 1;
+  }
+  to {
+    transform: rotate(var(--angle)) translateX(36px);
+    opacity: 0;
+  }
+}
+
+/* ── Blue ── */
+
+/* The source art is cropped at the bottom, so Blue must always sit flush on
+   the scene's bottom edge — never translate or float her vertically. */
+.blueWrap {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  width: min(48%, 340px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+
+.blueImage {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.bubble {
+  position: relative;
+  margin-bottom: 10px;
+  max-width: 250px;
+  padding: 9px 13px;
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
+  text-align: center;
+  color: var(--color-text-soft);
+  animation: bubbleIn 0.3s var(--ease-bounce);
+}
+
+.bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  background: inherit;
+  border-right: 1px solid var(--color-border-subtle);
+  border-bottom: 1px solid var(--color-border-subtle);
+  transform: rotate(45deg);
+}
+
+@keyframes bubbleIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 1024px) {
+  .scene {
+    min-height: 480px;
+  }
+
+  .blueWrap {
+    width: min(60%, 300px);
+  }
+
+  .header {
+    max-width: 100%;
+    padding: 16px 18px;
+  }
+
+  .counters {
+    top: auto;
+    bottom: 14px;
+    right: 14px;
+  }
+}
