@@ -1219,7 +1219,7 @@ export default function ResearchTab() {
             <div className={styles.sectionLabel}>07 — Blue Statistical Interpretation</div>
             <div className={styles.bluePanel}>
               <div className={styles.blueId}>
-                <Image src="https://i.imgur.com/3Y3KrnJ.png" alt="Blue" width={56} height={56} className={styles.bluePfp} unoptimized />
+                <Image src="/blue/blue-home.png" alt="Blue" width={72} height={72} className={styles.bluePfp} />
                 <div className={styles.blueNameLabel}>Blue</div>
               </div>
               <div>

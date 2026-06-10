@@ -169,8 +169,6 @@
   grid-template-columns: 1fr;
   gap: 32px;
   min-width: 0;
-  max-width: 680px;
-  margin: 0 auto;
 }
 
 .entryPanel > * {
@@ -710,12 +708,13 @@
 }
 
 .bluePfp {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  border: 3px solid color-mix(in oklch, var(--color-primary) 50%, transparent);
-  margin-bottom: 8px;
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
+  border: 2px solid color-mix(in oklch, var(--color-primary) 55%, transparent);
+  margin-bottom: 10px;
   object-fit: cover;
+  background: color-mix(in oklch, var(--color-primary) 12%, #1A1B24);
 }
 
 .blueNameLabel {
@@ -1022,9 +1021,9 @@
 }
 
 .ratingBtnActiveDown {
-  border-color: #FF8C42;
-  color: #FF8C42;
-  background: rgba(255,140,66,0.15);
+  border-color: #FF7729;
+  color: #FF7729;
+  background: rgba(255,119,41,0.15);
 }
 
 @media (max-width: 400px) {
