@@ -156,3 +156,12 @@
     padding-bottom: 128px;
   }
 }
+
+/* Desktop: drop the trailing padding so the sticky Blue scene can stay flush
+   with the viewport bottom through the entire scroll range. The side column
+   carries its own bottom spacing instead (Dashboard.module.css). */
+@media (min-width: 1025px) {
+  .bentoScrollWithMorningNote {
+    padding-bottom: 0;
+  }
+}

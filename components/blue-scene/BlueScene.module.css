@@ -8,6 +8,20 @@
   background: var(--color-surface-1);
 }
 
+/* Desktop: pin the scene to the viewport. The home scroll container is
+   100dvh - 72px (top nav) with 18px top padding; sizing the scene to the
+   remainder and making it sticky keeps its bottom edge — and Blue — flush
+   with the bottom of the viewport while the side column scrolls. */
+@media (min-width: 1025px) {
+  .scene {
+    position: sticky;
+    top: 18px;
+    flex: 0 0 auto;
+    height: calc(100dvh - 72px - 18px);
+    min-height: 460px;
+  }
+}
+
 .sky {
   position: absolute;
   inset: 0;
