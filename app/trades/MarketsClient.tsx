@@ -287,6 +287,177 @@ function LastUpdatedLabel({ timestamp }: { timestamp: number }) {
   return <span className={styles.lastUpdated}>updated {timeAgo(timestamp)}</span>;
 }
 
+// ── Market Debate ──
+
+interface DebatePost {
+  id: string;
+  stance: 'yes' | 'no';
+  body: string;
+  created_at: string;
+  user_id: string;
+  username: string | null;
+  avatar_url: string | null;
+  is_own: boolean;
+}
+
+function debateTimeAgo(iso: string): string {
+  const s = Math.round((Date.now() - new Date(iso).getTime()) / 1000);
+  if (s < 60) return 'just now';
+  const m = Math.floor(s / 60);
+  if (m < 60) return m + 'm ago';
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + 'h ago';
+  return Math.floor(h / 24) + 'd ago';
+}
+
+function MarketDebate({ marketId, marketTitle }: { marketId: string; marketTitle: string }) {
+  const [posts, setPosts] = useState<DebatePost[] | null>(null);
+  const [stance, setStance] = useState<'yes' | 'no'>('yes');
+  const [draft, setDraft] = useState('');
+  const [isPosting, setIsPosting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`/api/treasury/market-debate?marketId=${encodeURIComponent(marketId)}`);
+        if (!res.ok) throw new Error();
+        const data: { posts?: DebatePost[] } = await res.json();
+        if (!cancelled) setPosts(data.posts || []);
+      } catch {
+        if (!cancelled) setPosts([]);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [marketId]);
+
+  const yesCount = posts?.filter((post) => post.stance === 'yes').length ?? 0;
+  const noCount = (posts?.length ?? 0) - yesCount;
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const body = draft.trim();
+    if (!body || isPosting) return;
+    setIsPosting(true);
+    setError(null);
+
+    try {
+      const res = await fetch('/api/treasury/market-debate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ marketId, marketTitle, stance, body }),
+      });
+      const data: { post?: DebatePost; error?: string } = await res.json();
+
+      if (!res.ok || !data.post) {
+        setError(res.status === 401 ? 'Sign in to join the debate.' : (data.error || 'Could not post your take.'));
+        return;
+      }
+
+      setPosts((current) => [data.post as DebatePost, ...(current || [])]);
+      setDraft('');
+    } catch {
+      setError('Could not post your take.');
+    } finally {
+      setIsPosting(false);
+    }
+  };
+
+  const handleDelete = async (postId: string) => {
+    setPosts((current) => (current || []).filter((post) => post.id !== postId));
+    try {
+      await fetch('/api/treasury/market-debate', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ postId }),
+      });
+    } catch {
+      // Optimistic removal stands; the post will reappear on next open if the delete failed.
+    }
+  };
+
+  return (
+    <div className={styles.debateSection}>
+      <div className={styles.debateHeader}>
+        <span className={styles.debateTitle}>Debate</span>
+        <span className={styles.debateTally}>
+          <span className={styles.debateTallyYes}>{yesCount} yes</span>
+          <span className={styles.debateTallyNo}>{noCount} no</span>
+        </span>
+      </div>
+
+      <form className={styles.debateComposer} onSubmit={handleSubmit}>
+        <div className={styles.debateStanceToggle} role="radiogroup" aria-label="Your stance">
+          <button
+            type="button"
+            role="radio"
+            aria-checked={stance === 'yes'}
+            className={`${styles.debateStanceButton} ${stance === 'yes' ? styles.debateStanceButtonYes : ''}`}
+            onClick={() => setStance('yes')}
+          >
+            Yes
+          </button>
+          <button
+            type="button"
+            role="radio"
+            aria-checked={stance === 'no'}
+            className={`${styles.debateStanceButton} ${stance === 'no' ? styles.debateStanceButtonNo : ''}`}
+            onClick={() => setStance('no')}
+          >
+            No
+          </button>
+        </div>
+        <textarea
+          className={styles.debateInput}
+          value={draft}
+          onChange={(event) => setDraft(event.target.value)}
+          placeholder="Make your case..."
+          rows={2}
+          maxLength={500}
+          disabled={isPosting}
+        />
+        <button type="submit" className={styles.debateSubmit} disabled={!draft.trim() || isPosting}>
+          {isPosting ? 'Posting...' : 'Post'}
+        </button>
+      </form>
+      {error && <p className={styles.debateError}>{error}</p>}
+
+      <div className={styles.debateList}>
+        {posts === null && <p className={styles.debateEmpty}>Loading the debate...</p>}
+        {posts !== null && posts.length === 0 && (
+          <p className={styles.debateEmpty}>No takes yet. Stake out the first position.</p>
+        )}
+        {posts?.map((post) => (
+          <div key={post.id} className={styles.debatePost}>
+            {post.avatar_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={post.avatar_url} alt="" className={styles.debateAvatar} width={26} height={26} />
+            ) : (
+              <span className={`${styles.debateAvatar} ${styles.debateAvatarFallback}`} aria-hidden="true" />
+            )}
+            <div className={styles.debatePostMain}>
+              <div className={styles.debatePostMeta}>
+                <span className={styles.debateAuthor}>{post.username || 'member'}</span>
+                <span className={post.stance === 'yes' ? styles.debateStanceYes : styles.debateStanceNo}>
+                  {post.stance === 'yes' ? 'Yes' : 'No'}
+                </span>
+                <span className={styles.debateTime}>{debateTimeAgo(post.created_at)}</span>
+                {post.is_own && (
+                  <button type="button" className={styles.debateDelete} onClick={() => void handleDelete(post.id)}>
+                    Delete
+                  </button>
+                )}
+              </div>
+              <p className={styles.debateBody}>{post.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── Page ──
 
 export default function Markets() {
@@ -305,6 +476,9 @@ export default function Markets() {
   const [isTradeExecuting, setIsTradeExecuting] = useState(false);
   const [isMembershipOpen, setIsMembershipOpen] = useState(false);
   const [isModelDetailsOpen, setIsModelDetailsOpen] = useState(false);
+  // The quant column is pinned open on wide screens; the drawer toggle only
+  // matters below the desktop breakpoint.
+  const [isDesktopModels, setIsDesktopModels] = useState(false);
   const [hasVipMembershipCard, setHasVipMembershipCard] = useState<boolean | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [selectedMarket, setSelectedMarket] = useState<{ category: MarketCategory; market: MarketRow } | null>(null);
@@ -428,6 +602,14 @@ export default function Markets() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isModelDetailsOpen]);
+
+  useEffect(() => {
+    const query = window.matchMedia('(min-width: 1101px)');
+    const sync = () => setIsDesktopModels(query.matches);
+    sync();
+    query.addEventListener('change', sync);
+    return () => query.removeEventListener('change', sync);
+  }, []);
 
   // Fetch credit stats and execution logs
   useEffect(() => {
@@ -733,15 +915,15 @@ export default function Markets() {
         {/* ── Status Bar ── */}
         <div className={styles.statusBar}>
           <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>pricing method</span>
-            <span className={styles.statusHighlight}>PROBABILITY ESTIMATE</span>
+            <span className={styles.statusLabel}>model</span>
+            <span className={styles.statusHighlight}>Black-Scholes binary</span>
           </div>
           <div className={styles.statusItem}>
             <span className={styles.statusLabel}>markets:</span>
-            <span className={styles.statusValue}>ELECTIONS POLITICS CULTURE SCIENCE</span>
+            <span className={styles.statusValue}>elections politics culture science</span>
           </div>
           <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>simulations:</span>
+            <span className={styles.statusLabel}>MC_paths:</span>
             <span className={styles.statusValue}>200,000</span>
           </div>
           <div className={styles.statusItem}>
@@ -753,11 +935,11 @@ export default function Markets() {
             <span className={styles.statusValue}>1.2s</span>
           </div>
           <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>trade when gap is</span>
-            <span className={styles.statusHighlight}>3%+</span>
+            <span className={styles.statusLabel}>edge_threshold:</span>
+            <span className={styles.statusHighlight}>3%</span>
           </div>
           <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>max size:</span>
+            <span className={styles.statusLabel}>kelly:</span>
             <span className={styles.statusValue}>0.25x</span>
           </div>
           {lastPriceUpdate > 0 && (
@@ -794,15 +976,15 @@ export default function Markets() {
           {/* ════ POP-UP: Model Parameters ════ */}
           <aside
             className={`${styles.modelsColumn} ${isModelDetailsOpen ? styles.modelsColumnOpen : ''}`}
-            aria-hidden={!isModelDetailsOpen}
-            aria-label="Model details"
-            aria-modal={isModelDetailsOpen}
-            role="dialog"
+            aria-hidden={!(isDesktopModels || isModelDetailsOpen)}
+            aria-label="Quant engine"
+            aria-modal={!isDesktopModels && isModelDetailsOpen}
+            role={isDesktopModels ? 'complementary' : 'dialog'}
           >
             <div className={styles.modelDrawerHeader}>
               <div>
-                <span className={styles.modelDrawerKicker}>Advanced</span>
-                <h2 className={styles.modelDrawerTitle}>Model details</h2>
+                <span className={styles.modelDrawerKicker}>Live</span>
+                <h2 className={styles.modelDrawerTitle}>Quant engine</h2>
               </div>
               <button
                 type="button"
@@ -812,9 +994,6 @@ export default function Markets() {
                 Close
               </button>
             </div>
-            <p className={styles.modelDrawerIntro}>
-              These numbers are for audit and debugging. Most members only need Blue estimate, market price, and price gap.
-            </p>
 
             {/* Black-Scholes Binary Pricing */}
             <div className={styles.modelPanel}>
@@ -957,34 +1136,34 @@ export default function Markets() {
 
             {/* Edge Detection Pipeline */}
             <div className={styles.modelPanel}>
-              <div className={styles.modelName}>{'// plain trade check'}</div>
+              <div className={styles.modelName}>{'// edge detection pipeline'}</div>
               <div className={styles.paramRow}>
-                <span className={styles.paramKey}>Blue estimate</span>
+                <span className={styles.paramKey}>model_fair</span>
                 <span><span className={styles.paramValue}>{derived.model_fair.toFixed(2)}%</span></span>
               </div>
               <div className={styles.paramRow}>
-                <span className={styles.paramKey}>market price</span>
+                <span className={styles.paramKey}>mkt_price</span>
                 <span><span className={styles.paramValue}>{derived.mkt_price.toFixed(2)}%</span></span>
               </div>
               <div className={styles.paramRow}>
-                <span className={styles.paramKey}>price gap</span>
+                <span className={styles.paramKey}>divergence</span>
                 <span><span className={styles.paramValue}>{derived.divergence >= 0 ? '+' : ''}{derived.divergence.toFixed(2)}%</span></span>
               </div>
               <div className={styles.paramRow}>
-                <span className={styles.paramKey}>trade line</span>
+                <span className={styles.paramKey}>threshold</span>
                 <span><span className={styles.paramValue}>3.00%</span></span>
               </div>
               <div
                 className={styles.signalRow}
-                style={derived.signal === 'SKIP' ? { background: 'rgba(26, 27, 36, 0.05)', borderColor: 'rgba(26, 27, 36, 0.12)' } : undefined}
+                style={derived.signal === 'SKIP' ? { background: 'rgba(226, 86, 123, 0.08)', borderColor: 'rgba(226, 86, 123, 0.2)' } : undefined}
               >
-                <span className={styles.signalLabel}>next step</span>
+                <span className={styles.signalLabel}>signal</span>
                 <span className={derived.signal === 'TRADE' ? styles.signalValue : styles.signalSkip}>
                   &rarr; {derived.signal}
                 </span>
               </div>
               <div className={styles.paramRow}>
-                <span className={styles.paramKey}>max size</span>
+                <span className={styles.paramKey}>kelly_f</span>
                 <span><span className={styles.paramValue}>0.25x</span></span>
               </div>
               <div className={styles.paramRow}>
@@ -1306,6 +1485,10 @@ export default function Markets() {
                 >
                   Trade this with Blue
                 </button>
+                <MarketDebate
+                  marketId={selectedMarket.market.ticker || selectedMarket.market.id}
+                  marketTitle={selectedMarket.market.question}
+                />
               </div>
             </div>
           );

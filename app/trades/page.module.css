@@ -16,6 +16,9 @@
   --markets-light-border: rgba(26, 29, 51, 0.08);
   --markets-light-border-strong: rgba(26, 29, 51, 0.12);
   --markets-skip: var(--color-text-muted);
+  /* Rose red from the original quant desk — used for No stances and the SKIP
+     signal, where "down vs up" needs a real second hue. */
+  --markets-no: #E2567B;
   height: calc(100dvh - 72px);
   min-height: calc(100dvh - 72px);
   max-height: calc(100dvh - 72px);
@@ -227,6 +230,12 @@
   overflow: hidden;
 }
 
+@media (min-width: 1101px) {
+  .grid {
+    grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
+  }
+}
+
 /* ── Panel Base ── */
 .panel {
   background: linear-gradient(180deg, var(--markets-light-panel-raised) 0%, var(--markets-light-panel) 100%);
@@ -331,6 +340,34 @@
   pointer-events: auto;
   transform: translateX(0) scale(1);
   visibility: visible;
+}
+
+/* On wide screens the quant engine is pinned open as the left column of the
+   grid — the drawer treatment (and its toggle button) only applies below the
+   desktop breakpoint. */
+@media (min-width: 1101px) {
+  .modelsColumn {
+    position: static;
+    grid-column: 1;
+    grid-row: 1;
+    z-index: auto;
+    width: auto;
+    border: none;
+    border-right: 1px solid rgba(26, 29, 51, 0.08);
+    border-radius: 0;
+    box-shadow: none;
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+    visibility: visible;
+    transition: none;
+  }
+
+  .modelDrawerClose,
+  .modelDetailsButton,
+  .modelDetailsBackdrop {
+    display: none;
+  }
 }
 
 .modelDrawerHeader {
@@ -476,7 +513,7 @@
 }
 
 .signalSkip {
-  color: var(--color-text-muted);
+  color: var(--markets-no);
   font-weight: bold;
   font-size: 12px;
 }
@@ -506,6 +543,15 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   background: var(--markets-light-panel-raised);
+}
+
+/* With the quant engine pinned open as column 1 on desktop, the market feed
+   moves to column 2. */
+@media (min-width: 1101px) {
+  .kalshiPanel {
+    grid-column: 2;
+    grid-row: 1;
+  }
 }
 
 .treasuryPanel {
@@ -1683,7 +1729,8 @@
 
 .marketModalCard {
   position: relative;
-  width: min(440px, 100%);
+  width: min(560px, 100%);
+  max-height: min(86dvh, 780px);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -1693,6 +1740,8 @@
   border-radius: var(--radius-xl);
   background: var(--card-background, #ffffff);
   box-shadow: var(--shadow-xl);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .marketModalClose {
@@ -1772,6 +1821,240 @@
 .marketModalCta:hover {
   filter: brightness(1.05);
   transform: translateY(-1px);
+}
+
+/* ── Market Debate (inside the market pop-up) ── */
+.debateSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--color-border-strong);
+}
+
+.debateHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.debateTitle {
+  font-family: var(--font-button);
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+}
+
+.debateTally {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  font-family: var(--font-button);
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+}
+
+.debateTallyYes {
+  color: var(--color-primary);
+}
+
+.debateTallyNo {
+  color: var(--markets-no);
+}
+
+.debateComposer {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.debateStanceToggle {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.debateStanceButton {
+  flex: 1;
+  min-width: 44px;
+  padding: 4px 10px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: var(--font-button);
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.debateStanceButtonYes {
+  border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  color: var(--color-primary);
+}
+
+.debateStanceButtonNo {
+  border-color: color-mix(in oklch, var(--markets-no) 40%, transparent);
+  background: color-mix(in oklch, var(--markets-no) 10%, transparent);
+  color: var(--markets-no);
+}
+
+.debateInput {
+  resize: none;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-base, #ffffff);
+  color: var(--color-text-dark);
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.debateInput:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.debateSubmit {
+  align-self: stretch;
+  padding: 0 14px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--color-text-light);
+  font-family: var(--font-button);
+  font-size: 12px;
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.debateSubmit:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+
+.debateSubmit:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.debateError {
+  margin: -4px 0 0;
+  font-family: var(--font-button);
+  font-size: 11px;
+  color: var(--markets-no);
+}
+
+.debateList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 260px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 2px;
+}
+
+.debateEmpty {
+  margin: 4px 0;
+  font-family: var(--font-button);
+  font-size: 12px;
+  color: var(--color-text-faint);
+}
+
+.debatePost {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.debateAvatar {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-2);
+}
+
+.debateAvatarFallback {
+  display: inline-block;
+}
+
+.debatePostMain {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.debatePostMeta {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-family: var(--font-button);
+  font-size: 11px;
+}
+
+.debateAuthor {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-dark);
+}
+
+.debateStanceYes,
+.debateStanceNo {
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: var(--font-weight-bold);
+}
+
+.debateStanceYes {
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  color: var(--color-primary);
+}
+
+.debateStanceNo {
+  background: color-mix(in oklch, var(--markets-no) 12%, transparent);
+  color: var(--markets-no);
+}
+
+.debateTime {
+  color: var(--color-text-faint);
+}
+
+.debateDelete {
+  border: none;
+  background: transparent;
+  padding: 0;
+  color: var(--color-text-faint);
+  font-family: var(--font-button);
+  font-size: 10px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.debateDelete:hover {
+  color: var(--markets-no);
+}
+
+.debateBody {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text-soft);
+  word-break: break-word;
+  white-space: pre-wrap;
 }
 
 .marketCards {
@@ -2365,4 +2648,43 @@
 :global([data-theme="dark"]) .blueExecuteButton:hover {
   background: color-mix(in oklch, var(--color-primary) 32%, transparent);
   box-shadow: 0 8px 20px color-mix(in oklch, var(--color-background) 68%, transparent);
+}
+
+:global([data-theme="dark"]) .marketModalCard {
+  background: var(--markets-dark-panel);
+  border-color: var(--color-border-strong);
+}
+
+:global([data-theme="dark"]) .debateSection {
+  border-top-color: var(--color-border-strong);
+}
+
+:global([data-theme="dark"]) .debateInput {
+  background: color-mix(in oklch, var(--markets-dark-panel-low) 80%, transparent);
+  border-color: var(--color-border-strong);
+  color: var(--color-text-dark);
+}
+
+:global([data-theme="dark"]) .debateStanceButton {
+  border-color: var(--color-border-strong);
+}
+
+:global([data-theme="dark"]) .debateStanceButtonYes {
+  border-color: color-mix(in oklch, var(--color-primary) 50%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 22%, transparent);
+  color: var(--color-text-light);
+}
+
+:global([data-theme="dark"]) .debateStanceButtonNo {
+  border-color: color-mix(in oklch, var(--markets-no) 50%, transparent);
+  background: color-mix(in oklch, var(--markets-no) 22%, transparent);
+  color: var(--color-text-light);
+}
+
+@media (min-width: 1101px) {
+  :global([data-theme="dark"]) .modelsColumn {
+    border: none;
+    border-right: 1px solid var(--color-border-strong);
+    box-shadow: none;
+  }
 }
