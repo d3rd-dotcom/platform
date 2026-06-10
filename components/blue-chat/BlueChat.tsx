@@ -130,6 +130,19 @@ function isQuestForgeIntent(text: string): boolean {
   return /\b(make|create|build|forge|set ?up|launch|design|spin up|publish)\b/.test(t) || /\bnew quest\b/.test(t);
 }
 
+// Detects when a typed message is asking Blue to DELETE the user's custom
+// course. Blue has no server-side tools, so without this the model would just
+// pretend it deleted something — instead we run a real confirm-then-delete flow.
+function isCourseDeleteIntent(text: string): boolean {
+  const t = text.toLowerCase().trim();
+  if (!/\bcourses?\b/.test(t)) return false;
+  return /\b(delete|remove|erase|trash|scrap|wipe|get rid of)\b/.test(t);
+}
+
+function isAffirmative(text: string): boolean {
+  return /^(yes|yeah|yep|ya|sure|ok|okay|confirm|do it|delete it|go ahead|please do)\b/i.test(text.trim());
+}
+
 const KNOWLEDGE_DOMAINS = [
   'Psychology', 'Wellness', 'Creativity', 'Habits',
   'Science', 'CBT', 'Stress', 'Sleep', 'Nutrition',
@@ -228,6 +241,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const [questDraftNonce, setQuestDraftNonce] = useState(0);
   const [questForgeBusy, setQuestForgeBusy] = useState(false);
   const [courseBuilderVisible, setCourseBuilderVisible] = useState(false);
+  const [pendingCourseDelete, setPendingCourseDelete] = useState<string | null>(null);
   const [autoDistributionXConnection, setAutoDistributionXConnection] = useState<AutoDistributionXConnection>({
     loading: false,
     connected: false,
@@ -484,27 +498,12 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     recognition.onresult = (event: SpeechRecognitionEvent) => {
       const transcript = event.results[0][0].transcript;
       if (transcript.trim()) {
+        // Auto-send through the exact same pipeline as typed messages so
+        // voice gets intent detection (quest forge, course delete) too.
         setInputText(transcript.trim());
-        // Auto-send via the same flow as typed messages
         setTimeout(() => {
-          setInputText(transcript.trim());
-          // Trigger handleSend logic inline
-          const text = transcript.trim();
-          const userMessage: Message = {
-            id: Date.now().toString(),
-            text,
-            sender: 'user',
-            timestamp: new Date(),
-          };
-          setMessages((prev) => [...prev, userMessage]);
           setInputText('');
-          if (researchMode) {
-            sendToEliza(text, 'research');
-          } else if (autoDistributionVisible) {
-            sendToEliza(text, 'auto-distribution');
-          } else {
-            sendToEliza(text);
-          }
+          submitUserMessage(transcript.trim(), []);
         }, 300);
       }
     };
@@ -710,29 +709,37 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     setPendingAttachments((prev) => prev.filter((attachment) => attachment.id !== attachmentId));
   };
 
-  const handleSend = async () => {
-    if (isTyping || isUploadingAttachment) return;
-    if (!inputText.trim() && pendingAttachments.length === 0) return;
-    setShardUpsell(null);
-
-    const text = inputText.trim() || 'Please review these attachments and help me continue.';
-    const attachments = pendingAttachments;
-    const userMessage: Message = {
+  // Shared pipeline for typed and voice input — appends the user message,
+  // runs intent detection (quest forge, course delete), then routes by mode.
+  const submitUserMessage = (text: string, attachments: UploadedAttachment[]) => {
+    setMessages((prev) => [...prev, {
       id: Date.now().toString(),
       text,
-      sender: 'user',
+      sender: 'user' as const,
       timestamp: new Date(),
-      attachments,
-    };
+      attachments: attachments.length ? attachments : undefined,
+    }]);
 
-    setMessages((prev) => [...prev, userMessage]);
-    setInputText('');
-    setPendingAttachments([]);
-
-    // "make a quest…" — draft and open the forge instead of a normal reply.
-    if (!researchMode && !autoDistributionVisible && isQuestForgeIntent(text)) {
-      draftQuestFromPrompt(text);
-      return;
+    if (!researchMode && !autoDistributionVisible) {
+      // Awaiting confirmation on a course delete — "yes" commits, anything else keeps it.
+      if (pendingCourseDelete) {
+        if (isAffirmative(text)) {
+          confirmCourseDelete();
+        } else {
+          setPendingCourseDelete(null);
+          addBlueMessage('kept it — your course is untouched.');
+        }
+        return;
+      }
+      if (isCourseDeleteIntent(text)) {
+        startCourseDelete();
+        return;
+      }
+      // "make a quest…" — draft and open the forge instead of a normal reply.
+      if (isQuestForgeIntent(text)) {
+        draftQuestFromPrompt(text);
+        return;
+      }
     }
 
     if (researchMode) {
@@ -747,6 +754,18 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     }
 
     sendToEliza(text, undefined, attachments);
+  };
+
+  const handleSend = async () => {
+    if (isTyping || isUploadingAttachment) return;
+    if (!inputText.trim() && pendingAttachments.length === 0) return;
+    setShardUpsell(null);
+
+    const text = inputText.trim() || 'Please review these attachments and help me continue.';
+    const attachments = pendingAttachments;
+    setInputText('');
+    setPendingAttachments([]);
+    submitUserMessage(text, attachments);
   };
 
   // Activate research mode. Research mode is a VIP-membership benefit — the
@@ -776,6 +795,64 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       addBlueMessage("research mode is live — unlocked with your VIP membership. tell me what you're writing — a grant, a proposal, a thesis chapter — plus the topic and any constraints (funder, length, deadline). drop any reference material in the card above. i'll draft it in full report form and we can refine section by section.");
     } catch {
       addBlueMessage("something went wrong unlocking research mode. try again.");
+    }
+  };
+
+  // ── Custom course deletion ─────────────────────────────────
+  // The model has no tools, so deletion runs client-side against the real
+  // API with an explicit confirm step — Blue never just claims it happened.
+  const startCourseDelete = async () => {
+    if (!ready || !authenticated) {
+      addBlueMessage('sign in first so i can check your course.');
+      return;
+    }
+    setIsTyping(true);
+    try {
+      const res = await fetch('/api/course/personal', {
+        cache: 'no-store',
+        credentials: 'include',
+        headers: await authHeaders(),
+      });
+      const data = await res.json().catch(() => ({}));
+      const record = data?.course;
+      setIsTyping(false);
+      if (record?.courseData?.title) {
+        setPendingCourseDelete(String(record.courseData.title));
+        addBlueMessage(`you've got "${record.courseData.title}". deleting it wipes the course and its progress for good — say "yes" to confirm, anything else keeps it.`);
+      } else if (record) {
+        setPendingCourseDelete('course draft');
+        addBlueMessage("you have a course that never finished generating. say \"yes\" and i'll clear it out, anything else keeps it.");
+      } else {
+        addBlueMessage("you don't have a custom course right now, so there's nothing to delete.");
+      }
+    } catch {
+      setIsTyping(false);
+      addBlueMessage("i couldn't check your course just now — try again in a sec.");
+    }
+  };
+
+  const confirmCourseDelete = async () => {
+    setPendingCourseDelete(null);
+    setIsTyping(true);
+    try {
+      const res = await fetch('/api/course/personal', {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: await authHeaders(),
+      });
+      const data = await res.json().catch(() => ({}));
+      setIsTyping(false);
+      if (res.ok && data.deleted) {
+        window.dispatchEvent(new Event('personalCourseUpdated'));
+        addBlueMessage('done — your course and its progress are deleted. build a new one from the Courses page whenever.');
+      } else if (res.ok) {
+        addBlueMessage("turns out there was no course left to delete — you're already clear.");
+      } else {
+        addBlueMessage("that delete didn't go through, so your course is still there. try again in a sec.");
+      }
+    } catch {
+      setIsTyping(false);
+      addBlueMessage("that delete didn't go through, so your course is still there. try again in a sec.");
     }
   };
 
@@ -1211,13 +1288,12 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         : "still loading treasury data. try again in a sec.";
     }
 
+    // This entire function only runs when the AI backend is unreachable. The
+    // keyword branches above are static, accurate FAQ answers — but for
+    // anything else, be honest about the outage instead of faking a reply.
     const fallbacks = [
-      "name the actual goal. that's where we start.",
-      "give me the real version of that — what are you trying to move?",
-      "what's the real question under that one?",
-      "that's vague. one concrete thing you want to move — go.",
-      "you're overthinking the ask. what do you actually want to do?",
-      "say it plain. then we move.",
+      "i can't reach my full brain right now, so i don't want to wing that one. give it a minute and resend?",
+      "my connection's down rn — resend that in a bit and i'll answer it properly.",
     ];
     return fallbacks[Math.floor(Math.random() * fallbacks.length)];
   };

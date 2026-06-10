@@ -87,6 +87,15 @@ export async function saveGeneratedCourse(userId: string, courseData: CourseData
   return mapRow(rows[0]);
 }
 
+export async function deletePersonalCourse(userId: string): Promise<boolean> {
+  await ensurePersonalCourseSchema();
+  const rows = await sqlQuery<Array<{ id: string }>>(
+    `DELETE FROM personal_courses WHERE user_id = :userId RETURNING id`,
+    { userId }
+  );
+  return rows.length > 0;
+}
+
 export async function saveProgress(
   userId: string,
   progressData: Record<string, unknown>

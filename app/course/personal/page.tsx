@@ -27,6 +27,9 @@ export default function PersonalCoursePage() {
   const [viewWeek, setViewWeek] = useState(1);
   const [readingOpen, setReadingOpen] = useState(false);
   const [swipeAnim, setSwipeAnim] = useState<'none' | 'left' | 'right'>('none');
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState(false);
 
   const authHeaders = useCallback(async (): Promise<HeadersInit> => {
     try {
@@ -96,6 +99,32 @@ export default function PersonalCoursePage() {
     });
   };
 
+  const deleteCourse = async () => {
+    if (deleting) return;
+    play('click');
+    setDeleting(true);
+    setDeleteError(false);
+    try {
+      const res = await fetch('/api/course/personal', {
+        method: 'DELETE',
+        headers: await authHeaders(),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.deleted) {
+        setDeleteError(true);
+        return;
+      }
+      setCourse(null);
+      setProgress({});
+      setConfirmingDelete(false);
+      window.dispatchEvent(new Event('personalCourseUpdated'));
+    } catch {
+      setDeleteError(true);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   const goToWeek = (dir: 'prev' | 'next') => {
     setViewWeek((w) => {
       if (dir === 'next' && w < totalWeeks) { setSwipeAnim('left'); play('click'); return w + 1; }
@@ -145,6 +174,39 @@ export default function PersonalCoursePage() {
           <div className={styles.courseHead}>
             <Link href="/courses" className={styles.backLink}>← Courses</Link>
             <h1 className={styles.courseTitle}>{course.title}</h1>
+            <div className={styles.deleteRow}>
+              {confirmingDelete ? (
+                <>
+                  <span className={styles.deleteConfirmText}>
+                    {deleteError ? 'Could not delete — try again.' : 'Delete this course and its progress for good?'}
+                  </span>
+                  <button
+                    type="button"
+                    className={styles.deleteConfirmBtn}
+                    onClick={deleteCourse}
+                    disabled={deleting}
+                  >
+                    {deleting ? 'Deleting…' : 'Yes, delete it'}
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.deleteCancelBtn}
+                    onClick={() => { play('click'); setConfirmingDelete(false); setDeleteError(false); }}
+                    disabled={deleting}
+                  >
+                    Keep it
+                  </button>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  className={styles.deleteLink}
+                  onClick={() => { play('click'); setConfirmingDelete(true); }}
+                >
+                  Delete this course
+                </button>
+              )}
+            </div>
           </div>
 
           <BlueVideoPanel
