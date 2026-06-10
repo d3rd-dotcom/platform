@@ -1830,7 +1830,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
                   })}
                 </div>
                 <Image
-                  src="/images/blue-fullbody.png"
+                  src="/blue/blue-left.png"
                   alt="Blue full body"
                   fill
                   className={styles.fullBodyImage}
