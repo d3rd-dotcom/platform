@@ -1566,22 +1566,39 @@
   background-color: #F9FBFF;
 }
 
-/* Treasury as a sticky card pinned to the top-right of the feed. Market cards
-   wrap to its left and below it (it's a float), and it stays in view while the
-   feed scrolls (sticky). ~the size of one market card. */
-/* The treasury card + the "Trade Using Blue" button float top-right together
-   and stay in view (sticky) while markets scroll beside and below them. */
-.treasuryCluster {
-  float: left;
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  width: 280px;
-  max-width: 58%;
-  margin: 0 14px 12px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+/* ── Desk Header Row ──
+   Full-width row above the grid: treasury balance card | Trade Using Blue |
+   execution receipt. Sits between the status bar and the quant/feed columns. */
+.deskRow {
+  display: grid;
+  grid-template-columns: minmax(250px, 340px) auto minmax(0, 1fr);
+  align-items: stretch;
+  gap: 14px;
+  flex: 0 0 auto;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  background:
+    radial-gradient(circle at 1px 1px, color-mix(in oklch, var(--color-primary) 8%, transparent) 1px, transparent 0);
+  background-size: 16px 16px;
+  background-color: var(--markets-light-panel);
+}
+
+.deskRow .treasuryFloat {
+  min-height: 132px;
+}
+
+.deskRow .chatFab {
+  align-self: center;
+  justify-self: center;
+}
+
+.deskRow .receipt {
+  width: min(380px, 100%);
+  justify-self: end;
+}
+
+.deskRow .receiptBody {
+  max-height: 96px;
 }
 
 .treasuryFloat {
@@ -1729,7 +1746,7 @@
 
 .marketModalCard {
   position: relative;
-  width: min(560px, 100%);
+  width: min(940px, 100%);
   max-height: min(86dvh, 780px);
   box-sizing: border-box;
   display: flex;
@@ -1766,6 +1783,36 @@
   color: var(--color-text-dark);
 }
 
+/* Artizen-style featured layout: market hero on the left, the gamified action
+   stack (Cakes stake, Ask Blue, Trader Mode, debate) on the right. */
+.marketModalColumns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+@media (max-width: 760px) {
+  .marketModalColumns {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+}
+
+.marketModalHero {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.marketModalAction {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
 .marketModalHead {
   display: flex;
   align-items: center;
@@ -1773,11 +1820,42 @@
 }
 
 .marketModalIcon {
-  width: 56px;
-  height: 56px;
-  border-radius: 14px;
+  width: 88px;
+  height: 88px;
+  border-radius: 18px;
   object-fit: cover;
   border: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
+}
+
+.marketModalStats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.marketModalStat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border: 1px solid var(--markets-light-border);
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, var(--markets-light-panel-raised) 0%, var(--markets-light-tint) 100%);
+}
+
+.marketModalStatLabel {
+  font-family: var(--font-button);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--color-text-faint);
+}
+
+.marketModalStatValue {
+  font-family: var(--font-button);
+  font-size: 15px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-dark);
 }
 
 .marketModalTitle {
@@ -2217,8 +2295,54 @@
   border-color: color-mix(in oklch, var(--color-primary) 18%, transparent);
 }
 
+/* The selected market: pinned first in the feed with a ring + glow so it reads
+   as the featured item. Persists after the pop-up closes. */
+.marketItemFeatured {
+  border-color: color-mix(in oklch, var(--color-primary) 50%, transparent);
+  background: linear-gradient(180deg, var(--markets-light-panel-raised) 0%, var(--markets-light-tint) 100%);
+  box-shadow:
+    0 0 0 3px color-mix(in oklch, var(--color-primary) 16%, transparent),
+    0 18px 38px color-mix(in oklch, var(--color-primary) 14%, transparent);
+  transform: translateY(-2px);
+}
+
+.marketItemFeatured:hover {
+  border-color: color-mix(in oklch, var(--color-primary) 60%, transparent);
+  box-shadow:
+    0 0 0 3px color-mix(in oklch, var(--color-primary) 20%, transparent),
+    0 20px 42px color-mix(in oklch, var(--color-primary) 18%, transparent);
+}
+
+/* Non-selected cards read secondary while one market is featured. */
+.marketItemMuted {
+  opacity: 0.74;
+}
+
+.marketItemMuted:hover {
+  opacity: 1;
+}
+
+.marketPillGroup {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 6px;
+}
+
+.marketFeaturedTag {
+  flex-shrink: 0;
+  padding: 6px 9px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 45%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
+  color: var(--color-primary);
+  font-family: var(--font-button);
+  font-size: 10px;
+  font-weight: var(--font-weight-bold);
+  white-space: nowrap;
+}
+
 .marketLoadMore {
-  clear: both;
   margin-top: 12px;
   border: 1px solid color-mix(in oklch, var(--color-primary) 16%, transparent);
   border-radius: 999px;
@@ -2365,6 +2489,20 @@
   }
 }
 
+/* Desk header row: drop the receipt to its own full-width line before the
+   three-up layout gets cramped. */
+@media (max-width: 1320px) {
+  .deskRow {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .deskRow .receipt {
+    grid-column: 1 / -1;
+    width: 100%;
+    justify-self: stretch;
+  }
+}
+
 @media (max-width: 900px) {
   .main {
     margin-left: 0;
@@ -2414,17 +2552,16 @@
     grid-row: 1;
   }
 
-  /* No side nav on mobile — the treasury becomes a slim full-width card at the
-     top of the feed instead of a floated corner card. */
-  .treasuryCluster {
-    float: none;
-    position: static;
-    width: auto;
-    max-width: none;
-    margin: 0 0 12px 0;
+  /* No side nav on mobile — the desk header stacks: slim treasury card with
+     the Trade Using Blue button beneath it (receipt hides entirely). */
+  .deskRow {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 12px;
   }
 
-  .treasuryFloat {
+  .treasuryFloat,
+  .deskRow .treasuryFloat {
     min-height: 0;
   }
 
@@ -2727,6 +2864,37 @@
 :global([data-theme="dark"]) .marketItem {
   background: color-mix(in oklch, var(--markets-dark-panel-low) 68%, transparent);
   border-color: var(--color-border-subtle);
+}
+
+:global([data-theme="dark"]) .marketItemFeatured {
+  background: linear-gradient(180deg, var(--markets-dark-panel-raised) 0%, var(--markets-dark-panel) 100%);
+  border-color: color-mix(in oklch, var(--color-primary) 55%, transparent);
+  box-shadow:
+    0 0 0 3px color-mix(in oklch, var(--color-primary) 24%, transparent),
+    0 18px 38px rgba(0, 0, 0, 0.42);
+}
+
+:global([data-theme="dark"]) .marketFeaturedTag {
+  background: color-mix(in oklch, var(--color-primary) 22%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
+  color: var(--color-text-light);
+}
+
+:global([data-theme="dark"]) .deskRow {
+  background:
+    radial-gradient(circle at 1px 1px, color-mix(in oklch, var(--color-primary) 18%, transparent) 1px, transparent 0);
+  background-size: 16px 16px;
+  background-color: var(--markets-dark-panel-low);
+  border-bottom-color: var(--color-border-subtle);
+}
+
+:global([data-theme="dark"]) .marketModalStat {
+  background: linear-gradient(180deg, var(--markets-dark-panel-raised) 0%, var(--markets-dark-panel) 100%);
+  border-color: var(--color-border-subtle);
+}
+
+:global([data-theme="dark"]) .marketModalStatValue {
+  color: var(--color-text-dark);
 }
 
 :global([data-theme="dark"]) .marketArena {

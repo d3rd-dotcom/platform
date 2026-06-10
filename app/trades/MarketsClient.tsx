@@ -483,6 +483,9 @@ export default function Markets() {
   const [hasVipMembershipCard, setHasVipMembershipCard] = useState<boolean | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [selectedMarket, setSelectedMarket] = useState<{ category: MarketCategory; market: MarketRow } | null>(null);
+  // Modal visibility is intentionally separate from the selection: closing the
+  // pop-up keeps the market featured (highlighted + pinned) in the feed.
+  const [isMarketModalOpen, setIsMarketModalOpen] = useState(false);
   // Cakes (the voting token) staked on the selected market. Conviction here is
   // what ultimately fuels Blue's trader mode once a debate resolves.
   const [stakeCakes, setStakeCakes] = useState(15);
@@ -714,6 +717,16 @@ export default function Markets() {
     });
   }, [deferredKalshiMarkets, visibleMarketCounts]);
 
+  // The selected market is pinned to the top of the feed as the featured card.
+  // If a feed refresh has a fresher snapshot of it, prefer that one.
+  const orderedMarkets = useMemo(() => {
+    if (!selectedMarket) return mixedMarkets;
+    const selectedId = selectedMarket.market.id;
+    const fresh = mixedMarkets.find((entry) => entry.market.id === selectedId);
+    const rest = mixedMarkets.filter((entry) => entry.market.id !== selectedId);
+    return [fresh ?? selectedMarket, ...rest];
+  }, [mixedMarkets, selectedMarket]);
+
   useEffect(() => {
     const node = tradeChatScrollRef.current;
     if (!node) return;
@@ -828,16 +841,33 @@ export default function Markets() {
     }
   }, [buildBlueTradingMessage, generateLocalTradeResponse, isTradeChatSending]);
 
-  // Open the chat with Blue already analyzing the clicked market.
+  // Open the chat with Blue already analyzing the clicked market. The selection
+  // is kept so the market stays featured in the feed while the debate runs.
   const askBlueAboutMarket = useCallback((entry: { category: MarketCategory; market: MarketRow }) => {
     const [yes, no] = parseOutcomePrices(entry.market.outcomePrices);
     const question =
       `What's your read on this market: "${entry.market.question}"? ` +
       `It's trading Yes ${Math.round(yes * 100)}% / No ${Math.round(no * 100)}%. Is there an edge?`;
-    setSelectedMarket(null);
+    setIsMarketModalOpen(false);
     setIsChatOpen(true);
     void sendTradeChatMessage(question);
   }, [sendTradeChatMessage]);
+
+  // TODO(cakes-ledger): wire this to a real Cakes staking backend once the
+  // ledger exists. Until then Trader Mode is a staged request — it frames the
+  // pipeline (drift read, Black-Scholes, quarter-Kelly) in Blue's chat and
+  // never claims an execution or a fill.
+  const activateTraderMode = useCallback((entry: { category: MarketCategory; market: MarketRow }) => {
+    const [yes, no] = parseOutcomePrices(entry.market.outcomePrices);
+    const prompt =
+      `Trader Mode request (staged, not executed): I want to stake ${stakeCakes} Cakes on ` +
+      `"${entry.market.question}", trading Yes ${Math.round(yes * 100)}% / No ${Math.round(no * 100)}%. ` +
+      `Walk me through how you would position it: the 15-minute Kalshi drift read, the Black-Scholes fair value, ` +
+      `and the quarter-Kelly size. Do not place an order — the Cakes ledger is not live yet.`;
+    setIsMarketModalOpen(false);
+    setIsChatOpen(true);
+    void sendTradeChatMessage(prompt);
+  }, [sendTradeChatMessage, stakeCakes]);
 
   const executedTrades = executionLogs.filter((log) => log.action === 'TRADE');
 
@@ -973,6 +1003,81 @@ export default function Markets() {
             onClick={() => setIsModelDetailsOpen(false)}
           />
         )}
+
+        {/* ── Desk Header Row: treasury balance | Trade Using Blue | receipt ── */}
+        <div className={styles.deskRow}>
+          <aside className={styles.treasuryFloat} aria-label="Trades treasury">
+            <span className={styles.treasuryFloatTitle}>Trades Treasury</span>
+            {!balance && !balanceError && (
+              <TreasuryQuickSkeleton />
+            )}
+            {balanceError && !balance && (
+              <span className={styles.errorText}>Failed to load balance</span>
+            )}
+            {balance && (
+              <>
+                <div className={styles.treasuryQuickPrimary}>
+                  <div className={styles.balanceHero}>${balance.formatted}</div>
+                  <div className={styles.balanceLabel}>USDC Trades Balance</div>
+                </div>
+                <div className={styles.treasuryQuickSpark}>
+                  <TickerLine stroke="var(--color-primary)" strokeWidth={2} opacity={0.85} />
+                  <TickerLine drift={0.18} vol={0.8} stroke="var(--color-tertiary)" strokeWidth={1.5} opacity={0.55} speed={350} />
+                  <TickerLine drift={0.05} vol={0.5} stroke="var(--color-primary)" strokeWidth={1.5} opacity={0.5} speed={500} />
+                </div>
+              </>
+            )}
+          </aside>
+
+          <button
+            type="button"
+            className={styles.chatFab}
+            onClick={() => setIsChatOpen((open) => !open)}
+            aria-expanded={isChatOpen}
+            aria-label={isChatOpen ? 'Close Blue trading chat' : 'Trade using Blue'}
+          >
+            <span className={styles.chatFabShine} aria-hidden="true" />
+            <span className={styles.chatFabContent}>
+              <span className={styles.chatFabIcon} aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M5.5 16.5H5a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3h14a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3h-7l-5.5 4v-4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M7.5 9.5h9M7.5 12.5h5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              </span>
+              <span className={styles.chatFabTitle}>{isChatOpen ? 'Close chat' : 'Trade Using Blue'}</span>
+            </span>
+          </button>
+
+          <div className={styles.receipt} aria-label="Executed trades history">
+            <div className={styles.receiptHead}>
+              <span className={styles.receiptShop}>MWA Trading Desk</span>
+              <span className={styles.receiptSub}>execution receipts</span>
+            </div>
+            <div className={styles.receiptRule} />
+            <div className={styles.receiptBody}>
+              {executedTrades.length === 0 ? (
+                <p className={styles.receiptEmpty}>- awaiting first execution -</p>
+              ) : (
+                executedTrades.map((log, i) => (
+                  <div key={`${log.timestamp}-${i}`} className={styles.receiptItem}>
+                    <div className={styles.receiptItemTop}>
+                      <span>{formatTradeTime(String(log.timestamp / 1000))}</span>
+                      <span className={styles.receiptAction}>{log.action}</span>
+                    </div>
+                    <div className={styles.receiptItemDetail}>
+                      {log.asset ? `${log.asset} ` : ''}{log.details}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+            <div className={styles.receiptRule} />
+            <div className={styles.receiptFoot}>
+              <span>{executedTrades.length} fill{executedTrades.length === 1 ? '' : 's'}</span>
+              <span aria-hidden="true">* * *</span>
+            </div>
+          </div>
+        </div>
 
         {/* ── Dashboard Grid ── */}
         <div className={styles.grid}>
@@ -1191,78 +1296,6 @@ export default function Markets() {
               <span className={styles.panelTitle}>Trades</span>
             </div>
             <div className={styles.marketArena}>
-              <div className={styles.treasuryCluster}>
-              <aside className={styles.treasuryFloat} aria-label="Trades treasury">
-                <span className={styles.treasuryFloatTitle}>Trades Treasury</span>
-                {!balance && !balanceError && (
-                  <TreasuryQuickSkeleton />
-                )}
-                {balanceError && !balance && (
-                  <span className={styles.errorText}>Failed to load balance</span>
-                )}
-                {balance && (
-                  <>
-                    <div className={styles.treasuryQuickPrimary}>
-                      <div className={styles.balanceHero}>${balance.formatted}</div>
-                      <div className={styles.balanceLabel}>USDC Trades Balance</div>
-                    </div>
-                    <div className={styles.treasuryQuickSpark}>
-                      <TickerLine stroke="var(--color-primary)" strokeWidth={2} opacity={0.85} />
-                      <TickerLine drift={0.18} vol={0.8} stroke="var(--color-tertiary)" strokeWidth={1.5} opacity={0.55} speed={350} />
-                      <TickerLine drift={0.05} vol={0.5} stroke="var(--color-primary)" strokeWidth={1.5} opacity={0.5} speed={500} />
-                    </div>
-                  </>
-                )}
-              </aside>
-                <button
-                  type="button"
-                  className={styles.chatFab}
-                  onClick={() => setIsChatOpen((open) => !open)}
-                  aria-expanded={isChatOpen}
-                  aria-label={isChatOpen ? 'Close Blue trading chat' : 'Trade using Blue'}
-                >
-                  <span className={styles.chatFabShine} aria-hidden="true" />
-                  <span className={styles.chatFabContent}>
-                    <span className={styles.chatFabIcon} aria-hidden="true">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                        <path d="M5.5 16.5H5a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3h14a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3h-7l-5.5 4v-4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        <path d="M7.5 9.5h9M7.5 12.5h5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                      </svg>
-                    </span>
-                    <span className={styles.chatFabTitle}>{isChatOpen ? 'Close chat' : 'Trade Using Blue'}</span>
-                  </span>
-                </button>
-
-                <div className={styles.receipt} aria-label="Executed trades history">
-                  <div className={styles.receiptHead}>
-                    <span className={styles.receiptShop}>MWA Trading Desk</span>
-                    <span className={styles.receiptSub}>execution receipts</span>
-                  </div>
-                  <div className={styles.receiptRule} />
-                  <div className={styles.receiptBody}>
-                    {executedTrades.length === 0 ? (
-                      <p className={styles.receiptEmpty}>- awaiting first execution -</p>
-                    ) : (
-                      executedTrades.map((log, i) => (
-                        <div key={`${log.timestamp}-${i}`} className={styles.receiptItem}>
-                          <div className={styles.receiptItemTop}>
-                            <span>{formatTradeTime(String(log.timestamp / 1000))}</span>
-                            <span className={styles.receiptAction}>{log.action}</span>
-                          </div>
-                          <div className={styles.receiptItemDetail}>
-                            {log.asset ? `${log.asset} ` : ''}{log.details}
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                  <div className={styles.receiptRule} />
-                  <div className={styles.receiptFoot}>
-                    <span>{executedTrades.length} fill{executedTrades.length === 1 ? '' : 's'}</span>
-                    <span aria-hidden="true">* * *</span>
-                  </div>
-                </div>
-              </div>
               {!deferredKalshiMarkets && !kalshiError && (
                 <MarketListSkeleton />
               )}
@@ -1272,18 +1305,23 @@ export default function Markets() {
               {deferredKalshiMarkets && (
                 <>
                   <div className={styles.marketCards}>
-                    {mixedMarkets.map(({ category, market }) => {
+                    {orderedMarkets.map(({ category, market }) => {
                       const [yes, no] = parseOutcomePrices(market.outcomePrices);
                       const yesPct = Math.round(yes * 100);
                       const noPct = Math.round(no * 100);
                       const iconSrc = market.iconUrl || CATEGORY_AVATARS[category];
+                      const isFeatured = selectedMarket?.market.id === market.id;
+                      const isMuted = Boolean(selectedMarket) && !isFeatured;
 
                       return (
                         <button
                           key={market.id}
                           type="button"
-                          className={styles.marketItem}
-                          onClick={() => setSelectedMarket({ category, market })}
+                          className={`${styles.marketItem} ${isFeatured ? styles.marketItemFeatured : ''} ${isMuted ? styles.marketItemMuted : ''}`}
+                          onClick={() => {
+                            setSelectedMarket({ category, market });
+                            setIsMarketModalOpen(true);
+                          }}
                         >
                           <div className={styles.marketItemTop}>
                             <div className={styles.marketItemHeader}>
@@ -1298,7 +1336,10 @@ export default function Markets() {
                               />
                               <div className={styles.marketQuestion}>{market.question}</div>
                             </div>
-                            <div className={styles.marketPill}>{CATEGORY_LABELS[category]}</div>
+                            <div className={styles.marketPillGroup}>
+                              {isFeatured && <span className={styles.marketFeaturedTag}>Featured</span>}
+                              <div className={styles.marketPill}>{CATEGORY_LABELS[category]}</div>
+                            </div>
                           </div>
                           <div className={styles.marketBarWrap}>
                             <div className={styles.marketBar}>
@@ -1440,14 +1481,14 @@ export default function Markets() {
       </div>
       <ProMembershipModal isOpen={isMembershipOpen} onClose={() => setIsMembershipOpen(false)} />
 
-      {selectedMarket && typeof document !== 'undefined' && createPortal(
+      {selectedMarket && isMarketModalOpen && typeof document !== 'undefined' && createPortal(
         (() => {
           const [yes, no] = parseOutcomePrices(selectedMarket.market.outcomePrices);
           const yesPct = Math.round(yes * 100);
           const noPct = Math.round(no * 100);
           const iconSrc = selectedMarket.market.iconUrl || CATEGORY_AVATARS[selectedMarket.category];
           return (
-            <div className={styles.marketModalOverlay} onClick={() => setSelectedMarket(null)}>
+            <div className={styles.marketModalOverlay} onClick={() => setIsMarketModalOpen(false)}>
               <div
                 className={styles.marketModalCard}
                 role="dialog"
@@ -1458,77 +1499,111 @@ export default function Markets() {
                 <button
                   type="button"
                   className={styles.marketModalClose}
-                  onClick={() => setSelectedMarket(null)}
+                  onClick={() => setIsMarketModalOpen(false)}
                   aria-label="Close"
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                     <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                   </svg>
                 </button>
-                <div className={styles.marketModalHead}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={iconSrc} alt="" className={styles.marketModalIcon} width={56} height={56} />
-                  <span className={styles.marketPill}>{CATEGORY_LABELS[selectedMarket.category]}</span>
-                </div>
-                <h2 className={styles.marketModalTitle}>{selectedMarket.market.question}</h2>
-                <div className={styles.marketBar}>
-                  <div className={styles.marketYes} style={{ width: `${yesPct}%` }} />
-                  <div className={styles.marketNo} style={{ width: `${noPct}%` }} />
-                </div>
-                <div className={styles.marketModalValues}>
-                  <span className={styles.marketBarValueYes}>Yes {yesPct}%</span>
-                  <span className={styles.marketBarValueNo}>No {noPct}%</span>
-                </div>
-                <div className={styles.marketModalMeta}>
-                  <span>Volume {formatVol(selectedMarket.market.volume)}</span>
-                </div>
 
-                <div className={styles.stakePanel}>
-                  <div className={styles.stakePanelHead}>
-                    <span className={styles.stakeLabel}>Stake Cakes</span>
-                    <span className={styles.stakeReadout}>{stakeCakes} Cakes</span>
+                <div className={styles.marketModalColumns}>
+                  {/* Left: the market hero */}
+                  <div className={styles.marketModalHero}>
+                    <div className={styles.marketModalHead}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={iconSrc} alt="" className={styles.marketModalIcon} width={88} height={88} />
+                      <span className={styles.marketPill}>{CATEGORY_LABELS[selectedMarket.category]}</span>
+                    </div>
+                    <h2 className={styles.marketModalTitle}>{selectedMarket.market.question}</h2>
+                    <div className={styles.marketBar}>
+                      <div className={styles.marketYes} style={{ width: `${yesPct}%` }} />
+                      <div className={styles.marketNo} style={{ width: `${noPct}%` }} />
+                    </div>
+                    <div className={styles.marketModalValues}>
+                      <span className={styles.marketBarValueYes}>Yes {yesPct}%</span>
+                      <span className={styles.marketBarValueNo}>No {noPct}%</span>
+                    </div>
+                    <div className={styles.marketModalStats}>
+                      <div className={styles.marketModalStat}>
+                        <span className={styles.marketModalStatLabel}>Volume</span>
+                        <span className={styles.marketModalStatValue}>{formatVol(selectedMarket.market.volume)}</span>
+                      </div>
+                      <div className={styles.marketModalStat}>
+                        <span className={styles.marketModalStatLabel}>Yes</span>
+                        <span className={`${styles.marketModalStatValue} ${styles.marketBarValueYes}`}>{yesPct}%</span>
+                      </div>
+                      <div className={styles.marketModalStat}>
+                        <span className={styles.marketModalStatLabel}>No</span>
+                        <span className={`${styles.marketModalStatValue} ${styles.marketBarValueNo}`}>{noPct}%</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className={styles.stakeChips}>
-                    {[5, 15, 30, 50].map((amount) => (
-                      <button
-                        key={amount}
-                        type="button"
-                        className={`${styles.stakeChip} ${stakeCakes === amount ? styles.stakeChipActive : ''}`}
-                        onClick={() => setStakeCakes(amount)}
-                      >
-                        {amount}
-                      </button>
-                    ))}
-                    <input
-                      className={styles.stakeInput}
-                      type="number"
-                      min={1}
-                      max={9999}
-                      value={stakeCakes}
-                      onChange={(event) => setStakeCakes(Math.max(1, Math.min(9999, Number(event.target.value) || 1)))}
-                      aria-label="Cakes to stake"
+
+                  {/* Right: stake, Ask Blue, Trader Mode, debate */}
+                  <div className={styles.marketModalAction}>
+                    <div className={styles.stakePanel}>
+                      <div className={styles.stakePanelHead}>
+                        <span className={styles.stakeLabel}>Stake Cakes</span>
+                        <span className={styles.stakeReadout}>{stakeCakes} Cakes</span>
+                      </div>
+                      <div className={styles.stakeChips}>
+                        {[5, 15, 30, 50].map((amount) => (
+                          <button
+                            key={amount}
+                            type="button"
+                            className={`${styles.stakeChip} ${stakeCakes === amount ? styles.stakeChipActive : ''}`}
+                            onClick={() => setStakeCakes(amount)}
+                          >
+                            {amount}
+                          </button>
+                        ))}
+                        <input
+                          className={styles.stakeInput}
+                          type="number"
+                          min={1}
+                          max={9999}
+                          value={stakeCakes}
+                          onChange={(event) => setStakeCakes(Math.max(1, Math.min(9999, Number(event.target.value) || 1)))}
+                          aria-label="Cakes to stake"
+                        />
+                      </div>
+                    </div>
+
+                    <CtaButton
+                      variant="primary"
+                      size="lg"
+                      block
+                      onClick={() => askBlueAboutMarket(selectedMarket)}
+                    >
+                      Ask Blue
+                    </CtaButton>
+                    <p className={styles.stakeFootnote}>
+                      Blue opens a debate for this market. When the case is made, your staked Cakes
+                      activate Trader Mode &mdash; Blue reads the 15-minute Kalshi drift, prices it with
+                      Black&ndash;Scholes, and sizes the position at quarter-Kelly.
+                    </p>
+
+                    <CtaButton
+                      variant="secondary"
+                      block
+                      onClick={() => activateTraderMode(selectedMarket)}
+                    >
+                      Activate Trader Mode
+                    </CtaButton>
+                    <p className={styles.stakeFootnote}>
+                      Stakes your {stakeCakes} Cakes so Blue can position this trade: drift read,
+                      Black&ndash;Scholes pricing, quarter-Kelly sizing. The Cakes ledger is still
+                      coming online &mdash; for now this stages the request with Blue and nothing
+                      is executed.
+                    </p>
+
+                    <MarketDebate
+                      marketId={selectedMarket.market.ticker || selectedMarket.market.id}
+                      marketTitle={selectedMarket.market.question}
                     />
                   </div>
                 </div>
-
-                <CtaButton
-                  variant="primary"
-                  size="lg"
-                  block
-                  onClick={() => askBlueAboutMarket(selectedMarket)}
-                >
-                  Ask Blue
-                </CtaButton>
-                <p className={styles.stakeFootnote}>
-                  Blue opens a debate for this market. When the case is made, your staked Cakes
-                  activate Trader Mode &mdash; Blue reads the 15-minute Kalshi drift, prices it with
-                  Black&ndash;Scholes, and sizes the position at quarter-Kelly.
-                </p>
-
-                <MarketDebate
-                  marketId={selectedMarket.market.ticker || selectedMarket.market.id}
-                  marketTitle={selectedMarket.market.question}
-                />
               </div>
             </div>
           );
