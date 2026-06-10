@@ -108,79 +108,6 @@
   background-color: var(--color-primary);
 }
 
-/* ── Task checklist ── */
-.taskList {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.taskItem {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  width: 100%;
-  text-align: left;
-  padding: 16px 18px;
-  border-radius: 14px;
-  background: var(--color-surface-base);
-  border: 1px solid var(--color-border-subtle);
-  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.05);
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-}
-
-.taskItem:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(26, 29, 51, 0.08);
-  border-color: color-mix(in oklch, var(--color-primary) 35%, transparent);
-}
-
-.taskItemDone {
-  background: color-mix(in srgb, var(--color-primary) 5%, var(--color-surface-base));
-  border-color: color-mix(in oklch, var(--color-primary) 28%, transparent);
-}
-
-.taskCheck {
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  border-radius: 8px;
-  border: 2px solid var(--color-border-strong, rgba(26, 29, 51, 0.2));
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  transition: background 0.15s ease, border-color 0.15s ease;
-}
-
-.taskCheckDone {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-}
-
-.taskLabel {
-  font-family: var(--font-body, sans-serif);
-  font-size: 0.9375rem;
-  line-height: 1.45;
-  color: var(--color-text-dark);
-}
-
-.taskItemDone .taskLabel {
-  color: var(--color-text-muted);
-  text-decoration: line-through;
-  text-decoration-color: color-mix(in oklch, var(--color-primary) 50%, transparent);
-}
-
-.taskProgress {
-  font-family: var(--font-mono, monospace);
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
-  margin: 18px 0 0;
-  text-align: center;
-}
-
 /* ── Swipe transitions (mirror the 12-week page feel) ── */
 .swipeLeft {
   animation: slideLeft 0.16s ease;
@@ -245,22 +172,7 @@
   opacity: 0.9;
 }
 
-:global([data-theme="dark"]) .taskItem {
-  background: #1e1f2c;
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 6px 20px rgba(0, 0, 0, 0.45);
-}
-
-:global([data-theme="dark"]) .taskItemDone {
-  background: color-mix(in srgb, var(--color-primary) 16%, #1e1f2c);
-  border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
-}
-
 :global([data-theme="dark"]) .courseTitle,
 :global([data-theme="dark"]) .stateHeading {
   color: #f0f1fa;
-}
-
-:global([data-theme="dark"]) .taskLabel {
-  color: #e6e8f5;
 }

@@ -8,9 +8,19 @@ import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
 import { useSound } from '@/hooks/useSound';
 import type { CourseData } from '@/lib/personal-course';
 import shared from '../page.module.css';
+import wt from '@/components/week-tasks/WeekTasksView.module.css';
 import styles from './personal.module.css';
 
 type ProgressMap = Record<string, number[]>;
+
+// Same calm-rainbow accents and artwork tiles the 12-week missions use, so a
+// custom course week reads exactly like a main course week.
+const TASK_ACCENTS = [
+  '#5168FF', '#7C8FFF', '#8B5CF6', '#A855F7',
+  '#38BDF8', '#22D3EE', '#2DD4BF', '#34D399',
+];
+
+const TASK_ART_VARIANTS = ['Aurora', 'Sunrise', 'Orbit', 'Bloom', 'Ribbon', 'Prism'] as const;
 
 function paragraphs(body: string): string[] {
   return body.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
@@ -292,37 +302,62 @@ export default function PersonalCoursePage() {
 
                 <div className={shared.missionsHeadingRow} aria-hidden="true">
                   <span className={shared.missionsDivider} />
-                  <h2 className={shared.missionsHeading}>Tasks</h2>
+                  <h2 className={shared.missionsHeading}>Missions</h2>
                   <span className={shared.missionsDivider} />
                 </div>
 
-                <div className={styles.taskList}>
+                <div className={wt.container}>
                   {week.tasks.map((task, i) => {
                     const done = (progress[`week${week.weekNumber}`] ?? []).includes(i);
+                    const artVariant = TASK_ART_VARIANTS[i % TASK_ART_VARIANTS.length];
                     return (
-                      <button
+                      <div
                         key={i}
-                        type="button"
-                        className={`${styles.taskItem} ${done ? styles.taskItemDone : ''}`}
-                        onClick={() => toggleTask(i)}
-                        onMouseEnter={() => play('hover')}
+                        className={`${wt.taskCard} ${done ? wt.taskCardDone : ''}`}
+                        style={{ '--task-accent': TASK_ACCENTS[i % TASK_ACCENTS.length] } as React.CSSProperties}
                       >
-                        <span className={`${styles.taskCheck} ${done ? styles.taskCheckDone : ''}`} aria-hidden="true">
-                          {done && (
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M20 6L9 17l-5-5" />
-                            </svg>
-                          )}
-                        </span>
-                        <span className={styles.taskLabel}>{task}</span>
-                      </button>
+                        <button
+                          type="button"
+                          className={wt.taskCardHeader}
+                          onClick={() => toggleTask(i)}
+                          onMouseEnter={() => play('hover')}
+                        >
+                          <span className={wt.taskAccent} aria-hidden="true" />
+                          <div className={`${wt.taskArtwork} ${wt[`taskArtwork${artVariant}`]}`} aria-hidden="true">
+                            <div className={wt.taskArtworkGlow} />
+                            <div className={wt.taskArtworkLine} />
+                          </div>
+                          <div className={wt.taskInfo}>
+                            <span className={wt.taskTitle}>{task}</span>
+                          </div>
+                          <div className={wt.taskRight}>
+                            {done ? (
+                              <div className={wt.taskCheckDone}>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                              </div>
+                            ) : (
+                              <div className={wt.taskCheckEmpty} />
+                            )}
+                          </div>
+                        </button>
+                      </div>
                     );
                   })}
-                </div>
 
-                <p className={styles.taskProgress}>
-                  {completedThisWeek} of {week.tasks.length} done this week
-                </p>
+                  <div className={wt.sealSection}>
+                    <div className={wt.progressInfo}>
+                      <span className={wt.progressText}>{completedThisWeek} / {week.tasks.length} tasks completed</span>
+                      <div className={wt.progressBar}>
+                        <div
+                          className={wt.progressBarFill}
+                          style={{ width: `${week.tasks.length ? (completedThisWeek / week.tasks.length) * 100 : 0}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </>
             )}
           </div>
