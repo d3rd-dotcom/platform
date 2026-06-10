@@ -1,6 +1,7 @@
 .scene {
   position: relative;
   overflow: hidden;
+  container-type: inline-size;
   flex: 1;
   min-height: 620px;
   border: 1px solid var(--color-border-subtle);
@@ -37,32 +38,30 @@
   position: absolute;
   top: 0;
   left: 0;
+  right: 0;
   z-index: 3;
-  padding: 20px 22px;
-  max-width: 60%;
+  padding: 22px 0 0;
   pointer-events: none;
 }
 
+/* Oversized decorative wordmark — sized in container-width units so it
+   always spans the full top edge of the scene. */
 .title {
   margin: 0;
-  font-family: var(--font-primary);
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-mono);
+  font-size: 9.2cqw;
+  font-weight: var(--font-weight-regular);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  text-align: center;
   color: var(--color-text-dark);
-}
-
-.subtitle {
-  margin: 4px 0 0;
-  font-family: var(--font-body);
-  font-size: var(--font-size-sm);
-  line-height: 1.45;
-  color: var(--color-text-muted);
 }
 
 .counters {
   position: absolute;
-  top: 20px;
-  right: 22px;
+  bottom: 14px;
+  right: 14px;
   z-index: 3;
   display: flex;
   gap: 8px;
@@ -269,13 +268,6 @@
   }
 
   .header {
-    max-width: 100%;
-    padding: 16px 18px;
-  }
-
-  .counters {
-    top: auto;
-    bottom: 14px;
-    right: 14px;
+    padding-top: 16px;
   }
 }
