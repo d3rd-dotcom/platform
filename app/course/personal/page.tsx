@@ -7,6 +7,7 @@ import SideNavigation from '@/components/side-navigation/SideNavigation';
 import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
 import { useSound } from '@/hooks/useSound';
 import type { CourseData } from '@/lib/personal-course';
+import { broadcastPersonalCourseUpdated, onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
 import shared from '../page.module.css';
 import wt from '@/components/week-tasks/WeekTasksView.module.css';
 import styles from './personal.module.css';
@@ -41,6 +42,8 @@ export default function PersonalCoursePage() {
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<number | null>(null);
+  const savePendingRef = useRef(false);
 
   // Same breakpoint as the 12-week course page: desktop pins the content to a
   // 420px left column and opens the weekly read in the right panel.
@@ -60,35 +63,49 @@ export default function PersonalCoursePage() {
     }
   }, [getAccessToken]);
 
+  const loadCourse = useCallback(async () => {
+    try {
+      const res = await fetch(personalCourseUrl(), {
+        cache: 'no-store',
+        headers: await authHeaders(),
+      });
+      const data = await res.json().catch(() => ({}));
+      const record = data?.course;
+      if (record?.status === 'ready' && record?.courseData?.weeks?.length) {
+        setCourse(record.courseData as CourseData);
+        // Don't clobber a local task toggle whose debounced save hasn't
+        // flushed yet — the server copy would be a step behind.
+        if (!savePendingRef.current) {
+          setProgress((record.progressData as ProgressMap) ?? {});
+        }
+        setPersisted(Boolean(record && !data.guest));
+      } else {
+        setCourse(null);
+      }
+    } catch {
+      setCourse(null);
+    } finally {
+      setLoading(false);
+    }
+  }, [authHeaders]);
+
   useEffect(() => {
     if (!ready) return;
-    (async () => {
-      try {
-        const res = await fetch('/api/course/personal', {
-          cache: 'no-store',
-          headers: await authHeaders(),
-        });
-        const data = await res.json().catch(() => ({}));
-        const record = data?.course;
-        if (record?.status === 'ready' && record?.courseData?.weeks?.length) {
-          setCourse(record.courseData as CourseData);
-          setProgress((record.progressData as ProgressMap) ?? {});
-          setPersisted(Boolean(record && !data.guest));
-        } else {
-          setCourse(null);
-        }
-      } catch {
-        setCourse(null);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [ready, authHeaders]);
+    loadCourse();
+  }, [ready, loadCourse]);
+
+  // If the course is deleted or replaced anywhere else (Blue's chat, another
+  // tab) this page must drop it immediately — also revalidates on tab focus.
+  useEffect(() => {
+    if (!ready) return;
+    return onPersonalCourseUpdated(loadCourse);
+  }, [ready, loadCourse]);
 
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const persistProgress = useCallback((next: ProgressMap) => {
     if (!persisted) return;
     if (saveTimer.current) clearTimeout(saveTimer.current);
+    savePendingRef.current = true;
     saveTimer.current = setTimeout(async () => {
       try {
         await fetch('/api/course/progress', {
@@ -98,6 +115,8 @@ export default function PersonalCoursePage() {
         });
       } catch {
         // Progress is best-effort; a failed save just isn't persisted.
+      } finally {
+        savePendingRef.current = false;
       }
     }, 600);
   }, [persisted, authHeaders]);
@@ -125,7 +144,7 @@ export default function PersonalCoursePage() {
     setDeleting(true);
     setDeleteError(false);
     try {
-      const res = await fetch('/api/course/personal', {
+      const res = await fetch(personalCourseUrl(), {
         method: 'DELETE',
         headers: await authHeaders(),
       });
@@ -137,7 +156,7 @@ export default function PersonalCoursePage() {
       setCourse(null);
       setProgress({});
       setConfirmingDelete(false);
-      window.dispatchEvent(new Event('personalCourseUpdated'));
+      broadcastPersonalCourseUpdated();
     } catch {
       setDeleteError(true);
     } finally {
@@ -152,6 +171,7 @@ export default function PersonalCoursePage() {
       return w;
     });
     setReadingOpen(false);
+    setSelectedTask(null);
     setTimeout(() => setSwipeAnim('none'), 160);
   };
 
@@ -198,6 +218,55 @@ export default function PersonalCoursePage() {
       </div>
       <div className={shared.inlineReaderBody}>
         {paragraphs(week.read.body).map((p, i) => <p key={i}>{p}</p>)}
+      </div>
+    </div>
+  ) : null;
+
+  // Desktop right panel for a selected mission — the same focused-card
+  // treatment the 12-week course uses, showing the task requirement in full.
+  const selectedDone = selectedTask !== null
+    && (progress[`week${week.weekNumber}`] ?? []).includes(selectedTask);
+  const taskPanel = selectedTask !== null && week.tasks[selectedTask] !== undefined ? (
+    <div className={wt.container}>
+      <div
+        className={`${wt.taskCard} ${selectedDone ? wt.taskCardDone : ''}`}
+        style={{ '--task-accent': TASK_ACCENTS[selectedTask % TASK_ACCENTS.length] } as React.CSSProperties}
+      >
+        <div className={wt.taskCardHeader}>
+          <span className={wt.taskAccent} aria-hidden="true" />
+          <div
+            className={`${wt.taskArtwork} ${wt[`taskArtwork${TASK_ART_VARIANTS[selectedTask % TASK_ART_VARIANTS.length]}`]}`}
+            aria-hidden="true"
+          >
+            <div className={wt.taskArtworkGlow} />
+            <div className={wt.taskArtworkLine} />
+          </div>
+          <div className={wt.taskInfo}>
+            <span className={wt.taskTitle}>Mission {selectedTask + 1} — Week {week.weekNumber}: {week.theme}</span>
+          </div>
+          <div className={wt.taskRight}>
+            {selectedDone ? (
+              <div className={wt.taskCheckDone}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </div>
+            ) : (
+              <div className={wt.taskCheckEmpty} />
+            )}
+          </div>
+        </div>
+        <div className={wt.taskCardContent}>
+          <p className={wt.taskInstructions}>{week.tasks[selectedTask]}</p>
+          <button
+            type="button"
+            className={`${wt.markDoneBtn} ${selectedDone ? wt.markDoneBtnActive : ''}`}
+            onClick={() => toggleTask(selectedTask)}
+            onMouseEnter={() => play('hover')}
+          >
+            {selectedDone ? 'Completed' : 'Complete Task'}
+          </button>
+        </div>
       </div>
     </div>
   ) : null;
@@ -269,7 +338,7 @@ export default function PersonalCoursePage() {
                 <button
                   key={w.weekNumber}
                   className={`${shared.weekDot} ${w.weekNumber === viewWeek ? shared.weekDotActive : ''}`}
-                  onClick={() => { play('click'); setViewWeek(w.weekNumber); setReadingOpen(false); }}
+                  onClick={() => { play('click'); setViewWeek(w.weekNumber); setReadingOpen(false); setSelectedTask(null); }}
                   title={`Week ${w.weekNumber}: ${w.theme}`}
                 />
               ))}
@@ -301,7 +370,7 @@ export default function PersonalCoursePage() {
                   <button
                     type="button"
                     className={`${shared.readingCard} ${isDesktop && readingOpen ? shared.readingCardActive : ''}`}
-                    onClick={() => { play('click'); setReadingOpen(true); }}
+                    onClick={() => { play('click'); setReadingOpen(true); setSelectedTask(null); }}
                     onMouseEnter={() => play('hover')}
                   >
                     <span className={shared.readingAccent} aria-hidden="true" />
@@ -335,7 +404,18 @@ export default function PersonalCoursePage() {
                         <button
                           type="button"
                           className={wt.taskCardHeader}
-                          onClick={() => toggleTask(i)}
+                          onClick={() => {
+                            // Desktop mirrors the main course: the card opens
+                            // its requirements in the right panel; completing
+                            // happens there. Mobile toggles in place.
+                            if (isDesktop) {
+                              play('click');
+                              setSelectedTask(i);
+                              setReadingOpen(false);
+                            } else {
+                              toggleTask(i);
+                            }
+                          }}
                           onMouseEnter={() => play('hover')}
                         >
                           <span className={wt.taskAccent} aria-hidden="true" />
@@ -355,6 +435,15 @@ export default function PersonalCoursePage() {
                               </div>
                             ) : (
                               <div className={wt.taskCheckEmpty} />
+                            )}
+                            {isDesktop && (
+                              <svg
+                                className={`${wt.expandArrow} ${wt.expandArrowPanel}`}
+                                width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                              >
+                                <polyline points="6 9 12 15 18 9" />
+                              </svg>
                             )}
                           </div>
                         </button>
@@ -380,11 +469,15 @@ export default function PersonalCoursePage() {
 
         </div>
 
-        {isDesktop && readingOpen && week.read && (
+        {isDesktop && (readingOpen && week.read ? (
           <div className={shared.rightPanel}>
             {reader}
           </div>
-        )}
+        ) : taskPanel ? (
+          <div className={shared.rightPanel}>
+            {taskPanel}
+          </div>
+        ) : null)}
       </main>
     </div>
   );

@@ -6,6 +6,7 @@ import { usePrivy } from '@privy-io/react-auth';
 import { BookOpen, Sparkle } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import type { CourseData } from '@/lib/personal-course';
+import { onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
 import styles from './page.module.css';
 
 function getCourseEndDate() {
@@ -33,7 +34,7 @@ export default function CoursesPage() {
     try {
       const token = await getAccessToken();
       const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
-      const res = await fetch('/api/course/personal', { cache: 'no-store', headers });
+      const res = await fetch(personalCourseUrl(), { cache: 'no-store', headers });
       const data = await res.json().catch(() => ({}));
       const record = data?.course;
       if (record?.status === 'ready' && record?.courseData?.weeks?.length) {
@@ -51,12 +52,9 @@ export default function CoursesPage() {
     loadPersonalCourse();
   }, [ready, loadPersonalCourse]);
 
-  // A course built in Blue's chat should appear here without a manual refresh.
-  useEffect(() => {
-    const handler = () => loadPersonalCourse();
-    window.addEventListener('personalCourseUpdated', handler);
-    return () => window.removeEventListener('personalCourseUpdated', handler);
-  }, [loadPersonalCourse]);
+  // Courses created or deleted anywhere — Blue's chat, the course page,
+  // another tab — must appear/disappear here without a manual refresh.
+  useEffect(() => onPersonalCourseUpdated(loadPersonalCourse), [loadPersonalCourse]);
 
   return (
     <div className={styles.layout}>

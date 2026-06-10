@@ -18,6 +18,7 @@ import QuestForgeInline from './QuestForgeInline';
 import type { QuestForgeDraft, QuestForgeRequest } from './QuestForgeInline';
 import CourseBuilderInline from './CourseBuilderInline';
 import { sendUsdcOnBase, type Eip1193Provider } from '@/lib/usdc-base-transfer';
+import { broadcastPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
 
 const ProMembershipModal = dynamic(() => import('../pro-membership-modal/ProMembershipModal'), { ssr: false });
 
@@ -808,7 +809,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     }
     setIsTyping(true);
     try {
-      const res = await fetch('/api/course/personal', {
+      const res = await fetch(personalCourseUrl(), {
         cache: 'no-store',
         credentials: 'include',
         headers: await authHeaders(),
@@ -835,7 +836,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     setPendingCourseDelete(null);
     setIsTyping(true);
     try {
-      const res = await fetch('/api/course/personal', {
+      const res = await fetch(personalCourseUrl(), {
         method: 'DELETE',
         credentials: 'include',
         headers: await authHeaders(),
@@ -843,7 +844,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       const data = await res.json().catch(() => ({}));
       setIsTyping(false);
       if (res.ok && data.deleted) {
-        window.dispatchEvent(new Event('personalCourseUpdated'));
+        broadcastPersonalCourseUpdated();
         addBlueMessage('done — your course and its progress are deleted. build a new one from the Courses page whenever.');
       } else if (res.ok) {
         addBlueMessage("turns out there was no course left to delete — you're already clear.");
@@ -1582,9 +1583,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             onClose={() => setCourseBuilderVisible(false)}
             onCourseCreated={() => {
               setCourseBuilderVisible(false);
-              if (typeof window !== 'undefined') {
-                window.dispatchEvent(new Event('personalCourseUpdated'));
-              }
+              broadcastPersonalCourseUpdated();
               addBlueMessage("done. your 4-week course is live on the Courses page whenever you want to start week one.");
             }}
           />
