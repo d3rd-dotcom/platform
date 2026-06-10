@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import { useAccount } from 'wagmi';
-import { CheckCircle, Circle, UploadSimple, ArrowSquareOut } from '@phosphor-icons/react';
+import { CheckCircle, Circle, UploadSimple, ArrowSquareOut, CaretLeft } from '@phosphor-icons/react';
 import { ConfettiCelebration } from '../quests/ConfettiCelebration';
 import { ShardAnimation } from '../quests/ShardAnimation';
 import { XConnectingModal } from '../x-connecting/XConnectingModal';
@@ -267,13 +267,6 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
   if (!quest) {
     return (
       <div className={styles.wrapper}>
-        <div className={styles.boardHeader}>
-          <div className={styles.boardHeaderInner}>
-            <span className={styles.boardNode} aria-hidden="true" />
-            <span className={styles.boardTitle}>Quest Board</span>
-            <span className={styles.boardNode} aria-hidden="true" />
-          </div>
-        </div>
         <div className={styles.idle}>
           <div className={styles.idleInner}>
             <Image src="/icons/money.svg" alt="" width={40} height={40} className={styles.idleIcon} />
@@ -379,14 +372,14 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.boardHeader}>
-        <div className={styles.boardHeaderInner}>
-          <span className={styles.boardNode} aria-hidden="true" />
-          <span className={styles.boardTitle}>Quest Board</span>
-          <span className={styles.boardNode} aria-hidden="true" />
-        </div>
-      </div>
       <div className={styles.panel} data-tone={kindMeta.tone}>
+      <div className={styles.panelTop}>
+        <button type="button" className={styles.backBtn} onClick={onDeselect}>
+          <CaretLeft size={12} weight="bold" />
+          Quest board
+        </button>
+        <span className={styles.kindChip}>{kindMeta.label}</span>
+      </div>
       <div className={styles.scrollArea}>
         <section className={styles.hero}>
           <h1 className={styles.heroTitle}>{quest.title}</h1>

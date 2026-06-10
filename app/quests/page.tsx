@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import QuestListPanel, { UnifiedQuest, QuestFilter } from '@/components/quest-list-panel/QuestListPanel';
+import QuestSidePanel from '@/components/quest-side-panel/QuestSidePanel';
 import QuestDetailPanel from '@/components/quest-detail-panel/QuestDetailPanel';
 import QuestModal from '@/components/quest-modal/QuestModal';
 import QuestAuthorPanel from '@/components/quest-author-panel/QuestAuthorPanel';
@@ -233,17 +234,24 @@ export default function QuestsPage() {
             filter={filter}
             onFilterChange={setFilter}
             onSelectQuest={setSelectedQuest}
-            completedCount={completedQuestCount}
-            totalCount={allQuests.length}
-            usdcAvailable={usdcAvailable}
-            isPro={isPro}
-            onForge={() => { play('click'); setForgeOpen(true); }}
-            onClaims={() => { play('click'); setClaimOpen(true); }}
           />
-          <QuestDetailPanel
-            quest={selectedQuest}
-            onDeselect={() => setSelectedQuest(null)}
-          />
+          <aside className={`${styles.sideColumn} ${selectedQuest ? styles.sideColumnWide : ''}`}>
+            {selectedQuest ? (
+              <QuestDetailPanel
+                quest={selectedQuest}
+                onDeselect={() => setSelectedQuest(null)}
+              />
+            ) : (
+              <QuestSidePanel
+                completedCount={completedQuestCount}
+                totalCount={allQuests.length}
+                usdcAvailable={usdcAvailable}
+                isPro={isPro}
+                onForge={() => { play('click'); setForgeOpen(true); }}
+                onClaims={() => { play('click'); setClaimOpen(true); }}
+              />
+            )}
+          </aside>
         </main>
       </div>
 

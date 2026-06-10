@@ -1,497 +1,577 @@
-/* QuestListPanel — dark console panel, left column of the quests split layout */
+/* QuestListPanel — large taskboard, the main column of the quests layout.
+   Big quest rows (artwork tile, kind tag, title, description, reward chips)
+   under the hanging "Quest Board" tab. */
 
-.panel {
-  --c-border: rgba(235, 232, 247, 0.10);
-  --c-fg: #ebe8f7;
-  --c-fg-soft: rgba(235, 232, 247, 0.74);
-  --c-fg-muted: rgba(235, 232, 247, 0.52);
-  --c-fg-faint: rgba(235, 232, 247, 0.36);
-  --c-blue: var(--color-primary);
+.wrapper {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding-top: 24px;
+}
 
-  width: 390px;
+/* ── Quest Board tab — hangs flat from the panel's top edge ── */
+.boardHeader {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  border-radius: 0 0 10px 10px;
+  background: #1b2245;
+  border: 1px solid rgba(26, 29, 51, 0.12);
+  border-top: none;
+}
+
+.boardHeaderInner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 22px;
+}
+
+.boardNode {
+  width: 5px;
+  height: 5px;
+  background: rgba(155, 175, 255, 0.55);
+  transform: rotate(45deg);
   flex-shrink: 0;
+}
+
+.boardTitle {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: rgba(205, 218, 255, 0.85);
+  white-space: nowrap;
+}
+
+/* ── Panel ── */
+.panel {
+  flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 16px;
   border-radius: 16px;
   overflow: hidden;
-  color: var(--c-fg);
-  border: 1px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
-  background: linear-gradient(180deg, #11131b 0%, #0c0d17 60%);
+  background: #ffffff;
+  border: 1px solid rgba(26, 29, 51, 0.10);
 }
 
-/* ── Header ── */
-.header {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 10px 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(235, 232, 247, 0.10);
-  background: rgba(235, 232, 247, 0.04);
-}
-
-.headerRow {
+/* ── Toolbar: filter tabs + cleared tally ── */
+.toolbar {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(26, 29, 51, 0.08);
 }
 
-.eyebrow {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--c-fg-muted);
-}
-
-.versionBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 7px;
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #7586ff;
-  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
-  border: 1px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
-}
-
-.stats {
-  display: flex;
-  gap: 16px;
-}
-
-.stat {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.statLabelRow {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.statLabel {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--c-fg-faint);
-}
-
-.infoBtn {
-  display: grid;
-  place-items: center;
-  width: 14px;
-  height: 14px;
-  padding: 0;
-  border: none;
-  background: none;
-  color: var(--c-fg-faint);
-  cursor: pointer;
-  border-radius: 999px;
-  transition: color 0.15s ease;
-  flex-shrink: 0;
-}
-
-.infoBtn:hover {
-  color: #7586ff;
-}
-
-.infoBtnActive {
-  color: #7586ff;
-}
-
-.infoBtn:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 1px;
-}
-
-.statValue {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-family: var(--font-secondary);
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--c-fg);
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-}
-
-.statMuted {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--c-fg-faint);
-}
-
-.statIcon {
-  color: var(--c-blue);
-}
-
-/* ── Blue video piece ── */
-.blueVideo {
-  flex-shrink: 0;
-}
-
-/* ── Filter pills ── */
 .filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
-  flex-shrink: 0;
+  gap: 6px;
 }
 
-.filterPill {
+.filterTab {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 5px 10px;
+  gap: 6px;
+  padding: 6px 12px;
   border-radius: 999px;
-  border: 1px solid rgba(235, 232, 247, 0.12);
-  background: rgba(235, 232, 247, 0.06);
-  color: var(--c-fg-muted);
+  appearance: none;
+  -webkit-appearance: none;
+  text-transform: none;
+  letter-spacing: normal;
+  border: 1px solid rgba(26, 29, 51, 0.12);
+  background: rgba(26, 29, 51, 0.03);
+  color: rgba(26, 29, 51, 0.62);
   font-family: var(--font-primary);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.14s ease, border-color 0.14s ease, color 0.14s ease;
 }
 
-.filterPill:hover {
-  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
-  border-color: color-mix(in oklch, var(--color-primary) 32%, transparent);
-  color: var(--c-fg-soft);
+.filterTab:hover {
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 28%, transparent);
+  color: #1a1d33;
 }
 
-.filterPillActive {
-  background: color-mix(in oklch, var(--color-primary) 22%, transparent);
-  border-color: color-mix(in oklch, var(--color-primary) 50%, transparent);
-  color: #c2ccff;
+.filterTabActive,
+.filterTabActive:hover {
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 42%, transparent);
+  color: var(--color-primary);
 }
 
 .filterCount {
   font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-size: 10px;
   font-weight: 700;
-  color: inherit;
-  opacity: 0.7;
+  opacity: 0.72;
   font-variant-numeric: tabular-nums;
 }
 
-/* ── Quest list ── */
-.questList {
+.toolbarStat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  font-family: var(--font-secondary);
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1d33;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.toolbarStat img {
+  align-self: center;
+}
+
+.toolbarStatMuted {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(26, 29, 51, 0.46);
+}
+
+/* ── List ── */
+.list {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 4px;
-  background: rgba(23, 26, 36, 0.72);
-  border: 1px solid rgba(235, 232, 247, 0.10);
-  border-radius: 10px;
+  gap: 10px;
+  padding: 16px 18px;
+  background: #f7f8ff;
 }
 
-.questList::-webkit-scrollbar {
-  width: 3px;
+.list::-webkit-scrollbar {
+  width: 4px;
 }
 
-.questList::-webkit-scrollbar-track {
+.list::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.questList::-webkit-scrollbar-thumb {
-  background: color-mix(in oklch, var(--color-primary) 28%, transparent);
+.list::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, var(--color-primary) 24%, transparent);
   border-radius: 999px;
 }
 
-/* ── Quest item (the colorful buttons) ── */
-.questItem {
+/* ── Quest card (large row) ── */
+.card {
   --accent: var(--color-primary);
-  position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 11px;
-  border-radius: 7px;
-  border: 1px solid color-mix(in srgb, var(--accent) 30%, rgba(255, 255, 255, 0.10));
-  background: color-mix(in srgb, var(--accent) 10%, rgba(255, 255, 255, 0.03));
+  gap: 16px;
+  width: 100%;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(26, 29, 51, 0.08);
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
   cursor: pointer;
   text-align: left;
-  transition: background 0.14s ease, border-color 0.14s ease;
-  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  text-transform: none;
+  letter-spacing: normal;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;
 }
 
-.questItem:hover {
-  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
-  background: color-mix(in srgb, var(--accent) 18%, rgba(255, 255, 255, 0.03));
+.card:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 12%, transparent);
+  transform: translateY(-1px);
 }
 
-.questItemActive,
-.questItemActive:hover {
+.cardActive,
+.cardActive:hover {
   border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 24%, rgba(255, 255, 255, 0.03));
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 32%, transparent);
+  box-shadow:
+    0 0 0 1px var(--accent),
+    0 6px 18px color-mix(in srgb, var(--accent) 16%, transparent);
 }
 
-.questItemDone {
-  opacity: 0.65;
+.cardDone {
+  opacity: 0.66;
+  border-color: rgba(34, 197, 94, 0.26);
 }
 
-.questItemDone:hover {
-  opacity: 0.85;
+.cardDone:hover {
+  opacity: 0.9;
+  border-color: rgba(34, 197, 94, 0.45);
+  box-shadow: 0 6px 18px rgba(34, 197, 94, 0.10);
 }
 
-.questAccent {
-  width: 3px;
-  height: 28px;
-  border-radius: 999px;
-  background: var(--accent);
+.card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Artwork tile — gradient keyed to quest kind (matches QuestCard) */
+.artwork {
+  display: block;
+  width: 58px;
+  height: 58px;
   flex-shrink: 0;
-  opacity: 0.85;
+  border-radius: 13px;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent) 22%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    0 5px 12px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
-.questInfo {
+.artwork[data-kind='course'] {
+  background:
+    radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.42), transparent 28%),
+    linear-gradient(135deg, #2a3b8f 0%, var(--color-primary) 40%, #67d5ff 100%);
+}
+
+.artwork[data-kind='mission'] {
+  background:
+    radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.4), transparent 28%),
+    linear-gradient(135deg, #1d5b34 0%, #4ea968 44%, #9ee6a8 100%);
+}
+
+.artwork[data-kind='submit'] {
+  background:
+    radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.42), transparent 28%),
+    linear-gradient(135deg, #8a3d12 0%, #ff9c51 46%, #ffd2a6 100%);
+}
+
+.artwork[data-kind='social'] {
+  background:
+    radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.4), transparent 28%),
+    linear-gradient(135deg, #4a2a86 0%, #a871f4 46%, #d9bcff 100%);
+}
+
+.artwork[data-kind='custom'] {
+  background:
+    radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.4), transparent 28%),
+    linear-gradient(135deg, #8a2547 0%, #ff648e 46%, #ffbcd0 100%);
+}
+
+/* Info column */
+.info {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
 
-.questTitle {
-  font-family: var(--font-secondary);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--c-fg);
-  line-height: 1.25;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.questSub {
-  font-family: var(--font-mono);
-  font-size: 9.5px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--c-fg-faint);
-}
-
-.questRight {
+.metaRow {
   display: flex;
   align-items: center;
-  flex-shrink: 0;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-/* Reward count — kept minimal (no pill) so it doesn't orphan on the row. */
-.questBadge {
-  --bc: var(--color-primary);
+.kindTag {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  color: color-mix(in srgb, var(--bc) 76%, white 24%);
+  gap: 5px;
   font-family: var(--font-mono);
   font-size: 9.5px;
   font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  opacity: 0.92;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--accent) 78%, #1a1d33 22%);
 }
 
-.questCheck {
-  width: 22px;
-  height: 22px;
+.kindDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+.stateTag {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: rgba(26, 29, 51, 0.46);
+}
+
+.byline {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: rgba(26, 29, 51, 0.42);
+}
+
+.title {
+  font-family: var(--font-primary);
+  font-size: 17px;
+  font-weight: 800;
+  color: #121935;
+  line-height: 1.2;
+  letter-spacing: 0.005em;
+}
+
+.desc {
+  font-family: var(--font-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(18, 25, 53, 0.62);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+/* Rewards column (right side) */
+.rewards {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.rewardChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px 6px 9px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--color-primary) 9%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1a234a;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.rewardChipUsdc {
+  background: rgba(39, 117, 202, 0.10);
+  border-color: rgba(39, 117, 202, 0.22);
+  color: #1f5c9e;
+}
+
+.progressLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(26, 29, 51, 0.46);
+  font-variant-numeric: tabular-nums;
+}
+
+.checkDone {
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: #22c55e;
-  color: #fff;
+  color: #ffffff;
   display: grid;
   place-items: center;
-  flex-shrink: 0;
+}
+
+.clearedLabel {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: #1c8a48;
 }
 
 .empty {
-  padding: 24px 16px;
+  padding: 32px 16px;
   text-align: center;
   font-family: var(--font-secondary);
-  font-size: 13px;
-  color: var(--c-fg-faint);
+  font-size: 14px;
+  color: rgba(26, 29, 51, 0.46);
 }
 
-/* ── VIP actions ── */
-.vipRow {
-  display: flex;
-  gap: 6px;
-  flex-shrink: 0;
+/* ── Dark mode ── */
+:global([data-theme='dark']) .boardHeader {
+  background: #c6d2ff;
+  border-color: rgba(100, 130, 200, 0.40);
+  border-top: none;
 }
 
-.vipBtn {
-  flex: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid color-mix(in oklch, var(--color-primary) 28%, transparent);
-  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
-  color: #c2ccff;
-  font-family: var(--font-primary);
-  font-size: 11.5px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.14s ease, border-color 0.14s ease;
+:global([data-theme='dark']) .boardTitle {
+  color: rgba(10, 18, 55, 0.88);
 }
 
-.vipBtn:hover {
-  background: color-mix(in oklch, var(--color-primary) 18%, transparent);
-  border-color: color-mix(in oklch, var(--color-primary) 50%, transparent);
+:global([data-theme='dark']) .boardNode {
+  background: rgba(40, 70, 170, 0.60);
 }
 
-.vipBtn:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+:global([data-theme='dark']) .panel {
+  background: #131a2e;
+  border-color: rgba(150, 170, 255, 0.14);
 }
 
-/* ── Light mode ── */
-:global(:root:not([data-theme="dark"])) .panel {
-  --c-border: rgba(30, 34, 54, 0.12);
-  --c-fg: #1a1d33;
-  --c-fg-soft: rgba(26, 29, 51, 0.80);
-  --c-fg-muted: rgba(26, 29, 51, 0.58);
-  --c-fg-faint: rgba(26, 29, 51, 0.42);
-
-  border-color: color-mix(in oklch, var(--color-primary) 20%, transparent);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(246, 248, 255, 0.90) 100%);
-  box-shadow: 0 18px 48px rgba(38, 45, 84, 0.12);
+:global([data-theme='dark']) .toolbar {
+  border-bottom-color: rgba(150, 170, 255, 0.14);
 }
 
-:global(:root:not([data-theme="dark"])) .header {
-  border-color: rgba(30, 34, 54, 0.12);
-  background: color-mix(in oklch, var(--color-primary) 5%, transparent);
+:global([data-theme='dark']) .filterTab {
+  border-color: rgba(235, 232, 247, 0.12);
+  background: rgba(235, 232, 247, 0.05);
+  color: rgba(235, 232, 247, 0.62);
 }
 
-:global(:root:not([data-theme="dark"])) .versionBadge {
-  background: color-mix(in oklch, var(--color-primary) 9%, transparent);
-  border-color: color-mix(in oklch, var(--color-primary) 22%, transparent);
-  color: var(--color-primary);
-}
-
-:global(:root:not([data-theme="dark"])) .questList {
-  background: rgba(255, 255, 255, 0.72);
-  border-color: rgba(30, 34, 54, 0.10);
-}
-
-:global(:root:not([data-theme="dark"])) .questItem {
-  border-color: color-mix(in srgb, var(--accent) 38%, rgba(24, 32, 51, 0.14));
-  background: color-mix(in srgb, var(--accent) 8%, rgba(255, 255, 255, 0.92));
-}
-
-:global(:root:not([data-theme="dark"])) .questItem:hover {
-  border-color: color-mix(in srgb, var(--accent) 58%, transparent);
-  background: color-mix(in srgb, var(--accent) 14%, rgba(255, 255, 255, 0.95));
-}
-
-:global(:root:not([data-theme="dark"])) .questItemActive,
-:global(:root:not([data-theme="dark"])) .questItemActive:hover {
-  border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 18%, rgba(255, 255, 255, 0.95));
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 28%, transparent);
-}
-
-:global(:root:not([data-theme="dark"])) .questTitle {
-  color: #1a1d33;
-}
-
-:global(:root:not([data-theme="dark"])) .questSub {
-  color: rgba(26, 29, 51, 0.48);
-}
-
-:global(:root:not([data-theme="dark"])) .questAccent {
-  opacity: 1;
-}
-
-:global(:root:not([data-theme="dark"])) .filterPill {
-  border-color: rgba(26, 29, 51, 0.12);
-  background: rgba(26, 29, 51, 0.04);
-  color: rgba(26, 29, 51, 0.62);
-}
-
-:global(:root:not([data-theme="dark"])) .filterPill:hover {
-  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
-  border-color: color-mix(in oklch, var(--color-primary) 28%, transparent);
-  color: #1a1d33;
-}
-
-:global(:root:not([data-theme="dark"])) .filterPillActive {
-  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
-  border-color: color-mix(in oklch, var(--color-primary) 42%, transparent);
-  color: var(--color-primary);
-}
-
-:global(:root:not([data-theme="dark"])) .vipBtn {
-  border-color: color-mix(in oklch, var(--color-primary) 22%, transparent);
-  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
-  color: var(--color-primary);
-}
-
-:global(:root:not([data-theme="dark"])) .vipBtn:hover {
+:global([data-theme='dark']) .filterTab:hover {
   background: color-mix(in oklch, var(--color-primary) 14%, transparent);
-  border-color: color-mix(in oklch, var(--color-primary) 38%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 32%, transparent);
+  color: rgba(235, 232, 247, 0.86);
 }
 
-:global(:root:not([data-theme="dark"])) .empty {
-  color: rgba(26, 29, 51, 0.42);
+:global([data-theme='dark']) .filterTabActive,
+:global([data-theme='dark']) .filterTabActive:hover {
+  background: color-mix(in oklch, var(--color-primary) 22%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 50%, transparent);
+  color: #c2ccff;
 }
 
-:global(:root:not([data-theme="dark"])) .statValue {
-  color: #1a1d33;
+:global([data-theme='dark']) .toolbarStat {
+  color: #eef3ff;
 }
 
-:global(:root:not([data-theme="dark"])) .statMuted {
-  color: rgba(26, 29, 51, 0.42);
+:global([data-theme='dark']) .toolbarStatMuted {
+  color: rgba(226, 234, 255, 0.46);
 }
 
-:global(:root:not([data-theme="dark"])) .infoBtn {
-  color: rgba(26, 29, 51, 0.38);
+:global([data-theme='dark']) .list {
+  background: #0e1424;
 }
 
-:global(:root:not([data-theme="dark"])) .infoBtn:hover,
-:global(:root:not([data-theme="dark"])) .infoBtnActive {
-  color: var(--color-primary);
+:global([data-theme='dark']) .card {
+  background: #1a2138;
+  border-color: rgba(150, 170, 255, 0.12);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.40);
+}
+
+:global([data-theme='dark']) .card:hover {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55);
+}
+
+:global([data-theme='dark']) .cardActive,
+:global([data-theme='dark']) .cardActive:hover {
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 1px var(--accent),
+    0 6px 20px rgba(0, 0, 0, 0.55);
+}
+
+:global([data-theme='dark']) .cardDone {
+  border-color: rgba(34, 197, 94, 0.30);
+}
+
+:global([data-theme='dark']) .title {
+  color: #eef3ff;
+}
+
+:global([data-theme='dark']) .desc {
+  color: rgba(226, 234, 255, 0.64);
+}
+
+:global([data-theme='dark']) .kindTag {
+  color: color-mix(in srgb, var(--accent) 72%, #ffffff 28%);
+}
+
+:global([data-theme='dark']) .stateTag,
+:global([data-theme='dark']) .byline,
+:global([data-theme='dark']) .progressLabel {
+  color: rgba(226, 234, 255, 0.48);
+}
+
+:global([data-theme='dark']) .rewardChip {
+  background: color-mix(in oklch, var(--color-primary) 22%, transparent);
+  border-color: rgba(150, 170, 255, 0.20);
+  color: #eaf0ff;
+}
+
+:global([data-theme='dark']) .rewardChipUsdc {
+  background: rgba(39, 117, 202, 0.26);
+  border-color: rgba(96, 165, 230, 0.34);
+  color: #cfe6ff;
+}
+
+:global([data-theme='dark']) .clearedLabel {
+  color: #5ad88a;
+}
+
+:global([data-theme='dark']) .empty {
+  color: rgba(226, 234, 255, 0.46);
 }
 
 /* ── Responsive ── */
 @media (max-width: 900px) {
-  .panel {
-    width: 100%;
+  .wrapper {
     flex: 0 0 auto;
-    overflow: visible;
   }
 
-  .questList {
-    max-height: 320px;
+  .panel {
+    min-height: 0;
+  }
+
+  .list {
+    flex: none;
+    overflow: visible;
   }
 }
 
 @media (max-width: 560px) {
-  .panel {
-    padding: 12px;
+  .card {
+    gap: 12px;
+    padding: 13px 14px;
+  }
+
+  .artwork {
+    width: 46px;
+    height: 46px;
+    border-radius: 11px;
+  }
+
+  .title {
+    font-size: 15px;
+  }
+
+  .toolbar {
+    padding: 12px 14px;
+  }
+
+  .list {
+    padding: 12px 14px;
+  }
+
+  .toolbarStat {
+    display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .questItem,
-  .filterPill,
-  .vipBtn {
+  .card,
+  .filterTab {
     transition: none;
+  }
+
+  .card:hover {
+    transform: none;
   }
 }

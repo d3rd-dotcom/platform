@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
-import { Sparkle, Coins, Check, Info } from '@phosphor-icons/react';
-import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
+import { Check } from '@phosphor-icons/react';
 import type { DrawerQuest } from '@/components/quest-drawer/QuestDrawer';
 import type { QuestCardKind } from '@/components/quest-card/QuestCard';
 import { useSound } from '@/hooks/useSound';
@@ -47,16 +46,11 @@ interface QuestListPanelProps {
   filter: QuestFilter;
   onFilterChange: (f: QuestFilter) => void;
   onSelectQuest: (quest: UnifiedQuest) => void;
-  completedCount: number;
-  totalCount: number;
-  usdcAvailable: number;
-  isPro: boolean;
-  onForge: () => void;
-  onClaims: () => void;
 }
 
-const MSG_DEFAULT = 'Diamonds and rewards for completionists dedicated to self-improvement. Small steps make a difference.';
-const MSG_USDC = '$1 USDC per quest, paid on-chain to your wallet. Academic Angels only — hold the NFT on Base to unlock.';
+function isQuestCleared(quest: UnifiedQuest): boolean {
+  return (quest.claimedCount ?? 0) >= (quest.targetCount ?? 1);
+}
 
 export default function QuestListPanel({
   quests,
@@ -64,25 +58,25 @@ export default function QuestListPanel({
   filter,
   onFilterChange,
   onSelectQuest,
-  completedCount,
-  totalCount,
-  usdcAvailable,
-  isPro,
-  onForge,
-  onClaims,
 }: QuestListPanelProps) {
   const { play } = useSound();
-  const [blueMessage, setBlueMessage] = useState(MSG_DEFAULT);
-  const usdcInfoActive = blueMessage === MSG_USDC;
 
-  const handleUsdcInfo = () => {
-    play('click');
-    setBlueMessage(usdcInfoActive ? MSG_DEFAULT : MSG_USDC);
-  };
-
-  const countsByKind = React.useMemo(() => {
-    const acc: Record<QuestCardKind, number> = { course: 0, mission: 0, submit: 0, social: 0, custom: 0 };
-    for (const q of quests) acc[q.kind] += 1;
+  const tallies = React.useMemo(() => {
+    const acc: Record<QuestFilter, { total: number; cleared: number }> = {
+      all: { total: 0, cleared: 0 },
+      course: { total: 0, cleared: 0 },
+      mission: { total: 0, cleared: 0 },
+      submit: { total: 0, cleared: 0 },
+      social: { total: 0, cleared: 0 },
+      custom: { total: 0, cleared: 0 },
+    };
+    for (const q of quests) {
+      const cleared = isQuestCleared(q) ? 1 : 0;
+      acc.all.total += 1;
+      acc.all.cleared += cleared;
+      acc[q.kind].total += 1;
+      acc[q.kind].cleared += cleared;
+    }
     return acc;
   }, [quests]);
 
@@ -92,143 +86,114 @@ export default function QuestListPanel({
   }, [quests, filter]);
 
   return (
-    <div className={styles.panel}>
-      <section className={styles.header}>
-        <div className={styles.headerRow}>
-          <span className={styles.eyebrow}>Quest board</span>
-          <span className={styles.versionBadge}>
-            <Image src="/icons/ui-diamond.svg" alt="" width={9} height={9} />
-            MWA
+    <div className={styles.wrapper}>
+      <div className={styles.boardHeader}>
+        <div className={styles.boardHeaderInner}>
+          <span className={styles.boardNode} aria-hidden="true" />
+          <span className={styles.boardTitle}>Quest Board</span>
+          <span className={styles.boardNode} aria-hidden="true" />
+        </div>
+      </div>
+
+      <div className={styles.panel}>
+        <div className={styles.toolbar}>
+          <div className={styles.filters} role="tablist">
+            {FILTER_ORDER.map((key) => {
+              const tally = tallies[key];
+              if (key !== 'all' && tally.total === 0) return null;
+              const active = filter === key;
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  className={`${styles.filterTab} ${active ? styles.filterTabActive : ''}`}
+                  onClick={() => { play('click'); onFilterChange(key); }}
+                >
+                  {FILTER_LABEL[key]}
+                  <span className={styles.filterCount}>{tally.cleared}/{tally.total}</span>
+                </button>
+              );
+            })}
+          </div>
+          <span className={styles.toolbarStat}>
+            <Image src="/icons/money.svg" alt="" width={13} height={13} />
+            {tallies.all.cleared}
+            <span className={styles.toolbarStatMuted}>/{tallies.all.total} cleared</span>
           </span>
         </div>
-        <div className={styles.stats}>
-          <div className={styles.stat}>
-            <span className={styles.statLabel}>Cleared</span>
-            <span className={styles.statValue}>
-              <Image src="/icons/money.svg" alt="" width={13} height={13} className={styles.statIcon} />
-              {completedCount}
-              <span className={styles.statMuted}>/{totalCount}</span>
-            </span>
-          </div>
-          {usdcAvailable > 0 && (
-            <div className={styles.stat}>
-              <span className={styles.statLabelRow}>
-                <span className={styles.statLabel}>USDC bounties</span>
+
+        <div className={styles.list}>
+          {filteredQuests.length === 0 ? (
+            <div className={styles.empty}>No quests match this filter.</div>
+          ) : (
+            filteredQuests.map((quest) => {
+              const targetCount = quest.targetCount ?? 1;
+              const completed = isQuestCleared(quest);
+              const inProgress = !completed && (quest.progressCount ?? 0) > 0;
+              const color = KIND_COLOR[quest.kind];
+              const isSelected = quest.id === selectedQuestId;
+              const usdcReward = quest.usdcReward ?? 0;
+
+              return (
                 <button
+                  key={quest.id}
                   type="button"
-                  className={`${styles.infoBtn} ${usdcInfoActive ? styles.infoBtnActive : ''}`}
-                  onClick={handleUsdcInfo}
-                  aria-label="What are USDC bounties?"
-                  title="What are USDC bounties?"
+                  className={`${styles.card} ${isSelected ? styles.cardActive : ''} ${completed ? styles.cardDone : ''}`}
+                  style={{ '--accent': color } as React.CSSProperties}
+                  onClick={() => { play('click'); onSelectQuest(quest); }}
+                  onMouseEnter={() => play('hover')}
                 >
-                  <Info size={11} weight="fill" />
+                  <span className={styles.artwork} data-kind={quest.kind} aria-hidden="true" />
+
+                  <span className={styles.info}>
+                    <span className={styles.metaRow}>
+                      <span className={styles.kindTag}>
+                        <span className={styles.kindDot} aria-hidden="true" />
+                        {KIND_LABEL[quest.kind]}
+                      </span>
+                      {inProgress && <span className={styles.stateTag}>In progress</span>}
+                      {quest.authorLabel && <span className={styles.byline}>{quest.authorLabel}</span>}
+                    </span>
+                    <span className={styles.title}>{quest.title}</span>
+                    <span className={styles.desc}>{quest.desc}</span>
+                  </span>
+
+                  <span className={styles.rewards}>
+                    {completed ? (
+                      <>
+                        <span className={styles.checkDone}>
+                          <Check size={14} weight="bold" />
+                        </span>
+                        <span className={styles.clearedLabel}>Cleared</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className={styles.rewardChip}>
+                          <Image src="/icons/ui-diamond.svg" alt="" width={13} height={13} />
+                          {quest.points}
+                        </span>
+                        {usdcReward > 0 && (
+                          <span className={`${styles.rewardChip} ${styles.rewardChipUsdc}`}>
+                            <Image src="/icons/usdc-logo.svg" alt="USDC" width={14} height={14} />
+                            ${usdcReward}
+                          </span>
+                        )}
+                        {targetCount > 1 && (
+                          <span className={styles.progressLabel}>
+                            {Math.min(quest.progressCount ?? 0, targetCount)}/{targetCount}
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </span>
                 </button>
-              </span>
-              <span className={styles.statValue}>
-                <Image src="/icons/usdc-logo.svg" alt="USDC" width={14} height={14} />
-                ${usdcAvailable}
-              </span>
-            </div>
+              );
+            })
           )}
         </div>
-      </section>
-
-      <BlueVideoPanel
-        className={styles.blueVideo}
-        message={blueMessage}
-      />
-
-      <div className={styles.filters} role="tablist">
-        {FILTER_ORDER.map((key) => {
-          const count = key === 'all' ? totalCount : countsByKind[key as QuestCardKind];
-          if (key !== 'all' && count === 0) return null;
-          const active = filter === key;
-          return (
-            <button
-              key={key}
-              type="button"
-              role="tab"
-              aria-selected={active}
-              className={`${styles.filterPill} ${active ? styles.filterPillActive : ''}`}
-              onClick={() => { play('click'); onFilterChange(key); }}
-            >
-              {FILTER_LABEL[key]}
-            </button>
-          );
-        })}
       </div>
-
-      <div className={styles.questList}>
-        {filteredQuests.length === 0 ? (
-          <div className={styles.empty}>No quests match this filter.</div>
-        ) : (
-          filteredQuests.map((quest) => {
-            const completed = (quest.claimedCount ?? 0) >= (quest.targetCount ?? 1);
-            const inProgress = !completed && (quest.progressCount ?? 0) > 0;
-            const color = KIND_COLOR[quest.kind];
-            const isSelected = quest.id === selectedQuestId;
-
-            return (
-              <button
-                key={quest.id}
-                type="button"
-                className={`${styles.questItem} ${isSelected ? styles.questItemActive : ''} ${completed ? styles.questItemDone : ''}`}
-                style={{ '--accent': color } as React.CSSProperties}
-                onClick={() => { play('click'); onSelectQuest(quest); }}
-                onMouseEnter={() => play('hover')}
-              >
-                <span className={styles.questAccent} aria-hidden="true" />
-                <span className={styles.questInfo}>
-                  <span className={styles.questTitle}>{quest.title}</span>
-                  <span className={styles.questSub}>
-                    {KIND_LABEL[quest.kind]}
-                    {inProgress ? ' · in progress' : ''}
-                  </span>
-                </span>
-                <span className={styles.questRight}>
-                  {completed ? (
-                    <span className={styles.questCheck}>
-                      <Check size={11} weight="bold" />
-                    </span>
-                  ) : (quest.usdcReward ?? 0) > 0 ? (
-                    <span className={styles.questBadge} style={{ '--bc': '#2775CA' } as React.CSSProperties}>
-                      ${quest.usdcReward}
-                    </span>
-                  ) : (
-                    <span className={styles.questBadge} style={{ '--bc': color } as React.CSSProperties}>
-                      <Image src="/icons/ui-diamond.svg" alt="" width={9} height={9} />
-                      {quest.points}
-                    </span>
-                  )}
-                </span>
-              </button>
-            );
-          })
-        )}
-      </div>
-
-      {isPro && (
-        <div className={styles.vipRow}>
-          <button
-            type="button"
-            className={styles.vipBtn}
-            onClick={() => { play('click'); onForge(); }}
-            onMouseEnter={() => play('hover')}
-          >
-            <Sparkle size={12} weight="fill" />
-            Quest forge
-          </button>
-          <button
-            type="button"
-            className={styles.vipBtn}
-            onClick={() => { play('click'); onClaims(); }}
-            onMouseEnter={() => play('hover')}
-          >
-            <Coins size={12} weight="fill" />
-            Claims
-          </button>
-        </div>
-      )}
     </div>
   );
 }
