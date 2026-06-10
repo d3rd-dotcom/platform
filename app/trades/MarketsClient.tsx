@@ -7,6 +7,7 @@ import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import { HowToButton } from '@/components/treasury-how-to/TreasuryHowTo';
 import ProMembershipModal from '@/components/pro-membership-modal/ProMembershipModal';
+import CtaButton from '@/components/shared/CtaButton';
 import styles from './page.module.css';
 import type { CoinPrice, TreasuryBalance, CategorizedMarkets, MarketCategory, MarketRow, AppleTokenStats as ShardTokenStats } from '@/lib/market-api';
 
@@ -482,6 +483,9 @@ export default function Markets() {
   const [hasVipMembershipCard, setHasVipMembershipCard] = useState<boolean | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [selectedMarket, setSelectedMarket] = useState<{ category: MarketCategory; market: MarketRow } | null>(null);
+  // Cakes (the voting token) staked on the selected market. Conviction here is
+  // what ultimately fuels Blue's trader mode once a debate resolves.
+  const [stakeCakes, setStakeCakes] = useState(15);
   const [visibleMarketCounts, setVisibleMarketCounts] = useState<Record<MarketCategory, number>>({
     elections: INITIAL_VISIBLE_MARKETS,
     politics: INITIAL_VISIBLE_MARKETS,
@@ -1478,13 +1482,49 @@ export default function Markets() {
                 <div className={styles.marketModalMeta}>
                   <span>Volume {formatVol(selectedMarket.market.volume)}</span>
                 </div>
-                <button
-                  type="button"
-                  className={styles.marketModalCta}
+
+                <div className={styles.stakePanel}>
+                  <div className={styles.stakePanelHead}>
+                    <span className={styles.stakeLabel}>Stake Cakes</span>
+                    <span className={styles.stakeReadout}>{stakeCakes} Cakes</span>
+                  </div>
+                  <div className={styles.stakeChips}>
+                    {[5, 15, 30, 50].map((amount) => (
+                      <button
+                        key={amount}
+                        type="button"
+                        className={`${styles.stakeChip} ${stakeCakes === amount ? styles.stakeChipActive : ''}`}
+                        onClick={() => setStakeCakes(amount)}
+                      >
+                        {amount}
+                      </button>
+                    ))}
+                    <input
+                      className={styles.stakeInput}
+                      type="number"
+                      min={1}
+                      max={9999}
+                      value={stakeCakes}
+                      onChange={(event) => setStakeCakes(Math.max(1, Math.min(9999, Number(event.target.value) || 1)))}
+                      aria-label="Cakes to stake"
+                    />
+                  </div>
+                </div>
+
+                <CtaButton
+                  variant="primary"
+                  size="lg"
+                  block
                   onClick={() => askBlueAboutMarket(selectedMarket)}
                 >
-                  Trade this with Blue
-                </button>
+                  Ask Blue
+                </CtaButton>
+                <p className={styles.stakeFootnote}>
+                  Blue opens a debate for this market. When the case is made, your staked Cakes
+                  activate Trader Mode &mdash; Blue reads the 15-minute Kalshi drift, prices it with
+                  Black&ndash;Scholes, and sizes the position at quarter-Kelly.
+                </p>
+
                 <MarketDebate
                   marketId={selectedMarket.market.ticker || selectedMarket.market.id}
                   marketTitle={selectedMarket.market.question}

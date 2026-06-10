@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import CtaButton from '@/components/shared/CtaButton';
 import styles from './page.module.css';
 import {
   colors,
@@ -457,15 +458,22 @@ export default function StyleGuidePage() {
 
         {/* Buttons Section */}
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>🔘 Buttons</h2>
+          <h2 className={styles.sectionTitle}>Buttons</h2>
           <p className={styles.sectionDescription}>
-            All buttons use Departure Mono font with uppercase text and 0.05em letter-spacing.
+            Canonical call-to-action. Reach for the shared <code>&lt;CtaButton&gt;</code> for any
+            primary action instead of hand-rolling one. Pill shaped, brand blue, Departure Mono,
+            sentence case (never uppercase), with a soft lift and glow on hover.
           </p>
           <div className={styles.buttonGrid}>
-            <button className={styles.buttonPrimary}>Primary Button</button>
-            <button className={styles.buttonSecondary}>Secondary Button</button>
-            <button className={styles.buttonOutline}>Outline Button</button>
-            <button className={styles.buttonDark}>Dark Button</button>
+            <CtaButton variant="primary">Ask Blue</CtaButton>
+            <CtaButton variant="secondary">Secondary action</CtaButton>
+            <CtaButton variant="ghost">Ghost action</CtaButton>
+          </div>
+          <div className={styles.buttonGrid} style={{ marginTop: '1rem' }}>
+            <CtaButton variant="primary" size="sm">Small</CtaButton>
+            <CtaButton variant="primary">Medium</CtaButton>
+            <CtaButton variant="primary" size="lg">Large</CtaButton>
+            <CtaButton variant="primary" disabled>Disabled</CtaButton>
           </div>
         </section>
 

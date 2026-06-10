@@ -1,0 +1,118 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   Canonical MWA call-to-action button.
+
+   One source of truth for primary actions across the app so we stop
+   hand-rolling generic gray buttons. Pill shaped, brand-blue, sentence case
+   (never uppercase — house rule), with a soft lift + glow on hover.
+
+   Variants:  primary | secondary | ghost
+   Sizes:     sm | md (default) | lg
+   Modifier:  block (full width)
+   ────────────────────────────────────────────────────────────────────────── */
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 22px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-family: var(--font-button);
+  font-size: 13px;
+  font-weight: var(--font-weight-bold, 700);
+  letter-spacing: 0.01em;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition:
+    transform var(--duration-fast, 0.15s) var(--ease-default, ease),
+    box-shadow var(--duration-fast, 0.15s) var(--ease-default, ease),
+    background var(--duration-fast, 0.15s) var(--ease-default, ease),
+    border-color var(--duration-fast, 0.15s) var(--ease-default, ease);
+}
+
+.cta:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.cta:not(:disabled):active {
+  transform: translateY(0);
+}
+
+.cta:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ── Sizes ── */
+.sm {
+  min-height: 36px;
+  padding: 0 14px;
+  font-size: 12px;
+}
+
+.lg {
+  min-height: 54px;
+  padding: 0 30px;
+  font-size: 15px;
+}
+
+.block {
+  display: flex;
+  width: 100%;
+}
+
+/* ── Primary: solid brand pill ── */
+.primary {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+  box-shadow: 0 6px 18px color-mix(in oklch, var(--color-primary) 24%, transparent);
+}
+
+.primary:not(:disabled):hover {
+  transform: translateY(-1px);
+  background: var(--color-primary-hover, var(--color-primary));
+  box-shadow: 0 12px 28px color-mix(in oklch, var(--color-primary) 38%, transparent);
+}
+
+/* ── Secondary: tinted brand pill ── */
+.secondary {
+  background: color-mix(in oklch, var(--color-primary) 9%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 26%, transparent);
+  color: var(--color-primary);
+}
+
+.secondary:not(:disabled):hover {
+  transform: translateY(-1px);
+  background: color-mix(in oklch, var(--color-primary) 15%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
+  box-shadow: 0 10px 22px color-mix(in oklch, var(--color-primary) 16%, transparent);
+}
+
+/* ── Ghost: neutral outline pill ── */
+.ghost {
+  background: transparent;
+  border-color: var(--color-border-strong);
+  color: var(--color-text-dark);
+}
+
+.ghost:not(:disabled):hover {
+  transform: translateY(-1px);
+  background: var(--color-surface-2);
+  border-color: var(--color-border-strong);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta,
+  .cta:not(:disabled):hover {
+    transform: none;
+  }
+}

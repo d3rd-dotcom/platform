@@ -1823,6 +1823,131 @@
   transform: translateY(-1px);
 }
 
+/* ── Gamified stake panel (market pop-up) ── */
+.stakePanel {
+  margin-top: 4px;
+  padding: 14px;
+  border: 1px solid var(--markets-light-border);
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, var(--markets-light-panel-raised) 0%, var(--markets-light-tint) 100%);
+}
+
+.stakePanelHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.stakeLabel {
+  font-family: var(--font-button);
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+}
+
+.stakeReadout {
+  font-family: var(--font-button);
+  font-size: 13px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.stakeChips {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.stakeChip {
+  min-height: 38px;
+  border: 1px solid var(--markets-light-border-strong);
+  border-radius: 999px;
+  background: var(--markets-light-panel-raised);
+  color: var(--color-text-soft);
+  font-family: var(--font-button);
+  font-size: 13px;
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition:
+    transform var(--duration-fast) var(--ease-default),
+    background var(--duration-fast) var(--ease-default),
+    border-color var(--duration-fast) var(--ease-default),
+    color var(--duration-fast) var(--ease-default);
+}
+
+.stakeChip:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in oklch, var(--color-primary) 28%, transparent);
+  color: var(--color-primary);
+}
+
+.stakeChipActive {
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 42%, transparent);
+  color: var(--color-primary);
+}
+
+.stakeInput {
+  min-width: 0;
+  min-height: 38px;
+  padding: 0 10px;
+  border: 1px solid var(--markets-light-border-strong);
+  border-radius: var(--radius-md);
+  background: #FFFFFF;
+  color: var(--color-text-dark);
+  font-family: var(--font-button);
+  font-size: 13px;
+  font-weight: var(--font-weight-bold);
+  text-align: center;
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+.stakeInput::-webkit-outer-spin-button,
+.stakeInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.stakeInput:focus {
+  border-color: color-mix(in oklch, var(--color-primary) 50%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary) 10%, transparent);
+}
+
+.stakeFootnote {
+  margin: 2px 0 0;
+  font-family: var(--font-button);
+  font-size: 10px;
+  line-height: 1.5;
+  color: var(--color-text-faint);
+}
+
+:global([data-theme="dark"]) .stakePanel {
+  background: linear-gradient(180deg, var(--markets-dark-panel-raised) 0%, var(--markets-dark-panel) 100%);
+  border-color: var(--color-border-subtle);
+}
+
+:global([data-theme="dark"]) .stakeChip {
+  background: color-mix(in oklch, var(--markets-dark-panel-low) 70%, transparent);
+  border-color: var(--color-border-subtle);
+  color: var(--color-text-soft);
+}
+
+:global([data-theme="dark"]) .stakeChipActive {
+  background: color-mix(in oklch, var(--color-primary) 24%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 44%, transparent);
+  color: var(--color-text-light);
+}
+
+:global([data-theme="dark"]) .stakeInput {
+  background: rgba(0, 0, 0, 0.22);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.92);
+}
+
 /* ── Market Debate (inside the market pop-up) ── */
 .debateSection {
   display: flex;

@@ -1,13 +1,12 @@
 import React from 'react';
-import styles from './ExploreQuestsButton.module.css';
+import CtaButton from '@/components/shared/CtaButton';
 
 const ExploreQuestsButton: React.FC = () => {
   return (
-    <button className={styles.exploreQuestsButton} data-intro="explore-quests">
-      <span className={styles.buttonText}>Explore Quests</span>
-    </button>
+    <CtaButton variant="primary" block data-intro="explore-quests">
+      Explore Quests
+    </CtaButton>
   );
 };
 
 export default ExploreQuestsButton;
-
