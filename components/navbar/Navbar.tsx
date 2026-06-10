@@ -306,12 +306,13 @@ const Navbar: React.FC = () => {
             <button 
               className={styles.messageButton} 
               onClick={() => setIsChatOpen(true)}
-              aria-label="Messages"
+              aria-label="Ask Blue"
               type="button"
             >
               <div className={styles.messageIcon}>
                 <span className={styles.notificationDot}></span>
               </div>
+              <span className={styles.messageLabel}>Ask Blue</span>
             </button>
             {/* User Info Dropdown */}
             {username && !username.startsWith('user_') && (
