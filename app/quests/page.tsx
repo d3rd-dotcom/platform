@@ -193,11 +193,6 @@ export default function QuestsPage() {
     return [...builtIn, ...custom];
   }, [customQuests, questCounts, weekStatuses]);
 
-  const completedQuestCount = useMemo(
-    () => allQuests.filter((q) => (q.claimedCount ?? 0) >= (q.targetCount ?? 1)).length,
-    [allQuests],
-  );
-
   const usdcAvailable = useMemo(
     () => allQuests
       .filter((q) => (q.usdcReward ?? 0) > 0 && (q.claimedCount ?? 0) < (q.targetCount ?? 1))
@@ -234,6 +229,7 @@ export default function QuestsPage() {
             filter={filter}
             onFilterChange={setFilter}
             onSelectQuest={setSelectedQuest}
+            usdcAvailable={usdcAvailable}
           />
           <aside className={`${styles.sideColumn} ${selectedQuest ? styles.sideColumnWide : ''}`}>
             {selectedQuest ? (
@@ -243,9 +239,6 @@ export default function QuestsPage() {
               />
             ) : (
               <QuestSidePanel
-                completedCount={completedQuestCount}
-                totalCount={allQuests.length}
-                usdcAvailable={usdcAvailable}
                 isPro={isPro}
                 onForge={() => { play('click'); setForgeOpen(true); }}
                 onClaims={() => { play('click'); setClaimOpen(true); }}

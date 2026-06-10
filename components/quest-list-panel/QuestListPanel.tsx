@@ -46,6 +46,7 @@ interface QuestListPanelProps {
   filter: QuestFilter;
   onFilterChange: (f: QuestFilter) => void;
   onSelectQuest: (quest: UnifiedQuest) => void;
+  usdcAvailable: number;
 }
 
 function isQuestCleared(quest: UnifiedQuest): boolean {
@@ -58,6 +59,7 @@ export default function QuestListPanel({
   filter,
   onFilterChange,
   onSelectQuest,
+  usdcAvailable,
 }: QuestListPanelProps) {
   const { play } = useSound();
 
@@ -117,11 +119,16 @@ export default function QuestListPanel({
               );
             })}
           </div>
-          <span className={styles.toolbarStat}>
-            <Image src="/icons/money.svg" alt="" width={13} height={13} />
-            {tallies.all.cleared}
-            <span className={styles.toolbarStatMuted}>/{tallies.all.total} cleared</span>
-          </span>
+          {usdcAvailable > 0 && (
+            <span
+              className={styles.usdcStat}
+              title="USDC bounties are paid on-chain to your wallet. Academic Angels only — hold the NFT on Base to unlock."
+            >
+              <Image src="/icons/usdc-logo.svg" alt="USDC" width={15} height={15} />
+              ${usdcAvailable}
+              <span className={styles.usdcStatLabel}>in bounties</span>
+            </span>
+          )}
         </div>
 
         <div className={styles.list}>
