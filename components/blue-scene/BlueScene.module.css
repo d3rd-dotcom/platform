@@ -33,6 +33,89 @@
   );
 }
 
+/* Light mode: soft clouds drifting across the top of the scene. */
+.sky::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 52%;
+  background-image:
+    radial-gradient(ellipse 110px 30px at 14% 22%, rgba(255, 255, 255, 0.9), transparent 72%),
+    radial-gradient(ellipse 70px 22px at 24% 16%, rgba(255, 255, 255, 0.75), transparent 72%),
+    radial-gradient(ellipse 130px 34px at 58% 12%, rgba(255, 255, 255, 0.8), transparent 72%),
+    radial-gradient(ellipse 80px 24px at 68% 20%, rgba(255, 255, 255, 0.65), transparent 72%),
+    radial-gradient(ellipse 120px 30px at 90% 30%, rgba(255, 255, 255, 0.7), transparent 72%),
+    radial-gradient(ellipse 90px 26px at 38% 38%, rgba(255, 255, 255, 0.5), transparent 72%);
+  mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
+}
+
+/* Dark mode: deepen the sky and swap the clouds for a starfield. */
+:global([data-theme='dark']) .sky {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--color-primary) 22%, var(--color-surface-1)) 0%,
+    color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-1)) 55%,
+    var(--color-surface-1) 100%
+  );
+}
+
+:global([data-theme='dark']) .sky::before {
+  height: 58%;
+  background-image:
+    radial-gradient(circle at 6% 18%, rgba(255, 255, 255, 0.9) 0 1px, transparent 2px),
+    radial-gradient(circle at 15% 42%, rgba(255, 255, 255, 0.7) 0 1px, transparent 2px),
+    radial-gradient(circle at 22% 10%, rgba(255, 255, 255, 0.95) 0 1.4px, transparent 2.4px),
+    radial-gradient(circle at 31% 30%, rgba(255, 255, 255, 0.6) 0 1px, transparent 2px),
+    radial-gradient(circle at 40% 14%, rgba(255, 255, 255, 0.85) 0 1px, transparent 2px),
+    radial-gradient(circle at 47% 44%, rgba(255, 255, 255, 0.55) 0 1px, transparent 2px),
+    radial-gradient(circle at 55% 24%, rgba(255, 255, 255, 0.9) 0 1.3px, transparent 2.3px),
+    radial-gradient(circle at 63% 8%, rgba(255, 255, 255, 0.7) 0 1px, transparent 2px),
+    radial-gradient(circle at 71% 36%, rgba(255, 255, 255, 0.8) 0 1px, transparent 2px),
+    radial-gradient(circle at 79% 16%, rgba(255, 255, 255, 0.95) 0 1.4px, transparent 2.4px),
+    radial-gradient(circle at 87% 40%, rgba(255, 255, 255, 0.6) 0 1px, transparent 2px),
+    radial-gradient(circle at 94% 22%, rgba(255, 255, 255, 0.85) 0 1px, transparent 2px),
+    radial-gradient(circle at 10% 60%, rgba(255, 255, 255, 0.45) 0 1px, transparent 2px),
+    radial-gradient(circle at 35% 58%, rgba(255, 255, 255, 0.4) 0 1px, transparent 2px),
+    radial-gradient(circle at 60% 62%, rgba(255, 255, 255, 0.45) 0 1px, transparent 2px),
+    radial-gradient(circle at 84% 58%, rgba(255, 255, 255, 0.4) 0 1px, transparent 2px);
+  mask-image: linear-gradient(180deg, #000 60%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent 100%);
+}
+
+/* A second star layer that gently twinkles. */
+:global([data-theme='dark']) .sky::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 58%;
+  background-image:
+    radial-gradient(circle at 12% 26%, rgba(255, 255, 255, 0.9) 0 1px, transparent 2px),
+    radial-gradient(circle at 27% 50%, rgba(255, 255, 255, 0.8) 0 1px, transparent 2px),
+    radial-gradient(circle at 44% 32%, rgba(255, 255, 255, 0.9) 0 1.2px, transparent 2.2px),
+    radial-gradient(circle at 59% 48%, rgba(255, 255, 255, 0.7) 0 1px, transparent 2px),
+    radial-gradient(circle at 74% 26%, rgba(255, 255, 255, 0.9) 0 1px, transparent 2px),
+    radial-gradient(circle at 91% 46%, rgba(255, 255, 255, 0.8) 0 1.2px, transparent 2.2px);
+  mask-image: linear-gradient(180deg, #000 60%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent 100%);
+  animation: twinkle 3.2s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.25;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :global([data-theme='dark']) .sky::after {
+    animation: none;
+  }
+}
+
 .header {
   position: absolute;
   top: 0;
