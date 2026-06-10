@@ -40,6 +40,16 @@ export default function PersonalCoursePage() {
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  // Same breakpoint as the 12-week course page: desktop pins the content to a
+  // 420px left column and opens the weekly read in the right panel.
+  useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= 1024);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   const authHeaders = useCallback(async (): Promise<HeadersInit> => {
     try {
@@ -175,11 +185,28 @@ export default function PersonalCoursePage() {
 
   const completedThisWeek = (progress[`week${week.weekNumber}`] ?? []).length;
 
+  // The weekly read renders inline on mobile and in the right panel on
+  // desktop — same reader markup either way.
+  const reader = week.read ? (
+    <div className={shared.inlineReader}>
+      <button type="button" className={shared.inlineReaderBack} onClick={() => { play('click'); setReadingOpen(false); }}>
+        ← Back to week
+      </button>
+      <div className={shared.inlineReaderHeader}>
+        <span className={shared.inlineReaderCategory}>Week {week.weekNumber} — {week.theme}</span>
+        <h2 className={shared.inlineReaderTitle}>{week.read.title}</h2>
+      </div>
+      <div className={shared.inlineReaderBody}>
+        {paragraphs(week.read.body).map((p, i) => <p key={i}>{p}</p>)}
+      </div>
+    </div>
+  ) : null;
+
   return (
     <div className={shared.pageLayout}>
       <SideNavigation />
-      <main className={shared.content}>
-        <div className={shared.leftCol}>
+      <main className={`${shared.content} ${isDesktop ? shared.contentDesktop : ''}`}>
+        <div className={isDesktop ? shared.leftCol : undefined}>
 
           <div className={styles.courseHead}>
             <Link href="/courses" className={styles.backLink}>← Courses</Link>
@@ -266,25 +293,14 @@ export default function PersonalCoursePage() {
           <div
             className={`${shared.weekContent} ${swipeAnim === 'left' ? styles.swipeLeft : swipeAnim === 'right' ? styles.swipeRight : ''}`}
           >
-            {readingOpen && week.read ? (
-              <div className={shared.inlineReader}>
-                <button type="button" className={shared.inlineReaderBack} onClick={() => { play('click'); setReadingOpen(false); }}>
-                  ← Back to week
-                </button>
-                <div className={shared.inlineReaderHeader}>
-                  <span className={shared.inlineReaderCategory}>Week {week.weekNumber} — {week.theme}</span>
-                  <h2 className={shared.inlineReaderTitle}>{week.read.title}</h2>
-                </div>
-                <div className={shared.inlineReaderBody}>
-                  {paragraphs(week.read.body).map((p, i) => <p key={i}>{p}</p>)}
-                </div>
-              </div>
+            {readingOpen && week.read && !isDesktop ? (
+              reader
             ) : (
               <>
                 {week.read && (
                   <button
                     type="button"
-                    className={shared.readingCard}
+                    className={`${shared.readingCard} ${isDesktop && readingOpen ? shared.readingCardActive : ''}`}
                     onClick={() => { play('click'); setReadingOpen(true); }}
                     onMouseEnter={() => play('hover')}
                   >
@@ -363,6 +379,12 @@ export default function PersonalCoursePage() {
           </div>
 
         </div>
+
+        {isDesktop && readingOpen && week.read && (
+          <div className={shared.rightPanel}>
+            {reader}
+          </div>
+        )}
       </main>
     </div>
   );
