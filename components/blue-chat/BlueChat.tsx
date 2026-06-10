@@ -1310,31 +1310,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       }]);
     };
 
-    if (action === 'what-is-this') {
-      send('What is this place?');
-      setPendingAttachments([]);
-      setTimeManagementVisible(false);
-      setAutoDistributionVisible(false);
-      addBlueMessage(
-        "the world's first decentralized cohort for mental wellness. course, community, science — on-chain. you're early."
-      );
-    } else if (action === 'next-move') {
-      send("What's my next move?");
-      setPendingAttachments([]);
-      setTimeManagementVisible(false);
-      setAutoDistributionVisible(false);
-      addBlueMessage(
-        "name the work, the deadline, and what you've avoided. i'll cut it to one next move."
-      );
-    } else if (action === 'read-resistance') {
-      send("Read what I'm avoiding.");
-      setPendingAttachments([]);
-      setTimeManagementVisible(false);
-      setAutoDistributionVisible(false);
-      addBlueMessage(
-        "show me the task you keep circling. one sentence is enough. i'll name the pattern and the first move."
-      );
-    } else if (action === 'time') {
+    if (action === 'time') {
       send('Help me time block');
       setPendingAttachments([]);
       setAutoDistributionVisible(false);
@@ -1727,12 +1703,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             <span>{shardCount}</span>
           </div>
         )}
-        <button className={styles.quickAction} onClick={() => handleQuickAction('next-move')} disabled={isTyping} type="button">
-          Next Move
-        </button>
-        <button className={styles.quickAction} onClick={() => handleQuickAction('read-resistance')} disabled={isTyping} type="button">
-          Shadow
-        </button>
         {isVipMember && (
           <button className={styles.quickAction} onClick={() => handleQuickAction('forge-quest')} disabled={isTyping} type="button">
             Forge a quest
