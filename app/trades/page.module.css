@@ -278,9 +278,9 @@
 }
 
 .modelDetailsButton {
-  border: 1px solid rgba(35, 134, 79, 0.24);
+  border: 1px solid color-mix(in oklch, var(--color-tertiary) 24%, transparent);
   border-radius: 999px;
-  background: rgba(233, 248, 239, 0.9);
+  background: color-mix(in oklch, var(--color-tertiary) 8%, transparent);
   color: var(--color-secondary);
   font-family: var(--font-button);
   font-size: 10px;
@@ -433,7 +433,7 @@
 
 .modelPanel:last-child {
   background: linear-gradient(180deg, var(--markets-light-green) 0%, var(--markets-light-panel) 100%);
-  border-color: rgba(35, 134, 79, 0.18);
+  border-color: color-mix(in oklch, var(--color-tertiary) 18%, transparent);
 }
 
 .modelName {
@@ -494,8 +494,8 @@
   gap: 8px;
   margin-top: 6px;
   padding: 6px 10px;
-  background: rgba(116, 196, 101, 0.08);
-  border: 1px solid rgba(116, 196, 101, 0.2);
+  background: color-mix(in oklch, var(--color-tertiary) 9%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-tertiary) 22%, transparent);
   border-radius: var(--radius-sm);
 }
 
@@ -2201,7 +2201,7 @@
 }
 
 .marketNo {
-  background: rgba(26, 27, 36, 0.2);
+  background: var(--markets-no);
   transition: width 0.3s ease;
 }
 
@@ -2211,7 +2211,8 @@
 }
 
 .marketBarValueNo {
-  color: var(--color-text-faint);
+  color: var(--markets-no);
+  font-weight: var(--font-weight-semibold);
 }
 
 /* ── Last Updated Badge ── */

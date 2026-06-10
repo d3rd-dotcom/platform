@@ -1155,7 +1155,7 @@ export default function Markets() {
               </div>
               <div
                 className={styles.signalRow}
-                style={derived.signal === 'SKIP' ? { background: 'rgba(226, 86, 123, 0.08)', borderColor: 'rgba(226, 86, 123, 0.2)' } : undefined}
+                style={derived.signal === 'SKIP' ? { background: 'color-mix(in oklch, var(--markets-no) 9%, transparent)', borderColor: 'color-mix(in oklch, var(--markets-no) 22%, transparent)' } : undefined}
               >
                 <span className={styles.signalLabel}>signal</span>
                 <span className={derived.signal === 'TRADE' ? styles.signalValue : styles.signalSkip}>
