@@ -714,6 +714,7 @@
   border: 2px solid color-mix(in oklch, var(--color-primary) 55%, transparent);
   margin-bottom: 10px;
   object-fit: cover;
+  object-position: top;
   background: color-mix(in oklch, var(--color-primary) 12%, #1A1B24);
 }
 
