@@ -494,6 +494,9 @@ export default function Markets() {
   // One-time Daemon spotlight that flags this chat as the community trading desk
   // (not the usual Blue companion). Persisted via safe-storage so it shows once.
   const [showChatSpotlight, setShowChatSpotlight] = useState(false);
+  // Execution receipts live in a pop-up opened from the treasury card, so the
+  // market feed owns the full column width.
+  const [isReceiptOpen, setIsReceiptOpen] = useState(false);
   const [visibleMarketCounts, setVisibleMarketCounts] = useState<Record<MarketCategory, number>>({
     elections: INITIAL_VISIBLE_MARKETS,
     politics: INITIAL_VISIBLE_MARKETS,
@@ -999,9 +1002,6 @@ export default function Markets() {
             </div>
           )}
           <div className={styles.statusItem}>
-            <HowToButton />
-          </div>
-          <div className={styles.statusItem}>
             <button
               type="button"
               className={styles.modelDetailsButton}
@@ -1021,10 +1021,21 @@ export default function Markets() {
           />
         )}
 
-        {/* ── Desk Header Row: treasury balance | Trade Using Blue | receipt ── */}
+        {/* ── Desk Header Row: treasury card (opens the execution receipts) ── */}
         <div className={styles.deskRow}>
-          <aside className={styles.treasuryFloat} aria-label="Trades treasury">
+          <button
+            type="button"
+            className={styles.treasuryFloat}
+            aria-label="Trades treasury — view execution receipts"
+            onClick={() => setIsReceiptOpen(true)}
+          >
             <span className={styles.treasuryFloatTitle}>Trades Treasury</span>
+            <span className={styles.treasuryReceiptHint}>
+              Receipts
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
             {!balance && !balanceError && (
               <TreasuryQuickSkeleton />
             )}
@@ -1044,37 +1055,7 @@ export default function Markets() {
                 </div>
               </>
             )}
-          </aside>
-
-          <div className={styles.receipt} aria-label="Executed trades history">
-            <div className={styles.receiptHead}>
-              <span className={styles.receiptShop}>MWA Trading Desk</span>
-              <span className={styles.receiptSub}>execution receipts</span>
-            </div>
-            <div className={styles.receiptRule} />
-            <div className={styles.receiptBody}>
-              {executedTrades.length === 0 ? (
-                <p className={styles.receiptEmpty}>- awaiting first execution -</p>
-              ) : (
-                executedTrades.map((log, i) => (
-                  <div key={`${log.timestamp}-${i}`} className={styles.receiptItem}>
-                    <div className={styles.receiptItemTop}>
-                      <span>{formatTradeTime(String(log.timestamp / 1000))}</span>
-                      <span className={styles.receiptAction}>{log.action}</span>
-                    </div>
-                    <div className={styles.receiptItemDetail}>
-                      {log.asset ? `${log.asset} ` : ''}{log.details}
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-            <div className={styles.receiptRule} />
-            <div className={styles.receiptFoot}>
-              <span>{executedTrades.length} fill{executedTrades.length === 1 ? '' : 's'}</span>
-              <span aria-hidden="true">* * *</span>
-            </div>
-          </div>
+          </button>
         </div>
 
         {/* ── Dashboard Grid ── */}
@@ -1292,6 +1273,7 @@ export default function Markets() {
           <div className={`${styles.panel} ${styles.chartPanel} ${styles.kalshiPanel}`}>
             <div className={styles.panelHeader}>
               <span className={styles.panelTitle}>Trades</span>
+              <HowToButton />
             </div>
             <div className={styles.marketArena}>
               {!deferredKalshiMarkets && !kalshiError && (
@@ -1525,6 +1507,59 @@ export default function Markets() {
         </div>
       </div>
       <ProMembershipModal isOpen={isMembershipOpen} onClose={() => setIsMembershipOpen(false)} />
+
+      {isReceiptOpen && typeof document !== 'undefined' && createPortal(
+        <div className={styles.receiptModalOverlay} onClick={() => setIsReceiptOpen(false)}>
+          <div
+            className={styles.receiptModalCard}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Execution receipts"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className={styles.receiptModalClose}
+              onClick={() => setIsReceiptOpen(false)}
+              aria-label="Close"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+            </button>
+            <div className={styles.receipt} aria-label="Executed trades history">
+              <div className={styles.receiptHead}>
+                <span className={styles.receiptShop}>MWA Trading Desk</span>
+                <span className={styles.receiptSub}>execution receipts</span>
+              </div>
+              <div className={styles.receiptRule} />
+              <div className={styles.receiptBody}>
+                {executedTrades.length === 0 ? (
+                  <p className={styles.receiptEmpty}>- awaiting first execution -</p>
+                ) : (
+                  executedTrades.map((log, i) => (
+                    <div key={`${log.timestamp}-${i}`} className={styles.receiptItem}>
+                      <div className={styles.receiptItemTop}>
+                        <span>{formatTradeTime(String(log.timestamp / 1000))}</span>
+                        <span className={styles.receiptAction}>{log.action}</span>
+                      </div>
+                      <div className={styles.receiptItemDetail}>
+                        {log.asset ? `${log.asset} ` : ''}{log.details}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+              <div className={styles.receiptRule} />
+              <div className={styles.receiptFoot}>
+                <span>{executedTrades.length} fill{executedTrades.length === 1 ? '' : 's'}</span>
+                <span aria-hidden="true">* * *</span>
+              </div>
+            </div>
+          </div>
+        </div>,
+        document.body,
+      )}
 
       {selectedMarket && isMarketModalOpen && typeof document !== 'undefined' && createPortal(
         (() => {

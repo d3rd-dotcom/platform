@@ -1678,7 +1678,7 @@
    execution receipt. Sits between the status bar and the quant/feed columns. */
 .deskRow {
   display: grid;
-  grid-template-columns: minmax(250px, 340px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: stretch;
   gap: 14px;
   flex: 0 0 auto;
@@ -1691,37 +1691,73 @@
 }
 
 .deskRow .treasuryFloat {
-  min-height: 132px;
+  min-height: 120px;
 }
 
-.deskRow .receipt {
-  width: min(420px, 100%);
-  justify-self: end;
-}
-
-.deskRow .receiptBody {
-  max-height: 96px;
-}
-
+/* The treasury card is a button that opens the execution-receipt pop-up. */
 .treasuryFloat {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  min-height: 156px;
-  padding: 14px;
+  width: 100%;
+  min-height: 120px;
+  padding: 14px 16px;
+  text-align: left;
+  font: inherit;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
   border: 1px solid var(--markets-light-border);
   border-radius: var(--radius-md);
   background: linear-gradient(180deg, var(--markets-light-panel-raised) 0%, var(--markets-light-panel) 100%);
   box-shadow: 0 12px 28px rgba(26, 29, 51, 0.08);
+  transition:
+    transform var(--duration-fast) var(--ease-default),
+    box-shadow var(--duration-fast) var(--ease-default),
+    border-color var(--duration-fast) var(--ease-default);
+}
+
+.treasuryFloat:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in oklch, var(--color-primary) 22%, transparent);
+  box-shadow: 0 16px 32px rgba(26, 29, 51, 0.12);
+}
+
+.treasuryFloat:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 .treasuryFloatTitle {
   font-family: var(--font-button);
   font-size: 10px;
   font-weight: var(--font-weight-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   color: var(--color-text-muted);
+}
+
+/* "Receipts" affordance, top-right of the treasury card. */
+.treasuryReceiptHint {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-family: var(--font-button);
+  font-size: 10px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.04em;
+  color: var(--color-primary);
+}
+
+.treasuryReceiptHint svg {
+  transition: transform var(--duration-fast) var(--ease-default);
+}
+
+.treasuryFloat:hover .treasuryReceiptHint svg {
+  transform: translateX(2px);
 }
 
 /* Executed-trades history styled like a thermal-paper receipt. */
@@ -1830,6 +1866,61 @@
 .marketItem:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
+}
+
+/* ── Execution receipt pop-up (opened from the treasury card) ── */
+.receiptModalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(8, 10, 16, 0.55);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+
+.receiptModalCard {
+  position: relative;
+  width: min(420px, 100%);
+  max-height: min(86dvh, 720px);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.receiptModalCard .receipt {
+  margin: 0;
+}
+
+.receiptModalCard .receiptBody {
+  max-height: none;
+}
+
+.receiptModalClose {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.6);
+  color: #2b2a27;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.receiptModalClose:hover {
+  background: rgba(255, 255, 255, 0.92);
 }
 
 /* Market detail pop-up */
@@ -2685,19 +2776,6 @@
   }
 }
 
-/* Desk header row: drop the receipt to its own full-width line before the
-   three-up layout gets cramped. */
-@media (max-width: 1320px) {
-  .deskRow {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .deskRow .receipt {
-    width: 100%;
-    justify-self: stretch;
-  }
-}
-
 @media (max-width: 900px) {
   .main {
     margin-left: 0;
@@ -2747,8 +2825,7 @@
     grid-row: 1;
   }
 
-  /* No side nav on mobile — the desk header stacks: slim treasury card with
-     the Trade Using Blue button beneath it (receipt hides entirely). */
+  /* No side nav on mobile — the treasury card becomes a slim full-width header. */
   .deskRow {
     grid-template-columns: 1fr;
     gap: 10px;
@@ -2758,10 +2835,6 @@
   .treasuryFloat,
   .deskRow .treasuryFloat {
     min-height: 0;
-  }
-
-  .receipt {
-    display: none;
   }
 
   .balanceHero {
