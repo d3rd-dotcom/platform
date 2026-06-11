@@ -242,6 +242,22 @@
   gap: 6px;
 }
 
+.itemProof {
+  margin: 2px 0 0 0;
+  padding: 8px 10px;
+  border-radius: 9px;
+  background: rgba(26, 29, 51, 0.04);
+  border: 1px solid rgba(26, 29, 51, 0.07);
+  font-family: var(--font-secondary);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: rgba(18, 25, 53, 0.8);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
 .itemMetaChip {
   display: inline-flex;
   align-items: center;
@@ -384,6 +400,12 @@
 
 :global([data-theme='dark']) .itemTitle {
   color: #eef3ff;
+}
+
+:global([data-theme='dark']) .itemProof {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(226, 234, 255, 0.8);
 }
 
 :global([data-theme='dark']) .itemMetaChip {

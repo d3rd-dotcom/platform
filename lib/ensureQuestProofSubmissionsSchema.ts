@@ -39,13 +39,17 @@ export async function ensureQuestProofSubmissionsSchema() {
 }
 
 async function _ensureQuestProofSubmissionsSchemaImpl() {
+  // proof_text holds the member's written entry and/or a link to their work.
+  // We deliberately store text (not files): the app runs on Vercel's ephemeral
+  // filesystem with no object store wired, so a pasted link/entry is the only
+  // proof that actually persists and is reviewable.
   await sqlQuery(`
     CREATE TABLE IF NOT EXISTS quest_proof_submissions (
       id CHAR(36) PRIMARY KEY,
       user_id CHAR(36) NOT NULL,
       quest_id VARCHAR(120) NOT NULL,
       shards INTEGER NOT NULL DEFAULT 0,
-      file_name VARCHAR(255),
+      proof_text TEXT,
       status VARCHAR(16) NOT NULL DEFAULT 'pending',
       reviewed_by CHAR(36),
       note TEXT,
@@ -58,12 +62,15 @@ async function _ensureQuestProofSubmissionsSchemaImpl() {
 
   try {
     await sqlQuery(
+      `ALTER TABLE quest_proof_submissions ADD COLUMN IF NOT EXISTS proof_text TEXT`,
+    );
+    await sqlQuery(
       `CREATE INDEX IF NOT EXISTS idx_quest_proof_status ON quest_proof_submissions(status)`,
     );
     await sqlQuery(
       `CREATE INDEX IF NOT EXISTS idx_quest_proof_user ON quest_proof_submissions(user_id)`,
     );
   } catch {
-    // indexes may already exist
+    // column/indexes may already exist
   }
 }

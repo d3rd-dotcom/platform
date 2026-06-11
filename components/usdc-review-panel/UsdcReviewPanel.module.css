@@ -175,6 +175,35 @@
   background: #fff;
 }
 
+/* Proof rows stack a header (info + reward + actions) above the proof text. */
+.rowProof {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.rowHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.proofText {
+  margin: 0;
+  padding: 9px 11px;
+  border-radius: 9px;
+  background: rgba(26, 29, 51, 0.04);
+  border: 1px solid rgba(26, 29, 51, 0.07);
+  font-family: var(--font-secondary);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: rgba(18, 25, 53, 0.82);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
 .rowInfo {
   display: flex;
   flex-direction: column;
@@ -306,6 +335,12 @@
 :global([data-theme='dark']) .row {
   background: #25273a;
   border-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme='dark']) .proofText {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(227, 225, 238, 0.78);
 }
 
 :global([data-theme='dark']) .refresh {

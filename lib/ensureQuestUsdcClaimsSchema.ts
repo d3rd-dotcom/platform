@@ -51,6 +51,7 @@ async function _ensureQuestUsdcClaimsSchemaImpl() {
       recipient_wallet VARCHAR(255),
       usdc_amount NUMERIC(12, 6) NOT NULL,
       reward_kind VARCHAR(10) NOT NULL DEFAULT 'usdc',
+      proof_text TEXT,
       status VARCHAR(16) NOT NULL DEFAULT 'pending',
       tx_hash VARCHAR(120),
       reviewed_by CHAR(36),
@@ -66,6 +67,9 @@ async function _ensureQuestUsdcClaimsSchemaImpl() {
   try {
     await sqlQuery(
       `ALTER TABLE quest_usdc_claims ADD COLUMN IF NOT EXISTS reward_kind VARCHAR(10) NOT NULL DEFAULT 'usdc'`,
+    );
+    await sqlQuery(
+      `ALTER TABLE quest_usdc_claims ADD COLUMN IF NOT EXISTS proof_text TEXT`,
     );
     await sqlQuery(
       `ALTER TABLE quest_usdc_claims ALTER COLUMN recipient_wallet DROP NOT NULL`,

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import { useAccount } from 'wagmi';
-import { CheckCircle, Circle, UploadSimple, ArrowSquareOut, CaretLeft } from '@phosphor-icons/react';
+import { CheckCircle, Circle, ArrowSquareOut, CaretLeft } from '@phosphor-icons/react';
 import { ConfettiCelebration } from '../quests/ConfettiCelebration';
 import { ShardAnimation } from '../quests/ShardAnimation';
 import { XConnectingModal } from '../x-connecting/XConnectingModal';
@@ -35,7 +35,7 @@ interface ProofState {
   loading: boolean;
   status: 'pending' | 'approved' | 'rejected' | null;
   note: string | null;
-  fileName: string | null;
+  proofText: string | null;
 }
 
 interface QuestDetailPanelProps {
@@ -54,10 +54,10 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
   const [showShardAnimation, setShowShardAnimation] = useState(false);
   const [shardsAwarded, setShardsAwarded] = useState(0);
   const [showConnectingModal, setShowConnectingModal] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [usdcClaim, setUsdcClaim] = useState<UsdcClaimState | null>(null);
   const [isSubmittingUsdc, setIsSubmittingUsdc] = useState(false);
   const [proof, setProof] = useState<ProofState | null>(null);
+  const [proofText, setProofText] = useState('');
   const [isSubmittingProof, setIsSubmittingProof] = useState(false);
 
   const getAuthHeaders = async (): Promise<HeadersInit> => {
@@ -107,7 +107,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
 
   useEffect(() => {
     if (!quest) {
-      setSelectedFile(null);
+      setProofText('');
       setStep1Completed(false);
       setStep2Completed(false);
     }
@@ -123,7 +123,8 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
     }
 
     let cancelled = false;
-    setProof({ loading: true, status: null, note: null, fileName: null });
+    setProof({ loading: true, status: null, note: null, proofText: null });
+    setProofText('');
 
     (async () => {
       try {
@@ -139,10 +140,12 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
           loading: false,
           status: data.submission?.status ?? null,
           note: data.submission?.note ?? null,
-          fileName: data.submission?.fileName ?? null,
+          proofText: data.submission?.proofText ?? null,
         });
+        // Prefill the box so a rejected member can edit and resubmit.
+        if (data.submission?.proofText) setProofText(data.submission.proofText);
       } catch {
-        if (!cancelled) setProof({ loading: false, status: null, note: null, fileName: null });
+        if (!cancelled) setProof({ loading: false, status: null, note: null, proofText: null });
       }
     })();
 
@@ -256,7 +259,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json', ...authHeaders },
-        body: JSON.stringify({ questId: quest.id, shards: quest.points }),
+        body: JSON.stringify({ questId: quest.id, shards: quest.points, proofText: proofText.trim() || undefined }),
       });
       const data = await response.json();
       if (data.ok && data.status === 'pending_review') {
@@ -265,7 +268,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
         window.dispatchEvent(new Event('shardsUpdated'));
         alert('Submitted for review. The quest creator will approve your completion before the reward is released.');
         onDeselect();
-        setSelectedFile(null);
+        setProofText('');
       } else if (data.ok) {
         setShardsAwarded(quest.points);
         setShowConfetti(true);
@@ -277,7 +280,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
             setShowConfetti(false);
             setShowShardAnimation(false);
             setShardsAwarded(0);
-            setSelectedFile(null);
+            setProofText('');
           }, 2000);
         }, 5000);
       } else {
@@ -319,8 +322,9 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
 
   const handleSubmitProof = async () => {
     if (!quest || isSubmittingProof) return;
-    if (!selectedFile) {
-      alert('Attach your proof before submitting.');
+    const entry = proofText.trim();
+    if (entry.length < 10) {
+      alert('Write your entry or paste a link to your work before submitting.');
       return;
     }
     setIsSubmittingProof(true);
@@ -330,17 +334,17 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json', ...headers },
-        body: JSON.stringify({ questId: quest.id, fileName: selectedFile }),
+        body: JSON.stringify({ questId: quest.id, proofText: entry }),
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok && data.ok) {
-        setProof({ loading: false, status: 'pending', note: null, fileName: selectedFile });
+        setProof({ loading: false, status: 'pending', note: null, proofText: entry });
       } else if (data?.submission?.status) {
         setProof((prev) => ({
           loading: false,
           status: data.submission.status,
           note: prev?.note ?? null,
-          fileName: prev?.fileName ?? selectedFile,
+          proofText: prev?.proofText ?? entry,
         }));
       } else {
         alert(data.error || 'Could not submit your proof. Please try again.');
@@ -511,24 +515,23 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
             {quest.rewardType === 'proof-required' && (
               <>
                 <p className={styles.actionDesc}>
-                  {targetCount === 1
-                    ? 'Share your entry whenever you are ready — a staff member will read it, and approval clears the quest. Take your time; there is no rush.'
-                    : `Every entry you share moves you one step closer — submit all ${targetCount} to fully clear it. Take your time; there is no rush.`}
+                  Share your entry whenever you are ready — a reviewer will read it, and approval clears the quest. Take your time; there is no rush.
                 </p>
-                <label className={styles.uploadZone}>
-                  <UploadSimple size={26} weight="duotone" className={styles.uploadIcon} />
-                  <span className={styles.uploadText}>{selectedFile || 'Drop a file or click to choose'}</span>
-                  <span className={styles.uploadHint}>Images, video, PDF, or docs</span>
-                  <input
-                    type="file"
-                    className={styles.uploadInput}
-                    accept="image/*,video/*,.pdf,.doc,.docx"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) setSelectedFile(file.name);
-                    }}
-                  />
-                </label>
+                <textarea
+                  className={styles.proofInput}
+                  value={proofText}
+                  onChange={(e) => setProofText(e.target.value)}
+                  placeholder="Write your entry here, or paste a link to your work — a post, doc, image, or video."
+                  rows={5}
+                  maxLength={4000}
+                  disabled={
+                    isSubmittingProof
+                    || isCompleting
+                    || questIsComplete
+                    || proof?.status === 'pending'
+                    || proof?.status === 'approved'
+                  }
+                />
                 <div className={styles.callout} data-state="info">
                   <span className={styles.calloutDot} aria-hidden="true" />
                   <span>Submissions are queued for review. Approved entries receive diamonds automatically.</span>
@@ -665,7 +668,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
               || questIsComplete
               || proof?.status === 'pending'
               || proof?.status === 'approved'
-              || !selectedFile
+              || proofText.trim().length < 10
             }
           >
             {questIsComplete || proof?.status === 'approved'
@@ -684,7 +687,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
             type="button"
             className={styles.primaryButton}
             onClick={handleCompleteReward}
-            disabled={isCompleting || questIsComplete}
+            disabled={isCompleting || questIsComplete || proofText.trim().length < 10}
           >
             {questIsComplete
               ? 'Quest cleared'

@@ -88,6 +88,7 @@ export async function POST(request: Request) {
 
   const body = await request.json().catch(() => ({}));
   const questId = body?.questId;
+  const proofText = typeof body?.proofText === 'string' ? body.proofText.trim().slice(0, 4000) : '';
 
   if (!questId || typeof questId !== 'string') {
     return NextResponse.json({ error: 'Quest ID is required.' }, { status: 400 });
@@ -134,6 +135,14 @@ export async function POST(request: Request) {
   if (customQuest && needsCreatorReview) {
     const isUsdc = customQuest.reward_kind === 'usdc';
 
+    // Proof quests must carry the member's entry/link so the creator can judge it.
+    if (customQuest.quest_type === 'proof-required' && proofText.length < 10) {
+      return NextResponse.json(
+        { error: 'Write your entry or paste a link to your work before submitting.' },
+        { status: 400 },
+      );
+    }
+
     if (customQuest.escrow_status !== 'funded') {
       return NextResponse.json({ error: 'This quest is not funded yet.' }, { status: 409 });
     }
@@ -161,8 +170,8 @@ export async function POST(request: Request) {
 
     try {
       await sqlQuery(
-        `INSERT INTO quest_usdc_claims (id, user_id, quest_id, recipient_wallet, usdc_amount, reward_kind, status)
-         VALUES (:id, :userId, :questId, :wallet, :amount, :rewardKind, 'pending')`,
+        `INSERT INTO quest_usdc_claims (id, user_id, quest_id, recipient_wallet, usdc_amount, reward_kind, proof_text, status)
+         VALUES (:id, :userId, :questId, :wallet, :amount, :rewardKind, :proofText, 'pending')`,
         {
           id: uuidv4(),
           userId: user.id,
@@ -170,6 +179,7 @@ export async function POST(request: Request) {
           wallet: user.walletAddress ?? null,
           amount: rewardAmount,
           rewardKind: isUsdc ? 'usdc' : 'credits',
+          proofText: proofText || null,
         },
       );
     } catch (err: any) {

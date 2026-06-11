@@ -20,7 +20,7 @@ interface ProofSubmission {
   questId: string;
   questTitle: string;
   shards: number;
-  fileName: string | null;
+  proofText: string | null;
   username: string | null;
   createdAt: string;
 }
@@ -183,39 +183,43 @@ export default function UsdcReviewPanel({ fetchWithAuth }: UsdcReviewPanelProps)
       ) : (
         <ul className={styles.list}>
           {proofs.map((submission) => (
-            <li key={submission.id} className={styles.row}>
-              <div className={styles.rowInfo}>
-                <span className={styles.rowTitle}>{submission.questTitle}</span>
-                <span className={styles.rowMeta}>
-                  {submission.username ? `@${submission.username}` : 'Member'}
-                  {submission.fileName ? ` · ${submission.fileName}` : ''}
+            <li key={submission.id} className={`${styles.row} ${styles.rowProof}`}>
+              <div className={styles.rowHead}>
+                <div className={styles.rowInfo}>
+                  <span className={styles.rowTitle}>{submission.questTitle}</span>
+                  <span className={styles.rowMeta}>
+                    {submission.username ? `@${submission.username}` : 'Member'}
+                  </span>
+                </div>
+                <span className={styles.rowAmount}>
+                  <Image src="/icons/ui-diamond.svg" alt="" width={13} height={13} />
+                  {submission.shards}
                 </span>
+                <div className={styles.rowActions}>
+                  <button
+                    type="button"
+                    className={styles.reject}
+                    onClick={() => reviewProof(submission, 'reject')}
+                    disabled={busyId === submission.id}
+                    aria-label="Reject submission"
+                    title="Reject"
+                  >
+                    <XCircle size={16} weight="fill" />
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.approve}
+                    onClick={() => reviewProof(submission, 'approve')}
+                    disabled={busyId === submission.id}
+                  >
+                    <CheckCircle size={15} weight="fill" />
+                    {busyId === submission.id ? 'Saving…' : 'Approve'}
+                  </button>
+                </div>
               </div>
-              <span className={styles.rowAmount}>
-                <Image src="/icons/ui-diamond.svg" alt="" width={13} height={13} />
-                {submission.shards}
-              </span>
-              <div className={styles.rowActions}>
-                <button
-                  type="button"
-                  className={styles.reject}
-                  onClick={() => reviewProof(submission, 'reject')}
-                  disabled={busyId === submission.id}
-                  aria-label="Reject submission"
-                  title="Reject"
-                >
-                  <XCircle size={16} weight="fill" />
-                </button>
-                <button
-                  type="button"
-                  className={styles.approve}
-                  onClick={() => reviewProof(submission, 'approve')}
-                  disabled={busyId === submission.id}
-                >
-                  <CheckCircle size={15} weight="fill" />
-                  {busyId === submission.id ? 'Saving…' : 'Approve'}
-                </button>
-              </div>
+              {submission.proofText && (
+                <p className={styles.proofText}>{submission.proofText}</p>
+              )}
             </li>
           ))}
           {claims.map((claim) => (

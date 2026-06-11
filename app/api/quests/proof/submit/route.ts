@@ -8,16 +8,19 @@ import { getQuestDefinition } from '@/lib/quest-definitions';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+const PROOF_MIN = 10;
+const PROOF_MAX = 4000;
+
 interface SubmissionRow {
   id: string;
   status: string;
   note: string | null;
-  file_name: string | null;
+  proof_text: string | null;
 }
 
 async function loadSubmission(userId: string, questId: string): Promise<SubmissionRow | null> {
   const rows = await sqlQuery<SubmissionRow[]>(
-    `SELECT id, status, note, file_name
+    `SELECT id, status, note, proof_text
      FROM quest_proof_submissions
      WHERE user_id = :userId AND quest_id = :questId
      LIMIT 1`,
@@ -55,16 +58,16 @@ export async function GET(request: Request) {
   const submission = await loadSubmission(user.id, questId);
   return NextResponse.json({
     submission: submission
-      ? { status: submission.status, note: submission.note, fileName: submission.file_name }
+      ? { status: submission.status, note: submission.note, proofText: submission.proof_text }
       : null,
   });
 }
 
 /**
- * POST /api/quests/proof/submit  { questId, fileName }
- * Files a proof submission for staff review. No diamonds are minted here — they
- * are only awarded when a staff member approves the submission via
- * /api/quests/proof/review.
+ * POST /api/quests/proof/submit  { questId, proofText }
+ * Files a proof submission (the member's written entry or a link) for staff
+ * review. No diamonds are minted here — they are only awarded when a staff
+ * member approves the submission via /api/quests/proof/review.
  */
 export async function POST(request: Request) {
   if (!isDbConfigured()) {
@@ -78,13 +81,17 @@ export async function POST(request: Request) {
 
   const body = await request.json().catch(() => ({}));
   const questId = typeof body?.questId === 'string' ? body.questId : null;
-  const fileName = typeof body?.fileName === 'string' ? body.fileName.slice(0, 255) : null;
+  const proofText = typeof body?.proofText === 'string' ? body.proofText.trim() : '';
   if (!questId) {
     return NextResponse.json({ error: 'questId is required.' }, { status: 400 });
   }
-  if (!fileName) {
-    return NextResponse.json({ error: 'Attach your proof before submitting.' }, { status: 400 });
+  if (proofText.length < PROOF_MIN) {
+    return NextResponse.json(
+      { error: `Share a bit more — write your entry or paste a link (at least ${PROOF_MIN} characters).` },
+      { status: 400 },
+    );
   }
+  const proof = proofText.slice(0, PROOF_MAX);
 
   const definition = getQuestDefinition(questId);
   if (!definition || definition.questType !== 'proof-required') {
@@ -99,10 +106,10 @@ export async function POST(request: Request) {
       // Let the member resubmit after a rejection.
       await sqlQuery(
         `UPDATE quest_proof_submissions
-         SET status = 'pending', file_name = :fileName, note = NULL,
+         SET status = 'pending', proof_text = :proof, note = NULL,
              reviewed_by = NULL, updated_at = NOW()
          WHERE user_id = :userId AND quest_id = :questId`,
-        { userId: user.id, questId, fileName },
+        { userId: user.id, questId, proof },
       );
       return NextResponse.json({ ok: true, submission: { status: 'pending' } });
     }
@@ -114,14 +121,14 @@ export async function POST(request: Request) {
 
   try {
     await sqlQuery(
-      `INSERT INTO quest_proof_submissions (id, user_id, quest_id, shards, file_name, status)
-       VALUES (:id, :userId, :questId, :shards, :fileName, 'pending')`,
+      `INSERT INTO quest_proof_submissions (id, user_id, quest_id, shards, proof_text, status)
+       VALUES (:id, :userId, :questId, :shards, :proof, 'pending')`,
       {
         id: uuidv4(),
         userId: user.id,
         questId,
         shards: definition.points,
-        fileName,
+        proof,
       },
     );
   } catch (err: any) {

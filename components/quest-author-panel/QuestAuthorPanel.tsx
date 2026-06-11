@@ -26,6 +26,7 @@ interface PendingClaim {
   recipientWallet: string | null;
   usdcAmount: number;
   rewardKind: 'usdc' | 'credits';
+  proofText: string | null;
   username: string | null;
   createdAt: string;
   escrowRemaining: number | null;
@@ -298,6 +299,9 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
                       <span className={styles.itemMetaChip}>{escrowLabel}</span>
                     )}
                   </span>
+                  {claim.proofText && (
+                    <p className={styles.itemProof}>{claim.proofText}</p>
+                  )}
                 </div>
                 <div className={styles.claimActions}>
                   <button
