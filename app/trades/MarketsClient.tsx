@@ -1741,15 +1741,17 @@ export default function Markets() {
                   </svg>
                 </button>
 
-                <div className={styles.marketModalColumns}>
-                  {/* Left: the market hero */}
+                <div className={styles.marketModalBody}>
+                  {/* Top: market name, position, and volume */}
                   <div className={styles.marketModalHero}>
                     <div className={styles.marketModalHead}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={iconSrc} alt="" className={styles.marketModalIcon} width={88} height={88} />
-                      <span className={styles.marketPill}>{CATEGORY_LABELS[selectedMarket.category]}</span>
+                      <img src={iconSrc} alt="" className={styles.marketModalIcon} width={56} height={56} />
+                      <div className={styles.marketModalHeadText}>
+                        <span className={styles.marketPill}>{CATEGORY_LABELS[selectedMarket.category]}</span>
+                        <h2 className={styles.marketModalTitle}>{selectedMarket.market.question}</h2>
+                      </div>
                     </div>
-                    <h2 className={styles.marketModalTitle}>{selectedMarket.market.question}</h2>
                     <div className={styles.marketBar}>
                       <div className={styles.marketYes} style={{ width: `${yesPct}%` }} />
                       <div className={styles.marketNo} style={{ width: `${noPct}%` }} />
@@ -1770,33 +1772,32 @@ export default function Markets() {
                     </div>
                   </div>
 
-                  {/* Right: the vote — Blue is the trader, the community steers her */}
-                  <div className={styles.marketModalAction}>
-                    <div className={styles.voteIntro}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={VOTE_TOKEN_ICON} alt="" className={styles.voteIntroIcon} width={36} height={36} />
-                      <div className={styles.voteIntroText}>
-                        <span className={styles.voteIntroTitle}>You vote, Blue trades</span>
-                        <span className={styles.voteIntroSub}>
-                          Pick a side and make your case. Blue tallies every vote, then prices and
-                          places the trade for the treasury — she makes the final call.
-                        </span>
-                      </div>
+                  {/* The vote */}
+                  <MarketDebate
+                    marketId={selectedMarket.market.ticker || selectedMarket.market.id}
+                    marketTitle={selectedMarket.market.question}
+                  />
+
+                  {/* How Blue acts on the vote — sits underneath the vote */}
+                  <div className={styles.voteIntro}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={VOTE_TOKEN_ICON} alt="" className={styles.voteIntroIcon} width={36} height={36} />
+                    <div className={styles.voteIntroText}>
+                      <span className={styles.voteIntroTitle}>Post Your Beliefs</span>
+                      <span className={styles.voteIntroSub}>
+                        Blue snaps live trading data and runs it through a quantum processing script
+                        and elf magic to position trades.
+                      </span>
                     </div>
-
-                    <MarketDebate
-                      marketId={selectedMarket.market.ticker || selectedMarket.market.id}
-                      marketTitle={selectedMarket.market.question}
-                    />
-
-                    <CtaButton
-                      variant="secondary"
-                      block
-                      onClick={() => askBlueAboutMarket(selectedMarket)}
-                    >
-                      Ask Blue about this market
-                    </CtaButton>
                   </div>
+
+                  <CtaButton
+                    variant="secondary"
+                    block
+                    onClick={() => askBlueAboutMarket(selectedMarket)}
+                  >
+                    Ask Blue about this market
+                  </CtaButton>
                 </div>
               </div>
             </div>
