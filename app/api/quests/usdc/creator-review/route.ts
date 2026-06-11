@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
-import { isDbConfigured, sqlQuery } from '@/lib/db';
+import { isDbConfigured, sqlQuery, withTransaction, sqlQueryWithClient } from '@/lib/db';
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { ensureCustomQuestsSchema } from '@/lib/ensureCustomQuestsSchema';
 import { ensureQuestUsdcClaimsSchema } from '@/lib/ensureQuestUsdcClaimsSchema';
@@ -16,8 +16,9 @@ interface ClaimJoinRow {
   id: string;
   user_id: string;
   quest_id: string;
-  recipient_wallet: string;
+  recipient_wallet: string | null;
   usdc_amount: string;
+  reward_kind: string;
   status: string;
   created_at: string;
   username: string | null;
@@ -49,7 +50,7 @@ export async function GET() {
   }
 
   const rows = await sqlQuery<ClaimJoinRow[]>(
-    `SELECT c.id, c.user_id, c.quest_id, c.recipient_wallet, c.usdc_amount, c.status, c.created_at,
+    `SELECT c.id, c.user_id, c.quest_id, c.recipient_wallet, c.usdc_amount, c.reward_kind, c.status, c.created_at,
             u.username, q.title AS quest_title, q.created_by, q.escrow_remaining, q.escrow_status
      FROM quest_usdc_claims c
      JOIN custom_quests q ON q.id = c.quest_id
@@ -66,6 +67,7 @@ export async function GET() {
       questTitle: r.quest_title,
       recipientWallet: r.recipient_wallet,
       usdcAmount: Number(r.usdc_amount),
+      rewardKind: (r.reward_kind ?? 'usdc') as 'usdc' | 'credits',
       username: r.username,
       createdAt: r.created_at,
       escrowRemaining: r.escrow_remaining != null ? Number(r.escrow_remaining) : null,
@@ -98,7 +100,7 @@ export async function POST(request: Request) {
   }
 
   const rows = await sqlQuery<ClaimJoinRow[]>(
-    `SELECT c.id, c.user_id, c.quest_id, c.recipient_wallet, c.usdc_amount, c.status,
+    `SELECT c.id, c.user_id, c.quest_id, c.recipient_wallet, c.usdc_amount, c.reward_kind, c.status,
             c.created_at, NULL AS username, q.title AS quest_title, q.created_by,
             q.escrow_remaining, q.escrow_status
      FROM quest_usdc_claims c
@@ -139,6 +141,78 @@ export async function POST(request: Request) {
   );
   if (reserved.length === 0) {
     return NextResponse.json({ error: 'Claim is no longer pending.' }, { status: 409 });
+  }
+
+  // Credit rewards stay in-app: draw the creator's escrowed diamonds and award
+  // them to the completer atomically. No on-chain payout is involved.
+  if (claim.reward_kind === 'credits') {
+    try {
+      await withTransaction(async (client) => {
+        const drawn = await sqlQueryWithClient<Array<{ escrow_remaining: string }>>(
+          client,
+          `UPDATE custom_quests
+           SET escrow_remaining = escrow_remaining - :amt,
+               escrow_status = CASE WHEN escrow_remaining - :amt <= 0 THEN 'depleted' ELSE escrow_status END
+           WHERE id = :qid AND escrow_remaining >= :amt
+           RETURNING escrow_remaining`,
+          { qid: claim.quest_id, amt: amount },
+        );
+        if (drawn.length === 0) {
+          throw new Error('ESCROW_DEPLETED');
+        }
+
+        await sqlQueryWithClient(
+          client,
+          `UPDATE users SET shard_count = shard_count + :amt WHERE id = :userId`,
+          { userId: claim.user_id, amt: amount },
+        );
+
+        const dupe = await sqlQueryWithClient<Array<{ id: string }>>(
+          client,
+          `SELECT id FROM quests WHERE user_id = :userId AND quest_id = :questId LIMIT 1`,
+          { userId: claim.user_id, questId: claim.quest_id },
+        );
+        if (dupe.length === 0) {
+          await sqlQueryWithClient(
+            client,
+            `INSERT INTO quests (id, user_id, quest_id, shards_awarded)
+             VALUES (:id, :userId, :questId, :amt)`,
+            { id: uuidv4(), userId: claim.user_id, questId: claim.quest_id, amt: amount },
+          );
+        }
+
+        await sqlQueryWithClient(
+          client,
+          `UPDATE quest_usdc_claims SET status = 'paid', updated_at = NOW() WHERE id = :id`,
+          { id: claimId },
+        );
+      });
+
+      return NextResponse.json({ ok: true, claim: { status: 'paid' } });
+    } catch (err: any) {
+      // Roll the claim back to pending so the creator can retry.
+      await sqlQuery(
+        `UPDATE quest_usdc_claims SET status = 'pending', updated_at = NOW() WHERE id = :id`,
+        { id: claimId },
+      );
+      if (err?.message === 'ESCROW_DEPLETED') {
+        return NextResponse.json(
+          { error: "Not enough diamonds left in this quest's escrow." },
+          { status: 409 },
+        );
+      }
+      console.error('Error approving credit claim:', err);
+      return NextResponse.json({ error: 'Failed to approve claim.' }, { status: 500 });
+    }
+  }
+
+  // USDC payouts move real money. A destination wallet is required.
+  if (!claim.recipient_wallet) {
+    await sqlQuery(
+      `UPDATE quest_usdc_claims SET status = 'pending', updated_at = NOW() WHERE id = :id`,
+      { id: claimId },
+    );
+    return NextResponse.json({ error: 'Completer has no wallet on file for USDC.' }, { status: 409 });
   }
 
   // Draw the reward from escrow, guarded so we never overpay the funded amount.

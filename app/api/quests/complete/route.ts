@@ -122,18 +122,26 @@ export async function POST(request: Request) {
     }
   }
 
-  // USDC custom quests pay real money out of the creator's escrow, and the
-  // creator must approve every payout. Completing one here just files a pending
-  // claim — no credits are minted and no `quests` row is written until the
-  // creator approves it via /api/quests/usdc/creator-review.
-  if (customQuest && customQuest.reward_kind === 'usdc') {
+  // Custom quests require the creator's approval before any escrow is released
+  // when EITHER (a) the reward is real USDC, or (b) the quest is proof-required.
+  // In both cases, completing here only files a pending claim — no credits are
+  // minted and no `quests` row is written until the creator approves it via
+  // /api/quests/usdc/creator-review. This is what stops a proof-required quest
+  // from being drained without proof.
+  const needsCreatorReview = !!customQuest && (
+    customQuest.reward_kind === 'usdc' || customQuest.quest_type === 'proof-required'
+  );
+  if (customQuest && needsCreatorReview) {
+    const isUsdc = customQuest.reward_kind === 'usdc';
+
     if (customQuest.escrow_status !== 'funded') {
       return NextResponse.json({ error: 'This quest is not funded yet.' }, { status: 409 });
     }
-    if (!user.walletAddress) {
+    // Only USDC payouts need a destination wallet; credit rewards land in-app.
+    if (isUsdc && !user.walletAddress) {
       return NextResponse.json({ error: 'Link a wallet to receive USDC.' }, { status: 400 });
     }
-    const rewardAmount = Number(customQuest.reward_amount ?? 0);
+    const rewardAmount = Number(customQuest.reward_amount ?? customQuest.points ?? 0);
     if (!(rewardAmount > 0)) {
       return NextResponse.json({ error: 'This quest has no reward configured.' }, { status: 400 });
     }
@@ -153,14 +161,15 @@ export async function POST(request: Request) {
 
     try {
       await sqlQuery(
-        `INSERT INTO quest_usdc_claims (id, user_id, quest_id, recipient_wallet, usdc_amount, status)
-         VALUES (:id, :userId, :questId, :wallet, :amount, 'pending')`,
+        `INSERT INTO quest_usdc_claims (id, user_id, quest_id, recipient_wallet, usdc_amount, reward_kind, status)
+         VALUES (:id, :userId, :questId, :wallet, :amount, :rewardKind, 'pending')`,
         {
           id: uuidv4(),
           userId: user.id,
           questId: customQuest.id,
-          wallet: user.walletAddress,
+          wallet: user.walletAddress ?? null,
           amount: rewardAmount,
+          rewardKind: isUsdc ? 'usdc' : 'credits',
         },
       );
     } catch (err: any) {
@@ -170,11 +179,11 @@ export async function POST(request: Request) {
           { status: 409 },
         );
       }
-      console.error('Error creating custom USDC claim:', err);
+      console.error('Error creating custom quest claim:', err);
       return NextResponse.json({ error: 'Failed to submit quest.' }, { status: 500 });
     }
 
-    return NextResponse.json({ ok: true, status: 'pending_review', usdcAmount: rewardAmount });
+    return NextResponse.json({ ok: true, status: 'pending_review', rewardKind: isUsdc ? 'usdc' : 'credits', rewardAmount });
   }
 
   try {

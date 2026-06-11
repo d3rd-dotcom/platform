@@ -23,8 +23,9 @@ interface PendingClaim {
   id: string;
   questId: string;
   questTitle: string;
-  recipientWallet: string;
+  recipientWallet: string | null;
   usdcAmount: number;
+  rewardKind: 'usdc' | 'credits';
   username: string | null;
   createdAt: string;
   escrowRemaining: number | null;
@@ -268,24 +269,33 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
       {pendingClaims.length > 0 && (
         <div className={styles.list}>
           <div className={styles.listHeader}>
-            <h4 className={styles.listTitle}>USDC payouts to approve</h4>
+            <h4 className={styles.listTitle}>Completions to approve</h4>
             <span className={styles.listMeta}>{pendingClaims.length}</span>
           </div>
           {claimError && <p className={styles.errorText}>{claimError}</p>}
           <ul className={styles.listItems}>
-            {pendingClaims.map((claim) => (
+            {pendingClaims.map((claim) => {
+              const isUsdc = claim.rewardKind !== 'credits';
+              const rewardLabel = isUsdc
+                ? `$${claim.usdcAmount} USDC`
+                : `${claim.usdcAmount} diamonds`;
+              const escrowLabel = claim.escrowRemaining != null
+                ? (isUsdc ? `$${claim.escrowRemaining} left` : `${claim.escrowRemaining} left`)
+                : null;
+              const who = claim.username
+                ? `@${claim.username}`
+                : claim.recipientWallet
+                  ? `${claim.recipientWallet.slice(0, 6)}…${claim.recipientWallet.slice(-4)}`
+                  : 'Member';
+              return (
               <li key={claim.id} className={styles.listItem}>
                 <div className={styles.itemBody}>
                   <span className={styles.itemTitle}>{claim.questTitle}</span>
                   <span className={styles.itemMetaRow}>
-                    <span className={styles.itemMetaChip}>${claim.usdcAmount} USDC</span>
-                    <span className={styles.itemMetaChip}>
-                      {claim.username
-                        ? `@${claim.username}`
-                        : `${claim.recipientWallet.slice(0, 6)}…${claim.recipientWallet.slice(-4)}`}
-                    </span>
-                    {claim.escrowRemaining != null && (
-                      <span className={styles.itemMetaChip}>${claim.escrowRemaining} left</span>
+                    <span className={styles.itemMetaChip}>{rewardLabel}</span>
+                    <span className={styles.itemMetaChip}>{who}</span>
+                    {escrowLabel && (
+                      <span className={styles.itemMetaChip}>{escrowLabel}</span>
                     )}
                   </span>
                 </div>
@@ -310,7 +320,8 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
                   </button>
                 </div>
               </li>
-            ))}
+              );
+            })}
           </ul>
         </div>
       )}

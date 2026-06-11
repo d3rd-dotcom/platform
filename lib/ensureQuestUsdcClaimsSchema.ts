@@ -38,13 +38,19 @@ export async function ensureQuestUsdcClaimsSchema() {
 }
 
 async function _ensureQuestUsdcClaimsSchemaImpl() {
+  // Despite the name, this table now backs creator-reviewed claims for BOTH
+  // reward kinds. `reward_kind` = 'usdc' pays real money from Blue's wallet;
+  // 'credits' draws the creator's escrowed diamonds. `usdc_amount` holds the
+  // per-completion reward for either kind. recipient_wallet is only required for
+  // USDC payouts, so it is nullable (credit completers may have no wallet).
   await sqlQuery(`
     CREATE TABLE IF NOT EXISTS quest_usdc_claims (
       id CHAR(36) PRIMARY KEY,
       user_id CHAR(36) NOT NULL,
       quest_id VARCHAR(120) NOT NULL,
-      recipient_wallet VARCHAR(255) NOT NULL,
+      recipient_wallet VARCHAR(255),
       usdc_amount NUMERIC(12, 6) NOT NULL,
+      reward_kind VARCHAR(10) NOT NULL DEFAULT 'usdc',
       status VARCHAR(16) NOT NULL DEFAULT 'pending',
       tx_hash VARCHAR(120),
       reviewed_by CHAR(36),
@@ -55,6 +61,18 @@ async function _ensureQuestUsdcClaimsSchemaImpl() {
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     )
   `);
+
+  // Idempotent migrations for tables that predate the credit generalization.
+  try {
+    await sqlQuery(
+      `ALTER TABLE quest_usdc_claims ADD COLUMN IF NOT EXISTS reward_kind VARCHAR(10) NOT NULL DEFAULT 'usdc'`,
+    );
+    await sqlQuery(
+      `ALTER TABLE quest_usdc_claims ALTER COLUMN recipient_wallet DROP NOT NULL`,
+    );
+  } catch {
+    // column/constraint may already be in the target state
+  }
 
   try {
     await sqlQuery(

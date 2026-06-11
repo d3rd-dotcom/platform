@@ -259,7 +259,14 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
         body: JSON.stringify({ questId: quest.id, shards: quest.points }),
       });
       const data = await response.json();
-      if (data.ok) {
+      if (data.ok && data.status === 'pending_review') {
+        // Creator-reviewed custom quest — no diamonds are released until the
+        // quest creator approves, so don't celebrate a payout that hasn't happened.
+        window.dispatchEvent(new Event('shardsUpdated'));
+        alert('Submitted for review. The quest creator will approve your completion before the reward is released.');
+        onDeselect();
+        setSelectedFile(null);
+      } else if (data.ok) {
         setShardsAwarded(quest.points);
         setShowConfetti(true);
         setShowShardAnimation(true);
