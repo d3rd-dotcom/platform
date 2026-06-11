@@ -16,6 +16,7 @@ interface SubmissionRow {
   quest_id: string;
   shards: number;
   proof_text: string | null;
+  proof_url: string | null;
   status: string;
   note: string | null;
   created_at: string;
@@ -52,7 +53,7 @@ export async function GET() {
   if (gate.error) return gate.error;
 
   const rows = await sqlQuery<SubmissionRow[]>(
-    `SELECT s.id, s.user_id, s.quest_id, s.shards, s.proof_text, s.status, s.note, s.created_at,
+    `SELECT s.id, s.user_id, s.quest_id, s.shards, s.proof_text, s.proof_url, s.status, s.note, s.created_at,
             u.username
      FROM quest_proof_submissions s
      LEFT JOIN users u ON u.id = s.user_id
@@ -67,6 +68,7 @@ export async function GET() {
       questTitle: questTitle(r.quest_id),
       shards: r.shards,
       proofText: r.proof_text,
+      proofUrl: r.proof_url,
       username: r.username,
       createdAt: r.created_at,
     })),
@@ -99,7 +101,7 @@ export async function POST(request: Request) {
   }
 
   const rows = await sqlQuery<SubmissionRow[]>(
-    `SELECT id, user_id, quest_id, shards, proof_text, status, note, created_at,
+    `SELECT id, user_id, quest_id, shards, proof_text, proof_url, status, note, created_at,
             NULL AS username
      FROM quest_proof_submissions WHERE id = :id LIMIT 1`,
     { id: submissionId },

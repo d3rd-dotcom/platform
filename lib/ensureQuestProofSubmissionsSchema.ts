@@ -50,6 +50,7 @@ async function _ensureQuestProofSubmissionsSchemaImpl() {
       quest_id VARCHAR(120) NOT NULL,
       shards INTEGER NOT NULL DEFAULT 0,
       proof_text TEXT,
+      proof_url TEXT,
       status VARCHAR(16) NOT NULL DEFAULT 'pending',
       reviewed_by CHAR(36),
       note TEXT,
@@ -63,6 +64,9 @@ async function _ensureQuestProofSubmissionsSchemaImpl() {
   try {
     await sqlQuery(
       `ALTER TABLE quest_proof_submissions ADD COLUMN IF NOT EXISTS proof_text TEXT`,
+    );
+    await sqlQuery(
+      `ALTER TABLE quest_proof_submissions ADD COLUMN IF NOT EXISTS proof_url TEXT`,
     );
     await sqlQuery(
       `CREATE INDEX IF NOT EXISTS idx_quest_proof_status ON quest_proof_submissions(status)`,

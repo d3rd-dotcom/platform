@@ -204,6 +204,36 @@
   overflow-y: auto;
 }
 
+.proofAttachment {
+  display: inline-flex;
+  align-self: flex-start;
+  text-decoration: none;
+}
+
+.proofThumb {
+  max-width: 140px;
+  max-height: 100px;
+  border-radius: 9px;
+  border: 1px solid rgba(26, 29, 51, 0.12);
+  object-fit: cover;
+  display: block;
+}
+
+.proofLink {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(39, 117, 202, 0.10);
+  border: 1px solid rgba(39, 117, 202, 0.22);
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 700;
+  color: #1f5c9e;
+}
+
+.proofLink:hover { background: rgba(39, 117, 202, 0.16); }
+
 .rowInfo {
   display: flex;
   flex-direction: column;

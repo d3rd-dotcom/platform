@@ -258,6 +258,22 @@
   overflow-y: auto;
 }
 
+.itemProofLink {
+  align-self: flex-start;
+  margin-top: 2px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgba(39, 117, 202, 0.10);
+  border: 1px solid rgba(39, 117, 202, 0.22);
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 700;
+  color: #1f5c9e;
+  text-decoration: none;
+}
+
+.itemProofLink:hover { background: rgba(39, 117, 202, 0.16); }
+
 .itemMetaChip {
   display: inline-flex;
   align-items: center;

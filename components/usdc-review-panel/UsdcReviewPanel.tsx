@@ -21,8 +21,13 @@ interface ProofSubmission {
   questTitle: string;
   shards: number;
   proofText: string | null;
+  proofUrl: string | null;
   username: string | null;
   createdAt: string;
+}
+
+function isImageUrl(url: string): boolean {
+  return /\.(png|jpe?g|gif|webp)(\?|$)/i.test(url);
 }
 
 interface UsdcReviewPanelProps {
@@ -219,6 +224,21 @@ export default function UsdcReviewPanel({ fetchWithAuth }: UsdcReviewPanelProps)
               </div>
               {submission.proofText && (
                 <p className={styles.proofText}>{submission.proofText}</p>
+              )}
+              {submission.proofUrl && (
+                <a
+                  href={submission.proofUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.proofAttachment}
+                >
+                  {isImageUrl(submission.proofUrl) ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={submission.proofUrl} alt="Proof attachment" className={styles.proofThumb} />
+                  ) : (
+                    <span className={styles.proofLink}>View attachment</span>
+                  )}
+                </a>
               )}
             </li>
           ))}

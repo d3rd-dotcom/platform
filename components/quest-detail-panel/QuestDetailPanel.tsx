@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import { useAccount } from 'wagmi';
-import { CheckCircle, Circle, ArrowSquareOut, CaretLeft } from '@phosphor-icons/react';
+import { CheckCircle, Circle, ArrowSquareOut, CaretLeft, Paperclip } from '@phosphor-icons/react';
 import { ConfettiCelebration } from '../quests/ConfettiCelebration';
 import { ShardAnimation } from '../quests/ShardAnimation';
 import { XConnectingModal } from '../x-connecting/XConnectingModal';
@@ -36,6 +36,7 @@ interface ProofState {
   status: 'pending' | 'approved' | 'rejected' | null;
   note: string | null;
   proofText: string | null;
+  proofUrl: string | null;
 }
 
 interface QuestDetailPanelProps {
@@ -58,6 +59,9 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
   const [isSubmittingUsdc, setIsSubmittingUsdc] = useState(false);
   const [proof, setProof] = useState<ProofState | null>(null);
   const [proofText, setProofText] = useState('');
+  const [attachmentUrl, setAttachmentUrl] = useState<string | null>(null);
+  const [attachmentName, setAttachmentName] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const [isSubmittingProof, setIsSubmittingProof] = useState(false);
 
   const getAuthHeaders = async (): Promise<HeadersInit> => {
@@ -108,6 +112,8 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
   useEffect(() => {
     if (!quest) {
       setProofText('');
+      setAttachmentUrl(null);
+      setAttachmentName(null);
       setStep1Completed(false);
       setStep2Completed(false);
     }
@@ -123,8 +129,10 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
     }
 
     let cancelled = false;
-    setProof({ loading: true, status: null, note: null, proofText: null });
+    setProof({ loading: true, status: null, note: null, proofText: null, proofUrl: null });
     setProofText('');
+    setAttachmentUrl(null);
+    setAttachmentName(null);
 
     (async () => {
       try {
@@ -141,11 +149,16 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
           status: data.submission?.status ?? null,
           note: data.submission?.note ?? null,
           proofText: data.submission?.proofText ?? null,
+          proofUrl: data.submission?.proofUrl ?? null,
         });
-        // Prefill the box so a rejected member can edit and resubmit.
+        // Prefill so a rejected member can edit and resubmit.
         if (data.submission?.proofText) setProofText(data.submission.proofText);
+        if (data.submission?.proofUrl) {
+          setAttachmentUrl(data.submission.proofUrl);
+          setAttachmentName('Attached file');
+        }
       } catch {
-        if (!cancelled) setProof({ loading: false, status: null, note: null, proofText: null });
+        if (!cancelled) setProof({ loading: false, status: null, note: null, proofText: null, proofUrl: null });
       }
     })();
 
@@ -259,7 +272,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json', ...authHeaders },
-        body: JSON.stringify({ questId: quest.id, shards: quest.points, proofText: proofText.trim() || undefined }),
+        body: JSON.stringify({ questId: quest.id, shards: quest.points, proofText: proofText.trim() || undefined, proofUrl: attachmentUrl ?? undefined }),
       });
       const data = await response.json();
       if (data.ok && data.status === 'pending_review') {
@@ -269,6 +282,8 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
         alert('Submitted for review. The quest creator will approve your completion before the reward is released.');
         onDeselect();
         setProofText('');
+        setAttachmentUrl(null);
+        setAttachmentName(null);
       } else if (data.ok) {
         setShardsAwarded(quest.points);
         setShowConfetti(true);
@@ -320,11 +335,37 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
     }
   };
 
+  const handleAttachProof = async (file: File) => {
+    setIsUploading(true);
+    try {
+      const headers = await getAuthHeaders();
+      const form = new FormData();
+      form.append('file', file);
+      const res = await fetch('/api/quests/proof/upload', {
+        method: 'POST',
+        credentials: 'include',
+        headers,
+        body: form,
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.url) {
+        setAttachmentUrl(data.url);
+        setAttachmentName(data.name || file.name);
+      } else {
+        alert(data.error || 'Could not upload that file. Paste a link instead.');
+      }
+    } catch {
+      alert('Could not upload that file. Paste a link instead.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const handleSubmitProof = async () => {
     if (!quest || isSubmittingProof) return;
     const entry = proofText.trim();
-    if (entry.length < 10) {
-      alert('Write your entry or paste a link to your work before submitting.');
+    if (entry.length < 10 && !attachmentUrl) {
+      alert('Share your work — write an entry, paste a link, or attach a file.');
       return;
     }
     setIsSubmittingProof(true);
@@ -334,17 +375,18 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json', ...headers },
-        body: JSON.stringify({ questId: quest.id, proofText: entry }),
+        body: JSON.stringify({ questId: quest.id, proofText: entry, proofUrl: attachmentUrl ?? undefined }),
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok && data.ok) {
-        setProof({ loading: false, status: 'pending', note: null, proofText: entry });
+        setProof({ loading: false, status: 'pending', note: null, proofText: entry, proofUrl: attachmentUrl });
       } else if (data?.submission?.status) {
         setProof((prev) => ({
           loading: false,
           status: data.submission.status,
           note: prev?.note ?? null,
           proofText: prev?.proofText ?? entry,
+          proofUrl: prev?.proofUrl ?? attachmentUrl,
         }));
       } else {
         alert(data.error || 'Could not submit your proof. Please try again.');
@@ -521,7 +563,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
                   className={styles.proofInput}
                   value={proofText}
                   onChange={(e) => setProofText(e.target.value)}
-                  placeholder="Write your entry here, or paste a link to your work — a post, doc, image, or video."
+                  placeholder="Write your entry here, or paste a link to your work. You can also attach a file below."
                   rows={5}
                   maxLength={4000}
                   disabled={
@@ -532,6 +574,45 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
                     || proof?.status === 'approved'
                   }
                 />
+                {!(proof?.status === 'pending' || proof?.status === 'approved' || questIsComplete) && (
+                  attachmentUrl ? (
+                    <div className={styles.attachRow}>
+                      <a
+                        href={attachmentUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.attachChip}
+                      >
+                        <Paperclip size={13} weight="bold" />
+                        {attachmentName || 'Attached file'}
+                      </a>
+                      <button
+                        type="button"
+                        className={styles.attachRemove}
+                        onClick={() => { setAttachmentUrl(null); setAttachmentName(null); }}
+                        aria-label="Remove attachment"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ) : (
+                    <label className={`${styles.attachButton} ${isUploading ? styles.attachButtonBusy : ''}`}>
+                      <Paperclip size={13} weight="bold" />
+                      {isUploading ? 'Uploading…' : 'Attach a file (optional)'}
+                      <input
+                        type="file"
+                        className={styles.attachInput}
+                        accept="image/*,video/mp4,video/webm,.pdf,.doc,.docx"
+                        disabled={isUploading || isSubmittingProof || isCompleting}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleAttachProof(file);
+                          e.target.value = '';
+                        }}
+                      />
+                    </label>
+                  )
+                )}
                 <div className={styles.callout} data-state="info">
                   <span className={styles.calloutDot} aria-hidden="true" />
                   <span>Submissions are queued for review. Approved entries receive diamonds automatically.</span>
@@ -668,7 +749,8 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
               || questIsComplete
               || proof?.status === 'pending'
               || proof?.status === 'approved'
-              || proofText.trim().length < 10
+              || isUploading
+              || (proofText.trim().length < 10 && !attachmentUrl)
             }
           >
             {questIsComplete || proof?.status === 'approved'
@@ -687,7 +769,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
             type="button"
             className={styles.primaryButton}
             onClick={handleCompleteReward}
-            disabled={isCompleting || questIsComplete || proofText.trim().length < 10}
+            disabled={isCompleting || questIsComplete || isUploading || (proofText.trim().length < 10 && !attachmentUrl)}
           >
             {questIsComplete
               ? 'Quest cleared'

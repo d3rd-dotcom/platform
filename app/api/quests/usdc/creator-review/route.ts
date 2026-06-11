@@ -20,6 +20,7 @@ interface ClaimJoinRow {
   usdc_amount: string;
   reward_kind: string;
   proof_text: string | null;
+  proof_url: string | null;
   status: string;
   created_at: string;
   username: string | null;
@@ -51,7 +52,7 @@ export async function GET() {
   }
 
   const rows = await sqlQuery<ClaimJoinRow[]>(
-    `SELECT c.id, c.user_id, c.quest_id, c.recipient_wallet, c.usdc_amount, c.reward_kind, c.proof_text, c.status, c.created_at,
+    `SELECT c.id, c.user_id, c.quest_id, c.recipient_wallet, c.usdc_amount, c.reward_kind, c.proof_text, c.proof_url, c.status, c.created_at,
             u.username, q.title AS quest_title, q.created_by, q.escrow_remaining, q.escrow_status
      FROM quest_usdc_claims c
      JOIN custom_quests q ON q.id = c.quest_id
@@ -70,6 +71,7 @@ export async function GET() {
       usdcAmount: Number(r.usdc_amount),
       rewardKind: (r.reward_kind ?? 'usdc') as 'usdc' | 'credits',
       proofText: r.proof_text,
+      proofUrl: r.proof_url,
       username: r.username,
       createdAt: r.created_at,
       escrowRemaining: r.escrow_remaining != null ? Number(r.escrow_remaining) : null,
