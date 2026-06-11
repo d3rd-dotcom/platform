@@ -5,6 +5,9 @@
 .wrapper {
   flex: 1;
   min-width: 0;
+  /* Keep the board a comfortable reading width so the eye isn't dragged across
+     wide screens — the detail/side column absorbs the remaining space. */
+  max-width: 620px;
   min-height: 0;
   position: relative;
   display: flex;
@@ -508,6 +511,7 @@
 @media (max-width: 900px) {
   .wrapper {
     flex: 0 0 auto;
+    max-width: none;
   }
 
   .panel {

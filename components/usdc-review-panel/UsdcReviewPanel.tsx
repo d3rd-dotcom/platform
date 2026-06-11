@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import Image from 'next/image';
 import { CheckCircle, XCircle, ArrowsClockwise, Coins } from '@phosphor-icons/react';
 import styles from './UsdcReviewPanel.module.css';
 
@@ -10,6 +11,16 @@ interface ReviewClaim {
   questTitle: string;
   recipientWallet: string;
   usdcAmount: number;
+  username: string | null;
+  createdAt: string;
+}
+
+interface ProofSubmission {
+  id: string;
+  questId: string;
+  questTitle: string;
+  shards: number;
+  fileName: string | null;
   username: string | null;
   createdAt: string;
 }
@@ -24,21 +35,32 @@ function truncate(addr: string) {
 
 export default function UsdcReviewPanel({ fetchWithAuth }: UsdcReviewPanelProps) {
   const [claims, setClaims] = useState<ReviewClaim[]>([]);
+  const [proofs, setProofs] = useState<ProofSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetchWithAuth('/api/quests/usdc/review');
-      if (res.ok) {
-        const data = await res.json();
+      const [usdcRes, proofRes] = await Promise.all([
+        fetchWithAuth('/api/quests/usdc/review'),
+        fetchWithAuth('/api/quests/proof/review'),
+      ]);
+      if (usdcRes.ok) {
+        const data = await usdcRes.json();
         setClaims(data.claims ?? []);
       } else {
         setClaims([]);
       }
+      if (proofRes.ok) {
+        const data = await proofRes.json();
+        setProofs(data.submissions ?? []);
+      } else {
+        setProofs([]);
+      }
     } catch {
       setClaims([]);
+      setProofs([]);
     } finally {
       setLoading(false);
     }
@@ -85,6 +107,45 @@ export default function UsdcReviewPanel({ fetchWithAuth }: UsdcReviewPanelProps)
     [busyId, fetchWithAuth, load],
   );
 
+  const reviewProof = useCallback(
+    async (submission: ProofSubmission, action: 'approve' | 'reject') => {
+      if (busyId) return;
+      let note: string | null = null;
+      if (action === 'reject') {
+        note = window.prompt('Optional note for the member (why this was not approved):') || null;
+      } else if (
+        !window.confirm(
+          `Approve "${submission.questTitle}" and release ${submission.shards} diamonds to ${submission.username ? `@${submission.username}` : 'this member'}?`,
+        )
+      ) {
+        return;
+      }
+
+      setBusyId(submission.id);
+      try {
+        const res = await fetchWithAuth('/api/quests/proof/review', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ submissionId: submission.id, action, note }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data.ok) {
+          setProofs((prev) => prev.filter((s) => s.id !== submission.id));
+        } else {
+          window.alert(data.error || 'Could not complete the review. Please try again.');
+          if (res.status === 409) void load();
+        }
+      } catch {
+        window.alert('Could not complete the review. Please try again.');
+      } finally {
+        setBusyId(null);
+      }
+    },
+    [busyId, fetchWithAuth, load],
+  );
+
+  const total = claims.length + proofs.length;
+
   return (
     <div className={styles.panel}>
       <div className={styles.head}>
@@ -92,8 +153,8 @@ export default function UsdcReviewPanel({ fetchWithAuth }: UsdcReviewPanelProps)
           <span className={styles.headIcon} aria-hidden="true">
             <Coins size={15} weight="fill" />
           </span>
-          <span className={styles.title}>USDC payouts to review</span>
-          {!loading && claims.length > 0 && <span className={styles.count}>{claims.length}</span>}
+          <span className={styles.title}>Quests to review</span>
+          {!loading && total > 0 && <span className={styles.count}>{total}</span>}
         </div>
         <button
           type="button"
@@ -111,16 +172,52 @@ export default function UsdcReviewPanel({ fetchWithAuth }: UsdcReviewPanelProps)
           <span className={styles.skeletonRow} />
           <span className={styles.skeletonRow} />
         </div>
-      ) : claims.length === 0 ? (
+      ) : total === 0 ? (
         <div className={styles.empty}>
           <span className={styles.emptyMark} aria-hidden="true">
             <CheckCircle size={20} weight="fill" />
           </span>
           <span className={styles.emptyTitle}>All caught up</span>
-          <span className={styles.emptyText}>No USDC bounties are waiting for review.</span>
+          <span className={styles.emptyText}>Nothing is waiting for review.</span>
         </div>
       ) : (
         <ul className={styles.list}>
+          {proofs.map((submission) => (
+            <li key={submission.id} className={styles.row}>
+              <div className={styles.rowInfo}>
+                <span className={styles.rowTitle}>{submission.questTitle}</span>
+                <span className={styles.rowMeta}>
+                  {submission.username ? `@${submission.username}` : 'Member'}
+                  {submission.fileName ? ` · ${submission.fileName}` : ''}
+                </span>
+              </div>
+              <span className={styles.rowAmount}>
+                <Image src="/icons/ui-diamond.svg" alt="" width={13} height={13} />
+                {submission.shards}
+              </span>
+              <div className={styles.rowActions}>
+                <button
+                  type="button"
+                  className={styles.reject}
+                  onClick={() => reviewProof(submission, 'reject')}
+                  disabled={busyId === submission.id}
+                  aria-label="Reject submission"
+                  title="Reject"
+                >
+                  <XCircle size={16} weight="fill" />
+                </button>
+                <button
+                  type="button"
+                  className={styles.approve}
+                  onClick={() => reviewProof(submission, 'approve')}
+                  disabled={busyId === submission.id}
+                >
+                  <CheckCircle size={15} weight="fill" />
+                  {busyId === submission.id ? 'Saving…' : 'Approve'}
+                </button>
+              </div>
+            </li>
+          ))}
           {claims.map((claim) => (
             <li key={claim.id} className={styles.row}>
               <div className={styles.rowInfo}>

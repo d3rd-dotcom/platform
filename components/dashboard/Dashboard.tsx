@@ -8,8 +8,13 @@ import DailyNotes from '@/components/daily-notes/DailyNotes';
 import InventoryPanel from '@/components/inventory-panel/InventoryPanel';
 import styles from './Dashboard.module.css';
 
-const ProMembershipModal = dynamic(
-  () => import('../pro-membership-modal/ProMembershipModal'),
+const AngelUpsellModal = dynamic(
+  () => import('../angel-upsell-modal/AngelUpsellModal'),
+  { ssr: false },
+);
+
+const MintModal = dynamic(
+  () => import('../mint-modal/MintModal'),
   { ssr: false },
 );
 
@@ -35,7 +40,8 @@ function avatarColor(name: string): string {
 
 export default function Dashboard({ enableMorningPagesPersistence = false }: DashboardProps) {
   const [leaderboard, setLeaderboard] = useState<LeaderUser[]>([]);
-  const [isProModalOpen, setIsProModalOpen] = useState(false);
+  const [isAngelModalOpen, setIsAngelModalOpen] = useState(false);
+  const [isMintModalOpen, setIsMintModalOpen] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
 
   useEffect(() => {
@@ -123,7 +129,7 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
           type="button"
           className={styles.vipCard}
           data-tour="vip"
-          onClick={() => setIsProModalOpen(true)}
+          onClick={() => setIsAngelModalOpen(true)}
         >
           <div className={styles.vipHead}>
             <svg
@@ -136,13 +142,13 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
             >
               <path d="M5 16L3 6l5.5 4L12 4l3.5 6L21 6l-2 10H5zm0 3h14v2H5z" />
             </svg>
-            <span className={styles.vipTitle}>VIP Membership</span>
+            <span className={styles.vipTitle}>Become an Angel</span>
           </div>
           <p className={styles.vipText}>
-            One payment, lifetime access — unlock R-Tool, Simulations, and every tool we build.
+            Mint your Academic Angel on Base to unlock paid USDC quests and support the community treasury.
           </p>
           <span className={styles.vipCta}>
-            Go VIP
+            Become an Angel
             <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path
                 d="M6 3L11 8L6 13"
@@ -156,8 +162,16 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
         </button>
       </aside>
 
-      {isProModalOpen && (
-        <ProMembershipModal isOpen={isProModalOpen} onClose={() => setIsProModalOpen(false)} />
+      {isAngelModalOpen && (
+        <AngelUpsellModal
+          isOpen={isAngelModalOpen}
+          onClose={() => setIsAngelModalOpen(false)}
+          onMint={() => { setIsAngelModalOpen(false); setIsMintModalOpen(true); }}
+        />
+      )}
+
+      {isMintModalOpen && (
+        <MintModal isOpen={isMintModalOpen} onClose={() => setIsMintModalOpen(false)} />
       )}
 
       {showLeaderboard && (

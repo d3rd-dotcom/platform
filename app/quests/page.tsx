@@ -271,7 +271,7 @@ export default function QuestsPage() {
         />
       </QuestModal>
 
-      <QuestModal isOpen={claimOpen} onClose={() => setClaimOpen(false)} title="USDC payouts to review">
+      <QuestModal isOpen={claimOpen} onClose={() => setClaimOpen(false)} title="Quests to review">
         <UsdcReviewPanel fetchWithAuth={fetchWithAuth} />
       </QuestModal>
 

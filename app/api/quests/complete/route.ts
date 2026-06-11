@@ -97,6 +97,16 @@ export async function POST(request: Request) {
   const definition = getQuestDefinition(questId);
   const customQuest = definition ? null : await loadCustomQuest(questId);
 
+  // SECURITY: proof-required quests can NEVER be self-attested here — that would
+  // let anyone mint the diamonds without ever submitting proof. They go through
+  // /api/quests/proof/submit and are only awarded on staff approval.
+  if (definition?.questType === 'proof-required') {
+    return NextResponse.json(
+      { error: 'Proof quests are reviewed before diamonds are released. Submit your proof and a staff member will approve it.' },
+      { status: 400 },
+    );
+  }
+
   if (!definition && customQuest) {
     if (customQuest.archived_at) {
       return NextResponse.json({ error: 'Quest is no longer available.' }, { status: 410 });

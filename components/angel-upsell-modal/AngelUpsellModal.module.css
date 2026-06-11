@@ -208,6 +208,63 @@
   box-shadow: 3px 3px 0 #1A1D33;
 }
 
+/* Dark Mode Overrides — mirror ProMembershipModal so text/surface tokens match. */
+:global([data-theme="dark"]) .modal {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .closeButton {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(227, 225, 238, 0.95);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+:global([data-theme="dark"]) .closeButton:hover {
+  background: rgba(107, 128, 255, 0.12);
+  color: #6B80FF;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+:global([data-theme="dark"]) .title {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .description {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .benefitsHeading {
+  color: rgba(227, 225, 238, 0.9);
+}
+
+:global([data-theme="dark"]) .featureItem {
+  color: rgba(227, 225, 238, 0.95);
+  background: rgba(107, 128, 255, 0.08);
+  border-color: rgba(107, 128, 255, 0.2);
+}
+
+:global([data-theme="dark"]) .angelImage {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+:global([data-theme="dark"]) .ctaButton {
+  background: var(--color-primary);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .ctaButton:hover {
+  background: var(--color-primary-hover);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+:global([data-theme="dark"]) .ctaButton:active {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
 @media (max-width: 480px) {
   .content {
     padding: 20px 16px;
@@ -219,5 +276,9 @@
 
   .angelImage {
     max-width: 180px;
+  }
+
+  :global([data-theme="dark"]) .modal {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   }
 }

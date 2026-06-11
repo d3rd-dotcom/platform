@@ -31,6 +31,13 @@ interface UsdcClaimState {
   note: string | null;
 }
 
+interface ProofState {
+  loading: boolean;
+  status: 'pending' | 'approved' | 'rejected' | null;
+  note: string | null;
+  fileName: string | null;
+}
+
 interface QuestDetailPanelProps {
   quest: DrawerQuest | null;
   onDeselect: () => void;
@@ -50,6 +57,8 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [usdcClaim, setUsdcClaim] = useState<UsdcClaimState | null>(null);
   const [isSubmittingUsdc, setIsSubmittingUsdc] = useState(false);
+  const [proof, setProof] = useState<ProofState | null>(null);
+  const [isSubmittingProof, setIsSubmittingProof] = useState(false);
 
   const getAuthHeaders = async (): Promise<HeadersInit> => {
     const token = await getAccessToken();
@@ -103,6 +112,43 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
       setStep2Completed(false);
     }
   }, [quest?.id]);
+
+  // Proof-required quests are reviewed by staff — load any existing submission so
+  // the panel reflects pending / approved / rejected state instead of pretending
+  // the diamonds are instantly claimable.
+  useEffect(() => {
+    if (!quest || quest.rewardType !== 'proof-required' || quest.id.startsWith('cq_')) {
+      setProof(null);
+      return;
+    }
+
+    let cancelled = false;
+    setProof({ loading: true, status: null, note: null, fileName: null });
+
+    (async () => {
+      try {
+        const headers = await getAuthHeaders();
+        const res = await fetch(`/api/quests/proof/submit?questId=${encodeURIComponent(quest.id)}`, {
+          credentials: 'include',
+          cache: 'no-store',
+          headers,
+        });
+        const data = await res.json().catch(() => ({}));
+        if (cancelled) return;
+        setProof({
+          loading: false,
+          status: data.submission?.status ?? null,
+          note: data.submission?.note ?? null,
+          fileName: data.submission?.fileName ?? null,
+        });
+      } catch {
+        if (!cancelled) setProof({ loading: false, status: null, note: null, fileName: null });
+      }
+    })();
+
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quest?.id, quest?.rewardType]);
 
   useEffect(() => {
     if (!quest || quest.rewardType !== 'twitter-follow' || !isConnected) {
@@ -264,6 +310,41 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
     }
   };
 
+  const handleSubmitProof = async () => {
+    if (!quest || isSubmittingProof) return;
+    if (!selectedFile) {
+      alert('Attach your proof before submitting.');
+      return;
+    }
+    setIsSubmittingProof(true);
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch('/api/quests/proof/submit', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', ...headers },
+        body: JSON.stringify({ questId: quest.id, fileName: selectedFile }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.ok) {
+        setProof({ loading: false, status: 'pending', note: null, fileName: selectedFile });
+      } else if (data?.submission?.status) {
+        setProof((prev) => ({
+          loading: false,
+          status: data.submission.status,
+          note: prev?.note ?? null,
+          fileName: prev?.fileName ?? selectedFile,
+        }));
+      } else {
+        alert(data.error || 'Could not submit your proof. Please try again.');
+      }
+    } catch {
+      alert('Could not submit your proof. Please try again.');
+    } finally {
+      setIsSubmittingProof(false);
+    }
+  };
+
   if (!quest) {
     return (
       <div className={styles.wrapper}>
@@ -285,6 +366,10 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
   const claimedCount = quest.claimedCount ?? 0;
   const questIsComplete = claimedCount >= targetCount;
   const canClaimSealedWeek = quest.rewardType === 'sealed-week' && progressCount >= targetCount && !questIsComplete;
+  // Custom (user-forged) quests use the creator-funded escrow flow via
+  // /api/quests/complete. Only built-in Blue quests use the staff proof review.
+  const isCustomQuest = quest.id.startsWith('cq_');
+  const usesProofReview = quest.rewardType === 'proof-required' && !isCustomQuest;
 
   // The status / eligibility line ("grey stuff") sits directly under the quest
   // description — it's the most relevant "what's next / what's blocking me" note.
@@ -309,6 +394,32 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
           <span>Sign in to start this quest.</span>
         </div>
       );
+    }
+    if (quest.rewardType === 'proof-required' && proof && !proof.loading && proof.status) {
+      if (proof.status === 'pending') {
+        return (
+          <div className={styles.callout} data-state="info">
+            <span className={styles.calloutDot} aria-hidden="true" />
+            <span>Submitted. A staff member will review your proof and release your diamonds.</span>
+          </div>
+        );
+      }
+      if (proof.status === 'approved') {
+        return (
+          <div className={styles.callout} data-state="ready">
+            <span className={styles.calloutDot} aria-hidden="true" />
+            <span>Approved — your {quest.points} diamonds have been added to your balance.</span>
+          </div>
+        );
+      }
+      if (proof.status === 'rejected') {
+        return (
+          <div className={styles.callout} data-state="waiting">
+            <span className={styles.calloutDot} aria-hidden="true" />
+            <span>{proof.note || 'Your submission was not approved. Update your proof and submit again.'}</span>
+          </div>
+        );
+      }
     }
     if (quest.rewardType === 'proof-required' && usdcReward > 0 && usdcClaim) {
       if (usdcClaim.loading) {
@@ -537,7 +648,31 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
             {questIsComplete ? 'Quest cleared' : isCompleting ? 'Claiming...' : `Claim ${quest.points} diamonds`}
           </button>
         )}
-        {quest.rewardType === 'proof-required' && (
+        {quest.rewardType === 'proof-required' && usesProofReview && (
+          <button
+            type="button"
+            className={styles.primaryButton}
+            onClick={handleSubmitProof}
+            disabled={
+              isSubmittingProof
+              || questIsComplete
+              || proof?.status === 'pending'
+              || proof?.status === 'approved'
+              || !selectedFile
+            }
+          >
+            {questIsComplete || proof?.status === 'approved'
+              ? 'Quest cleared'
+              : proof?.status === 'pending'
+                ? 'Submitted for review'
+                : isSubmittingProof
+                  ? 'Submitting...'
+                  : proof?.status === 'rejected'
+                    ? 'Resubmit proof'
+                    : 'Submit for review'}
+          </button>
+        )}
+        {quest.rewardType === 'proof-required' && !usesProofReview && (
           <button
             type="button"
             className={styles.primaryButton}
