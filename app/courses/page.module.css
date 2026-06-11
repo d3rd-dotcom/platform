@@ -19,19 +19,6 @@
   max-width: 860px;
 }
 
-.header {
-  margin-bottom: 40px;
-}
-
-.heading {
-  font-family: var(--font-display, sans-serif);
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--color-text-dark);
-  letter-spacing: -0.01em;
-  margin: 0;
-}
-
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -39,7 +26,7 @@
   align-items: start;
 }
 
-/* ── Artist's Awakening — inset image card ── */
+/* ── Creative Healing — inset image card ── */
 .courseCard {
   display: flex;
   flex-direction: column;
@@ -66,7 +53,7 @@
   height: 152px;
   border-radius: 10px;
   background-color: #3d2e7c;
-  background-image: url('/stories/week-01/creative-recovery-butterflies.png');
+  background-image: url('/stories/week-01/healer-creative-reflection.png');
   background-size: cover;
   background-position: center top;
   overflow: hidden;

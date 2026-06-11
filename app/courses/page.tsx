@@ -60,9 +60,6 @@ export default function CoursesPage() {
     <div className={styles.layout}>
       <SideNavigation />
       <main className={styles.main}>
-        <div className={styles.header}>
-          <h1 className={styles.heading}>Popular Courses</h1>
-        </div>
         <div className={styles.grid}>
 
           <Link href="/course" className={styles.courseCard}>
@@ -73,7 +70,7 @@ export default function CoursesPage() {
               </div>
             </div>
             <div className={styles.courseBody}>
-              <h2 className={styles.courseTitle}>Artist&apos;s Awakening</h2>
+              <h2 className={styles.courseTitle}>Creative Healing</h2>
               <p className={styles.courseDesc}>
                 A journey through rediscovering your creative energy and excavating it to reach your highest horizon.
               </p>
