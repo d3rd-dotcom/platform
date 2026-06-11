@@ -1,10 +1,8 @@
 .dashboard {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 320px;
-  gap: 18px;
+  gap: 16px;
   width: 100%;
-  max-width: 1320px;
-  margin: 0 auto;
   align-items: start;
 }
 
@@ -22,11 +20,28 @@
   min-width: 0;
 }
 
-/* Bottom spacing lives here (not on the scroll container) so the sticky Blue
-   scene's containing block reaches the true end of the scroll. */
+/* Desktop app frame: the dashboard fills the (non-scrolling) page, the Blue
+   scene fills its column edge to edge, and only the side column scrolls when
+   its content runs taller than the viewport. */
 @media (min-width: 1025px) {
+  .dashboard {
+    flex: 1;
+    min-height: 0;
+    align-items: stretch;
+  }
+
+  .mainArea {
+    min-height: 0;
+  }
+
   .sideStack {
-    padding-bottom: 32px;
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+
+  .sideStack::-webkit-scrollbar {
+    display: none;
   }
 }
 
@@ -632,7 +647,7 @@
 }
 
 /* ── Responsive ── */
-@media (max-width: 1080px) {
+@media (max-width: 1024px) {
   .dashboard {
     grid-template-columns: 1fr;
   }
