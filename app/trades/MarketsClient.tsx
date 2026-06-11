@@ -1135,7 +1135,6 @@ export default function Markets() {
               <>
                 <div className={styles.treasuryQuickPrimary}>
                   <div className={styles.balanceHero}>${balance.formatted}</div>
-                  <div className={styles.balanceLabel}>USDC Trades Balance</div>
                 </div>
                 <div className={styles.treasuryQuickSpark}>
                   <TickerLine key={`a-${treasuryRange}`} len={rangeLen} stroke="var(--color-primary)" strokeWidth={2} opacity={0.85} />
@@ -1164,22 +1163,22 @@ export default function Markets() {
           <aside
             className={`${styles.modelsColumn} ${isModelDetailsOpen ? styles.modelsColumnOpen : ''}`}
             aria-hidden={!(isDesktopModels || isModelDetailsOpen)}
-            aria-label="Quant engine"
+            aria-label="Blue Quantum Engine"
             aria-modal={!isDesktopModels && isModelDetailsOpen}
             role={isDesktopModels ? 'complementary' : 'dialog'}
           >
             <div className={styles.modelDrawerHeader}>
-              <div>
-                <span className={styles.modelDrawerKicker}>Live</span>
-                <h2 className={styles.modelDrawerTitle}>Quant engine</h2>
+              <h2 className={styles.modelDrawerTitle}>Blue Quantum Engine</h2>
+              <div className={styles.modelDrawerActions}>
+                <HowToButton />
+                <button
+                  type="button"
+                  className={styles.modelDrawerClose}
+                  onClick={() => setIsModelDetailsOpen(false)}
+                >
+                  Close
+                </button>
               </div>
-              <button
-                type="button"
-                className={styles.modelDrawerClose}
-                onClick={() => setIsModelDetailsOpen(false)}
-              >
-                Close
-              </button>
             </div>
 
             {/* Black-Scholes Binary Pricing */}
@@ -1370,14 +1369,21 @@ export default function Markets() {
 
           {/* Kalshi Signal Markets */}
           <div className={`${styles.panel} ${styles.chartPanel} ${styles.kalshiPanel}`}>
-            <div className={styles.panelHeader}>
-              <div className={styles.panelTitleGroup}>
-                <span className={styles.panelTitle}>Trades</span>
-                <span className={styles.panelSubtitle}>Blue runs every trade — you vote on what she takes</span>
-              </div>
-              <HowToButton />
-            </div>
             <div className={styles.feedControls}>
+              <div className={styles.feedSearch}>
+                <svg className={styles.feedSearchIcon} width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
+                  <path d="M20 20l-3.5-3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+                <input
+                  type="search"
+                  className={styles.feedSearchInput}
+                  value={marketSearch}
+                  onChange={(event) => setMarketSearch(event.target.value)}
+                  placeholder="Search markets"
+                  aria-label="Search markets"
+                />
+              </div>
               <div className={styles.feedTabs} role="tablist" aria-label="Market filter">
                 <button
                   type="button"
@@ -1398,20 +1404,6 @@ export default function Markets() {
                 >
                   All markets
                 </button>
-              </div>
-              <div className={styles.feedSearch}>
-                <svg className={styles.feedSearchIcon} width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
-                  <path d="M20 20l-3.5-3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                </svg>
-                <input
-                  type="search"
-                  className={styles.feedSearchInput}
-                  value={marketSearch}
-                  onChange={(event) => setMarketSearch(event.target.value)}
-                  placeholder="Search markets"
-                  aria-label="Search markets"
-                />
               </div>
             </div>
             <div className={styles.marketArena}>

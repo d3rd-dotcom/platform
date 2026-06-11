@@ -285,11 +285,10 @@
   top: 0;
   z-index: 4;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-  padding: 8px 0 10px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  padding: 10px 0 12px;
   margin-bottom: 2px;
   background: var(--markets-light-panel-raised);
   border-bottom: 1px solid var(--markets-light-border);
@@ -351,11 +350,9 @@
 
 .feedSearch {
   position: relative;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  flex: 1;
-  min-width: 160px;
-  max-width: 280px;
+  width: 100%;
 }
 
 .feedSearchIcon {
@@ -593,6 +590,13 @@
   gap: 16px;
   padding: 4px 4px 8px;
   flex: 0 0 auto;
+}
+
+.modelDrawerActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .modelDrawerKicker {
@@ -1948,11 +1952,11 @@
 }
 
 .treasuryFloatTitle {
-  font-family: var(--font-button);
-  font-size: 10px;
+  font-family: var(--font-secondary);
+  font-size: 15px;
   font-weight: var(--font-weight-semibold);
-  letter-spacing: 0.08em;
-  color: var(--color-text-muted);
+  letter-spacing: 0;
+  color: var(--color-text-dark);
 }
 
 /* "Receipts" badge button, top-right of the treasury card. */
@@ -3243,31 +3247,7 @@
   border-color: var(--color-border-subtle);
 }
 
-/* Receipt becomes dark warm "paper" with light mono ink. */
-:global([data-theme="dark"]) .receipt {
-  color: #d9d4c6;
-  background:
-    repeating-linear-gradient(180deg, transparent 0 23px, rgba(255, 255, 255, 0.035) 23px 24px),
-    #211f1a;
-  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.5));
-}
-
-:global([data-theme="dark"]) .receiptSub {
-  color: rgba(217, 212, 198, 0.55);
-}
-
-:global([data-theme="dark"]) .receiptItemDetail,
-:global([data-theme="dark"]) .receiptFoot {
-  color: rgba(217, 212, 198, 0.78);
-}
-
-:global([data-theme="dark"]) .receiptEmpty {
-  color: rgba(217, 212, 198, 0.5);
-}
-
-:global([data-theme="dark"]) .receiptRule {
-  border-top-color: rgba(217, 212, 198, 0.32);
-}
+/* The receipt pop-up keeps its light thermal-paper look even in dark mode. */
 
 :global([data-theme="dark"]) .panelTitle,
 :global([data-theme="dark"]) .modelName,
