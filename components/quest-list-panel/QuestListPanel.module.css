@@ -62,7 +62,7 @@
   border: 1px solid rgba(26, 29, 51, 0.10);
 }
 
-/* ── Toolbar: filter tabs + cleared tally ── */
+/* ── Toolbar: forge/claims actions + USDC bounty stat ── */
 .toolbar {
   flex-shrink: 0;
   display: flex;
@@ -74,25 +74,25 @@
   border-bottom: 1px solid rgba(26, 29, 51, 0.08);
 }
 
-.filters {
+.actions {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
 
-.filterTab {
+.actionBtn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
+  padding: 7px 14px;
   border-radius: 999px;
   appearance: none;
   -webkit-appearance: none;
   text-transform: none;
   letter-spacing: normal;
-  border: 1px solid rgba(26, 29, 51, 0.12);
-  background: rgba(26, 29, 51, 0.03);
-  color: rgba(26, 29, 51, 0.62);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 28%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  color: var(--color-primary);
   font-family: var(--font-primary);
   font-size: 12px;
   font-weight: 600;
@@ -100,25 +100,14 @@
   transition: background 0.14s ease, border-color 0.14s ease, color 0.14s ease;
 }
 
-.filterTab:hover {
-  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
-  border-color: color-mix(in oklch, var(--color-primary) 28%, transparent);
-  color: #1a1d33;
+.actionBtn:hover {
+  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 46%, transparent);
 }
 
-.filterTabActive,
-.filterTabActive:hover {
-  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
-  border-color: color-mix(in oklch, var(--color-primary) 42%, transparent);
-  color: var(--color-primary);
-}
-
-.filterCount {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  opacity: 0.72;
-  font-variant-numeric: tabular-nums;
+.actionBtn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 .usdcStat {
@@ -429,23 +418,15 @@
   border-bottom-color: rgba(150, 170, 255, 0.14);
 }
 
-:global([data-theme='dark']) .filterTab {
-  border-color: rgba(235, 232, 247, 0.12);
-  background: rgba(235, 232, 247, 0.05);
-  color: rgba(235, 232, 247, 0.62);
-}
-
-:global([data-theme='dark']) .filterTab:hover {
-  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
-  border-color: color-mix(in oklch, var(--color-primary) 32%, transparent);
-  color: rgba(235, 232, 247, 0.86);
-}
-
-:global([data-theme='dark']) .filterTabActive,
-:global([data-theme='dark']) .filterTabActive:hover {
-  background: color-mix(in oklch, var(--color-primary) 22%, transparent);
-  border-color: color-mix(in oklch, var(--color-primary) 50%, transparent);
+:global([data-theme='dark']) .actionBtn {
+  border-color: color-mix(in oklch, var(--color-primary) 28%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
   color: #c2ccff;
+}
+
+:global([data-theme='dark']) .actionBtn:hover {
+  background: color-mix(in oklch, var(--color-primary) 18%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 50%, transparent);
 }
 
 :global([data-theme='dark']) .usdcStat {
@@ -570,7 +551,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .card,
-  .filterTab {
+  .actionBtn {
     transition: none;
   }
 

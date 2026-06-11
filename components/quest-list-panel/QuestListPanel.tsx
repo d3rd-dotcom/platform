@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Check } from '@phosphor-icons/react';
+import { Check, Sparkle, Coins } from '@phosphor-icons/react';
 import type { DrawerQuest } from '@/components/quest-drawer/QuestDrawer';
 import type { QuestCardKind } from '@/components/quest-card/QuestCard';
 import { useSound } from '@/hooks/useSound';
@@ -11,18 +11,6 @@ import styles from './QuestListPanel.module.css';
 export interface UnifiedQuest extends DrawerQuest {
   kind: QuestCardKind;
 }
-
-export type QuestFilter = 'all' | QuestCardKind;
-
-const FILTER_ORDER: QuestFilter[] = ['all', 'course', 'mission', 'submit', 'social', 'custom'];
-const FILTER_LABEL: Record<QuestFilter, string> = {
-  all: 'All',
-  course: 'Course',
-  mission: 'Mission',
-  submit: 'Submit',
-  social: 'Social',
-  custom: 'Custom',
-};
 
 const KIND_COLOR: Record<QuestCardKind, string> = {
   course: '#5168ff',
@@ -43,9 +31,9 @@ const KIND_LABEL: Record<QuestCardKind, string> = {
 interface QuestListPanelProps {
   quests: UnifiedQuest[];
   selectedQuestId: string | null;
-  filter: QuestFilter;
-  onFilterChange: (f: QuestFilter) => void;
   onSelectQuest: (quest: UnifiedQuest) => void;
+  onForge: () => void;
+  onClaims: () => void;
   usdcAvailable: number;
 }
 
@@ -56,36 +44,12 @@ function isQuestCleared(quest: UnifiedQuest): boolean {
 export default function QuestListPanel({
   quests,
   selectedQuestId,
-  filter,
-  onFilterChange,
   onSelectQuest,
+  onForge,
+  onClaims,
   usdcAvailable,
 }: QuestListPanelProps) {
   const { play } = useSound();
-
-  const tallies = React.useMemo(() => {
-    const acc: Record<QuestFilter, { total: number; cleared: number }> = {
-      all: { total: 0, cleared: 0 },
-      course: { total: 0, cleared: 0 },
-      mission: { total: 0, cleared: 0 },
-      submit: { total: 0, cleared: 0 },
-      social: { total: 0, cleared: 0 },
-      custom: { total: 0, cleared: 0 },
-    };
-    for (const q of quests) {
-      const cleared = isQuestCleared(q) ? 1 : 0;
-      acc.all.total += 1;
-      acc.all.cleared += cleared;
-      acc[q.kind].total += 1;
-      acc[q.kind].cleared += cleared;
-    }
-    return acc;
-  }, [quests]);
-
-  const filteredQuests = React.useMemo(() => {
-    if (filter === 'all') return quests;
-    return quests.filter((q) => q.kind === filter);
-  }, [quests, filter]);
 
   return (
     <div className={styles.wrapper}>
@@ -99,25 +63,25 @@ export default function QuestListPanel({
 
       <div className={styles.panel}>
         <div className={styles.toolbar}>
-          <div className={styles.filters} role="tablist">
-            {FILTER_ORDER.map((key) => {
-              const tally = tallies[key];
-              if (key !== 'all' && tally.total === 0) return null;
-              const active = filter === key;
-              return (
-                <button
-                  key={key}
-                  type="button"
-                  role="tab"
-                  aria-selected={active}
-                  className={`${styles.filterTab} ${active ? styles.filterTabActive : ''}`}
-                  onClick={() => { play('click'); onFilterChange(key); }}
-                >
-                  {FILTER_LABEL[key]}
-                  <span className={styles.filterCount}>{tally.cleared}/{tally.total}</span>
-                </button>
-              );
-            })}
+          <div className={styles.actions}>
+            <button
+              type="button"
+              className={styles.actionBtn}
+              onClick={() => { play('click'); onForge(); }}
+              onMouseEnter={() => play('hover')}
+            >
+              <Sparkle size={13} weight="fill" />
+              Quest forge
+            </button>
+            <button
+              type="button"
+              className={styles.actionBtn}
+              onClick={() => { play('click'); onClaims(); }}
+              onMouseEnter={() => play('hover')}
+            >
+              <Coins size={13} weight="fill" />
+              Claims
+            </button>
           </div>
           {usdcAvailable > 0 && (
             <span
@@ -132,10 +96,10 @@ export default function QuestListPanel({
         </div>
 
         <div className={styles.list}>
-          {filteredQuests.length === 0 ? (
-            <div className={styles.empty}>No quests match this filter.</div>
+          {quests.length === 0 ? (
+            <div className={styles.empty}>No quests on the board yet.</div>
           ) : (
-            filteredQuests.map((quest) => {
+            quests.map((quest) => {
               const targetCount = quest.targetCount ?? 1;
               const completed = isQuestCleared(quest);
               const inProgress = !completed && (quest.progressCount ?? 0) > 0;

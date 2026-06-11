@@ -3,12 +3,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
-import QuestListPanel, { UnifiedQuest, QuestFilter } from '@/components/quest-list-panel/QuestListPanel';
+import QuestListPanel, { UnifiedQuest } from '@/components/quest-list-panel/QuestListPanel';
 import QuestSidePanel from '@/components/quest-side-panel/QuestSidePanel';
 import QuestDetailPanel from '@/components/quest-detail-panel/QuestDetailPanel';
 import QuestModal from '@/components/quest-modal/QuestModal';
 import QuestAuthorPanel from '@/components/quest-author-panel/QuestAuthorPanel';
 import UsdcReviewPanel from '@/components/usdc-review-panel/UsdcReviewPanel';
+import AngelUpsellModal from '@/components/angel-upsell-modal/AngelUpsellModal';
+import MintModal from '@/components/mint-modal/MintModal';
 import { useSound } from '@/hooks/useSound';
 import { QUEST_DEFINITIONS, QuestType } from '@/lib/quest-definitions';
 import type { QuestCardKind } from '@/components/quest-card/QuestCard';
@@ -55,9 +57,10 @@ export default function QuestsPage() {
   const [customQuests, setCustomQuests] = useState<CustomQuest[]>([]);
   const [authoredQuests, setAuthoredQuests] = useState<CustomQuest[]>([]);
   const [isPro, setIsPro] = useState(false);
-  const [filter, setFilter] = useState<QuestFilter>('all');
   const [forgeOpen, setForgeOpen] = useState(false);
   const [claimOpen, setClaimOpen] = useState(false);
+  const [angelPitchOpen, setAngelPitchOpen] = useState(false);
+  const [mintOpen, setMintOpen] = useState(false);
 
   const fetchWithAuth = useCallback(async (url: string, init?: RequestInit) => {
     const token = await getAccessToken();
@@ -205,6 +208,21 @@ export default function QuestsPage() {
     refreshQuestData();
   }, [refreshAuthoredQuests, refreshQuestData]);
 
+  // Forge and claims are staff tools (VIP card holders). Everyone else gets
+  // the Academic Angel pitch — holding the Angel NFT is what unlocks USDC
+  // quest payouts.
+  const handleForge = useCallback(() => {
+    play('click');
+    if (isPro) setForgeOpen(true);
+    else setAngelPitchOpen(true);
+  }, [isPro, play]);
+
+  const handleClaims = useCallback(() => {
+    play('click');
+    if (isPro) setClaimOpen(true);
+    else setAngelPitchOpen(true);
+  }, [isPro, play]);
+
   const handleDeleteAuthored = useCallback(async (id: string) => {
     if (!window.confirm('Archive this quest? It will stop appearing for users.')) return;
     const token = await getAccessToken();
@@ -226,9 +244,9 @@ export default function QuestsPage() {
           <QuestListPanel
             quests={allQuests}
             selectedQuestId={selectedQuest?.id ?? null}
-            filter={filter}
-            onFilterChange={setFilter}
             onSelectQuest={setSelectedQuest}
+            onForge={handleForge}
+            onClaims={handleClaims}
             usdcAvailable={usdcAvailable}
           />
           <aside className={`${styles.sideColumn} ${selectedQuest ? styles.sideColumnWide : ''}`}>
@@ -238,11 +256,7 @@ export default function QuestsPage() {
                 onDeselect={() => setSelectedQuest(null)}
               />
             ) : (
-              <QuestSidePanel
-                isPro={isPro}
-                onForge={() => { play('click'); setForgeOpen(true); }}
-                onClaims={() => { play('click'); setClaimOpen(true); }}
-              />
+              <QuestSidePanel />
             )}
           </aside>
         </main>
@@ -260,6 +274,14 @@ export default function QuestsPage() {
       <QuestModal isOpen={claimOpen} onClose={() => setClaimOpen(false)} title="USDC payouts to review">
         <UsdcReviewPanel fetchWithAuth={fetchWithAuth} />
       </QuestModal>
+
+      <AngelUpsellModal
+        isOpen={angelPitchOpen}
+        onClose={() => setAngelPitchOpen(false)}
+        onMint={() => { setAngelPitchOpen(false); setMintOpen(true); }}
+      />
+
+      <MintModal isOpen={mintOpen} onClose={() => setMintOpen(false)} />
     </>
   );
 }

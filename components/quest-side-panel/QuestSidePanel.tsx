@@ -2,26 +2,13 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Sparkle, Coins, CursorClick } from '@phosphor-icons/react';
+import { CursorClick } from '@phosphor-icons/react';
 import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
-import { useSound } from '@/hooks/useSound';
 import styles from './QuestSidePanel.module.css';
 
 const BLUE_MESSAGE = 'Diamonds and rewards for completionists dedicated to self-improvement. Small steps make a difference.';
 
-interface QuestSidePanelProps {
-  isPro: boolean;
-  onForge: () => void;
-  onClaims: () => void;
-}
-
-export default function QuestSidePanel({
-  isPro,
-  onForge,
-  onClaims,
-}: QuestSidePanelProps) {
-  const { play } = useSound();
-
+export default function QuestSidePanel() {
   return (
     <div className={styles.panel}>
       <section className={styles.header}>
@@ -33,29 +20,6 @@ export default function QuestSidePanel({
           </span>
         </div>
       </section>
-
-      {isPro && (
-        <div className={styles.vipRow}>
-          <button
-            type="button"
-            className={styles.vipBtn}
-            onClick={() => { play('click'); onForge(); }}
-            onMouseEnter={() => play('hover')}
-          >
-            <Sparkle size={12} weight="fill" />
-            Quest forge
-          </button>
-          <button
-            type="button"
-            className={styles.vipBtn}
-            onClick={() => { play('click'); onClaims(); }}
-            onMouseEnter={() => play('hover')}
-          >
-            <Coins size={12} weight="fill" />
-            Claims
-          </button>
-        </div>
-      )}
 
       <BlueVideoPanel
         className={styles.blueVideo}
