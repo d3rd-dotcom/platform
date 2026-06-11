@@ -34,6 +34,31 @@ export async function GET(request: NextRequest) {
 
   await ensureMarketDebateTable();
 
+  // `?active=1` returns the markets with live discussion (vote tallies + recency)
+  // so the desk can surface what the community is actively voting on.
+  if (request.nextUrl.searchParams.get('active')) {
+    const activeMarkets = await sqlQuery<Array<{
+      market_id: string;
+      market_title: string | null;
+      posts: number;
+      yes: number;
+      no: number;
+      last_at: string;
+    }>>(
+      `SELECT market_id,
+              MAX(market_title) AS market_title,
+              COUNT(*)::int AS posts,
+              COUNT(*) FILTER (WHERE stance = 'yes')::int AS yes,
+              COUNT(*) FILTER (WHERE stance = 'no')::int AS no,
+              MAX(created_at) AS last_at
+       FROM market_debate_posts
+       GROUP BY market_id
+       ORDER BY MAX(created_at) DESC
+       LIMIT 50`
+    );
+    return NextResponse.json({ activeMarkets });
+  }
+
   const marketId = request.nextUrl.searchParams.get('marketId');
   if (!marketId) {
     return NextResponse.json({ error: 'Missing marketId' }, { status: 400 });
