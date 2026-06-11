@@ -34,16 +34,6 @@ export default function QuestSidePanel({
         </div>
       </section>
 
-      <BlueVideoPanel
-        className={styles.blueVideo}
-        message={BLUE_MESSAGE}
-      />
-
-      <div className={styles.hint}>
-        <CursorClick size={16} weight="duotone" className={styles.hintIcon} />
-        <span>Pick a quest from the board to see its details and claim rewards.</span>
-      </div>
-
       {isPro && (
         <div className={styles.vipRow}>
           <button
@@ -66,6 +56,16 @@ export default function QuestSidePanel({
           </button>
         </div>
       )}
+
+      <BlueVideoPanel
+        className={styles.blueVideo}
+        message={BLUE_MESSAGE}
+      />
+
+      <div className={styles.hint}>
+        <CursorClick size={16} weight="duotone" className={styles.hintIcon} />
+        <span>Pick a quest from the board to see its details and claim rewards.</span>
+      </div>
     </div>
   );
 }
