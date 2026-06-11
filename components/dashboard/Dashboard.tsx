@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import BlueScene from '@/components/blue-scene/BlueScene';
+import CaseMonitor from '@/components/case-monitor/CaseMonitor';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
 import InventoryPanel from '@/components/inventory-panel/InventoryPanel';
 import styles from './Dashboard.module.css';
@@ -69,6 +70,7 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
       {/* ── Main content area ── */}
       <main className={styles.mainArea}>
         <BlueScene />
+        <CaseMonitor />
       </main>
 
       {/* ── Side: leaderboard, morning note, membership ── */}
