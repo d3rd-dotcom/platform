@@ -764,8 +764,10 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
       {/* Profile card portaled into the top nav far-right slot (desktop) */}
       {profileSlot && createPortal(renderProfileCard(false), profileSlot)}
 
-      {/* Floating Ask Blue button — bottom right (desktop) */}
-      {!isChatOpen && (
+      {/* Floating Ask Blue button — bottom right (desktop).
+          The /trades desk ships its own "Trade Using Blue" launcher in the same
+          spot, so suppress this one there to avoid two stacked FABs. */}
+      {!isChatOpen && pathname !== '/trades' && (
         <button
           type="button"
           className={`${styles.askBlueFab} hover-slide-trigger`}

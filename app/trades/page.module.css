@@ -643,23 +643,27 @@
    with an inner content chip. */
 .chatFab {
   position: relative;
-  align-self: center;
   display: inline-flex;
   align-items: center;
+  height: 58px;
   padding: 2px;
   border: none;
-  border-radius: 20px;
+  border-radius: 999px;
   background: transparent;
   overflow: hidden;
   cursor: pointer;
   white-space: nowrap;
-  box-shadow: var(--shadow-md);
-  transition: opacity 0.15s ease, transform 0.15s ease;
+  box-shadow: 0 8px 24px color-mix(in oklch, var(--color-primary) 28%, transparent);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .chatFab:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px color-mix(in oklch, var(--color-primary) 38%, transparent);
+}
+
+.chatFab:active {
+  transform: translateY(0);
 }
 
 .chatFabShine {
@@ -680,12 +684,14 @@
 
 .chatFabContent {
   position: relative;
+  z-index: 1;
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 6px 16px 6px 7px;
-  border-radius: 18px;
-  background: rgba(244, 245, 254, 0.96);
+  gap: 8px;
+  height: 100%;
+  padding: 0 20px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.97);
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
 }
@@ -697,19 +703,17 @@
 .chatFabIcon {
   width: 26px;
   height: 26px;
-  border-radius: 50%;
   flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-primary);
-  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
-  border: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  color: #2d3142;
+}
+
+:global([data-theme="dark"]) .chatFabIcon {
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .chatFabTitle {
   font-family: var(--font-primary);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: var(--font-weight-medium, 500);
   color: #2d3142;
   letter-spacing: 0;
@@ -722,9 +726,9 @@
 /* Docked chat launcher, bottom-right, sitting below the chat panel. */
 .chatDock {
   position: fixed;
-  right: 20px;
+  right: 24px;
   bottom: 24px;
-  z-index: 230;
+  z-index: 1200;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -1885,9 +1889,9 @@
    stack (Cakes stake, Ask Blue, Trader Mode, debate) on the right. */
 .marketModalColumns {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 28px;
-  align-items: start;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
+  gap: 22px;
+  align-items: stretch;
 }
 
 @media (max-width: 760px) {
@@ -1900,8 +1904,52 @@
 .marketModalHero {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  justify-content: center;
+  gap: 16px;
   min-width: 0;
+  padding: 22px;
+  border: 1px solid var(--markets-light-border);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, var(--markets-light-panel-raised) 0%, var(--markets-light-tint) 100%);
+}
+
+.heroStats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.heroStat {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px;
+  border: 1px solid var(--markets-light-border);
+  border-radius: var(--radius-md);
+  background: var(--markets-light-panel-raised);
+}
+
+.heroStatLabel {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.heroStatNum {
+  font-family: var(--font-mono);
+  font-size: 19px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-dark);
+  font-variant-numeric: tabular-nums;
+}
+
+.heroStatYes {
+  color: var(--color-primary);
+}
+
+.heroStatNo {
+  color: var(--markets-no);
 }
 
 .marketModalAction {
@@ -2033,8 +2081,39 @@
 
 .stakeChips {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
+}
+
+/* Custom amount on its own row so it reads as a field, not another chip. */
+.stakeCustom {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--markets-light-border-strong);
+  border-radius: var(--radius-md);
+  background: color-mix(in oklch, var(--color-text-dark) 4%, #FFFFFF);
+}
+
+.stakeCustom:focus-within {
+  border-color: color-mix(in oklch, var(--color-primary) 50%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary) 10%, transparent);
+}
+
+.stakeCustomLabel {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.stakeCustomSuffix {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  color: var(--color-text-faint);
+  flex-shrink: 0;
 }
 
 .stakeChip {
@@ -2067,18 +2146,19 @@
 }
 
 .stakeInput {
+  flex: 1;
   min-width: 0;
-  min-height: 38px;
-  padding: 0 10px;
-  border: 1px solid var(--markets-light-border-strong);
-  border-radius: var(--radius-md);
-  background: #FFFFFF;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: transparent;
   color: var(--color-text-dark);
-  font-family: var(--font-button);
-  font-size: 13px;
+  font-family: var(--font-mono);
+  font-size: 15px;
   font-weight: var(--font-weight-bold);
-  text-align: center;
+  text-align: left;
   outline: none;
+  font-variant-numeric: tabular-nums;
   -moz-appearance: textfield;
 }
 
@@ -2086,11 +2166,6 @@
 .stakeInput::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
-}
-
-.stakeInput:focus {
-  border-color: color-mix(in oklch, var(--color-primary) 50%, transparent);
-  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary) 10%, transparent);
 }
 
 .stakeFootnote {
@@ -2128,9 +2203,23 @@
 }
 
 :global([data-theme="dark"]) .stakeInput {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+:global([data-theme="dark"]) .stakeCustom {
   background: rgba(0, 0, 0, 0.22);
   border-color: rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.92);
+}
+
+:global([data-theme="dark"]) .marketModalHero {
+  background: linear-gradient(180deg, var(--markets-dark-panel-raised) 0%, var(--markets-dark-panel) 100%);
+  border-color: var(--color-border-subtle);
+}
+
+:global([data-theme="dark"]) .heroStat {
+  background: color-mix(in oklch, var(--markets-dark-panel-low) 70%, transparent);
+  border-color: var(--color-border-subtle);
 }
 
 /* ── Market Debate (inside the market pop-up) ── */

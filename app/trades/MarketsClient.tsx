@@ -1497,8 +1497,8 @@ export default function Markets() {
                 </button>
               </div>
               <p className={styles.daemonSpotlightBody}>
-                This is not the usual Blue. Here she trades the community treasury &mdash; back a
-                market with Cakes and she makes the case, then positions the trade.
+                New desk unlocked. Blue trades the community treasury from here &mdash; pick a market,
+                back it with Cakes, and win the case to send her in.
               </p>
             </div>
           )}
@@ -1515,12 +1515,10 @@ export default function Markets() {
           >
             <span className={styles.chatFabShine} aria-hidden="true" />
             <span className={styles.chatFabContent}>
-              <span className={styles.chatFabIcon} aria-hidden="true">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path d="M5.5 16.5H5a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3h14a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3h-7l-5.5 4v-4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M7.5 9.5h9M7.5 12.5h5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                </svg>
-              </span>
+              <svg viewBox="0 0 511.893 511.893" className={styles.chatFabIcon} fill="currentColor" aria-hidden="true">
+                <path d="M458.599,261.333c32.107-47.253,41.707-94.293,21.44-129.387c-19.947-34.453-64.213-49.6-119.787-46.187C335.079,32.853,297.959,0,255.932,0s-79.147,32.96-104.427,85.867c-0.747,0-1.6-0.213-2.347-0.213c-56.64-3.093-98.347,13.44-117.333,46.187c-20.267,35.2-10.667,82.133,21.44,129.387c-32.107,47.253-41.707,94.293-21.44,129.387c18.133,31.36,56.213,46.827,104.747,46.827c6.613,0,13.44-0.32,20.373-0.853c24.96,46.72,59.84,75.307,99.093,75.307s74.133-28.587,99.093-75.307c6.933,0.533,13.76,0.853,20.267,0.853c48.427,0,86.613-15.467,104.747-46.827C500.306,355.627,490.706,308.587,458.599,261.333z M461.586,142.613c14.933,25.813,7.147,62.08-16.96,99.947c-16.427-20.053-34.773-38.293-54.827-54.613c-3.84-27.627-10.667-54.613-20.373-80.747C412.839,105.813,446.972,117.333,461.586,142.613z M373.266,256c0,22.933-1.813,45.867-5.333,68.587c-17.173,13.547-35.307,25.813-54.293,36.8c-18.56,10.667-37.867,20.053-57.707,28.053c-19.84-8-39.147-17.387-57.707-28.053c-18.987-10.987-37.12-23.253-54.293-36.8c-6.507-41.387-7.04-83.52-1.707-125.12c17.707-14.08,36.373-26.773,56-38.187c18.667-10.773,37.973-20.16,57.92-28.16c19.84,8,39.04,17.493,57.6,28.16c19.52,11.307,38.293,24.107,55.893,38.187C372.092,218.24,373.266,237.12,373.266,256z M255.932,21.333c31.04,0,59.84,25.707,81.067,66.88c-27.733,4.267-55.04,11.52-81.173,21.867c-26.133-10.24-53.333-17.493-81.067-21.653C195.986,47.147,224.786,21.333,255.932,21.333z M50.279,142.613c14.187-24.533,46.933-37.013,92.267-35.627c-9.813,26.133-16.64,53.333-20.48,81.067c-20.053,16.32-38.507,34.56-54.827,54.613C43.132,204.693,35.346,168.427,50.279,142.613z M50.279,380.053c-14.933-25.813-7.147-62.08,16.96-99.947c16.853,20.693,35.947,39.573,56.747,56.213c5.013,29.12,12.8,55.68,22.72,79.04C101.266,417.6,65.319,406.187,50.279,380.053z M255.932,490.667c-28.48,0-55.04-21.653-75.627-56.853c24-3.947,49.493-11.093,75.627-21.227c26.133,10.133,51.627,17.28,75.627,21.227C310.972,469.013,284.412,490.667,255.932,490.667z M461.586,380.053c-15.04,26.133-50.987,37.44-96.427,35.307c9.92-23.253,17.6-49.92,22.72-79.04c20.8-16.747,39.893-35.52,56.747-56.213C468.732,317.973,476.519,354.24,461.586,380.053z" />
+                <path d="M255.932,224c-23.573,0-42.667,19.093-42.667,42.667s19.093,42.667,42.667,42.667c23.573,0,42.667-19.093,42.667-42.667S279.506,224,255.932,224z" />
+              </svg>
               <span className={styles.chatFabTitle}>{isChatOpen ? 'Close chat' : 'Trade Using Blue'}</span>
             </span>
           </button>
@@ -1567,11 +1565,20 @@ export default function Markets() {
                       <div className={styles.marketYes} style={{ width: `${yesPct}%` }} />
                       <div className={styles.marketNo} style={{ width: `${noPct}%` }} />
                     </div>
-                    <div className={styles.marketModalValues}>
-                      <span className={styles.marketBarValueYes}>Yes {yesPct}%</span>
-                      <span className={styles.marketBarValueNo}>No {noPct}%</span>
+                    <div className={styles.heroStats}>
+                      <div className={styles.heroStat}>
+                        <span className={styles.heroStatLabel}>Yes</span>
+                        <span className={`${styles.heroStatNum} ${styles.heroStatYes}`}>{yesPct}%</span>
+                      </div>
+                      <div className={styles.heroStat}>
+                        <span className={styles.heroStatLabel}>No</span>
+                        <span className={`${styles.heroStatNum} ${styles.heroStatNo}`}>{noPct}%</span>
+                      </div>
+                      <div className={styles.heroStat}>
+                        <span className={styles.heroStatLabel}>Volume</span>
+                        <span className={styles.heroStatNum}>{formatVol(selectedMarket.market.volume)}</span>
+                      </div>
                     </div>
-                    <div className={styles.marketModalMeta}>Volume {formatVol(selectedMarket.market.volume)}</div>
                   </div>
 
                   {/* Right: stake, Ask Blue, Trader Mode, debate */}
@@ -1592,6 +1599,9 @@ export default function Markets() {
                             {amount}
                           </button>
                         ))}
+                      </div>
+                      <label className={styles.stakeCustom}>
+                        <span className={styles.stakeCustomLabel}>Custom</span>
                         <input
                           className={styles.stakeInput}
                           type="number"
@@ -1601,7 +1611,8 @@ export default function Markets() {
                           onChange={(event) => setStakeCakes(Math.max(1, Math.min(9999, Number(event.target.value) || 1)))}
                           aria-label="Cakes to stake"
                         />
-                      </div>
+                        <span className={styles.stakeCustomSuffix}>Cakes</span>
+                      </label>
                     </div>
 
                     <CtaButton
