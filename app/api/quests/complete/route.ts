@@ -7,6 +7,7 @@ import { recordBlueQuestCompletion } from '@/lib/blue-memory';
 import { isDbConfigured, sqlQuery, withTransaction, sqlQueryWithClient } from '@/lib/db';
 import { getQuestDefinition, getQuestDefinitionForStoredQuestId } from '@/lib/quest-definitions';
 import { ensureQuestUsdcClaimsSchema } from '@/lib/ensureQuestUsdcClaimsSchema';
+import { isOwnStorageUrl } from '@/lib/supabase-storage';
 import { recordAgentActivity } from '@/lib/room-log';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -89,9 +90,16 @@ export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
   const questId = body?.questId;
   const proofText = typeof body?.proofText === 'string' ? body.proofText.trim().slice(0, 4000) : '';
-  const proofUrl = typeof body?.proofUrl === 'string' && /^https?:\/\//i.test(body.proofUrl.trim())
-    ? body.proofUrl.trim().slice(0, 1000)
-    : null;
+  // SECURITY: only our own Storage uploads are accepted as attachments — never
+  // an arbitrary member-supplied link (phishing/drainer vector for reviewers).
+  const rawProofUrl = typeof body?.proofUrl === 'string' ? body.proofUrl.trim() : '';
+  if (rawProofUrl && !isOwnStorageUrl(rawProofUrl)) {
+    return NextResponse.json(
+      { error: 'Attach files through the uploader — external links are not accepted.' },
+      { status: 400 },
+    );
+  }
+  const proofUrl = rawProofUrl || null;
 
   if (!questId || typeof questId !== 'string') {
     return NextResponse.json({ error: 'Quest ID is required.' }, { status: 400 });

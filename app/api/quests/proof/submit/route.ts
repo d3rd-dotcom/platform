@@ -4,6 +4,7 @@ import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { ensureQuestProofSubmissionsSchema } from '@/lib/ensureQuestProofSubmissionsSchema';
 import { getQuestDefinition } from '@/lib/quest-definitions';
+import { isOwnStorageUrl } from '@/lib/supabase-storage';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -17,13 +18,6 @@ interface SubmissionRow {
   note: string | null;
   proof_text: string | null;
   proof_url: string | null;
-}
-
-function cleanUrl(value: unknown): string | null {
-  if (typeof value !== 'string') return null;
-  const trimmed = value.trim();
-  if (!/^https?:\/\//i.test(trimmed)) return null;
-  return trimmed.slice(0, 1000);
 }
 
 async function loadSubmission(userId: string, questId: string): Promise<SubmissionRow | null> {
@@ -95,14 +89,23 @@ export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
   const questId = typeof body?.questId === 'string' ? body.questId : null;
   const proofText = typeof body?.proofText === 'string' ? body.proofText.trim() : '';
-  const proofUrl = cleanUrl(body?.proofUrl);
+  // SECURITY: only accept attachment URLs we minted via /api/quests/proof/upload
+  // (our own Storage bucket). Never store/relay an arbitrary member-supplied link.
+  const rawUrl = typeof body?.proofUrl === 'string' ? body.proofUrl.trim() : '';
+  if (rawUrl && !isOwnStorageUrl(rawUrl)) {
+    return NextResponse.json(
+      { error: 'Attach files through the uploader — external links are not accepted.' },
+      { status: 400 },
+    );
+  }
+  const proofUrl = rawUrl || null;
   if (!questId) {
     return NextResponse.json({ error: 'questId is required.' }, { status: 400 });
   }
-  // Proof must be a written entry/link OR an attached file (or both).
+  // Proof must be a written entry OR an attached file (or both).
   if (proofText.length < PROOF_MIN && !proofUrl) {
     return NextResponse.json(
-      { error: `Share your work — write an entry, paste a link, or attach a file.` },
+      { error: `Share your work — write an entry or attach a file.` },
       { status: 400 },
     );
   }

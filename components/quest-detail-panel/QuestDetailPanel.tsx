@@ -365,7 +365,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
     if (!quest || isSubmittingProof) return;
     const entry = proofText.trim();
     if (entry.length < 10 && !attachmentUrl) {
-      alert('Share your work — write an entry, paste a link, or attach a file.');
+      alert('Share your work — write an entry or attach a file.');
       return;
     }
     setIsSubmittingProof(true);
@@ -563,7 +563,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
                   className={styles.proofInput}
                   value={proofText}
                   onChange={(e) => setProofText(e.target.value)}
-                  placeholder="Write your entry here, or paste a link to your work. You can also attach a file below."
+                  placeholder="Write your entry here — what you did, learned, or made. You can also attach a file below."
                   rows={5}
                   maxLength={4000}
                   disabled={

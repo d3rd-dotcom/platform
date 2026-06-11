@@ -31,6 +31,28 @@ export function isStorageConfigured(): boolean {
   return Boolean(projectUrl() && serviceKey());
 }
 
+export function proofBucket(): string {
+  return process.env.SUPABASE_PROOF_BUCKET || 'quest-proofs';
+}
+
+/** Public URL prefix for our own proof bucket, or null if not derivable. */
+export function publicUrlPrefix(bucket: string = proofBucket()): string | null {
+  const base = projectUrl();
+  return base ? `${base}/storage/v1/object/public/${bucket}/` : null;
+}
+
+/**
+ * SECURITY: proof attachments must be files WE stored, not arbitrary URLs.
+ * Surfacing attacker-controlled links to privileged reviewers (staff/quest
+ * creators) in a crypto app is a phishing/drainer vector. Only accept URLs
+ * under our own public Storage bucket.
+ */
+export function isOwnStorageUrl(url: unknown): url is string {
+  if (typeof url !== 'string') return false;
+  const prefix = publicUrlPrefix();
+  return Boolean(prefix && url.startsWith(prefix));
+}
+
 export interface UploadResult {
   url: string;
   path: string;
