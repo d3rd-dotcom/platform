@@ -18,13 +18,6 @@ export type {
   KalshiOrderbookSide,
 } from './kalshi-api';
 
-// Legacy aliases — kept so existing call sites don't all need to change
-// in lockstep. New code should import from './kalshi-api' directly.
-export type { MarketRow as PolymarketMarket } from './kalshi-api';
-export type { RecentTrade as PolymarketTrade } from './kalshi-api';
-import { fetchKalshiBtcTrades as _fetchKalshiBtcTrades } from './kalshi-api';
-export const fetchPolymarketTrades = _fetchKalshiBtcTrades;
-
 // ── Types ──
 
 export interface CoinPrice {

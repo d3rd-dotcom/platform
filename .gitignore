@@ -38,6 +38,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# stray package tarballs (e.g. next-swc-*.tgz)
+*.tgz
+
 # CRE workflow temp build artifacts
 cre-workflows/*/tmp.js
 cre-workflows/*/tmp.wasm
