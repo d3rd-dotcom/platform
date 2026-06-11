@@ -1021,8 +1021,10 @@ export default function Markets() {
           />
         )}
 
-        {/* ── Desk Header Row: treasury card (opens the execution receipts) ── */}
-        <div className={styles.deskRow}>
+        {/* ── Dashboard Grid: treasury + Quant engine stack column 1, markets fill column 2 ── */}
+        <div className={styles.grid}>
+
+          {/* Treasury card sits above the Quant engine; opens the receipts pop-up. */}
           <button
             type="button"
             className={styles.treasuryFloat}
@@ -1056,10 +1058,6 @@ export default function Markets() {
               </>
             )}
           </button>
-        </div>
-
-        {/* ── Dashboard Grid ── */}
-        <div className={styles.grid}>
 
           {/* ════ POP-UP: Model Parameters ════ */}
           <aside

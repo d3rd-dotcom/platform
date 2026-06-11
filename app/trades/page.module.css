@@ -222,7 +222,7 @@
 .grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
   gap: 2px;
   flex: 1;
   background: var(--markets-light-gutter);
@@ -233,6 +233,7 @@
 @media (min-width: 1101px) {
   .grid {
     grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
   }
 }
 
@@ -349,11 +350,10 @@
   .modelsColumn {
     position: static;
     grid-column: 1;
-    grid-row: 1;
+    grid-row: 2;
     z-index: auto;
     width: auto;
     border: none;
-    border-right: 1px solid rgba(26, 29, 51, 0.08);
     border-radius: 0;
     box-shadow: none;
     opacity: 1;
@@ -538,19 +538,19 @@
 
 .kalshiPanel {
   grid-column: 1;
-  grid-row: 1;
+  grid-row: 2;
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
   background: var(--markets-light-panel-raised);
 }
 
-/* With the quant engine pinned open as column 1 on desktop, the market feed
-   moves to column 2. */
+/* On desktop the market feed owns the full height of column 2; column 1 stacks
+   the treasury card (row 1) above the Quant engine (row 2). */
 @media (min-width: 1101px) {
   .kalshiPanel {
     grid-column: 2;
-    grid-row: 1;
+    grid-row: 1 / span 2;
   }
 }
 
@@ -1673,60 +1673,36 @@
   background-color: #F9FBFF;
 }
 
-/* ── Desk Header Row ──
-   Full-width row above the grid: treasury balance card | Trade Using Blue |
-   execution receipt. Sits between the status bar and the quant/feed columns. */
-.deskRow {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  align-items: stretch;
-  gap: 14px;
-  flex: 0 0 auto;
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--color-border-subtle);
-  background:
-    radial-gradient(circle at 1px 1px, color-mix(in oklch, var(--color-primary) 8%, transparent) 1px, transparent 0);
-  background-size: 16px 16px;
-  background-color: var(--markets-light-panel);
-}
-
-.deskRow .treasuryFloat {
-  min-height: 120px;
-}
-
-/* The treasury card is a button that opens the execution-receipt pop-up. */
+/* ── Treasury card ──
+   Compact panel in column 1 / row 1, above the Quant engine. It's a button that
+   opens the execution-receipt pop-up. Fills its grid cell (the markets own all
+   of column 2) — never a full-width band. */
 .treasuryFloat {
   position: relative;
+  grid-column: 1;
+  grid-row: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  width: 100%;
-  min-height: 120px;
+  gap: 6px;
+  width: auto;
   padding: 14px 16px;
   text-align: left;
   font: inherit;
   -webkit-appearance: none;
   appearance: none;
   cursor: pointer;
-  border: 1px solid var(--markets-light-border);
-  border-radius: var(--radius-md);
+  border: none;
   background: linear-gradient(180deg, var(--markets-light-panel-raised) 0%, var(--markets-light-panel) 100%);
-  box-shadow: 0 12px 28px rgba(26, 29, 51, 0.08);
-  transition:
-    transform var(--duration-fast) var(--ease-default),
-    box-shadow var(--duration-fast) var(--ease-default),
-    border-color var(--duration-fast) var(--ease-default);
+  transition: background var(--duration-fast) var(--ease-default);
 }
 
 .treasuryFloat:hover {
-  transform: translateY(-1px);
-  border-color: color-mix(in oklch, var(--color-primary) 22%, transparent);
-  box-shadow: 0 16px 32px rgba(26, 29, 51, 0.12);
+  background: linear-gradient(180deg, var(--markets-light-panel-raised) 0%, var(--markets-light-tint) 100%);
 }
 
 .treasuryFloat:focus-visible {
   outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  outline-offset: -2px;
 }
 
 .treasuryFloatTitle {
@@ -1737,19 +1713,23 @@
   color: var(--color-text-muted);
 }
 
-/* "Receipts" affordance, top-right of the treasury card. */
+/* "Receipts" badge, top-right of the treasury card. */
 .treasuryReceiptHint {
   position: absolute;
   top: 12px;
-  right: 14px;
+  right: 12px;
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 24%, transparent);
+  color: var(--color-primary);
   font-family: var(--font-button);
   font-size: 10px;
   font-weight: var(--font-weight-bold);
-  letter-spacing: 0.04em;
-  color: var(--color-primary);
+  letter-spacing: 0.03em;
 }
 
 .treasuryReceiptHint svg {
@@ -2804,11 +2784,11 @@
 
   .grid {
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
   }
 
   .modelsColumn {
-    top: calc(72px + var(--markets-top-bars-height) + 78px);
+    top: calc(72px + var(--markets-top-bars-height) + 12px);
     left: 12px;
     right: 12px;
     bottom: 12px;
@@ -2822,19 +2802,12 @@
   .chartPanel,
   .kalshiPanel {
     grid-column: 1;
-    grid-row: 1;
+    grid-row: 2;
   }
 
-  /* No side nav on mobile — the treasury card becomes a slim full-width header. */
-  .deskRow {
-    grid-template-columns: 1fr;
-    gap: 10px;
-    padding: 12px;
-  }
-
-  .treasuryFloat,
-  .deskRow .treasuryFloat {
-    min-height: 0;
+  /* No side nav on mobile — the treasury card is a slim full-width header row. */
+  .treasuryFloat {
+    padding: 12px 14px;
   }
 
   .balanceHero {
@@ -3148,14 +3121,6 @@
   color: var(--color-text-light);
 }
 
-:global([data-theme="dark"]) .deskRow {
-  background:
-    radial-gradient(circle at 1px 1px, color-mix(in oklch, var(--color-primary) 18%, transparent) 1px, transparent 0);
-  background-size: 16px 16px;
-  background-color: var(--markets-dark-panel-low);
-  border-bottom-color: var(--color-border-subtle);
-}
-
 :global([data-theme="dark"]) .marketModalStat {
   background: linear-gradient(180deg, var(--markets-dark-panel-raised) 0%, var(--markets-dark-panel) 100%);
   border-color: var(--color-border-subtle);
@@ -3246,7 +3211,6 @@
 @media (min-width: 1101px) {
   :global([data-theme="dark"]) .modelsColumn {
     border: none;
-    border-right: 1px solid var(--color-border-strong);
     box-shadow: none;
   }
 }
