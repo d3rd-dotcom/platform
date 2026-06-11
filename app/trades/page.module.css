@@ -596,13 +596,54 @@
 }
 
 .modelDrawerKicker {
-  display: block;
-  color: var(--color-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-text-muted);
   font-family: var(--font-button);
   font-size: 9px;
   font-weight: var(--font-weight-bold);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.modelDrawerKicker::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  flex-shrink: 0;
+}
+
+/* Quiet, thin scrollbars for the scrolling panels (no harsh default bar). */
+.modelsColumn,
+.kalshiPanel {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklch, var(--color-text-dark) 16%, transparent) transparent;
+}
+
+.modelsColumn::-webkit-scrollbar,
+.kalshiPanel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modelsColumn::-webkit-scrollbar-track,
+.kalshiPanel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modelsColumn::-webkit-scrollbar-thumb,
+.kalshiPanel::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  background-color: color-mix(in oklch, var(--color-text-dark) 16%, transparent);
+}
+
+.modelsColumn::-webkit-scrollbar-thumb:hover,
+.kalshiPanel::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in oklch, var(--color-text-dark) 28%, transparent);
+  background-clip: padding-box;
 }
 
 .modelDrawerTitle {
@@ -1902,23 +1943,8 @@
   gap: 6px;
   width: auto;
   padding: 14px 16px;
-  text-align: left;
-  font: inherit;
-  -webkit-appearance: none;
-  appearance: none;
-  cursor: pointer;
   border: none;
   background: linear-gradient(180deg, var(--markets-light-panel-raised) 0%, var(--markets-light-panel) 100%);
-  transition: background var(--duration-fast) var(--ease-default);
-}
-
-.treasuryFloat:hover {
-  background: linear-gradient(180deg, var(--markets-light-panel-raised) 0%, var(--markets-light-tint) 100%);
-}
-
-.treasuryFloat:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: -2px;
 }
 
 .treasuryFloatTitle {
@@ -1929,7 +1955,7 @@
   color: var(--color-text-muted);
 }
 
-/* "Receipts" badge, top-right of the treasury card. */
+/* "Receipts" badge button, top-right of the treasury card. */
 .treasuryReceiptHint {
   position: absolute;
   top: 12px;
@@ -1946,14 +1972,56 @@
   font-size: 10px;
   font-weight: var(--font-weight-bold);
   letter-spacing: 0.03em;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: background var(--duration-fast) var(--ease-default);
+}
+
+.treasuryReceiptHint:hover {
+  background: color-mix(in oklch, var(--color-primary) 16%, transparent);
 }
 
 .treasuryReceiptHint svg {
   transition: transform var(--duration-fast) var(--ease-default);
 }
 
-.treasuryFloat:hover .treasuryReceiptHint svg {
+.treasuryReceiptHint:hover svg {
   transform: translateX(2px);
+}
+
+/* 1d / 7d / 15d / 30d progress filter, bottom-right of the treasury card. */
+.treasuryRange {
+  display: inline-flex;
+  align-self: flex-end;
+  gap: 2px;
+  margin-top: 2px;
+  padding: 2px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--color-text-dark) 5%, transparent);
+}
+
+.treasuryRangeButton {
+  padding: 3px 9px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: var(--font-button);
+  font-size: 10px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-default), color var(--duration-fast) var(--ease-default);
+}
+
+.treasuryRangeButton:hover {
+  color: var(--color-text-dark);
+}
+
+.treasuryRangeButtonActive {
+  background: var(--color-primary);
+  color: #ffffff;
 }
 
 /* Executed-trades history styled like a thermal-paper receipt. */
@@ -3102,9 +3170,7 @@
 }
 
 :global([data-theme="dark"]) .modelsColumn {
-  background:
-    radial-gradient(circle at 12% 0%, color-mix(in oklch, var(--color-tertiary) 12%, transparent), transparent 30%),
-    linear-gradient(180deg, var(--markets-dark-panel) 0%, var(--markets-dark-panel-low) 100%);
+  background: linear-gradient(180deg, var(--markets-dark-panel) 0%, var(--markets-dark-panel-low) 100%);
   border-color: var(--color-border-strong);
   box-shadow: 0 28px 90px rgba(0, 0, 0, 0.58);
 }

@@ -213,6 +213,16 @@ const INITIAL_VISIBLE_MARKETS = 3;
 const MARKET_LOAD_MORE_STEP = 3;
 const CHAT_SPOTLIGHT_KEY = 'mwa-trades-chat-daemon-seen';
 
+// Treasury progress windows. `len` sets how many points the sparkline plots, so
+// longer ranges read as more history at a glance.
+const TREASURY_RANGES = [
+  { id: '1d', len: 36 },
+  { id: '7d', len: 80 },
+  { id: '15d', len: 130 },
+  { id: '30d', len: 200 },
+] as const;
+type TreasuryRange = (typeof TREASURY_RANGES)[number]['id'];
+
 const INITIAL_TRADE_CHAT: TradeChatMessage[] = [
   {
     role: 'blue',
@@ -234,13 +244,13 @@ const TICKER_LEN = 80;
 const TICKER_DRIFT = 0.25;   // upward bias per tick
 const TICKER_VOL = 0.6;      // small random noise
 
-function TickerLine({ drift = TICKER_DRIFT, vol = TICKER_VOL, stroke = 'var(--color-primary)', strokeWidth = 2.5, opacity = 0.8, speed = 300 }: {
-  drift?: number; vol?: number; stroke?: string; strokeWidth?: number; opacity?: number; speed?: number;
+function TickerLine({ drift = TICKER_DRIFT, vol = TICKER_VOL, stroke = 'var(--color-primary)', strokeWidth = 2.5, opacity = 0.8, speed = 300, len = TICKER_LEN }: {
+  drift?: number; vol?: number; stroke?: string; strokeWidth?: number; opacity?: number; speed?: number; len?: number;
 }) {
   const buf = useRef<number[]>((() => {
     const arr: number[] = [];
     let v = 0;
-    for (let i = 0; i < TICKER_LEN; i++) {
+    for (let i = 0; i < len; i++) {
       v += drift + (Math.random() - 0.5) * vol;
       arr.push(v);
     }
@@ -253,7 +263,7 @@ function TickerLine({ drift = TICKER_DRIFT, vol = TICKER_VOL, stroke = 'var(--co
       const arr = buf.current as number[];
       const last = arr[arr.length - 1];
       arr.push(last + drift + (Math.random() - 0.5) * vol);
-      if (arr.length > TICKER_LEN) arr.shift();
+      if (arr.length > len) arr.shift();
 
       const min = Math.min(...arr);
       const max = Math.max(...arr);
@@ -275,7 +285,7 @@ function TickerLine({ drift = TICKER_DRIFT, vol = TICKER_VOL, stroke = 'var(--co
     tick();
     const id = setInterval(tick, speed);
     return () => clearInterval(id);
-  }, [drift, vol, speed]);
+  }, [drift, vol, speed, len]);
 
   if (!points) return null;
 
@@ -515,6 +525,8 @@ export default function Markets() {
   // Execution receipts live in a pop-up opened from the treasury card, so the
   // market feed owns the full column width.
   const [isReceiptOpen, setIsReceiptOpen] = useState(false);
+  // Treasury progress window (1d / 7d / 15d / 30d).
+  const [treasuryRange, setTreasuryRange] = useState<TreasuryRange>('7d');
   const [visibleMarketCounts, setVisibleMarketCounts] = useState<Record<MarketCategory, number>>({
     elections: INITIAL_VISIBLE_MARKETS,
     politics: INITIAL_VISIBLE_MARKETS,
@@ -784,23 +796,42 @@ export default function Markets() {
     return out;
   }, [deferredKalshiMarkets]);
 
+  // Markets the community is actively voting on, built from the discussion data
+  // itself (not just the live feed) so a discussed market still shows even after
+  // it rotates out of the curated Kalshi feed. Matched markets keep their live
+  // price; unmatched ones fall back to the community vote split.
+  const activeEntries = useMemo(() => {
+    return activeMarkets.map((am) => {
+      const matched = allEntries.find((entry) => (entry.market.ticker || entry.market.id) === am.market_id);
+      if (matched) return matched;
+      const total = am.yes + am.no;
+      const yesFrac = total ? am.yes / total : 0;
+      const market: MarketRow = {
+        id: am.market_id,
+        ticker: am.market_id,
+        event_ticker: am.market_id,
+        question: am.market_title || am.market_id,
+        outcomePrices: JSON.stringify([yesFrac, total ? 1 - yesFrac : 0]),
+        volume: 0,
+        liquidity: 0,
+        endDate: '',
+        active: true,
+        yes_ask: 0,
+        no_ask: 0,
+      };
+      return { category: 'politics' as MarketCategory, market };
+    });
+  }, [activeMarkets, allEntries]);
+
   // Either the active/searched subset, or the default interleaved feed.
   const isFilteredView = marketTab === 'active' || marketSearch.trim() !== '';
 
   const filteredMarkets = useMemo(() => {
     const query = marketSearch.trim().toLowerCase();
-    let list = allEntries;
-    if (marketTab === 'active') {
-      list = list
-        .filter((entry) => activeById.has(entry.market.ticker || entry.market.id))
-        .sort((a, b) =>
-          (activeById.get(b.market.ticker || b.market.id)?.posts ?? 0) -
-          (activeById.get(a.market.ticker || a.market.id)?.posts ?? 0),
-        );
-    }
+    let list = marketTab === 'active' ? activeEntries : allEntries;
     if (query) list = list.filter((entry) => entry.market.question.toLowerCase().includes(query));
     return list.slice(0, 60);
-  }, [allEntries, activeById, marketTab, marketSearch]);
+  }, [activeEntries, allEntries, marketTab, marketSearch]);
 
   const baseMarkets = isFilteredView ? filteredMarkets : mixedMarkets;
 
@@ -1078,20 +1109,22 @@ export default function Markets() {
         {/* ── Dashboard Grid: treasury + Quant engine stack column 1, markets fill column 2 ── */}
         <div className={styles.grid}>
 
-          {/* Treasury card sits above the Quant engine; opens the receipts pop-up. */}
-          <button
-            type="button"
-            className={styles.treasuryFloat}
-            aria-label="Trades treasury — view execution receipts"
-            onClick={() => setIsReceiptOpen(true)}
-          >
+          {/* Treasury card sits above the Quant engine. */}
+          {(() => {
+            const rangeLen = TREASURY_RANGES.find((range) => range.id === treasuryRange)?.len ?? 80;
+            return (
+          <div className={styles.treasuryFloat} aria-label="Trades treasury">
             <span className={styles.treasuryFloatTitle}>Trades Treasury</span>
-            <span className={styles.treasuryReceiptHint}>
+            <button
+              type="button"
+              className={styles.treasuryReceiptHint}
+              onClick={() => setIsReceiptOpen(true)}
+            >
               Receipts
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-            </span>
+            </button>
             {!balance && !balanceError && (
               <TreasuryQuickSkeleton />
             )}
@@ -1105,13 +1138,27 @@ export default function Markets() {
                   <div className={styles.balanceLabel}>USDC Trades Balance</div>
                 </div>
                 <div className={styles.treasuryQuickSpark}>
-                  <TickerLine stroke="var(--color-primary)" strokeWidth={2} opacity={0.85} />
-                  <TickerLine drift={0.18} vol={0.8} stroke="var(--color-tertiary)" strokeWidth={1.5} opacity={0.55} speed={350} />
-                  <TickerLine drift={0.05} vol={0.5} stroke="var(--color-primary)" strokeWidth={1.5} opacity={0.5} speed={500} />
+                  <TickerLine key={`a-${treasuryRange}`} len={rangeLen} stroke="var(--color-primary)" strokeWidth={2} opacity={0.85} />
+                  <TickerLine key={`b-${treasuryRange}`} len={rangeLen} drift={0.18} vol={0.8} stroke="var(--color-tertiary)" strokeWidth={1.5} opacity={0.55} speed={350} />
+                  <TickerLine key={`c-${treasuryRange}`} len={rangeLen} drift={0.05} vol={0.5} stroke="var(--color-primary)" strokeWidth={1.5} opacity={0.5} speed={500} />
+                </div>
+                <div className={styles.treasuryRange} role="group" aria-label="Treasury range">
+                  {TREASURY_RANGES.map((range) => (
+                    <button
+                      key={range.id}
+                      type="button"
+                      className={`${styles.treasuryRangeButton} ${treasuryRange === range.id ? styles.treasuryRangeButtonActive : ''}`}
+                      onClick={() => setTreasuryRange(range.id)}
+                    >
+                      {range.id}
+                    </button>
+                  ))}
                 </div>
               </>
             )}
-          </button>
+          </div>
+            );
+          })()}
 
           {/* ════ POP-UP: Model Parameters ════ */}
           <aside
