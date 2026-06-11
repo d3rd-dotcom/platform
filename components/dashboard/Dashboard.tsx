@@ -6,7 +6,6 @@ import dynamic from 'next/dynamic';
 import BlueScene from '@/components/blue-scene/BlueScene';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
 import InventoryPanel from '@/components/inventory-panel/InventoryPanel';
-import type { CourseData } from '@/lib/personal-course';
 import styles from './Dashboard.module.css';
 
 const ProMembershipModal = dynamic(
@@ -15,9 +14,6 @@ const ProMembershipModal = dynamic(
 );
 
 interface DashboardProps {
-  course: CourseData;
-  initialProgress?: Record<string, unknown>;
-  initialIntake?: Record<string, string>;
   enableMorningPagesPersistence?: boolean;
 }
 

@@ -71,12 +71,14 @@ export default function FeatureTour() {
   // ── Phase A controls ──
   const finishIntro = useCallback(() => {
     setStorageItem(INTRO_SEEN_KEY, '1');
+    removeStorageItem(PENDING_KEY);
     setRect(null);
     setPhase('idle');
   }, []);
 
   const startFirstNote = useCallback(() => {
     setStorageItem(INTRO_SEEN_KEY, '1');
+    removeStorageItem(PENDING_KEY);
     setRect(null);
     setPhase('idle');
     // Open the writing session by activating the card's button. A short delay
