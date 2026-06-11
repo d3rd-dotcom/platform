@@ -8,6 +8,7 @@ import SideNavigation from '@/components/side-navigation/SideNavigation';
 import { HowToButton } from '@/components/treasury-how-to/TreasuryHowTo';
 import ProMembershipModal from '@/components/pro-membership-modal/ProMembershipModal';
 import CtaButton from '@/components/shared/CtaButton';
+import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 import styles from './page.module.css';
 import type { CoinPrice, TreasuryBalance, CategorizedMarkets, MarketCategory, MarketRow, AppleTokenStats as ShardTokenStats } from '@/lib/market-api';
 
@@ -198,6 +199,7 @@ const TRADE_CHAT_SUGGESTIONS = [
 ];
 const INITIAL_VISIBLE_MARKETS = 3;
 const MARKET_LOAD_MORE_STEP = 3;
+const CHAT_SPOTLIGHT_KEY = 'mwa-trades-chat-daemon-seen';
 
 const INITIAL_TRADE_CHAT: TradeChatMessage[] = [
   {
@@ -489,6 +491,9 @@ export default function Markets() {
   // Cakes (the voting token) staked on the selected market. Conviction here is
   // what ultimately fuels Blue's trader mode once a debate resolves.
   const [stakeCakes, setStakeCakes] = useState(15);
+  // One-time Daemon spotlight that flags this chat as the community trading desk
+  // (not the usual Blue companion). Persisted via safe-storage so it shows once.
+  const [showChatSpotlight, setShowChatSpotlight] = useState(false);
   const [visibleMarketCounts, setVisibleMarketCounts] = useState<Record<MarketCategory, number>>({
     elections: INITIAL_VISIBLE_MARKETS,
     politics: INITIAL_VISIBLE_MARKETS,
@@ -616,6 +621,18 @@ export default function Markets() {
     sync();
     query.addEventListener('change', sync);
     return () => query.removeEventListener('change', sync);
+  }, []);
+
+  // Surface the Daemon spotlight once, a beat after load, if it hasn't been seen.
+  useEffect(() => {
+    if (getStorageItem(CHAT_SPOTLIGHT_KEY) === '1') return;
+    const timer = setTimeout(() => setShowChatSpotlight(true), 1100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const dismissChatSpotlight = useCallback(() => {
+    setShowChatSpotlight(false);
+    setStorageItem(CHAT_SPOTLIGHT_KEY, '1');
   }, []);
 
   // Fetch credit stats and execution logs
@@ -1028,25 +1045,6 @@ export default function Markets() {
               </>
             )}
           </aside>
-
-          <button
-            type="button"
-            className={styles.chatFab}
-            onClick={() => setIsChatOpen((open) => !open)}
-            aria-expanded={isChatOpen}
-            aria-label={isChatOpen ? 'Close Blue trading chat' : 'Trade using Blue'}
-          >
-            <span className={styles.chatFabShine} aria-hidden="true" />
-            <span className={styles.chatFabContent}>
-              <span className={styles.chatFabIcon} aria-hidden="true">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path d="M5.5 16.5H5a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3h14a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3h-7l-5.5 4v-4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M7.5 9.5h9M7.5 12.5h5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                </svg>
-              </span>
-              <span className={styles.chatFabTitle}>{isChatOpen ? 'Close chat' : 'Trade Using Blue'}</span>
-            </span>
-          </button>
 
           <div className={styles.receipt} aria-label="Executed trades history">
             <div className={styles.receiptHead}>
@@ -1478,6 +1476,55 @@ export default function Markets() {
           </section>
 
         </div>
+
+        {/* ── Docked chat launcher + one-time Daemon spotlight ── */}
+        <div className={styles.chatDock}>
+          {showChatSpotlight && !isChatOpen && (
+            <div className={styles.daemonSpotlight} role="status">
+              <div className={styles.daemonSpotlightHead}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/icons/daemon.svg" alt="" className={styles.daemonSpotlightIcon} width={15} height={15} />
+                <span className={styles.daemonSpotlightKicker}>Daemon</span>
+                <button
+                  type="button"
+                  className={styles.daemonSpotlightClose}
+                  onClick={dismissChatSpotlight}
+                  aria-label="Dismiss"
+                >
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </div>
+              <p className={styles.daemonSpotlightBody}>
+                This is not the usual Blue. Here she trades the community treasury &mdash; back a
+                market with Cakes and she makes the case, then positions the trade.
+              </p>
+            </div>
+          )}
+
+          <button
+            type="button"
+            className={styles.chatFab}
+            onClick={() => {
+              setIsChatOpen((open) => !open);
+              dismissChatSpotlight();
+            }}
+            aria-expanded={isChatOpen}
+            aria-label={isChatOpen ? 'Close Blue trading chat' : 'Trade using Blue'}
+          >
+            <span className={styles.chatFabShine} aria-hidden="true" />
+            <span className={styles.chatFabContent}>
+              <span className={styles.chatFabIcon} aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M5.5 16.5H5a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3h14a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3h-7l-5.5 4v-4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M7.5 9.5h9M7.5 12.5h5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              </span>
+              <span className={styles.chatFabTitle}>{isChatOpen ? 'Close chat' : 'Trade Using Blue'}</span>
+            </span>
+          </button>
+        </div>
       </div>
       <ProMembershipModal isOpen={isMembershipOpen} onClose={() => setIsMembershipOpen(false)} />
 
@@ -1524,28 +1571,15 @@ export default function Markets() {
                       <span className={styles.marketBarValueYes}>Yes {yesPct}%</span>
                       <span className={styles.marketBarValueNo}>No {noPct}%</span>
                     </div>
-                    <div className={styles.marketModalStats}>
-                      <div className={styles.marketModalStat}>
-                        <span className={styles.marketModalStatLabel}>Volume</span>
-                        <span className={styles.marketModalStatValue}>{formatVol(selectedMarket.market.volume)}</span>
-                      </div>
-                      <div className={styles.marketModalStat}>
-                        <span className={styles.marketModalStatLabel}>Yes</span>
-                        <span className={`${styles.marketModalStatValue} ${styles.marketBarValueYes}`}>{yesPct}%</span>
-                      </div>
-                      <div className={styles.marketModalStat}>
-                        <span className={styles.marketModalStatLabel}>No</span>
-                        <span className={`${styles.marketModalStatValue} ${styles.marketBarValueNo}`}>{noPct}%</span>
-                      </div>
-                    </div>
+                    <div className={styles.marketModalMeta}>Volume {formatVol(selectedMarket.market.volume)}</div>
                   </div>
 
                   {/* Right: stake, Ask Blue, Trader Mode, debate */}
                   <div className={styles.marketModalAction}>
                     <div className={styles.stakePanel}>
                       <div className={styles.stakePanelHead}>
-                        <span className={styles.stakeLabel}>Stake Cakes</span>
-                        <span className={styles.stakeReadout}>{stakeCakes} Cakes</span>
+                        <span className={styles.stakeLabel}>Back this with Cakes</span>
+                        <span className={styles.stakeReadout}>{stakeCakes}</span>
                       </div>
                       <div className={styles.stakeChips}>
                         {[5, 15, 30, 50].map((amount) => (
@@ -1578,12 +1612,6 @@ export default function Markets() {
                     >
                       Ask Blue
                     </CtaButton>
-                    <p className={styles.stakeFootnote}>
-                      Blue opens a debate for this market. When the case is made, your staked Cakes
-                      activate Trader Mode &mdash; Blue reads the 15-minute Kalshi drift, prices it with
-                      Black&ndash;Scholes, and sizes the position at quarter-Kelly.
-                    </p>
-
                     <CtaButton
                       variant="secondary"
                       block
@@ -1591,11 +1619,9 @@ export default function Markets() {
                     >
                       Activate Trader Mode
                     </CtaButton>
-                    <p className={styles.stakeFootnote}>
-                      Stakes your {stakeCakes} Cakes so Blue can position this trade: drift read,
-                      Black&ndash;Scholes pricing, quarter-Kelly sizing. The Cakes ledger is still
-                      coming online &mdash; for now this stages the request with Blue and nothing
-                      is executed.
+                    <p className={styles.actionHelp}>
+                      Your Cakes back a community trade. Blue argues the case, then sizes it for the
+                      treasury. Nothing executes yet.
                     </p>
 
                     <MarketDebate

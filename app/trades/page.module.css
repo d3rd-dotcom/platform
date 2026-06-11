@@ -719,6 +719,109 @@
   color: rgba(255, 255, 255, 0.92);
 }
 
+/* Docked chat launcher, bottom-right, sitting below the chat panel. */
+.chatDock {
+  position: fixed;
+  right: 20px;
+  bottom: 24px;
+  z-index: 230;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.chatDock > * {
+  pointer-events: auto;
+}
+
+/* One-time Daemon spotlight that flags this chat as the trading desk. */
+.daemonSpotlight {
+  position: relative;
+  width: 268px;
+  max-width: calc(100vw - 40px);
+  padding: 12px 14px 13px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, var(--markets-light-panel-raised) 0%, var(--markets-light-panel) 100%);
+  box-shadow: var(--shadow-xl);
+  animation: chatBubbleIn 0.24s ease-out;
+}
+
+.daemonSpotlight::after {
+  content: '';
+  position: absolute;
+  right: 30px;
+  bottom: -7px;
+  width: 13px;
+  height: 13px;
+  background: var(--markets-light-panel);
+  border-right: 1px solid var(--color-border-strong);
+  border-bottom: 1px solid var(--color-border-strong);
+  transform: rotate(45deg);
+}
+
+.daemonSpotlightHead {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 6px;
+}
+
+.daemonSpotlightIcon {
+  opacity: 0.85;
+}
+
+.daemonSpotlightKicker {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.14em;
+  color: var(--color-primary);
+}
+
+.daemonSpotlightClose {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-faint);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.daemonSpotlightClose:hover {
+  color: var(--color-text-dark);
+}
+
+.daemonSpotlightBody {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--color-text-soft);
+}
+
+:global([data-theme="dark"]) .daemonSpotlight {
+  background: linear-gradient(180deg, var(--markets-dark-panel-raised) 0%, var(--markets-dark-panel) 100%);
+  border-color: var(--color-border-strong);
+}
+
+:global([data-theme="dark"]) .daemonSpotlight::after {
+  background: var(--markets-dark-panel);
+}
+
+@media (max-width: 900px) {
+  .chatDock {
+    right: 12px;
+    bottom: 16px;
+  }
+}
+
 .blueChatHeader {
   display: flex;
   align-items: center;
@@ -1571,7 +1674,7 @@
    execution receipt. Sits between the status bar and the quant/feed columns. */
 .deskRow {
   display: grid;
-  grid-template-columns: minmax(250px, 340px) auto minmax(0, 1fr);
+  grid-template-columns: minmax(250px, 340px) minmax(0, 1fr);
   align-items: stretch;
   gap: 14px;
   flex: 0 0 auto;
@@ -1587,13 +1690,8 @@
   min-height: 132px;
 }
 
-.deskRow .chatFab {
-  align-self: center;
-  justify-self: center;
-}
-
 .deskRow .receipt {
-  width: min(380px, 100%);
+  width: min(420px, 100%);
   justify-self: end;
 }
 
@@ -1919,18 +2017,18 @@
 }
 
 .stakeLabel {
-  font-family: var(--font-button);
-  font-size: 11px;
-  font-weight: var(--font-weight-bold);
-  letter-spacing: 0.06em;
-  color: var(--color-text-muted);
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-dark);
 }
 
 .stakeReadout {
   font-family: var(--font-button);
-  font-size: 13px;
+  font-size: 17px;
   font-weight: var(--font-weight-bold);
   color: var(--color-primary);
+  font-variant-numeric: tabular-nums;
 }
 
 .stakeChips {
@@ -2001,6 +2099,15 @@
   font-size: 10px;
   line-height: 1.5;
   color: var(--color-text-faint);
+}
+
+/* Human-readable helper under the actions — sans, not thin mono. */
+.actionHelp {
+  margin: 2px 0 4px;
+  font-family: var(--font-primary);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--color-text-soft);
 }
 
 :global([data-theme="dark"]) .stakePanel {
@@ -2493,11 +2600,10 @@
    three-up layout gets cramped. */
 @media (max-width: 1320px) {
   .deskRow {
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .deskRow .receipt {
-    grid-column: 1 / -1;
     width: 100%;
     justify-self: stretch;
   }
