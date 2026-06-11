@@ -16,15 +16,24 @@ import { v4 as uuidv4 } from 'uuid';
  */
 
 function projectUrl(): string | null {
-  if (process.env.SUPABASE_URL) return process.env.SUPABASE_URL.replace(/\/+$/, '');
-  // Derive from the Supabase pooler DATABASE_URL, whose username is
+  // Accept the common public-URL var names already used across Supabase setups.
+  const explicit = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (explicit) return explicit.replace(/\/+$/, '');
+  // Otherwise derive from the Supabase pooler DATABASE_URL, whose username is
   // `postgres.<project-ref>` — the ref maps to https://<ref>.supabase.co.
   const match = (process.env.DATABASE_URL || '').match(/postgres\.([a-z0-9]+)[:.]/i);
   return match ? `https://${match[1]}.supabase.co` : null;
 }
 
 function serviceKey(): string | null {
-  return process.env.SUPABASE_SERVICE_ROLE_KEY || null;
+  // The service-role key shows up under a few names depending on the setup —
+  // use whichever is present so an existing Vercel secret just works.
+  return (
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.SUPABASE_SERVICE_KEY ||
+    process.env.SUPABASE_SECRET_KEY ||
+    null
+  );
 }
 
 export function isStorageConfigured(): boolean {
