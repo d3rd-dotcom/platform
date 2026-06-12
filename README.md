@@ -4,8 +4,6 @@
 
 # Mental Wealth Academy
 
-**Decentralized Education, Micro-University For Humans & Machines Evolving Through Collectively Owned Cyberspace.**
-
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![Solidity](https://img.shields.io/badge/Solidity-0.8.24-363636?style=for-the-badge&logo=solidity&logoColor=white)](https://soliditylang.org/)
 [![Chainlink CRE](https://img.shields.io/badge/Chainlink-CRE-375BD2?style=for-the-badge&logo=chainlink&logoColor=white)](https://chain.link/)
@@ -13,55 +11,47 @@
 
 </div>
 
+Decentralized education infrastructure — a micro-university where humans and machines grow through collectively owned online spaces.
+
+
 ---
 
-## What this is
+## 🧿 What This Is
 
-Mental Wealth Academy is a research cohort and learning app. Members complete quests, Blue reviews the work, and approved submissions can earn USDC rewards from a bounded community treasury.
+The Platform is the Academy's main learning environment — an agentic LMS that goes further than most. It explores the intersection of cyber-psychology, on-chain governance, and AI-driven decision-making, all within a community-owned structure with real stakes.
 
-Governance controls the community spending path. The larger reserve stays behind a Safe/Gnosis multisig, while the app-facing micro-treasury handles smaller quest rewards, grants, and approved proposals.
+At its core: a learning app with a transparent treasury, governed by members, scored by AI, and executed autonomously by Chainlink CRE workflows.
 
 ```text
-// large-treasury: the main reserve. Protected by the 2-of-3 Safe/Gnosis multisig; used for custody, reserves, and high-risk transfers.
-// micro-treasury: the smaller app-facing USDC pool. Governance can route funds here for quests, grants, and approved proposals.
-// quests + USDC rewards: members submit proof of work, Blue reviews it, and approved claims can receive USDC from the micro-treasury.
+Governance contract: 0x2cbb90a761ba64014b811be342b8ef01b471992d on Base Mainnet
 ```
-
-**Governance contract:** [`0x09a4FEfEe8245B644713546FDF28b4160218f7Fc`](https://basescan.org/address/0x09a4FEfEe8245B644713546FDF28b4160218f7Fc) (BlueKillStreak, Base Mainnet)
-
 ---
+⚙️ How It Works
 
-
-
-https://github.com/user-attachments/assets/e111f509-1f39-4009-8c8e-b8beef6165a0
-
-
-
-## What's advanced here
+Two primary surfaces carry the weight of the Academy's innovation:
 
 ### `/community`
 
-The community governance hub. Members submit funding proposals, vote on-chain, and interact with **Blue** -- the AI governance agent reviewing the micro-treasury spending path.
+Members submit funding proposals, vote on-chain, and interact with **Blue**, our AI governance agent. The system runs with minimal bureaucratic overhead by design.
 
-- **Private Governance Calls** -- Blue reviews every proposal through the ElizaOS API, scoring across 6 dimensions (clarity, impact, feasibility, budget, ingenuity, chaos). Reviews are delivered on-chain via CRE workflow DON, making AI scoring tamper-proof.
-- **On-chain Voting** -- Token-weighted community votes with a 50% threshold. Blue's approval level (1-4) determines her voting weight (10%-40%). Level 0 kills the proposal outright.
-- **Quest and USDC Rewards** -- Approved quest work and community proposals can route USDC from the micro-treasury. The large-treasury remains separate multisig custody.
+- **AI Proposal Review** — Every proposal is scored by Azura via the ElizaOS API across six dimensions: clarity, impact, feasibility, budget, ingenuity, and chaos. Scores are written back on-chain through a Chainlink CRE DON, making them tamper-proof. Azura's approval level (0–4) determines her voting weight (0%–40%). Level 0 kills the proposal outright.
+- **On-chain Voting** — Token-weighted community votes with a 50% threshold. When a proposal clears it, it executes automatically — transferring USDC to the recipient, no intermediaries required.
 
-### `/markets`
 
-A live edge-detection dashboard scanning **Kalshi**, the CFTC-regulated US prediction market exchange.
+### `/trades` — Autonomous Trading Dashboard
+
+A Bayesian market scanner powered by Quantum Math Scripts for volume and book-orders.
 
 - **Black-Scholes Binary Pricer** -- Compares Kalshi market prices against a short-dated Black-Scholes model fed by live CoinGecko spot. Edges over 3% become signals.
 - **Quarter-Kelly Sizing** -- Conservative position sizing caps notional at 5% of the trading treasury per position, 40% total exposure.
-- **Live Orderbooks** -- Curated Kalshi markets across commodities, economics, AI, and politics, sorted by balance, volume, and end-date proximity.
-- **Dry-Run Signals** -- Order placement is intentionally not wired. Signals are emitted to the execution log for review; nothing routes capital without explicit approval.
-- **Governance Path** -- Trade proposals can also flow through community governance on `/community`, giving the DAO direct input on trading decisions.
-
+- **Conservative Risk Management** — Positions are capped at 5% of the trading treasury per trade.
+- **Live Orderbooks** — Real-time CLOB data from Polymarket displayed alongside the DON's active positions and trade history.
+- **Governance Path** — Trade proposals can route through the community on /community, giving the DAO direct input on where capital flows.
 ---
 
-## CRE Integration
+## 🔧 CRE Integration
 
-Three CRE workflows run in the Chainlink DON, automating governance review and execution:
+Four CRE workflows run in the Chainlink DON,  automating the full pipeline from governance to execution:
 
 ### 1. `blue-review` -- AI Proposal Scoring
 **Trigger:** `ProposalCreated` event on-chain
@@ -84,31 +74,14 @@ When a trade proposal passes governance and the recipient is the trader contract
 
 ### Pipeline
 
-```mermaid
-flowchart TD
-    A([📝 Proposal Created]) --> B[🤖 CRE: blue-review]
-    B -->|DON scores proposal,\nwrites level on-chain| C{🗳️ Community Votes}
-    C -->|50% threshold reached| D[⚡ CRE: auto-execute]
-    C -->|below threshold| X([❌ Rejected])
-    D -->|DON executes proposal| E{Route?}
-    E -->|Funding| F([💰 USDC to Recipient])
-    E -->|Trade| G[📊 CRE: trade-execute]
-    G -->|DON routes to trader| H([🎯 BlueMarketTrader])
+```📝 Proposal Created
+   → CRE: azura-review  →  DON scores proposal, writes level on-chain
+   → 🗳️ Community Votes
+      ├── 50% threshold reached  →  CRE: auto-execute  →  💰 USDC to Recipient
+      └── Trade proposal         →  CRE: trade-execute  →  🎯 AzuraMarketTrader
 
-    I([⏰ Vercel Cron]) --> J[📈 Kalshi Edge Scanner]
-    J -->|Black-Scholes vs market| K([📡 Signal Log])
-
-    style A fill:#5168FF,color:#fff,stroke:#1A1D33
-    style B fill:#375BD2,color:#fff,stroke:#1A1D33
-    style C fill:#FF7729,color:#fff,stroke:#1A1D33
-    style D fill:#375BD2,color:#fff,stroke:#1A1D33
-    style F fill:#74C465,color:#fff,stroke:#1A1D33
-    style G fill:#375BD2,color:#fff,stroke:#1A1D33
-    style H fill:#0052FF,color:#fff,stroke:#1A1D33
-    style I fill:#5168FF,color:#fff,stroke:#1A1D33
-    style J fill:#5168FF,color:#fff,stroke:#1A1D33
-    style K fill:#74C465,color:#fff,stroke:#1A1D33
-    style X fill:#e74c3c,color:#fff,stroke:#1A1D33
+⏰ Every 30 min
+   → CRE: polymarket-trader  →  Claude Bayesian analysis  →  🎯 AzuraMarketTrader
 ```
 
 ---
@@ -190,3 +163,30 @@ cd cre-workflows
 cre workflow simulate --workflow blue-review
 cre workflow simulate --workflow auto-execute
 ```
+
+---
+ 
+## 🌍 Where This Fits
+ 
+The Platform is one piece of a larger picture. Mental Wealth is building open infrastructure for education and collective intelligence — the way the internet is open infrastructure for communication. No one company controls it. No one company profits from it. It just gets better, for everyone, together.
+ 
+| Repo | What it does |
+| --- | --- |
+| [**platform**](https://github.com/Mental-Wealth-Academy/platform) | This repo — agentic LMS with on-chain governance and AI |
+| [**treasury**](https://github.com/Mental-Wealth-Academy/treasury) | Community-owned USDC treasury with autonomous trading model |
+| [**genetics**](https://github.com/Mental-Wealth-Academy/genetics) | Privacy-first, browser-native genomics lab |
+| [**research**](https://github.com/Mental-Wealth-Academy/research) | Statistical workbench with AI interpretation |
+| [**knowledge**](https://github.com/Mental-Wealth-Academy/knowledge) | Central hub for aggregating and synthesizing knowledge via LLM workflows |
+ 
+---
+ 
+## 🤝 Get Involved
+ 
+Read the docs → [docs.mentalwealthacademy.world](https://docs.mentalwealthacademy.world)
+ 
+Say hello → [research@mentalwealthacademy.net](mailto:research@mentalwealthacademy.net)
+ 
+---
+ 
+*Mental Wealth Foundation — open AI infrastructure, built by everyone, for everyone.*
+*Open protocol · Community governed · Apache-2.0 · © 2026*
