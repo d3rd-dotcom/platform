@@ -43,35 +43,9 @@ interface NavSection {
   badgeType?: 'default' | 'highlight' | 'muted' | 'pro';
 }
 
-const desktopNavSections: NavSection[] = [
-  {
-    id: 'extras',
-    label: 'Pro Features',
-    badge: 'Pro',
-    badgeType: 'pro',
-    items: [
-      { id: 'markets', label: 'Trades', href: '/trades', iconSrc: '/icons/nav-trades-v1.svg', requiresPro: true },
-      { id: 'research', label: 'R-Tool', href: '/research', iconSrc: '/icons/nav-laboratory-v3.svg', requiresPro: true },
-      { id: 'simulations', label: 'Simulations', href: '/simulation', iconSrc: '/icons/nav-simulations-v2.svg', requiresPro: true },
-      { id: 'genetics', label: 'Genetics', href: '/genetics', iconSrc: '/icons/genetics.svg', requiresPro: true },
-    ],
-  },
-];
+const desktopNavSections: NavSection[] = [];
 
-const mobileNavSections: NavSection[] = [
-  {
-    id: 'extras',
-    label: 'Pro Features',
-    badge: 'Pro',
-    badgeType: 'pro',
-    items: [
-      { id: 'markets', label: 'Trades', href: '/trades', iconSrc: '/icons/nav-trades-v1.svg', requiresPro: true },
-      { id: 'research', label: 'R-Tool', href: '/research', iconSrc: '/icons/nav-laboratory-v3.svg', requiresPro: true },
-      { id: 'simulations', label: 'Simulations', href: '/simulation', iconSrc: '/icons/nav-simulations-v2.svg', requiresPro: true },
-      { id: 'genetics', label: 'Genetics', href: '/genetics', iconSrc: '/icons/genetics.svg', requiresPro: true },
-    ],
-  },
-];
+const mobileNavSections: NavSection[] = [];
 
 const primaryNavItems: NavItem[] = [
   {
