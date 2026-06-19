@@ -13,8 +13,6 @@ interface SimCase {
 
 const CASES: SimCase[] = [
   { id: 'case-1', label: 'Case 01', name: 'Meadow district', capacity: 2400, initial: 1742 },
-  { id: 'case-2', label: 'Case 02', name: 'Night market', capacity: 1800, initial: 1289 },
-  { id: 'case-3', label: 'Case 03', name: 'Harbor commons', capacity: 3200, initial: 2451 },
 ];
 
 const TICK_MS = 2400;
@@ -74,7 +72,7 @@ export default function CaseMonitor() {
           <span className={styles.liveDot} aria-hidden="true" />
           Case monitor
         </span>
-        <span className={styles.headMeta}>3 cases · engine online</span>
+        <span className={styles.headMeta}>{CASES.length === 1 ? '1 case' : `${CASES.length} cases`} · engine online</span>
       </header>
 
       <div className={styles.rows}>
