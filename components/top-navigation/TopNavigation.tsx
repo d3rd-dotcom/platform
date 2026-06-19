@@ -14,7 +14,7 @@ import HoverSlideText from '@/components/shared/HoverSlideText';
 const NAV_LINKS = [
   { label: 'Courses',   href: '/courses',   icon: '/icons/nav-course-v2.svg' },
   { label: 'R-Tool',    href: '/research',  icon: '/icons/nav-laboratory-v3.svg' },
-  { label: 'Simulations', href: '/simulation', icon: '/icons/nav-simulations-v2.svg' },
+  { label: 'Pocket World', href: '/simulation', icon: '/icons/nav-simulations-v2.svg' },
 ];
 
 const TopNavigation: React.FC = () => {

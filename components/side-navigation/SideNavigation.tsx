@@ -194,14 +194,12 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
 
   // Locate the top-nav slot the profile card portals into.
   useEffect(() => {
-    setProfileSlot(document.getElementById('topnav-profile-slot'));
-  }, [pathname]);
-
-  useEffect(() => {
-    const collapsed = document.documentElement.getAttribute('data-sidebar-collapsed') === 'true';
-    setIsCollapsed(collapsed);
-    syncSidebarPreference(collapsed);
+    const timer = setTimeout(() => {
+      setProfileSlot(document.getElementById('topnav-profile-slot'));
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
+
 
   const toggleCollapsed = useCallback(() => {
     const next = !isCollapsed;
