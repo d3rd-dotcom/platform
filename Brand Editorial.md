@@ -16,8 +16,6 @@ Use this line, or a trimmed piece of it, whenever a post needs to explain what w
 ---
 ## Three Ways to Frame Us
 
-Teachers: Swap emojis for the teacher alt code pack: ✓ • → ★ ✗
-
 
 # North Stars (the why behind every post)
 
@@ -115,7 +113,9 @@ Ultimately, a quality education needs to be open-sourced.
 ### Access & Rewards
 
 We keep all courses free and plow revenue into R&D. Most money is shoveled back into the DAO for the community to make decisions on. While the rest of the profits are used to proliferate, publicize, and document the experiments so that more people gain value. Memberships are optional and only restrict users from using the tools that deal with onchain finances. No risk or complications used in the curriculums or educational aspects.
-  
+
+Teachers: Swap emojis for the teacher alt code pack: ✓ • → ★ ✗
+
 ### Reinvestment
 
 All revenue is reinvested into R&D:
