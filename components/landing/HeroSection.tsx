@@ -4,6 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import styles from './LandingPage.module.css';
 import LandingEnterAcademyButton from './LandingEnterAcademyButton';
+import LandingEnterAsAgentButton from './LandingEnterAsAgentButton';
 import { KeyFiguresSection } from './KeyFiguresSection';
 import ProblemMap from './ProblemMap';
 
@@ -57,6 +58,7 @@ export const HeroSection: React.FC = () => {
           We generate impact with a philosophy called ethereal horizon. God-level insight and measurable impact for the planet, humans, machines, and animals.</p>
           <div className={styles.heroActions}>
             <LandingEnterAcademyButton dark />
+            <LandingEnterAsAgentButton />
           </div>
         </div>
         <div className={styles.heroVisualColumn} aria-hidden="true">

@@ -541,7 +541,7 @@
   position: static;
   z-index: 3;
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 6px;
   margin-bottom: 12px;
   padding: 6px;
@@ -567,10 +567,15 @@
 }
 .stepperRail .stepChip {
   width: 100%;
-  justify-content: flex-start;
-  gap: 6px;
-  padding: 6px 7px 6px 6px;
-  font-size: 11px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+  padding: 7px 4px;
+  font-size: 10px;
+  line-height: 1.2;
+  border-radius: 12px;
 }
 .stepChip:disabled {
   opacity: 0.4;

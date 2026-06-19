@@ -214,9 +214,9 @@
   align-items: center;
   justify-content: center;
   min-height: 48px;
-  padding: 14px 16px;
+  padding: 12px 14px;
   font-family: var(--font-primary);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: var(--font-weight-medium);
   color: var(--color-text-dark);
   background: #ffffff;
@@ -225,6 +225,9 @@
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
+  -webkit-tap-highlight-color: transparent;
+  /* Ensure touch targets don't have hit detection above the button */
+  margin: 0;
 }
 
 .radioOption input[type="radio"] {
@@ -316,6 +319,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 8px 24px color-mix(in oklch, var(--color-primary) 30%, transparent);
+  -webkit-tap-highlight-color: transparent;
 }
 
 .primaryButton:hover:not(:disabled) {
@@ -340,6 +344,7 @@
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .secondaryButton:hover {
@@ -406,6 +411,7 @@
   cursor: pointer;
   overflow: hidden;
   transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .avatarOption:hover {
@@ -608,8 +614,107 @@
     height: 80px;
   }
 
+  /* Mobile radio group: single column with improved touch targets */
   .radioGroup {
     grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  /* Ensure radio buttons have proper spacing and touch targets on mobile */
+  .radioOption {
+    min-height: 52px;
+    padding: 12px 14px;
+    font-size: 14px;
+    /* Add extra spacing to prevent ghost touches from adjacent buttons */
+    margin-bottom: 2px;
+  }
+
+  /* Increase button padding for easier touch on small screens */
+  .primaryButton,
+  .secondaryButton {
+    padding: 14px 20px;
+    min-height: 48px;
+    font-size: 14px;
+  }
+
+  .input,
+  .input[type="date"] {
+    padding: 13px 14px;
+    padding-left: 30px;
+    font-size: 16px;
+    /* Prevent zoom on focus for iOS */
+  }
+
+  .inputPrefix {
+    left: 14px;
+    font-size: 14px;
+  }
+
+  /* Ensure proper touch area for inputs */
+  .inputWrapper {
+    min-height: 48px;
+  }
+
+  /* Fix for date input on mobile */
+  .input[type="date"] {
+    padding-left: 14px;
+  }
+
+  .inputLabel,
+  .inputGroup legend {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+
+  .inputHint {
+    font-size: 11px;
+    margin-top: 6px;
+  }
+}
+
+/* Very small screens (< 360px) */
+@media (max-width: 360px) {
+  .stepContent {
+    padding: 24px 16px 24px;
+  }
+
+  .stepTitle {
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+
+  .stepDescription {
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+
+  .formFields {
+    gap: 12px;
+  }
+
+  .radioOption {
+    min-height: 50px;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .avatarGrid {
+    gap: 8px;
+  }
+
+  .avatarOption {
+    width: 70px;
+    height: 70px;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+
+  .explainerCard {
+    padding: 10px 12px;
   }
 }
 

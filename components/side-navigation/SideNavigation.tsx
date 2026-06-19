@@ -44,6 +44,7 @@ interface NavSection {
   badgeType?: 'default' | 'highlight' | 'muted' | 'pro';
 }
 
+<<<<<<< HEAD
 const desktopNavSections: NavSection[] = [
   {
     id: 'extras',
@@ -71,6 +72,11 @@ const mobileNavSections: NavSection[] = [
     ],
   },
 ];
+=======
+const desktopNavSections: NavSection[] = [];
+
+const mobileNavSections: NavSection[] = [];
+>>>>>>> 4149a4bd678bbf626a1d7f38495cdf91f7d1f1dc
 
 const primaryNavItems: NavItem[] = [
   {
