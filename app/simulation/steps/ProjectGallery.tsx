@@ -73,9 +73,9 @@ export default function ProjectGallery({
     <div className={styles.gallery}>
       <header className={styles.galleryHeader}>
         <div>
-          <h1 className={styles.galleryTitle}>Simulations</h1>
+          <h1 className={styles.galleryTitle}>Predict Any Future</h1>
           <p className={styles.gallerySub}>
-            Turn a document into a living world of autonomous agents, then read the future it produces.
+            Ask any question, let 100 agents simulate what would happen, perfect for science experiments and future predictions.
           </p>
         </div>
         <Button
