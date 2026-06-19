@@ -787,7 +787,7 @@ export default function DailyNotes({
           className={styles.cardButton}
           onClick={handleCompactClick}
           onMouseEnter={() => play('hover')}
-          aria-label="Open Morning Note"
+          aria-label="Open Journal"
         >
           <Image
             className={styles.icon}
@@ -798,7 +798,7 @@ export default function DailyNotes({
           />
           <div className={styles.cardText}>
             <span className={`${styles.label} ${compact ? styles.labelCompact : ''}`}>
-              {compact ? 'Morning Note' : 'Morning Pages'}
+              Journal
             </span>
             {!compact && (
               <span className={`${styles.sublabel} ${compact ? styles.sublabelCompact : ''}`}>
