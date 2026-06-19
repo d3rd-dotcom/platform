@@ -17,9 +17,11 @@ interface SubmitProposalModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
+  mode?: 'proposal' | 'experiment';
 }
 
-const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClose, onSuccess }) => {
+const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClose, onSuccess, mode = 'proposal' }) => {
+  const isExperiment = mode === 'experiment';
   const { play } = useSound();
   const { address, isConnected, connector } = useAccount();
   const { login } = usePrivy();
@@ -237,13 +239,14 @@ const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClo
         onClose={handleSuccessClose}
         txHash={successModal.txHash}
         proposalId={successModal.proposalId}
+        mode={mode}
       />
       {!isOpen ? null : (
       <>
       <div className={styles.overlay} onClick={onClose} />
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
-          <h2 className={styles.modalTitle}>Submit Proposal</h2>
+          <h2 className={styles.modalTitle}>{isExperiment ? 'Submit Experiment' : 'Submit Proposal'}</h2>
           <button className={styles.closeButton} onClick={() => { play('click'); onClose(); }} onMouseEnter={() => play('hover')} aria-label="Close" type="button">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -298,12 +301,12 @@ const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClo
           {/* Title Input */}
           <div className={styles.inputGroup}>
             <label className={styles.label}>
-              <span className={styles.labelText}>Proposal Title</span>
+              <span className={styles.labelText}>{isExperiment ? 'Experiment Title' : 'Proposal Title'}</span>
             </label>
             <input
               type="text"
               className={styles.input}
-              placeholder="Enter your proposal title..."
+              placeholder={isExperiment ? 'Enter your experiment title...' : 'Enter your proposal title...'}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               maxLength={120}
@@ -362,11 +365,11 @@ const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClo
           {/* Markdown Input */}
           <div className={styles.inputGroup}>
             <label className={styles.label}>
-              <span className={styles.labelText}>Proposal Details</span>
+              <span className={styles.labelText}>{isExperiment ? 'Experiment Details' : 'Proposal Details'}</span>
             </label>
             <textarea
               className={styles.textarea}
-              placeholder="Describe your proposal, objectives, budget, and timeline..."
+              placeholder={isExperiment ? 'Describe your experiment, objectives, hypothesis, budget, and timeline...' : 'Describe your proposal, objectives, budget, and timeline...'}
               value={proposal}
               onChange={(e) => setProposal(e.target.value)}
               rows={12}
@@ -389,13 +392,13 @@ const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClo
                 <>
                   <div className={styles.spinner}></div>
                   <span>
-                    {submissionStep === 'blockchain' && 'Creating (sign transaction)...'}
+                    {submissionStep === 'blockchain' && (isExperiment ? 'Creating experiment (sign transaction)...' : 'Creating proposal (sign transaction)...')}
                     {submissionStep === 'database' && 'Saving to database...'}
                     {submissionStep === 'idle' && 'Submitting...'}
                   </span>
                 </>
               ) : (
-                <span>Submit Proposal</span>
+                <span>{isExperiment ? 'Submit Experiment' : 'Submit Proposal'}</span>
               )}
             </button>
           </div>

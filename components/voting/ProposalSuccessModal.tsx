@@ -9,6 +9,7 @@ interface ProposalSuccessModalProps {
   onClose: () => void;
   txHash: string;
   proposalId: number;
+  mode?: 'proposal' | 'experiment';
 }
 
 export default function ProposalSuccessModal({
@@ -16,11 +17,13 @@ export default function ProposalSuccessModal({
   onClose,
   txHash,
   proposalId,
+  mode = 'proposal',
 }: ProposalSuccessModalProps) {
   const { play } = useSound();
 
   if (!isOpen) return null;
 
+  const isExperiment = mode === 'experiment';
   const baseScanUrl = `https://basescan.org/tx/${txHash}`;
   const shortTxHash = `${txHash.slice(0, 10)}...${txHash.slice(-8)}`;
 
@@ -30,17 +33,21 @@ export default function ProposalSuccessModal({
       <div className={styles.modal}>
         <div className={styles.modalHeader}>
           <div className={styles.successIcon}>✓</div>
-          <h2 className={styles.modalTitle}>Proposal Submitted!</h2>
+          <h2 className={styles.modalTitle}>
+            {isExperiment ? 'Experiment Submitted!' : 'Proposal Submitted!'}
+          </h2>
         </div>
 
         <div className={styles.modalContent}>
           <p className={styles.message}>
-            Your proposal has been created on-chain and saved to the database.
+            Your {isExperiment ? 'experiment' : 'proposal'} has been created on-chain and saved to the database.
           </p>
 
           <div className={styles.detailsCard}>
             <div className={styles.detailRow}>
-              <span className={styles.detailLabel}>Proposal ID</span>
+              <span className={styles.detailLabel}>
+                {isExperiment ? 'Experiment ID' : 'Proposal ID'}
+              </span>
               <span className={styles.detailValue}>#{proposalId}</span>
             </div>
             <div className={styles.detailRow}>
@@ -62,13 +69,13 @@ export default function ProposalSuccessModal({
           <div className={styles.blueNote}>
             <div className={styles.blueAvatar}>✦</div>
             <span className={styles.blueText}>
-              Blue is reviewing your proposal now. Check back soon for her decision!
+              Blue is reviewing your {isExperiment ? 'experiment' : 'proposal'} now. Check back soon for her decision!
             </span>
           </div>
 
           <div className={styles.actions}>
             <Link href="/home" className={styles.primaryButton} onClick={() => { play('navigation'); onClose(); }} onMouseEnter={() => play('hover')}>
-              View All Proposals
+              {isExperiment ? 'View All Experiments' : 'View All Proposals'}
             </Link>
             <button className={styles.secondaryButton} onClick={() => { play('click'); onClose(); }} onMouseEnter={() => play('hover')}>
               Close
@@ -79,3 +86,4 @@ export default function ProposalSuccessModal({
     </>
   );
 }
+

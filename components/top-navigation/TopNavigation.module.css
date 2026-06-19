@@ -352,11 +352,10 @@
   }
 }
 
-/* Phone & small tablet — top nav hidden, bottom nav takes over.
-   Matches the body padding-top: 72px -> 0 switch in globals.css so the
-   header and its reserved space appear and disappear together. */
 @media (max-width: 900px) {
   .header {
     display: none;
   }
 }
+
+
