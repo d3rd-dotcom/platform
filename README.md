@@ -12,7 +12,7 @@ Decentralized education infrastructure — a micro-university where humans and m
 
 ---
 
-<img width="1690" height="864" alt="Screenshot 2026-06-19 at 12 10 45 AM" src="https://github.com/user-attachments/assets/25db7231-5431-4427-85cb-51f9ffade66d" />
+<img width="1676" height="863" alt="Screenshot 2026-06-19 at 3 28 34 PM" src="https://github.com/user-attachments/assets/e0191dcb-6079-4c89-af0d-5986b356a7e1" />
 
 
 ## 🧿 What This Is
