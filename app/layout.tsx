@@ -66,7 +66,7 @@ export const metadata: Metadata = {
     description: 'Unlock your potential, reach your horizon.',
     images: [
       {
-        url: 'https://i.imgur.com/Ouwx2i8.png',
+        url: 'https://imgur.com',
         width: 1200,
         height: 630,
         alt: 'Mental Wealth Academy — a 12-week personal development program with Blue',
@@ -78,12 +78,12 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Mental Wealth Academy',
     description: 'Unlock your potential, reach your horizon.',
-    images: ['https://i.imgur.com/Ouwx2i8.png'],
+    images: ['https://imgur.com'],
   },
   other: {
     'fc:miniapp': JSON.stringify({
       version: 'next',
-      imageUrl: 'https://i.imgur.com/Ouwx2i8.png',
+      imageUrl: 'https://imgur.com',
       button: {
         title: 'Launch Mental Wealth Academy',
         action: {
@@ -107,8 +107,8 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} ${poppins.variable} ${spaceGrotesk.variable} ${patrickHand.variable}`}
-      data-sidebar-collapsed="true"
-      style={{ '--sidebar-width': '72px' } as CSSProperties}
+      data-sidebar-collapsed="false"
+      style={{ '--sidebar-width': '265px' } as CSSProperties}
       suppressHydrationWarning
     >
       <head>
@@ -168,17 +168,15 @@ export default function RootLayout({
             `,
           }}
         />
-            <script
+        <script
           dangerouslySetInnerHTML={{
             __html: `
-              // Suppress only non-critical wallet SDK analytics errors
               if (typeof window !== 'undefined') {
                 const originalError = window.console.error;
                 window.console.error = function(...args) {
                   const errorString = String(args[0] || '');
                   const errorMessage = args.join(' ');
                   
-                  // Check if any argument is an object with AnalyticsSDKApiError context
                   const hasAnalyticsContext = args.some(arg => {
                     if (typeof arg === 'object' && arg !== null) {
                       if (arg.context === 'AnalyticsSDKApiError') {
@@ -190,14 +188,11 @@ export default function RootLayout({
                             argString.includes('Analytics SDK')) {
                           return true;
                         }
-                      } catch (e) {
-                        // Ignore JSON stringify errors
-                      }
+                      } catch (e) {}
                     }
                     return false;
                   });
                   
-                  // Suppress wallet SDK analytics fetch errors (non-critical)
                   const isAnalyticsError = 
                     hasAnalyticsContext ||
                     ((errorString.includes('Analytics SDK') || errorMessage.includes('Analytics SDK')) &&
@@ -209,28 +204,16 @@ export default function RootLayout({
                      errorMessage.includes('TypeError: Failed to fetch')));
                   
                   if (isAnalyticsError) {
-                    return; // Suppress analytics errors
+                    return;
                   }
                   
-                  // Suppress Coinbase Wallet SDK analytics errors (non-critical)
-                  if (errorMessage.includes('cca-lite.coinbase.com') ||
+                  if (errorMessage.includes('://coinbase.com') ||
                       errorMessage.includes('ERR_BLOCKED_BY_CLIENT') ||
-                      errorString.includes('cca-lite.coinbase.com')) {
+                      errorString.includes('://coinbase.com')) {
                     return;
                   }
                   
                   originalError.apply(console, args);
-                };
-                
-                // Suppress network warnings for blocked wallet telemetry requests
-                const originalWarn = window.console.warn;
-                window.console.warn = function(...args) {
-                  const warnMessage = args.join(' ');
-                  if (warnMessage.includes('cca-lite.coinbase.com') ||
-                      warnMessage.includes('ERR_BLOCKED_BY_CLIENT')) {
-                    return;
-                  }
-                  originalWarn.apply(console, args);
                 };
               }
             `,
@@ -238,12 +221,12 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <PwaRegistrar />
-        <MiniAppProvider>
-          <SoundProvider>
+        <SoundProvider>
+          <MiniAppProvider>
             <RouteShell>{children}</RouteShell>
-          </SoundProvider>
-        </MiniAppProvider>
+          </MiniAppProvider>
+        </SoundProvider>
+        <PwaRegistrar />
         <SpeedInsights />
         <Analytics />
       </body>
