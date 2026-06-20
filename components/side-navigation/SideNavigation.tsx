@@ -51,8 +51,8 @@ const desktopNavSections: NavSection[] = [
     badge: 'Pro',
     badgeType: 'pro',
     items: [
-      { id: 'markets', label: 'Trades', href: '/trades', iconSrc: '/icons/nav-trades-v1.svg', requiresPro: true },
       { id: 'genetics', label: 'Genetics', href: '/genetics', iconSrc: '/icons/genetics.svg', requiresPro: true },
+      { id: 'markets', label: 'Endowment', href: '/trades', iconSrc: '/icons/nav-trades-v1.svg', requiresPro: true },
     ],
   },
 ];
@@ -78,12 +78,10 @@ const primaryNavItems: NavItem[] = [
     href: '/home',
     iconSrc: '/icons/nav-home.svg',
   },
-  {
-    id: 'quests',
-    label: 'Quests',
-    href: '/quests',
-    iconSrc: '/icons/nav-quests-v3.svg',
-  },
+  { id: 'course',
+    label: 'Course',
+    href: '/course',
+    iconSrc: '/icons/nav-course-v2.svg' },
   {
     id: 'surveys',
     label: 'Surveys',
