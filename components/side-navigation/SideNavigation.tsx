@@ -85,8 +85,8 @@ const primaryNavItems: NavItem[] = [
     iconSrc: '/icons/nav-surveys-v5.svg',
   },
   {
-    id: 'course',
-    label: 'Course',
+    id: 'study',
+    label: 'study',
     href: '/course',
     iconSrc: '/icons/nav-course-v2.svg',
   },
