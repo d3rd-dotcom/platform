@@ -798,7 +798,7 @@ export default function DailyNotes({
           />
           <div className={styles.cardText}>
             <span className={`${styles.label} ${compact ? styles.labelCompact : ''}`}>
-              Journal
+              Field Notes
             </span>
             {!compact && (
               <span className={`${styles.sublabel} ${compact ? styles.sublabelCompact : ''}`}>
