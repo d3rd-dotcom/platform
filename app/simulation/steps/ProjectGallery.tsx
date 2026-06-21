@@ -9,6 +9,15 @@ import type { Project } from '@/lib/simulation-api';
 import { useAsync } from '../usePolling';
 import styles from '../simulation.module.css';
 
+const BANNER_GRADIENTS = [
+  'linear-gradient(135deg, #4F46E5 0%, #818CF8 100%)',
+  'linear-gradient(135deg, #0F6E56 0%, #1D9E75 100%)',
+  'linear-gradient(135deg, #993556 0%, #D4537E 100%)',
+  'linear-gradient(135deg, #185FA5 0%, #378ADD 100%)',
+  'linear-gradient(135deg, #854F0B 0%, #EF9F27 100%)',
+  'linear-gradient(135deg, #3B6D11 0%, #639922 100%)',
+];
+
 export default function ProjectGallery({
   online,
   onOpen,
@@ -72,29 +81,29 @@ export default function ProjectGallery({
   return (
     <div className={styles.gallery}>
       <header className={styles.galleryHeader}>
-        <div>
-          <h1 className={styles.galleryTitle}>Predict Any Future</h1>
-          <p className={styles.gallerySub}>
-            Ask any question, let 100 agents simulate what would happen, perfect for science experiments and future predictions.
-          </p>
-        </div>
-        <Button
+        <h1 className={styles.galleryTitle}>Predict any future</h1>
+        <p className={styles.gallerySub}>
+          Ask any question, let 100 agents simulate what would happen, perfect for science
+          experiments and future predictions.
+        </p>
+        <button
+          className={styles.newWorldBtn}
           onClick={() => {
             play('click');
             setCreating((v) => !v);
           }}
           onMouseEnter={() => play('hover')}
         >
-          {creating ? 'Close' : 'New world'}
-        </Button>
+          {creating ? 'Close' : '+ New world'}
+        </button>
       </header>
 
       {online === false && (
         <div className={styles.warnBanner}>
           The simulation engine is offline. Set <code>SIMULATION_API_URL</code> and{' '}
           <code>SIMULATION_API_SECRET</code> to your deployed backend (see{' '}
-          <code>simulation-backend/DEPLOY.md</code>). You can still browse the
-          interface, but building worlds needs the backend running.
+          <code>simulation-backend/DEPLOY.md</code>). You can still browse the interface, but
+          building worlds needs the backend running.
         </div>
       )}
 
@@ -186,7 +195,9 @@ export default function ProjectGallery({
         </div>
       )}
 
-      <section className={`${styles.projectGrid} ${loadingProjects ? styles.projectGridLoading : ''}`}>
+      <section
+        className={`${styles.projectGrid} ${loadingProjects ? styles.projectGridLoading : ''}`}
+      >
         {loadingProjects && (
           <div className={styles.loaderBlock} aria-live="polite">
             <DotmSquare15 speed={0.9} dotSize={5} gap={3} />
@@ -196,7 +207,7 @@ export default function ProjectGallery({
         {!loading && projects.length === 0 && (
           <p className={styles.muted}>No worlds yet. Create your first one above.</p>
         )}
-        {projects.map((p) => (
+        {projects.map((p, i) => (
           <button
             key={p.project_id}
             className={styles.projectCard}
@@ -206,27 +217,28 @@ export default function ProjectGallery({
             }}
             onMouseEnter={() => play('hover')}
           >
-            <div className={styles.projectCardTop}>
-              <span className={styles.projectStatus} data-status={p.status}>
-                {prettyStatus(p.status)}
+            <div
+              className={styles.projectCardBanner}
+              style={{ background: BANNER_GRADIENTS[i % BANNER_GRADIENTS.length] }}
+            >
+              <span className={styles.projectStatus}>
+                Pocket World simulated
               </span>
             </div>
-            <h3 className={styles.projectCardName}>{p.name}</h3>
-            {p.simulation_requirement && (
-              <p className={styles.projectCardReq}>{p.simulation_requirement}</p>
-            )}
-            <span className={styles.projectCardMeta}>
-              {p.files?.length ? `${p.files.length} document(s)` : 'No documents'}
-            </span>
+            <div className={styles.projectCardInner}>
+              <h3 className={styles.projectCardName}>{p.name}</h3>
+              {p.simulation_requirement && (
+                <p className={styles.projectCardReq}>{p.simulation_requirement}</p>
+              )}
+            </div>
+            <div className={styles.projectCardFooter}>
+              <span className={styles.projectCardMeta}>
+                {p.files?.length ? `${p.files.length} source${p.files.length !== 1 ? 's' : ''}` : 'No sources'}
+              </span>
+            </div>
           </button>
         ))}
       </section>
     </div>
   );
-}
-
-function prettyStatus(s: string) {
-  return s
-    .replace(/_/g, ' ')
-    .replace(/^\w/, (c) => c.toUpperCase());
 }
