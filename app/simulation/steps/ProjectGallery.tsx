@@ -81,10 +81,10 @@ export default function ProjectGallery({
   return (
     <div className={styles.gallery}>
       <header className={styles.galleryHeader}>
-        <h1 className={styles.galleryTitle}>Predict any future</h1>
+        <h1 className={styles.galleryTitle}>Simulate a reality</h1>
         <p className={styles.gallerySub}>
-          Ask any question, let 100 agents simulate what would happen, perfect for science
-          experiments and future predictions.
+          Ask Blue a question, watch as she conjures up 100s of realistic agents to simulate the
+          outcome, perfect for science experiments and future predictions.
         </p>
         <button
           className={styles.newWorldBtn}
@@ -221,9 +221,7 @@ export default function ProjectGallery({
               className={styles.projectCardBanner}
               style={{ background: BANNER_GRADIENTS[i % BANNER_GRADIENTS.length] }}
             >
-              <span className={styles.projectStatus}>
-                Pocket World simulated
-              </span>
+              <span className={styles.projectStatus}>Pocket World simulated</span>
             </div>
             <div className={styles.projectCardInner}>
               <h3 className={styles.projectCardName}>{p.name}</h3>
@@ -233,7 +231,9 @@ export default function ProjectGallery({
             </div>
             <div className={styles.projectCardFooter}>
               <span className={styles.projectCardMeta}>
-                {p.files?.length ? `${p.files.length} source${p.files.length !== 1 ? 's' : ''}` : 'No sources'}
+                {p.files?.length
+                  ? `${p.files.length} source${p.files.length !== 1 ? 's' : ''}`
+                  : 'No sources'}
               </span>
             </div>
           </button>

@@ -268,23 +268,24 @@
   .galleryHeader {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
+    align-items: flex-start;
+    text-align: left;
     gap: 8px;
     margin-bottom: clamp(14px, 2.4vh, 24px);
     flex: 0 0 auto;
   }
   .galleryTitle {
-    font-family: var(--font-secondary);
-    font-size: 28px;
+    font-family: var(--font-primary);
+    font-size: 42px;
     font-weight: 700;
     margin: 0 0 4px;
+    line-height: 1.1;
   }
   .gallerySub {
     font-size: 14px;
     opacity: 0.6;
-    max-width: 540px;
-    margin: 0 auto 4px;
+    max-width: 580px;
+    margin: 0 0 4px;
   }
   .newWorldBtn {
     display: inline-flex;
