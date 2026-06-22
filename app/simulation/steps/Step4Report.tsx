@@ -166,15 +166,16 @@ export default function Step4Report({
               <button className={styles.secondaryBtn} onClick={() => generate(true)} onMouseEnter={() => play('hover')}>
                 Regenerate
               </button>
-              <Button
+              <button
+                className={styles.secondaryBtn}
                 onClick={() => {
                   play('navigation');
                   onDone();
                 }}
                 onMouseEnter={() => play('hover')}
               >
-                Talk to the world →
-              </Button>
+                Discuss
+              </button>
             </>
           ) : (
             <Button

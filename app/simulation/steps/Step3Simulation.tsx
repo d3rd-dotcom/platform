@@ -88,6 +88,11 @@ export default function Step3Simulation({
       if (runnerStatus === 'completed' && previous && previous !== 'completed') play('success');
       setError(null);
     }
+    // Stale error field from a prior run can coexist with completed status.
+    // Always clear it for terminal states.
+    if (['completed', 'stopped', 'idle'].includes(runnerStatus)) {
+      setError(null);
+    }
   }, [play]);
 
   useEffect(() => {
@@ -175,6 +180,7 @@ export default function Step3Simulation({
   }, [actions]);
 
   const completed = ['completed', 'stopped'].includes(status.runner_status || '');
+  const [mirrorTab, setMirrorTab] = useState<'1' | '2'>('1');
 
   return (
     <div className={styles.panel}>
@@ -238,10 +244,34 @@ export default function Step3Simulation({
 
       {error && <p className={styles.errorText}>{error}</p>}
 
-      <div className={styles.spaces}>
-        <Feed title="Info Plaza" subtitle="same agents, public broadcast" actions={plaza} empty={started} />
-        <Feed title="Topic Community" subtitle="same agents, threaded discussion" actions={community} empty={started} />
+      <div className={styles.modeToggle} role="tablist" aria-label="Feed mirror">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={mirrorTab === '1'}
+          className={`${styles.modeBtn} ${mirrorTab === '1' ? styles.modeBtnActive : ''}`}
+          onClick={() => { play('click'); setMirrorTab('1'); }}
+          onMouseEnter={() => play('hover')}
+        >
+          Mirror 1
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={mirrorTab === '2'}
+          className={`${styles.modeBtn} ${mirrorTab === '2' ? styles.modeBtnActive : ''}`}
+          onClick={() => { play('click'); setMirrorTab('2'); }}
+          onMouseEnter={() => play('hover')}
+        >
+          Mirror 2
+        </button>
       </div>
+      {mirrorTab === '1' && (
+        <Feed title="Mirror 1" subtitle="same agents, public broadcast" actions={plaza} empty={started} />
+      )}
+      {mirrorTab === '2' && (
+        <Feed title="Mirror 2" subtitle="same agents, threaded discussion" actions={community} empty={started} />
+      )}
     </div>
   );
 }

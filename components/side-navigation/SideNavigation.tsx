@@ -856,7 +856,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
       {/* Floating Ask Blue button — bottom right (desktop).
           The /trades desk ships its own "Trade Using Blue" launcher in the same
           spot, so suppress this one there to avoid two stacked FABs. */}
-      {!isChatOpen && pathname !== '/trades' && (
+      {!isChatOpen && pathname !== '/trades' && pathname !== '/simulation' && (
         <button
           type="button"
           className={`${styles.askBlueFab} hover-slide-trigger`}

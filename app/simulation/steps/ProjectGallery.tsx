@@ -124,7 +124,7 @@ export default function ProjectGallery({
             onMouseEnter={() => play('hover')}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-            Your Pocket
+            Your Worlds
           </button>
           <button
             className={styles.actionBtn}
@@ -155,7 +155,7 @@ export default function ProjectGallery({
             <div className={styles.modalHeader}>
               <h2 className={styles.modalTitle}>Create a new world</h2>
               <button className={styles.modalClose} onClick={() => setCreating(false)} aria-label="Close">✕</button>
-            </div>
+              </div>
             <label className={styles.field}>
               <span>World name</span>
               <input
@@ -206,7 +206,7 @@ export default function ProjectGallery({
                   </small>
                 </>
               )}
-            </div>
+              </div>
             <div className={styles.field}>
               <span id="source-documents-label">Source documents</span>
               <input
@@ -232,7 +232,7 @@ export default function ProjectGallery({
               {files.length > 0 && (
                 <span className={styles.fileList}>{files.map((f) => f.name).join(', ')}</span>
               )}
-            </div>
+              </div>
             {error && <p className={styles.errorText}>{error}</p>}
             <Button onClick={submit} onMouseEnter={() => play('hover')} disabled={busy}>
               {busy ? 'Analyzing documents…' : 'Build knowledge graph'}
@@ -241,72 +241,72 @@ export default function ProjectGallery({
         </div>
       )}
 
-      <div className={styles.galleryBody}>
-        <section className={styles.projectGrid}>
-          {!loading && projects.length === 0 && (
-            <p className={styles.muted}>No worlds yet. Create your first one above.</p>
-          )}
-          {projects.map((p, i) => (
-            <button
-              key={p.project_id}
-              className={styles.projectCard}
-              onClick={() => {
-                play('navigation');
-                onOpen(p);
-              }}
-              onMouseEnter={() => play('hover')}
-            >
-              <div className={styles.projectCardBody}>
-                <h3 className={styles.projectCardName}>{p.name}</h3>
-                <p className={styles.projectCardAuthor}>by you</p>
-                {(p.ontology?.analysis_summary || p.simulation_requirement) && (
-                  <p className={styles.projectCardExcerpt}>{p.ontology?.analysis_summary || p.simulation_requirement}</p>
-                )}
-                <span className={styles.observeBtn}>
-                  Observe findings
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                </span>
+      <section className={styles.projectGrid}>
+        {!loading && projects.length === 0 && (
+          <p className={styles.muted}>No worlds yet. Create your first one above.</p>
+        )}
+        {projects.map((p, i) => (
+          <button
+            key={p.project_id}
+            className={styles.projectCard}
+            onClick={() => {
+              play('navigation');
+              onOpen(p);
+            }}
+            onMouseEnter={() => play('hover')}
+          >
+            <div className={styles.projectCardBody}>
+              <h3 className={styles.projectCardName}>{p.name}</h3>
+              <p className={styles.projectCardAuthor}>by you</p>
+              {(p.ontology?.analysis_summary || p.simulation_requirement) && (
+                <p className={styles.projectCardExcerpt}>{p.ontology?.analysis_summary || p.simulation_requirement}</p>
+              )}
+              <span className={styles.observeBtn}>
+                Observe findings
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </span>
               </div>
-              <div className={styles.projectCardVisual}>
-                <div
-                  className={styles.projectCardVisualInner}
-                  style={{ background: 'var(--color-surface-2)' }}
-                >
-                  <span className={styles.projectStatus}>Pocket World</span>
+            <div className={styles.projectCardVisual}>
+              <div
+                className={`${styles.projectCardVisualInner} ${styles.projectCardVisualWithImage}`}
+                style={{
+                  backgroundImage: `url(${i === 0 ? '/world-first.png' : '/world-other.png'})`,
+                }}
+              >
+                <span className={styles.projectStatus}>Pocket World</span>
                 </div>
               </div>
+          </button>
+        ))}
+      </section>
+      <div className={styles.galleryRight}>
+        <article className={styles.recentActivityCard}>
+          <div className={styles.recentActivityHeader}>
+            <h3 className={styles.recentActivityTitle}>Recent Activity</h3>
+            <button className={styles.recentActivityLink} onClick={() => {}}>
+              View all
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </button>
-          ))}
-        </section>
-        <div className={styles.galleryRight}>
-          <article className={styles.recentActivityCard}>
-            <div className={styles.recentActivityHeader}>
-              <h3 className={styles.recentActivityTitle}>Recent Activity</h3>
-              <button className={styles.recentActivityLink} onClick={() => {}}>
-                View all
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-              </button>
-            </div>
-            <div className={styles.recentActivityList}>
-              {SEED_POSTS.map((post) => (
-                <div key={post.id} className={styles.recentMiniCard}>
-                  <div className={styles.recentMiniBody}>
-                    <p className={styles.recentMiniTitle}>{post.title}</p>
-                    <div className={styles.recentMiniMeta}>
-                      <span>{post.creator}</span>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                      <span>{post.users}</span>
-                      <span className={styles.recentMiniAmount}>${post.amount} available</span>
-                    </div>
-                  </div>
-                  <div className={styles.recentMiniImage}>
-                    <img src={post.img} alt="" />
-                  </div>
+          </div>
+          <div className={styles.recentActivityList}>
+            {SEED_POSTS.map((post) => (
+              <div key={post.id} className={styles.recentMiniCard}>
+                <div className={styles.recentMiniBody}>
+                  <p className={styles.recentMiniTitle}>{post.title}</p>
+                  <div className={styles.recentMiniMeta}>
+                    <span>{post.creator}</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                  <span>{post.users}</span>
+                  <span className={styles.recentMiniAmount}>${post.amount} available</span>
                 </div>
-              ))}
-            </div>
-          </article>
+                </div>
+                <div className={styles.recentMiniImage}>
+                  <img src={post.img} alt="" />
+                </div>
+              </div>
+          ))}
         </div>
+        </article>
       </div>
     </div>
   );

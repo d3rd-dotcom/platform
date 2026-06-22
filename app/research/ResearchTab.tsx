@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -15,6 +15,7 @@ import {
 import { Scatter, Bar, Line } from 'react-chartjs-2';
 import Image from 'next/image';
 import { useTheme } from '@/components/theme/ThemeProvider';
+import { getTransferPayload, clearTransferPayload } from '@/lib/simulation-to-research';
 import styles from './page.module.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
@@ -320,6 +321,19 @@ export default function ResearchTab() {
     setBlueRating(null);
     showToast(`DATASET LOADED — N=${data.length}, ${cols.length} VARIABLES`);
   }, [showToast]);
+
+  // Auto-load simulation data transferred from Step 5
+  useEffect(() => {
+    const payload = getTransferPayload();
+    if (payload && payload.csv) {
+      const { columns: cols, rows: data } = parseCsv(payload.csv);
+      if (cols.length > 0 && data.length > 0) {
+        setCsvText(payload.csv);
+        loadData(cols, data);
+      }
+      clearTransferPayload();
+    }
+  }, [loadData, showToast]);
 
   const parseAndLoad = useCallback((text: string) => {
     setParsing(true);

@@ -1,9 +1,14 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import * as api from '@/lib/simulation-api';
 import type { AgentProfile } from '@/lib/simulation-api';
+import {
+  fetchSimulationData,
+  saveTransferPayload,
+} from '@/lib/simulation-to-research';
 import Button from '@/components/button/Button';
 import { useSound } from '@/hooks/useSound';
 import type { WorkflowState } from '../SimulationWorkspace';
@@ -16,6 +21,7 @@ interface Msg {
 }
 
 export default function Step5Interaction({ wf }: { wf: WorkflowState }) {
+  const router = useRouter();
   const { play } = useSound();
   const simId = wf.simulationId as string;
   const [mode, setMode] = useState<'report' | 'agent'>('report');
@@ -25,6 +31,7 @@ export default function Step5Interaction({ wf }: { wf: WorkflowState }) {
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [transferring, setTransferring] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const targetId = target ? agentId(target) : undefined;
 
@@ -92,13 +99,48 @@ export default function Step5Interaction({ wf }: { wf: WorkflowState }) {
     }
   };
 
+  const transferToResearch = async () => {
+    play('click');
+    setTransferring(true);
+    setError(null);
+    try {
+      const payload = await fetchSimulationData(
+        wf.project.project_id,
+        wf.graphId!,
+        simId,
+        wf.project.name,
+      );
+      saveTransferPayload(payload);
+      router.push('/research');
+    } catch (e) {
+      play('error');
+      setError(e instanceof Error ? e.message : 'Transfer failed');
+    } finally {
+      setTransferring(false);
+    }
+  };
+
   return (
     <div className={styles.panel}>
-      <h2 className={styles.panelTitle}>Interaction</h2>
-      <p className={styles.panelLead}>
-        Question the world. Ask the Report Agent about emergent dynamics, or interview any agent
-        directly about what they did and why.
-      </p>
+      <div className={styles.simHeader}>
+        <div>
+          <h2 className={styles.panelTitle}>Interaction</h2>
+          <p className={styles.panelLead}>
+            Question the world. Ask the Report Agent about emergent dynamics, or interview any agent
+            directly about what they did and why.
+          </p>
+        </div>
+        <div className={styles.simControls}>
+          <button
+            className={styles.secondaryBtn}
+            onClick={transferToResearch}
+            onMouseEnter={() => play('hover')}
+            disabled={transferring}
+          >
+            {transferring ? 'Transferring…' : 'Transfer to R-Tool'}
+          </button>
+        </div>
+      </div>
 
       <div className={styles.modeToggle}>
         <button
