@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useMemo, useCallback } from 'react';
 import { DotmSquare3 } from '@/components/dot-matrix/DotmSquare3';
 import Button from '@/components/button/Button';
 import { useSound } from '@/hooks/useSound';
@@ -17,6 +17,15 @@ const SEED_POSTS = [
   { id: 'sp-5', title: 'RFC: Open Protocol for Burnout Detection in Dev Teams', creator: 'Prism', users: 4, amount: 175, img: '/anbel05.png' },
 ];
 
+function formatDate(iso?: string) {
+  if (!iso) return '';
+  try {
+    return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  } catch {
+    return '';
+  }
+}
+
 export default function ProjectGallery({
   online,
   onOpen,
@@ -29,8 +38,48 @@ export default function ProjectGallery({
   const projects = data?.data ?? [];
   const loadingProjects = loading && projects.length === 0;
 
+  const allSims = useAsync(() => api.listSimulations(), []);
+  const allReports = useAsync(() => api.listReports(), []);
+
+  const reportByProject = useMemo(() => {
+    const sims = allSims.data?.data ?? [];
+    const reports = allReports.data?.data ?? [];
+    const reportBySim = new Map<string, { title: string; summary: string }>();
+    for (const r of reports) {
+      const rec = r as Record<string, unknown>;
+      const outline = rec.outline as { title?: string; summary?: string } | undefined;
+      const simId = rec.simulation_id as string | undefined;
+      if (rec.report_id && outline?.title && simId) {
+        reportBySim.set(simId, {
+          title: outline.title,
+          summary: outline.summary ?? '',
+        });
+      }
+    }
+    const map = new Map<string, { title: string; summary: string }>();
+    for (const s of sims) {
+      const o = reportBySim.get(s.simulation_id);
+      if (o) map.set(s.project_id, o);
+    }
+    return map;
+  }, [allSims.data, allReports.data]);
+
   const [creating, setCreating] = useState(false);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
+  const [votes, setVotes] = useState<Record<string, number>>({});
+
+  const castVote = useCallback((id: string, dir: 'up' | 'down') => {
+    setVotes((prev) => ({ ...prev, [id]: (prev[id] ?? 0) + (dir === 'up' ? 1 : -1) }));
+  }, []);
+
+  const share = useCallback(async (e: React.MouseEvent, projectName: string) => {
+    e.stopPropagation();
+    try {
+      await navigator.share({ title: projectName, url: window.location.href });
+    } catch {
+      await navigator.clipboard?.writeText(window.location.href);
+    }
+  }, []);
   const [name, setName] = useState('');
   const [requirement, setRequirement] = useState('');
   const [additionalContext, setAdditionalContext] = useState('');
@@ -245,7 +294,9 @@ export default function ProjectGallery({
         {!loading && projects.length === 0 && (
           <p className={styles.muted}>No worlds yet. Create your first one above.</p>
         )}
-        {projects.map((p, i) => (
+        {projects.map((p, i) => {
+          const article = reportByProject.get(p.project_id);
+          return (
           <button
             key={p.project_id}
             className={styles.projectCard}
@@ -256,10 +307,14 @@ export default function ProjectGallery({
             onMouseEnter={() => play('hover')}
           >
             <div className={styles.projectCardBody}>
-              <h3 className={styles.projectCardName}>{p.name}</h3>
-              <p className={styles.projectCardAuthor}>by you</p>
-              {(p.ontology?.analysis_summary || p.simulation_requirement) && (
-                <p className={styles.projectCardExcerpt}>{p.ontology?.analysis_summary || p.simulation_requirement}</p>
+              {article ? (
+                <h3 className={styles.projectCardName}>{article.title}</h3>
+              ) : (
+                <h3 className={styles.projectCardName}>{p.name}</h3>
+              )}
+              <p className={styles.projectCardAuthor}>by you · {formatDate(p.created_at)}</p>
+              {article?.summary && (
+                <p className={styles.projectCardExcerpt}>{article.summary}</p>
               )}
               <span className={styles.observeBtn}>
                 Observe findings
@@ -276,8 +331,36 @@ export default function ProjectGallery({
                 <span className={styles.projectStatus}>Pocket World</span>
                 </div>
               </div>
+            <div className={styles.projectCardFooter}>
+              <button
+                className={styles.projectCardVoteBtn}
+                onClick={(e) => { e.stopPropagation(); castVote(p.project_id, 'up'); }}
+                onMouseEnter={() => play('hover')}
+                aria-label="Upvote"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+              </button>
+              <span className={styles.projectCardVoteCount}>{votes[p.project_id] ?? 0}</span>
+              <button
+                className={styles.projectCardVoteBtn}
+                onClick={(e) => { e.stopPropagation(); castVote(p.project_id, 'down'); }}
+                onMouseEnter={() => play('hover')}
+                aria-label="Downvote"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+              <button
+                className={styles.projectCardShareBtn}
+                onClick={(e) => share(e, article?.title || p.name)}
+                onMouseEnter={() => play('hover')}
+                aria-label="Share"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98"/><path d="m15.41 6.51-6.82 3.98"/></svg>
+              </button>
+              </div>
           </button>
-        ))}
+          );
+        })}
       </section>
       <div className={styles.galleryRight}>
         <article className={styles.recentActivityCard}>

@@ -466,6 +466,9 @@ export const getConsoleLog = (reportId: string, fromLine = 0) =>
 export const getReport = (reportId: string) =>
   request<ReportState>(`/api/report/${reportId}`);
 
+export const listReports = (params: Record<string, unknown> = {}) =>
+  request<ReportState[]>(`/api/report/list${qs(params)}`);
+
 export const chatWithReport = (data: {
   simulation_id: string;
   message: string;

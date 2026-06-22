@@ -249,15 +249,15 @@
   /* ── gallery ── */
   
   .gallery {
-    width: min(1040px, 100%);
+    width: min(1460px, 100%);
     height: 100%;
     min-height: 0;
     margin: 0 auto;
-    padding: clamp(18px, 4vh, 40px) 24px clamp(16px, 3vh, 32px);
+    padding: clamp(18px, 4vh, 40px) 32px clamp(16px, 3vh, 32px);
     display: grid;
-    grid-template-columns: 1fr 360px;
+    grid-template-columns: 1fr 380px;
     grid-template-rows: auto auto 1fr;
-    gap: 0 24px;
+    gap: 0 32px;
     overflow: hidden;
   }
   .galleryHeader {
@@ -278,7 +278,7 @@
     grid-column: 1;
     grid-row: 3;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(520px, 1fr));
     gap: 16px;
     min-width: 0;
     min-height: 0;
@@ -508,17 +508,20 @@
   .projectCard {
     position: relative;
     text-align: left;
+    text-transform: none;
+    letter-spacing: normal;
     background: var(--color-surface-1);
     border: 1px solid var(--color-border-subtle);
     border-radius: 16px;
     cursor: pointer;
-    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     color: var(--foreground, var(--color-text-dark, #171717));
     font-family: var(--font-geist-sans, var(--font-primary)), -apple-system, "system-ui", "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
     -webkit-font-smoothing: antialiased;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
     overflow: hidden;
     backdrop-filter: blur(4px);
     min-height: 180px;
@@ -528,10 +531,10 @@
     display: none;
   }
   .projectCard:hover {
-    transform: translateY(-2px);
+    transform: translateY(-1px);
     background: var(--color-surface-1);
-    border-color: color-mix(in oklch, var(--color-primary) 50%, transparent);
-    box-shadow: 0 8px 24px color-mix(in oklch, var(--color-primary) 14%, transparent);
+    border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
+    box-shadow: 0 3px 10px color-mix(in oklch, var(--color-primary) 12%, transparent);
   }
   .projectCardBody {
     flex: 1;
@@ -585,8 +588,70 @@
   .observeBtn:hover {
     opacity: 0.75;
   }
+  .projectCardFooter {
+    flex: 0 0 100%;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 16px;
+    background: rgba(0, 0, 0, 0.02);
+    border-top: 1px solid rgba(0, 0, 0, 0.04);
+    pointer-events: auto;
+    position: relative;
+    z-index: 2;
+  }
+  :global([data-theme='dark']) .projectCardFooter {
+    background: rgba(255, 255, 255, 0.015);
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+  }
+  .projectCardVoteBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.35;
+    transition: opacity 0.15s ease, background 0.15s ease;
+    padding: 0;
+  }
+  .projectCardVoteBtn:hover {
+    opacity: 0.8;
+    background: rgba(0, 0, 0, 0.04);
+  }
+  .projectCardVoteCount {
+    font-size: 12px;
+    font-weight: 600;
+    opacity: 0.5;
+    min-width: 18px;
+    text-align: center;
+  }
+  .projectCardShareBtn {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.35;
+    transition: opacity 0.15s ease, background 0.15s ease;
+    padding: 0;
+  }
+  .projectCardShareBtn:hover {
+    opacity: 0.8;
+    background: rgba(0, 0, 0, 0.04);
+  }
   .projectCardVisual {
-    flex: 0 0 140px;
+    flex: 0 0 220px;
     min-height: 0;
     align-self: stretch;
     display: flex;
@@ -598,12 +663,16 @@
     border-radius: 0;
     display: flex;
     align-items: flex-end;
-    padding: 16px;
+    padding: 0;
+    position: relative;
   }
   .projectCardVisualWithImage {
-    background-size: cover;
+    background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
+    background-origin: content-box;
+    background-clip: content-box;
+    padding: 16px 16px 16px 0;
   }
   .projectStatus {
     display: inline-flex;
@@ -881,11 +950,11 @@
   .recentActivityCard {
     position: relative;
     overflow: hidden;
-    background: linear-gradient(150deg, #fafafe 0%, #f2f2fa 48%, #eaeaef 100%);
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    background: rgba(0, 0, 0, 0.015);
+    border: 1px solid rgba(0, 0, 0, 0.04);
     border-radius: 22px;
     padding: 20px;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+    box-shadow: none;
     color: #1a1b24;
   }
   .recentActivityCard > * {
@@ -914,10 +983,10 @@
     pointer-events: none;
   }
   :global([data-theme='dark']) .recentActivityCard {
-    background: linear-gradient(150deg, #2e2e3e 0%, #262636 48%, #1e1e2e 100%);
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    color: #f0f1f5;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    color: rgba(240, 241, 245, 0.7);
+    box-shadow: none;
   }
   :global([data-theme='dark']) .recentActivityEyebrow {
     color: rgba(255, 255, 255, 0.5);
