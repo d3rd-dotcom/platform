@@ -52,6 +52,17 @@ function actionText(a: Action): string {
   return '';
 }
 
+function cleanSimError(text: string | null | undefined): string | null {
+  if (!text?.trim()) return null;
+  // The backend sometimes mixes process-exit info with leaked LLM output.
+  // Extract only the meaningful prefix.
+  const exitMatch = text.match(/^Process exit code: -?\d+/);
+  if (exitMatch) return exitMatch[0];
+  // If it looks like pure garbage (no capital letter start), hide it.
+  if (!/^[A-Z]/.test(text.trim())) return 'Simulation failed';
+  return text.trim();
+}
+
 export default function Step3Simulation({
   wf,
   onDone,
@@ -69,6 +80,13 @@ export default function Step3Simulation({
   const [status, setStatus] = useState<RunDetail>({});
   const [loadingRun, setLoadingRun] = useState(true);
   const previousRunnerStatus = useRef<string | undefined>();
+  const retryTimerRef = useRef<ReturnType<typeof setTimeout>>();
+
+  useEffect(() => {
+    return () => {
+      if (retryTimerRef.current) clearTimeout(retryTimerRef.current);
+    };
+  }, []);
 
   const applyRunStatus = useCallback((detail: RunDetail | undefined) => {
     const next = detail ?? {};
@@ -82,8 +100,16 @@ export default function Step3Simulation({
       setActions(next.all_actions);
     }
     if (runnerStatus === 'failed') {
-      if (previous && previous !== 'failed') play('error');
-      setError(next.error?.trim() || 'Simulation failed');
+      if (previous && previous !== 'failed') {
+        play('error');
+        setError(cleanSimError(next.error) || 'Simulation failed');
+      } else if (previous === 'failed') {
+        // already in failed state — no change
+      } else {
+        // Initial load with a stale failed status from a prior session.
+        // Show a cleaned message instead of raw backend garbage.
+        setError(cleanSimError(next.error) || 'Simulation exited unexpectedly');
+      }
     } else {
       if (runnerStatus === 'completed' && previous && previous !== 'completed') play('success');
       setError(null);
@@ -128,6 +154,17 @@ export default function Step3Simulation({
       });
     } catch (e) {
       const message = e instanceof Error ? e.message : 'Failed to start simulation';
+      // Retry if the OASIS env isn't ready yet (profile gen finishes before
+      // runtime containers are initialised). This avoids console noise from
+      // a background poll hitting a 404 endpoint.
+      const notReady =
+        message.toLowerCase().includes('not ready') ||
+        message.toLowerCase().includes('prepare');
+      if (notReady) {
+        setError('Simulation environment is still starting up. Retrying…');
+        retryTimerRef.current = setTimeout(start, 2000);
+        return;
+      }
       try {
         const current = await api.getRunStatusDetail(simId);
         const detail = current.data as RunDetail | undefined;

@@ -1,4 +1,3 @@
-import SmoothScroll from '../components/SmoothScroll';
 import type { Metadata } from 'next';
 import type { CSSProperties, ReactNode } from 'react';
 import { Poppins, Space_Grotesk, Inter, Patrick_Hand } from 'next/font/google';
@@ -222,7 +221,6 @@ export default function RootLayout({
         />
       </head>
       <body>
-      <SmoothScroll />
         <SoundProvider>
           <MiniAppProvider>
             <RouteShell>{children}</RouteShell>

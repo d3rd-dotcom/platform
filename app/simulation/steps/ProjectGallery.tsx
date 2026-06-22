@@ -313,9 +313,7 @@ export default function ProjectGallery({
                 <h3 className={styles.projectCardName}>{p.name}</h3>
               )}
               <p className={styles.projectCardAuthor}>by you · {formatDate(p.created_at)}</p>
-              {article?.summary && (
-                <p className={styles.projectCardExcerpt}>{article.summary}</p>
-              )}
+              <p className={styles.projectCardExcerpt}>{article?.summary || ''}</p>
               <span className={styles.observeBtn}>
                 Observe findings
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
