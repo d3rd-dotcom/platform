@@ -179,31 +179,31 @@ export default function ProjectGallery({
         </section>
         <div className={styles.galleryRight}>
           <div className={styles.recentActivityCard}>
-            <div className={styles.skeleton} style={{ height: 18, width: '60%', marginBottom: 20 }} />
+            <div className={styles.skeleton} style={{ height: 15, width: '60%', marginBottom: 17 }} />
             {Array.from({ length: 4 }).map((_, j) => (
-              <div key={j} className={styles.recentMiniCard} style={{ marginBottom: 6 }}>
+              <div key={j} className={styles.recentMiniCard} style={{ marginBottom: 5 }}>
                 <div className={styles.recentMiniBody}>
-                  <div className={styles.skeleton} style={{ height: 13, width: '100%', marginBottom: 6 }} />
-                  <div className={styles.skeleton} style={{ height: 13, width: '72%', marginBottom: 4 }} />
-                  <div className={styles.skeleton} style={{ height: 10, width: '54%' }} />
+                  <div className={styles.skeleton} style={{ height: 11, width: '100%', marginBottom: 5 }} />
+                  <div className={styles.skeleton} style={{ height: 11, width: '72%', marginBottom: 3 }} />
+                  <div className={styles.skeleton} style={{ height: 8, width: '54%' }} />
                 </div>
                 <div className={styles.recentMiniImage}>
-                  <div className={styles.skeleton} style={{ width: 56, height: 56, borderRadius: 8 }} />
+                  <div className={styles.skeleton} style={{ width: 48, height: 48, borderRadius: 7 }} />
                 </div>
               </div>
             ))}
           </div>
           <div className={styles.recentActivityCard}>
-            <div className={styles.skeleton} style={{ height: 18, width: '50%', marginBottom: 20 }} />
+            <div className={styles.skeleton} style={{ height: 15, width: '50%', marginBottom: 17 }} />
             {Array.from({ length: 4 }).map((_, j) => (
-              <div key={j} className={styles.recentMiniCard} style={{ marginBottom: 6 }}>
+              <div key={j} className={styles.recentMiniCard} style={{ marginBottom: 5 }}>
                 <div className={styles.recentMiniBody}>
-                  <div className={styles.skeleton} style={{ height: 13, width: '100%', marginBottom: 6 }} />
-                  <div className={styles.skeleton} style={{ height: 13, width: '60%', marginBottom: 4 }} />
-                  <div className={styles.skeleton} style={{ height: 10, width: '40%' }} />
+                  <div className={styles.skeleton} style={{ height: 11, width: '100%', marginBottom: 5 }} />
+                  <div className={styles.skeleton} style={{ height: 11, width: '60%', marginBottom: 3 }} />
+                  <div className={styles.skeleton} style={{ height: 8, width: '40%' }} />
                 </div>
                 <div className={styles.recentMiniImage}>
-                  <div className={styles.skeleton} style={{ width: 56, height: 56, borderRadius: 8 }} />
+                  <div className={styles.skeleton} style={{ width: 48, height: 48, borderRadius: 7 }} />
                 </div>
               </div>
             ))}
@@ -391,6 +391,9 @@ export default function ProjectGallery({
                 }}
               >
                 <span className={styles.projectStatus}>Pocket World</span>
+                <div className={styles.projectCardVisualOverlay}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </div>
                 </div>
               </div>
             <div className={styles.projectCardFooter}>

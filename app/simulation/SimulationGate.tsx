@@ -25,7 +25,19 @@ const DEV_BYPASS =
 export default function SimulationGate() {
   const { ready, authenticated, getAccessToken, login } = usePrivy();
   const { play } = useSound();
-  const [access, setAccess] = useState<'loading' | 'allowed' | 'denied'>('loading');
+
+  // Bootstrap from localStorage so VIP users skip the loading spinner.
+  const [access, setAccess] = useState<'loading' | 'allowed' | 'denied'>(() => {
+    if (typeof window === 'undefined') return 'loading';
+    try {
+      const cached = localStorage.getItem('simulation_access');
+      if (cached) {
+        const { allowed, ts } = JSON.parse(cached);
+        if (allowed && Date.now() - ts < 120_000) return 'allowed';
+      }
+    } catch { /* ignore */ }
+    return 'loading';
+  });
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
@@ -48,7 +60,15 @@ export default function SimulationGate() {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
         const data = res.ok ? await res.json().catch(() => null) : null;
-        if (!cancelled) setAccess(data?.hasVipMembershipCard ? 'allowed' : 'denied');
+        const allowed = data?.hasVipMembershipCard === true;
+        if (!cancelled) {
+          setAccess(allowed ? 'allowed' : 'denied');
+          if (allowed) {
+            try { localStorage.setItem('simulation_access', JSON.stringify({ allowed: true, ts: Date.now() })); } catch { /* ignore */ }
+          } else {
+            try { localStorage.removeItem('simulation_access'); } catch { /* ignore */ }
+          }
+        }
       } catch {
         if (!cancelled) setAccess('denied');
       }
