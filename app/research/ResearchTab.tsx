@@ -16,6 +16,7 @@ import { Scatter, Bar, Line } from 'react-chartjs-2';
 import Image from 'next/image';
 import { useTheme } from '@/components/theme/ThemeProvider';
 import { getTransferPayload, clearTransferPayload } from '@/lib/simulation-to-research';
+import type { SimTransferPayload } from '@/lib/simulation-to-research';
 import styles from './page.module.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
@@ -276,6 +277,12 @@ export default function ResearchTab() {
 
   const [dragging, setDragging] = useState(false);
 
+  // Simulation trajectory data (loaded alongside nodes dataset)
+  const [edgeRows, setEdgeRows] = useState<DataRow[]>([]);
+  const [edgeCols, setEdgeCols] = useState<ColumnDef[]>([]);
+  const [metadataRows, setMetadataRows] = useState<DataRow[]>([]);
+  const [metadataCols, setMetadataCols] = useState<ColumnDef[]>([]);
+
   // Blue panel state
   const [blueGenerated, setBlueGenerated] = useState(false);
   const [blueRating, setBlueRating] = useState<'up' | 'down' | null>(null);
@@ -303,6 +310,10 @@ export default function ResearchTab() {
   const loadData = useCallback((cols: ColumnDef[], data: DataRow[]) => {
     setColumns(cols);
     setRows(data);
+    setEdgeCols([]);
+    setEdgeRows([]);
+    setMetadataCols([]);
+    setMetadataRows([]);
     const numCols = cols.filter(c => c.type === 'numeric').map(c => c.name);
     setCorrSelected(numCols);
     // Auto-set chart defaults
@@ -325,8 +336,34 @@ export default function ResearchTab() {
   // Auto-load simulation data transferred from Step 5
   useEffect(() => {
     const payload = getTransferPayload();
-    if (payload && payload.csv) {
-      const { columns: cols, rows: data } = parseCsv(payload.csv);
+    if (!payload) return;
+
+    // New format: nodes.csv + edges.csv + metadata.csv
+    if (payload.nodesCsv) {
+      const { columns: nCols, rows: nRows } = parseCsv(payload.nodesCsv);
+      if (nCols.length > 0 && nRows.length > 0) {
+        loadData(nCols, nRows);
+
+        if (payload.edgesCsv) {
+          const { columns: eCols, rows: eRows } = parseCsv(payload.edgesCsv);
+          setEdgeCols(eCols);
+          setEdgeRows(eRows);
+        }
+
+        if (payload.metadataCsv) {
+          const { columns: mCols, rows: mRows } = parseCsv(payload.metadataCsv);
+          setMetadataCols(mCols);
+          setMetadataRows(mRows);
+        }
+      }
+      clearTransferPayload();
+      return;
+    }
+
+    // Legacy format: single csv field (pre-refactor payloads in localStorage)
+    const legacy = payload as unknown as Record<string, unknown>;
+    if (legacy.csv && typeof legacy.csv === 'string') {
+      const { columns: cols, rows: data } = parseCsv(legacy.csv as string);
       if (cols.length > 0 && data.length > 0) {
         loadData(cols, data);
       }
@@ -1072,6 +1109,66 @@ svg{display:block;margin:0 auto}
             </div>
 
           </div>
+
+          {/* 02b — Trajectory Edges (from simulation actions) */}
+          {edgeRows.length > 0 && edgeCols.length > 0 && (
+            <div>
+              <div className={styles.sectionLabel}>02b — Trajectory Edges</div>
+              <div className={styles.brutCard}>
+                <div className={styles.statsGrid}>
+                  <div className={`${styles.statTile} ${styles.statTilePrimary}`}>
+                    <div className={styles.statTileLabel}>INTERACTIONS</div>
+                    <div className={styles.statTileValue}>{edgeRows.length}</div>
+                  </div>
+                  {(() => {
+                    const relCol = edgeCols.find(c => c.name === 'relationship_type');
+                    const sourceCol = edgeCols.find(c => c.name === 'source_node');
+                    const targetCol = edgeCols.find(c => c.name === 'target_node');
+                    const relTypes = relCol ? new Set(edgeRows.map(r => String(r[relCol.name] ?? ''))).size : 0;
+                    const agents = new Set([
+                      ...(sourceCol ? edgeRows.map(r => String(r[sourceCol.name] ?? '')) : []),
+                      ...(targetCol ? edgeRows.map(r => String(r[targetCol.name] ?? '')) : []),
+                    ]).size;
+                    return (
+                      <>
+                        <div className={`${styles.statTile} ${styles.statTileAccent}`}>
+                          <div className={styles.statTileLabel}>RELATIONSHIP TYPES</div>
+                          <div className={styles.statTileValue}>{relTypes}</div>
+                        </div>
+                        <div className={`${styles.statTile} ${styles.statTileTertiary}`}>
+                          <div className={styles.statTileLabel}>AGENTS CONNECTED</div>
+                          <div className={styles.statTileValue}>{agents}</div>
+                        </div>
+                      </>
+                    );
+                  })()}
+                </div>
+                <div className={styles.dataTableWrapper} style={{ marginTop: 16, maxHeight: 300, overflowY: 'auto' }}>
+                  <table className={styles.dataTable}>
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        {edgeCols.map(c => <th key={c.name}>{c.name}</th>)}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {edgeRows.slice(0, 100).map((r, i) => (
+                        <tr key={i}>
+                          <td className={styles.tdN}>{i + 1}</td>
+                          {edgeCols.map(c => (
+                            <td key={c.name}>{String(r[c.name] ?? '')}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {edgeRows.length > 100 && (
+                    <p className={styles.corrNote}>Showing first 100 of {edgeRows.length} edges</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* 03 — Descriptive Statistics */}
           <div>

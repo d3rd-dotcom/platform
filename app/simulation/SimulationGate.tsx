@@ -85,9 +85,10 @@ export default function SimulationGate() {
   if (access === 'loading' || !ready) {
     return (
       <div className={styles.gateState}>
-        <span className={styles.loaderInline} aria-hidden>
+        <div className={styles.loaderBlock} aria-live="polite">
           <DotmSquare3 speed={0.9} dotSize={5} gap={3} />
-        </span>
+          <p className={styles.muted}>Checking access…</p>
+        </div>
       </div>
     );
   }
