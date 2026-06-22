@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { X, FloppyDisk, Eye, Lock, ArrowLeft, ArrowRight, MagnifyingGlass, ShieldCheck } from '@phosphor-icons/react';
 import { useSound } from '@/hooks/useSound';
@@ -60,7 +61,7 @@ export function RoleGatePopup({ isOpen, onClose }: RoleGatePopupProps) {
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className={styles.roleGateOverlay} onClick={onClose}>
       <div className={styles.roleGateCard} onClick={(e) => e.stopPropagation()}>
         <button className={styles.roleGateClose} onClick={onClose} aria-label="Close">
@@ -87,7 +88,7 @@ export function RoleGatePopup({ isOpen, onClose }: RoleGatePopupProps) {
               >
                 <Eye size={20} weight="duotone" />
                 <span className={styles.roleGateBtnLabel}>Subject</span>
-                <span className={styles.roleGateBtnDesc}>Standard onboarding &amp; curriculum</span>
+                <span className={styles.roleGateBtnDesc}>Standard Track</span>
               </button>
               <button
                 type="button"
@@ -97,7 +98,7 @@ export function RoleGatePopup({ isOpen, onClose }: RoleGatePopupProps) {
               >
                 <MagnifyingGlass size={20} weight="duotone" />
                 <span className={styles.roleGateBtnLabel}>Researcher</span>
-                <span className={styles.roleGateBtnDesc}>Access ongoing case studies &amp; data</span>
+                <span className={styles.roleGateBtnDesc}>Research Access</span>
               </button>
             </div>
           </div>
@@ -202,6 +203,7 @@ export function RoleGatePopup({ isOpen, onClose }: RoleGatePopupProps) {
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

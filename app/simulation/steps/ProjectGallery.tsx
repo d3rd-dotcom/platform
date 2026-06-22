@@ -8,6 +8,41 @@ import type { Project } from '@/lib/simulation-api';
 import { useAsync } from '../usePolling';
 import styles from '../simulation.module.css';
 
+const DEV_MOCK_PROJECTS: Project[] = [
+  {
+    project_id: 'mock-1',
+    name: 'Aftermath of the Fed Rate Cut',
+    status: 'graph_completed',
+    simulation_requirement: 'Predict market reactions to the latest Fed rate cut across tech, real estate, and consumer sectors over the next 6 months.',
+    created_at: '2026-06-18T10:00:00Z',
+    updated_at: '2026-06-19T14:30:00Z',
+  },
+  {
+    project_id: 'mock-2',
+    name: 'CBDC Adoption in Southeast Asia',
+    status: 'graph_completed',
+    simulation_requirement: 'Simulate central bank digital currency adoption curves in Indonesia, Thailand, and Vietnam given current regulatory trajectories.',
+    created_at: '2026-06-15T08:00:00Z',
+    updated_at: '2026-06-17T11:00:00Z',
+  },
+  {
+    project_id: 'mock-3',
+    name: 'AI Regulation Impact on Open-Source LLM Development',
+    status: 'graph_completed',
+    simulation_requirement: 'Model how proposed EU and US AI regulations will affect open-source LLM contribution velocity, fork activity, and corporate adoption.',
+    created_at: '2026-06-10T09:00:00Z',
+    updated_at: '2026-06-12T16:00:00Z',
+  },
+  {
+    project_id: 'mock-4',
+    name: 'Talent Migration Under Remote Work Policies',
+    status: 'graph_completed',
+    simulation_requirement: 'Project population shifts in US metro areas assuming 30% of knowledge workers remain fully remote through 2028.',
+    created_at: '2026-06-05T07:00:00Z',
+    updated_at: '2026-06-07T10:00:00Z',
+  },
+];
+
 const SEED_POSTS = [
   { id: 'sp-1', title: 'If the treasury could fund one wild idea, what would yours be?', creator: 'Seraph', users: 3, amount: 130, img: '/anbel01.png' },
   { id: 'sp-2', title: 'What daily habit changed your mental health the most?', creator: 'Halo', users: 7, amount: 85, img: '/anbel02.png' },
@@ -43,6 +78,8 @@ export default function ProjectGallery({
   const { play } = useSound();
   const { data, loading, refetch } = useAsync(() => api.listProjects(50), []);
   const projects = data?.data ?? [];
+  const isOffline = online === false;
+  const displayProjects = (isOffline || projects.length === 0) && !loading ? DEV_MOCK_PROJECTS : projects;
   const loadingProjects = loading && projects.length === 0;
 
   const allSims = useAsync(() => api.listSimulations(), []);
@@ -156,16 +193,18 @@ export default function ProjectGallery({
         <section className={styles.projectGrid} aria-label="Loading worlds">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className={styles.projectCard}>
-              <div className={styles.projectCardBody}>
-                <div className={styles.skeleton} style={{ height: 20, width: '72%', marginBottom: 8 }} />
-                <div className={styles.skeleton} style={{ height: 12, width: '44%', marginBottom: 12 }} />
-                <div className={styles.skeleton} style={{ height: 12, width: '88%', marginBottom: 4 }} />
-                <div className={styles.skeleton} style={{ height: 12, width: '64%', marginBottom: 12 }} />
-                <div className={styles.skeleton} style={{ height: 14, width: 110, marginTop: 'auto' }} />
-              </div>
-              <div className={styles.projectCardVisual}>
-                <div className={styles.projectCardVisualInner} style={{ padding: '16px 16px 16px 0', width: '100%' }}>
-                  <div className={styles.skeleton} style={{ width: '100%', height: '100%', minHeight: 120, borderRadius: 10 }} />
+              <div className={styles.projectCardMain}>
+                <div className={styles.projectCardBody}>
+                  <div className={styles.skeleton} style={{ height: 20, width: '72%', marginBottom: 8 }} />
+                  <div className={styles.skeleton} style={{ height: 12, width: '44%', marginBottom: 12 }} />
+                  <div className={styles.skeleton} style={{ height: 12, width: '88%', marginBottom: 4 }} />
+                  <div className={styles.skeleton} style={{ height: 12, width: '64%', marginBottom: 12 }} />
+                  <div className={styles.skeleton} style={{ height: 14, width: 110, marginTop: 'auto' }} />
+                </div>
+                <div className={styles.projectCardVisual}>
+                  <div className={styles.projectCardVisualInner}>
+                    <div className={styles.skeleton} style={{ position: 'absolute', inset: 0, borderRadius: 10 }} />
+                  </div>
                 </div>
               </div>
               <div className={styles.projectCardFooter}>
@@ -355,10 +394,10 @@ export default function ProjectGallery({
       )}
 
       <section className={styles.projectGrid}>
-        {!loading && projects.length === 0 && (
+        {!loading && !isOffline && projects.length === 0 && (
           <p className={styles.muted}>No worlds yet. Create your first one above.</p>
         )}
-        {projects.map((p, i) => {
+        {displayProjects.map((p, i) => {
           const article = reportByProject.get(p.project_id);
           return (
           <button
@@ -370,6 +409,7 @@ export default function ProjectGallery({
             }}
             onMouseEnter={() => play('hover')}
           >
+            <div className={styles.projectCardMain}>
             <div className={styles.projectCardBody}>
               {article ? (
                 <h3 className={styles.projectCardName}>{article.title}</h3>
@@ -396,6 +436,7 @@ export default function ProjectGallery({
                 </div>
                 </div>
               </div>
+            </div>
             <div className={styles.projectCardFooter}>
               <button
                 className={styles.projectCardVoteBtn}

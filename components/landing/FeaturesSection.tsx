@@ -2,37 +2,37 @@
 
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
-import AddToHomeScreenButton from '@/components/pwa/AddToHomeScreenButton';
+
 import styles from './FeaturesSection.module.css';
 
 const featureCards = [
   {
     number: '01',
-    title: 'Enter The Experiment',
-    badge: 'Weekly',
+    title: 'Simulate Your World',
+    badge: 'Simulation',
     description:
-      'A new app drops each week — a live behavioral study wrapped in a real case-study challenge. Show up and you are already doing science.',
-    details: ['New content every week', 'Case-study format', 'IRB-style research design'],
+      'Create a God\'s eye view of your life, your quest, and your hypothesis. Let swarms of agents strategize and present to you alternative possible realities.',
+    details: ['Map your life as a simulation', 'Agents generate alternative realities', 'Choose your hypothesis to test'],
     footerLabel: 'Season 1 cohort',
     footerValue: '12 weeks',
   },
   {
     number: '02',
-    title: 'Contribute Real Insight',
-    badge: 'Verified',
+    title: 'Design Curriculums & Quests',
+    badge: 'Quests',
     description:
-      'Complete prompts and generate useful behavioral data. Blue reads your submission, decides if you pass, and records your results to the shared dataset.',
-    details: ['Complete the reading', 'Submit to Blue', 'Co-own the dataset'],
+      'Answer questions from B.L.U.E., who turns potential futures into actionable quests... with real-life rewards and USDC for touching grass and kicking ass!',
+    details: ['B.L.U.E. designs your quests', 'Real-world accountability', 'Earn USDC for touching grass'],
     footerLabel: 'Review time',
     footerValue: '~24 hrs',
   },
   {
     number: '03',
-    title: 'Get Rewarded For Showing Up',
-    badge: 'Onchain',
+    title: 'Become a Researcher',
+    badge: 'Classified',
     description:
-      "Earn cross-platform rewards for meaningful participation. Your diamonds live in your wallet — not on our servers — and compound the more you contribute.",
-    details: ['Earn diamonds on-chain', 'Diamonds in your wallet', 'Convert to real value'],
+      'Once you level up, you gain access to classified tools. Memberships can be earned or purchased. Become a gear in the machine steering our world, forward.',
+    details: ['Level up to unlock classified tools', 'Earn or purchase membership', 'Shape the future as a gear in the machine'],
     footerLabel: 'On Base blockchain',
     footerValue: 'User-owned',
   },
@@ -98,9 +98,8 @@ export const FeaturesSection: React.FC = () => {
             <div className={styles.headlinePanel}>
               <h2 className={styles.title}>&ldquo;Intellectually Refreshing&rdquo;</h2>
               <p className={styles.description}>
-                Three steps. Weekly apps, real participation, real rewards.
+                Three steps. Simulate your world, design your quests, earn your place.
               </p>
-              <AddToHomeScreenButton className={styles.ctaButton} />
             </div>
           </div>
 

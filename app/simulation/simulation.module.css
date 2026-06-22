@@ -528,6 +528,13 @@
 
   /* ── project cards ── */
 
+  .projectCardMain {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+  }
   .projectCard {
     position: relative;
     text-align: left;
@@ -539,8 +546,7 @@
     cursor: pointer;
     transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-direction: column;
     color: var(--foreground, var(--color-text-dark, #171717));
     font-family: var(--font-geist-sans, var(--font-primary)), -apple-system, "system-ui", "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -548,7 +554,6 @@
     backdrop-filter: blur(4px);
     min-height: 180px;
     box-sizing: border-box;
-    padding-bottom: 1rem;
   }
   .projectCard::before {
     display: none;
@@ -613,7 +618,7 @@
     opacity: 0.75;
   }
   .projectCardFooter {
-    flex: 0 0 100%;
+    flex: 0 0 auto;
     display: flex;
     align-items: center;
     gap: 6px;
@@ -1001,11 +1006,11 @@
   .recentActivityCard {
     position: relative;
     overflow: hidden;
-    background: rgba(0, 0, 0, 0.015);
-    border: 1px solid rgba(0, 0, 0, 0.04);
+    background: color-mix(in oklch, var(--color-surface-1) 100%, transparent);
+    border: 1px solid var(--color-border-subtle);
     border-radius: 18px;
     padding: 17px;
-    box-shadow: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
     color: #1a1b24;
     flex: 1;
     display: flex;
@@ -1037,8 +1042,8 @@
     pointer-events: none;
   }
   :global([data-theme='dark']) .recentActivityCard {
-    background: rgba(255, 255, 255, 0.015);
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    background: color-mix(in oklch, var(--color-surface-1) 100%, transparent);
+    border: 1px solid var(--color-border-subtle);
     color: rgba(240, 241, 245, 0.7);
     box-shadow: none;
   }
@@ -1097,7 +1102,7 @@
   }
   .recentActivityTitle {
     font-family: var(--font-secondary);
-    font-size: 14px;
+    font-size: 17px;
     font-weight: 700;
     color: #1a1b24;
     margin: 0;
@@ -1107,7 +1112,7 @@
     align-items: center;
     gap: 5px;
     font-family: var(--font-mono);
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.08em;
     color: #1a1b24;
@@ -1152,9 +1157,9 @@
   .recentMiniTitle {
     margin: 0;
     font-family: var(--font-primary);
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 600;
-    line-height: 1.35;
+    line-height: 1.4;
     color: rgba(0, 0, 0, 0.85);
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -1164,10 +1169,10 @@
   .recentMiniMeta {
     display: flex;
     align-items: center;
-    gap: 3px;
-    font-size: 8px;
+    gap: 4px;
+    font-size: 11px;
     font-weight: 500;
-    color: rgba(0, 0, 0, 0.5);
+    color: rgba(0, 0, 0, 0.55);
     flex-wrap: wrap;
   }
   .recentMiniMeta svg {

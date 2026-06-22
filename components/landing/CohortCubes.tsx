@@ -115,27 +115,26 @@ const CubesScene = memo(({ bgColor }: { bgColor: THREE.Vector3 }) => {
   const visibleHeight = 2 * Math.tan(fovRad / 2) * cameraZ;
   const visibleWidth = visibleHeight * aspect;
 
-  // Place cubes in two flanking columns so they frame the center content.
-  // On landscape: 5 left, 5 right — x stays in the outer 25-45% of half-width.
-  // On portrait: 5 top, 5 bottom — y stays in the outer 28-46% of half-height.
-  const half = count / 2; // 5
+  // Place cubes heavily biased to the right so some are always visible on load.
+  // On landscape: 2 left (mostly hidden / peek-in), 8 right (always visible).
+  // On portrait: 2 top, 8 bottom.
+  const rightCount = 8;
+  const leftCount = count - rightCount;
   const isLandscape = aspect >= 1;
 
   for (let i = 0; i < count; i++) {
-    const side = i < half ? -1 : 1;
-    const idx = i % half;
-    const t = idx / (half - 1); // 0..1 along the main axis
+    const side = i < leftCount ? -1 : 1;
+    const idx = side === -1 ? i : i - leftCount;
+    const groupSize = side === -1 ? leftCount : rightCount;
+    const t = groupSize > 1 ? idx / (groupSize - 1) : 0;
 
     let x: number, y: number;
     if (isLandscape) {
       if (side === -1) {
-        // Push left-column cubes past the viewport's left edge so they only peek in as
-        // partial shapes — their bodies won't float over the hero copy column.
         const xBase = visibleWidth * (0.48 + Math.random() * 0.06);
-        // Jitter outward only so no cube drifts back toward the text.
         x = -(xBase + Math.random() * visibleWidth * 0.04);
       } else {
-        const xBase = visibleWidth * (0.27 + Math.random() * 0.16);
+        const xBase = visibleWidth * (0.25 + Math.random() * 0.18);
         x = xBase + (Math.random() - 0.5) * visibleWidth * 0.04;
       }
       y = (t - 0.5) * visibleHeight * 0.92 + (Math.random() - 0.5) * visibleHeight * 0.10;
@@ -143,6 +142,12 @@ const CubesScene = memo(({ bgColor }: { bgColor: THREE.Vector3 }) => {
       x = (t - 0.5) * visibleWidth * 0.88 + (Math.random() - 0.5) * visibleWidth * 0.08;
       const yBase = visibleHeight * (0.28 + Math.random() * 0.18);
       y = side * yBase;
+    }
+
+    // Pin the topmost right-side cube to a guaranteed top-right position.
+    if (isLandscape && side === 1 && idx === rightCount - 1) {
+      x = visibleWidth * 0.38;
+      y = visibleHeight * 0.42;
     }
 
     cubes.push({

@@ -14,7 +14,7 @@ export const CohortSection = () => {
             <div className={styles.titlePanelText}>
               <h2 className={styles.cohortTitle}>A Cohort For Humanitarian AI Research</h2>
               <p className={styles.cohortSubtitle}>
-                A 12-week programme where you design and participate in live research studies, earn token rewards for contributions, shape the protocols, and co-own the behavioral dataset that results. This isn't a course — it's a new kind of lab, and you're a member, not a subject.
+                A seasonal programme where you design and participate in live research studies, earn tokens and reflections, shape proposals, and co-own the next gen of behavioral science. This isn't a course — it's a new kind of lab, and you're a superhero.
               </p>
             </div>
             <a

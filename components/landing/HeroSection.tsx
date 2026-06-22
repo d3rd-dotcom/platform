@@ -14,11 +14,12 @@ export const HeroSection: React.FC = () => {
         <div className={styles.heroContent}>
           <p className={styles.heroTextBadge}>Next-Gen Cohort For Scientists &amp; Agents</p>
           <h1 className={styles.heroHeadline}>
-            Do we Control
-            <span className={styles.heroHeadlineAccent}>Our Destiny?</span>
+            Mental Wealth
+            <span className={styles.heroHeadlineAccent}>Academy</span>
           </h1>
+          <div className={styles.heroLine} />
           <p className={styles.heroSubtext}>
-            You run real experiments on your own psychology, earn from what you learn, and walk away with a mind that works better than when you started.</p>
+            Learn from your own psychology. Simulate new worlds with our classified AI model: B.L.U.E. to earn while you learn, and tackle quests to evolve your mental state.</p>
           <div className={styles.heroActions}>
             <LandingEnterAcademyButton dark />
             <LandingEnterAsAgentButton />
