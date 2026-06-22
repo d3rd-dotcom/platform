@@ -1,7 +1,6 @@
 'use client';
 
 import { useRef, useState, useEffect, useMemo, useCallback } from 'react';
-import { DotmSquare3 } from '@/components/dot-matrix/DotmSquare3';
 import Button from '@/components/button/Button';
 import { useSound } from '@/hooks/useSound';
 import * as api from '@/lib/simulation-api';
@@ -15,6 +14,14 @@ const SEED_POSTS = [
   { id: 'sp-3', title: 'Would you try a brain-training game designed by the community?', creator: 'Vesper', users: 2, amount: 210, img: '/anbel03.png' },
   { id: 'sp-4', title: 'Open Dataset: Attention Metrics in LLM-Augmented Dev Workflows', creator: 'Orbit', users: 5, amount: 50, img: '/anbel04.png' },
   { id: 'sp-5', title: 'RFC: Open Protocol for Burnout Detection in Dev Teams', creator: 'Prism', users: 4, amount: 175, img: '/anbel05.png' },
+];
+
+const SEED_COMMUNITY = [
+  { id: 'cp-1', title: 'Attention Scaffold — a cognitive architecture for deep work', creator: 'Nova', users: 12, img: '/anbel06.png' },
+  { id: 'cp-2', title: 'Mood Atlas: mapping emotional states to market regimes', creator: 'Echo', users: 8, img: '/anbel07.png' },
+  { id: 'cp-3', title: 'Synthion — synthetic peer group for accountability loops', creator: 'Pixel', users: 5, img: '/anbel08.png' },
+  { id: 'cp-4', title: 'Open corpus of dev diary transcripts for burnout research', creator: 'Frost', users: 9, img: '/anbel09.png' },
+  { id: 'cp-5', title: 'Protocol for quantifying narrative absorption in VR', creator: 'Lumen', users: 6, img: '/anbel10.png' },
 ];
 
 function formatDate(iso?: string) {
@@ -139,12 +146,69 @@ export default function ProjectGallery({
   if (loadingProjects) {
     return (
       <div className={styles.gallery}>
-        <section className={`${styles.projectGrid} ${styles.projectGridLoading}`}>
-          <div className={styles.loaderBlock} aria-live="polite">
-            <DotmSquare3 speed={0.9} dotSize={5} gap={3} />
-            <p className={styles.muted}>Loading worlds…</p>
+        <header className={styles.galleryHeader}>
+          <div className={styles.filterRow}>
+            <div className={`${styles.filterBtn} ${styles.skeleton}`} style={{ width: 130 }}>&nbsp;</div>
+            <div className={`${styles.filterBtn} ${styles.skeleton}`} style={{ width: 120 }}>&nbsp;</div>
+            <div className={`${styles.actionBtn} ${styles.skeleton}`} style={{ width: 150 }}>&nbsp;</div>
           </div>
+        </header>
+        <section className={styles.projectGrid} aria-label="Loading worlds">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className={styles.projectCard}>
+              <div className={styles.projectCardBody}>
+                <div className={styles.skeleton} style={{ height: 20, width: '72%', marginBottom: 8 }} />
+                <div className={styles.skeleton} style={{ height: 12, width: '44%', marginBottom: 12 }} />
+                <div className={styles.skeleton} style={{ height: 12, width: '88%', marginBottom: 4 }} />
+                <div className={styles.skeleton} style={{ height: 12, width: '64%', marginBottom: 12 }} />
+                <div className={styles.skeleton} style={{ height: 14, width: 110, marginTop: 'auto' }} />
+              </div>
+              <div className={styles.projectCardVisual}>
+                <div className={styles.projectCardVisualInner} style={{ padding: '16px 16px 16px 0', width: '100%' }}>
+                  <div className={styles.skeleton} style={{ width: '100%', height: '100%', minHeight: 120, borderRadius: 10 }} />
+                </div>
+              </div>
+              <div className={styles.projectCardFooter}>
+                <div className={styles.skeleton} style={{ width: 28, height: 28, borderRadius: '50%' }} />
+                <div className={styles.skeleton} style={{ width: 24, height: 12, borderRadius: 4 }} />
+                <div className={styles.skeleton} style={{ width: 28, height: 28, borderRadius: '50%' }} />
+                <div className={styles.skeleton} style={{ width: 28, height: 28, borderRadius: '50%', marginLeft: 'auto' }} />
+              </div>
+            </div>
+          ))}
         </section>
+        <div className={styles.galleryRight}>
+          <div className={styles.recentActivityCard}>
+            <div className={styles.skeleton} style={{ height: 18, width: '60%', marginBottom: 20 }} />
+            {Array.from({ length: 4 }).map((_, j) => (
+              <div key={j} className={styles.recentMiniCard} style={{ marginBottom: 6 }}>
+                <div className={styles.recentMiniBody}>
+                  <div className={styles.skeleton} style={{ height: 13, width: '100%', marginBottom: 6 }} />
+                  <div className={styles.skeleton} style={{ height: 13, width: '72%', marginBottom: 4 }} />
+                  <div className={styles.skeleton} style={{ height: 10, width: '54%' }} />
+                </div>
+                <div className={styles.recentMiniImage}>
+                  <div className={styles.skeleton} style={{ width: 56, height: 56, borderRadius: 8 }} />
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className={styles.recentActivityCard}>
+            <div className={styles.skeleton} style={{ height: 18, width: '50%', marginBottom: 20 }} />
+            {Array.from({ length: 4 }).map((_, j) => (
+              <div key={j} className={styles.recentMiniCard} style={{ marginBottom: 6 }}>
+                <div className={styles.recentMiniBody}>
+                  <div className={styles.skeleton} style={{ height: 13, width: '100%', marginBottom: 6 }} />
+                  <div className={styles.skeleton} style={{ height: 13, width: '60%', marginBottom: 4 }} />
+                  <div className={styles.skeleton} style={{ height: 10, width: '40%' }} />
+                </div>
+                <div className={styles.recentMiniImage}>
+                  <div className={styles.skeleton} style={{ width: 56, height: 56, borderRadius: 8 }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
@@ -161,8 +225,8 @@ export default function ProjectGallery({
             }}
             onMouseEnter={() => play('hover')}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>
-            Recent Worlds
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M9 4.5a.75.75 0 0 1 .721.544l.813 2.846a3.75 3.75 0 0 0 2.576 2.576l2.846.813a.75.75 0 0 1 0 1.442l-2.846.813a3.75 3.75 0 0 0-2.576 2.576l-.813 2.846a.75.75 0 0 1-1.442 0l-.813-2.846a3.75 3.75 0 0 0-2.576-2.576l-2.846-.813a.75.75 0 0 1 0-1.442l2.846-.813A3.75 3.75 0 0 0 7.466 7.89l.813-2.846A.75.75 0 0 1 9 4.5ZM18 1.5a.75.75 0 0 1 .728.568l.258 1.036c.236.94.97 1.674 1.91 1.91l1.036.258a.75.75 0 0 1 0 1.456l-1.036.258c-.94.236-1.674.97-1.91 1.91l-.258 1.036a.75.75 0 0 1-1.456 0l-.258-1.036a2.625 2.625 0 0 0-1.91-1.91l-1.036-.258a.75.75 0 0 1 0-1.456l1.036-.258a2.625 2.625 0 0 0 1.91-1.91l.258-1.036A.75.75 0 0 1 18 1.5ZM16.5 15a.75.75 0 0 1 .712.513l.394 1.183c.15.447.5.799.948.948l1.183.394a.75.75 0 0 1 0 1.424l-1.183.394a1.5 1.5 0 0 0-.948.948l-.394 1.183a.75.75 0 0 1-1.424 0l-.394-1.183a1.5 1.5 0 0 0-.948-.948l-1.183-.394a.75.75 0 0 1 0-1.424l1.183-.394a1.5 1.5 0 0 0 .948-.948l.394-1.183A.75.75 0 0 1 16.5 15Z" clip-rule="evenodd"/></svg>
+            Recent
           </button>
           <button
             className={`${styles.filterBtn} ${activeFilter === 'pocket' ? styles.filterBtnActive : ''}`}
@@ -184,7 +248,7 @@ export default function ProjectGallery({
             onMouseEnter={() => play('hover')}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-            Simulate Reality
+            Simulate
           </button>
         </div>
       </header>
@@ -316,7 +380,7 @@ export default function ProjectGallery({
               <p className={styles.projectCardExcerpt}>{article?.summary || ''}</p>
               <span className={styles.observeBtn}>
                 Observe findings
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
               </span>
               </div>
             <div className={styles.projectCardVisual}>
@@ -379,6 +443,32 @@ export default function ProjectGallery({
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                   <span>{post.users}</span>
                   <span className={styles.recentMiniAmount}>${post.amount} available</span>
+                </div>
+                </div>
+                <div className={styles.recentMiniImage}>
+                  <img src={post.img} alt="" />
+                </div>
+              </div>
+          ))}
+        </div>
+        </article>
+        <article className={styles.recentActivityCard}>
+          <div className={styles.recentActivityHeader}>
+            <h3 className={styles.recentActivityTitle}>Community</h3>
+            <button className={styles.recentActivityLink} onClick={() => {}}>
+              View all
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+          </div>
+          <div className={styles.recentActivityList}>
+            {SEED_COMMUNITY.map((post) => (
+              <div key={post.id} className={styles.recentMiniCard}>
+                <div className={styles.recentMiniBody}>
+                  <p className={styles.recentMiniTitle}>{post.title}</p>
+                  <div className={styles.recentMiniMeta}>
+                    <span>{post.creator}</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                  <span>{post.users}</span>
                 </div>
                 </div>
                 <div className={styles.recentMiniImage}>
