@@ -258,6 +258,21 @@
     flex-direction: column;
     overflow: hidden;
   }
+  .galleryBody {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 24px;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .galleryBody > .projectGrid {
+    min-width: 0;
+  }
+  .galleryRight {
+    min-width: 0;
+    overflow-y: auto;
+  }
   .galleryHeader {
     display: flex;
     flex-direction: column;
@@ -285,6 +300,8 @@
     align-items: center;
     gap: 12px;
     margin-top: 8px;
+    margin-left: -24px;
+    padding-left: 24px;
   }
   .filterBtn {
     display: inline-flex;
@@ -296,10 +313,12 @@
     background: rgba(125, 135, 200, 0.1);
     border: 1px solid rgba(125, 135, 200, 0.2);
     border-radius: 6px;
-    padding: 7px 14px;
+    padding: 14px 14px;
     cursor: pointer;
-    color: inherit;
+    color: var(--color-text-dark, #000);
     line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
     transition: background 0.15s ease, border-color 0.15s ease;
   }
   .filterBtn:hover {
@@ -307,9 +326,84 @@
     border-color: rgba(125, 135, 200, 0.35);
   }
   .filterBtnActive {
+    background: color-mix(in oklch, var(--color-primary) 14%, transparent);
+    border-color: color-mix(in oklch, var(--color-primary) 50%, transparent);
+    color: var(--color-primary);
+  }
+  .actionBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-primary);
+    font-size: 13px;
+    font-weight: 600;
     background: var(--color-primary);
-    border-color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    border-radius: 6px;
+    padding: 14px 14px;
+    cursor: pointer;
     color: #fff;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    transition: opacity 0.15s ease;
+  }
+  .actionBtn:hover {
+    opacity: 0.88;
+  }
+  /* ── create modal ── */
+
+  .backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+  }
+  .modal {
+    width: min(560px, calc(100vw - 32px));
+    max-height: calc(100dvh - 48px);
+    overflow-y: auto;
+    background: var(--color-surface-1);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 18px;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.25);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .modalHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .modalTitle {
+    font-family: var(--font-secondary);
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+  }
+  .modalClose {
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    border: none;
+    background: rgba(125, 135, 200, 0.12);
+    color: inherit;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .modalClose:hover {
+    background: rgba(125, 135, 200, 0.22);
   }
   .warnBanner {
     background: rgba(245, 158, 11, 0.12);
@@ -421,11 +515,14 @@
     transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
     display: flex;
     flex-direction: row;
-    color: inherit;
+    color: var(--foreground, var(--color-text-dark, #171717));
+    font-family: var(--font-geist-sans, var(--font-primary)), -apple-system, "system-ui", "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     overflow: hidden;
     backdrop-filter: blur(4px);
     min-height: 180px;
+    box-sizing: border-box;
   }
   .projectCard::before {
     display: none;
@@ -440,7 +537,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 18px 20px;
+    padding: 1rem;
     gap: 8px;
     min-width: 0;
   }
@@ -513,8 +610,6 @@
     background: rgba(255, 255, 255, 0.18);
     border: 1px solid rgba(255, 255, 255, 0.32);
     color: #fff;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
   }
   
   /* ── workflow shell ── */
@@ -721,9 +816,12 @@
   .graphColumn {
     min-width: 0;
     min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
   .graphCard {
-    height: 100%;
+    flex: 1;
     min-height: 0;
     background: var(--color-surface-1, rgba(255, 255, 255, 0.94));
     border: 1px solid var(--color-border-subtle, rgba(125, 135, 200, 0.18));
@@ -771,6 +869,199 @@
     }
   }
   
+  /* ── recent activity ── */
+
+  .recentActivityCard {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(150deg, #fafafe 0%, #f2f2fa 48%, #eaeaef 100%);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 22px;
+    padding: 20px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+    color: #1a1b24;
+  }
+  .recentActivityCard > * {
+    position: relative;
+    z-index: 1;
+  }
+  .recentActivityCard::before {
+    content: '';
+    position: absolute;
+    top: -32%;
+    right: -14%;
+    width: 38%;
+    aspect-ratio: 1;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.22), transparent 68%);
+    pointer-events: none;
+  }
+  .recentActivityCard::after {
+    content: '';
+    position: absolute;
+    right: -9%;
+    bottom: -20%;
+    width: 28%;
+    aspect-ratio: 1;
+    background: rgba(255, 255, 255, 0.07);
+    clip-path: polygon(50% 0, 100% 32%, 78% 100%, 22% 100%, 0 32%);
+    pointer-events: none;
+  }
+  :global([data-theme='dark']) .recentActivityCard {
+    background: linear-gradient(150deg, #2e2e3e 0%, #262636 48%, #1e1e2e 100%);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    color: #f0f1f5;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+  }
+  :global([data-theme='dark']) .recentActivityEyebrow {
+    color: rgba(255, 255, 255, 0.5);
+  }
+  :global([data-theme='dark']) .recentActivityTitle {
+    color: #fff;
+  }
+  :global([data-theme='dark']) .recentActivityLink {
+    color: #fff;
+  }
+  :global([data-theme='dark']) .recentMiniCard {
+    background: transparent;
+  }
+  :global([data-theme='dark']) .recentMiniCard:hover {
+    background: color-mix(in oklch, var(--color-primary) 18%, transparent);
+  }
+  :global([data-theme='dark']) .recentMiniTitle {
+    color: rgba(255, 255, 255, 0.9);
+  }
+  :global([data-theme='dark']) .recentMiniMeta {
+    color: rgba(255, 255, 255, 0.5);
+  }
+  :global([data-theme='dark']) .recentMiniAmount {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  :global([data-theme='dark']) .filterBtn {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.85);
+  }
+  :global([data-theme='dark']) .filterBtn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.22);
+  }
+  :global([data-theme='dark']) .filterBtnActive {
+    background: color-mix(in oklch, var(--color-primary) 20%, transparent);
+    border-color: color-mix(in oklch, var(--color-primary) 55%, transparent);
+    color: var(--color-primary);
+  }
+  .recentActivityHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .recentActivityEyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.5);
+    margin: 0 0 2px;
+  }
+  .recentActivityTitle {
+    font-family: var(--font-secondary);
+    font-size: 17px;
+    font-weight: 700;
+    color: #1a1b24;
+    margin: 0;
+  }
+  .recentActivityLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #1a1b24;
+    text-decoration: none;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .recentActivityLink:hover {
+    opacity: 0.8;
+  }
+  .recentActivityList {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .recentMiniCard {
+    display: flex;
+    gap: 10px;
+    background: transparent;
+    border-radius: 10px;
+    padding: 8px;
+    align-items: stretch;
+    transition: background 0.15s ease;
+  }
+  .recentMiniCard:hover {
+    background: color-mix(in oklch, var(--color-primary) 18%, transparent);
+  }
+  .recentMiniBody {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .recentMiniTitle {
+    margin: 0;
+    font-family: var(--font-primary);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: rgba(0, 0, 0, 0.85);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .recentMiniMeta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.5);
+    flex-wrap: wrap;
+  }
+  .recentMiniMeta svg {
+    opacity: 0.6;
+  }
+  .recentMiniAmount {
+    color: rgba(0, 0, 0, 0.65);
+    font-weight: 600;
+  }
+  .recentMiniImage {
+    flex: 0 0 56px;
+    width: 56px;
+    height: 56px;
+    align-self: center;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .recentMiniImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
   /* ── panels ── */
   
   .panel {

@@ -1,7 +1,7 @@
 'use client';
 
-import { useRef, useState } from 'react';
-import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
+import { useRef, useState, useEffect } from 'react';
+import { DotmSquare3 } from '@/components/dot-matrix/DotmSquare3';
 import Button from '@/components/button/Button';
 import { useSound } from '@/hooks/useSound';
 import * as api from '@/lib/simulation-api';
@@ -9,13 +9,12 @@ import type { Project } from '@/lib/simulation-api';
 import { useAsync } from '../usePolling';
 import styles from '../simulation.module.css';
 
-const BANNER_GRADIENTS = [
-  'linear-gradient(135deg, #4F46E5 0%, #818CF8 100%)',
-  'linear-gradient(135deg, #0F6E56 0%, #1D9E75 100%)',
-  'linear-gradient(135deg, #993556 0%, #D4537E 100%)',
-  'linear-gradient(135deg, #185FA5 0%, #378ADD 100%)',
-  'linear-gradient(135deg, #854F0B 0%, #EF9F27 100%)',
-  'linear-gradient(135deg, #3B6D11 0%, #639922 100%)',
+const SEED_POSTS = [
+  { id: 'sp-1', title: 'If the treasury could fund one wild idea, what would yours be?', creator: 'Seraph', users: 3, amount: 130, img: '/anbel01.png' },
+  { id: 'sp-2', title: 'What daily habit changed your mental health the most?', creator: 'Halo', users: 7, amount: 85, img: '/anbel02.png' },
+  { id: 'sp-3', title: 'Would you try a brain-training game designed by the community?', creator: 'Vesper', users: 2, amount: 210, img: '/anbel03.png' },
+  { id: 'sp-4', title: 'Open Dataset: Attention Metrics in LLM-Augmented Dev Workflows', creator: 'Orbit', users: 5, amount: 50, img: '/anbel04.png' },
+  { id: 'sp-5', title: 'RFC: Open Protocol for Burnout Detection in Dev Teams', creator: 'Prism', users: 4, amount: 175, img: '/anbel05.png' },
 ];
 
 export default function ProjectGallery({
@@ -40,6 +39,15 @@ export default function ProjectGallery({
   const [error, setError] = useState<string | null>(null);
   const [contextOpen, setContextOpen] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!creating) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setCreating(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [creating]);
 
   const submit = async () => {
     play('click');
@@ -79,6 +87,19 @@ export default function ProjectGallery({
     }
   };
 
+  if (loadingProjects) {
+    return (
+      <div className={styles.gallery}>
+        <section className={`${styles.projectGrid} ${styles.projectGridLoading}`}>
+          <div className={styles.loaderBlock} aria-live="polite">
+            <DotmSquare3 speed={0.9} dotSize={5} gap={3} />
+            <p className={styles.muted}>Loading worlds…</p>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.gallery}>
       <header className={styles.galleryHeader}>
@@ -91,7 +112,7 @@ export default function ProjectGallery({
             }}
             onMouseEnter={() => play('hover')}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>
             Recent Worlds
           </button>
           <button
@@ -102,18 +123,18 @@ export default function ProjectGallery({
             }}
             onMouseEnter={() => play('hover')}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 3h16a2 2 0 0 1 2 2v6a10 10 0 0 1-10 10A10 10 0 0 1 2 11V5a2 2 0 0 1 2-2z"/><polyline points="8 10 12 14 16 10"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
             Your Pocket
           </button>
           <button
-            className={`${styles.filterBtn} ${creating ? styles.filterBtnActive : ''}`}
+            className={styles.actionBtn}
             onClick={() => {
               play('click');
-              setCreating((v) => !v);
+              setCreating(true);
             }}
             onMouseEnter={() => play('hover')}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5z"/><line x1="9" y1="3" x2="9" y2="7"/><line x1="5" y1="7" x2="9" y2="7"/><line x1="15" y1="3" x2="15" y2="7"/><line x1="19" y1="7" x2="15" y2="7"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
             Simulate Reality
           </button>
         </div>
@@ -129,59 +150,63 @@ export default function ProjectGallery({
       )}
 
       {creating && (
-        <div className={styles.createCard}>
-          <label className={styles.field}>
-            <span>World name</span>
-            <input
-              className={styles.input}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Aftermath of the rate cut"
-            />
-          </label>
-          <label className={styles.field}>
-            <span>What should this world predict?</span>
-            <textarea
-              className={styles.textarea}
-              value={requirement}
-              onChange={(e) => setRequirement(e.target.value)}
-              rows={2}
-              placeholder="Describe the scenario and the question you want answered."
-            />
-          </label>
-          <div className={styles.field}>
-            <button
-              type="button"
-              className={styles.accordionToggle}
-              onClick={() => {
-                play('click');
-                setContextOpen((v) => !v);
-              }}
-              onMouseEnter={() => play('hover')}
-              aria-expanded={contextOpen}
-            >
-              <span>People, entities, and relationships (optional)</span>
-              <span className={styles.accordionChevron} aria-hidden>
-                {contextOpen ? '−' : '+'}
-              </span>
-            </button>
-            {contextOpen && (
-              <>
-                <textarea
-                  className={styles.textarea}
-                  value={additionalContext}
-                  onChange={(e) => setAdditionalContext(e.target.value)}
-                  rows={4}
-                  placeholder="Add key people, groups, or connections."
-                />
-                <small className={styles.fieldHint}>
-                  Use one clear fact per line. These details become source context for graph entities
-                  and directed relationships.
-                </small>
-              </>
-            )}
-          </div>
-          <div className={styles.createCardFooter}>
+        <div className={styles.backdrop} onClick={() => setCreating(false)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h2 className={styles.modalTitle}>Create a new world</h2>
+              <button className={styles.modalClose} onClick={() => setCreating(false)} aria-label="Close">✕</button>
+            </div>
+            <label className={styles.field}>
+              <span>World name</span>
+              <input
+                className={styles.input}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="e.g. Aftermath of the rate cut"
+              />
+            </label>
+            <label className={styles.field}>
+              <span>What should this world predict?</span>
+              <textarea
+                className={styles.textarea}
+                value={requirement}
+                onChange={(e) => setRequirement(e.target.value)}
+                rows={2}
+                placeholder="Describe the scenario and the question you want answered."
+              />
+            </label>
+            <div className={styles.field}>
+              <button
+                type="button"
+                className={styles.accordionToggle}
+                onClick={() => {
+                  play('click');
+                  setContextOpen((v) => !v);
+                }}
+                onMouseEnter={() => play('hover')}
+                aria-expanded={contextOpen}
+              >
+                <span>People, entities, and relationships (optional)</span>
+                <span className={styles.accordionChevron} aria-hidden>
+                  {contextOpen ? '−' : '+'}
+                </span>
+              </button>
+              {contextOpen && (
+                <>
+                  <textarea
+                    className={styles.textarea}
+                    value={additionalContext}
+                    onChange={(e) => setAdditionalContext(e.target.value)}
+                    rows={4}
+                    placeholder="Add key people, groups, or connections."
+                  />
+                  <small className={styles.fieldHint}>
+                    Use one clear fact per line. These details become source context for graph entities
+                    and directed relationships.
+                  </small>
+                </>
+              )}
+            </div>
             <div className={styles.field}>
               <span id="source-documents-label">Source documents</span>
               <input
@@ -216,50 +241,73 @@ export default function ProjectGallery({
         </div>
       )}
 
-      <section
-        className={`${styles.projectGrid} ${loadingProjects ? styles.projectGridLoading : ''}`}
-      >
-        {loadingProjects && (
-          <div className={styles.loaderBlock} aria-live="polite">
-            <DotmSquare15 speed={0.9} dotSize={5} gap={3} />
-            <p className={styles.muted}>Loading worlds…</p>
-          </div>
-        )}
-        {!loading && projects.length === 0 && (
-          <p className={styles.muted}>No worlds yet. Create your first one above.</p>
-        )}
-        {projects.map((p, i) => (
-          <button
-            key={p.project_id}
-            className={styles.projectCard}
-            onClick={() => {
-              play('navigation');
-              onOpen(p);
-            }}
-            onMouseEnter={() => play('hover')}
-          >
-            <div className={styles.projectCardBody}>
-              <h3 className={styles.projectCardName}>{p.name}</h3>
-              <p className={styles.projectCardAuthor}>by you</p>
-              {p.simulation_requirement && (
-                <p className={styles.projectCardExcerpt}>{p.simulation_requirement}</p>
-              )}
-              <span className={styles.observeBtn}>
-                Observe findings
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-              </span>
-            </div>
-            <div className={styles.projectCardVisual}>
-              <div
-                className={styles.projectCardVisualInner}
-                style={{ background: BANNER_GRADIENTS[i % BANNER_GRADIENTS.length] }}
-              >
-                <span className={styles.projectStatus}>Pocket World</span>
+      <div className={styles.galleryBody}>
+        <section className={styles.projectGrid}>
+          {!loading && projects.length === 0 && (
+            <p className={styles.muted}>No worlds yet. Create your first one above.</p>
+          )}
+          {projects.map((p, i) => (
+            <button
+              key={p.project_id}
+              className={styles.projectCard}
+              onClick={() => {
+                play('navigation');
+                onOpen(p);
+              }}
+              onMouseEnter={() => play('hover')}
+            >
+              <div className={styles.projectCardBody}>
+                <h3 className={styles.projectCardName}>{p.name}</h3>
+                <p className={styles.projectCardAuthor}>by you</p>
+                {(p.ontology?.analysis_summary || p.simulation_requirement) && (
+                  <p className={styles.projectCardExcerpt}>{p.ontology?.analysis_summary || p.simulation_requirement}</p>
+                )}
+                <span className={styles.observeBtn}>
+                  Observe findings
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </span>
               </div>
+              <div className={styles.projectCardVisual}>
+                <div
+                  className={styles.projectCardVisualInner}
+                  style={{ background: 'var(--color-surface-2)' }}
+                >
+                  <span className={styles.projectStatus}>Pocket World</span>
+                </div>
+              </div>
+            </button>
+          ))}
+        </section>
+        <div className={styles.galleryRight}>
+          <article className={styles.recentActivityCard}>
+            <div className={styles.recentActivityHeader}>
+              <h3 className={styles.recentActivityTitle}>Recent Activity</h3>
+              <button className={styles.recentActivityLink} onClick={() => {}}>
+                View all
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </button>
             </div>
-          </button>
-        ))}
-      </section>
+            <div className={styles.recentActivityList}>
+              {SEED_POSTS.map((post) => (
+                <div key={post.id} className={styles.recentMiniCard}>
+                  <div className={styles.recentMiniBody}>
+                    <p className={styles.recentMiniTitle}>{post.title}</p>
+                    <div className={styles.recentMiniMeta}>
+                      <span>{post.creator}</span>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                      <span>{post.users}</span>
+                      <span className={styles.recentMiniAmount}>${post.amount} available</span>
+                    </div>
+                  </div>
+                  <div className={styles.recentMiniImage}>
+                    <img src={post.img} alt="" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </article>
+        </div>
+      </div>
     </div>
   );
 }

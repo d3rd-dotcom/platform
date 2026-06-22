@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
+import { DotmSquare3 } from '@/components/dot-matrix/DotmSquare3';
 import Button from '@/components/button/Button';
 import { useSound } from '@/hooks/useSound';
 import * as api from '@/lib/simulation-api';
@@ -187,7 +187,7 @@ export default function Step4Report({
           )}
           {generating && (
             <span className={styles.loaderInline} aria-hidden>
-              <DotmSquare15 speed={0.9} dotSize={4} gap={3} />
+              <DotmSquare3 speed={0.9} dotSize={4} gap={3} />
             </span>
           )}
         </div>
@@ -199,7 +199,7 @@ export default function Step4Report({
         <div className={styles.logBox}>
           {logs.length === 0 && (
             <div className={styles.loaderBlock} aria-live="polite">
-              <DotmSquare15 speed={0.9} dotSize={5} gap={3} />
+              <DotmSquare3 speed={0.9} dotSize={5} gap={3} />
               <span className={styles.muted}>Report Agent is thinking…</span>
             </div>
           )}

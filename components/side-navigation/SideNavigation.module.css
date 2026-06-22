@@ -6,7 +6,7 @@
 }
 
 .sideNav {
-  width: var(--sidebar-width, 265px);
+  width: var(--sidebar-width, 245px);
   height: calc(100vh - 72px);
   background: #f4f5fe;
   border-right: 1px solid #d0d2e8;
@@ -392,16 +392,24 @@
   overflow-y: auto;
   overflow-x: hidden;
   min-height: 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.navSections::-webkit-scrollbar {
+  display: none;
 }
 
 .navPrimaryGroup {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .navExtrasGroup {
   margin-top: auto;
   padding-top: 16px;
+  overflow: hidden;
 }
 
 .section {
@@ -1920,23 +1928,27 @@
   width: 100%;
   height: 48px;
   background: var(--color-primary);
-  border: 1px solid transparent;
+  border: 2px solid #1A1D33;
   border-radius: 12px;
   font-family: var(--font-primary);
   font-size: 14px;
   font-weight: 600;
   color: #ffffff;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(26, 29, 51, 0.04), 0 2px 4px rgba(26, 29, 51, 0.02);
-  transition: all 0.2s ease;
+  box-shadow: 3px 3px 0 #1A1D33;
+  transition: all 0.15s ease;
 }
 
 .actionButton:hover {
-  /* Makes the blue slightly lighter or darker when hovered */
   background: color-mix(in oklch, #ffffff 10%, var(--color-primary));
   color: #ffffff;
-  box-shadow: 0 6px 16px rgba(26, 29, 51, 0.08), 0 3px 6px rgba(26, 29, 51, 0.04);
-  transform: translateY(-1px);
+  box-shadow: 4px 4px 0 #1A1D33;
+  transform: translate(-1px, -1px);
+}
+
+.actionButton:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 #1A1D33;
 }
 
 .actionButtonIcon {
@@ -1954,21 +1966,26 @@
   justify-content: center;
   width: 44px;
   height: 44px;
-  background: #ffffff;
-  border: 1px solid rgba(26, 29, 51, 0.12);
+  background: var(--color-primary);
+  border: 2px solid #1A1D33;
   border-radius: 50%;
-  color: #1A1D33;
+  color: #ffffff;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(26, 29, 51, 0.04);
-  transition: all 0.2s ease;
+  box-shadow: 2px 2px 0 #1A1D33;
+  transition: all 0.15s ease;
 }
 
 .actionButtonCollapsed:hover {
-  background: color-mix(in oklch, var(--color-primary) 5%, #ffffff);
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  box-shadow: 0 6px 16px rgba(26, 29, 51, 0.08);
-  transform: scale(1.05);
+  background: color-mix(in oklch, #ffffff 10%, var(--color-primary));
+  border-color: #1A1D33;
+  color: #ffffff;
+  box-shadow: 3px 3px 0 #1A1D33;
+  transform: translate(-1px, -1px);
+}
+
+.actionButtonCollapsed:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #1A1D33;
 }
 
 /* Sidebar Footer & Socials */
@@ -2043,17 +2060,23 @@
 /* Dark mode overrides */
 :global([data-theme="dark"]) .actionButton,
 :global([data-theme="dark"]) .actionButtonCollapsed {
-  background: var(--color-shell-background, #0f1020);
+  background: var(--color-primary);
   border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.08));
-  color: var(--color-text-soft, rgba(255, 255, 255, 0.7));
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
 }
 
 :global([data-theme="dark"]) .actionButton:hover,
 :global([data-theme="dark"]) .actionButtonCollapsed:hover {
-  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-shell-background, #0f1020));
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  background: color-mix(in oklch, #ffffff 10%, var(--color-primary));
+  border-color: var(--color-border-strong, rgba(255, 255, 255, 0.25));
+  color: #ffffff;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .actionButton:active,
+:global([data-theme="dark"]) .actionButtonCollapsed:active {
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
 }
 
 :global([data-theme="dark"]) .sidebarFooter {

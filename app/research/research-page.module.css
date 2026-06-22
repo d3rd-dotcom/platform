@@ -1,7 +1,7 @@
 .pageLayout {
+  position: relative;
   margin-left: var(--sidebar-width, 265px);
-  min-height: 100vh;
-  overflow-x: hidden;
+  min-height: calc(100dvh - 72px);
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
@@ -239,7 +239,7 @@
 }
 
 .toolContent {
-  min-height: calc(100vh - 80px);
+  height: 100%;
 }
 
 /* Also make button cards look like buttons not links */

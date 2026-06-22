@@ -34,6 +34,22 @@ function hasCompletedGraph(project: Project) {
     (project.status === 'graph_completed' || project.status === 'graph_built');
 }
 
+const SEED_POSTS = [
+  { id: 'sp-1', title: 'If the treasury could fund one wild idea, what would yours be?', ts: Date.now() - 1000 * 60 * 18 },
+  { id: 'sp-2', title: 'What daily habit changed your mental health the most?', ts: Date.now() - 1000 * 60 * 60 * 5 },
+  { id: 'sp-3', title: 'Would you try a brain-training game designed by the community?', ts: Date.now() - 1000 * 60 * 60 * 22 },
+  { id: 'sp-4', title: 'Open Dataset: Attention Metrics in LLM-Augmented Dev Workflows', ts: Date.now() - 1000 * 60 * 60 * 48 },
+  { id: 'sp-5', title: 'RFC: Open Protocol for Burnout Detection in Dev Teams', ts: Date.now() - 1000 * 60 * 60 * 72 },
+];
+
+function relTime(ts: number): string {
+  const s = Math.floor((Date.now() - ts) / 1000);
+  if (s < 60) return `${s}s ago`;
+  if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+  if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
+  return `${Math.floor(s / 86400)}d ago`;
+}
+
 export default function SimulationWorkspace() {
   const { play } = useSound();
   const [wf, setWf] = useState<WorkflowState | null>(null);
@@ -203,6 +219,21 @@ export default function SimulationWorkspace() {
               }}
             />
           </div>
+          <article className={styles.recentActivityCard}>
+            <p className={styles.recentActivityEyebrow}>Room Log</p>
+            <h3 className={styles.recentActivityTitle}>Recent Activity</h3>
+            <div className={styles.recentActivityList}>
+              {SEED_POSTS.map((post) => (
+                <div key={post.id} className={styles.recentActivityItem}>
+                  <span>{post.title}</span>
+                  <time>{relTime(post.ts)}</time>
+                </div>
+              ))}
+            </div>
+            <button className={styles.recentActivityLink} onClick={() => {}}>
+              View all activity
+            </button>
+          </article>
         </section>
 
         <aside className={styles.stepColumn} aria-label="Simulation workflow controls">

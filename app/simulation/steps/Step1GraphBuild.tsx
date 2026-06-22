@@ -3,7 +3,7 @@
 import { useCallback, useRef, useState } from 'react';
 import * as api from '@/lib/simulation-api';
 import type { GraphData } from '@/lib/simulation-api';
-import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
+import { DotmSquare3 } from '@/components/dot-matrix/DotmSquare3';
 import Button from '@/components/button/Button';
 import { useSound } from '@/hooks/useSound';
 import { usePolling } from '../usePolling';
@@ -294,7 +294,7 @@ export default function Step1GraphBuild({
         )}
         {building && (
           <span className={styles.graphBuildLoader} aria-hidden>
-            <DotmSquare15 speed={0.9} dotSize={4} gap={3} />
+            <DotmSquare3 speed={0.9} dotSize={4} gap={3} />
           </span>
         )}
       </div>

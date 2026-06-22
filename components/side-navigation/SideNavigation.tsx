@@ -85,10 +85,16 @@ const primaryNavItems: NavItem[] = [
     iconSrc: '/icons/nav-surveys-v5.svg',
   },
   {
-    id: 'study',
-    label: 'study',
+    id: 'course',
+    label: 'Course',
     href: '/course',
     iconSrc: '/icons/nav-course-v2.svg',
+  },
+  {
+    id: 'quests',
+    label: 'Quests',
+    href: '/quests',
+    iconSrc: '/icons/nav-quests-v3.svg',
   },
 ];
 
@@ -97,7 +103,7 @@ interface SideNavigationProps {
   onExternalMobileClose?: () => void;
 }
 
-const SIDEBAR_EXPANDED_WIDTH = '265px';
+const SIDEBAR_EXPANDED_WIDTH = '245px';
 const SIDEBAR_COLLAPSED_WIDTH = '72px';
 
 function syncSidebarPreference(collapsed: boolean) {

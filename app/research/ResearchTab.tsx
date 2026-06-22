@@ -253,7 +253,7 @@ export default function ResearchTab() {
   const [manualRow, setManualRow] = useState<Record<string, string>>({});
 
   // Chart state
-  const [chartType, setChartType] = useState<ChartType>('scatter');
+  const [chartType, setChartType] = useState<ChartType>('bar');
   const [chartX, setChartX] = useState('');
   const [chartY, setChartY] = useState('');
   const [chartGroup, setChartGroup] = useState('');
@@ -696,50 +696,157 @@ export default function ResearchTab() {
 
   const exportResults = () => {
     if (n === 0) { showToast('NO DATA TO EXPORT'); return; }
-    const lines: string[] = [];
     const ts = new Date().toISOString().slice(0, 19).replace('T', ' ');
-    lines.push(`R-TOOL STATISTICAL REPORT`);
-    lines.push(`Generated: ${ts}`);
-    lines.push(`${'='.repeat(60)}\n`);
 
-    // Descriptive stats
-    lines.push(`DESCRIPTIVE STATISTICS (N = ${n})`);
-    lines.push(`${'-'.repeat(60)}`);
-    lines.push(`${'Variable'.padEnd(16)}${'Mean'.padEnd(10)}${'SD'.padEnd(10)}${'Med'.padEnd(10)}${'Min'.padEnd(10)}${'Max'.padEnd(10)}${'Q1'.padEnd(10)}${'Q3'.padEnd(10)}${'Skew'.padEnd(10)}${'Kurt'.padEnd(10)}`);
+    const svgChartW = 520, svgChartH = 220;
+
+    function barChartSVG(data: {label: string; value: number}[], title: string, color: string) {
+      if (data.length === 0) return '';
+      const maxV = Math.max(...data.map(d => Math.abs(d.value)), 0.01);
+      const padL = 60, padR = 20, padT = 20, padB = 40;
+      const cw = svgChartW - padL - padR;
+      const ch = svgChartH - padT - padB;
+      const barW = Math.min(40, cw / data.length - 8);
+      const bars = data.map((d, i) => {
+        const x = padL + (cw / data.length) * i + (cw / data.length - barW) / 2;
+        const h = (Math.abs(d.value) / maxV) * ch;
+        const y = d.value >= 0 ? padT + ch - h : padT + ch;
+        return `<rect x="${x}" y="${y}" width="${barW}" height="${h}" rx="3" fill="${color}" opacity="0.85"/>
+<text x="${x + barW / 2}" y="${svgChartH - 6}" text-anchor="middle" font-size="10" fill="rgba(232,230,240,0.6)">${d.label}</text>
+<text x="${x + barW / 2}" y="${d.value >= 0 ? y - 6 : y + h + 14}" text-anchor="middle" font-size="10" fill="${color}">${round2(d.value)}</text>`;
+      }).join('\n');
+      return `<div class="sec"><h2>${title}</h2><svg width="${svgChartW}" height="${svgChartH}" viewBox="0 0 ${svgChartW} ${svgChartH}">
+<line x1="${padL}" y1="${padT + ch}" x2="${padL + cw}" y2="${padT + ch}" stroke="rgba(255,255,255,0.1)"/>
+${bars}</svg></div>`;
+    }
+
+    function histSVG(vals: number[], label: string) {
+      if (vals.length < 3) return '';
+      const bins = 8;
+      const mn = Math.min(...vals), mx = Math.max(...vals);
+      const bw = (mx - mn) / bins || 1;
+      const counts = Array(bins).fill(0);
+      vals.forEach(v => { const i = Math.min(Math.floor((v - mn) / bw), bins - 1); counts[i]++; });
+      const maxC = Math.max(...counts, 1);
+      const padL = 50, padR = 20, padT = 20, padB = 40;
+      const cw = svgChartW - padL - padR, ch = svgChartH - padT - padB;
+      const barW = cw / bins - 2;
+      const bars = counts.map((c, i) => {
+        const x = padL + (cw / bins) * i + 1;
+        const h = (c / maxC) * ch;
+        const y = padT + ch - h;
+        return `<rect x="${x}" y="${y}" width="${barW}" height="${h}" rx="2" fill="var(--color-primary)" opacity="0.75"/>`;
+      }).join('\n');
+      return `<div class="sec"><h2>Distribution: ${label}</h2><svg width="${svgChartW}" height="${svgChartH}" viewBox="0 0 ${svgChartW} ${svgChartH}">
+<line x1="${padL}" y1="${padT + ch}" x2="${padL + cw}" y2="${padT + ch}" stroke="rgba(255,255,255,0.1)"/>
+${bars}
+<text x="${padL}" y="${svgChartH - 6}" font-size="9" fill="rgba(232,230,240,0.4)">${round2(mn)}</text>
+<text x="${padL + cw}" y="${svgChartH - 6}" text-anchor="end" font-size="9" fill="rgba(232,230,240,0.4)">${round2(mx)}</text>
+</svg></div>`;
+    }
+
+    let cssVars = `--color-primary: #8b95ff;`;
+    let html = `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>R-Tool Report</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,sans-serif;background:#0c0d17;color:#e8e6f0;padding:40px;${cssVars}}
+.report{max-width:960px;margin:0 auto}
+h1{font-size:28px;font-weight:700;letter-spacing:-0.02em;margin-bottom:2px;background:linear-gradient(135deg,#8b95ff,#a78bfa,#f2a0b5);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.meta{color:rgba(232,230,240,0.45);font-size:13px;margin-bottom:6px}
+.summary{display:flex;gap:12px;margin-bottom:32px;flex-wrap:wrap}
+.stat{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px 20px;flex:1;min-width:120px;text-align:center}
+.stat-n{font-size:28px;font-weight:700;color:#c8c6ff}
+.stat-l{font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(232,230,240,0.45);margin-top:4px}
+.sec{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:24px;margin-bottom:24px}
+.sec h2{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:rgba(232,230,240,0.55);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.08)}
+table{width:100%;border-collapse:collapse;font-size:12px;font-family:'SF Mono',Consolas,monospace}
+th{text-align:left;padding:6px 10px;color:rgba(232,230,240,0.45);font-size:10px;text-transform:uppercase;letter-spacing:0.08em;border-bottom:1px solid rgba(255,255,240,0.08)}
+td{padding:6px 10px;border-bottom:1px solid rgba(255,255,240,0.04)}
+.lk{color:rgba(232,230,240,0.65)}
+.rv{color:#c8c6ff;font-weight:600;text-align:right}
+.bar{display:inline-block;height:6px;border-radius:3px;vertical-align:middle}
+.matrix{display:grid;gap:3px}
+.mc{text-align:center;padding:6px;border-radius:4px;font-size:11px;font-weight:600;font-family:'SF Mono',Consolas,monospace}
+.mh{color:rgba(232,230,240,0.5);font-size:10px;text-transform:uppercase;letter-spacing:0.06em}
+.trr{color:#8cf2bd}
+.trv{color:#c8c6ff}
+svg{display:block;margin:0 auto}
+</style></head><body><div class="report">
+<h1>Statistical Report</h1>
+<div class="meta">R-Tool Workbench &middot; ${ts}</div>
+<div class="summary">
+<div class="stat"><div class="stat-n">${n}</div><div class="stat-l">Observations</div></div>
+<div class="stat"><div class="stat-n">${columns.length}</div><div class="stat-l">Variables</div></div>
+<div class="stat"><div class="stat-n">${numericCols.length}</div><div class="stat-l">Numeric</div></div>
+<div class="stat"><div class="stat-n">${categoricalCols.length}</div><div class="stat-l">Categorical</div></div>
+</div>`;
+
+    // Data table
+    html += `<div class="sec"><h2>Data Table (${n} rows)</h2><div style="overflow-x:auto"><table><tr>${columns.map(c => `<th>${c.name}</th>`).join('')}</tr>`;
+    rows.forEach(r => {
+      html += `<tr>${columns.map(c => `<td class="rv">${typeof r[c.name] === 'number' ? round2(r[c.name] as number) : String(r[c.name] ?? '')}</td>`).join('')}</tr>`;
+    });
+    html += `</table></div></div>`;
+
+    // Bar chart of means
+    if (numericCols.length > 0) {
+      const meansData = numericCols.map(c => ({label: c.name, value: mean(colVals(c.name))}));
+      html += barChartSVG(meansData, 'Variable Means', '#8b95ff');
+    }
+
+    // Histograms for numeric columns
+    numericCols.forEach(col => {
+      html += histSVG(colVals(col.name), col.name);
+    });
+
+    // Descriptive stats table
+    html += `<div class="sec"><h2>Descriptive Statistics</h2><table><tr>${['Variable','Mean','SD','Median','Min','Max','Q1','Q3','Skew','Kurt'].map(h => `<th>${h}</th>`).join('')}</tr>`;
     numericCols.forEach(col => {
       const v = colVals(col.name);
-      lines.push(
-        `${col.name.padEnd(16)}${round2(mean(v)).toString().padEnd(10)}${round2(std(v)).toString().padEnd(10)}${round2(median(v)).toString().padEnd(10)}${round2(Math.min(...v)).toString().padEnd(10)}${round2(Math.max(...v)).toString().padEnd(10)}${round2(quartile(v, 0.25)).toString().padEnd(10)}${round2(quartile(v, 0.75)).toString().padEnd(10)}${round2(skewness(v)).toString().padEnd(10)}${round2(kurtosis(v)).toString().padEnd(10)}`
-      );
+      html += `<tr><td class="lk">${col.name}</td>${[mean(v), std(v), median(v), Math.min(...v), Math.max(...v), quartile(v, 0.25), quartile(v, 0.75), skewness(v), kurtosis(v)].map(x => `<td class="rv">${round2(x)}</td>`).join('')}</tr>`;
     });
-    lines.push('');
+    html += `</table></div>`;
 
-    // Correlation matrix
+    // Correlation heatmap
     if (corrCols.length >= 2) {
-      lines.push(`PEARSON CORRELATION MATRIX`);
-      lines.push(`${'-'.repeat(60)}`);
-      lines.push(`${''.padEnd(16)}${corrCols.map(c => c.padEnd(10)).join('')}`);
+      const nc = corrCols.length;
+      html += `<div class="sec"><h2>Pearson Correlation Matrix</h2><div class="matrix" style="grid-template-columns:${'auto '.repeat(nc + 1)}">`;
+      html += `<div class="mc mh"></div>`;
+      corrCols.forEach(c => { html += `<div class="mc mh">${c}</div>`; });
       corrCols.forEach((rowC, i) => {
-        const row = corrCols.map((_, j) => {
+        html += `<div class="mc mh">${rowC}</div>`;
+        corrCols.forEach((colC, j) => {
           const r = i === j ? 1 : pearson(corrData[i], corrData[j]);
-          return round2(r).toFixed(2).padEnd(10);
-        }).join('');
-        lines.push(`${rowC.padEnd(16)}${row}`);
+          const abs = Math.abs(r);
+          const hue = r >= 0 ? 140 : 20;
+          html += `<div class="mc" style="background:hsla(${hue},${Math.round(abs * 80 + 10)}%,50%,${abs * 0.5 + 0.1});color:hsl(${hue},40%,85%);border:1px solid hsla(${hue},${Math.round(abs * 80 + 10)}%,60%,0.2)">${round2(r).toFixed(2)}</div>`;
+        });
       });
-      lines.push('');
+      html += `</div></div>`;
     }
 
     // Test results
     if (testResult && testLabel) {
-      lines.push(`INFERENTIAL TEST: ${testLabel}`);
-      lines.push(`${'-'.repeat(60)}`);
+      const pVal = testResult['p-value'] ?? testResult['p (two-tailed)'] ?? testResult['p (F-test)'];
+      html += `<div class="sec"><h2>${testLabel}</h2><table>`;
       Object.entries(testResult).forEach(([k, v]) => {
-        lines.push(`  ${k.padEnd(24)}${String(v)}`);
+        const val = typeof v === 'number' ? v : parseFloat(v);
+        if (!isNaN(val)) {
+          const barW = Math.min(Math.abs(val) * 60, 180);
+          const hue = val >= 0 ? 140 : 20;
+          html += `<tr><td class="lk">${k}</td><td class="rv">${round2(val)}</td><td><span class="bar" style="width:${barW}px;background:hsl(${hue},70%,50%)"></span></td></tr>`;
+        } else {
+          html += `<tr><td class="lk">${k}</td><td class="rv" colspan="2">${String(v)}</td></tr>`;
+        }
       });
-      lines.push('');
+      if (pVal !== undefined) {
+        const sig = typeof pVal === 'number' && pVal < 0.05;
+        html += `<tr><td class="lk">Significance</td><td class="${sig ? 'trr' : 'trv'}" colspan="2">${sig ? 'Statistically significant (p < 0.05)' : 'Not statistically significant (p ≥ 0.05)'}</td></tr>`;
+      }
+      html += `</table></div>`;
     }
 
-    downloadFile(lines.join('\n'), `r-tool-report-${Date.now()}.txt`, 'text/plain');
+    html += `</div></body></html>`;
+    downloadFile(html, `r-tool-report-${Date.now()}.html`, 'text/html');
     showToast('REPORT EXPORTED');
   };
 
@@ -811,142 +918,146 @@ export default function ResearchTab() {
         {/* Main Content */}
         <div className={styles.content}>
 
-          {/* 01 — Data */}
-          <div>
-            <div className={styles.sectionLabel}>01 — Data</div>
-            <div className={styles.entryPanel}>
-              <div className={styles.brutCard}>
-                <div style={{ marginBottom: 20 }}>
-                  <div className={styles.entryTitle}>Import or Enter Data</div>
-                  <p className={styles.entryDesc}>Paste CSV, upload a .csv file, or define a schema and enter rows manually.</p>
-                </div>
+          <div className={styles.sectionsRow}>
 
-                {/* Mode tabs */}
-                <div className={styles.tabBar}>
-                  <button className={inputMode === 'csv' ? styles.tabBtnActive : styles.tabBtn} onClick={() => setInputMode('csv')}>CSV / File</button>
-                  <button className={inputMode === 'manual' ? styles.tabBtnActive : styles.tabBtn} onClick={() => setInputMode('manual')}>Manual Entry</button>
-                </div>
-
-                {inputMode === 'csv' ? (
-                  <div className={styles.entryForm}>
-                    <div
-                      className={styles.fieldGroup}
-                      onDragOver={e => { e.preventDefault(); setDragging(true); }}
-                      onDragLeave={() => setDragging(false)}
-                      onDrop={handleFileDrop}
-                    >
-                      <label className={styles.fieldLabel}>Paste or Drop CSV Data</label>
-                      <textarea
-                        className={styles.csvTextarea}
-                        value={csvText}
-                        onChange={e => setCsvText(e.target.value)}
-                        placeholder="Paste CSV here or drag & drop a .csv file&#10;&#10;name,age,group,score&#10;Alice,28,A,82&#10;Bob,35,B,67"
-                        rows={6}
-                        style={dragging ? { borderColor: 'var(--color-primary)', background: 'color-mix(in oklch, var(--color-primary) 5%, transparent)' } : undefined}
-                      />
-                    </div>
-                    <div className={styles.buttonRow}>
-                      <button className={styles.btnPrimary} onClick={handleCsvImport} disabled={parsing}>
-                        {parsing ? 'PARSING...' : 'LOAD DATA'}
-                      </button>
-                    </div>
+            {/* 01 — Data */}
+            <div>
+              <div className={styles.sectionLabel}>01 — Data</div>
+              <div className={styles.entryPanel}>
+                <div className={styles.brutCard}>
+                  <div style={{ marginBottom: 20 }}>
+                    <div className={styles.entryTitle}>Import or Enter Data</div>
+                    <p className={styles.entryDesc}>Paste CSV, upload a .csv file, or define a schema and enter rows manually.</p>
                   </div>
-                ) : (
-                  <div className={styles.entryForm}>
-                    {!schemaLocked ? (
-                      <>
-                        <div className={styles.fieldGroup}>
-                          <label className={styles.fieldLabel}>Define Schema</label>
-                          <div className={styles.fieldHint}>Add column names and types, then lock the schema to begin entering rows.</div>
-                        </div>
-                        {schemaDraft.map((col, i) => (
-                          <div key={i} className={styles.inputRow}>
-                            <div className={styles.fieldGroup}>
+
+                  {/* Mode tabs */}
+                  <div className={styles.tabBar}>
+                    <button className={inputMode === 'csv' ? styles.tabBtnActive : styles.tabBtn} onClick={() => setInputMode('csv')}>CSV / File</button>
+                    <button className={inputMode === 'manual' ? styles.tabBtnActive : styles.tabBtn} onClick={() => setInputMode('manual')}>Manual Entry</button>
+                  </div>
+
+                  {inputMode === 'csv' ? (
+                    <div className={styles.entryForm}>
+                      <div
+                        className={styles.fieldGroup}
+                        onDragOver={e => { e.preventDefault(); setDragging(true); }}
+                        onDragLeave={() => setDragging(false)}
+                        onDrop={handleFileDrop}
+                      >
+                        <label className={styles.fieldLabel}>Paste or Drop CSV Data</label>
+                        <textarea
+                          className={styles.csvTextarea}
+                          value={csvText}
+                          onChange={e => setCsvText(e.target.value)}
+                          placeholder="Paste CSV here or drag & drop a .csv file&#10;&#10;name,age,group,score&#10;Alice,28,A,82&#10;Bob,35,B,67"
+                          rows={6}
+                          style={dragging ? { borderColor: 'var(--color-primary)', background: 'color-mix(in oklch, var(--color-primary) 5%, transparent)' } : undefined}
+                        />
+                      </div>
+                      <div className={styles.buttonRow}>
+                        <button className={styles.btnPrimary} onClick={handleCsvImport} disabled={parsing}>
+                          {parsing ? 'PARSING...' : 'LOAD DATA'}
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className={styles.entryForm}>
+                      {!schemaLocked ? (
+                        <>
+                          <div className={styles.fieldGroup}>
+                            <label className={styles.fieldLabel}>Define Schema</label>
+                            <div className={styles.fieldHint}>Add column names and types, then lock the schema to begin entering rows.</div>
+                          </div>
+                          {schemaDraft.map((col, i) => (
+                            <div key={i} className={styles.inputRow}>
+                              <div className={styles.fieldGroup}>
+                                <input
+                                  className={styles.input}
+                                  value={col.name}
+                                  onChange={e => updateSchemaCol(i, 'name', e.target.value)}
+                                  placeholder="Column name"
+                                />
+                              </div>
+                              <div className={styles.fieldGroup} style={{ display: 'flex', flexDirection: 'row', gap: 8, alignItems: 'center' }}>
+                                <select className={styles.select} value={col.type} onChange={e => updateSchemaCol(i, 'type', e.target.value)}>
+                                  <option value="numeric">Numeric</option>
+                                  <option value="categorical">Categorical</option>
+                                </select>
+                                {schemaDraft.length > 1 && (
+                                  <button className={styles.btnOutline} style={{ padding: '8px 12px', flexShrink: 0 }} onClick={() => removeSchemaCol(i)}>&times;</button>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                          <div className={styles.buttonRow}>
+                            <button className={styles.btnOutline} onClick={addSchemaCol}>+ COLUMN</button>
+                            <button className={styles.btnPrimary} onClick={lockSchema}>LOCK SCHEMA</button>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className={styles.fieldGroup}>
+                            <label className={styles.fieldLabel}>Add Row</label>
+                            <div className={styles.fieldHint}>Schema: {columns.map(c => `${c.name} (${c.type})`).join(', ')}</div>
+                          </div>
+                          {columns.map(col => (
+                            <div key={col.name} className={styles.fieldGroup}>
+                              <label className={styles.fieldLabel}>{col.name} ({col.type})</label>
                               <input
                                 className={styles.input}
-                                value={col.name}
-                                onChange={e => updateSchemaCol(i, 'name', e.target.value)}
-                                placeholder="Column name"
+                                type={col.type === 'numeric' ? 'number' : 'text'}
+                                value={manualRow[col.name] || ''}
+                                onChange={e => setManualRow(prev => ({ ...prev, [col.name]: e.target.value }))}
+                                placeholder={col.type === 'numeric' ? '0' : 'value'}
                               />
                             </div>
-                            <div className={styles.fieldGroup} style={{ display: 'flex', flexDirection: 'row', gap: 8, alignItems: 'center' }}>
-                              <select className={styles.select} value={col.type} onChange={e => updateSchemaCol(i, 'type', e.target.value)}>
-                                <option value="numeric">Numeric</option>
-                                <option value="categorical">Categorical</option>
-                              </select>
-                              {schemaDraft.length > 1 && (
-                                <button className={styles.btnOutline} style={{ padding: '8px 12px', flexShrink: 0 }} onClick={() => removeSchemaCol(i)}>&times;</button>
-                              )}
-                            </div>
+                          ))}
+                          <div className={styles.buttonRow}>
+                            <button className={styles.btnPrimary} onClick={addManualRow}>+ ADD ROW</button>
+                            <button className={styles.btnOutline} onClick={resetSchema}>RESET SCHEMA</button>
                           </div>
-                        ))}
-                        <div className={styles.buttonRow}>
-                          <button className={styles.btnOutline} onClick={addSchemaCol}>+ COLUMN</button>
-                          <button className={styles.btnPrimary} onClick={lockSchema}>LOCK SCHEMA</button>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div className={styles.fieldGroup}>
-                          <label className={styles.fieldLabel}>Add Row</label>
-                          <div className={styles.fieldHint}>Schema: {columns.map(c => `${c.name} (${c.type})`).join(', ')}</div>
-                        </div>
-                        {columns.map(col => (
-                          <div key={col.name} className={styles.fieldGroup}>
-                            <label className={styles.fieldLabel}>{col.name} ({col.type})</label>
-                            <input
-                              className={styles.input}
-                              type={col.type === 'numeric' ? 'number' : 'text'}
-                              value={manualRow[col.name] || ''}
-                              onChange={e => setManualRow(prev => ({ ...prev, [col.name]: e.target.value }))}
-                              placeholder={col.type === 'numeric' ? '0' : 'value'}
-                            />
-                          </div>
-                        ))}
-                        <div className={styles.buttonRow}>
-                          <button className={styles.btnPrimary} onClick={addManualRow}>+ ADD ROW</button>
-                          <button className={styles.btnOutline} onClick={resetSchema}>RESET SCHEMA</button>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                )}
-              </div>
-
-            </div>
-          </div>
-
-          {/* 02 — Data Table */}
-          <div>
-            <div className={styles.sectionLabel}>02 — Data Table</div>
-            <div className={styles.dataTableWrapper}>
-              <table className={styles.dataTable}>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    {columns.map(c => <th key={c.name}>{c.name}</th>)}
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.length === 0 ? (
-                    <tr>
-                      <td colSpan={columns.length + 1} className={styles.emptyRow}>
-                        NO DATA — IMPORT CSV OR ENTER ROWS
-                      </td>
-                    </tr>
-                  ) : (
-                    rows.map((r, i) => (
-                      <tr key={i}>
-                        <td className={styles.tdN}>{i + 1}</td>
-                        {columns.map(c => (
-                          <td key={c.name}>{typeof r[c.name] === 'number' ? round2(r[c.name] as number) : String(r[c.name] ?? '')}</td>
-                        ))}
-                      </tr>
-                    ))
+                        </>
+                      )}
+                    </div>
                   )}
-                </tbody>
-              </table>
+                </div>
+
+              </div>
             </div>
+
+            {/* 02 — Data Table */}
+            <div>
+              <div className={styles.sectionLabel}>02 — Data Table</div>
+              <div className={styles.dataTableWrapper}>
+                <table className={styles.dataTable}>
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      {columns.map(c => <th key={c.name}>{c.name}</th>)}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rows.length === 0 ? (
+                      <tr>
+                        <td colSpan={columns.length + 1} className={styles.emptyRow}>
+                          NO DATA — IMPORT CSV OR ENTER ROWS
+                        </td>
+                      </tr>
+                    ) : (
+                      rows.map((r, i) => (
+                        <tr key={i}>
+                          <td className={styles.tdN}>{i + 1}</td>
+                          {columns.map(c => (
+                            <td key={c.name}>{typeof r[c.name] === 'number' ? round2(r[c.name] as number) : String(r[c.name] ?? '')}</td>
+                          ))}
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
           </div>
 
           {/* 03 — Descriptive Statistics */}
@@ -985,13 +1096,13 @@ export default function ResearchTab() {
           <div>
             <div className={styles.sectionLabel}>04 — Visualizations</div>
             <div className={styles.tabBar}>
-              {(['scatter', 'histogram', 'bar', 'line', 'boxplot'] as ChartType[]).map(tab => (
+              {(['bar', 'scatter', 'histogram', 'line', 'boxplot'] as ChartType[]).map(tab => (
                 <button
                   key={tab}
                   className={chartType === tab ? styles.tabBtnActive : styles.tabBtn}
                   onClick={() => setChartType(tab)}
                 >
-                  {tab === 'scatter' ? 'Scatter' : tab === 'histogram' ? 'Histogram' : tab === 'bar' ? 'Bar' : tab === 'line' ? 'Line' : 'Box'}
+                  {tab === 'bar' ? 'Bar' : tab === 'scatter' ? 'Scatter' : tab === 'histogram' ? 'Histogram' : tab === 'line' ? 'Line' : 'Box'}
                 </button>
               ))}
             </div>
@@ -1062,7 +1173,7 @@ export default function ResearchTab() {
           {/* 05 — Correlation Matrix */}
           <div>
             <div className={styles.sectionLabel}>05 — Pearson Correlation Matrix</div>
-            <div className={styles.brutCard}>
+            <div className={styles.brutCardMatrix}>
               {numericCols.length < 2 || n < 5 ? (
                 <div className={styles.emptyState}><p className={styles.emptyStateText}>Need {'\u2265'} 5 rows and {'\u2265'} 2 numeric columns for correlations</p></div>
               ) : (

@@ -12,9 +12,8 @@ import ColorThemePicker from '@/components/theme/ColorThemePicker';
 import HoverSlideText from '@/components/shared/HoverSlideText';
 
 const NAV_LINKS = [
-  { label: 'Quests', href: '/quests', icon: '/icons/nav-quests-v3.svg' },
-  { label: 'R-Tool', href: '/research', icon: '/icons/nav-laboratory-v3.svg' },
   { label: 'Pocket World', href: '/simulation', icon: '/icons/nav-simulations-v2.svg' },
+  { label: 'R-Tool', href: '/research', icon: '/icons/nav-laboratory-v3.svg' },
 ];
 
 const TopNavigation: React.FC = () => {

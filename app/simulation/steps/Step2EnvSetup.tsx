@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
+import { DotmSquare3 } from '@/components/dot-matrix/DotmSquare3';
 import Button from '@/components/button/Button';
 import * as api from '@/lib/simulation-api';
 import type { AgentProfile } from '@/lib/simulation-api';
@@ -250,7 +250,7 @@ export default function Step2EnvSetup({
           </Button>
           {preparing && (
             <span className={styles.loaderInline} aria-hidden>
-              <DotmSquare15 speed={0.9} dotSize={4} gap={3} />
+              <DotmSquare3 speed={0.9} dotSize={4} gap={3} />
             </span>
           )}
         </div>
@@ -266,7 +266,7 @@ export default function Step2EnvSetup({
             </h4>
             {preparing && (
               <span className={styles.loaderInline} aria-hidden>
-                <DotmSquare15 speed={0.9} dotSize={4} gap={3} />
+                <DotmSquare3 speed={0.9} dotSize={4} gap={3} />
               </span>
             )}
           </div>
