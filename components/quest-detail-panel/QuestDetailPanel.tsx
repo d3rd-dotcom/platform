@@ -121,7 +121,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
 
   // Proof-required quests are reviewed by staff — load any existing submission so
   // the panel reflects pending / approved / rejected state instead of pretending
-  // the diamonds are instantly claimable.
+  // the reflections are instantly claimable.
   useEffect(() => {
     if (!quest || quest.rewardType !== 'proof-required' || quest.id.startsWith('cq_')) {
       setProof(null);
@@ -276,7 +276,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
       });
       const data = await response.json();
       if (data.ok && data.status === 'pending_review') {
-        // Creator-reviewed custom quest — no diamonds are released until the
+        // Creator-reviewed custom quest — no reflections are released until the
         // quest creator approves, so don't celebrate a payout that hasn't happened.
         window.dispatchEvent(new Event('shardsUpdated'));
         alert('Submitted for review. The quest creator will approve your completion before the reward is released.');
@@ -434,7 +434,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
           <span className={styles.calloutDot} aria-hidden="true" />
           <span>
             {sealed
-              ? `Week ${quest.weekNumber} is sealed — your diamonds are ready to claim.`
+              ? `Week ${quest.weekNumber} is sealed — your reflections are ready to claim.`
               : `Week ${quest.weekNumber} is not sealed yet. Finish that week on your home dashboard, then come back to claim.`}
           </span>
         </div>
@@ -453,7 +453,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
         return (
           <div className={styles.callout} data-state="info">
             <span className={styles.calloutDot} aria-hidden="true" />
-            <span>Submitted. A staff member will review your proof and release your diamonds.</span>
+            <span>Submitted. A staff member will review your proof and release your reflections.</span>
           </div>
         );
       }
@@ -461,7 +461,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
         return (
           <div className={styles.callout} data-state="ready">
             <span className={styles.calloutDot} aria-hidden="true" />
-            <span>Approved — your {quest.points} diamonds have been added to your balance.</span>
+            <span>Approved — your {quest.points} reflections have been added to your balance.</span>
           </div>
         );
       }
@@ -615,7 +615,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
                 )}
                 <div className={styles.callout} data-state="info">
                   <span className={styles.calloutDot} aria-hidden="true" />
-                  <span>Submissions are queued for review. Approved entries receive diamonds automatically.</span>
+                  <span>Submissions are queued for review. Approved entries receive reflections automatically.</span>
                 </div>
                 {usdcReward > 0 && usdcClaim && !usdcClaim.loading && !usdcClaim.status && usdcClaim.eligible && (
                   <>
@@ -637,7 +637,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
 
             {quest.rewardType === 'no-proof' && (
               <p className={styles.actionDesc}>
-                Finish the task above on your own, then claim your diamonds. This one uses self-attestation.
+                Finish the task above on your own, then claim your reflections. This one uses self-attestation.
               </p>
             )}
 
@@ -714,7 +714,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
             <li className={styles.rewardItem}>
               <Image src="/icons/ui-diamond.svg" alt="" width={18} height={18} />
               <span className={styles.rewardItemValue}>{quest.points}</span>
-              <span className={styles.rewardItemName}>Diamonds</span>
+              <span className={styles.rewardItemName}>Reflections</span>
             </li>
             {usdcReward > 0 && (
               <li className={styles.rewardItem}>
@@ -736,7 +736,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
             onClick={handleCompleteReward}
             disabled={!canClaimSealedWeek || isCompleting}
           >
-            {questIsComplete ? 'Quest cleared' : isCompleting ? 'Claiming...' : `Claim ${quest.points} diamonds`}
+            {questIsComplete ? 'Quest cleared' : isCompleting ? 'Claiming...' : `Claim ${quest.points} reflections`}
           </button>
         )}
         {quest.rewardType === 'proof-required' && usesProofReview && (
@@ -787,7 +787,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
             onClick={handleCompleteReward}
             disabled={isCompleting || questIsComplete}
           >
-            {questIsComplete ? 'Quest cleared' : isCompleting ? 'Claiming...' : `Claim ${quest.points} diamonds`}
+            {questIsComplete ? 'Quest cleared' : isCompleting ? 'Claiming...' : `Claim ${quest.points} reflections`}
           </button>
         )}
         {quest.rewardType === 'twitter-follow' && (
@@ -802,7 +802,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
               : isCompleting
                 ? 'Claiming...'
                 : step1Completed && step2Completed
-                  ? 'Claim diamonds'
+                  ? 'Claim reflections'
                   : 'Complete the steps above'}
           </button>
         )}

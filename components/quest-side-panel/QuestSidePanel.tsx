@@ -6,7 +6,7 @@ import { CursorClick } from '@phosphor-icons/react';
 import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
 import styles from './QuestSidePanel.module.css';
 
-const BLUE_MESSAGE = 'Diamonds and rewards for completionists dedicated to self-improvement. Small steps make a difference.';
+const BLUE_MESSAGE = 'Reflections for completionists dedicated to self-improvement. Small steps make a difference.';
 
 export default function QuestSidePanel() {
   return (

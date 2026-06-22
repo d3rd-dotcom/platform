@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { Check, Sparkle, Coins } from '@phosphor-icons/react';
 import type { DrawerQuest } from '@/components/quest-drawer/QuestDrawer';
@@ -51,6 +51,12 @@ export default function QuestListPanel({
 }: QuestListPanelProps) {
   const { play } = useSound();
 
+  const [activeTab, setActiveTab] = useState<'available' | 'completed'>('available');
+
+  const completedQuests = quests.filter((q) => isQuestCleared(q));
+  const availableQuests = quests.filter((q) => !isQuestCleared(q));
+  const displayQuests = activeTab === 'available' ? availableQuests : completedQuests;
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.boardHeader}>
@@ -95,11 +101,34 @@ export default function QuestListPanel({
           )}
         </div>
 
+        <div className={styles.tabBar}>
+          <button
+            type="button"
+            className={`${styles.tab} ${activeTab === 'available' ? styles.tabActive : ''}`}
+            onClick={() => setActiveTab('available')}
+          >
+            Available
+            <span className={styles.tabCount}>{availableQuests.length}</span>
+          </button>
+          <button
+            type="button"
+            className={`${styles.tab} ${activeTab === 'completed' ? styles.tabActive : ''}`}
+            onClick={() => setActiveTab('completed')}
+          >
+            Completed
+            <span className={styles.tabCount}>{completedQuests.length}</span>
+          </button>
+        </div>
+
         <div className={styles.list}>
-          {quests.length === 0 ? (
-            <div className={styles.empty}>No quests on the board yet.</div>
+          {displayQuests.length === 0 ? (
+            <div className={styles.empty}>
+              {activeTab === 'available'
+                ? 'All quests cleared! Check the completed tab.'
+                : 'No completed quests yet.'}
+            </div>
           ) : (
-            quests.map((quest) => {
+            displayQuests.map((quest) => {
               const targetCount = quest.targetCount ?? 1;
               const completed = isQuestCleared(quest);
               const inProgress = !completed && (quest.progressCount ?? 0) > 0;

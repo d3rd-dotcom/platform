@@ -255,7 +255,7 @@
     margin: 0 auto;
     padding: clamp(18px, 4vh, 40px) 32px clamp(16px, 3vh, 32px);
     display: grid;
-    grid-template-columns: 1fr 380px;
+    grid-template-columns: 1fr 440px;
     grid-template-rows: auto auto 1fr;
     gap: 0 32px;
     overflow: hidden;
@@ -291,6 +291,17 @@
     grid-row: 1 / -1;
     min-width: 0;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  @media (max-width: 1100px) {
+    .gallery {
+      grid-template-columns: 1fr;
+    }
+    .galleryRight {
+      display: none;
+    }
   }
   .galleryTitle {
     font-family: var(--font-primary);
@@ -534,10 +545,10 @@
     font-family: var(--font-geist-sans, var(--font-primary)), -apple-system, "system-ui", "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
     -webkit-font-smoothing: antialiased;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
-    overflow: hidden;
     backdrop-filter: blur(4px);
     min-height: 180px;
     box-sizing: border-box;
+    padding-bottom: 1rem;
   }
   .projectCard::before {
     display: none;
@@ -559,11 +570,10 @@
   .projectCardName {
     font-family: var(--font-primary);
     font-size: 17px;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--color-text-dark, #1a1b24);
     margin: 0;
     line-height: 1.55;
-    max-width: 32ch;
   }
   .projectCardAuthor {
     font-size: 12px;
@@ -997,6 +1007,9 @@
     padding: 17px;
     box-shadow: none;
     color: #1a1b24;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
   }
   .recentActivityCard > * {
     position: relative;
@@ -1114,6 +1127,8 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
+    flex: 1;
+    justify-content: space-around;
   }
   .recentMiniCard {
     display: flex;

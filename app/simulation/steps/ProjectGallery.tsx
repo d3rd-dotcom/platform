@@ -17,11 +17,11 @@ const SEED_POSTS = [
 ];
 
 const SEED_COMMUNITY = [
-  { id: 'cp-1', title: 'Attention Scaffold — a cognitive architecture for deep work', creator: 'Nova', users: 12, img: '/anbel06.png' },
-  { id: 'cp-2', title: 'Mood Atlas: mapping emotional states to market regimes', creator: 'Echo', users: 8, img: '/anbel07.png' },
-  { id: 'cp-3', title: 'Synthion — synthetic peer group for accountability loops', creator: 'Pixel', users: 5, img: '/anbel08.png' },
-  { id: 'cp-4', title: 'Open corpus of dev diary transcripts for burnout research', creator: 'Frost', users: 9, img: '/anbel09.png' },
-  { id: 'cp-5', title: 'Protocol for quantifying narrative absorption in VR', creator: 'Lumen', users: 6, img: '/anbel10.png' },
+  { id: 'cp-1', title: 'Attention Scaffold', creator: 'Nova', users: 12, img: '/anbel06.png' },
+  { id: 'cp-2', title: 'Mood Atlas', creator: 'Echo', users: 8, img: '/anbel07.png' },
+  { id: 'cp-3', title: 'Synthion', creator: 'Pixel', users: 5, img: '/anbel08.png' },
+  { id: 'cp-4', title: 'Dev Diary Corpus', creator: 'Frost', users: 9, img: '/anbel09.png' },
+  { id: 'cp-5', title: 'Narrative Absorption Protocol', creator: 'Lumen', users: 6, img: '/anbel10.png' },
 ];
 
 function formatDate(iso?: string) {
