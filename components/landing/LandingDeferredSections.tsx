@@ -2,14 +2,13 @@
 
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
-
-const CompanyLogos = dynamic(() => import('./CompanyLogos'), { ssr: false });
+import { KeyFiguresSection } from './KeyFiguresSection';
 const CohortSection = dynamic(() =>
   import('./CohortSection').then((mod) => mod.CohortSection),
   { ssr: false }
 );
 const EcosystemSection = dynamic(() =>
-  import('./HeroSection').then((mod) => mod.EcosystemSection),
+  import('./EcosystemSection').then((mod) => mod.EcosystemSection),
   { ssr: false }
 );
 const FounderSection = dynamic(() =>
@@ -58,12 +57,12 @@ export function LandingDeferredSections() {
 
   return (
     <>
-      <EcosystemSection />
+      <CohortSection />
       <FeaturesSection />
+      <EcosystemSection />
       <FounderSection />
       <TestimonialSection />
-      <CohortSection />
-      <CompanyLogos />
+      <KeyFiguresSection />
       <PatternTextSection />
       <FAQSection />
       <LandingFooter />

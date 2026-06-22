@@ -2,16 +2,10 @@
   position: relative;
   width: 100%;
   background-color: #202127;
-  padding: 0;
+  padding: 48px 0;
   z-index: 1;
   overflow: hidden;
-}
-
-.cubesBackground {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
+  min-height: 780px;
 }
 
 .cohortContainer {
@@ -36,7 +30,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 32px;
-  padding: 52px 64px 44px;
+  padding: 40px 80px 32px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -71,7 +65,7 @@
 
 @media (min-width: 1024px) {
   .cohortContentGrid {
-    grid-template-columns: 1fr 1.4fr;
+    grid-template-columns: 1.4fr 1fr;
   }
 }
 
@@ -80,17 +74,17 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .cohortDivider {
   height: 1px;
-  margin: 0 48px;
+  margin: 0 80px;
   background-color: rgba(255, 255, 255, 0.08);
 }
 
 .cohortFeatureBlock {
-  padding: 32px 48px;
+  padding: 24px 80px;
 }
 
 .cohortFeatureHeader {
@@ -142,7 +136,7 @@
   .cohortDiamonds {
     display: block;
     position: relative;
-    padding: 28px 40px 28px 24px;
+    padding: 28px 24px 28px 80px;
   }
 }
 
@@ -150,14 +144,13 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  gap: 14px;
+  gap: 10px;
   height: 100%;
-  min-height: 380px;
 }
 
 .cohortImgCell {
   position: relative;
-  min-height: 160px;
+  min-height: 170px;
   overflow: hidden;
   border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -218,11 +211,16 @@
 /* Mobile */
 @media (max-width: 1023px) {
   .cohortFeatures {
-    border-right: 0;
+    border-left: 0;
   }
 }
 
 @media (max-width: 767px) {
+  .cohortSection {
+    padding: 24px 0;
+    min-height: 480px;
+  }
+
   .titlePanel {
     flex-direction: column;
     gap: 22px;
@@ -251,14 +249,14 @@
   }
 }
 
-.discordPill {
+.telegramPill {
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   gap: 12px;
   padding: 15px 30px;
   border-radius: 999px;
-  background: #5865F2;
+  background: #28A8E8;
   color: #ffffff;
   font-family: var(--font-primary);
   font-size: 0.95rem;
@@ -268,16 +266,16 @@
   text-decoration: none;
   text-transform: uppercase;
   transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-  box-shadow: 0 8px 20px rgba(88, 101, 242, 0.28);
+  box-shadow: 0 8px 20px rgba(40, 168, 232, 0.28);
 }
 
-.discordPill svg {
+.telegramPill svg {
   flex-shrink: 0;
   display: block;
 }
 
-.discordPill:hover {
-  background: #4752c4;
-  box-shadow: 0 10px 26px rgba(88, 101, 242, 0.38);
+.telegramPill:hover {
+  background: #1b8fc4;
+  box-shadow: 0 10px 26px rgba(40, 168, 232, 0.38);
   transform: translateY(-1px);
 }

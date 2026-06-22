@@ -23,7 +23,7 @@ export const FounderSection: React.FC = () => {
           </h2>
           <div className={founderStyles.body}>
             <p>
-            Decentralization allows us to change how we've been serving underserved communities. We can connect and access the same tools and research opportunities as any other American.
+            Most education treats you like a container to fill. We treat you like a system to upgrade. Blue runs experiments on your own data, you keep the rewards, and you walk away sharper than you came in.
             </p>
             <a
               href="https://cal.com/james.mwa/strategy?overlayCalendar=true"
