@@ -884,8 +884,6 @@
   .stepColumn {
     min-width: 0;
     min-height: 0;
-    overflow: hidden;
-    padding-right: 2px;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -925,7 +923,6 @@
     }
     .stepColumn {
       max-height: none;
-      overflow: hidden;
       padding-right: 0;
     }
     .graphCard {
