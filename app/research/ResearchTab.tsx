@@ -328,7 +328,6 @@ export default function ResearchTab() {
     if (payload && payload.csv) {
       const { columns: cols, rows: data } = parseCsv(payload.csv);
       if (cols.length > 0 && data.length > 0) {
-        setCsvText(payload.csv);
         loadData(cols, data);
       }
       clearTransferPayload();

@@ -854,6 +854,7 @@
   .workflowBody {
     display: grid;
     grid-template-columns: minmax(0, 1fr) clamp(340px, 34%, 480px);
+    grid-template-rows: minmax(0, 1fr);
     gap: clamp(16px, 1.5vw, 24px);
     align-items: stretch;
     flex: 1;

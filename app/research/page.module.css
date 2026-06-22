@@ -18,6 +18,7 @@
   display: grid;
   gap: 32px;
   box-sizing: border-box;
+  overflow-x: auto;
 }
 
 .content > * {
@@ -130,6 +131,11 @@
   grid-template-columns: 1fr 1fr;
   gap: 32px;
   min-width: 0;
+}
+
+.sectionsRow > * {
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 
 .sectionLabel::after {
