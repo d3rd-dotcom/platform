@@ -31,6 +31,7 @@ export default function ProjectGallery({
   const loadingProjects = loading && projects.length === 0;
 
   const [creating, setCreating] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const [name, setName] = useState('');
   const [requirement, setRequirement] = useState('');
   const [additionalContext, setAdditionalContext] = useState('');
@@ -81,21 +82,41 @@ export default function ProjectGallery({
   return (
     <div className={styles.gallery}>
       <header className={styles.galleryHeader}>
-        <h1 className={styles.galleryTitle}>Simulate a reality</h1>
-        <p className={styles.gallerySub}>
-          Ask Blue a question, watch as she conjures up 100s of realistic agents to simulate the
-          outcome, perfect for science experiments and future predictions.
-        </p>
-        <button
-          className={styles.newWorldBtn}
-          onClick={() => {
-            play('click');
-            setCreating((v) => !v);
-          }}
-          onMouseEnter={() => play('hover')}
-        >
-          {creating ? 'Close' : '+ New world'}
-        </button>
+        <div className={styles.filterRow}>
+          <button
+            className={`${styles.filterBtn} ${activeFilter === 'recent' ? styles.filterBtnActive : ''}`}
+            onClick={() => {
+              play('click');
+              setActiveFilter(activeFilter === 'recent' ? null : 'recent');
+            }}
+            onMouseEnter={() => play('hover')}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Recent Worlds
+          </button>
+          <button
+            className={`${styles.filterBtn} ${activeFilter === 'pocket' ? styles.filterBtnActive : ''}`}
+            onClick={() => {
+              play('click');
+              setActiveFilter(activeFilter === 'pocket' ? null : 'pocket');
+            }}
+            onMouseEnter={() => play('hover')}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 3h16a2 2 0 0 1 2 2v6a10 10 0 0 1-10 10A10 10 0 0 1 2 11V5a2 2 0 0 1 2-2z"/><polyline points="8 10 12 14 16 10"/></svg>
+            Your Pocket
+          </button>
+          <button
+            className={`${styles.filterBtn} ${creating ? styles.filterBtnActive : ''}`}
+            onClick={() => {
+              play('click');
+              setCreating((v) => !v);
+            }}
+            onMouseEnter={() => play('hover')}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5z"/><line x1="9" y1="3" x2="9" y2="7"/><line x1="5" y1="7" x2="9" y2="7"/><line x1="15" y1="3" x2="15" y2="7"/><line x1="19" y1="7" x2="15" y2="7"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            Simulate Reality
+          </button>
+        </div>
       </header>
 
       {online === false && (
@@ -217,24 +238,24 @@ export default function ProjectGallery({
             }}
             onMouseEnter={() => play('hover')}
           >
-            <div
-              className={styles.projectCardBanner}
-              style={{ background: BANNER_GRADIENTS[i % BANNER_GRADIENTS.length] }}
-            >
-              <span className={styles.projectStatus}>Pocket World simulated</span>
-            </div>
-            <div className={styles.projectCardInner}>
+            <div className={styles.projectCardBody}>
               <h3 className={styles.projectCardName}>{p.name}</h3>
+              <p className={styles.projectCardAuthor}>by you</p>
               {p.simulation_requirement && (
-                <p className={styles.projectCardReq}>{p.simulation_requirement}</p>
+                <p className={styles.projectCardExcerpt}>{p.simulation_requirement}</p>
               )}
-            </div>
-            <div className={styles.projectCardFooter}>
-              <span className={styles.projectCardMeta}>
-                {p.files?.length
-                  ? `${p.files.length} source${p.files.length !== 1 ? 's' : ''}`
-                  : 'No sources'}
+              <span className={styles.observeBtn}>
+                Observe findings
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
               </span>
+            </div>
+            <div className={styles.projectCardVisual}>
+              <div
+                className={styles.projectCardVisualInner}
+                style={{ background: BANNER_GRADIENTS[i % BANNER_GRADIENTS.length] }}
+              >
+                <span className={styles.projectStatus}>Pocket World</span>
+              </div>
             </div>
           </button>
         ))}
