@@ -57,12 +57,12 @@ export function LandingDeferredSections() {
 
   return (
     <>
-      <CohortSection />
       <FeaturesSection />
       <EcosystemSection />
       <FounderSection />
       <TestimonialSection />
       <KeyFiguresSection />
+      <CohortSection />
       <PatternTextSection />
       <FAQSection />
       <LandingFooter />

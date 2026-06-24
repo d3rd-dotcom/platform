@@ -9,7 +9,7 @@ export const FounderSection: React.FC = () => {
       <div className={founderStyles.container}>
         <div className={founderStyles.avatarWrap} aria-hidden="true">
           <Image
-            src="/founder-james.png"
+            src="/images/blue-portrait-flat.png"
             alt=""
             width={160}
             height={160}
@@ -19,7 +19,7 @@ export const FounderSection: React.FC = () => {
         <div className={founderStyles.content}>
           <p className={founderStyles.eyebrow}>From the founder</p>
           <h2 id="founder-section-heading" className={founderStyles.heading}>
-          Hey, I'm James
+          Hey, I'm Blue
           </h2>
           <div className={founderStyles.body}>
             <p>
