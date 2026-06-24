@@ -73,6 +73,10 @@
     flex: 0 0 auto;
     padding-top: 0;
   }
+
+  .sideColumn.hideMobile {
+    display: none;
+  }
 }
 
 @media (max-width: 768px) {
@@ -85,6 +89,22 @@
     padding: 10px;
     gap: 10px;
   }
+}
+
+/* ── Mobile quest detail overlay ── */
+.mobileOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #ffffff;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+}
+
+:global([data-theme="dark"]) .mobileOverlay {
+  background: #131a2e;
 }
 
 @media (prefers-reduced-motion: reduce) {

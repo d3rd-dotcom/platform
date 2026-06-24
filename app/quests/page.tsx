@@ -57,6 +57,22 @@ export default function QuestsPage() {
   const [customQuests, setCustomQuests] = useState<CustomQuest[]>([]);
   const [authoredQuests, setAuthoredQuests] = useState<CustomQuest[]>([]);
   const [isPro, setIsPro] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 900);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobile || !selectedQuest) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = prev; };
+  }, [isMobile, selectedQuest]);
+
   const [forgeOpen, setForgeOpen] = useState(false);
   const [claimOpen, setClaimOpen] = useState(false);
   const [angelPitchOpen, setAngelPitchOpen] = useState(false);
@@ -249,18 +265,27 @@ export default function QuestsPage() {
             onClaims={handleClaims}
             usdcAvailable={usdcAvailable}
           />
-          <aside className={`${styles.sideColumn} ${selectedQuest ? styles.sideColumnWide : ''}`}>
-            {selectedQuest ? (
+          <aside className={`${styles.sideColumn} ${selectedQuest ? styles.sideColumnWide : ''} ${isMobile && selectedQuest ? styles.hideMobile : ''}`}>
+            {(!isMobile || !selectedQuest) && (selectedQuest ? (
               <QuestDetailPanel
                 quest={selectedQuest}
                 onDeselect={() => setSelectedQuest(null)}
               />
             ) : (
               <QuestSidePanel />
-            )}
+            ))}
           </aside>
         </main>
       </div>
+
+      {isMobile && selectedQuest && (
+        <div className={styles.mobileOverlay}>
+          <QuestDetailPanel
+            quest={selectedQuest}
+            onDeselect={() => setSelectedQuest(null)}
+          />
+        </div>
+      )}
 
       <QuestModal isOpen={forgeOpen} onClose={() => setForgeOpen(false)} title="Quest forge">
         <QuestAuthorPanel

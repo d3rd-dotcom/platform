@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { Check, Sparkle, Coins } from '@phosphor-icons/react';
+import { Check, Sparkle, Coins, CaretLeft, CaretRight } from '@phosphor-icons/react';
 import type { DrawerQuest } from '@/components/quest-drawer/QuestDrawer';
 import type { QuestCardKind } from '@/components/quest-card/QuestCard';
 import { useSound } from '@/hooks/useSound';
@@ -52,10 +52,25 @@ export default function QuestListPanel({
   const { play } = useSound();
 
   const [activeTab, setActiveTab] = useState<'available' | 'completed'>('available');
+  const [currentPage, setCurrentPage] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 900);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  const PAGE_SIZE = 3;
 
   const completedQuests = quests.filter((q) => isQuestCleared(q));
   const availableQuests = quests.filter((q) => !isQuestCleared(q));
   const displayQuests = activeTab === 'available' ? availableQuests : completedQuests;
+  const totalPages = isMobile ? Math.max(1, Math.ceil(displayQuests.length / PAGE_SIZE)) : 1;
+  const pagedQuests = isMobile
+    ? displayQuests.slice(currentPage * PAGE_SIZE, (currentPage + 1) * PAGE_SIZE)
+    : displayQuests;
 
   return (
     <div className={styles.wrapper}>
@@ -105,7 +120,7 @@ export default function QuestListPanel({
           <button
             type="button"
             className={`${styles.tab} ${activeTab === 'available' ? styles.tabActive : ''}`}
-            onClick={() => setActiveTab('available')}
+            onClick={() => { setActiveTab('available'); setCurrentPage(0); }}
           >
             Available
             <span className={styles.tabCount}>{availableQuests.length}</span>
@@ -113,7 +128,7 @@ export default function QuestListPanel({
           <button
             type="button"
             className={`${styles.tab} ${activeTab === 'completed' ? styles.tabActive : ''}`}
-            onClick={() => setActiveTab('completed')}
+            onClick={() => { setActiveTab('completed'); setCurrentPage(0); }}
           >
             Completed
             <span className={styles.tabCount}>{completedQuests.length}</span>
@@ -128,7 +143,7 @@ export default function QuestListPanel({
                 : 'No completed quests yet.'}
             </div>
           ) : (
-            displayQuests.map((quest) => {
+            pagedQuests.map((quest) => {
               const targetCount = quest.targetCount ?? 1;
               const completed = isQuestCleared(quest);
               const inProgress = !completed && (quest.progressCount ?? 0) > 0;
@@ -193,6 +208,34 @@ export default function QuestListPanel({
             })
           )}
         </div>
+
+        {isMobile && displayQuests.length > PAGE_SIZE && (
+          <div className={styles.pagination}>
+            <button
+              type="button"
+              className={styles.pageBtn}
+              disabled={currentPage === 0}
+              onClick={() => { play('click'); setCurrentPage((p) => Math.max(0, p - 1)); }}
+              aria-label="Previous page"
+            >
+              <CaretLeft size={12} weight="bold" />
+              Prev
+            </button>
+            <span className={styles.pageInfo}>
+              Page {currentPage + 1} of {totalPages}
+            </span>
+            <button
+              type="button"
+              className={styles.pageBtn}
+              disabled={currentPage >= totalPages - 1}
+              onClick={() => { play('click'); setCurrentPage((p) => Math.min(totalPages - 1, p + 1)); }}
+              aria-label="Next page"
+            >
+              Next
+              <CaretRight size={12} weight="bold" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

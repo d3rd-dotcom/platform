@@ -9,7 +9,7 @@ import styles from './page.module.css';
 type Step = 'linking' | 'verifying' | 'approved' | 'denied' | 'error';
 
 export default function TelegramPage() {
-  const { ready, authenticated, login, user, getAccessToken } = usePrivy();
+  const { ready, authenticated, login, linkTelegram, user, getAccessToken } = usePrivy();
 
   const [step, setStep] = useState<Step | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -23,18 +23,26 @@ export default function TelegramPage() {
 
   useEffect(() => {
     if (!ready) return;
-    if (!authenticated) return;
-
-    if (!hasTelegramLinked) {
-      setStep(null);
-    } else if (step === null) {
+    if (hasTelegramLinked && step === null) {
       setStep(null);
     }
-  }, [ready, authenticated, hasTelegramLinked, step]);
+  }, [ready, hasTelegramLinked, step]);
 
-  const handleLinkTelegram = useCallback(() => {
-    login({ loginMethods: ['telegram'] });
-  }, [login]);
+  const handleLinkTelegram = useCallback(async () => {
+    setStep('linking');
+    try {
+      if (linkTelegram) {
+        await linkTelegram();
+      }
+    } catch (err: any) {
+      if (err?.message?.includes('already linked')) {
+        setStep(null);
+      } else {
+        setStep('error');
+        setErrorMessage(err?.message || 'Failed to link Telegram');
+      }
+    }
+  }, [linkTelegram]);
 
   const handleVerify = useCallback(async () => {
     setStep('verifying');
@@ -44,7 +52,7 @@ export default function TelegramPage() {
       const token = await getAccessToken();
       if (!token) {
         setStep('error');
-        setErrorMessage('Could not get auth token. Please try signing in again.');
+        setErrorMessage('Could not get auth token. Try signing in again.');
         return;
       }
 
@@ -72,7 +80,7 @@ export default function TelegramPage() {
   }, [getAccessToken]);
 
   const handleLogin = useCallback(() => {
-    login();
+    login({ loginMethods: ['telegram'] });
   }, [login]);
 
   if (!ready) {
@@ -106,16 +114,16 @@ export default function TelegramPage() {
 
           <h1 className={styles.title}>Telegram Channel Access</h1>
           <p className={styles.subtitle}>
-            Verify your Academic Angel NFT to access the private MWA Telegram channel.
+            Verify your Academic Angel NFT to access the private MWA Telegram group.
           </p>
 
           {!authenticated && (
             <>
               <p className={styles.description}>
-                Sign in to your MWA account to link Telegram and verify your NFT.
+                Sign in with Telegram to link your account and verify your NFT.
               </p>
               <Button fullWidth onClick={handleLogin}>
-                Sign In
+                Sign in with Telegram
               </Button>
             </>
           )}
@@ -126,10 +134,7 @@ export default function TelegramPage() {
                 Link your Telegram account to your MWA profile. This connects your
                 Telegram identity to your wallet so we can verify your NFT.
               </p>
-              <Button
-                fullWidth
-                onClick={handleLinkTelegram}
-              >
+              <Button fullWidth onClick={handleLinkTelegram}>
                 Link Telegram Account
               </Button>
             </>
@@ -154,7 +159,7 @@ export default function TelegramPage() {
           {step === 'verifying' && (
             <>
               <div className={styles.spinner} />
-              <p className={styles.description}>Checking NFT ownership...</p>
+              <p className={styles.description}>Checking NFT ownership on-chain...</p>
             </>
           )}
 
@@ -165,8 +170,8 @@ export default function TelegramPage() {
               </div>
               <p className={styles.description}>
                 You&apos;re verified as an Academic Angel holder. Go back to
-                Telegram and click the <strong>Join</strong> button on the
-                channel — the bot will send you a one-time invite link.
+                Telegram and tap <strong>Join</strong> on the group — the bot will
+                let you in automatically.
               </p>
             </>
           )}
@@ -178,7 +183,7 @@ export default function TelegramPage() {
               </div>
               <p className={styles.description}>
                 The wallet linked to your Telegram account doesn&apos;t hold an
-                Academic Angel NFT. You need one to access the channel.
+                Academic Angel NFT. You need one to access the group.
               </p>
               <Button fullWidth onClick={handleVerify}>
                 Try Again
