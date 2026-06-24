@@ -70,3 +70,48 @@ export async function getWalletFromPrivyToken(token: string): Promise<string | n
     return null;
   }
 }
+
+/**
+ * Verifies a raw Privy access token and returns the user's
+ * Telegram user ID from linked accounts, and wallet address.
+ */
+export async function getTelegramAndWalletFromPrivyToken(
+  token: string
+): Promise<{ telegramId: string; walletAddress: string } | null> {
+  if (!token) return null;
+
+  try {
+    const client = getPrivyClient();
+    const { userId } = await client.verifyAuthToken(token);
+    const user = await client.getUser(userId);
+
+    const telegramAccount = user.linkedAccounts.find(
+      (a: any) => a.type === 'telegram'
+    );
+    if (!telegramAccount || !('telegramUserId' in telegramAccount)) {
+      console.warn('[Privy Auth] No Telegram account linked for userId:', userId);
+      return null;
+    }
+
+    const embeddedWallet = user.linkedAccounts.find(
+      (a: any) => a.type === 'wallet' && a.walletClientType === 'privy' && a.chainType === 'ethereum'
+    );
+    const linkedWallet = user.linkedAccounts.find(
+      (a: any) => a.type === 'wallet' && a.chainType === 'ethereum'
+    );
+    const wallet = embeddedWallet || linkedWallet;
+
+    if (!wallet || !('address' in wallet)) {
+      console.warn('[Privy Auth] No wallet found for Telegram user:', telegramAccount.telegramUserId);
+      return null;
+    }
+
+    return {
+      telegramId: String((telegramAccount as any).telegramUserId),
+      walletAddress: String((wallet as any).address).toLowerCase(),
+    };
+  } catch (error: any) {
+    console.error('[Privy Auth] Telegram+wallet extraction failed:', error?.message || error);
+    return null;
+  }
+}

@@ -46,7 +46,7 @@ const SEED_POSTS: SeedPost[] = [
   {
     id: 'sp-2',
     author: 'MindBridge_Collective',
-    avatar: '/anbel09.png',
+    avatar: 'https://images.unsplash.com/photo-1540206395-68808572332f?w=96&h=96&fit=crop&auto=format',
     category: 'Mental Health',
     title: 'What daily habit changed your mental health the most?',
     body: 'One small habit that shifted everything for me was morning walks with no phone. What tiny routine made the biggest difference for you?',
@@ -57,7 +57,7 @@ const SEED_POSTS: SeedPost[] = [
   {
     id: 'sp-3',
     author: 'NeuroCognitive_Lab',
-    avatar: '/anbel11.png',
+    avatar: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=96&h=96&fit=crop&auto=format',
     category: 'Neuroscience',
     title: 'Would you try a brain-training game designed by the community?',
     body: 'Thinking about a community-built focus game backed by real neuroscience. Would you play it? What would make you actually stick with it?',
@@ -220,11 +220,11 @@ const DASHBOARD_PARTICIPANTS: ReadonlyArray<{
   accent: string;
   image?: string;
 }> = [
-  { label: 'Seraph', image: '/anbel01.png', accent: styles.dashboardAvatarImageWrap },
-  { label: 'Halo', image: '/anbel02.png', accent: styles.dashboardAvatarImageWrap },
-  { label: 'Vesper', image: '/anbel03.png', accent: styles.dashboardAvatarImageWrap },
-  { label: 'Orbit', image: '/anbel04.png', accent: styles.dashboardAvatarImageWrap },
-  { label: 'Prism', image: '/anbel05.png', accent: styles.dashboardAvatarImageWrap },
+  { label: 'Seraph', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=96&h=96&fit=crop&auto=format', accent: styles.dashboardAvatarImageWrap },
+  { label: 'Halo', image: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?w=96&h=96&fit=crop&auto=format', accent: styles.dashboardAvatarImageWrap },
+  { label: 'Vesper', image: 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=96&h=96&fit=crop&auto=format', accent: styles.dashboardAvatarImageWrap },
+  { label: 'Orbit', image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=96&h=96&fit=crop&auto=format', accent: styles.dashboardAvatarImageWrap },
+  { label: 'Prism', image: 'https://images.unsplash.com/photo-1512758017271-d7b84c2113f1?w=96&h=96&fit=crop&auto=format', accent: styles.dashboardAvatarImageWrap },
 ];
 
 const TOP_CONTRIBUTORS = [

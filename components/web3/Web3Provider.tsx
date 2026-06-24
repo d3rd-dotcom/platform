@@ -36,7 +36,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
             'wallet_connect_qr',
           ],
         },
-        loginMethods: ['wallet', 'email', 'google', 'discord', 'farcaster'],
+        loginMethods: ['wallet', 'email', 'google', 'discord', 'telegram', 'farcaster'],
         embeddedWallets: {
           ethereum: {
             createOnLogin: 'users-without-wallets',

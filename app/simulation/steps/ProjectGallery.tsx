@@ -44,19 +44,19 @@ const DEV_MOCK_PROJECTS: Project[] = [
 ];
 
 const SEED_POSTS = [
-  { id: 'sp-1', title: 'If the treasury could fund one wild idea, what would yours be?', creator: 'Seraph', users: 3, amount: 130, img: '/anbel01.png' },
-  { id: 'sp-2', title: 'What daily habit changed your mental health the most?', creator: 'Halo', users: 7, amount: 85, img: '/anbel02.png' },
-  { id: 'sp-3', title: 'Would you try a brain-training game designed by the community?', creator: 'Vesper', users: 2, amount: 210, img: '/anbel03.png' },
-  { id: 'sp-4', title: 'Open Dataset: Attention Metrics in LLM-Augmented Dev Workflows', creator: 'Orbit', users: 5, amount: 50, img: '/anbel04.png' },
-  { id: 'sp-5', title: 'RFC: Open Protocol for Burnout Detection in Dev Teams', creator: 'Prism', users: 4, amount: 175, img: '/anbel05.png' },
+  { id: 'sp-1', title: 'If the treasury could fund one wild idea, what would yours be?', creator: 'Seraph', users: 3, amount: 130, img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=96&h=96&fit=crop&auto=format' },
+  { id: 'sp-2', title: 'What daily habit changed your mental health the most?', creator: 'Halo', users: 7, amount: 85, img: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?w=96&h=96&fit=crop&auto=format' },
+  { id: 'sp-3', title: 'Would you try a brain-training game designed by the community?', creator: 'Vesper', users: 2, amount: 210, img: 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=96&h=96&fit=crop&auto=format' },
+  { id: 'sp-4', title: 'Open Dataset: Attention Metrics in LLM-Augmented Dev Workflows', creator: 'Orbit', users: 5, amount: 50, img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=96&h=96&fit=crop&auto=format' },
+  { id: 'sp-5', title: 'RFC: Open Protocol for Burnout Detection in Dev Teams', creator: 'Prism', users: 4, amount: 175, img: 'https://images.unsplash.com/photo-1512758017271-d7b84c2113f1?w=96&h=96&fit=crop&auto=format' },
 ];
 
 const SEED_COMMUNITY = [
-  { id: 'cp-1', title: 'Attention Scaffold', creator: 'Nova', users: 12, img: '/anbel06.png' },
-  { id: 'cp-2', title: 'Mood Atlas', creator: 'Echo', users: 8, img: '/anbel07.png' },
-  { id: 'cp-3', title: 'Synthion', creator: 'Pixel', users: 5, img: '/anbel08.png' },
-  { id: 'cp-4', title: 'Dev Diary Corpus', creator: 'Frost', users: 9, img: '/anbel09.png' },
-  { id: 'cp-5', title: 'Narrative Absorption Protocol', creator: 'Lumen', users: 6, img: '/anbel10.png' },
+  { id: 'cp-1', title: 'Attention Scaffold', creator: 'Nova', users: 12, img: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=96&h=96&fit=crop&auto=format' },
+  { id: 'cp-2', title: 'Mood Atlas', creator: 'Echo', users: 8, img: 'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?w=96&h=96&fit=crop&auto=format' },
+  { id: 'cp-3', title: 'Synthion', creator: 'Pixel', users: 5, img: 'https://images.unsplash.com/photo-1567095761054-7a02e69e5c43?w=96&h=96&fit=crop&auto=format' },
+  { id: 'cp-4', title: 'Dev Diary Corpus', creator: 'Frost', users: 9, img: 'https://images.unsplash.com/photo-1540206395-68808572332f?w=96&h=96&fit=crop&auto=format' },
+  { id: 'cp-5', title: 'Narrative Absorption Protocol', creator: 'Lumen', users: 6, img: 'https://images.unsplash.com/photo-1574169208507-84376144848b?w=96&h=96&fit=crop&auto=format' },
 ];
 
 function formatDate(iso?: string) {
