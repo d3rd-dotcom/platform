@@ -125,6 +125,7 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
   const [showRewardAnimation, setShowRewardAnimation] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const preloadAudioRef = useRef<HTMLAudioElement | null>(null);
   const spokenSceneRef = useRef<string | null>(null);
   const [narrationEnabled, setNarrationEnabled] = useState(false);
   const narrationEnabledRef = useRef(false);
@@ -147,16 +148,8 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
         if (audioRef.current) audioRef.current.currentTime = 0;
         spokenSceneRef.current = null;
       } else {
-        // Turning on mid-scene: start the current scene's narration immediately.
-        const currentScene = SCENES[sceneIndex];
-        if (currentScene && !isTyping && !showCheckIn) {
-          spokenSceneRef.current = currentScene.id;
-          const el = audioRef.current ?? new Audio();
-          audioRef.current = el;
-          el.src = currentScene.audio;
-          el.currentTime = 0;
-          void el.play().catch(() => {});
-        }
+        // Turning on mid-scene: clear spokenScene so the effect loads & plays.
+        spokenSceneRef.current = null;
       }
       return next;
     });
@@ -192,21 +185,43 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
     };
   }, [sceneIndex, shouldRender, showCheckIn]);
 
+  // Load current scene audio as soon as scene changes (during typing).
+  // Also preload the next scene's audio so it's ready when the user advances.
   useEffect(() => {
-    if (!shouldRender || isTyping || showCheckIn) return;
+    if (!shouldRender || showCheckIn) return;
     if (!narrationEnabledRef.current) return;
 
     const currentScene = SCENES[sceneIndex];
     if (!currentScene || spokenSceneRef.current === currentScene.id) return;
 
     spokenSceneRef.current = currentScene.id;
+
     const el = audioRef.current ?? new Audio();
     audioRef.current = el;
+    el.preload = 'auto';
     el.src = currentScene.audio;
     el.currentTime = 0;
-    void el.play().catch(() => {
-      // Silent fallback if browser playback is unavailable.
-    });
+    // Audio loads in the background. Playback triggers when typing completes.
+
+    // Preload next scene audio
+    const nextIndex = sceneIndex + 1;
+    if (nextIndex < SCENES.length) {
+      const nextEl = preloadAudioRef.current ?? new Audio();
+      preloadAudioRef.current = nextEl;
+      nextEl.preload = 'auto';
+      nextEl.src = SCENES[nextIndex].audio;
+    }
+  }, [sceneIndex, shouldRender, showCheckIn, narrationEnabled]);
+
+  // Play narration once the typewriter animation finishes.
+  useEffect(() => {
+    if (!shouldRender || isTyping || showCheckIn) return;
+    if (!narrationEnabledRef.current) return;
+
+    const el = audioRef.current;
+    if (!el || !el.src) return;
+
+    void el.play().catch(() => {});
   }, [sceneIndex, shouldRender, isTyping, showCheckIn, narrationEnabled]);
 
   // Orientation detection + landscape lock
@@ -248,6 +263,11 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
         audioRef.current.removeAttribute('src');
         audioRef.current.load();
       }
+      preloadAudioRef.current?.pause();
+      if (preloadAudioRef.current) {
+        preloadAudioRef.current.removeAttribute('src');
+        preloadAudioRef.current.load();
+      }
     };
   }, []);
 
@@ -270,6 +290,8 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
     } else {
       audioRef.current?.pause();
       if (audioRef.current) audioRef.current.currentTime = 0;
+      preloadAudioRef.current?.pause();
+      if (preloadAudioRef.current) preloadAudioRef.current.currentTime = 0;
       setIsAnimating(false);
       const timer = setTimeout(() => {
         setShouldRender(false);
