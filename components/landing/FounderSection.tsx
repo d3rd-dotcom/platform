@@ -23,10 +23,10 @@ export const FounderSection: React.FC = () => {
           </h2>
           <div className={founderStyles.body}>
             <p>
-            Most education treats you like a container to fill. We treat you like a system to upgrade. Blue runs experiments on your own data, you keep the rewards, and you walk away sharper than you came in.
+            Most education treats you like a container to fill. We treat you like a system to upgrade.             I'll run experiments on your own data, you keep the rewards, and you walk away sharper than you came in.
             </p>
             <a
-              href="https://cal.com/james.mwa/strategy?overlayCalendar=true"
+              href="https://cal.com/blue.ai/strategy?overlayCalendar=true"
               className={`${styles.fancyButton} ${styles.fancyButtonAgent}`}
               target="_blank"
               rel="noopener noreferrer"
