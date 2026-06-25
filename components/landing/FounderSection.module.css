@@ -33,6 +33,7 @@
 
 .avatarWrap {
   flex: 0 0 auto;
+  position: relative;
   width: clamp(96px, 16vw, 160px);
   height: clamp(96px, 16vw, 160px);
   border-radius: 50%;
@@ -46,6 +47,34 @@
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.video {
+  position: absolute;
+  inset: -10% -10%;
+  width: 120%;
+  height: 120%;
+  object-fit: cover;
+  object-position: 50% 55%;
+  border-radius: 50%;
+  transition: opacity 0.8s ease;
+}
+
+.videoHidden {
+  opacity: 0;
+}
+
+.imageOverlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.imageVisible {
+  opacity: 1;
 }
 
 .content {

@@ -5,6 +5,7 @@
   padding: 88px 24px 112px;
   background-color: #FFFFFF;
   z-index: 1;
+  --reveal-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .featuresSection::before {
@@ -36,14 +37,86 @@
   max-width: 1280px;
   margin: 0 auto;
   z-index: 1;
-  opacity: 0;
-  transform: translateY(22px);
-  transition: opacity 0.55s ease, transform 0.55s ease;
 }
 
-.sectionVisible .container {
-  opacity: 1;
-  transform: translateY(0);
+/* ── Appear animations ── */
+
+.topPanel,
+.title,
+.description,
+.card,
+.phoneReveal,
+.eyebrow {
+  opacity: 0;
+}
+
+.sectionVisible .eyebrow {
+  animation: fadeUp 0.6s var(--reveal-ease) 0.05s both;
+}
+
+.sectionVisible .topPanel {
+  animation: fadeUp 0.8s var(--reveal-ease) 0.05s both;
+}
+
+.sectionVisible .phoneRear {
+  animation: phoneReveal 1s var(--reveal-ease) 0.1s both;
+}
+
+.sectionVisible .phoneFront {
+  animation: phoneReveal 1s var(--reveal-ease) 0.25s both;
+}
+
+.sectionVisible .title {
+  animation: fadeUp 0.7s var(--reveal-ease) 0.15s both;
+}
+
+.sectionVisible .description {
+  animation: fadeUp 0.7s var(--reveal-ease) 0.3s both;
+}
+
+.sectionVisible .card {
+  animation: cardReveal 0.8s var(--reveal-ease) var(--delay, 0.35s) both;
+}
+
+.sectionVisible .card:nth-child(1) { --delay: 0.35s; }
+.sectionVisible .card:nth-child(2) { --delay: 0.5s; }
+.sectionVisible .card:nth-child(3) { --delay: 0.65s; }
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes phoneReveal {
+  from {
+    opacity: 0;
+    filter: blur(6px) brightness(1.4);
+  }
+  60% {
+    opacity: 1;
+    filter: blur(1px) brightness(1.05);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0) brightness(1);
+  }
+}
+
+@keyframes cardReveal {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* Sharp-edged board — matches SnapshotFeaturesSection */

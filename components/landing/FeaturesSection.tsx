@@ -50,7 +50,7 @@ export const FeaturesSection: React.FC = () => {
       ([entry]) => {
         if (entry.isIntersecting) setIsVisible(true);
       },
-      { threshold: 0.08 }
+      { threshold: 0.2, rootMargin: '0px 0px -60px 0px' }
     );
 
     observer.observe(el);
@@ -74,7 +74,7 @@ export const FeaturesSection: React.FC = () => {
           <div className={styles.topPanel}>
             <div className={styles.phonePanel}>
               <div className={styles.phoneStack}>
-                <div className={`${styles.phoneMockup} ${styles.phoneRear}`}>
+                <div className={`${styles.phoneMockup} ${styles.phoneRear} ${styles.phoneReveal}`}>
                   <Image
                     src="/uploads/mockup-app-landing-2.png"
                     alt="Course reading screen on phone"
@@ -83,7 +83,7 @@ export const FeaturesSection: React.FC = () => {
                     className={styles.phoneImage}
                   />
                 </div>
-                <div className={`${styles.phoneMockup} ${styles.phoneFront}`}>
+                <div className={`${styles.phoneMockup} ${styles.phoneFront} ${styles.phoneReveal}`}>
                   <Image
                     src="/uploads/mockup-app-landing.png"
                     alt="Week one tasks screen on phone"

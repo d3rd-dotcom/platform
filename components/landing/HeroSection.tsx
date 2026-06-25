@@ -3,6 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import styles from './LandingPage.module.css';
+import GlitchRevealText from './GlitchRevealText';
 import LandingEnterAcademyButton from './LandingEnterAcademyButton';
 import LandingEnterAsAgentButton from './LandingEnterAsAgentButton';
 import CompanyLogos from './CompanyLogos';
@@ -13,10 +14,18 @@ export const HeroSection: React.FC = () => {
       <div className={styles.heroSection}>
         <div className={styles.heroContent}>
           <p className={styles.heroTextBadge}>Next-Gen Cohort For Scientists &amp; Agents</p>
-          <h1 className={styles.heroHeadline}>
-            Mental Wealth
-            <span className={styles.heroHeadlineAccent}>Academy</span>
-          </h1>
+          <GlitchRevealText
+            as="h1"
+            className={styles.heroHeadline}
+            lines={[
+              { text: 'Mental Wealth' },
+              { text: 'Academy', accent: true },
+            ]}
+            accentClassName={styles.heroHeadlineAccent}
+            staggerDelay={50}
+            duration={1000}
+            startDelay={200}
+          />
           <div className={styles.heroLine} />
           <p className={styles.heroSubtext}>
             Learn from your own psychology. Simulate new worlds with our classified AI model: B.L.U.E. to earn while you learn, and tackle quests to evolve your mental state.</p>
