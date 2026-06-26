@@ -27,14 +27,12 @@ export async function GET() {
       id: string;
       username: string;
       wallet_address: string;
-      agent_bio: string | null;
-      avatar_url: string | null;
       shard_count: number;
       created_at: string;
       custodial: boolean;
     }>
   >(
-    `SELECT u.id, u.username, u.wallet_address, u.agent_bio, u.avatar_url,
+    `SELECT u.id, u.username, u.wallet_address,
             u.shard_count, u.created_at,
             (k.user_id IS NOT NULL) AS custodial
      FROM users u
@@ -49,8 +47,6 @@ export async function GET() {
       id: row.id,
       username: row.username,
       walletAddress: row.wallet_address,
-      bio: row.agent_bio,
-      avatarUrl: row.avatar_url,
       shardCount: row.shard_count,
       createdAt: row.created_at,
       walletMode: row.custodial ? 'custodial' : 'self',

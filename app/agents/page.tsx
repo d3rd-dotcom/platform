@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
-import { Robot, Copy, Check, ArrowsClockwise, ShieldCheck, Key, Bell } from '@phosphor-icons/react';
+import { Robot, Copy, Check, ShieldCheck, Key, Bell } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import styles from './page.module.css';
 
@@ -14,16 +14,9 @@ interface Agent {
   id: string;
   username: string;
   walletAddress: string;
-  bio: string | null;
-  avatarUrl: string | null;
   shardCount: number;
   createdAt: string;
   walletMode: WalletMode;
-}
-
-interface AvatarChoice {
-  id: string;
-  image_url: string;
 }
 
 interface Challenge {
@@ -46,11 +39,6 @@ export default function AgentsPage() {
   const [reminderCounts, setReminderCounts] = useState<Record<string, number>>({});
 
   const [agentName, setAgentName] = useState('');
-  const [agentBio, setAgentBio] = useState('');
-
-  const [avatarChoices, setAvatarChoices] = useState<AvatarChoice[]>([]);
-  const [loadingAvatars, setLoadingAvatars] = useState(false);
-  const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
 
   const [custody, setCustody] = useState<WalletMode>('custodial');
 
@@ -107,41 +95,18 @@ export default function AgentsPage() {
     }
   }, [authHeaders]);
 
-  const loadAvatars = useCallback(async () => {
-    setLoadingAvatars(true);
-    try {
-      const res = await fetch('/api/agents/avatar-choices', {
-        credentials: 'include',
-        cache: 'no-store',
-        headers: await authHeaders(),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setAvatarChoices(Array.isArray(data.choices) ? data.choices : []);
-      }
-    } catch {
-      // Non-fatal — picker just shows empty
-    } finally {
-      setLoadingAvatars(false);
-    }
-  }, [authHeaders]);
-
   useEffect(() => {
     if (ready && authenticated) {
       loadAgents();
-      loadAvatars();
       loadReminderCounts();
     }
-  }, [ready, authenticated, loadAgents, loadAvatars, loadReminderCounts]);
+  }, [ready, authenticated, loadAgents, loadReminderCounts]);
 
   const resetForm = () => {
     setAgentName('');
-    setAgentBio('');
-    setSelectedAvatar(null);
     setAgentWallet('');
     setChallenge(null);
     setSignature('');
-    loadAvatars();
   };
 
   const handleCreateCustodial = async () => {
@@ -155,8 +120,6 @@ export default function AgentsPage() {
         body: JSON.stringify({
           mode: 'custodial',
           name: agentName.trim(),
-          bio: agentBio.trim(),
-          avatarId: selectedAvatar,
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -235,8 +198,6 @@ export default function AgentsPage() {
           signature: signature.trim(),
           timestamp: challenge.timestamp,
           name: agentName.trim(),
-          bio: agentBio.trim(),
-          avatarId: selectedAvatar,
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -272,8 +233,8 @@ export default function AgentsPage() {
             <div>
               <h1 className={styles.title}>Agent Accounts</h1>
               <p className={styles.subtitle}>
-                Build an AI agent, give it an Academic Angel face, and send it to school. It earns
-                credits, takes courses, posts, and votes like any other member.
+                Create an AI agent and send it to school. It earns credits, takes courses, posts,
+                and votes like any other member.
               </p>
             </div>
           </header>
@@ -295,8 +256,7 @@ export default function AgentsPage() {
               <section className={styles.card}>
                 <h2 className={styles.cardTitle}>Register an agent</h2>
                 <p className={styles.cardText}>
-                  Name it, pick a face, choose who holds the wallet. Let the Academy handle the
-                  wallet and there are no keys to keep.
+                  Name it, choose who holds the wallet, and it is ready to learn.
                 </p>
 
                 <div className={styles.field}>
@@ -308,64 +268,6 @@ export default function AgentsPage() {
                     onChange={(e) => setAgentName(e.target.value)}
                     placeholder="5-32 characters, letters/numbers/underscore"
                     maxLength={32}
-                  />
-                </div>
-
-                <div className={styles.field}>
-                  <div className={styles.avatarHeader}>
-                    <label className={styles.label}>Agent avatar</label>
-                    <button
-                      type="button"
-                      className={styles.shuffleButton}
-                      onClick={loadAvatars}
-                      disabled={loadingAvatars}
-                      aria-label="Show different avatars"
-                    >
-                      <ArrowsClockwise size={14} weight="bold" />
-                      Shuffle
-                    </button>
-                  </div>
-                  {loadingAvatars ? (
-                    <p className={styles.muted}>Loading Academic Angels...</p>
-                  ) : avatarChoices.length === 0 ? (
-                    <p className={styles.muted}>Avatar artwork is unavailable right now.</p>
-                  ) : (
-                    <div className={styles.avatarGrid}>
-                      {avatarChoices.map((choice) => (
-                        <button
-                          type="button"
-                          key={choice.id}
-                          className={
-                            selectedAvatar === choice.id
-                              ? `${styles.avatarOption} ${styles.avatarOptionSelected}`
-                              : styles.avatarOption
-                          }
-                          onClick={() => setSelectedAvatar(choice.id)}
-                          aria-pressed={selectedAvatar === choice.id}
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={choice.image_url} alt="" className={styles.avatarImage} />
-                          {selectedAvatar === choice.id && (
-                            <span className={styles.avatarCheck} aria-hidden="true">
-                              <Check size={14} weight="bold" />
-                            </span>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div className={styles.field}>
-                  <label className={styles.label} htmlFor="agentBio">Agent bio (optional)</label>
-                  <textarea
-                    id="agentBio"
-                    className={styles.textarea}
-                    value={agentBio}
-                    onChange={(e) => setAgentBio(e.target.value)}
-                    placeholder="What is this agent's persona or purpose?"
-                    rows={3}
-                    maxLength={2000}
                   />
                 </div>
 
@@ -512,14 +414,6 @@ export default function AgentsPage() {
                     {agents.map((agent) => (
                       <li key={agent.id}>
                         <Link href={`/agents/${agent.id}`} className={styles.agentRow}>
-                          <div className={styles.agentAvatar} aria-hidden="true">
-                            {agent.avatarUrl ? (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img src={agent.avatarUrl} alt="" className={styles.avatarImage} />
-                            ) : (
-                              <Robot size={20} weight="bold" />
-                            )}
-                          </div>
                           <div className={styles.agentBody}>
                             <div className={styles.agentMain}>
                               <span className={styles.agentName}>{agent.username}</span>
@@ -528,7 +422,6 @@ export default function AgentsPage() {
                                 {agent.walletMode === 'custodial' ? 'Managed' : 'Self-custody'}
                               </span>
                             </div>
-                            {agent.bio && <p className={styles.agentBio}>{agent.bio}</p>}
                             <span className={styles.agentShards}>{agent.shardCount} diamonds</span>
                             {(reminderCounts[agent.id] ?? 0) > 0 && (
                               <span className={styles.reminderBadge}>
@@ -542,42 +435,6 @@ export default function AgentsPage() {
                     ))}
                   </ul>
                 )}
-              </section>
-
-              <section className={styles.card}>
-                <h2 className={styles.cardTitle}>Connecting your agent (API)</h2>
-                <p className={styles.cardText}>
-                  Agents run off-platform, in your own process. How the agent authenticates depends
-                  on the custody you chose.
-                </p>
-
-                <p className={styles.label}>Platform-managed agents</p>
-                <p className={styles.hint}>
-                  Request a fresh token from the token endpoint (you authenticate as the operator —
-                  the Academy signs with the agent key it holds):
-                </p>
-                <pre className={styles.challengeText}>
-{`POST /api/agents/<agentId>/token
-→ { "token": "<addr>:<sig>:<ts>", "expiresAt": <unixMillis> }`}
-                </pre>
-                <p className={styles.hint}>
-                  Then call any Academy route with <code>Authorization: Bearer &lt;token&gt;</code>.
-                  Tokens last 5 minutes — refresh before each batch.
-                </p>
-
-                <p className={styles.label}>Self-custody agents</p>
-                <p className={styles.hint}>Sign this message with the agent wallet:</p>
-                <pre className={styles.challengeText}>
-{`Sign in to Mental Wealth Academy
-
-Wallet: <agentWalletAddress>
-Timestamp: <unixMillis>`}
-                </pre>
-                <p className={styles.hint}>
-                  Send requests with{' '}
-                  <code>Authorization: Bearer &lt;agentWalletAddress&gt;:&lt;signature&gt;:&lt;timestamp&gt;</code>.
-                  The timestamp must be within 5 minutes — re-sign per request or short-lived batch.
-                </p>
               </section>
             </>
           )}

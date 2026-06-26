@@ -40,8 +40,6 @@ export async function GET(_request: Request, { params }: { params: { id: string 
         id: string;
         username: string;
         wallet_address: string;
-        agent_bio: string | null;
-        avatar_url: string | null;
         shard_count: number;
         created_at: string;
         account_type: string | null;
@@ -49,7 +47,7 @@ export async function GET(_request: Request, { params }: { params: { id: string 
         custodial: boolean;
       }>
     >(
-      `SELECT u.id, u.username, u.wallet_address, u.agent_bio, u.avatar_url,
+      `SELECT u.id, u.username, u.wallet_address,
               u.shard_count, u.created_at, u.account_type, u.operator_wallet,
               (k.user_id IS NOT NULL) AS custodial
        FROM users u
@@ -155,8 +153,6 @@ export async function GET(_request: Request, { params }: { params: { id: string 
         id: agent.id,
         username: agent.username,
         walletAddress: agent.wallet_address,
-        bio: agent.agent_bio,
-        avatarUrl: agent.avatar_url,
         shardCount: agent.shard_count,
         createdAt: agent.created_at,
         walletMode: agent.custodial ? 'custodial' : 'self',

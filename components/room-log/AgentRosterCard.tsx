@@ -3,14 +3,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
-import { Robot, CaretRight } from '@phosphor-icons/react';
+import { CaretRight } from '@phosphor-icons/react';
 import RoomLogOverlay from './RoomLogOverlay';
 import styles from './AgentRosterCard.module.css';
 
 interface Agent {
   id: string;
   username: string;
-  avatarUrl: string | null;
   shardCount: number;
 }
 
@@ -81,14 +80,6 @@ export default function AgentRosterCard() {
                   className={styles.agentRow}
                   onClick={() => setOverlayOpen(true)}
                 >
-                  <span className={styles.avatar} aria-hidden="true">
-                    {agent.avatarUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={agent.avatarUrl} alt="" className={styles.avatarImg} />
-                    ) : (
-                      <Robot size={18} weight="bold" />
-                    )}
-                  </span>
                   <span className={styles.agentName}>{agent.username}</span>
                   <span className={styles.agentShards}>{agent.shardCount} diamonds</span>
                   <CaretRight size={15} weight="bold" className={styles.caret} />

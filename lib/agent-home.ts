@@ -10,8 +10,6 @@ export interface AgentHomeRow {
   id: string;
   username: string;
   wallet_address: string;
-  agent_bio: string | null;
-  avatar_url: string | null;
   shard_count: number;
   created_at: string;
   account_type: string | null;
@@ -74,7 +72,7 @@ export function isAgentWallet(agent: Pick<AgentHomeRow, 'wallet_address'>, walle
 
 export async function getAgentHomeRow(agentId: string): Promise<AgentHomeRow | null> {
   const rows = await sqlQuery<AgentHomeRow[]>(
-    `SELECT u.id, u.username, u.wallet_address, u.agent_bio, u.avatar_url,
+    `SELECT u.id, u.username, u.wallet_address,
             u.shard_count, u.created_at, u.account_type, u.operator_wallet,
             (k.user_id IS NOT NULL) AS custodial
      FROM users u
@@ -91,7 +89,7 @@ export async function getAgentHomeRow(agentId: string): Promise<AgentHomeRow | n
 
 export async function getOperatorAgentRows(operatorWallet: string): Promise<AgentHomeRow[]> {
   return sqlQuery<AgentHomeRow[]>(
-    `SELECT u.id, u.username, u.wallet_address, u.agent_bio, u.avatar_url,
+    `SELECT u.id, u.username, u.wallet_address,
             u.shard_count, u.created_at, u.account_type, u.operator_wallet,
             (k.user_id IS NOT NULL) AS custodial
      FROM users u

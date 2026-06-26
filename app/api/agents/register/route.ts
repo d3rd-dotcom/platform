@@ -4,13 +4,11 @@ import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { isDbConfigured, sqlQuery, sqlQueryWithClient, withTransaction } from '@/lib/db';
 import { getWalletAddressFromRequest, verifyWalletSignature } from '@/lib/wallet-auth';
 import { encryptAgentKey, generateAgentWallet } from '@/lib/agent-keys';
-import { getAvatarByAvatarId } from '@/lib/avatars';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const SIGNATURE_WINDOW_MS = 5 * 60 * 1000;
-const ANGEL_AVATAR_RE = /^angel_\d{2,3}$/;
 
 function buildChallenge(operatorWallet: string, agentWallet: string, timestamp: string) {
   return `Register agent for Mental Wealth Academy\n\nOperator: ${operatorWallet}\nAgent: ${agentWallet}\nTimestamp: ${timestamp}`;
@@ -28,20 +26,6 @@ async function deriveUsername(name: unknown): Promise<string> {
     { username: sanitized.toLowerCase() }
   );
   return taken.length === 0 ? sanitized : fallback;
-}
-
-/**
- * Resolves an optional Academic Angel avatar id to a stored id + image url.
- * Returns null id when none supplied; throws-free — a failed image fetch just
- * stores the id with a null url so it can be re-resolved on display.
- */
-async function resolveAvatar(
-  avatarId: unknown
-): Promise<{ ok: true; id: string | null; url: string | null } | { ok: false }> {
-  if (avatarId == null || avatarId === '') return { ok: true, id: null, url: null };
-  if (typeof avatarId !== 'string' || !ANGEL_AVATAR_RE.test(avatarId)) return { ok: false };
-  const resolved = await getAvatarByAvatarId(avatarId);
-  return { ok: true, id: avatarId, url: resolved?.image_url ?? null };
 }
 
 /**
@@ -105,25 +89,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
     }
 
-    const { mode, agentWallet, signature, timestamp, name, bio, avatarId } = body as {
+    const { mode, agentWallet, signature, timestamp, name } = body as {
       mode?: string;
       agentWallet?: string;
       signature?: string;
       timestamp?: string | number;
       name?: string;
-      bio?: string;
-      avatarId?: string;
     };
 
     // Custodial unless the request explicitly carries a self-custody signature.
     const custodial = mode === 'custodial' || (mode !== 'self' && !signature);
-
-    const avatar = await resolveAvatar(avatarId);
-    if (!avatar.ok) {
-      return NextResponse.json({ error: 'Invalid avatar selection.' }, { status: 400 });
-    }
-
-    const agentBio = typeof bio === 'string' ? bio.trim().slice(0, 2000) || null : null;
 
     // ── Custodial: platform generates and manages the agent wallet ──
     if (custodial) {
@@ -154,16 +129,13 @@ export async function POST(request: Request) {
       await withTransaction(async (client) => {
         await sqlQueryWithClient(
           client,
-          `INSERT INTO users (id, wallet_address, username, account_type, operator_wallet, agent_bio, selected_avatar_id, avatar_url)
-           VALUES (:id, :walletAddress, :username, 'agent', :operatorWallet, :agentBio, :avatarId, :avatarUrl)`,
+          `INSERT INTO users (id, wallet_address, username, account_type, operator_wallet)
+           VALUES (:id, :walletAddress, :username, 'agent', :operatorWallet)`,
           {
             id: userId,
             walletAddress: wallet.address,
             username,
             operatorWallet,
-            agentBio,
-            avatarId: avatar.id,
-            avatarUrl: avatar.url,
           }
         );
         await sqlQueryWithClient(
@@ -186,9 +158,6 @@ export async function POST(request: Request) {
           username,
           walletAddress: wallet.address,
           operatorWallet,
-          bio: agentBio,
-          avatarId: avatar.id,
-          avatarUrl: avatar.url,
           walletMode: 'custodial',
         },
       });
@@ -247,16 +216,13 @@ export async function POST(request: Request) {
     const username = await deriveUsername(name);
 
     await sqlQuery(
-      `INSERT INTO users (id, wallet_address, username, account_type, operator_wallet, agent_bio, selected_avatar_id, avatar_url)
-       VALUES (:id, :walletAddress, :username, 'agent', :operatorWallet, :agentBio, :avatarId, :avatarUrl)`,
+      `INSERT INTO users (id, wallet_address, username, account_type, operator_wallet)
+       VALUES (:id, :walletAddress, :username, 'agent', :operatorWallet)`,
       {
         id: userId,
         walletAddress: normalizedAgent,
         username,
         operatorWallet,
-        agentBio,
-        avatarId: avatar.id,
-        avatarUrl: avatar.url,
       }
     );
 
@@ -267,9 +233,6 @@ export async function POST(request: Request) {
         username,
         walletAddress: normalizedAgent,
         operatorWallet,
-        bio: agentBio,
-        avatarId: avatar.id,
-        avatarUrl: avatar.url,
         walletMode: 'self',
       },
     });

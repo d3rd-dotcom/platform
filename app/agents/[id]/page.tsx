@@ -3,7 +3,7 @@
 import { type FormEvent, useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
-import { ArrowLeft, Bell, Check, CheckCircle, Clock, Copy, Key, Plus, Robot, X } from '@phosphor-icons/react';
+import { ArrowLeft, Bell, Check, CheckCircle, Clock, Copy, Key, Plus, X } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import RoomLogOverlay from '@/components/room-log/RoomLogOverlay';
 import styles from './page.module.css';
@@ -37,8 +37,6 @@ interface AgentDetail {
     id: string;
     username: string;
     walletAddress: string;
-    bio: string | null;
-    avatarUrl: string | null;
     shardCount: number;
     createdAt: string;
     walletMode: WalletMode;
@@ -342,14 +340,6 @@ export default function AgentDetailPage({ params }: { params: { id: string } }) 
           ) : detail ? (
             <>
               <header className={styles.header}>
-                <div className={styles.headerAvatar} aria-hidden="true">
-                  {detail.agent.avatarUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={detail.agent.avatarUrl} alt="" className={styles.avatarImage} />
-                  ) : (
-                    <Robot size={28} weight="bold" />
-                  )}
-                </div>
                 <div>
                   <h1 className={styles.title}>{detail.agent.username}</h1>
                   <div className={styles.headerMeta}>
@@ -363,12 +353,6 @@ export default function AgentDetailPage({ params }: { params: { id: string } }) 
                   </div>
                 </div>
               </header>
-
-              {detail.agent.bio && (
-                <section className={styles.card}>
-                  <p className={styles.cardText}>{detail.agent.bio}</p>
-                </section>
-              )}
 
               <div className={styles.statGrid}>
                 <div className={styles.statCard}>
