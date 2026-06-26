@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import styles from './CourseStudioModal.module.css';
 import {
@@ -72,7 +72,7 @@ export default function CourseStudioModal({
   onCourseCreated,
   existingCourseId,
 }: CourseStudioProps) {
-  const [phase, setPhase] = useState<'loading' | 'edit' | 'saving'>('loading');
+  const [phase, setPhase] = useState<'loading' | 'edit' | 'saving'>(existingCourseId ? 'loading' : 'edit');
   const [courseId, setCourseId] = useState<string | null>(existingCourseId ?? null);
   const [title, setTitle] = useState('');
   const [focus, setFocus] = useState('');
@@ -84,6 +84,14 @@ export default function CourseStudioModal({
   const [error, setError] = useState<string | null>(null);
   const [dirty, setDirty] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(true);
+  const titleRef = useRef<HTMLInputElement>(null);
+
+  // Auto-focus the title input for new courses
+  useEffect(() => {
+    if (phase === 'edit' && !existingCourseId && titleRef.current) {
+      titleRef.current.focus();
+    }
+  }, [phase, existingCourseId]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -95,7 +103,7 @@ export default function CourseStudioModal({
 
   // Load existing course
   useEffect(() => {
-    if (!existingCourseId) { setPhase('edit'); return; }
+    if (!existingCourseId) { return; }
     (async () => {
       try {
         const headers = await authHeaders();
@@ -291,6 +299,7 @@ export default function CourseStudioModal({
               </button>
               <div className={styles.headerMeta}>
                 <input
+                  ref={titleRef}
                   value={title}
                   onChange={(e) => { setTitle(e.target.value); setDirty(true); }}
                   placeholder="Course title"
@@ -307,8 +316,9 @@ export default function CourseStudioModal({
                 onClick={saveCourse}
                 disabled={phase === 'saving' || !title.trim()}
                 className={styles.saveBtn}
+                title={!title.trim() ? 'Enter a course title first' : ''}
               >
-                {phase === 'saving' ? 'Saving...' : courseId ? 'Save' : 'Create'}
+                {phase === 'saving' ? 'Saving...' : courseId ? 'Save' : 'Create course'}
               </button>
             </div>
           </div>
@@ -341,6 +351,7 @@ export default function CourseStudioModal({
                 onAddWeek={addWeek}
                 onUpdateWeek={updateWeek}
                 onDeleteComponent={deleteComponent}
+                onUpdateComponent={updateComponent}
               />
             </main>
 

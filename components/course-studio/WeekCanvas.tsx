@@ -26,6 +26,7 @@ interface WeekCanvasProps {
   onAddWeek: () => void;
   onUpdateWeek: (weekId: string, updates: { title?: string; theme?: string }) => void;
   onDeleteComponent: (compId: string) => void;
+  onUpdateComponent: (compId: string, updates: Partial<CourseComponentRecord>) => void;
 }
 
 const TYPE_COLORS: Record<string, string> = {
@@ -61,11 +62,13 @@ function WysiwygComponent({
   isSelected,
   onSelect,
   onDelete,
+  onComponentUpdate,
 }: {
   component: CourseComponentRecord;
   isSelected: boolean;
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
+  onComponentUpdate?: (id: string, updates: Partial<CourseComponentRecord>) => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: component.id,
@@ -114,7 +117,10 @@ function WysiwygComponent({
 
       {/* WYSIWYG rendered content */}
       <div className={styles.componentPreview}>
-        <ComponentRenderer component={component} />
+        <ComponentRenderer
+          component={component}
+          onComponentUpdate={(updates) => onComponentUpdate?.(component.id, updates)}
+        />
       </div>
     </div>
   );
@@ -126,12 +132,14 @@ function WeekDropZone({
   selectedComponentId,
   onSelectComponent,
   onDeleteComponent,
+  onComponentUpdate,
 }: {
   week: StudioWeek;
   components: CourseComponentRecord[];
   selectedComponentId: string | null;
   onSelectComponent: (id: string | null) => void;
   onDeleteComponent: (id: string) => void;
+  onComponentUpdate?: (id: string, updates: Partial<CourseComponentRecord>) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({
     id: `week-${week.id}`,
@@ -156,6 +164,7 @@ function WeekDropZone({
             isSelected={selectedComponentId === comp.id}
             onSelect={onSelectComponent}
             onDelete={onDeleteComponent}
+            onComponentUpdate={onComponentUpdate}
           />
         ))}
       </SortableContext>
@@ -172,6 +181,7 @@ export default function WeekCanvas({
   onAddWeek,
   onUpdateWeek,
   onDeleteComponent,
+  onUpdateComponent,
 }: WeekCanvasProps) {
   const currentWeek = weeks.find((w) => w.id === selectedWeek);
   if (!currentWeek && weeks.length === 0) {
@@ -234,6 +244,7 @@ export default function WeekCanvas({
         selectedComponentId={selectedComponentId}
         onSelectComponent={onSelectComponent}
         onDeleteComponent={onDeleteComponent}
+        onComponentUpdate={onUpdateComponent}
       />
     </div>
   );

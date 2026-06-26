@@ -4,7 +4,6 @@ import dynamic from 'next/dynamic';
 import type { CourseComponentRecord } from '@/lib/vip-course-db';
 import styles from './ComponentRenderer.module.css';
 
-// Lazy-load each renderer so only the needed one is fetched
 const RichTextRenderer = dynamic(() => import('./RichTextRenderer'), { ssr: false });
 const MultipleChoiceRenderer = dynamic(() => import('./MultipleChoiceRenderer'), { ssr: false });
 const DropdownRenderer = dynamic(() => import('./DropdownRenderer'), { ssr: false });
@@ -25,21 +24,26 @@ function UnknownRenderer({ component }: { component: CourseComponentRecord }) {
   );
 }
 
-const RENDERER_MAP: Record<string, React.ComponentType<{ component: CourseComponentRecord }>> = {
-  rich_text: RichTextRenderer,
-  multiple_choice: MultipleChoiceRenderer,
-  dropdown: DropdownRenderer,
-  image_embed: ImageEmbedRenderer,
-  video_embed: VideoEmbedRenderer,
-  file_upload: FileUploadRenderer,
-  text_input: TextInputRenderer,
-  rating_scale: RatingScaleRenderer,
-  reflection_journal: ReflectionJournalRenderer,
-  quiz_block: QuizBlockRenderer,
-  markdown_file: MarkdownFileRenderer,
+type RendererProps = { component: CourseComponentRecord; onComponentUpdate?: (updates: Partial<CourseComponentRecord>) => void };
+
+const RENDERER_MAP: Record<string, React.ComponentType<RendererProps>> = {
+  rich_text: RichTextRenderer as React.ComponentType<RendererProps>,
+  multiple_choice: MultipleChoiceRenderer as React.ComponentType<RendererProps>,
+  dropdown: DropdownRenderer as React.ComponentType<RendererProps>,
+  image_embed: ImageEmbedRenderer as React.ComponentType<RendererProps>,
+  video_embed: VideoEmbedRenderer as React.ComponentType<RendererProps>,
+  file_upload: FileUploadRenderer as React.ComponentType<RendererProps>,
+  text_input: TextInputRenderer as React.ComponentType<RendererProps>,
+  rating_scale: RatingScaleRenderer as React.ComponentType<RendererProps>,
+  reflection_journal: ReflectionJournalRenderer as React.ComponentType<RendererProps>,
+  quiz_block: QuizBlockRenderer as React.ComponentType<RendererProps>,
+  markdown_file: MarkdownFileRenderer as React.ComponentType<RendererProps>,
 };
 
-export default function ComponentRenderer({ component }: { component: CourseComponentRecord }) {
+export default function ComponentRenderer({
+  component,
+  onComponentUpdate,
+}: RendererProps) {
   const Renderer = RENDERER_MAP[component.componentType] ?? UnknownRenderer;
-  return <Renderer component={component} />;
+  return <Renderer component={component} onComponentUpdate={onComponentUpdate} />;
 }
