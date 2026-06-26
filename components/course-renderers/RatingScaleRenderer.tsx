@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { CourseComponentRecord } from '@/lib/vip-course-db';
+import styles from './RatingScaleRenderer.module.css';
 
 interface RatingScaleConfig {
   min?: number;
@@ -23,16 +24,12 @@ export default function RatingScaleRenderer({ component }: { component: CourseCo
 
   return (
     <div>
-      <div className="flex items-center gap-1">
+      <div className={styles.rating_container}>
         {values.map((v) => (
           <button
             key={v}
             type="button"
-            className={`w-9 h-9 rounded-full text-sm font-medium transition-colors ${
-              value === v
-                ? 'bg-blue-500 text-white'
-                : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200'
-            }`}
+            className={`${styles.rating_btn} ${value === v ? styles.rating_btn_active : styles.rating_btn_inactive}`}
             onClick={() => setValue(v)}
           >
             {v}
@@ -40,7 +37,7 @@ export default function RatingScaleRenderer({ component }: { component: CourseCo
         ))}
       </div>
       {value !== null && config.labels?.[value] && (
-        <p className="text-sm text-neutral-500 mt-1">{config.labels[value]}</p>
+        <p className={styles.label_text}>{config.labels[value]}</p>
       )}
     </div>
   );

@@ -5,7 +5,6 @@ import Image from 'next/image';
 import styles from './LandingPage.module.css';
 import GlitchRevealText from './GlitchRevealText';
 import LandingEnterAcademyButton from './LandingEnterAcademyButton';
-import LandingEnterAsAgentButton from './LandingEnterAsAgentButton';
 import CompanyLogos from './CompanyLogos';
 
 export const HeroSection: React.FC = () => {
@@ -31,7 +30,6 @@ export const HeroSection: React.FC = () => {
             Learn from your own psychology. Simulate new worlds with our classified AI model: B.L.U.E. to earn while you learn, and tackle quests to evolve your mental state.</p>
           <div className={styles.heroActions}>
             <LandingEnterAcademyButton dark />
-            <LandingEnterAsAgentButton />
           </div>
         </div>
         <div className={styles.heroVisualColumn} aria-hidden="true">

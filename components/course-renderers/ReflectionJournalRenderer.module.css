@@ -1,0 +1,36 @@
+.prompt {
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-base);
+  min-height: 120px;
+  resize: vertical;
+}
+
+:global([data-theme="dark"]) .textarea {
+  background: #1e1f2c;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.word_count_warning {
+  color: #f59e0b;
+}
+
+.saved_text {
+  color: #22c55e;
+}

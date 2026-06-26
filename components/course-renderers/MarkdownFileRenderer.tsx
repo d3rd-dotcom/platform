@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import type { CourseComponentRecord } from '@/lib/vip-course-db';
+import styles from './MarkdownFileRenderer.module.css';
 
 interface MarkdownFileConfig {
   url?: string;
@@ -24,15 +25,15 @@ export default function MarkdownFileRenderer({ component }: { component: CourseC
       .finally(() => setLoading(false));
   }, [config.url, content]);
 
-  if (loading) return <div className="text-neutral-500 italic">Loading...</div>;
-  if (!content) return <div className="text-neutral-500 italic">No content</div>;
+  if (loading) return <div className={styles.empty_state}>Loading...</div>;
+  if (!content) return <div className={styles.empty_state}>No content</div>;
 
   return (
-    <div className="prose prose-neutral dark:prose-invert max-w-none">
+    <div className={styles.prose_container}>
       {content.split('\n').map((line, i) => {
         if (line.startsWith('## ')) return <h2 key={i}>{line.slice(3)}</h2>;
         if (line.startsWith('# ')) return <h1 key={i}>{line.slice(2)}</h1>;
-        if (line.startsWith('- ')) return <li key={i} className="ml-4">{line.slice(2)}</li>;
+        if (line.startsWith('- ')) return <li key={i} className={styles.list_item}>{line.slice(2)}</li>;
         if (line.trim() === '') return <br key={i} />;
         return <p key={i}>{line}</p>;
       })}

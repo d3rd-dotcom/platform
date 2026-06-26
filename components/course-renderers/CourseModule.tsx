@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import ComponentRenderer from './ComponentRenderer';
 import type { VipCourseFull } from '@/lib/vip-course-db';
+import styles from './CourseModule.module.css';
 
 interface CourseModuleProps {
   courseSlug?: string;
@@ -42,24 +43,24 @@ export default function CourseModule({
     })();
   }, [courseId, courseSlug, authHeaders]);
 
-  if (loading) return <div className="text-neutral-500 italic p-4">Loading course...</div>;
-  if (error) return <div className="text-red-500 p-4">{error}</div>;
-  if (!course) return <div className="text-neutral-500 italic p-4">No course found</div>;
+  if (loading) return <div className={styles.loading}>Loading course...</div>;
+  if (error) return <div className={styles.error}>{error}</div>;
+  if (!course) return <div className={styles.no_course}>No course found</div>;
 
   const week = course.weeks.find((w) => w.weekNumber === weekNumber) ?? course.weeks[0];
-  if (!week) return <div className="text-neutral-500 italic p-4">No weeks in this course</div>;
+  if (!week) return <div className={styles.no_weeks}>No weeks in this course</div>;
 
   return (
     <div>
-      <div className="mb-4">
-        <h2 className="text-lg font-bold">{week.title || `Week ${week.weekNumber}`}</h2>
-        {week.theme && <p className="text-sm text-neutral-500">{week.theme}</p>}
+      <div className={styles.header}>
+        <h2 className={styles.week_title}>{week.title || `Week ${week.weekNumber}`}</h2>
+        {week.theme && <p className={styles.week_theme}>{week.theme}</p>}
       </div>
-      <div className="space-y-6">
+      <div className={styles.components_list}>
         {week.components.map((component) => (
-          <div key={component.id} className="p-4 rounded-lg border border-neutral-200 dark:border-neutral-700">
+          <div key={component.id} className={styles.component_card}>
             {component.title && (
-              <h3 className="font-medium text-sm text-neutral-500 mb-2 uppercase tracking-wide">{component.title}</h3>
+              <h3 className={styles.component_title}>{component.title}</h3>
             )}
             <ComponentRenderer component={component} />
           </div>

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { CourseComponentRecord } from '@/lib/vip-course-db';
+import styles from './QuizBlockRenderer.module.css';
 
 interface QuizQuestion {
   id: string;
@@ -50,30 +51,28 @@ export default function QuizBlockRenderer({ component }: { component: CourseComp
   const passed = config.passingScore ? percentage >= config.passingScore : percentage >= 60;
 
   if (questions.length === 0) {
-    return <div className="text-neutral-500 italic">No questions</div>;
+    return <div className={styles.empty_state}>No questions</div>;
   }
 
   return (
     <div>
       {config.timeLimitMinutes && (
-        <p className="text-sm text-neutral-500 mb-3">Time limit: {config.timeLimitMinutes} minutes</p>
+        <p className={styles.time_limit}>Time limit: {config.timeLimitMinutes} minutes</p>
       )}
 
       {questions.map((q, qi) => (
-        <div key={q.id} className="mb-4 p-3 rounded border border-neutral-200 dark:border-neutral-700">
-          <p className="font-medium mb-2">{qi + 1}. {q.text}</p>
-          <div className="space-y-1">
+        <div key={q.id} className={styles.question_card}>
+          <p className={styles.question_text}>{qi + 1}. {q.text}</p>
+          <div className={styles.options_list}>
             {q.options.map((opt) => {
               const isSelected = (answers[q.id] ?? []).includes(opt.id);
-              let className = 'flex items-center gap-2 p-2 rounded border cursor-pointer transition-colors text-sm';
+              let className = styles.option;
               if (submitted) {
-                if (opt.isCorrect) className += ' border-green-500 bg-green-50 dark:bg-green-900/20';
-                else if (isSelected) className += ' border-red-400 bg-red-50 dark:bg-red-900/20';
-                else className += ' border-transparent opacity-50';
-              } else {
-                className += isSelected
-                  ? ' border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                  : ' border-neutral-200 dark:border-neutral-700 hover:border-neutral-400';
+                if (opt.isCorrect) className += ' ' + styles.option_correct;
+                else if (isSelected) className += ' ' + styles.option_incorrect;
+                else className += ' ' + styles.option_disabled;
+              } else if (isSelected) {
+                className += ' ' + styles.option_selected;
               }
               return (
                 <div key={opt.id} className={className} onClick={() => toggleAnswer(q.id, opt.id, q.allowMultiple ?? false)} role="button" tabIndex={0}>
@@ -90,13 +89,13 @@ export default function QuizBlockRenderer({ component }: { component: CourseComp
         <button
           type="button"
           onClick={handleSubmit}
-          className="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600 text-sm"
+          className={styles.submit_btn}
         >
           Submit quiz
         </button>
       ) : (
-        <div className={`p-3 rounded text-sm ${passed ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300' : 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300'}`}>
-          <p className="font-medium">{correctCount}/{total} correct ({percentage}%)</p>
+        <div className={`${styles.result_card} ${passed ? styles.result_passed : styles.result_failed}`}>
+          <p className={styles.result_title}>{correctCount}/{total} correct ({percentage}%)</p>
           {passed ? <p>Passed!</p> : <p>Score below passing threshold ({config.passingScore ?? 60}%). Try again.</p>}
         </div>
       )}

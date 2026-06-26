@@ -1,0 +1,127 @@
+.empty_state {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.time_limit {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  margin-bottom: 12px;
+}
+
+.question_card {
+  margin-bottom: 16px;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-subtle);
+}
+
+:global([data-theme="dark"]) .question_card {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.question_text {
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.options_list > * + * {
+  margin-top: 4px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-subtle);
+  cursor: pointer;
+  font-size: 0.8125rem;
+}
+
+.option:hover {
+  border-color: #a3a3a3;
+}
+
+:global([data-theme="dark"]) .option {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.option_correct {
+  border-color: #22c55e;
+  background: #f0fdf4;
+}
+
+:global([data-theme="dark"]) .option_correct {
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.option_incorrect {
+  border-color: #f87171;
+  background: #fef2f2;
+}
+
+:global([data-theme="dark"]) .option_incorrect {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.option_disabled {
+  border-color: transparent;
+  opacity: 0.5;
+}
+
+.option_selected,
+.option_selected:hover {
+  border-color: var(--color-primary);
+  background: #eff6ff;
+}
+
+:global([data-theme="dark"]) .option_selected,
+:global([data-theme="dark"]) .option_selected:hover {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.submit_btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 0.8125rem;
+  border: none;
+  cursor: pointer;
+}
+
+.submit_btn:hover {
+  background: #2563eb;
+}
+
+.result_card {
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+}
+
+.result_passed {
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+:global([data-theme="dark"]) .result_passed {
+  background: rgba(34, 197, 94, 0.1);
+  color: #86efac;
+}
+
+.result_failed {
+  background: #fffbeb;
+  color: #d97706;
+}
+
+:global([data-theme="dark"]) .result_failed {
+  background: rgba(245, 158, 11, 0.1);
+  color: #fcd34d;
+}
+
+.result_title {
+  font-weight: 500;
+}

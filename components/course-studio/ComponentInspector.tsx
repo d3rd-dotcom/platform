@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { CourseComponentRecord, ComponentType } from '@/lib/vip-course-db';
+import styles from './ComponentInspector.module.css';
 
 interface ComponentInspectorProps {
   component: CourseComponentRecord | null;
@@ -83,7 +84,7 @@ export default function ComponentInspector({ component, onUpdate, onDelete }: Co
 
   if (!component) {
     return (
-      <div className="text-neutral-400 text-sm italic p-4 text-center">
+      <div className={styles.empty}>
         Select a component to edit
       </div>
     );
@@ -129,43 +130,43 @@ export default function ComponentInspector({ component, onUpdate, onDelete }: Co
 
   return (
     <div>
-      <div className="mb-4">
-        <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-500 mb-1">Title</label>
+      <div className={styles.fieldGroup}>
+        <label className={styles.label}>Title</label>
         <input
           value={component.title}
           onChange={(e) => onUpdate(component.id, { title: e.target.value })}
-          className="w-full p-2 text-sm rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800"
+          className={styles.input}
           placeholder="Component title"
         />
       </div>
 
-      <div className="mb-4">
-        <label className="flex items-center gap-2 text-sm">
+      <div className={styles.fieldGroup}>
+        <label className={styles.checkboxLabel}>
           <input
             type="checkbox"
             checked={component.required}
             onChange={(e) => onUpdate(component.id, { required: e.target.checked })}
-            className="rounded"
+            className={styles.checkbox}
           />
           Required
         </label>
       </div>
 
-      <div className="space-y-3">
-        <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500">Config</p>
+      <div className={styles.configSection}>
+        <p className={styles.configHeading}>Config</p>
         {jsonError && (
-          <p className="text-xs text-red-500">{jsonError}</p>
+          <p className={styles.jsonError}>{jsonError}</p>
         )}
         {fields.map((field) => (
-          <label key={field.key} className="block text-sm">
-            <span className="text-neutral-600 dark:text-neutral-400 text-xs">{field.label}</span>
+          <label key={field.key} className={styles.formField}>
+            <span className={styles.formFieldLabel}>{field.label}</span>
             {field.type === 'textarea' ? (
               <textarea
                 value={getConfigValue(field.key)}
                 onChange={(e) => handleFieldChange(field.key, e.target.value, field.type)}
                 placeholder={field.placeholder}
                 rows={4}
-                className="w-full mt-1 p-2 text-sm rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 font-mono"
+                className={styles.textarea}
               />
             ) : field.type === 'json' ? (
               <textarea
@@ -173,13 +174,13 @@ export default function ComponentInspector({ component, onUpdate, onDelete }: Co
                 onChange={(e) => handleFieldChange(field.key, e.target.value, field.type)}
                 placeholder={field.placeholder}
                 rows={4}
-                className="w-full mt-1 p-2 text-sm rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 font-mono"
+                className={styles.textarea}
               />
             ) : field.type === 'select' ? (
               <select
                 value={String((component.config as Record<string, unknown>)[field.key] ?? '')}
                 onChange={(e) => handleFieldChange(field.key, e.target.value, field.type)}
-                className="w-full mt-1 p-2 text-sm rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800"
+                className={styles.select}
               >
                 <option value="">--</option>
                 {field.options?.map((opt) => (
@@ -192,18 +193,18 @@ export default function ComponentInspector({ component, onUpdate, onDelete }: Co
                 value={getConfigValue(field.key)}
                 onChange={(e) => handleFieldChange(field.key, e.target.value, field.type)}
                 placeholder={field.placeholder}
-                className="w-full mt-1 p-2 text-sm rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800"
+                className={styles.input}
               />
             )}
           </label>
         ))}
       </div>
 
-      <div className="mt-6 pt-4 border-t border-neutral-200 dark:border-neutral-700">
+      <div className={styles.deleteSection}>
         <button
           type="button"
           onClick={() => onDelete(component.id)}
-          className="w-full px-3 py-2 text-sm rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors"
+          className={styles.deleteBtn}
         >
           Delete component
         </button>

@@ -1,6 +1,7 @@
 'use client';
 
 import type { CourseComponentRecord } from '@/lib/vip-course-db';
+import styles from './ImageEmbedRenderer.module.css';
 
 interface ImageEmbedConfig {
   url?: string;
@@ -14,22 +15,22 @@ export default function ImageEmbedRenderer({ component }: { component: CourseCom
   const config = component.config as ImageEmbedConfig;
 
   if (!config.url) {
-    return <div className="text-neutral-500 italic">No image selected</div>;
+    return <div className={styles.empty_state}>No image selected</div>;
   }
 
-  const alignClass = config.alignment === 'left' ? 'mr-auto' : config.alignment === 'right' ? 'ml-auto' : 'mx-auto';
+  const alignClass = config.alignment === 'left' ? styles.align_left : config.alignment === 'right' ? styles.align_right : styles.align_center;
 
   return (
-    <figure className={`max-w-full ${alignClass}`} style={{ width: config.width ?? 'auto' }}>
+    <figure className={`${styles.figure} ${alignClass}`} style={{ width: config.width ?? 'auto' }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={config.url}
         alt={config.alt ?? ''}
-        className="rounded-lg w-full h-auto object-cover"
+        className={styles.img}
         loading="lazy"
       />
       {config.caption && (
-        <figcaption className="text-sm text-neutral-500 mt-1 text-center">{config.caption}</figcaption>
+        <figcaption className={styles.caption}>{config.caption}</figcaption>
       )}
     </figure>
   );

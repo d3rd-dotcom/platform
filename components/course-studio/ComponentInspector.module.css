@@ -1,0 +1,152 @@
+/* ── Empty state ── */
+.empty {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  font-style: italic;
+  padding: 16px;
+  text-align: center;
+}
+
+/* ── Title field ── */
+.fieldGroup {
+  margin-bottom: 16px;
+}
+
+.label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+  margin-bottom: 4px;
+}
+
+.input {
+  width: 100%;
+  padding: 8px;
+  font-size: 0.8125rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-base);
+  color: var(--color-text-dark);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.input:focus {
+  border-color: var(--color-primary);
+}
+
+.textarea {
+  width: 100%;
+  padding: 8px;
+  font-size: 0.8125rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-base);
+  color: var(--color-text-dark);
+  outline: none;
+  transition: border-color 0.15s ease;
+  resize: vertical;
+  min-height: 80px;
+  font-family: var(--font-mono, 'SF Mono', Monaco, monospace);
+}
+
+.textarea:focus {
+  border-color: var(--color-primary);
+}
+
+.select {
+  width: 100%;
+  padding: 8px;
+  font-size: 0.8125rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-base);
+  color: var(--color-text-dark);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.select:focus {
+  border-color: var(--color-primary);
+}
+
+.checkbox {
+  border-radius: 4px;
+  accent-color: var(--color-primary);
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+/* ── Config section ── */
+.configSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.configHeading {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.jsonError {
+  font-size: 0.75rem;
+  color: #ef4444;
+}
+
+.formField {
+  display: block;
+  font-size: 0.8125rem;
+}
+
+.formFieldLabel {
+  display: block;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  margin-bottom: 2px;
+}
+
+/* ── Delete button ── */
+.deleteSection {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.deleteBtn {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 0.8125rem;
+  border-radius: 8px;
+  border: none;
+  background: #ef4444;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  transition: opacity 0.15s ease;
+}
+
+.deleteBtn:hover {
+  opacity: 0.85;
+}
+
+:global([data-theme="dark"]) .input,
+:global([data-theme="dark"]) .textarea,
+:global([data-theme="dark"]) .select {
+  background: #1e1f2c;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f0f1fa;
+}

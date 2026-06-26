@@ -1,0 +1,301 @@
+/* ── Empty state ── */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--color-text-muted);
+}
+
+.emptyText {
+  font-size: 0.8125rem;
+  margin-bottom: 12px;
+}
+
+.addWeekBtn {
+  padding: 6px 14px;
+  font-size: 0.8125rem;
+  border-radius: 8px;
+  border: none;
+  background: var(--color-primary);
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.addWeekBtn:hover {
+  opacity: 0.85;
+}
+
+/* ── Week tabs ── */
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.tab {
+  padding: 6px 12px;
+  font-size: 0.8125rem;
+  border-radius: 8px;
+  border: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  font-weight: 500;
+}
+
+.tabActive {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.tabInactive {
+  background: #f0f1fa;
+  color: var(--color-text-muted);
+}
+
+.tabInactive:hover {
+  background: #e4e5f0;
+}
+
+.addTab {
+  padding: 6px 8px;
+  font-size: 0.8125rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  background: transparent;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.addTab:hover {
+  color: var(--color-text-dark);
+  background: #f0f1fa;
+}
+
+:global([data-theme="dark"]) .tabInactive {
+  background: #2a2b3a;
+  color: #9aa0c0;
+}
+
+:global([data-theme="dark"]) .tabInactive:hover {
+  background: #35364a;
+}
+
+:global([data-theme="dark"]) .addTab:hover {
+  color: #f0f1fa;
+  background: #2a2b3a;
+}
+
+/* ── Week editor (title + theme inputs) ── */
+.weekEditor {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.weekInput {
+  flex: 1;
+  padding: 8px;
+  font-size: 0.8125rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-base);
+  color: var(--color-text-dark);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.weekInput:focus {
+  border-color: var(--color-primary);
+}
+
+.weekInput::placeholder {
+  color: var(--color-text-muted);
+}
+
+:global([data-theme="dark"]) .weekInput {
+  background: #1e1f2c;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f0f1fa;
+}
+
+/* ── Drop zone ── */
+.dropZone {
+  min-height: 120px;
+  border-radius: 12px;
+  border: 2px dashed var(--color-border-subtle);
+  transition: border-color 0.2s ease, background 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  background: color-mix(in oklch, var(--color-primary) 2%, transparent);
+}
+
+.dropZoneOver {
+  border-color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  border-style: solid;
+}
+
+.dropZoneEmpty {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: 48px 0;
+  font-style: italic;
+}
+
+/* ── WYSIWYG component card ── */
+.component {
+  border-radius: 12px;
+  border: 2px solid var(--color-border-subtle);
+  overflow: hidden;
+  background: var(--color-surface-base);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.component:hover {
+  border-color: var(--color-text-muted);
+}
+
+.componentSelected {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary), 0 8px 24px color-mix(in oklch, var(--color-primary) 20%, transparent);
+}
+
+.componentDragging {
+  opacity: 0.4;
+}
+
+/* ── Toolbar (color-coded by type) ── */
+.componentToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  color: #fff;
+  font-size: 0.7rem;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.toolbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.dragHandle {
+  cursor: grab;
+  font-size: 0.8rem;
+  letter-spacing: -0.04em;
+  opacity: 0.7;
+  padding: 0 2px;
+  transition: opacity 0.15s ease;
+}
+
+.dragHandle:hover {
+  opacity: 1;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.toolbarIcon {
+  font-size: 0.85rem;
+  line-height: 1;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+.toolbarType {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.9;
+}
+
+.toolbarTitle {
+  opacity: 0.8;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+}
+
+.toolbarRight {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.requiredBadge {
+  font-size: 0.55rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.deleteBtn {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: none;
+  background: rgba(0, 0, 0, 0.15);
+  color: #fff;
+  font-size: 0.6rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s ease, background 0.15s ease;
+  line-height: 1;
+}
+
+.component:hover .deleteBtn {
+  opacity: 1;
+}
+
+.deleteBtn:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* ── WYSIWYG preview area ── */
+.componentPreview {
+  padding: 16px 20px;
+  cursor: default;
+}
+
+.componentPreview > * {
+  max-width: 100%;
+}
+
+:global([data-theme="dark"]) .component {
+  background: #1e1f2c;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .componentSelected {
+  border-color: var(--color-primary);
+}
+
+:global([data-theme="dark"]) .dropZoneOver {
+  background: rgba(81, 104, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .dropZone {
+  background: color-mix(in oklch, var(--color-primary) 3%, transparent);
+}

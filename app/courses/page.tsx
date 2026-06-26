@@ -56,6 +56,19 @@ export default function CoursesPage() {
 
   useEffect(() => onPersonalCourseUpdated(loadPersonalCourse), [loadPersonalCourse]);
 
+  if (studioOpen) {
+    return (
+      <CourseStudioModal
+        authHeaders={authHeaders}
+        onClose={() => setStudioOpen(false)}
+        onCourseCreated={() => {
+          setStudioOpen(false);
+          loadPersonalCourse();
+        }}
+      />
+    );
+  }
+
   return (
     <div className={styles.layout}>
       <SideNavigation />
@@ -109,17 +122,6 @@ export default function CoursesPage() {
 
         </div>
       </main>
-
-      {studioOpen && (
-        <CourseStudioModal
-          authHeaders={authHeaders}
-          onClose={() => setStudioOpen(false)}
-          onCourseCreated={() => {
-            setStudioOpen(false);
-            loadPersonalCourse();
-          }}
-        />
-      )}
     </div>
   );
 }

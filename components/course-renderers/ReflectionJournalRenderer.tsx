@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import type { CourseComponentRecord } from '@/lib/vip-course-db';
+import styles from './ReflectionJournalRenderer.module.css';
 
 interface ReflectionJournalConfig {
   prompt?: string;
@@ -31,18 +32,18 @@ export default function ReflectionJournalRenderer({ component }: { component: Co
 
   return (
     <div>
-      {config.prompt && <p className="font-medium mb-2">{config.prompt}</p>}
+      {config.prompt && <p className={styles.prompt}>{config.prompt}</p>}
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
-        className="w-full p-3 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 min-h-[120px] resize-y"
+        className={styles.textarea}
         placeholder="Write your reflection..."
       />
-      <div className="flex items-center justify-between mt-1 text-sm text-neutral-500">
-        <span className={!meetsMin && text.length > 0 ? 'text-amber-500' : ''}>
+      <div className={styles.footer}>
+        <span className={!meetsMin && text.length > 0 ? styles.word_count_warning : ''}>
           {wordCount} / {minWords} words {minWords > 0 && (meetsMin ? '✓' : '(minimum)')}
         </span>
-        {saved && <span className="text-green-500">Saved</span>}
+        {saved && <span className={styles.saved_text}>Saved</span>}
       </div>
     </div>
   );

@@ -5,7 +5,8 @@ import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import { useAccount } from 'wagmi';
 import { providers, Contract } from 'ethers';
-import { CaretLeft, CaretRight, X } from '@phosphor-icons/react';
+import { useRouter } from 'next/navigation';
+import { CaretLeft, CaretRight, Robot, X } from '@phosphor-icons/react';
 import styles from './TopNavProfileButton.module.css';
 
 const CONTRACT_ADDRESS =
@@ -43,6 +44,7 @@ function dateKey(d: Date) {
 function truncateAddr(addr: string) { return `${addr.slice(0, 6)}...${addr.slice(-4)}`; }
 
 export default function TopNavProfileButton() {
+  const router = useRouter();
   const { authenticated, getAccessToken } = usePrivy();
   const { address } = useAccount();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -291,9 +293,19 @@ export default function TopNavProfileButton() {
           </button>
         </div>
 
-        <div className={styles.drawerBody}>
-          {/* Inventory */}
-          <div className={styles.inventory}>
+          <div className={styles.drawerBody}>
+            {/* Agent nav */}
+            <button
+              type="button"
+              className={styles.agentNavBtn}
+              onClick={() => { setDrawerOpen(false); router.push('/agents'); }}
+            >
+              <Robot size={16} weight="fill" />
+              <span>Enter as Agent</span>
+            </button>
+
+            {/* Inventory */}
+            <div className={styles.inventory}>
             <div className={styles.shardsRow}>
               <div className={styles.shardsLeft}>
                 <Image src="/icons/ui-diamond.svg" alt="" width={28} height={28} className={styles.shardsIcon} />

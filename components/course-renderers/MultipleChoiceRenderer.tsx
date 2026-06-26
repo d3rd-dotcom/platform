@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { CourseComponentRecord } from '@/lib/vip-course-db';
+import styles from './MultipleChoiceRenderer.module.css';
 
 interface MultipleChoiceConfig {
   question?: string;
@@ -28,19 +29,19 @@ export default function MultipleChoiceRenderer({ component }: { component: Cours
 
   return (
     <div>
-      {config.question && <p className="font-medium mb-2">{config.question}</p>}
-      <div className="space-y-1">
+      {config.question && <p className={styles.question_text}>{config.question}</p>}
+      <div className={styles.options_list}>
         {options.map((opt) => {
           const isSelected = selected.includes(opt.id);
-          let className = 'flex items-center gap-2 p-2 rounded border cursor-pointer transition-colors';
+          let className = styles.option;
           if (showResults) {
-            if (opt.isCorrect) className += ' border-green-500 bg-green-50 dark:bg-green-900/20';
-            else if (isSelected) className += ' border-red-400 bg-red-50 dark:bg-red-900/20';
-            else className += ' border-neutral-200 dark:border-neutral-700 opacity-60';
+            if (opt.isCorrect) className += ' ' + styles.option_correct;
+            else if (isSelected) className += ' ' + styles.option_incorrect;
+            else className += ' ' + styles.option_disabled;
           } else {
             className += isSelected
-              ? ' border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-              : ' border-neutral-200 dark:border-neutral-700 hover:border-neutral-400';
+              ? ' ' + styles.option_selected
+              : ' ' + styles.option_unselected;
           }
           return (
             <div key={opt.id} className={className} onClick={() => toggle(opt.id)} role="button" tabIndex={0}>
@@ -53,7 +54,7 @@ export default function MultipleChoiceRenderer({ component }: { component: Cours
       {config.showFeedback && options.length > 0 && (
         <button
           type="button"
-          className="mt-2 px-3 py-1 text-sm rounded bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300"
+          className={styles.submit_btn}
           onClick={() => setShowResults(true)}
         >
           Check answers

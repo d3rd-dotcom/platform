@@ -1,0 +1,63 @@
+.dropzone {
+  border: 2px dashed var(--color-border-subtle);
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.dropzone_active {
+  border-color: var(--color-primary);
+  background: #eff6ff;
+}
+
+:global([data-theme="dark"]) .dropzone_active {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.dropzone_inactive {
+  border-color: var(--color-border-subtle);
+}
+
+:global([data-theme="dark"]) .dropzone_inactive {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dropzone_inactive:hover {
+  border-color: #a3a3a3;
+}
+
+.dropzone_text {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.hint_text {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+
+.file_input {
+  display: none;
+}
+
+.file_list {
+  margin-top: 8px;
+}
+
+.file_list > * + * {
+  margin-top: 4px;
+}
+
+.file_item {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.file_size {
+  color: var(--color-text-muted);
+}

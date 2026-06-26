@@ -1,6 +1,7 @@
 'use client';
 
 import type { CourseComponentRecord } from '@/lib/vip-course-db';
+import styles from './RichTextRenderer.module.css';
 
 interface RichTextConfig {
   content?: string;
@@ -12,7 +13,7 @@ export default function RichTextRenderer({ component }: { component: CourseCompo
   const content = config.content ?? '';
 
   if (!content) {
-    return <div className="text-neutral-500 italic">No content</div>;
+    return <div className={styles.empty_state}>No content</div>;
   }
 
   if (config.format === 'html') {
@@ -20,11 +21,11 @@ export default function RichTextRenderer({ component }: { component: CourseCompo
   }
 
   return (
-    <div className="prose prose-neutral dark:prose-invert max-w-none">
+    <div className={styles.prose_container}>
       {content.split('\n').map((line, i) => {
         if (line.startsWith('## ')) return <h2 key={i}>{line.slice(3)}</h2>;
         if (line.startsWith('# ')) return <h1 key={i}>{line.slice(2)}</h1>;
-        if (line.startsWith('- ')) return <li key={i} className="ml-4">{line.slice(2)}</li>;
+        if (line.startsWith('- ')) return <li key={i} className={styles.list_item}>{line.slice(2)}</li>;
         if (line.trim() === '') return <br key={i} />;
         return <p key={i}>{line}</p>;
       })}

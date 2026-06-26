@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import type { CourseComponentRecord } from '@/lib/vip-course-db';
+import styles from './ComponentRenderer.module.css';
 
 // Lazy-load each renderer so only the needed one is fetched
 const RichTextRenderer = dynamic(() => import('./RichTextRenderer'), { ssr: false });
@@ -18,7 +19,7 @@ const MarkdownFileRenderer = dynamic(() => import('./MarkdownFileRenderer'), { s
 
 function UnknownRenderer({ component }: { component: CourseComponentRecord }) {
   return (
-    <div className="p-3 rounded border border-amber-300 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 text-sm">
+    <div className={styles.unknown_warning}>
       Unknown component type: <code>{component.componentType}</code>
     </div>
   );

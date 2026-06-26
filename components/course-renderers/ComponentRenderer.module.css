@@ -1,0 +1,13 @@
+.unknown_warning {
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #fcd34d;
+  background: #fffbeb;
+  color: #d97706;
+  font-size: 0.8125rem;
+}
+
+:global([data-theme="dark"]) .unknown_warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: #fcd34d;
+}

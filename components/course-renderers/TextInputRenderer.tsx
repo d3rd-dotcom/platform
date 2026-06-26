@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { CourseComponentRecord } from '@/lib/vip-course-db';
+import styles from './TextInputRenderer.module.css';
 
 interface TextInputConfig {
   placeholder?: string;
@@ -32,7 +33,7 @@ export default function TextInputRenderer({ component }: { component: CourseComp
           maxLength={maxLength}
           required={config.validation?.required}
           pattern={config.validation?.pattern}
-          className="w-full p-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800"
+          className={styles.input}
         />
       ) : (
         <input
@@ -43,7 +44,7 @@ export default function TextInputRenderer({ component }: { component: CourseComp
           min={config.validation?.min}
           max={config.validation?.max}
           required={config.validation?.required}
-          className="w-full p-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800"
+          className={styles.input}
         />
       )}
     </div>

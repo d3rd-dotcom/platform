@@ -1,0 +1,40 @@
+.rating_container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rating_btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+}
+
+.rating_btn_active {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.rating_btn_inactive {
+  background: #f0f1fa;
+  color: var(--color-text-muted);
+}
+
+.rating_btn_inactive:hover {
+  background: #d4d4d4;
+}
+
+:global([data-theme="dark"]) .rating_btn_inactive {
+  background: #1e1f2c;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.label_text {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}

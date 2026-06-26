@@ -1,6 +1,7 @@
 'use client';
 
 import type { CourseComponentRecord } from '@/lib/vip-course-db';
+import styles from './VideoEmbedRenderer.module.css';
 
 interface VideoEmbedConfig {
   url?: string;
@@ -34,26 +35,26 @@ export default function VideoEmbedRenderer({ component }: { component: CourseCom
   const config = component.config as VideoEmbedConfig;
 
   if (!config.url) {
-    return <div className="text-neutral-500 italic">No video URL</div>;
+    return <div className={styles.empty_state}>No video URL</div>;
   }
 
   const embedUrl = getEmbedUrl(config.url, config.provider) ?? config.url;
 
   return (
     <div>
-      <div className="aspect-video rounded-lg overflow-hidden bg-black">
+      <div className={styles.video_wrapper}>
         <iframe
           src={embedUrl}
-          className="w-full h-full"
+          className={styles.iframe}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
           title={component.title}
         />
       </div>
       {config.transcript && (
-        <details className="mt-2">
-          <summary className="text-sm cursor-pointer text-neutral-500 hover:text-neutral-700">Transcript</summary>
-          <p className="text-sm text-neutral-600 mt-1 whitespace-pre-wrap">{config.transcript}</p>
+        <details className={styles.transcript_details}>
+          <summary className={styles.summary}>Transcript</summary>
+          <p className={styles.transcript_text}>{config.transcript}</p>
         </details>
       )}
     </div>

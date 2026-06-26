@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import SideNavigation from '@/components/side-navigation/SideNavigation';
+import styles from './CourseStudioModal.module.css';
 import {
   DndContext,
   DragOverlay,
@@ -17,7 +19,21 @@ import WeekCanvas from './WeekCanvas';
 import ComponentInspector from './ComponentInspector';
 import type { VipCourseFull, CourseComponentRecord, ComponentType } from '@/lib/vip-course-db';
 
-interface CourseStudioModalProps {
+const PALETTE_ICONS: Record<ComponentType, string> = {
+  rich_text: '📖',
+  multiple_choice: '🚪',
+  dropdown: '⬇️',
+  image_embed: '🖼️',
+  video_embed: '💎',
+  file_upload: '📦',
+  text_input: '⌨️',
+  rating_scale: '⭐',
+  reflection_journal: '✍️',
+  quiz_block: '❓',
+  markdown_file: '📄',
+};
+
+interface CourseStudioProps {
   authHeaders: () => Promise<HeadersInit>;
   onClose: () => void;
   onCourseCreated: () => void;
@@ -55,7 +71,7 @@ export default function CourseStudioModal({
   onClose,
   onCourseCreated,
   existingCourseId,
-}: CourseStudioModalProps) {
+}: CourseStudioProps) {
   const [phase, setPhase] = useState<'loading' | 'edit' | 'saving'>('loading');
   const [courseId, setCourseId] = useState<string | null>(existingCourseId ?? null);
   const [title, setTitle] = useState('');
@@ -67,6 +83,7 @@ export default function CourseStudioModal({
   const [activeDragItem, setActiveDragItem] = useState<{ type: ComponentType } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [dirty, setDirty] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(true);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -113,7 +130,6 @@ export default function CourseStudioModal({
     setDirty(true);
   };
 
-  // Generate a temporary ID for new components on the client
   const tempId = () => `new-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
   const addComponentToWeek = (weekId: string, type: ComponentType, config?: Record<string, unknown>) => {
@@ -179,13 +195,11 @@ export default function CourseStudioModal({
     const activeData = active.data.current;
     const overData = over.data.current;
 
-    // Dragging from palette onto a week drop zone
     if (activeData?.source === 'palette' && overData?.weekId) {
       addComponentToWeek(overData.weekId, activeData.type as ComponentType);
       return;
     }
 
-    // Dragging from palette onto a component (add to that component's week)
     if (activeData?.source === 'palette' && overData?.type) {
       const targetWeek = weeks.find((w) => w.components.some((c) => c.id === over.id));
       if (targetWeek) {
@@ -194,7 +208,6 @@ export default function CourseStudioModal({
       return;
     }
 
-    // Reordering within a week
     const activeWeek = weeks.find((w) => w.components.some((c) => c.id === active.id));
     const overWeek = weeks.find((w) => w.components.some((c) => c.id === over.id));
 
@@ -222,14 +235,12 @@ export default function CourseStudioModal({
       const headers = await authHeaders();
 
       if (courseId) {
-        // Update existing course
         await fetch(`/api/vip/courses/${courseId}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json', ...headers },
           body: JSON.stringify({ title: title.trim(), slug: slug.trim(), focus: focus.trim() }),
         });
       } else {
-        // Create new course
         const slugVal = slug.trim() || title.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
         const res = await fetch('/api/vip/courses', {
           method: 'POST',
@@ -250,54 +261,77 @@ export default function CourseStudioModal({
 
   if (phase === 'loading') {
     return (
-      <Overlay onClose={onClose}>
-        <div className="flex items-center justify-center h-full text-neutral-400">Loading...</div>
-      </Overlay>
+      <div className={styles.layout}>
+        <SideNavigation />
+        <div className={styles.loading}>Loading...</div>
+      </div>
     );
   }
 
   return (
-    <Overlay onClose={onClose}>
+    <div className={styles.layout}>
+      <SideNavigation />
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="flex flex-col h-full">
+        <div className={styles.body}>
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-3 border-b border-neutral-200 dark:border-neutral-700 shrink-0">
-            <div className="flex items-center gap-3 flex-1 min-w-0">
-              <input
-                value={title}
-                onChange={(e) => { setTitle(e.target.value); setDirty(true); }}
-                placeholder="Course title"
-                className="text-lg font-bold bg-transparent border-none outline-none w-full placeholder-neutral-400"
-              />
-              <span className="text-xs text-neutral-400 shrink-0">{weeks.length} week(s)</span>
+          <div className={styles.header}>
+            <div className={styles.headerLeft}>
+              <button
+                type="button"
+                onClick={onClose}
+                className={styles.backBtn}
+                title="Back to courses"
+              >
+                ←
+              </button>
+              <div className={styles.headerMeta}>
+                <input
+                  value={title}
+                  onChange={(e) => { setTitle(e.target.value); setDirty(true); }}
+                  placeholder="Course title"
+                  className={styles.titleInput}
+                />
+                <span className={styles.weekCount}>{weeks.length} week(s)</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2 shrink-0">
-              {error && <span className="text-sm text-red-500">{error}</span>}
+            <div className={styles.headerActions}>
+              {error && <span className={styles.errorText}>{error}</span>}
+              <span className={styles.dirtyDot} data-visible={dirty ? '' : undefined} />
               <button
                 type="button"
                 onClick={saveCourse}
                 disabled={phase === 'saving' || !title.trim()}
-                className="px-4 py-1.5 text-sm rounded-lg bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-40"
+                className={styles.saveBtn}
               >
-                {phase === 'saving' ? 'Saving...' : courseId ? 'Save' : 'Create course'}
+                {phase === 'saving' ? 'Saving...' : courseId ? 'Save' : 'Create'}
               </button>
             </div>
           </div>
 
           {/* 3-column body */}
-          <div className="flex flex-1 overflow-hidden">
-            {/* Left: Palette */}
-            <aside className="w-48 shrink-0 p-4 border-r border-neutral-200 dark:border-neutral-700 overflow-y-auto">
-              <ComponentPalette />
+          <div className={styles.columns}>
+            {/* Left: collapsible palette drawer */}
+            <aside className={styles.paletteColumn}>
+              <div className={`${styles.paletteDrawer} ${drawerOpen ? '' : styles.paletteClosed}`}>
+                <ComponentPalette />
+              </div>
+              <button
+                type="button"
+                className={styles.drawerToggle}
+                onClick={() => setDrawerOpen((o) => !o)}
+                title={drawerOpen ? 'Close item shop' : 'Open item shop'}
+              >
+                {drawerOpen ? '◀' : '▶'}
+              </button>
             </aside>
 
-            {/* Center: Canvas */}
-            <main className="flex-1 p-4 overflow-y-auto">
+            {/* Center: Canvas with WYSIWYG */}
+            <main className={styles.canvas}>
               <WeekCanvas
                 weeks={weeks}
                 selectedWeek={selectedWeekId}
@@ -306,41 +340,39 @@ export default function CourseStudioModal({
                 selectedComponentId={selectedComponentId}
                 onAddWeek={addWeek}
                 onUpdateWeek={updateWeek}
+                onDeleteComponent={deleteComponent}
               />
             </main>
 
-            {/* Right: Inspector */}
-            <aside className="w-72 shrink-0 p-4 border-l border-neutral-200 dark:border-neutral-700 overflow-y-auto">
-              <ComponentInspector
-                component={selectedComponent}
-                onUpdate={updateComponent}
-                onDelete={deleteComponent}
-              />
-            </aside>
+            {/* Right: Inspector as overlay card */}
+            {selectedComponent && (
+              <div className={styles.inspectorOverlay}>
+                <div className={styles.inspectorBackdrop} onClick={() => setSelectedComponentId(null)} />
+                <aside className={styles.inspectorCard}>
+                  <ComponentInspector
+                    component={selectedComponent}
+                    onUpdate={updateComponent}
+                    onDelete={deleteComponent}
+                  />
+                </aside>
+              </div>
+            )}
           </div>
         </div>
 
         <DragOverlay>
           {activeDragItem && (
-            <div className="p-2 rounded-lg bg-blue-500 text-white text-sm shadow-lg">
-              + {activeDragItem.type.replace(/_/g, ' ')}
+            <div className={styles.dragOverlay}>
+              <span className={styles.dragOverlayIcon}>
+                {PALETTE_ICONS[activeDragItem.type] ?? '❓'}
+              </span>
+              <span className={styles.dragOverlayLabel}>
+                + {activeDragItem.type.replace(/_/g, ' ')}
+              </span>
             </div>
           )}
         </DragOverlay>
       </DndContext>
-    </Overlay>
-  );
-}
-
-function Overlay({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
-  return (
-    <div className="fixed inset-0 z-50 flex">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      {/* Modal */}
-      <div className="relative w-full h-full max-w-[1400px] mx-auto flex flex-col bg-white dark:bg-neutral-900 shadow-2xl">
-        {children}
-      </div>
     </div>
   );
 }

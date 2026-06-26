@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { CourseComponentRecord } from '@/lib/vip-course-db';
+import styles from './DropdownRenderer.module.css';
 
 interface DropdownConfig {
   label?: string;
@@ -17,11 +18,11 @@ export default function DropdownRenderer({ component }: { component: CourseCompo
 
   return (
     <div>
-      {config.label && <label className="block font-medium mb-1">{config.label}</label>}
+      {config.label && <label className={styles.label}>{config.label}</label>}
       <select
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        className="w-full p-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800"
+        className={styles.select}
         required={config.required}
       >
         <option value="" disabled>{config.placeholder ?? 'Select...'}</option>
