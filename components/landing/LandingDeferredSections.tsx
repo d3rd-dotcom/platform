@@ -27,6 +27,10 @@ const PatternTextSection = dynamic(() =>
   import('./PatternTextSection').then((mod) => mod.PatternTextSection),
   { ssr: false }
 );
+const MagazineSection = dynamic(() =>
+  import('./MagazineSection').then((mod) => mod.MagazineSection),
+  { ssr: false }
+);
 const FAQSection = dynamic(() =>
   import('./FAQSection').then((mod) => mod.FAQSection),
   { ssr: false }
@@ -62,6 +66,7 @@ export function LandingDeferredSections() {
       <FounderSection />
       <TestimonialSection />
       <KeyFiguresSection />
+      <MagazineSection />
       <CohortSection />
       <PatternTextSection />
       <FAQSection />

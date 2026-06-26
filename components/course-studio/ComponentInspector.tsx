@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { CourseComponentRecord, ComponentType } from '@/lib/vip-course-db';
 import styles from './ComponentInspector.module.css';
 
@@ -81,6 +81,13 @@ const CONFIG_FIELDS: Record<ComponentType, Array<{
 export default function ComponentInspector({ component, onUpdate, onDelete }: ComponentInspectorProps) {
   const [localConfig, setLocalConfig] = useState<Record<string, string>>({});
   const [jsonError, setJsonError] = useState<string | null>(null);
+
+  const componentId = component?.id;
+  useEffect(() => {
+    if (!componentId) return;
+    setLocalConfig({});
+    setJsonError(null);
+  }, [componentId]);
 
   if (!component) {
     return (
@@ -178,7 +185,7 @@ export default function ComponentInspector({ component, onUpdate, onDelete }: Co
               />
             ) : field.type === 'select' ? (
               <select
-                value={String((component.config as Record<string, unknown>)[field.key] ?? '')}
+                value={getConfigValue(field.key)}
                 onChange={(e) => handleFieldChange(field.key, e.target.value, field.type)}
                 className={styles.select}
               >

@@ -7,6 +7,7 @@ import {
   DndContext,
   DragOverlay,
   closestCenter,
+  pointerWithin,
   PointerSensor,
   useSensor,
   useSensors,
@@ -14,6 +15,12 @@ import {
   type DragEndEvent,
 } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
+
+function collisionFallback(args: Parameters<typeof closestCenter>[0]) {
+  const pointerHits = pointerWithin(args);
+  if (pointerHits.length > 0) return pointerHits;
+  return closestCenter(args);
+}
 import ComponentPalette from './ComponentPalette';
 import WeekCanvas from './WeekCanvas';
 import ComponentInspector from './ComponentInspector';
@@ -200,22 +207,50 @@ export default function CourseStudioModal({
     const { active, over } = event;
     if (!over) return;
 
-    const activeData = active.data.current;
-    const overData = over.data.current;
+    // ── Palette → canvas drop ──
+    if (active.data.current?.source === 'palette') {
+      const compType = active.data.current.type as ComponentType;
+      const overData = over.data.current;
 
-    if (activeData?.source === 'palette' && overData?.weekId) {
-      addComponentToWeek(overData.weekId, activeData.type as ComponentType);
-      return;
-    }
+      // 1) Dropped directly on a week droppable
+      if (overData?.weekId) {
+        addComponentToWeek(overData.weekId, compType);
+        return;
+      }
 
-    if (activeData?.source === 'palette' && overData?.type) {
-      const targetWeek = weeks.find((w) => w.components.some((c) => c.id === over.id));
-      if (targetWeek) {
-        addComponentToWeek(targetWeek.id, activeData.type as ComponentType);
+      // 2) Dropped on a sortable component → find its week
+      if (overData?.type || overData?.source === 'canvas') {
+        const targetWeek = weeks.find((w) => w.components.some((c) => c.id === over.id));
+        if (targetWeek) {
+          addComponentToWeek(targetWeek.id, compType);
+          return;
+        }
+      }
+
+      // 3) Fallback: over.id might be a week id prefixed with "week-"
+      if (typeof over.id === 'string' && over.id.startsWith('week-')) {
+        const weekId = over.id.slice(5);
+        if (weeks.some((w) => w.id === weekId)) {
+          addComponentToWeek(weekId, compType);
+          return;
+        }
+      }
+
+      // 4) Last resort: try to match over.id to any week or component
+      const byWeek = weeks.find((w) => w.id === over.id);
+      if (byWeek) {
+        addComponentToWeek(byWeek.id, compType);
+        return;
+      }
+      const byComponent = weeks.find((w) => w.components.some((c) => c.id === over.id));
+      if (byComponent) {
+        addComponentToWeek(byComponent.id, compType);
+        return;
       }
       return;
     }
 
+    // ── Sortable reorder (canvas → canvas) ──
     const activeWeek = weeks.find((w) => w.components.some((c) => c.id === active.id));
     const overWeek = weeks.find((w) => w.components.some((c) => c.id === over.id));
 
@@ -281,7 +316,7 @@ export default function CourseStudioModal({
       <SideNavigation />
       <DndContext
         sensors={sensors}
-        collisionDetection={closestCenter}
+          collisionDetection={collisionFallback}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
@@ -361,6 +396,7 @@ export default function CourseStudioModal({
                 <div className={styles.inspectorBackdrop} onClick={() => setSelectedComponentId(null)} />
                 <aside className={styles.inspectorCard}>
                   <ComponentInspector
+                    key={selectedComponentId}
                     component={selectedComponent}
                     onUpdate={updateComponent}
                     onDelete={deleteComponent}
