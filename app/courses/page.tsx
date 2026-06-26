@@ -5,30 +5,32 @@ import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
 import { BookOpen, Sparkle } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
+import CourseStudioModal from '@/components/course-studio/CourseStudioModal';
 import type { CourseData } from '@/lib/personal-course';
 import { onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
 import styles from './page.module.css';
 
 function getCourseEndDate() {
   const d = new Date();
-  d.setDate(d.getDate() + 84); // 12 weeks
+  d.setDate(d.getDate() + 84);
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
 function getPersonalEndDate() {
   const d = new Date();
-  d.setDate(d.getDate() + 28); // 4 weeks
+  d.setDate(d.getDate() + 28);
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-}
-
-function openCourseBuilder() {
-  (window as Window & { __blueCourseBuilderOnOpen?: boolean }).__blueCourseBuilderOnOpen = true;
-  window.dispatchEvent(new Event('toggleBlueChat'));
 }
 
 export default function CoursesPage() {
   const { ready, getAccessToken } = usePrivy();
   const [personalCourse, setPersonalCourse] = useState<CourseData | null>(null);
+  const [studioOpen, setStudioOpen] = useState(false);
+
+  const authHeaders = useCallback(async (): Promise<HeadersInit> => {
+    const token = await getAccessToken();
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  }, [getAccessToken]);
 
   const loadPersonalCourse = useCallback(async () => {
     try {
@@ -52,8 +54,6 @@ export default function CoursesPage() {
     loadPersonalCourse();
   }, [ready, loadPersonalCourse]);
 
-  // Courses created or deleted anywhere — Blue's chat, the course page,
-  // another tab — must appear/disappear here without a manual refresh.
   useEffect(() => onPersonalCourseUpdated(loadPersonalCourse), [loadPersonalCourse]);
 
   return (
@@ -97,7 +97,7 @@ export default function CoursesPage() {
             </Link>
           )}
 
-          <button type="button" onClick={openCourseBuilder} className={styles.buildCard}>
+          <button type="button" onClick={() => setStudioOpen(true)} className={styles.buildCard}>
             <div className={styles.buildIcon}>
               <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="48" height="48">
                 <rect x="1" y="1" width="46" height="46" rx="11" stroke="currentColor" strokeWidth="2" />
@@ -109,6 +109,17 @@ export default function CoursesPage() {
 
         </div>
       </main>
+
+      {studioOpen && (
+        <CourseStudioModal
+          authHeaders={authHeaders}
+          onClose={() => setStudioOpen(false)}
+          onCourseCreated={() => {
+            setStudioOpen(false);
+            loadPersonalCourse();
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -16,7 +16,6 @@ import AutoDistributionInline from './AutoDistributionInline';
 import type { AutoDistributionRequest } from './AutoDistributionInline';
 import QuestForgeInline from './QuestForgeInline';
 import type { QuestForgeDraft, QuestForgeRequest } from './QuestForgeInline';
-import CourseBuilderInline from './CourseBuilderInline';
 import { sendUsdcOnBase, type Eip1193Provider } from '@/lib/usdc-base-transfer';
 import { broadcastPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
 
@@ -241,7 +240,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const [questDraft, setQuestDraft] = useState<QuestForgeDraft | null>(null);
   const [questDraftNonce, setQuestDraftNonce] = useState(0);
   const [questForgeBusy, setQuestForgeBusy] = useState(false);
-  const [courseBuilderVisible, setCourseBuilderVisible] = useState(false);
   const [pendingCourseDelete, setPendingCourseDelete] = useState<string | null>(null);
   const [autoDistributionXConnection, setAutoDistributionXConnection] = useState<AutoDistributionXConnection>({
     loading: false,
@@ -367,26 +365,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       fetchTreasuryContext();
       fetchShardCount();
       fetchVipStatus();
-      // Course builder triggered from /courses page before BlueChat mounted
-      if (typeof window !== 'undefined' && (window as Window & { __blueCourseBuilderOnOpen?: boolean }).__blueCourseBuilderOnOpen) {
-        (window as Window & { __blueCourseBuilderOnOpen?: boolean }).__blueCourseBuilderOnOpen = false;
-        // Course creation is a VIP-membership perk. Confirm holdings fresh —
-        // isVipMember state may not have settled on this first open.
-        (async () => {
-          const holds = await fetchVipStatus();
-          if (!holds) {
-            addBlueMessage("building a course is a VIP membership perk. grab a membership card and i'll design a 4-week course around any goal you bring me.");
-            setShowMembershipModal(true);
-            return;
-          }
-          setResearchMode(false);
-          setAutoDistributionVisible(false);
-          setTimeManagementVisible(false);
-          setQuestForgeVisible(false);
-          setCourseBuilderVisible(true);
-          addBlueMessage("what do you want to learn? fill in the topic below — i'll design a 4-week course around it.");
-        })();
-      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, fetchTreasuryContext, fetchShardCount, fetchVipStatus]);
@@ -864,7 +842,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     setResearchMode(false);
     setAutoDistributionVisible(false);
     setTimeManagementVisible(false);
-    setCourseBuilderVisible(false);
     setPendingAttachments([]);
   };
 
@@ -1573,19 +1550,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             creditBalance={shardCount}
             onSubmit={submitQuestForge}
             onClose={() => { setQuestForgeVisible(false); setQuestDraft(null); }}
-          />
-        )}
-
-        {courseBuilderVisible && (
-          <CourseBuilderInline
-            authHeaders={authHeaders}
-            onPlay={play}
-            onClose={() => setCourseBuilderVisible(false)}
-            onCourseCreated={() => {
-              setCourseBuilderVisible(false);
-              broadcastPersonalCourseUpdated();
-              addBlueMessage("done. your 4-week course is live on the Courses page whenever you want to start week one.");
-            }}
           />
         )}
 

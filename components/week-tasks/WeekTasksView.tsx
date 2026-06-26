@@ -6,9 +6,8 @@ import dynamic from 'next/dynamic';
 import { usePrivy } from '@privy-io/react-auth';
 import styles from './WeekTasksView.module.css';
 import jStyles from '@/components/accordion-journal/AccordionJournalCard.module.css';
-import { weekSectionsMap } from '@/components/accordion-journal/weekSections';
-import { week1Sections, week2Sections } from '@/components/accordion-journal/AccordionJournalCard';
-import type { JournalSection } from '@/components/accordion-journal/AccordionJournalCard';
+import { useCourseSections } from '@/lib/vip-course-legacy';
+import type { JournalSection } from '@/lib/vip-course-legacy';
 import { useSound } from '@/hooks/useSound';
 
 // Reward overlays shared with the Morning Pages flow, so sealing a week
@@ -102,8 +101,8 @@ export default function WeekTasksView({
   syncedCompletedSections,
   disableAutoSave = false,
 }: WeekTasksViewProps) {
-  const journalSections: JournalSection[] =
-    weekSectionsMap[weekNumber] || (weekNumber === 2 ? week2Sections : week1Sections);
+  const { sections: fetchedSections, loading: sectionsLoading } = useCourseSections('creative-healing', weekNumber);
+  const journalSections: JournalSection[] = fetchedSections || [];
   const weekColor = WEEK_COLORS[weekNumber] || '#5168FF';
 
   const { play } = useSound();
@@ -589,7 +588,7 @@ export default function WeekTasksView({
     }
   };
 
-  if (isLoading) {
+  if (isLoading || sectionsLoading) {
     return (
       <div className={styles.loading}>
         <div className={styles.loadingDot} />

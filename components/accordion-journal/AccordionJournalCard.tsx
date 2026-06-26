@@ -5,7 +5,8 @@ import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import styles from './AccordionJournalCard.module.css';
-import { weekSectionsMap } from './weekSections';
+import { useCourseSections } from '@/lib/vip-course-legacy';
+import type { JournalSection } from '@/lib/vip-course-legacy';
 import { useSound } from '@/hooks/useSound';
 import LetterModal from './LetterModal';
 
@@ -41,219 +42,7 @@ interface SealAttestation {
   attester: 'blue';
 }
 
-export interface JournalSection {
-  id: string;
-  title: string;
-  icon: React.ReactNode;
-  type: 'text' | 'list' | 'blurts' | 'lives' | 'checklist' | 'time-map' | 'enjoy-list' | 'life-pie' | 'numbered-list' | 'affirmations';
-  instructions: string;
-  placeholder?: string;
-  listCount?: number;
-  listLabels?: string[];
-  checkItems?: string[];
-  startNumber?: number;
-}
 
-// Week 1 Sections
-export const week1Sections: JournalSection[] = [
-  {
-    id: 'blurts-affirmations',
-    title: 'Blurts → Affirmations',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4 12h16M4 6h16M4 18h16" />
-      </svg>
-    ),
-    type: 'blurts',
-    instructions: 'This week, work with your affirmations of choice and your blurts at the end of each day\'s morning pages. Convert all negative blurts into positive affirmations. Example: "I\'m stupid" → "I\'m always learning"'
-  },
-  {
-    id: 'artist-date',
-    title: 'Artist Date',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" />
-        <path d="M12 6v6l4 2" />
-      </svg>
-    ),
-    type: 'text',
-    instructions: 'Take yourself on an artist date this week. A sample: take five dollars and go to your local five-and-dime. Buy silly things like gold stick-em stars, tiny dinosaurs, postcards, sparkly sequins, glue, kid\'s scissors, crayons. You might give yourself a gold star on your envelope each day you write. Just for fun.',
-    placeholder: 'Describe your artist date plans or experience...'
-  },
-  {
-    id: 'time-travel-enemies',
-    title: 'Time Travel: Monsters',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-      </svg>
-    ),
-    type: 'list',
-    instructions: 'List three old enemies of your creative self-worth. Be specific. Your historic monsters are building blocks of your core negative beliefs. Then select one and write out its horror story—the room you were in, how people looked at you, what was said. It\'s cathartic to draw or trash your monster.',
-    listCount: 4,
-    listLabels: ['Enemy 1', 'Enemy 2', 'Enemy 3', 'Horror Story']
-  },
-  {
-    id: 'time-travel-champions',
-    title: 'Time Travel: Champions',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-      </svg>
-    ),
-    type: 'list',
-    instructions: 'List three old champions of your creative self-worth. Be specific. Every encouraging word counts. Even if you disbelieve a compliment, record it—it may well be true. Post your favorites near where you do your morning pages.',
-    listCount: 3,
-    listLabels: ['Champion 1', 'Champion 2', 'Champion 3']
-  },
-  {
-    id: 'letters',
-    title: 'Letters to Self',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-        <polyline points="22,6 12,13 2,6" />
-      </svg>
-    ),
-    type: 'list',
-    instructions: 'Write two letters: (1) A letter to the editor in your defense—mail it to yourself. It\'s fun to write in the voice of your wounded artist child! (2) A thank-you letter to a long-lost mentor or to yourself.',
-    listCount: 2,
-    listLabels: ['Letter to the Editor (in your defense)', 'Thank You / Encouragement Letter']
-  },
-  {
-    id: 'imaginary-lives',
-    title: 'Five Imaginary Lives',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-      </svg>
-    ),
-    type: 'lives',
-    instructions: 'If you had five other lives to lead, what would you do? Pilot, cowhand, physicist, monk, scuba diver, belly dancer, painter... Don\'t overthink—the point is to have fun! Pick one and do something related this week.'
-  },
-  {
-    id: 'artist-walk',
-    title: 'Artist Walk',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="5" r="3" />
-        <path d="M12 8v8M9 21l3-6 3 6M6 14h12" />
-      </svg>
-    ),
-    type: 'checklist',
-    instructions: 'Take your artist for a walk, the two of you. A brisk twenty-minute walk can shift attention and clear stuck thinking.',
-    checkItems: [
-      'Completed 20-minute walk',
-      'Walked mindfully (no phone)',
-      'Noticed something new or inspiring'
-    ]
-  }
-];
-
-// Week 2 Sections
-export const week2Sections: JournalSection[] = [
-  {
-    id: 'time-map',
-    title: 'Time Map',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" />
-        <path d="M12 6v6l4 2" />
-      </svg>
-    ),
-    type: 'time-map',
-    instructions: 'Where does your time go? List your five major activities this week. How much time did you give to each one? Which were what you wanted to do and which were shoulds? How much of your time is spent helping others and ignoring your own desires? Create a safety map: inside the circle, place topics you need to protect and supportive people. Outside, place names of those you must be self-protective around.'
-  },
-  {
-    id: 'enjoy-list',
-    title: 'List 20 Things You Enjoy',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-      </svg>
-    ),
-    type: 'enjoy-list',
-    instructions: 'List twenty things you enjoy doing (rock climbing, roller-skating, baking pies, making soup, reading poetry, riding a bike, etc.). When was the last time you let yourself do these things? Next to each entry, place a date. Don\'t be surprised if it\'s been years for some of your favorites. This list is an excellent resource for artist dates.'
-  },
-  {
-    id: 'do-two-things',
-    title: 'Do Two of Your 20 Things',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="9 11 12 14 22 4" />
-        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-      </svg>
-    ),
-    type: 'list',
-    instructions: 'From your 20 things you enjoy, write down two favorite things that you\'ve avoided that could be this week\'s goals. These goals can be small: buy one roll of film and shoot it. Remember, we are trying to win you some autonomy with your time. Look for windows of time just for you, and use them in small creative acts.',
-    listCount: 2,
-    listLabels: ['Favorite thing 1 (what I\'ll do this week)', 'Favorite thing 2 (what I\'ll do this week)']
-  },
-  {
-    id: 'daily-affirmations',
-    title: 'Daily Affirmations',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-      </svg>
-    ),
-    type: 'affirmations',
-    instructions: 'Dip back into Week One and read the affirmations. Note which ones cause the most reaction. Often the one that sounds the most ridiculous is the most significant. Write three chosen affirmations five times each day in your morning pages; be sure to include the affirmations you made yourself from your blurts.'
-  },
-  {
-    id: 'more-imaginary-lives',
-    title: 'Five More Imaginary Lives',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-      </svg>
-    ),
-    type: 'lives',
-    instructions: 'Return to the list of imaginary lives from last week. Add five more lives. Check to see if you could be doing bits and pieces of these lives in the one you are living now. If you have listed a dancer\'s life, do you let yourself go dancing? If you have listed a monk\'s life, are you ever allowed to go on a retreat?',
-    startNumber: 6
-  },
-  {
-    id: 'life-pie',
-    title: 'Draw a Life Pie',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
-        <path d="M22 12A10 10 0 0 0 12 2v10z" />
-      </svg>
-    ),
-    type: 'life-pie',
-    instructions: 'Draw a circle divided into six pieces: Values, Exercise, Play, Work, Friends, and Romance/Adventure. Place a dot in each slice at the degree to which you are fulfilled (outer rim = great; inner circle = not so great). Connect the dots. This shows where you are lopsided. Even the slightest attention to impoverished areas can nurture them.'
-  },
-  {
-    id: 'ten-tiny-changes',
-    title: 'Ten Tiny Changes',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-      </svg>
-    ),
-    type: 'numbered-list',
-    instructions: 'List ten changes you\'d like to make for yourself, from the significant to the small ("get new sheets so I have another set, go to China, paint my kitchen, dump my bitchy friend Alice"). As the morning pages nudge us into the present, a small shift like a newly painted bathroom can yield a luxuriously large sense of self-care.',
-    listCount: 10,
-    listLabels: Array.from({ length: 10 }, (_, i) => `${i + 1}. I would like to`)
-  },
-  {
-    id: 'weekly-goal',
-    title: 'Make & Do a Goal',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" />
-        <circle cx="12" cy="12" r="6" />
-        <circle cx="12" cy="12" r="2" />
-      </svg>
-    ),
-    type: 'list',
-    instructions: 'Select one small item from your Ten Tiny Changes and make it a goal for this week. Then do it!',
-    listCount: 2,
-    listLabels: ['My goal for this week', 'How I completed it (or my progress)']
-  }
-];
 
 interface AccordionJournalCardProps {
   weekNumber?: number;
@@ -298,8 +87,8 @@ export default function AccordionJournalCard({
   isLocked = false,
   weekEndsAt,
 }: AccordionJournalCardProps) {
-  // Use provided sections, weekSectionsMap, or defaults for weeks 1/2
-  const journalSections = sections || weekSectionsMap[weekNumber] || (weekNumber === 2 ? week2Sections : week1Sections);
+  const { sections: fetchedSections } = useCourseSections('creative-healing', weekNumber);
+  const journalSections = sections || fetchedSections || [];
 
   const { play } = useSound();
   const { getAccessToken } = usePrivy();
