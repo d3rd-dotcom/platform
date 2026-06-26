@@ -29,34 +29,6 @@ interface WeekCanvasProps {
   onUpdateComponent: (compId: string, updates: Partial<CourseComponentRecord>) => void;
 }
 
-const TYPE_COLORS: Record<string, string> = {
-  rich_text: '#B85C38',
-  multiple_choice: '#9370DB',
-  dropdown: '#20B2AA',
-  image_embed: '#FF6B6B',
-  video_embed: '#4ECDC4',
-  file_upload: '#DEB887',
-  text_input: '#95E1D3',
-  rating_scale: '#FFD700',
-  reflection_journal: '#F08080',
-  quiz_block: '#FFA500',
-  markdown_file: '#A9A9A9',
-};
-
-const TYPE_ICONS: Record<string, string> = {
-  rich_text: '📖',
-  multiple_choice: '🚪',
-  dropdown: '⬇️',
-  image_embed: '🖼️',
-  video_embed: '💎',
-  file_upload: '📦',
-  text_input: '⌨️',
-  rating_scale: '⭐',
-  reflection_journal: '✍️',
-  quiz_block: '❓',
-  markdown_file: '📄',
-};
-
 function WysiwygComponent({
   component,
   isSelected,
@@ -80,43 +52,33 @@ function WysiwygComponent({
     transition,
   };
 
-  const color = TYPE_COLORS[component.componentType] ?? '#666';
-  const icon = TYPE_ICONS[component.componentType] ?? '❓';
-
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={`${styles.component} ${isSelected ? styles.componentSelected : ''} ${isDragging ? styles.componentDragging : ''}`}
+      className={`${styles.card} ${isSelected ? styles.cardSelected : ''} ${isDragging ? styles.cardDragging : ''}`}
       onClick={(e) => { e.stopPropagation(); onSelect(component.id); }}
     >
-      {/* Drag handle + toolbar */}
-      <div className={styles.componentToolbar} style={{ background: color }}>
-        <div className={styles.toolbarLeft}>
-          <span className={styles.dragHandle} {...attributes} {...listeners}>
-            ⋮⋮
-          </span>
-          <span className={styles.toolbarIcon}>{icon}</span>
-          <span className={styles.toolbarType}>{component.componentType.replace(/_/g, ' ')}</span>
-          {component.title && (
-            <span className={styles.toolbarTitle}>{component.title}</span>
-          )}
-        </div>
-        <div className={styles.toolbarRight}>
-          {component.required && <span className={styles.requiredBadge}>required</span>}
-          <button
-            type="button"
-            className={styles.deleteBtn}
-            onClick={(e) => { e.stopPropagation(); onDelete(component.id); }}
-            title="Delete component"
-          >
-            ✕
-          </button>
-        </div>
+      {/* Drag handle — only visible on hover */}
+      <div className={styles.handle} {...attributes} {...listeners}>
+        <span className={styles.handleIcon}>⋮⋮</span>
       </div>
 
-      {/* WYSIWYG rendered content */}
-      <div className={styles.componentPreview}>
+      {/* Delete button — only visible on hover */}
+      <button
+        type="button"
+        className={styles.deleteBtn}
+        onClick={(e) => { e.stopPropagation(); onDelete(component.id); }}
+        title="Remove component"
+      >
+        ✕
+      </button>
+
+      {/* Match CourseModule .component_card exactly */}
+      <div className={styles.cardBody}>
+        {component.title && (
+          <h3 className={styles.cardTitle}>{component.title}</h3>
+        )}
         <ComponentRenderer
           component={component}
           onComponentUpdate={(updates) => onComponentUpdate?.(component.id, updates)}

@@ -97,7 +97,7 @@
 .weekEditor {
   display: flex;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 }
 
 .weekInput {
@@ -129,173 +129,148 @@
 /* ── Drop zone ── */
 .dropZone {
   min-height: 120px;
-  border-radius: 12px;
-  border: 2px dashed var(--color-border-subtle);
-  transition: border-color 0.2s ease, background 0.2s ease;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  border: 1px dashed var(--color-border-subtle);
+  border-radius: 8px;
   padding: 16px;
-  background: color-mix(in oklch, var(--color-primary) 2%, transparent);
+  transition: border-color 0.2s ease, background 0.2s ease;
 }
 
 .dropZoneOver {
   border-color: var(--color-primary);
-  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
   border-style: solid;
+  background: color-mix(in oklch, var(--color-primary) 4%, transparent);
 }
 
 .dropZoneEmpty {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   color: var(--color-text-muted);
   text-align: center;
   padding: 48px 0;
   font-style: italic;
 }
 
-/* ── WYSIWYG component card ── */
-.component {
-  border-radius: 12px;
-  border: 2px solid var(--color-border-subtle);
-  overflow: hidden;
+.dropZoneEmpty {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: 48px 0;
+  font-style: italic;
+}
+
+/* ── Component card — matches CourseModule .component_card ── */
+.card {
+  position: relative;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-subtle);
   background: var(--color-surface-base);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.component:hover {
+.card + .card {
+  margin-top: 24px;
+}
+
+.card:hover {
   border-color: var(--color-text-muted);
 }
 
-.componentSelected {
+.cardSelected {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px var(--color-primary), 0 8px 24px color-mix(in oklch, var(--color-primary) 20%, transparent);
+  box-shadow: 0 0 0 1px var(--color-primary);
 }
 
-.componentDragging {
+.cardDragging {
   opacity: 0.4;
 }
 
-/* ── Toolbar (color-coded by type) ── */
-.componentToolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 4px 8px;
-  color: #fff;
-  font-size: 0.7rem;
-  user-select: none;
-  -webkit-user-select: none;
+/* ── Card body — matches CourseModule inner content ── */
+.cardBody {
+  /* same as CourseModule .component_card */
 }
 
-.toolbarLeft {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  min-width: 0;
-}
-
-.dragHandle {
-  cursor: grab;
-  font-size: 0.8rem;
-  letter-spacing: -0.04em;
-  opacity: 0.7;
-  padding: 0 2px;
-  transition: opacity 0.15s ease;
-}
-
-.dragHandle:hover {
-  opacity: 1;
-}
-
-.dragHandle:active {
-  cursor: grabbing;
-}
-
-.toolbarIcon {
-  font-size: 0.85rem;
-  line-height: 1;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
-}
-
-.toolbarType {
-  font-weight: 700;
+.cardTitle {
+  font-weight: 500;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  margin: 0 0 8px 0;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  opacity: 0.9;
 }
 
-.toolbarTitle {
-  opacity: 0.8;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 200px;
-}
-
-.toolbarRight {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.requiredBadge {
-  font-size: 0.55rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  background: rgba(255, 255, 255, 0.2);
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-
-.deleteBtn {
-  width: 20px;
-  height: 20px;
-  border-radius: 4px;
-  border: none;
-  background: rgba(0, 0, 0, 0.15);
-  color: #fff;
-  font-size: 0.6rem;
-  cursor: pointer;
+/* ── Drag handle — visible on hover ── */
+.handle {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: grab;
   opacity: 0;
-  transition: opacity 0.15s ease, background 0.15s ease;
+  transition: opacity 0.15s ease;
+  border-radius: 8px 8px 0 0;
+  z-index: 5;
+}
+
+.card:hover .handle {
+  opacity: 1;
+}
+
+.handle:active {
+  cursor: grabbing;
+}
+
+.handleIcon {
+  font-size: 0.75rem;
+  letter-spacing: -0.04em;
+  color: var(--color-text-muted);
+}
+
+/* ── Delete button — visible on hover ── */
+.deleteBtn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 0.65rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease, background 0.15s ease, color 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 6;
   line-height: 1;
 }
 
-.component:hover .deleteBtn {
+.card:hover .deleteBtn {
   opacity: 1;
 }
 
 .deleteBtn:hover {
-  background: rgba(0, 0, 0, 0.3);
+  background: #fee2e2;
+  color: #ef4444;
 }
 
-/* ── WYSIWYG preview area ── */
-.componentPreview {
-  padding: 16px 20px;
-  cursor: default;
-}
-
-.componentPreview > * {
-  max-width: 100%;
-}
-
-:global([data-theme="dark"]) .component {
+:global([data-theme="dark"]) .card {
   background: #1e1f2c;
   border-color: rgba(255, 255, 255, 0.08);
 }
 
-:global([data-theme="dark"]) .componentSelected {
+:global([data-theme="dark"]) .cardSelected {
   border-color: var(--color-primary);
 }
 
-:global([data-theme="dark"]) .dropZoneOver {
-  background: rgba(81, 104, 255, 0.08);
-}
-
-:global([data-theme="dark"]) .dropZone {
-  background: color-mix(in oklch, var(--color-primary) 3%, transparent);
+:global([data-theme="dark"]) .deleteBtn:hover {
+  background: rgba(239, 68, 68, 0.15);
 }
