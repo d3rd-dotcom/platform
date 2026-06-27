@@ -191,19 +191,6 @@
   color: var(--color-primary);
 }
 
-.buildCardLocked {
-  opacity: 0.55;
-  cursor: pointer;
-}
-
-.buildCardLocked:hover {
-  border-color: color-mix(in oklch, #ef4444 70%, transparent);
-  color: #ef4444;
-  background: color-mix(in oklch, #ef4444 4%, transparent);
-  transform: translateY(-1px);
-  opacity: 0.85;
-}
-
 /* ── Dark mode ── */
 
 :global([data-theme="dark"]) .courseCard {
