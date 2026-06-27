@@ -80,8 +80,8 @@ const primaryNavItems: NavItem[] = [
   },
   {
     id: 'course',
-    label: 'Course',
-    href: '/course',
+    label: 'Courses',
+    href: '/courses',
     iconSrc: '/icons/nav-course-v2.svg',
   },
   { 
@@ -233,9 +233,13 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     const blueChatHandler = () => setIsChatOpen(true);
     window.addEventListener('toggleBlueChat', blueChatHandler);
 
+    const openProHandler = () => setIsProModalOpen(true);
+    window.addEventListener('openProModal', openProHandler);
+
     return () => {
       window.removeEventListener('toggleSidebar', handler);
       window.removeEventListener('toggleBlueChat', blueChatHandler);
+      window.removeEventListener('openProModal', openProHandler);
     };
   }, [onExternalMobileClose, toggleCollapsed]);
 

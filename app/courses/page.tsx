@@ -29,6 +29,7 @@ export default function CoursesPage() {
   const { ready, getAccessToken } = usePrivy();
   const [personalCourse, setPersonalCourse] = useState<CourseData | null>(null);
   const [studioOpen, setStudioOpen] = useState(false);
+  const [hasVip, setHasVip] = useState<boolean | null>(null);
 
   const authHeaders = useCallback(async (): Promise<HeadersInit> => {
     const token = await getAccessToken();
@@ -58,6 +59,16 @@ export default function CoursesPage() {
   }, [ready, loadPersonalCourse]);
 
   useEffect(() => onPersonalCourseUpdated(loadPersonalCourse), [loadPersonalCourse]);
+
+  useEffect(() => {
+    if (!ready) { setHasVip(null); return; }
+    (async () => {
+      const headers = await authHeaders();
+      const res = await fetch('/api/account/status', { cache: 'no-store', headers });
+      const data = await res.json().catch(() => ({}));
+      setHasVip(Boolean(data?.hasVipMembershipCard));
+    })();
+  }, [ready, authHeaders]);
 
   if (studioOpen) {
     return (
@@ -120,10 +131,17 @@ export default function CoursesPage() {
           </Link>
         )}
 
-        <button type="button" onClick={() => setStudioOpen(true)} className={styles.buildCard}>
-          <Plus size={20} weight="bold" />
-          <span>Build your own course</span>
-        </button>
+        {hasVip !== null && hasVip ? (
+          <button type="button" onClick={() => setStudioOpen(true)} className={styles.buildCard}>
+            <Plus size={20} weight="bold" />
+            <span>Build your own course</span>
+          </button>
+        ) : hasVip !== null && !hasVip ? (
+          <button type="button" onClick={() => window.dispatchEvent(new Event('openProModal'))} className={`${styles.buildCard} ${styles.buildCardLocked}`}>
+            <Plus size={20} weight="bold" />
+            <span>VIP required to build courses</span>
+          </button>
+        ) : null}
 
       </main>
     </div>
