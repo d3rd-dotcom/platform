@@ -11,6 +11,7 @@ import {
   Star,
   NotePencil,
   Question,
+  Lock,
   Television,
   Trash,
   X,
@@ -38,6 +39,7 @@ const COMPONENT_ICONS: Record<ComponentType, React.ReactNode> = {
   rating_scale: <Star size={18} weight="bold" />,
   reflection_journal: <NotePencil size={18} weight="bold" />,
   quiz_block: <Question size={18} weight="bold" />,
+  password_gate: <Lock size={18} weight="bold" />,
 };
 
 const COMPONENT_LABELS: Record<ComponentType, string> = {
@@ -50,6 +52,7 @@ const COMPONENT_LABELS: Record<ComponentType, string> = {
   rating_scale: 'Rating',
   reflection_journal: 'Journal',
   quiz_block: 'Quiz',
+  password_gate: 'Password Gate',
 };
 
 const CONFIG_FIELDS: Record<ComponentType, Array<{
@@ -104,6 +107,11 @@ const CONFIG_FIELDS: Record<ComponentType, Array<{
   quiz_block: [
     { key: 'timeLimitMinutes', label: 'Time limit (minutes)', type: 'number', placeholder: 'Leave empty for no limit' },
     { key: 'passingScore', label: 'Passing score (%)', type: 'number', placeholder: 'e.g. 80' },
+  ],
+  password_gate: [
+    { key: 'password', label: 'Password', type: 'text', placeholder: 'The secret password students must enter' },
+    { key: 'hint', label: 'Hint', type: 'text', placeholder: 'A clue shown to students before they guess' },
+    { key: 'content', label: 'Revealed content', type: 'textarea', placeholder: 'Content shown after correct password — markdown supported' },
   ],
 };
 
@@ -362,6 +370,7 @@ export default function ComponentPanel({ component, onUpdate, onDelete, onClose 
                   rating_scale: 'A self-assessment where students rate their understanding on a scale.',
                   reflection_journal: 'A guided journal prompt. Students write a longer reflection on their learning.',
                   poll: 'A quick poll to gather class opinions or check understanding in real time.',
+                  password_gate: 'A password-protected reveal. Students enter a secret password to unlock bonus content, answers, or the next section.',
                 };
                 onUpdate(component.id, {
                   config: { ...component.config, description: templates[component.componentType] ?? '' },
@@ -458,6 +467,19 @@ export default function ComponentPanel({ component, onUpdate, onDelete, onClose 
                     }}
                   >
                     10 min / 80%
+                  </button>
+                )}
+                {component.componentType === 'password_gate' && (
+                  <button
+                    type="button"
+                    className={styles.presetBtn}
+                    onClick={() => {
+                      handleFieldChange('password', 'secret', 'text');
+                      handleFieldChange('hint', 'Something only your students would know', 'text');
+                      handleFieldChange('content', '🎉 You unlocked the bonus content!', 'text');
+                    }}
+                  >
+                    Quick Reveal
                   </button>
                 )}
               </div>

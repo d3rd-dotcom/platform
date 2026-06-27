@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
-import { walletHoldsVipMembershipCard } from '@/lib/vip-membership-card';
 import { createCourseComponent } from '@/lib/vip-course-db';
 import type { ComponentType } from '@/lib/vip-course-db';
 
@@ -17,16 +16,13 @@ const VALID_COMPONENT_TYPES: ComponentType[] = [
   'rating_scale',
   'reflection_journal',
   'quiz_block',
+  'password_gate',
 ];
 
 async function assertVipUser(): Promise<string> {
   const user = await getCurrentUserFromRequestCookie();
   if (!user) {
     throw Object.assign(new Error('Sign in to access courses.'), { status: 401 });
-  }
-  const hasMembership = await walletHoldsVipMembershipCard(user.walletAddress);
-  if (!hasMembership) {
-    throw Object.assign(new Error('A VIP membership is required.'), { status: 403, code: 'vip_required' });
   }
   return user.id;
 }

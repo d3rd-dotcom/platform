@@ -3,11 +3,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
-import { Plus } from '@phosphor-icons/react';
+import { Plus, PencilSimple, CheckCircle } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import CourseStudioModal from '@/components/course-studio/CourseStudioModal';
 import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
 import type { CourseData } from '@/lib/personal-course';
+import type { VipCourseRecord } from '@/lib/vip-course-db';
 import { onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
 import styles from './page.module.css';
 
@@ -29,6 +30,8 @@ export default function CoursesPage() {
   const { ready, getAccessToken } = usePrivy();
   const [personalCourse, setPersonalCourse] = useState<CourseData | null>(null);
   const [studioOpen, setStudioOpen] = useState(false);
+  const [editingCourseId, setEditingCourseId] = useState<string | null>(null);
+  const [authoredCourses, setAuthoredCourses] = useState<VipCourseRecord[]>([]);
 
   const authHeaders = useCallback(async (): Promise<HeadersInit> => {
     const token = await getAccessToken();
@@ -55,19 +58,35 @@ export default function CoursesPage() {
   useEffect(() => {
     if (!ready) return;
     loadPersonalCourse();
+    loadAuthoredCourses();
   }, [ready, loadPersonalCourse]);
 
   useEffect(() => onPersonalCourseUpdated(loadPersonalCourse), [loadPersonalCourse]);
 
-  if (studioOpen) {
+  const loadAuthoredCourses = useCallback(async () => {
+    try {
+      const headers = await authHeaders();
+      const res = await fetch('/api/vip/courses', { cache: 'no-store', headers });
+      if (!res.ok) return;
+      const data = await res.json();
+      setAuthoredCourses(data.courses ?? []);
+    } catch { /* ignore */ }
+  }, [authHeaders]);
+
+  const handleCourseCreated = useCallback(() => {
+    setStudioOpen(false);
+    setEditingCourseId(null);
+    loadPersonalCourse();
+    loadAuthoredCourses();
+  }, [loadPersonalCourse, loadAuthoredCourses]);
+
+  if (studioOpen || editingCourseId) {
     return (
       <CourseStudioModal
         authHeaders={authHeaders}
-        onClose={() => setStudioOpen(false)}
-        onCourseCreated={() => {
-          setStudioOpen(false);
-          loadPersonalCourse();
-        }}
+        onClose={() => { setStudioOpen(false); setEditingCourseId(null); }}
+        onCourseCreated={handleCourseCreated}
+        existingCourseId={editingCourseId ?? undefined}
       />
     );
   }
@@ -124,6 +143,33 @@ export default function CoursesPage() {
           <Plus size={20} weight="bold" />
           <span>Build your own course</span>
         </button>
+
+        {authoredCourses.length > 0 && (
+          <section className={styles.authoredSection}>
+            <h2 className={styles.authoredHeading}>Your authored courses</h2>
+            <div className={styles.authoredList}>
+              {authoredCourses.map((c) => (
+                <div key={c.id} className={styles.authoredCard}>
+                  <div className={styles.authoredBody}>
+                    <span className={styles.authoredTitle}>{c.title}</span>
+                    <span className={styles.authoredSlug}>/{c.slug}</span>
+                    <span className={`${styles.authoredStatus} ${c.status === 'published' ? styles.authoredStatusPublished : ''}`}>
+                      {c.status === 'published' ? 'Published' : 'Draft'}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setEditingCourseId(c.id)}
+                    className={styles.authoredEditBtn}
+                    title="Edit course"
+                  >
+                    <PencilSimple size={16} weight="bold" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
       </main>
     </div>

@@ -13,6 +13,7 @@ const TextInputRenderer = dynamic(() => import('./TextInputRenderer'), { ssr: fa
 const RatingScaleRenderer = dynamic(() => import('./RatingScaleRenderer'), { ssr: false });
 const ReflectionJournalRenderer = dynamic(() => import('./ReflectionJournalRenderer'), { ssr: false });
 const QuizBlockRenderer = dynamic(() => import('./QuizBlockRenderer'), { ssr: false });
+const PasswordGateRenderer = dynamic(() => import('./PasswordGateRenderer'), { ssr: false });
 
 function UnknownRenderer({ component }: { component: CourseComponentRecord }) {
   return (
@@ -34,6 +35,7 @@ const RENDERER_MAP: Record<string, React.ComponentType<RendererProps>> = {
   rating_scale: RatingScaleRenderer as React.ComponentType<RendererProps>,
   reflection_journal: ReflectionJournalRenderer as React.ComponentType<RendererProps>,
   quiz_block: QuizBlockRenderer as React.ComponentType<RendererProps>,
+  password_gate: PasswordGateRenderer as React.ComponentType<RendererProps>,
 };
 
 export default function ComponentRenderer({

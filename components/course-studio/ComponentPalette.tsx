@@ -11,6 +11,7 @@ import {
   Star,
   NotePencil,
   Question,
+  Lock,
 } from '@phosphor-icons/react';
 import type { ComponentType } from '@/lib/vip-course-db';
 import styles from './ComponentPalette.module.css';
@@ -36,6 +37,7 @@ const PALETTE_ITEMS: PaletteItemDef[] = [
   { type: 'rating_scale', label: 'Rating', icon: <Star size={18} weight="bold" />, description: 'Rating scale' },
   { type: 'reflection_journal', label: 'Journal', icon: <NotePencil size={18} weight="bold" />, description: 'Journal prompt' },
   { type: 'quiz_block', label: 'Quiz', icon: <Question size={18} weight="bold" />, description: 'Timed quiz' },
+  { type: 'password_gate', label: 'Password Gate', icon: <Lock size={18} weight="bold" />, description: 'Password-protected reveal' },
 ];
 
 function PaletteItem({ type, label, icon, description, onAdd }: PaletteItemDef & { onAdd?: (type: ComponentType) => void }) {

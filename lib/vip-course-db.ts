@@ -10,7 +10,8 @@ export type ComponentType =
   | 'text_input'
   | 'rating_scale'
   | 'reflection_journal'
-  | 'quiz_block';
+  | 'quiz_block'
+  | 'password_gate';
 
 export type VipCourseStatus = 'draft' | 'published' | 'archived';
 

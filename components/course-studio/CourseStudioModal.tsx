@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
-import { ArrowCounterClockwise, Eye } from '@phosphor-icons/react';
+import { ArrowCounterClockwise, Eye, CheckCircle } from '@phosphor-icons/react';
 import CourseModule from '@/components/course-renderers/CourseModule';
 import styles from './CourseStudioModal.module.css';
 import {
@@ -28,7 +28,7 @@ import ComponentPalette from './ComponentPalette';
 import WeekCanvas from './WeekCanvas';
 import ComponentPanel from './ComponentPanel';
 import CourseBuilderTour from './CourseBuilderTour';
-import type { VipCourseFull, CourseComponentRecord, ComponentType } from '@/lib/vip-course-db';
+import type { VipCourseFull, CourseComponentRecord, ComponentType, VipCourseStatus } from '@/lib/vip-course-db';
 
 interface CourseStudioProps {
   authHeaders: () => Promise<HeadersInit>;
@@ -88,6 +88,8 @@ export default function CourseStudioModal({
     sortOrder: number;
   } | null>(null);
   const [previewMode, setPreviewMode] = useState(false);
+  const [status, setStatus] = useState<VipCourseStatus>('draft');
+  const [publishing, setPublishing] = useState(false);
   const undoTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const titleRef = useRef<HTMLInputElement>(null);
 
@@ -122,6 +124,7 @@ export default function CourseStudioModal({
         setFocus(course.focus);
         setSlug(course.slug);
         setCourseId(course.id);
+        setStatus(course.status);
         const mapped = course.weeks.map((w) => ({
           id: w.id,
           weekNumber: w.weekNumber,
@@ -332,6 +335,38 @@ export default function CourseStudioModal({
     setPhase('edit');
   };
 
+  const publishCourse = async () => {
+    if (!courseId) {
+      // Save first, then publish
+      setPhase('saving');
+      try {
+        await saveCourseData();
+      } catch (err: any) {
+        setError(err.message ?? 'Save failed');
+        setPhase('edit');
+        return;
+      }
+    }
+    setPublishing(true);
+    setError(null);
+    try {
+      const headers = await authHeaders();
+      const res = await fetch(`/api/vip/courses/${courseId}/publish`, {
+        method: 'POST',
+        headers,
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? 'Publish failed');
+      }
+      setStatus('published');
+    } catch (err: any) {
+      setError(err.message ?? 'Publish failed');
+    } finally {
+      setPublishing(false);
+    }
+  };
+
   const handleBack = async () => {
     if (previewMode) {
       setPreviewMode(false);
@@ -366,7 +401,7 @@ export default function CourseStudioModal({
     title,
     focus,
     coverImageUrl: null,
-    status: 'draft',
+    status,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     weeks: weeks.map((w) => ({
@@ -458,6 +493,23 @@ export default function CourseStudioModal({
                 <Eye size={14} weight="bold" />
                 {previewMode ? 'Edit' : 'Preview'}
               </button>
+              {courseId && (
+                <div className={styles.statusGroup}>
+                  <span className={`${styles.statusBadge} ${status === 'published' ? styles.statusPublished : ''}`}>
+                    {status === 'published' ? 'Published' : 'Draft'}
+                  </span>
+                  {status !== 'published' && (
+                    <button
+                      type="button"
+                      onClick={publishCourse}
+                      disabled={publishing}
+                      className={styles.publishBtn}
+                    >
+                      {publishing ? 'Publishing...' : 'Publish'}
+                    </button>
+                  )}
+                </div>
+              )}
               <button
                 type="button"
                 onClick={saveCourse}

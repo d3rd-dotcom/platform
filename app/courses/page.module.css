@@ -191,6 +191,108 @@
   color: var(--color-primary);
 }
 
+/* ── Authored courses ── */
+.authoredSection {
+  margin-top: 32px;
+}
+
+.authoredHeading {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+  margin: 0 0 12px;
+  font-family: var(--font-mono);
+}
+
+.authoredList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.authoredCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-base);
+  transition: border-color 0.15s ease;
+}
+
+.authoredCard:hover {
+  border-color: var(--color-primary);
+}
+
+.authoredBody {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+
+.authoredTitle {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.authoredSlug {
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.authoredStatus {
+  font-size: 0.625rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid #f59e0b;
+  color: #f59e0b;
+  background: color-mix(in srgb, #f59e0b 8%, transparent);
+  white-space: nowrap;
+}
+
+.authoredStatusPublished {
+  border-color: #22c55e;
+  color: #22c55e;
+  background: color-mix(in srgb, #22c55e 8%, transparent);
+}
+
+.authoredEditBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-subtle);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.12s ease;
+  flex-shrink: 0;
+}
+
+.authoredEditBtn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+}
+
 /* ── Dark mode ── */
 
 :global([data-theme="dark"]) .courseCard {
