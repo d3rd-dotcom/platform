@@ -26,12 +26,6 @@
       "name": "White",
       "hex": "#FFFFFF",
       "meaning": "Text on dark, balance"
-    },
-    "gradient": {
-      "name": "Futuristic Floss",
-      "start": "#FBF8FF",
-      "end": "#E1E1F4",
-      "meaning": "Subtle depth, modern feel"
     }
   },
   "typography": {

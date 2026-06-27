@@ -110,16 +110,7 @@ export const colors = {
     productivity: '#5168FF',
     wealth: '#50599B',
   },
-  
-  // Gradient Colors
-  gradient: {
-    futuristicFlossStart: '#FFFFFF',
-    futuristicFlossEnd: '#E1E1F4',
-    futuristicFlossDarkStart: '#090A10',
-    futuristicFlossDarkMid: '#11131B',
-    futuristicFlossDarkEnd: '#0B0C12',
-  },
-  
+
   // Border Colors
   border: {
     DEFAULT: 'rgba(0, 0, 0, 0.08)',
@@ -131,18 +122,18 @@ export const colors = {
 } as const;
 
 /**
- * Gradient Definitions
+ * Brand Colors (exported as named tokens for API compatibility)
  */
 export const gradients = {
-  futuristicFloss: `linear-gradient(to bottom, ${colors.gradient.futuristicFlossStart}, ${colors.gradient.futuristicFlossEnd})`,
-  primary: `linear-gradient(135deg, ${colors.primary.DEFAULT} 0%, ${colors.primary.light} 100%)`,
-  secondary: `linear-gradient(135deg, ${colors.secondary.DEFAULT} 0%, ${colors.secondary.light} 100%)`,
-  darkFuturisticFloss: `linear-gradient(180deg, ${colors.gradient.futuristicFlossDarkStart} 0%, ${colors.gradient.futuristicFlossDarkMid} 54%, ${colors.gradient.futuristicFlossDarkEnd} 100%)`,
-  darkPrimary: 'linear-gradient(135deg, #8A94FF 0%, #BE9FE5 52%, #93D9B7 100%)',
-  darkSecondary: 'linear-gradient(135deg, #766C96 0%, #927B72 100%)',
-  swipeLike: `linear-gradient(135deg, ${colors.secondary.DEFAULT} 0%, #ADB7FF 100%)`,
-  swipeSkip: `linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%)`,
-  swipeSave: `linear-gradient(135deg, ${colors.primary.DEFAULT} 0%, #7B8CFF 100%)`,
+  futuristicFloss: '#FFFFFF',
+  primary: colors.primary.DEFAULT,
+  secondary: colors.secondary.DEFAULT,
+  darkFuturisticFloss: '#090A10',
+  darkPrimary: '#8A94FF',
+  darkSecondary: '#766C96',
+  swipeLike: colors.secondary.DEFAULT,
+  swipeSkip: '#FF6B6B',
+  swipeSave: colors.primary.DEFAULT,
 } as const;
 
 // ============================================

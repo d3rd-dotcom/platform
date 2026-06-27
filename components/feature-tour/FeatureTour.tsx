@@ -52,8 +52,8 @@ interface IntroStep {
 
 const INTRO_STEPS: IntroStep[] = [
   {
-    title: 'Write your Morning Note',
-    body: 'A few lines each morning earns you 100 diamonds and builds your daily streak.',
+    title: 'Field Notes — Your Research Log',
+    body: 'Write about science, patterns, things you\'ve observed recently. That\'s the whole game — keep your eyes open and scribble it down. No rules, no grades, just notes.',
   },
 ];
 
@@ -332,10 +332,9 @@ export default function FeatureTour() {
       <div className={`${styles.scrim} ${styles.scrimSolid}`} />
       <div ref={calloutRef} className={`${styles.callout} ${styles.calloutCentered}`}>
         {blueHeader()}
-        <h3 className={styles.title}>First note done</h3>
+        <h3 className={styles.title}>First Field Note Locked</h3>
         <p className={styles.body}>
-          Do that once a day to keep your streak. Your course is next — that is
-          where the weekly tasks and activities live.
+          One down. Keep that streak alive and your course is waiting — weekly tasks, activities, the real work.
         </p>
         <p className={styles.bodyFaint}>
           Want to know how something works? Just ask me.
@@ -429,10 +428,9 @@ export default function FeatureTour() {
         {blueHeader(undefined, 'Daemon')}
         {remindMode === 'done' ? (
           <>
-            <h3 className={styles.title}>All done today</h3>
+            <h3 className={styles.title}>Field Notes Locked</h3>
             <p className={styles.body}>
-              Today&rsquo;s note is in — nice work keeping the streak. Come back
-              tmr for the next one.
+              Today&rsquo;s observations are sealed. Streak lives. Back tomorrow for more.
             </p>
             <div className={styles.actions}>
               <span className={styles.skipSlot} />
@@ -445,10 +443,9 @@ export default function FeatureTour() {
           </>
         ) : (
           <>
-            <h3 className={styles.title}>Time for today&rsquo;s note</h3>
+            <h3 className={styles.title}>Field Notes Are Due</h3>
             <p className={styles.body}>
-              A few lines keeps your streak alive and earns 100 diamonds — any time
-              of day works.
+              Your daily log needs fresh observations. Science, patterns, anomalies — whatever crossed your path. Just get it down.
             </p>
             <div className={styles.actions}>
               <span className={styles.skipSlot}>
@@ -458,7 +455,7 @@ export default function FeatureTour() {
               </span>
               <span className={styles.navBtns}>
                 <button type="button" className={styles.next} onClick={writeTodayNote}>
-                  Write today&rsquo;s note
+                  Get started
                 </button>
               </span>
             </div>

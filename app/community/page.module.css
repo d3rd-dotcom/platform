@@ -4826,7 +4826,7 @@
 }
 
 :global([data-theme="dark"]) .primaryCta {
-  background: var(--gradient-primary);
+  background: var(--color-primary);
   color: var(--color-text-light);
   border-color: color-mix(in oklch, var(--color-primary) 34%, transparent);
   box-shadow: 0 4px 16px rgba(139, 149, 255, 0.28);
@@ -4913,7 +4913,7 @@
 }
 
 :global([data-theme="dark"]) .communityViewViewport {
-  background: var(--gradient-futuristic-floss);
+  background: var(--color-background);
 }
 
 :global([data-theme="dark"]) .treasuryHeroCard :global(.balance) {

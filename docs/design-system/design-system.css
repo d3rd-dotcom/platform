@@ -25,12 +25,6 @@
   --color-productivity: #5168FF;
   --color-wealth: #50599B;
   
-  /* Gradient Colors */
-  --gradient-futuristic-floss-start: #FBF8FF;
-  --gradient-futuristic-floss-end: #E1E1F4;
-  
-  /* Gradients */
-  --gradient-futuristic-floss: linear-gradient(to bottom, var(--gradient-futuristic-floss-start), var(--gradient-futuristic-floss-end));
   
   /* Typography */
   --font-primary: 'Poppins', sans-serif;
@@ -240,18 +234,6 @@ button,
 /* ============================================
    Utility Classes
    ============================================ */
-
-/* Gradient Utilities */
-.gradient-futuristic-floss {
-  background: var(--gradient-futuristic-floss);
-}
-
-.text-gradient-futuristic-floss {
-  background: var(--gradient-futuristic-floss);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
 
 /* Color Utilities */
 .bg-primary {

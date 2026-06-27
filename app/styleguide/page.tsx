@@ -123,9 +123,9 @@ export default function StyleGuidePage() {
 
         {/* Gradients Section */}
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>🌈 Gradients</h2>
+          <h2 className={styles.sectionTitle}>🎨 Solid Colors</h2>
           <p className={styles.sectionDescription}>
-            Subtle gradients for hero sections, featured content, and depth effects.
+            Clean solid colors for actions, surfaces, and UI elements.
           </p>
           <div className={styles.gradientGrid}>
             <GradientCard 
