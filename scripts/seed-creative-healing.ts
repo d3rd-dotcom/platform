@@ -17,9 +17,9 @@ import { ensureVipCourseSchema } from '../lib/ensureVipCourseSchema';
 // ── Types ──
 
 type SeedComponentType =
-  | 'rich_text' | 'multiple_choice' | 'dropdown' | 'image_embed'
+  | 'rich_text' | 'multiple_choice' | 'image_embed'
   | 'video_embed' | 'file_upload' | 'text_input' | 'rating_scale'
-  | 'reflection_journal' | 'quiz_block' | 'markdown_file';
+  | 'reflection_journal' | 'quiz_block';
 
 type LegacyType =
   | 'text' | 'list' | 'blurts' | 'lives' | 'checklist' | 'time-map'
@@ -55,7 +55,6 @@ function inferLegacyType(comp: SeedComponent): LegacyType {
   if (ct === 'rating_scale') return 'life-pie';
   if (ct === 'reflection_journal') return 'text';
   if (ct === 'rich_text') return 'text';
-  if (ct === 'markdown_file') return 'text';
 
   if (ct === 'text_input') {
     const labels = cfg.labels as string[] | undefined;
@@ -149,14 +148,6 @@ function reflection(title: string, prompt: string, minWords = 0): SeedComponent 
     componentType: 'reflection_journal',
     title,
     config: { prompt, minWords, saveEnabled: true },
-  };
-}
-
-function markdownRead(title: string, filePath: string, description: string): SeedComponent {
-  return {
-    componentType: 'markdown_file',
-    title,
-    config: { url: filePath, originalName: title, content: '' },
   };
 }
 
@@ -451,7 +442,7 @@ async function main() {
     if (week.readingFile) {
       await sqlQuery(
         `INSERT INTO course_components (week_id, sort_order, component_type, title, config, required)
-         VALUES (:weekId, 0, 'markdown_file', :title, :config, false)`,
+         VALUES (:weekId, 0, 'rich_text', :title, :config, false)`,
         {
           weekId,
           title: week.readingFile.title,

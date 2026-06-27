@@ -10,7 +10,6 @@ export const dynamic = 'force-dynamic';
 const VALID_COMPONENT_TYPES: ComponentType[] = [
   'rich_text',
   'multiple_choice',
-  'dropdown',
   'image_embed',
   'video_embed',
   'file_upload',
@@ -18,7 +17,6 @@ const VALID_COMPONENT_TYPES: ComponentType[] = [
   'rating_scale',
   'reflection_journal',
   'quiz_block',
-  'markdown_file',
 ];
 
 async function assertVipUser(): Promise<string> {

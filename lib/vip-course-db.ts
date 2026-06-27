@@ -4,15 +4,13 @@ import { ensureVipCourseSchema } from './ensureVipCourseSchema';
 export type ComponentType =
   | 'rich_text'
   | 'multiple_choice'
-  | 'dropdown'
   | 'image_embed'
   | 'video_embed'
   | 'file_upload'
   | 'text_input'
   | 'rating_scale'
   | 'reflection_journal'
-  | 'quiz_block'
-  | 'markdown_file';
+  | 'quiz_block';
 
 export type VipCourseStatus = 'draft' | 'published' | 'archived';
 

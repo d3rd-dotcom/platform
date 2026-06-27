@@ -3,9 +3,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
-import { BookOpen, Sparkle } from '@phosphor-icons/react';
+import { Plus } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import CourseStudioModal from '@/components/course-studio/CourseStudioModal';
+import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
 import type { CourseData } from '@/lib/personal-course';
 import { onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
 import styles from './page.module.css';
@@ -21,6 +22,8 @@ function getPersonalEndDate() {
   d.setDate(d.getDate() + 28);
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
+
+const COURSE_THUMB = 'https://i.imgur.com/KkpN9as.png';
 
 export default function CoursesPage() {
   const { ready, getAccessToken } = usePrivy();
@@ -73,54 +76,55 @@ export default function CoursesPage() {
     <div className={styles.layout}>
       <SideNavigation />
       <main className={styles.main}>
-        <div className={styles.grid}>
 
-          <Link href="/course" className={styles.courseCard}>
-            <div className={styles.courseImageWrap}>
-              <div className={styles.courseNoise} aria-hidden="true" />
-              <div className={styles.courseIconBadge}>
-                <BookOpen size={16} weight="duotone" />
-              </div>
+        <BlueVideoPanel
+          className={styles.blueVideo}
+          message="Your courses — pick up where you left off."
+        />
+
+        <div className={styles.divider} aria-hidden="true" />
+
+        <Link href="/course" className={styles.courseCard}>
+          <span className={styles.accent} aria-hidden="true" />
+          <span
+            className={styles.thumb}
+            style={{ backgroundImage: `url(${JSON.stringify(COURSE_THUMB)})` }}
+            aria-hidden="true"
+          />
+          <div className={styles.body}>
+            <span className={styles.category}>12-Week Core</span>
+            <span className={styles.title}>Creative Healing</span>
+            <span className={styles.desc}>
+              A journey through rediscovering your creative energy and excavating it to reach your highest horizon.
+            </span>
+          </div>
+          <svg className={styles.arrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </Link>
+
+        {personalCourse && (
+          <Link href="/course/personal" className={styles.courseCard}>
+            <span className={styles.accent} aria-hidden="true" />
+            <span className={`${styles.thumb} ${styles.personalThumb}`} aria-hidden="true" />
+            <div className={styles.body}>
+              <span className={styles.category}>Your course</span>
+              <span className={styles.title}>{personalCourse.title}</span>
+              <span className={styles.desc}>
+                A personal 4-week track built around {personalCourse.focus.toLowerCase()} — a weekly read and tasks tuned to your goal.
+              </span>
             </div>
-            <div className={styles.courseBody}>
-              <h2 className={styles.courseTitle}>Creative Healing</h2>
-              <p className={styles.courseDesc}>
-                A journey through rediscovering your creative energy and excavating it to reach your highest horizon.
-              </p>
-              <span className={styles.courseEndBadge}>End date: {getCourseEndDate()}</span>
-            </div>
+            <svg className={styles.arrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
           </Link>
+        )}
 
-          {personalCourse && (
-            <Link href="/course/personal" className={styles.courseCard}>
-              <div className={`${styles.courseImageWrap} ${styles.personalImageWrap}`}>
-                <div className={styles.courseNoise} aria-hidden="true" />
-                <div className={styles.courseIconBadge}>
-                  <Sparkle size={16} weight="duotone" />
-                </div>
-              </div>
-              <div className={styles.courseBody}>
-                <span className={styles.coursePersonalTag}>Your course</span>
-                <h2 className={styles.courseTitle}>{personalCourse.title}</h2>
-                <p className={styles.courseDesc}>
-                  A personal 4-week track built around {personalCourse.focus.toLowerCase()} — a weekly read and tasks tuned to your goal.
-                </p>
-                <span className={styles.courseEndBadge}>End date: {getPersonalEndDate()}</span>
-              </div>
-            </Link>
-          )}
+        <button type="button" onClick={() => setStudioOpen(true)} className={styles.buildCard}>
+          <Plus size={20} weight="bold" />
+          <span>Build your own course</span>
+        </button>
 
-          <button type="button" onClick={() => setStudioOpen(true)} className={styles.buildCard}>
-            <div className={styles.buildIcon}>
-              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="48" height="48">
-                <rect x="1" y="1" width="46" height="46" rx="11" stroke="currentColor" strokeWidth="2" />
-                <line x1="24" y1="14" x2="24" y2="34" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-                <line x1="14" y1="24" x2="34" y2="24" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-              </svg>
-            </div>
-          </button>
-
-        </div>
       </main>
     </div>
   );

@@ -9,6 +9,8 @@ interface MultipleChoiceConfig {
   options?: Array<{ id: string; text: string; isCorrect: boolean }>;
   allowMultiple?: boolean;
   showFeedback?: boolean;
+  selectMultiple?: boolean;
+  revealAnswers?: boolean;
 }
 
 export default function MultipleChoiceRenderer({ component }: { component: CourseComponentRecord }) {
@@ -16,7 +18,7 @@ export default function MultipleChoiceRenderer({ component }: { component: Cours
   const options = config.options ?? [];
   const [selected, setSelected] = useState<string[]>([]);
   const [showResults, setShowResults] = useState(false);
-  const allowMultiple = config.allowMultiple ?? false;
+  const allowMultiple = config.selectMultiple ?? config.allowMultiple ?? false;
 
   const toggle = (id: string) => {
     if (showResults) return;
@@ -51,7 +53,7 @@ export default function MultipleChoiceRenderer({ component }: { component: Cours
           );
         })}
       </div>
-      {config.showFeedback && options.length > 0 && (
+      {(config.revealAnswers ?? config.showFeedback) && options.length > 0 && (
         <button
           type="button"
           className={styles.submit_btn}

@@ -145,8 +145,24 @@
 /* ── Week meta inputs ── */
 .weekMeta {
   display: flex;
+  align-items: center;
   gap: 8px;
-  margin-bottom: 0;
+  margin-bottom: 6px;
+}
+
+.weekBadge {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  padding: 6px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  line-height: 1;
 }
 
 .weekTitleInput {
@@ -173,8 +189,8 @@
 }
 
 .weekThemeInput {
-  flex: 1;
-  padding: 8px 10px;
+  width: 100%;
+  padding: 7px 10px;
   font-size: 0.75rem;
   border-radius: 8px;
   border: 1px solid var(--color-border-subtle);
@@ -182,6 +198,7 @@
   color: var(--color-text-muted);
   outline: none;
   transition: border-color 0.12s ease;
+  box-sizing: border-box;
 }
 
 .weekThemeInput:focus {
@@ -241,8 +258,19 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 40px 0;
+  padding: 0;
+  flex: 1;
+  min-height: 80px;
   color: var(--color-text-faint);
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  transition: color 0.15s ease;
+}
+
+.dropZoneEmpty:hover {
+  color: var(--color-primary);
 }
 
 .dropZoneEmptyIcon {
@@ -263,35 +291,46 @@
   margin: 0;
 }
 
-/* ── Component card — placeholder style ── */
+/* ── Component card — fine-tuned like 12-week course tasks ── */
 .card {
   position: relative;
-  display: flex;
+  isolation: isolate;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 20px 3px 40px minmax(0, 1fr) auto;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--color-border-subtle);
-  background: var(--color-surface-base);
+  gap: 12px;
+  min-height: 68px;
+  padding: 10px 12px 10px 4px;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--comp-accent, var(--color-primary)) 22%, rgba(26, 29, 51, 0.06));
+  background: color-mix(in srgb, var(--comp-accent, var(--color-primary)) 7%, #ffffff);
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
   cursor: pointer;
-  transition: border-color 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  text-align: left;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .card:hover {
-  border-color: var(--color-text-muted);
-  background: var(--color-surface-2);
+  background: color-mix(in srgb, var(--comp-accent, var(--color-primary)) 11%, #ffffff);
+  border-color: color-mix(in srgb, var(--comp-accent, var(--color-primary)) 38%, rgba(26, 29, 51, 0.06));
+  box-shadow: 0 4px 16px color-mix(in oklch, var(--comp-accent, var(--color-primary)) 14%, transparent);
+  transform: translateY(-1px);
 }
 
 .cardSelected {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 1px var(--color-primary);
-  background: color-mix(in oklch, var(--color-primary) 4%, transparent);
+  border-color: color-mix(in srgb, var(--comp-accent, var(--color-primary)) 50%, rgba(26, 29, 51, 0.06));
+  box-shadow:
+    0 0 0 1px color-mix(in oklch, var(--comp-accent, var(--color-primary)) 30%, transparent),
+    0 4px 16px color-mix(in oklch, var(--comp-accent, var(--color-primary)) 14%, transparent);
+  background: color-mix(in srgb, var(--comp-accent, var(--color-primary)) 13%, #ffffff);
 }
 
 .cardDragging {
   opacity: 0.4;
 }
 
+/* ── Drag handle ── */
 .cardHandle {
   flex-shrink: 0;
   width: 20px;
@@ -314,52 +353,113 @@
   cursor: grabbing;
 }
 
-.cardIcon {
+/* ── Accent bar ── */
+.cardAccent {
+  width: 3px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--comp-accent, var(--color-primary));
   flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  background: var(--color-surface-2);
-  color: var(--color-primary);
-  border: 1px solid var(--color-border-subtle);
+  opacity: 0.85;
 }
 
+/* ── Artwork thumbnail ── */
+.cardArtwork {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  box-shadow:
+    0 0 0 1px color-mix(in oklch, var(--comp-accent, var(--color-primary)) 20%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: box-shadow 0.25s ease, transform 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.cardArtwork::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.1));
+  pointer-events: none;
+}
+
+.card:hover .cardArtwork {
+  box-shadow:
+    0 0 0 1px color-mix(in oklch, var(--comp-accent, var(--color-primary)) 32%, transparent),
+    0 3px 8px color-mix(in oklch, var(--comp-accent, var(--color-primary)) 18%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px) scale(1.02);
+}
+
+/* ── Info column ── */
 .cardInfo {
-  flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
+  align-items: flex-start;
 }
 
 .cardType {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--color-text-dark);
-}
-
-.cardTitle {
-  font-size: 0.6875rem;
-  color: var(--color-text-muted);
+  font-family: var(--font-secondary);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #1A1D33;
+  line-height: 1.3;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  max-width: 100%;
+}
+
+.cardTypeLabel {
+  font-family: var(--font-secondary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: rgba(26, 29, 51, 0.5);
+  line-height: 1.25;
+}
+
+.cardTitle {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: rgba(26, 29, 51, 0.85);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  line-height: 1.3;
 }
 
 .cardEmpty {
   font-size: 0.6875rem;
-  color: var(--color-text-faint);
+  font-weight: 400;
+  color: rgba(26, 29, 51, 0.35);
   font-style: italic;
 }
 
 .cardFilled {
   font-size: 0.6875rem;
-  color: var(--color-secondary);
+  font-weight: 400;
+  color: rgba(26, 29, 51, 0.55);
 }
 
+.cardPreview {
+  font-size: 0.6875rem;
+  font-weight: 400;
+  color: rgba(26, 29, 51, 0.55);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  line-height: 1.3;
+}
+
+/* ── Delete button ── */
 .cardDelete {
   flex-shrink: 0;
   width: 24px;
@@ -370,7 +470,7 @@
   border-radius: 6px;
   border: none;
   background: transparent;
-  color: var(--color-text-faint);
+  color: rgba(26, 29, 51, 0.25);
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.12s ease, background 0.12s ease, color 0.12s ease;
@@ -387,31 +487,47 @@
 
 /* ── Dark mode ── */
 :global([data-theme="dark"]) .card {
-  background: #1e1f2c;
-  border-color: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--comp-accent, var(--color-primary)) 10%, #1E1F2C);
+  border: 1px solid color-mix(in srgb, var(--comp-accent, var(--color-primary)) 28%, rgba(255, 255, 255, 0.06));
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
 }
 
 :global([data-theme="dark"]) .card:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--comp-accent, var(--color-primary)) 16%, #1E1F2C);
+  border-color: color-mix(in srgb, var(--comp-accent, var(--color-primary)) 45%, rgba(255, 255, 255, 0.08));
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
 }
 
 :global([data-theme="dark"]) .cardSelected {
-  border-color: var(--color-primary);
-  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
-}
-
-:global([data-theme="dark"]) .cardIcon {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.08);
-  color: #8f9bff;
+  border-color: color-mix(in srgb, var(--comp-accent, var(--color-primary)) 55%, rgba(255, 255, 255, 0.08));
+  box-shadow:
+    0 0 0 1px color-mix(in oklch, var(--comp-accent, var(--color-primary)) 35%, transparent),
+    0 8px 28px rgba(0, 0, 0, 0.55);
+  background: color-mix(in srgb, var(--comp-accent, var(--color-primary)) 18%, #1E1F2C);
 }
 
 :global([data-theme="dark"]) .cardType {
-  color: #f0f1fa;
+  color: rgba(227, 225, 238, 0.95);
 }
 
-:global([data-theme="dark"]) .cardTitle {
-  color: #9aa0c0;
+:global([data-theme="dark"]) .cardTypeLabel {
+  color: rgba(227, 225, 238, 0.5);
+}
+
+:global([data-theme="dark"]) .cardEmpty {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .cardFilled {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .cardPreview {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .cardDelete {
+  color: rgba(227, 225, 238, 0.25);
 }
 
 :global([data-theme="dark"]) .weekTitleInput {
@@ -437,8 +553,8 @@
   border-color: rgba(255, 255, 255, 0.12);
 }
 
-:global([data-theme="dark"]) .weekNavLabel {
-  color: #9aa0c0;
+:global([data-theme="dark"]) .weekBadge {
+  background: color-mix(in srgb, var(--color-primary) 18%, transparent);
 }
 
 :global([data-theme="dark"]) .dropZone {

@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
+import { ArrowCounterClockwise, Eye } from '@phosphor-icons/react';
+import CourseModule from '@/components/course-renderers/CourseModule';
 import styles from './CourseStudioModal.module.css';
 import {
   DndContext,
@@ -24,7 +26,7 @@ function collisionFallback(args: Parameters<typeof closestCenter>[0]) {
 }
 import ComponentPalette from './ComponentPalette';
 import WeekCanvas from './WeekCanvas';
-import ComponentInspector from './ComponentInspector';
+import ComponentPanel from './ComponentPanel';
 import CourseBuilderTour from './CourseBuilderTour';
 import type { VipCourseFull, CourseComponentRecord, ComponentType } from '@/lib/vip-course-db';
 
@@ -79,7 +81,18 @@ export default function CourseStudioModal({
   const [error, setError] = useState<string | null>(null);
   const [dirty, setDirty] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(true);
+  const [slugManuallyEdited, setSlugManuallyEdited] = useState(!existingCourseId);
+  const [deletedComponent, setDeletedComponent] = useState<{
+    component: CourseComponentRecord;
+    weekId: string;
+    sortOrder: number;
+  } | null>(null);
+  const [previewMode, setPreviewMode] = useState(false);
+  const undoTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const titleRef = useRef<HTMLInputElement>(null);
+
+  const deriveSlug = (val: string) =>
+    val.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/^-+|-+$/g, '');
 
   // Auto-focus the title input for new courses
   useEffect(() => {
@@ -165,14 +178,43 @@ export default function CourseStudioModal({
   };
 
   const deleteComponent = (compId: string) => {
-    setWeeks((prev) =>
-      prev.map((w) => ({
-        ...w,
-        components: w.components.filter((c) => c.id !== compId),
-      })),
-    );
+    if (undoTimeoutRef.current) clearTimeout(undoTimeoutRef.current);
+    let stored: { component: CourseComponentRecord; weekId: string; sortOrder: number } | null = null;
+    setWeeks((prev) => {
+      const next = prev.map((w) => {
+        const idx = w.components.findIndex((c) => c.id === compId);
+        if (idx !== -1) {
+          stored = { component: w.components[idx], weekId: w.id, sortOrder: idx };
+          return { ...w, components: w.components.filter((c) => c.id !== compId) };
+        }
+        return w;
+      });
+      return next;
+    });
     setSelectedComponentId(null);
     setDirty(true);
+    if (stored) {
+      setDeletedComponent(stored);
+      undoTimeoutRef.current = setTimeout(() => setDeletedComponent(null), 5000);
+    }
+  };
+
+  const undoDelete = () => {
+    if (!deletedComponent) return;
+    if (undoTimeoutRef.current) clearTimeout(undoTimeoutRef.current);
+    const { component, weekId, sortOrder } = deletedComponent;
+    const newId = tempId();
+    setWeeks((prev) =>
+      prev.map((w) => {
+        if (w.id !== weekId) return w;
+        const comps = [...w.components];
+        comps.splice(sortOrder, 0, { ...component, id: newId });
+        return { ...w, components: comps.map((c, i) => ({ ...c, sortOrder: i })) };
+      }),
+    );
+    setSelectedComponentId(newId);
+    setDirty(true);
+    setDeletedComponent(null);
   };
 
   const addWeek = () => {
@@ -259,31 +301,53 @@ export default function CourseStudioModal({
     setError(null);
     setPhase('saving');
     try {
-      const headers = await authHeaders();
-
-      if (courseId) {
-        await fetch(`/api/vip/courses/${courseId}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json', ...headers },
-          body: JSON.stringify({ title: title.trim(), slug: slug.trim(), focus: focus.trim() }),
-        });
-      } else {
-        const slugVal = slug.trim() || title.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-        const res = await fetch('/api/vip/courses', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', ...headers },
-          body: JSON.stringify({ title: title.trim(), slug: slugVal, focus: focus.trim() }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error ?? 'Failed to create course');
-        setCourseId(data.course.id);
-      }
-
+      await saveCourseData();
       onCourseCreated();
     } catch (err: any) {
       setError(err.message ?? 'Save failed');
       setPhase('edit');
     }
+  };
+
+  const saveCourseData = async () => {
+    const headers = await authHeaders();
+    if (courseId) {
+      await fetch(`/api/vip/courses/${courseId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', ...headers },
+        body: JSON.stringify({ title: title.trim(), slug: slug.trim(), focus: focus.trim() }),
+      });
+    } else {
+      const slugVal = slug.trim() || title.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      const res = await fetch('/api/vip/courses', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...headers },
+        body: JSON.stringify({ title: title.trim(), slug: slugVal, focus: focus.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? 'Failed to create course');
+      setCourseId(data.course.id);
+    }
+    setDirty(false);
+    setPhase('edit');
+  };
+
+  const handleBack = async () => {
+    if (previewMode) {
+      setPreviewMode(false);
+      return;
+    }
+    if (dirty && title.trim()) {
+      setPhase('saving');
+      try {
+        await saveCourseData();
+      } catch (err: any) {
+        setError(err.message ?? 'Save failed');
+        setPhase('edit');
+        return;
+      }
+    }
+    onClose();
   };
 
   if (phase === 'loading') {
@@ -294,6 +358,30 @@ export default function CourseStudioModal({
       </div>
     );
   }
+
+  const previewCourse: VipCourseFull = {
+    id: courseId ?? 'preview',
+    userId: '',
+    slug,
+    title,
+    focus,
+    coverImageUrl: null,
+    status: 'draft',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    weeks: weeks.map((w) => ({
+      id: w.id,
+      courseId: courseId ?? 'preview',
+      weekNumber: w.weekNumber,
+      title: w.title,
+      theme: w.theme,
+      status: 'draft' as const,
+      sortOrder: w.weekNumber - 1,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      components: w.components,
+    })),
+  };
 
   return (
     <div className={styles.layout}>
@@ -310,7 +398,7 @@ export default function CourseStudioModal({
             <div className={styles.headerLeft}>
               <button
                 type="button"
-                onClick={onClose}
+                onClick={handleBack}
                 className={styles.backBtn}
                 title="Back to courses"
               >
@@ -322,19 +410,54 @@ export default function CourseStudioModal({
                 <input
                   ref={titleRef}
                   value={title}
-                  onChange={(e) => { setTitle(e.target.value); setDirty(true); }}
+                  onChange={(e) => {
+                    setTitle(e.target.value);
+                    if (!slugManuallyEdited) {
+                      setSlug(deriveSlug(e.target.value));
+                    }
+                    setDirty(true);
+                  }}
                   placeholder="Course title"
                   className={styles.titleInput}
                   data-tour="builder-title"
                 />
-                {slug && (
-                  <span className={styles.slugText}>/{slug}</span>
-                )}
+                <span className={styles.slugPrefix}>/</span>
+                <input
+                  value={slug}
+                  onChange={(e) => {
+                    setSlug(e.target.value);
+                    setSlugManuallyEdited(true);
+                    setDirty(true);
+                  }}
+                  placeholder="url-slug"
+                  className={styles.slugInput}
+                />
               </div>
             </div>
             <div className={styles.headerActions}>
               {error && <span className={styles.errorText}>{error}</span>}
               <span className={styles.dirtyDot} data-visible={dirty ? '' : undefined} />
+              <button
+                type="button"
+                onClick={async () => {
+                  if (dirty && title.trim()) {
+                    setPhase('saving');
+                    try {
+                      await saveCourseData();
+                    } catch (err: any) {
+                      setError(err.message ?? 'Save failed');
+                      setPhase('edit');
+                      return;
+                    }
+                  }
+                  setPreviewMode(true);
+                }}
+                className={styles.previewBtn}
+                title={previewMode ? 'Back to editing' : 'Preview course'}
+              >
+                <Eye size={14} weight="bold" />
+                {previewMode ? 'Edit' : 'Preview'}
+              </button>
               <button
                 type="button"
                 onClick={saveCourse}
@@ -348,62 +471,75 @@ export default function CourseStudioModal({
           </div>
 
           {/* Body */}
-          <div className={styles.columns}>
-            {/* Left: palette drawer */}
-            <aside className={styles.paletteColumn} data-tour="builder-palette">
-              <div className={`${styles.paletteDrawer} ${drawerOpen ? '' : styles.paletteClosed}`}>
-                <ComponentPalette />
-              </div>
-              <button
-                type="button"
-                className={styles.drawerToggle}
-                onClick={() => setDrawerOpen((o) => !o)}
-                title={drawerOpen ? 'Close components' : 'Open components'}
+          {previewMode ? (
+            <div className={styles.previewBody}>
+              <CourseModule course={previewCourse} authHeaders={authHeaders} />
+            </div>
+          ) : (
+            <div className={styles.columns}>
+              {/* Left: Component panel */}
+              <motion.aside
+                className={styles.componentPanel}
+                initial={{ x: -320, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                data-tour="builder-panel"
               >
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  {drawerOpen ? <path d="M19 15l-7-7-7 7"/> : <path d="M5 9l7 7 7-7"/>}
-                </svg>
-              </button>
-            </aside>
+                <ComponentPanel
+                  component={selectedComponent}
+                  onUpdate={updateComponent}
+                  onDelete={deleteComponent}
+                  onClose={() => setSelectedComponentId(null)}
+                />
+              </motion.aside>
 
-            {/* Center: Canvas */}
-            <main className={styles.canvas} data-tour="builder-canvas">
-              <WeekCanvas
-                weeks={weeks}
-                selectedWeek={selectedWeekId}
-                onSelectWeek={setSelectedWeekId}
-                onSelectComponent={setSelectedComponentId}
-                selectedComponentId={selectedComponentId}
-                onAddWeek={addWeek}
-                onUpdateWeek={updateWeek}
-                onDeleteComponent={deleteComponent}
-                onUpdateComponent={updateComponent}
-              />
-            </main>
+              {/* Center: Canvas */}
+              <main
+                className={styles.canvas}
+                data-tour="builder-canvas"
+              >
+                <WeekCanvas
+                  weeks={weeks}
+                  selectedWeek={selectedWeekId}
+                  onSelectWeek={setSelectedWeekId}
+                  onSelectComponent={setSelectedComponentId}
+                  selectedComponentId={selectedComponentId}
+                  onAddWeek={addWeek}
+                  onUpdateWeek={updateWeek}
+                  onDeleteComponent={deleteComponent}
+                  onUpdateComponent={updateComponent}
+                  onAddComponent={addComponentToWeek}
+                />
+              </main>
 
-            {/* Right: Inspector panel */}
-            <AnimatePresence>
-              {selectedComponent && (
-                <motion.aside
-                  key={selectedComponentId}
-                  className={styles.inspectorPanel}
-                  initial={{ x: 320, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  exit={{ x: 320, opacity: 0 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 35 }}
-                  data-tour="builder-inspector"
+              {/* Right: palette drawer */}
+              <aside className={styles.paletteColumn} data-tour="builder-palette">
+                <button
+                  type="button"
+                  className={styles.drawerToggle}
+                  onClick={() => setDrawerOpen((o) => !o)}
+                  title={drawerOpen ? 'Close components' : 'Open components'}
                 >
-                  <ComponentInspector
-                    component={selectedComponent}
-                    onUpdate={updateComponent}
-                    onDelete={deleteComponent}
-                    onClose={() => setSelectedComponentId(null)}
-                  />
-                </motion.aside>
-              )}
-            </AnimatePresence>
-          </div>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    {drawerOpen ? <path d="M9 6l6 6-6 6"/> : <path d="M15 18l-6-6 6-6"/>}
+                  </svg>
+                </button>
+                <div className={`${styles.paletteDrawer} ${drawerOpen ? '' : styles.paletteClosed}`}>
+                  <ComponentPalette onAddComponent={(type) => addComponentToWeek(selectedWeekId, type)} />
+                </div>
+              </aside>
+            </div>
+          )}
         </div>
+
+        {deletedComponent && (
+          <div className={styles.toast}>
+            <span>Component removed</span>
+            <button type="button" className={styles.undoBtn} onClick={undoDelete}>
+              <ArrowCounterClockwise size={14} weight="bold" />
+              Undo
+            </button>
+          </div>
+        )}
 
         <DragOverlay>
           <AnimatePresence>

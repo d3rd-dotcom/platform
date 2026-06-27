@@ -24,24 +24,42 @@ import {
 import type { CourseComponentRecord, ComponentType } from '@/lib/vip-course-db';
 import styles from './WeekCanvas.module.css';
 
-const COMPONENT_ICONS: Record<ComponentType, React.ReactNode> = {
-  rich_text: <TextT size={18} weight="bold" />,
-  multiple_choice: <CheckSquare size={18} weight="bold" />,
-  dropdown: <CaretDown size={18} weight="bold" />,
-  image_embed: <Image size={18} weight="bold" />,
-  video_embed: <Video size={18} weight="bold" />,
-  file_upload: <UploadSimple size={18} weight="bold" />,
-  text_input: <Keyboard size={18} weight="bold" />,
-  rating_scale: <Star size={18} weight="bold" />,
-  reflection_journal: <NotePencil size={18} weight="bold" />,
-  quiz_block: <Question size={18} weight="bold" />,
-  markdown_file: <FileText size={18} weight="bold" />,
+const COMPONENT_ACCENTS: Record<ComponentType, string> = {
+  rich_text: '#5168FF',
+  multiple_choice: '#8B5CF6',
+  image_embed: '#38BDF8',
+  video_embed: '#22D3EE',
+  file_upload: '#2DD4BF',
+  text_input: '#34D399',
+  rating_scale: '#F59E0B',
+  reflection_journal: '#F472B6',
+  quiz_block: '#EF4444',
+};
+
+const COMPONENT_ARTWORKS: Record<ComponentType, string> = {
+  rich_text:
+    'linear-gradient(135deg, #5168FF 0%, #7C8FFF 40%, #A78BFA 100%), radial-gradient(120% 140% at 20% 30%, rgba(255,255,255,0.35) 0%, transparent 70%)',
+  multiple_choice:
+    'linear-gradient(135deg, #7C3AED 0%, #A78BFA 40%, #C4B5FD 100%), radial-gradient(120% 120% at 80% 20%, rgba(255,255,255,0.4) 0%, transparent 65%)',
+  image_embed:
+    'linear-gradient(135deg, #0284C7 0%, #38BDF8 45%, #7DD3FC 100%), radial-gradient(130% 110% at 60% 40%, rgba(255,255,255,0.4) 0%, transparent 60%)',
+  video_embed:
+    'linear-gradient(135deg, #0891B2 0%, #22D3EE 50%, #67E8F9 100%), radial-gradient(120% 140% at 40% 30%, rgba(255,255,255,0.35) 0%, transparent 65%)',
+  file_upload:
+    'linear-gradient(135deg, #0D9488 0%, #2DD4BF 45%, #5EEAD4 100%), radial-gradient(130% 120% at 70% 60%, rgba(255,255,255,0.3) 0%, transparent 55%)',
+  text_input:
+    'linear-gradient(135deg, #059669 0%, #34D399 50%, #6EE7B7 100%), radial-gradient(110% 130% at 20% 80%, rgba(255,255,255,0.4) 0%, transparent 60%)',
+  rating_scale:
+    'linear-gradient(135deg, #D97706 0%, #F59E0B 45%, #FCD34D 100%), radial-gradient(120% 120% at 50% 20%, rgba(255,255,255,0.4) 0%, transparent 60%)',
+  reflection_journal:
+    'linear-gradient(135deg, #DB2777 0%, #F472B6 50%, #F9A8D4 100%), radial-gradient(130% 140% at 30% 40%, rgba(255,255,255,0.35) 0%, transparent 65%)',
+  quiz_block:
+    'linear-gradient(135deg, #DC2626 0%, #F87171 45%, #FCA5A5 100%), radial-gradient(120% 130% at 70% 30%, rgba(255,255,255,0.4) 0%, transparent 60%)',
 };
 
 const COMPONENT_LABELS: Record<ComponentType, string> = {
   rich_text: 'Rich Text',
   multiple_choice: 'Multiple Choice',
-  dropdown: 'Dropdown',
   image_embed: 'Image',
   video_embed: 'Video',
   file_upload: 'File Upload',
@@ -49,8 +67,50 @@ const COMPONENT_LABELS: Record<ComponentType, string> = {
   rating_scale: 'Rating',
   reflection_journal: 'Journal',
   quiz_block: 'Quiz',
-  markdown_file: 'Markdown',
 };
+
+function getComponentPreview(component: CourseComponentRecord): string | null {
+  const config = (component.config ?? {}) as Record<string, unknown>;
+  switch (component.componentType) {
+    case 'rich_text': {
+      const content = config.content as string | undefined;
+      return content ? content.slice(0, 90) + (content.length > 90 ? '…' : '') : null;
+    }
+    case 'multiple_choice': {
+      const q = config.question as string | undefined;
+      const opts = config.options as Array<{ id: string; text: string; isCorrect: boolean }> | undefined;
+      if (!opts || opts.length === 0) return q ?? null;
+      const correct = opts.filter((o) => o.isCorrect).length;
+      const summary = `${opts.length} option${opts.length === 1 ? '' : 's'}${correct > 0 ? ` · ${correct} correct` : ''}`;
+      return q ? `${q} — ${summary}` : summary;
+    }
+    case 'image_embed':
+      return (config.alt as string) || (config.url as string) || null;
+    case 'video_embed':
+      return (config.url as string) ?? null;
+    case 'text_input':
+      return (config.placeholder as string) ?? null;
+    case 'rating_scale': {
+      const min = config.min ?? 1;
+      const max = config.max ?? 5;
+      return `${min}–${max} scale`;
+    }
+    case 'reflection_journal': {
+      const prompt = config.prompt as string | undefined;
+      return prompt ? prompt.slice(0, 90) + (prompt.length > 90 ? '…' : '') : null;
+    }
+    case 'quiz_block': {
+      const timeLimit = config.timeLimitMinutes as number | undefined;
+      return timeLimit ? `${timeLimit} min quiz` : 'Quiz';
+    }
+    case 'file_upload': {
+      const types = config.acceptedTypes as string[] | undefined;
+      return types?.length ? types.join(', ') : 'File upload';
+    }
+    default:
+      return null;
+  }
+}
 
 interface StudioWeek {
   id: string;
@@ -70,6 +130,7 @@ interface WeekCanvasProps {
   onUpdateWeek: (weekId: string, updates: { title?: string; theme?: string }) => void;
   onDeleteComponent: (compId: string) => void;
   onUpdateComponent: (compId: string, updates: Partial<CourseComponentRecord>) => void;
+  onAddComponent: (weekId: string, type: ComponentType, config?: Record<string, unknown>) => void;
 }
 
 function WysiwygComponent({
@@ -93,13 +154,15 @@ function WysiwygComponent({
     transition,
   };
 
-  const hasConfig = component.config && Object.keys(component.config).length > 0;
+  const accent = COMPONENT_ACCENTS[component.componentType];
+  const artwork = COMPONENT_ARTWORKS[component.componentType];
   const hasTitle = !!component.title;
+  const preview = getComponentPreview(component);
 
   return (
     <div
       ref={setNodeRef}
-      style={style}
+      style={{ ...style, '--comp-accent': accent } as React.CSSProperties}
       className={`${styles.card} ${isSelected ? styles.cardSelected : ''} ${isDragging ? styles.cardDragging : ''}`}
       onClick={(e) => { e.stopPropagation(); onSelect(component.id); }}
     >
@@ -107,22 +170,23 @@ function WysiwygComponent({
         <DotsSixVertical size={12} weight="bold" />
       </div>
 
-      <span className={styles.cardIcon}>
-        {COMPONENT_ICONS[component.componentType]}
-      </span>
+      <span className={styles.cardAccent} aria-hidden="true" />
+
+      <span className={styles.cardArtwork} style={{ backgroundImage: artwork }} aria-hidden="true" />
 
       <div className={styles.cardInfo}>
-        <span className={styles.cardType}>
-          {COMPONENT_LABELS[component.componentType]}
-        </span>
-        {hasTitle && (
-          <span className={styles.cardTitle}>{component.title}</span>
+        {hasTitle ? (
+          <span className={styles.cardType}>{component.title}</span>
+        ) : (
+          <span className={styles.cardTypeLabel}>
+            {COMPONENT_LABELS[component.componentType]}
+          </span>
         )}
-        {!hasTitle && !hasConfig && (
+        {preview && (
+          <span className={styles.cardPreview}>{preview}</span>
+        )}
+        {!hasTitle && !preview && (
           <span className={styles.cardEmpty}>Tap to add content</span>
-        )}
-        {!hasTitle && hasConfig && (
-          <span className={styles.cardFilled}>Has content</span>
         )}
       </div>
 
@@ -144,12 +208,14 @@ function WeekDropZone({
   selectedComponentId,
   onSelectComponent,
   onDeleteComponent,
+  onAddComponent,
 }: {
   week: StudioWeek;
   components: CourseComponentRecord[];
   selectedComponentId: string | null;
   onSelectComponent: (id: string | null) => void;
   onDeleteComponent: (id: string) => void;
+  onAddComponent: (weekId: string, type: ComponentType, config?: Record<string, unknown>) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({
     id: `week-${week.id}`,
@@ -162,12 +228,15 @@ function WeekDropZone({
       className={`${styles.dropZone} ${isOver ? styles.dropZoneOver : ''}`}
     >
       {components.length === 0 && (
-        <div className={styles.dropZoneEmpty}>
+        <button
+          type="button"
+          className={styles.dropZoneEmpty}
+          onClick={() => onAddComponent(week.id, 'rich_text')}
+        >
           <span className={styles.dropZoneEmptyIcon}>
             <Plus size={20} weight="bold" />
           </span>
-          <span className={styles.dropZoneEmptyText}>Drag components here or use the palette</span>
-        </div>
+        </button>
       )}
       <SortableContext items={components.map((c) => c.id)} strategy={verticalListSortingStrategy}>
         {components.map((comp) => (
@@ -193,6 +262,8 @@ export default function WeekCanvas({
   onAddWeek,
   onUpdateWeek,
   onDeleteComponent,
+  onUpdateComponent,
+  onAddComponent,
 }: WeekCanvasProps) {
   const currentWeek = weeks.find((w) => w.id === selectedWeek);
   if (!currentWeek && weeks.length === 0) {
@@ -259,27 +330,24 @@ export default function WeekCanvas({
         >
           <ArrowRight size={14} weight="bold" />
         </button>
-
-        <span className={styles.weekNavLabel}>
-          {displayWeek.title || `Week ${displayWeek.weekNumber}`}
-        </span>
       </div>
 
-      {/* Week theme input */}
+      {/* Week meta inputs */}
       <div className={styles.weekMeta}>
+        <span className={styles.weekBadge}>Week {displayWeek.weekNumber}</span>
         <input
           value={displayWeek.title}
           onChange={(e) => onUpdateWeek(displayWeek.id, { title: e.target.value })}
-          placeholder="Week title"
+          placeholder="Name this week, e.g. Mindfulness Basics"
           className={styles.weekTitleInput}
         />
-        <input
-          value={displayWeek.theme}
-          onChange={(e) => onUpdateWeek(displayWeek.id, { theme: e.target.value })}
-          placeholder="Theme (optional)"
-          className={styles.weekThemeInput}
-        />
       </div>
+      <input
+        value={displayWeek.theme}
+        onChange={(e) => onUpdateWeek(displayWeek.id, { theme: e.target.value })}
+        placeholder="Theme — shows as subtitle in the course view"
+        className={styles.weekThemeInput}
+      />
 
       {/* Missions heading row — like /course */}
       <div className={styles.missionsHeadingRow} aria-hidden="true">
@@ -295,6 +363,7 @@ export default function WeekCanvas({
         selectedComponentId={selectedComponentId}
         onSelectComponent={onSelectComponent}
         onDeleteComponent={onDeleteComponent}
+        onAddComponent={onAddComponent}
       />
     </div>
   );

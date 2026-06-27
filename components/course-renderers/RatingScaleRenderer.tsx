@@ -9,6 +9,8 @@ interface RatingScaleConfig {
   max?: number;
   step?: number;
   labels?: Record<number, string>;
+  minLabel?: string;
+  maxLabel?: string;
 }
 
 export default function RatingScaleRenderer({ component }: { component: CourseComponentRecord }) {
@@ -38,6 +40,11 @@ export default function RatingScaleRenderer({ component }: { component: CourseCo
       </div>
       {value !== null && config.labels?.[value] && (
         <p className={styles.label_text}>{config.labels[value]}</p>
+      )}
+      {value === null && (config.minLabel || config.maxLabel) && (
+        <p className={styles.label_text}>
+          {config.minLabel}{config.minLabel && config.maxLabel ? ' — ' : ''}{config.maxLabel}
+        </p>
       )}
     </div>
   );

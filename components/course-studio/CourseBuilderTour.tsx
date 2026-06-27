@@ -28,9 +28,9 @@ const STEPS = [
     cta: 'Next',
   },
   {
-    target: 'builder-inspector',
+    target: 'builder-panel',
     title: 'Edit content',
-    body: 'The inspector lets you write content, configure options, and adjust each component. Tap any component on the canvas to open it.',
+    body: 'The panel lets you write content, configure options, and adjust each component. Tap any component on the canvas to open it.',
     cta: 'Done',
   },
 ];

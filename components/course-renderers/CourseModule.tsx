@@ -8,6 +8,7 @@ import styles from './CourseModule.module.css';
 interface CourseModuleProps {
   courseSlug?: string;
   courseId?: string;
+  course?: VipCourseFull;
   weekNumber?: number;
   authHeaders?: () => Promise<HeadersInit>;
 }
@@ -15,14 +16,20 @@ interface CourseModuleProps {
 export default function CourseModule({
   courseSlug,
   courseId,
+  course: directCourse,
   weekNumber = 1,
   authHeaders,
 }: CourseModuleProps) {
-  const [course, setCourse] = useState<VipCourseFull | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [course, setCourse] = useState<VipCourseFull | null>(directCourse ?? null);
+  const [loading, setLoading] = useState(!directCourse);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (directCourse) {
+      setCourse(directCourse);
+      setLoading(false);
+      return;
+    }
     if (!courseId && !courseSlug) { setLoading(false); return; }
 
     const url = courseId
@@ -41,7 +48,7 @@ export default function CourseModule({
         .catch((err) => setError(err.message))
         .finally(() => setLoading(false));
     })();
-  }, [courseId, courseSlug, authHeaders]);
+  }, [courseId, courseSlug, directCourse, authHeaders]);
 
   if (loading) return <div className={styles.loading}>Loading course...</div>;
   if (error) return <div className={styles.error}>{error}</div>;
