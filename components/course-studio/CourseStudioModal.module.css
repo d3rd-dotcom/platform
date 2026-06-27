@@ -33,6 +33,8 @@
   border-bottom: 1px solid var(--color-border-subtle);
   flex-shrink: 0;
   gap: 12px;
+  background: var(--color-surface-base);
+  z-index: 10;
 }
 
 .headerLeft {
@@ -52,16 +54,21 @@
 }
 
 .backBtn {
-  padding: 4px 10px;
+  padding: 6px;
   font-size: 1rem;
   border-radius: 8px;
   border: 1px solid var(--color-border-subtle);
   background: var(--color-surface-base);
   color: var(--color-text-muted);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.12s ease;
   flex-shrink: 0;
   line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
 }
 
 .backBtn:hover {
@@ -78,7 +85,7 @@
   width: 100%;
   min-width: 120px;
   color: var(--color-text-dark);
-  font-family: var(--font-display, sans-serif);
+  font-family: var(--font-display, var(--font-secondary));
 }
 
 .titleInput::placeholder {
@@ -86,9 +93,10 @@
   opacity: 0.5;
 }
 
-.weekCount {
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
+.slugText {
+  font-size: 0.6875rem;
+  color: var(--color-text-faint);
+  font-family: var(--font-mono);
   flex-shrink: 0;
 }
 
@@ -113,21 +121,24 @@
 }
 
 .errorText {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: #ef4444;
 }
 
 .saveBtn {
-  padding: 6px 16px;
-  font-size: 0.8125rem;
+  padding: 7px 18px;
+  font-size: 0.75rem;
   border-radius: 8px;
   border: none;
   background: var(--color-primary);
   color: #fff;
   cursor: pointer;
   font-weight: 600;
-  transition: opacity 0.15s ease;
+  transition: opacity 0.12s ease;
   white-space: nowrap;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .saveBtn:hover {
@@ -139,7 +150,7 @@
   cursor: default;
 }
 
-/* ── Left: collapsible game drawer ── */
+/* ── Left: collapsible palette drawer ── */
 .paletteColumn {
   display: flex;
   flex-shrink: 0;
@@ -147,15 +158,16 @@
 }
 
 .paletteDrawer {
-  width: 192px;
+  width: 200px;
   flex-shrink: 0;
   padding: 16px;
   border-right: 1px solid var(--color-border-subtle);
   overflow-y: auto;
   overflow-x: hidden;
-  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-              padding 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-              opacity 0.2s ease;
+  transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              padding 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.15s ease;
+  background: var(--color-surface-base);
 }
 
 .paletteClosed {
@@ -172,69 +184,47 @@
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
-  background: var(--color-primary);
-  color: #fff;
-  border: none;
-  border-radius: 0 8px 8px 0;
-  padding: 10px 5px;
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border-subtle);
+  border-left: none;
+  border-radius: 0 7px 7px 0;
+  padding: 8px 4px;
   cursor: pointer;
-  font-size: 0.65rem;
   line-height: 1;
-  transition: background 0.15s ease, padding 0.15s ease;
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
+  transition: background 0.12s ease, color 0.12s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .drawerToggle:hover {
-  background: var(--color-primary-hover);
-  padding-right: 7px;
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
 }
 
 /* ── Center: Canvas ── */
 .canvas {
   flex: 1;
-  padding: 20px 24px;
+  padding: 24px 28px;
   overflow-y: auto;
   min-width: 0;
+  max-width: 680px;
 }
 
-/* ── Right: Inspector overlay card ── */
-.inspectorOverlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  justify-content: flex-end;
-  z-index: 20;
-  pointer-events: none;
-}
-
-.inspectorBackdrop {
-  position: absolute;
-  inset: 0;
-  pointer-events: auto;
-}
-
-.inspectorCard {
+/* ── Right: Inspector panel ── */
+.inspectorPanel {
   width: 320px;
   max-width: 90vw;
+  flex-shrink: 0;
   height: 100%;
   overflow-y: auto;
   background: var(--color-surface-base);
   border-left: 1px solid var(--color-border-subtle);
   padding: 20px;
-  pointer-events: auto;
-  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.08);
-  animation: slideIn 0.2s ease;
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.06);
+  z-index: 15;
 }
 
 /* ── Drag overlay item ── */
@@ -242,22 +232,21 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 16px;
-  border-radius: 12px;
+  padding: 8px 14px;
+  border-radius: 8px;
   background: var(--color-primary);
   color: #fff;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 0 0 2px rgba(255, 255, 255, 0.3);
-  transform: rotate(-3deg) scale(1.05);
+  font-size: 0.75rem;
+  font-weight: 600;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.2);
   pointer-events: none;
   text-transform: capitalize;
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
 }
 
-.dragOverlayIcon {
-  font-size: 1.3rem;
+.dragOverlayLabel {
   line-height: 1;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 .loading {
@@ -268,14 +257,14 @@
   color: var(--color-text-muted);
 }
 
-/* ── Dark mode tweaks ── */
-:global([data-theme="dark"]) .inspectorCard {
+/* ── Dark mode ── */
+:global([data-theme="dark"]) .inspectorPanel {
   background: #1a1b28;
-  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.4);
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.35);
 }
 
 :global([data-theme="dark"]) .backBtn {
-  background: #1e1f2c;
+  background: rgba(255, 255, 255, 0.04);
   border-color: rgba(255, 255, 255, 0.1);
   color: #9aa0c0;
 }
@@ -283,4 +272,25 @@
 :global([data-theme="dark"]) .backBtn:hover {
   color: #f0f1fa;
   border-color: rgba(255, 255, 255, 0.2);
+}
+
+:global([data-theme="dark"]) .saveBtn {
+  background: var(--color-primary);
+}
+
+:global([data-theme="dark"]) .paletteDrawer {
+  background: #1a1b28;
+  border-right-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .drawerToggle {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #9aa0c0;
+}
+
+:global([data-theme="dark"]) .drawerToggle:hover {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
 }

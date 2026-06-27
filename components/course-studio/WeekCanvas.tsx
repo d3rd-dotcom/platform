@@ -3,11 +3,54 @@
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import dynamic from 'next/dynamic';
-import type { CourseComponentRecord } from '@/lib/vip-course-db';
+import {
+  TextT,
+  CheckSquare,
+  CaretDown,
+  Image,
+  Video,
+  UploadSimple,
+  Keyboard,
+  Star,
+  NotePencil,
+  Question,
+  FileText,
+  Plus,
+  DotsSixVertical,
+  Trash,
+  ArrowLeft,
+  ArrowRight,
+} from '@phosphor-icons/react';
+import type { CourseComponentRecord, ComponentType } from '@/lib/vip-course-db';
 import styles from './WeekCanvas.module.css';
 
-const ComponentRenderer = dynamic(() => import('@/components/course-renderers/ComponentRenderer'), { ssr: false });
+const COMPONENT_ICONS: Record<ComponentType, React.ReactNode> = {
+  rich_text: <TextT size={18} weight="bold" />,
+  multiple_choice: <CheckSquare size={18} weight="bold" />,
+  dropdown: <CaretDown size={18} weight="bold" />,
+  image_embed: <Image size={18} weight="bold" />,
+  video_embed: <Video size={18} weight="bold" />,
+  file_upload: <UploadSimple size={18} weight="bold" />,
+  text_input: <Keyboard size={18} weight="bold" />,
+  rating_scale: <Star size={18} weight="bold" />,
+  reflection_journal: <NotePencil size={18} weight="bold" />,
+  quiz_block: <Question size={18} weight="bold" />,
+  markdown_file: <FileText size={18} weight="bold" />,
+};
+
+const COMPONENT_LABELS: Record<ComponentType, string> = {
+  rich_text: 'Rich Text',
+  multiple_choice: 'Multiple Choice',
+  dropdown: 'Dropdown',
+  image_embed: 'Image',
+  video_embed: 'Video',
+  file_upload: 'File Upload',
+  text_input: 'Text Input',
+  rating_scale: 'Rating',
+  reflection_journal: 'Journal',
+  quiz_block: 'Quiz',
+  markdown_file: 'Markdown',
+};
 
 interface StudioWeek {
   id: string;
@@ -34,13 +77,11 @@ function WysiwygComponent({
   isSelected,
   onSelect,
   onDelete,
-  onComponentUpdate,
 }: {
   component: CourseComponentRecord;
   isSelected: boolean;
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
-  onComponentUpdate?: (id: string, updates: Partial<CourseComponentRecord>) => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: component.id,
@@ -52,6 +93,9 @@ function WysiwygComponent({
     transition,
   };
 
+  const hasConfig = component.config && Object.keys(component.config).length > 0;
+  const hasTitle = !!component.title;
+
   return (
     <div
       ref={setNodeRef}
@@ -59,31 +103,37 @@ function WysiwygComponent({
       className={`${styles.card} ${isSelected ? styles.cardSelected : ''} ${isDragging ? styles.cardDragging : ''}`}
       onClick={(e) => { e.stopPropagation(); onSelect(component.id); }}
     >
-      {/* Drag handle — only visible on hover */}
-      <div className={styles.handle} {...attributes} {...listeners}>
-        <span className={styles.handleIcon}>⋮⋮</span>
+      <div className={styles.cardHandle} {...attributes} {...listeners}>
+        <DotsSixVertical size={12} weight="bold" />
       </div>
 
-      {/* Delete button — only visible on hover */}
+      <span className={styles.cardIcon}>
+        {COMPONENT_ICONS[component.componentType]}
+      </span>
+
+      <div className={styles.cardInfo}>
+        <span className={styles.cardType}>
+          {COMPONENT_LABELS[component.componentType]}
+        </span>
+        {hasTitle && (
+          <span className={styles.cardTitle}>{component.title}</span>
+        )}
+        {!hasTitle && !hasConfig && (
+          <span className={styles.cardEmpty}>Tap to add content</span>
+        )}
+        {!hasTitle && hasConfig && (
+          <span className={styles.cardFilled}>Has content</span>
+        )}
+      </div>
+
       <button
         type="button"
-        className={styles.deleteBtn}
+        className={styles.cardDelete}
         onClick={(e) => { e.stopPropagation(); onDelete(component.id); }}
         title="Remove component"
       >
-        ✕
+        <Trash size={12} weight="bold" />
       </button>
-
-      {/* Match CourseModule .component_card exactly */}
-      <div className={styles.cardBody}>
-        {component.title && (
-          <h3 className={styles.cardTitle}>{component.title}</h3>
-        )}
-        <ComponentRenderer
-          component={component}
-          onComponentUpdate={(updates) => onComponentUpdate?.(component.id, updates)}
-        />
-      </div>
     </div>
   );
 }
@@ -94,14 +144,12 @@ function WeekDropZone({
   selectedComponentId,
   onSelectComponent,
   onDeleteComponent,
-  onComponentUpdate,
 }: {
   week: StudioWeek;
   components: CourseComponentRecord[];
   selectedComponentId: string | null;
   onSelectComponent: (id: string | null) => void;
   onDeleteComponent: (id: string) => void;
-  onComponentUpdate?: (id: string, updates: Partial<CourseComponentRecord>) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({
     id: `week-${week.id}`,
@@ -114,9 +162,12 @@ function WeekDropZone({
       className={`${styles.dropZone} ${isOver ? styles.dropZoneOver : ''}`}
     >
       {components.length === 0 && (
-        <p className={styles.dropZoneEmpty}>
-          Drag blocks from the Item Shop to build your course
-        </p>
+        <div className={styles.dropZoneEmpty}>
+          <span className={styles.dropZoneEmptyIcon}>
+            <Plus size={20} weight="bold" />
+          </span>
+          <span className={styles.dropZoneEmptyText}>Drag components here or use the palette</span>
+        </div>
       )}
       <SortableContext items={components.map((c) => c.id)} strategy={verticalListSortingStrategy}>
         {components.map((comp) => (
@@ -126,7 +177,6 @@ function WeekDropZone({
             isSelected={selectedComponentId === comp.id}
             onSelect={onSelectComponent}
             onDelete={onDeleteComponent}
-            onComponentUpdate={onComponentUpdate}
           />
         ))}
       </SortableContext>
@@ -143,7 +193,6 @@ export default function WeekCanvas({
   onAddWeek,
   onUpdateWeek,
   onDeleteComponent,
-  onUpdateComponent,
 }: WeekCanvasProps) {
   const currentWeek = weeks.find((w) => w.id === selectedWeek);
   if (!currentWeek && weeks.length === 0) {
@@ -151,62 +200,101 @@ export default function WeekCanvas({
       <div className={styles.empty}>
         <p className={styles.emptyText}>No weeks yet</p>
         <button type="button" onClick={onAddWeek} className={styles.addWeekBtn}>
-          + Add Week
+          <Plus size={14} weight="bold" />
+          Add Week
         </button>
       </div>
     );
   }
 
   const displayWeek = currentWeek ?? weeks[0];
+  const currentIndex = weeks.findIndex((w) => w.id === displayWeek.id);
 
   return (
-    <div>
-      {/* Week tabs */}
-      <div className={styles.tabs}>
-        {weeks.map((week) => (
-          <button
-            key={week.id}
-            type="button"
-            onClick={() => onSelectWeek(week.id)}
-            className={`${styles.tab} ${week.id === displayWeek.id ? styles.tabActive : styles.tabInactive}`}
-          >
-            {week.title || `Week ${week.weekNumber}`}
-          </button>
-        ))}
+    <div className={styles.canvasInner}>
+      {/* Week nav — dot style like /course */}
+      <div className={styles.weekNav}>
         <button
           type="button"
-          onClick={onAddWeek}
-          className={styles.addTab}
-          title="Add week"
+          className={styles.weekNavArrow}
+          onClick={() => {
+            const idx = Math.max(0, currentIndex - 1);
+            onSelectWeek(weeks[idx].id);
+          }}
+          disabled={currentIndex <= 0}
+          aria-label="Previous week"
         >
-          +
+          <ArrowLeft size={14} weight="bold" />
         </button>
+
+        <div className={styles.weekNavDots}>
+          {weeks.map((week, i) => (
+            <button
+              key={week.id}
+              type="button"
+              className={`${styles.weekDot} ${week.id === displayWeek.id ? styles.weekDotActive : ''}`}
+              onClick={() => onSelectWeek(week.id)}
+              title={week.title || `Week ${week.weekNumber}`}
+            />
+          ))}
+          <button
+            type="button"
+            onClick={onAddWeek}
+            className={styles.weekDotAdd}
+            title="Add week"
+          >
+            <Plus size={10} weight="bold" />
+          </button>
+        </div>
+
+        <button
+          type="button"
+          className={styles.weekNavArrow}
+          onClick={() => {
+            const idx = Math.min(weeks.length - 1, currentIndex + 1);
+            onSelectWeek(weeks[idx].id);
+          }}
+          disabled={currentIndex >= weeks.length - 1}
+          aria-label="Next week"
+        >
+          <ArrowRight size={14} weight="bold" />
+        </button>
+
+        <span className={styles.weekNavLabel}>
+          {displayWeek.title || `Week ${displayWeek.weekNumber}`}
+        </span>
       </div>
 
-      {/* Week title/theme editor */}
-      <div className={styles.weekEditor}>
+      {/* Week theme input */}
+      <div className={styles.weekMeta}>
         <input
           value={displayWeek.title}
           onChange={(e) => onUpdateWeek(displayWeek.id, { title: e.target.value })}
           placeholder="Week title"
-          className={styles.weekInput}
+          className={styles.weekTitleInput}
         />
         <input
           value={displayWeek.theme}
           onChange={(e) => onUpdateWeek(displayWeek.id, { theme: e.target.value })}
           placeholder="Theme (optional)"
-          className={styles.weekInput}
+          className={styles.weekThemeInput}
         />
       </div>
 
-      {/* Drop zone with WYSIWYG components */}
+      {/* Missions heading row — like /course */}
+      <div className={styles.missionsHeadingRow} aria-hidden="true">
+        <span className={styles.missionsDivider} />
+        <h2 className={styles.missionsHeading}>Components</h2>
+        <span className={styles.missionsDivider} />
+      </div>
+
+      {/* Drop zone with components */}
       <WeekDropZone
         week={displayWeek}
         components={displayWeek.components}
         selectedComponentId={selectedComponentId}
         onSelectComponent={onSelectComponent}
         onDeleteComponent={onDeleteComponent}
-        onComponentUpdate={onUpdateComponent}
       />
     </div>
   );

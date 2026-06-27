@@ -5,136 +5,228 @@
   align-items: center;
   justify-content: center;
   height: 100%;
+  gap: 16px;
   color: var(--color-text-muted);
+  padding: 64px 0;
 }
 
 .emptyText {
   font-size: 0.8125rem;
-  margin-bottom: 12px;
+  margin: 0;
+  color: var(--color-text-faint);
 }
 
 .addWeekBtn {
-  padding: 6px 14px;
-  font-size: 0.8125rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 0.75rem;
   border-radius: 8px;
-  border: none;
-  background: var(--color-primary);
-  color: #fff;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-base);
+  color: var(--color-primary);
   cursor: pointer;
   font-weight: 600;
+  transition: all 0.12s ease;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .addWeekBtn:hover {
-  opacity: 0.85;
+  background: var(--color-surface-2);
+  border-color: var(--color-primary);
 }
 
-/* ── Week tabs ── */
-.tabs {
+.canvasInner {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Week nav — dot style like /course ── */
+.weekNav {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
   margin-bottom: 16px;
-  overflow-x: auto;
-  padding-bottom: 4px;
+  padding: 0 2px;
 }
 
-.tab {
-  padding: 6px 12px;
-  font-size: 0.8125rem;
+.weekNavArrow {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface-base);
+  border: 1px solid var(--color-border-subtle);
   border-radius: 8px;
-  border: none;
-  white-space: nowrap;
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease;
-  font-weight: 500;
+  color: var(--color-text-muted);
+  transition: all 0.12s ease;
 }
 
-.tabActive {
+.weekNavArrow:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.weekNavArrow:disabled {
+  opacity: 0.22;
+  cursor: not-allowed;
+}
+
+.weekNavDots {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.weekDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-surface-3);
+  border: 1.5px solid var(--color-border-subtle);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.12s ease;
+}
+
+.weekDot:hover {
+  background: color-mix(in oklch, var(--color-primary) 30%, transparent);
+}
+
+.weekDotActive {
   background: var(--color-primary);
-  color: #fff;
+  border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
+  transform: scale(1.2);
 }
 
-.tabInactive {
-  background: #f0f1fa;
-  color: var(--color-text-muted);
-}
-
-.tabInactive:hover {
-  background: #e4e5f0;
-}
-
-.addTab {
-  padding: 6px 8px;
-  font-size: 0.8125rem;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  color: var(--color-text-muted);
+.weekDotAdd {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px dashed var(--color-border-subtle);
   background: transparent;
-  transition: color 0.15s ease, background 0.15s ease;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-faint);
+  transition: all 0.12s ease;
 }
 
-.addTab:hover {
-  color: var(--color-text-dark);
-  background: #f0f1fa;
+.weekDotAdd:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
 }
 
-:global([data-theme="dark"]) .tabInactive {
-  background: #2a2b3a;
-  color: #9aa0c0;
+.weekNavLabel {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--color-text-faint);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  min-width: 48px;
+  text-align: right;
 }
 
-:global([data-theme="dark"]) .tabInactive:hover {
-  background: #35364a;
-}
-
-:global([data-theme="dark"]) .addTab:hover {
-  color: #f0f1fa;
-  background: #2a2b3a;
-}
-
-/* ── Week editor (title + theme inputs) ── */
-.weekEditor {
+/* ── Week meta inputs ── */
+.weekMeta {
   display: flex;
   gap: 8px;
-  margin-bottom: 24px;
+  margin-bottom: 0;
 }
 
-.weekInput {
+.weekTitleInput {
   flex: 1;
-  padding: 8px;
-  font-size: 0.8125rem;
-  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 8px;
   border: 1px solid var(--color-border-subtle);
   background: var(--color-surface-base);
   color: var(--color-text-dark);
   outline: none;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.12s ease;
+  font-family: var(--font-secondary);
 }
 
-.weekInput:focus {
+.weekTitleInput:focus {
   border-color: var(--color-primary);
 }
 
-.weekInput::placeholder {
-  color: var(--color-text-muted);
+.weekTitleInput::placeholder {
+  color: var(--color-text-faint);
+  font-weight: 400;
 }
 
-:global([data-theme="dark"]) .weekInput {
-  background: #1e1f2c;
-  border-color: rgba(255, 255, 255, 0.1);
-  color: #f0f1fa;
+.weekThemeInput {
+  flex: 1;
+  padding: 8px 10px;
+  font-size: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-base);
+  color: var(--color-text-muted);
+  outline: none;
+  transition: border-color 0.12s ease;
+}
+
+.weekThemeInput:focus {
+  border-color: var(--color-primary);
+}
+
+.weekThemeInput::placeholder {
+  color: var(--color-text-faint);
+}
+
+/* ── Missions heading row — like /course ── */
+.missionsHeadingRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 4px 12px;
+}
+
+.missionsDivider {
+  flex: 1;
+  height: 1px;
+  background: var(--color-border-subtle);
+}
+
+.missionsHeading {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-faint);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  margin: 0;
 }
 
 /* ── Drop zone ── */
 .dropZone {
-  min-height: 120px;
+  min-height: 80px;
   display: flex;
   flex-direction: column;
-  border: 1px dashed var(--color-border-subtle);
-  border-radius: 8px;
-  padding: 16px;
-  transition: border-color 0.2s ease, background 0.2s ease;
+  gap: 6px;
+  border: 1.5px dashed var(--color-border-subtle);
+  border-radius: 12px;
+  padding: 12px;
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
 
 .dropZoneOver {
@@ -144,129 +236,226 @@
 }
 
 .dropZoneEmpty {
-  font-size: 0.8125rem;
-  color: var(--color-text-muted);
-  text-align: center;
-  padding: 48px 0;
-  font-style: italic;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 40px 0;
+  color: var(--color-text-faint);
 }
 
-.dropZoneEmpty {
-  font-size: 0.8125rem;
-  color: var(--color-text-muted);
-  text-align: center;
-  padding: 48px 0;
-  font-style: italic;
+.dropZoneEmptyIcon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border-subtle);
+  color: var(--color-text-faint);
 }
 
-/* ── Component card — matches CourseModule .component_card ── */
+.dropZoneEmptyText {
+  font-size: 0.75rem;
+  color: var(--color-text-faint);
+  margin: 0;
+}
+
+/* ── Component card — placeholder style ── */
 .card {
   position: relative;
-  padding: 16px;
-  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
   border: 1px solid var(--color-border-subtle);
   background: var(--color-surface-base);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-.card + .card {
-  margin-top: 24px;
+  cursor: pointer;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
 }
 
 .card:hover {
   border-color: var(--color-text-muted);
+  background: var(--color-surface-2);
 }
 
 .cardSelected {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 1px var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 4%, transparent);
 }
 
 .cardDragging {
   opacity: 0.4;
 }
 
-/* ── Card body — matches CourseModule inner content ── */
-.cardBody {
-  /* same as CourseModule .component_card */
-}
-
-.cardTitle {
-  font-weight: 500;
-  font-size: 0.8125rem;
-  color: var(--color-text-muted);
-  margin: 0 0 8px 0;
-}
-
-/* ── Drag handle — visible on hover ── */
-.handle {
-  position: absolute;
-  top: -1px;
-  left: -1px;
-  right: -1px;
-  height: 24px;
+.cardHandle {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: grab;
+  color: var(--color-text-faint);
   opacity: 0;
-  transition: opacity 0.15s ease;
-  border-radius: 8px 8px 0 0;
-  z-index: 5;
+  transition: opacity 0.12s ease;
+  border-radius: 4px;
 }
 
-.card:hover .handle {
+.card:hover .cardHandle {
   opacity: 1;
 }
 
-.handle:active {
+.cardHandle:active {
   cursor: grabbing;
 }
 
-.handleIcon {
-  font-size: 0.75rem;
-  letter-spacing: -0.04em;
-  color: var(--color-text-muted);
-}
-
-/* ── Delete button — visible on hover ── */
-.deleteBtn {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
-  border: none;
-  background: transparent;
-  color: var(--color-text-muted);
-  font-size: 0.65rem;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.15s ease, background 0.15s ease, color 0.15s ease;
+.cardIcon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 6;
-  line-height: 1;
+  border-radius: 8px;
+  background: var(--color-surface-2);
+  color: var(--color-primary);
+  border: 1px solid var(--color-border-subtle);
 }
 
-.card:hover .deleteBtn {
+.cardInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.cardType {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+}
+
+.cardTitle {
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardEmpty {
+  font-size: 0.6875rem;
+  color: var(--color-text-faint);
+  font-style: italic;
+}
+
+.cardFilled {
+  font-size: 0.6875rem;
+  color: var(--color-secondary);
+}
+
+.cardDelete {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-faint);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.12s ease, background 0.12s ease, color 0.12s ease;
+}
+
+.card:hover .cardDelete {
   opacity: 1;
 }
 
-.deleteBtn:hover {
-  background: #fee2e2;
+.cardDelete:hover {
+  background: rgba(239, 68, 68, 0.1);
   color: #ef4444;
 }
 
+/* ── Dark mode ── */
 :global([data-theme="dark"]) .card {
   background: #1e1f2c;
   border-color: rgba(255, 255, 255, 0.08);
 }
 
+:global([data-theme="dark"]) .card:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
 :global([data-theme="dark"]) .cardSelected {
   border-color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+}
+
+:global([data-theme="dark"]) .cardIcon {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #8f9bff;
+}
+
+:global([data-theme="dark"]) .cardType {
+  color: #f0f1fa;
+}
+
+:global([data-theme="dark"]) .cardTitle {
+  color: #9aa0c0;
+}
+
+:global([data-theme="dark"]) .weekTitleInput {
+  background: #1e1f2c;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f0f1fa;
+}
+
+:global([data-theme="dark"]) .weekThemeInput {
+  background: #1e1f2c;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f0f1fa;
+}
+
+:global([data-theme="dark"]) .weekNavArrow {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #9aa0c0;
+}
+
+:global([data-theme="dark"]) .weekDot {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+:global([data-theme="dark"]) .weekNavLabel {
+  color: #9aa0c0;
+}
+
+:global([data-theme="dark"]) .dropZone {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .missionsHeading {
+  color: #9aa0c0;
+}
+
+:global([data-theme="dark"]) .missionsDivider {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .dropZoneEmptyIcon {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 :global([data-theme="dark"]) .deleteBtn:hover {

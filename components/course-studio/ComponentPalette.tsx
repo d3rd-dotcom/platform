@@ -1,52 +1,48 @@
 'use client';
 
 import { useDraggable } from '@dnd-kit/core';
+import {
+  TextT,
+  CheckSquare,
+  CaretDown,
+  Image,
+  Video,
+  UploadSimple,
+  Keyboard,
+  Star,
+  NotePencil,
+  Question,
+  FileText,
+} from '@phosphor-icons/react';
 import type { ComponentType } from '@/lib/vip-course-db';
 import styles from './ComponentPalette.module.css';
 
 interface PaletteItemDef {
   type: ComponentType;
   label: string;
-  icon: string;
-  color: string;
+  icon: React.ReactNode;
   description: string;
 }
 
 const PALETTE_ITEMS: PaletteItemDef[] = [
-  { type: 'rich_text', label: 'Knowledge Block', icon: '📖', color: '#B85C38', description: 'Markdown, HTML, or rich text' },
-  { type: 'multiple_choice', label: 'Choice Gate', icon: '🚪', color: '#9370DB', description: 'Multiple choice question' },
-  { type: 'dropdown', label: 'Drop Block', icon: '⬇️', color: '#20B2AA', description: 'Dropdown selector' },
-  { type: 'image_embed', label: 'Image Block', icon: '🖼️', color: '#FF6B6B', description: 'Embed an image' },
-  { type: 'video_embed', label: 'Vision Crystal', icon: '💎', color: '#4ECDC4', description: 'YouTube or Vimeo embed' },
-  { type: 'file_upload', label: 'Supply Box', icon: '📦', color: '#DEB887', description: 'File upload field' },
-  { type: 'text_input', label: 'Input Stone', icon: '⌨️', color: '#95E1D3', description: 'Free-text input' },
-  { type: 'rating_scale', label: 'Star Meter', icon: '⭐', color: '#FFD700', description: 'Rating scale' },
-  { type: 'reflection_journal', label: 'Reflection Log', icon: '✍️', color: '#F08080', description: 'Journal prompt' },
-  { type: 'quiz_block', label: 'Power-Up Block', icon: '❓', color: '#FFA500', description: 'Timed quiz' },
-  { type: 'markdown_file', label: 'Data Scroll', icon: '📄', color: '#A9A9A9', description: 'Remote markdown file' },
+  { type: 'rich_text', label: 'Rich Text', icon: <TextT size={18} weight="bold" />, description: 'Markdown or HTML content' },
+  { type: 'multiple_choice', label: 'Multiple Choice', icon: <CheckSquare size={18} weight="bold" />, description: 'Multi-select question' },
+  { type: 'dropdown', label: 'Dropdown', icon: <CaretDown size={18} weight="bold" />, description: 'Dropdown selector' },
+  { type: 'image_embed', label: 'Image', icon: <Image size={18} weight="bold" />, description: 'Embed an image' },
+  { type: 'video_embed', label: 'Video', icon: <Video size={18} weight="bold" />, description: 'YouTube or Vimeo embed' },
+  { type: 'file_upload', label: 'File Upload', icon: <UploadSimple size={18} weight="bold" />, description: 'File upload field' },
+  { type: 'text_input', label: 'Text Input', icon: <Keyboard size={18} weight="bold" />, description: 'Free-text input' },
+  { type: 'rating_scale', label: 'Rating', icon: <Star size={18} weight="bold" />, description: 'Rating scale' },
+  { type: 'reflection_journal', label: 'Journal', icon: <NotePencil size={18} weight="bold" />, description: 'Journal prompt' },
+  { type: 'quiz_block', label: 'Quiz', icon: <Question size={18} weight="bold" />, description: 'Timed quiz' },
+  { type: 'markdown_file', label: 'Markdown', icon: <FileText size={18} weight="bold" />, description: 'Remote markdown file' },
 ];
 
-const SHADOW_COLORS: Record<string, string> = {
-  '#B85C38': '#8B4513',
-  '#9370DB': '#7B5DB8',
-  '#20B2AA': '#178F88',
-  '#FF6B6B': '#D94444',
-  '#4ECDC4': '#36AFA7',
-  '#DEB887': '#C4A265',
-  '#95E1D3': '#6FC4B6',
-  '#FFD700': '#D4B000',
-  '#F08080': '#D46060',
-  '#FFA500': '#D48900',
-  '#A9A9A9': '#888888',
-};
-
-function PaletteItem({ type, label, icon, color, description }: PaletteItemDef) {
+function PaletteItem({ type, label, icon, description }: PaletteItemDef) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `palette-${type}`,
     data: { type, source: 'palette' },
   });
-
-  const shadowColor = SHADOW_COLORS[color] ?? '#666';
 
   return (
     <div
@@ -54,16 +50,12 @@ function PaletteItem({ type, label, icon, color, description }: PaletteItemDef) 
       {...listeners}
       {...attributes}
       className={`${styles.item} ${isDragging ? styles.itemDragging : ''}`}
-      style={{
-        background: `linear-gradient(145deg, ${color}, ${shadowColor})`,
-        boxShadow: isDragging
-          ? `0 12px 32px ${color}66, 0 0 0 2px #fff`
-          : `0 4px 0 ${shadowColor}, 0 6px 12px ${color}33`,
-      }}
     >
       <span className={styles.itemIcon}>{icon}</span>
-      <span className={styles.itemLabel}>{label}</span>
-      <span className={styles.itemDescription}>{description}</span>
+      <div className={styles.itemInfo}>
+        <span className={styles.itemLabel}>{label}</span>
+        <span className={styles.itemDescription}>{description}</span>
+      </div>
     </div>
   );
 }
@@ -72,9 +64,10 @@ export default function ComponentPalette() {
   return (
     <div className={styles.section}>
       <div className={styles.header}>
-        <span className={styles.headerIcon}>🎮</span>
-        <span className={styles.headerTitle}>Item Shop</span>
+        <span className={styles.headerTitle}>Components</span>
+        <span className={styles.headerCount}>{PALETTE_ITEMS.length}</span>
       </div>
+      <p className={styles.hint}>Drag a component onto a week to add it</p>
       <div className={styles.grid}>
         {PALETTE_ITEMS.map((item) => (
           <PaletteItem key={item.type} {...item} />

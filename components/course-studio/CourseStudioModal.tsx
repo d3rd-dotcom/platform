@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import styles from './CourseStudioModal.module.css';
 import {
@@ -24,21 +25,8 @@ function collisionFallback(args: Parameters<typeof closestCenter>[0]) {
 import ComponentPalette from './ComponentPalette';
 import WeekCanvas from './WeekCanvas';
 import ComponentInspector from './ComponentInspector';
+import CourseBuilderTour from './CourseBuilderTour';
 import type { VipCourseFull, CourseComponentRecord, ComponentType } from '@/lib/vip-course-db';
-
-const PALETTE_ICONS: Record<ComponentType, string> = {
-  rich_text: '📖',
-  multiple_choice: '🚪',
-  dropdown: '⬇️',
-  image_embed: '🖼️',
-  video_embed: '💎',
-  file_upload: '📦',
-  text_input: '⌨️',
-  rating_scale: '⭐',
-  reflection_journal: '✍️',
-  quiz_block: '❓',
-  markdown_file: '📄',
-};
 
 interface CourseStudioProps {
   authHeaders: () => Promise<HeadersInit>;
@@ -207,18 +195,16 @@ export default function CourseStudioModal({
     const { active, over } = event;
     if (!over) return;
 
-    // ── Palette → canvas drop ──
+    // Palette → canvas drop
     if (active.data.current?.source === 'palette') {
       const compType = active.data.current.type as ComponentType;
       const overData = over.data.current;
 
-      // 1) Dropped directly on a week droppable
       if (overData?.weekId) {
         addComponentToWeek(overData.weekId, compType);
         return;
       }
 
-      // 2) Dropped on a sortable component → find its week
       if (overData?.type || overData?.source === 'canvas') {
         const targetWeek = weeks.find((w) => w.components.some((c) => c.id === over.id));
         if (targetWeek) {
@@ -227,7 +213,6 @@ export default function CourseStudioModal({
         }
       }
 
-      // 3) Fallback: over.id might be a week id prefixed with "week-"
       if (typeof over.id === 'string' && over.id.startsWith('week-')) {
         const weekId = over.id.slice(5);
         if (weeks.some((w) => w.id === weekId)) {
@@ -236,7 +221,6 @@ export default function CourseStudioModal({
         }
       }
 
-      // 4) Last resort: try to match over.id to any week or component
       const byWeek = weeks.find((w) => w.id === over.id);
       if (byWeek) {
         addComponentToWeek(byWeek.id, compType);
@@ -250,7 +234,7 @@ export default function CourseStudioModal({
       return;
     }
 
-    // ── Sortable reorder (canvas → canvas) ──
+    // Sortable reorder (canvas → canvas)
     const activeWeek = weeks.find((w) => w.components.some((c) => c.id === active.id));
     const overWeek = weeks.find((w) => w.components.some((c) => c.id === over.id));
 
@@ -316,7 +300,7 @@ export default function CourseStudioModal({
       <SideNavigation />
       <DndContext
         sensors={sensors}
-          collisionDetection={collisionFallback}
+        collisionDetection={collisionFallback}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
@@ -330,7 +314,9 @@ export default function CourseStudioModal({
                 className={styles.backBtn}
                 title="Back to courses"
               >
-                ←
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M15 18l-6-6 6-6"/>
+                </svg>
               </button>
               <div className={styles.headerMeta}>
                 <input
@@ -339,8 +325,11 @@ export default function CourseStudioModal({
                   onChange={(e) => { setTitle(e.target.value); setDirty(true); }}
                   placeholder="Course title"
                   className={styles.titleInput}
+                  data-tour="builder-title"
                 />
-                <span className={styles.weekCount}>{weeks.length} week(s)</span>
+                {slug && (
+                  <span className={styles.slugText}>/{slug}</span>
+                )}
               </div>
             </div>
             <div className={styles.headerActions}>
@@ -358,10 +347,10 @@ export default function CourseStudioModal({
             </div>
           </div>
 
-          {/* 3-column body */}
+          {/* Body */}
           <div className={styles.columns}>
-            {/* Left: collapsible palette drawer */}
-            <aside className={styles.paletteColumn}>
+            {/* Left: palette drawer */}
+            <aside className={styles.paletteColumn} data-tour="builder-palette">
               <div className={`${styles.paletteDrawer} ${drawerOpen ? '' : styles.paletteClosed}`}>
                 <ComponentPalette />
               </div>
@@ -369,14 +358,16 @@ export default function CourseStudioModal({
                 type="button"
                 className={styles.drawerToggle}
                 onClick={() => setDrawerOpen((o) => !o)}
-                title={drawerOpen ? 'Close item shop' : 'Open item shop'}
+                title={drawerOpen ? 'Close components' : 'Open components'}
               >
-                {drawerOpen ? '◀' : '▶'}
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  {drawerOpen ? <path d="M19 15l-7-7-7 7"/> : <path d="M5 9l7 7 7-7"/>}
+                </svg>
               </button>
             </aside>
 
-            {/* Center: Canvas with WYSIWYG */}
-            <main className={styles.canvas}>
+            {/* Center: Canvas */}
+            <main className={styles.canvas} data-tour="builder-canvas">
               <WeekCanvas
                 weeks={weeks}
                 selectedWeek={selectedWeekId}
@@ -390,36 +381,49 @@ export default function CourseStudioModal({
               />
             </main>
 
-            {/* Right: Inspector as overlay card */}
-            {selectedComponent && (
-              <div className={styles.inspectorOverlay}>
-                <div className={styles.inspectorBackdrop} onClick={() => setSelectedComponentId(null)} />
-                <aside className={styles.inspectorCard}>
+            {/* Right: Inspector panel */}
+            <AnimatePresence>
+              {selectedComponent && (
+                <motion.aside
+                  key={selectedComponentId}
+                  className={styles.inspectorPanel}
+                  initial={{ x: 320, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  exit={{ x: 320, opacity: 0 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+                  data-tour="builder-inspector"
+                >
                   <ComponentInspector
-                    key={selectedComponentId}
                     component={selectedComponent}
                     onUpdate={updateComponent}
                     onDelete={deleteComponent}
+                    onClose={() => setSelectedComponentId(null)}
                   />
-                </aside>
-              </div>
-            )}
+                </motion.aside>
+              )}
+            </AnimatePresence>
           </div>
         </div>
 
         <DragOverlay>
-          {activeDragItem && (
-            <div className={styles.dragOverlay}>
-              <span className={styles.dragOverlayIcon}>
-                {PALETTE_ICONS[activeDragItem.type] ?? '❓'}
-              </span>
-              <span className={styles.dragOverlayLabel}>
-                + {activeDragItem.type.replace(/_/g, ' ')}
-              </span>
-            </div>
-          )}
+          <AnimatePresence>
+            {activeDragItem && (
+              <motion.div
+                className={styles.dragOverlay}
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+              >
+                <span className={styles.dragOverlayLabel}>
+                  + {activeDragItem.type.replace(/_/g, ' ')}
+                </span>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </DragOverlay>
       </DndContext>
+
+      <CourseBuilderTour />
     </div>
   );
 }
