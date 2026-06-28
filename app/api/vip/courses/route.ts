@@ -1,22 +1,14 @@
 import { NextResponse } from 'next/server';
-import { getCurrentUserFromRequestCookie } from '@/lib/auth';
+import { assertCourseUser } from '@/lib/assert-course-auth';
 import { getVipCourses, createVipCourse } from '@/lib/vip-course-db';
 import type { VipCourseRecord } from '@/lib/vip-course-db';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-async function assertVipUser(): Promise<{ userId: string; wallet: string }> {
-  const user = await getCurrentUserFromRequestCookie();
-  if (!user) {
-    throw Object.assign(new Error('Sign in to access courses.'), { status: 401 });
-  }
-  return { userId: user.id, wallet: user.walletAddress };
-}
-
 export async function GET() {
   try {
-    const { userId } = await assertVipUser();
+    const userId = await assertCourseUser();
     const courses: VipCourseRecord[] = await getVipCourses(userId);
     return NextResponse.json({ courses });
   } catch (err: any) {
@@ -27,7 +19,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { userId } = await assertVipUser();
+    const userId = await assertCourseUser();
     const body = await request.json() as { slug?: unknown; title?: unknown; focus?: unknown; coverImageUrl?: unknown };
 
     if (!body.slug || typeof body.slug !== 'string' || !body.slug.trim()) {

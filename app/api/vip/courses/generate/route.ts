@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
+import { assertCourseUser } from '@/lib/assert-course-auth';
 import { elizaAPI } from '@/lib/eliza-api';
-import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -130,10 +130,7 @@ function parseGeneratedCourse(raw: string): { title: string; focus: string; week
 }
 
 export async function POST(request: Request) {
-  const user = await getCurrentUserFromRequestCookie();
-  if (!user) {
-    return NextResponse.json({ error: 'Sign in to generate a course.' }, { status: 401 });
-  }
+  await assertCourseUser();
 
   const body = await request.json().catch(() => ({})) as { prompt?: unknown };
   const prompt = typeof body?.prompt === 'string' ? body.prompt.trim() : '';

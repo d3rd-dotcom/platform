@@ -1,21 +1,13 @@
 import { NextResponse } from 'next/server';
-import { getCurrentUserFromRequestCookie } from '@/lib/auth';
+import { assertCourseUser } from '@/lib/assert-course-auth';
 import { getVipCourseFull, updateVipCourse, deleteVipCourse } from '@/lib/vip-course-db';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-async function assertVipUser(): Promise<string> {
-  const user = await getCurrentUserFromRequestCookie();
-  if (!user) {
-    throw Object.assign(new Error('Sign in to access courses.'), { status: 401 });
-  }
-  return user.id;
-}
-
 export async function GET(_request: Request, { params }: { params: { id: string } }) {
   try {
-    await assertVipUser();
+    await assertCourseUser();
     const course = await getVipCourseFull(params.id);
     if (!course) {
       return NextResponse.json({ error: 'Course not found.' }, { status: 404 });
@@ -29,7 +21,7 @@ export async function GET(_request: Request, { params }: { params: { id: string 
 
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
   try {
-    await assertVipUser();
+    await assertCourseUser();
     const body = await request.json() as Record<string, unknown>;
     const input: Record<string, unknown> = {};
 
@@ -72,7 +64,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 
 export async function DELETE(_request: Request, { params }: { params: { id: string } }) {
   try {
-    await assertVipUser();
+    await assertCourseUser();
     const deleted = await deleteVipCourse(params.id);
     if (!deleted) {
       return NextResponse.json({ error: 'Course not found.' }, { status: 404 });

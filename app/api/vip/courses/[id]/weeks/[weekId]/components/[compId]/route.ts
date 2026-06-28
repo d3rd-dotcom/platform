@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getCurrentUserFromRequestCookie } from '@/lib/auth';
+import { assertCourseUser } from '@/lib/assert-course-auth';
 import { updateCourseComponent, deleteCourseComponent } from '@/lib/vip-course-db';
 import type { ComponentType } from '@/lib/vip-course-db';
 
@@ -19,17 +19,9 @@ const VALID_COMPONENT_TYPES: ComponentType[] = [
   'password_gate',
 ];
 
-async function assertVipUser(): Promise<string> {
-  const user = await getCurrentUserFromRequestCookie();
-  if (!user) {
-    throw Object.assign(new Error('Sign in to access courses.'), { status: 401 });
-  }
-  return user.id;
-}
-
 export async function PATCH(request: Request, { params }: { params: { id: string; weekId: string; compId: string } }) {
   try {
-    await assertVipUser();
+    await assertCourseUser();
     const body = await request.json() as Record<string, unknown>;
     const input: Record<string, unknown> = {};
 
@@ -73,7 +65,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 
 export async function DELETE(_request: Request, { params }: { params: { id: string; weekId: string; compId: string } }) {
   try {
-    await assertVipUser();
+    await assertCourseUser();
     const deleted = await deleteCourseComponent(params.compId);
     if (!deleted) {
       return NextResponse.json({ error: 'Component not found.' }, { status: 404 });

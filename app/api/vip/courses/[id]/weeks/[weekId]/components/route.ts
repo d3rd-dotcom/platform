@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getCurrentUserFromRequestCookie } from '@/lib/auth';
+import { assertCourseUser } from '@/lib/assert-course-auth';
 import { createCourseComponent } from '@/lib/vip-course-db';
 import type { ComponentType } from '@/lib/vip-course-db';
 
@@ -19,17 +19,9 @@ const VALID_COMPONENT_TYPES: ComponentType[] = [
   'password_gate',
 ];
 
-async function assertVipUser(): Promise<string> {
-  const user = await getCurrentUserFromRequestCookie();
-  if (!user) {
-    throw Object.assign(new Error('Sign in to access courses.'), { status: 401 });
-  }
-  return user.id;
-}
-
 export async function POST(request: Request, { params }: { params: { id: string; weekId: string } }) {
   try {
-    await assertVipUser();
+    await assertCourseUser();
     const body = await request.json() as {
       componentType?: unknown;
       title?: unknown;

@@ -1,21 +1,13 @@
 import { NextResponse } from 'next/server';
-import { getCurrentUserFromRequestCookie } from '@/lib/auth';
+import { assertCourseUser } from '@/lib/assert-course-auth';
 import { createCourseWeek } from '@/lib/vip-course-db';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-async function assertVipUser(): Promise<string> {
-  const user = await getCurrentUserFromRequestCookie();
-  if (!user) {
-    throw Object.assign(new Error('Sign in to access courses.'), { status: 401 });
-  }
-  return user.id;
-}
-
 export async function POST(request: Request, { params }: { params: { id: string } }) {
   try {
-    await assertVipUser();
+    await assertCourseUser();
     const body = await request.json() as { weekNumber?: unknown; title?: unknown; theme?: unknown; sortOrder?: unknown };
 
     if (body.weekNumber === undefined || typeof body.weekNumber !== 'number') {
