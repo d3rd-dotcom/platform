@@ -455,6 +455,8 @@ export default function CourseStudioModal({
     status,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    authorName: 'Espeon',
+    authorAvatar: null,
     weeks: weeks.map((w) => ({
       id: w.id,
       courseId: courseId ?? 'preview',

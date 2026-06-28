@@ -111,31 +111,6 @@
   }
 }
 
-.header {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 3;
-  padding: 20px 22px;
-  max-width: 60%;
-  pointer-events: none;
-}
-
-.title {
-  margin: 0;
-  font-family: var(--font-primary);
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-dark);
-}
-
-.subtitle {
-  margin: 4px 0 0;
-  font-family: var(--font-body);
-  font-size: var(--font-size-sm);
-  line-height: 1.45;
-  color: var(--color-text-muted);
-}
 
 .counters {
   position: absolute;
@@ -169,6 +144,133 @@
   font-family: var(--font-mono);
   font-size: var(--font-size-md);
   color: var(--color-text-dark);
+}
+
+/* ── Streak ── */
+
+.streakWrapper {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  width: min(calc(100% - 40px), 520px);
+}
+
+.streak {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.streakHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2px;
+}
+
+.streakTitle {
+  font-family: var(--font-button);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--color-text-faint);
+}
+
+.streakLink {
+  font-family: var(--font-button);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+
+.streakLink:hover {
+  opacity: 1;
+}
+
+.streakTrack {
+  display: flex;
+  gap: 4px;
+  justify-content: space-between;
+}
+
+.streakDay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 8px 4px 6px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 8px;
+  background: color-mix(in oklch, var(--color-surface-1) 82%, transparent);
+  backdrop-filter: blur(4px);
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.06),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.22);
+  opacity: 0.78;
+  transition: opacity 0.2s, border-color 0.2s, box-shadow 0.2s;
+  flex: 1;
+  min-width: 0;
+}
+
+.streakDiamond {
+  color: var(--color-text-faint);
+  opacity: 0.5;
+}
+
+.streakDiamondLit {
+  color: var(--color-primary);
+  filter: drop-shadow(0 0 4px color-mix(in oklch, var(--color-primary) 40%, transparent));
+}
+
+.streakDayFilled .streakDiamond {
+  color: var(--color-primary);
+  opacity: 1;
+  filter: drop-shadow(0 0 4px color-mix(in oklch, var(--color-primary) 40%, transparent));
+}
+
+.streakDayFilled {
+  opacity: 1;
+  border-color: color-mix(in oklch, var(--color-primary) 45%, var(--color-border-strong));
+  background: color-mix(in oklch, var(--color-primary) 14%, color-mix(in oklch, var(--color-surface-1) 80%, transparent));
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.08),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.22),
+    0 0 0 1px color-mix(in oklch, var(--color-primary) 22%, transparent),
+    0 0 16px color-mix(in oklch, var(--color-primary) 12%, transparent);
+}
+
+.streakDayToday {
+  border-color: var(--color-accent);
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.08),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.22),
+    0 0 0 1px color-mix(in oklch, var(--color-accent) 35%, transparent),
+    0 0 16px color-mix(in oklch, var(--color-accent) 16%, transparent);
+  animation: pulse-today 2.4s ease-in-out infinite;
+  opacity: 0.9;
+}
+
+@keyframes pulse-today {
+  0%, 100% { box-shadow: 0 0 0 1px color-mix(in oklch, var(--color-accent) 30%, transparent), 0 0 14px color-mix(in oklch, var(--color-accent) 14%, transparent); }
+  50% { box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-accent) 50%, transparent), 0 0 22px color-mix(in oklch, var(--color-accent) 22%, transparent); }
+}
+
+.streakLabel {
+  font-family: var(--font-button);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
+}
+
+.streakDayFilled .streakLabel {
+  color: var(--color-primary);
 }
 
 /* ── Balloons ── */
@@ -344,11 +446,6 @@
 
   .blueWrap {
     width: min(60%, 300px);
-  }
-
-  .header {
-    max-width: 100%;
-    padding: 16px 18px;
   }
 
   .counters {

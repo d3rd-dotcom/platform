@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
+import { usePrivy } from '@privy-io/react-auth';
 import { useSound } from '@/hooks/useSound';
 import styles from './BlueScene.module.css';
 
@@ -49,12 +50,18 @@ function balloonLine(pops: number): string {
   return IDLE_LINE;
 }
 
+const DAYS = 7;
+const REWARD = 100;
+const DAY_LABELS = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'];
+
 export default function BlueScene() {
   const { play } = useSound();
+  const { getAccessToken } = usePrivy();
   const [balloons, setBalloons] = useState<Balloon[]>([]);
   const [sessionPops, setSessionPops] = useState(0);
   const [communityTotal, setCommunityTotal] = useState<number | null>(null);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [credits, setCredits] = useState(0);
 
   const idRef = useRef(0);
   const poppedIdsRef = useRef(new Set<number>());
@@ -79,6 +86,24 @@ export default function BlueScene() {
       })
       .catch(() => {/* counter is best-effort */});
   }, []);
+
+  useEffect(() => {
+    const fetchCredits = async () => {
+      try {
+        const token = await getAccessToken().catch(() => null);
+        const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+        const meRes = await window.fetch('/api/me', { credentials: 'include', cache: 'no-store', headers });
+        const meData = meRes.ok ? await meRes.json().catch(() => null) : null;
+        if (meData?.user?.shardCount !== undefined) {
+          setCredits(meData.user.shardCount);
+        }
+      } catch { /* silent */ }
+    };
+    fetchCredits();
+    const handle = () => fetchCredits();
+    window.addEventListener('shardsUpdated', handle);
+    return () => window.removeEventListener('shardsUpdated', handle);
+  }, [getAccessToken]);
 
   const flushPops = useCallback(() => {
     const count = pendingPopsRef.current;
@@ -177,16 +202,38 @@ export default function BlueScene() {
 
   const bubbleLine = useMemo(() => balloonLine(sessionPops), [sessionPops]);
 
+  const earned = Math.min(Math.floor(credits / REWARD), DAYS);
+  const today = new Date().getDay();
+
   return (
     <section className={styles.scene} aria-label="Balloon popping with Blue">
       <div className={styles.sky} aria-hidden="true" />
 
-      <header className={styles.header}>
-        <h2 className={styles.title}>The balloon experiment</h2>
-        <p className={styles.subtitle}>
-          Every balloon popped here, by anyone, adds to one shared number.
-        </p>
-      </header>
+      <div className={styles.streakWrapper}>
+        <div className={styles.streak}>
+          <div className={styles.streakHeader}>
+            <span className={styles.streakTitle}>Daily Activity</span>
+            <a href="/quests" className={styles.streakLink}>See all</a>
+          </div>
+          <div className={styles.streakTrack}>
+            {Array.from({ length: DAYS }, (_, i) => {
+              const filled = i < earned;
+              const isToday = i === today;
+              return (
+                <div
+                  key={i}
+                  className={`${styles.streakDay} ${filled ? styles.streakDayFilled : ''} ${isToday && !filled ? styles.streakDayToday : ''}`}
+                >
+                  <svg className={filled ? styles.streakDiamondLit : styles.streakDiamond} width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12 2L3 9l3 11h12l3-11-9-7zm0 3.3l5.2 4H6.8L12 5.3z"/>
+                  </svg>
+                  <span className={styles.streakLabel}>{DAY_LABELS[i]}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
 
       <div className={styles.counters}>
         <span className={styles.counterChip}>

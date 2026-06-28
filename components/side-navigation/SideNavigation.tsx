@@ -19,6 +19,8 @@ const SidebarProfileCard = dynamic(() => import('../sidebar-profile-card/Sidebar
 const AvatarSelectorModal = dynamic(() => import('../avatar-selector/AvatarSelectorModal'), { ssr: false });
 const UsernameChangeModal = dynamic(() => import('../username-change/UsernameChangeModal'), { ssr: false });
 const ProMembershipModal = dynamic(() => import('../pro-membership-modal/ProMembershipModal'), { ssr: false });
+const AngelUpsellModal = dynamic(() => import('../angel-upsell-modal/AngelUpsellModal'), { ssr: false });
+const MintModal = dynamic(() => import('../mint-modal/MintModal'), { ssr: false });
 const YourAccountsModal = dynamic(() => import('../nav-buttons/YourAccountsModal'), { ssr: false });
 const OnboardingModal = dynamic(() => import('../onboarding/OnboardingModal'), { ssr: false });
 const LootBoxModal = dynamic(() => import('../loot-box/LootBoxModal'), { ssr: false });
@@ -180,6 +182,8 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     if (externalMobileOpen) setIsMobileMenuOpenInternal(true);
   }, [externalMobileOpen]);
   const [isProModalOpen, setIsProModalOpen] = useState(false);
+  const [isAngelModalOpen, setIsAngelModalOpen] = useState(false);
+  const [isMintModalOpen, setIsMintModalOpen] = useState(false);
   const [adminExpanded, setAdminExpanded] = useState(true);
   const [isYourAccountsModalOpen, setIsYourAccountsModalOpen] = useState(false);
   const [isCreatingSession, setIsCreatingSession] = useState(false);
@@ -806,6 +810,43 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
           )}
         </div>
 
+        {/* Become an angel upsell */}
+        <div className={styles.angelCard}>
+          {isCollapsed ? (
+            <button
+              type="button"
+              className={styles.angelCollapsed}
+              onClick={() => setIsAngelModalOpen(true)}
+              title="Become an angel"
+              aria-label="Become an angel"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+            </button>
+          ) : (
+            <button
+              type="button"
+              className={styles.angelButton}
+              onClick={() => setIsAngelModalOpen(true)}
+            >
+              <span className={styles.angelIcon}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
+                  <path d="M12 8v4l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  <path d="M8 12h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              </span>
+              <span className={styles.angelLabel}>Become an angel</span>
+              <span className={styles.angelArrow}>
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+            </button>
+          )}
+        </div>
+
         {/* Navigation Footer / Social Links */}
         {!isCollapsed && (
           <div className={styles.sidebarFooter}>
@@ -901,6 +942,16 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
       )}
       {isProModalOpen && (
         <ProMembershipModal isOpen={isProModalOpen} onClose={() => setIsProModalOpen(false)} />
+      )}
+      {isAngelModalOpen && (
+        <AngelUpsellModal
+          isOpen={isAngelModalOpen}
+          onClose={() => setIsAngelModalOpen(false)}
+          onMint={() => { setIsAngelModalOpen(false); setIsMintModalOpen(true); }}
+        />
+      )}
+      {isMintModalOpen && (
+        <MintModal isOpen={isMintModalOpen} onClose={() => setIsMintModalOpen(false)} />
       )}
       {isYourAccountsModalOpen && (
         <YourAccountsModal onClose={() => setIsYourAccountsModalOpen(false)} />

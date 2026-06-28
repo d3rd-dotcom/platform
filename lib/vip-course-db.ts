@@ -25,6 +25,8 @@ export interface VipCourseRecord {
   status: VipCourseStatus;
   createdAt: string;
   updatedAt: string;
+  authorName: string;
+  authorAvatar: string | null;
 }
 
 export interface CourseWeekRecord {
@@ -67,6 +69,8 @@ interface VipCourseRow {
   status: string;
   created_at: string;
   updated_at: string;
+  author_username: string | null;
+  author_avatar_url: string | null;
 }
 
 interface CourseWeekRow {
@@ -106,6 +110,8 @@ function toVipCourse(row: VipCourseRow): VipCourseRecord {
     status: (row.status as VipCourseStatus) || 'draft',
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+    authorName: row.author_username ?? '',
+    authorAvatar: row.author_avatar_url ?? null,
   };
 }
 
@@ -153,7 +159,11 @@ function toCourseComponent(row: CourseComponentRow): CourseComponentRecord {
 export async function getVipCourses(userId: string): Promise<VipCourseRecord[]> {
   await ensureVipCourseSchema();
   const rows = await sqlQuery<VipCourseRow[]>(
-    `SELECT * FROM vip_courses WHERE user_id = :userId ORDER BY created_at DESC`,
+    `SELECT c.*, u.username AS author_username, u.avatar_url AS author_avatar_url
+     FROM vip_courses c
+     LEFT JOIN users u ON u.id = c.user_id
+     WHERE c.user_id = :userId
+     ORDER BY c.created_at DESC`,
     { userId },
   );
   return rows.map(toVipCourse);
@@ -162,7 +172,10 @@ export async function getVipCourses(userId: string): Promise<VipCourseRecord[]> 
 export async function getVipCourseById(id: string): Promise<VipCourseRecord | null> {
   await ensureVipCourseSchema();
   const rows = await sqlQuery<VipCourseRow[]>(
-    `SELECT * FROM vip_courses WHERE id = :id`,
+    `SELECT c.*, u.username AS author_username, u.avatar_url AS author_avatar_url
+     FROM vip_courses c
+     LEFT JOIN users u ON u.id = c.user_id
+     WHERE c.id = :id`,
     { id },
   );
   return rows[0] ? toVipCourse(rows[0]) : null;
@@ -171,7 +184,10 @@ export async function getVipCourseById(id: string): Promise<VipCourseRecord | nu
 export async function getVipCourseBySlug(slug: string): Promise<VipCourseRecord | null> {
   await ensureVipCourseSchema();
   const rows = await sqlQuery<VipCourseRow[]>(
-    `SELECT * FROM vip_courses WHERE slug = :slug`,
+    `SELECT c.*, u.username AS author_username, u.avatar_url AS author_avatar_url
+     FROM vip_courses c
+     LEFT JOIN users u ON u.id = c.user_id
+     WHERE c.slug = :slug`,
     { slug },
   );
   return rows[0] ? toVipCourse(rows[0]) : null;
@@ -189,7 +205,13 @@ export async function getVipCourseFull(id: string): Promise<VipCourseFull | null
   await ensureVipCourseSchema();
 
   const [courseRows, weekRows, componentRows] = await Promise.all([
-    sqlQuery<VipCourseRow[]>(`SELECT * FROM vip_courses WHERE id = :id`, { id }),
+    sqlQuery<VipCourseRow[]>(
+      `SELECT c.*, u.username AS author_username, u.avatar_url AS author_avatar_url
+       FROM vip_courses c
+       LEFT JOIN users u ON u.id = c.user_id
+       WHERE c.id = :id`,
+      { id },
+    ),
     sqlQuery<CourseWeekRow[]>(
       `SELECT * FROM course_weeks WHERE course_id = :id ORDER BY sort_order ASC, week_number ASC`,
       { id },

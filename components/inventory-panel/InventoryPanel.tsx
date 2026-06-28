@@ -2,24 +2,18 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
 import styles from './InventoryPanel.module.css';
 
-type MembershipTier = 'Guest' | 'Angel' | 'Staff';
-
-const EMPTY_VALUES = new Set(['0', '0.00', '000']);
+const DAYS = 7;
+const REWARD = 100;
 
 export default function InventoryPanel() {
-  const { user, getAccessToken } = usePrivy();
-  const address = user?.wallet?.address;
+  const { getAccessToken } = usePrivy();
 
-  const [credits, setCredits] = useState('000');
-  const [tier, setTier] = useState<MembershipTier | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [credits, setCredits] = useState(0);
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
+  const fetchCredits = useCallback(async () => {
     try {
       const token = await getAccessToken().catch(() => null);
       const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
@@ -27,85 +21,68 @@ export default function InventoryPanel() {
       const meRes = await window.fetch('/api/me', { credentials: 'include', cache: 'no-store', headers });
       const meData = meRes.ok ? await meRes.json().catch(() => null) : null;
       if (meData?.user?.shardCount !== undefined) {
-        setCredits(String(meData.user.shardCount).padStart(3, '0'));
+        setCredits(meData.user.shardCount);
       }
-
-      const statusUrl = address
-        ? `/api/account/status?walletAddress=${encodeURIComponent(address)}`
-        : '/api/account/status';
-      const status = await window
-        .fetch(statusUrl, { cache: 'no-store', credentials: 'include' })
-        .then((r) => (r.ok ? r.json().catch(() => null) : null))
-        .catch(() => null);
-      setTier(
-        status?.hasVipMembershipCard ? 'Staff' : status?.hasAcademicAngel ? 'Angel' : 'Guest',
-      );
     } catch {
       /* silent */
-    } finally {
-      setLoading(false);
     }
-  }, [address, getAccessToken]);
+  }, [getAccessToken]);
 
   useEffect(() => {
-    fetchData();
-    const handleShards = () => fetchData();
+    fetchCredits();
+    const handleShards = () => fetchCredits();
     window.addEventListener('shardsUpdated', handleShards);
     return () => window.removeEventListener('shardsUpdated', handleShards);
-  }, [fetchData]);
+  }, [fetchCredits]);
 
-  const isMember = tier === 'Angel' || tier === 'Staff';
-  const tierLabel =
-    tier === 'Staff' ? 'Staff / VIP' : tier === 'Angel' ? 'Academic Angel' : 'Guest';
-  const tierEmoji = tier === 'Staff' ? '👑' : tier === 'Angel' ? '😇' : '🧑';
-
-  const slots: Array<{ label: string; icon: string; value: string; tooltip: string; unoptimized?: boolean }> = [
-    { label: 'Diamonds',     icon: '/icons/ui-diamond.svg',     value: credits, tooltip: 'Earned through quests, lessons, and check-ins.' },
-    { label: 'Certificates', icon: '/icons/badge-academy.png',  value: '0',     tooltip: 'Awarded for completing Academy milestones.', unoptimized: true },
-    { label: 'Awards',       icon: '/icons/rewards.svg',        value: '0',     tooltip: 'Granted by staff for outstanding participation.' },
-  ];
+  const earned = Math.min(Math.floor(credits / REWARD), DAYS);
+  const today = new Date().getDay();
+  const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   return (
     <div className={styles.panel}>
-      <span className={styles.title}>Inventory</span>
+      <div className={styles.head}>
+        <span className={styles.title}>Daily stream</span>
+        <span className={styles.total}>{credits}</span>
+      </div>
 
-      <div className={styles.grid}>
-        {slots.map((slot) => {
-          const empty = EMPTY_VALUES.has(slot.value);
+      <div className={styles.track}>
+        {Array.from({ length: DAYS }, (_, i) => {
+          const filled = i < earned;
+          const isToday = i === today;
+
           return (
             <div
-              key={slot.label}
-              className={`${styles.slot} ${empty ? styles.slotEmpty : styles.slotFilled}`}
-              title={slot.tooltip}
+              key={i}
+              className={`${styles.day} ${filled ? styles.dayFilled : ''} ${isToday && !filled ? styles.dayToday : ''}`}
             >
-              <div className={styles.iconWrap}>
+              <div className={styles.dayIcon}>
                 <Image
-                  src={slot.icon}
-                  alt={slot.label}
-                  width={28}
-                  height={28}
-                  className={styles.icon}
-                  unoptimized={slot.unoptimized}
+                  src="/icons/ui-diamond.svg"
+                  alt=""
+                  width={filled ? 18 : 14}
+                  height={filled ? 18 : 14}
+                  className={filled ? styles.iconLit : styles.iconDim}
                 />
               </div>
-              {!empty && <span className={styles.count}>{slot.value}</span>}
-              <span className={styles.label}>{slot.label}</span>
+              <span className={`${styles.dayValue} ${filled ? styles.dayValueFilled : ''}`}>
+                {REWARD}
+              </span>
+              <span className={styles.dayLabel}>{dayLabels[i]}</span>
             </div>
           );
         })}
       </div>
 
-      <div className={`${styles.membershipSlot} ${isMember ? styles.membershipFilled : ''}`}>
-        <span className={styles.membershipIcon} role="img" aria-label={tierLabel}>{tierEmoji}</span>
-        <div className={styles.membershipInfo}>
-          <span className={styles.membershipMeta}>Membership</span>
-          <span className={`${styles.membershipTier} ${isMember ? styles.membershipTierActive : ''}`}>
-            {loading && tier === null ? '--' : tierLabel}
-          </span>
+      <div className={styles.progress}>
+        <div className={styles.progressBar}>
+          <div
+            className={styles.progressFill}
+            style={{ width: `${(earned / DAYS) * 100}%` }}
+          />
         </div>
+        <span className={styles.progressText}>{earned}/{DAYS}</span>
       </div>
-
-      <Link href="/quests" className={styles.questsLink}>Explore quests</Link>
     </div>
   );
 }

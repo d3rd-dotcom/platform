@@ -299,6 +299,16 @@ export default function FeatureTour() {
     } else {
       top = rect.bottom + gap;
       left = rect.left + rect.width / 2 - cw / 2;
+      // If there isn't enough room below the target, the viewport clamp
+      // would push the callout back up over the target, overlapping it.
+      // Try above instead (the top clamp handles overflow at the top edge).
+      if (rect.bottom + gap + ch + margin > vh) {
+        top = rect.top - gap - ch;
+        if (top < margin) {
+          top = Math.max(margin, (vh - ch) / 2);
+          left = Math.max(margin, (vw - cw) / 2);
+        }
+      }
     }
 
     top = Math.min(Math.max(margin, top), vh - ch - margin);

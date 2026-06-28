@@ -2,22 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import dynamic from 'next/dynamic';
 import BlueScene from '@/components/blue-scene/BlueScene';
 import CaseMonitor from '@/components/case-monitor/CaseMonitor';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
-import InventoryPanel from '@/components/inventory-panel/InventoryPanel';
 import styles from './Dashboard.module.css';
-
-const AngelUpsellModal = dynamic(
-  () => import('../angel-upsell-modal/AngelUpsellModal'),
-  { ssr: false },
-);
-
-const MintModal = dynamic(
-  () => import('../mint-modal/MintModal'),
-  { ssr: false },
-);
 
 interface DashboardProps {
   enableMorningPagesPersistence?: boolean;
@@ -41,8 +29,6 @@ function avatarColor(name: string): string {
 
 export default function Dashboard({ enableMorningPagesPersistence = false }: DashboardProps) {
   const [leaderboard, setLeaderboard] = useState<LeaderUser[]>([]);
-  const [isAngelModalOpen, setIsAngelModalOpen] = useState(false);
-  const [isMintModalOpen, setIsMintModalOpen] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
 
   useEffect(() => {
@@ -125,56 +111,7 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
           />
         </div>
 
-        <InventoryPanel />
-
-        <button
-          type="button"
-          className={styles.vipCard}
-          data-tour="vip"
-          onClick={() => setIsAngelModalOpen(true)}
-        >
-          <div className={styles.vipHead}>
-            <svg
-              className={styles.vipIcon}
-              width="13"
-              height="13"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path d="M5 16L3 6l5.5 4L12 4l3.5 6L21 6l-2 10H5zm0 3h14v2H5z" />
-            </svg>
-            <span className={styles.vipTitle}>Become an Angel</span>
-          </div>
-          <p className={styles.vipText}>
-            Mint your Academic Angel on Base to unlock paid USDC quests and support the community treasury.
-          </p>
-          <span className={styles.vipCta}>
-            Become an Angel
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path
-                d="M6 3L11 8L6 13"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </span>
-        </button>
       </aside>
-
-      {isAngelModalOpen && (
-        <AngelUpsellModal
-          isOpen={isAngelModalOpen}
-          onClose={() => setIsAngelModalOpen(false)}
-          onMint={() => { setIsAngelModalOpen(false); setIsMintModalOpen(true); }}
-        />
-      )}
-
-      {isMintModalOpen && (
-        <MintModal isOpen={isMintModalOpen} onClose={() => setIsMintModalOpen(false)} />
-      )}
 
       {showLeaderboard && (
         <div className={styles.leaderModalOverlay} onClick={() => setShowLeaderboard(false)}>

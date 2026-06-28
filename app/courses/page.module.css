@@ -392,6 +392,36 @@
   background: color-mix(in srgb, var(--color-primary) 6%, transparent);
 }
 
+.courseAuthor {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.authorAvatar {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-border-subtle);
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.authorName {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  opacity: 0.6;
+}
+
 /* ── Dark mode ── */
 
 :global([data-theme="dark"]) .courseCard {

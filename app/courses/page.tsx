@@ -51,6 +51,16 @@ export default function CoursesPage() {
       }>;
     }>;
   } | null>(null);
+  const [coreAuthor, setCoreAuthor] = useState<{ username: string; avatarUrl: string | null } | null>(null);
+
+  useEffect(() => {
+    fetch('/api/users/lookup?username=Espeon')
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => {
+        if (d?.user) setCoreAuthor({ username: d.user.username, avatarUrl: d.user.avatar_url });
+      })
+      .catch(() => {});
+  }, []);
 
   const authHeaders = useCallback(async (): Promise<HeadersInit> => {
     const token = await getAccessToken();
@@ -155,11 +165,19 @@ export default function CoursesPage() {
             aria-hidden="true"
           />
           <div className={styles.body}>
-            <span className={styles.category}>12-Week Core</span>
             <span className={styles.title}>Creative Healing</span>
             <span className={styles.desc}>
               A journey through rediscovering your creative energy and excavating it to reach your highest horizon.
             </span>
+            <div className={styles.courseAuthor}>
+              <span
+                className={styles.authorAvatar}
+                style={coreAuthor?.avatarUrl ? { backgroundImage: `url(${JSON.stringify(coreAuthor.avatarUrl)})` } : undefined}
+              >
+                {!coreAuthor?.avatarUrl ? (coreAuthor?.username?.[0] ?? 'E') : ''}
+              </span>
+              <span className={styles.authorName}>@{coreAuthor?.username ?? 'Espeon'}</span>
+            </div>
           </div>
           <svg className={styles.arrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M9 18l6-6-6-6"/>
@@ -189,7 +207,7 @@ export default function CoursesPage() {
               value={aiPrompt}
               onChange={(e) => { setAiPrompt(e.target.value); setGenError(null); }}
               onKeyDown={(e) => { if (e.key === 'Enter' && !generating) handleGenerate(); }}
-              placeholder="Describe the course you want Blue to build — e.g. &quot;I want to teach a 6-week course on meditation for beginners&quot;"
+              placeholder="Describe your course."
               className={styles.aiInput}
               disabled={generating}
             />
@@ -200,7 +218,7 @@ export default function CoursesPage() {
               className={styles.aiGenerateBtn}
             >
               <Sparkle size={16} weight="bold" />
-              {generating ? 'Generating...' : 'Generate with Blue'}
+              {generating ? 'Building...' : 'Build With Blue'}
             </button>
           </div>
           {genError && <p className={styles.aiError}>{genError}</p>}
@@ -211,13 +229,6 @@ export default function CoursesPage() {
             </div>
           )}
         </section>
-
-        <div className={styles.divider} aria-hidden="true" />
-
-        <button type="button" onClick={() => setStudioOpen(true)} className={styles.buildCard}>
-          <Plus size={20} weight="bold" />
-          <span>Build your own course from scratch</span>
-        </button>
 
         {authoredCourses.length > 0 && (
           <section className={styles.authoredSection}>
@@ -231,6 +242,17 @@ export default function CoursesPage() {
                     <span className={`${styles.authoredStatus} ${c.status === 'published' ? styles.authoredStatusPublished : ''}`}>
                       {c.status === 'published' ? 'Published' : 'Draft'}
                     </span>
+                    {c.authorName && (
+                      <div className={styles.courseAuthor}>
+                        <span
+                          className={styles.authorAvatar}
+                          style={c.authorAvatar ? { backgroundImage: `url(${JSON.stringify(c.authorAvatar)})` } : undefined}
+                        >
+                          {!c.authorAvatar ? c.authorName[0].toUpperCase() : ''}
+                        </span>
+                        <span className={styles.authorName}>@{c.authorName}</span>
+                      </div>
+                    )}
                   </div>
                   <button
                     type="button"
