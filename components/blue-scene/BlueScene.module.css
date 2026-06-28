@@ -258,7 +258,7 @@
   position: absolute;
   bottom: 56px;
   left: 5%;
-  z-index: 1;
+  z-index: 4;
   width: min(40%, 300px);
   display: flex;
   flex-direction: column;

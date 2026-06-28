@@ -140,10 +140,12 @@ export async function POST(request: Request) {
 
   await ensureChatSchema();
 
-  const result = await sqlQuery<Array<{ id: number; created_at: string }>>(
+  const result = await sqlQuery<
+    Array<{ id: number; user_id: string; username: string; avatar_url: string | null; created_at: string }>
+  >(
     `INSERT INTO chat_messages (user_id, username, avatar_url, message, type)
      VALUES (:userId, :username, :avatarUrl, :message, 'user')
-     RETURNING id, created_at`,
+     RETURNING id, user_id, username, avatar_url, created_at`,
     {
       userId: user.id,
       username: user.username,

@@ -16,6 +16,18 @@ interface ChatMessage {
   createdAt: string;
 }
 
+function mapMessage(row: Record<string, unknown>): ChatMessage {
+  return {
+    id: row.id as number,
+    userId: (row.user_id ?? row.userId) as string,
+    username: row.username as string,
+    avatarUrl: ((row.avatar_url ?? row.avatarUrl) as string | null) ?? null,
+    message: row.message as string,
+    type: (row.type as 'user' | 'system') ?? 'user',
+    createdAt: (row.created_at ?? row.createdAt) as string,
+  };
+}
+
 function avatarColor(name: string): string {
   const colors = ['#5168FF', '#E85D3A', '#62BE8F', '#9B7ED9', '#F5A623'];
   let hash = 0;
@@ -26,7 +38,9 @@ function avatarColor(name: string): string {
 }
 
 function formatTime(iso: string): string {
+  if (!iso) return '';
   const d = new Date(iso);
+  if (isNaN(d.getTime())) return '';
   return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
@@ -64,9 +78,10 @@ export default function ChatRoom() {
       if (!res.ok) return 0;
       const data = await res.json();
       if (Array.isArray(data.messages) && data.messages.length > 0) {
+        const mapped = data.messages.map(mapMessage);
         setMessages((prev) => {
           const existing = new Set(prev.map((m) => m.id));
-          const newOnes = data.messages.filter((m: ChatMessage) => !existing.has(m.id));
+          const newOnes = mapped.filter((m: ChatMessage) => !existing.has(m.id));
           if (newOnes.length === 0) return prev;
           return [...prev, ...newOnes];
         });
@@ -88,8 +103,9 @@ export default function ChatRoom() {
       if (!res.ok) return;
       const data = await res.json();
       if (Array.isArray(data.messages) && data.messages.length > 0) {
-        setMessages((prev) => [...data.messages, ...prev]);
-        oldestIdRef.current = data.messages[0].id;
+        const mapped = data.messages.map(mapMessage);
+        setMessages((prev) => [...mapped, ...prev]);
+        oldestIdRef.current = mapped[0].id;
         setHasMore(data.hasMore ?? false);
       } else {
         setHasMore(false);
@@ -108,10 +124,11 @@ export default function ChatRoom() {
       if (!res.ok) return;
       const data = await res.json();
       if (Array.isArray(data.messages)) {
-        setMessages(data.messages);
-        if (data.messages.length > 0) {
-          oldestIdRef.current = data.messages[0].id;
-          newestIdRef.current = data.messages[data.messages.length - 1].id;
+        const mapped = data.messages.map(mapMessage);
+        setMessages(mapped);
+        if (mapped.length > 0) {
+          oldestIdRef.current = mapped[0].id;
+          newestIdRef.current = mapped[mapped.length - 1].id;
         }
         setHasMore(data.hasMore ?? false);
       }
@@ -272,26 +289,36 @@ export default function ChatRoom() {
     const text = input.trim();
     if (!text || sending) return;
     setSending(true);
-    try {
-      const token = await getAccessToken().catch(() => null);
-      const headers: HeadersInit = { 'Content-Type': 'application/json' };
-      if (token) headers['Authorization'] = `Bearer ${token}`;
-      const res = await fetch('/api/chat/messages', {
-        method: 'POST',
-        headers,
-        credentials: 'include',
-        body: JSON.stringify({ message: text }),
+    const token = await getAccessToken().catch(() => null);
+    const headers: HeadersInit = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const res = await fetch('/api/chat/messages', {
+      method: 'POST',
+      headers,
+      credentials: 'include',
+      body: JSON.stringify({ message: text }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setInput('');
+      autoScrollRef.current = true;
+      // optimistic insert so the message appears instantly
+      const optimistic: ChatMessage = {
+        id: data.message.id,
+        userId: data.message.user_id,
+        username: data.message.username,
+        avatarUrl: data.message.avatar_url ?? null,
+        message: text,
+        type: 'user',
+        createdAt: data.message.created_at,
+      };
+      setMessages((prev) => {
+        if (prev.some((m) => m.id === optimistic.id)) return prev;
+        return [...prev, optimistic];
       });
-      if (res.ok) {
-        setInput('');
-        autoScrollRef.current = true;
-      }
-    } catch {
-      // best-effort
-    } finally {
-      setSending(false);
-      inputRef.current?.focus();
     }
+    setSending(false);
+    inputRef.current?.focus();
   }, [input, sending, getAccessToken]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
