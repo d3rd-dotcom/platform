@@ -57,6 +57,9 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
       {/* ── Main content area ── */}
       <main className={styles.mainArea}>
         <BlueScene />
+        <div className={styles.photoSafariMobile}>
+          <PhotoSafari />
+        </div>
         <CaseMonitor />
       </main>
 
@@ -99,7 +102,9 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
             )}
           </button>
 
-          <PhotoSafari />
+          <div className={styles.photoSafariDesktop}>
+            <PhotoSafari />
+          </div>
         </div>
 
         <div className={styles.morningPagesShell} data-tour="daily-note">

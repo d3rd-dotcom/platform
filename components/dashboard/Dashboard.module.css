@@ -653,10 +653,29 @@
   color: #8f9bff;
 }
 
+/* ── PhotoSafari dual position ── */
+.photoSafariMobile {
+  display: none;
+}
+
+.photoSafariDesktop {
+  display: block;
+}
+
 /* ── Responsive ── */
 @media (max-width: 1024px) {
   .dashboard {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .photoSafariMobile {
+    display: block;
+  }
+
+  .photoSafariDesktop {
+    display: none;
   }
 }
 
