@@ -130,17 +130,17 @@ function parseGeneratedCourse(raw: string): { title: string; focus: string; week
 }
 
 export async function POST(request: Request) {
-  await assertCourseUser();
-
-  const body = await request.json().catch(() => ({})) as { prompt?: unknown };
-  const prompt = typeof body?.prompt === 'string' ? body.prompt.trim() : '';
-
-  if (!prompt) {
-    return NextResponse.json({ error: 'Tell Blue what course you want to create.' }, { status: 400 });
-  }
-
-  let raw: string;
   try {
+    await assertCourseUser();
+
+    const body = await request.json().catch(() => ({})) as { prompt?: unknown };
+    const prompt = typeof body?.prompt === 'string' ? body.prompt.trim() : '';
+
+    if (!prompt) {
+      return NextResponse.json({ error: 'Tell Blue what course you want to create.' }, { status: 400 });
+    }
+
+    let raw: string;
     if (DEEPSEEK_API_KEY) {
       raw = await callDeepSeek(prompt);
     } else if (ELIZA_API_KEY) {
@@ -155,17 +155,18 @@ export async function POST(request: Request) {
     } else {
       return NextResponse.json({ error: 'No LLM configured.' }, { status: 503 });
     }
-  } catch (err) {
-    console.error('[vip/courses/generate] LLM call failed:', err);
-    return NextResponse.json({ error: 'Course generation failed. Try again.' }, { status: 500 });
-  }
 
-  const course = parseGeneratedCourse(raw);
-  if (!course) {
-    return NextResponse.json(
-      { error: 'Could not generate a course from that. Try being more specific about your topic.' },
-      { status: 422 },
-    );
+    const course = parseGeneratedCourse(raw);
+    if (!course) {
+      return NextResponse.json(
+        { error: 'Could not generate a course from that. Try being more specific about your topic.' },
+        { status: 422 },
+      );
+    }
+    return NextResponse.json({ course });
+  } catch (err: any) {
+    console.error('[vip/courses/generate] error:', err);
+    const status = err.status ?? 500;
+    return NextResponse.json({ error: err.message ?? 'Course generation failed.' }, { status });
   }
-  return NextResponse.json({ course });
 }

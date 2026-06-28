@@ -10,7 +10,8 @@ import { getCurrentUserFromRequestCookie } from './auth';
  * so all authenticated users can create courses for A/B testing.
  */
 export async function assertCourseUser(): Promise<string> {
-  if (process.env.NODE_ENV === 'development' && process.env.DEV_BYPASS_AUTH === 'true') {
+  const bypass = process.env.DEV_BYPASS_AUTH;
+  if (bypass && bypass !== '0' && bypass !== 'false' && bypass !== 'no') {
     return 'dev-bypass-user';
   }
 
