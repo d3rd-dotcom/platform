@@ -87,13 +87,13 @@ function ScanLine() {
 
   useFrame(({ clock }) => {
     const t = Math.sin(clock.elapsedTime * 0.7) * 0.5 + 0.5;
-    const range = viewport.height * 0.85;
+    const range = viewport.height * 0.78;
     ref.current.position.y = (t - 0.5) * range;
   });
 
   return (
     <mesh ref={ref}>
-      <planeGeometry args={[viewport.width * 0.92, 0.035]} />
+      <planeGeometry args={[viewport.width * 0.70, 0.035]} />
       <meshBasicMaterial color="#00ff88" transparent opacity={0.5} depthWrite={false} />
     </mesh>
   );
@@ -101,20 +101,30 @@ function ScanLine() {
 
 // ── Reticle ──
 function Reticle() {
+  const { viewport } = useThree();
+  const matRef = useRef<THREE.MeshBasicMaterial>(null!);
+  const r = Math.min(viewport.width, viewport.height) * 0.045;
+  const tickDist = r * 1.15;
+
+  useFrame(({ clock }) => {
+    const pulse = Math.sin(clock.elapsedTime * 1.5) * 0.12 + 0.4;
+    matRef.current.opacity = pulse;
+  });
+
   return (
     <group>
       <mesh>
-        <ringGeometry args={[0.2, 0.24, 48]} />
-        <meshBasicMaterial color="#00ff88" transparent opacity={0.45} side={THREE.DoubleSide} depthWrite={false} />
+        <ringGeometry args={[r * 0.85, r, 48]} />
+        <meshBasicMaterial ref={matRef} color="#00ff88" transparent opacity={0.4} side={THREE.DoubleSide} depthWrite={false} />
       </mesh>
       <mesh>
-        <circleGeometry args={[0.025, 12]} />
-        <meshBasicMaterial color="#00ff88" transparent opacity={0.3} depthWrite={false} />
+        <circleGeometry args={[r * 0.12, 12]} />
+        <meshBasicMaterial color="#00ff88" transparent opacity={0.25} depthWrite={false} />
       </mesh>
       {[[1, 0], [-1, 0], [0, 1], [0, -1]].map(([x, y], i) => (
-        <mesh key={i} position={[x * 0.26, y * 0.26, 0]}>
-          <planeGeometry args={[x === 0 ? 0.015 : 0.065, y === 0 ? 0.015 : 0.065]} />
-          <meshBasicMaterial color="#00ff88" transparent opacity={0.35} depthWrite={false} />
+        <mesh key={i} position={[x * tickDist, y * tickDist, 0]}>
+          <planeGeometry args={[x === 0 ? 0.015 : r * 0.3, y === 0 ? 0.015 : r * 0.3]} />
+          <meshBasicMaterial color="#00ff88" transparent opacity={0.3} depthWrite={false} />
         </mesh>
       ))}
     </group>
@@ -126,7 +136,8 @@ function CornerBrackets() {
   const { viewport } = useThree();
   const x = viewport.width * 0.38;
   const y = viewport.height * 0.38;
-  const len = 0.18;
+  const s = Math.min(viewport.width, viewport.height);
+  const len = s * 0.035;
   const t = 0.02;
 
   const corners = [
