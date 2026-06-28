@@ -155,11 +155,9 @@ async function generateSurveyAnalysis(
       ? '\nSCORED DIMENSIONS:\n' + dimensions.map((d) => `${d.label}: ${Math.round(d.score)}%`).join('\n') + '\nPROFILE: ' + (profileType ?? '')
       : ''
 
-    const prompt = `${bluePersona.system}
+    const prompt = `${bluePersona.persona.description}
 
-You are Blue, analyzing someone's survey responses through practical behavioral pattern mapping.
-
-${Array.isArray(bluePersona.bio) ? bluePersona.bio.join('\n') : bluePersona.bio}
+You are Blue, analyzing someone's survey responses through practical behavioral pattern mapping. Your core traits: ${bluePersona.persona.core_traits.join(', ')}. Your tone: ${bluePersona.communication.tone}.
 
 SURVEY: ${surveyTitle}
 SURVEY ID: ${surveyId}

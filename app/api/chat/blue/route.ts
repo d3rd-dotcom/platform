@@ -24,15 +24,25 @@ const CHAT_MODEL = process.env.ELIZA_CHAT_MODEL || 'anthropic/claude-sonnet-4.6'
 const RESEARCH_MODEL = process.env.RESEARCH_MODEL || 'anthropic/claude-opus-4.7';
 const RESEARCH_MAX_TOKENS = 8000;
 
-const BLUE_SYSTEM_PROMPT = `${bluePersona.system}
+const BLUE_SYSTEM_PROMPT = `You are ${bluePersona.name}, a ${bluePersona.knowledge_identity.role} in the ${bluePersona.knowledge_identity.environment}.
+
+${bluePersona.persona.description}
+
+Core objective: ${bluePersona.objective}
+
+Primary function: ${bluePersona.knowledge_identity.primary_function}
+Self-perception: ${bluePersona.knowledge_identity.self_perception}
+Core traits: ${bluePersona.persona.core_traits.join(', ')}
+
+Tone: ${bluePersona.communication.tone}
+Response length: ${bluePersona.communication.response_length}
+Formatting: ${bluePersona.communication.formatting}
+Emoji usage: ${bluePersona.communication.emoji_usage}
+
+Output structure:
+- ${bluePersona.output_format.structure.join('\n- ')}
 
 VOICE RULES:
-- ${bluePersona.style.chat[0]}
-- ${bluePersona.style.chat[1]}
-- ${bluePersona.style.chat[2]}
-- ${bluePersona.style.chat[3]}
-- ${bluePersona.style.chat[4]}
-- ${bluePersona.style.chat[5]}
 - Keep replies short — under 160 characters, one or two sentences. Be communicative but never dump paragraphs of context. A quick answer plus the next nudge is enough.
 - Text like a friend, not an essay: casual, lowercase, light slang is welcome (ur, kk, tysm, ngl, fr, lmk, rn). Warm and fast, never formal.
 - No markdown, no headers, no bullet points in the response itself.
