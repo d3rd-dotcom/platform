@@ -185,6 +185,11 @@ export async function locateOnImage(
     const data = await res.json();
     return { detections: data.detections || [], fallback: false };
   } catch {
+    const { detectOnDataUrl } = await import('./object-detection');
+    const { detections } = await detectOnDataUrl(imageData, 0.4);
+    if (detections.length > 0) {
+      return { detections, fallback: true };
+    }
     const result = await analyzeImageDataUrl(imageData);
     const score = matchPrompt(query, result);
     return {

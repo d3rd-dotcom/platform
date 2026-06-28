@@ -5,8 +5,8 @@
 /* ── Card ── */
 .card {
   width: 100%;
-  background: #ffffff;
-  border: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border-strong);
   border-radius: 18px;
   box-shadow: 0 16px 34px rgba(26, 29, 51, 0.08);
   overflow: hidden;
@@ -43,57 +43,19 @@
   justify-content: center;
   overflow: hidden;
   -webkit-tap-highlight-color: transparent;
-  border-radius: 16px;
-  transition: transform 0.2s ease;
-  background: none;
+  background: var(--color-surface-1);
+  transition: background 0.2s ease;
 }
 
 .idleViewfinder:hover {
-  transform: scale(1.008);
-}
-
-.idleViewfinder:active {
-  transform: scale(0.99);
-}
-
-.idleGradient {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    155deg,
-    #0a0c1a 0%,
-    #13153a 35%,
-    #1a1d5e 65%,
-    #0f1128 100%
-  );
-}
-
-:global([data-theme="dark"]) .idleGradient {
-  background: linear-gradient(
-    155deg,
-    #060714 0%,
-    #0e1033 35%,
-    #16194e 65%,
-    #0a0c1a 100%
-  );
+  background: var(--color-surface-2);
 }
 
 :global([data-theme="dark"]) .card {
-  background: #15172a;
-  border-color: color-mix(in oklch, var(--color-primary) 28%, transparent);
   box-shadow: 0 18px 44px rgba(0, 0, 0, 0.4);
 }
 
-/* Subtle noise overlay */
-.idleGradient::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: 0.08;
-  mix-blend-mode: overlay;
-  pointer-events: none;
-}
+
 
 .idleContent {
   position: relative;
@@ -105,7 +67,7 @@
 }
 
 .idleIcon {
-  color: rgba(255, 255, 255, 0.2);
+  color: var(--color-text-faint);
   width: 28px;
   height: 28px;
 }
@@ -113,7 +75,7 @@
 .idlePrompt {
   font-size: 0.85rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-muted);
   letter-spacing: -0.01em;
   text-align: center;
   max-width: 80%;
@@ -134,7 +96,7 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--color-text-soft);
 }
 
 .idleTodo {
@@ -143,7 +105,7 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--color-text-faint);
 }
 
 /* ── Overlays ── */

@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { analyzeImageDataUrl, locateOnImage, type LocateResult } from '@/lib/safari-analyze';
 import AnalysisOverlay from './AnalysisOverlay';
+import DetectionOverlay from './DetectionOverlay';
 import styles from './PhotoSafari.module.css';
 
 const ScannerScene = dynamic(() => import('./ScannerScene'), { ssr: false });
@@ -41,6 +42,7 @@ interface SafariEntry {
 interface DetectionResult {
   label: string;
   score: number;
+  box?: [number, number, number, number];
 }
 
 function getTodaysPrompt(): { text: string; index: number } {
@@ -147,18 +149,11 @@ export default function PhotoSafari() {
     setLocating(true);
     setDetections(null);
 
-    analyzeImageDataUrl(capturedUrl).then((analysis) => {
-      const localScore = Math.round(
-        (analysis.dominantConfidence + (analysis.edgeDensity > 0.3 ? 0.3 : 0)) / 2 * 100,
-      );
-      setDetections([{ label: analysis.dominantColor, score: localScore }]);
-      setLocating(false);
-    });
-
     locateOnImage(capturedUrl, today.text).then((result) => {
       const mapped: DetectionResult[] = result.detections.map((d: LocateResult) => ({
         label: d.label,
         score: Math.round(d.score * 100),
+        box: d.box,
       }));
       if (mapped.length > 0) setDetections(mapped);
       setLocating(false);
@@ -239,6 +234,7 @@ export default function PhotoSafari() {
           <div className={styles.cameraView}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={capturedUrl} alt="Captured" className={styles.previewImage} />
+            {detections && <DetectionOverlay detections={detections} />}
             <div className={styles.cameraPrompt}>
               {detections && detections.length > 0 ? (
                 <span>{detections[0].label}</span>
@@ -279,7 +275,6 @@ export default function PhotoSafari() {
       default:
         return (
           <button type="button" className={styles.idleViewfinder} onClick={openCamera}>
-            <div className={styles.idleGradient} />
             <div className={styles.idleContent}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={styles.idleIcon}>
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />

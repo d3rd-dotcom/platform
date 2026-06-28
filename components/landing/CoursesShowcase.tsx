@@ -464,11 +464,11 @@ export const CoursesShowcase: React.FC = () => {
                   onClick={() => handleCourseClick(course)}
                   type="button"
                 >
-                  <div className={styles.cardHeader} style={{ background: course.color }}>
+                  <div className={styles.cardImagePanel} style={{ background: course.color }}>
                     <span className={styles.cardWeekBadge}>Week {course.weekNumber}</span>
                     <span className={styles.cardCategoryBadge}>{course.category}</span>
                   </div>
-                  <div className={styles.cardContent}>
+                  <div className={styles.cardContentPanel}>
                     <h3 className={styles.cardTitle}>{course.title}</h3>
                     <div className={styles.cardMeta}>
                       <p className={styles.cardDate}>
@@ -487,6 +487,33 @@ export const CoursesShowcase: React.FC = () => {
                         </svg>
                         {course.time}
                       </p>
+                    </div>
+                    <div className={styles.cardStats}>
+                      <div className={styles.statGroup}>
+                        <span className={styles.statLabel}>Length</span>
+                        <span className={styles.statValue}>12 weeks</span>
+                      </div>
+                      <div className={styles.statGroup}>
+                        <span className={styles.statLabel}>Cost</span>
+                        <span className={styles.statValue}>Free</span>
+                      </div>
+                      <div className={styles.statGroup}>
+                        <span className={styles.statLabel}>Rewards</span>
+                        <span className={styles.statValue}>
+                          12k
+                          <img
+                            src="/icons/ui-diamond.svg"
+                            alt=""
+                            className={styles.diamondIcon}
+                          />
+                        </span>
+                      </div>
+                    </div>
+                    <div className={styles.progressDivider}>
+                      <div
+                        className={styles.progressFill}
+                        style={{ width: `${(course.weekNumber / 12) * 100}%` }}
+                      />
                     </div>
                     <p className={styles.cardDescription}>{course.description}</p>
                     <div className={styles.cardFooter}>

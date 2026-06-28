@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import SwipeableScene from '@/components/swipeable-scene/SwipeableScene';
+import BlueScene from '@/components/blue-scene/BlueScene';
 import CaseMonitor from '@/components/case-monitor/CaseMonitor';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
 import PhotoSafari from '@/components/photo-safari/PhotoSafari';
@@ -56,8 +56,8 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
     <div className={styles.dashboard}>
 
       {/* ── BlueScene ── */}
-      <div className={styles.swipeSceneWrap}>
-        <SwipeableScene />
+      <div className={styles.blueSceneWrap}>
+        <BlueScene />
       </div>
 
       {/* ── PhotoSafari (above CaseMonitor on mobile) ── */}
