@@ -124,7 +124,7 @@ export default function Step5Interaction({ wf }: { wf: WorkflowState }) {
     <div className={styles.panel}>
       <div className={styles.simHeader}>
         <div>
-          <h2 className={styles.panelTitle}><span className={styles.titleJa}>対話</span>Interaction</h2>
+          <h2 className={styles.panelTitle}>Interaction</h2>
           <p className={styles.panelLead}>
             Question the world. Ask the Report Agent about emergent dynamics, or interview any agent
             directly about what they did and why.

@@ -223,7 +223,7 @@ export default function Step3Simulation({
     <div className={styles.panel}>
       <div className={styles.simHeader}>
         <div>
-          <h2 className={styles.panelTitle}><span className={styles.titleJa}>模擬</span>Simulation</h2>
+          <h2 className={styles.panelTitle}>Simulation</h2>
           <p className={styles.panelLead}>
             The same agents participate in both channels: public broadcasts in Info Plaza and
             threaded discussion in Topic Community.

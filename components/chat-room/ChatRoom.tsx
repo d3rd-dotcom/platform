@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import { getSupabase } from '@/lib/supabase';
 import type { RealtimeChannel } from '@supabase/supabase-js';
+import { useSound } from '@/hooks/useSound';
 import styles from './ChatRoom.module.css';
 
 interface ChatMessage {
@@ -57,6 +58,7 @@ function highlightMentions(text: string): React.ReactNode {
 
 export default function ChatRoom() {
   const { getAccessToken } = usePrivy();
+  const { play } = useSound();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [hasMore, setHasMore] = useState(false);
   const [loadingOlder, setLoadingOlder] = useState(false);
@@ -322,6 +324,7 @@ export default function ChatRoom() {
   }, [input, sending, getAccessToken]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    play('click');
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage();

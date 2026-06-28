@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -10,8 +10,6 @@ import styles from './TopNavigation.module.css';
 import { useSound } from '@/hooks/useSound';
 import ColorThemePicker from '@/components/theme/ColorThemePicker';
 import HoverSlideText from '@/components/shared/HoverSlideText';
-import { SearchModal } from '@/components/search-modal/SearchModal';
-
 const NAV_LINKS = [
   { label: 'Pocket World', href: '/simulation', icon: '/icons/nav-simulations-v2.svg' },
   { label: 'R-Tool', href: '/research', icon: '/icons/nav-laboratory-v3.svg' },
@@ -23,8 +21,6 @@ const TopNavigation: React.FC = () => {
   const { play } = useSound();
   const { login, authenticated } = usePrivy();
   const loginTriggered = useRef(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const searchRef = useRef<HTMLDivElement>(null);
 
   // After Privy login succeeds, redirect to /home
   useEffect(() => {
@@ -86,12 +82,12 @@ const TopNavigation: React.FC = () => {
         </div>
 
         <div className={styles.searchWrapper}>
-          <div ref={searchRef} className={styles.searchBar}>
+          <div className={styles.searchBar}>
             <input
               type="text"
               className={styles.searchInput}
               placeholder="Search Academy"
-              onFocus={() => setSearchOpen(true)}
+              onKeyDown={() => play('click')}
             />
             <MagnifyingGlass size={20} weight="bold" className={styles.searchIcon} />
           </div>
@@ -168,11 +164,6 @@ const TopNavigation: React.FC = () => {
           <div id="topnav-profile-slot" className={styles.profileSlot} />
         </nav>
       </div>
-      <SearchModal
-        isOpen={searchOpen}
-        onClose={() => setSearchOpen(false)}
-        searchContainerRef={searchRef}
-      />
     </header>
   );
 };

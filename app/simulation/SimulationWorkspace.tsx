@@ -22,8 +22,8 @@ export interface WorkflowState {
 }
 
 const STEPS = [
-  { n: 1, label: 'Knowledge graph' },
-  { n: 2, label: 'World setup' },
+  { n: 1, label: 'Knowledge' },
+  { n: 2, label: 'Setup' },
   { n: 3, label: 'Simulation' },
   { n: 4, label: 'Report' },
   { n: 5, label: 'Interaction' },

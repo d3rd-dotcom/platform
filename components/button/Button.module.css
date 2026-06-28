@@ -1,53 +1,46 @@
-/* Shared bulky CTA button — Figma "Button Bulky, 9sp/Variant5" (id 1683:8947).
-   var(--color-primary) Academy Blue fill, 1px black stroke, 6px radius, drop shadow plus
-   top white + bottom dark inner-shadow bevels for the chunky 3D look. */
+/* Pill-style button — small, soft, rounded like topnav navigation tabs.
+   Default: solid primary fill (primary CTA).
+   Compact: even smaller for inline use. */
 
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 16px 28px;
-  min-height: 60px;
-  border: 1px solid #000000;
-  border-radius: 6px;
+  gap: 8px;
+  padding: 8px 18px;
+  min-height: 36px;
+  border: 1.5px solid var(--color-primary);
+  border-radius: 9999px;
   background: var(--color-primary);
   color: #ffffff;
   font-family: var(--font-primary);
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
   text-align: center;
   text-decoration: none;
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-  box-shadow:
-    0 4px 4px rgba(0, 0, 0, 0.25),
-    inset 0 4px 0 rgba(255, 255, 255, 0.25),
-    inset 0 -6px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 40%, transparent);
+  white-space: nowrap;
   transition:
     background 0.15s ease,
+    border-color 0.15s ease,
     transform 0.12s ease,
     box-shadow 0.15s ease;
 }
 
 .button:hover:not(:disabled):not([aria-disabled='true']) {
   background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
   transform: translateY(-1px);
-  box-shadow:
-    0 6px 6px rgba(0, 0, 0, 0.28),
-    inset 0 4px 0 rgba(255, 255, 255, 0.28),
-    inset 0 -6px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 0 color-mix(in oklch, var(--color-primary) 50%, transparent);
 }
 
 .button:active:not(:disabled):not([aria-disabled='true']) {
   transform: translateY(1px);
-  box-shadow:
-    0 2px 2px rgba(0, 0, 0, 0.22),
-    inset 0 4px 0 rgba(255, 255, 255, 0.18),
-    inset 0 -4px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 1px 0 color-mix(in oklch, var(--color-primary) 40%, transparent);
 }
 
 .button:focus-visible {
@@ -76,28 +69,19 @@
   display: inline-block;
 }
 
-/* Compact variant — same look, smaller scale for in-flow CTAs (step panels). */
+/* Compact variant — even smaller pill for inline / tight spaces */
 .compact {
-  padding: 10px 18px;
-  min-height: 44px;
-  font-size: 14px;
-  gap: 8px;
-  box-shadow:
-    0 3px 3px rgba(0, 0, 0, 0.22),
-    inset 0 3px 0 rgba(255, 255, 255, 0.25),
-    inset 0 -4px 0 rgba(0, 0, 0, 0.5);
+  padding: 6px 14px;
+  min-height: 32px;
+  font-size: 12px;
+  gap: 6px;
+  box-shadow: 0 2px 0 color-mix(in oklch, var(--color-primary) 40%, transparent);
 }
 
 .compact:hover:not(:disabled):not([aria-disabled='true']) {
-  box-shadow:
-    0 4px 4px rgba(0, 0, 0, 0.26),
-    inset 0 3px 0 rgba(255, 255, 255, 0.28),
-    inset 0 -4px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 50%, transparent);
 }
 
 .compact:active:not(:disabled):not([aria-disabled='true']) {
-  box-shadow:
-    0 1px 1px rgba(0, 0, 0, 0.2),
-    inset 0 3px 0 rgba(255, 255, 255, 0.18),
-    inset 0 -3px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 1px 0 color-mix(in oklch, var(--color-primary) 40%, transparent);
 }

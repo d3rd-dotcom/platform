@@ -160,8 +160,8 @@
 
 .searchInput {
   flex: 1;
-  min-width: 240px;
-  max-width: 600px;
+  min-width: 320px;
+  max-width: 720px;
   border: none;
   background: transparent;
   outline: none;

@@ -253,9 +253,12 @@ export default function ProjectGallery({
   }
 
   return (
-    <div className={styles.gallery}>
+    <div className={styles.galleryWrap}>
+      <div className={styles.feedHead}>
+        <h2 className={styles.feedTitle}><span className={styles.titleJa}>世界</span>Simulated Pocket Worlds</h2>
+      </div>
+      <div className={styles.gallery}>
       <header className={styles.galleryHeader}>
-        <h1 className={styles.galleryTitle}><span className={styles.titleJa}>世界</span>Simulation Worlds</h1>
         <div className={styles.filterRow}>
           <button
             className={`${styles.filterBtn} ${activeFilter === 'recent' ? styles.filterBtnActive : ''}`}
@@ -524,6 +527,7 @@ export default function ProjectGallery({
         </div>
         </article>
       </div>
-    </div>
+      </div>
+      </div>
   );
 }
