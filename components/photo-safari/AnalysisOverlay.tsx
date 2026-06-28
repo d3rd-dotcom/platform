@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { sampleVideoFrame, matchPrompt } from '@/lib/safari-analyze';
+import { sampleVideoFrame, matchPrompt, type AnalysisResult } from '@/lib/safari-analyze';
 import styles from './AnalysisOverlay.module.css';
 
 export default function AnalysisOverlay({
@@ -11,8 +11,8 @@ export default function AnalysisOverlay({
   stream: MediaStream;
   prompt: string;
 }) {
+  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [match, setMatch] = useState(0);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
   const rafRef = useRef(0);
 
   useEffect(() => {
@@ -22,7 +22,6 @@ export default function AnalysisOverlay({
     video.play();
     video.muted = true;
     video.playsInline = true;
-    videoRef.current = video;
 
     let lastSample = 0;
 
@@ -31,6 +30,7 @@ export default function AnalysisOverlay({
         lastSample = time;
         const result = sampleVideoFrame(video);
         if (result) {
+          setAnalysis(result);
           setMatch(matchPrompt(prompt, result));
         }
       }
@@ -46,8 +46,15 @@ export default function AnalysisOverlay({
   }, [stream, prompt]);
 
   const pct = Math.round(match * 100);
+  const color = analysis
+    ? `rgb(${Math.round(analysis.avgR)}, ${Math.round(analysis.avgG)}, ${Math.round(analysis.avgB)})`
+    : 'transparent';
 
   return (
-    <span className={styles.match}>{pct}%</span>
+    <div className={styles.bar}>
+      <span className={styles.swatch} style={{ backgroundColor: color }} />
+      <span className={styles.colorName}>{analysis?.dominantColor ?? '—'}</span>
+      <span className={styles.match}>{pct}%</span>
+    </div>
   );
 }
