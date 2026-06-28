@@ -3,12 +3,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
-import { Plus, PencilSimple, CheckCircle } from '@phosphor-icons/react';
+import { Plus, PencilSimple, Sparkle } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import CourseStudioModal from '@/components/course-studio/CourseStudioModal';
 import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
 import type { CourseData } from '@/lib/personal-course';
 import type { VipCourseRecord } from '@/lib/vip-course-db';
+import type { ComponentType } from '@/lib/vip-course-db';
 import { onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
 import styles from './page.module.css';
 
@@ -32,6 +33,24 @@ export default function CoursesPage() {
   const [studioOpen, setStudioOpen] = useState(false);
   const [editingCourseId, setEditingCourseId] = useState<string | null>(null);
   const [authoredCourses, setAuthoredCourses] = useState<VipCourseRecord[]>([]);
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [generating, setGenerating] = useState(false);
+  const [genError, setGenError] = useState<string | null>(null);
+  const [genCourse, setGenCourse] = useState<{
+    title: string;
+    focus: string;
+    weeks: Array<{
+      weekNumber: number;
+      title: string;
+      theme: string;
+      components: Array<{
+        componentType: string;
+        title: string;
+        config: Record<string, unknown>;
+        required?: boolean;
+      }>;
+    }>;
+  } | null>(null);
 
   const authHeaders = useCallback(async (): Promise<HeadersInit> => {
     const token = await getAccessToken();
@@ -76,20 +95,45 @@ export default function CoursesPage() {
   const handleCourseCreated = useCallback(() => {
     setStudioOpen(false);
     setEditingCourseId(null);
+    setGenCourse(null);
+    setAiPrompt('');
     loadPersonalCourse();
     loadAuthoredCourses();
   }, [loadPersonalCourse, loadAuthoredCourses]);
 
-  if (studioOpen || editingCourseId) {
+  if (studioOpen || editingCourseId || genCourse) {
     return (
       <CourseStudioModal
         authHeaders={authHeaders}
-        onClose={() => { setStudioOpen(false); setEditingCourseId(null); }}
+        onClose={() => { setStudioOpen(false); setEditingCourseId(null); setGenCourse(null); setAiPrompt(''); }}
         onCourseCreated={handleCourseCreated}
         existingCourseId={editingCourseId ?? undefined}
+        initialCourse={genCourse ?? undefined}
       />
     );
   }
+
+  const handleGenerate = async () => {
+    const trimmed = aiPrompt.trim();
+    if (!trimmed) return;
+    setGenerating(true);
+    setGenError(null);
+    try {
+      const headers = await authHeaders();
+      const res = await fetch('/api/vip/courses/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...headers },
+        body: JSON.stringify({ prompt: trimmed }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Generation failed');
+      setGenCourse(data.course);
+    } catch (err: any) {
+      setGenError(err.message ?? 'Something went wrong');
+    } finally {
+      setGenerating(false);
+    }
+  };
 
   return (
     <div className={styles.layout}>
@@ -139,9 +183,40 @@ export default function CoursesPage() {
           </Link>
         )}
 
+        <section className={styles.aiSection}>
+          <div className={styles.aiInputRow}>
+            <input
+              value={aiPrompt}
+              onChange={(e) => { setAiPrompt(e.target.value); setGenError(null); }}
+              onKeyDown={(e) => { if (e.key === 'Enter' && !generating) handleGenerate(); }}
+              placeholder="Describe the course you want Blue to build — e.g. &quot;I want to teach a 6-week course on meditation for beginners&quot;"
+              className={styles.aiInput}
+              disabled={generating}
+            />
+            <button
+              type="button"
+              onClick={handleGenerate}
+              disabled={generating || !aiPrompt.trim()}
+              className={styles.aiGenerateBtn}
+            >
+              <Sparkle size={16} weight="bold" />
+              {generating ? 'Generating...' : 'Generate with Blue'}
+            </button>
+          </div>
+          {genError && <p className={styles.aiError}>{genError}</p>}
+          {generating && (
+            <div className={styles.aiGenerating}>
+              <div className={styles.aiSpinner} />
+              <span>Blue is designing your course...</span>
+            </div>
+          )}
+        </section>
+
+        <div className={styles.divider} aria-hidden="true" />
+
         <button type="button" onClick={() => setStudioOpen(true)} className={styles.buildCard}>
           <Plus size={20} weight="bold" />
-          <span>Build your own course</span>
+          <span>Build your own course from scratch</span>
         </button>
 
         {authoredCourses.length > 0 && (

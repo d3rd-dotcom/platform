@@ -35,6 +35,21 @@ interface CourseStudioProps {
   onClose: () => void;
   onCourseCreated: () => void;
   existingCourseId?: string;
+  initialCourse?: {
+    title: string;
+    focus: string;
+    weeks: Array<{
+      weekNumber: number;
+      title: string;
+      theme: string;
+      components: Array<{
+        componentType: string;
+        title: string;
+        config: Record<string, unknown>;
+        required?: boolean;
+      }>;
+    }>;
+  };
 }
 
 type CourseDraft = {
@@ -68,13 +83,36 @@ export default function CourseStudioModal({
   onClose,
   onCourseCreated,
   existingCourseId,
+  initialCourse,
 }: CourseStudioProps) {
   const [phase, setPhase] = useState<'loading' | 'edit' | 'saving'>(existingCourseId ? 'loading' : 'edit');
   const [courseId, setCourseId] = useState<string | null>(existingCourseId ?? null);
   const [title, setTitle] = useState('');
   const [focus, setFocus] = useState('');
   const [slug, setSlug] = useState('');
-  const [weeks, setWeeks] = useState<CourseDraft['weeks']>([createBlankWeek(1)]);
+  const [weeks, setWeeks] = useState<CourseDraft['weeks']>(() => {
+    if (initialCourse?.weeks?.length) {
+      const now = Date.now();
+      return initialCourse.weeks.map((w, i) => ({
+        id: `gen-${now}-${i}`,
+        weekNumber: w.weekNumber,
+        title: w.title,
+        theme: w.theme,
+        components: (w.components ?? []).map((c, ci) => ({
+          id: `genc-${now}-${i}-${ci}`,
+          weekId: `gen-${now}-${i}`,
+          sortOrder: ci,
+          componentType: c.componentType as ComponentType,
+          title: c.title,
+          config: c.config,
+          required: c.required ?? false,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        })),
+      }));
+    }
+    return [createBlankWeek(1)];
+  });
   const [selectedWeekId, setSelectedWeekId] = useState(weeks[0]?.id ?? '');
   const [selectedComponentId, setSelectedComponentId] = useState<string | null>(null);
   const [activeDragItem, setActiveDragItem] = useState<{ type: ComponentType } | null>(null);
@@ -141,6 +179,19 @@ export default function CourseStudioModal({
       }
     })();
   }, [existingCourseId, authHeaders]);
+
+  // Pre-populate from AI-generated course
+  useEffect(() => {
+    if (!initialCourse) return;
+    setTitle(initialCourse.title);
+    setFocus(initialCourse.focus);
+    setSlug(deriveSlug(initialCourse.title));
+    if (initialCourse.weeks?.length) {
+      setSelectedWeekId(weeks[0]?.id ?? '');
+    }
+    setPhase('edit');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // run once on mount
 
   const updateWeek = (weekId: string, updates: { title?: string; theme?: string }) => {
     setWeeks((prev) =>
