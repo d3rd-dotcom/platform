@@ -54,58 +54,58 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
 
   return (
     <div className={styles.dashboard}>
-      {/* ── Main content area ── */}
-      <main className={styles.mainArea}>
+
+      {/* ── BlueScene ── */}
+      <div className={styles.blueSceneWrap}>
         <BlueScene />
-        <div className={styles.photoSafariMobile}>
-          <PhotoSafari />
-        </div>
+      </div>
+
+      {/* ── PhotoSafari (above CaseMonitor on mobile) ── */}
+      <div className={styles.photoSafariWrap}>
+        <PhotoSafari />
+      </div>
+
+      {/* ── CaseMonitor ── */}
+      <div className={styles.caseMonitorWrap}>
         <CaseMonitor />
-      </main>
+      </div>
 
-      {/* ── Side: leaderboard, morning note, membership ── */}
-      <aside className={styles.sideStack}>
-        <div className={styles.sideStackInner}>
-
-          <button
-            type="button"
-            className={styles.leaderboardCard}
-            onClick={() => setShowLeaderboard(true)}
-          >
-            <div className={styles.leaderHead}>
-              <Image src="/icons/ui-diamond.svg" alt="" width={14} height={14} />
-              <span className={styles.leaderTitle}>Leaderboard</span>
-            </div>
-            {leaderboard.length === 0 ? (
-              <p className={styles.leaderEmpty}>No rankings yet — be the first to show up.</p>
-            ) : (
-              <ul className={styles.leaderList}>
-                {leaderboard.slice(0, 3).map((u) => (
-                  <li key={u.rank} className={styles.leaderRow}>
-                    <span className={styles.leaderRank}>{u.rank}</span>
-                    {u.avatarUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={u.avatarUrl} alt={u.username} className={styles.leaderAvatar} />
-                    ) : (
-                      <span
-                        className={styles.leaderAvatar}
-                        style={{ background: avatarColor(u.username || '?') }}
-                      >
-                        {(u.username || '?').charAt(0).toUpperCase()}
-                      </span>
-                    )}
-                    <span className={styles.leaderName}>{u.username}</span>
-                    <span className={styles.leaderShards}>{u.shards}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </button>
-
-          <div className={styles.photoSafariDesktop}>
-            <PhotoSafari />
+      {/* ── Sidebar: Leaderboard + MorningPages ── */}
+      <aside className={styles.sidebarWrap}>
+        <button
+          type="button"
+          className={styles.leaderboardCard}
+          onClick={() => setShowLeaderboard(true)}
+        >
+          <div className={styles.leaderHead}>
+            <Image src="/icons/ui-diamond.svg" alt="" width={14} height={14} />
+            <span className={styles.leaderTitle}>Leaderboard</span>
           </div>
-        </div>
+          {leaderboard.length === 0 ? (
+            <p className={styles.leaderEmpty}>No rankings yet — be the first to show up.</p>
+          ) : (
+            <ul className={styles.leaderList}>
+              {leaderboard.slice(0, 3).map((u) => (
+                <li key={u.rank} className={styles.leaderRow}>
+                  <span className={styles.leaderRank}>{u.rank}</span>
+                  {u.avatarUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={u.avatarUrl} alt={u.username} className={styles.leaderAvatar} />
+                  ) : (
+                    <span
+                      className={styles.leaderAvatar}
+                      style={{ background: avatarColor(u.username || '?') }}
+                    >
+                      {(u.username || '?').charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                  <span className={styles.leaderName}>{u.username}</span>
+                  <span className={styles.leaderShards}>{u.shards}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </button>
 
         <div className={styles.morningPagesShell} data-tour="daily-note">
           <div className={styles.morningPagesGradient} aria-hidden="true" />
@@ -114,7 +114,6 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
             compact
           />
         </div>
-
       </aside>
 
       {showLeaderboard && (

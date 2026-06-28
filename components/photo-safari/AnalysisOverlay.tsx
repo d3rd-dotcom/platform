@@ -48,14 +48,6 @@ export default function AnalysisOverlay({
   const pct = Math.round(match * 100);
 
   return (
-    <div className={styles.badge}>
-      <div className={styles.barTrack}>
-        <div
-          className={styles.barFill}
-          style={{ width: `${pct}%` }}
-        />
-      </div>
-      <span className={styles.label}>{pct}%</span>
-    </div>
+    <span className={styles.match}>{pct}%</span>
   );
 }

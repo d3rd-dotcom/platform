@@ -1,35 +1,7 @@
-.badge {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 10px;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-radius: 999px;
-  pointer-events: none;
-}
-
-.barTrack {
-  width: 48px;
-  height: 4px;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.2);
-  overflow: hidden;
-}
-
-.barFill {
-  height: 100%;
-  border-radius: 4px;
-  background: #00ff88;
-  transition: width 0.3s ease;
-}
-
-.label {
+.match {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #ffffff;
-  min-width: 2.4em;
-  text-align: right;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.02em;
 }

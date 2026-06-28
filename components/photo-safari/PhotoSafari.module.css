@@ -1,28 +1,25 @@
-.card {
-  width: 100%;
-  background: #ffffff;
-  border: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
-  border-radius: 18px;
-  box-shadow: 0 16px 34px rgba(26, 29, 51, 0.08);
-  overflow: hidden;
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+/* ── Wrapper provides top gap ── */
+.wrapper {
+  margin-top: 4px;
 }
 
-:global([data-theme="dark"]) .card {
-  background: #15172a;
-  border-color: color-mix(in oklch, var(--color-primary) 28%, transparent);
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.4);
+/* ── Card ── */
+.card {
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  background: transparent;
+  transition: transform 0.2s ease;
 }
 
 /* ── Viewfinder (always 4:3) ── */
-
 .cameraView {
   position: relative;
   width: 100%;
   aspect-ratio: 4 / 3;
-  border-radius: 0;
   overflow: hidden;
   background: #000;
+  border-radius: 16px;
 }
 
 .previewImage {
@@ -33,7 +30,6 @@
 }
 
 /* ── Idle state ── */
-
 .idleViewfinder {
   position: relative;
   width: 100%;
@@ -45,85 +41,124 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
   overflow: hidden;
   -webkit-tap-highlight-color: transparent;
+  border-radius: 16px;
+  transition: transform 0.2s ease;
+  background: none;
+}
+
+.idleViewfinder:hover {
+  transform: scale(1.008);
+}
+
+.idleViewfinder:active {
+  transform: scale(0.99);
 }
 
 .idleGradient {
   position: absolute;
   inset: 0;
   background: linear-gradient(
-    150deg,
-    color-mix(in oklch, var(--color-primary) 20%, #f0efff) 0%,
-    color-mix(in oklch, var(--color-primary) 8%, #e8e6ff) 50%,
-    #d4d9ff 100%
+    155deg,
+    #0a0c1a 0%,
+    #13153a 35%,
+    #1a1d5e 65%,
+    #0f1128 100%
   );
 }
 
 :global([data-theme="dark"]) .idleGradient {
   background: linear-gradient(
-    150deg,
-    color-mix(in oklch, var(--color-primary) 30%, #0d0f1a) 0%,
-    color-mix(in oklch, var(--color-primary) 14%, #121422) 50%,
-    #181a2e 100%
+    155deg,
+    #060714 0%,
+    #0e1033 35%,
+    #16194e 65%,
+    #0a0c1a 100%
   );
 }
 
-.idleActions {
+/* Subtle noise overlay */
+.idleGradient::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.08;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.idleContent {
   position: relative;
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding: 10px 20px;
-  background: var(--color-primary);
-  color: #ffffff;
-  font-family: var(--font-button);
-  font-size: 0.9rem;
-  font-weight: 700;
-  border-radius: 12px;
-  transition: transform 0.15s ease, background 0.15s ease;
+  gap: 14px;
   z-index: 1;
 }
 
-.idleViewfinder:hover .idleActions {
-  background: #3d52e6;
-  transform: scale(1.03);
+.idleIcon {
+  color: rgba(255, 255, 255, 0.2);
+  width: 28px;
+  height: 28px;
 }
 
-.idleViewfinder:active .idleActions {
-  transform: scale(0.97);
+.idlePrompt {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: -0.01em;
+  text-align: center;
+  max-width: 80%;
+  line-height: 1.4;
 }
 
-/* ── Overlays (shared) ── */
-
-.cameraOverlay {
+.idleMeta {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  right: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 6px;
-  flex-wrap: wrap;
-  pointer-events: none;
-  z-index: 2;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
 }
 
+.idleDone {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.idleTodo {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* ── Overlays ── */
 .cameraPrompt {
-  display: inline-block;
-  padding: 5px 12px;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-radius: 999px;
-  font-family: var(--font-button);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  padding: 40px 16px 16px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.cameraPrompt > span {
+  display: block;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #ffffff;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: -0.01em;
   text-align: center;
-  max-width: 90%;
 }
 
 .cameraBottom {
@@ -164,27 +199,27 @@
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  border: 4px solid #ffffff;
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.3);
+  border: 3px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.15);
   transition: transform 0.1s ease;
 }
 
 .captureBtn:active .captureRing {
-  transform: scale(0.88);
+  transform: scale(0.85);
 }
 
 .cameraClose {
   position: absolute;
   top: 8px;
   right: 8px;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   border: none;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  color: #ffffff;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -194,67 +229,34 @@
 }
 
 .cameraClose:hover {
-  background: rgba(0, 0, 0, 0.7);
-}
-
-/* ── Detection chips ── */
-
-.detectionChips {
-  display: flex;
-  gap: 5px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.detectionChip {
-  padding: 4px 10px;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-radius: 999px;
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: #ffffff;
-}
-
-.detectionChip strong {
-  color: #00ff88;
-}
-
-.locatingLabel {
-  padding: 4px 10px;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(8px);
-  border-radius: 999px;
-  font-size: 0.72rem;
-  color: rgba(255, 255, 255, 0.7);
+  background: rgba(0, 0, 0, 0.6);
 }
 
 /* ── Preview actions ── */
-
 .previewBtn {
   flex: 1;
   padding: 9px;
   font-family: var(--font-button);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  border: 1px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
   border-radius: 10px;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: none;
   color: #ffffff;
   cursor: pointer;
   transition: background 0.15s ease;
 }
 
 .previewBtn:hover {
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .previewBtnPrimary {
   composes: previewBtn;
   background: var(--color-primary);
-  border-color: transparent;
+  flex: 1.5;
 }
 
 .previewBtnPrimary:hover {
@@ -262,7 +264,6 @@
 }
 
 /* ── Success ── */
-
 .successView {
   display: flex;
   align-items: center;
@@ -272,19 +273,21 @@
 .successView .previewImage {
   position: absolute;
   inset: 0;
-  filter: brightness(0.5);
+  filter: brightness(0.4) saturate(0.6);
 }
 
-.successBadge {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+.successOverlay {
+  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  color: #ffffff;
+  gap: 6px;
+  z-index: 2;
   animation: successPop 0.4s var(--ease-bounce);
+}
+
+.successIcon {
+  color: #ffffff;
 }
 
 @keyframes successPop {
@@ -293,26 +296,10 @@
 }
 
 .successLabel {
-  display: block;
-  width: 100%;
-  text-align: center;
   font-family: var(--font-button);
   font-size: 1rem;
-  font-weight: 800;
-  color: #ffffff;
-  margin-top: 4px;
-}
-
-.successStreak {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.7);
-  letter-spacing: 0.03em;
-}
-
-.successDetect {
-  opacity: 0.7;
+  color: #ffffff;
 }
 
 .successCard {
@@ -320,48 +307,10 @@
 }
 
 :global([data-theme="dark"]) .successCard {
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5);
-}
-
-/* ── Idle header ── */
-
-.idleHeader {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px 4px;
-}
-
-.label {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-primary);
-}
-
-.check {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  margin-left: auto;
-  color: #2f9e6b;
-}
-
-.count {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: #9aa0c0;
-  margin-left: auto;
-  white-space: nowrap;
+  box-shadow: none;
 }
 
 /* ── Error ── */
-
 .error {
   margin: 0;
   padding: 8px 14px 4px;
@@ -370,14 +319,13 @@
 }
 
 /* ── Gallery ── */
-
 .gallery {
   display: flex;
   gap: 5px;
   overflow-x: auto;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  padding: 8px 14px 14px;
+  padding: 8px 0 0;
 }
 
 .gallery::-webkit-scrollbar {
@@ -386,12 +334,11 @@
 
 .thumbWrap {
   flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 9px;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
   overflow: hidden;
-  border: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
-  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .thumb {
@@ -399,4 +346,5 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  border-radius: 8px;
 }

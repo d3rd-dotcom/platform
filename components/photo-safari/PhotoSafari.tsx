@@ -52,6 +52,24 @@ function getTodaysPrompt(): { text: string; index: number } {
   return { text: SAFARIS[index], index };
 }
 
+function getStreak(entries: SafariEntry[]): number {
+  if (entries.length === 0) return 0;
+  const dates = new Set(entries.map((e) => e.date));
+  const today = new Date().toISOString().slice(0, 10);
+  const startOffset = dates.has(today) ? 0 : 1;
+  let streak = 0;
+  for (let i = startOffset; ; i++) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    if (dates.has(d.toISOString().slice(0, 10))) {
+      streak++;
+    } else {
+      break;
+    }
+  }
+  return streak;
+}
+
 function loadEntries(): SafariEntry[] {
   if (typeof window === 'undefined') return [];
   try {
@@ -116,6 +134,7 @@ export default function PhotoSafari() {
   const captureFrame = useCallback(() => {
     const dataUrl = scannerRef.current?.capture();
     if (!dataUrl) return;
+    if (navigator.vibrate) navigator.vibrate(24);
     setCapturedUrl(dataUrl);
 
     stream?.getTracks().forEach((t) => t.stop());
@@ -190,14 +209,16 @@ export default function PhotoSafari() {
     return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
   };
 
+  const streak = getStreak(entries);
+
   const renderViewfinder = () => {
     switch (mode) {
       case 'camera':
         return (
           <div className={styles.cameraView}>
             {stream && <ScannerScene ref={scannerRef} stream={stream} />}
-            <div className={styles.cameraOverlay}>
-              <span className={styles.cameraPrompt}>{today.text}</span>
+            <div className={styles.cameraPrompt}>
+              <span>{today.text.replace('Scan ', '')}</span>
             </div>
             <div className={styles.cameraBottom}>
               {stream && <AnalysisOverlay stream={stream} prompt={today.text} />}
@@ -218,17 +239,14 @@ export default function PhotoSafari() {
           <div className={styles.cameraView}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={capturedUrl} alt="Captured" className={styles.previewImage} />
-            <div className={styles.cameraOverlay}>
-              {detections && detections.length > 0 && (
-                <div className={styles.detectionChips}>
-                  {detections.map((d, i) => (
-                    <span key={i} className={styles.detectionChip}>
-                      {d.label} <strong>{d.score}%</strong>
-                    </span>
-                  ))}
-                </div>
+            <div className={styles.cameraPrompt}>
+              {detections && detections.length > 0 ? (
+                <span>{detections[0].label}</span>
+              ) : locating ? (
+                <span>analyzing…</span>
+              ) : (
+                <span>{today.text.replace('Scan ', '')}</span>
               )}
-              {locating && <span className={styles.locatingLabel}>Analyzing…</span>}
             </div>
             <div className={styles.cameraBottom}>
               <button type="button" className={styles.previewBtn} onClick={retake}>Retake</button>
@@ -249,23 +267,11 @@ export default function PhotoSafari() {
               /* eslint-disable-next-line @next/next/no-img-element */
               <img src={capturedUrl} alt="" className={styles.previewImage} />
             )}
-            <div className={styles.cameraOverlay}>
-              <div className={styles.successBadge}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-              </div>
-              <span className={styles.successLabel}>Safari Complete!</span>
-              {animating && (
-                <div className={styles.successStreak}>
-                  +1 day streak
-                  {detections && detections.length > 0 && (
-                    <span className={styles.successDetect}>
-                      {' · '}{detections[0].label} {detections[0].score}%
-                    </span>
-                  )}
-                </div>
-              )}
+            <div className={styles.successOverlay}>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={styles.successIcon}>
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              <span className={styles.successLabel}>Logged</span>
             </div>
           </div>
         );
@@ -274,16 +280,21 @@ export default function PhotoSafari() {
         return (
           <button type="button" className={styles.idleViewfinder} onClick={openCamera}>
             <div className={styles.idleGradient} />
-            <span className={styles.cameraPrompt}>{today.text}</span>
-            <div className={styles.idleActions}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <div className={styles.idleContent}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={styles.idleIcon}>
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
                 <circle cx="12" cy="13" r="4" />
               </svg>
-              Scan Now
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 18l6-6-6-6" />
-              </svg>
+              <span className={styles.idlePrompt}>{today.text}</span>
+            </div>
+            <div className={styles.idleMeta}>
+              {streak > 0 ? (
+                <span className={styles.idleDone}>{streak}-day streak</span>
+              ) : todayDone ? (
+                <span className={styles.idleDone}>Completed today</span>
+              ) : (
+                <span className={styles.idleTodo}>Tap to start</span>
+              )}
             </div>
           </button>
         );
@@ -291,31 +302,23 @@ export default function PhotoSafari() {
   };
 
   return (
-    <div className={`${styles.card} ${mode === 'success' || animating ? styles.successCard : ''}`}>
-      {renderViewfinder()}
+    <div className={styles.wrapper}>
+      <div className={`${styles.card} ${mode === 'success' || animating ? styles.successCard : ''}`}>
+        {renderViewfinder()}
 
-      {error && <p className={styles.error}>{error}</p>}
+        {error && <p className={styles.error}>{error}</p>}
 
-      {mode === 'idle' && (
-        <div className={styles.idleHeader}>
-          <span className={styles.label}>Daily Safari</span>
-          {todayDone && <span className={styles.check}>Completed</span>}
-          {entries.length > 0 && (
-            <span className={styles.count}>{entries.length} scan{entries.length !== 1 ? 's' : ''}</span>
-          )}
-        </div>
-      )}
-
-      {entries.length > 0 && mode !== 'success' && !animating && (
-        <div className={styles.gallery}>
-          {entries.slice(0, 7).map((entry, i) => (
-            <div key={`${entry.date}-${i}`} className={styles.thumbWrap} title={`${entry.prompt} — ${formatDate(entry.date)}`}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={entry.imageData} alt={entry.prompt} className={styles.thumb} />
-            </div>
-          ))}
-        </div>
-      )}
+        {entries.length > 0 && mode !== 'success' && !animating && (
+          <div className={styles.gallery}>
+            {entries.slice(0, 7).map((entry, i) => (
+              <div key={`${entry.date}-${i}`} className={styles.thumbWrap} title={`${entry.prompt} — ${formatDate(entry.date)}`}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={entry.imageData} alt={entry.prompt} className={styles.thumb} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

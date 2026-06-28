@@ -1,58 +1,63 @@
 .dashboard {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
+  grid-template-columns: 1fr;
   gap: 16px;
   width: 100%;
   align-items: start;
 }
 
-.mainArea {
-  min-width: 0;
-  align-self: stretch;
-  display: flex;
-  flex-direction: column;
-}
+/* Flat grid — each card is a direct child. On mobile (single column) the DOM
+   order controls visual order: BlueScene → PhotoSafari → CaseMonitor → sidebar.
+   On desktop we override with explicit column/row placement. */
 
-.sideStack {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.sideStackInner {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  min-width: 0;
-  margin-bottom: 14px;
-}
-
-/* Desktop app frame: the dashboard fills the (non-scrolling) page, the Blue
-   scene fills its column edge to edge, and only the side column scrolls when
-   its content runs taller than the viewport. */
+/* ── Desktop: two-column fill-height layout ── */
 @media (min-width: 1025px) {
   .dashboard {
-    flex: 1;
-    min-height: 0;
+    grid-template-columns: 1fr 320px;
+    grid-template-rows: auto 1fr auto;
+    gap: 16px;
+    min-height: 100%;
     align-items: stretch;
   }
 
-  .mainArea {
-    min-height: 0;
+  .blueSceneWrap {
+    grid-column: 1;
+    grid-row: 1 / 3;
   }
 
-  .sideStack {
-    min-height: 0;
+  .photoSafariWrap {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .caseMonitorWrap {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .sidebarWrap {
+    grid-column: 2;
+    grid-row: 2 / 4;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
     overflow-y: auto;
     scrollbar-width: none;
   }
 
-  .sideStack::-webkit-scrollbar {
+  .sidebarWrap::-webkit-scrollbar {
     display: none;
   }
 }
 
-/* Desktop: inline card. Mobile: persistent dock above the bottom navigation. */
+/* ── Mobile: single column, no explicit grid-row needed (DOM order) ── */
+@media (max-width: 1024px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Morning pages ── */
 .morningPagesShell {
   --mobile-nav-height: calc(74px + max(env(safe-area-inset-bottom, 0px), 20px));
   --morning-pages-gap: 10px;
@@ -62,202 +67,6 @@
 
 .morningPagesGradient {
   display: none;
-}
-
-.cardLabel {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-primary);
-}
-
-/* ── Events grid ── */
-.eventsSection {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  min-width: 0;
-}
-
-.eventsHeader {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 0 4px;
-}
-
-.eventsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 14px;
-}
-
-.eventsHint {
-  margin: 0;
-  font-size: 0.86rem;
-  line-height: 1.55;
-  color: #6b7194;
-}
-
-/* ── Event card ── */
-.eventCard {
-  display: flex;
-  flex-direction: column;
-  background: #ffffff;
-  border: 1px solid rgba(26, 29, 51, 0.08);
-  border-radius: 14px;
-  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
-  overflow: hidden;
-}
-
-.eventImage {
-  position: relative;
-  width: 100%;
-  height: 124px;
-  background-color: #4150c8;
-  background-size: cover;
-  background-position: center;
-  overflow: hidden;
-}
-
-/* Film-grain overlay that turns the smooth mesh gradient into a MagicPattern-
-   style noisy gradient. The grain is an inline SVG fractal-noise texture. */
-.eventNoise {
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: 0.16;
-  mix-blend-mode: overlay;
-  pointer-events: none;
-}
-
-.eventBody {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 13px 14px 14px;
-  flex: 1;
-}
-
-.eventMeta {
-  font-size: 0.74rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  color: var(--color-primary);
-}
-
-.eventTitle {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 1.3;
-  letter-spacing: -0.01em;
-  color: #1a1d33;
-}
-
-.eventText {
-  margin: 0;
-  font-size: 0.82rem;
-  line-height: 1.5;
-  color: #6b7194;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.eventFoot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-top: auto;
-  padding-top: 8px;
-}
-
-.eventTime {
-  font-size: 0.76rem;
-  font-weight: 600;
-  color: #9aa0c0;
-}
-
-.eventBtn {
-  display: inline-flex;
-  align-items: center;
-  flex-shrink: 0;
-  padding: 7px 14px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #ffffff;
-  background: var(--color-primary);
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background 0.15s ease;
-}
-
-.eventBtn:hover {
-  background: #3d52e6;
-}
-
-.eventBtn:disabled {
-  background: color-mix(in oklch, var(--color-primary) 16%, transparent);
-  color: var(--color-primary);
-  cursor: default;
-}
-
-/* Registered state — quieter than the primary action, with a check-y tint. */
-.eventBtnDone {
-  background: rgba(98, 190, 143, 0.16);
-  color: #2f9e6b;
-}
-
-.eventBtnDone:hover {
-  background: rgba(98, 190, 143, 0.26);
-}
-
-/* Inline email prompt for wallet-only users with no Privy email. */
-.eventEmailPrompt {
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.eventEmailLabel {
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: #9aa0c0;
-}
-
-.eventEmailRow {
-  display: flex;
-  gap: 8px;
-}
-
-.eventEmailInput {
-  flex: 1 1 auto;
-  min-width: 0;
-  padding: 7px 10px;
-  font-size: 0.8rem;
-  color: inherit;
-  background: rgba(120, 130, 170, 0.08);
-  border: 1px solid rgba(120, 130, 170, 0.28);
-  border-radius: 8px;
-}
-
-.eventEmailInput:focus {
-  outline: none;
-  border-color: var(--color-primary);
-}
-
-.eventEmailError {
-  font-size: 0.72rem;
-  color: #e85d3a;
-  margin: 0;
 }
 
 /* ── Leaderboard card ── */
@@ -279,6 +88,95 @@
   transform: translateY(-1px);
   border-color: color-mix(in oklch, var(--color-primary) 32%, transparent);
   box-shadow: 0 18px 38px color-mix(in oklch, var(--color-primary) 14%, transparent);
+}
+
+.leaderHead {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 12px;
+}
+
+.leaderTitle {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.leaderList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.leaderRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 4px;
+  border-radius: 10px;
+}
+
+.leaderRow:first-child {
+  background: color-mix(in oklch, var(--color-primary) 7%, transparent);
+}
+
+.leaderRank {
+  width: 18px;
+  flex-shrink: 0;
+  text-align: center;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #9aa0c0;
+}
+
+.leaderRow:first-child .leaderRank {
+  color: var(--color-primary);
+}
+
+.leaderAvatar {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.leaderName {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2a2f52;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.leaderShards {
+  flex-shrink: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.leaderEmpty {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #9aa0c0;
 }
 
 /* ── Leaderboard modal ── */
@@ -420,93 +318,238 @@
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-.leaderHead {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  margin-bottom: 12px;
+/* ── Mobile: fixed-position MorningPages dock ── */
+@media (max-width: 768px) {
+  .morningPagesShell {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--mobile-nav-height) + var(--morning-pages-gap));
+    z-index: 1002;
+    padding: 0 12px 10px;
+    pointer-events: none;
+    isolation: isolate;
+  }
+
+  .morningPagesGradient {
+    display: block;
+    position: absolute;
+    inset: 0 0 calc(-1 * var(--morning-pages-gap));
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      180deg,
+      rgb(var(--morning-pages-filter-light) / 0%) 0%,
+      rgb(var(--morning-pages-filter-light) / 0%) 20%,
+      rgb(var(--morning-pages-filter-light) / 100%) 100%
+    );
+  }
+
+  :global([data-theme="dark"]) .morningPagesGradient {
+    background: linear-gradient(
+      180deg,
+      rgb(var(--morning-pages-filter-dark) / 0%) 0%,
+      rgb(var(--morning-pages-filter-dark) / 0%) 50%,
+      rgb(var(--morning-pages-filter-dark) / 100%) 100%
+    );
+  }
+
+  .morningPagesShell > :last-child {
+    position: relative;
+    z-index: 1;
+    pointer-events: auto;
+  }
 }
 
-.leaderTitle {
+/* ── Events grid ── */
+.eventsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.eventsHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 0 4px;
+}
+
+.eventsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.eventsHint {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: #6b7194;
+}
+
+.eventCard {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid rgba(26, 29, 51, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
+  overflow: hidden;
+}
+
+.eventImage {
+  position: relative;
+  width: 100%;
+  height: 124px;
+  background-color: #4150c8;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+.eventNoise {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.16;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.eventBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 13px 14px 14px;
+  flex: 1;
+}
+
+.eventMeta {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--color-primary);
+}
+
+.eventTitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: #1a1d33;
+}
+
+.eventText {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: #6b7194;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.eventFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.eventTime {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #9aa0c0;
+}
+
+.eventBtn {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 7px 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: var(--color-primary);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.eventBtn:hover {
+  background: #3d52e6;
+}
+
+.eventBtn:disabled {
+  background: color-mix(in oklch, var(--color-primary) 16%, transparent);
+  color: var(--color-primary);
+  cursor: default;
+}
+
+.eventBtnDone {
+  background: rgba(98, 190, 143, 0.16);
+  color: #2f9e6b;
+}
+
+.eventBtnDone:hover {
+  background: rgba(98, 190, 143, 0.26);
+}
+
+.eventEmailPrompt {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.eventEmailLabel {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #9aa0c0;
+}
+
+.eventEmailRow {
+  display: flex;
+  gap: 8px;
+}
+
+.eventEmailInput {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 7px 10px;
+  font-size: 0.8rem;
+  color: inherit;
+  background: rgba(120, 130, 170, 0.08);
+  border: 1px solid rgba(120, 130, 170, 0.28);
+  border-radius: 8px;
+}
+
+.eventEmailInput:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.eventEmailError {
+  font-size: 0.72rem;
+  color: #e85d3a;
+  margin: 0;
+}
+
+.cardLabel {
   font-family: var(--font-mono);
   font-size: 0.8rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-primary);
-}
-
-.leaderList {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.leaderRow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 4px;
-  border-radius: 10px;
-}
-
-.leaderRow:first-child {
-  background: color-mix(in oklch, var(--color-primary) 7%, transparent);
-}
-
-.leaderRank {
-  width: 18px;
-  flex-shrink: 0;
-  text-align: center;
-  font-size: 0.82rem;
-  font-weight: 800;
-  color: #9aa0c0;
-}
-
-.leaderRow:first-child .leaderRank {
-  color: var(--color-primary);
-}
-
-.leaderAvatar {
-  width: 28px;
-  height: 28px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  object-fit: cover;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.78rem;
-  font-weight: 800;
-  color: #ffffff;
-}
-
-.leaderName {
-  flex: 1;
-  min-width: 0;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #2a2f52;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.leaderShards {
-  flex-shrink: 0;
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: var(--color-primary);
-}
-
-.leaderEmpty {
-  margin: 0;
-  font-size: 0.85rem;
-  line-height: 1.5;
-  color: #9aa0c0;
 }
 
 /* ── VIP membership card ── */
@@ -529,7 +572,6 @@
   overflow: hidden;
 }
 
-/* Texture overlay — blends into the gradient, sits below the content */
 .vipCard::after {
   content: '';
   position: absolute;
@@ -593,7 +635,6 @@
   font-weight: 800;
 }
 
-/* ── Library card (wrapper link around the shared LibraryCard component) ── */
 .libraryCardLink {
   display: block;
   text-decoration: none;
@@ -630,8 +671,6 @@
     0 6px 20px rgba(0, 0, 0, 0.55);
 }
 
-/* Event header gradients are self-contained, so they need no dark-theme override. */
-
 :global([data-theme="dark"]) .eventMeta {
   color: #8f9bff;
 }
@@ -653,34 +692,8 @@
   color: #8f9bff;
 }
 
-/* ── PhotoSafari dual position ── */
-.photoSafariMobile {
-  display: none;
-}
-
-.photoSafariDesktop {
-  display: block;
-}
-
-/* ── Responsive ── */
-@media (max-width: 1024px) {
-  .dashboard {
-    grid-template-columns: 1fr;
-  }
-}
-
+/* ── Mobile event card swipe row ── */
 @media (max-width: 768px) {
-  .photoSafariMobile {
-    display: block;
-  }
-
-  .photoSafariDesktop {
-    display: none;
-  }
-}
-
-@media (max-width: 768px) {
-  /* Event cards become a horizontal, swipeable row to save vertical space. */
   .eventsGrid {
     display: flex;
     flex-wrap: nowrap;
@@ -700,45 +713,5 @@
     flex: 0 0 78%;
     max-width: 290px;
     scroll-snap-align: start;
-  }
-
-  .morningPagesShell {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: calc(var(--mobile-nav-height) + var(--morning-pages-gap));
-    z-index: 1002;
-    padding: 0 12px 10px;
-    pointer-events: none;
-    isolation: isolate;
-  }
-
-  .morningPagesGradient {
-    display: block;
-    position: absolute;
-    inset: 0 0 calc(-1 * var(--morning-pages-gap));
-    z-index: 0;
-    pointer-events: none;
-    background: linear-gradient(
-      180deg,
-      rgb(var(--morning-pages-filter-light) / 0%) 0%,
-      rgb(var(--morning-pages-filter-light) / 0%) 20%,
-      rgb(var(--morning-pages-filter-light) / 100%) 100%
-    );
-  }
-
-  :global([data-theme="dark"]) .morningPagesGradient {
-    background: linear-gradient(
-      180deg,
-      rgb(var(--morning-pages-filter-dark) / 0%) 0%,
-      rgb(var(--morning-pages-filter-dark) / 0%) 50%,
-      rgb(var(--morning-pages-filter-dark) / 100%) 100%
-    );
-  }
-
-  .morningPagesShell > :last-child {
-    position: relative;
-    z-index: 1;
-    pointer-events: auto;
   }
 }
