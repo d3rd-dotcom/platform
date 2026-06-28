@@ -130,6 +130,8 @@ export default function BlueScene() {
       .catch(() => {/* counter is best-effort */});
   }, []);
 
+  const handleRewardComplete = useCallback(() => setRewardData(null), []);
+
   const flushPops = useCallback(() => {
     const count = pendingPopsRef.current;
     if (count <= 0) return;
@@ -339,7 +341,7 @@ export default function BlueScene() {
       {rewardData && (
         <ShardAnimation
           shards={rewardData.shards}
-          onComplete={() => setRewardData(null)}
+          onComplete={handleRewardComplete}
         />
       )}
     </section>

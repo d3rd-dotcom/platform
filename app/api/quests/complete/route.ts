@@ -4,6 +4,7 @@ import { ensureWeeksSchema } from '@/lib/ensureWeeksSchema';
 import { ensureCustomQuestsSchema } from '@/lib/ensureCustomQuestsSchema';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { recordBlueQuestCompletion } from '@/lib/blue-memory';
+import { postSystemMessage } from '@/lib/chat';
 import { isDbConfigured, sqlQuery, withTransaction, sqlQueryWithClient } from '@/lib/db';
 import { getQuestDefinition, getQuestDefinitionForStoredQuestId } from '@/lib/quest-definitions';
 import { ensureQuestUsdcClaimsSchema } from '@/lib/ensureQuestUsdcClaimsSchema';
@@ -371,6 +372,19 @@ export async function POST(request: Request) {
       } catch (activityError: unknown) {
         console.error('Room Log activity error:', activityError);
       }
+    }
+
+    // Post to global chat
+    try {
+      const questName = definition?.title ?? 'a quest';
+      await postSystemMessage(
+        user.id,
+        user.username,
+        user.avatarUrl,
+        `${user.username} completed ${questName} (+${shardsToAward} credits).`,
+      );
+    } catch (chatError: unknown) {
+      console.error('Global chat notification error:', chatError);
     }
 
     return NextResponse.json({
