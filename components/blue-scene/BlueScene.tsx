@@ -50,9 +50,9 @@ function balloonLine(pops: number): string {
   return IDLE_LINE;
 }
 
-const DAYS = 7;
+const DAYS = 6;
 const REWARD = 100;
-const DAY_LABELS = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'];
+const DAY_LABELS = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6'];
 
 export default function BlueScene() {
   const { play } = useSound();
@@ -224,9 +224,14 @@ export default function BlueScene() {
                   key={i}
                   className={`${styles.streakDay} ${filled ? styles.streakDayFilled : ''} ${isToday && !filled ? styles.streakDayToday : ''}`}
                 >
-                  <svg className={filled ? styles.streakDiamondLit : styles.streakDiamond} width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M12 2L3 9l3 11h12l3-11-9-7zm0 3.3l5.2 4H6.8L12 5.3z"/>
-                  </svg>
+                  <Image
+                    className={filled ? styles.streakDiamondLit : styles.streakDiamond}
+                    src="/icons/ui-diamond.svg"
+                    alt=""
+                    width={16}
+                    height={16}
+                    aria-hidden="true"
+                  />
                   <span className={styles.streakLabel}>{DAY_LABELS[i]}</span>
                 </div>
               );

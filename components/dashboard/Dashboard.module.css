@@ -16,8 +16,15 @@
 .sideStack {
   display: flex;
   flex-direction: column;
+  min-width: 0;
+}
+
+.sideStackInner {
+  display: flex;
+  flex-direction: column;
   gap: 14px;
   min-width: 0;
+  margin-bottom: 14px;
 }
 
 /* Desktop app frame: the dashboard fills the (non-scrolling) page, the Blue
@@ -48,7 +55,7 @@
 /* Desktop: inline card. Mobile: persistent dock above the bottom navigation. */
 .morningPagesShell {
   --mobile-nav-height: calc(74px + max(env(safe-area-inset-bottom, 0px), 20px));
-  --morning-pages-gap: 16px;
+  --morning-pages-gap: 10px;
   --morning-pages-filter-light: 251 248 255;
   --morning-pages-filter-dark: 13 14 22;
 }
@@ -696,7 +703,7 @@
     background: linear-gradient(
       180deg,
       rgb(var(--morning-pages-filter-light) / 0%) 0%,
-      rgb(var(--morning-pages-filter-light) / 0%) 50%,
+      rgb(var(--morning-pages-filter-light) / 0%) 20%,
       rgb(var(--morning-pages-filter-light) / 100%) 100%
     );
   }

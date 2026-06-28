@@ -5,6 +5,7 @@ import Image from 'next/image';
 import BlueScene from '@/components/blue-scene/BlueScene';
 import CaseMonitor from '@/components/case-monitor/CaseMonitor';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
+import PhotoSafari from '@/components/photo-safari/PhotoSafari';
 import styles from './Dashboard.module.css';
 
 interface DashboardProps {
@@ -61,47 +62,45 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
 
       {/* ── Side: leaderboard, morning note, membership ── */}
       <aside className={styles.sideStack}>
-        <div className={styles.eventsHeader}>
-          <span className={styles.cardLabel}>Your progress</span>
-          <p className={styles.eventsHint}>
-            Keep your streak and see where you stand.
-          </p>
-        </div>
+        <div className={styles.sideStackInner}>
 
-        <button
-          type="button"
-          className={styles.leaderboardCard}
-          onClick={() => setShowLeaderboard(true)}
-        >
-          <div className={styles.leaderHead}>
-            <Image src="/icons/ui-diamond.svg" alt="" width={14} height={14} />
-            <span className={styles.leaderTitle}>Leaderboard</span>
-          </div>
-          {leaderboard.length === 0 ? (
-            <p className={styles.leaderEmpty}>No rankings yet — be the first to show up.</p>
-          ) : (
-            <ul className={styles.leaderList}>
-              {leaderboard.slice(0, 3).map((u) => (
-                <li key={u.rank} className={styles.leaderRow}>
-                  <span className={styles.leaderRank}>{u.rank}</span>
-                  {u.avatarUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={u.avatarUrl} alt={u.username} className={styles.leaderAvatar} />
-                  ) : (
-                    <span
-                      className={styles.leaderAvatar}
-                      style={{ background: avatarColor(u.username || '?') }}
-                    >
-                      {(u.username || '?').charAt(0).toUpperCase()}
-                    </span>
-                  )}
-                  <span className={styles.leaderName}>{u.username}</span>
-                  <span className={styles.leaderShards}>{u.shards}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </button>
+          <button
+            type="button"
+            className={styles.leaderboardCard}
+            onClick={() => setShowLeaderboard(true)}
+          >
+            <div className={styles.leaderHead}>
+              <Image src="/icons/ui-diamond.svg" alt="" width={14} height={14} />
+              <span className={styles.leaderTitle}>Leaderboard</span>
+            </div>
+            {leaderboard.length === 0 ? (
+              <p className={styles.leaderEmpty}>No rankings yet — be the first to show up.</p>
+            ) : (
+              <ul className={styles.leaderList}>
+                {leaderboard.slice(0, 3).map((u) => (
+                  <li key={u.rank} className={styles.leaderRow}>
+                    <span className={styles.leaderRank}>{u.rank}</span>
+                    {u.avatarUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={u.avatarUrl} alt={u.username} className={styles.leaderAvatar} />
+                    ) : (
+                      <span
+                        className={styles.leaderAvatar}
+                        style={{ background: avatarColor(u.username || '?') }}
+                      >
+                        {(u.username || '?').charAt(0).toUpperCase()}
+                      </span>
+                    )}
+                    <span className={styles.leaderName}>{u.username}</span>
+                    <span className={styles.leaderShards}>{u.shards}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </button>
+
+          <PhotoSafari />
+        </div>
 
         <div className={styles.morningPagesShell} data-tour="daily-note">
           <div className={styles.morningPagesGradient} aria-hidden="true" />

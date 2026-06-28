@@ -114,8 +114,8 @@
 
 .counters {
   position: absolute;
-  top: 20px;
-  right: 22px;
+  bottom: 14px;
+  right: 14px;
   z-index: 3;
   display: flex;
   gap: 8px;
@@ -161,6 +161,12 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  padding: 10px 12px 10px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklch, var(--color-surface-1) 96%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .streakHeader {
@@ -175,7 +181,7 @@
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: var(--color-text-faint);
+  color: var(--color-text-muted);
 }
 
 .streakLink {
@@ -207,31 +213,23 @@
   padding: 8px 4px 6px;
   border: 1px solid var(--color-border-subtle);
   border-radius: 8px;
-  background: color-mix(in oklch, var(--color-surface-1) 82%, transparent);
+  background: color-mix(in oklch, var(--color-surface-1) 94%, transparent);
   backdrop-filter: blur(4px);
   box-shadow:
     inset 1px 1px 0 rgba(255, 255, 255, 0.06),
     inset -1px -1px 0 rgba(0, 0, 0, 0.22);
-  opacity: 0.78;
   transition: opacity 0.2s, border-color 0.2s, box-shadow 0.2s;
   flex: 1;
   min-width: 0;
 }
 
 .streakDiamond {
-  color: var(--color-text-faint);
-  opacity: 0.5;
+  opacity: 0.55;
+  filter: grayscale(1);
 }
 
 .streakDiamondLit {
-  color: var(--color-primary);
-  filter: drop-shadow(0 0 4px color-mix(in oklch, var(--color-primary) 40%, transparent));
-}
-
-.streakDayFilled .streakDiamond {
-  color: var(--color-primary);
-  opacity: 1;
-  filter: drop-shadow(0 0 4px color-mix(in oklch, var(--color-primary) 40%, transparent));
+  filter: drop-shadow(0 0 6px color-mix(in oklch, var(--color-primary) 50%, transparent));
 }
 
 .streakDayFilled {
@@ -263,10 +261,10 @@
 
 .streakLabel {
   font-family: var(--font-button);
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.02em;
-  color: var(--color-text-muted);
+  color: var(--color-text-soft);
 }
 
 .streakDayFilled .streakLabel {
@@ -448,9 +446,5 @@
     width: min(60%, 300px);
   }
 
-  .counters {
-    top: auto;
-    bottom: 14px;
-    right: 14px;
-  }
+
 }
