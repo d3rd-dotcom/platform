@@ -504,7 +504,7 @@
     background: color-mix(in oklch, var(--color-primary) 4%, transparent);
   }
 
-  /* Departure Mono label is the tiny descriptor for "Very much like me" etc. */
+  /* Space Grotesk label is the tiny descriptor for "Very much like me" etc. */
   .quizModalLikertOptionLabel {
     display: block;
     flex: 1;

@@ -274,9 +274,9 @@
 }
 
 :global(:root:not([data-theme="dark"])) .shardBadge {
-  color: #d9468f;
-  background: rgba(217, 70, 143, 0.1);
-  border-color: rgba(217, 70, 143, 0.2);
+  color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 20%, transparent);
 }
 
 .cardDone {

@@ -112,16 +112,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        {/* Departure Mono is self-hosted via @font-face in globals.css; preload it
-            so it is available early for canvas/SVG that reference it by name.
-            All other fonts are self-hosted by next/font (no external requests). */}
-        <link
-          rel="preload"
-          href="/fonts/DepartureMono-Regular.otf"
-          as="font"
-          type="font/otf"
-          crossOrigin="anonymous"
-        />
+        {/* Space Grotesk is loaded via next/font/google above. */}
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"

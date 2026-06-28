@@ -214,7 +214,7 @@
 
 .title {
   font-family: var(--font-secondary);
-  font-size: 24px;
+  font-size: 32px;
   font-weight: 800;
   color: #1A1D33;
   line-height: 1.2;
@@ -241,11 +241,25 @@
   white-space: normal;
 }
 
-.cardBadgeGroup {
+.badgeWrapper {
   position: absolute;
   top: 12px;
   left: 12px;
   z-index: 2;
+  padding: 4px;
+  background: rgba(81, 104, 255, 0.65);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 50%, transparent);
+  border-radius: 14px;
+}
+
+.cardWrapper {
+  padding: 8px;
+  background: rgba(81, 104, 255, 0.65);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 50%, transparent);
+  border-radius: 20px;
+}
+
+.cardBadgeGroup {
   display: flex;
   align-items: center;
   background: rgba(35, 36, 52, 0.88);
@@ -365,19 +379,14 @@
   display: block;
   position: relative;
   z-index: 1;
-  filter: brightness(0) invert(1);
 }
 
 .usdcIcon {
   width: 18px;
   height: 18px;
   display: block;
-  position: absolute;
-  right: -4px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 0;
-  opacity: 0.6;
+  position: relative;
+  z-index: 1;
 }
 
 .rewardStack {

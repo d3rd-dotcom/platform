@@ -226,8 +226,8 @@ Noah,42,B,55,5,2.6,South
 Olga,26,A,93,16,4.8,North`;
 
 // ── Chart Config ─────────────────────────────────────────
-const monoFont = "'Departure Mono', monospace";
-const buttonFont = "'Departure Mono', monospace";
+const monoFont = "'Space Grotesk', sans-serif";
+const buttonFont = "'Space Grotesk', sans-serif";
 const ACCENT_CLASSES = ['statTilePrimary', 'statTileAccent', 'statTileTertiary', 'statTileSecondary', 'statTileMental'] as const;
 const CHART_COLORS = [
   { bg: 'rgba(81,104,255,0.6)', border: '#5168FF' },
@@ -628,7 +628,7 @@ export default function ResearchTab() {
           {ticks.map((t, i) => (
             <g key={i}>
               <line x1={leftPad} y1={toY(t)} x2={leftPad + plotW} y2={toY(t)} stroke={gridColor} strokeWidth={1} />
-              <text x={leftPad - 6} y={toY(t) + 3} textAnchor="end" fill={tickColor} fontSize={9} fontFamily="'Departure Mono', monospace">{round2(t)}</text>
+              <text x={leftPad - 6} y={toY(t) + 3} textAnchor="end" fill={tickColor} fontSize={9} fontFamily="'Space Grotesk', sans-serif">{round2(t)}</text>
             </g>
           ))}
           {/* Boxes */}
@@ -647,14 +647,14 @@ export default function ResearchTab() {
                 {/* Median line */}
                 <line x1={cx - boxW / 2} y1={toY(g.med)} x2={cx + boxW / 2} y2={toY(g.med)} stroke={color.border} strokeWidth={3} />
                 {/* Group label */}
-                <text x={cx} y={svgH - 8} textAnchor="middle" fill={labelColor} fontSize={10} fontFamily="'Departure Mono', monospace" fontWeight={600}>{g.name}</text>
+                <text x={cx} y={svgH - 8} textAnchor="middle" fill={labelColor} fontSize={10} fontFamily="'Space Grotesk', sans-serif" fontWeight={600}>{g.name}</text>
                 {/* N label */}
-                <text x={cx} y={svgH - 19} textAnchor="middle" fill={tickColor} fontSize={8} fontFamily="'Departure Mono', monospace">n={g.n}</text>
+                <text x={cx} y={svgH - 19} textAnchor="middle" fill={tickColor} fontSize={8} fontFamily="'Space Grotesk', sans-serif">n={g.n}</text>
               </g>
             );
           })}
           {/* Y-axis label */}
-          <text x={12} y={topPad + plotH / 2} textAnchor="middle" fill={tickColor} fontSize={10} fontFamily="'Departure Mono', monospace" transform={`rotate(-90, 12, ${topPad + plotH / 2})`}>{chartY}</text>
+          <text x={12} y={topPad + plotH / 2} textAnchor="middle" fill={tickColor} fontSize={10} fontFamily="'Space Grotesk', sans-serif" transform={`rotate(-90, 12, ${topPad + plotH / 2})`}>{chartY}</text>
         </svg>
       );
     }

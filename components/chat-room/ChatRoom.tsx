@@ -304,7 +304,7 @@ export default function ChatRoom() {
   return (
     <div className={styles.chatRoom}>
       <div className={styles.chatHeader}>
-        <span className={styles.chatTitle}>Global Chat</span>
+          <span className={styles.chatTitle}><span className={styles.chatTitleJa}>連携</span> Global Chat</span>
         {unreadCount > 0 && (
           <span className={styles.unreadBadge}>{unreadCount}</span>
         )}
@@ -356,7 +356,7 @@ export default function ChatRoom() {
           ref={inputRef}
           className={styles.chatInput}
           type="text"
-          placeholder="Type a message... @mention someone"
+          placeholder="Message..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}

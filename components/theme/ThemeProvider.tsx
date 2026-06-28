@@ -39,7 +39,7 @@ interface ThemeContextValue {
 }
 
 const ThemeContext = createContext<ThemeContextValue>({
-  theme: 'dark',
+  theme: 'light',
   toggleTheme: () => {},
   setTheme: () => {},
   colorTheme: 'default',
@@ -52,7 +52,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const pathname = usePathname();
   const isLandingPage = pathname === '/';
 
-  const [theme, setThemeState] = useState<Theme>('dark');
+  const [theme, setThemeState] = useState<Theme>('light');
   const [colorTheme, setColorThemeState] = useState<ColorTheme>('default');
 
   useEffect(() => {
@@ -60,10 +60,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (stored === 'dark' || stored === 'light') {
       setThemeState(stored);
     } else {
-      const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
-      const initial: Theme = isMobile ? 'light' : 'dark';
-      setThemeState(initial);
-      setStorageItem('mwa-theme', initial);
+      setThemeState('light');
+      setStorageItem('mwa-theme', 'light');
     }
 
     const storedColor = getStorageItem('mwa-color-theme') as ColorTheme | null;

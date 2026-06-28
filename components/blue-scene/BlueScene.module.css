@@ -3,10 +3,48 @@
   overflow: hidden;
   flex: 1;
   min-height: 620px;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-xl);
+  border: 2px solid color-mix(in oklch, var(--color-primary) 28%, transparent);
+  border-radius: 12px;
   background: var(--color-surface-1);
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    0 2px 10px rgba(0, 0, 0, 0.12),
+    0 12px 5px rgba(0, 0, 0, 0.25);
 }
+
+.sceneHeader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px 10px;
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-1));
+  border-bottom: 2px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
+  z-index: 4;
+}
+
+.sceneTitleJa {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.sceneTitle {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2a2f52;
+}
+
+
 
 /* Desktop: the home page is a fixed app frame (no page scroll), so the scene
    simply fills its column — it never moves, and Blue stays flush with the
@@ -17,100 +55,14 @@
   }
 }
 
-.sky {
+
+.bgImage {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    color-mix(in oklch, var(--color-primary) 14%, var(--color-surface-1)) 0%,
-    color-mix(in oklch, var(--color-primary) 5%, var(--color-surface-1)) 55%,
-    var(--color-surface-1) 100%
-  );
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
 }
-
-/* Light mode: soft clouds drifting across the top of the scene. */
-.sky::before {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto;
-  height: 52%;
-  background-image:
-    radial-gradient(ellipse 110px 30px at 14% 22%, rgba(255, 255, 255, 0.9), transparent 72%),
-    radial-gradient(ellipse 70px 22px at 24% 16%, rgba(255, 255, 255, 0.75), transparent 72%),
-    radial-gradient(ellipse 130px 34px at 58% 12%, rgba(255, 255, 255, 0.8), transparent 72%),
-    radial-gradient(ellipse 80px 24px at 68% 20%, rgba(255, 255, 255, 0.65), transparent 72%),
-    radial-gradient(ellipse 120px 30px at 90% 30%, rgba(255, 255, 255, 0.7), transparent 72%),
-    radial-gradient(ellipse 90px 26px at 38% 38%, rgba(255, 255, 255, 0.5), transparent 72%);
-  mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
-  -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
-}
-
-/* Dark mode: deepen the sky and swap the clouds for a starfield. */
-:global([data-theme='dark']) .sky {
-  background: linear-gradient(
-    180deg,
-    color-mix(in oklch, var(--color-primary) 22%, var(--color-surface-1)) 0%,
-    color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-1)) 55%,
-    var(--color-surface-1) 100%
-  );
-}
-
-:global([data-theme='dark']) .sky::before {
-  height: 58%;
-  background-image:
-    radial-gradient(circle at 6% 18%, rgba(255, 255, 255, 0.9) 0 1px, transparent 2px),
-    radial-gradient(circle at 15% 42%, rgba(255, 255, 255, 0.7) 0 1px, transparent 2px),
-    radial-gradient(circle at 22% 10%, rgba(255, 255, 255, 0.95) 0 1.4px, transparent 2.4px),
-    radial-gradient(circle at 31% 30%, rgba(255, 255, 255, 0.6) 0 1px, transparent 2px),
-    radial-gradient(circle at 40% 14%, rgba(255, 255, 255, 0.85) 0 1px, transparent 2px),
-    radial-gradient(circle at 47% 44%, rgba(255, 255, 255, 0.55) 0 1px, transparent 2px),
-    radial-gradient(circle at 55% 24%, rgba(255, 255, 255, 0.9) 0 1.3px, transparent 2.3px),
-    radial-gradient(circle at 63% 8%, rgba(255, 255, 255, 0.7) 0 1px, transparent 2px),
-    radial-gradient(circle at 71% 36%, rgba(255, 255, 255, 0.8) 0 1px, transparent 2px),
-    radial-gradient(circle at 79% 16%, rgba(255, 255, 255, 0.95) 0 1.4px, transparent 2.4px),
-    radial-gradient(circle at 87% 40%, rgba(255, 255, 255, 0.6) 0 1px, transparent 2px),
-    radial-gradient(circle at 94% 22%, rgba(255, 255, 255, 0.85) 0 1px, transparent 2px),
-    radial-gradient(circle at 10% 60%, rgba(255, 255, 255, 0.45) 0 1px, transparent 2px),
-    radial-gradient(circle at 35% 58%, rgba(255, 255, 255, 0.4) 0 1px, transparent 2px),
-    radial-gradient(circle at 60% 62%, rgba(255, 255, 255, 0.45) 0 1px, transparent 2px),
-    radial-gradient(circle at 84% 58%, rgba(255, 255, 255, 0.4) 0 1px, transparent 2px);
-  mask-image: linear-gradient(180deg, #000 60%, transparent 100%);
-  -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent 100%);
-}
-
-/* A second star layer that gently twinkles. */
-:global([data-theme='dark']) .sky::after {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto;
-  height: 58%;
-  background-image:
-    radial-gradient(circle at 12% 26%, rgba(255, 255, 255, 0.9) 0 1px, transparent 2px),
-    radial-gradient(circle at 27% 50%, rgba(255, 255, 255, 0.8) 0 1px, transparent 2px),
-    radial-gradient(circle at 44% 32%, rgba(255, 255, 255, 0.9) 0 1.2px, transparent 2.2px),
-    radial-gradient(circle at 59% 48%, rgba(255, 255, 255, 0.7) 0 1px, transparent 2px),
-    radial-gradient(circle at 74% 26%, rgba(255, 255, 255, 0.9) 0 1px, transparent 2px),
-    radial-gradient(circle at 91% 46%, rgba(255, 255, 255, 0.8) 0 1.2px, transparent 2.2px);
-  mask-image: linear-gradient(180deg, #000 60%, transparent 100%);
-  -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent 100%);
-  animation: twinkle 3.2s ease-in-out infinite alternate;
-}
-
-@keyframes twinkle {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0.25;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  :global([data-theme='dark']) .sky::after {
-    animation: none;
-  }
-}
-
 
 .counters {
   position: absolute;
@@ -144,131 +96,6 @@
   font-family: var(--font-mono);
   font-size: var(--font-size-md);
   color: var(--color-text-dark);
-}
-
-/* ── Streak ── */
-
-.streakWrapper {
-  position: absolute;
-  top: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 3;
-  width: min(calc(100% - 40px), 520px);
-}
-
-.streak {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 10px 12px 10px;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-lg);
-  background: color-mix(in oklch, var(--color-surface-1) 96%, transparent);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-.streakHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 2px;
-}
-
-.streakTitle {
-  font-family: var(--font-button);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--color-text-muted);
-}
-
-.streakLink {
-  font-family: var(--font-button);
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--color-primary);
-  text-decoration: none;
-  opacity: 0.7;
-  transition: opacity 0.15s;
-}
-
-.streakLink:hover {
-  opacity: 1;
-}
-
-.streakTrack {
-  display: flex;
-  gap: 4px;
-  justify-content: space-between;
-}
-
-.streakDay {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  padding: 8px 4px 6px;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 8px;
-  background: color-mix(in oklch, var(--color-surface-1) 94%, transparent);
-  backdrop-filter: blur(4px);
-  box-shadow:
-    inset 1px 1px 0 rgba(255, 255, 255, 0.06),
-    inset -1px -1px 0 rgba(0, 0, 0, 0.22);
-  transition: opacity 0.2s, border-color 0.2s, box-shadow 0.2s;
-  flex: 1;
-  min-width: 0;
-}
-
-.streakDiamond {
-  opacity: 0.55;
-  filter: grayscale(1);
-}
-
-.streakDiamondLit {
-  filter: drop-shadow(0 0 6px color-mix(in oklch, var(--color-primary) 50%, transparent));
-}
-
-.streakDayFilled {
-  opacity: 1;
-  border-color: color-mix(in oklch, var(--color-primary) 45%, var(--color-border-strong));
-  background: color-mix(in oklch, var(--color-primary) 14%, color-mix(in oklch, var(--color-surface-1) 80%, transparent));
-  box-shadow:
-    inset 1px 1px 0 rgba(255, 255, 255, 0.08),
-    inset -1px -1px 0 rgba(0, 0, 0, 0.22),
-    0 0 0 1px color-mix(in oklch, var(--color-primary) 22%, transparent),
-    0 0 16px color-mix(in oklch, var(--color-primary) 12%, transparent);
-}
-
-.streakDayToday {
-  border-color: var(--color-accent);
-  box-shadow:
-    inset 1px 1px 0 rgba(255, 255, 255, 0.08),
-    inset -1px -1px 0 rgba(0, 0, 0, 0.22),
-    0 0 0 1px color-mix(in oklch, var(--color-accent) 35%, transparent),
-    0 0 16px color-mix(in oklch, var(--color-accent) 16%, transparent);
-  animation: pulse-today 2.4s ease-in-out infinite;
-  opacity: 0.9;
-}
-
-@keyframes pulse-today {
-  0%, 100% { box-shadow: 0 0 0 1px color-mix(in oklch, var(--color-accent) 30%, transparent), 0 0 14px color-mix(in oklch, var(--color-accent) 14%, transparent); }
-  50% { box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-accent) 50%, transparent), 0 0 22px color-mix(in oklch, var(--color-accent) 22%, transparent); }
-}
-
-.streakLabel {
-  font-family: var(--font-button);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  color: var(--color-text-soft);
-}
-
-.streakDayFilled .streakLabel {
-  color: var(--color-primary);
 }
 
 /* ── Balloons ── */
@@ -435,6 +262,23 @@
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+}
+
+:global([data-theme="dark"]) .scene {
+  border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
+}
+
+:global([data-theme="dark"]) .sceneHeader {
+  background: color-mix(in oklch, var(--color-primary) 14%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
+}
+
+:global([data-theme="dark"]) .sceneTitle {
+  color: #d6d9ee;
+}
+
+:global([data-theme="dark"]) .sceneTitleJa {
+  color: var(--color-primary);
 }
 
 @media (max-width: 1024px) {

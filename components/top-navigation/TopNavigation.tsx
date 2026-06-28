@@ -1,15 +1,16 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
+import { MagnifyingGlass } from '@phosphor-icons/react';
 import styles from './TopNavigation.module.css';
 import { useSound } from '@/hooks/useSound';
-import { useTheme } from '@/components/theme/ThemeProvider';
 import ColorThemePicker from '@/components/theme/ColorThemePicker';
 import HoverSlideText from '@/components/shared/HoverSlideText';
+import { SearchModal } from '@/components/search-modal/SearchModal';
 
 const NAV_LINKS = [
   { label: 'Pocket World', href: '/simulation', icon: '/icons/nav-simulations-v2.svg' },
@@ -20,9 +21,10 @@ const TopNavigation: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
   const { play } = useSound();
-  const { theme, toggleTheme } = useTheme();
   const { login, authenticated } = usePrivy();
   const loginTriggered = useRef(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
 
   // After Privy login succeeds, redirect to /home
   useEffect(() => {
@@ -83,6 +85,17 @@ const TopNavigation: React.FC = () => {
           </a>
         </div>
 
+        <div className={styles.searchWrapper}>
+          <div ref={searchRef} className={styles.searchBar}>
+            <input
+              type="text"
+              className={styles.searchInput}
+              placeholder="Search Academy"
+              onFocus={() => setSearchOpen(true)}
+            />
+            <MagnifyingGlass size={20} weight="bold" className={styles.searchIcon} />
+          </div>
+        </div>
         <nav className={styles.centerNav} aria-label="Main navigation">
           {NAV_LINKS.map(({ label, href, icon }) => {
             const active = pathname === href || pathname?.startsWith(href + '/');
@@ -95,14 +108,19 @@ const TopNavigation: React.FC = () => {
                 onClick={() => play('navigation')}
                 aria-current={active ? 'page' : undefined}
               >
-                <Image
-                  src={icon}
-                  alt=""
-                  width={16}
-                  height={16}
-                  className={`${styles.navLinkIcon} ${active ? styles.navLinkIconActive : ''}`}
-                />
-                <HoverSlideText>{label}</HoverSlideText>
+                <span className={styles.navLinkIconWrap}>
+                  <Image
+                    src={icon}
+                    alt=""
+                    width={16}
+                    height={16}
+                    className={styles.navLinkIcon}
+                  />
+                </span>
+                <span className={styles.navDivider} />
+                <span className={styles.navLinkLabel}>
+                  <HoverSlideText>{label}</HoverSlideText>
+                </span>
               </Link>
             );
           })}
@@ -125,34 +143,7 @@ const TopNavigation: React.FC = () => {
             </svg>
           </Link>
           <ColorThemePicker />
-          <button
-            type="button"
-            className={styles.themeToggle}
-            onClick={() => {
-              play('toggle-on');
-              toggleTheme();
-            }}
-            onMouseEnter={() => play('hover')}
-            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-          >
-            {theme === 'light' ? (
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-              </svg>
-            ) : (
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="5" />
-                <line x1="12" y1="1" x2="12" y2="3" />
-                <line x1="12" y1="21" x2="12" y2="23" />
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                <line x1="1" y1="12" x2="3" y2="12" />
-                <line x1="21" y1="12" x2="23" y2="12" />
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-              </svg>
-            )}
-          </button>
+
           {!authenticated && (
             <>
               <button
@@ -177,6 +168,11 @@ const TopNavigation: React.FC = () => {
           <div id="topnav-profile-slot" className={styles.profileSlot} />
         </nav>
       </div>
+      <SearchModal
+        isOpen={searchOpen}
+        onClose={() => setSearchOpen(false)}
+        searchContainerRef={searchRef}
+      />
     </header>
   );
 };

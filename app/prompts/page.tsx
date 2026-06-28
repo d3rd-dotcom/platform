@@ -231,7 +231,7 @@ Blue makes reflective work accountable: submissions are reviewed, revisions are 
 
 - **Headlines:** Poppins Bold — clean sans-serif
 - **Body:** Space Grotesk — readable
-- **Accent:** Departure Mono — for technical elements, numbers, and quest labels
+- **Accent:** Space Grotesk — for technical elements, numbers, and quest labels
 
 ### Visual Mood
 

@@ -403,6 +403,8 @@
 .navPrimaryGroup {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-height: 0;
   overflow: hidden;
 }
 
@@ -410,6 +412,103 @@
   margin-top: auto;
   padding-top: 16px;
   overflow: hidden;
+}
+
+.navBottomGroup {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ask Blue — styled like Experiment button */
+.askBlueCardContainer {
+  padding: 0 10px 16px;
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.askBlueCard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 56px;
+  background: var(--color-primary);
+  border: 2px solid #1A1D33;
+  border-radius: 12px;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #1A1D33;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.askBlueCard:hover {
+  background: color-mix(in oklch, #ffffff 10%, var(--color-primary));
+  color: #ffffff;
+  box-shadow: 4px 4px 0 #1A1D33;
+  transform: translate(-1px, -1px);
+}
+
+.askBlueCard:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 #1A1D33;
+}
+
+.askBlueCardIcon {
+  filter: brightness(0) invert(1);
+  transition: transform 0.2s ease;
+}
+
+.askBlueCard:hover .askBlueCardIcon {
+  transform: rotate(90deg);
+}
+
+/* Collapsed: circular icon button */
+.askBlueCollapsed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: var(--color-primary);
+  border: 2px solid #1A1D33;
+  border-radius: 50%;
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 #1A1D33;
+  transition: all 0.15s ease;
+}
+
+.askBlueCollapsed:hover {
+  background: color-mix(in oklch, #ffffff 10%, var(--color-primary));
+  border-color: #1A1D33;
+  color: #ffffff;
+  box-shadow: 3px 3px 0 #1A1D33;
+  transform: translate(-1px, -1px);
+}
+
+.askBlueCollapsed:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #1A1D33;
+}
+
+.sideNavCollapsed .navBottomGroup {
+  margin-top: 0;
+}
+
+.sideNavCollapsed .askBlueCardContainer {
+  padding: 4px 0;
+}
+
+.sideNavCollapsed .askBlueCard {
+  display: none;
 }
 
 .section {
@@ -1806,99 +1905,7 @@
   display: none;
 }
 
-/* ── Floating Ask Blue button (desktop) ── */
-.askBlueFab {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: 1200;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: auto;
-  height: 58px;
-  padding: 2px;
-  border: none;
-  border-radius: 999px;
-  background: transparent;
-  cursor: pointer;
-  overflow: hidden;
-  box-shadow: 0 8px 24px color-mix(in oklch, var(--color-primary) 28%, transparent);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
 
-.askBlueFab:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 30px color-mix(in oklch, var(--color-primary) 38%, transparent);
-}
-
-.askBlueFab:active {
-  transform: translateY(0);
-}
-
-.askBlueFabRing {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 200%;
-  aspect-ratio: 1;
-  background: conic-gradient(
-    var(--color-primary),
-    #74C465,
-    #E8556D,
-    #F2A0B5,
-    #a78bfa,
-    var(--color-primary)
-  );
-  animation: askBlueFabRotate 4s linear infinite;
-  pointer-events: none;
-}
-
-@keyframes askBlueFabRotate {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to   { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-.askBlueFabInner {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  height: 100%;
-  padding: 0 18px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.97);
-  backdrop-filter: blur(4px);
-}
-
-.askBlueFabLabel {
-  font-family: var(--font-primary);
-  font-size: 14px;
-  font-weight: var(--font-weight-medium);
-  color: #2d3142;
-  white-space: nowrap;
-}
-
-:global([data-theme="dark"]) .askBlueFabLabel {
-  color: rgba(255, 255, 255, 0.92);
-}
-
-:global([data-theme="dark"]) .askBlueFabInner {
-  background: var(--color-shell-background, #0f1020);
-}
-
-.askBlueFabIcon {
-  width: 26px;
-  height: 26px;
-  color: #2d3142;
-}
-
-:global([data-theme="dark"]) .askBlueFabIcon {
-  color: rgba(255, 255, 255, 0.92);
-}
 
 @media (max-width: 900px) {
   /* Mobile drawer: show the profile card at the top of the drawer. */
@@ -1906,10 +1913,6 @@
     display: block;
   }
 
-  /* Bottom nav already exposes Ask Blue on mobile. */
-  .askBlueFab {
-    display: none;
-  }
 }
 
 /* Create Experiment Button Styles */

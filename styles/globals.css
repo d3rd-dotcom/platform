@@ -1,15 +1,6 @@
 /* Fonts are self-hosted. Inter/Poppins/Space Grotesk/Patrick Hand come from
-   next/font/google in layout.tsx (--font-* vars). Departure Mono is served by
-   the @font-face below so its real name works in CSS, <canvas> (Chart.js) and
-   inline SVG. There is no external Google Fonts <link> — everything is local. */
-
-@font-face {
-  font-family: 'Departure Mono';
-  src: url('/fonts/DepartureMono-Regular.otf') format('opentype');
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-}
+   next/font/google in layout.tsx (--font-* vars). There is no external Google
+   Fonts <link> — everything is local. */
 
 /**
  * Academy V3 Design System
@@ -69,10 +60,9 @@
   --font-body: var(--font-inter), 'Inter', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
   --font-primary: var(--font-poppins), 'Poppins', sans-serif;
   --font-secondary: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
-  --font-button: 'Departure Mono', monospace;
-  --font-mono: 'Departure Mono', monospace;
-  --font-departure-mono: 'Departure Mono', monospace;
-  --font-code: 'Departure Mono', monospace;
+  --font-button: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  --font-mono: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  --font-code: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
   
   /* Font Weights */
   --font-weight-light: 300;
@@ -425,7 +415,7 @@ h6 {
   font-size: 1rem;
 }
 
-/* Buttons - Departure Mono */
+/* Buttons - Space Grotesk */
 button,
 .btn {
   font-family: var(--font-button);

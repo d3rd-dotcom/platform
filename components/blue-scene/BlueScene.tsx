@@ -2,9 +2,25 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
-import { usePrivy } from '@privy-io/react-auth';
 import { useSound } from '@/hooks/useSound';
+import { GardenShader } from '@/components/garden-shader/GardenShader';
 import styles from './BlueScene.module.css';
+
+const TOTAL_BG = 21;
+
+function bgIndex(): number {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const diff = now.getTime() - start.getTime();
+  const day = Math.floor(diff / (1000 * 60 * 60 * 24));
+  return (day % TOTAL_BG) + 1;
+}
+
+function pad(n: number): string {
+  return String(n).padStart(2, '0');
+}
+
+const bgUrl = `/backgrounds/bg-${pad(bgIndex())}.png`;
 
 interface Balloon {
   id: number;
@@ -34,14 +50,14 @@ const SPAWN_INTERVAL_MS = 1700;
 const FLUSH_DEBOUNCE_MS = 2500;
 
 const MILESTONE_LINES: Array<[number, string]> = [
-  [50, 'Fifty pops. Blue is genuinely impressed.'],
-  [25, 'Twenty-five — that is dedication.'],
-  [10, 'Double digits. The collective thanks you.'],
-  [5, 'You are on a roll.'],
-  [1, 'Nice pop. It all counts.'],
+  [50, '50 pops. That is a statistically significant sample.'],
+  [25, '25. The signal frequency is stabilizing.'],
+  [10, '10 pops. The lab is officially interested.'],
+  [5, '5 pops. Enough for a scatter plot.'],
+  [1, '1 pop. First contact logged.'],
 ];
 
-const IDLE_LINE = 'Pop a balloon — every pop joins the community count.';
+const IDLE_LINE = 'Pop a balloon. Every burst adds a node to the field.';
 
 function balloonLine(pops: number): string {
   for (const [threshold, line] of MILESTONE_LINES) {
@@ -50,18 +66,12 @@ function balloonLine(pops: number): string {
   return IDLE_LINE;
 }
 
-const DAYS = 6;
-const REWARD = 100;
-const DAY_LABELS = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6'];
-
 export default function BlueScene() {
   const { play } = useSound();
-  const { getAccessToken } = usePrivy();
   const [balloons, setBalloons] = useState<Balloon[]>([]);
   const [sessionPops, setSessionPops] = useState(0);
   const [communityTotal, setCommunityTotal] = useState<number | null>(null);
   const [reducedMotion, setReducedMotion] = useState(false);
-  const [credits, setCredits] = useState(0);
 
   const idRef = useRef(0);
   const poppedIdsRef = useRef(new Set<number>());
@@ -86,24 +96,6 @@ export default function BlueScene() {
       })
       .catch(() => {/* counter is best-effort */});
   }, []);
-
-  useEffect(() => {
-    const fetchCredits = async () => {
-      try {
-        const token = await getAccessToken().catch(() => null);
-        const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
-        const meRes = await window.fetch('/api/me', { credentials: 'include', cache: 'no-store', headers });
-        const meData = meRes.ok ? await meRes.json().catch(() => null) : null;
-        if (meData?.user?.shardCount !== undefined) {
-          setCredits(meData.user.shardCount);
-        }
-      } catch { /* silent */ }
-    };
-    fetchCredits();
-    const handle = () => fetchCredits();
-    window.addEventListener('shardsUpdated', handle);
-    return () => window.removeEventListener('shardsUpdated', handle);
-  }, [getAccessToken]);
 
   const flushPops = useCallback(() => {
     const count = pendingPopsRef.current;
@@ -202,42 +194,14 @@ export default function BlueScene() {
 
   const bubbleLine = useMemo(() => balloonLine(sessionPops), [sessionPops]);
 
-  const earned = Math.min(Math.floor(credits / REWARD), DAYS);
-  const today = new Date().getDay();
-
   return (
     <section className={styles.scene} aria-label="Balloon popping with Blue">
-      <div className={styles.sky} aria-hidden="true" />
+      <div className={styles.bgImage} style={{ backgroundImage: `url(${bgUrl})` }} />
+      <GardenShader />
 
-      <div className={styles.streakWrapper}>
-        <div className={styles.streak}>
-          <div className={styles.streakHeader}>
-            <span className={styles.streakTitle}>Daily Activity</span>
-            <a href="/quests" className={styles.streakLink}>See all</a>
-          </div>
-          <div className={styles.streakTrack}>
-            {Array.from({ length: DAYS }, (_, i) => {
-              const filled = i < earned;
-              const isToday = i === today;
-              return (
-                <div
-                  key={i}
-                  className={`${styles.streakDay} ${filled ? styles.streakDayFilled : ''} ${isToday && !filled ? styles.streakDayToday : ''}`}
-                >
-                  <Image
-                    className={filled ? styles.streakDiamondLit : styles.streakDiamond}
-                    src="/icons/ui-diamond.svg"
-                    alt=""
-                    width={16}
-                    height={16}
-                    aria-hidden="true"
-                  />
-                  <span className={styles.streakLabel}>{DAY_LABELS[i]}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+      <div className={styles.sceneHeader}>
+        <span className={styles.sceneTitleJa}>幻想庭園</span>
+        <span className={styles.sceneTitle}>Ethereal Gardens</span>
       </div>
 
       <div className={styles.counters}>

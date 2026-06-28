@@ -2,7 +2,7 @@
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  padding: 18px 24px 32px;
+  padding: 0 24px 32px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -147,7 +147,7 @@
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .bentoScroll {
-    padding: 14px 12px 32px;
+    padding: 0 12px 32px;
   }
 }
 
@@ -163,7 +163,7 @@
 @media (min-width: 1025px) {
   .bentoScrollWithMorningNote {
     height: 100%;
-    overflow: hidden;
-    padding: 16px;
+    overflow: visible;
+    padding: 0 16px 16px;
   }
 }

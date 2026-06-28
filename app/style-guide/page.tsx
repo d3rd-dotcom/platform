@@ -166,7 +166,7 @@ export default function StyleGuidePage() {
           <h2 className={styles.sectionTitle}>✏️ Typography</h2>
           <p className={styles.sectionDescription}>
             Typography sets the tone for knowledge transfer and community trust.
-            Space Grotesk for headlines, Poppins for body text, Departure Mono for buttons and technical data.
+            Space Grotesk for headlines, Poppins for body text, and Space Grotesk for buttons and technical data.
           </p>
 
           {/* Font Families */}
@@ -206,7 +206,7 @@ export default function StyleGuidePage() {
               </div>
               <div className={styles.fontFamilyCard}>
                 <div className={styles.fontFamilyName} style={{ fontFamily: fontFamilies.mono }}>
-                  Departure Mono
+                  Space Grotesk
                 </div>
                 <div className={styles.fontFamilyUsage}>Mono — Buttons, Code, Technical Data</div>
                 <div className={styles.fontFamilySample} style={{ fontFamily: fontFamilies.mono }}>
@@ -272,13 +272,13 @@ export default function StyleGuidePage() {
                 label="Button — Actions" 
                 text="CONNECT WALLET" 
                 style={{ ...typography.button, fontSize: fontSizes.base }}
-                meta={`${fontSizes.base} / Medium / Departure Mono / Uppercase`}
+                meta={`${fontSizes.base} / Medium / Space Grotesk / Uppercase`}
               />
               <TypographySample 
                 label="Mono — Technical Data" 
                 text="0x1234...5678 | Block #18,942,156" 
                 style={{ ...typography.mono, fontSize: fontSizes.base }}
-                meta={`${fontSizes.base} / Regular / Departure Mono / Tabular Nums`}
+                meta={`${fontSizes.base} / Regular / Space Grotesk / Tabular Nums`}
               />
             </div>
           </div>
@@ -461,7 +461,7 @@ export default function StyleGuidePage() {
           <h2 className={styles.sectionTitle}>Buttons</h2>
           <p className={styles.sectionDescription}>
             Canonical call-to-action. Reach for the shared <code>&lt;CtaButton&gt;</code> for any
-            primary action instead of hand-rolling one. Pill shaped, brand blue, Departure Mono,
+            primary action instead of hand-rolling one. Pill shaped, brand blue, Space Grotesk,
             sentence case (never uppercase), with a soft lift and glow on hover.
           </p>
           <div className={styles.buttonGrid}>

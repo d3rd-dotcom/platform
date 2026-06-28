@@ -1,19 +1,29 @@
 .chatRoom {
   display: flex;
   flex-direction: column;
-  background: #ffffff;
-  border: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
-  border-radius: 18px;
-  box-shadow: 0 16px 34px rgba(26, 29, 51, 0.08);
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(81,104,255,0.06)'/%3E%3C/svg%3E");
+  border: 2px solid color-mix(in oklch, var(--color-primary) 28%, transparent);
+  border-radius: 12px;
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    0 2px 10px rgba(0, 0, 0, 0.12),
+    0 12px 5px rgba(0, 0, 0, 0.25);
   overflow: hidden;
   min-height: 0;
+}
+
+:global([data-theme="dark"]) .chatRoom {
+  background-color: #15172a;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
 }
 
 .chatHeader {
   display: flex;
   align-items: center;
   padding: 12px 16px 10px;
-  border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 10%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 8%, #ffffff);
+  border-bottom: 2px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
 }
 
 .chatTitle {
@@ -22,6 +32,10 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  color: #2a2f52;
+}
+
+.chatTitleJa {
   color: var(--color-primary);
 }
 
@@ -35,8 +49,8 @@
   gap: 6px;
   scrollbar-width: thin;
   scrollbar-color: color-mix(in oklch, var(--color-primary) 20%, transparent) transparent;
-  min-height: 180px;
-  max-height: 320px;
+  min-height: 260px;
+  max-height: 520px;
 }
 
 .chatList::-webkit-scrollbar {
@@ -136,8 +150,8 @@
 .chatInputWrap {
   display: flex;
   gap: 6px;
-  padding: 8px 12px 10px;
-  border-top: 1px solid color-mix(in oklch, var(--color-primary) 10%, transparent);
+  padding: 8px 12px 20px;
+  border-top: 2px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
 }
 
 .chatInput {
@@ -165,31 +179,60 @@
 .chatSend {
   padding: 8px 14px;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.65rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-transform: none;
   color: #ffffff;
   background: var(--color-primary);
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: background 0.15s ease, opacity 0.15s ease;
+  box-shadow:
+    0 8px 0 var(--color-primary),
+    0 12px 16px rgba(0, 0, 0, 0.25);
+  transition: background 0.15s ease, opacity 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .chatSend:hover {
   background: #3d52e6;
+  transform: translateY(2px);
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    0 12px 16px rgba(0, 0, 0, 0.25);
+}
+
+.chatSend:active {
+  transform: translateY(6px);
+  box-shadow:
+    0 2px 0 var(--color-primary),
+    0 8px 12px rgba(0, 0, 0, 0.25);
 }
 
 .chatSend:disabled {
   opacity: 0.4;
   cursor: default;
+  transform: none;
+  box-shadow: none;
 }
 
 :global([data-theme="dark"]) .chatRoom {
-  background: #15172a;
-  border-color: color-mix(in oklch, var(--color-primary) 28%, transparent);
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.4);
+  background-color: #15172a;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
+  border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    0 2px 10px rgba(0, 0, 0, 0.12),
+    0 12px 5px rgba(0, 0, 0, 0.25);
+}
+
+:global([data-theme="dark"]) .chatHeader {
+  background: color-mix(in oklch, var(--color-primary) 14%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
+}
+
+:global([data-theme="dark"]) .chatTitle {
+  color: #d6d9ee;
 }
 
 :global([data-theme="dark"]) .msgUsername {
@@ -214,12 +257,8 @@
   background: color-mix(in oklch, var(--color-primary) 8%, transparent);
 }
 
-:global([data-theme="dark"]) .chatHeader {
-  border-color: color-mix(in oklch, var(--color-primary) 16%, transparent);
-}
-
 :global([data-theme="dark"]) .chatInputWrap {
-  border-color: color-mix(in oklch, var(--color-primary) 16%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
 }
 
 :global([data-theme="dark"]) .systemText {

@@ -170,7 +170,7 @@ const liStyle = {
 };
 
 const codeStyle = {
-  fontFamily: 'var(--font-button, "Departure Mono", monospace)',
+  fontFamily: 'var(--font-button, "Space Grotesk", sans-serif)',
   fontSize: '0.8125rem',
   background: 'color-mix(in oklch, var(--color-primary, #5B6AF0) 8%, transparent)',
   padding: '0.125rem 0.375rem',

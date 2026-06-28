@@ -7,8 +7,8 @@
 }
 
 /* Flat grid — each card is a direct child. On mobile (single column) the DOM
-   order controls visual order: BlueScene → CaseMonitor → sidebar.
-   On desktop we override with explicit column/row placement. */
+   order controls visual order. On desktop we override with explicit
+   column/row placement. */
 
 .blueSceneWrap {
   display: flex;
@@ -18,7 +18,7 @@
 /* ── Desktop: two-column fill-height layout ── */
 @media (min-width: 1025px) {
   .dashboard {
-    grid-template-columns: 1fr 320px;
+    grid-template-columns: 1fr 380px;
     grid-template-rows: auto 1fr auto;
     gap: 16px;
     min-height: 100%;
@@ -27,12 +27,7 @@
 
   .blueSceneWrap {
     grid-column: 1;
-    grid-row: 1 / 3;
-  }
-
-  .caseMonitorWrap {
-    grid-column: 1;
-    grid-row: 3;
+    grid-row: 2 / 4;
   }
 
   .sidebarWrap {
@@ -42,12 +37,17 @@
     flex-direction: column;
     gap: 14px;
     overflow-y: auto;
+    overflow-x: visible;
     scrollbar-width: none;
+    padding: 0 8px 24px;
   }
 
   .sidebarWrap::-webkit-scrollbar {
     display: none;
   }
+
+
+
 }
 
 /* ── Mobile: single column, no explicit grid-row needed (DOM order) ── */
@@ -63,6 +63,8 @@
   --morning-pages-gap: 10px;
   --morning-pages-filter-light: 251 248 255;
   --morning-pages-filter-dark: 13 14 22;
+  position: relative;
+  overflow: hidden;
 }
 
 .morningPagesGradient {
@@ -76,25 +78,41 @@
   text-align: left;
   font: inherit;
   background: #ffffff;
-  border: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  border: 2px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
   border-radius: 18px;
-  box-shadow: 0 16px 34px rgba(26, 29, 51, 0.08);
-  padding: 16px 16px 14px;
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    0 2px 10px rgba(0, 0, 0, 0.12),
+    0 12px 5px rgba(0, 0, 0, 0.25);
+  padding: 16px;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .leaderboardCard:hover {
   transform: translateY(-1px);
-  border-color: color-mix(in oklch, var(--color-primary) 32%, transparent);
-  box-shadow: 0 18px 38px color-mix(in oklch, var(--color-primary) 14%, transparent);
+  box-shadow:
+    0 8px 0 var(--color-primary),
+    0 2px 12px rgba(0, 0, 0, 0.12),
+    0 14px 8px rgba(0, 0, 0, 0.25);
 }
 
 .leaderHead {
   display: flex;
   align-items: center;
   gap: 7px;
-  margin-bottom: 12px;
+  padding: 12px 16px;
+  margin: -16px -16px 12px;
+  border-radius: 16px 16px 0 0;
+  background: color-mix(in oklch, var(--color-primary) 8%, #ffffff);
+  border-bottom: 2px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+}
+
+.leaderIcon {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  line-height: 1;
 }
 
 .leaderTitle {
@@ -103,7 +121,7 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-primary);
+  color: #2a2f52;
 }
 
 .leaderList {
@@ -644,7 +662,18 @@
 :global([data-theme="dark"]) .leaderboardCard {
   background: #15172a;
   border-color: color-mix(in oklch, var(--color-primary) 28%, transparent);
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.4);
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    0 2px 10px rgba(0, 0, 0, 0.12),
+    0 12px 5px rgba(0, 0, 0, 0.25);
+}
+
+:global([data-theme="dark"]) .leaderHead {
+  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
+}
+
+:global([data-theme="dark"]) .leaderTitle {
+  color: #d6d9ee;
 }
 
 :global([data-theme="dark"]) .leaderName {

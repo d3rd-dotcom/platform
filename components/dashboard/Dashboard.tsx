@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import BlueScene from '@/components/blue-scene/BlueScene';
-import CaseMonitor from '@/components/case-monitor/CaseMonitor';
 import ChatRoom from '@/components/chat-room/ChatRoom';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
 import styles from './Dashboard.module.css';
@@ -60,20 +59,17 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
         <BlueScene />
       </div>
 
-      {/* ── CaseMonitor ── */}
-      <div className={styles.caseMonitorWrap}>
-        <CaseMonitor />
-      </div>
-
-      {/* ── Sidebar: Leaderboard + ChatRoom + MorningPages ── */}
+      {/* ── Sidebar: ChatRoom + Leaderboard + MorningPages ── */}
       <aside className={styles.sidebarWrap}>
+        <ChatRoom />
+
         <button
           type="button"
           className={styles.leaderboardCard}
           onClick={() => setShowLeaderboard(true)}
         >
           <div className={styles.leaderHead}>
-            <Image src="/icons/ui-diamond.svg" alt="" width={14} height={14} />
+            <span className={styles.leaderIcon}>金剛</span>
             <span className={styles.leaderTitle}>Leaderboard</span>
           </div>
           {leaderboard.length === 0 ? (
@@ -101,8 +97,6 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
             </ul>
           )}
         </button>
-
-        <ChatRoom />
 
         <div className={styles.morningPagesShell} data-tour="daily-note">
           <div className={styles.morningPagesGradient} aria-hidden="true" />

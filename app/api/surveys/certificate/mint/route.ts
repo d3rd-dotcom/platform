@@ -36,9 +36,6 @@ async function generateCertificateImage(
   username: string,
 ): Promise<Buffer> {
   const certPath = path.join(process.cwd(), 'public', 'certificates', `${profileType}.png`);
-  const fontPath = path.join(process.cwd(), 'app', 'fonts', 'DepartureMono-Regular.otf');
-
-  const fontBase64 = fs.readFileSync(fontPath).toString('base64');
   const certBuffer = fs.readFileSync(certPath);
 
   const { width = 5103, height = 3217 } = await sharp(certBuffer).metadata();
@@ -54,16 +51,13 @@ async function generateCertificateImage(
     <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
       <defs>
         <style>
-          @font-face {
-            font-family: 'Departure Mono';
-            src: url('data:font/otf;base64,${fontBase64}') format('opentype');
-          }
+          @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap');
         </style>
       </defs>
       <text
         x="2552"
         y="2100"
-        font-family="'Departure Mono', monospace"
+        font-family="'Space Grotesk', sans-serif"
         font-size="145"
         fill="#ffffff"
         text-anchor="middle"

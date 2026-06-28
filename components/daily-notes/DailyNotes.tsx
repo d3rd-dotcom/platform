@@ -54,7 +54,7 @@ const WEEK_COLORS = [
   '#CA8A04', // Week 8 — yellow
   '#EA580C', // Week 9 — orange
   '#DC2626', // Week 10 — red
-  '#DB2777', // Week 11 — pink
+  'var(--color-primary)', // Week 11 — brand
   '#9333EA', // Week 12 — purple
 ];
 
