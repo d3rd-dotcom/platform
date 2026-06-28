@@ -441,6 +441,7 @@
   font-family: var(--font-primary);
   font-size: 14px;
   font-weight: 600;
+  text-transform: none;
   color: #ffffff;
   cursor: pointer;
   box-shadow: 3px 3px 0 #1A1D33;

@@ -64,7 +64,6 @@
   --morning-pages-filter-light: 251 248 255;
   --morning-pages-filter-dark: 13 14 22;
   position: relative;
-  overflow: hidden;
 }
 
 .morningPagesGradient {
@@ -78,12 +77,12 @@
   text-align: left;
   font: inherit;
   background: #ffffff;
-  border: 2px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
-  border-radius: 18px;
+  border: 2px solid var(--color-primary-hover);
+  border-radius: 12px;
   box-shadow:
     0 6px 0 var(--color-primary),
-    0 2px 10px rgba(0, 0, 0, 0.12),
-    0 12px 5px rgba(0, 0, 0, 0.25);
+    0 0px 10px rgba(0, 0, 0, 0.14),
+    0 10px 5px rgba(0, 0, 0, 0.30);
   padding: 16px;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -91,10 +90,11 @@
 
 .leaderboardCard:hover {
   transform: translateY(-1px);
+  border-color: var(--color-primary-hover);
   box-shadow:
     0 8px 0 var(--color-primary),
-    0 2px 12px rgba(0, 0, 0, 0.12),
-    0 14px 8px rgba(0, 0, 0, 0.25);
+    0 0px 12px rgba(0, 0, 0, 0.14),
+    0 12px 8px rgba(0, 0, 0, 0.30);
 }
 
 .leaderHead {
@@ -105,7 +105,7 @@
   margin: -16px -16px 12px;
   border-radius: 16px 16px 0 0;
   background: color-mix(in oklch, var(--color-primary) 8%, #ffffff);
-  border-bottom: 2px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  border-bottom: 2px solid var(--color-primary-hover);
 }
 
 .leaderIcon {
@@ -661,11 +661,11 @@
 /* ── Dark theme ── */
 :global([data-theme="dark"]) .leaderboardCard {
   background: #15172a;
-  border-color: color-mix(in oklch, var(--color-primary) 28%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 40%, transparent);
   box-shadow:
     0 6px 0 var(--color-primary),
-    0 2px 10px rgba(0, 0, 0, 0.12),
-    0 12px 5px rgba(0, 0, 0, 0.25);
+    0 0px 10px rgba(0, 0, 0, 0.14),
+    0 10px 5px rgba(0, 0, 0, 0.30);
 }
 
 :global([data-theme="dark"]) .leaderHead {

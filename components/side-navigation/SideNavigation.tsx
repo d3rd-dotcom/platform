@@ -743,15 +743,15 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
         {/* Navigation Sections */}
         <div className={styles.navSections}>
           <div className={styles.navPrimaryGroup}>
-            {/* Ask Blue — styled like Experiment button */}
+            {/* Call Blue — styled like Experiment button */}
             <div className={styles.askBlueCardContainer}>
               {isCollapsed ? (
                 <button
                   onClick={() => { play('click'); setIsChatOpen(true); }}
                   onMouseEnter={() => play('hover')}
                   className={styles.askBlueCollapsed}
-                  title="Ask Blue"
-                  aria-label="Ask Blue"
+                  title="Call Blue"
+                  aria-label="Call Blue"
                 >
                   <Image
                     src="/icons/nav-prompts-v3.svg"
@@ -776,7 +776,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                     height={16}
                     className={styles.askBlueCardIcon}
                   />
-                  <span>Ask Blue</span>
+                  <span>Call Blue</span>
                 </button>
               )}
             </div>

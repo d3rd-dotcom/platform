@@ -3,12 +3,12 @@
   flex-direction: column;
   background-color: #ffffff;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(81,104,255,0.06)'/%3E%3C/svg%3E");
-  border: 2px solid color-mix(in oklch, var(--color-primary) 28%, transparent);
+  border: 2px solid var(--color-primary-hover);
   border-radius: 12px;
   box-shadow:
     0 6px 0 var(--color-primary),
-    0 2px 10px rgba(0, 0, 0, 0.12),
-    0 12px 5px rgba(0, 0, 0, 0.25);
+    0 0px 10px rgba(0, 0, 0, 0.14),
+    0 10px 5px rgba(0, 0, 0, 0.30);
   overflow: hidden;
   min-height: 0;
 }
@@ -23,7 +23,7 @@
   align-items: center;
   padding: 12px 16px 10px;
   background: color-mix(in oklch, var(--color-primary) 8%, #ffffff);
-  border-bottom: 2px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
+  border-bottom: 2px solid var(--color-primary-hover);
 }
 
 .chatTitle {
@@ -151,7 +151,7 @@
   display: flex;
   gap: 6px;
   padding: 8px 12px 20px;
-  border-top: 2px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
+  border-top: 2px solid var(--color-primary-hover);
 }
 
 .chatInput {
@@ -162,7 +162,7 @@
   font-size: 0.82rem;
   color: #1a1d33;
   background: color-mix(in oklch, var(--color-primary) 6%, transparent);
-  border: 1px solid color-mix(in oklch, var(--color-primary) 14%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary-hover) 14%, transparent);
   border-radius: 8px;
   outline: none;
   transition: border-color 0.15s ease;
@@ -190,7 +190,7 @@
   cursor: pointer;
   box-shadow:
     0 8px 0 var(--color-primary),
-    0 12px 16px rgba(0, 0, 0, 0.25);
+    0 10px 16px rgba(0, 0, 0, 0.30);
   transition: background 0.15s ease, opacity 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -199,14 +199,14 @@
   transform: translateY(2px);
   box-shadow:
     0 6px 0 var(--color-primary),
-    0 12px 16px rgba(0, 0, 0, 0.25);
+    0 10px 16px rgba(0, 0, 0, 0.30);
 }
 
 .chatSend:active {
   transform: translateY(6px);
   box-shadow:
     0 2px 0 var(--color-primary),
-    0 8px 12px rgba(0, 0, 0, 0.25);
+    0 6px 12px rgba(0, 0, 0, 0.30);
 }
 
 .chatSend:disabled {
@@ -218,17 +218,17 @@
 
 :global([data-theme="dark"]) .chatRoom {
   background-color: #15172a;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
-  border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(0,0,0,0.04)'/%3E%3C/svg%3E");
+  border-color: color-mix(in oklch, var(--color-primary-hover) 40%, transparent);
   box-shadow:
     0 6px 0 var(--color-primary),
-    0 2px 10px rgba(0, 0, 0, 0.12),
-    0 12px 5px rgba(0, 0, 0, 0.25);
+    0 0px 10px rgba(0, 0, 0, 0.14),
+    0 10px 5px rgba(0, 0, 0, 0.30);
 }
 
 :global([data-theme="dark"]) .chatHeader {
   background: color-mix(in oklch, var(--color-primary) 14%, #15172a);
-  border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 30%, transparent);
 }
 
 :global([data-theme="dark"]) .chatTitle {
@@ -246,7 +246,7 @@
 :global([data-theme="dark"]) .chatInput {
   color: #d6d9ee;
   background: color-mix(in oklch, var(--color-primary) 10%, transparent);
-  border-color: color-mix(in oklch, var(--color-primary) 22%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 22%, transparent);
 }
 
 :global([data-theme="dark"]) .chatInput::placeholder {
@@ -258,7 +258,7 @@
 }
 
 :global([data-theme="dark"]) .chatInputWrap {
-  border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 30%, transparent);
 }
 
 :global([data-theme="dark"]) .systemText {

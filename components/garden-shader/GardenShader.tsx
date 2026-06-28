@@ -12,54 +12,83 @@ const fragmentSrc = [
   'precision highp float;',
   'uniform vec2 uRes;',
   'uniform float uTime;',
+  'uniform vec2 uMouse;',
   '',
-  'float gridLine(float x, float spacing, float width) {',
-  '  float g = fract(x / spacing);',
-  '  return 1.0 - smoothstep(0.0, width, min(g, 1.0 - g));',
+  'float hash(vec2 p) {',
+  '  vec3 p3 = fract(vec3(p.xyx) * 0.1031);',
+  '  p3 += dot(p3, p3.yzx + 33.33);',
+  '  return fract((p3.x + p3.y) * p3.z);',
+  '}',
+  '',
+  'float noise(vec2 p) {',
+  '  vec2 i = floor(p);',
+  '  vec2 f = fract(p);',
+  '  f = f * f * (3.0 - 2.0 * f);',
+  '  float a = hash(i + vec2(0.0));',
+  '  float b = hash(i + vec2(1.0, 0.0));',
+  '  float c = hash(i + vec2(0.0, 1.0));',
+  '  float d = hash(i + vec2(1.0, 1.0));',
+  '  return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);',
+  '}',
+  '',
+  'float fbm(vec2 p) {',
+  '  float v = 0.0;',
+  '  float a = 0.5;',
+  '  for (int i = 0; i < 5; i++) {',
+  '    v += a * noise(p);',
+  '    p *= 2.0;',
+  '    a *= 0.5;',
+  '  }',
+  '  return v;',
   '}',
   '',
   'void main() {',
   '  vec2 uv = gl_FragCoord.xy / uRes;',
   '  float a = uRes.x / uRes.y;',
   '  vec2 p = (uv - 0.5) * vec2(a, 1.0);',
+  '  float barrel = 0.2 + 0.06 * sin(uTime * 0.12);',
+  '  float dist2 = dot(p / vec2(a, 1.0), p / vec2(a, 1.0));',
+  '  p = p * (1.0 + barrel * dist2) * 2.5;',
   '',
-  '  float dx = sin(p.y * 10.0 + uTime * 0.3) * 0.008',
-  '           + cos(p.x * 7.0 + uTime * 0.2) * 0.005;',
-  '  float dy = cos(p.x * 9.0 + uTime * 0.25) * 0.008',
-  '           + sin(p.y * 6.0 + uTime * 0.35) * 0.005;',
+  '  vec2 mouseP = (uMouse - 0.5) * vec2(a, 1.0);',
+  '  float mouseDist = distance(p / 2.5, mouseP);',
   '',
-  '  vec2 q = p + vec2(dx, dy);',
-  '',
-  '  float spacing1 = 0.04;',
-  '  float line1 = max(',
-  '    gridLine(q.x, spacing1, 0.008),',
-  '    gridLine(q.y, spacing1, 0.008)',
-  '  );',
-  '  ',
-  '  float spacing2 = spacing1 * 4.0;',
-  '  float line2 = max(',
-  '    gridLine(q.x, spacing2, 0.008),',
-  '    gridLine(q.y, spacing2, 0.008)',
+  '  vec2 drift = vec2(',
+  '    sin(uTime * 0.08) * 0.5 + cos(uTime * 0.05) * 0.3,',
+  '    cos(uTime * 0.1) * 0.4 + sin(uTime * 0.06) * 0.3',
   '  );',
   '',
-  '  vec2 gv = fract(q / spacing2) - 0.5;',
-  '  float node = 1.0 - smoothstep(0.0, 0.06, length(gv));',
+  '  vec2 q = vec2(',
+  '    fbm(p + drift + exp(-mouseDist * 3.0) * 0.3),',
+  '    fbm(p + drift * 0.7 + exp(-mouseDist * 3.0) * 0.2)',
+  '  );',
   '',
-  '  float vig = 1.0 - smoothstep(0.1, 1.2, length(p));',
+  '  vec2 r = vec2(',
+  '    fbm(p + q * 3.0 + vec2(sin(uTime * 0.04 + 1.7), cos(uTime * 0.04 + 9.2))),',
+  '    fbm(p + q * 3.0 + vec2(sin(uTime * 0.05 + 8.3), cos(uTime * 0.05 + 2.8)))',
+  '  );',
   '',
-  '  vec3 lineColor = vec3(0.3, 0.6, 0.95);',
+  '  float f = fbm(p + r * 5.0);',
   '',
-  '  float pulse = 0.85 + 0.15 * sin(uTime * 0.5);',
+  '  float t = sin((f + uTime * 0.015) * 6.28318) * 0.5 + 0.5;',
+  '  vec3 col = mix(vec3(0.3, 0.9, 1.0), vec3(1.0), t);',
   '',
-  '  float meshStrength = max(',
-  '    line1 * 0.4,',
-  '    max(line2 * 0.55, node * 0.5)',
-  '  ) * vig * pulse;',
+  '  float vig = 1.0 - smoothstep(0.15, 1.0, length(uv - 0.5) * 1.4);',
+  '  col *= (0.7 + 0.3 * vig);',
   '',
-  '  vec3 final = lineColor * meshStrength;',
-  '  float alpha = meshStrength * 0.55;',
+  '  vec2 grainUV = gl_FragCoord.xy * 0.08;',
+  '  float gt = uTime * 1.5;',
+  '  float gf = fract(gt);',
+  '  float g0 = floor(gt);',
+  '  float g1 = g0 + 1.0;',
+  '  vec3 grain;',
+  '  grain.r = mix(hash(grainUV + g0), hash(grainUV + g1), gf);',
+  '  grain.g = mix(hash(grainUV + g0 + 100.0), hash(grainUV + g1 + 100.0), gf);',
+  '  grain.b = mix(hash(grainUV + g0 + 200.0), hash(grainUV + g1 + 200.0), gf);',
+  '  col += (grain - 0.5) * 0.6;',
   '',
-  '  gl_FragColor = vec4(final, alpha);',
+  '  float alpha = 0.53 + 0.25 * vig;',
+  '  gl_FragColor = vec4(col, alpha);',
   '}',
 ].join('\n');
 
@@ -139,8 +168,19 @@ export function GardenShader() {
 
     const uRes = gl.getUniformLocation(prog, 'uRes');
     const uTime = gl.getUniformLocation(prog, 'uTime');
+    const uMouse = gl.getUniformLocation(prog, 'uMouse');
     gl.uniform2f(uRes, w, h);
     gl.uniform1f(uTime, 0);
+    gl.uniform2f(uMouse, 0.5, 0.5);
+
+    let mouseX = 0.5;
+    let mouseY = 0.5;
+    function onMouse(e: MouseEvent) {
+      const rect = cvs.getBoundingClientRect();
+      mouseX = (e.clientX - rect.left) / rect.width;
+      mouseY = 1.0 - (e.clientY - rect.top) / rect.height;
+    }
+    document.addEventListener('mousemove', onMouse);
 
     const ro = new ResizeObserver(() => {
       w = prt.clientWidth || window.innerWidth;
@@ -158,6 +198,7 @@ export function GardenShader() {
     function frame() {
       const t = (performance.now() - start) / 1000;
       g.uniform1f(uTime, t);
+      g.uniform2f(uMouse, mouseX, mouseY);
       g.drawArrays(g.TRIANGLES, 0, 6);
       animId = requestAnimationFrame(frame);
     }
@@ -167,6 +208,7 @@ export function GardenShader() {
     return () => {
       cancelAnimationFrame(animId);
       ro.disconnect();
+      document.removeEventListener('mousemove', onMouse);
       g.deleteProgram(prog);
       g.deleteShader(vs);
       g.deleteShader(fs);

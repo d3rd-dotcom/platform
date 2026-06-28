@@ -66,6 +66,10 @@ function getQuestShardReward(questId: string): number {
   if (/^daily-notes-w\d+-d\d+$/.test(questId)) {
     return 100;
   }
+  // Balloon pop milestones: balloon-5, balloon-10, balloon-15, etc.
+  if (/^balloon-\d+$/.test(questId)) {
+    return 10;
+  }
   // Generic quest reward fallback (capped at safe default)
   return 10;
 }

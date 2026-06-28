@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Image from 'next/image';
 import { useSound } from '@/hooks/useSound';
 import { GardenShader } from '@/components/garden-shader/GardenShader';
+import { ShardAnimation } from '@/components/quests/ShardAnimation';
 import styles from './BlueScene.module.css';
 
 const TOTAL_BG = 21;
@@ -72,13 +73,23 @@ export default function BlueScene() {
   const [sessionPops, setSessionPops] = useState(0);
   const [communityTotal, setCommunityTotal] = useState<number | null>(null);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [rewardData, setRewardData] = useState<{ shards: number } | null>(null);
 
   const idRef = useRef(0);
   const poppedIdsRef = useRef(new Set<number>());
   const sessionPopsRef = useRef(0);
   const pendingPopsRef = useRef(0);
+  const lastMilestoneRef = useRef(0);
   const flushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const removalTimersRef = useRef(new Map<number, ReturnType<typeof setTimeout>>());
+
+  // Restore last rewarded milestone from storage.
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('lastBalloonMilestone');
+      if (saved) lastMilestoneRef.current = Number(saved);
+    } catch {}
+  }, []);
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -187,6 +198,28 @@ export default function BlueScene() {
     play(sessionPopsRef.current % 10 === 0 ? 'celebration' : 'click');
     setCommunityTotal((t) => (t === null ? t : t + 1));
 
+    // Reward 10 diamonds every 5 pops
+    const currentPops = sessionPopsRef.current;
+    if (currentPops % 5 === 0 && currentPops > lastMilestoneRef.current) {
+      lastMilestoneRef.current = currentPops;
+      try { localStorage.setItem('lastBalloonMilestone', String(currentPops)); } catch {}
+
+      fetch('/api/quests/complete', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ questId: `balloon-${currentPops}`, shards: 10 }),
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.ok && data.shardsAwarded > 0) {
+            setRewardData({ shards: data.shardsAwarded });
+            window.dispatchEvent(new Event('shardsUpdated'));
+          }
+        })
+        .catch(() => {});
+    }
+
     pendingPopsRef.current += 1;
     if (flushTimerRef.current) clearTimeout(flushTimerRef.current);
     flushTimerRef.current = setTimeout(flushPops, FLUSH_DEBOUNCE_MS);
@@ -277,6 +310,13 @@ export default function BlueScene() {
           className={styles.blueImage}
         />
       </div>
+
+      {rewardData && (
+        <ShardAnimation
+          shards={rewardData.shards}
+          onComplete={() => setRewardData(null)}
+        />
+      )}
     </section>
   );
 }

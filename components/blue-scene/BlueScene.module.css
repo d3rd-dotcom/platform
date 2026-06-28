@@ -3,13 +3,13 @@
   overflow: hidden;
   flex: 1;
   min-height: 620px;
-  border: 2px solid color-mix(in oklch, var(--color-primary) 28%, transparent);
+  border: 2px solid var(--color-primary-hover);
   border-radius: 12px;
   background: var(--color-surface-1);
   box-shadow:
     0 6px 0 var(--color-primary),
-    0 2px 10px rgba(0, 0, 0, 0.12),
-    0 12px 5px rgba(0, 0, 0, 0.25);
+    0 0px 10px rgba(0, 0, 0, 0.14),
+    0 10px 5px rgba(0, 0, 0, 0.30);
 }
 
 .sceneHeader {
@@ -22,7 +22,7 @@
   gap: 8px;
   padding: 12px 16px 10px;
   background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-1));
-  border-bottom: 2px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
+  border-bottom: 2px solid var(--color-primary-hover);
   z-index: 4;
 }
 
@@ -208,7 +208,7 @@
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1;
+  z-index: -1;
   width: min(48%, 340px);
   display: flex;
   flex-direction: column;
@@ -265,12 +265,16 @@
 }
 
 :global([data-theme="dark"]) .scene {
-  border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 40%, transparent);
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    0 0px 10px rgba(0, 0, 0, 0.14),
+    0 10px 5px rgba(0, 0, 0, 0.30);
 }
 
 :global([data-theme="dark"]) .sceneHeader {
   background: color-mix(in oklch, var(--color-primary) 14%, #15172a);
-  border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 30%, transparent);
 }
 
 :global([data-theme="dark"]) .sceneTitle {

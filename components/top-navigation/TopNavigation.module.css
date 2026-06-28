@@ -361,6 +361,7 @@
   background: color-mix(in oklch, var(--color-primary) 8%, transparent);
   border-color: var(--color-primary);
   color: var(--color-primary);
+  transform: translateY(-1px);
 }
 
 /* ── Dark mode overrides ── */

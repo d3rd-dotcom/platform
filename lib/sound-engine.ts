@@ -209,13 +209,12 @@ export class SoundEngine {
 
     switch (type) {
       case 'click': {
-        this.mallet(pick(scale), now, this.dur(0.28), 0.5);
+        this.mallet(pick(PENTATONIC_C5), now, this.dur(0.22), 0.35);
         break;
       }
 
       case 'hover': {
-        // Soft, brief, low-octave tap — gentle accent on hover
-        this.mallet(pick(scale) / 2, now, this.dur(0.18), 0.22);
+        this.mallet(pick(PENTATONIC_C5), now, this.dur(0.12), 0.15);
         break;
       }
 
