@@ -209,53 +209,7 @@ export class SoundEngine {
 
     switch (type) {
       case 'click': {
-        // Mechanical keyboard-style click
-        const clickLen = Math.max(1, Math.floor(ctx.sampleRate * 0.006));
-        const clickBuf = ctx.createBuffer(1, clickLen, ctx.sampleRate);
-        const clickData = clickBuf.getChannelData(0);
-        for (let i = 0; i < clickLen; i++) clickData[i] = Math.random() * 2 - 1;
-        const clickSource = ctx.createBufferSource();
-        clickSource.buffer = clickBuf;
-
-        const bp2 = ctx.createBiquadFilter();
-        bp2.type = 'bandpass';
-        bp2.frequency.value = 2000 + Math.random() * 1500;
-        bp2.Q.value = 0.6;
-
-        const clickGain = ctx.createGain();
-        const clickStart = now;
-        clickGain.gain.setValueAtTime(0.0001, clickStart);
-        clickGain.gain.exponentialRampToValueAtTime(0.25 + Math.random() * 0.12, clickStart + 0.0005);
-        clickGain.gain.exponentialRampToValueAtTime(0.0001, clickStart + 0.008);
-
-        clickSource.connect(bp2);
-        bp2.connect(clickGain);
-        clickGain.connect(this.busInput!);
-        clickSource.start(clickStart);
-        clickSource.stop(clickStart + 0.015);
-
-        // Subtle bottom-out thud
-        const thudLen = Math.max(1, Math.floor(ctx.sampleRate * 0.01));
-        const thudBuf = ctx.createBuffer(1, thudLen, ctx.sampleRate);
-        const thudData = thudBuf.getChannelData(0);
-        for (let i = 0; i < thudLen; i++) thudData[i] = Math.random() * 2 - 1;
-        const thudSource = ctx.createBufferSource();
-        thudSource.buffer = thudBuf;
-
-        const lp = ctx.createBiquadFilter();
-        lp.type = 'lowpass';
-        lp.frequency.value = 300;
-
-        const thudGain = ctx.createGain();
-        thudGain.gain.setValueAtTime(0.0001, clickStart + 0.003);
-        thudGain.gain.exponentialRampToValueAtTime(0.12, clickStart + 0.005);
-        thudGain.gain.exponentialRampToValueAtTime(0.0001, clickStart + 0.015);
-
-        thudSource.connect(lp);
-        lp.connect(thudGain);
-        thudGain.connect(this.busInput!);
-        thudSource.start(clickStart + 0.003);
-        thudSource.stop(clickStart + 0.02);
+        this.mallet(pick(scale), now, this.dur(0.28), 0.5);
         break;
       }
 

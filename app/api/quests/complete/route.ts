@@ -376,13 +376,22 @@ export async function POST(request: Request) {
 
     // Post to global chat
     try {
-      const questName = definition?.title ?? 'a quest';
-      await postSystemMessage(
-        user.id,
-        user.username,
-        user.avatarUrl,
-        `${user.username} completed ${questName} (+${shardsToAward} credits).`,
-      );
+      if (/^balloon-\d+$/.test(resolvedQuestId)) {
+        await postSystemMessage(
+          user.id,
+          user.username,
+          user.avatarUrl,
+          `${user.username} popped some balloons.`,
+        );
+      } else {
+        const questName = definition?.title ?? 'a quest';
+        await postSystemMessage(
+          user.id,
+          user.username,
+          user.avatarUrl,
+          `${user.username} completed ${questName} (+${shardsToAward} credits).`,
+        );
+      }
     } catch (chatError: unknown) {
       console.error('Global chat notification error:', chatError);
     }
