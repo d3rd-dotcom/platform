@@ -176,6 +176,7 @@ export default function CoursesPage() {
             </span>
             <div className={styles.body}>
               <div className={styles.contentCenter}>
+                <span className={styles.category}>Community Course</span>
                 <span className={styles.title}>Creative Healing</span>
                 <span className={styles.desc}>
                   A journey through rediscovering your creative energy and excavating it to reach your highest horizon.

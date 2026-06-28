@@ -50,21 +50,43 @@ const MAX_ACTIVE_BALLOONS = 7;
 const SPAWN_INTERVAL_MS = 1700;
 const FLUSH_DEBOUNCE_MS = 2500;
 
-const MILESTONE_LINES: Array<[number, string]> = [
-  [50, '50 pops. That is a statistically significant sample.'],
-  [25, '25. The signal frequency is stabilizing.'],
-  [10, '10 pops. The lab is officially interested.'],
-  [5, '5 pops. Enough for a scatter plot.'],
-  [1, '1 pop. First contact logged.'],
+type Dialogue = { ja: string; en: string; chaotic?: boolean };
+
+const DIALOGUES: Array<[number, Dialogue]> = [
+  [200, { ja: 'グリッドが…動いてる…私のコードがおかしいのかな？', en: 'THE GRID IS ALIVE. Is my code broken?', chaotic: true }],
+  [150, { ja: '数が…勝手に増えてる…止められない', en: 'The numbers… they grow on their own. I cant stop it.', chaotic: true }],
+  [100, { ja: 'データが耳の中で囁いてる…', en: 'I can hear the data whispering…', chaotic: true }],
+  [80, { ja: '風船の神様になった気分', en: 'I feel powerful. Like a balloon god.' }],
+  [75, { ja: 'もう何が何だか…風船なの？星なの？', en: 'I dont even know anymore… are these balloons? Stars??' }],
+  [60, { ja: '癖になるって言いたくないけど…癖になってる', en: 'Im not saying its addicting but… its addicting.' }],
+  [52, { ja: '一つに名前をつけたんだ。上手くいかなかった', en: 'I named one of them. It didnt end well.' }],
+  [50, { ja: '五十？！増えてる…？大丈夫なやつ？', en: '50?! Are they… multiplying? Should I be worried?' }],
+  [40, { ja: '慣れてきた。生まれつきの才能だね', en: 'Im getting good at this. Natural talent.' }],
+  [35, { ja: '三十五…そろそろ休憩したほうがいい気がする', en: '35… maybe we should take a break. Just saying.' }],
+  [30, { ja: '風船の一つがウィンクした気がする', en: 'I think I saw one blink at me.' }],
+  [25, { ja: '二十五って…風船多すぎじゃない？', en: 'OK 25 is like… a lot of balloons. What is happening.' }],
+  [23, { ja: '止めたほうがいい？止められないんだけど', en: 'Should we stop? I cant stop. Ive tried.' }],
+  [20, { ja: '何やってるか分かんないけど、めっちゃ上手い', en: 'I dont know what Im doing but Im doing it great.' }],
+  [15, { ja: '十五！もう一回数えよ…一、二…', en: '15! Im gonna count again… one, two…' }],
+  [12, { ja: '十三。不吉な数字。なんか好き', en: 'Thirteen. Spooky. I love it.' }],
+  [10, { ja: '十！十だよ！指で数えた！', en: 'TEN. That is ten. I counted. On my fingers.' }],
+  [8, { ja: '潰したとき、風船って何か感じてるのかな…', en: 'I wonder if they feel anything when they pop.' }],
+  [7, { ja: '七！ラッキーセブン！良いことあるよね？', en: "Seven! Lucky seven! That's good right?" }],
+  [6, { ja: 'ブーンって音、聞こえる？私だけ？', en: 'Do you hear a humming sound? No? Just me?' }],
+  [5, { ja: '五！一より多い！多分ね。', en: 'Five! That is more than one! I think.' }],
+  [4, { ja: '数えてるよ…大体ね。もう二回も分からなくなった', en: "I'm keeping track. Sort of. I lost count twice." }],
+  [3, { ja: '三！四の一個前の数字！…だと思う', en: "Three! That's the number before four. I think." }],
+  [2, { ja: 'えっ…これ、私がやったの？たぶん違う。', en: 'Wait… did I do that? Maybe. Probably not.' }],
+  [1, { ja: 'わっ。何か弾けた…私のせい？', en: 'Whoa. Something popped. Was that… me?' }],
 ];
 
-const IDLE_LINE = 'Pop a balloon. Every burst adds a node to the field.';
+const IDLE_DIALOGUE: Dialogue = { ja: 'えっと…風船、触ってもいいよ。無理しなくて大丈夫。', en: 'Umm… you can touch the balloons. If you want. No pressure.' };
 
-function balloonLine(pops: number): string {
-  for (const [threshold, line] of MILESTONE_LINES) {
-    if (pops >= threshold) return line;
+function balloonDialogue(pops: number): Dialogue {
+  for (const [threshold, d] of DIALOGUES) {
+    if (pops >= threshold) return d;
   }
-  return IDLE_LINE;
+  return IDLE_DIALOGUE;
 }
 
 export default function BlueScene() {
@@ -225,7 +247,7 @@ export default function BlueScene() {
     flushTimerRef.current = setTimeout(flushPops, FLUSH_DEBOUNCE_MS);
   }, [flushPops, play]);
 
-  const bubbleLine = useMemo(() => balloonLine(sessionPops), [sessionPops]);
+  const dialogue = useMemo(() => balloonDialogue(sessionPops), [sessionPops]);
 
   return (
     <section className={styles.scene} aria-label="Balloon popping with Blue">
@@ -237,17 +259,23 @@ export default function BlueScene() {
         <span className={styles.sceneTitle}>Ethereal Gardens</span>
       </div>
 
-      <div className={styles.counters}>
-        <span className={styles.counterChip}>
-          <span className={styles.counterLabel}>you</span>
-          <span className={styles.counterValue}>{sessionPops}</span>
-        </span>
-        <span className={styles.counterChip}>
-          <span className={styles.counterLabel}>community</span>
-          <span className={styles.counterValue}>
-            {communityTotal === null ? '—' : communityTotal.toLocaleString()}
+      <div className={styles.sceneFooter}>
+        <div className={`${styles.footerText}${dialogue.chaotic ? ' ' + styles.footerTextChaotic : ''}`}>
+          <span className={styles.footerTextJa}>{dialogue.ja}</span>
+          <span className={styles.footerTextEn}>{dialogue.en}</span>
+        </div>
+        <div className={styles.footerCounters}>
+          <span className={styles.counterChip}>
+            <span className={styles.counterLabel}>you</span>
+            <span className={styles.counterValue}>{sessionPops}</span>
           </span>
-        </span>
+          <span className={styles.counterChip}>
+            <span className={styles.counterLabel}>community</span>
+            <span className={styles.counterValue}>
+              {communityTotal === null ? '—' : communityTotal.toLocaleString()}
+            </span>
+          </span>
+        </div>
       </div>
 
       {balloons.map((b) => (
@@ -298,9 +326,6 @@ export default function BlueScene() {
       ))}
 
       <div className={styles.blueWrap}>
-        <div className={styles.bubble} key={bubbleLine}>
-          {bubbleLine}
-        </div>
         <Image
           src="/blue/blue-home.png"
           alt="Blue, the Academy mascot"

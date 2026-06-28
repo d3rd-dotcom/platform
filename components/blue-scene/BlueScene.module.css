@@ -64,38 +64,89 @@
   z-index: 0;
 }
 
-.counters {
+.sceneFooter {
   position: absolute;
-  bottom: 14px;
-  right: 14px;
-  z-index: 3;
+  bottom: 0;
+  left: 0;
+  right: 0;
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 8px;
+  padding: 10px 16px;
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-1));
+  border-top: 2px solid color-mix(in oklch, var(--color-primary) 36%, #000);
+  z-index: 4;
   pointer-events: none;
+}
+
+.footerText {
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-soft);
+  line-height: 1.4;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.footerTextJa {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.footerTextEn {
+  font-size: 0.8rem;
+}
+
+.footerTextChaotic {
+  text-shadow:
+    1.5px 0 rgba(255, 0, 0, 0.7),
+    -1.5px 0 rgba(0, 255, 255, 0.7);
+  animation: chromaShift 0.15s steps(2) infinite;
+}
+
+@keyframes chromaShift {
+  0% { text-shadow: 2px 0 rgba(255,0,0,0.7), -2px 0 rgba(0,255,255,0.7); }
+  50% { text-shadow: -1px 0 rgba(255,0,0,0.5), 1px 0 rgba(0,255,255,0.5); }
+  100% { text-shadow: 2px 0 rgba(255,0,0,0.7), -2px 0 rgba(0,255,255,0.7); }
+}
+
+.footerCounters {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
 .counterChip {
   display: flex;
-  align-items: baseline;
-  gap: 7px;
-  padding: 6px 11px;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
   background: color-mix(in oklch, var(--color-surface-1) 86%, transparent);
   border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-md);
+  border-radius: 999px;
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
 }
 
 .counterLabel {
   font-family: var(--font-mono);
-  font-size: var(--font-size-xs);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   color: var(--color-text-faint);
 }
 
 .counterValue {
   font-family: var(--font-mono);
-  font-size: var(--font-size-md);
+  font-size: 0.75rem;
+  font-weight: 700;
   color: var(--color-text-dark);
+  min-width: 1.2em;
+  text-align: right;
 }
 
 /* ── Balloons ── */
@@ -205,15 +256,15 @@
    the scene's bottom edge — never translate or float her vertically. */
 .blueWrap {
   position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: -1;
-  width: min(48%, 340px);
+  bottom: 56px;
+  left: 5%;
+  z-index: 1;
+  width: min(40%, 300px);
   display: flex;
   flex-direction: column;
   align-items: center;
   pointer-events: none;
+  opacity: 1;
 }
 
 .blueImage {
