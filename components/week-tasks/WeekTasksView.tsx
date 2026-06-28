@@ -714,9 +714,6 @@ export default function WeekTasksView({
         <div className={styles.sealSection}>
           <div className={styles.progressInfo}>
             <span className={styles.progressText}>{completedCount} / {totalSections} tasks completed</span>
-            <div className={styles.progressBar}>
-              <div className={styles.progressBarFill} style={{ width: `${(completedCount / totalSections) * 100}%` }} />
-            </div>
           </div>
           <button
             type="button"
@@ -725,8 +722,7 @@ export default function WeekTasksView({
             onClick={() => { play('click'); setShowSealModal(true); }}
             onMouseEnter={() => play('hover')}
           >
-            <Image src="/uploads/BlueSeal.svg" alt="" width={18} height={18} />
-            Seal Week {weekNumber}
+            Seal The Week
           </button>
           {!canSeal && (
             <span className={styles.sealHint}>Complete at least {Math.ceil(totalSections / 2)} tasks to seal</span>

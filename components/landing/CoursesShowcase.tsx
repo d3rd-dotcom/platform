@@ -465,7 +465,18 @@ export const CoursesShowcase: React.FC = () => {
                   type="button"
                 >
                   <div className={styles.cardImagePanel} style={{ background: course.color }}>
-                    <span className={styles.cardWeekBadge}>Week {course.weekNumber}</span>
+                    <div className={styles.cardBadgeGroup}>
+                      <span className={styles.badgeItem}>12 weeks</span>
+                      <span className={styles.badgeDivider} />
+                      <span className={styles.badgeItem}>
+                        12k
+                        <img
+                          src="/icons/ui-diamond.svg"
+                          alt=""
+                          className={styles.diamondIcon}
+                        />
+                      </span>
+                    </div>
                     <span className={styles.cardCategoryBadge}>{course.category}</span>
                   </div>
                   <div className={styles.cardContentPanel}>
@@ -488,27 +499,6 @@ export const CoursesShowcase: React.FC = () => {
                         {course.time}
                       </p>
                     </div>
-                    <div className={styles.cardStats}>
-                      <div className={styles.statGroup}>
-                        <span className={styles.statLabel}>Length</span>
-                        <span className={styles.statValue}>12 weeks</span>
-                      </div>
-                      <div className={styles.statGroup}>
-                        <span className={styles.statLabel}>Cost</span>
-                        <span className={styles.statValue}>Free</span>
-                      </div>
-                      <div className={styles.statGroup}>
-                        <span className={styles.statLabel}>Rewards</span>
-                        <span className={styles.statValue}>
-                          12k
-                          <img
-                            src="/icons/ui-diamond.svg"
-                            alt=""
-                            className={styles.diamondIcon}
-                          />
-                        </span>
-                      </div>
-                    </div>
                     <div className={styles.progressDivider}>
                       <div
                         className={styles.progressFill}
@@ -517,21 +507,25 @@ export const CoursesShowcase: React.FC = () => {
                     </div>
                     <p className={styles.cardDescription}>{course.description}</p>
                     <div className={styles.cardFooter}>
-                      {registeredCourses.has(course.id) ? (
-                        <span className={styles.registeredBadge}>
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <polyline points="20 6 9 17 4 12" />
-                          </svg>
-                          Registered
-                        </span>
-                      ) : (
-                        <span className={styles.learnMore}>
-                          View Details
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <polyline points="9 18 15 12 9 6" />
-                          </svg>
-                        </span>
-                      )}
+                      <span className={styles.cardAuthor}>{course.instructor}</span>
+                      <div className={styles.footerRight}>
+                        <span className={styles.cardMembership}>Free</span>
+                        {registeredCourses.has(course.id) ? (
+                          <span className={styles.registeredBadge}>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            Registered
+                          </span>
+                        ) : (
+                          <span className={styles.learnMore}>
+                            View Details
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="9 18 15 12 9 6" />
+                            </svg>
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </button>

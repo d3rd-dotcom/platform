@@ -365,14 +365,21 @@ export default function CourseStudioModal({
 
   const saveCourseData = async () => {
     const headers = await authHeaders();
-    if (courseId) {
-      await fetch(`/api/vip/courses/${courseId}`, {
+    let currentCourseId = courseId;
+
+    // Step 1: Save course metadata
+    if (currentCourseId) {
+      const res = await fetch(`/api/vip/courses/${currentCourseId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', ...headers },
         body: JSON.stringify({ title: title.trim(), slug: slug.trim(), focus: focus.trim() }),
       });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? 'Failed to save course');
+      }
     } else {
-      const slugVal = slug.trim() || title.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      const slugVal = slug.trim() || deriveSlug(title.trim());
       const res = await fetch('/api/vip/courses', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...headers },
@@ -381,7 +388,59 @@ export default function CourseStudioModal({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'Failed to create course');
       setCourseId(data.course.id);
+      currentCourseId = data.course.id;
     }
+
+    // Step 2: Save weeks and components via bulk content endpoint
+    if (currentCourseId) {
+      const contentRes = await fetch(`/api/vip/courses/${currentCourseId}/content`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', ...headers },
+        body: JSON.stringify({
+          weeks: weeks.map((w, i) => ({
+            weekNumber: w.weekNumber,
+            title: w.title,
+            theme: w.theme,
+            sortOrder: i,
+            components: w.components.map((c, ci) => ({
+              componentType: c.componentType,
+              title: c.title,
+              config: c.config,
+              sortOrder: ci,
+              required: c.required,
+            })),
+          })),
+        }),
+      });
+      if (!contentRes.ok) {
+        const data = await contentRes.json().catch(() => ({}));
+        throw new Error(data.error ?? 'Failed to save course content');
+      }
+      const { course: savedCourse } = await contentRes.json();
+
+      // Update local state with real DB IDs from the saved course
+      setWeeks(
+        savedCourse.weeks.map((w: any) => ({
+          id: w.id,
+          weekNumber: w.weekNumber,
+          title: w.title,
+          theme: w.theme,
+          components: w.components.map((c: any) => ({
+            id: c.id,
+            weekId: c.weekId,
+            sortOrder: c.sortOrder,
+            componentType: c.componentType,
+            title: c.title,
+            config: c.config,
+            required: c.required,
+            createdAt: c.createdAt,
+            updatedAt: c.updatedAt,
+          })),
+        })),
+      );
+      setSelectedWeekId(savedCourse.weeks[0]?.id ?? weeks[0]?.id ?? '');
+    }
+
     setDirty(false);
     setPhase('edit');
   };
@@ -464,7 +523,7 @@ export default function CourseStudioModal({
       title: w.title,
       theme: w.theme,
       status: 'draft' as const,
-      sortOrder: w.weekNumber - 1,
+      sortOrder: Math.max(0, w.weekNumber - 1),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       components: w.components,
@@ -605,7 +664,7 @@ export default function CourseStudioModal({
                 <WeekCanvas
                   weeks={weeks}
                   selectedWeek={selectedWeekId}
-                  onSelectWeek={setSelectedWeekId}
+                  onSelectWeek={(weekId) => { setSelectedWeekId(weekId); setSelectedComponentId(null); }}
                   onSelectComponent={setSelectedComponentId}
                   selectedComponentId={selectedComponentId}
                   onAddWeek={addWeek}

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { assertCourseUser } from '@/lib/assert-course-auth';
+import { assertCourseOwner } from '@/lib/assert-course-auth';
 import { createCourseWeek } from '@/lib/vip-course-db';
 
 export const runtime = 'nodejs';
@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request, { params }: { params: { id: string } }) {
   try {
-    await assertCourseUser();
+    await assertCourseOwner(params.id);
     const body = await request.json() as { weekNumber?: unknown; title?: unknown; theme?: unknown; sortOrder?: unknown };
 
     if (body.weekNumber === undefined || typeof body.weekNumber !== 'number') {

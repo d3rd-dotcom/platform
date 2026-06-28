@@ -5,6 +5,7 @@ import { recordBlueMorningPagesEvent } from '@/lib/blue-memory';
 import { ensurePrayersSchema } from '@/lib/ensurePrayersSchema';
 import { encryptForUser, decryptForUser } from '@/lib/encrypt';
 import { recordAgentActivity } from '@/lib/room-log';
+import { postSystemMessage } from '@/lib/chat';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -236,6 +237,18 @@ export async function POST(request: Request) {
       } catch (activityError: unknown) {
         console.error('Room Log activity error:', activityError);
       }
+    }
+
+    // Post global chat notification
+    try {
+      await postSystemMessage(
+        user.id,
+        user.username,
+        user.avatarUrl,
+        `${user.username} completed their field notes.`,
+      );
+    } catch (chatError: unknown) {
+      console.error('Chat notification error:', chatError);
     }
   }
 

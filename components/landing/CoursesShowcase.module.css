@@ -240,18 +240,34 @@
   border-right: 3px solid #1A1D33;
 }
 
-.cardWeekBadge {
+.cardBadgeGroup {
+  display: flex;
+  align-items: center;
   background: #ffffff;
-  color: #1A1D33;
-  font-family: var(--font-button);
-  font-size: 11px;
-  font-weight: 700;
-  padding: 6px 12px;
   border: 2px solid #1A1D33;
   border-radius: 2px;
   box-shadow: 2px 2px 0 #1A1D33;
+  overflow: hidden;
+}
+
+.badgeItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-button);
+  font-size: 11px;
+  font-weight: 700;
+  color: #1A1D33;
+  padding: 6px 10px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+.badgeDivider {
+  width: 2px;
+  height: 24px;
+  background: #1A1D33;
+  flex-shrink: 0;
 }
 
 .cardCategoryBadge {
@@ -280,10 +296,11 @@
 .cardTitle {
   font-family: var(--font-primary);
   font-size: 1.35rem;
-  font-weight: 700;
+  font-weight: 800;
   color: #1A1D33;
   margin: 0;
   line-height: 1.25;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.06);
 }
 
 .cardStats {
@@ -337,9 +354,16 @@
 
 .progressFill {
   height: 100%;
-  background: var(--color-primary, #5168FF);
+  background: linear-gradient(90deg, #5168FF, #FF7729, #74C465);
+  background-size: 200% 100%;
+  animation: progressMove 2s linear infinite;
   border-radius: 1px;
   transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes progressMove {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
 }
 
 .cardMeta {
@@ -392,6 +416,36 @@
   margin-top: auto;
   padding-top: 16px;
   border-top: 2px solid #1A1D33;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footerRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cardAuthor {
+  font-family: var(--font-button);
+  font-size: 12px;
+  font-weight: 700;
+  color: #1A1D33;
+  letter-spacing: 0.03em;
+  opacity: 0.8;
+}
+
+.cardMembership {
+  font-family: var(--font-button);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border: 2px solid var(--color-primary);
+  border-radius: 2px;
 }
 
 .learnMore {

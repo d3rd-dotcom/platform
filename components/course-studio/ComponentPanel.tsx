@@ -381,12 +381,8 @@ export default function ComponentPanel({ component, onUpdate, onDelete, onClose 
             </button>
           </div>
           <textarea
-            value={(component.config?.description as string) ?? ''}
-            onChange={(e) =>
-              onUpdate(component.id, {
-                config: { ...component.config, description: e.target.value },
-              })
-            }
+            value={getConfigValue('description')}
+            onChange={(e) => handleFieldChange('description', e.target.value, 'text')}
             className={`${styles.textarea} ${styles.input}`}
             placeholder="What is this component for? Students will see this as context."
             rows={2}

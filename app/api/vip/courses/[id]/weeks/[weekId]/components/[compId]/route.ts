@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { assertCourseUser } from '@/lib/assert-course-auth';
+import { assertCourseOwner } from '@/lib/assert-course-auth';
 import { updateCourseComponent, deleteCourseComponent } from '@/lib/vip-course-db';
 import type { ComponentType } from '@/lib/vip-course-db';
 
@@ -21,7 +21,7 @@ const VALID_COMPONENT_TYPES: ComponentType[] = [
 
 export async function PATCH(request: Request, { params }: { params: { id: string; weekId: string; compId: string } }) {
   try {
-    await assertCourseUser();
+    await assertCourseOwner(params.id);
     const body = await request.json() as Record<string, unknown>;
     const input: Record<string, unknown> = {};
 
@@ -65,7 +65,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 
 export async function DELETE(_request: Request, { params }: { params: { id: string; weekId: string; compId: string } }) {
   try {
-    await assertCourseUser();
+    await assertCourseOwner(params.id);
     const deleted = await deleteCourseComponent(params.compId);
     if (!deleted) {
       return NextResponse.json({ error: 'Component not found.' }, { status: 404 });

@@ -8,6 +8,15 @@ interface RichTextConfig {
   format?: 'markdown' | 'html';
 }
 
+function sanitizeHtml(html: string): string {
+  return html
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '')
+    .replace(/(?:href|src|action|formaction)\s*=\s*"javascript:[^"]*"/gi, 'href="#"')
+    .replace(/(?:href|src|action|formaction)\s*=\s*'javascript:[^']*'/gi, "href='#'")
+    .replace(/(?:href|src|action|formaction)\s*=\s*javascript:[^\s>]+/gi, 'href="#"');
+}
+
 export default function RichTextRenderer({ component }: { component: CourseComponentRecord }) {
   const config = component.config as RichTextConfig;
   const content = config.content ?? '';
@@ -17,7 +26,7 @@ export default function RichTextRenderer({ component }: { component: CourseCompo
   }
 
   if (config.format === 'html') {
-    return <div dangerouslySetInnerHTML={{ __html: content }} />;
+    return <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }} />;
   }
 
   return (

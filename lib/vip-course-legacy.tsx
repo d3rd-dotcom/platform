@@ -105,7 +105,11 @@ export function useCourseSections(slug: string, weekNumber: number) {
 
       const weeksByNumber = new Map<number, JournalSection[]>();
       for (const w of course.weeks) {
-        const mapped = w.components.map(mapComponentToSection);
+        const taskComponents = w.components.filter((comp: CourseComponentRecord) => {
+          const c = comp.config as Record<string, unknown>;
+          return !(typeof c.url === 'string' && typeof c.imageUrl === 'string' && typeof c.originalName === 'string');
+        });
+        const mapped = taskComponents.map(mapComponentToSection);
         weeksByNumber.set(w.weekNumber, mapped);
       }
 

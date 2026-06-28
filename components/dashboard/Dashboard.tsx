@@ -4,8 +4,8 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import BlueScene from '@/components/blue-scene/BlueScene';
 import CaseMonitor from '@/components/case-monitor/CaseMonitor';
+import ChatRoom from '@/components/chat-room/ChatRoom';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
-import PhotoSafari from '@/components/photo-safari/PhotoSafari';
 import styles from './Dashboard.module.css';
 
 interface DashboardProps {
@@ -60,17 +60,12 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
         <BlueScene />
       </div>
 
-      {/* ── PhotoSafari (above CaseMonitor on mobile) ── */}
-      <div className={styles.photoSafariWrap}>
-        <PhotoSafari />
-      </div>
-
       {/* ── CaseMonitor ── */}
       <div className={styles.caseMonitorWrap}>
         <CaseMonitor />
       </div>
 
-      {/* ── Sidebar: Leaderboard + MorningPages ── */}
+      {/* ── Sidebar: Leaderboard + ChatRoom + MorningPages ── */}
       <aside className={styles.sidebarWrap}>
         <button
           type="button"
@@ -106,6 +101,8 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
             </ul>
           )}
         </button>
+
+        <ChatRoom />
 
         <div className={styles.morningPagesShell} data-tour="daily-note">
           <div className={styles.morningPagesGradient} aria-hidden="true" />

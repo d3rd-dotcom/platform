@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { assertCourseUser } from '@/lib/assert-course-auth';
+import { assertCourseOwner } from '@/lib/assert-course-auth';
 import { updateVipCourse } from '@/lib/vip-course-db';
 
 export const runtime = 'nodejs';
@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(_request: Request, { params }: { params: { id: string } }) {
   try {
-    await assertCourseUser();
+    await assertCourseOwner(params.id);
     const course = await updateVipCourse(params.id, { status: 'published' });
     if (!course) {
       return NextResponse.json({ error: 'Course not found.' }, { status: 404 });

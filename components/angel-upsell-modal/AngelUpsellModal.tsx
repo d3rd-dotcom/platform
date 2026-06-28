@@ -15,10 +15,9 @@ interface AngelUpsellModalProps {
 const ANGEL_IMAGE = 'https://i.imgur.com/GXA3DBV.gif';
 
 const FEATURES = [
-  'Unlock USDC quest bounties, paid on-chain to your wallet',
-  'Submit proof and claim paid quests straight from the board',
-  'A collectible Angel on Base — one-time purchase, yours forever',
-  'Every mint supports the community treasury',
+  'Get paid for every quest you complete',
+  'Gain access to private events',
+  'A quiet virtue, made visible',
 ];
 
 export default function AngelUpsellModal({ isOpen, onClose, onMint }: AngelUpsellModalProps) {
@@ -55,51 +54,50 @@ export default function AngelUpsellModal({ isOpen, onClose, onMint }: AngelUpsel
         </button>
 
         <div className={styles.content}>
-          <div className={styles.imageWrapper}>
-            <img src={ANGEL_IMAGE} alt="Academic Angel" className={styles.angelImage} />
+          <div className={styles.topSection}>
+            <div className={styles.imageWrapper}>
+              <img src={ANGEL_IMAGE} alt="Academic Angel" className={styles.angelImage} />
+            </div>
+
+            <div className={styles.textContent}>
+              <span className={styles.badge}>Exclusive Membership</span>
+              <h2 className={styles.title}>Become an Academic Angel</h2>
+              <p className={styles.description}>
+                You feel the sky glow, you understand it now.
+              </p>
+              <ul className={styles.featureList}>
+                {FEATURES.map((feature) => (
+                  <li key={feature} className={styles.featureItem}>
+                    <svg
+                      className={styles.checkIcon}
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                    >
+                      <path
+                        d="M13.5 4.5L6.5 11.5L2.5 7.5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
-          <div className={styles.textContent}>
-            <span className={styles.badge}>Academic Angel</span>
-            <h2 className={styles.title}>Become an Academic Angel</h2>
-            <p className={styles.description}>
-              USDC quest bounties are reserved for Academic Angel holders. Mint your
-              Angel on Base to take part in paid quests.
-            </p>
-
-            <p className={styles.benefitsHeading}>Benefits include:</p>
-            <ul className={styles.featureList}>
-              {FEATURES.map((feature) => (
-                <li key={feature} className={styles.featureItem}>
-                  <svg
-                    className={styles.checkIcon}
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                  >
-                    <path
-                      d="M13.5 4.5L6.5 11.5L2.5 7.5"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <span>{feature}</span>
-                </li>
-              ))}
-            </ul>
-
-            <button
-              type="button"
-              className={styles.ctaButton}
-              onClick={() => { play('click'); onMint(); }}
-              onMouseEnter={() => play('hover')}
-            >
-              <span>Mint your Angel</span>
-            </button>
-          </div>
+          <button
+            type="button"
+            className={styles.ctaButton}
+            onClick={() => { play('click'); onMint(); }}
+            onMouseEnter={() => play('hover')}
+          >
+            <span>Mint your Angel</span>
+          </button>
         </div>
       </div>
     </div>

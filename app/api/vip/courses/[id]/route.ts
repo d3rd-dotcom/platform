@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { assertCourseUser } from '@/lib/assert-course-auth';
+import { assertCourseOwner } from '@/lib/assert-course-auth';
 import { getVipCourseFull, updateVipCourse, deleteVipCourse } from '@/lib/vip-course-db';
 
 export const runtime = 'nodejs';
@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(_request: Request, { params }: { params: { id: string } }) {
   try {
-    await assertCourseUser();
+    await assertCourseOwner(params.id);
     const course = await getVipCourseFull(params.id);
     if (!course) {
       return NextResponse.json({ error: 'Course not found.' }, { status: 404 });
@@ -21,7 +21,7 @@ export async function GET(_request: Request, { params }: { params: { id: string 
 
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
   try {
-    await assertCourseUser();
+    await assertCourseOwner(params.id);
     const body = await request.json() as Record<string, unknown>;
     const input: Record<string, unknown> = {};
 
@@ -64,7 +64,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 
 export async function DELETE(_request: Request, { params }: { params: { id: string } }) {
   try {
-    await assertCourseUser();
+    await assertCourseOwner(params.id);
     const deleted = await deleteVipCourse(params.id);
     if (!deleted) {
       return NextResponse.json({ error: 'Course not found.' }, { status: 404 });

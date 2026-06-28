@@ -353,7 +353,7 @@ export default function CoursePage() {
 
           <BlueVideoPanel
             className={styles.blueVideo}
-            message="12 weeks. One creative life reclaimed. Pick up where you left off."
+            message="Reclaim your creative life one week at a time."
           />
 
           <div className={styles.weekNav}>
@@ -396,12 +396,6 @@ export default function CoursePage() {
                 <path d="M9 18l6-6-6-6"/>
               </svg>
             </button>
-
-            {seasonLoading ? (
-              <span className={`${styles.weekNavLabel} ${styles.skeletonTextWide} ${styles.skeletonBlock}`} />
-            ) : (
-              <span className={styles.weekNavLabel}>{WEEK_TITLES[resolvedViewWeek]}</span>
-            )}
           </div>
 
           <div

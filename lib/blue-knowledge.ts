@@ -304,10 +304,10 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
   {
     id: 'page-styleguide',
     title: 'Styleguide',
-    routes: ['/styleguide'],
-    keywords: ['styleguide', 'design', 'tokens', 'colors', 'typography'],
+    routes: ['/style-guide'],
+    keywords: ['styleguide', 'style-guide', 'design', 'tokens', 'colors', 'typography'],
     body:
-      'The /styleguide page is the design system reference — colors, type, components, motion tokens. Internal tool for design consistency.',
+      'The /style-guide page is the design system reference — colors, type, components, motion tokens. Internal tool for design consistency.',
   },
   {
     id: 'community-treasury',

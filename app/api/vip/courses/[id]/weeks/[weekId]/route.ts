@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { assertCourseUser } from '@/lib/assert-course-auth';
+import { assertCourseOwner } from '@/lib/assert-course-auth';
 import { updateCourseWeek, deleteCourseWeek } from '@/lib/vip-course-db';
 
 export const runtime = 'nodejs';
@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 export async function PATCH(request: Request, { params }: { params: { id: string; weekId: string } }) {
   try {
-    await assertCourseUser();
+    await assertCourseOwner(params.id);
     const body = await request.json() as Record<string, unknown>;
     const input: Record<string, unknown> = {};
 
@@ -53,7 +53,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 
 export async function DELETE(_request: Request, { params }: { params: { id: string; weekId: string } }) {
   try {
-    await assertCourseUser();
+    await assertCourseOwner(params.id);
     const deleted = await deleteCourseWeek(params.weekId);
     if (!deleted) {
       return NextResponse.json({ error: 'Week not found.' }, { status: 404 });

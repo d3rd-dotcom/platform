@@ -447,6 +447,7 @@ async function main() {
           weekId,
           title: week.readingFile.title,
           config: JSON.stringify({
+            content: week.readingFile.description,
             url: week.readingFile.markdownPath,
             originalName: week.readingFile.title,
             imageUrl: week.readingFile.imageUrl,

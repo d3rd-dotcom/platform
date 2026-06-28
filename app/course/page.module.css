@@ -137,18 +137,7 @@
   gap: 5px;
 }
 
-.weekNavLabel {
-  flex-shrink: 0;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 700;
-  color: rgba(26, 29, 51, 0.55);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  min-width: 48px;
-  text-align: right;
-}
+
 
 /* Week Dots */
 
@@ -583,9 +572,9 @@
     margin: 10px 0 10px;
   }
 
-  .weekNavLabel {
-    font-size: 10px;
-    min-width: 40px;
+  .weekNavArrow {
+    width: 36px;
+    height: 36px;
   }
 
   .weekDot {
@@ -611,10 +600,6 @@
 /* ============================================ */
 /* DARK MODE OVERRIDES                          */
 /* ============================================ */
-
-:global([data-theme="dark"]) .weekNavLabel {
-  color: var(--color-text-muted);
-}
 
 :global([data-theme="dark"]) .skeletonBlock {
   background: var(--color-surface-2);

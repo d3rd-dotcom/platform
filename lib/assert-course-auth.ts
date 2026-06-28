@@ -1,4 +1,5 @@
 import { getCurrentUserFromRequestCookie } from './auth';
+import { getVipCourseById } from './vip-course-db';
 
 /**
  * Returns the authenticated user's ID.
@@ -20,4 +21,20 @@ export async function assertCourseUser(): Promise<string> {
     throw Object.assign(new Error('Sign in to access courses.'), { status: 401 });
   }
   return user.id;
+}
+
+/**
+ * Asserts the authenticated user owns the course with the given ID.
+ * Returns the user ID on success, throws 404/403 otherwise.
+ */
+export async function assertCourseOwner(courseId: string): Promise<string> {
+  const userId = await assertCourseUser();
+  const course = await getVipCourseById(courseId);
+  if (!course) {
+    throw Object.assign(new Error('Course not found'), { status: 404 });
+  }
+  if (course.userId !== userId) {
+    throw Object.assign(new Error('Forbidden'), { status: 403 });
+  }
+  return userId;
 }

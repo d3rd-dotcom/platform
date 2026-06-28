@@ -820,9 +820,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
               title="Become an angel"
               aria-label="Become an angel"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-              </svg>
+              <Image src="/icons/guidance.svg" alt="" width={18} height={18} />
             </button>
           ) : (
             <button
@@ -831,11 +829,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
               onClick={() => setIsAngelModalOpen(true)}
             >
               <span className={styles.angelIcon}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
-                  <path d="M12 8v4l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                  <path d="M8 12h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
+                <Image src="/icons/guidance.svg" alt="" width={16} height={16} />
               </span>
               <span className={styles.angelLabel}>Become an angel</span>
               <span className={styles.angelArrow}>
@@ -880,15 +874,14 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
 
             {/* Text Links rows */}
             <div className={styles.footerLinksRow}>
-              <a href="/about" className={styles.footerLink}>About</a>
-              <a href="https://docs.mentalwealthacademy.world" target="_blank" rel="noopener noreferrer" className={styles.footerLink}>Docs</a>
+              <Link href="/guidebook" className={styles.footerLink}>Guidebook</Link>
               <span className={styles.footerDot}>•</span>
-              <a href="/changelog" className={`${styles.footerLink} ${styles.changelogLink}`}>Changelog</a>
+              <a href="https://github.com/Mental-Wealth-Academy/platform/commits/main/" target="_blank" rel="noopener noreferrer" className={`${styles.footerLink} ${styles.changelogLink}`}>Changelog</a>
             </div>
             <div className={styles.footerLinksRow}>
-              <a href="/terms" className={styles.footerLink}>Terms</a>
-              <a href="/privacy" className={styles.footerLink}>Privacy</a>
-              <a href="/support" className={styles.footerLink}>Support</a>
+              <span className={styles.footerLink} style={{ pointerEvents: 'none', cursor: 'default' }}>Terms</span>
+              <span className={styles.footerLink} style={{ pointerEvents: 'none', cursor: 'default' }}>Privacy</span>
+              <span className={styles.footerLink} style={{ pointerEvents: 'none', cursor: 'default' }}>Support</span>
             </div>
           </div>
         )}

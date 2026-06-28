@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { assertCourseUser } from '@/lib/assert-course-auth';
+import { assertCourseOwner } from '@/lib/assert-course-auth';
 import { createCourseComponent } from '@/lib/vip-course-db';
 import type { ComponentType } from '@/lib/vip-course-db';
 
@@ -21,7 +21,7 @@ const VALID_COMPONENT_TYPES: ComponentType[] = [
 
 export async function POST(request: Request, { params }: { params: { id: string; weekId: string } }) {
   try {
-    await assertCourseUser();
+    await assertCourseOwner(params.id);
     const body = await request.json() as {
       componentType?: unknown;
       title?: unknown;

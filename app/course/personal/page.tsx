@@ -317,7 +317,7 @@ export default function PersonalCoursePage() {
 
           <BlueVideoPanel
             className={shared.blueVideo}
-            message={`Four weeks on ${course.focus.toLowerCase()}. One small step at a time — pick up where you left off.`}
+            message="Small steps add up. Pick up where you left off."
           />
 
           <div className={shared.weekNav}>

@@ -88,6 +88,16 @@ const nextConfig = {
       },
     ];
   },
+  // Redirect old /styleguide to /style-guide
+  async redirects() {
+    return [
+      {
+        source: '/styleguide',
+        destination: '/style-guide',
+        permanent: true,
+      },
+    ];
+  },
   // Proxy external resources to avoid CORS issues
   async rewrites() {
     return [

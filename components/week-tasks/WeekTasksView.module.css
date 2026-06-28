@@ -412,39 +412,20 @@
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
-  color: rgba(26, 29, 51, 0.4);
+  color: rgba(26, 29, 51, 0.55);
   text-align: center;
   letter-spacing: 0.04em;
-}
-
-.progressBar {
-  width: 100%;
-  height: 6px;
-  background: #E8E9F0;
-  border: none;
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.progressBarFill {
-  height: 100%;
-  background: var(--week-color, var(--color-primary));
-  border-radius: 3px;
-  transition: width 0.3s ease;
 }
 
 .sealBtn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
   width: 100%;
-  padding: 14px 28px;
-  font-family: var(--font-mono);
-  font-size: 13px;
+  padding: 16px 28px;
+  font-family: var(--font-secondary);
+  font-size: 15px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   color: #AAAAAA;
   background: #E8E9F0;
   border: 1.5px solid rgba(26, 29, 51, 0.1);
@@ -457,12 +438,6 @@
   background: var(--week-color, var(--color-primary));
   border-color: var(--week-color, var(--color-primary));
   cursor: pointer;
-  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 25%, transparent);
-}
-
-.sealBtnReady:hover {
-  box-shadow: 0 6px 20px color-mix(in oklch, var(--color-primary) 35%, transparent);
-  transform: translateY(-1px);
 }
 
 .sealHint {
@@ -720,17 +695,14 @@
 }
 
 :global([data-theme="dark"]) .progressText {
-  color: rgba(227, 225, 238, 0.35);
-}
-
-:global([data-theme="dark"]) .progressBar {
-  background: rgba(255, 255, 255, 0.08);
+  color: rgba(227, 225, 238, 0.75);
 }
 
 :global([data-theme="dark"]) .sealBtn {
   background: rgba(255, 255, 255, 0.04);
   color: rgba(227, 225, 238, 0.35);
   border-color: rgba(255, 255, 255, 0.06);
+  font-family: var(--font-secondary);
 }
 
 :global([data-theme="dark"]) .sealHint {

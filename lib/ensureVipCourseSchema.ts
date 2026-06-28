@@ -69,6 +69,8 @@ export async function ensureVipCourseSchema() {
     `);
 
     try {
+      await sqlQuery(`ALTER TABLE vip_courses DROP CONSTRAINT IF EXISTS vip_courses_slug_unique`);
+      await sqlQuery(`ALTER TABLE vip_courses ADD CONSTRAINT vip_courses_slug_unique UNIQUE (slug)`);
       await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_vip_courses_user ON vip_courses(user_id, status)`);
       await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_course_weeks_course ON course_weeks(course_id, sort_order)`);
       await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_course_components_week ON course_components(week_id, sort_order)`);

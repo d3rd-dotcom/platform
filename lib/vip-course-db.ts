@@ -1,4 +1,4 @@
-import { sqlQuery } from './db';
+import { sqlQuery, withTransaction } from './db';
 import { ensureVipCourseSchema } from './ensureVipCourseSchema';
 
 export type ComponentType =
@@ -441,21 +441,119 @@ export async function deleteCourseComponent(id: string): Promise<boolean> {
   return rows.length > 0;
 }
 
+export async function replaceCourseContent(
+  courseId: string,
+  weeks: Array<{
+    weekNumber: number;
+    title: string;
+    theme: string;
+    sortOrder: number;
+    components: Array<{
+      componentType: ComponentType;
+      title: string;
+      config: Record<string, unknown>;
+      sortOrder: number;
+      required: boolean;
+    }>;
+  }>,
+): Promise<VipCourseFull> {
+  await ensureVipCourseSchema();
+
+  return withTransaction(async (client) => {
+    // Delete existing weeks (components cascade via FK)
+    await client.query('DELETE FROM course_weeks WHERE course_id = $1', [courseId]);
+
+    // Re-insert weeks and components
+    for (const week of weeks) {
+      const weekResult = await client.query(
+        `INSERT INTO course_weeks (course_id, week_number, title, theme, sort_order)
+         VALUES ($1, $2, $3, $4, $5)
+         RETURNING id`,
+        [courseId, week.weekNumber, week.title, week.theme, week.sortOrder],
+      );
+      const weekId = weekResult.rows[0].id;
+
+      if (week.components.length > 0) {
+        const valueClauses: string[] = [];
+        const valueParams: unknown[] = [];
+        let paramIndex = 1;
+
+        for (const comp of week.components) {
+          valueClauses.push(`($${paramIndex}, $${paramIndex + 1}, $${paramIndex + 2}, $${paramIndex + 3}, $${paramIndex + 4}, $${paramIndex + 5})`);
+          valueParams.push(weekId, comp.sortOrder, comp.componentType, comp.title, JSON.stringify(comp.config), comp.required);
+          paramIndex += 6;
+        }
+
+        await client.query(
+          `INSERT INTO course_components (week_id, sort_order, component_type, title, config, required)
+           VALUES ${valueClauses.join(', ')}`,
+          valueParams,
+        );
+      }
+    }
+
+    // Return the full course
+    const courseRows = await client.query(
+      `SELECT c.*, u.username AS author_username, u.avatar_url AS author_avatar_url
+       FROM vip_courses c
+       LEFT JOIN users u ON u.id = c.user_id
+       WHERE c.id = $1`,
+      [courseId],
+    );
+
+    if (!courseRows.rows[0]) {
+      throw new Error('Course not found after content replacement');
+    }
+
+    const weekRows = await client.query(
+      `SELECT * FROM course_weeks WHERE course_id = $1 ORDER BY sort_order ASC, week_number ASC`,
+      [courseId],
+    );
+
+    const compRows = await client.query(
+      `SELECT c.* FROM course_components c
+       JOIN course_weeks w ON c.week_id = w.id
+       WHERE w.course_id = $1
+       ORDER BY c.sort_order ASC`,
+      [courseId],
+    );
+
+    const componentMap = new Map<string, CourseComponentRecord[]>();
+    for (const comp of compRows.rows.map(toCourseComponent)) {
+      const list = componentMap.get(comp.weekId);
+      if (list) {
+        list.push(comp);
+      } else {
+        componentMap.set(comp.weekId, [comp]);
+      }
+    }
+
+    const mappedWeeks = weekRows.rows.map((w: CourseWeekRow) => ({
+      ...toCourseWeek(w),
+      components: componentMap.get(w.id) ?? [],
+    }));
+
+    return { ...toVipCourse(courseRows.rows[0] as VipCourseRow), weeks: mappedWeeks };
+  });
+}
+
 export async function reorderCourseComponents(
   weekId: string,
   orderedIds: string[],
 ): Promise<CourseComponentRecord[]> {
   await ensureVipCourseSchema();
 
-  const caseWhen = orderedIds
-    .map((compId, index) => `WHEN id = '${compId.replace(/'/g, "''")}' THEN ${index}`)
-    .join(' ');
+  if (orderedIds.length === 0) return [];
 
-  if (!caseWhen) return [];
+  const whenClauses = orderedIds.map((_, i) => `WHEN $${i + 1} THEN ${i}`).join(' ');
+  const params: unknown[] = [...orderedIds, weekId];
 
   await sqlQuery(
-    `UPDATE course_components SET sort_order = CASE ${caseWhen} ELSE sort_order END, updated_at = CURRENT_TIMESTAMP WHERE week_id = :weekId`,
-    { weekId },
+    `UPDATE course_components
+     SET sort_order = CASE id ${whenClauses} ELSE sort_order END,
+         updated_at = CURRENT_TIMESTAMP
+     WHERE week_id = $${orderedIds.length + 1}`,
+    params,
   );
 
   const rows = await sqlQuery<CourseComponentRow[]>(

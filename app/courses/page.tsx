@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
-import { Plus, PencilSimple, Sparkle } from '@phosphor-icons/react';
+import { Plus, PencilSimple } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import CourseStudioModal from '@/components/course-studio/CourseStudioModal';
 import type { CourseData } from '@/lib/personal-course';
@@ -149,91 +149,100 @@ export default function CoursesPage() {
       <SideNavigation />
       <main className={styles.main}>
 
-        <div className={styles.divider} aria-hidden="true" />
-
         <Link href="/course" className={styles.courseCard}>
           <span
             className={styles.thumb}
             style={{ backgroundImage: `url(${JSON.stringify(COURSE_THUMB)})` }}
-            aria-hidden="true"
-          />
+          >
+              <div className={styles.cardBadgeGroup}>
+                <div className={styles.badgeSection}>
+                  <span className={styles.badgeValue}>12 sessions</span>
+                  <span className={styles.badgeEyebrow}>length</span>
+                </div>
+                <span className={styles.badgeDivider} />
+                <div className={styles.badgeSection}>
+                  <span className={styles.badgeValue}>
+                    12k
+                    <span className={styles.rewardStack}>
+                      <img src="/icons/usdc-logo.svg" alt="" className={styles.usdcIcon} />
+                      <img src="/icons/ui-diamond.svg" alt="" className={styles.diamondIcon} />
+                    </span>
+                  </span>
+                  <span className={styles.badgeEyebrow}>rewards</span>
+                </div>
+              </div>
+          </span>
           <div className={styles.body}>
-            <div className={styles.cardStats}>
-              <div className={styles.statGroup}>
-                <span className={styles.statLabel}>Length</span>
-                <span className={styles.statValue}>12 wks</span>
-              </div>
-              <div className={styles.statGroup}>
-                <span className={styles.statLabel}>Cost</span>
-                <span className={styles.statValue}>Free</span>
-              </div>
-              <div className={styles.statGroup}>
-                <span className={styles.statLabel}>Rewards</span>
-                <span className={styles.statValue}>
-                  12k
-                  <img src="/icons/ui-diamond.svg" alt="" className={styles.diamondIcon} />
-                </span>
-              </div>
-            </div>
-            <div className={styles.progressDivider}>
-              <div className={styles.progressFill} style={{ width: '8.3%' }} />
-            </div>
             <div className={styles.contentCenter}>
               <span className={styles.title}>Creative Healing</span>
               <span className={styles.desc}>
                 A journey through rediscovering your creative energy and excavating it to reach your highest horizon.
               </span>
             </div>
-            <div className={styles.courseAuthor}>
-              <span
-                className={styles.authorAvatar}
-                style={coreAuthor?.avatarUrl ? { backgroundImage: `url(${JSON.stringify(coreAuthor.avatarUrl)})` } : undefined}
-              >
-                {!coreAuthor?.avatarUrl ? (coreAuthor?.username?.[0] ?? 'E') : ''}
-              </span>
-              <span className={styles.authorName}>@{coreAuthor?.username ?? 'Espeon'}</span>
+            <div className={styles.cardFooter}>
+              <div className={styles.footerLeft}>
+                <div className={styles.cardMembers}>
+                  <div className={styles.memberAvatars}>
+                    <span className={styles.memberAvatar} style={{ backgroundImage: 'linear-gradient(135deg, #5168FF, #9b7ed9)' }}>AZ</span>
+                    <span className={styles.memberAvatar} style={{ backgroundImage: 'linear-gradient(135deg, #FF7729, #F472B6)' }}>JM</span>
+                    <span className={styles.memberAvatar} style={{ backgroundImage: 'linear-gradient(135deg, #74C465, #4ECDC4)' }}>KL</span>
+                  </div>
+                  <span className={styles.memberCount}>+23</span>
+                </div>
+                <div className={styles.courseAuthor}>
+                  <span
+                    className={styles.authorAvatar}
+                    style={coreAuthor?.avatarUrl ? { backgroundImage: `url(${JSON.stringify(coreAuthor.avatarUrl)})` } : undefined}
+                  >
+                    {!coreAuthor?.avatarUrl ? (coreAuthor?.username?.[0] ?? 'E') : ''}
+                  </span>
+                  <span className={styles.authorName}>@{coreAuthor?.username ?? 'Espeon'}</span>
+                </div>
+              </div>
+              <span className={styles.cardMembership}>Free</span>
+            </div>
+            <div className={styles.progressDivider}>
+              <div className={styles.progressFill} style={{ width: '8.3%' }} />
             </div>
           </div>
-          <svg className={styles.arrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 18l6-6-6-6"/>
-          </svg>
         </Link>
 
         {personalCourse && (
           <Link href="/course/personal" className={styles.courseCard}>
-            <span className={`${styles.thumb} ${styles.personalThumb}`} aria-hidden="true" />
+            <span className={`${styles.thumb} ${styles.personalThumb}`}>
+              <div className={styles.cardBadgeGroup}>
+                <div className={styles.badgeSection}>
+                  <span className={styles.badgeValue}>4 sessions</span>
+                  <span className={styles.badgeEyebrow}>length</span>
+                </div>
+                <span className={styles.badgeDivider} />
+                <div className={styles.badgeSection}>
+                  <span className={styles.badgeValue}>
+                    4k
+                    <span className={styles.rewardStack}>
+                      <img src="/icons/usdc-logo.svg" alt="" className={styles.usdcIcon} />
+                      <img src="/icons/ui-diamond.svg" alt="" className={styles.diamondIcon} />
+                    </span>
+                  </span>
+                  <span className={styles.badgeEyebrow}>rewards</span>
+                </div>
+              </div>
+            </span>
             <div className={styles.body}>
               <span className={styles.category}>Your course</span>
-              <div className={styles.cardStats}>
-                <div className={styles.statGroup}>
-                  <span className={styles.statLabel}>Length</span>
-                  <span className={styles.statValue}>4 wks</span>
-                </div>
-                <div className={styles.statGroup}>
-                  <span className={styles.statLabel}>Cost</span>
-                  <span className={styles.statValue}>Free</span>
-                </div>
-                <div className={styles.statGroup}>
-                  <span className={styles.statLabel}>Rewards</span>
-                  <span className={styles.statValue}>
-                    4k
-                    <img src="/icons/ui-diamond.svg" alt="" className={styles.diamondIcon} />
-                  </span>
-                </div>
-              </div>
-              <div className={styles.progressDivider}>
-                <div className={styles.progressFill} style={{ width: '0%' }} />
-              </div>
               <div className={styles.contentCenter}>
                 <span className={styles.title}>{personalCourse.title}</span>
                 <span className={styles.desc}>
                   A personal 4-week track built around {personalCourse.focus.toLowerCase()} — a weekly read and tasks tuned to your goal.
                 </span>
               </div>
+              <div className={styles.cardFooter}>
+                <span className={styles.cardMembership}>Free</span>
+              </div>
+              <div className={styles.progressDivider}>
+                <div className={styles.progressFill} style={{ width: '0%' }} />
+              </div>
             </div>
-            <svg className={styles.arrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 18l6-6-6-6"/>
-            </svg>
           </Link>
         )}
 
@@ -253,7 +262,6 @@ export default function CoursesPage() {
               disabled={generating || !aiPrompt.trim()}
               className={styles.aiGenerateBtn}
             >
-              <Sparkle size={16} weight="bold" />
               {generating ? 'Building...' : 'Build With Blue'}
             </button>
           </div>

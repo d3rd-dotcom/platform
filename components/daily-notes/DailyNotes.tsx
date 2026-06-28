@@ -298,6 +298,7 @@ export default function DailyNotes({
 
       // First successful note ever: let the home first-run guide pick it up and
       // point the user to the course. Fires once per browser.
+      window.dispatchEvent(new Event('globalChatUpdate'));
       if (getStorageItem('mwa-first-daily-note-done') !== '1') {
         setStorageItem('mwa-first-daily-note-done', '1');
         window.dispatchEvent(new CustomEvent('dailyNoteCompleted'));
