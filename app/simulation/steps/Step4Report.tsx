@@ -154,7 +154,7 @@ export default function Step4Report({
     <div className={styles.panel}>
       <div className={styles.simHeader}>
         <div>
-          <h2 className={styles.panelTitle}>Report</h2>
+          <h2 className={styles.panelTitle}><span className={styles.titleJa}>報告</span>Report</h2>
           <p className={styles.panelLead}>
             The Report Agent reads the whole simulation and synthesizes a forecast that answers your
             original question.

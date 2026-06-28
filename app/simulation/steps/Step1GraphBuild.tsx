@@ -188,7 +188,7 @@ export default function Step1GraphBuild({
 
   return (
     <div className={styles.panel}>
-      <h2 className={styles.panelTitle}>Knowledge graph</h2>
+      <h2 className={styles.panelTitle}><span className={styles.titleJa}>知識図</span>Knowledge graph</h2>
       <p className={styles.panelLead}>
         We analyzed your documents and proposed the entities and relationships that define this
         world. Build the graph to extract them into long-term agent memory.

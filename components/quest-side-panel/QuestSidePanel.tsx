@@ -1,30 +1,46 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 import { CursorClick } from '@phosphor-icons/react';
-import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
+import QuestDetailPanel from '@/components/quest-detail-panel/QuestDetailPanel';
+import type { UnifiedQuest } from '@/components/quest-list-panel/QuestListPanel';
 import styles from './QuestSidePanel.module.css';
 
-const BLUE_MESSAGE = 'Completionists: small steps move you forward.';
+interface QuestSidePanelProps {
+  quest?: UnifiedQuest | null;
+  onDeselect?: () => void;
+}
 
-export default function QuestSidePanel() {
+const KIND_LABEL: Record<string, string> = {
+  course: 'Course',
+  mission: 'Mission',
+  submit: 'Submit',
+  social: 'Social',
+  custom: 'Custom',
+};
+
+export default function QuestSidePanel({ quest, onDeselect }: QuestSidePanelProps) {
+  if (quest) {
+    return (
+      <div className={styles.panel}>
+        <div className={styles.listHeader}>
+          <span className={styles.listHeaderKind}>{KIND_LABEL[quest.kind] ?? quest.kind}</span>
+          <span className={styles.listHeaderQuestTitle}>{quest.title}</span>
+        </div>
+        <div className={styles.detailWrap}>
+          <QuestDetailPanel quest={quest} onDeselect={onDeselect ?? (() => {})} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.panel}>
-      <section className={styles.header}>
-        <div className={styles.headerRow}>
-          <span className={styles.eyebrow}>Quest log</span>
-          <span className={styles.versionBadge}>
-            <Image src="/icons/ui-diamond.svg" alt="" width={9} height={9} />
-            MWA
-          </span>
-        </div>
-      </section>
-
-      <BlueVideoPanel
-        className={styles.blueVideo}
-        message={BLUE_MESSAGE}
-      />
+      <div className={styles.listHeader}>
+        <span className={styles.listHeaderTitle}>
+          <span className={styles.listHeaderJa}>探索</span> Quest Log
+        </span>
+      </div>
 
       <div className={styles.hint}>
         <CursorClick size={16} weight="duotone" className={styles.hintIcon} />

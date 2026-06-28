@@ -255,6 +255,7 @@ export default function ProjectGallery({
   return (
     <div className={styles.gallery}>
       <header className={styles.galleryHeader}>
+        <h1 className={styles.galleryTitle}><span className={styles.titleJa}>世界</span>Simulation Worlds</h1>
         <div className={styles.filterRow}>
           <button
             className={`${styles.filterBtn} ${activeFilter === 'recent' ? styles.filterBtnActive : ''}`}

@@ -51,12 +51,22 @@ export default function CoursesPage() {
     }>;
   } | null>(null);
   const [coreAuthor, setCoreAuthor] = useState<{ username: string; avatarUrl: string | null } | null>(null);
+  const [skyyeAuthor, setSkyyeAuthor] = useState<{ username: string; avatarUrl: string | null } | null>(null);
 
   useEffect(() => {
     fetch('/api/users/lookup?username=Espeon')
       .then((r) => r.ok ? r.json() : null)
       .then((d) => {
         if (d?.user) setCoreAuthor({ username: d.user.username, avatarUrl: d.user.avatar_url });
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/users/lookup?username=Skyye')
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => {
+        if (d?.user) setSkyyeAuthor({ username: d.user.username, avatarUrl: d.user.avatar_url });
       })
       .catch(() => {});
   }, []);
@@ -151,61 +161,130 @@ export default function CoursesPage() {
 
         <div className={styles.cardWrapper}>
           <Link href="/course" className={styles.courseCard}>
-            <span
-              className={styles.thumb}
-              style={{ backgroundImage: `url(${JSON.stringify(COURSE_THUMB)})` }}
-            >
-              <div className={styles.badgeWrapper}>
-                <div className={styles.cardBadgeGroup}>
-                  <div className={styles.badgeSection}>
-                    <span className={styles.badgeValue}>12 sessions</span>
-                    <span className={styles.badgeEyebrow}>length</span>
-                  </div>
-                  <span className={styles.badgeDivider} />
-                  <div className={styles.badgeSection}>
-                    <span className={styles.badgeValue}>
-                      <span className={styles.rewardStack}>
-                        <img src="/icons/usdc-logo.svg" alt="" className={styles.usdcIcon} />
-                        <img src="/icons/ui-diamond.svg" alt="" className={styles.diamondIcon} />
-                      </span>
-                    </span>
-                    <span className={styles.badgeEyebrow}>rewards</span>
-                  </div>
-                </div>
-              </div>
-            </span>
-            <div className={styles.body}>
-              <div className={styles.contentCenter}>
-                <span className={styles.category}>Community Course</span>
-                <span className={styles.title}>Creative Healing</span>
-                <span className={styles.desc}>
-                  A journey through rediscovering your creative energy and excavating it to reach your highest horizon.
-                </span>
-              </div>
-              <div className={styles.cardFooter}>
-                <div className={styles.footerLeft}>
-                  <div className={styles.cardMembers}>
-                    <div className={styles.memberAvatars}>
-                      <span className={styles.memberAvatar} style={{ backgroundImage: 'linear-gradient(135deg, #5168FF, #9b7ed9)' }}>AZ</span>
-                      <span className={styles.memberAvatar} style={{ backgroundImage: 'linear-gradient(135deg, #FF7729, #F472B6)' }}>JM</span>
-                      <span className={styles.memberAvatar} style={{ backgroundImage: 'linear-gradient(135deg, #74C465, #4ECDC4)' }}>KL</span>
+            <div className={styles.cardHeader}>
+              <span className={styles.cardKanji}>影の探求</span>
+              <span className={styles.cardHeaderTitle}>Shadow Work Course</span>
+            </div>
+            <div className={styles.cardBodyRow}>
+              <span
+                className={styles.thumb}
+                style={{ backgroundImage: `url(${JSON.stringify(COURSE_THUMB)})` }}
+              >
+                <div className={styles.badgeWrapper}>
+                  <div className={styles.cardBadgeGroup}>
+                    <div className={styles.badgeSection}>
+                      <span className={styles.badgeValue}>12 sessions</span>
+                      <span className={styles.badgeEyebrow}>length</span>
                     </div>
-                    <span className={styles.memberCount}>+23</span>
-                  </div>
-                  <div className={styles.courseAuthor}>
-                    <span
-                      className={styles.authorAvatar}
-                      style={coreAuthor?.avatarUrl ? { backgroundImage: `url(${JSON.stringify(coreAuthor.avatarUrl)})` } : undefined}
-                    >
-                      {!coreAuthor?.avatarUrl ? (coreAuthor?.username?.[0] ?? 'E') : ''}
-                    </span>
-                    <span className={styles.authorName}>@{coreAuthor?.username ?? 'Espeon'}</span>
+                    <span className={styles.badgeDivider} />
+                    <div className={styles.badgeSection}>
+                      <span className={styles.badgeValue}>
+                        <span className={styles.rewardStack}>
+                          <img src="/icons/usdc-logo.svg" alt="" className={styles.usdcIcon} />
+                          <img src="/icons/ui-diamond.svg" alt="" className={styles.diamondIcon} />
+                        </span>
+                      </span>
+                      <span className={styles.badgeEyebrow}>rewards</span>
+                    </div>
                   </div>
                 </div>
-                <span className={styles.cardMembership}>Free</span>
+              </span>
+              <div className={styles.body}>
+                <div className={styles.contentCenter}>
+                  <span className={styles.desc}>
+                    A journey through rediscovering your creative energy and excavating it to reach your highest horizon.
+                  </span>
+                </div>
+                <div className={styles.cardFooter}>
+                  <div className={styles.footerLeft}>
+                    <div className={styles.cardMembers}>
+                      <div className={styles.memberAvatars}>
+                        <span className={styles.memberAvatar} style={{ backgroundImage: 'linear-gradient(135deg, #5168FF, #9b7ed9)' }}>AZ</span>
+                        <span className={styles.memberAvatar} style={{ backgroundImage: 'linear-gradient(135deg, #FF7729, #F472B6)' }}>JM</span>
+                        <span className={styles.memberAvatar} style={{ backgroundImage: 'linear-gradient(135deg, #74C465, #4ECDC4)' }}>KL</span>
+                      </div>
+                      <span className={styles.memberCount}>+23</span>
+                    </div>
+                    <div className={styles.courseAuthor}>
+                      <span
+                        className={styles.authorAvatar}
+                        style={coreAuthor?.avatarUrl ? { backgroundImage: `url(${JSON.stringify(coreAuthor.avatarUrl)})` } : undefined}
+                      >
+                        {!coreAuthor?.avatarUrl ? (coreAuthor?.username?.[0] ?? 'E') : ''}
+                      </span>
+                      <span className={styles.authorName}>@{coreAuthor?.username ?? 'Espeon'}</span>
+                    </div>
+                  </div>
+                  <span className={styles.cardMembership}>Free</span>
+                </div>
+                <div className={styles.progressDivider}>
+                  <div className={styles.progressFill} style={{ width: '8.3%' }} />
+                </div>
               </div>
-              <div className={styles.progressDivider}>
-                <div className={styles.progressFill} style={{ width: '8.3%' }} />
+            </div>
+          </Link>
+        </div>
+
+        <div className={styles.cardWrapper}>
+          <Link href="/course/tap-into-creativity" className={styles.courseCard}>
+            <div className={styles.cardHeader}>
+              <span className={styles.cardKanji}>創造開拓</span>
+              <span className={styles.cardHeaderTitle}>Tap Into Creativity</span>
+            </div>
+            <div className={styles.cardBodyRow}>
+              <span
+                className={styles.thumb}
+                style={{ backgroundImage: `url(${JSON.stringify(COURSE_THUMB)})` }}>
+                <div className={styles.badgeWrapper}>
+                  <div className={styles.cardBadgeGroup}>
+                    <div className={styles.badgeSection}>
+                      <span className={styles.badgeValue}>4 sessions</span>
+                      <span className={styles.badgeEyebrow}>length</span>
+                    </div>
+                    <span className={styles.badgeDivider} />
+                    <div className={styles.badgeSection}>
+                      <span className={styles.badgeValue}>
+                        <span className={styles.rewardStack}>
+                          <img src="/icons/usdc-logo.svg" alt="" className={styles.usdcIcon} />
+                          <img src="/icons/ui-diamond.svg" alt="" className={styles.diamondIcon} />
+                        </span>
+                      </span>
+                      <span className={styles.badgeEyebrow}>rewards</span>
+                    </div>
+                  </div>
+                </div>
+              </span>
+              <div className={styles.body}>
+                <div className={styles.contentCenter}>
+                  <span className={styles.desc}>
+                    The goal is to help people feel confident and encouraged to express themselves creatively. It&apos;s the advice I wish I had when I was little and afraid to call myself an artist.
+                  </span>
+                </div>
+                <div className={styles.cardFooter}>
+                  <div className={styles.footerLeft}>
+                    <div className={styles.cardMembers}>
+                      <div className={styles.memberAvatars}>
+                        <span className={styles.memberAvatar} style={{ backgroundImage: 'linear-gradient(135deg, #F472B6, #EC4899)' }}>AR</span>
+                        <span className={styles.memberAvatar} style={{ backgroundImage: 'linear-gradient(135deg, #38BDF8, #818CF8)' }}>BN</span>
+                        <span className={styles.memberAvatar} style={{ backgroundImage: 'linear-gradient(135deg, #FBBF24, #F59E0B)' }}>CL</span>
+                      </div>
+                      <span className={styles.memberCount}>+0</span>
+                    </div>
+                    <div className={styles.courseAuthor}>
+                      <span
+                        className={styles.authorAvatar}
+                        style={skyyeAuthor?.avatarUrl ? { backgroundImage: `url(${JSON.stringify(skyyeAuthor.avatarUrl)})` } : { backgroundImage: 'linear-gradient(135deg, #8B5CF6, #F59E0B)' }}
+                      >
+                        {!skyyeAuthor?.avatarUrl ? (skyyeAuthor?.username?.[0] ?? 'S') : ''}
+                      </span>
+                      <span className={styles.authorName}>@{skyyeAuthor?.username ?? 'Skyye'}</span>
+                    </div>
+                  </div>
+                  <span className={styles.cardMembership}>Academic Angels</span>
+                </div>
+                <div className={styles.progressDivider}>
+                  <div className={styles.progressFill} style={{ width: '0%' }} />
+                </div>
               </div>
             </div>
           </Link>

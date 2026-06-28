@@ -1,71 +1,74 @@
-/* QuestSidePanel — dark console sidebar, right column of the quests layout.
-   Holds the quest log header, Blue's video piece, and the selection hint.
-   Styling carried over from the old left-column QuestListPanel. */
+/* QuestSidePanel — right column of the quests layout. */
 
 .panel {
-  --c-border: rgba(235, 232, 247, 0.10);
-  --c-fg: #ebe8f7;
-  --c-fg-soft: rgba(235, 232, 247, 0.74);
   --c-fg-muted: rgba(235, 232, 247, 0.52);
-  --c-fg-faint: rgba(235, 232, 247, 0.36);
-  --c-blue: var(--color-primary);
 
   flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 16px;
-  border-radius: 16px;
+  padding: 0;
+  border-radius: 12px;
   overflow: hidden;
-  color: var(--c-fg);
-  border: 1px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
-  background: linear-gradient(180deg, #11131b 0%, #0c0d17 60%);
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(81,104,255,0.06)'/%3E%3C/svg%3E");
+  border: 2px solid var(--color-primary-hover);
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    0 0px 10px rgba(0, 0, 0, 0.14),
+    0 10px 5px rgba(0, 0, 0, 0.30);
 }
 
-/* ── Header ── */
-.header {
+/* ── List header ── */
+.listHeader {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px 10px;
+  background: color-mix(in oklch, var(--color-primary) 8%, #ffffff);
+  border-bottom: 2px solid var(--color-primary-hover);
+  flex-shrink: 0;
+}
+
+.listHeaderTitle {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2a2f52;
+}
+
+.listHeaderQuestTitle {
+  font-family: var(--font-primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #2a2f52;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.listHeaderJa {
+  color: var(--color-primary);
+}
+
+.listHeaderKind {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+/* ── Detail wrap — quest details fill the panel when a quest is selected ── */
+.detailWrap {
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 10px 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(235, 232, 247, 0.10);
-  background: rgba(235, 232, 247, 0.04);
-  flex-shrink: 0;
-}
-
-.headerRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.eyebrow {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--c-fg-muted);
-}
-
-.versionBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 7px;
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #7586ff;
-  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
-  border: 1px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
-}
-
-/* ── Blue video piece ── */
-.blueVideo {
-  flex-shrink: 0;
 }
 
 /* ── Hint (fills the idle middle space) ── */
@@ -77,18 +80,19 @@
   justify-content: center;
   gap: 9px;
   padding: 16px;
+  margin: 16px;
   border-radius: 10px;
-  border: 1px dashed rgba(235, 232, 247, 0.14);
-  background: rgba(235, 232, 247, 0.03);
+  border: 1px dashed rgba(26, 29, 51, 0.14);
+  background: rgba(26, 29, 51, 0.025);
   font-family: var(--font-secondary);
   font-size: 12.5px;
   line-height: 1.5;
-  color: var(--c-fg-muted);
+  color: rgba(26, 29, 51, 0.58);
   text-align: left;
 }
 
 .hintIcon {
-  color: #7586ff;
+  color: var(--color-primary);
   flex-shrink: 0;
 }
 
@@ -96,39 +100,39 @@
   max-width: 240px;
 }
 
-/* ── VIP actions ── */
-/* ── Light mode ── */
-:global(:root:not([data-theme="dark"])) .panel {
-  --c-border: rgba(30, 34, 54, 0.12);
-  --c-fg: #1a1d33;
-  --c-fg-soft: rgba(26, 29, 51, 0.80);
-  --c-fg-muted: rgba(26, 29, 51, 0.58);
-  --c-fg-faint: rgba(26, 29, 51, 0.42);
-
-  border-color: color-mix(in oklch, var(--color-primary) 20%, transparent);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(246, 248, 255, 0.90) 100%);
-  box-shadow: 0 18px 48px rgba(38, 45, 84, 0.12);
+/* ── Dark mode ── */
+:global([data-theme="dark"]) .panel {
+  background-color: #15172a;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
+  border-color: color-mix(in oklch, var(--color-primary-hover) 40%, transparent);
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    0 0px 10px rgba(0, 0, 0, 0.14),
+    0 10px 5px rgba(0, 0, 0, 0.30);
 }
 
-:global(:root:not([data-theme="dark"])) .header {
-  border-color: rgba(30, 34, 54, 0.12);
-  background: color-mix(in oklch, var(--color-primary) 5%, transparent);
+:global([data-theme="dark"]) .listHeader {
+  background: color-mix(in oklch, var(--color-primary) 14%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 30%, transparent);
 }
 
-:global(:root:not([data-theme="dark"])) .versionBadge {
-  background: color-mix(in oklch, var(--color-primary) 9%, transparent);
-  border-color: color-mix(in oklch, var(--color-primary) 22%, transparent);
-  color: var(--color-primary);
+:global([data-theme="dark"]) .listHeaderTitle,
+:global([data-theme="dark"]) .listHeaderQuestTitle {
+  color: #d6d9ee;
 }
 
-:global(:root:not([data-theme="dark"])) .hint {
-  border-color: rgba(26, 29, 51, 0.14);
-  background: rgba(26, 29, 51, 0.025);
-  color: rgba(26, 29, 51, 0.58);
+:global([data-theme="dark"]) .listHeaderKind {
+  color: #7586ff;
 }
 
-:global(:root:not([data-theme="dark"])) .hintIcon {
-  color: var(--color-primary);
+:global([data-theme="dark"]) .hint {
+  border-color: rgba(235, 232, 247, 0.14);
+  background: rgba(235, 232, 247, 0.03);
+  color: rgba(235, 232, 247, 0.52);
+}
+
+:global([data-theme="dark"]) .hintIcon {
+  color: #7586ff;
 }
 
 /* ── Responsive ── */
@@ -145,8 +149,8 @@
 }
 
 @media (max-width: 560px) {
-  .panel {
-    padding: 12px;
+  .hint {
+    margin: 12px;
   }
 }
 

@@ -74,15 +74,12 @@ export default function QuestListPanel({
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.boardHeader}>
-        <div className={styles.boardHeaderInner}>
-          <span className={styles.boardNode} aria-hidden="true" />
-          <span className={styles.boardTitle}>Quest Board</span>
-          <span className={styles.boardNode} aria-hidden="true" />
-        </div>
-      </div>
-
       <div className={styles.panel}>
+        <div className={styles.listHeader}>
+          <span className={styles.listHeaderTitle}>
+            <span className={styles.listHeaderJa}>任務</span> Quest Board
+          </span>
+        </div>
         <div className={styles.toolbar}>
           <div className={styles.actions}>
             <button

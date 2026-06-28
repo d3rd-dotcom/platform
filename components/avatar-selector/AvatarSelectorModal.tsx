@@ -19,13 +19,9 @@ interface AvatarSelectorModalProps {
 const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAvatarSelected }) => {
   const { getAccessToken } = usePrivy();
   const [avatars, setAvatars] = useState<Avatar[]>([]);
-  const [currentAvatar, setCurrentAvatar] = useState<string | null>(null);
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [rerolling, setRerolling] = useState(false);
-  const [credits, setCredits] = useState<number | null>(null);
-  const [rerollCost, setRerollCost] = useState(200);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -46,10 +42,7 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
         }
 
         setAvatars(data.choices || []);
-        setCurrentAvatar(data.currentAvatar || null);
-        setSelectedAvatar(data.currentAvatar || null);
-        if (typeof data.credits === 'number') setCredits(data.credits);
-        if (typeof data.rerollCost === 'number') setRerollCost(data.rerollCost);
+        setSelectedAvatar(null);
       } catch (err: any) {
         console.error('Failed to fetch avatars:', err);
         setError(err?.message || 'Failed to load avatars');
@@ -60,33 +53,6 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
 
     fetchAvatars();
   }, [getAccessToken]);
-
-  const handleReroll = async () => {
-    setRerolling(true);
-    setError(null);
-    try {
-      const token = await getAccessToken();
-      const response = await fetch('/api/avatars/reroll', {
-        method: 'POST',
-        credentials: 'include',
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      });
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || data.error || 'Failed to reroll avatars');
-      }
-
-      setAvatars(data.choices || []);
-      setSelectedAvatar(null);
-      if (typeof data.credits === 'number') setCredits(data.credits);
-    } catch (err: any) {
-      console.error('Failed to reroll avatars:', err);
-      setError(err?.message || 'Failed to reroll avatars');
-    } finally {
-      setRerolling(false);
-    }
-  };
 
   const handleUploadCustom = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -216,7 +182,7 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
               <button
                 className={styles.uploadButton}
                 onClick={() => fileInputRef.current?.click()}
-                disabled={uploading || saving || rerolling}
+                disabled={uploading || saving}
                 type="button"
               >
                 {uploading ? 'Uploading…' : 'Upload your own picture'}
@@ -227,7 +193,7 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
                     key={avatar.id}
                     className={`${styles.avatarOption} ${
                       selectedAvatar === avatar.image_url ? styles.selected : ''
-                    } ${currentAvatar === avatar.image_url ? styles.current : ''}`}
+                    }`}
                     onClick={() => setSelectedAvatar(avatar.image_url)}
                     type="button"
                   >
@@ -241,30 +207,10 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
                         unoptimized
                       />
                     </div>
-                    {currentAvatar === avatar.image_url && (
-                      <span className={styles.currentBadge}>Current</span>
-                    )}
                   </button>
                 ))}
               </div>
               {error && <div className={styles.errorMessage}>{error}</div>}
-              <div className={styles.rerollRow}>
-                <button
-                  className={styles.rerollButton}
-                  onClick={handleReroll}
-                  disabled={rerolling || saving || (credits !== null && credits < rerollCost)}
-                  type="button"
-                >
-                  {rerolling ? 'Rerolling…' : `Reroll for ${rerollCost} diamonds`}
-                </button>
-                {credits !== null && (
-                  <span className={styles.creditsNote}>
-                    {credits < rerollCost
-                      ? `You have ${credits} credits — need ${rerollCost}`
-                      : `Balance: ${credits} credits`}
-                  </span>
-                )}
-              </div>
             </>
           )}
         </div>

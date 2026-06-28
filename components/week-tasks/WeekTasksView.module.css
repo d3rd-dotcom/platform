@@ -470,9 +470,9 @@
   opacity: 0.7;
 }
 
-/* ─── Seal Modal ─── */
+/* ─── Mission Completion Modal ─── */
 
-.sealModalOverlay {
+.missionModalOverlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.4);
@@ -490,15 +490,15 @@
   to { opacity: 1; }
 }
 
-.sealModal {
+.missionModal {
   background: #FFFFFF;
-  border: 1px solid rgba(26, 29, 51, 0.1);
-  border-radius: 16px;
-  padding: 28px 24px;
+  border: 2px solid #1A1D33;
+  border-radius: 12px;
   width: 100%;
-  max-width: 380px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
-  animation: modalIn 0.2s ease;
+  max-width: 400px;
+  box-shadow: 8px 8px 0 #1A1D33;
+  overflow: hidden;
+  animation: modalIn 0.25s ease;
 }
 
 @keyframes modalIn {
@@ -506,28 +506,48 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-.sealModalTitle {
+.missionModalHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 24px 16px;
+  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
+  border-bottom: 1.5px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
+}
+
+.missionModalKanji {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.02em;
+}
+
+.missionModalTitle {
   font-family: var(--font-secondary);
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   color: #1A1D33;
-  margin: 0 0 8px;
 }
 
-.sealModalText {
+.missionModalBody {
+  padding: 22px 24px;
+}
+
+.missionModalText {
   font-family: var(--font-primary);
-  font-size: 13px;
+  font-size: 14px;
   color: rgba(26, 29, 51, 0.6);
-  line-height: 1.6;
-  margin: 0 0 20px;
+  line-height: 1.7;
+  margin: 0;
 }
 
-.sealModalButtons {
+.missionModalFooter {
   display: flex;
   gap: 12px;
+  padding: 0 24px 24px;
 }
 
-.sealModalCancel {
+.missionModalBack {
   flex: 1;
   padding: 12px;
   font-family: var(--font-mono);
@@ -535,50 +555,57 @@
   font-weight: 700;
   color: #1A1D33;
   background: #F4F5FE;
-  border: 1px solid rgba(26, 29, 51, 0.1);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
   border-radius: 10px;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: all 0.15s ease;
 }
 
-.sealModalCancel:hover {
+.missionModalBack:hover {
   background: #E8E9F0;
 }
 
-.sealModalConfirm {
+.missionModalConfirm {
   flex: 1;
   padding: 12px;
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 700;
   color: #FFFFFF;
-  background: var(--week-color, var(--color-primary));
-  border: none;
+  background: var(--color-primary);
+  border: 2px solid #1A1D33;
   border-radius: 10px;
+  box-shadow: 3px 3px 0 #1A1D33;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: all 0.15s ease;
 }
 
-.sealModalConfirm:hover {
-  filter: brightness(0.92);
+.missionModalConfirm:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #1A1D33;
 }
 
-.sealModalProgress {
+.missionModalConfirm:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 #1A1D33;
+}
+
+.missionModalProgress {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  padding: 20px 0;
+  padding: 32px 24px;
   font-family: var(--font-mono);
   font-size: 13px;
   color: rgba(26, 29, 51, 0.6);
 }
 
-.sealSpinner {
+.missionSpinner {
   width: 32px;
   height: 32px;
   border: 3px solid #E8E9F0;
-  border-top-color: var(--week-color, var(--color-primary));
+  border-top-color: var(--color-primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -715,33 +742,52 @@
   color: #4ADE80;
 }
 
-:global([data-theme="dark"]) .sealModal {
+:global([data-theme="dark"]) .missionModal {
   background: #16171F;
-  border-color: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.5);
 }
 
-:global([data-theme="dark"]) .sealModalTitle {
+:global([data-theme="dark"]) .missionModalHeader {
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .missionModalTitle {
   color: rgba(227, 225, 238, 0.95);
 }
 
-:global([data-theme="dark"]) .sealModalText {
+:global([data-theme="dark"]) .missionModalText {
   color: rgba(227, 225, 238, 0.55);
 }
 
-:global([data-theme="dark"]) .sealModalCancel {
+:global([data-theme="dark"]) .missionModalBack {
   background: rgba(255, 255, 255, 0.05);
   color: rgba(227, 225, 238, 0.95);
   border-color: rgba(255, 255, 255, 0.06);
 }
 
-:global([data-theme="dark"]) .sealModalCancel:hover {
+:global([data-theme="dark"]) .missionModalBack:hover {
   background: rgba(255, 255, 255, 0.08);
 }
 
-:global([data-theme="dark"]) .sealModalProgress {
+:global([data-theme="dark"]) .missionModalConfirm {
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.5);
+}
+
+:global([data-theme="dark"]) .missionModalConfirm:hover {
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+}
+
+:global([data-theme="dark"]) .missionModalConfirm:active {
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+}
+
+:global([data-theme="dark"]) .missionModalProgress {
   color: rgba(227, 225, 238, 0.55);
 }
 
-:global([data-theme="dark"]) .sealSpinner {
+:global([data-theme="dark"]) .missionSpinner {
   border-color: rgba(255, 255, 255, 0.1);
 }

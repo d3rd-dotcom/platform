@@ -129,6 +129,7 @@ export default function WeekTasksView({
   const [isSealing, setIsSealing] = useState(false);
   const [sealStep, setSealStep] = useState<'confirm' | 'sealing'>('confirm');
   const [showSealModal, setShowSealModal] = useState(false);
+  const [username, setUsername] = useState<string | null>(null);
   const [shardsAwarded, setShardsAwarded] = useState(700);
   const [showRewardAnimation, setShowRewardAnimation] = useState(false);
   const [showMissionReward, setShowMissionReward] = useState(false);
@@ -143,6 +144,18 @@ export default function WeekTasksView({
     if (initialIsSealed !== undefined) setIsSealed(initialIsSealed);
     if (initialSealTxHash !== undefined) setSealTxHash(initialSealTxHash ?? null);
   }, [initialIsSealed, initialSealTxHash]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch('/api/me', { credentials: 'include' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.user?.username) setUsername(data.user.username);
+        }
+      } catch {}
+    })();
+  }, []);
 
   const collectProgressData = useCallback(() => ({
     sectionData,
@@ -353,6 +366,17 @@ export default function WeekTasksView({
       setShowRewardAnimation(true);
       // Tell the navbar credit counter (and anything else listening) to refresh.
       if (typeof window !== 'undefined') window.dispatchEvent(new Event('shardsUpdated'));
+      // Post to global chat
+      try {
+        const authHeadersPost = await getAuthHeaders();
+        await fetch('/api/chat/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...authHeadersPost },
+          credentials: 'include',
+          body: JSON.stringify({ message: 'completed a mission' }),
+        });
+        if (typeof window !== 'undefined') window.dispatchEvent(new Event('globalChatUpdate'));
+      } catch {}
       if (onSealComplete) onSealComplete(weekNumber, data.txHash ?? null);
       if (typeof window !== 'undefined' && 'vibrate' in navigator) navigator.vibrate([50, 30, 50, 30, 100]);
     } catch (err) {
@@ -740,29 +764,34 @@ export default function WeekTasksView({
         </div>
       )}
 
-      {/* Seal Confirmation Modal */}
+      {/* Mission Completion Modal */}
       {showSealModal && (
-        <div className={styles.sealModalOverlay} onClick={() => { if (sealStep === 'confirm') { play('toggle-off'); setShowSealModal(false); } }}>
-          <div className={styles.sealModal} onClick={e => e.stopPropagation()}>
+        <div className={styles.missionModalOverlay} onClick={() => { if (sealStep === 'confirm') { play('toggle-off'); setShowSealModal(false); } }}>
+          <div className={styles.missionModal} onClick={e => e.stopPropagation()}>
             {sealStep === 'confirm' && (
               <>
-                <h3 className={styles.sealModalTitle}>Seal Week {weekNumber}?</h3>
-                <p className={styles.sealModalText}>
-                  This will finalize your work and award 700 diamonds. You won&apos;t be able to edit after sealing.
-                </p>
-                <div className={styles.sealModalButtons}>
-                  <button className={styles.sealModalCancel}
+                <div className={styles.missionModalHeader}>
+                  <span className={styles.missionModalKanji}>任務記録</span>
+                  <span className={styles.missionModalTitle}>Mission Log</span>
+                </div>
+                <div className={styles.missionModalBody}>
+                  <p className={styles.missionModalText}>
+                    Are you really sure you&apos;re ready to wrap up this mission? After completion, there&apos;s no turning back...
+                  </p>
+                </div>
+                <div className={styles.missionModalFooter}>
+                  <button className={styles.missionModalBack}
                     onClick={() => { play('toggle-off'); setShowSealModal(false); }}
-                    onMouseEnter={() => play('hover')}>Cancel</button>
-                  <button className={styles.sealModalConfirm}
+                    onMouseEnter={() => play('hover')}>Go Back</button>
+                  <button className={styles.missionModalConfirm}
                     onClick={() => { play('celebration'); handleSealWeek(); }}
-                    onMouseEnter={() => play('hover')}>Seal</button>
+                    onMouseEnter={() => play('hover')}>Completed</button>
                 </div>
               </>
             )}
             {sealStep === 'sealing' && (
-              <div className={styles.sealModalProgress}>
-                <div className={styles.sealSpinner} />
+              <div className={styles.missionModalProgress}>
+                <div className={styles.missionSpinner} />
                 <span>Sealing week...</span>
               </div>
             )}

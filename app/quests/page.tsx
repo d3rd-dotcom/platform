@@ -5,7 +5,6 @@ import { usePrivy } from '@privy-io/react-auth';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import QuestListPanel, { UnifiedQuest } from '@/components/quest-list-panel/QuestListPanel';
 import QuestSidePanel from '@/components/quest-side-panel/QuestSidePanel';
-import QuestDetailPanel from '@/components/quest-detail-panel/QuestDetailPanel';
 import QuestModal from '@/components/quest-modal/QuestModal';
 import QuestAuthorPanel from '@/components/quest-author-panel/QuestAuthorPanel';
 import UsdcReviewPanel from '@/components/usdc-review-panel/UsdcReviewPanel';
@@ -265,27 +264,14 @@ export default function QuestsPage() {
             onClaims={handleClaims}
             usdcAvailable={usdcAvailable}
           />
-          <aside className={`${styles.sideColumn} ${selectedQuest ? styles.sideColumnWide : ''} ${isMobile && selectedQuest ? styles.hideMobile : ''}`}>
-            {(!isMobile || !selectedQuest) && (selectedQuest ? (
-              <QuestDetailPanel
-                quest={selectedQuest}
-                onDeselect={() => setSelectedQuest(null)}
-              />
-            ) : (
-              <QuestSidePanel />
-            ))}
+          <aside className={styles.sideColumn}>
+            <QuestSidePanel
+              quest={selectedQuest}
+              onDeselect={() => setSelectedQuest(null)}
+            />
           </aside>
         </main>
       </div>
-
-      {isMobile && selectedQuest && (
-        <div className={styles.mobileOverlay}>
-          <QuestDetailPanel
-            quest={selectedQuest}
-            onDeselect={() => setSelectedQuest(null)}
-          />
-        </div>
-      )}
 
       <QuestModal isOpen={forgeOpen} onClose={() => setForgeOpen(false)} title="Quest forge">
         <QuestAuthorPanel

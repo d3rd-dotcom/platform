@@ -3,8 +3,9 @@
   margin: 12px 10px 0;
   padding: 5px 10px;
   background: var(--color-grey-900, #1a1b24);
-  border: 1px solid var(--color-grey-700, #2a2b36);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 35%, transparent);
   border-radius: 10px;
+  box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 20%, transparent);
   flex-shrink: 0;
 }
 
@@ -222,7 +223,8 @@
 /* Light mode */
 :global(:root:not([data-theme="dark"])) .card {
   background: #ffffff;
-  border-color: rgba(26, 27, 36, 0.12);
+  border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
+  box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 25%, transparent);
 }
 
 :global(:root:not([data-theme="dark"])) .name {

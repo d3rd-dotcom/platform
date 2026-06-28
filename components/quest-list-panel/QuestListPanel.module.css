@@ -1,6 +1,5 @@
 /* QuestListPanel — large taskboard, the main column of the quests layout.
-   Big quest rows (artwork tile, kind tag, title, description, reward chips)
-   under the hanging "Quest Board" tab. */
+   Big quest rows (artwork tile, kind tag, title, description, reward chips). */
 
 .wrapper {
   flex: 1;
@@ -9,48 +8,8 @@
      wide screens — the detail/side column absorbs the remaining space. */
   max-width: 620px;
   min-height: 0;
-  position: relative;
   display: flex;
   flex-direction: column;
-  padding-top: 24px;
-}
-
-/* ── Quest Board tab — hangs flat from the panel's top edge ── */
-.boardHeader {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  border-radius: 0 0 10px 10px;
-  background: #1b2245;
-  border: 1px solid rgba(26, 29, 51, 0.12);
-  border-top: none;
-}
-
-.boardHeaderInner {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 7px 22px;
-}
-
-.boardNode {
-  width: 5px;
-  height: 5px;
-  background: rgba(155, 175, 255, 0.55);
-  transform: rotate(45deg);
-  flex-shrink: 0;
-}
-
-.boardTitle {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.20em;
-  text-transform: uppercase;
-  color: rgba(205, 218, 255, 0.85);
-  white-space: nowrap;
 }
 
 /* ── Panel ── */
@@ -59,10 +18,37 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
-  border-radius: 16px;
+  border-radius: 12px;
   overflow: hidden;
-  background: #ffffff;
-  border: 1px solid rgba(26, 29, 51, 0.10);
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(81,104,255,0.06)'/%3E%3C/svg%3E");
+  border: 2px solid var(--color-primary-hover);
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    0 0px 10px rgba(0, 0, 0, 0.14),
+    0 10px 5px rgba(0, 0, 0, 0.30);
+}
+
+/* ── List header ── */
+.listHeader {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px 10px;
+  background: color-mix(in oklch, var(--color-primary) 8%, #ffffff);
+  border-bottom: 2px solid var(--color-primary-hover);
+}
+
+.listHeaderTitle {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2a2f52;
+}
+
+.listHeaderJa {
+  color: var(--color-primary);
 }
 
 /* ── Toolbar: forge/claims actions + USDC bounty stat ── */
@@ -93,19 +79,22 @@
   -webkit-appearance: none;
   text-transform: none;
   letter-spacing: normal;
-  border: 1px solid color-mix(in oklch, var(--color-primary) 28%, transparent);
-  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 5%, transparent);
   color: var(--color-primary);
   font-family: var(--font-primary);
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.14s ease, border-color 0.14s ease, color 0.14s ease;
+  box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 22%, transparent);
+  transition: background 0.14s ease, border-color 0.14s ease, color 0.14s ease, box-shadow 0.14s ease;
 }
 
 .actionBtn:hover {
-  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
-  border-color: color-mix(in oklch, var(--color-primary) 46%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 45%, transparent);
+  color: var(--color-primary);
+  box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 32%, transparent);
 }
 
 .actionBtn:focus-visible {
@@ -244,10 +233,10 @@
   gap: 16px;
   width: 100%;
   padding: 16px 18px;
-  border-radius: 14px;
-  border: 1px solid rgba(26, 29, 51, 0.08);
+  border-radius: 12px;
+  border: 2px solid color-mix(in srgb, var(--accent) 32%, transparent);
   background: #ffffff;
-  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--accent) 55%, transparent);
   cursor: pointer;
   text-align: left;
   appearance: none;
@@ -258,28 +247,26 @@
 }
 
 .card:hover {
-  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
-  box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 12%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+  box-shadow: 0 6px 0 color-mix(in srgb, var(--accent) 60%, transparent);
   transform: translateY(-1px);
 }
 
 .cardActive,
 .cardActive:hover {
   border-color: var(--accent);
-  box-shadow:
-    0 0 0 1px var(--accent),
-    0 6px 18px color-mix(in srgb, var(--accent) 16%, transparent);
+  box-shadow: 0 4px 0 var(--accent);
 }
 
 .cardDone {
   opacity: 0.66;
-  border-color: rgba(34, 197, 94, 0.26);
+  border-color: rgba(34, 197, 94, 0.40);
 }
 
 .cardDone:hover {
   opacity: 0.9;
-  border-color: rgba(34, 197, 94, 0.45);
-  box-shadow: 0 6px 18px rgba(34, 197, 94, 0.10);
+  border-color: rgba(34, 197, 94, 0.55);
+  box-shadow: 0 4px 0 rgba(34, 197, 94, 0.50);
 }
 
 .card:focus-visible {
@@ -472,23 +459,23 @@
 }
 
 /* ── Dark mode ── */
-:global([data-theme='dark']) .boardHeader {
-  background: #c6d2ff;
-  border-color: rgba(100, 130, 200, 0.40);
-  border-top: none;
-}
-
-:global([data-theme='dark']) .boardTitle {
-  color: rgba(10, 18, 55, 0.88);
-}
-
-:global([data-theme='dark']) .boardNode {
-  background: rgba(40, 70, 170, 0.60);
-}
-
 :global([data-theme='dark']) .panel {
-  background: #131a2e;
-  border-color: rgba(150, 170, 255, 0.14);
+  background-color: #15172a;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
+  border-color: color-mix(in oklch, var(--color-primary-hover) 40%, transparent);
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    0 0px 10px rgba(0, 0, 0, 0.14),
+    0 10px 5px rgba(0, 0, 0, 0.30);
+}
+
+:global([data-theme='dark']) .listHeader {
+  background: color-mix(in oklch, var(--color-primary) 14%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 30%, transparent);
+}
+
+:global([data-theme='dark']) .listHeaderTitle {
+  color: #d6d9ee;
 }
 
 :global([data-theme='dark']) .toolbar {
@@ -496,14 +483,17 @@
 }
 
 :global([data-theme='dark']) .actionBtn {
-  border-color: color-mix(in oklch, var(--color-primary) 28%, transparent);
-  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
-  color: #c2ccff;
+  border-color: color-mix(in oklch, var(--color-primary) 35%, transparent);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 22%, transparent);
 }
 
 :global([data-theme='dark']) .actionBtn:hover {
-  background: color-mix(in oklch, var(--color-primary) 18%, transparent);
+  background: rgba(255, 255, 255, 0.07);
   border-color: color-mix(in oklch, var(--color-primary) 50%, transparent);
+  color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 28%, transparent);
 }
 
 :global([data-theme='dark']) .usdcStat {
@@ -522,25 +512,23 @@
 
 :global([data-theme='dark']) .card {
   background: #1a2138;
-  border-color: rgba(150, 170, 255, 0.12);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.40);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--accent) 40%, transparent);
 }
 
 :global([data-theme='dark']) .card:hover {
   border-color: color-mix(in srgb, var(--accent) 55%, transparent);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 6px 0 color-mix(in srgb, var(--accent) 50%, transparent);
 }
 
 :global([data-theme='dark']) .cardActive,
 :global([data-theme='dark']) .cardActive:hover {
   border-color: var(--accent);
-  box-shadow:
-    0 0 0 1px var(--accent),
-    0 6px 20px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 4px 0 var(--accent);
 }
 
 :global([data-theme='dark']) .cardDone {
-  border-color: rgba(34, 197, 94, 0.30);
+  border-color: rgba(34, 197, 94, 0.40);
 }
 
 :global([data-theme='dark']) .title {

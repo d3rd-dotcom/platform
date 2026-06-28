@@ -144,12 +144,12 @@
   overflow: hidden;
   width: 100%;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   background: var(--color-surface-base);
-  border: 2px solid rgba(0, 0, 0, 0.10);
+  border: 2px solid var(--color-primary-hover);
   border-radius: 12px;
   box-shadow:
-    0 6px 0 rgba(0, 0, 0, 0.08),
+    0 6px 0 var(--color-primary),
     0 0px 10px rgba(0, 0, 0, 0.14),
     0 10px 5px rgba(0, 0, 0, 0.30);
   cursor: pointer;
@@ -161,11 +161,44 @@
 
 .courseCard:hover {
   transform: translateY(-1px);
-  border-color: rgba(0, 0, 0, 0.16);
+  border-color: var(--color-primary);
   box-shadow:
-    0 8px 0 rgba(0, 0, 0, 0.10),
+    0 8px 0 var(--color-primary),
     0 0px 12px rgba(0, 0, 0, 0.14),
     0 12px 8px rgba(0, 0, 0, 0.30);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-base));
+  border-bottom: 2px solid var(--color-primary-hover);
+}
+
+.cardKanji {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.cardHeaderTitle {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2a2f52;
+}
+
+.cardBodyRow {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
 }
 
 .thumb {
@@ -187,6 +220,10 @@
 
 .personalThumb {
   background-image: linear-gradient(135deg, var(--color-primary) 0%, #9b7ed9 55%, #e85d3a 120%);
+}
+
+.skyyeThumb {
+  background-image: linear-gradient(135deg, #8B5CF6 0%, #EC4899 55%, #F59E0B 120%);
 }
 
 .body {
@@ -595,6 +632,15 @@
     0 12px 8px rgba(0, 0, 0, 0.30);
 }
 
+:global([data-theme="dark"]) .cardHeader {
+  background: color-mix(in oklch, var(--color-primary) 12%, var(--color-surface-2));
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .cardHeaderTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
 :global([data-theme="dark"]) .category {
   color: var(--color-text-muted);
 }
@@ -664,7 +710,7 @@
 }
 
 @media (max-width: 640px) {
-  .courseCard {
+  .cardBodyRow {
     flex-direction: column;
   }
 
