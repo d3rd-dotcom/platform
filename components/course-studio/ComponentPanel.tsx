@@ -1,6 +1,5 @@
 'use client';
 
-import { useState, useRef } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import type { CourseComponentRecord } from '@/lib/vip-course-db';
 import styles from './ComponentPanel.module.css';
@@ -23,6 +22,7 @@ function getMissionLabel(comp: CourseComponentRecord): string {
     multiple_choice: 'Multiple Choice',
     rating_scale: 'Rating Scale',
     video_embed: 'Video',
+    image_embed: 'Image',
   };
   return labels[comp.componentType] || 'Mission';
 }
@@ -31,51 +31,18 @@ interface ComponentPanelProps {
   readingContent?: string;
   missions: CourseComponentRecord[];
   selectedMissionId: string | null;
+  currentWeek: { weekNumber: number; theme: string };
   onEditReading?: () => void;
   onSelectMission: (id: string | null) => void;
   onDeleteMission: (id: string) => void;
   onAddBlankMission: () => void;
 }
 
-function BrandMediaSlot() {
-  const [media, setMedia] = useState<{ type: 'image' | 'video'; url: string } | null>(null);
-  const fileRef = useRef<HTMLInputElement>(null);
-
-  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const url = URL.createObjectURL(file);
-    setMedia({ type: file.type.startsWith('video/') ? 'video' : 'image', url });
-  };
-
-  return (
-    <div className={styles.brandSlot}>
-      {media ? (
-        <div className={styles.brandPreview}>
-          {media.type === 'image' ? (
-            <img src={media.url} alt="" className={styles.brandImage} />
-          ) : (
-            <video src={media.url} className={styles.brandVideo} controls />
-          )}
-          <button type="button" className={styles.brandChange} onClick={() => fileRef.current?.click()}>
-            Change
-          </button>
-        </div>
-      ) : (
-        <button type="button" className={styles.brandEmpty} onClick={() => fileRef.current?.click()}>
-          <span className={styles.brandEmptyLabel}>Brand Image or Video</span>
-          <span className={styles.brandEmptyHint}>Click to upload</span>
-        </button>
-      )}
-      <input ref={fileRef} type="file" accept="image/*,video/*" className={styles.fileInput} onChange={handleFile} />
-    </div>
-  );
-}
-
 export default function ComponentPanel({
   readingContent,
   missions,
   selectedMissionId,
+  currentWeek,
   onEditReading,
   onSelectMission,
   onAddBlankMission,
@@ -88,9 +55,6 @@ export default function ComponentPanel({
   return (
     <div className={styles.panel}>
 
-      {/* Brand media */}
-      <BrandMediaSlot />
-
       {/* Reading card — mirrors /course page readingCard */}
       <button type="button" className={styles.readingCard} onClick={onEditReading}>
         <span className={styles.readingAccent} aria-hidden="true" />
@@ -101,8 +65,8 @@ export default function ComponentPanel({
           </svg>
         </span>
         <div className={styles.readingInfo}>
-          <span className={styles.readingCategory}>Weekly Read</span>
-          <span className={styles.readingTitle}>Title</span>
+          <span className={styles.readingCategory}>Week {currentWeek.weekNumber}</span>
+          <span className={styles.readingTitle}>{readingContent ? currentWeek.theme || 'Reading' : currentWeek.theme || 'Add reading'}</span>
         </div>
         <svg className={styles.readingArrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M9 18l6-6-6-6" />

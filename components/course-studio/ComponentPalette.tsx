@@ -3,12 +3,8 @@
 import { useDraggable } from '@dnd-kit/core';
 import {
   NotePencil,
-  ListNumbers,
-  Heart,
-  Users,
   Clipboard,
   Sliders,
-  Sparkle,
   Video,
 } from '@phosphor-icons/react';
 import type { ComponentType } from '@/lib/vip-course-db';
@@ -28,11 +24,7 @@ interface ComponentPaletteProps {
 
 const MISSION_ITEMS: PaletteItemDef[] = [
   { type: 'reflection_journal', label: 'Free Write', icon: <NotePencil size={18} weight="bold" />, description: 'Open-ended journal', config: { prompt: '', minWords: 0 } },
-  { type: 'text_input', label: 'Numbered List', icon: <ListNumbers size={18} weight="bold" />, description: 'Numbered prompt list', config: { placeholder: 'Write your answer...' } },
-  { type: 'text_input', label: 'Lists', icon: <Users size={18} weight="bold" />, description: 'Imaginary lives template', config: { placeholder: 'Write your answer...' } },
   { type: 'multiple_choice', label: 'Checklist', icon: <Clipboard size={18} weight="bold" />, description: 'Checklist of items', config: { question: '', options: [], selectMultiple: true } },
-  { type: 'text_input', label: 'Enjoy List', icon: <Heart size={18} weight="bold" />, description: 'Things you enjoy', config: { placeholder: 'Something you enjoy...' } },
-  { type: 'text_input', label: 'Gratitude', icon: <Sparkle size={18} weight="bold" />, description: 'Gratitude entries', config: { placeholder: 'I am grateful for...' } },
   { type: 'rating_scale', label: 'Sliders', icon: <Sliders size={18} weight="bold" />, description: 'Life domain sliders', config: { min: 0, max: 10, minLabel: 'Low', maxLabel: 'High' } },
   { type: 'video_embed', label: 'Video', icon: <Video size={18} weight="bold" />, description: 'Video link with description', config: { url: '', description: '', question: '', answer: '' } },
 ];

@@ -634,6 +634,7 @@ export default function CourseStudioModal({
                     readingContent={readingContent}
                     missions={currentWeekComponents}
                     selectedMissionId={selectedComponentId}
+                    currentWeek={currentWeek ? { weekNumber: currentWeek.weekNumber, theme: currentWeek.theme } : { weekNumber: 1, theme: '' }}
                     onSelectMission={(id) => { setSelectedComponentId(id); setSelectedSlot(null); }}
                     onDeleteMission={deleteComponent}
                     onAddBlankMission={addBlankMission}
