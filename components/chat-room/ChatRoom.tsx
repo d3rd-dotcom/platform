@@ -70,6 +70,7 @@ export default function ChatRoom() {
   const oldestIdRef = useRef<number | null>(null);
   const newestIdRef = useRef<number | null>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
   const autoScrollRef = useRef(true);
   const subRef = useRef<RealtimeChannel>();
 
@@ -141,8 +142,8 @@ export default function ChatRoom() {
 
   // ── Auto-scroll to bottom when new messages arrive ──
   useEffect(() => {
-    if (autoScrollRef.current && listRef.current) {
-      listRef.current.scrollTop = listRef.current.scrollHeight;
+    if (autoScrollRef.current && bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: 'instant', block: 'end' });
     }
   }, [messages]);
 
@@ -379,6 +380,7 @@ export default function ChatRoom() {
             </div>
           ))
         )}
+        <div ref={bottomRef} />
       </div>
 
       <div className={styles.chatInputWrap}>

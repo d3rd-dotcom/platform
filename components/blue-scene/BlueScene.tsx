@@ -102,14 +102,22 @@ export default function BlueScene() {
   const sessionPopsRef = useRef(0);
   const pendingPopsRef = useRef(0);
   const lastMilestoneRef = useRef(0);
+  const baselineRef = useRef(0);
   const flushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const removalTimersRef = useRef(new Map<number, ReturnType<typeof setTimeout>>());
 
-  // Restore last rewarded milestone from storage.
+  // Restore last rewarded milestone from storage and use it as baseline
+  // so cumulative pop tracking works across sessions.
   useEffect(() => {
     try {
       const saved = localStorage.getItem('lastBalloonMilestone');
-      if (saved) lastMilestoneRef.current = Number(saved);
+      if (saved) {
+        const n = Number(saved);
+        if (!isNaN(n) && n > 0) {
+          lastMilestoneRef.current = n;
+          baselineRef.current = n;
+        }
+      }
     } catch {}
   }, []);
 
@@ -223,17 +231,17 @@ export default function BlueScene() {
     if (sessionPopsRef.current % 10 === 0) play('celebration');
     setCommunityTotal((t) => (t === null ? t : t + 1));
 
-    // Reward 10 diamonds every 5 pops
-    const currentPops = sessionPopsRef.current;
-    if (currentPops % 5 === 0 && currentPops > lastMilestoneRef.current) {
-      lastMilestoneRef.current = currentPops;
-      try { localStorage.setItem('lastBalloonMilestone', String(currentPops)); } catch {}
+    // Reward 10 diamonds every 5 cumulative pops across sessions
+    const cumulativePops = baselineRef.current + sessionPopsRef.current;
+    if (cumulativePops % 5 === 0 && cumulativePops > lastMilestoneRef.current) {
+      lastMilestoneRef.current = cumulativePops;
+      try { localStorage.setItem('lastBalloonMilestone', String(cumulativePops)); } catch {}
 
       fetch('/api/quests/complete', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ questId: `balloon-${currentPops}`, shards: 10 }),
+        body: JSON.stringify({ questId: `balloon-${cumulativePops}`, shards: 10 }),
       })
         .then((r) => r.json())
         .then((data) => {
@@ -242,7 +250,7 @@ export default function BlueScene() {
             window.dispatchEvent(new Event('shardsUpdated'));
           }
         })
-        .catch(() => {});
+        .catch((err: unknown) => console.error('Failed to complete balloon quest:', err));
     }
 
     pendingPopsRef.current += 1;

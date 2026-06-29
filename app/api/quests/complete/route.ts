@@ -381,7 +381,7 @@ export async function POST(request: Request) {
           user.id,
           user.username,
           user.avatarUrl,
-          `${user.username} popped some balloons.`,
+          `${user.username} popped some balloons (+${shardsToAward} diamonds).`,
         );
       } else {
         const questName = definition?.title ?? 'a quest';
