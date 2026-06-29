@@ -339,6 +339,7 @@
 @media (max-width: 1024px) {
   .scene {
     min-height: 480px;
+    overflow-anchor: none;
   }
 
   .blueWrap {
@@ -348,7 +349,7 @@
 
   .footerCounters {
     position: absolute;
-    bottom: 80px;
+    top: 52px;
     right: 12px;
     z-index: 5;
   }
