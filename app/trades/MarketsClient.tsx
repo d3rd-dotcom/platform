@@ -9,6 +9,7 @@ import { HowToButton } from '@/components/treasury-how-to/TreasuryHowTo';
 import ProMembershipModal from '@/components/pro-membership-modal/ProMembershipModal';
 import CtaButton from '@/components/shared/CtaButton';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
+import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
 import type { CoinPrice, TreasuryBalance, CategorizedMarkets, MarketCategory, MarketRow, AppleTokenStats as ShardTokenStats } from '@/lib/market-api';
 
@@ -490,6 +491,7 @@ function MarketDebate({ marketId, marketTitle }: { marketId: string; marketTitle
 // ── Page ──
 
 export default function Markets() {
+  const { play } = useSound();
   const [prices, setPrices] = useState<CoinPrice[] | null>(null);
   const [balance, setBalance] = useState<TreasuryBalance | null>(null);
   const [kalshiMarkets, setKalshiMarkets] = useState<CategorizedMarkets | null>(null);
@@ -1588,6 +1590,7 @@ export default function Markets() {
                 value={tradeChatInput}
                 onChange={(event) => setTradeChatInput(event.target.value)}
                 onKeyDown={(event) => {
+                  play('click');
                   if (event.key === 'Enter' && !event.shiftKey) {
                     event.preventDefault();
                     void sendTradeChatMessage(tradeChatInput);

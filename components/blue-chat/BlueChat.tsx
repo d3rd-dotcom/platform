@@ -1386,6 +1386,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    play('click');
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();

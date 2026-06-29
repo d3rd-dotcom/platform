@@ -219,7 +219,7 @@ export default function BlueScene() {
 
     sessionPopsRef.current += 1;
     setSessionPops(sessionPopsRef.current);
-    play('click');
+    if (sessionPopsRef.current % 10 === 0) play('celebration');
     setCommunityTotal((t) => (t === null ? t : t + 1));
 
     // Reward 10 diamonds every 5 pops

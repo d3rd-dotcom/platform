@@ -10,6 +10,7 @@ import type { CourseData } from '@/lib/personal-course';
 import type { VipCourseRecord } from '@/lib/vip-course-db';
 import type { ComponentType } from '@/lib/vip-course-db';
 import { onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
+import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
 
 function getCourseEndDate() {
@@ -27,6 +28,7 @@ function getPersonalEndDate() {
 const COURSE_THUMB = '/academy-story.png';
 
 export default function CoursesPage() {
+  const { play } = useSound();
   const { ready, getAccessToken } = usePrivy();
   const [personalCourse, setPersonalCourse] = useState<CourseData | null>(null);
   const [studioOpen, setStudioOpen] = useState(false);
@@ -337,7 +339,7 @@ export default function CoursesPage() {
             <input
               value={aiPrompt}
               onChange={(e) => { setAiPrompt(e.target.value); setGenError(null); }}
-              onKeyDown={(e) => { if (e.key === 'Enter' && !generating) handleGenerate(); }}
+              onKeyDown={(e) => { play('click'); if (e.key === 'Enter' && !generating) handleGenerate(); }}
               placeholder="Describe your course."
               className={styles.aiInput}
               disabled={generating}

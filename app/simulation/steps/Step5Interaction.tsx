@@ -218,7 +218,7 @@ export default function Step5Interaction({ wf }: { wf: WorkflowState }) {
           value={input}
           placeholder={mode === 'report' ? 'Ask the Report Agent…' : 'Ask this agent…'}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && send()}
+          onKeyDown={(e) => { play('click'); if (e.key === 'Enter') send(); }}
           disabled={busy || (mode === 'agent' && !target)}
         />
         <Button
