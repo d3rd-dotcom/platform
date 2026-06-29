@@ -126,7 +126,6 @@ export default function CourseStudioModal({
   const [error, setError] = useState<string | null>(null);
   const [dirty, setDirty] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(true);
-  const [slugManuallyEdited, setSlugManuallyEdited] = useState(!existingCourseId);
   const [readingContent, setReadingContent] = useState('');
   const [selectedSlot, setSelectedSlot] = useState<'reading' | null>(null);
   const [deletedComponent, setDeletedComponent] = useState<{
@@ -137,6 +136,10 @@ export default function CourseStudioModal({
   const [previewMode, setPreviewMode] = useState(false);
   const [status, setStatus] = useState<VipCourseStatus>('draft');
   const [publishing, setPublishing] = useState(false);
+  const [showPublishReview, setShowPublishReview] = useState(false);
+  const [reviewTitle, setReviewTitle] = useState('');
+  const [reviewDesc, setReviewDesc] = useState('');
+  const [reviewSlug, setReviewSlug] = useState('');
   const undoTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const titleRef = useRef<HTMLInputElement>(null);
 
@@ -377,11 +380,12 @@ export default function CourseStudioModal({
         throw new Error(data.error ?? 'Failed to save course');
       }
     } else {
-      const slugVal = slug.trim() || deriveSlug(title.trim());
+      const slugVal = slug.trim() || deriveSlug(title.trim()) || `course-${Date.now()}`;
+      const titleVal = title.trim() || 'Untitled Course';
       const res = await fetch('/api/vip/courses', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...headers },
-        body: JSON.stringify({ title: title.trim(), slug: slugVal, focus: focus.trim(), coverImageUrl }),
+        body: JSON.stringify({ title: titleVal, slug: slugVal, focus: focus.trim(), coverImageUrl }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'Failed to create course');
@@ -443,9 +447,8 @@ export default function CourseStudioModal({
     setPhase('edit');
   };
 
-  const publishCourse = async () => {
-    if (!courseId) {
-      // Save first, then publish
+  const handleOpenPublishReview = async () => {
+    if (dirty) {
       setPhase('saving');
       try {
         await saveCourseData();
@@ -455,19 +458,46 @@ export default function CourseStudioModal({
         return;
       }
     }
+    setReviewTitle(title);
+    setReviewDesc(focus);
+    setReviewSlug(slug || deriveSlug(title));
+    setShowPublishReview(true);
+  };
+
+  const confirmPublish = async () => {
     setPublishing(true);
     setError(null);
     try {
       const headers = await authHeaders();
-      const res = await fetch(`/api/vip/courses/${courseId}/publish`, {
+      if (!courseId) {
+        throw new Error('Save the course first');
+      }
+      const metaRes = await fetch(`/api/vip/courses/${courseId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', ...headers },
+        body: JSON.stringify({
+          title: reviewTitle.trim(),
+          slug: reviewSlug.trim(),
+          focus: reviewDesc.trim(),
+        }),
+      });
+      if (!metaRes.ok) {
+        const data = await metaRes.json().catch(() => ({}));
+        throw new Error(data.error ?? 'Failed to save metadata');
+      }
+      const pubRes = await fetch(`/api/vip/courses/${courseId}/publish`, {
         method: 'POST',
         headers,
       });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
+      if (!pubRes.ok) {
+        const data = await pubRes.json().catch(() => ({}));
         throw new Error(data.error ?? 'Publish failed');
       }
+      setTitle(reviewTitle.trim());
+      setFocus(reviewDesc.trim());
+      setSlug(reviewSlug.trim());
       setStatus('published');
+      setShowPublishReview(false);
     } catch (err: any) {
       setError(err.message ?? 'Publish failed');
     } finally {
@@ -480,7 +510,7 @@ export default function CourseStudioModal({
       setPreviewMode(false);
       return;
     }
-    if (dirty && title.trim()) {
+    if (dirty) {
       setPhase('saving');
       try {
         await saveCourseData();
@@ -535,27 +565,12 @@ export default function CourseStudioModal({
                   value={title}
                   onChange={(e) => {
                     setTitle(e.target.value);
-                    if (!slugManuallyEdited) {
-                      setSlug(deriveSlug(e.target.value));
-                    }
                     setDirty(true);
                   }}
                   onKeyDown={() => play('click')}
                   placeholder="Course title"
                   className={styles.titleInput}
                   data-tour="builder-title"
-                />
-                <span className={styles.slugPrefix}>/</span>
-                <input
-                  value={slug}
-                  onChange={(e) => {
-                    setSlug(e.target.value);
-                    setSlugManuallyEdited(true);
-                    setDirty(true);
-                  }}
-                  onKeyDown={() => play('click')}
-                  placeholder="url-slug"
-                  className={styles.slugInput}
                 />
               </div>
             </div>
@@ -564,19 +579,7 @@ export default function CourseStudioModal({
               <span className={styles.dirtyDot} data-visible={dirty ? '' : undefined} />
               <button
                 type="button"
-                onClick={async () => {
-                  if (dirty && title.trim()) {
-                    setPhase('saving');
-                    try {
-                      await saveCourseData();
-                    } catch (err: any) {
-                      setError(err.message ?? 'Save failed');
-                      setPhase('edit');
-                      return;
-                    }
-                  }
-                  setPreviewMode(true);
-                }}
+                onClick={() => setPreviewMode((p) => !p)}
                 className={styles.previewBtn}
                 title={previewMode ? 'Back to editing' : 'Preview course'}
               >
@@ -591,11 +594,11 @@ export default function CourseStudioModal({
                   {status !== 'published' && (
                     <button
                       type="button"
-                      onClick={publishCourse}
+                      onClick={handleOpenPublishReview}
                       disabled={publishing}
                       className={styles.publishBtn}
                     >
-                      {publishing ? 'Publishing...' : 'Publish'}
+                      Review & Publish
                     </button>
                   )}
                 </div>
@@ -603,9 +606,8 @@ export default function CourseStudioModal({
               <button
                 type="button"
                 onClick={saveCourse}
-                disabled={phase === 'saving' || !title.trim()}
+                disabled={phase === 'saving'}
                 className={styles.saveBtn}
-                title={!title.trim() ? 'Enter a course title first' : ''}
               >
                 {phase === 'saving' ? 'Saving...' : courseId ? 'Save' : 'Create course'}
               </button>
@@ -715,6 +717,78 @@ export default function CourseStudioModal({
             )}
           </AnimatePresence>
         </DragOverlay>
+
+        {showPublishReview && (
+          <div className={styles.publishOverlay} onClick={() => setShowPublishReview(false)}>
+            <div className={styles.publishDialog} onClick={(e) => e.stopPropagation()}>
+              <div className={styles.publishCardPreview}>
+                <div className={styles.previewCard}>
+                  <div className={styles.previewCardThumb}>
+                    <div className={styles.previewCardBadge}>
+                      <span className={styles.previewBadgeValue}>{weeks.length} session{weeks.length !== 1 ? 's' : ''}</span>
+                    </div>
+                  </div>
+                  <div className={styles.previewCardBody}>
+                    <h3 className={styles.previewCardTitle}>{reviewTitle || 'Course Title'}</h3>
+                    <p className={styles.previewCardDesc}>{reviewDesc || 'No description yet'}</p>
+                  </div>
+                </div>
+              </div>
+              <div className={styles.publishForm}>
+                <h2 className={styles.publishFormTitle}>Pre-publish Review</h2>
+                <p className={styles.publishFormSub}>Set the title, description, and URL slug before publishing.</p>
+                <label className={styles.publishField}>
+                  <span className={styles.publishFieldLabel}>Title</span>
+                  <input
+                    value={reviewTitle}
+                    onChange={(e) => setReviewTitle(e.target.value)}
+                    placeholder="Course title"
+                    className={styles.publishFieldInput}
+                  />
+                </label>
+                <label className={styles.publishField}>
+                  <span className={styles.publishFieldLabel}>Description</span>
+                  <textarea
+                    value={reviewDesc}
+                    onChange={(e) => setReviewDesc(e.target.value)}
+                    placeholder="Short description for the course card"
+                    rows={3}
+                    className={styles.publishFieldTextarea}
+                  />
+                </label>
+                <label className={styles.publishField}>
+                  <span className={styles.publishFieldLabel}>URL Slug</span>
+                  <div className={styles.publishSlugRow}>
+                    <span className={styles.publishSlugPrefix}>/</span>
+                    <input
+                      value={reviewSlug}
+                      onChange={(e) => setReviewSlug(e.target.value)}
+                      placeholder="url-slug"
+                      className={styles.publishFieldInput}
+                    />
+                  </div>
+                </label>
+                <div className={styles.publishActions}>
+                  <button
+                    type="button"
+                    onClick={() => setShowPublishReview(false)}
+                    className={styles.publishCancelBtn}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={confirmPublish}
+                    disabled={publishing || !reviewTitle.trim() || !reviewSlug.trim()}
+                    className={styles.publishConfirmBtn}
+                  >
+                    {publishing ? 'Publishing...' : 'Confirm & Publish'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </DndContext>
 
       <CourseBuilderTour />
