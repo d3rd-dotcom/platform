@@ -9,7 +9,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useAccount } from 'wagmi';
 import { usePrivy } from '@privy-io/react-auth';
 import type { IconProps } from '@phosphor-icons/react';
-import { PhPhone } from '@phosphor-icons/react';
+import { Phone } from '@phosphor-icons/react';
 import styles from './SideNavigation.module.css';
 import { useSound } from '@/hooks/useSound';
 import { useInitialSidebarCollapsed } from './SidebarStateProvider';
@@ -757,7 +757,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                   title="Call Blue"
                   aria-label="Call Blue"
                 >
-                  <PhPhone
+                  <Phone
                     size={20}
                     weight="fill"
                     className={styles.askBlueCardIcon}
@@ -771,7 +771,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                   onClick={() => { play('click'); setIsCallingBlue(true); }}
                   onMouseEnter={() => play('hover')}
                 >
-                  <PhPhone
+                  <Phone
                     size={16}
                     weight="fill"
                     className={styles.askBlueCardIcon}

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { PhPhone } from '@phosphor-icons/react';
+import { Phone } from '@phosphor-icons/react';
 import styles from './BlueCallingOverlay.module.css';
 
 interface BlueCallingOverlayProps {
@@ -26,7 +26,7 @@ export default function BlueCallingOverlay({ onAccept, onDecline }: BlueCallingO
     <div className={styles.backdrop} onClick={onDecline}>
       <div className={styles.card} onClick={(e) => e.stopPropagation()}>
         <div className={styles.avatarCircle}>
-          <PhPhone size={40} weight="fill" />
+          <Phone size={40} weight="fill" />
         </div>
 
         <div className={styles.nameRow}>
@@ -41,7 +41,7 @@ export default function BlueCallingOverlay({ onAccept, onDecline }: BlueCallingO
             </svg>
           </button>
           <button className={styles.acceptBtn} onClick={onAccept} type="button">
-            <PhPhone size={28} weight="fill" />
+            <Phone size={28} weight="fill" />
           </button>
         </div>
       </div>
