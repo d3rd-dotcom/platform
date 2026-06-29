@@ -2,16 +2,14 @@
 
 import { useDraggable } from '@dnd-kit/core';
 import {
-  TextT,
-  CheckSquare,
-  Image,
-  Video,
-  UploadSimple,
-  Keyboard,
-  Star,
   NotePencil,
-  Question,
-  Lock,
+  ListNumbers,
+  Heart,
+  Users,
+  Clipboard,
+  Sliders,
+  Sparkle,
+  Video,
 } from '@phosphor-icons/react';
 import type { ComponentType } from '@/lib/vip-course-db';
 import styles from './ComponentPalette.module.css';
@@ -21,29 +19,28 @@ interface PaletteItemDef {
   label: string;
   icon: React.ReactNode;
   description: string;
+  config?: Record<string, unknown>;
 }
 
 interface ComponentPaletteProps {
-  onAddComponent?: (type: ComponentType) => void;
+  onAddComponent?: (type: ComponentType, config?: Record<string, unknown>) => void;
 }
 
-const PALETTE_ITEMS: PaletteItemDef[] = [
-  { type: 'rich_text', label: 'Rich Text', icon: <TextT size={18} weight="bold" />, description: 'Markdown or HTML content' },
-  { type: 'multiple_choice', label: 'Multiple Choice', icon: <CheckSquare size={18} weight="bold" />, description: 'Multi-select question' },
-  { type: 'image_embed', label: 'Image', icon: <Image size={18} weight="bold" />, description: 'Embed an image' },
-  { type: 'video_embed', label: 'Video', icon: <Video size={18} weight="bold" />, description: 'YouTube or Vimeo embed' },
-  { type: 'file_upload', label: 'File Upload', icon: <UploadSimple size={18} weight="bold" />, description: 'File upload field' },
-  { type: 'text_input', label: 'Text Input', icon: <Keyboard size={18} weight="bold" />, description: 'Free-text input' },
-  { type: 'rating_scale', label: 'Rating', icon: <Star size={18} weight="bold" />, description: 'Rating scale' },
-  { type: 'reflection_journal', label: 'Journal', icon: <NotePencil size={18} weight="bold" />, description: 'Journal prompt' },
-  { type: 'quiz_block', label: 'Quiz', icon: <Question size={18} weight="bold" />, description: 'Timed quiz' },
-  { type: 'password_gate', label: 'Password Gate', icon: <Lock size={18} weight="bold" />, description: 'Password-protected reveal' },
+const MISSION_ITEMS: PaletteItemDef[] = [
+  { type: 'reflection_journal', label: 'Free Write', icon: <NotePencil size={18} weight="bold" />, description: 'Open-ended journal', config: { legacyType: 'text' } },
+  { type: 'text_input', label: 'Numbered List', icon: <ListNumbers size={18} weight="bold" />, description: 'Numbered prompt list', config: { legacyType: 'numbered-list', listCount: 5, labels: ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5'] } },
+  { type: 'text_input', label: 'Lives', icon: <Users size={18} weight="bold" />, description: 'Five imaginary lives', config: { legacyType: 'lives', listLabels: ['Life 1', 'Life 2', 'Life 3', 'Life 4', 'Life 5'] } },
+  { type: 'multiple_choice', label: 'Checklist', icon: <Clipboard size={18} weight="bold" />, description: 'Checklist of items', config: { legacyType: 'checklist', checkItems: [] } },
+  { type: 'text_input', label: 'Enjoy List', icon: <Heart size={18} weight="bold" />, description: '20 things you enjoy', config: { legacyType: 'enjoy-list', count: 20 } },
+  { type: 'text_input', label: 'Affirmations', icon: <Sparkle size={18} weight="bold" />, description: 'Daily affirmations', config: { legacyType: 'affirmations', count: 3 } },
+  { type: 'rating_scale', label: 'Life Pie', icon: <Sliders size={18} weight="bold" />, description: '6 life domain sliders', config: { legacyType: 'life-pie', min: 0, max: 10, labels: ['Values', 'Exercise', 'Play', 'Work', 'Friends', 'Romance'] } },
+  { type: 'video_embed', label: 'Video', icon: <Video size={18} weight="bold" />, description: 'Video link with description', config: { url: '', description: '', question: '', answer: '' } },
 ];
 
-function PaletteItem({ type, label, icon, description, onAdd }: PaletteItemDef & { onAdd?: (type: ComponentType) => void }) {
+function PaletteItem({ type, label, icon, description, config, onAdd }: PaletteItemDef & { onAdd?: (type: ComponentType, config?: Record<string, unknown>) => void }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
-    id: `palette-${type}`,
-    data: { type, source: 'palette' },
+    id: `palette-${type}${config?.legacyType ? '-' + config.legacyType : ''}`,
+    data: { type, source: 'palette', config, paletteLabel: label },
   });
 
   return (
@@ -52,12 +49,11 @@ function PaletteItem({ type, label, icon, description, onAdd }: PaletteItemDef &
       {...listeners}
       {...attributes}
       className={`${styles.item} ${isDragging ? styles.itemDragging : ''}`}
-      onClick={() => onAdd?.(type)}
+      onClick={() => onAdd?.(type, config)}
     >
       <span className={styles.itemIcon}>{icon}</span>
       <div className={styles.itemInfo}>
         <span className={styles.itemLabel}>{label}</span>
-        <span className={styles.itemDescription}>{description}</span>
       </div>
     </div>
   );
@@ -66,14 +62,9 @@ function PaletteItem({ type, label, icon, description, onAdd }: PaletteItemDef &
 export default function ComponentPalette({ onAddComponent }: ComponentPaletteProps) {
   return (
     <div className={styles.section}>
-      <div className={styles.header}>
-        <span className={styles.headerTitle}>Components</span>
-        <span className={styles.headerCount}>{PALETTE_ITEMS.length}</span>
-      </div>
-
       <div className={styles.grid}>
-        {PALETTE_ITEMS.map((item) => (
-          <PaletteItem key={item.type} {...item} onAdd={onAddComponent} />
+        {MISSION_ITEMS.map((item) => (
+          <PaletteItem key={item.config?.legacyType as string} {...item} onAdd={onAddComponent} />
         ))}
       </div>
     </div>

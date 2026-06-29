@@ -1,634 +1,517 @@
-/* ── Empty state ── */
-.empty {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  padding: 32px 32px;
-  text-align: center;
-}
-
-.emptyIcon {
-  color: var(--color-primary);
-  opacity: 0.5;
-}
-
-.emptyText {
-  color: var(--color-text-faint);
-  font-size: 0.8125rem;
-  font-family: var(--font-mono);
-  letter-spacing: 0.02em;
-  line-height: 1.6;
-  margin: 0;
-  max-width: 220px;
-}
-
-/* ── Component panel ── */
 .panel {
   display: flex;
   flex-direction: column;
   height: 100%;
-}
-
-.panelHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--color-border-subtle);
-  flex-shrink: 0;
-  margin-bottom: 8px;
-}
-
-.panelHeaderLeft {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.panelTypeIcon {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  background: var(--color-surface-2);
-  color: var(--color-primary);
-  border: 1px solid var(--color-border-subtle);
-  flex-shrink: 0;
-}
-
-.panelHeaderMeta {
-  display: flex;
-  flex-direction: column;
-}
-
-.panelType {
-  font-size: 0.6875rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-text-muted);
-  font-family: var(--font-mono);
-}
-
-.panelClose {
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;
-  border: none;
-  background: transparent;
-  color: var(--color-text-faint);
-  cursor: pointer;
-  transition: background 0.12s ease, color 0.12s ease;
-}
-
-.panelClose:hover {
-  background: var(--color-surface-2);
-  color: var(--color-text-dark);
-}
-
-.panelBody {
-  flex: 1;
+  gap: 12px;
   overflow-y: auto;
-  padding-top: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
 }
 
-/* ── Field group ── */
-.fieldGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+/* ── Brand media slot ── */
+
+.brandSlot {
+  flex-shrink: 0;
 }
 
-.fieldGroupHeader {
+.fileInput {
+  display: none;
+}
+
+.brandEmpty {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+  border: 2px dashed var(--color-border-subtle);
+  background: var(--color-surface-subtle);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  color: var(--color-text-muted);
 }
 
-.label {
-  font-size: 0.6875rem;
+.brandEmpty:hover {
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 4%, transparent);
+  color: var(--color-primary);
+}
+
+.brandEmptyLabel {
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-text-muted);
+  letter-spacing: 0.04em;
   font-family: var(--font-mono);
 }
 
-.autoFillBtn {
+.brandEmptyHint {
+  font-size: 0.625rem;
+  opacity: 0.6;
+}
+
+.brandPreview {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--color-border-subtle);
+}
+
+.brandImage,
+.brandVideo {
+  width: 100%;
+  display: block;
+}
+
+.brandChange {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  padding: 4px 10px;
   font-size: 0.625rem;
   font-weight: 600;
   font-family: var(--font-mono);
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  padding: 2px 8px;
-  border-radius: 4px;
-  border: 1px solid var(--color-border-subtle);
-  background: transparent;
-  color: var(--color-text-muted);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
   cursor: pointer;
-  transition: all 0.12s ease;
+  backdrop-filter: blur(4px);
+  transition: background 0.12s ease;
 }
 
-.autoFillBtn:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+.brandChange:hover {
+  background: rgba(0, 0, 0, 0.75);
 }
 
-:global([data-theme="dark"]) .autoFillBtn {
-  border-color: rgba(255, 255, 255, 0.1);
-  color: #9aa0c0;
-}
+/* ── Reading card (mirrors /course page) ── */
 
-:global([data-theme="dark"]) .autoFillBtn:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  background: rgba(81, 104, 255, 0.08);
-}
-
-.input {
+.readingCard {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   width: 100%;
-  padding: 10px 12px;
-  font-size: 0.875rem;
-  border-radius: 8px;
-  border: 1px solid var(--color-border-subtle);
-  background: var(--color-surface-base);
-  color: var(--color-text-dark);
-  outline: none;
-  transition: border-color 0.12s ease, box-shadow 0.12s ease;
-  font-family: var(--font-primary);
-  line-height: 1.5;
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  min-height: 92px;
+  padding: 14px 16px;
+  background: color-mix(in srgb, var(--color-primary) 7%, #ffffff);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, rgba(26, 29, 51, 0.06));
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
 }
 
-.input:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 15%, transparent);
+.readingCard:hover {
+  background: color-mix(in srgb, var(--color-primary) 11%, #ffffff);
+  border-color: color-mix(in srgb, var(--color-primary) 38%, rgba(26, 29, 51, 0.06));
+  box-shadow: 0 4px 16px color-mix(in oklch, var(--color-primary) 14%, transparent);
+  transform: translateY(-1px);
 }
 
-.titleInput {
-  font-size: 1.125rem;
-  font-weight: 700;
-  font-family: var(--font-secondary);
-  letter-spacing: -0.01em;
+.readingAccent {
+  width: 3px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  flex-shrink: 0;
+  opacity: 0.85;
 }
 
-.textarea {
-  width: 100%;
-  padding: 10px 12px;
-  font-size: 0.875rem;
-  border-radius: 8px;
-  border: 1px solid var(--color-border-subtle);
-  background: var(--color-surface-base);
-  color: var(--color-text-dark);
-  outline: none;
-  transition: border-color 0.12s ease, box-shadow 0.12s ease;
-  resize: vertical;
-  min-height: 80px;
-  font-family: var(--font-primary);
-  line-height: 1.6;
-}
-
-.textarea:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 15%, transparent);
-}
-
-.textareaMono {
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-}
-
-.select {
-  width: 100%;
-  padding: 10px 12px;
-  font-size: 0.875rem;
-  border-radius: 8px;
-  border: 1px solid var(--color-border-subtle);
-  background: var(--color-surface-base);
-  color: var(--color-text-dark);
-  outline: none;
-  transition: border-color 0.12s ease, box-shadow 0.12s ease;
-}
-
-.select:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 15%, transparent);
-}
-
-/* ── Checkbox ── */
-.checkboxRow {
+.readingThumb {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-primary) 14%, #eef0ff);
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  box-shadow:
+    0 0 0 1px rgba(26, 29, 51, 0.08),
+    0 2px 6px rgba(26, 29, 51, 0.08);
 }
 
-.checkbox {
-  border-radius: 4px;
-  accent-color: var(--color-primary);
-  width: 16px;
-  height: 16px;
+.readingThumbIcon {
+  color: var(--color-primary);
+  opacity: 0.6;
 }
 
-.checkboxLabel {
-  font-size: 0.8125rem;
-  color: var(--color-text-dark);
-  cursor: pointer;
+.readingInfo {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+  text-align: left;
 }
 
-/* ── Config section ── */
-.configSection {
+.readingCategory {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(26, 29, 51, 0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.readingTitle {
+  font-family: var(--font-secondary);
+  font-size: 16px;
+  font-weight: 700;
+  color: #1A1D33;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+}
+
+.readingArrow {
+  position: relative;
+  z-index: 1;
+  color: rgba(26, 29, 51, 0.25);
+  flex-shrink: 0;
+}
+
+/* ── Missions heading (mirrors /course page) ── */
+
+.missionsHeadingRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 4px 0;
+}
+
+.missionsDivider {
+  flex: 1;
+  height: 1px;
+  background: rgba(26, 29, 51, 0.1);
+}
+
+.missionsHeading {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  color: #1A1D33;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  margin: 0;
+}
+
+/* ── Missions droppable zone ── */
+
+.missionsZone {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  border-radius: 10px;
+  transition: background 0.12s ease;
+  min-height: 80px;
 }
 
-.configHeader {
+.missionsZoneOver {
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  outline: 2px dashed var(--color-primary);
+  outline-offset: -2px;
+  border-radius: 14px;
+}
+
+/* ── Task card (mirrors WeekTasksView) ── */
+
+.taskCard {
+  --task-accent: var(--color-primary);
+  width: 100%;
+  background: color-mix(in srgb, var(--task-accent) 7%, #ffffff);
+  border: 1px solid color-mix(in srgb, var(--task-accent) 22%, rgba(26, 29, 51, 0.06));
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.taskCard:hover {
+  background: color-mix(in srgb, var(--task-accent) 11%, #ffffff);
+  border-color: color-mix(in srgb, var(--task-accent) 38%, rgba(26, 29, 51, 0.06));
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--task-accent) 20%, transparent);
+}
+
+.taskCardSelected {
+  background: color-mix(in srgb, var(--task-accent) 14%, #ffffff) !important;
+  border-color: var(--task-accent) !important;
+  box-shadow: 0 0 0 1px var(--task-accent), 0 4px 16px color-mix(in srgb, var(--task-accent) 24%, transparent) !important;
+}
+
+.taskCardHeader {
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.configHeading {
-  font-size: 0.6875rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-text-muted);
-  margin: 0;
-  font-family: var(--font-mono);
-}
-
-.presets {
-  display: flex;
-  gap: 4px;
-}
-
-.presetBtn {
-  font-size: 0.625rem;
-  font-weight: 600;
-  font-family: var(--font-mono);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 3px 8px;
-  border-radius: 4px;
-  border: 1px solid var(--color-border-subtle);
-  background: transparent;
-  color: var(--color-text-muted);
+  gap: 12px;
+  padding: 14px 16px;
+  background: none;
+  border: none;
   cursor: pointer;
-  transition: all 0.12s ease;
+  text-align: left;
+  font-family: inherit;
+  transition: background 0.15s ease;
+}
+
+.taskAccent {
+  width: 3px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--task-accent);
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.taskArtwork {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--task-accent) 68%, #0f172a 32%) 0%,
+      var(--task-accent) 48%,
+      color-mix(in srgb, var(--task-accent) 42%, #ffffff 58%) 100%);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--task-accent) 28%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 4px 10px color-mix(in srgb, var(--task-accent) 22%, transparent);
+  transition: box-shadow 0.25s cubic-bezier(0.25, 1, 0.5, 1), transform 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.taskCard:hover .taskArtwork {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--task-accent) 42%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34),
+    0 6px 14px color-mix(in srgb, var(--task-accent) 32%, transparent);
+  transform: translateY(-1px) scale(1.02);
+}
+
+/* Artwork variants */
+.taskArtworkAurora {
+  background-image:
+    radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.42), transparent 28%),
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--task-accent) 68%, #0f172a 32%) 0%,
+      var(--task-accent) 48%,
+      color-mix(in srgb, var(--task-accent) 42%, #ffffff 58%) 100%);
+}
+
+.taskArtworkSunrise {
+  background-image:
+    radial-gradient(circle at 75% 24%, rgba(255, 255, 255, 0.52), transparent 22%),
+    linear-gradient(140deg,
+      color-mix(in srgb, var(--task-accent) 70%, #0f172a 30%) 0%,
+      var(--task-accent) 50%,
+      color-mix(in srgb, var(--task-accent) 38%, #ffffff 62%) 100%);
+}
+
+.taskArtworkOrbit {
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.22), transparent 28%),
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--task-accent) 60%, #0f172a 40%) 0%,
+      var(--task-accent) 52%,
+      color-mix(in srgb, var(--task-accent) 46%, #ffffff 54%) 100%);
+}
+
+.taskArtworkBloom {
+  background-image:
+    radial-gradient(circle at 24% 22%, rgba(255, 255, 255, 0.46), transparent 26%),
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--task-accent) 72%, #1a1336 28%) 0%,
+      var(--task-accent) 50%,
+      color-mix(in srgb, var(--task-accent) 35%, #ffffff 65%) 100%);
+}
+
+.taskArtworkRibbon {
+  background-image:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.18), transparent 48%),
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--task-accent) 65%, #0f172a 35%) 0%,
+      var(--task-accent) 50%,
+      color-mix(in srgb, var(--task-accent) 40%, #ffffff 60%) 100%);
+}
+
+.taskArtworkPrism {
+  background-image:
+    radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.38), transparent 32%),
+    linear-gradient(150deg,
+      color-mix(in srgb, var(--task-accent) 72%, #0f0a1e 28%) 0%,
+      var(--task-accent) 48%,
+      color-mix(in srgb, var(--task-accent) 36%, #f0f0ff 64%) 100%);
+}
+
+.taskTitle {
+  flex: 1;
+  font-family: var(--font-secondary);
+  font-size: 14px;
+  font-weight: 700;
+  color: #1A1D33;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.presetBtn:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+.taskArrow {
+  color: rgba(26, 29, 51, 0.2);
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
 }
 
-:global([data-theme="dark"]) .presetBtn {
-  border-color: rgba(255, 255, 255, 0.1);
-  color: #9aa0c0;
+.taskCard:hover .taskArrow {
+  transform: translateX(2px);
+  color: rgba(26, 29, 51, 0.35);
 }
 
-:global([data-theme="dark"]) .presetBtn:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  background: rgba(81, 104, 255, 0.08);
-}
+/* ── Add mission button ── */
 
-.jsonError {
-  font-size: 0.6875rem;
-  color: #ef4444;
-  margin: 0;
-}
-
-.fields {
+.addBtn {
   display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.formField {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.formFieldLabel {
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
-  font-weight: 500;
-}
-
-/* ── Delete button ── */
-.deleteSection {
-  margin-top: auto;
-  padding-top: 20px;
-  border-top: 1px solid var(--color-border-subtle);
-}
-
-/* ── Error states ── */
-.fieldError {
-  margin: 2px 0 0;
-  font-size: 0.6875rem;
-  color: #ef4444;
-  line-height: 1.3;
-}
-
-.inputError {
-  border-color: rgba(239, 68, 68, 0.5) !important;
-}
-
-:global([data-theme="dark"]) .inputError {
-  border-color: rgba(239, 68, 68, 0.5) !important;
-}
-
-.deleteBtn {
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   width: 100%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 10px 12px;
-  font-size: 0.75rem;
+  padding: 10px;
   border-radius: 8px;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  border: 2px dashed rgba(26, 29, 51, 0.12);
   background: transparent;
-  color: #ef4444;
-  cursor: pointer;
+  color: rgba(26, 29, 51, 0.35);
+  font-size: 0.75rem;
   font-weight: 600;
-  transition: all 0.12s ease;
-  font-family: var(--font-mono);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.deleteBtn:hover {
-  background: rgba(239, 68, 68, 0.08);
-  border-color: #ef4444;
-}
-
-/* ── Multiple choice option editor ── */
-.optionsEditor {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.optionsEmpty {
-  font-size: 0.75rem;
-  color: var(--color-text-faint);
-  margin: 0;
-  font-style: italic;
-}
-
-.optionsHint {
-  font-size: 0.6875rem;
-  color: var(--color-text-muted);
-  margin: 2px 0 0;
-  font-style: italic;
-}
-
-.optionRow {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 6px 8px;
-  border-radius: 6px;
-  border: 1px solid transparent;
-  background: var(--color-surface-base);
-  transition: all 0.12s ease;
-}
-
-.optionRowCorrect {
-  background: color-mix(in srgb, #22c55e 8%, transparent);
-  border-color: color-mix(in srgb, #22c55e 25%, transparent);
-}
-
-.optionLabel {
-  width: 18px;
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  font-weight: 700;
-  color: var(--color-text-faint);
-  text-align: center;
-  flex-shrink: 0;
-  line-height: 1;
-}
-
-.optionRowCorrect .optionLabel {
-  color: #22c55e;
-}
-
-.optionInput {
-  flex: 1;
-  padding: 8px 10px;
-  font-size: 0.8125rem;
-  border-radius: 6px;
-  border: 1px solid var(--color-border-subtle);
-  background: var(--color-surface-base);
-  color: var(--color-text-dark);
-  outline: none;
-  transition: border-color 0.12s ease;
-  font-family: var(--font-primary);
-}
-
-.optionInput:focus {
-  border-color: var(--color-primary);
-}
-
-.optionMarkBtn {
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;
-  border: none;
-  background: transparent;
+  font-family: inherit;
   cursor: pointer;
   transition: all 0.12s ease;
-  flex-shrink: 0;
 }
 
-.optionMarkBtn:hover {
-  background: color-mix(in srgb, #22c55e 10%, transparent);
-}
-
-.optionMarkIcon {
-  color: var(--color-text-faint);
-}
-
-.optionMarkBtn:hover .optionMarkIcon {
-  color: #22c55e;
-}
-
-.optionMarkIconActive {
-  color: #22c55e;
-}
-
-.optionRemove {
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--color-text-faint);
-  cursor: pointer;
-  transition: all 0.12s ease;
-  flex-shrink: 0;
-}
-
-.optionRemove:hover {
-  background: rgba(239, 68, 68, 0.08);
-  color: #ef4444;
-  border-color: rgba(239, 68, 68, 0.2);
-}
-
-.optionAdd {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 6px 10px;
-  font-size: 0.75rem;
-  border-radius: 6px;
-  border: 1px dashed var(--color-border-subtle);
-  background: transparent;
-  color: var(--color-text-muted);
-  cursor: pointer;
-  transition: all 0.12s ease;
-  font-family: var(--font-mono);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.optionAdd:hover {
+.addBtn:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
   background: color-mix(in srgb, var(--color-primary) 6%, transparent);
 }
 
-/* ── Dark mode overrides for option editor ── */
-:global([data-theme="dark"]) .optionRow {
-  background: rgba(255, 255, 255, 0.03);
+/* ── Empty state ── */
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px 16px;
+  border-radius: 14px;
+  border: 2px dashed rgba(26, 29, 51, 0.1);
+  background: rgba(26, 29, 51, 0.02);
 }
 
-:global([data-theme="dark"]) .emptyIcon {
-  opacity: 0.4;
-}
-
-:global([data-theme="dark"]) .optionRowCorrect {
-  background: color-mix(in srgb, #22c55e 12%, #1E1F2C);
-  border-color: color-mix(in srgb, #22c55e 30%, transparent);
-}
-
-:global([data-theme="dark"]) .optionRowCorrect .optionLabel {
-  color: #4ade80;
-}
-
-:global([data-theme="dark"]) .optionInput {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.08);
-  color: #f0f1fa;
-}
-
-:global([data-theme="dark"]) .optionInput:focus {
-  border-color: var(--color-primary);
-}
-
-:global([data-theme="dark"]) .optionMarkIcon {
-  color: #6b7089;
-}
-
-:global([data-theme="dark"]) .optionMarkBtn:hover .optionMarkIcon {
-  color: #4ade80;
-}
-
-:global([data-theme="dark"]) .optionMarkIconActive {
-  color: #4ade80;
-}
-
-:global([data-theme="dark"]) .optionRemove {
-  color: #6b7089;
-}
-
-:global([data-theme="dark"]) .optionRemove:hover {
-  background: rgba(239, 68, 68, 0.15);
-  color: #ef4444;
-  border-color: rgba(239, 68, 68, 0.25);
-}
-
-:global([data-theme="dark"]) .optionAdd {
-  border-color: rgba(255, 255, 255, 0.12);
-  color: #9aa0c0;
-}
-
-:global([data-theme="dark"]) .optionAdd:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  background: rgba(81, 104, 255, 0.08);
-}
-
-:global([data-theme="dark"]) .optionsEmpty,
-:global([data-theme="dark"]) .optionsHint {
-  color: #6b7089;
+.emptyText {
+  font-size: 0.6875rem;
+  color: rgba(26, 29, 51, 0.3);
+  text-align: center;
 }
 
 /* ── Dark mode ── */
-:global([data-theme="dark"]) .input,
-:global([data-theme="dark"]) .textarea,
-:global([data-theme="dark"]) .select {
-  background: #1e1f2c;
-  border-color: rgba(255, 255, 255, 0.08);
+
+:global([data-theme="dark"]) .readingCard {
+  background: color-mix(in srgb, var(--color-primary) 12%, #181926);
+  border-color: color-mix(in srgb, var(--color-primary) 30%, rgba(255, 255, 255, 0.06));
+}
+
+:global([data-theme="dark"]) .readingCard:hover {
+  background: color-mix(in srgb, var(--color-primary) 18%, #181926);
+  border-color: color-mix(in srgb, var(--color-primary) 45%, rgba(255, 255, 255, 0.08));
+}
+
+:global([data-theme="dark"]) .readingCategory {
+  color: rgba(240, 241, 250, 0.5);
+}
+
+:global([data-theme="dark"]) .readingTitle {
   color: #f0f1fa;
 }
 
-:global([data-theme="dark"]) .input:focus,
-:global([data-theme="dark"]) .textarea:focus,
-:global([data-theme="dark"]) .select:focus {
+:global([data-theme="dark"]) .readingArrow {
+  color: rgba(240, 241, 250, 0.2);
+}
+
+:global([data-theme="dark"]) .readingThumb {
+  background: color-mix(in srgb, var(--color-primary) 18%, #1e2030);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+:global([data-theme="dark"]) .missionsDivider {
+  background: rgba(240, 241, 250, 0.08);
+}
+
+:global([data-theme="dark"]) .missionsHeading {
+  color: #f0f1fa;
+}
+
+:global([data-theme="dark"]) .taskCard {
+  background: color-mix(in srgb, var(--task-accent) 12%, #181926);
+  border-color: color-mix(in srgb, var(--task-accent) 30%, rgba(255, 255, 255, 0.06));
+}
+
+:global([data-theme="dark"]) .taskCard:hover {
+  background: color-mix(in srgb, var(--task-accent) 18%, #181926);
+  border-color: color-mix(in srgb, var(--task-accent) 45%, rgba(255, 255, 255, 0.08));
+}
+
+:global([data-theme="dark"]) .taskCardSelected {
+  background: color-mix(in srgb, var(--task-accent) 22%, #181926) !important;
+  border-color: var(--task-accent) !important;
+}
+
+:global([data-theme="dark"]) .taskTitle {
+  color: #f0f1fa;
+}
+
+:global([data-theme="dark"]) .taskArrow {
+  color: rgba(240, 241, 250, 0.2);
+}
+
+:global([data-theme="dark"]) .taskCard:hover .taskArrow {
+  color: rgba(240, 241, 250, 0.35);
+}
+
+:global([data-theme="dark"]) .addBtn {
+  border-color: rgba(240, 241, 250, 0.1);
+  color: rgba(240, 241, 250, 0.3);
+}
+
+:global([data-theme="dark"]) .addBtn:hover {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 18%, transparent);
+  color: var(--color-primary);
 }
 
-:global([data-theme="dark"]) .panelType {
-  color: #9aa0c0;
+:global([data-theme="dark"]) .empty {
+  border-color: rgba(240, 241, 250, 0.08);
+  background: rgba(240, 241, 250, 0.02);
 }
 
-:global([data-theme="dark"]) .panelTypeIcon {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.08);
-  color: #8f9bff;
-}
-
-:global([data-theme="dark"]) .checkboxLabel {
-  color: #f0f1fa;
-}
-
-:global([data-theme="dark"]) .panelClose:hover {
-  background: rgba(255, 255, 255, 0.04);
-  color: #f0f1fa;
-}
-
-:global([data-theme="dark"]) .deleteBtn {
-  border-color: rgba(239, 68, 68, 0.25);
-}
-
-:global([data-theme="dark"]) .deleteBtn:hover {
-  background: rgba(239, 68, 68, 0.12);
+:global([data-theme="dark"]) .emptyText {
+  color: rgba(240, 241, 250, 0.25);
 }

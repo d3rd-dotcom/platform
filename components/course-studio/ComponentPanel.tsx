@@ -1,607 +1,164 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { useSound } from '@/hooks/useSound';
-import {
-  TextT,
-  CheckSquare,
-  Image,
-  Video,
-  UploadSimple,
-  Keyboard,
-  Star,
-  NotePencil,
-  Question,
-  Lock,
-  Television,
-  Trash,
-  X,
-  Plus,
-  Minus,
-  CheckCircle,
-} from '@phosphor-icons/react';
-import type { CourseComponentRecord, ComponentType } from '@/lib/vip-course-db';
+import { useState, useRef } from 'react';
+import { useDroppable } from '@dnd-kit/core';
+import type { CourseComponentRecord } from '@/lib/vip-course-db';
 import styles from './ComponentPanel.module.css';
 
-function RichTextEditor({ value, onChange }: { value: string; onChange: (val: string) => void }) {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+const TASK_ACCENTS = [
+  '#5168FF', '#7C8FFF', '#8B5CF6', '#A855F7',
+  '#38BDF8', '#22D3EE', '#2DD4BF', '#34D399',
+];
 
-  const insertHeader = (level: number) => {
-    const prefix = `${'#'.repeat(level)} `;
-    const textarea = textareaRef.current;
-    if (!textarea) {
-      onChange(value + (value ? '\n\n' : '') + prefix);
-      return;
-    }
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const before = value.slice(0, start);
-    const after = value.slice(end);
-    const newValue = before + prefix + after;
-    onChange(newValue);
-    setTimeout(() => {
-      textarea.focus();
-      const pos = start + prefix.length;
-      textarea.setSelectionRange(pos, pos);
-    });
+function getTaskArtwork(index: number): string {
+  const variants = ['aurora', 'sunrise', 'orbit', 'bloom', 'ribbon', 'prism'];
+  return variants[index % variants.length];
+}
+
+function getLegacyLabel(comp: CourseComponentRecord): string {
+  const legacyType = comp.config?.legacyType as string | undefined;
+  const labels: Record<string, string> = {
+    text: 'Free Write',
+    'numbered-list': 'Numbered List',
+    lives: 'Lives',
+    checklist: 'Checklist',
+    'enjoy-list': 'Enjoy List',
+    affirmations: 'Affirmations',
+    'life-pie': 'Life Pie',
   };
-
-  return (
-    <div className={styles.richTextWrap}>
-      <div className={styles.richToolbar}>
-        <span className={styles.richToolbarLabel}>Add header</span>
-        <button type="button" onClick={() => insertHeader(3)} className={styles.richToolbarBtn} title="Heading 3">
-          H<sub>3</sub>
-        </button>
-        <button type="button" onClick={() => insertHeader(4)} className={styles.richToolbarBtn} title="Heading 4">
-          H<sub>4</sub>
-        </button>
-        <button type="button" onClick={() => insertHeader(5)} className={styles.richToolbarBtn} title="Heading 5">
-          H<sub>5</sub>
-        </button>
-      </div>
-      <textarea
-        ref={textareaRef}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onKeyDown={() => play('click')}
-        className={`${styles.textarea} ${styles.textareaMono}`}
-        placeholder="Write your content here..."
-        rows={8}
-      />
-    </div>
-  );
+  return (legacyType && labels[legacyType]) || comp.title || 'Untitled';
 }
 
 interface ComponentPanelProps {
-  component: CourseComponentRecord | null;
-  onUpdate: (compId: string, updates: Partial<CourseComponentRecord>) => void;
-  onDelete: (compId: string) => void;
-  onClose: () => void;
+  readingContent?: string;
+  missions: CourseComponentRecord[];
+  selectedMissionId: string | null;
+  onEditReading?: () => void;
+  onSelectMission: (id: string | null) => void;
+  onDeleteMission: (id: string) => void;
+  onAddBlankMission: () => void;
 }
 
-const COMPONENT_ICONS: Record<ComponentType, React.ReactNode> = {
-  rich_text: <TextT size={18} weight="bold" />,
-  multiple_choice: <CheckSquare size={18} weight="bold" />,
-  image_embed: <Image size={18} weight="bold" />,
-  video_embed: <Video size={18} weight="bold" />,
-  file_upload: <UploadSimple size={18} weight="bold" />,
-  text_input: <Keyboard size={18} weight="bold" />,
-  rating_scale: <Star size={18} weight="bold" />,
-  reflection_journal: <NotePencil size={18} weight="bold" />,
-  quiz_block: <Question size={18} weight="bold" />,
-  password_gate: <Lock size={18} weight="bold" />,
-};
+function BrandMediaSlot() {
+  const [media, setMedia] = useState<{ type: 'image' | 'video'; url: string } | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
-const COMPONENT_LABELS: Record<ComponentType, string> = {
-  rich_text: 'Rich Text',
-  multiple_choice: 'Multiple Choice',
-  image_embed: 'Image',
-  video_embed: 'Video',
-  file_upload: 'File Upload',
-  text_input: 'Text Input',
-  rating_scale: 'Rating',
-  reflection_journal: 'Journal',
-  quiz_block: 'Quiz',
-  password_gate: 'Password Gate',
-};
-
-const CONFIG_FIELDS: Record<ComponentType, Array<{
-  key: string;
-  label: string;
-  type: 'text' | 'textarea' | 'number' | 'select';
-  options?: { value: string; label: string }[];
-  placeholder?: string;
-}>> = {
-  rich_text: [
-    { key: 'content', label: 'Content', type: 'textarea', placeholder: 'Write a paragraph, paste a video link, or embed markdown...' },
-  ],
-  multiple_choice: [
-    { key: 'question', label: 'Question', type: 'text', placeholder: 'Enter your question here' },
-    { key: 'options', label: 'Options', type: 'text' },
-    { key: 'selectMultiple', label: 'Allow selecting multiple', type: 'select', options: [{ value: 'true', label: 'Yes' }, { value: 'false', label: 'No' }] },
-    { key: 'revealAnswers', label: 'Reveal correct answers', type: 'select', options: [{ value: 'true', label: 'Yes' }, { value: 'false', label: 'No' }] },
-  ],
-  image_embed: [
-    { key: 'url', label: 'Image URL', type: 'text', placeholder: 'Paste an image URL...' },
-    { key: 'alt', label: 'Alt text', type: 'text', placeholder: 'Describe the image for accessibility' },
-    { key: 'caption', label: 'Caption', type: 'text', placeholder: 'Optional caption shown below the image' },
-    { key: 'width', label: 'Width', type: 'text', placeholder: '100%, 500px, auto' },
-    { key: 'alignment', label: 'Alignment', type: 'select', options: [{ value: 'left', label: 'Left' }, { value: 'center', label: 'Center' }, { value: 'right', label: 'Right' }] },
-  ],
-  video_embed: [
-    { key: 'url', label: 'Video URL', type: 'text', placeholder: 'Paste a YouTube or Vimeo URL...' },
-    { key: 'provider', label: 'Provider', type: 'select', options: [{ value: 'youtube', label: 'YouTube' }, { value: 'vimeo', label: 'Vimeo' }, { value: 'upload', label: 'Direct upload' }] },
-    { key: 'transcript', label: 'Transcript', type: 'textarea', placeholder: 'Paste a transcript for accessibility' },
-  ],
-  file_upload: [
-    { key: 'maxSizeMb', label: 'Max size (MB)', type: 'number', placeholder: 'Default is 10' },
-    { key: 'multiple', label: 'Allow multiple', type: 'select', options: [{ value: 'true', label: 'Yes' }, { value: 'false', label: 'No' }] },
-  ],
-  text_input: [
-    { key: 'placeholder', label: 'Placeholder', type: 'text', placeholder: 'e.g. Enter your answer here' },
-    { key: 'maxLength', label: 'Max length', type: 'number', placeholder: 'Max characters allowed' },
-    { key: 'inputType', label: 'Input type', type: 'select', options: [{ value: 'text', label: 'Text' }, { value: 'email', label: 'Email' }, { value: 'number', label: 'Number' }] },
-  ],
-  rating_scale: [
-    { key: 'min', label: 'Min', type: 'number', placeholder: '1' },
-    { key: 'max', label: 'Max', type: 'number', placeholder: '5' },
-    { key: 'step', label: 'Step', type: 'number', placeholder: '1' },
-    { key: 'minLabel', label: 'Min label', type: 'text', placeholder: 'e.g. Poor' },
-    { key: 'maxLabel', label: 'Max label', type: 'text', placeholder: 'e.g. Excellent' },
-  ],
-  reflection_journal: [
-    { key: 'prompt', label: 'Prompt', type: 'textarea', placeholder: 'Write a prompt to guide the reflection...' },
-    { key: 'minWords', label: 'Min words', type: 'number', placeholder: 'Minimum word count' },
-    { key: 'saveEnabled', label: 'Auto-save', type: 'select', options: [{ value: 'true', label: 'Enabled' }, { value: 'false', label: 'Disabled' }] },
-  ],
-  quiz_block: [
-    { key: 'timeLimitMinutes', label: 'Time limit (minutes)', type: 'number', placeholder: 'Leave empty for no limit' },
-    { key: 'passingScore', label: 'Passing score (%)', type: 'number', placeholder: 'e.g. 80' },
-  ],
-  password_gate: [
-    { key: 'password', label: 'Password', type: 'text', placeholder: 'The secret password students must enter' },
-    { key: 'hint', label: 'Hint', type: 'text', placeholder: 'A clue shown to students before they guess' },
-    { key: 'content', label: 'Revealed content', type: 'textarea', placeholder: 'Content shown after correct password — markdown supported' },
-  ],
-};
-
-function MultipleChoiceEditor({
-  value,
-  onChange,
-}: {
-  value: string;
-  onChange: (val: string) => void;
-}) {
-  const [options, setOptions] = useState<Array<{ id: string; text: string; isCorrect: boolean }>>(() => {
-    try {
-      const parsed = JSON.parse(value || '[]');
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
-    }
-  });
-
-  const sync = (opts: Array<{ id: string; text: string; isCorrect: boolean }>) => {
-    setOptions(opts);
-    onChange(JSON.stringify(opts));
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    setMedia({ type: file.type.startsWith('video/') ? 'video' : 'image', url });
   };
-
-  const addOption = () => {
-    const label = String.fromCharCode(65 + options.length);
-    sync([...options, { id: String(Date.now()), text: `Option ${label}`, isCorrect: false }]);
-  };
-
-  const updateOption = (id: string, updates: Partial<{ text: string; isCorrect: boolean }>) => {
-    sync(options.map((o) => (o.id === id ? { ...o, ...updates } : o)));
-  };
-
-  const removeOption = (id: string) => {
-    sync(options.filter((o) => o.id !== id));
-  };
-
-  const correctCount = options.filter((o) => o.isCorrect).length;
 
   return (
-    <div className={styles.optionsEditor}>
-      {options.length === 0 && (
-        <p className={styles.optionsEmpty}>No options yet</p>
+    <div className={styles.brandSlot}>
+      {media ? (
+        <div className={styles.brandPreview}>
+          {media.type === 'image' ? (
+            <img src={media.url} alt="" className={styles.brandImage} />
+          ) : (
+            <video src={media.url} className={styles.brandVideo} controls />
+          )}
+          <button type="button" className={styles.brandChange} onClick={() => fileRef.current?.click()}>
+            Change
+          </button>
+        </div>
+      ) : (
+        <button type="button" className={styles.brandEmpty} onClick={() => fileRef.current?.click()}>
+          <span className={styles.brandEmptyLabel}>Brand Image or Video</span>
+          <span className={styles.brandEmptyHint}>Click to upload</span>
+        </button>
       )}
-      {options.map((opt, i) => {
-        const label = String.fromCharCode(65 + i);
-        return (
-          <div
-            key={opt.id}
-            className={`${styles.optionRow} ${opt.isCorrect ? styles.optionRowCorrect : ''}`}
-          >
-            <span className={styles.optionLabel}>{label}</span>
-            <input
-              type="text"
-              value={opt.text}
-              onChange={(e) => updateOption(opt.id, { text: e.target.value })}
-              onKeyDown={() => play('click')}
-              placeholder={`Option ${label}`}
-              className={styles.optionInput}
-            />
-            <button
-              type="button"
-              className={styles.optionMarkBtn}
-              onClick={() => updateOption(opt.id, { isCorrect: !opt.isCorrect })}
-              title={opt.isCorrect ? 'Correct answer' : 'Mark as correct'}
-            >
-              <CheckCircle
-                size={16}
-                weight={opt.isCorrect ? 'fill' : 'regular'}
-                className={opt.isCorrect ? styles.optionMarkIconActive : styles.optionMarkIcon}
-              />
-            </button>
-            <button
-              type="button"
-              className={styles.optionRemove}
-              onClick={() => removeOption(opt.id)}
-              title="Remove option"
-            >
-              <Minus size={12} weight="bold" />
-            </button>
-          </div>
-        );
-      })}
-      <button type="button" className={styles.optionAdd} onClick={addOption}>
-        <Plus size={12} weight="bold" />
-        Add option
-      </button>
-      {correctCount > 1 && (
-        <p className={styles.optionsHint}>Multiple options marked correct — student must select all</p>
-      )}
+      <input ref={fileRef} type="file" accept="image/*,video/*" className={styles.fileInput} onChange={handleFile} />
     </div>
   );
 }
 
-export default function ComponentPanel({ component, onUpdate, onDelete, onClose }: ComponentPanelProps) {
-  const { play } = useSound();
-  const [localConfig, setLocalConfig] = useState<Record<string, string>>({});
-  const [jsonError, setJsonError] = useState<string | null>(null);
-  const titleRef = useRef<HTMLInputElement>(null);
-
-  const componentId = component?.id;
-  useEffect(() => {
-    if (!componentId) return;
-    setLocalConfig({});
-    setJsonError(null);
-  }, [componentId]);
-
-  useEffect(() => {
-    if (componentId && titleRef.current) {
-      titleRef.current.focus();
-    }
-  }, [componentId]);
-
-  if (!component) {
-    return (
-      <div className={styles.empty}>
-        <Television size={36} weight="light" className={styles.emptyIcon} />
-        <p className={styles.emptyText}>Drag components from the palette onto a week to build your course</p>
-      </div>
-    );
-  }
-
-  const fields = CONFIG_FIELDS[component.componentType] ?? [];
-
-  const getConfigValue = (key: string): string => {
-    if (localConfig[key] !== undefined) return localConfig[key];
-    const val = (component.config as Record<string, unknown>)[key];
-    if (val === undefined || val === null) return '';
-    if (Array.isArray(val) || typeof val === 'object') return JSON.stringify(val, null, 2);
-    return String(val);
-  };
-
-  const getConfigNum = (key: string): number | undefined => {
-    const raw = getConfigValue(key);
-    if (!raw) return undefined;
-    const n = Number(raw);
-    return isNaN(n) ? undefined : n;
-  };
-
-  const fieldErrors: Record<string, string> = {};
-  if (component) {
-    if (component.componentType === 'rating_scale') {
-      const min = getConfigNum('min');
-      const max = getConfigNum('max');
-      if (min !== undefined && max !== undefined && min >= max) {
-        fieldErrors.min = 'Min must be less than Max';
-        fieldErrors.max = 'Min must be less than Max';
-      }
-      const step = getConfigNum('step');
-      if (step !== undefined && step <= 0) {
-        fieldErrors.step = 'Step must be greater than 0';
-      }
-    }
-    if (component.componentType === 'text_input') {
-      const maxLen = getConfigNum('maxLength');
-      if (maxLen !== undefined && maxLen <= 0) {
-        fieldErrors.maxLength = 'Must be greater than 0';
-      }
-    }
-    if (component.componentType === 'file_upload') {
-      const mb = getConfigNum('maxSizeMb');
-      if (mb !== undefined && mb <= 0) {
-        fieldErrors.maxSizeMb = 'Must be greater than 0';
-      }
-    }
-    if (component.componentType === 'quiz_block') {
-      const score = getConfigNum('passingScore');
-      if (score !== undefined && (score < 0 || score > 100)) {
-        fieldErrors.passingScore = 'Must be between 0 and 100';
-      }
-    }
-    if (component.componentType === 'reflection_journal') {
-      const words = getConfigNum('minWords');
-      if (words !== undefined && words <= 0) {
-        fieldErrors.minWords = 'Must be greater than 0';
-      }
-    }
-  }
-
-  const handleFieldChange = (key: string, value: string, type: string) => {
-    setLocalConfig((prev) => ({ ...prev, [key]: value }));
-    setJsonError(null);
-
-    const updated = { ...component.config } as Record<string, unknown>;
-
-    if (type === 'number') {
-      updated[key] = value ? Number(value) : undefined;
-    } else if (type === 'json') {
-      if (!value.trim()) {
-        updated[key] = undefined;
-      } else {
-        try {
-          updated[key] = JSON.parse(value);
-        } catch {
-          setJsonError(`Invalid JSON for ${key}`);
-          return;
-        }
-      }
-    } else if (type === 'select') {
-      updated[key] = value === 'true' ? true : value === 'false' ? false : value;
-    } else {
-      updated[key] = value;
-    }
-
-    onUpdate(component.id, { config: updated });
-  };
+export default function ComponentPanel({
+  readingContent,
+  missions,
+  selectedMissionId,
+  onEditReading,
+  onSelectMission,
+  onAddBlankMission,
+}: ComponentPanelProps) {
+  const { setNodeRef, isOver } = useDroppable({
+    id: 'missions-drop-zone',
+    data: { source: 'missions-zone' },
+  });
 
   return (
     <div className={styles.panel}>
-      <div className={styles.panelHeader}>
-        <div className={styles.panelHeaderLeft}>
-          <span className={styles.panelTypeIcon}>
-            {COMPONENT_ICONS[component.componentType]}
-          </span>
-          <div className={styles.panelHeaderMeta}>
-            <span className={styles.panelType}>
-              {COMPONENT_LABELS[component.componentType]}
-            </span>
-          </div>
+
+      {/* Brand media */}
+      <BrandMediaSlot />
+
+      {/* Reading card — mirrors /course page readingCard */}
+      <button type="button" className={styles.readingCard} onClick={onEditReading}>
+        <span className={styles.readingAccent} aria-hidden="true" />
+        <span className={styles.readingThumb} aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={styles.readingThumbIcon}>
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+          </svg>
+        </span>
+        <div className={styles.readingInfo}>
+          <span className={styles.readingCategory}>Weekly Read</span>
+          <span className={styles.readingTitle}>Title</span>
         </div>
-        <button
-          type="button"
-          className={styles.panelClose}
-          onClick={onClose}
-          title="Close"
-        >
-          <X size={16} weight="bold" />
-        </button>
+        <svg className={styles.readingArrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M9 18l6-6-6-6" />
+        </svg>
+      </button>
+
+      {/* Missions heading — mirrors /course page */}
+      <div className={styles.missionsHeadingRow} aria-hidden="true">
+        <span className={styles.missionsDivider} />
+        <h2 className={styles.missionsHeading}>Missions</h2>
+        <span className={styles.missionsDivider} />
       </div>
 
-      <div className={styles.panelBody}>
-        <div className={styles.fieldGroup}>
-          <label className={styles.label}>Title</label>
-          <input
-            ref={titleRef}
-            value={component.title}
-            onChange={(e) => onUpdate(component.id, { title: e.target.value })}
-            onKeyDown={() => play('click')}
-            className={`${styles.input} ${styles.titleInput}`}
-            placeholder="Component title"
-          />
-        </div>
-
-        <div className={styles.fieldGroup}>
-          <div className={styles.fieldGroupHeader}>
-            <label className={styles.label}>Description</label>
-            <button
-              type="button"
-              className={styles.autoFillBtn}
-              onClick={() => {
-                const templates: Record<string, string> = {
-                  rich_text: 'A lesson section where students read or watch embedded content. Use this to present core material, explain concepts, or share resources.',
-                  video_embed: 'A video lesson. Students watch the embedded video as part of the curriculum.',
-                  image_embed: 'An image with a caption. Use this to illustrate concepts or share diagrams.',
-                  file_upload: 'Students upload a file here — journal entry, worksheet, or completed exercise.',
-                  text_input: 'A short written response question. Students type their answer into a text field.',
-                  multiple_choice: 'A multiple-choice question testing understanding or reinforcing key ideas.',
-                  quiz_block: 'A graded quiz. Students answer questions to demonstrate mastery of the material.',
-                  rating_scale: 'A self-assessment where students rate their understanding on a scale.',
-                  reflection_journal: 'A guided journal prompt. Students write a longer reflection on their learning.',
-                  poll: 'A quick poll to gather class opinions or check understanding in real time.',
-                  password_gate: 'A password-protected reveal. Students enter a secret password to unlock bonus content, answers, or the next section.',
-                };
-                onUpdate(component.id, {
-                  config: { ...component.config, description: templates[component.componentType] ?? '' },
-                });
-              }}
-            >
-              Auto-fill
-            </button>
-          </div>
-          <textarea
-            value={getConfigValue('description')}
-            onChange={(e) => handleFieldChange('description', e.target.value, 'text')}
-            onKeyDown={() => play('click')}
-            className={`${styles.textarea} ${styles.input}`}
-            placeholder="What is this component for? Students will see this as context."
-            rows={2}
-          />
-        </div>
-
-        <div className={styles.checkboxRow}>
-          <input
-            type="checkbox"
-            id="required-check"
-            checked={component.required}
-            onChange={(e) => onUpdate(component.id, { required: e.target.checked })}
-            className={styles.checkbox}
-          />
-          <label htmlFor="required-check" className={styles.checkboxLabel}>
-            Required
-          </label>
-        </div>
-
-        {fields.length > 0 && (
-          <div className={styles.configSection}>
-            <div className={styles.configHeader}>
-              <p className={styles.configHeading}>Configuration</p>
-              <div className={styles.presets}>
-                {component.componentType === 'multiple_choice' && (
-                  <>
-                    <button
-                      type="button"
-                      className={styles.presetBtn}
-                      onClick={() => {
-                        const presetOptions = JSON.stringify([
-                          { id: 't', text: 'True', isCorrect: true },
-                          { id: 'f', text: 'False', isCorrect: false },
-                        ]);
-                        handleFieldChange('options', presetOptions, 'json');
-                        handleFieldChange('question', 'True or false?', 'text');
-                      }}
-                    >
-                      True / False
-                    </button>
-                    <button
-                      type="button"
-                      className={styles.presetBtn}
-                      onClick={() => {
-                        const opts = 'ABCD'.split('').map((ch) => ({
-                          id: ch.toLowerCase(),
-                          text: `Option ${ch}`,
-                          isCorrect: false,
-                        }));
-                        handleFieldChange('options', JSON.stringify(opts), 'json');
-                        handleFieldChange('question', '', 'text');
-                      }}
-                    >
-                      4 Options
-                    </button>
-                  </>
-                )}
-                {component.componentType === 'rating_scale' && (
-                  <button
-                    type="button"
-                    className={styles.presetBtn}
-                    onClick={() => {
-                      handleFieldChange('min', '1', 'number');
-                      handleFieldChange('max', '5', 'number');
-                      handleFieldChange('step', '1', 'number');
-                    }}
-                  >
-                    1–5 Scale
-                  </button>
-                )}
-                {component.componentType === 'quiz_block' && (
-                  <button
-                    type="button"
-                    className={styles.presetBtn}
-                    onClick={() => {
-                      handleFieldChange('timeLimitMinutes', '10', 'number');
-                      handleFieldChange('passingScore', '80', 'number');
-                    }}
-                  >
-                    10 min / 80%
-                  </button>
-                )}
-                {component.componentType === 'password_gate' && (
-                  <button
-                    type="button"
-                    className={styles.presetBtn}
-                    onClick={() => {
-                      handleFieldChange('password', 'secret', 'text');
-                      handleFieldChange('hint', 'Something only your students would know', 'text');
-                      handleFieldChange('content', '🎉 You unlocked the bonus content!', 'text');
-                    }}
-                  >
-                    Quick Reveal
-                  </button>
-                )}
-              </div>
-            </div>
-            {jsonError && (
-              <p className={styles.jsonError}>{jsonError}</p>
-            )}
-            <div className={styles.fields}>
-              {fields.map((field) => (
-                <div key={field.key} className={styles.formField}>
-                  <span className={styles.formFieldLabel}>{field.label}</span>
-                  {component.componentType === 'multiple_choice' && field.key === 'options' ? (
-                    <MultipleChoiceEditor
-                      value={getConfigValue(field.key)}
-                      onChange={(val) => handleFieldChange(field.key, val, 'json')}
-                    />
-                  ) : component.componentType === 'rich_text' && field.key === 'content' ? (
-                    <RichTextEditor
-                      value={getConfigValue(field.key)}
-                      onChange={(val) => handleFieldChange(field.key, val, 'text')}
-                    />
-                  ) : field.type === 'textarea' ? (
-                    <textarea
-                      value={getConfigValue(field.key)}
-                      onChange={(e) => handleFieldChange(field.key, e.target.value, field.type)}
-                      onKeyDown={() => play('click')}
-                      placeholder={field.placeholder}
-                      rows={3}
-                      className={styles.textarea}
-                    />
-                  ) : field.type === 'select' ? (
-                    <select
-                      value={getConfigValue(field.key)}
-                      onChange={(e) => handleFieldChange(field.key, e.target.value, field.type)}
-                      className={styles.select}
-                    >
-                      <option value="">--</option>
-                      {field.options?.map((opt) => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
-                      ))}
-                    </select>
-                  ) : (
-                    <input
-                      type={field.type === 'number' ? 'number' : 'text'}
-                      value={getConfigValue(field.key)}
-                      onChange={(e) => handleFieldChange(field.key, e.target.value, field.type)}
-                      onKeyDown={() => play('click')}
-                      placeholder={field.placeholder}
-                      className={`${styles.input} ${fieldErrors[field.key] ? styles.inputError : ''}`}
-                    />
-                  )}
-                  {fieldErrors[field.key] && (
-                    <p className={styles.fieldError}>{fieldErrors[field.key]}</p>
-                  )}
-                </div>
-              ))}
-            </div>
+      {/* Droppable missions zone */}
+      <div
+        ref={setNodeRef}
+        className={`${styles.missionsZone} ${isOver ? styles.missionsZoneOver : ''}`}
+      >
+        {missions.length === 0 && (
+          <div className={styles.empty}>
+            <span className={styles.emptyText}>Drop components here or add a blank mission</span>
           </div>
         )}
 
-        <div className={styles.deleteSection}>
-          <button
-            type="button"
-            onClick={() => onDelete(component.id)}
-            className={styles.deleteBtn}
-          >
-            <Trash size={14} weight="bold" />
-            Remove component
-          </button>
-        </div>
+        {missions.map((comp, i) => {
+          const accent = TASK_ACCENTS[i % TASK_ACCENTS.length];
+          const artworkVariant = getTaskArtwork(i + 1);
+          return (
+            <div
+              key={comp.id}
+              className={`${styles.taskCard} ${comp.id === selectedMissionId ? styles.taskCardSelected : ''}`}
+              onClick={() => onSelectMission(comp.id)}
+              style={{ '--task-accent': accent } as React.CSSProperties}
+            >
+              <div className={styles.taskCardHeader}>
+                <span className={styles.taskAccent} aria-hidden="true" />
+                <span className={`${styles.taskArtwork} ${styles[`taskArtwork${artworkVariant.charAt(0).toUpperCase() + artworkVariant.slice(1)}`] || ''}`} aria-hidden="true" />
+                <span className={styles.taskTitle}>{getLegacyLabel(comp)}</span>
+                <svg className={styles.taskArrow} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 18l6-6-6-6" />
+                </svg>
+              </div>
+            </div>
+          );
+        })}
+
+        <button type="button" className={styles.addBtn} onClick={onAddBlankMission}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+          Add Mission
+        </button>
       </div>
+
     </div>
   );
 }

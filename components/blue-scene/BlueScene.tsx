@@ -217,6 +217,7 @@ export default function BlueScene() {
     }, 450);
     removalTimersRef.current.set(id, burstTimer);
 
+    play('pop');
     sessionPopsRef.current += 1;
     setSessionPops(sessionPopsRef.current);
     if (sessionPopsRef.current % 10 === 0) play('celebration');
@@ -293,6 +294,7 @@ export default function BlueScene() {
             '--rise-duration': `${b.duration}s`,
             '--sway-delay': `${b.delay}s`,
           } as React.CSSProperties}
+          tabIndex={-1}
           onClick={() => popBalloon(b.id)}
           disabled={b.popped}
           aria-label="Pop balloon"

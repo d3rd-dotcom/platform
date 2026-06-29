@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
-import { ArrowCounterClockwise, Eye, CheckCircle } from '@phosphor-icons/react';
-import CourseModule from '@/components/course-renderers/CourseModule';
+import { ArrowCounterClockwise, Eye } from '@phosphor-icons/react';
+import CoursePreview from './CoursePreview';
 import styles from './CourseStudioModal.module.css';
 import {
   DndContext,
@@ -17,7 +17,7 @@ import {
   type DragStartEvent,
   type DragEndEvent,
 } from '@dnd-kit/core';
-import { arrayMove } from '@dnd-kit/sortable';
+
 
 function collisionFallback(args: Parameters<typeof closestCenter>[0]) {
   const pointerHits = pointerWithin(args);
@@ -26,8 +26,12 @@ function collisionFallback(args: Parameters<typeof closestCenter>[0]) {
 }
 import { useSound } from '@/hooks/useSound';
 import ComponentPalette from './ComponentPalette';
-import WeekCanvas from './WeekCanvas';
 import ComponentPanel from './ComponentPanel';
+import MissionEditor from './MissionEditor';
+import VideoEmbedEditor from './VideoEmbedEditor';
+import dynamic from 'next/dynamic';
+
+const ReadingEditor = dynamic(() => import('./ReadingEditor'), { ssr: false });
 import CourseBuilderTour from './CourseBuilderTour';
 import type { VipCourseFull, CourseComponentRecord, ComponentType, VipCourseStatus } from '@/lib/vip-course-db';
 
@@ -117,11 +121,13 @@ export default function CourseStudioModal({
   });
   const [selectedWeekId, setSelectedWeekId] = useState(weeks[0]?.id ?? '');
   const [selectedComponentId, setSelectedComponentId] = useState<string | null>(null);
-  const [activeDragItem, setActiveDragItem] = useState<{ type: ComponentType } | null>(null);
+  const [activeDragItem, setActiveDragItem] = useState<{ type: ComponentType; label?: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [dirty, setDirty] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(!existingCourseId);
+  const [readingContent, setReadingContent] = useState('');
+  const [selectedSlot, setSelectedSlot] = useState<'reading' | null>(null);
   const [deletedComponent, setDeletedComponent] = useState<{
     component: CourseComponentRecord;
     weekId: string;
@@ -146,10 +152,6 @@ export default function CourseStudioModal({
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
   );
-
-  const selectedComponent = selectedComponentId
-    ? weeks.flatMap((w) => w.components).find((c) => c.id === selectedComponentId) ?? null
-    : null;
 
   // Load existing course
   useEffect(() => {
@@ -281,10 +283,14 @@ export default function CourseStudioModal({
     setDirty(true);
   };
 
+  const addBlankMission = () => {
+    addComponentToWeek(selectedWeekId, 'reflection_journal', { legacyType: 'text' });
+  };
+
   const handleDragStart = (event: DragStartEvent) => {
     const data = event.active.data.current;
     if (data?.source === 'palette') {
-      setActiveDragItem({ type: data.type as ComponentType });
+      setActiveDragItem({ type: data.type as ComponentType, label: (data as any).paletteLabel as string | undefined });
     }
   };
 
@@ -293,20 +299,28 @@ export default function CourseStudioModal({
     const { active, over } = event;
     if (!over) return;
 
-    // Palette → canvas drop
-    if (active.data.current?.source === 'palette') {
-      const compType = active.data.current.type as ComponentType;
-      const overData = over.data.current;
+    const activeData = active.data.current;
+    const overData = over.data.current;
+
+    // Palette → missions zone drop
+    if (activeData?.source === 'palette') {
+      const compType = activeData.type as ComponentType;
+      const config = activeData.config as Record<string, unknown> | undefined;
+
+      if (over.id === 'missions-drop-zone' || overData?.source === 'missions-zone') {
+        addComponentToWeek(selectedWeekId, compType, config);
+        return;
+      }
 
       if (overData?.weekId) {
-        addComponentToWeek(overData.weekId, compType);
+        addComponentToWeek(overData.weekId, compType, config);
         return;
       }
 
       if (overData?.type || overData?.source === 'canvas') {
         const targetWeek = weeks.find((w) => w.components.some((c) => c.id === over.id));
         if (targetWeek) {
-          addComponentToWeek(targetWeek.id, compType);
+          addComponentToWeek(targetWeek.id, compType, config);
           return;
         }
       }
@@ -314,42 +328,22 @@ export default function CourseStudioModal({
       if (typeof over.id === 'string' && over.id.startsWith('week-')) {
         const weekId = over.id.slice(5);
         if (weeks.some((w) => w.id === weekId)) {
-          addComponentToWeek(weekId, compType);
+          addComponentToWeek(weekId, compType, config);
           return;
         }
       }
 
       const byWeek = weeks.find((w) => w.id === over.id);
       if (byWeek) {
-        addComponentToWeek(byWeek.id, compType);
+        addComponentToWeek(byWeek.id, compType, config);
         return;
       }
       const byComponent = weeks.find((w) => w.components.some((c) => c.id === over.id));
       if (byComponent) {
-        addComponentToWeek(byComponent.id, compType);
+        addComponentToWeek(byComponent.id, compType, config);
         return;
       }
       return;
-    }
-
-    // Sortable reorder (canvas → canvas)
-    const activeWeek = weeks.find((w) => w.components.some((c) => c.id === active.id));
-    const overWeek = weeks.find((w) => w.components.some((c) => c.id === over.id));
-
-    if (activeWeek && activeWeek.id === overWeek?.id) {
-      const oldIndex = activeWeek.components.findIndex((c) => c.id === active.id);
-      const newIndex = activeWeek.components.findIndex((c) => c.id === over.id);
-      if (oldIndex !== newIndex && oldIndex !== -1 && newIndex !== -1) {
-        const reordered = arrayMove(activeWeek.components, oldIndex, newIndex);
-        setWeeks((prev) =>
-          prev.map((w) =>
-            w.id === activeWeek.id
-              ? { ...w, components: reordered.map((c, i) => ({ ...c, sortOrder: i })) }
-              : w,
-          ),
-        );
-        setDirty(true);
-      }
     }
   };
 
@@ -506,31 +500,9 @@ export default function CourseStudioModal({
     );
   }
 
-  const previewCourse: VipCourseFull = {
-    id: courseId ?? 'preview',
-    userId: '',
-    slug,
-    title,
-    focus,
-    coverImageUrl: null,
-    status,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    authorName: 'Espeon',
-    authorAvatar: null,
-    weeks: weeks.map((w) => ({
-      id: w.id,
-      courseId: courseId ?? 'preview',
-      weekNumber: w.weekNumber,
-      title: w.title,
-      theme: w.theme,
-      status: 'draft' as const,
-      sortOrder: Math.max(0, w.weekNumber - 1),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      components: w.components,
-    })),
-  };
+  const currentWeek = weeks.find((w) => w.id === selectedWeekId);
+  const currentWeekComponents = currentWeek?.components ?? [];
+  const selectedComponent = currentWeekComponents.find((c) => c.id === selectedComponentId) ?? null;
 
   return (
     <div className={styles.layout}>
@@ -640,11 +612,13 @@ export default function CourseStudioModal({
 
           {/* Body */}
           {previewMode ? (
-            <div className={styles.previewBody}>
-              <CourseModule course={previewCourse} authHeaders={authHeaders} />
-            </div>
+            <CoursePreview
+              weeks={weeks}
+              readingContent={readingContent}
+              title={title}
+            />
           ) : (
-            <div className={styles.columns}>
+            <div className={styles.editorArea}>
               {/* Left: Component panel */}
               <motion.aside
                 className={styles.componentPanel}
@@ -652,47 +626,62 @@ export default function CourseStudioModal({
                 animate={{ x: 0, opacity: 1 }}
                 data-tour="builder-panel"
               >
-                <ComponentPanel
-                  component={selectedComponent}
-                  onUpdate={updateComponent}
-                  onDelete={deleteComponent}
-                  onClose={() => setSelectedComponentId(null)}
-                />
+                <div className={styles.panelCard}>
+                  <ComponentPanel
+                    readingContent={readingContent}
+                    missions={currentWeekComponents}
+                    selectedMissionId={selectedComponentId}
+                    onSelectMission={(id) => { setSelectedComponentId(id); setSelectedSlot(null); }}
+                    onDeleteMission={deleteComponent}
+                    onAddBlankMission={addBlankMission}
+                    onEditReading={() => { setSelectedSlot('reading'); setSelectedComponentId(null); }}
+                  />
+                </div>
               </motion.aside>
 
-              {/* Center: Canvas */}
-              <main
-                className={styles.canvas}
-                data-tour="builder-canvas"
-              >
-                <WeekCanvas
-                  weeks={weeks}
-                  selectedWeek={selectedWeekId}
-                  onSelectWeek={(weekId) => { setSelectedWeekId(weekId); setSelectedComponentId(null); }}
-                  onSelectComponent={setSelectedComponentId}
-                  selectedComponentId={selectedComponentId}
-                  onAddWeek={addWeek}
-                  onUpdateWeek={updateWeek}
-                  onDeleteComponent={deleteComponent}
-                  onUpdateComponent={updateComponent}
-                  onAddComponent={addComponentToWeek}
-                />
-              </main>
+              {/* Right: Component editor */}
+              {selectedComponent && (
+                <main className={styles.missionEditor}>
+                  {selectedComponent.componentType === 'video_embed' ? (
+                    <VideoEmbedEditor
+                      component={selectedComponent}
+                      onUpdate={updateComponent}
+                      onDelete={deleteComponent}
+                    />
+                  ) : (
+                    <MissionEditor
+                      component={selectedComponent}
+                      onUpdate={updateComponent}
+                      onDelete={deleteComponent}
+                    />
+                  )}
+                </main>
+              )}
+              {selectedSlot === 'reading' && (
+                <main className={styles.missionEditor}>
+                  <ReadingEditor
+                    content={readingContent}
+                    onSave={(content) => setReadingContent(content)}
+                    onClose={() => setSelectedSlot(null)}
+                  />
+                </main>
+              )}
 
-              {/* Right: palette drawer */}
-              <aside className={styles.paletteColumn} data-tour="builder-palette">
+              {/* Bottom: Component palette */}
+              <aside className={`${styles.bottomPalette} ${drawerOpen ? '' : styles.bottomPaletteClosed}`} data-tour="builder-palette">
                 <button
                   type="button"
-                  className={styles.drawerToggle}
+                  className={styles.paletteToggle}
                   onClick={() => setDrawerOpen((o) => !o)}
-                  title={drawerOpen ? 'Close components' : 'Open components'}
+                  title={drawerOpen ? 'Close component palette' : 'Open component palette'}
                 >
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                    {drawerOpen ? <path d="M9 6l6 6-6 6"/> : <path d="M15 18l-6-6 6-6"/>}
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ transform: drawerOpen ? 'rotate(0deg)' : 'rotate(-90deg)', transition: 'transform 0.2s ease' }}>
+                    <path d="M6 9l6 6 6-6"/>
                   </svg>
+                  Components
                 </button>
-                <div className={`${styles.paletteDrawer} ${drawerOpen ? '' : styles.paletteClosed}`}>
-                  <ComponentPalette onAddComponent={(type) => addComponentToWeek(selectedWeekId, type)} />
+                <div className={styles.paletteBody}>
+                  <ComponentPalette onAddComponent={(type, config) => addComponentToWeek(selectedWeekId, type, config)} />
                 </div>
               </aside>
             </div>
@@ -719,7 +708,7 @@ export default function CourseStudioModal({
                 exit={{ scale: 0.9, opacity: 0 }}
               >
                 <span className={styles.dragOverlayLabel}>
-                  + {activeDragItem.type.replace(/_/g, ' ')}
+                  + {activeDragItem.label ?? activeDragItem.type.replace(/_/g, ' ')}
                 </span>
               </motion.div>
             )}

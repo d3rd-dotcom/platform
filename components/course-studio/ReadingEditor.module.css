@@ -1,0 +1,297 @@
+.editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  flex-shrink: 0;
+}
+
+.badge {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
+}
+
+/* ── Toolbar ── */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 16px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  background: var(--color-surface-base);
+}
+
+.toolBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.1s ease;
+  font-family: inherit;
+}
+
+.toolBtn:hover {
+  background: var(--color-surface-2);
+  color: var(--color-text-dark);
+}
+
+.toolBtnActive {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.headingLvl {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.divider {
+  width: 1px;
+  height: 20px;
+  background: var(--color-border-subtle);
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+.spacer {
+  flex: 1;
+}
+
+/* ── Editor content area ── */
+
+.editorArea {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+  outline: none;
+}
+
+.editorContent {
+  outline: none;
+  min-height: 200px;
+  color: var(--color-text-dark);
+  font-size: 0.9375rem;
+  line-height: 1.8;
+}
+
+.editorContent p {
+  margin: 0 0 12px;
+}
+
+.editorContent h1 {
+  font-family: var(--font-secondary);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 1.6em 0 0.5em;
+  color: var(--color-text-dark);
+}
+
+.editorContent h2 {
+  font-family: var(--font-secondary);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 1.6em 0 0.5em;
+  color: var(--color-text-dark);
+}
+
+.editorContent h3 {
+  font-family: var(--font-secondary);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 1.6em 0 0.5em;
+  color: var(--color-text-dark);
+}
+
+.editorContent ul,
+.editorContent ol {
+  padding-left: 24px;
+  margin: 0 0 12px;
+}
+
+.editorContent li {
+  margin-bottom: 4px;
+}
+
+.editorContent blockquote {
+  border-left: 3px solid var(--color-primary);
+  padding: 8px 16px;
+  margin: 0 0 12px;
+  background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+  border-radius: 0 8px 8px 0;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.editorContent code {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--color-surface-2);
+  color: var(--color-primary);
+}
+
+.editorContent pre {
+  background: var(--color-surface-2);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 0 0 12px;
+  overflow-x: auto;
+}
+
+.editorContent pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+.editorContent a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.editorContent a:hover {
+  opacity: 0.8;
+}
+
+.editorContent strong {
+  font-weight: 700;
+}
+
+.editorContent em {
+  font-style: italic;
+}
+
+.editorContent p.is-editor-empty:first-child::before {
+  color: var(--color-text-faint);
+  opacity: 0.4;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* ── Footer ── */
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 24px;
+  border-top: 1px solid var(--color-border-subtle);
+  flex-shrink: 0;
+}
+
+.cancelBtn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-subtle);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.cancelBtn:hover {
+  border-color: var(--color-text-faint);
+  color: var(--color-text-dark);
+}
+
+.saveBtn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.saveBtn:hover {
+  opacity: 0.9;
+}
+
+/* ── Dark mode ── */
+
+:global([data-theme="dark"]) .toolbar {
+  background: #13141f;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .toolBtn {
+  color: rgba(240, 241, 250, 0.45);
+}
+
+:global([data-theme="dark"]) .toolBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #f0f1fa;
+}
+
+:global([data-theme="dark"]) .toolBtnActive {
+  background: rgba(143, 155, 255, 0.12);
+  color: #8f9bff;
+}
+
+:global([data-theme="dark"]) .divider {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .editorContent {
+  color: #f0f1fa;
+}
+
+:global([data-theme="dark"]) .editorContent h1,
+:global([data-theme="dark"]) .editorContent h2,
+:global([data-theme="dark"]) .editorContent h3 {
+  color: #f0f1fa;
+}
+
+:global([data-theme="dark"]) .editorContent code {
+  background: rgba(255, 255, 255, 0.06);
+  color: #8f9bff;
+}
+
+:global([data-theme="dark"]) .editorContent blockquote {
+  background: rgba(143, 155, 255, 0.08);
+  color: rgba(240, 241, 250, 0.65);
+}
+
+:global([data-theme="dark"]) .editorContent pre {
+  background: rgba(255, 255, 255, 0.04);
+}

@@ -1,0 +1,172 @@
+.editor {
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  background: color-mix(in srgb, var(--color-primary) 7%, #ffffff);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, rgba(26, 29, 51, 0.06));
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
+}
+
+/* ── Task card header ── */
+
+.taskCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  flex-shrink: 0;
+}
+
+.taskAccent {
+  width: 3px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.taskArtwork {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--color-primary) 68%, #0f172a 32%) 0%,
+      var(--color-primary) 48%,
+      color-mix(in srgb, var(--color-primary) 42%, #ffffff 58%) 100%);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-primary) 28%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 4px 10px color-mix(in srgb, var(--color-primary) 22%, transparent);
+}
+
+.taskArtworkAurora {
+  background-image:
+    radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.42), transparent 28%),
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--color-primary) 68%, #0f172a 32%) 0%,
+      var(--color-primary) 48%,
+      color-mix(in srgb, var(--color-primary) 42%, #ffffff 58%) 100%);
+}
+
+.taskArtworkSunrise {
+  background-image:
+    radial-gradient(circle at 75% 24%, rgba(255, 255, 255, 0.52), transparent 22%),
+    linear-gradient(140deg,
+      color-mix(in srgb, var(--color-primary) 70%, #0f172a 30%) 0%,
+      var(--color-primary) 50%,
+      color-mix(in srgb, var(--color-primary) 38%, #ffffff 62%) 100%);
+}
+
+.taskArtworkOrbit {
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.22), transparent 28%),
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--color-primary) 60%, #0f172a 40%) 0%,
+      var(--color-primary) 52%,
+      color-mix(in srgb, var(--color-primary) 46%, #ffffff 54%) 100%);
+}
+
+.taskArtworkBloom {
+  background-image:
+    radial-gradient(circle at 24% 22%, rgba(255, 255, 255, 0.46), transparent 26%),
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--color-primary) 72%, #1a1336 28%) 0%,
+      var(--color-primary) 50%,
+      color-mix(in srgb, var(--color-primary) 35%, #ffffff 65%) 100%);
+}
+
+.taskArtworkRibbon {
+  background-image:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.18), transparent 48%),
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--color-primary) 65%, #0f172a 35%) 0%,
+      var(--color-primary) 50%,
+      color-mix(in srgb, var(--color-primary) 40%, #ffffff 60%) 100%);
+}
+
+.taskArtworkPrism {
+  background-image:
+    radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.38), transparent 32%),
+    linear-gradient(150deg,
+      color-mix(in srgb, var(--color-primary) 72%, #0f0a1e 28%) 0%,
+      var(--color-primary) 48%,
+      color-mix(in srgb, var(--color-primary) 36%, #f0f0ff 64%) 100%);
+}
+
+.titleInput {
+  flex: 1;
+  font-family: var(--font-secondary);
+  font-size: 16px;
+  font-weight: 700;
+  color: #1A1D33;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
+  line-height: 1.3;
+}
+
+.titleInput::placeholder {
+  color: rgba(26, 29, 51, 0.25);
+}
+
+.deleteBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: rgba(26, 29, 51, 0.2);
+  cursor: pointer;
+  transition: all 0.12s ease;
+  flex-shrink: 0;
+}
+
+.deleteBtn:hover {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #ef4444;
+}
+
+/* ── Expanded content area (matches /course taskCardContent) ── */
+
+.taskCardContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 18px 18px;
+  border-top: 1px solid rgba(26, 29, 51, 0.06);
+  min-height: 0;
+}
+
+/* ── Dark mode ── */
+
+:global([data-theme="dark"]) .titleInput {
+  color: #f0f1fa;
+}
+
+:global([data-theme="dark"]) .titleInput::placeholder {
+  color: rgba(240, 241, 250, 0.25);
+}
+
+:global([data-theme="dark"]) .deleteBtn {
+  color: rgba(240, 241, 250, 0.2);
+}
+
+:global([data-theme="dark"]) .deleteBtn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+:global([data-theme="dark"]) .taskCardContent {
+  border-top-color: rgba(255, 255, 255, 0.06);
+}

@@ -12,7 +12,8 @@ export type SoundType =
   | 'toggle-off'
   | 'celebration'
   | 'alarm'
-  | 'hum';
+  | 'hum'
+  | 'pop';
 
 // C pentatonic scale frequencies
 const PENTATONIC_C5 = [523.25, 587.33, 659.25, 783.99, 880.0];
@@ -318,6 +319,64 @@ export class SoundEngine {
         const top = scale[scale.length - 1];
         this.mallet(top * 2, sparkleStart, this.dur(0.4), 0.42);
         this.mallet(PENTATONIC_C5[2], sparkleStart + this.dur(0.07), this.dur(0.5), 0.38);
+        break;
+      }
+
+      case 'pop': {
+        // Satisfying balloon pop: bright crack + musical body + rubber snap
+        const t0 = now;
+
+        // 1. Crack — short bandpassed noise burst
+        const crackLen = Math.max(1, Math.floor(ctx.sampleRate * 0.018));
+        const crackBuf = ctx.createBuffer(1, crackLen, ctx.sampleRate);
+        const crackData = crackBuf.getChannelData(0);
+        for (let i = 0; i < crackLen; i++) crackData[i] = Math.random() * 2 - 1;
+        const crackSource = ctx.createBufferSource();
+        crackSource.buffer = crackBuf;
+
+        const crackBp = ctx.createBiquadFilter();
+        crackBp.type = 'bandpass';
+        crackBp.frequency.value = 2800;
+        crackBp.Q.value = 1.1;
+
+        const crackGain = ctx.createGain();
+        crackGain.gain.setValueAtTime(0.0001, t0);
+        crackGain.gain.exponentialRampToValueAtTime(0.38, t0 + 0.001);
+        crackGain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.02);
+
+        crackSource.connect(crackBp);
+        crackBp.connect(crackGain);
+        crackGain.connect(this.busInput!);
+        crackSource.start(t0);
+        crackSource.stop(t0 + 0.025);
+
+        // 2. Body — short musical tone for satisfying weight
+        const body = ctx.createOscillator();
+        body.type = 'sine';
+        body.frequency.setValueAtTime(720, t0 + 0.002);
+        body.frequency.exponentialRampToValueAtTime(520, t0 + 0.04);
+        const bodyGain = ctx.createGain();
+        bodyGain.gain.setValueAtTime(0.0001, t0 + 0.002);
+        bodyGain.gain.exponentialRampToValueAtTime(0.28, t0 + 0.005);
+        bodyGain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.05);
+        body.connect(bodyGain);
+        bodyGain.connect(this.busInput!);
+        body.start(t0 + 0.002);
+        body.stop(t0 + 0.055);
+
+        // 3. Snap — quick bright harmonic for that rubbery "sproing"
+        const snap = ctx.createOscillator();
+        snap.type = 'sine';
+        snap.frequency.setValueAtTime(1800, t0 + 0.006);
+        snap.frequency.exponentialRampToValueAtTime(2400, t0 + 0.015);
+        const snapGain = ctx.createGain();
+        snapGain.gain.setValueAtTime(0.0001, t0 + 0.006);
+        snapGain.gain.exponentialRampToValueAtTime(0.12, t0 + 0.009);
+        snapGain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.022);
+        snap.connect(snapGain);
+        snapGain.connect(this.busInput!);
+        snap.start(t0 + 0.006);
+        snap.stop(t0 + 0.026);
         break;
       }
 

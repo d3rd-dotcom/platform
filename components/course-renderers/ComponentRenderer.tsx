@@ -14,6 +14,7 @@ const RatingScaleRenderer = dynamic(() => import('./RatingScaleRenderer'), { ssr
 const ReflectionJournalRenderer = dynamic(() => import('./ReflectionJournalRenderer'), { ssr: false });
 const QuizBlockRenderer = dynamic(() => import('./QuizBlockRenderer'), { ssr: false });
 const PasswordGateRenderer = dynamic(() => import('./PasswordGateRenderer'), { ssr: false });
+const LegacyMissionRenderer = dynamic(() => import('./LegacyMissionRenderer'), { ssr: false });
 
 function UnknownRenderer({ component }: { component: CourseComponentRecord }) {
   return (
@@ -42,6 +43,10 @@ export default function ComponentRenderer({
   component,
   onComponentUpdate,
 }: RendererProps) {
+  const legacyType = component.config?.legacyType as string | undefined;
+  if (legacyType) {
+    return <LegacyMissionRenderer component={component} onUpdate={(c) => onComponentUpdate?.({ config: c })} />;
+  }
   const Renderer = RENDERER_MAP[component.componentType] ?? UnknownRenderer;
   return <Renderer component={component} onComponentUpdate={onComponentUpdate} />;
 }
