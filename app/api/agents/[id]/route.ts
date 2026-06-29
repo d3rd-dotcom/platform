@@ -10,7 +10,7 @@ import {
   summarizeMorningPages,
   type AgentReminder,
   type AgentCourseSummary,
-  type MorningPagesSummary,
+  type FieldNotesSummary,
 } from '@/lib/agent-home';
 
 export const runtime = 'nodejs';
@@ -114,7 +114,7 @@ export async function GET(_request: Request, { params }: { params: { id: string 
       console.warn('Agent detail: could not load tests:', err?.message);
     }
 
-    let morningPages: MorningPagesSummary = {
+    let fieldNotes: FieldNotesSummary = {
       totalEntries: 0,
       currentStreak: 0,
       lastEntryDate: null,
@@ -125,11 +125,11 @@ export async function GET(_request: Request, { params }: { params: { id: string 
     };
     try {
       const allWeekPages = await loadAgentAllWeekPages(agent.id);
-      morningPages = summarizeMorningPages(allWeekPages);
+      fieldNotes = summarizeMorningPages(allWeekPages);
     } catch (err: any) {
-      console.warn('Agent detail: could not load morning-pages summary:', err?.message);
+      console.warn('Agent detail: could not load field-notes summary:', err?.message);
     }
-    const virtualReminder = buildVirtualMorningPagesReminder(agent, morningPages);
+    const virtualReminder = buildVirtualMorningPagesReminder(agent, fieldNotes);
     const reminders: AgentReminder[] = virtualReminder ? [virtualReminder] : [];
 
     let course: AgentCourseSummary = {
@@ -160,10 +160,10 @@ export async function GET(_request: Request, { params }: { params: { id: string 
       progress: {
         questsCompleted: quests.length,
         testsCompleted: tests.filter((t) => t.completedAt).length,
-        morningPagesCompleted: morningPages.totalEntries,
+        fieldNotesCompleted: fieldNotes.totalEntries,
         courseTasksCompleted: course.completedTasks,
       },
-      morningPages,
+      fieldNotes,
       course,
       reminders,
       quests: quests.map((q) => ({

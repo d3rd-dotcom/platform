@@ -19,7 +19,7 @@ These are not bad in themselves. The issue is abuse. We reach for them to block 
 
 ## Workaholism
 
-Workaholism is an addiction, and like all addictions, it blocks creative attention. If people are too busy to write morning pages or too busy to take an artist date, they are probably too busy to hear what they want to make.
+Workaholism is an addiction, and like all addictions, it blocks creative attention. If people are too busy to write field notes or too busy to take an artist date, they are probably too busy to hear what they want to make.
 
 Play can make a workaholic very nervous. Fun is scary.
 
@@ -39,7 +39,7 @@ In order to recover our creativity, we must see workaholism as a block, not a bu
 
 In any creative life there are dry seasons. Life loses sweetness. Work feels mechanical, empty, or forced. We feel we have nothing to say and are tempted to say nothing.
 
-During a drought, morning pages seem both painful and foolish. They feel like empty gestures. Yet they are most valuable then. Droughts are terrible and necessary. They bring clarity and compassion. Droughts end because we keep showing up.
+During a drought, field notes seem both painful and foolish. They feel like empty gestures. Yet they are most valuable then. Droughts are terrible and necessary. They bring clarity and compassion. Droughts end because we keep showing up.
 
 To write is to right things. Sooner or later, our pages bring things right.
 
@@ -67,7 +67,7 @@ Never judge fledgling work too quickly. Art needs time to sprawl, incubate, and 
 
 ## Check-In
 
-1. How many days this week did you do your morning pages? Has reading your pages changed your writing?
+1. How many days this week did you do your field notes? Has reading your pages changed your writing?
 2. Did you do your artist date this week? Let yourself do an extra one. What did you do? How did it feel?
 3. Did you notice any useful timing, support, or opportunity this week? What was it?
 4. Were there any other issues this week that you consider significant for your recovery? Describe them.

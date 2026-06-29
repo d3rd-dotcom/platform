@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 const REREAD_SHARD_COST = 50;
 const DATE_KEY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
-interface MorningPageEntry {
+interface FieldNoteEntry {
   day?: number;
   date?: string;
   content?: string;
@@ -26,7 +26,7 @@ interface RereadNote {
   submittedAt: number | null;
 }
 
-function parseAllWeekPages(userId: string, progressData: any): Record<string, MorningPageEntry[]> {
+function parseAllWeekPages(userId: string, progressData: any): Record<string, FieldNoteEntry[]> {
   if (progressData?.encrypted && progressData?.data) {
     const decrypted = decryptForUser(userId, progressData.data);
     const parsed = JSON.parse(decrypted);
@@ -36,7 +36,7 @@ function parseAllWeekPages(userId: string, progressData: any): Record<string, Mo
   return progressData?.allWeekPages ?? {};
 }
 
-function findNoteByDate(allWeekPages: Record<string, MorningPageEntry[]>, dateKey: string): RereadNote | null {
+function findNoteByDate(allWeekPages: Record<string, FieldNoteEntry[]>, dateKey: string): RereadNote | null {
   for (const [weekKey, entries] of Object.entries(allWeekPages)) {
     if (!Array.isArray(entries)) continue;
 
@@ -107,11 +107,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'note_not_found' }, { status: 404 });
   }
 
-  let allWeekPages: Record<string, MorningPageEntry[]>;
+  let allWeekPages: Record<string, FieldNoteEntry[]>;
   try {
     allWeekPages = parseAllWeekPages(user.id, rows[0].progress_data);
   } catch (error) {
-    console.error('Failed to decrypt morning pages for reread:', error);
+    console.error('Failed to decrypt field notes for reread:', error);
     return NextResponse.json({ error: 'Failed to load note.' }, { status: 500 });
   }
 

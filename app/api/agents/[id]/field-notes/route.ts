@@ -13,8 +13,8 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 /**
- * GET /api/agents/[id]/morning-pages?week=N
- * Operator view of one week of an agent's encrypted morning pages. The server
+ * GET /api/agents/[id]/field-notes?week=N
+ * Operator view of one week of an agent's encrypted field notes. The server
  * decrypts with the agent user id after confirming operator ownership.
  */
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
@@ -43,10 +43,10 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
     return NextResponse.json(week);
   } catch (err: any) {
-    console.error('Agent morning pages error:', err);
+    console.error('Agent field notes error:', err);
     if (err?.code === 'ECONNREFUSED' || err?.code === 'ENOTFOUND' || err?.code === 'ETIMEDOUT') {
       return NextResponse.json({ error: 'Database connection failed.' }, { status: 503 });
     }
-    return NextResponse.json({ error: 'Failed to load agent morning pages.' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to load agent field notes.' }, { status: 500 });
   }
 }

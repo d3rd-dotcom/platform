@@ -690,7 +690,7 @@ export default function AccordionJournalCard({
               ))}
             </div>
             <div className={styles.affirmationReminder}>
-              <p>Write each affirmation 5 times daily in your morning pages</p>
+              <p>Write each affirmation 5 times daily in your field notes</p>
             </div>
           </div>
         );

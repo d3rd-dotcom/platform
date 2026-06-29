@@ -1411,14 +1411,14 @@
   box-shadow: 4px 4px 0 #1A1D33;
 }
 
-/* ─── Morning Pages Strip ─── */
-.morningPagesStrip {
+/* ─── Field Notes Strip ─── */
+.fieldNotesStrip {
   border-bottom: 3px solid #1A1D33;
   background: #F4F5FE;
   padding: 16px 24px;
 }
 
-.morningPagesHeader {
+.fieldNotesHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1426,7 +1426,7 @@
   flex-wrap: wrap;
 }
 
-.morningPagesLabel {
+.fieldNotesLabel {
   font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 700;
@@ -1436,13 +1436,13 @@
   margin: 0;
 }
 
-.morningPagesDays {
+.fieldNotesDays {
   display: flex;
   flex-direction: row;
   gap: 8px;
 }
 
-.morningPagesDayBtn {
+.fieldNotesDayBtn {
   width: 40px;
   height: 40px;
   display: flex;
@@ -1456,33 +1456,33 @@
   transition: all 0.15s ease;
 }
 
-.morningPagesDayAvailable {
+.fieldNotesDayAvailable {
   background: var(--color-primary);
   color: #FFFFFF;
   box-shadow: 2px 2px 0 #1A1D33;
   cursor: pointer;
 }
 
-.morningPagesDayAvailable:hover {
+.fieldNotesDayAvailable:hover {
   transform: translate(-1px, -1px);
   box-shadow: 3px 3px 0 #1A1D33;
 }
 
-.morningPagesDayDone {
+.fieldNotesDayDone {
   background: #22C55E;
   color: #FFFFFF;
   box-shadow: 2px 2px 0 #1A1D33;
   cursor: default;
 }
 
-.morningPagesDayLocked {
+.fieldNotesDayLocked {
   background: #E8E9F0;
   color: #AAAAAA;
   border-color: #CCCCCC;
   cursor: not-allowed;
 }
 
-.morningPagesPending {
+.fieldNotesPending {
   font-family: var(--font-primary);
   font-size: 12px;
   color: #666;
@@ -1552,8 +1552,8 @@
   color: #666;
 }
 
-/* ─── Morning Pages Timer Modal ─── */
-.morningPagesModalOverlay {
+/* ─── Field Notes Timer Modal ─── */
+.fieldNotesModalOverlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -1566,7 +1566,7 @@
   padding: 20px;
 }
 
-.morningPagesModalBackdrop {
+.fieldNotesModalBackdrop {
   position: absolute;
   top: 0;
   left: 0;
@@ -1576,7 +1576,7 @@
   backdrop-filter: blur(6px);
 }
 
-.morningPagesModal {
+.fieldNotesModal {
   position: relative;
   width: 100%;
   max-width: 560px;
@@ -1590,7 +1590,7 @@
   animation: modalSlideIn 0.3s ease;
 }
 
-.morningPagesModalHeader {
+.fieldNotesModalHeader {
   padding: 24px 24px 16px;
   background: linear-gradient(135deg, #F4F5FE 0%, #EBEEFF 100%);
   border-bottom: 3px solid #1A1D33;
@@ -1601,7 +1601,7 @@
   gap: 8px;
 }
 
-.morningPagesModalDayBadge {
+.fieldNotesModalDayBadge {
   display: inline-block;
   padding: 4px 12px;
   background: var(--color-primary);
@@ -1615,7 +1615,7 @@
   border: 2px solid #1A1D33;
 }
 
-.morningPagesModalTitle {
+.fieldNotesModalTitle {
   font-family: var(--font-secondary);
   font-size: 20px;
   font-weight: 700;
@@ -1623,19 +1623,19 @@
   margin: 0;
 }
 
-.morningPagesModalSubtitle {
+.fieldNotesModalSubtitle {
   font-family: var(--font-primary);
   font-size: 12px;
   color: #666;
   margin: 0;
 }
 
-.morningPagesTimerDisplay {
+.fieldNotesTimerDisplay {
   padding: 24px 24px 16px;
   text-align: center;
 }
 
-.morningPagesTimerCount {
+.fieldNotesTimerCount {
   font-family: var(--font-mono);
   font-size: 56px;
   font-weight: 700;
@@ -1646,11 +1646,11 @@
   transition: color 0.3s ease;
 }
 
-.morningPagesTimerWarning {
+.fieldNotesTimerWarning {
   color: #E53E3E;
 }
 
-.morningPagesTimerBar {
+.fieldNotesTimerBar {
   height: 6px;
   background: #E8E9F0;
   border: 2px solid #1A1D33;
@@ -1658,18 +1658,18 @@
   overflow: hidden;
 }
 
-.morningPagesTimerBarFill {
+.fieldNotesTimerBarFill {
   height: 100%;
   background: var(--color-primary);
   transition: width 1s linear;
 }
 
-.morningPagesWriteArea {
+.fieldNotesWriteArea {
   padding: 0 24px 16px;
   flex: 1;
 }
 
-.morningPagesTextarea {
+.fieldNotesTextarea {
   width: 100%;
   height: 200px;
   padding: 12px 16px;
@@ -1685,17 +1685,17 @@
   box-shadow: 2px 2px 0 #1A1D33;
 }
 
-.morningPagesTextarea:focus {
+.fieldNotesTextarea:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 3px 3px 0 var(--color-primary);
 }
 
-.morningPagesTextarea::placeholder {
+.fieldNotesTextarea::placeholder {
   color: #BBBBAA;
 }
 
-.morningPagesModalFooter {
+.fieldNotesModalFooter {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1704,7 +1704,7 @@
   border-top: 2px solid rgba(26, 29, 51, 0.1);
 }
 
-.morningPagesModalNote {
+.fieldNotesModalNote {
   font-family: var(--font-primary);
   font-size: 12px;
   color: #666;
@@ -1712,7 +1712,7 @@
   flex: 1;
 }
 
-.morningPagesSubmitBtn {
+.fieldNotesSubmitBtn {
   padding: 12px 24px;
   font-family: var(--font-mono);
   font-size: 12px;
@@ -1729,7 +1729,7 @@
   flex-shrink: 0;
 }
 
-.morningPagesSubmitBtn:hover {
+.fieldNotesSubmitBtn:hover {
   background: #16A34A;
   transform: translate(-1px, -1px);
   box-shadow: 4px 4px 0 #1A1D33;
@@ -1823,20 +1823,20 @@
     margin-top: -4px;
   }
 
-  /* Morning Pages Responsive */
-  .morningPagesStrip {
+  /* Field Notes Responsive */
+  .fieldNotesStrip {
     padding: 12px 16px;
   }
 
-  .morningPagesHeader {
+  .fieldNotesHeader {
     gap: 10px;
   }
 
-  .morningPagesDays {
+  .fieldNotesDays {
     gap: 6px;
   }
 
-  .morningPagesDayBtn {
+  .fieldNotesDayBtn {
     width: 34px;
     height: 34px;
     font-size: 12px;
@@ -1925,22 +1925,22 @@
     padding: 10px 12px;
   }
 
-  .morningPagesStrip {
+  .fieldNotesStrip {
     padding: 10px 14px;
   }
 
-  .morningPagesDays {
+  .fieldNotesDays {
     gap: 4px;
   }
 
-  .morningPagesDayBtn {
+  .fieldNotesDayBtn {
     width: 30px;
     height: 30px;
     font-size: 11px;
     border-width: 1.5px;
   }
 
-  .morningPagesLabel {
+  .fieldNotesLabel {
     font-size: 11px;
   }
 }
@@ -2444,38 +2444,38 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
-:global([data-theme="dark"]) .morningPagesStrip {
+:global([data-theme="dark"]) .fieldNotesStrip {
   border-bottom-color: rgba(255, 255, 255, 0.1);
   background: rgba(107, 128, 255, 0.08);
 }
 
-:global([data-theme="dark"]) .morningPagesLabel {
+:global([data-theme="dark"]) .fieldNotesLabel {
   color: rgba(227, 225, 238, 0.95);
 }
 
-:global([data-theme="dark"]) .morningPagesDayBtn {
+:global([data-theme="dark"]) .fieldNotesDayBtn {
   border-color: rgba(255, 255, 255, 0.1);
 }
 
-:global([data-theme="dark"]) .morningPagesDayAvailable {
+:global([data-theme="dark"]) .fieldNotesDayAvailable {
   box-shadow: none;
 }
 
-:global([data-theme="dark"]) .morningPagesDayAvailable:hover {
+:global([data-theme="dark"]) .fieldNotesDayAvailable:hover {
   box-shadow: none;
 }
 
-:global([data-theme="dark"]) .morningPagesDayDone {
+:global([data-theme="dark"]) .fieldNotesDayDone {
   box-shadow: none;
 }
 
-:global([data-theme="dark"]) .morningPagesDayLocked {
+:global([data-theme="dark"]) .fieldNotesDayLocked {
   background: rgba(255, 255, 255, 0.06);
   color: rgba(227, 225, 238, 0.35);
   border-color: rgba(255, 255, 255, 0.06);
 }
 
-:global([data-theme="dark"]) .morningPagesPending {
+:global([data-theme="dark"]) .fieldNotesPending {
   color: rgba(227, 225, 238, 0.55);
 }
 
@@ -2500,68 +2500,68 @@
   color: rgba(227, 225, 238, 0.55);
 }
 
-:global([data-theme="dark"]) .morningPagesModal {
+:global([data-theme="dark"]) .fieldNotesModal {
   background: #16171F;
   border-color: rgba(255, 255, 255, 0.1);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
-:global([data-theme="dark"]) .morningPagesModalHeader {
+:global([data-theme="dark"]) .fieldNotesModalHeader {
   background: linear-gradient(135deg, rgba(107, 128, 255, 0.06) 0%, rgba(107, 128, 255, 0.1) 100%);
   border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 
-:global([data-theme="dark"]) .morningPagesModalDayBadge {
+:global([data-theme="dark"]) .fieldNotesModalDayBadge {
   border-color: rgba(255, 255, 255, 0.1);
 }
 
-:global([data-theme="dark"]) .morningPagesModalTitle {
+:global([data-theme="dark"]) .fieldNotesModalTitle {
   color: rgba(227, 225, 238, 0.95);
 }
 
-:global([data-theme="dark"]) .morningPagesModalSubtitle {
+:global([data-theme="dark"]) .fieldNotesModalSubtitle {
   color: rgba(227, 225, 238, 0.55);
 }
 
-:global([data-theme="dark"]) .morningPagesTimerCount {
+:global([data-theme="dark"]) .fieldNotesTimerCount {
   color: rgba(227, 225, 238, 0.95);
 }
 
-:global([data-theme="dark"]) .morningPagesTimerBar {
+:global([data-theme="dark"]) .fieldNotesTimerBar {
   background: rgba(255, 255, 255, 0.06);
   border-color: rgba(255, 255, 255, 0.1);
 }
 
-:global([data-theme="dark"]) .morningPagesTextarea {
+:global([data-theme="dark"]) .fieldNotesTextarea {
   color: rgba(227, 225, 238, 0.95);
   background: #1A1B24;
   border-color: rgba(255, 255, 255, 0.1);
   box-shadow: none;
 }
 
-:global([data-theme="dark"]) .morningPagesTextarea:focus {
+:global([data-theme="dark"]) .fieldNotesTextarea:focus {
   border-color: #6B80FF;
   box-shadow: 0 0 0 2px rgba(107, 128, 255, 0.25);
 }
 
-:global([data-theme="dark"]) .morningPagesTextarea::placeholder {
+:global([data-theme="dark"]) .fieldNotesTextarea::placeholder {
   color: rgba(227, 225, 238, 0.35);
 }
 
-:global([data-theme="dark"]) .morningPagesModalFooter {
+:global([data-theme="dark"]) .fieldNotesModalFooter {
   border-top-color: rgba(255, 255, 255, 0.06);
 }
 
-:global([data-theme="dark"]) .morningPagesModalNote {
+:global([data-theme="dark"]) .fieldNotesModalNote {
   color: rgba(227, 225, 238, 0.55);
 }
 
-:global([data-theme="dark"]) .morningPagesSubmitBtn {
+:global([data-theme="dark"]) .fieldNotesSubmitBtn {
   border-color: rgba(255, 255, 255, 0.1);
   box-shadow: none;
 }
 
-:global([data-theme="dark"]) .morningPagesSubmitBtn:hover {
+:global([data-theme="dark"]) .fieldNotesSubmitBtn:hover {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 

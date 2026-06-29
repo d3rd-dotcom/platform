@@ -19,7 +19,7 @@ interface ProfileUser {
   createdAt?: string;
 }
 
-interface MorningPageEntry {
+interface FieldNoteEntry {
   day: number;
   date: string;
   content?: string;
@@ -27,7 +27,7 @@ interface MorningPageEntry {
 }
 
 interface DailyNotesResponse {
-  allWeekPages?: Record<string, MorningPageEntry[]>;
+  allWeekPages?: Record<string, FieldNoteEntry[]>;
 }
 
 interface StreakResponse {
@@ -250,7 +250,7 @@ export default function ProfilePage() {
         const errorMessage = data?.error === 'insufficient_shards'
           ? `You need ${REREAD_SHARD_COST} diamonds to reread this page.`
           : data?.error === 'note_not_found'
-            ? 'This morning page is no longer available to reread.'
+            ? 'This field note is no longer available to reread.'
             : 'The reread could not be opened right now.';
 
         setRereadModal((prev) => (
@@ -454,7 +454,7 @@ export default function ProfilePage() {
                     type="button"
                     className={dayClassName}
                     onClick={() => openRereadModal(day.dateKey)}
-                    aria-label={`Reread morning page for ${formatReadableDate(day.dateKey)}`}
+                    aria-label={`Reread field note for ${formatReadableDate(day.dateKey)}`}
                     title={`Reread ${formatReadableDate(day.dateKey)} for ${REREAD_SHARD_COST} diamonds`}
                   >
                     <span className={styles.dayNumber}>{day.date.getDate()}</span>
@@ -465,7 +465,7 @@ export default function ProfilePage() {
 
             <div className={styles.legend}>
               <span className={styles.legendSwatch} />
-              <span className={styles.legendText}>Morning pages completed</span>
+              <span className={styles.legendText}>Field notes completed</span>
             </div>
             <p className={styles.calendarHint}>Tap a completed day to reread it for 50 diamonds.</p>
           </section>
@@ -515,7 +515,7 @@ export default function ProfilePage() {
               </svg>
             </button>
 
-            <div className={styles.rereadEyebrow}>Morning Pages Archive</div>
+            <div className={styles.rereadEyebrow}>Field Notes Archive</div>
             <h3 id="reread-note-title" className={styles.rereadTitle}>{selectedDateLabel}</h3>
 
             {rereadModal.note ? (
@@ -542,7 +542,7 @@ export default function ProfilePage() {
             ) : (
               <>
                 <p className={styles.rereadCopy}>
-                  Spend {REREAD_SHARD_COST} diamonds to reopen this completed morning page. Access lasts for this view only.
+                  Spend {REREAD_SHARD_COST} diamonds to reopen this completed field note. Access lasts for this view only.
                 </p>
                 <div className={styles.rereadCostRow}>
                   <span className={styles.rereadCostBadge}>

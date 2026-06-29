@@ -11,7 +11,7 @@ import styles from './WeekOneVisualNovel.module.css';
 const NARRATION_PREF_KEY = 'weekOneVN.narrationEnabled';
 
 const CHECK_IN_QUESTIONS = [
-  'How many days did you do your morning pages?',
+  'How many days did you do your field notes?',
   'Did you take your artist date? What did you do, and how did it feel?',
   'Were there any other significant moments this week?',
 ];

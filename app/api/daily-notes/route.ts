@@ -33,7 +33,7 @@ function countMorningPageEntries(allWeekPages: Record<string, unknown[]>) {
 
 /**
  * GET /api/daily-notes
- * Load all morning pages or a specific week for the authenticated user
+ * Load all field notes or a specific week for the authenticated user
  */
 export async function GET(request: NextRequest) {
   if (!isDbConfigured()) {
@@ -153,8 +153,8 @@ export async function GET(request: NextRequest) {
 
 /**
  * POST /api/daily-notes
- * Save morning pages (encrypted at rest)
- * Body: { allWeekPages: Record<number, MorningPageEntry[]> } or { weekNumber: number, entries: MorningPageEntry[] }
+ * Save field notes (encrypted at rest)
+ * Body: { allWeekPages: Record<number, FieldNoteEntry[]> } or { weekNumber: number, entries: FieldNoteEntry[] }
  */
 export async function POST(request: Request) {
   if (!isDbConfigured()) {
@@ -226,14 +226,14 @@ export async function POST(request: Request) {
         allWeekPages: nextAllWeekPages,
       });
     } catch (memoryError: unknown) {
-      const message = memoryError instanceof Error ? memoryError.message : 'unknown blue morning page memory error';
-      console.error('Blue morning page memory error:', message);
+      const message = memoryError instanceof Error ? memoryError.message : 'unknown blue field note memory error';
+      console.error('Blue field note memory error:', message);
     }
 
-    // Stream agent morning pages into the Room Log feed
+    // Stream agent field notes into the Room Log feed
     if (user.accountType === 'agent') {
       try {
-        await recordAgentActivity(user.id, `${user.username} wrote a morning page.`);
+        await recordAgentActivity(user.id, `${user.username} wrote a field note.`);
       } catch (activityError: unknown) {
         console.error('Room Log activity error:', activityError);
       }

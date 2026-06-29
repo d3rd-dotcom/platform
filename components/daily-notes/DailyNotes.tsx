@@ -26,7 +26,7 @@ const IntroLoaderOverlay = dynamic(() => import('@/components/intro-loader/Intro
   ssr: false,
 });
 
-interface MorningPageEntry {
+interface FieldNoteEntry {
   day: number;
   date: string;
   content: string;
@@ -68,7 +68,7 @@ export default function DailyNotes({
   const { play } = useSound();
   const { ready, authenticated, login, getAccessToken } = usePrivy();
   const [currentWeek, setCurrentWeek] = useState(1);
-  const [allWeekPages, setAllWeekPages] = useState<Record<number, MorningPageEntry[]>>({});
+  const [allWeekPages, setAllWeekPages] = useState<Record<number, FieldNoteEntry[]>>({});
   const [previousWeekCounts, setPreviousWeekCounts] = useState<Record<number, number>>({});
   const [timerActive, setTimerActive] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -121,7 +121,7 @@ export default function DailyNotes({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [showAuthPrompt]);
 
-  const morningPages = allWeekPages[currentWeek] ?? [];
+  const fieldNotes = allWeekPages[currentWeek] ?? [];
   const todayDateStr = new Date().toISOString().split('T')[0];
   const weekColor = WEEK_COLORS[(currentWeek - 1) % WEEK_COLORS.length];
   const authPending = authenticated && !enablePersistence;
@@ -151,14 +151,14 @@ export default function DailyNotes({
 
   const availableDayIndex = (() => {
     if (!isWeekUnlocked) return -1;
-    if (morningPages.length === 0) return 0;
-    if (morningPages.length >= 7) return -1;
-    const last = morningPages[morningPages.length - 1];
-    return last.date < todayDateStr ? morningPages.length : -1;
+    if (fieldNotes.length === 0) return 0;
+    if (fieldNotes.length >= 7) return -1;
+    const last = fieldNotes[fieldNotes.length - 1];
+    return last.date < todayDateStr ? fieldNotes.length : -1;
   })();
 
-  const todayDone = morningPages.some(e => e.date === todayDateStr);
-  const weekComplete = morningPages.length >= 7;
+  const todayDone = fieldNotes.some(e => e.date === todayDateStr);
+  const weekComplete = fieldNotes.length >= 7;
   const totalCompleted = Object.values(allWeekPages).reduce((sum, pages) => sum + pages.length, 0);
 
   const panelBlueMessage = !dataReady
@@ -169,7 +169,7 @@ export default function DailyNotes({
         ? 'This week is complete. Seven entries are on the record.'
         : !isWeekUnlocked
           ? 'Finish the previous week first. The next page opens after seven completed entries.'
-          : 'A new morning page will unlock tomorrow. One entry per day keeps the practice clean.';
+          : 'A new field note will unlock tomorrow. One entry per day keeps the practice clean.';
 
   const formatTimer = (s: number) =>
     `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
@@ -230,7 +230,7 @@ export default function DailyNotes({
       if (!devBypass) setShowAuthPrompt(true);
       return;
     }
-    const newEntry: MorningPageEntry = {
+    const newEntry: FieldNoteEntry = {
       day: activeDayIndex + 1,
       date: todayDateStr,
       content: timerText,
@@ -281,7 +281,7 @@ export default function DailyNotes({
     play('success');
 
     if (enablePersistence) {
-      const saveKey = `morningPagesSavedToday_${todayDateStr}`;
+      const saveKey = `fieldNotesSavedToday_${todayDateStr}`;
       const alreadyShown = getStorageItem(saveKey);
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (!alreadyShown && !reducedMotion) {
@@ -497,9 +497,9 @@ export default function DailyNotes({
         className={`${styles.modal} ${embedded ? styles.panelModal : ''}`}
         role="dialog"
         aria-modal={embedded ? undefined : true}
-        aria-labelledby="morning-pages-session-title"
+        aria-labelledby="field-notes-session-title"
       >
-        <h3 id="morning-pages-session-title" className={styles.srOnly}>Morning Pages</h3>
+        <h3 id="field-notes-session-title" className={styles.srOnly}>Field Notes</h3>
 
         <div className={styles.modalMain}>
           <div className={styles.modalHeader}>
@@ -517,7 +517,7 @@ export default function DailyNotes({
                 requestClose();
               }}
               onMouseEnter={() => play('hover')}
-              aria-label={embedded ? 'Close morning pages panel' : 'Back'}
+              aria-label={embedded ? 'Close field notes panel' : 'Back'}
             >
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -671,7 +671,7 @@ export default function DailyNotes({
                   onPanelClose?.();
                 }}
                 onMouseEnter={() => play('hover')}
-                aria-label="Close morning pages panel"
+                aria-label="Close field notes panel"
               >
                 Close
               </button>
@@ -687,7 +687,7 @@ export default function DailyNotes({
               className={styles.authPromptDialog}
               role="dialog"
               aria-modal="true"
-              aria-labelledby="morning-pages-auth-title"
+              aria-labelledby="field-notes-auth-title"
               onClick={event => event.stopPropagation()}
             >
               <button
@@ -708,7 +708,7 @@ export default function DailyNotes({
                     <p className={styles.authPromptBubbleText}>
                       {authPending
                         ? 'I’m getting your space ready so your pages save properly.'
-                        : 'Create your account and I’ll keep your Morning Pages, streak, and weekly progress in one place.'}
+                        : 'Create your account and I’ll keep your Field Notes, streak, and weekly progress in one place.'}
                     </p>
                   </div>
                   <div className={styles.authPromptAvatarStage}>
@@ -723,13 +723,13 @@ export default function DailyNotes({
                     />
                   </div>
                 </div>
-                <h3 id="morning-pages-auth-title" className={styles.authPromptTitle}>
+                <h3 id="field-notes-auth-title" className={styles.authPromptTitle}>
                   {authPending ? 'Your account is almost ready.' : 'Create an account to continue.'}
                 </h3>
                 <p className={styles.authPromptCopy}>
                   {authPending
-                    ? 'We are finishing your setup so Morning Pages can save to your account.'
-                    : 'Morning Pages saves your progress to your course account. Sign in to start writing and keep your progress.'}
+                    ? 'We are finishing your setup so Field Notes can save to your account.'
+                    : 'Field Notes saves your progress to your course account. Sign in to start writing and keep your progress.'}
                 </p>
 
                 <div className={styles.authPromptActions}>
@@ -828,11 +828,11 @@ export default function DailyNotes({
           <div className={styles.expandedContent}>
             <p className={styles.instructions}>
               Write freely for 15 minutes each day. Let your thoughts flow without judgment.
-              Morning pages clear your mind and unlock your creative self.
+              Field notes clear your mind and unlock your creative self.
             </p>
             <div className={styles.dayButtons}>
               {Array.from({ length: 7 }, (_, i) => {
-                const done = morningPages.find(e => e.day === i + 1);
+                const done = fieldNotes.find(e => e.day === i + 1);
                 const isAvailable = availableDayIndex === i;
                 return (
                   <button
@@ -906,7 +906,7 @@ export default function DailyNotes({
             className={styles.authPromptDialog}
             role="dialog"
             aria-modal="true"
-            aria-labelledby="morning-pages-auth-title"
+            aria-labelledby="field-notes-auth-title"
             onClick={event => event.stopPropagation()}
           >
             <button
@@ -927,7 +927,7 @@ export default function DailyNotes({
                   <p className={styles.authPromptBubbleText}>
                     {authPending
                       ? 'I’m getting your space ready so your pages save properly.'
-                      : 'Create your account and I’ll keep your Morning Pages, streak, and weekly progress in one place.'}
+                      : 'Create your account and I’ll keep your Field Notes, streak, and weekly progress in one place.'}
                   </p>
                 </div>
                 <div className={styles.authPromptAvatarStage}>
@@ -942,13 +942,13 @@ export default function DailyNotes({
                   />
                 </div>
               </div>
-              <h3 id="morning-pages-auth-title" className={styles.authPromptTitle}>
+              <h3 id="field-notes-auth-title" className={styles.authPromptTitle}>
                 {authPending ? 'Your account is almost ready.' : 'Create an account to continue.'}
               </h3>
               <p className={styles.authPromptCopy}>
                 {authPending
-                  ? 'We are finishing your setup so Morning Pages can save to your account.'
-                  : 'Morning Pages saves your progress to your course account. Sign in to start writing and keep your progress.'}
+                  ? 'We are finishing your setup so Field Notes can save to your account.'
+                  : 'Field Notes saves your progress to your course account. Sign in to start writing and keep your progress.'}
               </p>
 
               <div className={styles.authPromptActions}>

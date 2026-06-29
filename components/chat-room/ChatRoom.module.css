@@ -150,7 +150,7 @@
 .chatInputWrap {
   display: flex;
   gap: 6px;
-  padding: 8px 12px 20px;
+  padding: 8px 12px;
   border-top: 2px solid var(--color-primary-hover);
 }
 
@@ -315,5 +315,5 @@
 
 .chatRoomFullPage .chatInputWrap {
   padding-top: 14px;
-  padding-bottom: 28px;
+  padding-bottom: 14px;
 }

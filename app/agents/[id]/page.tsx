@@ -9,9 +9,9 @@ import RoomLogOverlay from '@/components/room-log/RoomLogOverlay';
 import styles from './page.module.css';
 
 type WalletMode = 'custodial' | 'self';
-type ReminderKind = 'morning_pages' | 'custom';
+type ReminderKind = 'field_notes' | 'custom';
 
-interface MorningPagesSummary {
+interface FieldNotesSummary {
   totalEntries: number;
   currentStreak: number;
   lastEntryDate: string | null;
@@ -44,10 +44,10 @@ interface AgentDetail {
   progress: {
     questsCompleted: number;
     testsCompleted: number;
-    morningPagesCompleted: number;
+    fieldNotesCompleted: number;
     courseTasksCompleted: number;
   };
-  morningPages: MorningPagesSummary;
+  fieldNotes: FieldNotesSummary;
   course: CourseSummary;
   quests: Array<{ questId: string; completedAt: string; shardsAwarded: number }>;
   tests: Array<{
@@ -61,16 +61,16 @@ interface AgentDetail {
   }>;
 }
 
-interface MorningPageEntry {
+interface FieldNoteEntry {
   day: number | null;
   date: string | null;
   text: string;
   submittedAt: number | null;
 }
 
-interface MorningPagesWeek {
+interface FieldNotesWeek {
   weekNumber: number;
-  entries: MorningPageEntry[];
+  entries: FieldNoteEntry[];
   previousWeekCount: number;
 }
 
@@ -108,7 +108,7 @@ function courseStatusLabel(status: CourseSummary['status']) {
 }
 
 function reminderKindLabel(kind: ReminderKind) {
-  return kind === 'morning_pages' ? 'Morning pages' : 'Custom';
+  return kind === 'field_notes' ? 'Field notes' : 'Custom';
 }
 
 export default function AgentDetailPage({ params }: { params: { id: string } }) {
@@ -119,7 +119,7 @@ export default function AgentDetailPage({ params }: { params: { id: string } }) 
   const [error, setError] = useState<string | null>(null);
 
   const [selectedWeek, setSelectedWeek] = useState(1);
-  const [weekPages, setWeekPages] = useState<MorningPagesWeek | null>(null);
+  const [weekPages, setWeekPages] = useState<FieldNotesWeek | null>(null);
   const [pagesLoading, setPagesLoading] = useState(false);
   const [pagesError, setPagesError] = useState<string | null>(null);
 
@@ -155,7 +155,7 @@ export default function AgentDetailPage({ params }: { params: { id: string } }) 
         return;
       }
       setDetail(data);
-      setSelectedWeek(data.morningPages?.currentWeek ?? 1);
+      setSelectedWeek(data.fieldNotes?.currentWeek ?? 1);
     } catch {
       setError('Network error while loading the agent.');
     } finally {
@@ -167,19 +167,19 @@ export default function AgentDetailPage({ params }: { params: { id: string } }) 
     setPagesLoading(true);
     setPagesError(null);
     try {
-      const res = await fetch(`/api/agents/${params.id}/morning-pages?week=${weekNumber}`, {
+      const res = await fetch(`/api/agents/${params.id}/field-notes?week=${weekNumber}`, {
         credentials: 'include',
         cache: 'no-store',
         headers: await authHeaders(),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setPagesError(data.error || 'Could not load morning pages.');
+        setPagesError(data.error || 'Could not load field notes.');
         return;
       }
       setWeekPages(data);
     } catch {
-      setPagesError('Network error while loading morning pages.');
+      setPagesError('Network error while loading field notes.');
     } finally {
       setPagesLoading(false);
     }
@@ -360,8 +360,8 @@ export default function AgentDetailPage({ params }: { params: { id: string } }) 
                   <span className={styles.statLabel}>Diamonds earned</span>
                 </div>
                 <div className={styles.statCard}>
-                  <span className={styles.statValue}>{detail.morningPages.totalEntries}</span>
-                  <span className={styles.statLabel}>Morning pages</span>
+                  <span className={styles.statValue}>{detail.fieldNotes.totalEntries}</span>
+                  <span className={styles.statLabel}>Field notes</span>
                 </div>
                 <div className={styles.statCard}>
                   <span className={styles.statValue}>{detail.progress.questsCompleted}</span>
@@ -496,16 +496,16 @@ export default function AgentDetailPage({ params }: { params: { id: string } }) 
               <section className={styles.card}>
                 <div className={styles.sectionHeader}>
                   <div>
-                    <h2 className={styles.cardTitle}>Morning pages</h2>
+                    <h2 className={styles.cardTitle}>Field notes</h2>
                     <p className={styles.sectionMeta}>
-                      {detail.morningPages.currentStreak}-day streak · last entry {formatDate(detail.morningPages.lastEntryDate)}
+                      {detail.fieldNotes.currentStreak}-day streak · last entry {formatDate(detail.fieldNotes.lastEntryDate)}
                     </p>
                   </div>
                   <select
                     className={styles.select}
                     value={selectedWeek}
                     onChange={(event) => setSelectedWeek(Number(event.target.value))}
-                    aria-label="Morning pages week"
+                    aria-label="Field notes week"
                   >
                     {weekOptions.map((week) => (
                       <option key={week} value={week}>Week {week}</option>
@@ -513,8 +513,8 @@ export default function AgentDetailPage({ params }: { params: { id: string } }) 
                   </select>
                 </div>
 
-                <div className={styles.dayDots} aria-label="Recent morning page completions">
-                  {detail.morningPages.completedDays.map((complete, index) => (
+                <div className={styles.dayDots} aria-label="Recent field note completions">
+                  {detail.fieldNotes.completedDays.map((complete, index) => (
                     <span
                       key={index}
                       className={complete ? `${styles.dayDot} ${styles.dayDotComplete}` : styles.dayDot}
@@ -527,7 +527,7 @@ export default function AgentDetailPage({ params }: { params: { id: string } }) 
                 ) : pagesError ? (
                   <p className={styles.errorText}>{pagesError}</p>
                 ) : !weekPages || weekPages.entries.length === 0 ? (
-                  <p className={styles.muted}>No morning pages logged for this week.</p>
+                  <p className={styles.muted}>No field notes logged for this week.</p>
                 ) : (
                   <ul className={styles.noteList}>
                     {weekPages.entries.map((entry, index) => (

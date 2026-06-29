@@ -11,7 +11,7 @@ import { useSound } from '@/hooks/useSound';
 import ColorThemePicker from '@/components/theme/ColorThemePicker';
 import HoverSlideText from '@/components/shared/HoverSlideText';
 const NAV_LINKS = [
-  { label: 'Pocket World', href: '/simulation', icon: '/icons/nav-simulations-v2.svg' },
+  { label: 'Pocket News', href: '/simulation', icon: '/icons/nav-simulations-v2.svg' },
   { label: 'R-Tool', href: '/research', icon: '/icons/nav-laboratory-v3.svg' },
 ];
 

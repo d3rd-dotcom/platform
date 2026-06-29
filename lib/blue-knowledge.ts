@@ -56,7 +56,7 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
     body:
       'MWA features several reward and access rails: Gem Credits for in-app activity and shop/reward mechanics, Membership for gated community access, ' +
       'Tickets for event access or limited provider-requested activations, and USDC for eligible quest rewards. ' +
-      'Chatting with Blue normally costs 10 credits per turn. Users earn credits by completing quests, course tasks, morning pages, and weekly seals.',
+      'Chatting with Blue normally costs 10 credits per turn. Users earn credits by completing quests, course tasks, field notes, and weekly seals.',
   },
   {
     id: 'academic-angel-membership',
@@ -158,7 +158,7 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
       'parasocial', 'self-determination',
     ],
     body:
-      'MWA features map to published research. Journaling and morning pages: digital journaling, especially AI-personalized, improves emotional awareness ' +
+      'MWA features map to published research. Journaling and field notes: digital journaling, especially AI-personalized, improves emotional awareness ' +
       'and goal pursuit, and positive self-reflection is more adaptive than rumination. Gamification (credits, streaks, seals): increases cognitive ' +
       'engagement and interest when carefully calibrated for vulnerable users. Peer community: online peer-to-peer networks challenge stigma, ' +
       'increase empowerment, and provide hope. Blue as a companion: parasocial relationships function as legitimate coping resources, ' +
@@ -393,12 +393,12 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
       'Consent and privacy are non-negotiable — every experiment requires explicit opt-in.',
   },
   {
-    id: 'feature-morning-pages',
-    title: 'Morning pages',
+    id: 'feature-field-notes',
+    title: 'Field notes',
     routes: ['/course', '/quests', '/home'],
     keywords: ['morning', 'pages', 'journal', 'streak', 'prayer', 'daily'],
     body:
-      'Morning pages are a daily journaling habit (3 pages of freewriting). Tracked as a streak in the prayers table, encrypted per-user. ' +
+      'Field notes are a daily journaling habit (3 pages of freewriting). Tracked as a streak in the prayers table, encrypted per-user. ' +
       'Streak fuels Blue\'s memory and rewards.',
   },
   {

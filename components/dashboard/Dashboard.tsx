@@ -59,7 +59,7 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
         <BlueScene />
       </div>
 
-      {/* ── Sidebar: ChatRoom + Leaderboard + MorningPages ── */}
+      {/* ── Sidebar: ChatRoom + Leaderboard + FieldNotes ── */}
       <aside className={styles.sidebarWrap}>
         <div className={styles.chatRoomDesktopOnly}><ChatRoom fullPage /></div>
 
@@ -98,8 +98,8 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
           )}
         </button>
 
-        <div className={styles.morningPagesShell} data-tour="daily-note">
-          <div className={styles.morningPagesGradient} aria-hidden="true" />
+        <div className={styles.fieldNotesShell} data-tour="daily-note">
+          <div className={styles.fieldNotesGradient} aria-hidden="true" />
           <DailyNotes
             enablePersistence={enableMorningPagesPersistence}
             compact

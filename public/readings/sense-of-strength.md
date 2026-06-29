@@ -98,7 +98,7 @@ Select five affirmations to work with this week:
 
 ## Check-In
 
-1. How many days this week did you do your morning pages? How was the experience?
+1. How many days this week did you do your field notes? How was the experience?
 2. Did you do your artist date this week? What did you do? How did it feel?
 3. Did you notice any useful timing, support, or opportunity this week? What was it?
 4. Were there any other issues this week that you consider significant for your recovery? Describe them.

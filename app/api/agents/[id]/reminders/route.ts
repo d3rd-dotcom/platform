@@ -27,7 +27,7 @@ type ReminderRow = {
 };
 
 function normalizeKind(kind: unknown): AgentReminderKind {
-  return kind === 'morning_pages' ? 'morning_pages' : 'custom';
+  return kind === 'field_notes' ? 'field_notes' : 'custom';
 }
 
 function parseDueAt(rawDueAt: unknown): string | null | 'invalid' {
@@ -93,7 +93,7 @@ export async function GET(_request: Request, { params }: { params: { id: string 
       );
       if (virtualReminder) reminders.unshift(virtualReminder);
     } catch (err: any) {
-      console.warn('Agent reminders: could not compute morning-pages reminder:', err?.message);
+      console.warn('Agent reminders: could not compute field-notes reminder:', err?.message);
     }
 
     return NextResponse.json({ reminders });

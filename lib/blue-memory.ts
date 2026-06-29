@@ -26,7 +26,7 @@ interface BlueRelationshipState {
   interactionCount: number;
 }
 
-interface MorningPageSummary {
+interface FieldNoteSummary {
   totalEntries: number;
   streak: number;
   lastEntryDate: string | null;
@@ -34,7 +34,7 @@ interface MorningPageSummary {
 
 interface BlueContextValues {
   username: string | null;
-  morningPages: MorningPageSummary;
+  fieldNotes: FieldNoteSummary;
   completedQuestCount: number;
   recentCompletedQuests: string[];
   sealedWeeks: number[];
@@ -45,13 +45,13 @@ interface BlueContextValues {
   recentMessages: BlueChatMessage[];
 }
 
-interface MorningPageEntryLike {
+interface FieldNoteEntryLike {
   day?: number;
   date?: string | null;
   submittedAt?: number | null;
 }
 
-interface MorningPagePayloadSummary extends MorningPageSummary {
+interface FieldNotePayloadSummary extends FieldNoteSummary {
   latestEntry: {
     weekNumber: number;
     day: number | null;
@@ -74,7 +74,7 @@ function prettifyQuestLabel(questId: string) {
   if (questDefinition?.title) return questDefinition.title;
 
   return questId
-    .replace(/^daily-notes-w(\d+)-d(\d+)$/, 'Morning Pages Week $1 Day $2')
+    .replace(/^daily-notes-w(\d+)-d(\d+)$/, 'Field Notes Week $1 Day $2')
     .replace(/[-_]+/g, ' ')
     .replace(/\b\w/g, (char) => char.toUpperCase());
 }
@@ -86,17 +86,17 @@ function prettifySectionLabel(sectionId: string) {
     .replace(/\bMp\b/g, 'MP');
 }
 
-function summarizeMorningPagesPayload(allWeekPages: Record<string, unknown[]>): MorningPagePayloadSummary {
+function summarizeMorningPagesPayload(allWeekPages: Record<string, unknown[]>): FieldNotePayloadSummary {
   const dates = new Set<string>();
   let totalEntries = 0;
-  let latestEntry: MorningPagePayloadSummary['latestEntry'] = null;
+  let latestEntry: FieldNotePayloadSummary['latestEntry'] = null;
 
   for (const [weekKey, rawPages] of Object.entries(allWeekPages || {})) {
     const weekNumber = parseInt(String(weekKey), 10);
     const pages = Array.isArray(rawPages) ? rawPages : [];
 
     for (const rawEntry of pages) {
-      const entry = rawEntry as MorningPageEntryLike;
+      const entry = rawEntry as FieldNoteEntryLike;
       if (!entry?.date) continue;
 
       dates.add(entry.date);
@@ -149,7 +149,7 @@ function summarizeMorningPagesPayload(allWeekPages: Record<string, unknown[]>): 
   };
 }
 
-async function getMorningPageSummary(userId: string): Promise<MorningPageSummary> {
+async function getMorningPageSummary(userId: string): Promise<FieldNoteSummary> {
   await ensurePrayersSchema();
 
   const rows = await sqlQuery<Array<{ progress_data: any }>>(
@@ -460,15 +460,15 @@ export async function recordBlueMorningPagesEvent(args: {
   const summary = summarizeMorningPagesPayload(args.allWeekPages);
   if (!summary.totalEntries) return;
   const latestEntrySummary = summary.latestEntry
-    ? `Latest morning pages entry: Week ${summary.latestEntry.weekNumber}${summary.latestEntry.day !== null ? ` Day ${summary.latestEntry.day}` : ''} on ${summary.latestEntry.date ?? 'unknown date'}.`
+    ? `Latest field notes entry: Week ${summary.latestEntry.weekNumber}${summary.latestEntry.day !== null ? ` Day ${summary.latestEntry.day}` : ''} on ${summary.latestEntry.date ?? 'unknown date'}.`
     : null;
 
   await Promise.all([
     upsertBlueEventFact({
       userId: args.userId,
-      eventKey: 'morning-pages-total',
+      eventKey: 'field-notes-total',
       category: 'progress',
-      summary: `User has written ${summary.totalEntries} morning pages so far.`,
+      summary: `User has written ${summary.totalEntries} field notes so far.`,
       confidence: 0.99,
       metadata: {
         totalEntries: summary.totalEntries,
@@ -476,9 +476,9 @@ export async function recordBlueMorningPagesEvent(args: {
     }),
     upsertBlueEventFact({
       userId: args.userId,
-      eventKey: 'morning-pages-streak',
+      eventKey: 'field-notes-streak',
       category: 'habit',
-      summary: `User's current morning pages streak is ${summary.streak} day(s).`,
+      summary: `User's current field notes streak is ${summary.streak} day(s).`,
       confidence: 0.98,
       metadata: {
         streak: summary.streak,
@@ -488,9 +488,9 @@ export async function recordBlueMorningPagesEvent(args: {
     summary.latestEntry
       ? upsertBlueEventFact({
           userId: args.userId,
-          eventKey: 'morning-pages-latest-entry',
+          eventKey: 'field-notes-latest-entry',
           category: 'progress',
-          summary: latestEntrySummary || 'Latest morning pages entry recorded.',
+          summary: latestEntrySummary || 'Latest field notes entry recorded.',
           confidence: 0.96,
           metadata: {
             weekNumber: summary.latestEntry.weekNumber,
@@ -682,7 +682,7 @@ export async function buildBlueContext(args: {
 }) {
   await ensureBlueMemorySchema();
 
-  const [morningPages, questSummary, weekSummary, relationshipRows, factRows, recentMessages] = await Promise.all([
+  const [fieldNotes, questSummary, weekSummary, relationshipRows, factRows, recentMessages] = await Promise.all([
     getMorningPageSummary(args.userId),
     getQuestSummary(args.userId),
     getWeekSummary(args.userId),
@@ -718,7 +718,7 @@ export async function buildBlueContext(args: {
 
   const values: BlueContextValues = {
     username: args.username ?? null,
-    morningPages,
+    fieldNotes,
     completedQuestCount: questSummary.completedQuestCount,
     recentCompletedQuests: questSummary.recentCompletedQuests,
     sealedWeeks: weekSummary.sealedWeeks,
@@ -736,9 +736,9 @@ export async function buildBlueContext(args: {
   const contextText = [
     'Blue memory context for this user.',
     `Username: ${values.username || 'unknown'}`,
-    `Morning pages total: ${values.morningPages.totalEntries}`,
-    `Morning page streak: ${values.morningPages.streak} day(s)`,
-    `Last morning page date: ${values.morningPages.lastEntryDate || 'none'}`,
+    `Field notes total: ${values.fieldNotes.totalEntries}`,
+    `Field note streak: ${values.fieldNotes.streak} day(s)`,
+    `Last field note date: ${values.fieldNotes.lastEntryDate || 'none'}`,
     `Completed quests: ${values.completedQuestCount}`,
     `Recent completed quests: ${values.recentCompletedQuests.length ? values.recentCompletedQuests.join(', ') : 'none'}`,
     `Completed course tasks: ${values.completedTaskCount}`,

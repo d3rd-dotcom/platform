@@ -63,7 +63,7 @@
     flex-shrink: 0;
   }
 
-  .morningPagesShell {
+  .fieldNotesShell {
     flex-shrink: 0;
   }
 
@@ -81,16 +81,16 @@
   }
 }
 
-/* ── Morning pages ── */
-.morningPagesShell {
+/* ── Field notes ── */
+.fieldNotesShell {
   --mobile-nav-height: calc(74px + max(env(safe-area-inset-bottom, 0px), 20px));
-  --morning-pages-gap: 10px;
-  --morning-pages-filter-light: 251 248 255;
-  --morning-pages-filter-dark: 13 14 22;
+  --field-notes-gap: 10px;
+  --field-notes-filter-light: 251 248 255;
+  --field-notes-filter-dark: 13 14 22;
   position: relative;
 }
 
-.morningPagesGradient {
+.fieldNotesGradient {
   display: none;
 }
 
@@ -360,43 +360,43 @@
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* ── Mobile: fixed-position MorningPages dock ── */
+/* ── Mobile: fixed-position FieldNotes dock ── */
 @media (max-width: 768px) {
-  .morningPagesShell {
+  .fieldNotesShell {
     position: fixed;
     left: 0;
     right: 0;
-    bottom: calc(var(--mobile-nav-height) + var(--morning-pages-gap));
+    bottom: calc(var(--mobile-nav-height) + var(--field-notes-gap));
     z-index: 1002;
     padding: 0 12px 10px;
     pointer-events: none;
     isolation: isolate;
   }
 
-  .morningPagesGradient {
+  .fieldNotesGradient {
     display: block;
     position: absolute;
-    inset: 0 0 calc(-1 * var(--morning-pages-gap));
+    inset: 0 0 calc(-1 * var(--field-notes-gap));
     z-index: 0;
     pointer-events: none;
     background: linear-gradient(
       180deg,
-      rgb(var(--morning-pages-filter-light) / 0%) 0%,
-      rgb(var(--morning-pages-filter-light) / 0%) 20%,
-      rgb(var(--morning-pages-filter-light) / 100%) 100%
+      rgb(var(--field-notes-filter-light) / 0%) 0%,
+      rgb(var(--field-notes-filter-light) / 0%) 20%,
+      rgb(var(--field-notes-filter-light) / 100%) 100%
     );
   }
 
-  :global([data-theme="dark"]) .morningPagesGradient {
+  :global([data-theme="dark"]) .fieldNotesGradient {
     background: linear-gradient(
       180deg,
-      rgb(var(--morning-pages-filter-dark) / 0%) 0%,
-      rgb(var(--morning-pages-filter-dark) / 0%) 50%,
-      rgb(var(--morning-pages-filter-dark) / 100%) 100%
+      rgb(var(--field-notes-filter-dark) / 0%) 0%,
+      rgb(var(--field-notes-filter-dark) / 0%) 50%,
+      rgb(var(--field-notes-filter-dark) / 100%) 100%
     );
   }
 
-  .morningPagesShell > :last-child {
+  .fieldNotesShell > :last-child {
     position: relative;
     z-index: 1;
     pointer-events: auto;

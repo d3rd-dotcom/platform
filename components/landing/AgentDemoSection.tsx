@@ -13,7 +13,7 @@ type Line = {
 };
 
 const SCRIPT: Line[] = [
-  { kind: 'prompt', text: 'submit "morning-pages • week 3 • day 12"', typewriter: true },
+  { kind: 'prompt', text: 'submit "field-notes • week 3 • day 12"', typewriter: true },
   { kind: 'blank', text: '' },
   { kind: 'task', text: 'blue.review_submission', duration: '1.4s' },
   { kind: 'task', text: 'blue.evaluate_reflection', duration: '0.8s' },

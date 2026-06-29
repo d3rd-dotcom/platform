@@ -54,7 +54,7 @@ Escape velocity requires self-containment, intention, and boundaries.
 
 ## Check-In
 
-1. How many days this week did you do your morning pages? Have you accepted them as a permanent writing practice?
+1. How many days this week did you do your field notes? Have you accepted them as a permanent writing practice?
 2. Did you do your artist date this week? Will you allow yourself these on a permanent basis as well?
 3. Did you notice any useful timing, support, or opportunity this week? What was it?
 4. Were there any other issues this week that you consider significant for your recovery? Describe them.
@@ -63,7 +63,7 @@ Escape velocity requires self-containment, intention, and boundaries.
 
 My name is ________. I am a recovering creative person. To further my growth and joy, I now commit myself to the following self-nurturing plans.
 
-Morning pages have been an important part of my self-nurturing and self-discovery. I, ________, hereby commit myself to continuing to work with them for the next ninety days.
+Field notes have been an important part of my self-nurturing and self-discovery. I, ________, hereby commit myself to continuing to work with them for the next ninety days.
 
 Artist's dates have been integral to my growth in self-love and my deepening joy in living. I, ________, am willing to commit to another ninety days of weekly artist's dates for self-care.
 

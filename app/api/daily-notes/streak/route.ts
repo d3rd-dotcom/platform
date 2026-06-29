@@ -7,7 +7,7 @@ import { decryptForUser } from '@/lib/encrypt';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-interface MorningPageEntry {
+interface FieldNoteEntry {
   day: number;
   date: string;
   submittedAt: number;
@@ -41,7 +41,7 @@ export async function GET() {
     return NextResponse.json({ streak: 0, completedDays: [] });
   }
 
-  let allWeekPages: Record<string, MorningPageEntry[]> = {};
+  let allWeekPages: Record<string, FieldNoteEntry[]> = {};
   const pd = rows[0].progress_data;
 
   if (pd?.encrypted && pd?.data) {

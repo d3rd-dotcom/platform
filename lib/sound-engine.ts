@@ -13,7 +13,8 @@ export type SoundType =
   | 'celebration'
   | 'alarm'
   | 'hum'
-  | 'pop';
+  | 'pop'
+  | 'ring';
 
 // C pentatonic scale frequencies
 const PENTATONIC_C5 = [523.25, 587.33, 659.25, 783.99, 880.0];
@@ -386,6 +387,14 @@ export class SoundEngine {
         this.mallet(base, now, this.dur(0.22), 0.42);
         this.mallet(base * 1.5, now + this.dur(0.11), this.dur(0.24), 0.36);
         this.mallet(base * 2, now + this.dur(0.24), this.dur(0.3), 0.32);
+        break;
+      }
+
+      case 'ring': {
+        // Two-tone phone ring pattern — repeats via setInterval in the caller
+        const ringBase = scale[3];
+        this.mallet(ringBase, now, this.dur(0.18), 0.4);
+        this.mallet(ringBase * 1.12, now + this.dur(0.13), this.dur(0.18), 0.38);
         break;
       }
     }

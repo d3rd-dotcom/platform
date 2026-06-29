@@ -52,7 +52,7 @@
 
 ### Tasks for Week 1
 
-1.  [cite_start]**Morning Pages**: Every morning, write three pages of longhand freewriting. [cite: 208] [cite_start]Do not reread them or let anyone else see them. [cite: 209]
+1.  [cite_start]**Field Notes**: Every morning, write three pages of longhand freewriting. [cite: 208] [cite_start]Do not reread them or let anyone else see them. [cite: 209]
 2.  [cite_start]**Artist Date**: Once a week, take yourself on a solo expedition to do something fun or silly, like visiting a five-and-dime store to buy gold stars or stickers. [cite: 215, 217, 218]
 3.  [cite_start]**Time Travel**: Write out a "horror story" from your past involving someone who discouraged your creativity (a "monster"). [cite: 219] [cite_start]Sketch the monster or draw a red X through it. [cite: 222, 223]
 4.  [cite_start]**Letter in Defense**: Write a letter to the "editor" (or yourself) in the voice of your wounded artist child, defending your right to create. [cite: 224, 225]
@@ -64,6 +64,6 @@
 ### Check-In
 
 [cite_start]At the end of the week, answer these questions by hand: [cite: 239, 242]
-* [cite_start]How many days did you do your morning pages? [cite: 245]
+* [cite_start]How many days did you do your field notes? [cite: 245]
 * Did you do your artist date? [cite_start]What did you do and how did it feel? [cite: 246, 248]
 * [cite_start]Were there any other significant issues this week? [cite: 248]

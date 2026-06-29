@@ -4,7 +4,7 @@ import { ensurePersonalCourseSchema } from './ensurePersonalCourseSchema';
 import { ensurePrayersSchema } from './ensurePrayersSchema';
 import { getPersonalCourse } from './personal-course-db';
 
-export type AgentReminderKind = 'morning_pages' | 'custom';
+export type AgentReminderKind = 'field_notes' | 'custom';
 
 export interface AgentHomeRow {
   id: string;
@@ -24,7 +24,7 @@ export interface AgentMorningPageEntry {
   submittedAt: number | null;
 }
 
-export interface MorningPagesSummary {
+export interface FieldNotesSummary {
   totalEntries: number;
   currentStreak: number;
   lastEntryDate: string | null;
@@ -208,7 +208,7 @@ export function resolveCurrentMorningPagesWeek(allWeekPages: Record<string, Agen
 export function summarizeMorningPages(
   allWeekPages: Record<string, AgentMorningPageEntry[]>,
   now = new Date()
-): MorningPagesSummary {
+): FieldNotesSummary {
   const entries = Object.values(allWeekPages).flat();
   const allDates = new Set<string>();
   let lastEntryDate: string | null = null;
@@ -356,17 +356,17 @@ export async function loadAgentCourseSummary(agentUserId: string): Promise<Agent
 
 export function buildVirtualMorningPagesReminder(
   agent: Pick<AgentHomeRow, 'id' | 'username'>,
-  summary: MorningPagesSummary,
+  summary: FieldNotesSummary,
   now = new Date()
 ): AgentReminder | null {
   if (!summary.dueToday) return null;
 
   return {
-    id: `virtual:morning-pages:${agent.id}:${dateKey(now)}`,
+    id: `virtual:field-notes:${agent.id}:${dateKey(now)}`,
     agentId: agent.id,
     agentUsername: agent.username,
-    kind: 'morning_pages',
-    message: `Morning pages due - keep the ${summary.currentStreak}-day streak.`,
+    kind: 'field_notes',
+    message: `Field notes due - keep the ${summary.currentStreak}-day streak.`,
     dueAt: null,
     createdAt: now.toISOString(),
     virtual: true,

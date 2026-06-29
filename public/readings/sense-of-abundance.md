@@ -20,7 +20,7 @@ For one person, a pair of trousers from a vintage store opens a new sense of sty
 
 All too often, we blame blocked creativity on lack of money. Sometimes the actual block is a feeling of constriction. We need proof that we are allowed to choose, even in small ways.
 
-Creative living requires the luxury of time, even if it is fifteen minutes for morning pages and a ten-minute walk after work. It requires space, even if all we manage is one special shelf or a windowsill that is ours.
+Creative living requires the luxury of time, even if it is fifteen minutes for field notes and a ten-minute walk after work. It requires space, even if all we manage is one special shelf or a windowsill that is ours.
 
 Designating a few things as special and yours alone can help you feel less starved. The point is not extravagance. The point is care.
 

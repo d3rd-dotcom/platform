@@ -96,7 +96,7 @@ Many blocked people are actually very powerful and creative personalities who ha
 
 Growth is an erratic forward movement: two steps forward, one step back. Remember that and be gentle with yourself. A creative recovery is a healing process. You are capable of great things on Tuesday, but on Wednesday you may slide backward. This is normal.
 
-Very often, a week of insights will be followed by a week of sluggishness. The morning pages will seem pointless. They are not. What you are learning to do is rest on the page. If you write three pages every morning and do one kind thing for yourself every day, you will begin to notice a slight lightness of heart.
+Very often, a week of insights will be followed by a week of sluggishness. The field notes will seem pointless. They are not. What you are learning to do is rest on the page. If you write three pages every morning and do one kind thing for yourself every day, you will begin to notice a slight lightness of heart.
 
 Practice being kind to yourself in small, concrete ways. Look at your refrigerator. Are you feeding yourself nicely? Do you have socks? An extra set of sheets? A new house plant? A thermos for the long drive to work? Allow yourself to pitch out some old ragged clothes. You do not have to keep everything.
 
@@ -118,7 +118,7 @@ MARTHA GRAHAM
 
 ## Check-In
 
-1. How many days this week did you do your morning pages? How was the experience? If you skipped a day, why?
+1. How many days this week did you do your field notes? How was the experience? If you skipped a day, why?
 2. Did you do your artist date this week? What did you do? How did it feel?
 3. Did you notice any useful timing, support, or opportunity this week? What was it?
 4. Were there any other issues this week that you consider significant for your recovery? Describe them.

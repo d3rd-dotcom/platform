@@ -56,7 +56,7 @@ The deal is simple: "You take care of the quality, I will take care of the quant
 
 ## Tasks
 
-1. Read your morning pages with two colors: one for insights, one for actions needed.
+1. Read your field notes with two colors: one for insights, one for actions needed.
 2. Create an ideal-scene visualization of yourself doing your goal at the height of your powers.
 3. List your creative goals for the year, month, and week.
 4. Name one creative U-turn and then three more. Forgive yourself. Consider whether any abandoned work can be rescued.
@@ -64,7 +64,7 @@ The deal is simple: "You take care of the quality, I will take care of the quant
 
 ## Check-In
 
-1. How many days this week did you do your morning pages? Regarding your U-turns, have you allowed yourself a shift toward compassion?
+1. How many days this week did you do your field notes? Regarding your U-turns, have you allowed yourself a shift toward compassion?
 2. Did you do your artist date this week? What did you do? How did it feel?
 3. Did you notice any useful timing, support, or opportunity this week? What was it?
 4. Were there any other issues this week that you consider significant for your recovery? Describe them.

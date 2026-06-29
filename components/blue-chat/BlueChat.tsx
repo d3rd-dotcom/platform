@@ -1046,30 +1046,30 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
 
     // Credits - how to earn; legacy terms remain recognized.
     if (has('earn credit', 'get credit', 'how do i earn', 'how do i get credit', 'earn shard', 'get shard', 'how do i get shard', 'earn gem', 'get gem', 'how do i get gem') || (hasAll('earn', 'credit')) || (hasAll('get', 'credit', 'how')) || (hasAll('earn', 'shard')) || (hasAll('get', 'shard', 'how')) || (hasAll('earn', 'gem')) || (hasAll('get', 'gem', 'how'))) {
-      return "quests, morning pages, sealing course weeks, surveys. show up daily and it stacks.";
+      return "quests, field notes, sealing course weeks, surveys. show up daily and it stacks.";
     }
 
     // Credits - cost; legacy terms remain recognized.
     if (has('how much', 'cost credit', 'credit cost', 'spend credit', 'how many credit', 'cost shard', 'shard cost', 'spend shard', 'how many shard', 'cost gem', 'gem cost', 'spend gem', 'how many gem') || (hasAll('cost', 'chat')) || (hasAll('credit', 'cost')) || (hasAll('shard', 'cost')) || (hasAll('gem', 'cost'))) {
-      return "10 diamonds per chat turn. earn them back from quests and morning pages.";
+      return "10 diamonds per chat turn. earn them back from quests and field notes.";
     }
 
     // Credits - balance / general; legacy terms remain recognized.
     if (has('credit', 'shard', 'gem') || (hasAll('my', 'balance')) || (hasAll('how many', 'point'))) {
       const bal = shardCount;
       return bal !== null
-        ? `you got ${bal.toLocaleString()} diamonds rn. keep stacking from quests and morning pages.`
-        : "your diamond balance is on the home dashboard. quests and morning pages build it fastest.";
+        ? `you got ${bal.toLocaleString()} diamonds rn. keep stacking from quests and field notes.`
+        : "your diamond balance is on the home dashboard. quests and field notes build it fastest.";
     }
 
-    // Morning pages / journaling
-    if (has('morning pages', 'morning page') || (hasAll('journal') && !has('research')) || has('prayer', 'daily writing', 'freewrite')) {
+    // Field notes / journaling
+    if (has('field notes', 'field note') || (hasAll('journal') && !has('research')) || has('prayer', 'daily writing', 'freewrite')) {
       return "daily freewriting — no prompts, no grades, just you and the page. do it every day and the streak does the rest.";
     }
 
     // Streak
     if (has('streak')) {
-      return "how many days in a row you showed up. morning pages, quests, course work. keep it going.";
+      return "how many days in a row you showed up. field notes, quests, course work. keep it going.";
     }
 
     // Course / curriculum / chapters / weeks
@@ -1079,7 +1079,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
 
     // Quests
     if (has('quest', 'daily task', 'daily mission', 'daily quest', 'mission')) {
-      return "short daily tasks that earn diamonds - morning pages, X posts, course stuff. check quests for what's live rn.";
+      return "short daily tasks that earn diamonds - field notes, X posts, course stuff. check quests for what's live rn.";
     }
 
     // Surveys / assessments
@@ -1177,7 +1177,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
 
     // Privacy / data consent
     if (has('privacy', 'my data', 'data privacy', 'surveillance', 'encrypt', 'consent', 'opt out')) {
-      return "morning pages are encrypted, nothing moves without your say. consent is built in, not bolted on.";
+      return "field notes are encrypted, nothing moves without your say. consent is built in, not bolted on.";
     }
 
     // Mental wellness — anxiety
@@ -1237,7 +1237,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
 
     // What can I do / features / general help
     if (has('what can i do', 'how does this work', 'what\'s available', 'what do you do', 'what features', 'help me', 'guide me')) {
-      return "course, morning pages, quests, research, markets, community. what specifically?";
+      return "course, field notes, quests, research, markets, community. what specifically?";
     }
 
     // Help / generic help request

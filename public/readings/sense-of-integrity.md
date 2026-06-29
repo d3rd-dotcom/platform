@@ -2,16 +2,16 @@ This week may find you grappling with changing self-definition. The essays, task
 
 ## Honest Changes
 
-Working with the morning pages, we begin to sort through the differences between our real feelings and our official feelings. Official feelings are often indicated by the phrase, "I feel okay about that." The morning pages force us to get specific. Does okay mean resigned, accepting, detached, numb, pleased, or satisfied?
+Working with the field notes, we begin to sort through the differences between our real feelings and our official feelings. Official feelings are often indicated by the phrase, "I feel okay about that." The field notes force us to get specific. Does okay mean resigned, accepting, detached, numb, pleased, or satisfied?
 
-At the root of a successful creative recovery is the commitment to puncture our denial and stop saying, "It's okay," when in fact it is something else. The morning pages press us to answer what else.
+At the root of a successful creative recovery is the commitment to puncture our denial and stop saying, "It's okay," when in fact it is something else. The field notes press us to answer what else.
 
 Each painting has its own way of evolving. When the painting is finished, the subject reveals itself.  
 WILLIAM BAZIOTES
 
 We often avoid the pages precisely when an unpleasant piece of clarity is about to emerge. If we have the creeping feeling that our lover is not being honest with us, the pages may bring that possibility up. If we are suddenly and madly in love, the pages may threaten the blissful illusion. Extreme emotions are often the very triggers for avoiding the pages.
 
-Over time, the morning pages become a values audit. They point out drift. They clarify boundaries. They often pose problems and solutions:
+Over time, the field notes become a values audit. They point out drift. They clarify boundaries. They often pose problems and solutions:
 
 - "I have outgrown this job."
 - "This marriage is not working for me."
@@ -73,7 +73,7 @@ Reading deprivation is a powerful tool and a frightening one. Many people respon
 
 ## Check-In
 
-1. How many days this week did you do your morning pages? How was the experience?
+1. How many days this week did you do your field notes? How was the experience?
 2. Did you do your artist date this week? What did you do? How did it feel?
 3. Did you notice any useful timing, support, or opportunity this week? What was it?
 4. Were there any other issues this week that you consider significant for your recovery? Describe them.

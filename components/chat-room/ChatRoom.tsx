@@ -147,9 +147,21 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
   // ── Auto-scroll to bottom when new messages arrive ──
   useEffect(() => {
     if (autoScrollRef.current && bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: 'instant', block: 'end' });
+      requestAnimationFrame(() => {
+        bottomRef.current?.scrollIntoView({ behavior: 'instant', block: 'end' });
+      });
     }
   }, [messages]);
+
+  // ── Always scroll to bottom on initial mount after layout settles ──
+  useEffect(() => {
+    if (bottomRef.current && messages.length > 0) {
+      const raf = requestAnimationFrame(() => {
+        bottomRef.current?.scrollIntoView({ behavior: 'instant', block: 'end' });
+      });
+      return () => cancelAnimationFrame(raf);
+    }
+  }, [messages.length]);
 
   // ── Detect manual scroll-up (user reading history) ──
   const handleScroll = useCallback(() => {

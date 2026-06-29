@@ -26,7 +26,7 @@ type OperatorReminderRow = {
 };
 
 function normalizeKind(kind: string): AgentReminderKind {
-  return kind === 'morning_pages' ? 'morning_pages' : 'custom';
+  return kind === 'field_notes' ? 'field_notes' : 'custom';
 }
 
 function mapStoredReminder(row: OperatorReminderRow): AgentReminder {
@@ -80,7 +80,7 @@ export async function GET() {
         );
         if (virtualReminder) reminders.unshift(virtualReminder);
       } catch (err: any) {
-        console.warn('Agent reminders feed: could not compute morning-pages reminder:', err?.message);
+        console.warn('Agent reminders feed: could not compute field-notes reminder:', err?.message);
       }
     }
 

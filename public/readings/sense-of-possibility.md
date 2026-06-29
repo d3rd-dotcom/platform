@@ -14,7 +14,7 @@ That is not luck. It is what happens when you stop forcing every opportunity thr
 
 ## Finding the River
 
-Four weeks of morning pages have been loosening old sediment. You may not have noticed, but your grip on fixed opinions is softening. Your moods may feel more temporary. You may be starting to sense what you want before your critic explains why it is unreasonable.
+Four weeks of field notes have been loosening old sediment. You may not have noticed, but your grip on fixed opinions is softening. Your moods may feel more temporary. You may be starting to sense what you want before your critic explains why it is unreasonable.
 
 Call that the river if you like. In practical terms, it is momentum. Recovery is the process of finding momentum and learning how to keep moving without demanding proof at every step.
 
@@ -22,7 +22,7 @@ I have watched rigid people surprise themselves. A corporate attorney enrolled i
 
 By replacing "No way" with "Maybe," we open a small door. We learn that the footwork is necessary, but the payoff is not always linear. You try one thing and another useful thing appears.
 
-Morning pages gradually erode the wall between you and your own knowing. Freed from the constant noise of internal critics, a quieter voice can be heard:
+Field notes gradually erode the wall between you and your own knowing. Freed from the constant noise of internal critics, a quieter voice can be heard:
 
 "You could still try this."
 
@@ -72,6 +72,6 @@ Your wishes are often the most serious data you will produce about yourself. The
 
 Useful ideas, collaborators, tools, homes, friendships, and opportunities are not distributed only through the channels you already know. Stop deciding in advance what the delivery mechanism must look like.
 
-At night, before sleep, write down the areas where you need guidance. In the morning pages, write on those same topics. You may see options that were invisible twelve hours earlier. This is the mind continuing to work after you give it a clear problem.
+At night, before sleep, write down the areas where you need guidance. In the field notes, write on those same topics. You may see options that were invisible twelve hours earlier. This is the mind continuing to work after you give it a clear problem.
 
 Your recovery is your own. It is also evidence for the people around you. A person who stops shrinking gives everyone nearby a more honest model of what is possible.

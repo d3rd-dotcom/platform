@@ -129,7 +129,7 @@ const CONCEPT_ALIASES: Record<string, string[]> = {
   company: ['mwa', 'mental wealth', 'academy', 'mission', 'founder', 'james', 'desci', 'decentralized science'],
   credits: ['credits', 'credit', 'shards', 'gems', 'currency', 'cost', 'spend', 'earn', 'reward', 'tickets', 'usdc'],
   course: ['course', 'curriculum', 'week', 'seal', 'pathway', 'lesson', 'task', 'inner artist', 'shadow work', 'creativity', 'season'],
-  quests: ['quest', 'quests', 'daily', 'mission', 'morning pages', 'journal', 'streak', 'usdc rewards'],
+  quests: ['quest', 'quests', 'daily', 'mission', 'field notes', 'journal', 'streak', 'usdc rewards'],
   research: ['research', 'grant', 'proposal', 'thesis', 'paper', 'study', 'experiment', 'academic'],
   markets: ['markets', 'kalshi', 'prediction', 'trade', 'treasury', 'orderbook', 'yes', 'no'],
   membership: ['vip', 'membership', 'member', 'card', 'nft', 'lifetime', 'stripe', 'upgrade', 'academic angel', 'staff tier'],
@@ -145,7 +145,7 @@ const CONCEPT_ALIASES: Record<string, string[]> = {
 const ROUTE_TERMS: Record<string, string[]> = {
   '/home': ['dashboard', 'progress', 'streak', 'overview'],
   '/course': ['course', 'curriculum', 'week', 'seal', 'pathway'],
-  '/quests': ['quests', 'daily', 'morning pages', 'completion'],
+  '/quests': ['quests', 'daily', 'field notes', 'completion'],
   '/markets': ['markets', 'kalshi', 'prediction', 'treasury', 'trade'],
   '/research': ['research', 'grant', 'proposal', 'thesis', 'paper'],
   '/community': ['community', 'farcaster', 'social', 'treasury', 'events'],

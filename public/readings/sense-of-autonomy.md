@@ -30,7 +30,7 @@ Exercise teaches the rewards of process. It teaches us that we are stronger than
 
 ## Your Creative Workspace
 
-Morning pages are a focusing practice. In order to stay happily creative, it helps to keep a personal ritual that brings you back to your work.
+Field notes are a focusing practice. In order to stay happily creative, it helps to keep a personal ritual that brings you back to your work.
 
 Create a creativity corner, ledge, shelf, or room. Fill it with things that make you happy: leaves, candles, stones, shells, pictures, flowers, symbols, music, and objects that speak to your senses. Let it remind you that creativity is physical, sensory, and practiced.
 
@@ -51,7 +51,7 @@ Your creative workspace should be a sensory experience. Your artist responds to 
 
 ## Check-In
 
-1. How many days this week did you do your morning pages? How was the experience?
+1. How many days this week did you do your field notes? How was the experience?
 2. Did you do your artist date this week? What did you do? How did it feel?
 3. Did you notice any useful timing, support, or opportunity this week? What was it?
 4. Were there any other issues this week that you consider significant for your recovery? Describe them.

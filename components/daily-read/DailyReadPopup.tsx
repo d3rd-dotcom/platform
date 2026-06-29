@@ -33,7 +33,7 @@ const WEEK_INTROS: Record<number, { title: string; body: string }> = {
   7: {
     title: 'CHECK-IN',
     body:
-      'How many days this week did you do your morning pages? Have you\nallowed yourself to daydream a few creative risks? Are you coddling\nyour artist child with childhood loves?\n\nDid you do your artist date this week? Did you use it to take any risks?\nWhat did you do? How did it feel?\n\nDid you notice any useful timing, support, or opportunity this week? What was it?\n\nWere there any other issues this week that you consider significant for\nyour recovery? Describe them.',
+      'How many days this week did you do your field notes? Have you\nallowed yourself to daydream a few creative risks? Are you coddling\nyour artist child with childhood loves?\n\nDid you do your artist date this week? Did you use it to take any risks?\nWhat did you do? How did it feel?\n\nDid you notice any useful timing, support, or opportunity this week? What was it?\n\nWere there any other issues this week that you consider significant for\nyour recovery? Describe them.',
   },
 };
 
@@ -42,17 +42,17 @@ const WEEK_DIALOGUES: Record<number, { emotion: BlueEmotion; message: string }> 
   0: {
     emotion: 'happy',
     message:
-      "Before you move, I want to ground this week in ten principles. Read them slowly. Let them set the tone for your morning pages before the rest of the day starts talking over you.",
+      "Before you move, I want to ground this week in ten principles. Read them slowly. Let them set the tone for your field notes before the rest of the day starts talking over you.",
   },
   5: {
     emotion: 'confused',
     message:
-      "Week 5 asks for honesty. Notice where you've made small cages out of old limits, and bring that tension into your morning pages instead of smoothing it over.",
+      "Week 5 asks for honesty. Notice where you've made small cages out of old limits, and bring that tension into your field notes instead of smoothing it over.",
   },
   6: {
     emotion: 'sad',
     message:
-      "Week 6 tends to stir things up. Money stories, scarcity, and self-worth all surface here. Stay close to your morning pages this week. They will help you hear what's actually yours.",
+      "Week 6 tends to stir things up. Money stories, scarcity, and self-worth all surface here. Stay close to your field notes this week. They will help you hear what's actually yours.",
   },
 };
 
@@ -97,7 +97,7 @@ export default function DailyReadPopup({ activeWeek, onDismiss }: DailyReadPopup
   const weekIntro = WEEK_INTROS[activeWeek];
   const weekDialogue = WEEK_DIALOGUES[activeWeek] ?? {
     emotion: 'happy' as BlueEmotion,
-    message: `Week ${activeWeek} is open. Carry one strong thread into your morning pages before the day crowds it out.`,
+    message: `Week ${activeWeek} is open. Carry one strong thread into your field notes before the day crowds it out.`,
   };
   const dialogueMessage = limitCopy(weekDialogue.message, MAX_DIALOGUE_CHARS);
 
@@ -126,7 +126,7 @@ export default function DailyReadPopup({ activeWeek, onDismiss }: DailyReadPopup
           <h2 id="daily-read-popup-title" className={styles.title}>{weekIntro ? weekIntro.title : 'Basic Principles'}</h2>
           <p className={styles.subtitle}>
             {weekIntro
-              ? 'Let this frame the week, then keep the thread alive in your morning pages.'
+              ? 'Let this frame the week, then keep the thread alive in your field notes.'
               : 'These are the core ideas underneath the work. Read them once before you begin.'}
           </p>
         </div>
@@ -153,7 +153,7 @@ export default function DailyReadPopup({ activeWeek, onDismiss }: DailyReadPopup
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </span>
-            Open Morning Pages
+            Open Field Notes
           </button>
         </div>
       </div>

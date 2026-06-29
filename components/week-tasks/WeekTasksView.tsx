@@ -10,8 +10,8 @@ import { useCourseSections } from '@/lib/vip-course-legacy';
 import type { JournalSection } from '@/lib/vip-course-legacy';
 import { useSound } from '@/hooks/useSound';
 
-// Reward overlays shared with the Morning Pages flow, so sealing a week
-// celebrates the same way completing a morning page does.
+// Reward overlays shared with the Field Notes flow, so sealing a week
+// celebrates the same way completing a field note does.
 const ShardAnimation = dynamic(() => import('@/components/quests/ShardAnimation').then(mod => mod.ShardAnimation), {
   ssr: false,
   loading: () => null,
@@ -360,7 +360,7 @@ export default function WeekTasksView({
       // celebration rather than a now-locked editor.
       setExpandedSection(null);
       // Close the modal and hand off to the shared reward overlays
-      // (confetti + credit count-up), the same celebration Morning Pages uses.
+      // (confetti + credit count-up), the same celebration Field Notes uses.
       setShowSealModal(false);
       setSealStep('confirm');
       setShowRewardAnimation(true);
@@ -574,7 +574,7 @@ export default function WeekTasksView({
                 </div>
               ))}
             </div>
-            <div className={jStyles.affirmationReminder}><p>Write each affirmation 5 times daily in your morning pages</p></div>
+            <div className={jStyles.affirmationReminder}><p>Write each affirmation 5 times daily in your field notes</p></div>
           </div>
         );
       case 'life-pie': {
@@ -812,7 +812,7 @@ export default function WeekTasksView({
         />
       )}
 
-      {/* Reward celebration — shared with Morning Pages */}
+      {/* Reward celebration — shared with Field Notes */}
       {showRewardAnimation && (
         <>
           <ConfettiCelebration trigger={true} />

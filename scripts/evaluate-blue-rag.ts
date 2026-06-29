@@ -25,11 +25,11 @@ const fixtures: Fixture[] = [
     minCoverage: 0.7,
   },
   {
-    name: 'morning pages navigation',
-    message: 'where do i find morning pages?',
+    name: 'field notes navigation',
+    message: 'where do i find field notes?',
     pathname: '/home',
     shouldTrust: true,
-    expectedTopIds: ['page-quests', 'feature-morning-pages'],
+    expectedTopIds: ['page-quests', 'feature-field-notes'],
     minCoverage: 0.7,
   },
   {

@@ -8,7 +8,7 @@ TRUSTING OUR CREATIVITY IS new behavior for many of us. It may feel quite threat
 
 There is a recognizable ebb and flow to the process of recovering our creative selves. As we gain strength, so will some of the attacks of self-doubt. This is normal, and we can deal with these stronger attacks when we see them as symptoms of recovery.
 
-Common self-attacks are: "Okay, so I did okay this week but it's just a temporary thing.... Okay, so I got the morning pages done. I probably did them wrong.... Okay, so now I need to plan something big and do it right away! Who am I kidding? I'll never recover, not right away, not ever...."
+Common self-attacks are: "Okay, so I did okay this week but it's just a temporary thing.... Okay, so I got the field notes done. I probably did them wrong.... Okay, so now I need to plan something big and do it right away! Who am I kidding? I'll never recover, not right away, not ever...."
 
 These attacks are groundless, but very convincing to ourselves. Buying into them enables us to remain stuck and victimized. Just as a recovering alcoholic must avoid the first drink, the recovering artist must avoid taking the first think. For us, that think is really self-doubt: "I don't think this is any good...."
 
@@ -20,7 +20,7 @@ These attacks are groundless, but very convincing to ourselves. Buying into them
 
 These attacks can come from either internal or external sources. We can neutralize them once we recognize them as a sort of creative virus. Affirmations are a powerful antidote for self-hate, which commonly appears under the mask of self-doubt.
 
-Early in our creative recovery, self-doubt can lure us into self-sabotage. A common form for this sabotage is showing someone our morning pages. Remember, the morning pages are private and are not intended for the scrutiny of well-meaning friends. One newly unblocked writer showed his morning pages to a writer friend who was still blocked. When she critiqued them, he blocked again.
+Early in our creative recovery, self-doubt can lure us into self-sabotage. A common form for this sabotage is showing someone our field notes. Remember, the field notes are private and are not intended for the scrutiny of well-meaning friends. One newly unblocked writer showed his field notes to a writer friend who was still blocked. When she critiqued them, he blocked again.
 
 Do not let your self-doubt turn into self-sabotage.
 
@@ -44,7 +44,7 @@ Do not expect your blocked friends to applaud your recovery. That's like expecti
 
 Blocked friends may find your recovery disturbing. Your getting unblocked raises the unsettling possibility that they, too, could become unblocked and move into authentic creative risks rather than bench-sitting cynicism. Be alert to subtle sabotage from friends. You cannot afford their well-meaning doubts right now. Their doubts will reactivate your own. Be particularly alert to any suggestion that you have become selfish or different. (These are red-alert words for us. They are attempts to leverage us back into our old ways for the sake of someone else's comfort, not our own.)
 
-Blocked creatives are easily manipulated by guilt. Our friends, feeling abandoned by our departure from the ranks of the blocked, may unconsciously try to guilt-trip us into giving up our newly healthy habits. It is very important to understand that the time given to morning pages is time between you and God. You best know your answers. You will be led to new sources of support as you begin to support yourself.
+Blocked creatives are easily manipulated by guilt. Our friends, feeling abandoned by our departure from the ranks of the blocked, may unconsciously try to guilt-trip us into giving up our newly healthy habits. It is very important to understand that the time given to field notes is time between you and God. You best know your answers. You will be led to new sources of support as you begin to support yourself.
 
 Be very careful to safeguard your newly recovering artist. Often, creativity is blocked by our falling in with other people's plans for us. We want to set aside time for our creative work, but we feel we should do something else instead. As blocked creatives, we focus not on our responsibilities to ourselves, but on our responsibilities to others. We tend to think such behavior makes us good people. It doesn't. It makes us frustrated people.
 
@@ -54,7 +54,7 @@ Repeat: the Great Creator has gifted us with creativity. Our gift back is our us
 
 Be gentle but firm, and hang tough. The best thing you can do for your friends is to be an example through your own recovery. Do not let their fears and second thoughts derail you.
 
-Soon enough, the techniques you learn will enable you to teach others. Soon enough, you will be a bridge that will allow others to cross over from self-doubt into self-expression. For right now, protect your artist by refusing to show your morning pages to interested bystanders or to share your artist date with friends. Draw a sacred circle around your recovery. Give yourself the gift of faith. Trust that you are on the right track. You are.
+Soon enough, the techniques you learn will enable you to teach others. Soon enough, you will be a bridge that will allow others to cross over from self-doubt into self-expression. For right now, protect your artist by refusing to show your field notes to interested bystanders or to share your artist date with friends. Draw a sacred circle around your recovery. Give yourself the gift of faith. Trust that you are on the right track. You are.
 
 As your recovery progresses, you will come to experience a more comfortable faith in your creator and your creator within. You will learn that it is actually easier to write than not write, paint than not paint, and so forth. You will learn to enjoy the process of being a creative channel and to surrender your need to control the result. You will discover the joy of practicing your creativity. The process, not the product, will become your focus.
 
@@ -141,7 +141,7 @@ Now that we have talked about the barrier to recovery others can present, let us
 > To believe in God or in a guiding force because someone tells you to is the height of stupidity. We are given senses to receive our information with. With our own eyes we see, and with our skin we feel. With our intelligence, it is intended that we understand. But each person must puzzle it out for himself or herself.
 > — SOPHY BURNHAM
 
-Boiled down to their essentials, the doubts go something like this: "Okay, so I started writing the morning pages and I seem more awake and alert in my life. So what? It's just a coincidence.... Okay, so I have started filling the well and taking my artist on a date and I do notice I am cheering up a little. So what? It's just coincidental.... Okay, so now I am beginning to notice that the more I let myself explore the possibility of there being some power for good, the more I notice lucky coincidence turning up in my life. So what? I can't believe I am really being led. That's just too weird...."
+Boiled down to their essentials, the doubts go something like this: "Okay, so I started writing the field notes and I seem more awake and alert in my life. So what? It's just a coincidence.... Okay, so I have started filling the well and taking my artist on a date and I do notice I am cheering up a little. So what? It's just coincidental.... Okay, so now I am beginning to notice that the more I let myself explore the possibility of there being some power for good, the more I notice lucky coincidence turning up in my life. So what? I can't believe I am really being led. That's just too weird...."
 
 The reason we think it's weird to imagine an unseen helping hand is that we still doubt that it's okay for us to be creative. With this attitude firmly entrenched, we not only look all gift horses in the mouth but also swat them on the rump to get them out of our lives as fast as possible.
 
