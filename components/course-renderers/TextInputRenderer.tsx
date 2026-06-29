@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useSound } from '@/hooks/useSound';
 import type { CourseComponentRecord } from '@/lib/vip-course-db';
 import styles from './TextInputRenderer.module.css';
 
@@ -17,6 +18,7 @@ interface TextInputConfig {
 }
 
 export default function TextInputRenderer({ component }: { component: CourseComponentRecord }) {
+  const { play } = useSound();
   const config = component.config as TextInputConfig;
   const [value, setValue] = useState('');
   const type = config.inputType ?? 'text';
@@ -29,6 +31,7 @@ export default function TextInputRenderer({ component }: { component: CourseComp
           type={type}
           value={value}
           onChange={(e) => setValue(e.target.value)}
+          onKeyDown={() => play('click')}
           placeholder={config.placeholder}
           maxLength={maxLength}
           required={config.validation?.required}
@@ -40,6 +43,7 @@ export default function TextInputRenderer({ component }: { component: CourseComp
           type="number"
           value={value}
           onChange={(e) => setValue(e.target.value)}
+          onKeyDown={() => play('click')}
           placeholder={config.placeholder}
           min={config.validation?.min}
           max={config.validation?.max}

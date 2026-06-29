@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useSound } from '@/hooks/useSound';
 import {
   TextT,
   CheckSquare,
@@ -21,6 +22,56 @@ import {
 } from '@phosphor-icons/react';
 import type { CourseComponentRecord, ComponentType } from '@/lib/vip-course-db';
 import styles from './ComponentPanel.module.css';
+
+function RichTextEditor({ value, onChange }: { value: string; onChange: (val: string) => void }) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const insertHeader = (level: number) => {
+    const prefix = `${'#'.repeat(level)} `;
+    const textarea = textareaRef.current;
+    if (!textarea) {
+      onChange(value + (value ? '\n\n' : '') + prefix);
+      return;
+    }
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const before = value.slice(0, start);
+    const after = value.slice(end);
+    const newValue = before + prefix + after;
+    onChange(newValue);
+    setTimeout(() => {
+      textarea.focus();
+      const pos = start + prefix.length;
+      textarea.setSelectionRange(pos, pos);
+    });
+  };
+
+  return (
+    <div className={styles.richTextWrap}>
+      <div className={styles.richToolbar}>
+        <span className={styles.richToolbarLabel}>Add header</span>
+        <button type="button" onClick={() => insertHeader(3)} className={styles.richToolbarBtn} title="Heading 3">
+          H<sub>3</sub>
+        </button>
+        <button type="button" onClick={() => insertHeader(4)} className={styles.richToolbarBtn} title="Heading 4">
+          H<sub>4</sub>
+        </button>
+        <button type="button" onClick={() => insertHeader(5)} className={styles.richToolbarBtn} title="Heading 5">
+          H<sub>5</sub>
+        </button>
+      </div>
+      <textarea
+        ref={textareaRef}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onKeyDown={() => play('click')}
+        className={`${styles.textarea} ${styles.textareaMono}`}
+        placeholder="Write your content here..."
+        rows={8}
+      />
+    </div>
+  );
+}
 
 interface ComponentPanelProps {
   component: CourseComponentRecord | null;
@@ -168,6 +219,7 @@ function MultipleChoiceEditor({
               type="text"
               value={opt.text}
               onChange={(e) => updateOption(opt.id, { text: e.target.value })}
+              onKeyDown={() => play('click')}
               placeholder={`Option ${label}`}
               className={styles.optionInput}
             />
@@ -206,6 +258,7 @@ function MultipleChoiceEditor({
 }
 
 export default function ComponentPanel({ component, onUpdate, onDelete, onClose }: ComponentPanelProps) {
+  const { play } = useSound();
   const [localConfig, setLocalConfig] = useState<Record<string, string>>({});
   const [jsonError, setJsonError] = useState<string | null>(null);
   const titleRef = useRef<HTMLInputElement>(null);
@@ -347,6 +400,7 @@ export default function ComponentPanel({ component, onUpdate, onDelete, onClose 
             ref={titleRef}
             value={component.title}
             onChange={(e) => onUpdate(component.id, { title: e.target.value })}
+            onKeyDown={() => play('click')}
             className={`${styles.input} ${styles.titleInput}`}
             placeholder="Component title"
           />
@@ -383,6 +437,7 @@ export default function ComponentPanel({ component, onUpdate, onDelete, onClose 
           <textarea
             value={getConfigValue('description')}
             onChange={(e) => handleFieldChange('description', e.target.value, 'text')}
+            onKeyDown={() => play('click')}
             className={`${styles.textarea} ${styles.input}`}
             placeholder="What is this component for? Students will see this as context."
             rows={2}
@@ -492,10 +547,16 @@ export default function ComponentPanel({ component, onUpdate, onDelete, onClose 
                       value={getConfigValue(field.key)}
                       onChange={(val) => handleFieldChange(field.key, val, 'json')}
                     />
+                  ) : component.componentType === 'rich_text' && field.key === 'content' ? (
+                    <RichTextEditor
+                      value={getConfigValue(field.key)}
+                      onChange={(val) => handleFieldChange(field.key, val, 'text')}
+                    />
                   ) : field.type === 'textarea' ? (
                     <textarea
                       value={getConfigValue(field.key)}
                       onChange={(e) => handleFieldChange(field.key, e.target.value, field.type)}
+                      onKeyDown={() => play('click')}
                       placeholder={field.placeholder}
                       rows={3}
                       className={styles.textarea}
@@ -516,6 +577,7 @@ export default function ComponentPanel({ component, onUpdate, onDelete, onClose 
                       type={field.type === 'number' ? 'number' : 'text'}
                       value={getConfigValue(field.key)}
                       onChange={(e) => handleFieldChange(field.key, e.target.value, field.type)}
+                      onKeyDown={() => play('click')}
                       placeholder={field.placeholder}
                       className={`${styles.input} ${fieldErrors[field.key] ? styles.inputError : ''}`}
                     />

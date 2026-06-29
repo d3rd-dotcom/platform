@@ -21,6 +21,7 @@ import {
   ArrowLeft,
   ArrowRight,
 } from '@phosphor-icons/react';
+import { useSound } from '@/hooks/useSound';
 import type { CourseComponentRecord, ComponentType } from '@/lib/vip-course-db';
 import styles from './WeekCanvas.module.css';
 
@@ -173,38 +174,51 @@ function WysiwygComponent({
       className={`${styles.card} ${isSelected ? styles.cardSelected : ''} ${isDragging ? styles.cardDragging : ''}`}
       onClick={(e) => { e.stopPropagation(); onSelect(component.id); }}
     >
-      <div className={styles.cardHandle} {...attributes} {...listeners}>
-        <DotsSixVertical size={12} weight="bold" />
+      {/* ── Headpiece with artwork as the "kanji" icon ── */}
+      <div className={styles.cardHead}>
+        <div className={styles.cardHandle} {...attributes} {...listeners}>
+          <DotsSixVertical size={12} weight="bold" />
+        </div>
+
+        <span className={styles.cardArtwork} style={{ backgroundImage: artwork }} aria-hidden="true" />
+
+        <div className={styles.cardHeadInfo}>
+          {hasTitle ? (
+            <span className={styles.cardType}>{component.title}</span>
+          ) : (
+            <span className={styles.cardTypeLabel}>
+              {COMPONENT_LABELS[component.componentType]}
+            </span>
+          )}
+        </div>
+
+        <button
+          type="button"
+          className={styles.cardDelete}
+          onClick={(e) => { e.stopPropagation(); onDelete(component.id); }}
+          title="Remove component"
+        >
+          <Trash size={12} weight="bold" />
+        </button>
       </div>
 
-      <span className={styles.cardAccent} aria-hidden="true" />
+      {/* ── Body with accent bar and preview ── */}
+      <div className={styles.cardBody}>
+        <span className={styles.cardAccent} aria-hidden="true" />
 
-      <span className={styles.cardArtwork} style={{ backgroundImage: artwork }} aria-hidden="true" />
-
-      <div className={styles.cardInfo}>
-        {hasTitle ? (
-          <span className={styles.cardType}>{component.title}</span>
-        ) : (
-          <span className={styles.cardTypeLabel}>
-            {COMPONENT_LABELS[component.componentType]}
-          </span>
-        )}
-        {preview && (
-          <span className={styles.cardPreview}>{preview}</span>
-        )}
-        {!hasTitle && !preview && (
-          <span className={styles.cardEmpty}>Tap to add content</span>
-        )}
+        <div className={styles.cardInfo}>
+          {hasTitle && (
+            <span className={styles.cardTypeLabel}>
+              {COMPONENT_LABELS[component.componentType]}
+            </span>
+          )}
+          {preview ? (
+            <span className={styles.cardPreview}>{preview}</span>
+          ) : !hasTitle ? (
+            <span className={styles.cardEmpty}>Tap to add content</span>
+          ) : null}
+        </div>
       </div>
-
-      <button
-        type="button"
-        className={styles.cardDelete}
-        onClick={(e) => { e.stopPropagation(); onDelete(component.id); }}
-        title="Remove component"
-      >
-        <Trash size={12} weight="bold" />
-      </button>
     </div>
   );
 }
@@ -272,6 +286,7 @@ export default function WeekCanvas({
   onUpdateComponent,
   onAddComponent,
 }: WeekCanvasProps) {
+  const { play } = useSound();
   const currentWeek = weeks.find((w) => w.id === selectedWeek);
   if (!currentWeek && weeks.length === 0) {
     return (
@@ -345,6 +360,7 @@ export default function WeekCanvas({
         <input
           value={displayWeek.title}
           onChange={(e) => onUpdateWeek(displayWeek.id, { title: e.target.value })}
+          onKeyDown={() => play('click')}
           placeholder="Name this week, e.g. Mindfulness Basics"
           className={styles.weekTitleInput}
         />
@@ -352,6 +368,7 @@ export default function WeekCanvas({
       <input
         value={displayWeek.theme}
         onChange={(e) => onUpdateWeek(displayWeek.id, { theme: e.target.value })}
+        onKeyDown={() => play('click')}
         placeholder="Theme — shows as subtitle in the course view"
         className={styles.weekThemeInput}
       />

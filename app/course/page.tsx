@@ -238,7 +238,7 @@ export default function CoursePage() {
 
   const handleFocus = useCallback((e: React.FocusEvent) => {
     const tag = (e.target as HTMLElement).tagName;
-    if (tag === 'TEXTAREA' || tag === 'INPUT') play('hover');
+    if (tag === 'TEXTAREA' || tag === 'INPUT') play('click');
   }, [play]);
 
   const handleWelcomeAuthenticated = useCallback(() => {

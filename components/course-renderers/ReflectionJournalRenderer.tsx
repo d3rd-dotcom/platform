@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useSound } from '@/hooks/useSound';
 import type { CourseComponentRecord } from '@/lib/vip-course-db';
 import styles from './ReflectionJournalRenderer.module.css';
 
@@ -11,6 +12,7 @@ interface ReflectionJournalConfig {
 }
 
 export default function ReflectionJournalRenderer({ component }: { component: CourseComponentRecord }) {
+  const { play } = useSound();
   const config = component.config as ReflectionJournalConfig;
   const [text, setText] = useState('');
   const [saved, setSaved] = useState(false);
@@ -36,6 +38,7 @@ export default function ReflectionJournalRenderer({ component }: { component: Co
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
+        onKeyDown={() => play('click')}
         className={styles.textarea}
         placeholder="Write your reflection..."
       />

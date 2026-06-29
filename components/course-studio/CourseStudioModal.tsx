@@ -24,6 +24,7 @@ function collisionFallback(args: Parameters<typeof closestCenter>[0]) {
   if (pointerHits.length > 0) return pointerHits;
   return closestCenter(args);
 }
+import { useSound } from '@/hooks/useSound';
 import ComponentPalette from './ComponentPalette';
 import WeekCanvas from './WeekCanvas';
 import ComponentPanel from './ComponentPanel';
@@ -85,6 +86,7 @@ export default function CourseStudioModal({
   existingCourseId,
   initialCourse,
 }: CourseStudioProps) {
+  const { play } = useSound();
   const [phase, setPhase] = useState<'loading' | 'edit' | 'saving'>(existingCourseId ? 'loading' : 'edit');
   const [courseId, setCourseId] = useState<string | null>(existingCourseId ?? null);
   const [title, setTitle] = useState('');
@@ -564,6 +566,7 @@ export default function CourseStudioModal({
                     }
                     setDirty(true);
                   }}
+                  onKeyDown={() => play('click')}
                   placeholder="Course title"
                   className={styles.titleInput}
                   data-tour="builder-title"
@@ -576,6 +579,7 @@ export default function CourseStudioModal({
                     setSlugManuallyEdited(true);
                     setDirty(true);
                   }}
+                  onKeyDown={() => play('click')}
                   placeholder="url-slug"
                   className={styles.slugInput}
                 />

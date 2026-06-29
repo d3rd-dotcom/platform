@@ -642,6 +642,10 @@ export default function WeekTasksView({
       className={styles.container}
       data-week-number={weekNumber}
       style={{ '--week-color': weekColor } as React.CSSProperties}
+      onKeyDown={(e) => {
+        const tag = (e.target as HTMLElement).tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA') play('click');
+      }}
     >
 {visibleSections.map((section, idx) => {
         const isOpen = expandedSection === section.id;

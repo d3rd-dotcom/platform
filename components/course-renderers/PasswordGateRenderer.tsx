@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Lock, LockOpen } from '@phosphor-icons/react';
+import { useSound } from '@/hooks/useSound';
 import type { CourseComponentRecord } from '@/lib/vip-course-db';
 import styles from './PasswordGateRenderer.module.css';
 
@@ -12,6 +13,7 @@ interface PasswordGateConfig {
 }
 
 export default function PasswordGateRenderer({ component }: { component: CourseComponentRecord }) {
+  const { play } = useSound();
   const config = component.config as PasswordGateConfig;
   const [input, setInput] = useState('');
   const [unlocked, setUnlocked] = useState(false);
@@ -31,6 +33,7 @@ export default function PasswordGateRenderer({ component }: { component: CourseC
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    play('click');
     if (e.key === 'Enter') handleSubmit();
   };
 
