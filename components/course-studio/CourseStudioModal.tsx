@@ -96,6 +96,7 @@ export default function CourseStudioModal({
   const [title, setTitle] = useState('');
   const [focus, setFocus] = useState('');
   const [slug, setSlug] = useState('');
+  const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
   const [weeks, setWeeks] = useState<CourseDraft['weeks']>(() => {
     if (initialCourse?.weeks?.length) {
       const now = Date.now();
@@ -165,6 +166,7 @@ export default function CourseStudioModal({
         setTitle(course.title);
         setFocus(course.focus);
         setSlug(course.slug);
+        setCoverImageUrl(course.coverImageUrl);
         setCourseId(course.id);
         setStatus(course.status);
         const mapped = course.weeks.map((w) => ({
@@ -284,7 +286,7 @@ export default function CourseStudioModal({
   };
 
   const addBlankMission = () => {
-    addComponentToWeek(selectedWeekId, 'reflection_journal', { legacyType: 'text' });
+    addComponentToWeek(selectedWeekId, 'reflection_journal', { prompt: '', minWords: 0 });
   };
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -368,7 +370,7 @@ export default function CourseStudioModal({
       const res = await fetch(`/api/vip/courses/${currentCourseId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', ...headers },
-        body: JSON.stringify({ title: title.trim(), slug: slug.trim(), focus: focus.trim() }),
+        body: JSON.stringify({ title: title.trim(), slug: slug.trim(), focus: focus.trim(), coverImageUrl }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
@@ -379,7 +381,7 @@ export default function CourseStudioModal({
       const res = await fetch('/api/vip/courses', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...headers },
-        body: JSON.stringify({ title: title.trim(), slug: slugVal, focus: focus.trim() }),
+        body: JSON.stringify({ title: title.trim(), slug: slugVal, focus: focus.trim(), coverImageUrl }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'Failed to create course');
@@ -615,7 +617,6 @@ export default function CourseStudioModal({
             <CoursePreview
               weeks={weeks}
               readingContent={readingContent}
-              title={title}
             />
           ) : (
             <div className={styles.editorArea}>

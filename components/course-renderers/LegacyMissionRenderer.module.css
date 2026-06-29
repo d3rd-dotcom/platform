@@ -201,6 +201,10 @@
   align-items: center;
 }
 
+.enjoyListRowBuilder {
+  grid-template-columns: 32px 1fr 100px 26px;
+}
+
 .enjoyListNumber {
   display: flex;
   align-items: center;
@@ -352,6 +356,113 @@
   color: #1A1D33;
 }
 
+/* ── shared add button ── */
+
+.addBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px dashed rgba(26, 29, 51, 0.2);
+  background: transparent;
+  color: #666666;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  align-self: flex-start;
+}
+
+.addBtn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+}
+
+/* ── sliders: header row ── */
+
+.sliderHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sliderLabelInput {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: #1A1D33;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid transparent;
+  outline: none;
+  padding: 2px 0;
+  transition: border-color 0.12s ease;
+}
+
+.sliderLabelInput:focus {
+  border-bottom-color: rgba(26, 29, 51, 0.2);
+}
+
+.sliderLabelInput::placeholder {
+  color: #999999;
+}
+
+.removeSliderBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: rgba(26, 29, 51, 0.15);
+  cursor: pointer;
+  font-size: 11px;
+  transition: all 0.12s ease;
+  padding: 0;
+}
+
+.removeSliderBtn:hover {
+  background: #fef2f2;
+  color: #ef4444;
+}
+
+/* ── shared remove button ── */
+
+.removeItemBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: rgba(26, 29, 51, 0.15);
+  cursor: pointer;
+  font-size: 11px;
+  transition: all 0.12s ease;
+  padding: 0;
+}
+
+.removeItemBtn:hover {
+  background: #fef2f2;
+  color: #ef4444;
+}
+
+/* ── entry header (label + remove) ── */
+
+.entryHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 /* ── dark mode ── */
 
 :global([data-theme="dark"]) .textarea,
@@ -421,6 +532,40 @@
 
 :global([data-theme="dark"]) .slider {
   background: rgba(240, 241, 250, 0.1);
+}
+
+:global([data-theme="dark"]) .addBtn {
+  border-color: rgba(255, 255, 255, 0.15);
+  color: rgba(240, 241, 250, 0.5);
+}
+
+:global([data-theme="dark"]) .addBtn:hover {
+  border-color: #8f9bff;
+  color: #8f9bff;
+  background: rgba(143, 155, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .sliderLabelInput {
+  color: #f0f1fa;
+}
+
+:global([data-theme="dark"]) .sliderLabelInput::placeholder {
+  color: rgba(240, 241, 250, 0.3);
+}
+
+:global([data-theme="dark"]) .sliderLabelInput:focus {
+  border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+
+:global([data-theme="dark"]) .removeSliderBtn,
+:global([data-theme="dark"]) .removeItemBtn {
+  color: rgba(240, 241, 250, 0.2);
+}
+
+:global([data-theme="dark"]) .removeSliderBtn:hover,
+:global([data-theme="dark"]) .removeItemBtn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #f87171;
 }
 
 :global([data-theme="dark"]) .fallback {

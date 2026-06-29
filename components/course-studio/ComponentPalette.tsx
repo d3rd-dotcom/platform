@@ -27,19 +27,19 @@ interface ComponentPaletteProps {
 }
 
 const MISSION_ITEMS: PaletteItemDef[] = [
-  { type: 'reflection_journal', label: 'Free Write', icon: <NotePencil size={18} weight="bold" />, description: 'Open-ended journal', config: { legacyType: 'text' } },
-  { type: 'text_input', label: 'Numbered List', icon: <ListNumbers size={18} weight="bold" />, description: 'Numbered prompt list', config: { legacyType: 'numbered-list', listCount: 5, labels: ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5'] } },
-  { type: 'text_input', label: 'Lives', icon: <Users size={18} weight="bold" />, description: 'Five imaginary lives', config: { legacyType: 'lives', listLabels: ['Life 1', 'Life 2', 'Life 3', 'Life 4', 'Life 5'] } },
-  { type: 'multiple_choice', label: 'Checklist', icon: <Clipboard size={18} weight="bold" />, description: 'Checklist of items', config: { legacyType: 'checklist', checkItems: [] } },
-  { type: 'text_input', label: 'Enjoy List', icon: <Heart size={18} weight="bold" />, description: '20 things you enjoy', config: { legacyType: 'enjoy-list', count: 20 } },
-  { type: 'text_input', label: 'Affirmations', icon: <Sparkle size={18} weight="bold" />, description: 'Daily affirmations', config: { legacyType: 'affirmations', count: 3 } },
-  { type: 'rating_scale', label: 'Life Pie', icon: <Sliders size={18} weight="bold" />, description: '6 life domain sliders', config: { legacyType: 'life-pie', min: 0, max: 10, labels: ['Values', 'Exercise', 'Play', 'Work', 'Friends', 'Romance'] } },
+  { type: 'reflection_journal', label: 'Free Write', icon: <NotePencil size={18} weight="bold" />, description: 'Open-ended journal', config: { prompt: '', minWords: 0 } },
+  { type: 'text_input', label: 'Numbered List', icon: <ListNumbers size={18} weight="bold" />, description: 'Numbered prompt list', config: { placeholder: 'Write your answer...' } },
+  { type: 'text_input', label: 'Lists', icon: <Users size={18} weight="bold" />, description: 'Imaginary lives template', config: { placeholder: 'Write your answer...' } },
+  { type: 'multiple_choice', label: 'Checklist', icon: <Clipboard size={18} weight="bold" />, description: 'Checklist of items', config: { question: '', options: [], selectMultiple: true } },
+  { type: 'text_input', label: 'Enjoy List', icon: <Heart size={18} weight="bold" />, description: 'Things you enjoy', config: { placeholder: 'Something you enjoy...' } },
+  { type: 'text_input', label: 'Gratitude', icon: <Sparkle size={18} weight="bold" />, description: 'Gratitude entries', config: { placeholder: 'I am grateful for...' } },
+  { type: 'rating_scale', label: 'Sliders', icon: <Sliders size={18} weight="bold" />, description: 'Life domain sliders', config: { min: 0, max: 10, minLabel: 'Low', maxLabel: 'High' } },
   { type: 'video_embed', label: 'Video', icon: <Video size={18} weight="bold" />, description: 'Video link with description', config: { url: '', description: '', question: '', answer: '' } },
 ];
 
 function PaletteItem({ type, label, icon, description, config, onAdd }: PaletteItemDef & { onAdd?: (type: ComponentType, config?: Record<string, unknown>) => void }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
-    id: `palette-${type}${config?.legacyType ? '-' + config.legacyType : ''}`,
+    id: `palette-${type}`,
     data: { type, source: 'palette', config, paletteLabel: label },
   });
 
@@ -64,7 +64,7 @@ export default function ComponentPalette({ onAddComponent }: ComponentPalettePro
     <div className={styles.section}>
       <div className={styles.grid}>
         {MISSION_ITEMS.map((item) => (
-          <PaletteItem key={item.config?.legacyType as string} {...item} onAdd={onAddComponent} />
+          <PaletteItem key={item.type} {...item} onAdd={onAddComponent} />
         ))}
       </div>
     </div>

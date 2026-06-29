@@ -45,7 +45,8 @@ export default function ComponentRenderer({
 }: RendererProps) {
   const legacyType = component.config?.legacyType as string | undefined;
   if (legacyType) {
-    return <LegacyMissionRenderer component={component} onUpdate={(c) => onComponentUpdate?.({ config: c })} />;
+    const onUpdate = onComponentUpdate ? (c: Record<string, unknown>) => onComponentUpdate({ config: c }) : undefined;
+    return <LegacyMissionRenderer component={component} onUpdate={onUpdate} />;
   }
   const Renderer = RENDERER_MAP[component.componentType] ?? UnknownRenderer;
   return <Renderer component={component} onComponentUpdate={onComponentUpdate} />;

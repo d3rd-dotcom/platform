@@ -236,7 +236,7 @@ export default function CoursesPage() {
             <div className={styles.cardBodyRow}>
               <span
                 className={styles.thumb}
-                style={{ backgroundImage: `url(${JSON.stringify(COURSE_THUMB)})` }}>
+                style={{ backgroundImage: `url('/uploads/tapinto-creativity.avif')` }}>
                 <div className={styles.badgeWrapper}>
                   <div className={styles.cardBadgeGroup}>
                     <div className={styles.badgeSection}>

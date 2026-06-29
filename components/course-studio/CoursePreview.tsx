@@ -16,6 +16,27 @@ const ARTWORK_VARIANTS = ['aurora', 'sunrise', 'orbit', 'bloom', 'ribbon', 'pris
 const READING_ACCENT = '#6C5CE7';
 const READING_THUMB_BG = 'linear-gradient(135deg, #6C5CE7 0%, #A855F7 50%, #C084FC 100%)';
 
+function getInstructions(c: CourseComponentRecord): string {
+  const cfg = c.config ?? {};
+  // Legacy type instructions (backward compat)
+  const lt = cfg.legacyType as string;
+  if (lt === 'text') return (cfg.text as string) || 'Write your reflection...';
+  if (lt === 'numbered-list') {
+    const labels = cfg.labels as string[] | undefined;
+    return labels?.length ? `Reflect on: ${labels.join(', ')}` : 'Reflect on each item below...';
+  }
+  if (lt === 'lists' || lt === 'lives') return (cfg.instructions as string) || 'Respond to each prompt below...';
+  if (lt === 'checklist') return (cfg.instructions as string) || 'Review each item on the list.';
+  if (lt === 'enjoy-list') return (cfg.instructions as string) || 'List things you enjoy and when you last did them.';
+  if (lt === 'affirmations') return (cfg.instructions as string) || 'Write what you are grateful for.';
+  if (lt === 'life-pie') return (cfg.instructions as string || (cfg.reflectionText as string)) || 'Rate each area of your life.';
+  // Component type instructions
+  if (c.componentType === 'reflection_journal') return (cfg.prompt as string) || 'Write your reflection...';
+  if (c.componentType === 'multiple_choice') return (cfg.question as string) || '';
+  if (c.componentType === 'video_embed') return (cfg.description as string) || '';
+  return '';
+}
+
 function getArtworkVariant(id: string): string {
   let hash = 0;
   for (let i = 0; i < id.length; i++) hash = ((hash << 5) - hash) + id.charCodeAt(i);
@@ -31,10 +52,9 @@ interface CoursePreviewProps {
     components: CourseComponentRecord[];
   }>;
   readingContent: string;
-  title: string;
 }
 
-export default function CoursePreview({ weeks, readingContent, title }: CoursePreviewProps) {
+export default function CoursePreview({ weeks, readingContent }: CoursePreviewProps) {
   const [viewWeek, setViewWeek] = useState(1);
   const [rightContent, setRightContent] = useState<'reading' | 'task' | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
@@ -47,50 +67,6 @@ export default function CoursePreview({ weeks, readingContent, title }: CoursePr
 
   return (
     <div className={styles.preview}>
-      {/* Header */}
-      <div className={styles.header}>
-        <h1 className={styles.courseTitle}>{title}</h1>
-        <span className={styles.previewBadge}>Preview</span>
-      </div>
-
-      {/* Week navigation */}
-      <div className={styles.weekNav}>
-        <button
-          className={styles.weekNavArrow}
-          onClick={() => { const n = Math.max(1, viewWeek - 1); setViewWeek(n); setRightContent(null); }}
-          disabled={viewWeek <= 1}
-          aria-label="Previous week"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M15 18l-6-6 6-6"/>
-          </svg>
-        </button>
-
-        <div className={styles.weekDots}>
-          {weeks.map((w) => (
-            <button
-              key={w.id}
-              className={`${styles.weekDot} ${viewWeek === w.weekNumber ? styles.weekDotActive : ''}`}
-              onClick={() => { setViewWeek(w.weekNumber); setRightContent(null); }}
-              title={`Week ${w.weekNumber}: ${WEEK_TITLES[w.weekNumber - 1] ?? ''}`}
-            >
-              <span className={styles.weekDotInner} />
-            </button>
-          ))}
-        </div>
-
-        <button
-          className={styles.weekNavArrow}
-          onClick={() => { const n = Math.min(weeks.length, viewWeek + 1); setViewWeek(n); setRightContent(null); }}
-          disabled={viewWeek >= weeks.length}
-          aria-label="Next week"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 18l6-6-6-6"/>
-          </svg>
-        </button>
-      </div>
-
       {/* Main content */}
       <div className={styles.body}>
         {/* Left column — mirrors /course left column */}
@@ -111,6 +87,44 @@ export default function CoursePreview({ weeks, readingContent, title }: CoursePr
               <path d="M9 18l6-6-6-6"/>
             </svg>
           </button>
+
+          {/* Week navigation */}
+          <div className={styles.weekNav}>
+            <button
+              className={styles.weekNavArrow}
+              onClick={() => { const n = Math.max(1, viewWeek - 1); setViewWeek(n); setRightContent(null); }}
+              disabled={viewWeek <= 1}
+              aria-label="Previous week"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M15 18l-6-6 6-6"/>
+              </svg>
+            </button>
+
+            <div className={styles.weekDots}>
+              {weeks.map((w) => (
+                <button
+                  key={w.id}
+                  className={`${styles.weekDot} ${viewWeek === w.weekNumber ? styles.weekDotActive : ''}`}
+                  onClick={() => { setViewWeek(w.weekNumber); setRightContent(null); }}
+                  title={`Week ${w.weekNumber}: ${WEEK_TITLES[w.weekNumber - 1] ?? ''}`}
+                >
+                  <span className={styles.weekDotInner} />
+                </button>
+              ))}
+            </div>
+
+            <button
+              className={styles.weekNavArrow}
+              onClick={() => { const n = Math.min(weeks.length, viewWeek + 1); setViewWeek(n); setRightContent(null); }}
+              disabled={viewWeek >= weeks.length}
+              aria-label="Next week"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 18l6-6-6-6"/>
+              </svg>
+            </button>
+          </div>
 
           {/* Missions heading */}
           <div className={styles.missionsHeadingRow} aria-hidden="true">
@@ -171,31 +185,33 @@ export default function CoursePreview({ weeks, readingContent, title }: CoursePr
           )}
 
           {rightContent === 'task' && selectedTaskId && (
-            <div className={styles.taskDetail}>
-              {(() => {
-                const c = components.find((x) => x.id === selectedTaskId);
-                if (!c) return null;
-                const i = components.indexOf(c);
-                const accent = TASK_ACCENTS[i % TASK_ACCENTS.length];
-                const variant = getArtworkVariant(c.id);
-                return (
-                  <>
-                    <div className={styles.taskDetailHeader}>
-                      <span className={styles.taskDetailAccent} style={{ background: accent }} aria-hidden="true" />
-                      <span
-                        className={`${styles.taskArtwork} ${styles[`taskArtwork${variant.charAt(0).toUpperCase() + variant.slice(1)}`] || ''}`}
-                        style={{ '--task-accent': accent } as React.CSSProperties}
-                        aria-hidden="true"
-                      />
-                      <span className={styles.taskDetailTitle}>{c.title || 'Untitled'}</span>
-                    </div>
-                    <div className={styles.taskDetailBody}>
+            (() => {
+              const c = components.find((x) => x.id === selectedTaskId);
+              if (!c) return null;
+              const i = components.indexOf(c);
+              const accent = TASK_ACCENTS[i % TASK_ACCENTS.length];
+              const variant = getArtworkVariant(c.id);
+              const instructions = getInstructions(c);
+              return (
+                <div className={styles.taskCard}>
+                  <div className={styles.taskCardHeader}>
+                    <span className={styles.taskAccent} style={{ background: accent }} aria-hidden="true" />
+                    <span
+                      className={`${styles.taskArtwork} ${styles[`taskArtwork${variant.charAt(0).toUpperCase() + variant.slice(1)}`] || ''}`}
+                      style={{ '--task-accent': accent } as React.CSSProperties}
+                      aria-hidden="true"
+                    />
+                    <span className={styles.taskTitle}>{c.title || 'Untitled'}</span>
+                  </div>
+                  <div className={styles.taskCardContent}>
+                    {instructions && <p className={styles.taskInstructions}>{instructions}</p>}
+                    <div className={styles.taskEditor}>
                       <ComponentRenderer component={c as any} />
                     </div>
-                  </>
-                );
-              })()}
-            </div>
+                  </div>
+                </div>
+              );
+            })()
           )}
 
           {!rightContent && (

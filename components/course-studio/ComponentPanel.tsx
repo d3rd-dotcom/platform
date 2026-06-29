@@ -15,18 +15,16 @@ function getTaskArtwork(index: number): string {
   return variants[index % variants.length];
 }
 
-function getLegacyLabel(comp: CourseComponentRecord): string {
-  const legacyType = comp.config?.legacyType as string | undefined;
+function getMissionLabel(comp: CourseComponentRecord): string {
+  if (comp.title) return comp.title;
   const labels: Record<string, string> = {
-    text: 'Free Write',
-    'numbered-list': 'Numbered List',
-    lives: 'Lives',
-    checklist: 'Checklist',
-    'enjoy-list': 'Enjoy List',
-    affirmations: 'Affirmations',
-    'life-pie': 'Life Pie',
+    reflection_journal: 'Free Write',
+    text_input: 'Text Input',
+    multiple_choice: 'Multiple Choice',
+    rating_scale: 'Rating Scale',
+    video_embed: 'Video',
   };
-  return (legacyType && labels[legacyType]) || comp.title || 'Untitled';
+  return labels[comp.componentType] || 'Mission';
 }
 
 interface ComponentPanelProps {
@@ -142,7 +140,7 @@ export default function ComponentPanel({
               <div className={styles.taskCardHeader}>
                 <span className={styles.taskAccent} aria-hidden="true" />
                 <span className={`${styles.taskArtwork} ${styles[`taskArtwork${artworkVariant.charAt(0).toUpperCase() + artworkVariant.slice(1)}`] || ''}`} aria-hidden="true" />
-                <span className={styles.taskTitle}>{getLegacyLabel(comp)}</span>
+                <span className={styles.taskTitle}>{getMissionLabel(comp)}</span>
                 <svg className={styles.taskArrow} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M9 18l6-6-6-6" />
                 </svg>
