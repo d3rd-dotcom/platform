@@ -61,7 +61,7 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
 
       {/* ── Sidebar: ChatRoom + Leaderboard + MorningPages ── */}
       <aside className={styles.sidebarWrap}>
-        <ChatRoom />
+        <div className={styles.chatRoomDesktopOnly}><ChatRoom /></div>
 
         <button
           type="button"

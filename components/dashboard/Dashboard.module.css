@@ -56,6 +56,10 @@
     grid-template-columns: 1fr;
     overflow-x: hidden;
   }
+
+  .chatRoomDesktopOnly {
+    display: none;
+  }
 }
 
 /* ── Morning pages ── */

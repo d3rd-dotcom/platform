@@ -302,3 +302,13 @@
   color: #b0b6d0;
   text-align: center;
 }
+
+/* Full-page variant — no max-height so chat fills available space */
+.chatRoomFullPage {
+  flex: 1;
+}
+
+.chatRoomFullPage .chatList {
+  max-height: none;
+  min-height: 0;
+}

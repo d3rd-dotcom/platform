@@ -41,7 +41,6 @@ export const MobileBottomNav: React.FC = () => {
   if (pathname === '/') return null;
 
   const isActive = (href: string) => pathname === href || pathname?.startsWith(`${href}/`);
-  const openBlueChat = () => window.dispatchEvent(new Event('toggleBlueChat'));
 
   return (
     <nav className={styles.nav}>
@@ -62,15 +61,15 @@ export const MobileBottomNav: React.FC = () => {
         );
       })}
 
-      <button
-        type="button"
-        className={styles.tab}
+      <Link
+        href="/chat"
+        className={`${styles.tab} ${isActive('/chat') ? styles.tabActive : ''}`}
         aria-label="Chat"
-        onClick={openBlueChat}
+        aria-current={isActive('/chat') ? 'page' : undefined}
       >
-        <NavIconMark icon={ChatCircleDots} />
+        <NavIconMark icon={ChatCircleDots} isActive={isActive('/chat')} />
         <span className={styles.label}>Chat</span>
-      </button>
+      </Link>
     </nav>
   );
 };

@@ -56,7 +56,11 @@ function highlightMentions(text: string): React.ReactNode {
   );
 }
 
-export default function ChatRoom() {
+interface ChatRoomProps {
+  fullPage?: boolean;
+}
+
+export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
   const { getAccessToken } = usePrivy();
   const { play } = useSound();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -333,7 +337,7 @@ export default function ChatRoom() {
   };
 
   return (
-    <div className={styles.chatRoom}>
+    <div className={`${styles.chatRoom}${fullPage ? ' ' + styles.chatRoomFullPage : ''}`}>
       <div className={styles.chatHeader}>
           <span className={styles.chatTitle}><span className={styles.chatTitleJa}>連携</span> Global Chat</span>
         {unreadCount > 0 && (
