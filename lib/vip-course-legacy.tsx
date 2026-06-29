@@ -72,6 +72,7 @@ export function mapComponentToSection(comp: CourseComponentRecord): JournalSecti
 
 // ── Hook: fetch the full course by slug and map a specific week's components ──
 
+const FETCH_TIMEOUT = 10_000;
 const courseCache = new Map<string, JournalSection[]>();
 
 export function useCourseSections(slug: string, weekNumber: number) {
@@ -88,8 +89,15 @@ export function useCourseSections(slug: string, weekNumber: number) {
       return;
     }
 
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
+
     try {
-      const res = await fetch(`/api/vip/courses/slug/${slug}`);
+      const res = await fetch(`/api/vip/courses/slug/${slug}`, {
+        signal: controller.signal,
+        credentials: 'include',
+      });
+      clearTimeout(timer);
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
         throw new Error(body.error || 'Failed to load course');
@@ -120,8 +128,14 @@ export function useCourseSections(slug: string, weekNumber: number) {
 
       setSections(weeksByNumber.get(weekNumber) ?? []);
     } catch (err: any) {
-      setError(err.message);
+      clearTimeout(timer);
+      if (err.name === 'AbortError') {
+        setError('Request timed out');
+      } else {
+        setError(err.message);
+      }
     } finally {
+      clearTimeout(timer);
       setLoading(false);
     }
   }, [slug, weekNumber]);

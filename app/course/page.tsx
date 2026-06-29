@@ -177,7 +177,7 @@ export default function CoursePage() {
       .finally(() => {
         setSeasonLoading(false);
       });
-  }, [getAccessToken]);
+  }, []);
 
   const refreshAuth = useCallback(async () => {
     if (!ready || !authenticated) return;
