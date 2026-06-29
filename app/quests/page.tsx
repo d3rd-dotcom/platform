@@ -9,7 +9,6 @@ import QuestModal from '@/components/quest-modal/QuestModal';
 import QuestAuthorPanel from '@/components/quest-author-panel/QuestAuthorPanel';
 import UsdcReviewPanel from '@/components/usdc-review-panel/UsdcReviewPanel';
 import AngelUpsellModal from '@/components/angel-upsell-modal/AngelUpsellModal';
-import MintModal from '@/components/mint-modal/MintModal';
 import { useSound } from '@/hooks/useSound';
 import { QUEST_DEFINITIONS, QuestType } from '@/lib/quest-definitions';
 import type { QuestCardKind } from '@/components/quest-card/QuestCard';
@@ -75,7 +74,7 @@ export default function QuestsPage() {
   const [forgeOpen, setForgeOpen] = useState(false);
   const [claimOpen, setClaimOpen] = useState(false);
   const [angelPitchOpen, setAngelPitchOpen] = useState(false);
-  const [mintOpen, setMintOpen] = useState(false);
+
 
   const fetchWithAuth = useCallback(async (url: string, init?: RequestInit) => {
     const token = await getAccessToken();
@@ -289,10 +288,7 @@ export default function QuestsPage() {
       <AngelUpsellModal
         isOpen={angelPitchOpen}
         onClose={() => setAngelPitchOpen(false)}
-        onMint={() => { setAngelPitchOpen(false); setMintOpen(true); }}
       />
-
-      <MintModal isOpen={mintOpen} onClose={() => setMintOpen(false)} />
     </>
   );
 }

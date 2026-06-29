@@ -119,6 +119,29 @@ export class SoundEngine {
     airHp.connect(airGain);
     airGain.connect(this.masterGain);
 
+    // Reverb: feedback delay for a warm ambient tail — subtle wash, no slap
+    const revDelay = this.ctx.createDelay(0.3);
+    revDelay.delayTime.value = 0.12;
+    const revMix = this.ctx.createGain();
+    revMix.gain.value = 0.18;
+    const revFb = this.ctx.createGain();
+    revFb.gain.value = 0.25;
+    const revHp = this.ctx.createBiquadFilter();
+    revHp.type = 'highpass';
+    revHp.frequency.value = 300;
+    const revLp = this.ctx.createBiquadFilter();
+    revLp.type = 'lowpass';
+    revLp.frequency.value = 4000;
+
+    input.connect(revDelay);
+    revDelay.connect(revMix);
+    revMix.connect(revHp);
+    revHp.connect(revLp);
+    revLp.connect(this.masterGain);
+    // Feedback tap — feeds back into the delay
+    revLp.connect(revFb);
+    revFb.connect(revDelay);
+
     this.busInput = input;
   }
 
@@ -211,8 +234,24 @@ export class SoundEngine {
 
     switch (type) {
       case 'click': {
-        // Mechanical keyboard-style click
-        const clickLen = Math.max(1, Math.floor(ctx.sampleRate * 0.006));
+        // Creamy, thocky typing sound — rich low-end body + soft-top click
+        const clickStart = now;
+
+        // 1. Creamy body — warm sine thump for the "thock"
+        const body = ctx.createOscillator();
+        body.type = 'sine';
+        body.frequency.value = 180 + Math.random() * 80;
+        const bodyGain = ctx.createGain();
+        bodyGain.gain.setValueAtTime(0.0001, clickStart);
+        bodyGain.gain.exponentialRampToValueAtTime(0.18, clickStart + 0.003);
+        bodyGain.gain.exponentialRampToValueAtTime(0.0001, clickStart + 0.04);
+        body.connect(bodyGain);
+        bodyGain.connect(this.busInput!);
+        body.start(clickStart);
+        body.stop(clickStart + 0.05);
+
+        // 2. Soft top-click — lower bandpass noise for a rounded "thock"
+        const clickLen = Math.max(1, Math.floor(ctx.sampleRate * 0.008));
         const clickBuf = ctx.createBuffer(1, clickLen, ctx.sampleRate);
         const clickData = clickBuf.getChannelData(0);
         for (let i = 0; i < clickLen; i++) clickData[i] = Math.random() * 2 - 1;
@@ -221,22 +260,21 @@ export class SoundEngine {
 
         const bp2 = ctx.createBiquadFilter();
         bp2.type = 'bandpass';
-        bp2.frequency.value = 2000 + Math.random() * 1500;
-        bp2.Q.value = 0.6;
+        bp2.frequency.value = 1200 + Math.random() * 600;
+        bp2.Q.value = 0.8;
 
         const clickGain = ctx.createGain();
-        const clickStart = now;
         clickGain.gain.setValueAtTime(0.0001, clickStart);
-        clickGain.gain.exponentialRampToValueAtTime(0.25 + Math.random() * 0.12, clickStart + 0.0005);
-        clickGain.gain.exponentialRampToValueAtTime(0.0001, clickStart + 0.008);
+        clickGain.gain.exponentialRampToValueAtTime(0.22 + Math.random() * 0.1, clickStart + 0.001);
+        clickGain.gain.exponentialRampToValueAtTime(0.0001, clickStart + 0.014);
 
         clickSource.connect(bp2);
         bp2.connect(clickGain);
         clickGain.connect(this.busInput!);
         clickSource.start(clickStart);
-        clickSource.stop(clickStart + 0.015);
+        clickSource.stop(clickStart + 0.02);
 
-        // Subtle bottom-out thud
+        // 3. Bottom-out thud — subtle low-end weight
         const thudLen = Math.max(1, Math.floor(ctx.sampleRate * 0.01));
         const thudBuf = ctx.createBuffer(1, thudLen, ctx.sampleRate);
         const thudData = thudBuf.getChannelData(0);
@@ -246,18 +284,18 @@ export class SoundEngine {
 
         const lp = ctx.createBiquadFilter();
         lp.type = 'lowpass';
-        lp.frequency.value = 300;
+        lp.frequency.value = 250;
 
         const thudGain = ctx.createGain();
         thudGain.gain.setValueAtTime(0.0001, clickStart + 0.003);
         thudGain.gain.exponentialRampToValueAtTime(0.12, clickStart + 0.005);
-        thudGain.gain.exponentialRampToValueAtTime(0.0001, clickStart + 0.015);
+        thudGain.gain.exponentialRampToValueAtTime(0.0001, clickStart + 0.018);
 
         thudSource.connect(lp);
         lp.connect(thudGain);
         thudGain.connect(this.busInput!);
         thudSource.start(clickStart + 0.003);
-        thudSource.stop(clickStart + 0.02);
+        thudSource.stop(clickStart + 0.022);
         break;
       }
 
@@ -391,10 +429,13 @@ export class SoundEngine {
       }
 
       case 'ring': {
-        // Two-tone phone ring pattern — repeats via setInterval in the caller
-        const ringBase = scale[3];
-        this.mallet(ringBase, now, this.dur(0.18), 0.4);
-        this.mallet(ringBase * 1.12, now + this.dur(0.13), this.dur(0.18), 0.38);
+        // Melodic 4-note descending motif — a pretty ringtone phrase
+        // Uses the pentatonic scale for a guaranteed pleasant tune
+        const top = scale.length - 1;
+        this.mallet(scale[top], now, this.dur(0.14), 0.42);
+        this.mallet(scale[top - 1], now + this.dur(0.11), this.dur(0.14), 0.38);
+        this.mallet(scale[top - 2], now + this.dur(0.22), this.dur(0.16), 0.35);
+        this.mallet(scale[top], now + this.dur(0.33), this.dur(0.18), 0.32);
         break;
       }
     }

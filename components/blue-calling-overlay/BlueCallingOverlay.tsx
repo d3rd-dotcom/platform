@@ -23,7 +23,7 @@ export default function BlueCallingOverlay({ onAccept, onDecline }: BlueCallingO
 
     // Start ringing
     play('ring');
-    intervalRef.current = setInterval(() => play('ring'), 2400);
+    intervalRef.current = setInterval(() => play('ring'), 1600);
 
     return () => {
       window.removeEventListener('keydown', handleKey);

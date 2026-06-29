@@ -26,9 +26,7 @@ const BookReaderModal = dynamic(() => import('@/components/book-reader/BookReade
 const WeekOneVisualNovel = dynamic(() => import('@/components/visual-novel/WeekOneVisualNovel'), {
   ssr: false,
 });
-const MintModal = dynamic(() => import('@/components/mint-modal/MintModal'), {
-  ssr: false,
-});
+
 interface WeekStatus {
   weekNumber: number;
   isSealed: boolean;
@@ -132,7 +130,7 @@ export default function CoursePage() {
   const [viewWeek, setViewWeek] = useState<number | null>(null);
   const [weekEndsAt, setWeekEndsAt] = useState<string | null>(null);
   const [swipeAnim, setSwipeAnim] = useState<'none' | 'left' | 'right'>('none');
-  const [showMintModal, setShowMintModal] = useState(false);
+
   const { play } = useSound();
   const currentReading = WEEKLY_READINGS[readerIndex];
 
@@ -522,8 +520,6 @@ export default function CoursePage() {
           onClose={() => setIsWeekOneNovelOpen(false)}
         />
       )}
-      {showMintModal && <MintModal isOpen={showMintModal} onClose={() => setShowMintModal(false)} />}
-
       <CourseTour />
 
     </div>

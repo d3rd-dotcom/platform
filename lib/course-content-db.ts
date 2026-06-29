@@ -14,6 +14,7 @@ export interface CourseRecord {
   sortOrder: number;
   coverImageUrl: string | null;
   estimatedWeeks: number | null;
+  tokenGate: string;
   createdBy: string | null;
   updatedBy: string | null;
   publishedAt: string | null;
@@ -64,6 +65,7 @@ interface CourseRow {
   sort_order: number;
   cover_image_url: string | null;
   estimated_weeks: number | null;
+  token_gate: string;
   created_by: string | null;
   updated_by: string | null;
   published_at: string | null;
@@ -100,7 +102,7 @@ interface LessonRow {
   updated_at: string;
 }
 
-function toCourseRecord(row: CourseRow): CourseRecord {
+export function toCourseRecord(row: CourseRow): CourseRecord {
   return {
     id: row.id,
     slug: row.slug,
@@ -111,6 +113,7 @@ function toCourseRecord(row: CourseRow): CourseRecord {
     sortOrder: row.sort_order,
     coverImageUrl: row.cover_image_url,
     estimatedWeeks: row.estimated_weeks,
+    tokenGate: row.token_gate || '',
     createdBy: row.created_by,
     updatedBy: row.updated_by,
     publishedAt: row.published_at,
@@ -119,7 +122,7 @@ function toCourseRecord(row: CourseRow): CourseRecord {
   };
 }
 
-function toChapterRecord(row: ChapterRow): ChapterRecord {
+export function toChapterRecord(row: ChapterRow): ChapterRecord {
   return {
     id: row.id,
     courseId: row.course_id,
@@ -133,7 +136,7 @@ function toChapterRecord(row: ChapterRow): ChapterRecord {
   };
 }
 
-function toLessonRecord(row: LessonRow): LessonRecord {
+export function toLessonRecord(row: LessonRow): LessonRecord {
   return {
     id: row.id,
     chapterId: row.chapter_id,

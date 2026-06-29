@@ -691,7 +691,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
 
             <div className={styles.textContent}>
               <span className={styles.badge}>VIP Membership</span>
-              <h2 className={styles.title}>Become a Member</h2>
+              <h2 className={styles.title}>Earn Your Wings</h2>
               <p className={styles.description}>
                 Mental Wealth Academy is a research cohort built like a club,
                 not a classroom. One membership unlocks the path to excellence.

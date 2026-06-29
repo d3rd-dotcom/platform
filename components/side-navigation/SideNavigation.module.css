@@ -405,7 +405,8 @@
   flex-direction: column;
   flex: 1;
   min-height: 0;
-  overflow: hidden;
+  overflow: visible;
+  padding-top: 4px;
 }
 
 .navExtrasGroup {
@@ -420,9 +421,9 @@
   flex-direction: column;
 }
 
-/* Ask Blue — styled like Experiment button */
+/* Ask Blue — brutalist primary button, same styling as searchbar */
 .askBlueCardContainer {
-  padding: 0 10px 16px;
+  padding: 8px 10px 8px;
   display: flex;
   justify-content: center;
   flex-shrink: 0;
@@ -434,17 +435,17 @@
   justify-content: center;
   gap: 8px;
   width: 100%;
-  height: 56px;
+  height: 48px;
   background: var(--color-primary);
-  border: 2px solid #1A1D33;
-  border-radius: 12px;
+  border: 2px solid #6B90FF;
+  border-radius: 10px;
   font-family: var(--font-primary);
   font-size: 14px;
   font-weight: 600;
   text-transform: none;
   color: #ffffff;
   cursor: pointer;
-  box-shadow: 3px 3px 0 #1A1D33;
+  box-shadow: 2px 2px 0 #7BA0FF;
   transition: all 0.15s ease;
   box-sizing: border-box;
   flex-shrink: 0;
@@ -452,14 +453,15 @@
 
 .askBlueCard:hover {
   background: color-mix(in oklch, #ffffff 10%, var(--color-primary));
+  border-color: #6B90FF;
   color: #ffffff;
-  box-shadow: 4px 4px 0 #1A1D33;
+  box-shadow: 3px 3px 0 #7BA0FF;
   transform: translate(-1px, -1px);
 }
 
 .askBlueCard:active {
   transform: translate(1px, 1px);
-  box-shadow: 2px 2px 0 #1A1D33;
+  box-shadow: 1px 1px 0 #7BA0FF;
 }
 
 .askBlueCardIcon {
@@ -468,7 +470,7 @@
 }
 
 .askBlueCard:hover .askBlueCardIcon {
-  transform: scale(1.15);
+  transform: rotate(360deg);
 }
 
 /* Collapsed: circular icon button */
@@ -478,26 +480,28 @@
   justify-content: center;
   width: 44px;
   height: 44px;
-  background: var(--color-primary);
-  border: 2px solid #1A1D33;
+  background: linear-gradient(135deg, color-mix(in oklch, var(--color-primary) 12%, transparent) 0%, color-mix(in oklch, var(--color-primary) 6%, transparent) 100%);
+  border: 2px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
   border-radius: 50%;
-  color: #ffffff;
+  color: var(--color-primary);
   cursor: pointer;
-  box-shadow: 2px 2px 0 #1A1D33;
-  transition: all 0.15s ease;
+  box-shadow: none;
+  transition: all 0.2s ease;
+  animation: askBlueBreathing 3s ease-in-out infinite;
 }
 
 .askBlueCollapsed:hover {
-  background: color-mix(in oklch, #ffffff 10%, var(--color-primary));
-  border-color: #1A1D33;
-  color: #ffffff;
-  box-shadow: 3px 3px 0 #1A1D33;
-  transform: translate(-1px, -1px);
+  background: color-mix(in oklch, var(--color-primary) 20%, transparent);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  box-shadow: 0 2px 12px color-mix(in oklch, var(--color-primary) 22%, transparent);
+  transform: translateY(-1px);
+  animation: none;
 }
 
 .askBlueCollapsed:active {
-  transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0 #1A1D33;
+  transform: translateY(0);
+  box-shadow: none;
 }
 
 .sideNavCollapsed .navBottomGroup {
@@ -754,7 +758,6 @@
 .navItemActive {
   background: linear-gradient(135deg, color-mix(in oklch, var(--color-primary) 12%, transparent) 0%, color-mix(in oklch, var(--color-primary) 4%, transparent) 100%);
   border-color: color-mix(in oklch, var(--color-primary) 28%, transparent);
-  box-shadow: 0 10px 24px color-mix(in oklch, var(--color-primary) 12%, transparent);
 }
 
 .navItemDisabled {
@@ -840,7 +843,7 @@
 }
 
 .navItemActive .navItemLabel {
-  color: var(--color-primary);
+  color: #1A1D33;
   font-weight: 600;
   transform: translateX(1px);
 }
@@ -2081,115 +2084,6 @@
 :global([data-theme="dark"]) .actionButton:active,
 :global([data-theme="dark"]) .actionButtonCollapsed:active {
   box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
-}
-
-/* ── Become an angel upsell ─────────────────── */
-
-.angelCard {
-  padding: 8px 10px 0;
-  flex-shrink: 0;
-}
-
-.angelButton {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 9px 12px;
-  border: 1px solid color-mix(in oklch, var(--color-primary) 45%, transparent);
-  border-radius: 10px;
-  background: linear-gradient(145deg, var(--color-primary) 0%, #6a52d9 100%);
-  color: #ffffff;
-  cursor: pointer;
-  font-family: var(--font-button);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  transition: transform 0.12s, box-shadow 0.15s;
-  box-shadow:
-    0 4px 12px color-mix(in oklch, var(--color-primary) 28%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-}
-
-.angelButton::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: url('/uploads/vip-card-texture.png') center / cover no-repeat;
-  opacity: 0.35;
-  mix-blend-mode: soft-light;
-  pointer-events: none;
-}
-
-.angelButton:hover {
-  transform: translateY(-1px);
-  box-shadow:
-    0 6px 20px color-mix(in oklch, var(--color-primary) 36%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
-}
-
-.angelIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.18);
-  flex-shrink: 0;
-}
-
-.angelLabel {
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: left;
-}
-
-.angelArrow {
-  display: flex;
-  align-items: center;
-  opacity: 0.7;
-  transition: transform 0.15s, opacity 0.15s;
-  flex-shrink: 0;
-}
-
-.angelButton:hover .angelArrow {
-  transform: translateX(2px);
-  opacity: 1;
-}
-
-.angelCollapsed {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-  border: 1px solid color-mix(in oklch, var(--color-primary) 35%, transparent);
-  border-radius: 9px;
-  background: linear-gradient(145deg, var(--color-primary) 0%, #6a52d9 100%);
-  color: #ffffff;
-  cursor: pointer;
-  transition: transform 0.12s, box-shadow 0.15s;
-  box-shadow:
-    0 4px 12px color-mix(in oklch, var(--color-primary) 24%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
-}
-
-.angelCollapsed:hover {
-  transform: scale(1.06);
-  box-shadow:
-    0 6px 18px color-mix(in oklch, var(--color-primary) 34%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
-}
-
-.sideNavCollapsed .angelCard {
-  padding: 8px 6px 0;
 }
 
 :global([data-theme="dark"]) .sidebarFooter {

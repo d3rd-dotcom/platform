@@ -11,6 +11,7 @@ import type { VipCourseRecord } from '@/lib/vip-course-db';
 import type { ComponentType } from '@/lib/vip-course-db';
 import { onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
 import { useSound } from '@/hooks/useSound';
+import type { CourseRecord } from '@/lib/course-content-db';
 import styles from './page.module.css';
 
 function getCourseEndDate() {
@@ -54,6 +55,7 @@ export default function CoursesPage() {
   } | null>(null);
   const [coreAuthor, setCoreAuthor] = useState<{ username: string; avatarUrl: string | null } | null>(null);
   const [skyyeAuthor, setSkyyeAuthor] = useState<{ username: string; avatarUrl: string | null } | null>(null);
+  const [academyCourses, setAcademyCourses] = useState<CourseRecord[]>([]);
 
   useEffect(() => {
     fetch('/api/users/lookup?username=Espeon')
@@ -69,6 +71,15 @@ export default function CoursesPage() {
       .then((r) => r.ok ? r.json() : null)
       .then((d) => {
         if (d?.user) setSkyyeAuthor({ username: d.user.username, avatarUrl: d.user.avatar_url });
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/course-content')
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => {
+        if (d?.courses) setAcademyCourses(d.courses);
       })
       .catch(() => {});
   }, []);
@@ -361,6 +372,27 @@ export default function CoursesPage() {
             </div>
           )}
         </section>
+
+        {academyCourses.length > 0 && (
+          <section className={styles.authoredSection}>
+            <h2 className={styles.authoredHeading}>Academy courses</h2>
+            <div className={styles.authoredList}>
+              {academyCourses.map((c) => (
+                <Link key={c.id} href={`/course/${c.slug}`} className={`${styles.authoredCard} ${styles.courseLink}`}>
+                  <div className={styles.authoredBody}>
+                    <span className={styles.authoredTitle}>{c.title}</span>
+                    {c.tokenGate && (
+                      <span className={styles.angelTag}>Academic Angels</span>
+                    )}
+                    {c.estimatedWeeks && (
+                      <span className={styles.authoredSlug}>{c.estimatedWeeks} weeks</span>
+                    )}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
         {authoredCourses.length > 0 && (
           <section className={styles.authoredSection}>

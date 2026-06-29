@@ -35,6 +35,7 @@ export async function ensureCourseContentSchema() {
         sort_order INTEGER NOT NULL DEFAULT 0,
         cover_image_url TEXT NULL,
         estimated_weeks INTEGER NULL,
+        token_gate VARCHAR(32) NOT NULL DEFAULT '',
         created_by VARCHAR(36) NULL,
         updated_by VARCHAR(36) NULL,
         published_at TIMESTAMP NULL,
@@ -79,6 +80,12 @@ export async function ensureCourseContentSchema() {
         UNIQUE (chapter_id, slug)
       )
     `);
+
+    try {
+      await sqlQuery(`ALTER TABLE academy_courses ADD COLUMN IF NOT EXISTS token_gate VARCHAR(32) NOT NULL DEFAULT ''`);
+    } catch {
+      // migration best-effort
+    }
 
     try {
       await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_academy_courses_status_order ON academy_courses(status, sort_order)`);

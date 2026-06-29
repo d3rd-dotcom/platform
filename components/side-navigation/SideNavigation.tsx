@@ -22,7 +22,7 @@ const AvatarSelectorModal = dynamic(() => import('../avatar-selector/AvatarSelec
 const UsernameChangeModal = dynamic(() => import('../username-change/UsernameChangeModal'), { ssr: false });
 const ProMembershipModal = dynamic(() => import('../pro-membership-modal/ProMembershipModal'), { ssr: false });
 const AngelUpsellModal = dynamic(() => import('../angel-upsell-modal/AngelUpsellModal'), { ssr: false });
-const MintModal = dynamic(() => import('../mint-modal/MintModal'), { ssr: false });
+
 const YourAccountsModal = dynamic(() => import('../nav-buttons/YourAccountsModal'), { ssr: false });
 const OnboardingModal = dynamic(() => import('../onboarding/OnboardingModal'), { ssr: false });
 const LootBoxModal = dynamic(() => import('../loot-box/LootBoxModal'), { ssr: false });
@@ -190,7 +190,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   }, [externalMobileOpen]);
   const [isProModalOpen, setIsProModalOpen] = useState(false);
   const [isAngelModalOpen, setIsAngelModalOpen] = useState(false);
-  const [isMintModalOpen, setIsMintModalOpen] = useState(false);
+
   const [adminExpanded, setAdminExpanded] = useState(true);
   const [isYourAccountsModalOpen, setIsYourAccountsModalOpen] = useState(false);
   const [isCreatingSession, setIsCreatingSession] = useState(false);
@@ -298,6 +298,12 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     window.addEventListener('vipMembershipUpdated', handler);
     return () => window.removeEventListener('vipMembershipUpdated', handler);
   }, [refreshVipMembershipStatus]);
+
+  useEffect(() => {
+    const handler = () => setIsAngelModalOpen(true);
+    window.addEventListener('openAngelModal', handler);
+    return () => window.removeEventListener('openAngelModal', handler);
+  }, []);
 
   // Create server session after wallet connects via ConnectKit
   const createSessionForWallet = async (walletAddress: string) => {
@@ -747,7 +753,34 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
         {/* Navigation Sections */}
         <div className={styles.navSections}>
           <div className={styles.navPrimaryGroup}>
-            {/* Call Blue — styled like Experiment button */}
+            {primaryNavItems.map((item) => {
+              const active = isActive(item.href);
+
+              return (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  className={`${styles.navItem} hover-slide-trigger ${active ? styles.navItemActive : ''}`}
+                  onClick={() => {
+                    play('navigation');
+                    setIsMobileMenuOpen(false);
+                  }}
+                  onMouseEnter={() => play('hover')}
+                  title={isCollapsed ? item.label : undefined}
+                  aria-current={active ? 'page' : undefined}
+                >
+                <NavIconMark
+                  icon={item.icon}
+                  iconSrc={item.iconSrc}
+                  isActive={active}
+                  preserveColor={item.id === 'shop'}
+                />
+                <span className={styles.navItemLabel}><HoverSlideText>{item.label}</HoverSlideText></span>
+              </Link>
+              );
+            })}
+
+            {/* Call Blue */}
             <div className={styles.askBlueCardContainer}>
               {isCollapsed ? (
                 <button
@@ -776,37 +809,10 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                     weight="fill"
                     className={styles.askBlueCardIcon}
                   />
-                  <span>Call Blue</span>
+                  <span><HoverSlideText>Call Blue</HoverSlideText></span>
                 </button>
               )}
             </div>
-
-            {primaryNavItems.map((item) => {
-              const active = isActive(item.href);
-
-              return (
-                <Link
-                  key={item.id}
-                  href={item.href}
-                  className={`${styles.navItem} hover-slide-trigger ${active ? styles.navItemActive : ''}`}
-                  onClick={() => {
-                    play('navigation');
-                    setIsMobileMenuOpen(false);
-                  }}
-                  onMouseEnter={() => play('hover')}
-                  title={isCollapsed ? item.label : undefined}
-                  aria-current={active ? 'page' : undefined}
-                >
-                <NavIconMark
-                  icon={item.icon}
-                  iconSrc={item.iconSrc}
-                  isActive={active}
-                  preserveColor={item.id === 'shop'}
-                />
-                <span className={styles.navItemLabel}><HoverSlideText>{item.label}</HoverSlideText></span>
-              </Link>
-              );
-            })}
 
             {/* Bottom group: Surveys, Quests */}
             <div className={styles.navBottomGroup}>
@@ -844,37 +850,6 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
             <div className={styles.navExtrasGroup}>
               {renderSection(extrasSection)}
             </div>
-          )}
-        </div>
-
-        {/* Become an angel upsell */}
-        <div className={styles.angelCard}>
-          {isCollapsed ? (
-            <button
-              type="button"
-              className={styles.angelCollapsed}
-              onClick={() => setIsAngelModalOpen(true)}
-              title="Become an angel"
-              aria-label="Become an angel"
-            >
-              <Image src="/icons/guidance.svg" alt="" width={18} height={18} />
-            </button>
-          ) : (
-            <button
-              type="button"
-              className={styles.angelButton}
-              onClick={() => setIsAngelModalOpen(true)}
-            >
-              <span className={styles.angelIcon}>
-                <Image src="/icons/guidance.svg" alt="" width={16} height={16} />
-              </span>
-              <span className={styles.angelLabel}>Become an angel</span>
-              <span className={styles.angelArrow}>
-                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </span>
-            </button>
           )}
         </div>
 
@@ -953,11 +928,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
         <AngelUpsellModal
           isOpen={isAngelModalOpen}
           onClose={() => setIsAngelModalOpen(false)}
-          onMint={() => { setIsAngelModalOpen(false); setIsMintModalOpen(true); }}
         />
-      )}
-      {isMintModalOpen && (
-        <MintModal isOpen={isMintModalOpen} onClose={() => setIsMintModalOpen(false)} />
       )}
       {isYourAccountsModalOpen && (
         <YourAccountsModal onClose={() => setIsYourAccountsModalOpen(false)} />
