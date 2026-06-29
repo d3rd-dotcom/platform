@@ -48,11 +48,10 @@
   }
 
   .chatRoomDesktopOnly {
-    flex-shrink: 0;
+    flex: 1;
+    min-height: 200px;
     display: flex;
     flex-direction: column;
-    height: 360px;
-    min-height: 0;
   }
 
   .chatRoomDesktopOnly > * {
@@ -65,7 +64,6 @@
   }
 
   .morningPagesShell {
-    margin-top: auto;
     flex-shrink: 0;
   }
 

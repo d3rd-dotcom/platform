@@ -312,3 +312,8 @@
   max-height: none;
   min-height: 0;
 }
+
+.chatRoomFullPage .chatInputWrap {
+  padding-top: 14px;
+  padding-bottom: 28px;
+}

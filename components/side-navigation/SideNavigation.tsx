@@ -9,12 +9,14 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useAccount } from 'wagmi';
 import { usePrivy } from '@privy-io/react-auth';
 import type { IconProps } from '@phosphor-icons/react';
+import { PhPhone } from '@phosphor-icons/react';
 import styles from './SideNavigation.module.css';
 import { useSound } from '@/hooks/useSound';
 import { useInitialSidebarCollapsed } from './SidebarStateProvider';
 import HoverSlideText from '@/components/shared/HoverSlideText';
 
 const BlueChat = dynamic(() => import('../blue-chat/BlueChat'), { ssr: false });
+const BlueCallingOverlay = dynamic(() => import('../blue-calling-overlay/BlueCallingOverlay'), { ssr: false });
 const SidebarProfileCard = dynamic(() => import('../sidebar-profile-card/SidebarProfileCard'), { ssr: false });
 const AvatarSelectorModal = dynamic(() => import('../avatar-selector/AvatarSelectorModal'), { ssr: false });
 const UsernameChangeModal = dynamic(() => import('../username-change/UsernameChangeModal'), { ssr: false });
@@ -169,6 +171,8 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const { login, logout: privyLogout, authenticated, ready, getAccessToken } = usePrivy();
   const [shardCount, setShardCount] = useState<number | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isCallingBlue, setIsCallingBlue] = useState(false);
+  const [startWithVoice, setStartWithVoice] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [isAvatarSelectorOpen, setIsAvatarSelectorOpen] = useState(false);
@@ -237,7 +241,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     };
     window.addEventListener('toggleSidebar', handler);
 
-    const blueChatHandler = () => setIsChatOpen(true);
+    const blueChatHandler = () => setIsCallingBlue(true);
     window.addEventListener('toggleBlueChat', blueChatHandler);
 
     const openProHandler = () => setIsProModalOpen(true);
@@ -747,17 +751,15 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
             <div className={styles.askBlueCardContainer}>
               {isCollapsed ? (
                 <button
-                  onClick={() => { play('click'); setIsChatOpen(true); }}
+                  onClick={() => { play('click'); setIsCallingBlue(true); }}
                   onMouseEnter={() => play('hover')}
                   className={styles.askBlueCollapsed}
                   title="Call Blue"
                   aria-label="Call Blue"
                 >
-                  <Image
-                    src="/icons/nav-prompts-v3.svg"
-                    alt=""
-                    width={20}
-                    height={20}
+                  <PhPhone
+                    size={20}
+                    weight="fill"
                     className={styles.askBlueCardIcon}
                   />
                 </button>
@@ -766,14 +768,12 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                   type="button"
                   className={`${styles.askBlueCard} hover-slide-trigger`}
                   data-tour="ask-blue"
-                  onClick={() => { play('click'); setIsChatOpen(true); }}
+                  onClick={() => { play('click'); setIsCallingBlue(true); }}
                   onMouseEnter={() => play('hover')}
                 >
-                  <Image
-                    src="/icons/nav-prompts-v3.svg"
-                    alt=""
-                    width={16}
-                    height={16}
+                  <PhPhone
+                    size={16}
+                    weight="fill"
                     className={styles.askBlueCardIcon}
                   />
                   <span>Call Blue</span>
@@ -931,7 +931,13 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
 
 
       {/* Modals */}
-      {isChatOpen && <BlueChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />}
+      {isChatOpen && <BlueChat isOpen={isChatOpen} onClose={() => { setIsChatOpen(false); setStartWithVoice(false); }} startWithVoice={startWithVoice} />}
+      {isCallingBlue && (
+        <BlueCallingOverlay
+          onAccept={() => { setIsCallingBlue(false); setStartWithVoice(true); setIsChatOpen(true); }}
+          onDecline={() => setIsCallingBlue(false)}
+        />
+      )}
       {isLootBoxOpen && (
         <LootBoxModal
           isOpen={isLootBoxOpen}

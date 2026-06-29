@@ -463,12 +463,12 @@
 }
 
 .askBlueCardIcon {
-  filter: brightness(0) invert(1);
+  color: #ffffff;
   transition: transform 0.2s ease;
 }
 
 .askBlueCard:hover .askBlueCardIcon {
-  transform: rotate(90deg);
+  transform: scale(1.15);
 }
 
 /* Collapsed: circular icon button */

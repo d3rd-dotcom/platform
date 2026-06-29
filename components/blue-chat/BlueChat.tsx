@@ -104,6 +104,7 @@ interface UploadedAttachment {
 interface BlueChatProps {
   isOpen: boolean;
   onClose: () => void;
+  startWithVoice?: boolean;
 }
 
 interface ShardUpsellState {
@@ -196,15 +197,18 @@ function fileTypeLabel(mime: string): string {
   return 'FILE';
 }
 
-const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
+const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) => {
   const { play } = useSound();
   const { ready, authenticated, getAccessToken } = usePrivy();
   const { connector, isConnected } = useAccount();
   const currentPathname = usePathname();
+  const initialGreeting = startWithVoice
+    ? "h..h-hello...? who's this?"
+    : "hey, i'm blue. your research partner in the digital matrix. what are we analyzing today?";
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "hey, i'm blue. your research partner in the digital matrix. what are we analyzing today?",
+      text: initialGreeting,
       sender: 'blue',
       timestamp: new Date(),
     },
@@ -438,6 +442,23 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       voiceEnabledRef.current = true;
     }
   }, []);
+
+  // When chat is opened via "Call Blue": enable voice, speak the quirky greeting, then return to normal text.
+  useEffect(() => {
+    if (!startWithVoice) return;
+    setVoiceEnabled(true);
+    voiceEnabledRef.current = true;
+    setStorageItem(VOICE_PREF_KEY, '1');
+    setIsSpeaking(true);
+    const controller = new AbortController();
+    voiceAbortRef.current = controller;
+    speakBlue("h..h-hello...? who's this?", controller.signal)
+      .catch((err) => {
+        if (err?.name === 'AbortError') return;
+        console.warn('[BlueChat] call greeting TTS failed:', err);
+      })
+      .finally(() => setIsSpeaking(false));
+  }, [startWithVoice]);
 
   const toggleVoice = useCallback(() => {
     setVoiceEnabled((prev) => {
