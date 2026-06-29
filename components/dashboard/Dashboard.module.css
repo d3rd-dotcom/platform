@@ -28,6 +28,7 @@
   .blueSceneWrap {
     grid-column: 1;
     grid-row: 2 / 4;
+    height: 100%;
   }
 
   .sidebarWrap {
@@ -37,7 +38,13 @@
     flex-direction: column;
     gap: 14px;
     overflow-x: visible;
+    overflow-y: auto;
+    scrollbar-width: none;
     padding: 0 8px 24px;
+  }
+
+  .sidebarWrap::-webkit-scrollbar {
+    display: none;
   }
 
   .chatRoomDesktopOnly {
@@ -53,8 +60,12 @@
     min-height: 0;
   }
 
-  .leaderboardCard,
+  .leaderboardCard {
+    flex-shrink: 0;
+  }
+
   .morningPagesShell {
+    margin-top: auto;
     flex-shrink: 0;
   }
 
