@@ -54,6 +54,7 @@
 @media (max-width: 1024px) {
   .dashboard {
     grid-template-columns: 1fr;
+    overflow-x: hidden;
   }
 }
 
