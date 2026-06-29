@@ -1,6 +1,8 @@
 'use client';
 
 import { useDroppable } from '@dnd-kit/core';
+import { Plus, ArrowLeft, ArrowRight } from '@phosphor-icons/react';
+import { useSound } from '@/hooks/useSound';
 import type { CourseComponentRecord } from '@/lib/vip-course-db';
 import styles from './ComponentPanel.module.css';
 
@@ -17,18 +19,31 @@ function getTaskArtwork(index: number): string {
 function getMissionLabel(comp: CourseComponentRecord): string {
   if (comp.title) return comp.title;
   const labels: Record<string, string> = {
-    reflection_journal: 'Free Write',
+    reflection_journal: 'Journal',
     text_input: 'Text Input',
     rich_text: 'Rich Text',
-    multiple_choice: 'Checklist',
-    rating_scale: 'Sliders',
+    multiple_choice: 'Multiple Choice',
+    rating_scale: 'Rating Scale',
     video_embed: 'Video',
     image_embed: 'Image',
   };
   return labels[comp.componentType] || 'Mission';
 }
 
+interface StudioWeek {
+  id: string;
+  weekNumber: number;
+  title: string;
+  theme: string;
+  components: CourseComponentRecord[];
+}
+
 interface ComponentPanelProps {
+  weeks: StudioWeek[];
+  selectedWeekId: string;
+  onSelectWeek: (weekId: string) => void;
+  onAddWeek: () => void;
+  onUpdateWeek: (weekId: string, updates: { title?: string; theme?: string }) => void;
   readingContent?: string;
   missions: CourseComponentRecord[];
   selectedMissionId: string | null;
@@ -40,6 +55,11 @@ interface ComponentPanelProps {
 }
 
 export default function ComponentPanel({
+  weeks,
+  selectedWeekId,
+  onSelectWeek,
+  onAddWeek,
+  onUpdateWeek,
   readingContent,
   missions,
   selectedMissionId,
@@ -48,13 +68,88 @@ export default function ComponentPanel({
   onSelectMission,
   onAddBlankMission,
 }: ComponentPanelProps) {
+  const { play } = useSound();
   const { setNodeRef, isOver } = useDroppable({
     id: 'missions-drop-zone',
     data: { source: 'missions-zone' },
   });
 
+  const displayWeek = weeks.find((w) => w.id === selectedWeekId) ?? weeks[0];
+  const currentIndex = weeks.findIndex((w) => w.id === displayWeek?.id);
+
   return (
     <div className={styles.panel}>
+      {/* Week navigation — dots with arrows and add */}
+      <div className={styles.weekNav}>
+        <button
+          type="button"
+          className={styles.weekNavArrow}
+          onClick={() => {
+            const idx = Math.max(0, currentIndex - 1);
+            onSelectWeek(weeks[idx].id);
+          }}
+          disabled={!displayWeek || currentIndex <= 0}
+          aria-label="Previous week"
+        >
+          <ArrowLeft size={14} weight="bold" />
+        </button>
+
+        <div className={styles.weekNavDots}>
+          {weeks.map((week, i) => (
+            <button
+              key={week.id}
+              type="button"
+              className={`${styles.weekDot} ${week.id === selectedWeekId ? styles.weekDotActive : ''}`}
+              onClick={() => onSelectWeek(week.id)}
+              title={week.title || `Week ${week.weekNumber}`}
+            />
+          ))}
+          <button
+            type="button"
+            onClick={onAddWeek}
+            className={styles.weekDotAdd}
+            title="Add week"
+          >
+            <Plus size={10} weight="bold" />
+          </button>
+        </div>
+
+        <button
+          type="button"
+          className={styles.weekNavArrow}
+          onClick={() => {
+            const idx = Math.min(weeks.length - 1, currentIndex + 1);
+            onSelectWeek(weeks[idx].id);
+          }}
+          disabled={!displayWeek || currentIndex >= weeks.length - 1}
+          aria-label="Next week"
+        >
+          <ArrowRight size={14} weight="bold" />
+        </button>
+      </div>
+
+      {/* Week meta — badge, title, theme */}
+      {displayWeek && (
+        <div className={styles.weekMeta}>
+          <span className={styles.weekBadge}>Week {displayWeek.weekNumber}</span>
+          <input
+            value={displayWeek.title}
+            onChange={(e) => onUpdateWeek(displayWeek.id, { title: e.target.value })}
+            onKeyDown={() => play('click')}
+            placeholder="Name this week"
+            className={styles.weekTitleInput}
+          />
+        </div>
+      )}
+      {displayWeek && (
+        <input
+          value={displayWeek.theme}
+          onChange={(e) => onUpdateWeek(displayWeek.id, { theme: e.target.value })}
+          onKeyDown={() => play('click')}
+          placeholder="Theme — shows as subtitle"
+          className={styles.weekThemeInput}
+        />
+      )}
 
       {/* Reading card — mirrors /course page readingCard */}
       <button type="button" className={styles.readingCard} onClick={onEditReading}>

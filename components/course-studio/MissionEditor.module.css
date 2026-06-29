@@ -99,6 +99,27 @@
       color-mix(in srgb, var(--color-primary) 36%, #f0f0ff 64%) 100%);
 }
 
+.titleWrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.titleEditIcon {
+  flex-shrink: 0;
+  color: var(--color-text-faint);
+  opacity: 0.5;
+  transition: opacity 0.12s ease;
+}
+
+.titleWrapper:hover .titleEditIcon,
+.titleWrapper:focus-within .titleEditIcon {
+  opacity: 1;
+  color: var(--color-text-muted);
+}
+
 .titleInput {
   flex: 1;
   font-family: var(--font-secondary);

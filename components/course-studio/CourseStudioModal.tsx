@@ -631,6 +631,11 @@ export default function CourseStudioModal({
               >
                 <div className={styles.panelCard}>
                   <ComponentPanel
+                    weeks={weeks}
+                    selectedWeekId={selectedWeekId}
+                    onSelectWeek={setSelectedWeekId}
+                    onAddWeek={addWeek}
+                    onUpdateWeek={updateWeek}
                     readingContent={readingContent}
                     missions={currentWeekComponents}
                     selectedMissionId={selectedComponentId}
@@ -643,8 +648,8 @@ export default function CourseStudioModal({
                 </div>
               </motion.aside>
 
-              {/* Right: Component editor */}
-              {selectedComponent && (
+              {/* Right: Component editor or WeekCanvas */}
+              {selectedComponent ? (
                 <main className={styles.missionEditor}>
                   {selectedComponent.componentType === 'video_embed' ? (
                     <VideoEmbedEditor
@@ -660,14 +665,19 @@ export default function CourseStudioModal({
                     />
                   )}
                 </main>
-              )}
-              {selectedSlot === 'reading' && (
+              ) : selectedSlot === 'reading' ? (
                 <main className={styles.missionEditor}>
                   <ReadingEditor
                     content={readingContent}
                     onSave={(content) => setReadingContent(content)}
                     onClose={() => setSelectedSlot(null)}
                   />
+                </main>
+              ) : (
+                <main className={styles.editorEmptyBase}>
+                  <div className={styles.editorEmptyCard}>
+                    <p className={styles.editorEmptyText}>Select a mission to edit or add one from the palette below</p>
+                  </div>
                 </main>
               )}
 

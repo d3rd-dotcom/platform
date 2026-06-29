@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { Trash } from '@phosphor-icons/react';
+import { Trash, NotePencil } from '@phosphor-icons/react';
 import type { CourseComponentRecord } from '@/lib/vip-course-db';
 import LegacyMissionRenderer from '@/components/course-renderers/LegacyMissionRenderer';
-import ComponentRenderer from '@/components/course-renderers/ComponentRenderer';
+import MultipleChoiceEditor from './MultipleChoiceEditor';
+import ComponentConfigEditor from './ComponentConfigEditor';
 import styles from './MissionEditor.module.css';
 
 const ARTWORK_VARIANTS = ['aurora', 'sunrise', 'orbit', 'bloom', 'ribbon', 'prism'];
@@ -82,20 +83,56 @@ export default function MissionEditor({ component, onUpdate, onDelete }: Mission
     }
   };
 
+  const handleConfigUpdate = (config: Record<string, unknown>) => {
+    onUpdate(component.id, { config });
+  };
+
+  function renderEditor() {
+    if (component.componentType === 'multiple_choice') {
+      return (
+        <MultipleChoiceEditor
+          config={component.config as any}
+          onUpdate={handleConfigUpdate}
+        />
+      );
+    }
+
+    if (showLegacyEditor || legacyMapping) {
+      return (
+        <LegacyMissionRenderer
+          component={editorComponent}
+          onUpdate={handleLegacyUpdate}
+        />
+      );
+    }
+
+    // All other component types get their dedicated editor
+    return (
+      <ComponentConfigEditor
+        componentType={component.componentType}
+        config={component.config}
+        onUpdate={handleConfigUpdate}
+      />
+    );
+  }
+
   return (
     <div className={styles.editor}>
       {/* Task card header — mirrors /course expanded task card */}
       <div className={styles.taskCardHeader}>
         <span className={styles.taskAccent} aria-hidden="true" />
         <span className={`${styles.taskArtwork} ${styles[`taskArtwork${variant.charAt(0).toUpperCase() + variant.slice(1)}`] || ''}`} aria-hidden="true" />
-        <input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          onBlur={handleSaveTitle}
-          onKeyDown={(e) => { if (e.key === 'Enter') handleSaveTitle(); }}
-          placeholder="Mission title"
-          className={styles.titleInput}
-        />
+        <div className={styles.titleWrapper}>
+          <NotePencil size={12} className={styles.titleEditIcon} weight="bold" />
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            onBlur={handleSaveTitle}
+            onKeyDown={(e) => { if (e.key === 'Enter') handleSaveTitle(); }}
+            placeholder="Mission title"
+            className={styles.titleInput}
+          />
+        </div>
         <button
           type="button"
           className={styles.deleteBtn}
@@ -108,14 +145,7 @@ export default function MissionEditor({ component, onUpdate, onDelete }: Mission
 
       {/* Expanded content — the actual mission component */}
       <div className={styles.taskCardContent}>
-        {showLegacyEditor || legacyMapping ? (
-          <LegacyMissionRenderer
-            component={editorComponent}
-            onUpdate={handleLegacyUpdate}
-          />
-        ) : (
-          <ComponentRenderer component={component as any} />
-        )}
+        {renderEditor()}
       </div>
     </div>
   );

@@ -38,14 +38,15 @@ export default function RatingScaleRenderer({ component }: { component: CourseCo
           </button>
         ))}
       </div>
-      {value !== null && config.labels?.[value] && (
-        <p className={styles.label_text}>{config.labels[value]}</p>
-      )}
-      {value === null && (config.minLabel || config.maxLabel) && (
-        <p className={styles.label_text}>
-          {config.minLabel}{config.minLabel && config.maxLabel ? ' — ' : ''}{config.maxLabel}
-        </p>
-      )}
+      <div className={styles.label_row}>
+        {config.minLabel && <span className={styles.label_end}>{config.minLabel}</span>}
+        {value !== null && config.labels?.[value] ? (
+          <span className={styles.label_selected}>{config.labels[value]}</span>
+        ) : (
+          <span className={styles.label_selected}>&nbsp;</span>
+        )}
+        {config.maxLabel && <span className={styles.label_end}>{config.maxLabel}</span>}
+      </div>
     </div>
   );
 }

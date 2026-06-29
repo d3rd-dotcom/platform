@@ -76,6 +76,12 @@
     overflow-x: hidden;
   }
 
+  .sidebarWrap {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
   .chatRoomDesktopOnly {
     display: none;
   }

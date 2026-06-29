@@ -6,6 +6,184 @@
   overflow-y: auto;
 }
 
+/* ── Week nav ── */
+
+.weekNav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 2px;
+}
+
+.weekNavArrow {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface-base);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  transition: all 0.12s ease;
+}
+
+.weekNavArrow:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.weekNavArrow:disabled {
+  opacity: 0.22;
+  cursor: not-allowed;
+}
+
+.weekNavDots {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.weekDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-surface-3);
+  border: 1.5px solid var(--color-border-subtle);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.12s ease;
+}
+
+.weekDot:hover {
+  background: color-mix(in oklch, var(--color-primary) 30%, transparent);
+}
+
+.weekDotActive {
+  background: var(--color-primary);
+  border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
+  transform: scale(1.2);
+}
+
+.weekDotAdd {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px dashed var(--color-border-subtle);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-faint);
+  transition: all 0.12s ease;
+}
+
+.weekDotAdd:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
+}
+
+/* ── Week meta inputs ── */
+
+.weekMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.weekBadge {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  padding: 6px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.weekTitleInput {
+  flex: 1;
+  padding: 8px 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-base);
+  color: var(--color-text-dark);
+  outline: none;
+  transition: border-color 0.12s ease;
+  font-family: var(--font-secondary);
+}
+
+.weekTitleInput:focus {
+  border-color: var(--color-primary);
+}
+
+.weekTitleInput::placeholder {
+  color: var(--color-text-faint);
+  font-weight: 400;
+}
+
+.weekThemeInput {
+  width: 100%;
+  padding: 7px 10px;
+  font-size: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-base);
+  color: var(--color-text-muted);
+  outline: none;
+  transition: border-color 0.12s ease;
+  box-sizing: border-box;
+}
+
+.weekThemeInput:focus {
+  border-color: var(--color-primary);
+}
+
+.weekThemeInput::placeholder {
+  color: var(--color-text-faint);
+}
+
+:global([data-theme="dark"]) .weekTitleInput {
+  background: #1e1f2c;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f0f1fa;
+}
+
+:global([data-theme="dark"]) .weekThemeInput {
+  background: #1e1f2c;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f0f1fa;
+}
+
+:global([data-theme="dark"]) .weekNavArrow {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #9aa0c0;
+}
+
+:global([data-theme="dark"]) .weekDot {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+:global([data-theme="dark"]) .weekBadge {
+  background: color-mix(in srgb, var(--color-primary) 18%, transparent);
+}
+
 /* ── Reading card (mirrors /course page) ── */
 
 .readingCard {
