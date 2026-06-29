@@ -19,8 +19,9 @@ function getMissionLabel(comp: CourseComponentRecord): string {
   const labels: Record<string, string> = {
     reflection_journal: 'Free Write',
     text_input: 'Text Input',
-    multiple_choice: 'Multiple Choice',
-    rating_scale: 'Rating Scale',
+    rich_text: 'Rich Text',
+    multiple_choice: 'Checklist',
+    rating_scale: 'Sliders',
     video_embed: 'Video',
     image_embed: 'Image',
   };

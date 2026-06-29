@@ -3,8 +3,10 @@
 import { useDraggable } from '@dnd-kit/core';
 import {
   NotePencil,
+  TextT,
   Clipboard,
   Sliders,
+  Image,
   Video,
 } from '@phosphor-icons/react';
 import type { ComponentType } from '@/lib/vip-course-db';
@@ -23,9 +25,11 @@ interface ComponentPaletteProps {
 }
 
 const MISSION_ITEMS: PaletteItemDef[] = [
+  { type: 'text_input', label: 'Text Input', icon: <TextT size={18} weight="bold" />, description: 'Single text field', config: {} },
   { type: 'reflection_journal', label: 'Free Write', icon: <NotePencil size={18} weight="bold" />, description: 'Open-ended journal', config: { prompt: '', minWords: 0 } },
   { type: 'multiple_choice', label: 'Checklist', icon: <Clipboard size={18} weight="bold" />, description: 'Checklist of items', config: { question: '', options: [], selectMultiple: true } },
-  { type: 'rating_scale', label: 'Sliders', icon: <Sliders size={18} weight="bold" />, description: 'Life domain sliders', config: { min: 0, max: 10, minLabel: 'Low', maxLabel: 'High' } },
+  { type: 'rating_scale', label: 'Sliders', icon: <Sliders size={18} weight="bold" />, description: 'Rating scales', config: { min: 0, max: 10, minLabel: 'Low', maxLabel: 'High' } },
+  { type: 'image_embed', label: 'Image', icon: <Image size={18} weight="bold" />, description: 'Embed an image', config: { url: '', alt: '' } },
   { type: 'video_embed', label: 'Video', icon: <Video size={18} weight="bold" />, description: 'Video link with description', config: { url: '', description: '', question: '', answer: '' } },
 ];
 

@@ -324,7 +324,7 @@
 
 /* ── Left: Component panel ── */
 .componentPanel {
-  width: 320px;
+  width: 420px;
   max-width: 90vw;
   flex-shrink: 0;
   overflow-y: auto;
