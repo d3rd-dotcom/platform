@@ -536,6 +536,7 @@ export default function DailyNotes({
               placeholder="Every word is a step closer to the new you."
               value={timerText}
               onChange={(e) => setTimerText(e.target.value)}
+              onKeyDown={() => play('click')}
               autoFocus
               disabled={isPaused || isSubmitting}
             />
