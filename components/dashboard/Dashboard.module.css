@@ -36,17 +36,27 @@
     display: flex;
     flex-direction: column;
     gap: 14px;
-    overflow-y: auto;
     overflow-x: visible;
-    scrollbar-width: none;
     padding: 0 8px 24px;
   }
 
-  .sidebarWrap::-webkit-scrollbar {
-    display: none;
+  .chatRoomDesktopOnly {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    height: 360px;
+    min-height: 0;
   }
 
+  .chatRoomDesktopOnly > * {
+    flex: 1;
+    min-height: 0;
+  }
 
+  .leaderboardCard,
+  .morningPagesShell {
+    flex-shrink: 0;
+  }
 
 }
 
