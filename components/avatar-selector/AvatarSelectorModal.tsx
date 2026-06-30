@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import styles from './AvatarSelectorModal.module.css';
@@ -22,9 +22,7 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchAvatars = async () => {
@@ -53,58 +51,6 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
 
     fetchAvatars();
   }, [getAccessToken]);
-
-  const handleUploadCustom = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    event.target.value = ''; // allow re-selecting the same file
-    if (!file) return;
-
-    if (file.size > 10 * 1024 * 1024) {
-      setError('Image must be under 10MB.');
-      return;
-    }
-
-    setUploading(true);
-    setError(null);
-    try {
-      const token = await getAccessToken();
-      const authHeaders: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
-
-      const fd = new FormData();
-      fd.append('file', file);
-      const uploadRes = await fetch('/api/upload', {
-        method: 'POST',
-        credentials: 'include',
-        headers: authHeaders,
-        body: fd,
-      });
-      const uploadData = await uploadRes.json().catch(() => ({}));
-      if (!uploadRes.ok || !uploadData?.url) {
-        throw new Error(uploadData?.error || 'Failed to upload image');
-      }
-
-      // Persist the custom avatar directly to the user's profile.
-      const saveRes = await fetch('/api/me', {
-        method: 'PUT',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json', ...authHeaders },
-        body: JSON.stringify({ avatarUrl: uploadData.url }),
-      });
-      const saveData = await saveRes.json().catch(() => ({}));
-      if (!saveRes.ok) {
-        throw new Error(saveData?.error || 'Failed to save avatar');
-      }
-
-      onAvatarSelected(uploadData.url);
-      window.dispatchEvent(new Event('profileUpdated'));
-      onClose();
-    } catch (err: any) {
-      console.error('Failed to upload custom avatar:', err);
-      setError(err?.message || 'Failed to upload image');
-    } finally {
-      setUploading(false);
-    }
-  };
 
   const handleSelectAvatar = async () => {
     if (!selectedAvatar) {
@@ -170,23 +116,8 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
           ) : (
             <>
               <p className={styles.description}>
-                Choose one of your unique avatars, or upload your own
+                Choose one of your unique avatars
               </p>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/png,image/jpeg,image/gif,image/webp"
-                onChange={handleUploadCustom}
-                style={{ display: 'none' }}
-              />
-              <button
-                className={styles.uploadButton}
-                onClick={() => fileInputRef.current?.click()}
-                disabled={uploading || saving}
-                type="button"
-              >
-                {uploading ? 'Uploading…' : 'Upload your own picture'}
-              </button>
               <div className={styles.avatarGrid}>
                 {avatars.map((avatar) => (
                   <button
