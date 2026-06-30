@@ -12,7 +12,7 @@ export type ComponentType =
   | 'rating_scale'
   | 'reflection_journal'
   | 'quiz_block'
-  | 'password_gate'
+  | 'nft_gate'
   | 'mission_container';
 
 export type VipCourseStatus = 'draft' | 'published' | 'archived';
@@ -665,4 +665,113 @@ export async function reorderCourseComponents(
     { weekId },
   );
   return rows.map(toCourseComponent);
+}
+
+// ── Progress ──
+
+export interface VipProgressRecord {
+  id: string;
+  userId: string;
+  courseId: string;
+  weekId: string;
+  completedComponentIds: string[];
+  componentData: Record<string, unknown>;
+  isSealed: boolean;
+  sealedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface VipProgressRow {
+  id: string;
+  user_id: string;
+  course_id: string;
+  week_id: string;
+  completed_component_ids: string[];
+  component_data: Record<string, unknown>;
+  is_sealed: boolean;
+  sealed_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+function toVipProgress(row: VipProgressRow): VipProgressRecord {
+  return {
+    id: row.id,
+    userId: row.user_id,
+    courseId: row.course_id,
+    weekId: row.week_id,
+    completedComponentIds: row.completed_component_ids ?? [],
+    componentData: row.component_data ?? {},
+    isSealed: row.is_sealed,
+    sealedAt: row.sealed_at,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+export async function getVipProgress(userId: string, courseId: string): Promise<VipProgressRecord[]> {
+  await ensureVipCourseSchema();
+  const rows = await sqlQuery<VipProgressRow[]>(
+    `SELECT * FROM vip_progress WHERE user_id = :userId AND course_id = :courseId ORDER BY created_at ASC`,
+    { userId, courseId },
+  );
+  return rows.map(toVipProgress);
+}
+
+export async function upsertVipProgress(
+  userId: string,
+  courseId: string,
+  weekId: string,
+  data: {
+    completedComponentIds?: string[];
+    componentData?: Record<string, unknown>;
+    isSealed?: boolean;
+  },
+): Promise<VipProgressRecord> {
+  await ensureVipCourseSchema();
+  const existing = await sqlQuery<VipProgressRow[]>(
+    `SELECT * FROM vip_progress WHERE user_id = :userId AND course_id = :courseId AND week_id = :weekId`,
+    { userId, courseId, weekId },
+  );
+
+  if (existing.length > 0) {
+    const row = existing[0];
+    const mergedIds = data.completedComponentIds ?? row.completed_component_ids;
+    const mergedData = data.componentData ? { ...row.component_data, ...data.componentData } : row.component_data;
+    const sealed = data.isSealed !== undefined ? data.isSealed : row.is_sealed;
+
+    const updated = await sqlQuery<VipProgressRow[]>(
+      `UPDATE vip_progress
+       SET completed_component_ids = :completedComponentIds::jsonb,
+           component_data = :componentData::jsonb,
+           is_sealed = :isSealed,
+           sealed_at = CASE WHEN :isSealed IS TRUE AND sealed_at IS NULL THEN CURRENT_TIMESTAMP ELSE sealed_at END,
+           updated_at = CURRENT_TIMESTAMP
+       WHERE id = :id
+       RETURNING *`,
+      {
+        id: row.id,
+        completedComponentIds: JSON.stringify(mergedIds),
+        componentData: JSON.stringify(mergedData),
+        isSealed: sealed,
+      },
+    );
+    return toVipProgress(updated[0]);
+  }
+
+  const created = await sqlQuery<VipProgressRow[]>(
+    `INSERT INTO vip_progress (user_id, course_id, week_id, completed_component_ids, component_data, is_sealed)
+     VALUES (:userId, :courseId, :weekId, :completedComponentIds::jsonb, :componentData::jsonb, :isSealed)
+     RETURNING *`,
+    {
+      userId,
+      courseId,
+      weekId,
+      completedComponentIds: JSON.stringify(data.completedComponentIds ?? []),
+      componentData: JSON.stringify(data.componentData ?? {}),
+      isSealed: data.isSealed ?? false,
+    },
+  );
+  return toVipProgress(created[0]);
 }

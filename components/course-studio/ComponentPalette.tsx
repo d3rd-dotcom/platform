@@ -5,9 +5,7 @@ import {
   TextT,
   Clipboard,
   Sliders,
-  Image as ImageIcon,
   Video,
-  FileText,
   NotePencil,
   UploadSimple,
   Question,
@@ -30,13 +28,6 @@ interface ComponentPaletteProps {
 
 const MISSION_ITEMS: PaletteItemDef[] = [
   {
-    type: 'rich_text',
-    label: 'Rich Text',
-    icon: <FileText size={18} weight="bold" />,
-    description: 'Formatted text or instructions',
-    config: { content: '' },
-  },
-  {
     type: 'text_input',
     label: 'Text Input',
     icon: <TextT size={18} weight="bold" />,
@@ -51,7 +42,7 @@ const MISSION_ITEMS: PaletteItemDef[] = [
     config: {
       question: '',
       options: [
-        { id: 'opt-1', text: '', isCorrect: false },
+        { id: 'opt-1', text: '', isCorrect: true },
         { id: 'opt-2', text: '', isCorrect: false },
       ],
       selectMultiple: false,
@@ -67,20 +58,13 @@ const MISSION_ITEMS: PaletteItemDef[] = [
   {
     type: 'media_embed',
     label: 'Media',
-    icon: <ImageIcon size={18} weight="bold" />,
+    icon: <Video size={18} weight="bold" />,
     description: 'Image or video embed',
     config: { url: '', alt: '', caption: '' },
   },
   {
-    type: 'video_embed',
-    label: 'Video',
-    icon: <Video size={18} weight="bold" />,
-    description: 'Video link with description',
-    config: { url: '', description: '' },
-  },
-  {
     type: 'reflection_journal',
-    label: 'Journal',
+    label: 'Field Notes',
     icon: <NotePencil size={18} weight="bold" />,
     description: 'Open-ended reflection prompt',
     config: { prompt: '', minWords: 0 },
@@ -97,14 +81,27 @@ const MISSION_ITEMS: PaletteItemDef[] = [
     label: 'Quiz',
     icon: <Question size={18} weight="bold" />,
     description: 'Timed quiz assessment',
-    config: { timeLimitMinutes: 10, passingScore: 80, questions: [] },
+    config: {
+      timeLimitMinutes: 10,
+      passingScore: 80,
+      questions: [
+        {
+          id: 'q-default',
+          text: '',
+          options: [
+            { id: 'q-opt-1', text: '', isCorrect: true },
+            { id: 'q-opt-2', text: '', isCorrect: false },
+          ],
+        },
+      ],
+    },
   },
   {
-    type: 'password_gate',
-    label: 'Password Gate',
+    type: 'nft_gate',
+    label: 'NFT Gate',
     icon: <Lock size={18} weight="bold" />,
-    description: 'Password-protected content',
-    config: { password: '', hint: '' },
+    description: 'NFT-gated content',
+    config: { collection: 'academic_angels', contractAddress: '' },
   },
 ];
 

@@ -17,7 +17,7 @@ const VALID_COMPONENT_TYPES: ComponentType[] = [
   'rating_scale',
   'reflection_journal',
   'quiz_block',
-  'password_gate',
+  'nft_gate',
 ];
 
 export async function PATCH(request: Request, { params }: { params: { id: string; weekId: string; compId: string } }) {

@@ -1,0 +1,77 @@
+import { NextResponse } from 'next/server';
+import { getCurrentUserFromRequestCookie } from '@/lib/auth';
+import { isDbConfigured, sqlQuery, withTransaction } from '@/lib/db';
+import { getVipCourseFull } from '@/lib/vip-course-db';
+
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
+const SEAL_REWARD = 200;
+
+export async function POST(request: Request, { params }: { params: { id: string } }) {
+  if (!isDbConfigured()) {
+    return NextResponse.json({ error: 'Database not configured.' }, { status: 503 });
+  }
+
+  const user = await getCurrentUserFromRequestCookie();
+  if (!user) {
+    return NextResponse.json({ error: 'Not authenticated.' }, { status: 401 });
+  }
+
+  const body = await request.json();
+  const { weekId } = body;
+
+  if (!weekId) {
+    return NextResponse.json({ error: 'Missing weekId.' }, { status: 400 });
+  }
+
+  const course = await getVipCourseFull(params.id);
+  if (!course) {
+    return NextResponse.json({ error: 'Course not found.' }, { status: 404 });
+  }
+
+  const week = course.weeks.find((w) => w.id === weekId);
+  if (!week) {
+    return NextResponse.json({ error: 'Week not found.' }, { status: 404 });
+  }
+
+  const result = await withTransaction(async (client) => {
+    const existing = await client.query(
+      `SELECT * FROM vip_progress WHERE user_id = $1 AND course_id = $2 AND week_id = $3`,
+      [user.id, params.id, weekId],
+    );
+
+    if (existing.rows.length > 0 && existing.rows[0].is_sealed) {
+      return { alreadySealed: true, shardsAwarded: 0 };
+    }
+
+    if (existing.rows.length > 0) {
+      await client.query(
+        `UPDATE vip_progress SET is_sealed = true, sealed_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP WHERE id = $1`,
+        [existing.rows[0].id],
+      );
+    } else {
+      await client.query(
+        `INSERT INTO vip_progress (user_id, course_id, week_id, is_sealed, sealed_at)
+         VALUES ($1, $2, $3, true, CURRENT_TIMESTAMP)`,
+        [user.id, params.id, weekId],
+      );
+    }
+
+    await client.query(
+      `UPDATE users SET shard_count = shard_count + $1 WHERE id = $2`,
+      [SEAL_REWARD, user.id],
+    );
+
+    return { alreadySealed: false, shardsAwarded: SEAL_REWARD };
+  });
+
+  if (result.alreadySealed) {
+    return NextResponse.json({ error: 'Week already sealed.', alreadySealed: true }, { status: 409 });
+  }
+
+  return NextResponse.json({
+    sealed: true,
+    shardsAwarded: result.shardsAwarded,
+  });
+}

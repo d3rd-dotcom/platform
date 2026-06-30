@@ -36,7 +36,7 @@ const COMPONENT_ACCENTS: Record<ComponentType, string> = {
   rating_scale: '#F59E0B',
   reflection_journal: '#F472B6',
   quiz_block: '#EF4444',
-  password_gate: '#A855F7',
+  nft_gate: '#A855F7',
   mission_container: '#6B7280',
 };
 
@@ -61,7 +61,7 @@ const COMPONENT_ARTWORKS: Record<ComponentType, string> = {
     'linear-gradient(135deg, #DB2777 0%, #F472B6 50%, #F9A8D4 100%), radial-gradient(130% 140% at 30% 40%, rgba(255,255,255,0.35) 0%, transparent 65%)',
   quiz_block:
     'linear-gradient(135deg, #DC2626 0%, #F87171 45%, #FCA5A5 100%), radial-gradient(120% 130% at 70% 30%, rgba(255,255,255,0.4) 0%, transparent 60%)',
-  password_gate:
+  nft_gate:
     'linear-gradient(135deg, #7C3AED 0%, #A855F7 45%, #C084FC 100%), radial-gradient(120% 130% at 50% 50%, rgba(255,255,255,0.35) 0%, transparent 60%)',
   mission_container:
     'linear-gradient(135deg, #6B7280 0%, #9CA3AF 40%, #D1D5DB 100%), radial-gradient(120% 140% at 30% 40%, rgba(255,255,255,0.35) 0%, transparent 70%)',
@@ -76,9 +76,9 @@ const COMPONENT_LABELS: Record<ComponentType, string> = {
   file_upload: 'File Upload',
   text_input: 'Text Input',
   rating_scale: 'Rating',
-  reflection_journal: 'Journal',
+  reflection_journal: 'Field Notes',
   quiz_block: 'Quiz',
-  password_gate: 'Password Gate',
+  nft_gate: 'NFT Gate',
   mission_container: 'Mission',
 };
 
@@ -121,8 +121,11 @@ function getComponentPreview(component: CourseComponentRecord): string | null {
       const types = config.acceptedTypes as string[] | undefined;
       return types?.length ? types.join(', ') : 'File upload';
     }
-    case 'password_gate': {
-      return config.hint as string ?? 'Password-protected';
+    case 'nft_gate': {
+      const collection = config.collection as string ?? '';
+      if (collection === 'academic_angels') return 'Academic Angels';
+      if (collection === 'vip_club') return 'VIP Club';
+      return 'Custom NFT';
     }
     default:
       return null;

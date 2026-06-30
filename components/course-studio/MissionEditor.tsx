@@ -31,10 +31,10 @@ const BLOCK_LABELS: Record<string, string> = {
   rating_scale: 'Rating Scale',
   image_embed: 'Image',
   video_embed: 'Video',
-  reflection_journal: 'Journal',
+  reflection_journal: 'Field Notes',
   file_upload: 'File Upload',
   quiz_block: 'Quiz',
-  password_gate: 'Password Gate',
+  nft_gate: 'NFT Gate',
 };
 
 export default function MissionEditor({ component, onUpdate, onDelete, onAddBlock, onUpdateBlock, onDeleteBlock }: MissionEditorProps) {

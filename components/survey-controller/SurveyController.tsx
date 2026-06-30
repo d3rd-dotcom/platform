@@ -164,7 +164,7 @@ export default function SurveyController({
         <div className={styles.videoReview}>
           <div className={styles.videoReviewEyebrow}>{selectedSurvey.label} · review</div>
           <p className={styles.videoReviewText}>
-            Pick something. Answer it. I'll try to figure out what it means before you do. If I win, I'll give you some diamonds.
+            Pick something. Answer it. I&apos;ll try to figure out what it means before you do. If I win, I&apos;ll give you some diamonds.
           </p>
         </div>
       </div>

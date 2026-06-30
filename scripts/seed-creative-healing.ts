@@ -19,7 +19,7 @@ import { ensureVipCourseSchema } from '../lib/ensureVipCourseSchema';
 type SeedComponentType =
   | 'rich_text' | 'multiple_choice' | 'media_embed' | 'image_embed'
   | 'video_embed' | 'file_upload' | 'text_input' | 'rating_scale'
-  | 'reflection_journal' | 'quiz_block' | 'password_gate';
+  | 'reflection_journal' | 'quiz_block' | 'nft_gate';
 
 type LegacyType =
   | 'text' | 'list' | 'blurts' | 'lives' | 'checklist' | 'time-map'

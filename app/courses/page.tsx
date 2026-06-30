@@ -303,6 +303,56 @@ export default function CoursesPage() {
           </div>
         )}
 
+        {authoredCourses.filter((c) => c.status === 'published').map((c) => (
+          <div key={c.id} className={styles.cardWrapper}>
+            <Link href={`/course/${c.slug}`} className={styles.courseCard}>
+              <div className={styles.cardHeader}>
+                <span className={styles.cardKanji}>/{c.slug}</span>
+                <span className={styles.cardHeaderTitle}>{c.title}</span>
+              </div>
+              <div className={styles.cardBodyRow}>
+                <span className={styles.thumb} style={{ backgroundImage: `url('/academy-story.png')` }}>
+                  <div className={styles.badgeWrapper}>
+                    <div className={styles.cardBadgeGroup}>
+                      <div className={styles.badgeSection}>
+                        <span className={styles.badgeValue}>Published</span>
+                        <span className={styles.badgeEyebrow}>status</span>
+                      </div>
+                    </div>
+                  </div>
+                </span>
+                <div className={styles.body}>
+                  <div className={styles.contentCenter}>
+                    <span className={styles.category}>Your course</span>
+                    <span className={styles.desc}>
+                      {c.focus || 'No description yet'}
+                    </span>
+                  </div>
+                  <div className={styles.cardFooter}>
+                    <div className={styles.footerLeft}>
+                      {c.authorName && (
+                        <div className={styles.courseAuthor}>
+                          <span
+                            className={styles.authorAvatar}
+                            style={c.authorAvatar ? { backgroundImage: `url(${JSON.stringify(c.authorAvatar)})` } : undefined}
+                          >
+                            {!c.authorAvatar ? c.authorName[0].toUpperCase() : ''}
+                          </span>
+                          <span className={styles.authorName}>@{c.authorName}</span>
+                        </div>
+                      )}
+                    </div>
+                    <span className={styles.cardMembership}>Free</span>
+                  </div>
+                  <div className={styles.progressDivider}>
+                    <div className={styles.progressFill} style={{ width: '0%' }} />
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </div>
+        ))}
+
         {authenticated && (
           <Link href="/course-builder" className={styles.createCourseBtn}>
             <span className={styles.createCourseIcon}>

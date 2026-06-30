@@ -19,7 +19,7 @@ export const FounderSection: React.FC = () => {
         <div className={founderStyles.content}>
           <p className={founderStyles.eyebrow}>From the founder</p>
           <h2 id="founder-section-heading" className={founderStyles.heading}>
-          Hey, I'm Blue
+            Hey, I&apos;m Blue
           </h2>
           <div className={founderStyles.body}>
             <p>

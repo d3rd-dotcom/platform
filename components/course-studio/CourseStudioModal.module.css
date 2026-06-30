@@ -240,6 +240,12 @@
   border: 1px solid #f59e0b;
   color: #f59e0b;
   background: color-mix(in srgb, #f59e0b 8%, transparent);
+  cursor: pointer;
+  transition: opacity 0.12s ease;
+}
+
+.statusBadge:hover {
+  opacity: 0.75;
 }
 
 .statusPublished {

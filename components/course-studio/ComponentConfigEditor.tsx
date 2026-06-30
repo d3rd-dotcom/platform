@@ -40,8 +40,8 @@ export default function ComponentConfigEditor({
       return <FileUploadEditor config={config} patch={patch} />;
     case 'quiz_block':
       return <QuizBlockEditor config={config} patch={patch} />;
-    case 'password_gate':
-      return <PasswordGateEditor config={config} patch={patch} />;
+    case 'nft_gate':
+      return <NftGateEditor config={config} patch={patch} />;
     case 'reflection_journal':
       return <JournalEditor config={config} patch={patch} />;
     default:
@@ -155,15 +155,26 @@ function TextInputEditor({ config, patch }: { config: Record<string, unknown>; p
 }
 
 function RatingScaleEditor({ config, patch }: { config: Record<string, unknown>; patch: (n: Record<string, unknown>) => void }) {
+  const min = (config.min as number) ?? 1;
+  const max = (config.max as number) ?? 5;
+  const values: number[] = [];
+  for (let v = min; v <= max; v += (config.step as number) ?? 1) values.push(v);
+
   return (
     <div className={styles.editor}>
+      <label className={styles.label}>Scale preview</label>
+      <div className={styles.ratingPreview}>
+        {values.map((v) => (
+          <span key={v} className={styles.ratingPreviewBtn}>{v}</span>
+        ))}
+      </div>
       <div className={styles.row}>
         <div className={styles.fieldGroup}>
           <label className={styles.label}>Min value</label>
           <input
             type="number"
             className={styles.inputSmall}
-            value={(config.min as number) ?? 1}
+            value={min}
             onChange={(e) => patch({ min: parseInt(e.target.value) || 1 })}
           />
         </div>
@@ -172,8 +183,18 @@ function RatingScaleEditor({ config, patch }: { config: Record<string, unknown>;
           <input
             type="number"
             className={styles.inputSmall}
-            value={(config.max as number) ?? 5}
-            onChange={(e) => patch({ max: parseInt(e.target.value) || 5 })}
+            value={max}
+            onChange={(e) => patch({ max: parseInt(e.target.value) || 1 })}
+          />
+        </div>
+        <div className={styles.fieldGroup}>
+          <label className={styles.label}>Step</label>
+          <input
+            type="number"
+            className={styles.inputSmall}
+            value={(config.step as number) ?? 1}
+            onChange={(e) => patch({ step: parseInt(e.target.value) || 1 })}
+            min={1}
           />
         </div>
       </div>
@@ -272,11 +293,11 @@ function QuizBlockEditor({ config, patch }: { config: Record<string, unknown>; p
       ),
     );
 
-  const toggleCorrect = (qId: string, optId: string) =>
+  const setCorrect = (qId: string, optId: string) =>
     setQuestions(
       questions.map((q) =>
         q.id === qId
-          ? { ...q, options: q.options.map((o) => ({ ...o, isCorrect: o.id === optId ? !o.isCorrect : o.isCorrect })) }
+          ? { ...q, options: q.options.map((o) => ({ ...o, isCorrect: o.id === optId })) }
           : q,
       ),
     );
@@ -336,7 +357,7 @@ function QuizBlockEditor({ config, patch }: { config: Record<string, unknown>; p
                 type="radio"
                 name={`correct-${q.id}`}
                 checked={opt.isCorrect}
-                onChange={() => toggleCorrect(q.id, opt.id)}
+                onChange={() => setCorrect(q.id, opt.id)}
                 className={styles.radioInput}
               />
               <input
@@ -367,24 +388,34 @@ function QuizBlockEditor({ config, patch }: { config: Record<string, unknown>; p
   );
 }
 
-function PasswordGateEditor({ config, patch }: { config: Record<string, unknown>; patch: (n: Record<string, unknown>) => void }) {
+function NftGateEditor({ config, patch }: { config: Record<string, unknown>; patch: (n: Record<string, unknown>) => void }) {
+  const collection = (config.collection as string) ?? 'academic_angels';
+  const showCustom = collection === 'custom';
+
   return (
     <div className={styles.editor}>
-      <label className={styles.label}>Password</label>
-      <input
+      <label className={styles.label}>NFT Collection</label>
+      <select
         className={styles.input}
-        type="text"
-        value={(config.password as string) ?? ''}
-        onChange={(e) => patch({ password: e.target.value })}
-        placeholder="Set a password learners must enter"
-      />
-      <label className={styles.label}>Hint</label>
-      <input
-        className={styles.input}
-        value={(config.hint as string) ?? ''}
-        onChange={(e) => patch({ hint: e.target.value })}
-        placeholder="e.g. Hint: it was mentioned in Week 1 reading"
-      />
+        value={collection}
+        onChange={(e) => patch({ collection: e.target.value, contractAddress: e.target.value !== 'custom' ? '' : (config.contractAddress ?? '') })}
+      >
+        <option value="academic_angels">Academic Angels</option>
+        <option value="vip_club">VIP Club</option>
+        <option value="custom">Custom</option>
+      </select>
+      {showCustom && (
+        <>
+          <label className={styles.label}>Smart Contract Address</label>
+          <input
+            className={styles.input}
+            type="text"
+            value={(config.contractAddress as string) ?? ''}
+            onChange={(e) => patch({ contractAddress: e.target.value })}
+            placeholder="0x..."
+          />
+        </>
+      )}
     </div>
   );
 }

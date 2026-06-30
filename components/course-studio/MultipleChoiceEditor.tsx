@@ -52,7 +52,7 @@ export default function MultipleChoiceEditor({
                   patch({
                     options: selectMultiple
                       ? options.map((o) => (o.id === opt.id ? { ...o, isCorrect: !o.isCorrect } : o))
-                      : options.map((o) => ({ ...o, isCorrect: o.id === opt.id ? !o.isCorrect : false })),
+                      : options.map((o) => ({ ...o, isCorrect: o.id === opt.id })),
                   });
                 }}
                 className={styles.correctToggle}

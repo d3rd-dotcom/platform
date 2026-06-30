@@ -734,6 +734,16 @@ export default function CourseStudioModal({
                 </svg>
               </button>
               <div className={styles.headerMeta}>
+                {courseId && (
+                  <button
+                    type="button"
+                    onClick={handleOpenPublishReview}
+                    className={`${styles.statusBadge} ${status === 'published' ? styles.statusPublished : ''}`}
+                    title={status === 'published' ? 'Edit course card settings' : 'Review & Publish'}
+                  >
+                    {status === 'published' ? 'Published' : 'Draft'}
+                  </button>
+                )}
                 <input
                   ref={titleRef}
                   value={title}
@@ -760,22 +770,15 @@ export default function CourseStudioModal({
                 <Eye size={14} weight="bold" />
                 {previewMode ? 'Edit' : 'Preview'}
               </button>
-              {courseId && (
-                <div className={styles.statusGroup}>
-                  <span className={`${styles.statusBadge} ${status === 'published' ? styles.statusPublished : ''}`}>
-                    {status === 'published' ? 'Published' : 'Draft'}
-                  </span>
-                  {status !== 'published' && (
-                    <button
-                      type="button"
-                      onClick={handleOpenPublishReview}
-                      disabled={publishing || phase === 'saving'}
-                      className={styles.publishBtn}
-                    >
-                      Review & Publish
-                    </button>
-                  )}
-                </div>
+              {courseId && status !== 'published' && (
+                <button
+                  type="button"
+                  onClick={handleOpenPublishReview}
+                  disabled={publishing || phase === 'saving'}
+                  className={styles.publishBtn}
+                >
+                  Review & Publish
+                </button>
               )}
               <button
                 type="button"
@@ -968,8 +971,8 @@ export default function CourseStudioModal({
                 </div>
               </div>
               <div className={styles.publishForm}>
-                <h2 className={styles.publishFormTitle}>Pre-publish Review</h2>
-                <p className={styles.publishFormSub}>Set the title, description, and URL slug before publishing.</p>
+                <h2 className={styles.publishFormTitle}>{status === 'published' ? 'Course Card Settings' : 'Pre-publish Review'}</h2>
+                <p className={styles.publishFormSub}>{status === 'published' ? 'Edit the title, description, URL slug, and card preview shown on /courses.' : 'Set the title, description, and URL slug before publishing.'}</p>
                 <label className={styles.publishField}>
                   <span className={styles.publishFieldLabel}>Title</span>
                   <input
@@ -1018,7 +1021,7 @@ export default function CourseStudioModal({
                     disabled={publishing || !reviewTitle.trim() || !reviewSlug.trim()}
                     className={styles.publishConfirmBtn}
                   >
-                    {publishing ? 'Publishing...' : 'Confirm & Publish'}
+                    {publishing ? 'Saving...' : status === 'published' ? 'Save Settings' : 'Confirm & Publish'}
                   </button>
                 </div>
               </div>

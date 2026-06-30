@@ -21,11 +21,12 @@ function getMissionLabel(comp: CourseComponentRecord): string {
   if (comp.title) return comp.title;
   if (comp.componentType === 'mission_container') {
     const labels: Record<string, string> = {
-      reflection_journal: 'Journal',
+      reflection_journal: 'Field Notes',
       text_input: 'Text Input',
       rich_text: 'Rich Text',
       multiple_choice: 'Multiple Choice',
       rating_scale: 'Rating Scale',
+      nft_gate: 'NFT Gate',
       video_embed: 'Video',
       image_embed: 'Image',
       media_embed: 'Media',
@@ -37,11 +38,12 @@ function getMissionLabel(comp: CourseComponentRecord): string {
     return 'Mission';
   }
   const labels: Record<string, string> = {
-    reflection_journal: 'Journal',
+    reflection_journal: 'Field Notes',
     text_input: 'Text Input',
     rich_text: 'Rich Text',
     multiple_choice: 'Multiple Choice',
     rating_scale: 'Rating Scale',
+    nft_gate: 'NFT Gate',
     video_embed: 'Video',
     image_embed: 'Image',
     media_embed: 'Media',

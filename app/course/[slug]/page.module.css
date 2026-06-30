@@ -319,3 +319,268 @@
     height: 100px;
   }
 }
+
+/* ── VIP course: week nav ── */
+
+.weekNav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.weekArrow {
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-base);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.12s ease;
+}
+
+.weekArrow:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.weekArrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.weekDots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.weekDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border-subtle);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.12s ease;
+}
+
+.weekDot:hover {
+  border-color: var(--color-primary);
+}
+
+.weekDotActive {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+}
+
+.weekDotSealed {
+  border-color: #22c55e;
+  background: #22c55e;
+}
+
+.courseMeta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 0.8125rem;
+  color: var(--color-text-faint);
+  font-family: var(--font-mono);
+}
+
+.weekContent {
+  background: var(--color-surface-base);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.weekHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.weekTitle {
+  font-family: var(--font-secondary);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  margin: 0;
+}
+
+.weekTheme {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  margin: 2px 0 0;
+}
+
+.weekProgress {
+  flex-shrink: 0;
+}
+
+.progressCount {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--color-surface-subtle);
+}
+
+.sealedBadge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #22c55e;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: color-mix(in srgb, #22c55e 8%, transparent);
+}
+
+.componentsList {
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.componentCard {
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-subtle);
+  transition: border-color 0.15s ease;
+  position: relative;
+}
+
+.componentComplete {
+  border-color: color-mix(in srgb, #22c55e 30%, transparent);
+  background: color-mix(in srgb, #22c55e 3%, var(--color-surface-subtle));
+}
+
+.componentTitle {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 0 0 8px;
+}
+
+.componentActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+.completeBtn {
+  padding: 6px 14px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 8px;
+}
+
+.completeBtn:hover {
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+}
+
+.checkIcon {
+  color: #22c55e;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.sealSection {
+  padding: 20px 24px;
+  border-top: 1px solid var(--color-border-subtle);
+  display: flex;
+  justify-content: center;
+}
+
+.sealBtn {
+  padding: 12px 28px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 0.12s ease;
+  font-family: var(--font-mono);
+  letter-spacing: 0.03em;
+}
+
+.sealBtn:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.sealBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.sealedSection {
+  padding: 20px 24px;
+  border-top: 1px solid var(--color-border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #22c55e;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.shardToast {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #1a1d33;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  animation: shardIn 0.3s ease;
+}
+
+@keyframes shardIn {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.shardIcon {
+  font-size: 1.2rem;
+}
