@@ -1,11 +1,12 @@
 /**
- * Wipes every user's current avatar and re-rolls it to the new DiceBear
- * "toon-head" set, selecting option #0 as their avatar. This replaces the old
- * Noun/Angel avatars (and any other stored avatar_url) for all users.
+ * Wipes every user's current avatar and re-rolls it to the DiceBear
+ * "shape-grid" set, selecting option #0 as their avatar on a fresh generation.
+ * This replaces the old toon-head SVG data URIs with shape-grid HTTP URLs.
  *
  * After this runs, each user has:
- *   - selected_avatar_id = "<userId>#0"  (their first toon option)
- *   - avatar_url         = the rendered toon SVG data URI
+ *   - avatar_reroll_count += 1   (fresh generation of 6 options)
+ *   - selected_avatar_id = "<userId>#r<N>#0"  (their first shape-grid option)
+ *   - avatar_url         = the shape-grid DiceBear HTTP URL
  * They can still open the avatar picker to choose a different one of their 6.
  *
  * Run a preview first:   npx tsx scripts/migrate-toon-avatars.ts --dry-run
@@ -31,13 +32,14 @@ async function migrate() {
 
   await ensureForumSchema();
 
-  const rows = await sqlQuery<Array<{ id: string; username: string | null }>>(
-    `SELECT id, username FROM users`,
+  // Fetch current reroll counts so we can bump each user to the next generation.
+  const rows = await sqlQuery<Array<{ id: string; username: string | null; avatar_reroll_count: number }>>(
+    `SELECT id, username, avatar_reroll_count FROM users`,
     {}
   );
 
   console.log(
-    `${DRY_RUN ? '[DRY RUN] ' : ''}Re-rolling toon avatars for ${rows.length} user(s).`
+    `${DRY_RUN ? '[DRY RUN] ' : ''}Migrating ${rows.length} user(s) to shape-grid avatars (generation+1).`
   );
 
   let updated = 0;
@@ -45,8 +47,9 @@ async function migrate() {
 
   for (const row of rows) {
     try {
-      // Option #0 of the user's deterministic 6-roll.
-      const first = getAssignedAvatars(row.id)[0];
+      const nextGen = (row.avatar_reroll_count ?? 0) + 1;
+      // Option #0 of the user's next-generation 6-roll.
+      const first = getAssignedAvatars(row.id, nextGen)[0];
 
       if (DRY_RUN) {
         updated++;
@@ -56,9 +59,10 @@ async function migrate() {
       await sqlQuery(
         `UPDATE users
             SET avatar_url = :avatarUrl,
-                selected_avatar_id = :avatarId
+                selected_avatar_id = :avatarId,
+                avatar_reroll_count = :nextGen
           WHERE id = :userId`,
-        { avatarUrl: first.image_url, avatarId: first.id, userId: row.id }
+        { avatarUrl: first.image_url, avatarId: first.id, nextGen, userId: row.id }
       );
       updated++;
     } catch (err) {
@@ -76,6 +80,6 @@ async function migrate() {
 migrate()
   .then(() => process.exit(0))
   .catch((err) => {
-    console.error('Toon avatar migration failed:', err);
+    console.error('Shape-grid avatar migration failed:', err);
     process.exit(1);
   });

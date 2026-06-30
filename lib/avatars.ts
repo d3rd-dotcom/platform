@@ -1,23 +1,20 @@
 /**
- * Avatar System — DiceBear "toon-head"
+ * Avatar System — DiceBear "shape-grid"
  *
- * Generates unique toon avatars for each user with @dicebear/core + the
- * toon-head style from @dicebear/styles. Generation is fully local (no network
- * calls) and deterministic per seed.
+ * Generates unique avatars via the DiceBear HTTP API using the shape-grid
+ * style. Each avatar is a deterministic URL based on a seed string — the same
+ * seed always produces the same image.
  *
  * Each user gets 6 deterministic options derived from their user id; the same
  * seed always returns the same 6. Selecting one stores its seed as
- * selected_avatar_id and the rendered SVG data URI as avatar_url.
+ * selected_avatar_id and the shape-grid URL as avatar_url.
  *
  * Legacy Academic Angel avatars (angel_NNN) are still supported — agents use
  * them (so they stay visually distinct from humans), and they cover any
  * existing lookups. Angel images are hosted on IPFS, not generated.
- *
- * Toon Head style: a remix of "ToonHead" by Johan Melin, licensed CC BY 4.0.
  */
 
-import { Style, Avatar as DiceBearAvatar } from '@dicebear/core';
-import toonHeadDefinition from '@dicebear/styles/toon-head.json';
+const DICEBEAR_BASE = 'https://api.dicebear.com/10.x/shape-grid/svg';
 
 // Academic Angels NFT config (legacy — agents + existing avatar lookups)
 const ANGELS_METADATA_BASE = 'https://nftstorage.link/ipfs/QmWag7KqqDs7yyXzzPxg3xS3jWGgZcPRd2YAS7Whd1L6Xd';
@@ -27,8 +24,7 @@ const TOTAL_ANGELS = 550;
 // Number of avatars to assign per user
 const AVATARS_PER_USER = 6;
 
-// Academy blue. Kept for components that still tint Noun-based agent artwork
-// (e.g. app/simulation/AgentAvatar.tsx); toon-head avatars don't use it.
+// Academy blue. Used in AgentAvatar.tsx for Noun-based agent artwork.
 export const MWA_BRAND_BG = '5168ff';
 
 /**
@@ -36,32 +32,21 @@ export const MWA_BRAND_BG = '5168ff';
  */
 export interface Avatar {
   id: string;           // DiceBear seed (e.g. "<userId>#2") or legacy "angel_NNN"
-  image_url: string;    // SVG data URI (toon) or IPFS image URL (legacy angel)
-  metadata_url: string; // Empty for toons, IPFS URL for legacy angels
+  image_url: string;    // DiceBear shape-grid URL or IPFS image URL (legacy angel)
+  metadata_url: string; // Empty for shape-grid, IPFS URL for legacy angels
 }
 
-// Build the toon-head style once at module load.
-const toonStyle = new Style(toonHeadDefinition as unknown as ConstructorParameters<typeof Style>[0]);
-
 /**
- * Renders a toon-head SVG data URI from a seed string.
+ * Builds a DiceBear shape-grid URL from a seed string.
  */
-function buildToonDataUri(seed: string): string {
-  const raw = new DiceBearAvatar(toonStyle, { seed }).toString();
-  // toon-head has no backgroundColor option, so bake the Academy-blue
-  // background behind the figure (matching how the old Noun avatars sat on
-  // brand blue). The rect is inserted right after the opening <svg> tag.
-  const svg = raw.replace(
-    /(<svg[^>]*>)/,
-    `$1<rect width="100%" height="100%" fill="#${MWA_BRAND_BG}"/>`,
-  );
-  const base64 = Buffer.from(svg).toString('base64');
-  return `data:image/svg+xml;base64,${base64}`;
+function buildShapeGridUrl(seed: string): string {
+  const params = new URLSearchParams({ seed });
+  return `${DICEBEAR_BASE}?${params.toString()}`;
 }
 
 /**
  * Deterministic seed for the Nth avatar option of a given user/base seed.
- * The seed IS the avatar id, so an id alone is enough to re-render the avatar.
+ * The seed IS the avatar id, so an id alone is enough to build the avatar URL.
  *
  * `generation` shifts the set: generation 0 yields the original ids
  * (`<userSeed>#<index>`) so existing selections keep working, while each paid
@@ -111,7 +96,7 @@ async function fetchAngelImageUrl(tokenId: number): Promise<string> {
 
 /**
  * Gets deterministically assigned avatars for a user.
- * Returns 6 unique toons — all generated locally, no network calls.
+ * Returns 6 unique shape-grid options — all generated via the DiceBear HTTP API.
  *
  * Same user seed + generation always returns the same 6 avatars. Pass the
  * user's `avatar_reroll_count` as `generation` so paid rerolls surface a new set.
@@ -122,7 +107,7 @@ export function getAssignedAvatars(userSeed: string, generation = 0): Avatar[] {
     const seed = optionSeed(userSeed, i, generation);
     avatars.push({
       id: seed,
-      image_url: buildToonDataUri(seed),
+      image_url: buildShapeGridUrl(seed),
       metadata_url: '',
     });
   }
@@ -165,10 +150,10 @@ export async function getAvatarByAvatarId(avatarId: string): Promise<Avatar | nu
     }
   }
 
-  // Otherwise the id is a DiceBear seed — render the toon deterministically.
+  // Otherwise the id is a DiceBear seed — build the shape-grid URL deterministically.
   return {
     id: avatarId,
-    image_url: buildToonDataUri(avatarId),
+    image_url: buildShapeGridUrl(avatarId),
     metadata_url: '',
   };
 }
@@ -177,7 +162,7 @@ export async function getAvatarByAvatarId(avatarId: string): Promise<Avatar | nu
  * Returns a sample of Academic Angel avatars for the agent avatar picker.
  *
  * Agents use Academic Angel artwork so they are visually distinct from humans,
- * who get toons. Angel images live on IPFS, so this oversamples random token
+ * who get shape-grid avatars. Angel images live on IPFS, so this oversamples random token
  * ids, resolves them in parallel, and returns up to `count` that loaded.
  */
 export async function getAngelAvatars(count = 8): Promise<Avatar[]> {

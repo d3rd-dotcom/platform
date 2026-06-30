@@ -39,6 +39,7 @@ async function speakBlue(text: string, signal?: AbortSignal): Promise<void> {
 
   return new Promise<void>((resolve, reject) => {
     const el = new Audio(url);
+    el.volume = 0.6;
     el.onended = () => { URL.revokeObjectURL(url); resolve(); };
     el.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Audio playback error')); };
     el.play().catch(reject);

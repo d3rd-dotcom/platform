@@ -9,18 +9,6 @@ import styles from './CreateAccountButton.module.css';
 
 type MeResponse = { user: { id: string; username: string; avatarUrl: string | null } | null };
 
-async function uploadIfPresent(file: File | null) {
-  if (!file) return null;
-  const fd = new FormData();
-  fd.append('file', file);
-  const res = await fetch('/api/upload', { method: 'POST', body: fd });
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}));
-    throw new Error(data?.error || 'Upload failed');
-  }
-  return (await res.json()) as { url: string; mime: string };
-}
-
 const CreateAccountButton: React.FC = () => {
   const { ready, authenticated, login, logout, getAccessToken } = usePrivy();
   const { address } = useAccount();
@@ -28,7 +16,6 @@ const CreateAccountButton: React.FC = () => {
   const [me, setMe] = useState<MeResponse['user']>(null);
   const [open, setOpen] = useState(false);
   const [username, setUsername] = useState('');
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -61,14 +48,13 @@ const CreateAccountButton: React.FC = () => {
     setError(null);
     setSaving(true);
     try {
-      const uploaded = await uploadIfPresent(avatarFile);
       const headers = await getPrivyAuthHeaders(getAccessToken);
 
       if (!me) {
         const res = await fetch('/api/auth/wallet-signup', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', ...headers },
-          body: JSON.stringify({ walletAddress: address, username, avatarUrl: uploaded?.url ?? null }),
+          body: JSON.stringify({ walletAddress: address, username }),
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(data?.error || 'Signup failed');
@@ -76,14 +62,13 @@ const CreateAccountButton: React.FC = () => {
         const res = await fetch('/api/me', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json', ...headers },
-          body: JSON.stringify({ username, avatarUrl: uploaded?.url ?? me.avatarUrl }),
+          body: JSON.stringify({ username }),
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(data?.error || 'Update failed');
       }
 
       await refreshMe();
-      setAvatarFile(null);
       setOpen(false);
     } catch (e: any) {
       setError(e?.message || 'Failed to save');
@@ -97,7 +82,6 @@ const CreateAccountButton: React.FC = () => {
     await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
     setMe(null);
     setUsername('');
-    setAvatarFile(null);
     setOpen(false);
   }
 
@@ -145,15 +129,6 @@ const CreateAccountButton: React.FC = () => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="letters/numbers/underscore"
-                />
-              </label>
-              <label className={styles.label}>
-                Avatar (png/jpg/gif/webp)
-                <input
-                  className={styles.input}
-                  type="file"
-                  accept="image/png,image/jpeg,image/gif,image/webp"
-                  onChange={(e) => setAvatarFile(e.target.files?.[0] || null)}
                 />
               </label>
               {error && <div className={styles.error}>{error}</div>}

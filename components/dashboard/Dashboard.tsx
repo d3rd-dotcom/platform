@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 import BlueScene from '@/components/blue-scene/BlueScene';
 import ChatRoom from '@/components/chat-room/ChatRoom';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
@@ -135,11 +134,8 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
               &times;
             </button>
             <div className={styles.leaderModalHeader}>
-              <Image src="/icons/ui-diamond.svg" alt="" width={28} height={28} />
-              <div>
-                <strong className={styles.leaderModalTitle}>Leaderboard</strong>
-                <span className={styles.leaderModalSub}>Top contributors</span>
-              </div>
+              <span className={styles.leaderModalIcon}>金剛</span>
+              <span className={styles.leaderModalTitle}>Leaderboard</span>
             </div>
             <div className={styles.leaderModalList}>
               {leaderboard.length === 0 ? (

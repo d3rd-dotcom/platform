@@ -22,9 +22,6 @@ const CyberpunkDataViz = dynamic(() => import('@/components/cyberpunk-data-viz/C
   ssr: false,
   loading: () => null,
 });
-const IntroLoaderOverlay = dynamic(() => import('@/components/intro-loader/IntroLoaderOverlay'), {
-  ssr: false,
-});
 
 interface FieldNoteEntry {
   day: number;
@@ -79,7 +76,6 @@ export default function DailyNotes({
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showRewardAnimation, setShowRewardAnimation] = useState(false);
   const [rewardData, setRewardData] = useState<{ shards: number } | null>(null);
-  const [introDayIndex, setIntroDayIndex] = useState<number | null>(null);
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
   const [showSaveConfirm, setShowSaveConfirm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -193,10 +189,6 @@ export default function DailyNotes({
     setIsPaused(false);
     startTimerInterval();
   }, [startTimerInterval]);
-
-  const startTimer = useCallback((dayIndex: number) => {
-    setIntroDayIndex(dayIndex);
-  }, []);
 
   const resumeTimer = () => {
     setIsPaused(false);
@@ -419,8 +411,8 @@ export default function DailyNotes({
     }
 
     play('click');
-    startTimer(dayIndex);
-  }, [gateOpen, play, startTimer]);
+    beginWritingSession(dayIndex);
+  }, [gateOpen, play, beginWritingSession]);
 
   const canStart = dataReady && isWeekUnlocked && !weekComplete && !todayDone && availableDayIndex >= 0;
   const cardSubLabel = 'daily reflection and notes';
@@ -883,22 +875,6 @@ export default function DailyNotes({
           </div>
         )}
       </div>
-
-      {/* Timer Modal */}
-      {introDayIndex !== null && (
-        <IntroLoaderOverlay
-          src="/loaders/Sandy%20Loading.lottie"
-          label="Opening notes"
-          durationMs={580}
-          onFinish={() => {
-            const dayIndex = introDayIndex;
-            setIntroDayIndex(null);
-            if (dayIndex !== null) {
-              beginWritingSession(dayIndex);
-            }
-          }}
-        />
-      )}
 
       {showAuthPrompt && typeof window !== 'undefined' && createPortal(
         <div className={styles.authPromptOverlay} onClick={() => setShowAuthPrompt(false)}>
