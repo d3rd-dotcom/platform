@@ -25,8 +25,8 @@ export default function RichTextRenderer({ component }: { component: CourseCompo
     return <div className={styles.empty_state}>No content</div>;
   }
 
-  if (config.format === 'html') {
-    return <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }} />;
+  if (config.format === 'html' || /<[a-z][\s\S]*>/i.test(content)) {
+    return <div className={styles.html_container} dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }} />;
   }
 
   return (

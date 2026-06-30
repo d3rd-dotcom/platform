@@ -11,3 +11,71 @@
 .list_item {
   margin-left: 16px;
 }
+
+.html_container {
+  line-height: 1.7;
+  text-align: left;
+}
+
+.html_container h1,
+.html_container h2,
+.html_container h3,
+.html_container h4 {
+  font-family: var(--font-secondary);
+  font-weight: 700;
+  color: var(--color-text-dark);
+  margin: 0 0 8px;
+}
+
+.html_container h1 { font-size: 1.5rem; }
+.html_container h2 { font-size: 1.25rem; }
+.html_container h3 { font-size: 1.125rem; }
+
+.html_container p {
+  font-family: var(--font-primary);
+  font-size: 0.9375rem;
+  color: var(--color-text-dark);
+  line-height: 1.7;
+  margin: 0 0 12px;
+}
+
+.html_container ul,
+.html_container ol {
+  padding-left: 24px;
+  margin: 0 0 12px;
+}
+
+.html_container li {
+  font-family: var(--font-primary);
+  font-size: 0.9375rem;
+  color: var(--color-text-dark);
+  line-height: 1.7;
+  margin-bottom: 4px;
+}
+
+.html_container img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin: 8px 0;
+}
+
+.html_container blockquote {
+  margin: 0 0 12px;
+  padding: 8px 16px;
+  border-left: 3px solid var(--color-primary);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.html_container a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.html_container strong {
+  font-weight: 700;
+}
+
+.html_container em {
+  font-style: italic;
+}

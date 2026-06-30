@@ -533,7 +533,7 @@ export default function CourseStudioModal({
                 sortOrder: 0,
                 componentType: 'rich_text',
                 title: 'Weekly Read',
-                config: { content: wkReading.content, imageUrl: wkReading.imageUrl || '', _isReading: true },
+                config: { content: wkReading.content, imageUrl: wkReading.imageUrl || '', _isReading: true, format: 'html' },
                 required: false,
                 blocks: [],
                 createdAt: '',

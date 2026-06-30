@@ -283,29 +283,28 @@ export default function CourseSlugPage({ params }: PageProps) {
               <div className={styles.componentsList}>
                 {currentWeek.components.map((component) => {
                   if (component.componentType === 'mission_container' && component.blocks) {
-                    return component.blocks.map((block) => {
-                      const blockAsComponent = {
-                        ...component,
-                        componentType: block.blockType,
-                        config: block.config,
-                        title: '',
-                        blocks: [],
-                      } as any;
-                      const isComplete = completedIds.has(block.id);
-                      return (
-                        <div key={block.id} className={`${styles.componentCard} ${isComplete ? styles.componentComplete : ''}`}>
-                          {!isComplete && (
-                            <div className={styles.componentActions}>
-                              <button type="button" className={styles.completeBtn} onClick={() => handleComplete(block.id)}>
-                                Mark complete
+                    return (
+                      <div key={component.id} className={styles.componentCard}>
+                        {component.title && <h3 className={styles.componentTitle}>{component.title}</h3>}
+                        <ComponentRenderer component={component} />
+                        <div className={styles.missionActions}>
+                          {component.blocks.map((block) => {
+                            const done = completedIds.has(block.id);
+                            return (
+                              <button
+                                key={block.id}
+                                type="button"
+                                className={`${styles.completeBtn} ${done ? styles.completeBtnDone : ''}`}
+                                disabled={done}
+                                onClick={() => handleComplete(block.id)}
+                              >
+                                {done ? 'Done' : `Mark complete: ${block.blockType.replace(/_/g, ' ')}`}
                               </button>
-                            </div>
-                          )}
-                          {isComplete && <CheckCircle size={16} weight="fill" className={styles.checkIcon} />}
-                          <ComponentRenderer component={blockAsComponent} />
+                            );
+                          })}
                         </div>
-                      );
-                    });
+                      </div>
+                    );
                   }
                   const compId = component.id;
                   const isComplete = completedIds.has(compId);
