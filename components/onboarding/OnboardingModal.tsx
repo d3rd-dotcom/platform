@@ -18,16 +18,15 @@ interface OnboardingModalProps {
   isOpen: boolean;
   onClose: () => void;
   onComplete?: (username: string, avatarUrl: string | null) => void;
+  forceReady?: boolean;
 }
 
 const genderOptions = [
-  { value: 'female', label: 'Female' },
   { value: 'male', label: 'Male' },
-  { value: 'nonbinary', label: 'Non-binary' },
-  { value: 'private', label: 'Prefer not to say' },
+  { value: 'female', label: 'Female' },
 ] as const;
 
-const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onComplete }) => {
+const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onComplete, forceReady = false }) => {
   const { address } = useAccount();
   const { getAccessToken, authenticated, login } = usePrivy();
   const devOnboarding = useDevOnboarding();
@@ -67,8 +66,8 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
   useEffect(() => {
     if (!isOpen) return;
 
-    // Dev onboarding: skip real auth, go straight to ready
-    if (devOnboarding) {
+    // Dev onboarding or force-ready preview: skip real auth
+    if (devOnboarding || forceReady) {
       setHasSession(true);
       setAuthStatus('ready');
       return;
@@ -126,6 +125,18 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
       setLoadingAvatars(true);
       setAvatarError(null);
       try {
+        if (forceReady) {
+          setAvatars([
+            { id: 'preview#0', image_url: 'https://api.dicebear.com/10.x/shape-grid/svg?seed=preview%230', metadata_url: '' },
+            { id: 'preview#1', image_url: 'https://api.dicebear.com/10.x/shape-grid/svg?seed=preview%231', metadata_url: '' },
+            { id: 'preview#2', image_url: 'https://api.dicebear.com/10.x/shape-grid/svg?seed=preview%232', metadata_url: '' },
+            { id: 'preview#3', image_url: 'https://api.dicebear.com/10.x/shape-grid/svg?seed=preview%233', metadata_url: '' },
+            { id: 'preview#4', image_url: 'https://api.dicebear.com/10.x/shape-grid/svg?seed=preview%234', metadata_url: '' },
+            { id: 'preview#5', image_url: 'https://api.dicebear.com/10.x/shape-grid/svg?seed=preview%235', metadata_url: '' },
+          ]);
+          setLoadingAvatars(false);
+          return;
+        }
         const token = await getAccessToken();
         const headers: HeadersInit = devOnboarding
           ? { 'x-dev-bypass': getDevWallet() }
@@ -148,7 +159,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
       }
     };
     fetchAvatars();
-  }, [isOpen, authStatus, getAccessToken, devOnboarding]);
+  }, [isOpen, authStatus, getAccessToken, devOnboarding, forceReady]);
 
   const checkUsername = useCallback(async (name: string) => {
     if (checkingRef.current === name) return;
@@ -201,16 +212,25 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
   useEffect(() => {
     if (isOpen) {
       setStep('details');
-      setSelectedAvatarId(null);
-      setUsername('');
-      setGender('');
-      setBirthday('');
       setError(null);
-      setUsernameAvailable(null);
-      setCheckingUsername(false);
+      if (forceReady) {
+        setUsername('preview_user');
+        setGender('female');
+        setBirthday('2000-01-15');
+        setSelectedAvatarId('avatar-1');
+        setUsernameAvailable(true);
+        setCheckingUsername(false);
+      } else {
+        setSelectedAvatarId(null);
+        setUsername('');
+        setGender('');
+        setBirthday('');
+        setUsernameAvailable(null);
+        setCheckingUsername(false);
+      }
       checkingRef.current = null;
     }
-  }, [isOpen]);
+  }, [isOpen, forceReady]);
 
   const handleUsernameChange = (value: string) => {
     setUsername(value.toLowerCase().replace(/[^a-z0-9_]/g, ''));
@@ -256,6 +276,12 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
 
   const handleSubmit = async () => {
     setError(null);
+
+    // Force-ready preview: just close without submitting
+    if (forceReady) {
+      onClose();
+      return;
+    }
 
     if (!isUsernameValid) {
       setError('Username must be 5-32 characters (letters, numbers, underscores)');
@@ -355,7 +381,6 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
 
   if (!isOpen) return null;
 
-  const progressWidth = step === 'details' ? '33.33%' : step === 'avatar' ? '66.66%' : '100%';
   const today = new Date().toISOString().slice(0, 10);
 
   return (
@@ -388,18 +413,12 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
 
         {authStatus === 'ready' && (
         <>
-        <div className={styles.progressBar}>
-          <div className={styles.progressFill} style={{ width: progressWidth }} />
-        </div>
 
         {step === 'details' ? (
           <div className={styles.stepContent}>
-            <h2 className={styles.stepTitle}>Profile Setup</h2>
-            <p className={styles.stepDescription}>
-              Choose your Academy name and tell us the basics we use to personalize research and rewards.
-            </p>
+            <h2 className={`${styles.stepTitle} ${styles.titleAnimated}`}>Character Identifiers</h2>
 
-            <div className={styles.formFields}>
+            <div className={`${styles.formFields} ${styles.formAnimated}`}>
               <div className={styles.inputGroup}>
                 <label htmlFor="onboarding-username" className={styles.inputLabel}>Username</label>
                 <div className={styles.inputWrapper}>
@@ -434,7 +453,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
               </div>
 
               <fieldset className={styles.inputGroup}>
-                <legend>Gender</legend>
+                <legend>Sex</legend>
                 <div className={styles.radioGroup}>
                   {genderOptions.map((option) => (
                     <label
@@ -455,23 +474,64 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
               </fieldset>
 
               <div className={styles.inputGroup}>
-                <label htmlFor="onboarding-birthday" className={styles.inputLabel}>Birthday</label>
-                <input
-                  id="onboarding-birthday"
-                  name="birthday"
-                  type="date"
-                  value={birthday}
-                  max={today}
-                  onChange={(e) => setBirthday(e.target.value)}
-                  className={styles.input}
-                />
+                <label className={styles.inputLabel}>Birthday 🎂</label>
+                <div className={styles.birthdayRow}>
+                  <input
+                    name="bmonth"
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="MM"
+                    maxLength={2}
+                    value={birthday ? birthday.split('-')[1] || '' : ''}
+                    onChange={(e) => {
+                      const v = e.target.value.replace(/\D/g, '').slice(0, 2);
+                      const year = birthday?.split('-')[0] || '';
+                      const day = birthday?.split('-')[2] || '';
+                      setBirthday(v ? `${year}-${v}-${day}` : '');
+                    }}
+                    className={styles.birthdayInput}
+                    autoComplete="bday-month"
+                  />
+                  <span className={styles.birthdaySep}>/</span>
+                  <input
+                    name="bday"
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="DD"
+                    maxLength={2}
+                    value={birthday ? birthday.split('-')[2] || '' : ''}
+                    onChange={(e) => {
+                      const v = e.target.value.replace(/\D/g, '').slice(0, 2);
+                      const parts = birthday?.split('-') || ['', '', ''];
+                      setBirthday(v ? `${parts[0]}-${parts[1]}-${v}` : birthday?.slice(0, 7) || '');
+                    }}
+                    className={styles.birthdayInput}
+                    autoComplete="bday-day"
+                  />
+                  <span className={styles.birthdaySep}>/</span>
+                  <input
+                    name="byear"
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="YYYY"
+                    maxLength={4}
+                    value={birthday ? birthday.split('-')[0] || '' : ''}
+                    onChange={(e) => {
+                      const v = e.target.value.replace(/\D/g, '').slice(0, 4);
+                      const parts = birthday?.split('-') || ['', '', ''];
+                      setBirthday(v ? `${v}-${parts[1]}-${parts[2]}` : '');
+                    }}
+                    className={`${styles.birthdayInput} ${styles.birthdayYear}`}
+                    autoComplete="bday-year"
+                  />
+                </div>
               </div>
             </div>
 
             {error && <p className={styles.error}>{error}</p>}
 
             <button
-              className={styles.primaryButton}
+              className={`${styles.primaryButton} ${styles.buttonsAnimated}`}
               onClick={handleDetailsContinue}
               disabled={!isDetailsValid}
             >
@@ -480,9 +540,9 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
           </div>
         ) : step === 'avatar' ? (
           <div className={styles.stepContent}>
-            <h2 className={styles.stepTitle}>Choose your avatar</h2>
-            <p className={styles.stepDescription}>
-              Select one of your assigned avatars. This becomes your Academy identity.
+            <h2 className={`${styles.stepTitle} ${styles.titleAnimated}`}>Choose your avatar</h2>
+            <p className={`${styles.stepDescription} ${styles.descAnimated}`}>
+              This decision is very important.
             </p>
 
             {loadingAvatars ? (
@@ -494,7 +554,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
                 {avatars.map((avatar) => (
                   <button
                     key={avatar.id}
-                    className={`${styles.avatarOption} ${selectedAvatarId === avatar.id ? styles.avatarSelected : ''}`}
+                    className={`${styles.avatarOption} ${styles.avatarLottery} ${selectedAvatarId === avatar.id ? styles.avatarSelected : ''}`}
                     onClick={() => {
                       setSelectedAvatarId(avatar.id);
                       setError(null);
@@ -523,7 +583,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
 
             {error && <p className={styles.error}>{error}</p>}
 
-            <div className={styles.buttonRow}>
+            <div className={`${styles.buttonRow} ${styles.buttonsAnimated}`}>
               <button
                 className={styles.secondaryButton}
                 onClick={() => setStep('details')}
@@ -542,7 +602,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
           </div>
         ) : (
           <div className={styles.stepContent}>
-            <div className={styles.shardHero}>
+            <div className={`${styles.shardHero} ${styles.shardHeroAnimated}`}>
               <Image
                 src="/icons/ui-diamond.svg"
                 alt="Diamonds"
@@ -551,29 +611,29 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
                 className={styles.shardIcon}
               />
             </div>
-            <h2 className={styles.stepTitle}>Earn diamonds, build real upside</h2>
-            <p className={styles.stepDescription}>
-              Diamonds are earned through meaningful Academy activity. Surveys and the 12-week course are the best starting paths because they turn your reflections, research participation, and completed lessons into diamond rewards.
+            <h2 className={`${styles.stepTitle} ${styles.titleAnimated}`}>The School of The Future</h2>
+            <p className={`${styles.stepDescription} ${styles.descAnimated}`}>
+              Welcome to the Next-Gen.
             </p>
 
             <div className={styles.shardExplainer}>
-              <div className={styles.explainerCard}>
-                <h3>Earn</h3>
+              <div className={`${styles.explainerCard} ${styles.cardAnimated}`}>
+                <h3>Decentralized Quality Education</h3>
                 <p>Complete surveys, finish course milestones, build streaks, and submit quests to grow your credit balance.</p>
               </div>
-              <div className={styles.explainerCard}>
-                <h3>Use</h3>
+              <div className={`${styles.explainerCard} ${styles.cardAnimated}`}>
+                <h3>Real Cash Prizes For Learning</h3>
                 <p>Use diamonds inside the AI prediction market to back forecasts and create ways to make real money.</p>
               </div>
-              <div className={styles.explainerCard}>
-                <h3>Unlock</h3>
+              <div className={`${styles.explainerCard} ${styles.cardAnimated}`}>
+                <h3>Reach Your Ethereal Horizon</h3>
                 <p>VIP members can access research grants and community funds connected to Academy participation.</p>
               </div>
             </div>
 
             {error && <p className={styles.error}>{error}</p>}
 
-            <div className={styles.buttonRow}>
+            <div className={`${styles.buttonRow} ${styles.buttonsAnimated}`}>
               <button
                 className={styles.secondaryButton}
                 onClick={() => setStep('avatar')}

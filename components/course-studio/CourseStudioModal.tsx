@@ -177,15 +177,40 @@ export default function CourseStudioModal({
         setCoverImageUrl(course.coverImageUrl);
         setCourseId(course.id);
         setStatus(course.status);
-        const mapped = course.weeks.map((w) => ({
-          id: w.id,
-          weekNumber: w.weekNumber,
-          title: w.title,
-          theme: w.theme,
-          components: [],
-        }));
+        let firstReading = '';
+        let firstReadingImg = '';
+        const mapped = course.weeks.map((w) => {
+          const readingComp = w.components.find(
+            (c) => c.componentType === 'rich_text' && (c.config as any)?._isReading,
+          );
+          if (readingComp) {
+            if (!firstReading) {
+              firstReading = (readingComp.config as any)?.content ?? '';
+              firstReadingImg = (readingComp.config as any)?.imageUrl ?? '';
+            }
+            return {
+              id: w.id,
+              weekNumber: w.weekNumber,
+              title: w.title,
+              theme: w.theme,
+              components: w.components.filter(
+                (c) => !(c.componentType === 'rich_text' && (c.config as any)?._isReading),
+              ),
+            };
+          }
+          return {
+            id: w.id,
+            weekNumber: w.weekNumber,
+            title: w.title,
+            theme: w.theme,
+            components: w.components,
+          };
+        });
         setWeeks(mapped.length ? mapped : [createBlankWeek(1)]);
         setSelectedWeekId(mapped[0]?.id ?? '');
+        if (firstReading) setReadingContent(firstReading);
+        if (firstReadingImg) setReadingImageUrl(firstReadingImg);
+        setDirty(false);
         setPhase('edit');
       } catch {
         setError('Failed to load course.');
@@ -481,25 +506,42 @@ export default function CourseStudioModal({
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', ...headers },
         body: JSON.stringify({
-          weeks: weeks.map((w, i) => ({
-            weekNumber: w.weekNumber,
-            title: w.title,
-            theme: w.theme,
-            sortOrder: i,
-            components: w.components.map((c, ci) => ({
-              componentType: c.componentType,
-              title: c.title,
-              config: c.config,
-              sortOrder: ci,
-              required: c.required,
-              blocks: (c.blocks || []).map((b, bi) => ({
-                blockType: b.blockType,
-                config: b.config,
-                sortOrder: bi,
-                required: b.required,
+          weeks: weeks.map((w, i) => {
+            const comps = [...w.components];
+            if (readingContent) {
+              comps.unshift({
+                id: '',
+                weekId: w.id,
+                sortOrder: 0,
+                componentType: 'rich_text',
+                title: 'Weekly Read',
+                config: { content: readingContent, imageUrl: readingImageUrl || '', _isReading: true },
+                required: false,
+                blocks: [],
+                createdAt: '',
+                updatedAt: '',
+              });
+            }
+            return {
+              weekNumber: w.weekNumber,
+              title: w.title,
+              theme: w.theme,
+              sortOrder: i,
+              components: comps.map((c, ci) => ({
+                componentType: c.componentType,
+                title: c.title,
+                config: c.config,
+                sortOrder: ci,
+                required: c.required,
+                blocks: (c.blocks || []).map((b, bi) => ({
+                  blockType: b.blockType,
+                  config: b.config,
+                  sortOrder: bi,
+                  required: b.required,
+                })),
               })),
-            })),
-          })),
+            };
+          }),
         }),
       });
       if (!contentRes.ok) {
@@ -543,6 +585,7 @@ export default function CourseStudioModal({
 
     setDirty(false);
     setPhase('edit');
+    return currentCourseId;
   };
 
   const handleOpenPublishReview = async () => {
@@ -567,11 +610,16 @@ export default function CourseStudioModal({
     setPublishing(true);
     setError(null);
     try {
-      const headers = await authHeaders();
-      if (!courseId) {
+      // Save all content (weeks, components, reading) first
+      setPhase('saving');
+      const savedId = await saveCourseData();
+      const pubCourseId = savedId ?? courseId;
+      if (!pubCourseId) {
         throw new Error('Save the course first');
       }
-      const metaRes = await fetch(`/api/vip/courses/${courseId}`, {
+
+      const headers = await authHeaders();
+      const metaRes = await fetch(`/api/vip/courses/${pubCourseId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', ...headers },
         body: JSON.stringify({
@@ -584,7 +632,7 @@ export default function CourseStudioModal({
         const data = await metaRes.json().catch(() => ({}));
         throw new Error(data.error ?? 'Failed to save metadata');
       }
-      const pubRes = await fetch(`/api/vip/courses/${courseId}/publish`, {
+      const pubRes = await fetch(`/api/vip/courses/${pubCourseId}/publish`, {
         method: 'POST',
         headers,
       });
@@ -599,6 +647,7 @@ export default function CourseStudioModal({
       setShowPublishReview(false);
     } catch (err: any) {
       setError(err.message ?? 'Publish failed');
+      setPhase('edit');
     } finally {
       setPublishing(false);
     }
@@ -782,6 +831,23 @@ export default function CourseStudioModal({
                   </div>
                 </main>
               )}
+
+              {/* Floating save bar — always visible above the palette */}
+              <div className={styles.floatingSaveBar}>
+                <div className={styles.floatingSaveLeft}>
+                  {error && <span className={styles.errorText}>{error}</span>}
+                  <span className={styles.dirtyDot} data-visible={dirty ? '' : undefined} />
+                  {dirty && <span className={styles.floatingDirtyLabel}>Unsaved changes</span>}
+                </div>
+                <button
+                  type="button"
+                  onClick={saveCourse}
+                  disabled={phase === 'saving'}
+                  className={styles.saveBtn}
+                >
+                  {phase === 'saving' ? 'Saving...' : courseId ? 'Save' : 'Create course'}
+                </button>
+              </div>
 
               {/* Bottom: Component palette */}
               <aside className={`${styles.bottomPalette} ${drawerOpen ? '' : styles.bottomPaletteClosed}`} data-tour="builder-palette">

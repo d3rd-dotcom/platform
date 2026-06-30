@@ -26,7 +26,7 @@ function getPersonalEndDate() {
 const COURSE_THUMB = '/academy-story.png';
 
 export default function CoursesPage() {
-  const { ready, getAccessToken } = usePrivy();
+  const { ready, authenticated, getAccessToken } = usePrivy();
   const [personalCourse, setPersonalCourse] = useState<CourseData | null>(null);
   const [authoredCourses, setAuthoredCourses] = useState<VipCourseRecord[]>([]);
   const [coreAuthor, setCoreAuthor] = useState<{ username: string; avatarUrl: string | null } | null>(null);
@@ -301,6 +301,17 @@ export default function CoursesPage() {
             </div>
           </Link>
           </div>
+        )}
+
+        {authenticated && (
+          <Link href="/course-builder" className={styles.createCourseBtn}>
+            <span className={styles.createCourseIcon}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+            </span>
+            <span className={styles.createCourseLabel}>Create Course</span>
+          </Link>
         )}
 
         {academyCourses.length > 0 && (

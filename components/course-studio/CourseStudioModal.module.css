@@ -286,6 +286,44 @@
   background: #13141f;
 }
 
+/* ── Floating save bar above palette ── */
+.floatingSaveBar {
+  position: fixed;
+  bottom: 36px;
+  left: var(--sidebar-width, 265px);
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 24px;
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-surface-2));
+  border-top: 1px solid var(--color-border-subtle);
+  backdrop-filter: blur(8px);
+  z-index: 40;
+  gap: 12px;
+}
+
+.floatingSaveLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.floatingDirtyLabel {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #f59e0b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+:global([data-theme="dark"]) .floatingSaveBar {
+  background: color-mix(in srgb, var(--color-primary) 10%, #0d0e16);
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
 /* ── Bottom: component palette bar ── */
 .bottomPalette {
   position: fixed;

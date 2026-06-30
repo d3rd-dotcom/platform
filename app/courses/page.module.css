@@ -634,6 +634,57 @@
   color: #f0f1fa;
 }
 
+/* ── Create Course Button ── */
+.createCourseBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 20px 24px;
+  border: 2px dashed var(--color-primary);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-surface-base));
+  color: var(--color-primary);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin-top: 4px;
+}
+
+.createCourseBtn:hover {
+  background: color-mix(in srgb, var(--color-primary) 14%, var(--color-surface-base));
+  border-style: solid;
+  transform: translateY(-1px);
+}
+
+.createCourseIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+}
+
+.createCourseLabel {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+:global([data-theme="dark"]) .createCourseBtn {
+  background: color-mix(in srgb, var(--color-primary) 8%, #0d0e16);
+  border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+}
+
+:global([data-theme="dark"]) .createCourseBtn:hover {
+  background: color-mix(in srgb, var(--color-primary) 16%, #0d0e16);
+}
+
 @media (max-width: 900px) {
   .layout { margin-left: 0; }
 }
@@ -853,5 +904,13 @@
 
   .desc {
     font-size: 14px;
+  }
+
+  .createCourseBtn {
+    width: 100%;
+  }
+
+  .createCourseBtn .createCourseLabel {
+    font-size: 0.8125rem;
   }
 }

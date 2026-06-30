@@ -218,6 +218,34 @@
   box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 50%, transparent);
 }
 
+.navLinkDisabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+  border-color: color-mix(in oklch, var(--color-primary) 18%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 3%, transparent);
+}
+
+.navLinkLabelText {
+  display: inline-flex;
+  align-items: center;
+}
+
+.navLinkBadge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  padding: 1px 5px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  background: color-mix(in oklch, var(--color-primary) 15%, transparent);
+  color: var(--color-text-soft);
+  line-height: 1.4;
+}
+
 .navLinkIconWrap {
   display: flex;
   align-items: center;
@@ -394,6 +422,12 @@
   background: var(--color-primary);
   border-color: var(--color-primary);
   color: #ffffff;
+}
+
+:global([data-theme="dark"]) .navLinkDisabled {
+  opacity: 0.4;
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 :global([data-theme="dark"]) .navLinkIcon {

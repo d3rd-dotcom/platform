@@ -24,7 +24,6 @@ const ProMembershipModal = dynamic(() => import('../pro-membership-modal/ProMemb
 const AngelUpsellModal = dynamic(() => import('../angel-upsell-modal/AngelUpsellModal'), { ssr: false });
 
 const YourAccountsModal = dynamic(() => import('../nav-buttons/YourAccountsModal'), { ssr: false });
-const OnboardingModal = dynamic(() => import('../onboarding/OnboardingModal'), { ssr: false });
 const LootBoxModal = dynamic(() => import('../loot-box/LootBoxModal'), { ssr: false });
 const SubmitProposalModal = dynamic(() => import('../voting/SubmitProposalModal'), { ssr: false });
 
@@ -195,7 +194,6 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const [isYourAccountsModalOpen, setIsYourAccountsModalOpen] = useState(false);
   const [isCreatingSession, setIsCreatingSession] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [isLootBoxOpen, setIsLootBoxOpen] = useState(false);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [userLoadComplete, setUserLoadComplete] = useState(false);
@@ -326,7 +324,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
         sessionCreatedForRef.current = walletAddress;
         // If user still has temp username, they need to complete onboarding
         if (!meData.user.username || meData.user.username.startsWith('user_')) {
-          setIsOnboardingOpen(true);
+          window.dispatchEvent(new Event('openOnboarding'));
         }
         return;
       }
@@ -353,7 +351,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
         sessionCreatedForRef.current = walletAddress;
         // Open onboarding for new users or users who haven't completed setup
         if (!signupData.existing || !refreshData.user?.username || refreshData.user?.username?.startsWith('user_')) {
-          setIsOnboardingOpen(true);
+          window.dispatchEvent(new Event('openOnboarding'));
         }
       }
     } catch (error) {
@@ -537,13 +535,6 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
 
   const handleUsernameChanged = (newUsername: string) => {
     setUsername(newUsername);
-  };
-
-  const handleOnboardingComplete = (newUsername: string, newAvatarUrl: string | null) => {
-    setUsername(newUsername);
-    setAvatarUrl(newAvatarUrl);
-    setIsOnboardingOpen(false);
-    window.dispatchEvent(new Event('userLoggedIn'));
   };
 
   const handleSignOut = async () => {
@@ -944,13 +935,6 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
           onClose={() => setIsUsernameChangeModalOpen(false)}
           currentUsername={username || ''}
           onUsernameChanged={handleUsernameChanged}
-        />
-      )}
-      {isOnboardingOpen && (
-        <OnboardingModal
-          isOpen={isOnboardingOpen}
-          onClose={() => setIsOnboardingOpen(false)}
-          onComplete={handleOnboardingComplete}
         />
       )}
       {isSubmitModalOpen && (

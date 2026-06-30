@@ -22,7 +22,7 @@
   width: 100%;
   max-width: 520px;
   background: rgba(244, 245, 254, 0.96);
-  border: 2px solid rgba(255, 255, 255, 0.8);
+  border: 2px solid var(--color-primary);
   border-radius: 22px;
   box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
   overflow: hidden;
@@ -77,6 +77,7 @@
   align-items: center;
   text-align: center;
   overflow-y: auto;
+  overflow-x: hidden;
   flex: 1;
   min-height: 0;
 }
@@ -118,6 +119,9 @@
 
 .inputGroup {
   width: 100%;
+  border: none;
+  padding: 0;
+  margin: 0;
 }
 
 .inputLabel {
@@ -146,6 +150,40 @@
   text-align: left;
   margin-bottom: 8px;
   padding: 0;
+}
+
+.birthdayRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.birthdayInput {
+  flex: 1;
+  min-width: 0;
+  padding: 14px 8px;
+  font-family: var(--font-primary);
+  font-size: 16px;
+  color: var(--color-text-dark);
+  background: #ffffff;
+  border: 2px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
+  border-radius: 12px;
+  outline: none;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.birthdayInput:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px color-mix(in oklch, var(--color-primary) 10%, transparent);
+}
+
+.birthdaySep {
+  font-size: 18px;
+  color: var(--color-text-dark);
+  opacity: 0.4;
+  user-select: none;
 }
 
 .inputWrapper {
@@ -414,6 +452,25 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+@keyframes lotteryPop {
+  0%   { opacity: 0; transform: scale(0.2) rotate(-15deg); }
+  40%  { opacity: 1; transform: scale(1.15) rotate(4deg); }
+  65%  { transform: scale(0.92) rotate(-2deg); }
+  85%  { transform: scale(1.04) rotate(1deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+.avatarLottery {
+  animation: lotteryPop 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.avatarLottery:nth-child(1) { animation-delay: 0ms; }
+.avatarLottery:nth-child(2) { animation-delay: 80ms; }
+.avatarLottery:nth-child(3) { animation-delay: 160ms; }
+.avatarLottery:nth-child(4) { animation-delay: 240ms; }
+.avatarLottery:nth-child(5) { animation-delay: 320ms; }
+.avatarLottery:nth-child(6) { animation-delay: 400ms; }
+
 .avatarOption:hover {
   transform: scale(1.05);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
@@ -574,6 +631,26 @@
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.02); }
 }
+
+/* Stagger animations for all steps */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.shardHeroAnimated { animation: fadeUp 0.5s ease both; }
+
+.titleAnimated    { animation: fadeUp 0.5s ease both; animation-delay: 80ms; }
+.descAnimated     { animation: fadeUp 0.5s ease both; animation-delay: 160ms; }
+.formAnimated     { animation: fadeUp 0.5s ease both; animation-delay: 240ms; }
+.gridAnimated     { animation: fadeUp 0.5s ease both; animation-delay: 240ms; }
+
+.cardAnimated     { animation: fadeUp 0.5s ease both; }
+.cardAnimated:nth-child(1) { animation-delay: 320ms; }
+.cardAnimated:nth-child(2) { animation-delay: 400ms; }
+.cardAnimated:nth-child(3) { animation-delay: 480ms; }
+
+.buttonsAnimated  { animation: fadeUp 0.5s ease both; animation-delay: 560ms; }
 
 /* Mobile adjustments */
 @media (max-width: 520px) {

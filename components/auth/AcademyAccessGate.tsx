@@ -31,6 +31,7 @@ export default function AcademyAccessGate({ children }: { children: ReactNode })
   const { ready, authenticated, getAccessToken } = usePrivy();
   const devOnboarding = useDevOnboarding();
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
+  const [forceReady, setForceReady] = useState(false);
 
   const fetchMe = useCallback(async (): Promise<MeResponse> => {
     const token = await getAccessToken();
@@ -127,6 +128,11 @@ export default function AcademyAccessGate({ children }: { children: ReactNode })
     window.location.href = '/home?devonboard=1';
   };
 
+  const viewScreens = () => {
+    setForceReady(true);
+    setIsOnboardingOpen(true);
+  };
+
   const resetOnboarding = () => {
     clearDevOnboardingState();
     const keys = [
@@ -145,7 +151,8 @@ export default function AcademyAccessGate({ children }: { children: ReactNode })
       {children}
       <OnboardingModal
         isOpen={isOnboardingOpen}
-        onClose={() => setIsOnboardingOpen(false)}
+        forceReady={forceReady}
+        onClose={() => { setIsOnboardingOpen(false); setForceReady(false); }}
         onComplete={handleOnboardingComplete}
       />
       {showPanel && createPortal(
@@ -162,6 +169,9 @@ export default function AcademyAccessGate({ children }: { children: ReactNode })
           </span>
           <button type="button" onClick={startOnboarding} style={btnStyle}>
             Start Onboarding
+          </button>
+          <button type="button" onClick={viewScreens} style={btnStyle}>
+            View Screens
           </button>
           <button type="button" onClick={resetOnboarding} style={{...btnStyle, borderColor: 'rgba(255,100,100,0.4)', color: '#ff8a8a'}}>
             Reset
