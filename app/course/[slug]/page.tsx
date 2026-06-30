@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { CheckCircle, SealCheck, SpinnerGap, ArrowLeft, ArrowRight } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import ComponentRenderer from '@/components/course-renderers/ComponentRenderer';
+import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
 import type { CourseRecord, ChapterRecord, LessonRecord } from '@/lib/course-content-db';
 import type { VipCourseFull, VipProgressRecord, CourseComponentRecord } from '@/lib/vip-course-db';
 import styles from './page.module.css';
@@ -270,6 +271,12 @@ export default function CourseSlugPage({ params }: PageProps) {
           {/* ── Left column ── */}
           <div className={isDesktop ? courseStyles.leftCol : undefined}>
 
+            {/* Blue video */}
+            <BlueVideoPanel
+              className={courseStyles.blueVideo}
+              message={vipCourse.title || 'Custom course'}
+            />
+
             {/* Reading card */}
             {readingComponent && (
               <button
@@ -331,7 +338,7 @@ export default function CourseSlugPage({ params }: PageProps) {
 
             {/* Missions heading */}
             {taskComponents.length > 0 && (
-              <div className={courseStyles.missionsHeadingRow} aria-hidden="true">
+              <div className={courseStyles.missionsHeadingRow} style={{ marginBottom: 12 }} aria-hidden="true">
                 <span className={courseStyles.missionsDivider} />
                 <h2 className={courseStyles.missionsHeading}>Missions</h2>
                 <span className={courseStyles.missionsDivider} />
@@ -469,11 +476,7 @@ export default function CourseSlugPage({ params }: PageProps) {
               </div>
             )}
 
-            {!rightContent && (
-              <div className={styles.rightPanelEmpty}>
-                <p>Select a reading or mission to preview</p>
-              </div>
-            )}
+            {!rightContent && <div />}
           </div>
 
         </main>
