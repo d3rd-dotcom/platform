@@ -130,7 +130,7 @@ export default function FeatureTour() {
   }, []);
 
   // Decide what (if anything) to show, once on mount.
-  useEffect(() => {
+  const initPhase = useCallback(() => {
     if (typeof window === 'undefined') return;
 
     const introPending = getStorageItem(PENDING_KEY) === '1';
@@ -196,6 +196,19 @@ export default function FeatureTour() {
       };
     }
   }, []);
+
+  useEffect(() => {
+    initPhase();
+  }, [initPhase]);
+
+  // Re-run when profile is updated (e.g., onboarding completes)
+  useEffect(() => {
+    const onProfileUpdated = () => {
+      window.setTimeout(() => initPhase(), 600);
+    };
+    window.addEventListener('profileUpdated', onProfileUpdated);
+    return () => window.removeEventListener('profileUpdated', onProfileUpdated);
+  }, [initPhase]);
 
   // Live Phase B trigger: fired by DailyNotes on the first completed note. A
   // small delay lets the credit/reward animation play before Blue chimes in.

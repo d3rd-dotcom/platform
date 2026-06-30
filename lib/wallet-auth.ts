@@ -42,6 +42,14 @@ async function resolveAgentApiKey(key: string): Promise<string | null> {
 export async function getWalletAddressFromRequest(): Promise<string | null> {
   try {
     const headersList = await headers();
+
+    // 0. Dev bypass — no real auth needed in dev mode. Must come before the
+    //    real auth checks so we never waste a Privy call.
+    if (process.env.DEV_BYPASS_AUTH && process.env.NODE_ENV !== 'production') {
+      const bypassWallet = tryDevBypass(headersList);
+      if (bypassWallet) return bypassWallet;
+    }
+
     const authHeader = headersList.get('authorization');
 
     // 1. Try Authorization header with Privy JWT
@@ -97,6 +105,29 @@ export async function getWalletAddressFromRequest(): Promise<string | null> {
     console.error('getWalletAddressFromRequest error:', error);
     return null;
   }
+}
+
+/**
+ * Dev-only auth bypass. When DEV_BYPASS_AUTH is truthy AND the request
+ * carries a `x-dev-bypass` header with a valid 0x wallet address, that
+ * wallet is returned directly — no Privy JWT needed.
+ *
+ * The client-side DevOnboardingPanel sets this header so the onboarding
+ * API calls work without real wallet auth. Guarded by NODE_ENV so never
+ * active in production builds.
+ */
+function tryDevBypass(headersList: Headers): string | null {
+  const bypass = process.env.DEV_BYPASS_AUTH;
+  if (!bypass || bypass === '0' || bypass === 'false' || bypass === 'no') {
+    return null;
+  }
+  if (process.env.NODE_ENV === 'production') return null;
+
+  const devBypass = headersList.get('x-dev-bypass');
+  if (devBypass && /^0x[a-fA-F0-9]{40}$/.test(devBypass)) {
+    return devBypass.toLowerCase();
+  }
+  return null;
 }
 
 export async function verifyWalletSignature(

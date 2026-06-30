@@ -449,7 +449,7 @@ const Navbar: React.FC = () => {
                   // Dispatch event to open onboarding modal (works if already on home page)
                   window.dispatchEvent(new Event('openOnboarding'));
                   // Navigate to home with query param to trigger onboarding
-                  router.push('/voting?onboarding=true');
+                  router.push('/home?onboarding=true');
                 }}
                 type="button"
               >
@@ -464,7 +464,7 @@ const Navbar: React.FC = () => {
                   // Dispatch event to open onboarding modal (works if already on home page)
                   window.dispatchEvent(new Event('openOnboarding'));
                   // Navigate to home with query param to trigger onboarding
-                  router.push('/voting?onboarding=true');
+                  router.push('/home?onboarding=true');
                 }}
                 type="button"
               >
