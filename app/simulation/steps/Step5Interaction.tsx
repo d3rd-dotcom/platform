@@ -123,24 +123,12 @@ export default function Step5Interaction({ wf }: { wf: WorkflowState }) {
   return (
     <div className={styles.panel}>
       <div className={styles.simHeader}>
-        <div>
-          <h2 className={styles.panelTitle}>Interaction</h2>
-          <p className={styles.panelLead}>
-            Question the world. Ask the Report Agent about emergent dynamics, or interview any agent
-            directly about what they did and why.
-          </p>
-        </div>
-        <div className={styles.simControls}>
-          <button
-            className={styles.secondaryBtn}
-            onClick={transferToResearch}
-            onMouseEnter={() => play('hover')}
-            disabled={transferring}
-          >
-            {transferring ? 'Transferring…' : 'Transfer to R-Tool'}
-          </button>
-        </div>
+        <h2 className={styles.panelTitle}>Interaction</h2>
       </div>
+
+      <p className={styles.panelLead}>
+        Discuss findings with the Report Agent or interview individual agents from the simulation.
+      </p>
 
       <div className={styles.modeToggle}>
         <button
@@ -211,6 +199,16 @@ export default function Step5Interaction({ wf }: { wf: WorkflowState }) {
       </div>
 
       {error && <p className={styles.errorText}>{error}</p>}
+
+      <div className={styles.actionRow}>
+        <Button
+          onClick={transferToResearch}
+          onMouseEnter={() => play('hover')}
+          disabled={transferring}
+        >
+          {transferring ? 'Transferring…' : 'Transfer to R-Tool →'}
+        </Button>
+      </div>
 
       <div className={styles.chatInputRow}>
         <input

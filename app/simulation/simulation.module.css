@@ -864,10 +864,6 @@
     background: var(--color-surface-1);
     border: 2px solid var(--color-primary-hover);
     border-bottom: none;
-    box-shadow:
-      0 6px 0 var(--color-primary),
-      0 0px 10px rgba(0, 0, 0, 0.14),
-      0 10px 5px rgba(0, 0, 0, 0.30);
     flex: 0 0 auto;
   }
   .stepChip {
@@ -1450,19 +1446,44 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: 16px;
-    margin: -24px -24px 16px;
-    padding: 16px 24px 14px;
+    margin: -24px -24px 8px;
+    padding: 16px 24px 10px;
     flex-wrap: wrap;
     position: sticky;
     top: -24px;
     background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-1));
-    border-bottom: 2px solid var(--color-primary-hover);
     z-index: 2;
   }
   .simControls {
     display: flex;
     align-items: center;
     gap: 10px;
+  }
+  .reportActions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .secondaryBtnSm {
+    font-family: var(--font-primary);
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--color-text-dark, #1a1b24);
+    background: rgba(125, 135, 200, 0.12);
+    border: 1px solid rgba(125, 135, 200, 0.25);
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  .secondaryBtnSm:hover {
+    background: rgba(125, 135, 200, 0.2);
+  }
+  .secondaryBtnSm:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
   @media (max-width: 720px) {
     .simControls {

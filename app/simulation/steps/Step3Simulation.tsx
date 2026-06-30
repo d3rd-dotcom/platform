@@ -54,10 +54,14 @@ function actionText(a: Action): string {
 
 function cleanSimError(text: string | null | undefined): string | null {
   if (!text?.trim()) return null;
-  // The backend sometimes mixes process-exit info with leaked LLM output.
-  // Extract only the meaningful prefix.
-  const exitMatch = text.match(/^Process exit code: -?\d+/);
-  if (exitMatch) return exitMatch[0];
+  // Exit code -9 is SIGKILL — the process was terminated externally (e.g. on
+  // page reload, new run, or runtime cleanup). Results are already persisted
+  // so this is harmless noise.
+  const exitMatch = text.match(/^Process exit code: (-?\d+)/);
+  if (exitMatch) {
+    if (Number(exitMatch[1]) === -9) return null;
+    return exitMatch[0];
+  }
   // If it looks like pure garbage (no capital letter start), hide it.
   if (!/^[A-Z]/.test(text.trim())) return 'Simulation failed';
   return text.trim();
@@ -225,8 +229,7 @@ export default function Step3Simulation({
         <div>
           <h2 className={styles.panelTitle}>Simulation</h2>
           <p className={styles.panelLead}>
-            The same agents participate in both channels: public broadcasts in Info Plaza and
-            threaded discussion in Topic Community.
+            Agents participate in both channels: public broadcasts and threaded discussion.
           </p>
         </div>
         <div className={styles.simControls}>

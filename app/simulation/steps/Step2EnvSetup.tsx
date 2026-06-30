@@ -216,8 +216,7 @@ export default function Step2EnvSetup({
     <div className={styles.panel}>
       <h2 className={styles.panelTitle}>World setup</h2>
       <p className={styles.panelLead}>
-        Generate one agent for each eligible entity found in the knowledge graph, up to your
-        selected maximum. Each agent receives a persona and graph-based memory.
+        Generate agents from the knowledge graph entities.
       </p>
 
       {!prepared && (

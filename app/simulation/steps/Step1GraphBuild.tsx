@@ -190,8 +190,7 @@ export default function Step1GraphBuild({
     <div className={styles.panel}>
       <h2 className={styles.panelTitle}>Knowledge graph</h2>
       <p className={styles.panelLead}>
-        We analyzed your documents and proposed the entities and relationships that define this
-        world. Build the graph to extract them into long-term agent memory.
+        Build the graph to extract entities and relationships into long-term agent memory.
       </p>
 
       {ontology?.analysis_summary && (

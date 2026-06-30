@@ -153,45 +153,31 @@ export default function Step4Report({
   return (
     <div className={styles.panel}>
       <div className={styles.simHeader}>
-        <div>
-          <h2 className={styles.panelTitle}>Report</h2>
-          <p className={styles.panelLead}>
-            The Report Agent reads the whole simulation and synthesizes a forecast that answers your
-            original question.
-          </p>
-        </div>
-        <div className={styles.simControls}>
-          {done ? (
-            <>
-              <button className={styles.secondaryBtn} onClick={() => generate(true)} onMouseEnter={() => play('hover')}>
-                Regenerate
-              </button>
-              <button
-                className={styles.secondaryBtn}
-                onClick={() => {
-                  play('navigation');
-                  onDone();
-                }}
-                onMouseEnter={() => play('hover')}
-              >
-                Discuss
-              </button>
-            </>
-          ) : (
+        <h2 className={styles.panelTitle}>Report</h2>
+      </div>
+
+      <p className={styles.panelLead}>
+        Generate a report analyzing simulation outcomes, trends, and key findings.
+      </p>
+
+      <div className={styles.reportActions}>
+        {!done && (
+          <>
             <Button
+              size="compact"
               onClick={() => generate(true)}
               onMouseEnter={() => play('hover')}
               disabled={generating}
             >
               {generating ? 'Generating…' : 'Generate report'}
             </Button>
-          )}
-          {generating && (
-            <span className={styles.loaderInline} aria-hidden>
-              <DotmSquare3 speed={0.9} dotSize={4} gap={3} />
-            </span>
-          )}
-        </div>
+            {generating && (
+              <span className={styles.loaderInline} aria-hidden>
+                <DotmSquare3 speed={0.9} dotSize={4} gap={3} />
+              </span>
+            )}
+          </>
+        )}
       </div>
 
       {error && <p className={styles.errorText}>{error}</p>}
@@ -216,6 +202,27 @@ export default function Step4Report({
         <article className={styles.reportBody}>
           <ReactMarkdown>{content}</ReactMarkdown>
         </article>
+      )}
+
+      {done && (
+        <>
+          <div className={styles.reportActions}>
+            <button className={styles.secondaryBtnSm} onClick={() => generate(true)} onMouseEnter={() => play('hover')}>
+              Regenerate
+            </button>
+          </div>
+          <div className={styles.actionRow}>
+            <Button
+              onClick={() => {
+                play('navigation');
+                onDone();
+              }}
+              onMouseEnter={() => play('hover')}
+            >
+              Discuss findings →
+            </Button>
+          </div>
+        </>
       )}
     </div>
   );
