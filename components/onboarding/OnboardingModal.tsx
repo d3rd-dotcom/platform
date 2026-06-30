@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useAccount } from 'wagmi';
 import { usePrivy } from '@privy-io/react-auth';
 import { setStorageItem } from '@/lib/safe-storage';
+import { useDevOnboarding, getDevWallet } from '@/components/useDevMode';
 import styles from './OnboardingModal.module.css';
 
 interface Avatar {
@@ -29,6 +30,8 @@ const genderOptions = [
 const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onComplete }) => {
   const { address } = useAccount();
   const { getAccessToken, authenticated, login } = usePrivy();
+  const devOnboarding = useDevOnboarding();
+  const effectiveAddress = address || (devOnboarding ? getDevWallet() : null);
   const [step, setStep] = useState<'details' | 'avatar' | 'shards'>('details');
   const [hasSession, setHasSession] = useState(false);
   // Gate the onboarding questions behind a confirmed account. The questions
@@ -63,6 +66,14 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
   // yet, create it now (wallet-signup). Otherwise prompt them to sign in.
   useEffect(() => {
     if (!isOpen) return;
+
+    // Dev onboarding: skip real auth, go straight to ready
+    if (devOnboarding) {
+      setHasSession(true);
+      setAuthStatus('ready');
+      return;
+    }
+
     let cancelled = false;
     setAuthStatus('checking');
 
@@ -107,7 +118,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
     })();
 
     return () => { cancelled = true; };
-  }, [isOpen, authenticated, getAccessToken]);
+  }, [isOpen, authenticated, getAccessToken, devOnboarding]);
 
   useEffect(() => {
     if (!isOpen || authStatus !== 'ready') return;
@@ -116,10 +127,13 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
       setAvatarError(null);
       try {
         const token = await getAccessToken();
+        const headers: HeadersInit = devOnboarding
+          ? { 'x-dev-bypass': getDevWallet() }
+          : token ? { Authorization: `Bearer ${token}` } : {};
         const response = await fetch('/api/avatars/choices', {
           cache: 'no-store',
           credentials: 'include',
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
+          headers,
         });
         const data = await response.json();
         if (!response.ok) {
@@ -134,7 +148,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
       }
     };
     fetchAvatars();
-  }, [isOpen, authStatus, getAccessToken]);
+  }, [isOpen, authStatus, getAccessToken, devOnboarding]);
 
   const checkUsername = useCallback(async (name: string) => {
     if (checkingRef.current === name) return;
@@ -263,7 +277,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
       setStep('avatar');
       return;
     }
-    if (!address && !hasSession) {
+    if (!effectiveAddress && !hasSession) {
       setError('Wallet not connected. Please connect your wallet first.');
       return;
     }
@@ -271,13 +285,18 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
     setIsLoading(true);
     try {
       const token = await getAccessToken();
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+      if (devOnboarding) {
+        headers['x-dev-bypass'] = getDevWallet();
+      } else if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
       const profileResponse = await fetch('/api/profile/create', {
         method: 'POST',
         credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
+        headers,
         body: JSON.stringify({
           username,
           gender,
@@ -476,7 +495,10 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
                   <button
                     key={avatar.id}
                     className={`${styles.avatarOption} ${selectedAvatarId === avatar.id ? styles.avatarSelected : ''}`}
-                    onClick={() => setSelectedAvatarId(avatar.id)}
+                    onClick={() => {
+                      setSelectedAvatarId(avatar.id);
+                      setError(null);
+                    }}
                     type="button"
                   >
                     <Image

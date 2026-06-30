@@ -125,7 +125,10 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
                     className={`${styles.avatarOption} ${
                       selectedAvatar === avatar.image_url ? styles.selected : ''
                     }`}
-                    onClick={() => setSelectedAvatar(avatar.image_url)}
+                    onClick={() => {
+                      setSelectedAvatar(avatar.image_url);
+                      setError(null);
+                    }}
                     type="button"
                   >
                     <div className={styles.avatarImageWrapper}>
