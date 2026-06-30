@@ -11,6 +11,8 @@
     "start": "next start",
     "lint": "next lint",
     "generate:intake-audio": "tsx scripts/generate-course-intake-audio.ts",
+    "generate:blue-voice": "tsx scripts/generate-blue-voice-clips.ts",
+    "generate:blue-voice:force": "tsx scripts/generate-blue-voice-clips.ts --force",
     "test-db": "tsx scripts/test-db-connection.ts",
     "test-resend": "tsx scripts/test-resend.ts",
     "check-treasury": "tsx scripts/check-treasury-balance.ts",

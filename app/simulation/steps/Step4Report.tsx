@@ -28,6 +28,16 @@ export default function Step4Report({
   const [logs, setLogs] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const copyReport = async () => {
+    if (!content) return;
+    try {
+      await navigator.clipboard.writeText(content);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {}
+  };
 
   const finishWithReport = async (id: string, announceSuccess = true) => {
     setReportId(id);
@@ -154,30 +164,49 @@ export default function Step4Report({
     <div className={styles.panel}>
       <div className={styles.simHeader}>
         <h2 className={styles.panelTitle}>Report</h2>
-      </div>
-
-      <p className={styles.panelLead}>
-        Generate a report analyzing simulation outcomes, trends, and key findings.
-      </p>
-
-      <div className={styles.reportActions}>
-        {!done && (
-          <>
-            <Button
-              size="compact"
-              onClick={() => generate(true)}
-              onMouseEnter={() => play('hover')}
-              disabled={generating}
-            >
-              {generating ? 'Generating…' : 'Generate report'}
-            </Button>
-            {generating && (
-              <span className={styles.loaderInline} aria-hidden>
-                <DotmSquare3 speed={0.9} dotSize={4} gap={3} />
-              </span>
-            )}
-          </>
-        )}
+        <div className={styles.simControls}>
+          {!done && (
+            <>
+              <Button
+                size="compact"
+                onClick={() => generate(true)}
+                onMouseEnter={() => play('hover')}
+                disabled={generating}
+              >
+                {generating ? 'Generating…' : 'Generate report'}
+              </Button>
+              {generating && (
+                <span className={styles.loaderInline} aria-hidden>
+                  <DotmSquare3 speed={0.9} dotSize={4} gap={3} />
+                </span>
+              )}
+            </>
+          )}
+          {done && (
+            <>
+              <button className={styles.secondaryBtnSm} onClick={copyReport} onMouseEnter={() => play('hover')}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 4, verticalAlign: 'middle' }}>
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+                {copied ? 'Copied' : 'Copy'}
+              </button>
+              <button className={styles.secondaryBtnSm} onClick={() => generate(true)} onMouseEnter={() => play('hover')}>
+                Regenerate
+              </button>
+              <Button
+                size="compact"
+                onClick={() => {
+                  play('navigation');
+                  onDone();
+                }}
+                onMouseEnter={() => play('hover')}
+              >
+                Discuss findings →
+              </Button>
+            </>
+          )}
+        </div>
       </div>
 
       {error && <p className={styles.errorText}>{error}</p>}
@@ -202,27 +231,6 @@ export default function Step4Report({
         <article className={styles.reportBody}>
           <ReactMarkdown>{content}</ReactMarkdown>
         </article>
-      )}
-
-      {done && (
-        <>
-          <div className={styles.reportActions}>
-            <button className={styles.secondaryBtnSm} onClick={() => generate(true)} onMouseEnter={() => play('hover')}>
-              Regenerate
-            </button>
-          </div>
-          <div className={styles.actionRow}>
-            <Button
-              onClick={() => {
-                play('navigation');
-                onDone();
-              }}
-              onMouseEnter={() => play('hover')}
-            >
-              Discuss findings →
-            </Button>
-          </div>
-        </>
       )}
     </div>
   );

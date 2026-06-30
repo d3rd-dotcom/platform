@@ -226,12 +226,7 @@ export default function Step3Simulation({
   return (
     <div className={styles.panel}>
       <div className={styles.simHeader}>
-        <div>
-          <h2 className={styles.panelTitle}>Simulation</h2>
-          <p className={styles.panelLead}>
-            Agents participate in both channels: public broadcasts and threaded discussion.
-          </p>
-        </div>
+        <h2 className={styles.panelTitle}>Simulation</h2>
         <div className={styles.simControls}>
           {loadingRun && <span className={styles.muted}>Loading run...</span>}
           {!loadingRun && !started && (

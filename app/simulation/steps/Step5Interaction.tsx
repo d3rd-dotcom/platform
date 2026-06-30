@@ -124,11 +124,17 @@ export default function Step5Interaction({ wf }: { wf: WorkflowState }) {
     <div className={styles.panel}>
       <div className={styles.simHeader}>
         <h2 className={styles.panelTitle}>Interaction</h2>
+        <div className={styles.simControls}>
+          <Button
+            onClick={transferToResearch}
+            onMouseEnter={() => play('hover')}
+            disabled={transferring}
+            size="compact"
+          >
+            {transferring ? 'Transferring…' : 'Transfer to R-Tool →'}
+          </Button>
+        </div>
       </div>
-
-      <p className={styles.panelLead}>
-        Discuss findings with the Report Agent or interview individual agents from the simulation.
-      </p>
 
       <div className={styles.modeToggle}>
         <button
@@ -199,16 +205,6 @@ export default function Step5Interaction({ wf }: { wf: WorkflowState }) {
       </div>
 
       {error && <p className={styles.errorText}>{error}</p>}
-
-      <div className={styles.actionRow}>
-        <Button
-          onClick={transferToResearch}
-          onMouseEnter={() => play('hover')}
-          disabled={transferring}
-        >
-          {transferring ? 'Transferring…' : 'Transfer to R-Tool →'}
-        </Button>
-      </div>
 
       <div className={styles.chatInputRow}>
         <input

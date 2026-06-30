@@ -1138,7 +1138,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
 
     // Earning money / monetizing research
     if (has('earn money', 'make money', 'get paid', 'monetize', 'income', 'revenue', 'royalt')) {
-      return "credit payouts from contributions, validated surveys, or treasury proposals. pick a lane.";
+      return "diamond payouts from contributions, validated surveys, or treasury proposals. pick a lane.";
     }
 
     // Rewards / shop / loot
@@ -1233,7 +1233,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
 
     // Season / seasons
     if (has('season')) {
-      return "seasons are the long arc - credit resets, loot cycles, leaderboard. stay consistent and it stacks.";
+      return "seasons are the long arc - diamond resets, loot cycles, leaderboard. stay consistent and it stacks.";
     }
 
     // What can I do / features / general help
@@ -1243,7 +1243,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
 
     // Help / generic help request
     if (has('help') && t.length < 30) {
-      return "course, credits, research, markets, Discord - what do you need?";
+      return "course, diamonds, research, markets, Discord - what do you need?";
     }
 
     // BetterHelp / extractive wellness platforms
