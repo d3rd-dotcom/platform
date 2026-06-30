@@ -148,6 +148,7 @@ export default function CourseStudioModal({
     return () => {
       document.body.style.overflow = '';
       document.body.style.paddingTop = '';
+      if (undoTimeoutRef.current) clearTimeout(undoTimeoutRef.current);
     };
   }, []);
 

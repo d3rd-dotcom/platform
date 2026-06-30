@@ -1,42 +1,20 @@
-'use client';
-
-import { useRef, useState } from 'react';
 import Image from 'next/image';
 import { ArrowRight } from '@phosphor-icons/react';
 import styles from './LandingPage.module.css';
 import founderStyles from './FounderSection.module.css';
 
 export const FounderSection: React.FC = () => {
-  const [showImage, setShowImage] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  const handleVideoEnded = () => {
-    setShowImage(true);
-  };
-
   return (
     <section id="about" className={founderStyles.section} aria-labelledby="founder-section-heading">
       <div className={founderStyles.container}>
         <div className={founderStyles.avatarWrap} aria-hidden="true">
-          <video
-            ref={videoRef}
-            src="/videos/blue-scene.webm"
-            className={`${founderStyles.video} ${showImage ? founderStyles.videoHidden : ''}`}
-            onEnded={handleVideoEnded}
-            muted
-            playsInline
-            autoPlay
-            preload="auto"
+          <Image
+            src="/images/blue-portrait-flat.png"
+            alt=""
+            width={160}
+            height={160}
+            className={founderStyles.avatar}
           />
-          <div className={`${founderStyles.imageOverlay} ${showImage ? founderStyles.imageVisible : ''}`}>
-            <Image
-              src="/images/blue-portrait-flat.png"
-              alt=""
-              width={160}
-              height={160}
-              className={founderStyles.avatar}
-            />
-          </div>
         </div>
         <div className={founderStyles.content}>
           <p className={founderStyles.eyebrow}>From the founder</p>

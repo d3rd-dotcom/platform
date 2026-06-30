@@ -17,10 +17,12 @@ export const MagazineSection: React.FC = () => {
             how we think, it lives here.
           </p>
           <a
-            href="/magazines"
+            href="https://zora.co/coin/base:0xbfa7ba543ec90ccd9c30de7a76a5a23e1f18f92c?referrer=0x8c0704cde03a42f1a9362e574addb156bb7e8c95"
+            target="_blank"
+            rel="noopener noreferrer"
             className={styles.cta}
           >
-            Browse Issues
+            Collect on Zora
           </a>
         </div>
         <div className={styles.imageColumn}>
