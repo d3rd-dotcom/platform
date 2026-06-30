@@ -198,7 +198,7 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
 
     const el = audioRef.current ?? new Audio();
     audioRef.current = el;
-    el.volume = 0.6;
+    el.volume = 0.4;
     el.preload = 'auto';
     el.src = currentScene.audio;
     el.currentTime = 0;
