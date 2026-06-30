@@ -372,10 +372,17 @@ export default function CourseSlugPage({ params }: PageProps) {
                       aria-hidden="true"
                     />
                     <span className={styles.taskTitle}>{c.title || 'Untitled'}</span>
-                    {isComplete && <CheckCircle size={14} weight="fill" className={styles.taskCompleteIcon} />}
-                    <svg className={styles.taskArrow} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M9 18l6-6-6-6"/>
-                    </svg>
+                    <div className={styles.taskRight}>
+                      {isComplete ? (
+                        <div className={styles.taskCheckDone}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        </div>
+                      ) : (
+                        <div className={styles.taskCheckEmpty} />
+                      )}
+                    </div>
                   </button>
                 );
               })}
