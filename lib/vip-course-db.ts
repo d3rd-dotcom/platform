@@ -328,17 +328,19 @@ export async function updateVipCourse(
   }>,
 ): Promise<VipCourseRecord | null> {
   await ensureVipCourseSchema();
+  const setClauses: string[] = [];
+  const params: Record<string, unknown> = { id };
+
+  if (input.slug !== undefined) { setClauses.push('slug = :slug'); params.slug = input.slug; }
+  if (input.title !== undefined) { setClauses.push('title = :title'); params.title = input.title; }
+  if (input.focus !== undefined) { setClauses.push('focus = :focus'); params.focus = input.focus; }
+  if (input.coverImageUrl !== undefined) { setClauses.push('cover_image_url = :coverImageUrl'); params.coverImageUrl = input.coverImageUrl; }
+  if (input.status !== undefined) { setClauses.push('status = :status'); params.status = input.status; }
+  setClauses.push('updated_at = CURRENT_TIMESTAMP');
+
   const rows = await sqlQuery<VipCourseRow[]>(
-    `UPDATE vip_courses
-     SET slug = COALESCE(:slug, slug),
-         title = COALESCE(:title, title),
-         focus = COALESCE(:focus, focus),
-         cover_image_url = COALESCE(:coverImageUrl, cover_image_url),
-         status = COALESCE(:status, status),
-         updated_at = CURRENT_TIMESTAMP
-     WHERE id = :id
-     RETURNING *`,
-    { id, ...input },
+    `UPDATE vip_courses SET ${setClauses.join(', ')} WHERE id = :id RETURNING *`,
+    params,
   );
   return rows[0] ? toVipCourse(rows[0]) : null;
 }

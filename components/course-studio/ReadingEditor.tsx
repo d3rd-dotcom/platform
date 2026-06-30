@@ -26,10 +26,15 @@ interface ReadingEditorProps {
   onImageUrlChange?: (url: string) => void;
   onSave: (content: string) => void;
   onClose: () => void;
+  onDirtyChange?: (dirty: boolean) => void;
 }
 
-export default function ReadingEditor({ content, imageUrl, onImageUrlChange, onSave, onClose }: ReadingEditorProps) {
+export default function ReadingEditor({ content, imageUrl, onImageUrlChange, onSave, onClose, onDirtyChange }: ReadingEditorProps) {
   const [isDirty, setIsDirty] = useState(false);
+
+  useEffect(() => {
+    onDirtyChange?.(isDirty);
+  }, [isDirty, onDirtyChange]);
 
   const editor = useEditor({
     extensions: [
@@ -65,6 +70,30 @@ export default function ReadingEditor({ content, imageUrl, onImageUrlChange, onS
     editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
   }, [editor]);
 
+  const handleSave = () => {
+    if (!editor) return;
+    onSave(editor.getHTML());
+    setIsDirty(false);
+  };
+
+  const handleSaveAndClose = () => {
+    handleSave();
+    onClose();
+  };
+
+  const handleCancel = () => {
+    if (isDirty) {
+      const result = window.confirm(
+        'You have unsaved changes to the Weekly Read. Do you want to save before closing?',
+      );
+      if (result) {
+        handleSaveAndClose();
+        return;
+      }
+    }
+    onClose();
+  };
+
   if (!editor) return null;
 
   const ToolBtn = ({ onClick, active, label, children }: { onClick: () => void; active?: boolean; label: string; children: React.ReactNode }) => (
@@ -83,12 +112,31 @@ export default function ReadingEditor({ content, imageUrl, onImageUrlChange, onS
     <div className={styles.editor}>
       <div className={styles.header}>
         <span className={styles.badge}>Weekly Read</span>
+        {isDirty && <span className={styles.dirtyBadge}>Unsaved</span>}
+        <div className={styles.headerSpacer} />
+        <button
+          type="button"
+          className={styles.headerSaveBtn}
+          onClick={handleSave}
+        >
+          Save
+        </button>
+        <button
+          type="button"
+          className={styles.headerCancelBtn}
+          onClick={handleCancel}
+        >
+          Close
+        </button>
       </div>
 
       <div className={styles.imageRow}>
         <input
           value={imageUrl || ''}
-          onChange={(e) => onImageUrlChange?.(e.target.value)}
+          onChange={(e) => {
+            onImageUrlChange?.(e.target.value);
+            setIsDirty(true);
+          }}
           placeholder="Reading cover image URL (optional)"
           className={styles.imageInput}
         />
@@ -153,13 +201,13 @@ export default function ReadingEditor({ content, imageUrl, onImageUrlChange, onS
       <EditorContent editor={editor} className={styles.editorArea} />
 
       <div className={styles.footer}>
-        <button type="button" className={styles.cancelBtn} onClick={onClose}>Cancel</button>
+        <button type="button" className={styles.cancelBtn} onClick={handleCancel}>Cancel</button>
         <button
           type="button"
           className={styles.saveBtn}
-          onClick={() => { onSave(editor.getHTML()); onClose(); }}
+          onClick={handleSaveAndClose}
         >
-          Save
+          Save & Close
         </button>
       </div>
     </div>

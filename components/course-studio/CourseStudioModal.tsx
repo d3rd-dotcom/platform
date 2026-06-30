@@ -120,8 +120,8 @@ export default function CourseStudioModal({
   const [error, setError] = useState<string | null>(null);
   const [dirty, setDirty] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(true);
-  const [readingContent, setReadingContent] = useState('');
-  const [readingImageUrl, setReadingImageUrl] = useState('');
+  const [readingByWeek, setReadingByWeek] = useState<Record<string, { content: string; imageUrl: string }>>({});
+  const [readingDirty, setReadingDirty] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<'reading' | null>(null);
   const [deletedComponent, setDeletedComponent] = useState<{
     component: CourseComponentRecord;
@@ -177,17 +177,16 @@ export default function CourseStudioModal({
         setCoverImageUrl(course.coverImageUrl);
         setCourseId(course.id);
         setStatus(course.status);
-        let firstReading = '';
-        let firstReadingImg = '';
+        const readingMap: Record<string, { content: string; imageUrl: string }> = {};
         const mapped = course.weeks.map((w) => {
           const readingComp = w.components.find(
             (c) => c.componentType === 'rich_text' && (c.config as any)?._isReading,
           );
           if (readingComp) {
-            if (!firstReading) {
-              firstReading = (readingComp.config as any)?.content ?? '';
-              firstReadingImg = (readingComp.config as any)?.imageUrl ?? '';
-            }
+            readingMap[w.id] = {
+              content: (readingComp.config as any)?.content ?? '',
+              imageUrl: (readingComp.config as any)?.imageUrl ?? '',
+            };
             return {
               id: w.id,
               weekNumber: w.weekNumber,
@@ -208,8 +207,7 @@ export default function CourseStudioModal({
         });
         setWeeks(mapped.length ? mapped : [createBlankWeek(1)]);
         setSelectedWeekId(mapped[0]?.id ?? '');
-        if (firstReading) setReadingContent(firstReading);
-        if (firstReadingImg) setReadingImageUrl(firstReadingImg);
+        setReadingByWeek(readingMap);
         setDirty(false);
         setPhase('edit');
       } catch {
@@ -248,7 +246,7 @@ export default function CourseStudioModal({
       weekId,
       sortOrder: weeks.find((w) => w.id === weekId)?.components.length ?? 0,
       componentType: type,
-      title: isContainer ? '' : '',
+      title: isContainer ? 'Mission' : '',
       config: isContainer ? {} : (config ?? {}),
       required: false,
       blocks: [],
@@ -508,14 +506,15 @@ export default function CourseStudioModal({
         body: JSON.stringify({
           weeks: weeks.map((w, i) => {
             const comps = [...w.components];
-            if (readingContent) {
+            const wkReading = readingByWeek[w.id];
+            if (wkReading?.content) {
               comps.unshift({
                 id: '',
                 weekId: w.id,
                 sortOrder: 0,
                 componentType: 'rich_text',
                 title: 'Weekly Read',
-                config: { content: readingContent, imageUrl: readingImageUrl || '', _isReading: true },
+                config: { content: wkReading.content, imageUrl: wkReading.imageUrl || '', _isReading: true },
                 required: false,
                 blocks: [],
                 createdAt: '',
@@ -683,6 +682,9 @@ export default function CourseStudioModal({
   const currentWeek = weeks.find((w) => w.id === selectedWeekId);
   const currentWeekComponents = currentWeek?.components ?? [];
   const selectedComponent = currentWeekComponents.find((c) => c.id === selectedComponentId) ?? null;
+  const currentReading = selectedWeekId ? readingByWeek[selectedWeekId] : undefined;
+  const readingContent = currentReading?.content ?? '';
+  const readingImageUrl = currentReading?.imageUrl ?? '';
 
   return (
     <>
@@ -794,7 +796,14 @@ export default function CourseStudioModal({
                     readingImageUrl={readingImageUrl}
                     missions={currentWeekComponents}
                     selectedMissionId={selectedComponentId}
-                    onSelectMission={(id) => { setSelectedComponentId(id); setSelectedSlot(null); }}
+                    onSelectMission={(id) => {
+                      if (selectedSlot === 'reading' && readingDirty) {
+                        const ok = window.confirm('Discard unsaved changes to the Weekly Read?');
+                        if (!ok) return;
+                        setReadingDirty(false);
+                      }
+                      setSelectedComponentId(id); setSelectedSlot(null);
+                    }}
                     onDeleteMission={deleteComponent}
                     onAddBlankMission={addBlankMission}
                     onEditReading={() => { setSelectedSlot('reading'); setSelectedComponentId(null); }}
@@ -819,8 +828,24 @@ export default function CourseStudioModal({
                   <ReadingEditor
                     content={readingContent}
                     imageUrl={readingImageUrl}
-                    onImageUrlChange={setReadingImageUrl}
-                    onSave={(content) => setReadingContent(content)}
+                    onDirtyChange={setReadingDirty}
+                    onImageUrlChange={(url) => {
+                      if (selectedWeekId) {
+                        setReadingByWeek((prev) => ({
+                          ...prev,
+                          [selectedWeekId]: { ...prev[selectedWeekId], content: prev[selectedWeekId]?.content ?? '', imageUrl: url },
+                        }));
+                      }
+                    }}
+                    onSave={(content) => {
+                      if (selectedWeekId) {
+                        setReadingByWeek((prev) => ({
+                          ...prev,
+                          [selectedWeekId]: { content, imageUrl: prev[selectedWeekId]?.imageUrl ?? '' },
+                        }));
+                      }
+                      setReadingDirty(false);
+                    }}
                     onClose={() => setSelectedSlot(null)}
                   />
                 </main>
