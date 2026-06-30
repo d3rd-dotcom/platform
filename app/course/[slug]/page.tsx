@@ -55,13 +55,6 @@ export default function CourseSlugPage({ params }: PageProps) {
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  useEffect(() => {
-    if (!scrollRestored.current && !loading && vipCourse) {
-      scrollRestored.current = true;
-      window.scrollTo(0, 0);
-    }
-  }, [loading, vipCourse]);
-
   const authHeaders = useCallback(async (): Promise<HeadersInit> => {
     const token = await getAccessToken();
     return token ? { Authorization: `Bearer ${token}` } : {};
@@ -83,6 +76,14 @@ export default function CourseSlugPage({ params }: PageProps) {
   const [shardAnim, setShardAnim] = useState<number | null>(null);
   const [rightContent, setRightContent] = useState<'reading' | 'task' | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+  const [pendingConfirm, setPendingConfirm] = useState<CourseComponentRecord | null>(null);
+
+  useEffect(() => {
+    if (!scrollRestored.current && !loading && vipCourse) {
+      scrollRestored.current = true;
+      window.scrollTo(0, 0);
+    }
+  }, [loading, vipCourse]);
 
   useEffect(() => {
     if (!ready) return;
@@ -135,12 +136,17 @@ export default function CourseSlugPage({ params }: PageProps) {
     })();
   }, [ready, params.slug, authHeaders]);
 
-  const handleComplete = async (componentId: string) => {
+  const handleComplete = async (component: CourseComponentRecord) => {
     if (!vipCourse) return;
     const currentWeek = vipCourse.weeks.find((w) => w.weekNumber === activeWeek);
     if (!currentWeek) return;
+
+    const blockIds: string[] = component.componentType === 'mission_container' && component.blocks
+      ? component.blocks.map((b) => b.id)
+      : [component.id];
+
     const wp = progress.find((p) => p.weekId === currentWeek.id);
-    const newCompleted = [...(wp?.completedComponentIds ?? []), componentId];
+    const newCompleted = [...new Set([...(wp?.completedComponentIds ?? []), ...blockIds])];
     const headers = await authHeaders();
     const res = await fetch(`/api/vip/courses/${vipCourse.id}/progress`, {
       method: 'POST',
@@ -161,7 +167,7 @@ export default function CourseSlugPage({ params }: PageProps) {
       const diamRes = await fetch(`/api/vip/courses/${vipCourse.id}/diamonds`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...headers },
-        body: JSON.stringify({ componentId }),
+        body: JSON.stringify({ componentId: component.id }),
       });
       if (diamRes.ok) {
         setShardAnim(COMPLETION_REWARD);
@@ -354,9 +360,10 @@ export default function CourseSlugPage({ params }: PageProps) {
                 const accent = TASK_ACCENTS[i % TASK_ACCENTS.length];
                 const variant = getArtworkVariant(c.id);
                 const isSelected = rightContent === 'task' && selectedTaskId === c.id;
-                const compId = c.componentType === 'mission_container' && c.blocks?.[0]
-                  ? c.blocks[0].id : c.id;
-                const isComplete = completedIds.has(compId);
+                const blockIds = c.componentType === 'mission_container' && c.blocks
+                  ? c.blocks.map((b) => b.id)
+                  : [c.id];
+                const isComplete = blockIds.every((id) => completedIds.has(id));
 
                 return (
                   <button
@@ -449,32 +456,18 @@ export default function CourseSlugPage({ params }: PageProps) {
                   <ComponentRenderer component={selectedComponent} />
                   <div className={styles.detailActions}>
                     {(() => {
-                      if (selectedComponent.componentType === 'mission_container' && selectedComponent.blocks) {
-                        return selectedComponent.blocks.map((block) => {
-                          const done = completedIds.has(block.id);
-                          return (
-                            <button
-                              key={block.id}
-                              type="button"
-                              className={`${styles.completeBtn} ${done ? styles.completeBtnDone : ''}`}
-                              disabled={done}
-                              onClick={() => handleComplete(block.id)}
-                            >
-                              {done ? 'Completed' : `Complete: ${block.blockType.replace(/_/g, ' ')}`}
-                            </button>
-                          );
-                        });
-                      }
-                      const compId = selectedComponent.id;
-                      const done = completedIds.has(compId);
+                      const blockIds: string[] = selectedComponent.componentType === 'mission_container' && selectedComponent.blocks
+                        ? selectedComponent.blocks.map((b) => b.id)
+                        : [selectedComponent.id];
+                      const allDone = blockIds.every((id) => completedIds.has(id));
                       return (
                         <button
                           type="button"
-                          className={`${styles.completeBtn} ${done ? styles.completeBtnDone : ''}`}
-                          disabled={done}
-                          onClick={() => handleComplete(compId)}
+                          className={`${styles.completeBtn} ${allDone ? styles.completeBtnDone : ''}`}
+                          disabled={allDone}
+                          onClick={() => setPendingConfirm(selectedComponent)}
                         >
-                          {done ? 'Completed' : 'Mark complete'}
+                          {allDone ? 'Task Complete' : `Complete task ◆ +${COMPLETION_REWARD}`}
                         </button>
                       );
                     })()}
@@ -483,6 +476,38 @@ export default function CourseSlugPage({ params }: PageProps) {
               </div>
             )}
 
+            {pendingConfirm && (
+              <div className={styles.confirmOverlay} onClick={() => setPendingConfirm(null)}>
+                <div className={styles.confirmModal} onClick={(e) => e.stopPropagation()}>
+                  <div className={styles.confirmHeader}>
+                    <span className={styles.confirmKanji}>任務記録</span>
+                    <span className={styles.confirmTitle}>Mission Log</span>
+                  </div>
+                  <div className={styles.confirmBody}>
+                    <p className={styles.confirmText}>
+                      Complete this task and earn <strong>+{COMPLETION_REWARD} diamonds</strong>?
+                    </p>
+                  </div>
+                  <div className={styles.confirmFooter}>
+                    <button
+                      className={styles.confirmBack}
+                      onClick={() => setPendingConfirm(null)}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className={styles.confirmSubmit}
+                      onClick={() => {
+                        if (pendingConfirm) handleComplete(pendingConfirm);
+                        setPendingConfirm(null);
+                      }}
+                    >
+                      Complete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
             {!rightContent && <div />}
           </div>
 
