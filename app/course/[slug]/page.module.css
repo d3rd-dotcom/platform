@@ -1,3 +1,5 @@
+/* ── Shared: layout for non-VIP views (academy, gate, loading, not-found) ── */
+
 .layout {
   position: relative;
   margin-left: var(--sidebar-width, 265px);
@@ -140,6 +142,8 @@
   line-height: 1.6;
   margin: 0;
 }
+
+/* ── Academy course styles ── */
 
 .backLink {
   font-family: var(--font-primary);
@@ -320,173 +324,209 @@
   }
 }
 
-/* ── VIP course: week nav ── */
+/* ═══════════════════════════════════════════════ */
+/* VIP course — task cards (matches CoursePreview) */
+/* ═══════════════════════════════════════════════ */
 
-.weekNav {
+.taskList {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.weekArrow {
-  padding: 6px;
-  border-radius: 6px;
-  border: 1px solid var(--color-border-subtle);
-  background: var(--color-surface-base);
-  color: var(--color-text-muted);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.12s ease;
-}
-
-.weekArrow:hover:not(:disabled) {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-
-.weekArrow:disabled {
-  opacity: 0.3;
-  cursor: default;
-}
-
-.weekDots {
-  display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 8px;
 }
 
-.weekDot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: 2px solid var(--color-border-subtle);
-  background: transparent;
+.taskCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--task-accent, #6C5CE7) 7%, #ffffff);
+  border: 1px solid color-mix(in srgb, var(--task-accent, #6C5CE7) 22%, rgba(26, 29, 51, 0.06));
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
   cursor: pointer;
-  padding: 0;
-  transition: all 0.12s ease;
+  transition: all 0.2s ease;
+  text-align: left;
+  font-family: inherit;
+  box-sizing: border-box;
 }
 
-.weekDot:hover {
-  border-color: var(--color-primary);
+.taskCard:hover {
+  background: color-mix(in srgb, var(--task-accent, #6C5CE7) 11%, #ffffff);
+  border-color: color-mix(in srgb, var(--task-accent, #6C5CE7) 38%, rgba(26, 29, 51, 0.06));
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--task-accent, #6C5CE7) 20%, transparent);
 }
 
-.weekDotActive {
-  border-color: var(--color-primary);
-  background: var(--color-primary);
+.taskCardActive {
+  background: color-mix(in srgb, var(--task-accent, #6C5CE7) 14%, #ffffff) !important;
+  border-color: var(--task-accent, #6C5CE7) !important;
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--task-accent, #6C5CE7) 25%, transparent) !important;
 }
 
-.weekDotSealed {
-  border-color: #22c55e;
-  background: #22c55e;
+.taskCardComplete {
+  opacity: 0.7;
 }
 
-.courseMeta {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  font-size: 0.8125rem;
-  color: var(--color-text-faint);
-  font-family: var(--font-mono);
-}
-
-.weekContent {
-  background: var(--color-surface-base);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.weekHeader {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--color-border-subtle);
-}
-
-.weekTitle {
-  font-family: var(--font-secondary);
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--color-text-dark);
-  margin: 0;
-}
-
-.weekTheme {
-  font-size: 0.8125rem;
-  color: var(--color-text-muted);
-  margin: 2px 0 0;
-}
-
-.weekProgress {
+.taskAccent {
+  width: 3px;
+  height: 28px;
+  border-radius: 999px;
   flex-shrink: 0;
+  opacity: 0.85;
 }
 
-.progressCount {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--color-text-muted);
-  padding: 4px 10px;
-  border-radius: 6px;
-  background: var(--color-surface-subtle);
+.taskArtwork {
+  width: 36px;
+  height: 36px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--task-accent, #6C5CE7) 68%, #0f172a 32%) 0%,
+      var(--task-accent, #6C5CE7) 48%,
+      color-mix(in srgb, var(--task-accent, #6C5CE7) 42%, #ffffff 58%) 100%);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--task-accent, #6C5CE7) 28%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 4px 10px color-mix(in srgb, var(--task-accent, #6C5CE7) 22%, transparent);
 }
 
-.sealedBadge {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
+.taskArtworkAurora {
+  background-image:
+    radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.42), transparent 28%),
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--task-accent, #6C5CE7) 68%, #0f172a 32%) 0%,
+      var(--task-accent, #6C5CE7) 48%,
+      color-mix(in srgb, var(--task-accent, #6C5CE7) 42%, #ffffff 58%) 100%);
+}
+
+.taskArtworkSunrise {
+  background-image:
+    radial-gradient(circle at 75% 24%, rgba(255, 255, 255, 0.52), transparent 22%),
+    linear-gradient(140deg,
+      color-mix(in srgb, var(--task-accent, #6C5CE7) 70%, #0f172a 30%) 0%,
+      var(--task-accent, #6C5CE7) 50%,
+      color-mix(in srgb, var(--task-accent, #6C5CE7) 38%, #ffffff 62%) 100%);
+}
+
+.taskArtworkOrbit {
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.22), transparent 28%),
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--task-accent, #6C5CE7) 60%, #0f172a 40%) 0%,
+      var(--task-accent, #6C5CE7) 52%,
+      color-mix(in srgb, var(--task-accent, #6C5CE7) 46%, #ffffff 54%) 100%);
+}
+
+.taskArtworkBloom {
+  background-image:
+    radial-gradient(circle at 24% 22%, rgba(255, 255, 255, 0.46), transparent 26%),
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--task-accent, #6C5CE7) 72%, #1a1336 28%) 0%,
+      var(--task-accent, #6C5CE7) 50%,
+      color-mix(in srgb, var(--task-accent, #6C5CE7) 35%, #ffffff 65%) 100%);
+}
+
+.taskArtworkRibbon {
+  background-image:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.18), transparent 48%),
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--task-accent, #6C5CE7) 65%, #0f172a 35%) 0%,
+      var(--task-accent, #6C5CE7) 50%,
+      color-mix(in srgb, var(--task-accent, #6C5CE7) 40%, #ffffff 60%) 100%);
+}
+
+.taskArtworkPrism {
+  background-image:
+    radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.38), transparent 32%),
+    linear-gradient(150deg,
+      color-mix(in srgb, var(--task-accent, #6C5CE7) 72%, #0f0a1e 28%) 0%,
+      var(--task-accent, #6C5CE7) 48%,
+      color-mix(in srgb, var(--task-accent, #6C5CE7) 36%, #f0f0ff 64%) 100%);
+}
+
+.taskTitle {
+  flex: 1;
+  font-family: var(--font-secondary);
+  font-size: 0.8125rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  color: #1A1D33;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.taskArrow {
+  flex-shrink: 0;
+  color: #1A1D33;
+  opacity: 0.2;
+}
+
+.taskCompleteIcon {
+  flex-shrink: 0;
   color: #22c55e;
-  padding: 4px 10px;
-  border-radius: 6px;
-  background: color-mix(in srgb, #22c55e 8%, transparent);
 }
 
-.componentsList {
-  padding: 16px 24px;
+.emptyText {
+  font-size: 0.75rem;
+  color: var(--color-text-faint);
+  text-align: center;
+  padding: 24px;
+}
+
+/* ── Detail card (right panel) ── */
+
+.rightPanelReader {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  text-align: left;
+  gap: 20px;
+  padding: 4px 0 48px;
 }
 
-.componentCard {
-  padding: 16px;
-  border-radius: 8px;
-  border: 1px solid var(--color-border-subtle);
-  background: var(--color-surface-subtle);
-  transition: border-color 0.15s ease;
-  position: relative;
-  text-align: left;
+.detailCard {
+  background: color-mix(in srgb, var(--task-accent, #6C5CE7) 7%, #ffffff);
+  border: 1px solid color-mix(in srgb, var(--task-accent, #6C5CE7) 22%, rgba(26, 29, 51, 0.06));
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
 }
 
-.componentComplete {
-  border-color: color-mix(in srgb, #22c55e 30%, transparent);
-  background: color-mix(in srgb, #22c55e 3%, var(--color-surface-subtle));
-}
-
-.componentTitle {
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--color-text-dark);
-  margin: 0 0 8px;
-}
-
-.componentActions {
+.detailCardHeader {
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: 8px;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
 }
+
+.detailCardContent {
+  padding: 18px;
+  border-top: 1px solid rgba(26, 29, 51, 0.06);
+}
+
+.detailActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.rightPanelEmpty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--color-text-faint);
+  font-size: 0.8125rem;
+  text-align: center;
+}
+
+/* ── Completion button ── */
 
 .completeBtn {
   padding: 6px 14px;
@@ -501,7 +541,6 @@
   font-family: var(--font-mono);
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  margin-top: 8px;
 }
 
 .completeBtn:hover {
@@ -515,25 +554,10 @@
   opacity: 0.6;
 }
 
-.missionActions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid var(--color-border-subtle);
-}
-
-.checkIcon {
-  color: #22c55e;
-  position: absolute;
-  top: 12px;
-  right: 12px;
-}
+/* ── Seal section ── */
 
 .sealSection {
-  padding: 20px 24px;
-  border-top: 1px solid var(--color-border-subtle);
+  margin-top: 16px;
   display: flex;
   justify-content: center;
 }
@@ -562,8 +586,7 @@
 }
 
 .sealedSection {
-  padding: 20px 24px;
-  border-top: 1px solid var(--color-border-subtle);
+  margin-top: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -575,6 +598,8 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+
+/* ── Shard toast ── */
 
 .shardToast {
   position: fixed;
@@ -601,4 +626,41 @@
 
 .shardIcon {
   font-size: 1.2rem;
+}
+
+/* ── Dark mode overrides for task / detail cards ── */
+
+:global([data-theme="dark"]) .taskTitle {
+  color: #f0f1fa;
+}
+
+:global([data-theme="dark"]) .taskArrow {
+  color: #f0f1fa;
+}
+
+:global([data-theme="dark"]) .taskCard {
+  background: color-mix(in srgb, var(--task-accent, #6C5CE7) 12%, #13141f);
+  border-color: color-mix(in srgb, var(--task-accent, #6C5CE7) 22%, rgba(240, 241, 250, 0.06));
+}
+
+:global([data-theme="dark"]) .taskCard:hover {
+  background: color-mix(in srgb, var(--task-accent, #6C5CE7) 18%, #13141f);
+}
+
+:global([data-theme="dark"]) .taskCardActive {
+  background: color-mix(in srgb, var(--task-accent, #6C5CE7) 22%, #13141f) !important;
+  border-color: var(--task-accent, #6C5CE7) !important;
+}
+
+:global([data-theme="dark"]) .detailCard {
+  background: color-mix(in srgb, var(--task-accent, #6C5CE7) 12%, #13141f);
+  border-color: color-mix(in srgb, var(--task-accent, #6C5CE7) 22%, rgba(240, 241, 250, 0.06));
+}
+
+:global([data-theme="dark"]) .detailCardContent {
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .rightPanelEmpty {
+  color: var(--color-text-faint);
 }

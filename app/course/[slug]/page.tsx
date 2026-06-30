@@ -7,16 +7,28 @@ import { CheckCircle, SealCheck, SpinnerGap, ArrowLeft, ArrowRight } from '@phos
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import ComponentRenderer from '@/components/course-renderers/ComponentRenderer';
 import type { CourseRecord, ChapterRecord, LessonRecord } from '@/lib/course-content-db';
-import type { VipCourseFull, VipProgressRecord } from '@/lib/vip-course-db';
+import type { VipCourseFull, VipProgressRecord, CourseComponentRecord } from '@/lib/vip-course-db';
 import styles from './page.module.css';
+import courseStyles from '../page.module.css';
 
 const ANGEL_IMAGE = 'https://i.imgur.com/KkpN9as.png';
 const COMPLETION_REWARD = 50;
 const SEAL_REWARD = 200;
 
+const TASK_ACCENTS = ['#6C5CE7', '#F97316', '#22D3EE', '#F43F5E', '#A855F7', '#14B8A6', '#EAB308'];
+const ARTWORK_VARIANTS = ['aurora', 'sunrise', 'orbit', 'bloom', 'ribbon', 'prism'];
+const READING_ACCENT = '#6C5CE7';
+const READING_THUMB_BG = 'linear-gradient(135deg, #6C5CE7 0%, #A855F7 50%, #C084FC 100%)';
+
 type PageProps = { params: { slug: string } };
 
-function getAllComponentIds(week: VipCourseFull['weeks'][number]): string[] {
+function getArtworkVariant(id: string): string {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) hash = ((hash << 5) - hash) + id.charCodeAt(i);
+  return ARTWORK_VARIANTS[Math.abs(hash) % ARTWORK_VARIANTS.length];
+}
+
+function getAllBlockIds(week: VipCourseFull['weeks'][number]): string[] {
   const ids: string[] = [];
   for (const comp of week.components) {
     if (comp.componentType === 'mission_container' && comp.blocks) {
@@ -32,6 +44,14 @@ export default function CourseSlugPage({ params }: PageProps) {
   const { ready, authenticated, user, getAccessToken } = usePrivy();
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= 1024);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   const authHeaders = useCallback(async (): Promise<HeadersInit> => {
     const token = await getAccessToken();
@@ -52,6 +72,8 @@ export default function CourseSlugPage({ params }: PageProps) {
   const [progress, setProgress] = useState<VipProgressRecord[]>([]);
   const [sealing, setSealing] = useState(false);
   const [shardAnim, setShardAnim] = useState<number | null>(null);
+  const [rightContent, setRightContent] = useState<'reading' | 'task' | null>(null);
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!ready) return;
@@ -175,9 +197,9 @@ export default function CourseSlugPage({ params }: PageProps) {
   // ── Loading state ──
   if (loading) {
     return (
-      <div className={styles.layout}>
+      <div className={courseStyles.pageLayout}>
         <SideNavigation />
-        <main className={styles.main}>
+        <main className={courseStyles.content}>
           <div className={styles.stateWrap}>
             <SpinnerGap size={24} className={styles.spinner} />
             <p className={styles.stateText}>Loading course…</p>
@@ -190,9 +212,9 @@ export default function CourseSlugPage({ params }: PageProps) {
   // ── Not found ──
   if (notFound) {
     return (
-      <div className={styles.layout}>
+      <div className={courseStyles.pageLayout}>
         <SideNavigation />
-        <main className={styles.main}>
+        <main className={courseStyles.content}>
           <div className={styles.stateWrap}>
             <h1 className={styles.stateHeading}>Course not found</h1>
             <p className={styles.stateText}>This course doesn&apos;t exist or hasn&apos;t been published yet.</p>
@@ -209,16 +231,27 @@ export default function CourseSlugPage({ params }: PageProps) {
     const currentWeek = weeks.find((w) => w.weekNumber === activeWeek) ?? weeks[0];
     const weekProgress = progress.find((p) => p.weekId === currentWeek?.id);
     const completedIds = new Set(weekProgress?.completedComponentIds ?? []);
-    const allComponentIds = currentWeek ? getAllComponentIds(currentWeek) : [];
-    const completedCount = allComponentIds.filter((id) => completedIds.has(id)).length;
-    const totalCount = allComponentIds.length;
+    const allBlockIds = currentWeek ? getAllBlockIds(currentWeek) : [];
+    const completedCount = allBlockIds.filter((id) => completedIds.has(id)).length;
+    const totalCount = allBlockIds.length;
     const allDone = totalCount > 0 && completedCount === totalCount;
     const isSealed = weekProgress?.isSealed ?? false;
+    const components = currentWeek?.components ?? [];
+    const weekTitle = currentWeek?.title ?? '';
+    const weekTheme = currentWeek?.theme ?? '';
+
+    const readingComponent = components.find((c) => c.componentType === 'rich_text' && c.title === 'Weekly Read');
+    const taskComponents = components.filter((c) => !(c.componentType === 'rich_text' && c.title === 'Weekly Read'));
+
+    const selectedComponent = rightContent === 'task' && selectedTaskId
+      ? components.find((c) => c.id === selectedTaskId) ?? null
+      : null;
 
     return (
-      <div className={styles.layout}>
+      <div className={courseStyles.pageLayout}>
         <SideNavigation />
-        <main className={styles.main}>
+        <main className={`${courseStyles.content} ${isDesktop ? courseStyles.contentDesktop : ''}`}>
+
           {shardAnim !== null && (
             <div className={styles.shardToast}>
               <span className={styles.shardIcon}>◆</span>
@@ -226,119 +259,215 @@ export default function CourseSlugPage({ params }: PageProps) {
             </div>
           )}
 
-          <Link href="/courses" className={styles.backLink}>← Courses</Link>
+          {/* ── Left column ── */}
+          <div className={isDesktop ? courseStyles.leftCol : undefined}>
 
-          <div className={styles.courseHeader}>
-            <h1 className={styles.courseTitle}>{vipCourse.title}</h1>
-            {vipCourse.focus && <p className={styles.courseSummary}>{vipCourse.focus}</p>}
-            <div className={styles.courseMeta}>
-              <span>by @{vipCourse.authorName}</span>
-              <span>{weeks.length} sessions</span>
-            </div>
-          </div>
-
-          <div className={styles.weekNav}>
-            <button type="button" className={styles.weekArrow} onClick={() => setActiveWeek(Math.max(1, activeWeek - 1))} disabled={activeWeek <= 1}>
-              <ArrowLeft size={14} weight="bold" />
-            </button>
-            <div className={styles.weekDots}>
-              {weeks.map((w) => {
-                const wp = progress.find((p) => p.weekId === w.id);
-                const sealed = wp?.isSealed ?? false;
-                return (
-                  <button
-                    key={w.id}
-                    type="button"
-                    className={`${styles.weekDot} ${activeWeek === w.weekNumber ? styles.weekDotActive : ''} ${sealed ? styles.weekDotSealed : ''}`}
-                    onClick={() => setActiveWeek(w.weekNumber)}
-                    title={w.title || `Week ${w.weekNumber}`}
-                  />
-                );
-              })}
-            </div>
-            <button type="button" className={styles.weekArrow} onClick={() => setActiveWeek(Math.min(weeks.length, activeWeek + 1))} disabled={activeWeek >= weeks.length}>
-              <ArrowRight size={14} weight="bold" />
-            </button>
-          </div>
-
-          {currentWeek && (
-            <div className={styles.weekContent}>
-              <div className={styles.weekHeader}>
-                <div>
-                  <h2 className={styles.weekTitle}>{currentWeek.title || `Week ${currentWeek.weekNumber}`}</h2>
-                  {currentWeek.theme && <p className={styles.weekTheme}>{currentWeek.theme}</p>}
+            {/* Reading card */}
+            {readingComponent && (
+              <button
+                type="button"
+                className={`${courseStyles.readingCard} ${rightContent === 'reading' ? courseStyles.readingCardActive : ''}`}
+                onClick={() => { setRightContent('reading'); setSelectedTaskId(null); }}
+              >
+                <span className={courseStyles.readingAccent} style={{ background: READING_ACCENT }} aria-hidden="true" />
+                <span className={courseStyles.readingThumb} style={{ background: READING_THUMB_BG }} aria-hidden="true" />
+                <div className={courseStyles.readingInfo}>
+                  <span className={courseStyles.readingCategory}>{weekTheme || `Week ${activeWeek}`}</span>
+                  <span className={courseStyles.readingTitle}>{weekTitle || 'Weekly Read'}</span>
                 </div>
-                <div className={styles.weekProgress}>
-                  {isSealed ? (
-                    <span className={styles.sealedBadge}>
-                      <SealCheck size={14} weight="fill" />
-                      Sealed
-                    </span>
-                  ) : (
-                    <span className={styles.progressCount}>{completedCount}/{totalCount}</span>
-                  )}
-                </div>
-              </div>
+                <svg className={courseStyles.readingArrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </button>
+            )}
 
-              <div className={styles.componentsList}>
-                {currentWeek.components.map((component) => {
-                  if (component.componentType === 'mission_container' && component.blocks) {
-                    return (
-                      <div key={component.id} className={styles.componentCard}>
-                        {component.title && <h3 className={styles.componentTitle}>{component.title}</h3>}
-                        <ComponentRenderer component={component} />
-                        <div className={styles.missionActions}>
-                          {component.blocks.map((block) => {
-                            const done = completedIds.has(block.id);
-                            return (
-                              <button
-                                key={block.id}
-                                type="button"
-                                className={`${styles.completeBtn} ${done ? styles.completeBtnDone : ''}`}
-                                disabled={done}
-                                onClick={() => handleComplete(block.id)}
-                              >
-                                {done ? 'Done' : `Mark complete: ${block.blockType.replace(/_/g, ' ')}`}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  }
-                  const compId = component.id;
-                  const isComplete = completedIds.has(compId);
+            {/* Week navigation */}
+            <div className={courseStyles.weekNav}>
+              <button
+                className={courseStyles.weekNavArrow}
+                onClick={() => { const n = Math.max(1, activeWeek - 1); setActiveWeek(n); setRightContent(null); }}
+                disabled={activeWeek <= 1}
+                aria-label="Previous week"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M15 18l-6-6 6-6"/>
+                </svg>
+              </button>
+
+              <div className={courseStyles.weekNavDots}>
+                {weeks.map((w) => {
+                  const wp = progress.find((p) => p.weekId === w.id);
+                  const sealed = wp?.isSealed ?? false;
                   return (
-                    <div key={compId} className={`${styles.componentCard} ${isComplete ? styles.componentComplete : ''}`}>
-                      {component.title && <h3 className={styles.componentTitle}>{component.title}</h3>}
-                      <ComponentRenderer component={component} />
-                      {isComplete && <CheckCircle size={16} weight="fill" className={styles.checkIcon} />}
-                      {!isComplete && (
-                        <button type="button" className={styles.completeBtn} onClick={() => handleComplete(compId)}>
-                          Mark complete
-                        </button>
-                      )}
-                    </div>
+                    <button
+                      key={w.id}
+                      className={`${courseStyles.weekDot} ${activeWeek === w.weekNumber ? courseStyles.weekDotActive : ''} ${sealed ? courseStyles.weekDotSealed : ''}`}
+                      onClick={() => { setActiveWeek(w.weekNumber); setRightContent(null); }}
+                      title={w.title || `Week ${w.weekNumber}`}
+                    />
                   );
                 })}
               </div>
 
-              {!isSealed && allDone && (
-                <div className={styles.sealSection}>
-                  <button type="button" className={styles.sealBtn} onClick={handleSeal} disabled={sealing}>
-                    {sealing ? 'Sealing...' : `Seal Week ${currentWeek.weekNumber} ◆ +${SEAL_REWARD}`}
-                  </button>
-                </div>
-              )}
-
-              {isSealed && (
-                <div className={styles.sealedSection}>
-                  <SealCheck size={20} weight="fill" />
-                  <span>Week {currentWeek.weekNumber} sealed</span>
-                </div>
-              )}
+              <button
+                className={courseStyles.weekNavArrow}
+                onClick={() => { const n = Math.min(weeks.length, activeWeek + 1); setActiveWeek(n); setRightContent(null); }}
+                disabled={activeWeek >= weeks.length}
+                aria-label="Next week"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </button>
             </div>
-          )}
+
+            {/* Missions heading */}
+            {taskComponents.length > 0 && (
+              <div className={courseStyles.missionsHeadingRow} aria-hidden="true">
+                <span className={courseStyles.missionsDivider} />
+                <h2 className={courseStyles.missionsHeading}>Missions</h2>
+                <span className={courseStyles.missionsDivider} />
+              </div>
+            )}
+
+            {/* Task cards */}
+            <div className={styles.taskList}>
+              {taskComponents.length === 0 && !readingComponent && (
+                <p className={styles.emptyText}>No content in this week yet</p>
+              )}
+              {taskComponents.map((c, i) => {
+                const accent = TASK_ACCENTS[i % TASK_ACCENTS.length];
+                const variant = getArtworkVariant(c.id);
+                const isSelected = rightContent === 'task' && selectedTaskId === c.id;
+                const compId = c.componentType === 'mission_container' && c.blocks?.[0]
+                  ? c.blocks[0].id : c.id;
+                const isComplete = completedIds.has(compId);
+
+                return (
+                  <button
+                    key={c.id}
+                    type="button"
+                    className={`${styles.taskCard} ${isSelected ? styles.taskCardActive : ''} ${isComplete ? styles.taskCardComplete : ''}`}
+                    onClick={() => { setSelectedTaskId(c.id); setRightContent('task'); }}
+                  >
+                    <span className={styles.taskAccent} style={{ background: accent }} aria-hidden="true" />
+                    <span
+                      className={`${styles.taskArtwork} ${styles[`taskArtwork${variant.charAt(0).toUpperCase() + variant.slice(1)}`] || ''}`}
+                      style={{ '--task-accent': accent } as React.CSSProperties}
+                      aria-hidden="true"
+                    />
+                    <span className={styles.taskTitle}>{c.title || 'Untitled'}</span>
+                    {isComplete && <CheckCircle size={14} weight="fill" className={styles.taskCompleteIcon} />}
+                    <svg className={styles.taskArrow} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 18l6-6-6-6"/>
+                    </svg>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Seal section */}
+            {allDone && !isSealed && (
+              <div className={styles.sealSection}>
+                <button type="button" className={styles.sealBtn} onClick={handleSeal} disabled={sealing}>
+                  {sealing ? 'Sealing...' : `Seal Week ${activeWeek} ◆ +${SEAL_REWARD}`}
+                </button>
+              </div>
+            )}
+            {isSealed && (
+              <div className={styles.sealedSection}>
+                <SealCheck size={20} weight="fill" />
+                <span>Week {activeWeek} sealed</span>
+              </div>
+            )}
+          </div>
+
+          {/* ── Right panel (desktop) ── */}
+          <div className={courseStyles.rightPanel}>
+            {rightContent === 'reading' && readingComponent && (
+              <div className={styles.rightPanelReader}>
+                <button
+                  type="button"
+                  className={courseStyles.inlineReaderBack}
+                  onClick={() => setRightContent(null)}
+                >
+                  ← Back to missions
+                </button>
+                <div className={courseStyles.inlineReaderHeader}>
+                  <span className={courseStyles.inlineReaderCategory}>{weekTheme || `Week ${activeWeek}`}</span>
+                  <h2 className={courseStyles.inlineReaderTitle}>{weekTitle || 'Weekly Read'}</h2>
+                </div>
+                <div className={courseStyles.inlineReaderBody}>
+                  <ComponentRenderer component={readingComponent} />
+                </div>
+              </div>
+            )}
+
+            {rightContent === 'task' && selectedComponent && (
+              <div className={styles.detailCard}>
+                <div className={styles.detailCardHeader}>
+                  {(() => {
+                    const i = components.indexOf(selectedComponent);
+                    const accent = TASK_ACCENTS[i % TASK_ACCENTS.length];
+                    const variant = getArtworkVariant(selectedComponent.id);
+                    return (
+                      <>
+                        <span className={styles.taskAccent} style={{ background: accent }} aria-hidden="true" />
+                        <span
+                          className={`${styles.taskArtwork} ${styles[`taskArtwork${variant.charAt(0).toUpperCase() + variant.slice(1)}`] || ''}`}
+                          style={{ '--task-accent': accent } as React.CSSProperties}
+                          aria-hidden="true"
+                        />
+                        <span className={styles.taskTitle}>{selectedComponent.title || 'Untitled'}</span>
+                      </>
+                    );
+                  })()}
+                </div>
+                <div className={styles.detailCardContent}>
+                  <ComponentRenderer component={selectedComponent} />
+                  <div className={styles.detailActions}>
+                    {(() => {
+                      if (selectedComponent.componentType === 'mission_container' && selectedComponent.blocks) {
+                        return selectedComponent.blocks.map((block) => {
+                          const done = completedIds.has(block.id);
+                          return (
+                            <button
+                              key={block.id}
+                              type="button"
+                              className={`${styles.completeBtn} ${done ? styles.completeBtnDone : ''}`}
+                              disabled={done}
+                              onClick={() => handleComplete(block.id)}
+                            >
+                              {done ? 'Completed' : `Complete: ${block.blockType.replace(/_/g, ' ')}`}
+                            </button>
+                          );
+                        });
+                      }
+                      const compId = selectedComponent.id;
+                      const done = completedIds.has(compId);
+                      return (
+                        <button
+                          type="button"
+                          className={`${styles.completeBtn} ${done ? styles.completeBtnDone : ''}`}
+                          disabled={done}
+                          onClick={() => handleComplete(compId)}
+                        >
+                          {done ? 'Completed' : 'Mark complete'}
+                        </button>
+                      );
+                    })()}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {!rightContent && (
+              <div className={styles.rightPanelEmpty}>
+                <p>Select a reading or mission to preview</p>
+              </div>
+            )}
+          </div>
+
         </main>
       </div>
     );
@@ -359,6 +488,7 @@ export default function CourseSlugPage({ params }: PageProps) {
     );
   }
 
+  // ── NFT gate ──
   if (!accessGranted && gate) {
     return (
       <div className={styles.layout}>
