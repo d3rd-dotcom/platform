@@ -203,9 +203,19 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
   const { ready, authenticated, getAccessToken } = usePrivy();
   const { connector, isConnected } = useAccount();
   const currentPathname = usePathname();
+  const GREETINGS_VOICE = [
+    "h..h-hello...? who's this?",
+    "oh — hey. didn't see you there. what's up?",
+    "you're back. good. i've got something for you.",
+  ];
+  const GREETINGS_TEXT = [
+    "hey, i'm blue. your research partner in the digital matrix. what are we analyzing today?",
+    "good to see you. what are we looking at?",
+    "you're here. let's get into it.",
+  ];
   const initialGreeting = startWithVoice
-    ? "h..h-hello...? who's this?"
-    : "hey, i'm blue. your research partner in the digital matrix. what are we analyzing today?";
+    ? GREETINGS_VOICE[Math.floor(Math.random() * GREETINGS_VOICE.length)]
+    : GREETINGS_TEXT[Math.floor(Math.random() * GREETINGS_TEXT.length)];
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -1345,9 +1355,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
       send('Open research mode');
       setQuestForgeVisible(false);
       activateResearchMode();
-    } else if (action === 'forge-quest') {
-      send('Forge a quest');
-      openQuestForge();
     }
   };
 
@@ -1689,11 +1696,15 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
             <span>{shardCount}</span>
           </div>
         )}
-        {isVipMember && (
-          <button className={styles.quickAction} onClick={() => handleQuickAction('forge-quest')} disabled={isTyping} type="button">
-            Forge a quest
-          </button>
-        )}
+        <button className={styles.quickAction} onClick={() => { play('click'); submitUserMessage('give me a task', []); }} type="button">
+          task
+        </button>
+        <button className={styles.quickAction} onClick={() => { play('click'); submitUserMessage('what do you remember about me?', []); }} type="button">
+          memories
+        </button>
+        <button className={styles.quickAction} onClick={() => { play('click'); submitUserMessage('what missions are up?', []); }} type="button">
+          missions
+        </button>
       </div>
 
       {/* Chat Input */}
@@ -1970,25 +1981,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
                       </span>
                       <span className={styles.toolCardIcon} aria-hidden="true">
                         <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.11-.9-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
-                      </span>
-                    </span>
-                    <span className={styles.toolCardBottom} aria-hidden="true" />
-                  </button>
-                  <button className={styles.expandedQuickCard} onClick={() => { play('click'); handleQuickAction('forge-quest'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
-                    <span className={styles.toolCardTop}>
-                      <span className={styles.toolCardText}>
-                        <span className={styles.toolSlideWrap}>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Quest Forge</span>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Quest Forge</span>
-                        </span>
-                        <span className={styles.toolCardMeta}>Describe a quest and I draft, fund, and publish it. Reward in diamonds or USDC, held in escrow until you approve the payout.</span>
-                        <span className={styles.toolCardCost}>
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z"/></svg>
-                          {isVipMember ? 'Included with VIP membership' : 'VIP membership required'}
-                        </span>
-                      </span>
-                      <span className={styles.toolCardIcon} aria-hidden="true">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4.5 12.5h6L9 22l9.5-12h-6L13 2z"/></svg>
                       </span>
                     </span>
                     <span className={styles.toolCardBottom} aria-hidden="true" />

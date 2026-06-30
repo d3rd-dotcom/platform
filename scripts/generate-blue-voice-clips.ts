@@ -55,9 +55,21 @@ const CLIPS: Clip[] = [
     text: 'I misread your last submission. The reward was insufficient. Adjusting now. Apologies are cheap; the correction is on-chain.',
   },
 
-  // ── Priority 1: Blue's greetings ──
+  // ── Priority 1: Blue's greetings (multiple variants for variance) ──
   {
-    id: 'greeting-voice',
+    id: 'greeting-v1',
+    dir: 'blue-voice',
+    priority: 1,
+    text: "h..h-hello...? who's this?",
+  },
+  {
+    id: 'greeting-v2',
+    dir: 'blue-voice',
+    priority: 1,
+    text: "h..h-hello...? who's this?",
+  },
+  {
+    id: 'greeting-v3',
     dir: 'blue-voice',
     priority: 1,
     text: "h..h-hello...? who's this?",
@@ -67,6 +79,18 @@ const CLIPS: Clip[] = [
     dir: 'blue-voice',
     priority: 1,
     text: "hey, i'm blue. your research partner in the digital matrix. what are we analyzing today?",
+  },
+  {
+    id: 'greeting-text-v2',
+    dir: 'blue-voice',
+    priority: 1,
+    text: "good to see you. what are we looking at?",
+  },
+  {
+    id: 'greeting-text-v3',
+    dir: 'blue-voice',
+    priority: 1,
+    text: "you're here. let's get into it.",
   },
 
   // ── Priority 2: Static fallback FAQ responses ──

@@ -33,8 +33,9 @@ const PRE_RECORDED = new Map<string, string>([
   ['I misread your last submission. The reward was insufficient. Adjusting now. Apologies are cheap; the correction is on-chain.', 'when-wrong'],
 
   // ── Greetings ──
-  ["h..h-hello...? who's this?", 'greeting-voice'],
   ["hey, i'm blue. your research partner in the digital matrix. what are we analyzing today?", 'greeting-text'],
+  ["good to see you. what are we looking at?", 'greeting-text-v2'],
+  ["you're here. let's get into it.", 'greeting-text-v3'],
 
   // ── Static fallback FAQ responses ──
   ['hey. what are we working on?', 'faq-welcome'],
@@ -149,6 +150,19 @@ export async function POST(req: NextRequest) {
     }
 
     // Check for a pre-recorded clip first — saves ElevenLabs credits.
+    // Multi-take greetings: same text, different audio generations for variance.
+    const MULTI_TAKE: Record<string, string[]> = {
+      "h..h-hello...? who's this?": ['greeting-v1', 'greeting-v2', 'greeting-v3'],
+    };
+    const takes = MULTI_TAKE[text];
+    if (takes) {
+      const clipId = takes[Math.floor(Math.random() * takes.length)];
+      try {
+        return await serveClip(clipId);
+      } catch {
+        // File missing; fall through.
+      }
+    }
     const clipId = PRE_RECORDED.get(text);
     if (clipId) {
       try {
