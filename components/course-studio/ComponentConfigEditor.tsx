@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Trash } from '@phosphor-icons/react';
+import MultipleChoiceEditor from './MultipleChoiceEditor';
 import styles from './ComponentConfigEditor.module.css';
 
 interface Option {
@@ -25,11 +26,14 @@ export default function ComponentConfigEditor({
     case 'rich_text':
       return <RichTextEditor config={config} patch={patch} />;
     case 'image_embed':
-      return <ImageEmbedEditor config={config} patch={patch} />;
+    case 'media_embed':
+      return <MediaEmbedEditor config={config} patch={patch} />;
     case 'video_embed':
       return <VideoEmbedEditor config={config} patch={patch} />;
     case 'text_input':
       return <TextInputEditor config={config} patch={patch} />;
+    case 'multiple_choice':
+      return <MultipleChoiceEditor config={config as any} onUpdate={onUpdate} />;
     case 'rating_scale':
       return <RatingScaleEditor config={config} patch={patch} />;
     case 'file_upload':
@@ -60,30 +64,47 @@ function RichTextEditor({ config, patch }: { config: Record<string, unknown>; pa
   );
 }
 
-function ImageEmbedEditor({ config, patch }: { config: Record<string, unknown>; patch: (n: Record<string, unknown>) => void }) {
+function MediaEmbedEditor({ config, patch }: { config: Record<string, unknown>; patch: (n: Record<string, unknown>) => void }) {
+  const url = (config.url as string) ?? '';
+  const isVideo = /(?:youtube\.com|youtu\.be|vimeo\.com)/i.test(url);
   return (
     <div className={styles.editor}>
-      <label className={styles.label}>Image URL</label>
+      <label className={styles.label}>Media URL</label>
       <input
         className={styles.input}
-        value={(config.url as string) ?? ''}
+        value={url}
         onChange={(e) => patch({ url: e.target.value })}
-        placeholder="https://example.com/image.jpg"
+        placeholder="Image URL or YouTube/Vimeo link"
       />
-      <label className={styles.label}>Alt text</label>
-      <input
-        className={styles.input}
-        value={(config.alt as string) ?? ''}
-        onChange={(e) => patch({ alt: e.target.value })}
-        placeholder="Describe the image for accessibility"
-      />
-      <label className={styles.label}>Caption</label>
-      <input
-        className={styles.input}
-        value={(config.caption as string) ?? ''}
-        onChange={(e) => patch({ caption: e.target.value })}
-        placeholder="Optional caption shown below the image"
-      />
+      {isVideo ? (
+        <>
+          <label className={styles.label}>Description</label>
+          <textarea
+            className={styles.textarea}
+            value={(config.caption as string) ?? ''}
+            onChange={(e) => patch({ caption: e.target.value })}
+            placeholder="Optional description or transcript summary"
+            rows={3}
+          />
+        </>
+      ) : (
+        <>
+          <label className={styles.label}>Alt text</label>
+          <input
+            className={styles.input}
+            value={(config.alt as string) ?? ''}
+            onChange={(e) => patch({ alt: e.target.value })}
+            placeholder="Describe the image for accessibility"
+          />
+          <label className={styles.label}>Caption</label>
+          <input
+            className={styles.input}
+            value={(config.caption as string) ?? ''}
+            onChange={(e) => patch({ caption: e.target.value })}
+            placeholder="Optional caption shown below the media"
+          />
+        </>
+      )}
     </div>
   );
 }
@@ -156,20 +177,26 @@ function RatingScaleEditor({ config, patch }: { config: Record<string, unknown>;
           />
         </div>
       </div>
-      <label className={styles.label}>Min label</label>
-      <input
-        className={styles.input}
-        value={(config.minLabel as string) ?? ''}
-        onChange={(e) => patch({ minLabel: e.target.value })}
-        placeholder="e.g. Not likely"
-      />
-      <label className={styles.label}>Max label</label>
-      <input
-        className={styles.input}
-        value={(config.maxLabel as string) ?? ''}
-        onChange={(e) => patch({ maxLabel: e.target.value })}
-        placeholder="e.g. Very likely"
-      />
+      <div className={styles.row}>
+        <div className={styles.fieldGroup}>
+          <label className={styles.label}>Min label</label>
+          <input
+            className={styles.input}
+            value={(config.minLabel as string) ?? ''}
+            onChange={(e) => patch({ minLabel: e.target.value })}
+            placeholder="e.g. Not likely"
+          />
+        </div>
+        <div className={styles.fieldGroup}>
+          <label className={styles.label}>Max label</label>
+          <input
+            className={styles.input}
+            value={(config.maxLabel as string) ?? ''}
+            onChange={(e) => patch({ maxLabel: e.target.value })}
+            placeholder="e.g. Very likely"
+          />
+        </div>
+      </div>
     </div>
   );
 }

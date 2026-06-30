@@ -65,10 +65,10 @@ const MISSION_ITEMS: PaletteItemDef[] = [
     config: { min: 1, max: 5, minLabel: 'Low', maxLabel: 'High' },
   },
   {
-    type: 'image_embed',
-    label: 'Image',
+    type: 'media_embed',
+    label: 'Media',
     icon: <ImageIcon size={18} weight="bold" />,
-    description: 'Embed an image',
+    description: 'Image or video embed',
     config: { url: '', alt: '', caption: '' },
   },
   {

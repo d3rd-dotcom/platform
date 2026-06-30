@@ -53,7 +53,7 @@ export const EVENTS: EventItem[] = [
     timeLabel: 'May 5 - Aug 16',
     description:
       'Follow the 12-week course through readings and missions. Complete each week to unlock the next step.',
-    href: '/course',
+    href: '/shadow-work',
     ctaLabel: 'Start course',
   },
   {

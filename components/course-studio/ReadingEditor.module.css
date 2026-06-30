@@ -25,6 +25,53 @@
   color: var(--color-text-muted);
 }
 
+/* ── Image URL row ── */
+
+.imageRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 24px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  flex-shrink: 0;
+}
+
+.imageInput {
+  flex: 1;
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-base);
+  color: var(--color-text-dark);
+  outline: none;
+  font-family: var(--font-mono);
+  transition: border-color 0.12s ease;
+}
+
+.imageInput:focus {
+  border-color: var(--color-primary);
+}
+
+.imageInput::placeholder {
+  color: var(--color-text-faint);
+}
+
+.imagePreview {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 1px rgba(26, 29, 51, 0.08);
+}
+
+.imagePreviewImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 /* ── Toolbar ── */
 
 .toolbar {
@@ -248,6 +295,12 @@
 }
 
 /* ── Dark mode ── */
+
+:global([data-theme="dark"]) .imageInput {
+  background: #1e1f2c;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f0f1fa;
+}
 
 :global([data-theme="dark"]) .toolbar {
   background: #13141f;

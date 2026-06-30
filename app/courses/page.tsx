@@ -3,14 +3,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
-import { Plus, PencilSimple } from '@phosphor-icons/react';
+import { PencilSimple, Trash } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
-import CourseStudioModal from '@/components/course-studio/CourseStudioModal';
 import type { CourseData } from '@/lib/personal-course';
 import type { VipCourseRecord } from '@/lib/vip-course-db';
-import type { ComponentType } from '@/lib/vip-course-db';
 import { onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
-import { useSound } from '@/hooks/useSound';
 import type { CourseRecord } from '@/lib/course-content-db';
 import styles from './page.module.css';
 
@@ -29,33 +26,14 @@ function getPersonalEndDate() {
 const COURSE_THUMB = '/academy-story.png';
 
 export default function CoursesPage() {
-  const { play } = useSound();
   const { ready, getAccessToken } = usePrivy();
   const [personalCourse, setPersonalCourse] = useState<CourseData | null>(null);
-  const [studioOpen, setStudioOpen] = useState(false);
-  const [editingCourseId, setEditingCourseId] = useState<string | null>(null);
   const [authoredCourses, setAuthoredCourses] = useState<VipCourseRecord[]>([]);
-  const [aiPrompt, setAiPrompt] = useState('');
-  const [generating, setGenerating] = useState(false);
-  const [genError, setGenError] = useState<string | null>(null);
-  const [genCourse, setGenCourse] = useState<{
-    title: string;
-    focus: string;
-    weeks: Array<{
-      weekNumber: number;
-      title: string;
-      theme: string;
-      components: Array<{
-        componentType: string;
-        title: string;
-        config: Record<string, unknown>;
-        required?: boolean;
-      }>;
-    }>;
-  } | null>(null);
   const [coreAuthor, setCoreAuthor] = useState<{ username: string; avatarUrl: string | null } | null>(null);
   const [skyyeAuthor, setSkyyeAuthor] = useState<{ username: string; avatarUrl: string | null } | null>(null);
   const [academyCourses, setAcademyCourses] = useState<CourseRecord[]>([]);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     fetch('/api/users/lookup?username=Espeon')
@@ -124,46 +102,26 @@ export default function CoursesPage() {
     } catch { /* ignore */ }
   }, [authHeaders]);
 
-  const handleCourseCreated = useCallback(() => {
-    setStudioOpen(false);
-    setEditingCourseId(null);
-    setGenCourse(null);
-    setAiPrompt('');
-    loadPersonalCourse();
-    loadAuthoredCourses();
-  }, [loadPersonalCourse, loadAuthoredCourses]);
-
-  if (studioOpen || editingCourseId || genCourse) {
-    return (
-      <CourseStudioModal
-        authHeaders={authHeaders}
-        onClose={() => { setStudioOpen(false); setEditingCourseId(null); setGenCourse(null); setAiPrompt(''); }}
-        onCourseCreated={handleCourseCreated}
-        existingCourseId={editingCourseId ?? undefined}
-        initialCourse={genCourse ?? undefined}
-      />
-    );
-  }
-
-  const handleGenerate = async () => {
-    const trimmed = aiPrompt.trim();
-    if (!trimmed) return;
-    setGenerating(true);
-    setGenError(null);
+  const confirmDelete = async () => {
+    const id = deleteTarget;
+    if (!id) return;
+    setDeleting(true);
     try {
       const headers = await authHeaders();
-      const res = await fetch('/api/vip/courses/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...headers },
-        body: JSON.stringify({ prompt: trimmed }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Generation failed');
-      setGenCourse(data.course);
-    } catch (err: any) {
-      setGenError(err.message ?? 'Something went wrong');
+      const res = await fetch(`/api/vip/courses/${id}`, { method: 'DELETE', headers });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert(data.error ?? 'Failed to delete course');
+        setDeleting(false);
+        setDeleteTarget(null);
+        return;
+      }
+      setAuthoredCourses((prev) => prev.filter((c) => c.id !== id));
+      setDeleteTarget(null);
+    } catch {
+      alert('Failed to delete course');
     } finally {
-      setGenerating(false);
+      setDeleting(false);
     }
   };
 
@@ -173,7 +131,7 @@ export default function CoursesPage() {
       <main className={styles.main}>
 
         <div className={styles.cardWrapper}>
-          <Link href="/course" className={styles.courseCard}>
+          <Link href="/shadow-work" className={styles.courseCard}>
             <div className={styles.cardHeader}>
               <span className={styles.cardKanji}>影の探求</span>
               <span className={styles.cardHeaderTitle}>Shadow Work Course</span>
@@ -345,34 +303,6 @@ export default function CoursesPage() {
           </div>
         )}
 
-        <section className={styles.aiSection}>
-          <div className={styles.aiInputRow}>
-            <input
-              value={aiPrompt}
-              onChange={(e) => { setAiPrompt(e.target.value); setGenError(null); }}
-              onKeyDown={(e) => { play('click'); if (e.key === 'Enter' && !generating) handleGenerate(); }}
-              placeholder="Describe your course."
-              className={styles.aiInput}
-              disabled={generating}
-            />
-            <button
-              type="button"
-              onClick={handleGenerate}
-              disabled={generating || !aiPrompt.trim()}
-              className={styles.aiGenerateBtn}
-            >
-              {generating ? 'Building...' : 'Build With Blue'}
-            </button>
-          </div>
-          {genError && <p className={styles.aiError}>{genError}</p>}
-          {generating && (
-            <div className={styles.aiGenerating}>
-              <div className={styles.aiSpinner} />
-              <span>Blue is designing your course...</span>
-            </div>
-          )}
-        </section>
-
         {academyCourses.length > 0 && (
           <section className={styles.authoredSection}>
             <h2 className={styles.authoredHeading}>Academy courses</h2>
@@ -418,14 +348,23 @@ export default function CoursesPage() {
                       </div>
                     )}
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setEditingCourseId(c.id)}
-                    className={styles.authoredEditBtn}
-                    title="Edit course"
-                  >
-                    <PencilSimple size={16} weight="bold" />
-                  </button>
+                  <div className={styles.authoredActions}>
+                    <button
+                      type="button"
+                      onClick={() => setDeleteTarget(c.id)}
+                      className={styles.authoredDeleteBtn}
+                      title="Delete course"
+                    >
+                      <Trash size={16} weight="bold" />
+                    </button>
+                    <Link
+                      href={`/course-builder?edit=${c.id}`}
+                      className={styles.authoredEditBtn}
+                      title="Edit course"
+                    >
+                      <PencilSimple size={16} weight="bold" />
+                    </Link>
+                  </div>
                 </div>
               ))}
             </div>
@@ -433,6 +372,42 @@ export default function CoursesPage() {
         )}
 
       </main>
+
+      {deleteTarget && (
+        <div className={styles.deleteOverlay} onClick={() => !deleting && setDeleteTarget(null)}>
+          <div className={styles.deleteDialog} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.deleteTitleBar}>
+              <span className={styles.deleteTitleText}>delete.course</span>
+            </div>
+            <div className={styles.deleteBody}>
+              <div className={styles.deleteIcon}>
+                <Trash size={28} weight="bold" />
+              </div>
+              <p className={styles.deleteMessage}>
+                Are you sure you want to delete this course? This cannot be undone.
+              </p>
+              <div className={styles.deleteButtons}>
+                <button
+                  type="button"
+                  className={styles.deleteBtnCancel}
+                  disabled={deleting}
+                  onClick={() => setDeleteTarget(null)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className={styles.deleteBtnConfirm}
+                  disabled={deleting}
+                  onClick={confirmDelete}
+                >
+                  {deleting ? 'Deleting...' : 'Delete'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

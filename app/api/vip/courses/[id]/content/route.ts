@@ -8,6 +8,7 @@ export const dynamic = 'force-dynamic';
 const VALID_COMPONENT_TYPES: ComponentType[] = [
   'rich_text',
   'multiple_choice',
+  'media_embed',
   'image_embed',
   'video_embed',
   'file_upload',
@@ -16,6 +17,7 @@ const VALID_COMPONENT_TYPES: ComponentType[] = [
   'reflection_journal',
   'quiz_block',
   'password_gate',
+  'mission_container',
 ];
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
@@ -43,12 +45,28 @@ export async function PUT(request: Request, { params }: { params: { id: string }
             `week[${idx}].components[${ci}].componentType is required. Must be one of: ${VALID_COMPONENT_TYPES.join(', ')}`,
           );
         }
+        const blocks = Array.isArray(comp.blocks)
+          ? comp.blocks.map((block: any, bi: number) => {
+              if (!block.blockType || !VALID_COMPONENT_TYPES.includes(block.blockType)) {
+                throw new Error(
+                  `week[${idx}].components[${ci}].blocks[${bi}].blockType is required. Must be one of: ${VALID_COMPONENT_TYPES.join(', ')}`,
+                );
+              }
+              return {
+                blockType: block.blockType as ComponentType,
+                config: typeof block.config === 'object' && block.config !== null ? block.config as Record<string, unknown> : {},
+                sortOrder: typeof block.sortOrder === 'number' ? block.sortOrder : bi,
+                required: block.required === true,
+              };
+            })
+          : [];
         return {
           componentType: comp.componentType as ComponentType,
           title: typeof comp.title === 'string' ? comp.title : '',
           config: typeof comp.config === 'object' && comp.config !== null ? comp.config as Record<string, unknown> : {},
           sortOrder: typeof comp.sortOrder === 'number' ? comp.sortOrder : ci,
           required: comp.required === true,
+          blocks,
         };
       });
       return {

@@ -146,7 +146,7 @@
   border-radius: 6px;
   border: 1px solid transparent;
   background: transparent;
-  color: rgba(26, 29, 51, 0.2);
+  color: #ef4444;
   cursor: pointer;
   transition: all 0.12s ease;
   flex-shrink: 0;
@@ -163,12 +163,78 @@
 .taskCardContent {
   flex: 1;
   overflow-y: auto;
-  padding: 0 18px 18px;
+  padding: 18px;
   border-top: 1px solid rgba(26, 29, 51, 0.06);
   min-height: 0;
 }
 
 /* ── Dark mode ── */
+
+.emptyBlocks {
+  padding: 24px 0;
+  text-align: center;
+}
+
+.emptyBlocksText {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: rgba(26, 29, 51, 0.55);
+  margin: 0;
+  font-style: italic;
+}
+
+.blockCard {
+  border: 1px solid rgba(26, 29, 51, 0.08);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.6);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.blockCard:last-child {
+  margin-bottom: 0;
+}
+
+.blockHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(26, 29, 51, 0.03);
+  border-bottom: 1px solid rgba(26, 29, 51, 0.06);
+}
+
+.blockBadge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-primary);
+}
+
+.blockDeleteBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: #ef4444;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity 0.12s ease;
+}
+
+.blockDeleteBtn:hover {
+  opacity: 1;
+}
+
+.blockBody {
+  padding: 12px;
+}
 
 :global([data-theme="dark"]) .titleInput {
   color: #f0f1fa;
@@ -179,7 +245,7 @@
 }
 
 :global([data-theme="dark"]) .deleteBtn {
-  color: rgba(240, 241, 250, 0.2);
+  color: #f87171;
 }
 
 :global([data-theme="dark"]) .deleteBtn:hover {
@@ -190,4 +256,22 @@
 
 :global([data-theme="dark"]) .taskCardContent {
   border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .emptyBlocksText {
+  color: rgba(240, 241, 250, 0.5);
+}
+
+:global([data-theme="dark"]) .blockCard {
+  border-color: rgba(240, 241, 250, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+:global([data-theme="dark"]) .blockHeader {
+  background: rgba(240, 241, 250, 0.04);
+  border-bottom-color: rgba(240, 241, 250, 0.06);
+}
+
+:global([data-theme="dark"]) .blockDeleteBtn {
+  color: #f87171;
 }

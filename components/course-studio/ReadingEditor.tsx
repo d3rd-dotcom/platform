@@ -22,11 +22,13 @@ import styles from './ReadingEditor.module.css';
 
 interface ReadingEditorProps {
   content: string;
+  imageUrl?: string;
+  onImageUrlChange?: (url: string) => void;
   onSave: (content: string) => void;
   onClose: () => void;
 }
 
-export default function ReadingEditor({ content, onSave, onClose }: ReadingEditorProps) {
+export default function ReadingEditor({ content, imageUrl, onImageUrlChange, onSave, onClose }: ReadingEditorProps) {
   const [isDirty, setIsDirty] = useState(false);
 
   const editor = useEditor({
@@ -81,6 +83,20 @@ export default function ReadingEditor({ content, onSave, onClose }: ReadingEdito
     <div className={styles.editor}>
       <div className={styles.header}>
         <span className={styles.badge}>Weekly Read</span>
+      </div>
+
+      <div className={styles.imageRow}>
+        <input
+          value={imageUrl || ''}
+          onChange={(e) => onImageUrlChange?.(e.target.value)}
+          placeholder="Reading cover image URL (optional)"
+          className={styles.imageInput}
+        />
+        {imageUrl && (
+          <span className={styles.imagePreview}>
+            <img src={imageUrl} alt="" className={styles.imagePreviewImg} />
+          </span>
+        )}
       </div>
 
       <div className={styles.toolbar}>

@@ -67,7 +67,7 @@ const fixtures: Fixture[] = [
   {
     name: 'course foundation',
     message: 'what is the course based on?',
-    pathname: '/course',
+    pathname: '/shadow-work',
     shouldTrust: true,
     expectedTopIds: ['page-course'],
     minCoverage: 0.6,
@@ -75,7 +75,7 @@ const fixtures: Fixture[] = [
   {
     name: 'inner artist shadow work',
     message: 'is the course about awakening the inner artist and shadow work?',
-    pathname: '/course',
+    pathname: '/shadow-work',
     shouldTrust: true,
     expectedTopIds: ['page-course'],
     minCoverage: 0.7,
@@ -147,7 +147,7 @@ const fixtures: Fixture[] = [
   {
     name: 'why seasons',
     message: 'why does MWA use 12 week seasons?',
-    pathname: '/course',
+    pathname: '/shadow-work',
     shouldTrust: true,
     expectedTopIds: ['page-course'],
     minCoverage: 0.6,

@@ -68,12 +68,27 @@ export async function ensureVipCourseSchema() {
       )
     `);
 
+    await sqlQuery(`
+      CREATE TABLE IF NOT EXISTS mission_blocks (
+        id CHAR(36) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+        mission_id CHAR(36) NOT NULL,
+        block_type VARCHAR(32) NOT NULL,
+        sort_order INTEGER NOT NULL DEFAULT 0,
+        config JSONB NOT NULL DEFAULT '{}',
+        required BOOLEAN NOT NULL DEFAULT false,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (mission_id) REFERENCES course_components(id) ON DELETE CASCADE
+      )
+    `);
+
     try {
       await sqlQuery(`ALTER TABLE vip_courses DROP CONSTRAINT IF EXISTS vip_courses_slug_unique`);
       await sqlQuery(`ALTER TABLE vip_courses ADD CONSTRAINT vip_courses_slug_unique UNIQUE (slug)`);
       await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_vip_courses_user ON vip_courses(user_id, status)`);
       await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_course_weeks_course ON course_weeks(course_id, sort_order)`);
       await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_course_components_week ON course_components(week_id, sort_order)`);
+      await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_mission_blocks_mission ON mission_blocks(mission_id, sort_order)`);
     } catch {
       // indexes are best-effort
     }

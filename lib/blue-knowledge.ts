@@ -151,7 +151,7 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
   {
     id: 'business-evidence-base',
     title: 'The research behind MWA features',
-    routes: ['*', '/research', '/course'],
+    routes: ['*', '/research', '/shadow-work'],
     keywords: [
       'evidence', 'research basis', 'science behind', 'studies', 'literature',
       'why journaling', 'why gamification', 'does it work', 'peer support research',
@@ -186,13 +186,13 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
   {
     id: 'page-course',
     title: 'Course',
-    routes: ['/course'],
+    routes: ['/shadow-work'],
     keywords: [
       'course', 'week', 'lesson', 'curriculum', 'pathway', 'seal', 'awakening',
       'inner artist', 'shadow work', 'creativity', 'ethereal version', 'season',
     ],
     body:
-      'The /course page is the weekly curriculum. The course is based on Awakening the Inner Artist, shadow-work and creativity, ' +
+      'The /shadow-work page is the weekly curriculum. The course is based on Awakening the Inner Artist, shadow-work and creativity, ' +
       'and becoming the ethereal version of yourself. Each season runs as a 12-week gamified micro-university course where users complete tasks, ' +
       'seal weeks, manage points and rewards, and take part in refreshing rituals outside normal day-to-day life.',
   },
@@ -395,7 +395,7 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
   {
     id: 'feature-field-notes',
     title: 'Field notes',
-    routes: ['/course', '/quests', '/home'],
+    routes: ['/shadow-work', '/quests', '/home'],
     keywords: ['morning', 'pages', 'journal', 'streak', 'prayer', 'daily'],
     body:
       'Field notes are a daily journaling habit (3 pages of freewriting). Tracked as a streak in the prayers table, encrypted per-user. ' +

@@ -309,6 +309,22 @@ The existing 12-week "Creative Healing" course content must be migrated from Typ
 
 In the studio header, a button "Draft with Blue" opens a small inline prompt input (like the old CourseBuilderInline's topic/goal fields). On submit, it calls the existing `/api/course/draft` endpoint, and the returned `CourseData` is converted into `CourseComponent[]` and placed on the canvas. The user can then manually edit.
 
+### Course Preview (right panel in studio)
+
+The `CoursePreview` component renders a two-column layout mirroring `/course`. The left column shows the weekly reading card and mission task-card buttons; the right column shows the expanded view of a selected reading or task.
+
+**Styling constraint:** The right panel expanded card must not reuse the `.taskCard` CSS class name that the left-column buttons use — CSS modules merge duplicate keys, causing the expanded card to inherit `display: flex; align-items: center;` from the list-button definition. The right panel uses `.detailCard` / `.detailCardHeader` / `.detailCardContent` instead.
+
+### MissionEditor component routing
+
+The `MissionEditor` (opened when clicking a component in the builder's component panel) renders type-specific editors:
+
+- `multiple_choice` → `MultipleChoiceEditor`
+- Legacy components (`config.legacyType` present) → `LegacyMissionRenderer`
+- All other types → `ComponentConfigEditor` (which dispatches to type-specific editors like `JournalEditor`, `RichTextEditor`, `VideoEmbedEditor`, etc.)
+
+**Important:** Non-legacy components (no `legacyType` in config) must never be routed through `LegacyMissionRenderer` even if a legacy mapping exists for their component type. The condition is `showLegacyEditor` (i.e., `!!component.config?.legacyType`) only — not `legacyMapping`.
+
 ---
 
 ## 10. Acceptance Criteria

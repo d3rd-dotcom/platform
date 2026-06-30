@@ -6,6 +6,7 @@ import styles from './ComponentRenderer.module.css';
 
 const RichTextRenderer = dynamic(() => import('./RichTextRenderer'), { ssr: false });
 const MultipleChoiceRenderer = dynamic(() => import('./MultipleChoiceRenderer'), { ssr: false });
+const MediaEmbedRenderer = dynamic(() => import('./MediaEmbedRenderer'), { ssr: false });
 const ImageEmbedRenderer = dynamic(() => import('./ImageEmbedRenderer'), { ssr: false });
 const VideoEmbedRenderer = dynamic(() => import('./VideoEmbedRenderer'), { ssr: false });
 const FileUploadRenderer = dynamic(() => import('./FileUploadRenderer'), { ssr: false });
@@ -14,21 +15,27 @@ const RatingScaleRenderer = dynamic(() => import('./RatingScaleRenderer'), { ssr
 const ReflectionJournalRenderer = dynamic(() => import('./ReflectionJournalRenderer'), { ssr: false });
 const QuizBlockRenderer = dynamic(() => import('./QuizBlockRenderer'), { ssr: false });
 const PasswordGateRenderer = dynamic(() => import('./PasswordGateRenderer'), { ssr: false });
-const LegacyMissionRenderer = dynamic(() => import('./LegacyMissionRenderer'), { ssr: false });
 
-function UnknownRenderer({ component }: { component: CourseComponentRecord }) {
-  return (
-    <div className={styles.unknown_warning}>
-      Unknown component type: <code>{component.componentType}</code>
-    </div>
-  );
-}
+const BLOCK_LABELS: Record<string, string> = {
+  rich_text: 'Rich Text',
+  text_input: 'Text Input',
+  multiple_choice: 'Multiple Choice',
+  rating_scale: 'Rating Scale',
+  media_embed: 'Media',
+  image_embed: 'Image',
+  video_embed: 'Video',
+  reflection_journal: 'Journal',
+  file_upload: 'File Upload',
+  quiz_block: 'Quiz',
+  password_gate: 'Password Gate',
+};
 
 type RendererProps = { component: CourseComponentRecord; onComponentUpdate?: (updates: Partial<CourseComponentRecord>) => void };
 
 const RENDERER_MAP: Record<string, React.ComponentType<RendererProps>> = {
   rich_text: RichTextRenderer as React.ComponentType<RendererProps>,
   multiple_choice: MultipleChoiceRenderer as React.ComponentType<RendererProps>,
+  media_embed: MediaEmbedRenderer as React.ComponentType<RendererProps>,
   image_embed: ImageEmbedRenderer as React.ComponentType<RendererProps>,
   video_embed: VideoEmbedRenderer as React.ComponentType<RendererProps>,
   file_upload: FileUploadRenderer as React.ComponentType<RendererProps>,
@@ -43,11 +50,37 @@ export default function ComponentRenderer({
   component,
   onComponentUpdate,
 }: RendererProps) {
-  const legacyType = component.config?.legacyType as string | undefined;
-  if (legacyType) {
-    const onUpdate = onComponentUpdate ? (c: Record<string, unknown>) => onComponentUpdate({ config: c }) : undefined;
-    return <LegacyMissionRenderer component={component} onUpdate={onUpdate} />;
+  // Container mission — render each block
+  if (component.componentType === 'mission_container') {
+    const blocks = component.blocks || [];
+    return (
+      <div className={styles.container}>
+        {blocks.map((block) => {
+          const BlockRenderer = RENDERER_MAP[block.blockType];
+          if (!BlockRenderer) return null;
+          // Adapt the block to look like a component for the renderer
+          const blockAsComponent: CourseComponentRecord = {
+            ...component,
+            componentType: block.blockType as any,
+            config: block.config,
+            title: '',
+            blocks: [],
+          };
+          return (
+            <div key={block.id} className={styles.blockWrapper}>
+              {blocks.length > 1 && (
+                <div className={styles.blockLabel}>{BLOCK_LABELS[block.blockType] || block.blockType}</div>
+              )}
+              <BlockRenderer component={blockAsComponent} onComponentUpdate={onComponentUpdate} />
+            </div>
+          );
+        })}
+      </div>
+    );
   }
-  const Renderer = RENDERER_MAP[component.componentType] ?? UnknownRenderer;
+
+  // Single-type component (legacy or non-container)
+  const Renderer = RENDERER_MAP[component.componentType];
+  if (!Renderer) return null;
   return <Renderer component={component} onComponentUpdate={onComponentUpdate} />;
 }

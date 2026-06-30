@@ -1,10 +1,8 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { Trash, NotePencil } from '@phosphor-icons/react';
-import type { CourseComponentRecord } from '@/lib/vip-course-db';
-import LegacyMissionRenderer from '@/components/course-renderers/LegacyMissionRenderer';
-import MultipleChoiceEditor from './MultipleChoiceEditor';
+import type { CourseComponentRecord, MissionBlockRecord, ComponentType } from '@/lib/vip-course-db';
 import ComponentConfigEditor from './ComponentConfigEditor';
 import styles from './MissionEditor.module.css';
 
@@ -21,34 +19,25 @@ interface MissionEditorProps {
   component: CourseComponentRecord;
   onUpdate: (compId: string, updates: Partial<CourseComponentRecord>) => void;
   onDelete: (compId: string) => void;
+  onAddBlock?: (blockType: ComponentType, config?: Record<string, unknown>) => void;
+  onUpdateBlock?: (blockId: string, updates: Partial<MissionBlockRecord>) => void;
+  onDeleteBlock?: (blockId: string) => void;
 }
 
-/* ── Legacy translation for component types without direct editors ── */
-
-const LEGACY_EDITORS: Record<string, {
-  legacyType: string;
-  toLegacy: (cfg: Record<string, unknown>) => Record<string, unknown>;
-  fromLegacy: (cfg: Record<string, unknown>) => Record<string, unknown>;
-}> = {
-  reflection_journal: {
-    legacyType: 'text',
-    toLegacy: (cfg) => ({ ...cfg, legacyType: 'text', text: (cfg.prompt as string) ?? '' }),
-    fromLegacy: (cfg) => {
-      const { legacyType, text, ...rest } = cfg;
-      return { ...rest, prompt: text };
-    },
-  },
-  text_input: {
-    legacyType: 'text',
-    toLegacy: (cfg) => ({ ...cfg, legacyType: 'text', text: (cfg.placeholder as string) ?? '' }),
-    fromLegacy: (cfg) => {
-      const { legacyType, text, ...rest } = cfg;
-      return { ...rest, placeholder: text };
-    },
-  },
+const BLOCK_LABELS: Record<string, string> = {
+  rich_text: 'Rich Text',
+  text_input: 'Text Input',
+  multiple_choice: 'Multiple Choice',
+  rating_scale: 'Rating Scale',
+  image_embed: 'Image',
+  video_embed: 'Video',
+  reflection_journal: 'Journal',
+  file_upload: 'File Upload',
+  quiz_block: 'Quiz',
+  password_gate: 'Password Gate',
 };
 
-export default function MissionEditor({ component, onUpdate, onDelete }: MissionEditorProps) {
+export default function MissionEditor({ component, onUpdate, onDelete, onAddBlock, onUpdateBlock, onDeleteBlock }: MissionEditorProps) {
   const [title, setTitle] = useState(component.title);
 
   useEffect(() => {
@@ -62,63 +51,10 @@ export default function MissionEditor({ component, onUpdate, onDelete }: Mission
   };
 
   const variant = getArtworkVariant(component.id);
-
-  // Translate non-legacy components for LegacyMissionRenderer
-  const showLegacyEditor = !!component.config?.legacyType;
-  const legacyMapping = LEGACY_EDITORS[component.componentType];
-
-  const editorComponent = useMemo<CourseComponentRecord>(() => {
-    if (showLegacyEditor || !legacyMapping) return component;
-    return {
-      ...component,
-      config: legacyMapping.toLegacy(component.config ?? {}),
-    };
-  }, [component, showLegacyEditor, legacyMapping]);
-
-  const handleLegacyUpdate = (config: Record<string, unknown>) => {
-    if (showLegacyEditor) {
-      onUpdate(component.id, { config });
-    } else if (legacyMapping) {
-      onUpdate(component.id, { config: legacyMapping.fromLegacy(config) });
-    }
-  };
-
-  const handleConfigUpdate = (config: Record<string, unknown>) => {
-    onUpdate(component.id, { config });
-  };
-
-  function renderEditor() {
-    if (component.componentType === 'multiple_choice') {
-      return (
-        <MultipleChoiceEditor
-          config={component.config as any}
-          onUpdate={handleConfigUpdate}
-        />
-      );
-    }
-
-    if (showLegacyEditor || legacyMapping) {
-      return (
-        <LegacyMissionRenderer
-          component={editorComponent}
-          onUpdate={handleLegacyUpdate}
-        />
-      );
-    }
-
-    // All other component types get their dedicated editor
-    return (
-      <ComponentConfigEditor
-        componentType={component.componentType}
-        config={component.config}
-        onUpdate={handleConfigUpdate}
-      />
-    );
-  }
+  const blocks = component.blocks || [];
 
   return (
     <div className={styles.editor}>
-      {/* Task card header — mirrors /course expanded task card */}
       <div className={styles.taskCardHeader}>
         <span className={styles.taskAccent} aria-hidden="true" />
         <span className={`${styles.taskArtwork} ${styles[`taskArtwork${variant.charAt(0).toUpperCase() + variant.slice(1)}`] || ''}`} aria-hidden="true" />
@@ -143,9 +79,37 @@ export default function MissionEditor({ component, onUpdate, onDelete }: Mission
         </button>
       </div>
 
-      {/* Expanded content — the actual mission component */}
       <div className={styles.taskCardContent}>
-        {renderEditor()}
+        {blocks.length === 0 && (
+          <div className={styles.emptyBlocks}>
+            <p className={styles.emptyBlocksText}>No blocks yet. Add one from the palette below.</p>
+          </div>
+        )}
+
+        {blocks.map((block) => (
+          <div key={block.id} className={styles.blockCard}>
+            <div className={styles.blockHeader}>
+              <span className={styles.blockBadge}>{BLOCK_LABELS[block.blockType] || block.blockType}</span>
+              {onDeleteBlock && (
+                <button
+                  type="button"
+                  className={styles.blockDeleteBtn}
+                  onClick={() => onDeleteBlock(block.id)}
+                  title="Remove block"
+                >
+                  <Trash size={12} weight="bold" />
+                </button>
+              )}
+            </div>
+            <div className={styles.blockBody}>
+              <ComponentConfigEditor
+                componentType={block.blockType}
+                config={block.config}
+                onUpdate={(config) => onUpdateBlock?.(block.id, { config })}
+              />
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

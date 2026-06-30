@@ -5,32 +5,24 @@ import type { CourseComponentRecord } from '@/lib/vip-course-db';
 import ComponentRenderer from '@/components/course-renderers/ComponentRenderer';
 import styles from './CoursePreview.module.css';
 
-const WEEK_TITLES = [
-  'Safety', 'Self-Awareness', 'Processing', 'Compassion',
-  'Narrative', 'Integration', 'Resilience', 'Growth',
-  'Connection', 'Purpose', 'Autonomy', 'Legacy',
-];
-
 const TASK_ACCENTS = ['#6C5CE7', '#F97316', '#22D3EE', '#F43F5E', '#A855F7', '#14B8A6', '#EAB308'];
 const ARTWORK_VARIANTS = ['aurora', 'sunrise', 'orbit', 'bloom', 'ribbon', 'prism'];
 const READING_ACCENT = '#6C5CE7';
 const READING_THUMB_BG = 'linear-gradient(135deg, #6C5CE7 0%, #A855F7 50%, #C084FC 100%)';
 
 function getInstructions(c: CourseComponentRecord): string {
-  const cfg = c.config ?? {};
-  // Legacy type instructions (backward compat)
-  const lt = cfg.legacyType as string;
-  if (lt === 'text') return (cfg.text as string) || 'Write your reflection...';
-  if (lt === 'numbered-list') {
-    const labels = cfg.labels as string[] | undefined;
-    return labels?.length ? `Reflect on: ${labels.join(', ')}` : 'Reflect on each item below...';
+  if (c.componentType === 'mission_container') {
+    const blocks = c.blocks || [];
+    if (blocks.length > 0) {
+      const first = blocks[0];
+      if (first.blockType === 'reflection_journal') return (first.config.prompt as string) || '';
+      if (first.blockType === 'multiple_choice') return (first.config.question as string) || '';
+      if (first.blockType === 'video_embed') return (first.config.description as string) || '';
+      if (first.blockType === 'rich_text') return (first.config.content as string) || '';
+    }
+    return '';
   }
-  if (lt === 'lists' || lt === 'lives') return (cfg.instructions as string) || 'Respond to each prompt below...';
-  if (lt === 'checklist') return (cfg.instructions as string) || 'Review each item on the list.';
-  if (lt === 'enjoy-list') return (cfg.instructions as string) || 'List things you enjoy and when you last did them.';
-  if (lt === 'affirmations') return (cfg.instructions as string) || 'Write what you are grateful for.';
-  if (lt === 'life-pie') return (cfg.instructions as string || (cfg.reflectionText as string)) || 'Rate each area of your life.';
-  // Component type instructions
+  const cfg = c.config ?? {};
   if (c.componentType === 'reflection_journal') return (cfg.prompt as string) || 'Write your reflection...';
   if (c.componentType === 'multiple_choice') return (cfg.question as string) || '';
   if (c.componentType === 'video_embed') return (cfg.description as string) || '';
@@ -52,18 +44,18 @@ interface CoursePreviewProps {
     components: CourseComponentRecord[];
   }>;
   readingContent: string;
+  readingImageUrl?: string;
 }
 
-export default function CoursePreview({ weeks, readingContent }: CoursePreviewProps) {
+export default function CoursePreview({ weeks, readingContent, readingImageUrl }: CoursePreviewProps) {
   const [viewWeek, setViewWeek] = useState(1);
   const [rightContent, setRightContent] = useState<'reading' | 'task' | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
 
   const week = weeks.find((w) => w.weekNumber === viewWeek);
   const components = week?.components ?? [];
-
-  const weekReadingIndex = Math.min(viewWeek - 1, weeks.length - 1);
-  const weekLabel = WEEK_TITLES[weekReadingIndex] ?? `Week ${viewWeek}`;
+  const weekLabel = week?.theme ?? `Week ${viewWeek}`;
+  const weekTitle = week?.title ?? 'Weekly Read';
 
   return (
     <div className={styles.preview}>
@@ -78,10 +70,14 @@ export default function CoursePreview({ weeks, readingContent }: CoursePreviewPr
             onClick={() => { setRightContent('reading'); setSelectedTaskId(null); }}
           >
             <span className={styles.readingAccent} style={{ background: READING_ACCENT }} aria-hidden="true" />
-            <span className={styles.readingThumb} style={{ background: READING_THUMB_BG }} aria-hidden="true" />
+            <span className={styles.readingThumb} style={{ background: READING_THUMB_BG }} aria-hidden="true">
+              {readingImageUrl && (
+                <img src={readingImageUrl} alt="" className={styles.readingThumbImg} />
+              )}
+            </span>
             <div className={styles.readingInfo}>
               <span className={styles.readingCategory}>{weekLabel}</span>
-              <span className={styles.readingTitle}>Weekly Read</span>
+              <span className={styles.readingTitle}>{weekTitle}</span>
             </div>
             <svg className={styles.readingArrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 18l6-6-6-6"/>
@@ -107,7 +103,7 @@ export default function CoursePreview({ weeks, readingContent }: CoursePreviewPr
                   key={w.id}
                   className={`${styles.weekDot} ${viewWeek === w.weekNumber ? styles.weekDotActive : ''}`}
                   onClick={() => { setViewWeek(w.weekNumber); setRightContent(null); }}
-                  title={`Week ${w.weekNumber}: ${WEEK_TITLES[w.weekNumber - 1] ?? ''}`}
+                  title={`Week ${w.weekNumber}: ${w.theme || w.title || ''}`}
                 >
                   <span className={styles.weekDotInner} />
                 </button>
@@ -171,7 +167,7 @@ export default function CoursePreview({ weeks, readingContent }: CoursePreviewPr
           {rightContent === 'reading' && (
             <div className={styles.readerPanel}>
               <div className={styles.readerPanelHeader}>
-                <span className={styles.readerLabel}>Weekly Read</span>
+                <span className={styles.readerLabel}>{weekTitle}</span>
                 <span className={styles.readerTheme}>{weekLabel}</span>
               </div>
               <div className={styles.readerBody}>
@@ -193,8 +189,8 @@ export default function CoursePreview({ weeks, readingContent }: CoursePreviewPr
               const variant = getArtworkVariant(c.id);
               const instructions = getInstructions(c);
               return (
-                <div className={styles.taskCard}>
-                  <div className={styles.taskCardHeader}>
+                <div className={styles.detailCard}>
+                  <div className={styles.detailCardHeader}>
                     <span className={styles.taskAccent} style={{ background: accent }} aria-hidden="true" />
                     <span
                       className={`${styles.taskArtwork} ${styles[`taskArtwork${variant.charAt(0).toUpperCase() + variant.slice(1)}`] || ''}`}
@@ -203,7 +199,7 @@ export default function CoursePreview({ weeks, readingContent }: CoursePreviewPr
                     />
                     <span className={styles.taskTitle}>{c.title || 'Untitled'}</span>
                   </div>
-                  <div className={styles.taskCardContent}>
+                  <div className={styles.detailCardContent}>
                     {instructions && <p className={styles.taskInstructions}>{instructions}</p>}
                     <div className={styles.taskEditor}>
                       <ComponentRenderer component={c as any} />

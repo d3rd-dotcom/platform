@@ -17,7 +17,7 @@ import { ensureVipCourseSchema } from '../lib/ensureVipCourseSchema';
 // ── Types ──
 
 type SeedComponentType =
-  | 'rich_text' | 'multiple_choice' | 'image_embed'
+  | 'rich_text' | 'multiple_choice' | 'media_embed' | 'image_embed'
   | 'video_embed' | 'file_upload' | 'text_input' | 'rating_scale'
   | 'reflection_journal' | 'quiz_block' | 'password_gate';
 

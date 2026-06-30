@@ -28,6 +28,7 @@ import styles from './WeekCanvas.module.css';
 const COMPONENT_ACCENTS: Record<ComponentType, string> = {
   rich_text: '#5168FF',
   multiple_choice: '#8B5CF6',
+  media_embed: '#38BDF8',
   image_embed: '#38BDF8',
   video_embed: '#22D3EE',
   file_upload: '#2DD4BF',
@@ -36,6 +37,7 @@ const COMPONENT_ACCENTS: Record<ComponentType, string> = {
   reflection_journal: '#F472B6',
   quiz_block: '#EF4444',
   password_gate: '#A855F7',
+  mission_container: '#6B7280',
 };
 
 const COMPONENT_ARTWORKS: Record<ComponentType, string> = {
@@ -43,6 +45,8 @@ const COMPONENT_ARTWORKS: Record<ComponentType, string> = {
     'linear-gradient(135deg, #5168FF 0%, #7C8FFF 40%, #A78BFA 100%), radial-gradient(120% 140% at 20% 30%, rgba(255,255,255,0.35) 0%, transparent 70%)',
   multiple_choice:
     'linear-gradient(135deg, #7C3AED 0%, #A78BFA 40%, #C4B5FD 100%), radial-gradient(120% 120% at 80% 20%, rgba(255,255,255,0.4) 0%, transparent 65%)',
+  media_embed:
+    'linear-gradient(135deg, #0284C7 0%, #38BDF8 45%, #7DD3FC 100%), radial-gradient(130% 110% at 60% 40%, rgba(255,255,255,0.4) 0%, transparent 60%)',
   image_embed:
     'linear-gradient(135deg, #0284C7 0%, #38BDF8 45%, #7DD3FC 100%), radial-gradient(130% 110% at 60% 40%, rgba(255,255,255,0.4) 0%, transparent 60%)',
   video_embed:
@@ -59,11 +63,14 @@ const COMPONENT_ARTWORKS: Record<ComponentType, string> = {
     'linear-gradient(135deg, #DC2626 0%, #F87171 45%, #FCA5A5 100%), radial-gradient(120% 130% at 70% 30%, rgba(255,255,255,0.4) 0%, transparent 60%)',
   password_gate:
     'linear-gradient(135deg, #7C3AED 0%, #A855F7 45%, #C084FC 100%), radial-gradient(120% 130% at 50% 50%, rgba(255,255,255,0.35) 0%, transparent 60%)',
+  mission_container:
+    'linear-gradient(135deg, #6B7280 0%, #9CA3AF 40%, #D1D5DB 100%), radial-gradient(120% 140% at 30% 40%, rgba(255,255,255,0.35) 0%, transparent 70%)',
 };
 
 const COMPONENT_LABELS: Record<ComponentType, string> = {
   rich_text: 'Rich Text',
   multiple_choice: 'Multiple Choice',
+  media_embed: 'Media',
   image_embed: 'Image',
   video_embed: 'Video',
   file_upload: 'File Upload',
@@ -72,6 +79,7 @@ const COMPONENT_LABELS: Record<ComponentType, string> = {
   reflection_journal: 'Journal',
   quiz_block: 'Quiz',
   password_gate: 'Password Gate',
+  mission_container: 'Mission',
 };
 
 function getComponentPreview(component: CourseComponentRecord): string | null {
@@ -89,6 +97,7 @@ function getComponentPreview(component: CourseComponentRecord): string | null {
       const summary = `${opts.length} option${opts.length === 1 ? '' : 's'}${correct > 0 ? ` · ${correct} correct` : ''}`;
       return q ? `${q} — ${summary}` : summary;
     }
+    case 'media_embed':
     case 'image_embed':
       return (config.alt as string) || (config.url as string) || null;
     case 'video_embed':

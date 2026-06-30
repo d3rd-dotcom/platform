@@ -39,104 +39,6 @@
   background: var(--color-border-subtle);
 }
 
-/* ── AI Generate ── */
-.aiSection {
-  margin: 24px 0;
-}
-
-.aiInputRow {
-  display: flex;
-  gap: 8px;
-}
-
-.aiInput {
-  flex: 1;
-  padding: 12px 16px;
-  font-size: 0.9375rem;
-  border-radius: 12px;
-  border: 1.5px solid var(--color-border-subtle);
-  background: var(--color-surface-base);
-  color: var(--color-text-dark);
-  outline: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-  font-family: var(--font-primary);
-  line-height: 1.5;
-}
-
-.aiInput:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 12%, transparent);
-}
-
-.aiInput:disabled {
-  opacity: 0.5;
-}
-
-.aiGenerateBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  border-radius: 12px;
-  border: none;
-  background: var(--color-primary);
-  color: #fff;
-  cursor: pointer;
-  transition: opacity 0.12s ease, transform 0.12s ease;
-  white-space: nowrap;
-  font-family: var(--font-primary);
-}
-
-.aiGenerateBtn:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
-
-.aiGenerateBtn:disabled {
-  opacity: 0.4;
-  cursor: default;
-  transform: none;
-}
-
-.aiError {
-  font-size: 0.8125rem;
-  color: #ef4444;
-  margin: 8px 0 0;
-}
-
-.aiGenerating {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 12px;
-  font-size: 0.8125rem;
-  color: var(--color-text-muted);
-}
-
-.aiSpinner {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  border: 2px solid var(--color-border-subtle);
-  border-top-color: var(--color-primary);
-  animation: aiSpin 0.7s linear infinite;
-}
-
-@keyframes aiSpin {
-  to { transform: rotate(360deg); }
-}
-
-:global([data-theme="dark"]) .aiInput {
-  border-color: rgba(255, 255, 255, 0.12);
-  background: color-mix(in srgb, var(--color-surface-1) 60%, transparent);
-}
-
-:global([data-theme="dark"]) .aiInput:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(81, 104, 255, 0.15);
-}
 
 .courseCard {
   position: relative;
@@ -580,7 +482,15 @@
   color: inherit;
 }
 
-.authoredEditBtn {
+.authoredActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.authoredEditBtn,
+.authoredDeleteBtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -599,6 +509,12 @@
   border-color: var(--color-primary);
   color: var(--color-primary);
   background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+}
+
+.authoredDeleteBtn:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+  background: color-mix(in srgb, #ef4444 8%, transparent);
 }
 
 .courseAuthor {
@@ -753,6 +669,168 @@
   .desc {
     font-size: 15px;
   }
+}
+
+/* ── Delete confirmation dialog ── */
+.deleteOverlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.deleteDialog {
+  width: 100%;
+  max-width: 400px;
+  background: #1A1D33;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  animation: modalSlideIn 0.2s ease;
+}
+
+.deleteTitleBar {
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
+}
+
+.deleteTitleText {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.deleteBody {
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.deleteIcon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 107, 107, 0.2);
+  color: #FF6B6B;
+  border-radius: 50%;
+}
+
+.deleteMessage {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.deleteButtons {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.deleteBtnCancel {
+  flex: 1;
+  padding: 12px 16px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: #FFFFFF;
+  background: transparent;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 40%, transparent);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.deleteBtnCancel:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.deleteBtnConfirm {
+  flex: 1;
+  padding: 12px 16px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: #FFFFFF;
+  background: rgba(255, 107, 107, 0.25);
+  border: 1px solid rgba(255, 107, 107, 0.4);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.deleteBtnConfirm:hover {
+  background: rgba(255, 107, 107, 0.4);
+}
+
+.deleteBtnConfirm:disabled,
+.deleteBtnCancel:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@keyframes modalSlideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+:global(:root:not([data-theme="dark"])) .deleteOverlay {
+  background: rgba(20, 24, 48, 0.32);
+}
+
+:global(:root:not([data-theme="dark"])) .deleteDialog {
+  background: #ffffff;
+  border-color: color-mix(in oklch, var(--color-primary) 18%, transparent);
+  box-shadow: 0 20px 60px color-mix(in oklch, var(--color-primary) 18%, transparent);
+}
+
+:global(:root:not([data-theme="dark"])) .deleteTitleBar {
+  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
+  border-bottom-color: color-mix(in oklch, var(--color-primary) 14%, transparent);
+}
+
+:global(:root:not([data-theme="dark"])) .deleteTitleText {
+  color: rgba(26, 29, 51, 0.62);
+}
+
+:global(:root:not([data-theme="dark"])) .deleteMessage {
+  color: rgba(26, 29, 51, 0.86);
+}
+
+:global(:root:not([data-theme="dark"])) .deleteBtnCancel {
+  color: #1a1d33;
+  background: transparent;
+  border-color: color-mix(in oklch, var(--color-primary) 32%, transparent);
+}
+
+:global(:root:not([data-theme="dark"])) .deleteBtnCancel:hover {
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+}
+
+:global(:root:not([data-theme="dark"])) .deleteBtnConfirm {
+  color: #b3261e;
+  background: rgba(255, 107, 107, 0.12);
+  border-color: rgba(255, 107, 107, 0.32);
+}
+
+:global(:root:not([data-theme="dark"])) .deleteBtnConfirm:hover {
+  background: rgba(255, 107, 107, 0.22);
 }
 
 @media (max-width: 480px) {

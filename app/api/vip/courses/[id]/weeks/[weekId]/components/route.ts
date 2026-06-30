@@ -9,6 +9,7 @@ export const dynamic = 'force-dynamic';
 const VALID_COMPONENT_TYPES: ComponentType[] = [
   'rich_text',
   'multiple_choice',
+  'media_embed',
   'image_embed',
   'video_embed',
   'file_upload',

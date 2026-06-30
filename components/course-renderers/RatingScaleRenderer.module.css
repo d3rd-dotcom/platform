@@ -37,8 +37,21 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
-.label_text {
-  font-size: 0.8125rem;
+.label_row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  gap: 16px;
+}
+
+.label_end {
+  font-size: 0.75rem;
   color: var(--color-text-muted);
-  margin-top: 4px;
+}
+
+.label_selected {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
 }

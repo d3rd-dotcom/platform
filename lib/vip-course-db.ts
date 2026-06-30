@@ -4,6 +4,7 @@ import { ensureVipCourseSchema } from './ensureVipCourseSchema';
 export type ComponentType =
   | 'rich_text'
   | 'multiple_choice'
+  | 'media_embed'
   | 'image_embed'
   | 'video_embed'
   | 'file_upload'
@@ -11,7 +12,8 @@ export type ComponentType =
   | 'rating_scale'
   | 'reflection_journal'
   | 'quiz_block'
-  | 'password_gate';
+  | 'password_gate'
+  | 'mission_container';
 
 export type VipCourseStatus = 'draft' | 'published' | 'archived';
 
@@ -41,6 +43,17 @@ export interface CourseWeekRecord {
   updatedAt: string;
 }
 
+export interface MissionBlockRecord {
+  id: string;
+  missionId: string;
+  blockType: ComponentType;
+  sortOrder: number;
+  config: Record<string, unknown>;
+  required: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface CourseComponentRecord {
   id: string;
   weekId: string;
@@ -49,6 +62,7 @@ export interface CourseComponentRecord {
   title: string;
   config: Record<string, unknown>;
   required: boolean;
+  blocks: MissionBlockRecord[];
   createdAt: string;
   updatedAt: string;
 }
@@ -91,6 +105,17 @@ interface CourseComponentRow {
   sort_order: number;
   component_type: string;
   title: string;
+  config: string;
+  required: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+interface MissionBlockRow {
+  id: string;
+  mission_id: string;
+  block_type: string;
+  sort_order: number;
   config: string;
   required: boolean;
   created_at: string;
@@ -140,6 +165,19 @@ function parseConfig(raw: unknown): Record<string, unknown> {
   }
 }
 
+function toMissionBlock(row: MissionBlockRow): MissionBlockRecord {
+  return {
+    id: row.id,
+    missionId: row.mission_id,
+    blockType: (row.block_type as ComponentType) || 'rich_text',
+    sortOrder: row.sort_order,
+    config: parseConfig(row.config),
+    required: row.required,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
 function toCourseComponent(row: CourseComponentRow): CourseComponentRecord {
   return {
     id: row.id,
@@ -149,6 +187,7 @@ function toCourseComponent(row: CourseComponentRow): CourseComponentRecord {
     title: row.title,
     config: parseConfig(row.config),
     required: row.required,
+    blocks: [],
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -204,7 +243,7 @@ export async function getVipCourseFullBySlug(slug: string): Promise<VipCourseFul
 export async function getVipCourseFull(id: string): Promise<VipCourseFull | null> {
   await ensureVipCourseSchema();
 
-  const [courseRows, weekRows, componentRows] = await Promise.all([
+  const [courseRows, weekRows, componentRows, blockRows] = await Promise.all([
     sqlQuery<VipCourseRow[]>(
       `SELECT c.*, u.username AS author_username, u.avatar_url AS author_avatar_url
        FROM vip_courses c
@@ -223,17 +262,33 @@ export async function getVipCourseFull(id: string): Promise<VipCourseFull | null
        ORDER BY c.sort_order ASC`,
       { id },
     ),
+    sqlQuery<MissionBlockRow[]>(
+      `SELECT mb.* FROM mission_blocks mb
+       JOIN course_components c ON mb.mission_id = c.id
+       JOIN course_weeks w ON c.week_id = w.id
+       WHERE w.course_id = :id
+       ORDER BY mb.sort_order ASC`,
+      { id },
+    ),
   ]);
 
   if (!courseRows[0]) return null;
 
+  const blockMap = new Map<string, MissionBlockRecord[]>();
+  for (const block of blockRows.map(toMissionBlock)) {
+    const list = blockMap.get(block.missionId);
+    if (list) list.push(block);
+    else blockMap.set(block.missionId, [block]);
+  }
+
   const componentMap = new Map<string, CourseComponentRecord[]>();
   for (const comp of componentRows.map(toCourseComponent)) {
+    const compWithBlocks = { ...comp, blocks: blockMap.get(comp.id) ?? [] };
     const list = componentMap.get(comp.weekId);
     if (list) {
-      list.push(comp);
+      list.push(compWithBlocks);
     } else {
-      componentMap.set(comp.weekId, [comp]);
+      componentMap.set(comp.weekId, [compWithBlocks]);
     }
   }
 
@@ -454,13 +509,19 @@ export async function replaceCourseContent(
       config: Record<string, unknown>;
       sortOrder: number;
       required: boolean;
+      blocks?: Array<{
+        blockType: ComponentType;
+        config: Record<string, unknown>;
+        sortOrder: number;
+        required: boolean;
+      }>;
     }>;
   }>,
 ): Promise<VipCourseFull> {
   await ensureVipCourseSchema();
 
   return withTransaction(async (client) => {
-    // Delete existing weeks (components cascade via FK)
+    // Delete existing weeks (components cascade via FK to both course_components and mission_blocks)
     await client.query('DELETE FROM course_weeks WHERE course_id = $1', [courseId]);
 
     // Re-insert weeks and components
@@ -474,21 +535,45 @@ export async function replaceCourseContent(
       const weekId = weekResult.rows[0].id;
 
       if (week.components.length > 0) {
-        const valueClauses: string[] = [];
-        const valueParams: unknown[] = [];
+        const compValueClauses: string[] = [];
+        const compParams: unknown[] = [];
         let paramIndex = 1;
 
         for (const comp of week.components) {
-          valueClauses.push(`($${paramIndex}, $${paramIndex + 1}, $${paramIndex + 2}, $${paramIndex + 3}, $${paramIndex + 4}, $${paramIndex + 5})`);
-          valueParams.push(weekId, comp.sortOrder, comp.componentType, comp.title, JSON.stringify(comp.config), comp.required);
+          compValueClauses.push(`($${paramIndex}, $${paramIndex + 1}, $${paramIndex + 2}, $${paramIndex + 3}, $${paramIndex + 4}, $${paramIndex + 5}) RETURNING id`);
+          compParams.push(weekId, comp.sortOrder, comp.componentType, comp.title, JSON.stringify(comp.config), comp.required);
           paramIndex += 6;
         }
 
-        await client.query(
+        const compResults = await client.query(
           `INSERT INTO course_components (week_id, sort_order, component_type, title, config, required)
-           VALUES ${valueClauses.join(', ')}`,
-          valueParams,
+           VALUES ${compValueClauses.map((c, i) => c.replace(' RETURNING id', '')).join(', ')}
+           RETURNING id`,
+          compParams,
         );
+
+        // Insert blocks for each component
+        for (let ci = 0; ci < week.components.length; ci++) {
+          const comp = week.components[ci];
+          const compId = compResults.rows[ci]?.id;
+          if (comp.blocks && comp.blocks.length > 0 && compId) {
+            const blockValueClauses: string[] = [];
+            const blockParams: unknown[] = [];
+            let blockParamIndex = 1;
+
+            for (const block of comp.blocks) {
+              blockValueClauses.push(`($${blockParamIndex}, $${blockParamIndex + 1}, $${blockParamIndex + 2}, $${blockParamIndex + 3}, $${blockParamIndex + 4})`);
+              blockParams.push(compId, block.sortOrder, block.blockType, JSON.stringify(block.config), block.required);
+              blockParamIndex += 5;
+            }
+
+            await client.query(
+              `INSERT INTO mission_blocks (mission_id, sort_order, block_type, config, required)
+               VALUES ${blockValueClauses.join(', ')}`,
+              blockParams,
+            );
+          }
+        }
       }
     }
 
@@ -518,13 +603,30 @@ export async function replaceCourseContent(
       [courseId],
     );
 
+    const blockRows = await client.query(
+      `SELECT mb.* FROM mission_blocks mb
+       JOIN course_components c ON mb.mission_id = c.id
+       JOIN course_weeks w ON c.week_id = w.id
+       WHERE w.course_id = $1
+       ORDER BY mb.sort_order ASC`,
+      [courseId],
+    );
+
+    const blockMap = new Map<string, MissionBlockRecord[]>();
+    for (const block of blockRows.rows.map(toMissionBlock)) {
+      const list = blockMap.get(block.missionId);
+      if (list) list.push(block);
+      else blockMap.set(block.missionId, [block]);
+    }
+
     const componentMap = new Map<string, CourseComponentRecord[]>();
     for (const comp of compRows.rows.map(toCourseComponent)) {
+      const compWithBlocks = { ...comp, blocks: blockMap.get(comp.id) ?? [] };
       const list = componentMap.get(comp.weekId);
       if (list) {
-        list.push(comp);
+        list.push(compWithBlocks);
       } else {
-        componentMap.set(comp.weekId, [comp]);
+        componentMap.set(comp.weekId, [compWithBlocks]);
       }
     }
 

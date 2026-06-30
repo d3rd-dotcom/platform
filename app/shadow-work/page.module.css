@@ -1,0 +1,682 @@
+/* Home Page — Card-based layout with swipe navigation */
+
+.pageLayout {
+  position: relative;
+  margin-left: var(--sidebar-width, 265px);
+  transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  min-height: 100vh;
+  background-color: var(--color-background, #ffffff);
+  background-image:
+    linear-gradient(to right, color-mix(in oklch, var(--color-primary) 8%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklch, var(--color-primary) 8%, transparent) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: -1px -1px;
+}
+
+:global([data-theme="dark"]) .pageLayout {
+  background-color: #0d0e16;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+}
+
+.bgViz {
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-width, 265px);
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  opacity: 0.18;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  max-width: 640px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 24px 48px;
+}
+
+.skeletonBlock {
+  position: relative;
+  overflow: hidden;
+  background: rgba(26, 29, 51, 0.08);
+  color: transparent;
+  pointer-events: none;
+}
+
+.skeletonBlock::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  animation: shimmer 1.3s ease-in-out infinite;
+}
+
+.skeletonText,
+.skeletonTextShort,
+.skeletonTextWide {
+  display: block;
+  border-radius: 999px;
+  min-height: 0.9em;
+}
+
+.skeletonText {
+  width: 72px;
+}
+
+.skeletonTextShort {
+  width: 48px;
+}
+
+.skeletonTextWide {
+  width: 150px;
+}
+
+/* ============================================ */
+/* BLUE VIDEO                                   */
+/* ============================================ */
+
+.blueVideo {
+  margin: 16px 0 0;
+}
+
+/* ============================================ */
+/* WEEK NAV — compact single-row navigation     */
+/* ============================================ */
+
+.weekNav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 12px;
+  padding: 0 2px;
+}
+
+.weekNavArrow {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(26, 29, 51, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+  color: #1A1D33;
+  transition: all 0.15s ease;
+}
+
+.weekNavArrow:hover:not(:disabled) {
+  background: #fff;
+  border-color: color-mix(in oklch, var(--color-primary) 25%, transparent);
+  box-shadow: 0 2px 6px color-mix(in oklch, var(--color-primary) 10%, transparent);
+}
+
+.weekNavArrow:active:not(:disabled) {
+  transform: scale(0.93);
+}
+
+.weekNavArrow:disabled {
+  opacity: 0.22;
+  cursor: not-allowed;
+}
+
+.weekNavDots {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+
+
+/* Week Dots */
+
+.weekDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #E0E1EE;
+  border: 1.5px solid rgba(26, 29, 51, 0.08);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+
+.weekDot:hover {
+  background: color-mix(in oklch, var(--color-primary) 30%, transparent);
+}
+
+.weekDotActive {
+  background: var(--color-primary);
+  border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
+  transform: scale(1.2);
+}
+
+.weekDotSealed {
+  background: #22C55E;
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.weekDotLoading {
+  background: rgba(26, 29, 51, 0.08);
+  border-color: transparent;
+  cursor: default;
+}
+
+/* ============================================ */
+/* SWIPEABLE WEEK CONTENT                       */
+/* ============================================ */
+
+.weekContent {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.weekContentSwipeLeft {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.weekContentSwipeRight {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+/* ============================================ */
+/* READING CARD (softened)                      */
+/* ============================================ */
+
+.readingCard {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  min-height: 92px;
+  padding: 14px 16px;
+  background: color-mix(in srgb, var(--color-primary) 7%, #ffffff);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, rgba(26, 29, 51, 0.06));
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.readingAccent {
+  width: 3px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.readingThumb {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow:
+    0 0 0 1px rgba(26, 29, 51, 0.08),
+    0 2px 6px rgba(26, 29, 51, 0.08);
+}
+
+.readingThumb::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(0, 0, 0, 0.18));
+  pointer-events: none;
+}
+
+.readingCard:hover {
+  background: color-mix(in srgb, var(--color-primary) 11%, #ffffff);
+  border-color: color-mix(in srgb, var(--color-primary) 38%, rgba(26, 29, 51, 0.06));
+  box-shadow: 0 4px 16px color-mix(in oklch, var(--color-primary) 14%, transparent);
+  transform: translateY(-1px);
+}
+
+.readingCard:hover .readingThumb {
+  box-shadow:
+    0 0 0 1px color-mix(in oklch, var(--color-primary) 28%, transparent),
+    0 4px 10px color-mix(in oklch, var(--color-primary) 18%, transparent);
+}
+
+.readingCardSkeleton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: color-mix(in oklch, var(--color-primary) 5%, transparent);
+  backdrop-filter: blur(8px);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 14%, transparent);
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
+}
+
+.readingMediaSkeleton {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.readingCategorySkeletonLine {
+  display: block;
+  width: 56px;
+  height: 9px;
+  border-radius: 999px;
+}
+
+.readingTitleSkeletonLine {
+  display: block;
+  width: 62%;
+  height: 13px;
+  border-radius: 999px;
+  margin-top: 4px;
+}
+
+.readingAuthorSkeletonLine {
+  display: block;
+  width: 36%;
+  height: 9px;
+  border-radius: 999px;
+  margin-top: 4px;
+}
+
+.readingInfo {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.readingCategory {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(26, 29, 51, 0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.readingTitle {
+  font-family: var(--font-secondary);
+  font-size: 16px;
+  font-weight: 700;
+  color: #1A1D33;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+}
+
+.readingAuthor {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(26, 29, 51, 0.55);
+}
+
+.readingArrow {
+  position: relative;
+  z-index: 1;
+  color: rgba(26, 29, 51, 0.25);
+  flex-shrink: 0;
+}
+
+.missionsHeadingRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 4px 0;
+}
+
+.missionsDivider {
+  flex: 1;
+  height: 1px;
+  background: rgba(26, 29, 51, 0.1);
+}
+
+.missionsHeading {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  color: #1A1D33;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  margin: 0;
+}
+
+:global([data-theme="dark"]) .missionsHeading {
+  color: var(--color-text-dark);
+}
+
+:global([data-theme="dark"]) .missionsDivider {
+  background: var(--color-border-subtle);
+}
+
+.weekTasksSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.taskCardSkeleton {
+  width: 100%;
+  height: 72px;
+  border-radius: 14px;
+}
+
+.sealButtonSkeleton {
+  width: 100%;
+  height: 44px;
+  border-radius: 12px;
+  margin-top: 4px;
+}
+
+/* ============================================ */
+/* ANIMATIONS                                   */
+/* ============================================ */
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* ============================================ */
+/* DESKTOP TWO-COLUMN LAYOUT                    */
+/* ============================================ */
+
+.contentDesktop {
+  max-width: none;
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 0 32px;
+  align-items: start;
+  padding: 24px 32px 48px;
+  margin: 0;
+}
+
+.leftCol {
+  min-width: 0;
+}
+
+.rightPanel {
+  min-width: 0;
+  align-self: start;
+  position: sticky;
+  top: calc(72px + 24px);
+  max-height: calc(100vh - 72px - 48px);
+  overflow-y: auto;
+  padding-top: 0;
+  margin-top: 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(26, 29, 51, 0.12) transparent;
+}
+
+.rightPanel > :first-child {
+  margin-top: 0;
+}
+
+/* Reading card highlight when open in right panel */
+.readingCardActive {
+  background: color-mix(in srgb, var(--color-primary) 13%, #ffffff) !important;
+  border-color: color-mix(in srgb, var(--color-primary) 45%, rgba(26, 29, 51, 0.06)) !important;
+  box-shadow: 0 4px 16px color-mix(in oklch, var(--color-primary) 14%, transparent) !important;
+}
+
+/* ============================================ */
+/* INLINE READING PANEL (right column)          */
+/* ============================================ */
+
+.inlineReader {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 4px 0 48px;
+}
+
+.inlineReaderBack {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(26, 29, 51, 0.45);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.inlineReaderBack:hover { color: var(--color-primary); }
+
+.inlineReaderHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-bottom: 1px solid rgba(26, 29, 51, 0.08);
+  padding-bottom: 20px;
+}
+
+.inlineReaderCategory {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(26, 29, 51, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.inlineReaderTitle {
+  font-family: var(--font-secondary);
+  font-size: 22px;
+  font-weight: 700;
+  color: #1A1D33;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.inlineReaderLoading { padding: 8px 0; }
+
+.inlineReaderBody {
+  font-family: var(--font-primary);
+  font-size: 15px;
+  line-height: 1.75;
+  color: rgba(26, 29, 51, 0.78);
+}
+.inlineReaderBody p { margin: 0 0 1.1em; }
+.inlineReaderBody h1, .inlineReaderBody h2, .inlineReaderBody h3 {
+  font-family: var(--font-secondary);
+  font-weight: 700;
+  color: #1A1D33;
+  margin: 1.6em 0 0.5em;
+  line-height: 1.2;
+}
+.inlineReaderBody h1 { font-size: 20px; }
+.inlineReaderBody h2 { font-size: 17px; }
+.inlineReaderBody h3 { font-size: 15px; }
+.inlineReaderBody hr { border: none; border-top: 1px solid rgba(26, 29, 51, 0.1); margin: 1.5em 0; }
+.inlineReaderBody em { font-style: italic; }
+.inlineReaderBody strong { font-weight: 600; color: #1A1D33; }
+
+:global([data-theme="dark"]) .inlineReaderTitle,
+:global([data-theme="dark"]) .inlineReaderBody h1,
+:global([data-theme="dark"]) .inlineReaderBody h2,
+:global([data-theme="dark"]) .inlineReaderBody h3,
+:global([data-theme="dark"]) .inlineReaderBody strong { color: var(--color-text-dark); }
+:global([data-theme="dark"]) .inlineReaderBody { color: var(--color-text-muted); }
+:global([data-theme="dark"]) .inlineReaderCategory { color: var(--color-text-faint); }
+:global([data-theme="dark"]) .inlineReaderHeader { border-color: var(--color-border-subtle); }
+:global([data-theme="dark"]) .inlineReaderBack:hover { color: var(--color-primary); }
+
+/* ============================================ */
+/* RESPONSIVE                                   */
+/* ============================================ */
+
+@media (max-width: 900px) {
+  .pageLayout {
+    margin-left: 0;
+  }
+
+  .bgViz {
+    left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (max-width: 480px) {
+  .content {
+    padding: 16px 14px calc(96px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .weekNav {
+    gap: 6px;
+    margin: 10px 0 10px;
+  }
+
+  .weekNavArrow {
+    width: 36px;
+    height: 36px;
+  }
+
+  .weekDot {
+    width: 7px;
+    height: 7px;
+  }
+
+  .readingCard {
+    min-height: 84px;
+    padding: 14px 12px;
+    gap: 10px;
+  }
+
+  .readingTitle {
+    font-size: 14px;
+  }
+
+  .readingAuthor {
+    font-size: 11px;
+  }
+}
+
+/* ============================================ */
+/* DARK MODE OVERRIDES                          */
+/* ============================================ */
+
+:global([data-theme="dark"]) .skeletonBlock {
+  background: var(--color-surface-2);
+}
+
+:global([data-theme="dark"]) .skeletonBlock::after {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+}
+
+:global([data-theme="dark"]) .weekNavArrow {
+  background: color-mix(in oklch, var(--color-surface-1) 95%, transparent);
+  border-color: var(--color-border-subtle);
+  color: var(--color-text-dark);
+}
+
+:global([data-theme="dark"]) .weekNavArrow:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
+}
+
+:global([data-theme="dark"]) .weekDot {
+  background: var(--color-surface-2);
+  border-color: var(--color-border-subtle);
+}
+
+:global([data-theme="dark"]) .weekDotActive {
+  background: var(--color-primary);
+  border-color: color-mix(in oklch, var(--color-primary) 82%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-primary) 20%, transparent);
+}
+
+:global([data-theme="dark"]) .readingCard {
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface-1));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, rgba(255, 255, 255, 0.06));
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .readingThumb {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+:global([data-theme="dark"]) .readingThumb::after {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.25));
+}
+
+:global([data-theme="dark"]) .readingCardSkeleton {
+  background: color-mix(in oklch, var(--color-primary) 10%, var(--color-surface-1));
+  border: 1px solid color-mix(in oklch, var(--color-primary) 28%, rgba(255, 255, 255, 0.06));
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.32);
+}
+
+:global([data-theme="dark"]) .readingCard:hover {
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface-1));
+  border-color: color-mix(in srgb, var(--color-primary) 45%, rgba(255, 255, 255, 0.08));
+  box-shadow: 0 4px 20px rgba(139, 149, 255, 0.16);
+}
+
+:global([data-theme="dark"]) .readingCard:hover .readingThumb {
+  box-shadow:
+    0 0 0 1px color-mix(in oklch, var(--color-primary) 38%, transparent),
+    0 4px 10px color-mix(in oklch, var(--color-primary) 25%, transparent);
+}
+
+:global([data-theme="dark"]) .readingCategory {
+  color: var(--color-text-muted);
+}
+
+:global([data-theme="dark"]) .readingTitle {
+  color: var(--color-text-dark);
+}
+
+
+:global([data-theme="dark"]) .readingAuthor {
+  color: var(--color-text-muted);
+}
+
+:global([data-theme="dark"]) .readingArrow {
+  color: var(--color-text-faint);
+}

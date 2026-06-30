@@ -28,12 +28,11 @@ import { useSound } from '@/hooks/useSound';
 import ComponentPalette from './ComponentPalette';
 import ComponentPanel from './ComponentPanel';
 import MissionEditor from './MissionEditor';
-import VideoEmbedEditor from './VideoEmbedEditor';
 import dynamic from 'next/dynamic';
 
 const ReadingEditor = dynamic(() => import('./ReadingEditor'), { ssr: false });
 import CourseBuilderTour from './CourseBuilderTour';
-import type { VipCourseFull, CourseComponentRecord, ComponentType, VipCourseStatus } from '@/lib/vip-course-db';
+import type { VipCourseFull, CourseComponentRecord, MissionBlockRecord, ComponentType, VipCourseStatus } from '@/lib/vip-course-db';
 
 interface CourseStudioProps {
   authHeaders: () => Promise<HeadersInit>;
@@ -52,6 +51,11 @@ interface CourseStudioProps {
         title: string;
         config: Record<string, unknown>;
         required?: boolean;
+        blocks?: Array<{
+          blockType: string;
+          config: Record<string, unknown>;
+          required?: boolean;
+        }>;
       }>;
     }>;
   };
@@ -105,17 +109,7 @@ export default function CourseStudioModal({
         weekNumber: w.weekNumber,
         title: w.title,
         theme: w.theme,
-        components: (w.components ?? []).map((c, ci) => ({
-          id: `genc-${now}-${i}-${ci}`,
-          weekId: `gen-${now}-${i}`,
-          sortOrder: ci,
-          componentType: c.componentType as ComponentType,
-          title: c.title,
-          config: c.config,
-          required: c.required ?? false,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        })),
+        components: [],
       }));
     }
     return [createBlankWeek(1)];
@@ -127,6 +121,7 @@ export default function CourseStudioModal({
   const [dirty, setDirty] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [readingContent, setReadingContent] = useState('');
+  const [readingImageUrl, setReadingImageUrl] = useState('');
   const [selectedSlot, setSelectedSlot] = useState<'reading' | null>(null);
   const [deletedComponent, setDeletedComponent] = useState<{
     component: CourseComponentRecord;
@@ -145,6 +140,16 @@ export default function CourseStudioModal({
 
   const deriveSlug = (val: string) =>
     val.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/^-+|-+$/g, '');
+
+  // Full-screen mode: prevent page scroll & body offset from fixed top nav
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingTop = '0';
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.paddingTop = '';
+    };
+  }, []);
 
   // Auto-focus the title input for new courses
   useEffect(() => {
@@ -177,7 +182,7 @@ export default function CourseStudioModal({
           weekNumber: w.weekNumber,
           title: w.title,
           theme: w.theme,
-          components: w.components,
+          components: [],
         }));
         setWeeks(mapped.length ? mapped : [createBlankWeek(1)]);
         setSelectedWeekId(mapped[0]?.id ?? '');
@@ -212,14 +217,16 @@ export default function CourseStudioModal({
   const tempId = () => `new-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
   const addComponentToWeek = (weekId: string, type: ComponentType, config?: Record<string, unknown>) => {
+    const isContainer = type === 'mission_container';
     const newComp: CourseComponentRecord = {
       id: tempId(),
       weekId,
       sortOrder: weeks.find((w) => w.id === weekId)?.components.length ?? 0,
       componentType: type,
-      title: '',
-      config: config ?? {},
+      title: isContainer ? '' : '',
+      config: isContainer ? {} : (config ?? {}),
       required: false,
+      blocks: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -235,6 +242,62 @@ export default function CourseStudioModal({
       prev.map((w) => ({
         ...w,
         components: w.components.map((c) => (c.id === compId ? { ...c, ...updates } : c)),
+      })),
+    );
+    setDirty(true);
+  };
+
+  const addBlockToComponent = (compId: string, blockType: ComponentType, config?: Record<string, unknown>) => {
+    const block: MissionBlockRecord = {
+      id: tempId(),
+      missionId: compId,
+      blockType,
+      sortOrder: 0,
+      config: config ?? {},
+      required: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    setWeeks((prev) =>
+      prev.map((w) => ({
+        ...w,
+        components: w.components.map((c) => {
+          if (c.id !== compId) return c;
+          const blocks = [...(c.blocks || []), { ...block, sortOrder: c.blocks?.length ?? 0 }];
+          return { ...c, blocks };
+        }),
+      })),
+    );
+    setDirty(true);
+  };
+
+  const updateBlock = (compId: string, blockId: string, updates: Partial<MissionBlockRecord>) => {
+    setWeeks((prev) =>
+      prev.map((w) => ({
+        ...w,
+        components: w.components.map((c) => {
+          if (c.id !== compId) return c;
+          return {
+            ...c,
+            blocks: c.blocks.map((b) => (b.id === blockId ? { ...b, ...updates } : b)),
+          };
+        }),
+      })),
+    );
+    setDirty(true);
+  };
+
+  const deleteBlock = (compId: string, blockId: string) => {
+    setWeeks((prev) =>
+      prev.map((w) => ({
+        ...w,
+        components: w.components.map((c) => {
+          if (c.id !== compId) return c;
+          return {
+            ...c,
+            blocks: c.blocks.filter((b) => b.id !== blockId).map((b, i) => ({ ...b, sortOrder: i })),
+          };
+        }),
       })),
     );
     setDirty(true);
@@ -288,8 +351,63 @@ export default function CourseStudioModal({
     setDirty(true);
   };
 
+  const deleteWeek = (weekId: string) => {
+    if (weeks.length <= 1) return;
+    const idx = weeks.findIndex((w) => w.id === weekId);
+    setWeeks((prev) => prev.filter((w) => w.id !== weekId));
+    if (selectedWeekId === weekId) {
+      const remaining = weeks.filter((w) => w.id !== weekId);
+      const newIdx = Math.min(idx, remaining.length - 1);
+      setSelectedWeekId(remaining[newIdx]?.id ?? remaining[0]?.id ?? '');
+    }
+    setDirty(true);
+  };
+
   const addBlankMission = () => {
-    addComponentToWeek(selectedWeekId, 'reflection_journal', { prompt: '', minWords: 0 });
+    addComponentToWeek(selectedWeekId, 'mission_container');
+  };
+
+  const addBlockToSelectedMission = (blockType: ComponentType, config?: Record<string, unknown>) => {
+    const targetId = selectedComponentId ?? tempId();
+    if (!selectedComponentId) {
+      const newComp: CourseComponentRecord = {
+        id: targetId,
+        weekId: selectedWeekId,
+        sortOrder: weeks.find((w) => w.id === selectedWeekId)?.components.length ?? 0,
+        componentType: 'mission_container',
+        title: '',
+        config: {},
+        required: false,
+        blocks: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      setWeeks((prev) =>
+        prev.map((w) => (w.id === selectedWeekId ? { ...w, components: [...w.components, newComp] } : w)),
+      );
+      setSelectedComponentId(targetId);
+    }
+    const block: MissionBlockRecord = {
+      id: tempId(),
+      missionId: targetId,
+      blockType,
+      sortOrder: 0,
+      config: config ?? {},
+      required: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    setWeeks((prev) =>
+      prev.map((w) => ({
+        ...w,
+        components: w.components.map((c) => {
+          if (c.id !== targetId) return c;
+          const blocks = [...(c.blocks || []), { ...block, sortOrder: c.blocks?.length ?? 0 }];
+          return { ...c, blocks };
+        }),
+      })),
+    );
+    setDirty(true);
   };
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -307,47 +425,11 @@ export default function CourseStudioModal({
     const activeData = active.data.current;
     const overData = over.data.current;
 
-    // Palette → missions zone drop
+    // Palette → add block to selected mission (or auto-create one)
     if (activeData?.source === 'palette') {
-      const compType = activeData.type as ComponentType;
+      const blockType = activeData.type as ComponentType;
       const config = activeData.config as Record<string, unknown> | undefined;
-
-      if (over.id === 'missions-drop-zone' || overData?.source === 'missions-zone') {
-        addComponentToWeek(selectedWeekId, compType, config);
-        return;
-      }
-
-      if (overData?.weekId) {
-        addComponentToWeek(overData.weekId, compType, config);
-        return;
-      }
-
-      if (overData?.type || overData?.source === 'canvas') {
-        const targetWeek = weeks.find((w) => w.components.some((c) => c.id === over.id));
-        if (targetWeek) {
-          addComponentToWeek(targetWeek.id, compType, config);
-          return;
-        }
-      }
-
-      if (typeof over.id === 'string' && over.id.startsWith('week-')) {
-        const weekId = over.id.slice(5);
-        if (weeks.some((w) => w.id === weekId)) {
-          addComponentToWeek(weekId, compType, config);
-          return;
-        }
-      }
-
-      const byWeek = weeks.find((w) => w.id === over.id);
-      if (byWeek) {
-        addComponentToWeek(byWeek.id, compType, config);
-        return;
-      }
-      const byComponent = weeks.find((w) => w.components.some((c) => c.id === over.id));
-      if (byComponent) {
-        addComponentToWeek(byComponent.id, compType, config);
-        return;
-      }
+      addBlockToSelectedMission(blockType, config);
       return;
     }
   };
@@ -410,6 +492,12 @@ export default function CourseStudioModal({
               config: c.config,
               sortOrder: ci,
               required: c.required,
+              blocks: (c.blocks || []).map((b, bi) => ({
+                blockType: b.blockType,
+                config: b.config,
+                sortOrder: bi,
+                required: b.required,
+              })),
             })),
           })),
         }),
@@ -435,6 +523,16 @@ export default function CourseStudioModal({
             title: c.title,
             config: c.config,
             required: c.required,
+            blocks: (c.blocks || []).map((b: any) => ({
+              id: b.id,
+              missionId: b.missionId,
+              blockType: b.blockType,
+              sortOrder: b.sortOrder,
+              config: b.config,
+              required: b.required,
+              createdAt: b.createdAt,
+              updatedAt: b.updatedAt,
+            })),
             createdAt: c.createdAt,
             updatedAt: c.updatedAt,
           })),
@@ -458,6 +556,7 @@ export default function CourseStudioModal({
         return;
       }
     }
+    setPhase('edit');
     setReviewTitle(title);
     setReviewDesc(focus);
     setReviewSlug(slug || deriveSlug(title));
@@ -525,9 +624,9 @@ export default function CourseStudioModal({
 
   if (phase === 'loading') {
     return (
-      <div className={styles.layout}>
-        <SideNavigation />
-        <div className={styles.loading}>Loading...</div>
+      <div className={styles.loadingOverlay}>
+        <div className={styles.loadingSpinner} />
+        <span className={styles.loadingText}>Loading course...</span>
       </div>
     );
   }
@@ -537,6 +636,10 @@ export default function CourseStudioModal({
   const selectedComponent = currentWeekComponents.find((c) => c.id === selectedComponentId) ?? null;
 
   return (
+    <>
+    <style>{`
+      body { padding-top: 0 !important; overflow: hidden !important; }
+    `}</style>
     <div className={styles.layout}>
       <SideNavigation />
       <DndContext
@@ -595,7 +698,7 @@ export default function CourseStudioModal({
                     <button
                       type="button"
                       onClick={handleOpenPublishReview}
-                      disabled={publishing}
+                      disabled={publishing || phase === 'saving'}
                       className={styles.publishBtn}
                     >
                       Review & Publish
@@ -619,6 +722,7 @@ export default function CourseStudioModal({
             <CoursePreview
               weeks={weeks}
               readingContent={readingContent}
+              readingImageUrl={readingImageUrl}
             />
           ) : (
             <div className={styles.editorArea}>
@@ -635,11 +739,12 @@ export default function CourseStudioModal({
                     selectedWeekId={selectedWeekId}
                     onSelectWeek={setSelectedWeekId}
                     onAddWeek={addWeek}
+                    onDeleteWeek={deleteWeek}
                     onUpdateWeek={updateWeek}
                     readingContent={readingContent}
+                    readingImageUrl={readingImageUrl}
                     missions={currentWeekComponents}
                     selectedMissionId={selectedComponentId}
-                    currentWeek={currentWeek ? { weekNumber: currentWeek.weekNumber, theme: currentWeek.theme } : { weekNumber: 1, theme: '' }}
                     onSelectMission={(id) => { setSelectedComponentId(id); setSelectedSlot(null); }}
                     onDeleteMission={deleteComponent}
                     onAddBlankMission={addBlankMission}
@@ -648,27 +753,24 @@ export default function CourseStudioModal({
                 </div>
               </motion.aside>
 
-              {/* Right: Component editor or WeekCanvas */}
+              {/* Right: Component editor — always block-based MissionEditor */}
               {selectedComponent ? (
                 <main className={styles.missionEditor}>
-                  {selectedComponent.componentType === 'video_embed' ? (
-                    <VideoEmbedEditor
-                      component={selectedComponent}
-                      onUpdate={updateComponent}
-                      onDelete={deleteComponent}
-                    />
-                  ) : (
-                    <MissionEditor
-                      component={selectedComponent}
-                      onUpdate={updateComponent}
-                      onDelete={deleteComponent}
-                    />
-                  )}
+                  <MissionEditor
+                    component={selectedComponent}
+                    onUpdate={updateComponent}
+                    onDelete={deleteComponent}
+                    onAddBlock={(blockType, config) => addBlockToComponent(selectedComponent.id, blockType, config)}
+                    onUpdateBlock={(blockId, updates) => updateBlock(selectedComponent.id, blockId, updates)}
+                    onDeleteBlock={(blockId) => deleteBlock(selectedComponent.id, blockId)}
+                  />
                 </main>
               ) : selectedSlot === 'reading' ? (
                 <main className={styles.missionEditor}>
                   <ReadingEditor
                     content={readingContent}
+                    imageUrl={readingImageUrl}
+                    onImageUrlChange={setReadingImageUrl}
                     onSave={(content) => setReadingContent(content)}
                     onClose={() => setSelectedSlot(null)}
                   />
@@ -695,7 +797,7 @@ export default function CourseStudioModal({
                   Components
                 </button>
                 <div className={styles.paletteBody}>
-                  <ComponentPalette onAddComponent={(type, config) => addComponentToWeek(selectedWeekId, type, config)} />
+                  <ComponentPalette onAddComponent={(type, config) => addBlockToSelectedMission(type, config)} />
                 </div>
               </aside>
             </div>
@@ -752,7 +854,10 @@ export default function CourseStudioModal({
                   <span className={styles.publishFieldLabel}>Title</span>
                   <input
                     value={reviewTitle}
-                    onChange={(e) => setReviewTitle(e.target.value)}
+                    onChange={(e) => {
+                      setReviewTitle(e.target.value);
+                      setReviewSlug(deriveSlug(e.target.value));
+                    }}
                     placeholder="Course title"
                     className={styles.publishFieldInput}
                   />
@@ -804,5 +909,6 @@ export default function CourseStudioModal({
 
       <CourseBuilderTour />
     </div>
+    </>
   );
 }

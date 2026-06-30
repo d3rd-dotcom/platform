@@ -109,7 +109,7 @@ export default function FeatureTour() {
     // there (chapter → first mission) instead of ending at the door.
     setStorageItem(COURSE_TOUR_PENDING_KEY, '1');
     setPhase('idle');
-    router.push('/course');
+    router.push('/shadow-work');
   }, [router]);
 
   // ── Daily reminder controls ──
