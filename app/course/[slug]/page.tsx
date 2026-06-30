@@ -283,25 +283,6 @@ export default function CourseSlugPage({ params }: PageProps) {
               message={vipCourse.title || 'Custom course'}
             />
 
-            {/* Reading card */}
-            {readingComponent && (
-              <button
-                type="button"
-                className={`${courseStyles.readingCard} ${rightContent === 'reading' ? courseStyles.readingCardActive : ''}`}
-                onClick={() => { setRightContent('reading'); setSelectedTaskId(null); }}
-              >
-                <span className={courseStyles.readingAccent} style={{ background: READING_ACCENT }} aria-hidden="true" />
-                <span className={courseStyles.readingThumb} style={{ background: READING_THUMB_BG }} aria-hidden="true" />
-                <div className={courseStyles.readingInfo}>
-                  <span className={courseStyles.readingCategory}>{weekTheme || `Week ${activeWeek}`}</span>
-                  <span className={courseStyles.readingTitle}>{weekTitle || 'Weekly Read'}</span>
-                </div>
-                <svg className={courseStyles.readingArrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M9 18l6-6-6-6"/>
-                </svg>
-              </button>
-            )}
-
             {/* Week navigation */}
             <div className={courseStyles.weekNav}>
               <button
@@ -341,6 +322,25 @@ export default function CourseSlugPage({ params }: PageProps) {
                 </svg>
               </button>
             </div>
+
+            {/* Reading card */}
+            {readingComponent && (
+              <button
+                type="button"
+                className={`${courseStyles.readingCard} ${rightContent === 'reading' ? courseStyles.readingCardActive : ''}`}
+                onClick={() => { setRightContent('reading'); setSelectedTaskId(null); }}
+              >
+                <span className={courseStyles.readingAccent} style={{ background: READING_ACCENT }} aria-hidden="true" />
+                <span className={courseStyles.readingThumb} style={{ background: READING_THUMB_BG }} aria-hidden="true" />
+                <div className={courseStyles.readingInfo}>
+                  <span className={courseStyles.readingCategory}>{weekTheme || `Week ${activeWeek}`}</span>
+                  <span className={courseStyles.readingTitle}>{weekTitle || 'Weekly Read'}</span>
+                </div>
+                <svg className={courseStyles.readingArrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </button>
+            )}
 
             {/* Missions heading */}
             {taskComponents.length > 0 && (
