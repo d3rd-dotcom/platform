@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import Link from 'next/link';
 import { CheckCircle, SealCheck, SpinnerGap, ArrowLeft, ArrowRight } from '@phosphor-icons/react';
@@ -45,13 +45,21 @@ export default function CourseSlugPage({ params }: PageProps) {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
+  const scrollRestored = useRef(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const check = () => setIsDesktop(window.innerWidth >= 1024);
     check();
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
   }, []);
+
+  useEffect(() => {
+    if (!scrollRestored.current && !loading && vipCourse) {
+      scrollRestored.current = true;
+      window.scrollTo(0, 0);
+    }
+  }, [loading, vipCourse]);
 
   const authHeaders = useCallback(async (): Promise<HeadersInit> => {
     const token = await getAccessToken();
