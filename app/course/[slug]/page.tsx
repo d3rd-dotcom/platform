@@ -256,6 +256,7 @@ export default function CourseSlugPage({ params }: PageProps) {
     const weekTheme = currentWeek?.theme ?? '';
 
     const readingComponent = components.find((c) => c.componentType === 'rich_text' && c.title === 'Weekly Read');
+    const readingImageUrl = readingComponent ? (readingComponent.config as Record<string, string>)?.imageUrl ?? '' : '';
     const taskComponents = components.filter((c) => !(c.componentType === 'rich_text' && c.title === 'Weekly Read'));
 
     const selectedComponent = rightContent === 'task' && selectedTaskId
@@ -331,7 +332,11 @@ export default function CourseSlugPage({ params }: PageProps) {
                 onClick={() => { setRightContent('reading'); setSelectedTaskId(null); }}
               >
                 <span className={courseStyles.readingAccent} style={{ background: READING_ACCENT }} aria-hidden="true" />
-                <span className={courseStyles.readingThumb} style={{ background: READING_THUMB_BG }} aria-hidden="true" />
+                <span className={courseStyles.readingThumb} style={{ background: READING_THUMB_BG }} aria-hidden="true">
+                  {readingImageUrl && (
+                    <img src={readingImageUrl} alt="" className={courseStyles.readingThumbImg} />
+                  )}
+                </span>
                 <div className={courseStyles.readingInfo}>
                   <span className={courseStyles.readingCategory}>{weekTheme || `Week ${activeWeek}`}</span>
                   <span className={courseStyles.readingTitle}>{weekTitle || 'Weekly Read'}</span>

@@ -135,6 +135,7 @@ export default function CourseStudioModal({
   const [reviewTitle, setReviewTitle] = useState('');
   const [reviewDesc, setReviewDesc] = useState('');
   const [reviewSlug, setReviewSlug] = useState('');
+  const [reviewCoverImage, setReviewCoverImage] = useState('');
   const undoTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const titleRef = useRef<HTMLInputElement>(null);
 
@@ -621,6 +622,7 @@ export default function CourseStudioModal({
     setReviewTitle(title);
     setReviewDesc(focus);
     setReviewSlug(slug || deriveSlug(title));
+    setReviewCoverImage(coverImageUrl || '');
     setShowPublishReview(true);
   };
 
@@ -644,6 +646,7 @@ export default function CourseStudioModal({
           title: reviewTitle.trim(),
           slug: reviewSlug.trim(),
           focus: reviewDesc.trim(),
+          coverImageUrl: reviewCoverImage.trim() || null,
         }),
       });
       if (!metaRes.ok) {
@@ -661,6 +664,7 @@ export default function CourseStudioModal({
       setTitle(reviewTitle.trim());
       setFocus(reviewDesc.trim());
       setSlug(reviewSlug.trim());
+      setCoverImageUrl(reviewCoverImage.trim() || null);
       setStatus('published');
       setShowPublishReview(false);
     } catch (err: any) {
@@ -1006,6 +1010,15 @@ export default function CourseStudioModal({
                       className={styles.publishFieldInput}
                     />
                   </div>
+                </label>
+                <label className={styles.publishField}>
+                  <span className={styles.publishFieldLabel}>Cover Image URL</span>
+                  <input
+                    value={reviewCoverImage}
+                    onChange={(e) => setReviewCoverImage(e.target.value)}
+                    placeholder="https://example.com/course-image.jpg"
+                    className={styles.publishFieldInput}
+                  />
                 </label>
                 <div className={styles.publishActions}>
                   <button
