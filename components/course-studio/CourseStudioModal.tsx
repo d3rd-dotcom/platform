@@ -225,6 +225,24 @@ export default function CourseStudioModal({
     setSlug(deriveSlug(initialCourse.title));
     if (initialCourse.weeks?.length) {
       setSelectedWeekId(weeks[0]?.id ?? '');
+      const readingMap: Record<string, { content: string; imageUrl: string }> = {};
+      weeks.forEach((w) => {
+        const genWeek = initialCourse.weeks.find((gw) => gw.weekNumber === w.weekNumber);
+        if (genWeek) {
+          const rc = genWeek.components.find(
+            (c) => c.componentType === 'rich_text' && (c.config as any)?._isReading,
+          );
+          if (rc) {
+            readingMap[w.id] = {
+              content: (rc.config as any)?.content ?? '',
+              imageUrl: (rc.config as any)?.imageUrl ?? '',
+            };
+          }
+        }
+      });
+      if (Object.keys(readingMap).length > 0) {
+        setReadingByWeek(readingMap);
+      }
     }
     setPhase('edit');
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -647,6 +665,7 @@ export default function CourseStudioModal({
     } catch (err: any) {
       setError(err.message ?? 'Publish failed');
       setPhase('edit');
+      setDirty(true);
     } finally {
       setPublishing(false);
     }
@@ -657,7 +676,7 @@ export default function CourseStudioModal({
       setPreviewMode(false);
       return;
     }
-    if (dirty) {
+    if (dirty || readingDirty) {
       setPhase('saving');
       try {
         await saveCourseData();
@@ -772,8 +791,7 @@ export default function CourseStudioModal({
           {previewMode ? (
             <CoursePreview
               weeks={weeks}
-              readingContent={readingContent}
-              readingImageUrl={readingImageUrl}
+              readingByWeek={readingByWeek}
             />
           ) : (
             <div className={styles.editorArea}>
@@ -788,7 +806,14 @@ export default function CourseStudioModal({
                   <ComponentPanel
                     weeks={weeks}
                     selectedWeekId={selectedWeekId}
-                    onSelectWeek={setSelectedWeekId}
+                    onSelectWeek={(id) => {
+                      if (selectedSlot === 'reading' && readingDirty) {
+                        const ok = window.confirm('Discard unsaved changes to the Weekly Read?');
+                        if (!ok) return;
+                        setReadingDirty(false);
+                      }
+                      setSelectedWeekId(id);
+                    }}
                     onAddWeek={addWeek}
                     onDeleteWeek={deleteWeek}
                     onUpdateWeek={updateWeek}
@@ -826,6 +851,7 @@ export default function CourseStudioModal({
               ) : selectedSlot === 'reading' ? (
                 <main className={styles.missionEditor}>
                   <ReadingEditor
+                    key={selectedWeekId}
                     content={readingContent}
                     imageUrl={readingImageUrl}
                     onDirtyChange={setReadingDirty}
@@ -835,6 +861,7 @@ export default function CourseStudioModal({
                           ...prev,
                           [selectedWeekId]: { ...prev[selectedWeekId], content: prev[selectedWeekId]?.content ?? '', imageUrl: url },
                         }));
+                        setDirty(true);
                       }
                     }}
                     onSave={(content) => {
@@ -843,6 +870,7 @@ export default function CourseStudioModal({
                           ...prev,
                           [selectedWeekId]: { content, imageUrl: prev[selectedWeekId]?.imageUrl ?? '' },
                         }));
+                        setDirty(true);
                       }
                       setReadingDirty(false);
                     }}

@@ -43,11 +43,10 @@ interface CoursePreviewProps {
     theme: string;
     components: CourseComponentRecord[];
   }>;
-  readingContent: string;
-  readingImageUrl?: string;
+  readingByWeek: Record<string, { content: string; imageUrl: string }>;
 }
 
-export default function CoursePreview({ weeks, readingContent, readingImageUrl }: CoursePreviewProps) {
+export default function CoursePreview({ weeks, readingByWeek }: CoursePreviewProps) {
   const [viewWeek, setViewWeek] = useState(1);
   const [rightContent, setRightContent] = useState<'reading' | 'task' | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
@@ -56,6 +55,9 @@ export default function CoursePreview({ weeks, readingContent, readingImageUrl }
   const components = week?.components ?? [];
   const weekLabel = week?.theme ?? `Week ${viewWeek}`;
   const weekTitle = week?.title ?? 'Weekly Read';
+  const wkReading = week?.id ? readingByWeek[week.id] : undefined;
+  const readingContent = wkReading?.content ?? '';
+  const readingImageUrl = wkReading?.imageUrl ?? '';
 
   return (
     <div className={styles.preview}>
