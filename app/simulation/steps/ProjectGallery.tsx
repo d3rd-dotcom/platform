@@ -46,6 +46,20 @@ const DEV_MOCK_PROJECTS: Project[] = [
 
 
 
+// Anime-style card art, shown in gallery order and cycled for any extra worlds.
+const WORLD_IMAGES = [
+  '/worlds/world-01-biology.png',
+  '/worlds/world-02-blurred.png',
+  '/worlds/world-03-abstract.png',
+  '/worlds/world-04-eeg.png',
+  '/worlds/world-05-astrology.png',
+  '/worlds/world-06-underwater.png',
+  '/worlds/world-07-library.png',
+  '/worlds/world-08-greenhouse.png',
+  '/worlds/world-09-cyberpunk.png',
+  '/worlds/world-10-observatory.png',
+];
+
 function formatDate(iso?: string) {
   if (!iso) return '';
   try {
@@ -441,7 +455,7 @@ export default function ProjectGallery({
               <div
                 className={`${styles.projectCardVisualInner} ${styles.projectCardVisualWithImage}`}
                 style={{
-                  backgroundImage: `url(${i === 0 ? '/world-first.jpg' : '/world-other.jpg'})`,
+                  backgroundImage: `url(${WORLD_IMAGES[i % WORLD_IMAGES.length]})`,
                 }}
               >
                 <span className={styles.projectStatus}>{cardState.badge}</span>
