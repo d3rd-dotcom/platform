@@ -43,21 +43,7 @@ const DEV_MOCK_PROJECTS: Project[] = [
   },
 ];
 
-const SEED_POSTS = [
-  { id: 'sp-1', title: 'If the treasury could fund one wild idea, what would yours be?', creator: 'Seraph', users: 3, amount: 130, img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=96&h=96&fit=crop&auto=format' },
-  { id: 'sp-2', title: 'What daily habit changed your mental health the most?', creator: 'Halo', users: 7, amount: 85, img: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?w=96&h=96&fit=crop&auto=format' },
-  { id: 'sp-3', title: 'Would you try a brain-training game designed by the community?', creator: 'Vesper', users: 2, amount: 210, img: 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=96&h=96&fit=crop&auto=format' },
-  { id: 'sp-4', title: 'Open Dataset: Attention Metrics in LLM-Augmented Dev Workflows', creator: 'Orbit', users: 5, amount: 50, img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=96&h=96&fit=crop&auto=format' },
-  { id: 'sp-5', title: 'RFC: Open Protocol for Burnout Detection in Dev Teams', creator: 'Prism', users: 4, amount: 175, img: 'https://images.unsplash.com/photo-1512758017271-d7b84c2113f1?w=96&h=96&fit=crop&auto=format' },
-];
 
-const SEED_COMMUNITY = [
-  { id: 'cp-1', title: 'Attention Scaffold', creator: 'Nova', users: 12, img: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=96&h=96&fit=crop&auto=format' },
-  { id: 'cp-2', title: 'Mood Atlas', creator: 'Echo', users: 8, img: 'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?w=96&h=96&fit=crop&auto=format' },
-  { id: 'cp-3', title: 'Synthion', creator: 'Pixel', users: 5, img: 'https://images.unsplash.com/photo-1567095761054-7a02e69e5c43?w=96&h=96&fit=crop&auto=format' },
-  { id: 'cp-4', title: 'Dev Diary Corpus', creator: 'Frost', users: 9, img: 'https://images.unsplash.com/photo-1540206395-68808572332f?w=96&h=96&fit=crop&auto=format' },
-  { id: 'cp-5', title: 'Narrative Absorption Protocol', creator: 'Lumen', users: 6, img: 'https://images.unsplash.com/photo-1574169208507-84376144848b?w=96&h=96&fit=crop&auto=format' },
-];
 
 function formatDate(iso?: string) {
   if (!iso) return '';
@@ -152,6 +138,21 @@ export default function ProjectGallery({
   const [error, setError] = useState<string | null>(null);
   const [contextOpen, setContextOpen] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
+  const projectGridRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const onWheel = (e: WheelEvent) => {
+      const grid = projectGridRef.current;
+      if (!grid || !grid.contains(e.target as Node)) return;
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault();
+        const px = e.deltaMode === 1 ? e.deltaY * 28 : e.deltaY;
+        grid.scrollBy({ left: px, behavior: 'auto' });
+      }
+    };
+    window.addEventListener('wheel', onWheel, { passive: false });
+    return () => window.removeEventListener('wheel', onWheel);
+  }, []);
 
   useEffect(() => {
     if (!creating) return;
@@ -236,38 +237,6 @@ export default function ProjectGallery({
             </div>
           ))}
         </section>
-        <div className={styles.galleryRight}>
-          <div className={styles.recentActivityCard}>
-            <div className={styles.skeleton} style={{ height: 15, width: '60%', marginBottom: 17 }} />
-            {Array.from({ length: 4 }).map((_, j) => (
-              <div key={j} className={styles.recentMiniCard} style={{ marginBottom: 5 }}>
-                <div className={styles.recentMiniBody}>
-                  <div className={styles.skeleton} style={{ height: 11, width: '100%', marginBottom: 5 }} />
-                  <div className={styles.skeleton} style={{ height: 11, width: '72%', marginBottom: 3 }} />
-                  <div className={styles.skeleton} style={{ height: 8, width: '54%' }} />
-                </div>
-                <div className={styles.recentMiniImage}>
-                  <div className={styles.skeleton} style={{ width: 48, height: 48, borderRadius: 7 }} />
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className={styles.recentActivityCard}>
-            <div className={styles.skeleton} style={{ height: 15, width: '50%', marginBottom: 17 }} />
-            {Array.from({ length: 4 }).map((_, j) => (
-              <div key={j} className={styles.recentMiniCard} style={{ marginBottom: 5 }}>
-                <div className={styles.recentMiniBody}>
-                  <div className={styles.skeleton} style={{ height: 11, width: '100%', marginBottom: 5 }} />
-                  <div className={styles.skeleton} style={{ height: 11, width: '60%', marginBottom: 3 }} />
-                  <div className={styles.skeleton} style={{ height: 8, width: '40%' }} />
-                </div>
-                <div className={styles.recentMiniImage}>
-                  <div className={styles.skeleton} style={{ width: 48, height: 48, borderRadius: 7 }} />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     );
   }
@@ -417,7 +386,7 @@ export default function ProjectGallery({
         </div>
       )}
 
-      <section className={styles.projectGrid}>
+      <section className={styles.projectGrid} ref={projectGridRef}>
         {!loading && !isOffline && projects.length === 0 && (
           <p className={styles.muted}>No worlds yet. Create your first one above.</p>
         )}
@@ -461,9 +430,6 @@ export default function ProjectGallery({
                 }}
               >
                 <span className={styles.projectStatus}>{cardState.badge}</span>
-                <div className={styles.projectCardVisualOverlay}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                </div>
                 </div>
               </div>
             </div>
@@ -498,61 +464,6 @@ export default function ProjectGallery({
           );
         })}
       </section>
-      <div className={styles.galleryRight}>
-        <article className={styles.recentActivityCard}>
-          <div className={styles.recentActivityHeader}>
-            <h3 className={styles.recentActivityTitle}>Recent Activity</h3>
-            <button className={styles.recentActivityLink} onClick={() => {}}>
-              View all
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </button>
-          </div>
-          <div className={styles.recentActivityList}>
-            {SEED_POSTS.map((post) => (
-              <div key={post.id} className={styles.recentMiniCard}>
-                <div className={styles.recentMiniBody}>
-                  <p className={styles.recentMiniTitle}>{post.title}</p>
-                  <div className={styles.recentMiniMeta}>
-                    <span>{post.creator}</span>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                  <span>{post.users}</span>
-                  <span className={styles.recentMiniAmount}>${post.amount} available</span>
-                </div>
-                </div>
-                <div className={styles.recentMiniImage}>
-                  <img src={post.img} alt="" />
-                </div>
-              </div>
-          ))}
-        </div>
-        </article>
-        <article className={styles.recentActivityCard}>
-          <div className={styles.recentActivityHeader}>
-            <h3 className={styles.recentActivityTitle}>Community</h3>
-            <button className={styles.recentActivityLink} onClick={() => {}}>
-              View all
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </button>
-          </div>
-          <div className={styles.recentActivityList}>
-            {SEED_COMMUNITY.map((post) => (
-              <div key={post.id} className={styles.recentMiniCard}>
-                <div className={styles.recentMiniBody}>
-                  <p className={styles.recentMiniTitle}>{post.title}</p>
-                  <div className={styles.recentMiniMeta}>
-                    <span>{post.creator}</span>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                  <span>{post.users}</span>
-                </div>
-                </div>
-                <div className={styles.recentMiniImage}>
-                  <img src={post.img} alt="" />
-                </div>
-              </div>
-          ))}
-        </div>
-        </article>
-      </div>
       </div>
       </div>
   );
