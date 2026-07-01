@@ -435,6 +435,10 @@ export default function ProjectGallery({
             }}
             onMouseEnter={() => play('hover')}
           >
+            <div className={styles.projectCardHeader}>
+              <span className={styles.projectCardKanji}>世界</span>
+              <span className={styles.projectCardHeaderTitle}>{article?.title || p.name}</span>
+            </div>
             <div className={styles.projectCardMain}>
             <div className={styles.projectCardBody}>
               {article ? (
@@ -453,7 +457,7 @@ export default function ProjectGallery({
               <div
                 className={`${styles.projectCardVisualInner} ${styles.projectCardVisualWithImage}`}
                 style={{
-                  backgroundImage: `url(${i === 0 ? '/world-first.png' : '/world-other.png'})`,
+                  backgroundImage: `url(${i === 0 ? '/world-first.jpg' : '/world-other.jpg'})`,
                 }}
               >
                 <span className={styles.projectStatus}>{cardState.badge}</span>

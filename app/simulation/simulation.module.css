@@ -556,6 +556,8 @@
   }
   .projectCard {
     position: relative;
+    isolation: isolate;
+    overflow: hidden;
     text-align: left;
     text-transform: none;
     letter-spacing: normal;
@@ -575,6 +577,36 @@
       0 10px 5px rgba(0, 0, 0, 0.30);
     backdrop-filter: blur(4px);
     box-sizing: border-box;
+  }
+  .projectCardHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: #0a0a0f;
+    border-bottom: 2px solid var(--color-primary-hover);
+    flex-shrink: 0;
+  }
+  .projectCardKanji {
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--color-primary);
+  }
+  .projectCardHeaderTitle {
+    min-width: 0;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #ffffff;
   }
   .projectCard::before {
     display: none;

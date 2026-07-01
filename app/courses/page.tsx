@@ -23,7 +23,7 @@ function getPersonalEndDate() {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
-const COURSE_THUMB = '/academy-story.png';
+const COURSE_THUMB = '/uploads/course-shadow-work.jpg';
 
 export default function CoursesPage() {
   const { ready, authenticated, getAccessToken } = usePrivy();
@@ -205,7 +205,7 @@ export default function CoursesPage() {
             <div className={styles.cardBodyRow}>
               <span
                 className={styles.thumb}
-                style={{ backgroundImage: `url('/uploads/tapinto-creativity.avif')` }}>
+                style={{ backgroundImage: `url('/uploads/course-tap-creativity.jpg')` }}>
                 <div className={styles.badgeWrapper}>
                   <div className={styles.cardBadgeGroup}>
                     <div className={styles.badgeSection}>
@@ -251,7 +251,7 @@ export default function CoursesPage() {
                       <span className={styles.authorName}>@{skyyeAuthor?.username ?? 'Skyye'}</span>
                     </div>
                   </div>
-                  <span className={styles.cardMembership}>Academic Angels</span>
+                  <span className={styles.cardMembership}>Angels</span>
                 </div>
                 <div className={styles.progressDivider}>
                   <div className={styles.progressFill} style={{ width: '0%' }} />
@@ -264,7 +264,10 @@ export default function CoursesPage() {
         {personalCourse && (
           <div className={styles.cardWrapper}>
           <Link href="/course/personal" className={styles.courseCard}>
-            <span className={`${styles.thumb} ${styles.personalThumb}`}>
+            <span
+              className={`${styles.thumb} ${styles.personalThumb}`}
+              style={{ backgroundImage: `url('/uploads/course-personal.jpg')` }}
+            >
               <div className={styles.badgeWrapper}>
                 <div className={styles.cardBadgeGroup}>
                   <div className={styles.badgeSection}>
