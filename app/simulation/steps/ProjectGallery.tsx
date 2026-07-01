@@ -241,11 +241,10 @@ export default function ProjectGallery({
             <div className={styles.recentActivityHeader}>
               <div className={styles.skeleton} style={{ width: 20, height: 12 }} />
               <div className={styles.skeleton} style={{ height: 14, width: '40%' }} />
-              <div className={styles.skeleton} style={{ width: 50, height: 10, marginLeft: 'auto' }} />
             </div>
             <div className={styles.phoneStage}>
               <div className={styles.phoneScreen}>
-                <div className={styles.skeleton} style={{ width: '100%', height: 480 }} />
+                <div className={styles.skeleton} style={{ width: '100%', height: '100%' }} />
               </div>
             </div>
           </div>
@@ -255,11 +254,7 @@ export default function ProjectGallery({
   }
 
   return (
-    <div className={styles.galleryWrap}>
-      <div className={styles.feedHead}>
-        <h2 className={styles.feedTitle}><span className={styles.titleJa}>世界</span>Simulated Pocket Worlds</h2>
-      </div>
-      <div className={styles.gallery}>
+    <div className={styles.gallery}>
       <header className={styles.galleryHeader}>
         <div className={styles.filterRow}>
           <button
@@ -488,8 +483,7 @@ export default function ProjectGallery({
         <article className={styles.recentActivityCard}>
           <div className={styles.recentActivityHeader}>
             <span className={styles.recentActivityIcon}>世界</span>
-            <h3 className={styles.recentActivityTitle}>Blue Research Unit 02</h3>
-            <span className={styles.recentActivityEyebrow}>top creators</span>
+            <h3 className={styles.recentActivityTitle}>Simulated Pocket Worlds</h3>
           </div>
           <div className={styles.phoneStage}>
             <div className={styles.phoneScreen}>
@@ -508,7 +502,6 @@ export default function ProjectGallery({
           </div>
         </article>
       </aside>
-      </div>
       </div>
   );
 }
