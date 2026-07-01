@@ -1178,11 +1178,13 @@
   .recentActivityTitle {
     flex: 1;
     min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     font-family: var(--font-mono);
     font-size: 0.8rem;
     font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    letter-spacing: 0.02em;
     color: #1a1b24;
     margin: 0;
   }
@@ -1290,14 +1292,15 @@
     position: relative;
     flex: 1;
     display: flex;
+    align-items: flex-start;
     overflow: hidden;
     border-radius: 0 0 10px 10px;
-    background: #0a0c18;
-    padding-top: 32px;
+    background: #f5f6fb;
   }
   .phoneScene {
     width: 100%;
-    height: 100%;
+    height: 480px;
+    flex-shrink: 0;
   }
 
   /* ── panels ── */

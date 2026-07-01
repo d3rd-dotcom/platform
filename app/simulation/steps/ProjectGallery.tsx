@@ -245,7 +245,7 @@ export default function ProjectGallery({
             </div>
             <div className={styles.phoneStage}>
               <div className={styles.phoneScreen}>
-                <div className={styles.skeleton} style={{ width: '100%', height: '100%' }} />
+                <div className={styles.skeleton} style={{ width: '100%', height: 480 }} />
               </div>
             </div>
           </div>
@@ -488,7 +488,7 @@ export default function ProjectGallery({
         <article className={styles.recentActivityCard}>
           <div className={styles.recentActivityHeader}>
             <span className={styles.recentActivityIcon}>世界</span>
-            <h3 className={styles.recentActivityTitle}>Simulators</h3>
+            <h3 className={styles.recentActivityTitle}>Blue Research Unit 02</h3>
             <span className={styles.recentActivityEyebrow}>top creators</span>
           </div>
           <div className={styles.phoneStage}>
@@ -497,9 +497,11 @@ export default function ProjectGallery({
                 projectId="lsL5y48OjUQx1IYb4hfS"
                 sdkUrl="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.2.6/dist/unicornStudio.umd.js"
                 width="100%"
-                height="100%"
+                height="480px"
                 scale={1}
                 dpi={1.5}
+                lazyLoad={false}
+                showPlaceholderWhileLoading={false}
                 className={styles.phoneScene}
               />
             </div>
