@@ -11,9 +11,11 @@ import SimulationWorkspace from './SimulationWorkspace';
 import styles from './simulation.module.css';
 
 /**
- * Pro-only gate for /simulation. Mirrors the membership check used by Markets /
- * Quests: GET /api/account/status -> hasVipMembershipCard, authed with a Privy
- * token. Non-members see a locked screen with the Pro upgrade modal.
+ * Access gate for /simulation. Browsing worlds only needs a signed-in
+ * account. Building/rebuilding a graph or starting a new world is what
+ * costs compute, so those actions are gated behind Pro/VIP membership
+ * (GET /api/account/status -> hasVipMembershipCard) inside the workspace
+ * itself via the `canEdit` prop, not at the page level.
  */
 // Local-dev escape hatch: when Privy can't run locally (its domain allowlist
 // blocks localhost), set NEXT_PUBLIC_SIMULATION_DEV_BYPASS=true to skip the gate.
@@ -26,17 +28,17 @@ export default function SimulationGate() {
   const { ready, authenticated, getAccessToken, login } = usePrivy();
   const { play } = useSound();
 
-  // Bootstrap from localStorage so VIP users skip the loading spinner.
-  const [access, setAccess] = useState<'loading' | 'allowed' | 'denied'>(() => {
-    if (typeof window === 'undefined') return 'loading';
+  // Bootstrap from localStorage so returning VIP users skip the loading flash.
+  const [isVip, setIsVip] = useState(() => {
+    if (typeof window === 'undefined') return false;
     try {
-      const cached = localStorage.getItem('simulation_access');
+      const cached = localStorage.getItem('simulation_vip');
       if (cached) {
-        const { allowed, ts } = JSON.parse(cached);
-        if (allowed && Date.now() - ts < 120_000) return 'allowed';
+        const { vip, ts } = JSON.parse(cached);
+        if (vip && Date.now() - ts < 120_000) return true;
       }
     } catch { /* ignore */ }
-    return 'loading';
+    return false;
   });
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -44,7 +46,7 @@ export default function SimulationGate() {
     if (!ready) return;
     if (!authenticated) {
       setSimulationAccessTokenProvider(null);
-      setAccess('denied');
+      setIsVip(false);
       return;
     }
     // All workspace calls pass through the authenticated server-side proxy.
@@ -60,17 +62,17 @@ export default function SimulationGate() {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
         const data = res.ok ? await res.json().catch(() => null) : null;
-        const allowed = data?.hasVipMembershipCard === true;
+        const vip = data?.hasVipMembershipCard === true;
         if (!cancelled) {
-          setAccess(allowed ? 'allowed' : 'denied');
-          if (allowed) {
-            try { localStorage.setItem('simulation_access', JSON.stringify({ allowed: true, ts: Date.now() })); } catch { /* ignore */ }
+          setIsVip(vip);
+          if (vip) {
+            try { localStorage.setItem('simulation_vip', JSON.stringify({ vip: true, ts: Date.now() })); } catch { /* ignore */ }
           } else {
-            try { localStorage.removeItem('simulation_access'); } catch { /* ignore */ }
+            try { localStorage.removeItem('simulation_vip'); } catch { /* ignore */ }
           }
         }
       } catch {
-        if (!cancelled) setAccess('denied');
+        if (!cancelled) setIsVip(false);
       }
     })();
     return () => {
@@ -81,28 +83,20 @@ export default function SimulationGate() {
 
   // Re-check when membership/login changes elsewhere in the app.
   useEffect(() => {
-    const recheck = () => setAccess('loading');
+    const recheck = () => setIsVip(false);
     window.addEventListener('vipMembershipUpdated', recheck);
-    window.addEventListener('userLoggedIn', recheck);
-    return () => {
-      window.removeEventListener('vipMembershipUpdated', recheck);
-      window.removeEventListener('userLoggedIn', recheck);
-    };
+    return () => window.removeEventListener('vipMembershipUpdated', recheck);
   }, []);
 
-  const unlock = useCallback(() => {
-    play('click');
-    if (!authenticated) {
-      login();
-    } else {
-      setModalOpen(true);
-    }
-  }, [authenticated, login, play]);
+  const requireUpgrade = useCallback(() => {
+    play('error');
+    setModalOpen(true);
+  }, [play]);
 
   // All hooks above run unconditionally; this early return is safe.
-  if (DEV_BYPASS) return <SimulationWorkspace />;
+  if (DEV_BYPASS) return <SimulationWorkspace canEdit onRequireUpgrade={requireUpgrade} />;
 
-  if (access === 'loading' || !ready) {
+  if (!ready) {
     return (
       <div className={styles.gateState}>
         <div className={styles.loaderBlock} aria-live="polite">
@@ -113,23 +107,31 @@ export default function SimulationGate() {
     );
   }
 
-  if (access === 'denied') {
+  if (!authenticated) {
     return (
-      <>
-        <div className={styles.lockedCard}>
-          <h1 className={styles.lockedTitle}>Simulations is a Pro feature</h1>
-          <p className={styles.lockedText}>
-            Build living worlds of autonomous agents from any document, run them forward, and read
-            the futures they produce. Available to Pro members.
-          </p>
-          <Button onClick={unlock} onMouseEnter={() => play('hover')}>
-            {authenticated ? 'Unlock with Pro' : 'Sign in to continue'}
-          </Button>
-        </div>
-        <ProMembershipModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
-      </>
+      <div className={styles.lockedCard}>
+        <h1 className={styles.lockedTitle}>Sign in to explore Simulated Pocket Worlds</h1>
+        <p className={styles.lockedText}>
+          Browse living worlds of autonomous agents built from real documents, and read the
+          futures they produce. Sign in to start looking around.
+        </p>
+        <Button
+          onClick={() => {
+            play('click');
+            login();
+          }}
+          onMouseEnter={() => play('hover')}
+        >
+          Sign in to continue
+        </Button>
+      </div>
     );
   }
 
-  return <SimulationWorkspace />;
+  return (
+    <>
+      <SimulationWorkspace canEdit={isVip} onRequireUpgrade={requireUpgrade} />
+      <ProMembershipModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+    </>
+  );
 }

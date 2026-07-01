@@ -86,9 +86,13 @@ function worldCardState(p: Project, hasReport: boolean) {
 export default function ProjectGallery({
   online,
   onOpen,
+  canEdit,
+  onRequireUpgrade,
 }: {
   online: boolean | null;
   onOpen: (p: Project) => void;
+  canEdit: boolean;
+  onRequireUpgrade: () => void;
 }) {
   const { play } = useSound();
   const { data, loading, refetch } = useAsync(() => api.listProjects(50), []);
@@ -158,6 +162,11 @@ export default function ProjectGallery({
   }, [creating]);
 
   const submit = async () => {
+    if (!canEdit) {
+      play('error');
+      onRequireUpgrade();
+      return;
+    }
     play('click');
     setError(null);
     if (!requirement.trim()) {
@@ -286,13 +295,20 @@ export default function ProjectGallery({
           <button
             className={styles.actionBtn}
             onClick={() => {
+              if (!canEdit) {
+                play('error');
+                onRequireUpgrade();
+                return;
+              }
               play('click');
               setCreating(true);
             }}
             onMouseEnter={() => play('hover')}
+            title={canEdit ? undefined : 'Building a world requires VIP membership'}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
             Simulate
+            {!canEdit && <span className={styles.vipTag}>VIP</span>}
           </button>
         </div>
       </header>

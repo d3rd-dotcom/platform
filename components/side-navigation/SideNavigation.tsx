@@ -68,7 +68,7 @@ const mobileNavSections: NavSection[] = [
     badgeType: 'pro',
     items: [
       { id: 'markets', label: 'Trades', href: '/trades', iconSrc: '/icons/nav-trades-v1.svg', requiresPro: true },
-      { id: 'simulations', label: 'Simulations', href: '/simulation', iconSrc: '/icons/nav-simulations-v2.svg', requiresPro: true },
+      { id: 'simulations', label: 'Simulations', href: '/simulation', iconSrc: '/icons/nav-simulations-v2.svg' },
       { id: 'genetics', label: 'Genetics', href: '/genetics', iconSrc: '/icons/genetics.svg', requiresPro: true },
     ],
   },

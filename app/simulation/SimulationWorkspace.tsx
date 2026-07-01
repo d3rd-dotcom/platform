@@ -33,7 +33,13 @@ function hasCompletedGraph(project: Project) {
   return Boolean(project.graph_id) &&
     (project.status === 'graph_completed' || project.status === 'graph_built');
 }
-export default function SimulationWorkspace() {
+export default function SimulationWorkspace({
+  canEdit,
+  onRequireUpgrade,
+}: {
+  canEdit: boolean;
+  onRequireUpgrade: () => void;
+}) {
   const { play } = useSound();
   const [wf, setWf] = useState<WorkflowState | null>(null);
   const [step, setStep] = useState(1);
@@ -125,7 +131,12 @@ export default function SimulationWorkspace() {
 
   if (!wf) {
     return (
-      <ProjectGallery online={online} onOpen={openProject} />
+      <ProjectGallery
+        online={online}
+        onOpen={openProject}
+        canEdit={canEdit}
+        onRequireUpgrade={onRequireUpgrade}
+      />
     );
   }
 
@@ -237,6 +248,8 @@ export default function SimulationWorkspace() {
           {step === 1 && (
             <Step1GraphBuild
               wf={wf}
+              canEdit={canEdit}
+              onRequireUpgrade={onRequireUpgrade}
               onRebuildStart={() => {
                 setGraph(null);
                 patch({ graphId: null, simulationId: null, simulationReady: false, reportId: null });

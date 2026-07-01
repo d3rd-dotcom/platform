@@ -12,11 +12,15 @@ import styles from '../simulation.module.css';
 
 export default function Step1GraphBuild({
   wf,
+  canEdit,
+  onRequireUpgrade,
   onRebuildStart,
   onGraph,
   onGraphData,
 }: {
   wf: WorkflowState;
+  canEdit: boolean;
+  onRequireUpgrade: () => void;
   onRebuildStart: () => void;
   onGraph: (graphId: string) => void;
   onGraphData: (g: GraphData) => void;
@@ -65,6 +69,11 @@ export default function Step1GraphBuild({
   }, [play]);
 
   const start = async (force = false) => {
+    if (!canEdit) {
+      play('error');
+      onRequireUpgrade();
+      return;
+    }
     play('click');
     setError(null);
     setDone(false);
@@ -88,6 +97,11 @@ export default function Step1GraphBuild({
   };
 
   const rebuild = () => {
+    if (!canEdit) {
+      play('error');
+      onRequireUpgrade();
+      return;
+    }
     const confirmed = window.confirm(
       'Rebuild this graph from its saved documents and added context? Existing simulations and reports will remain unchanged.',
     );
@@ -95,6 +109,11 @@ export default function Step1GraphBuild({
   };
 
   const enrich = async () => {
+    if (!canEdit) {
+      play('error');
+      onRequireUpgrade();
+      return;
+    }
     play('click');
     const context = enrichmentContext.trim();
     if (!context) {
@@ -308,8 +327,15 @@ export default function Step1GraphBuild({
             Continue to world setup →
           </Button>
         ) : (
-          <Button onClick={() => start(false)} onMouseEnter={() => play('hover')} disabled={building}>
-            {building ? (rebuilding ? 'Rebuilding graph…' : 'Building graph…') : 'Build knowledge graph'}
+          <Button
+            onClick={() => start(false)}
+            onMouseEnter={() => play('hover')}
+            disabled={building}
+            title={canEdit ? undefined : 'Building a world requires VIP membership'}
+          >
+            {building
+              ? (rebuilding ? 'Rebuilding graph…' : 'Building graph…')
+              : canEdit ? 'Build knowledge graph' : 'Build knowledge graph (VIP)'}
           </Button>
         )}
         {building && (
