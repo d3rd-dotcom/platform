@@ -209,6 +209,10 @@ export default function ProjectGallery({
         <section className={styles.projectGrid} aria-label="Loading worlds">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className={styles.projectCard}>
+              <div className={styles.projectCardHeader}>
+                <div className={styles.skeleton} style={{ width: 28, height: 12 }} />
+                <div className={styles.skeleton} style={{ height: 12, width: '50%' }} />
+              </div>
               <div className={styles.projectCardMain}>
                 <div className={styles.projectCardBody}>
                   <div className={styles.skeleton} style={{ height: 20, width: '72%', marginBottom: 8 }} />
@@ -237,9 +241,12 @@ export default function ProjectGallery({
             <div className={styles.recentActivityHeader}>
               <div className={styles.skeleton} style={{ width: 20, height: 12 }} />
               <div className={styles.skeleton} style={{ height: 14, width: '40%' }} />
+              <div className={styles.skeleton} style={{ width: 50, height: 10, marginLeft: 'auto' }} />
             </div>
             <div className={styles.phoneStage}>
-              <div className={styles.skeleton} style={{ width: '100%', height: '100%' }} />
+              <div className={styles.phoneScreen}>
+                <div className={styles.skeleton} style={{ width: '100%', height: '100%' }} />
+              </div>
             </div>
           </div>
         </aside>
@@ -489,7 +496,7 @@ export default function ProjectGallery({
               <UnicornScene
                 projectId="lsL5y48OjUQx1IYb4hfS"
                 width="100%"
-                height="240px"
+                height="100%"
                 scale={1}
                 dpi={1.5}
                 className={styles.phoneScene}
