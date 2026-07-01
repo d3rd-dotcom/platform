@@ -491,7 +491,7 @@ export default function ProjectGallery({
                 projectId="lsL5y48OjUQx1IYb4hfS"
                 sdkUrl="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.2.6/dist/unicornStudio.umd.js"
                 width="100%"
-                height="480px"
+                height="100%"
                 scale={1}
                 dpi={1.5}
                 lazyLoad={false}
