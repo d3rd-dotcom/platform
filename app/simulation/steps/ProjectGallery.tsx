@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState, useEffect, useMemo, useCallback } from 'react';
+import UnicornScene from 'unicornstudio-react/next';
 import Button from '@/components/button/Button';
 import { useSound } from '@/hooks/useSound';
 import * as api from '@/lib/simulation-api';
@@ -238,7 +239,7 @@ export default function ProjectGallery({
               <div className={styles.skeleton} style={{ height: 14, width: '40%' }} />
             </div>
             <div className={styles.phoneStage}>
-              <div className={styles.skeleton} style={{ width: 'min(200px, 100%)', aspectRatio: '9 / 19.5', borderRadius: 34 }} />
+              <div className={styles.skeleton} style={{ width: '100%', height: '100%' }} />
             </div>
           </div>
         </aside>
@@ -484,22 +485,15 @@ export default function ProjectGallery({
             <span className={styles.recentActivityEyebrow}>top creators</span>
           </div>
           <div className={styles.phoneStage}>
-            <div className={styles.phoneDevice}>
-              <span className={styles.phoneButtonVolUp} aria-hidden="true" />
-              <span className={styles.phoneButtonVolDown} aria-hidden="true" />
-              <span className={styles.phoneButtonPower} aria-hidden="true" />
-              <div className={styles.phoneScreen}>
-                <div className={styles.phoneReflection} aria-hidden="true" />
-                <div className={styles.phoneNotch} aria-hidden="true" />
-                <span className={styles.phoneStatusLabel}>POCKET OS</span>
-                <div className={styles.phoneRadar} aria-hidden="true">
-                  <span className={styles.phoneRadarRing} />
-                  <span className={styles.phoneRadarRing} />
-                  <span className={styles.phoneRadarSweep} />
-                  <span className={styles.phoneRadarCore} />
-                </div>
-                <div className={styles.phoneHomeIndicator} aria-hidden="true" />
-              </div>
+            <div className={styles.phoneScreen}>
+              <UnicornScene
+                projectId="lsL5y48OjUQx1IYb4hfS"
+                width="100%"
+                height="240px"
+                scale={1}
+                dpi={1.5}
+                className={styles.phoneScene}
+              />
             </div>
           </div>
         </article>
