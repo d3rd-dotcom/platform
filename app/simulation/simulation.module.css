@@ -1085,12 +1085,12 @@
     position: relative;
     background: var(--color-surface-1);
     border: 2px solid var(--color-primary-hover);
-    border-radius: 8px;
-    padding: 8px;
+    border-radius: 12px;
+    padding: 16px;
     box-shadow:
-      0 3px 0 var(--color-primary),
-      0 0px 6px rgba(0, 0, 0, 0.14),
-      0 6px 3px rgba(0, 0, 0, 0.30);
+      0 6px 0 var(--color-primary),
+      0 0px 10px rgba(0, 0, 0, 0.14),
+      0 10px 5px rgba(0, 0, 0, 0.30);
     color: #1a1b24;
     flex: 1;
     display: flex;
@@ -1108,10 +1108,14 @@
     background: #15172a;
     border-color: color-mix(in oklch, var(--color-primary-hover) 40%, transparent);
     box-shadow:
-      0 3px 0 var(--color-primary),
-      0 0px 6px rgba(0, 0, 0, 0.14),
-      0 6px 3px rgba(0, 0, 0, 0.30);
+      0 6px 0 var(--color-primary),
+      0 0px 10px rgba(0, 0, 0, 0.14),
+      0 10px 5px rgba(0, 0, 0, 0.30);
     color: rgba(240, 241, 245, 0.7);
+  }
+  :global([data-theme='dark']) .recentActivityHeader {
+    background: color-mix(in oklch, var(--color-primary) 12%, #15172a);
+    border-bottom-color: color-mix(in oklch, var(--color-primary-hover) 30%, transparent);
   }
   :global([data-theme='dark']) .recentActivityEyebrow {
     color: rgba(255, 255, 255, 0.5);
@@ -1155,25 +1159,41 @@
   }
   .recentActivityHeader {
     display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 6px;
-    margin-bottom: 6px;
+    align-items: center;
+    gap: 7px;
+    padding: 12px 16px;
+    margin: -16px -16px 12px;
+    border-radius: 10px 10px 0 0;
+    background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-1));
+    border-bottom: 2px solid var(--color-primary-hover);
+  }
+  .recentActivityIcon {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .recentActivityTitle {
+    flex: 1;
+    min-width: 0;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #1a1b24;
+    margin: 0;
   }
   .recentActivityEyebrow {
     font-family: var(--font-mono);
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    color: rgba(0, 0, 0, 0.5);
-    margin: 0 0 2px;
-  }
-  .recentActivityTitle {
-    font-family: var(--font-secondary);
-    font-size: 12px;
+    font-size: 9px;
     font-weight: 700;
-    color: #1a1b24;
-    margin: 0;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.4);
+    flex-shrink: 0;
   }
   .recentActivityLink {
     display: inline-flex;
@@ -1199,7 +1219,7 @@
   .recentActivityList {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 4px;
     flex: 1;
     justify-content: space-around;
   }
@@ -1270,69 +1290,55 @@
   .simRow {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 4px 0;
-    border-bottom: 1px solid rgba(125, 135, 200, 0.12);
+    gap: 10px;
+    padding: 8px 6px;
+    border-radius: 10px;
   }
-  .simRow:last-child {
-    border-bottom: none;
+  .simRowTop {
+    background: color-mix(in oklch, var(--color-primary) 7%, transparent);
   }
   .simRank {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    font-weight: 700;
-    color: rgba(0, 0, 0, 0.35);
-    width: 16px;
-    text-align: right;
+    width: 18px;
     flex-shrink: 0;
+    text-align: center;
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: #9aa0c0;
   }
-  :global([data-theme='dark']) .simRank {
-    color: rgba(255, 255, 255, 0.35);
+  .simRowTop .simRank {
+    color: var(--color-primary);
   }
   .simAvatar {
-    flex: 0 0 24px;
-    width: 24px;
-    height: 24px;
+    flex: 0 0 28px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: var(--font-mono);
-    font-size: 10px;
-    font-weight: 700;
+    font-size: 0.78rem;
+    font-weight: 800;
     color: #fff;
     flex-shrink: 0;
   }
   .simName {
     flex: 1;
     min-width: 0;
-    font-family: var(--font-primary);
-    font-size: 10px;
+    font-size: 0.9rem;
     font-weight: 600;
-    color: rgba(0, 0, 0, 0.85);
+    color: #2a2f52;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   :global([data-theme='dark']) .simName {
     color: rgba(255, 255, 255, 0.9);
   }
   .simCount {
-    font-family: var(--font-mono);
-    font-size: 9px;
+    flex-shrink: 0;
+    font-size: 0.82rem;
     font-weight: 700;
     color: var(--color-primary);
-    flex-shrink: 0;
-  }
-  .simBarTrack {
-    width: 40px;
-    height: 4px;
-    background: rgba(125, 135, 200, 0.12);
-    border-radius: 2px;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-  .simBarFill {
-    height: 100%;
-    background: var(--color-primary);
-    border-radius: 2px;
   }
 
   /* ── panels ── */

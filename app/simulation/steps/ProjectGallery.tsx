@@ -15,7 +15,6 @@ const SIMULATORS = [
   { name: 'lumen', sims: 6, color: '#e17055' },
   { name: 'pixel', sims: 5, color: '#0984e3' },
 ];
-const MAX_SIMS = Math.max(...SIMULATORS.map((s) => s.sims));
 
 const DEV_MOCK_PROJECTS: Project[] = [
   {
@@ -243,16 +242,16 @@ export default function ProjectGallery({
         <aside className={styles.galleryRight}>
           <div className={styles.recentActivityCard}>
             <div className={styles.recentActivityHeader}>
-              <div className={styles.skeleton} style={{ height: 14, width: '50%' }} />
+              <div className={styles.skeleton} style={{ width: 20, height: 12 }} />
+              <div className={styles.skeleton} style={{ height: 14, width: '40%' }} />
             </div>
             <div className={styles.recentActivityList}>
               {Array.from({ length: 5 }).map((_, j) => (
                 <div key={j} className={styles.simRow}>
-                  <div className={styles.skeleton} style={{ width: 16, height: 10 }} />
-                  <div className={styles.skeleton} style={{ width: 24, height: 24, borderRadius: '50%' }} />
-                  <div className={styles.skeleton} style={{ flex: 1, height: 10 }} />
-                  <div className={styles.skeleton} style={{ width: 40, height: 4, borderRadius: 2 }} />
-                  <div className={styles.skeleton} style={{ width: 16, height: 10 }} />
+                  <div className={styles.skeleton} style={{ width: 18, height: 12 }} />
+                  <div className={styles.skeleton} style={{ width: 28, height: 28, borderRadius: '50%' }} />
+                  <div className={styles.skeleton} style={{ flex: 1, height: 12 }} />
+                  <div className={styles.skeleton} style={{ width: 20, height: 12 }} />
                 </div>
               ))}
             </div>
@@ -495,13 +494,14 @@ export default function ProjectGallery({
       <aside className={styles.galleryRight}>
         <article className={styles.recentActivityCard}>
           <div className={styles.recentActivityHeader}>
+            <span className={styles.recentActivityIcon}>世界</span>
             <h3 className={styles.recentActivityTitle}>Simulators</h3>
             <span className={styles.recentActivityEyebrow}>top creators</span>
           </div>
           <div className={styles.recentActivityList}>
             {SIMULATORS.map((sim, i) => (
-              <div key={sim.name} className={styles.simRow}>
-                <span className={styles.simRank}>#{i + 1}</span>
+              <div key={sim.name} className={`${styles.simRow} ${i === 0 ? styles.simRowTop : ''}`}>
+                <span className={styles.simRank}>{i + 1}</span>
                 <span
                   className={styles.simAvatar}
                   style={{ background: sim.color }}
@@ -509,12 +509,6 @@ export default function ProjectGallery({
                   {sim.name[0].toUpperCase()}
                 </span>
                 <span className={styles.simName}>{sim.name}</span>
-                <div className={styles.simBarTrack}>
-                  <div
-                    className={styles.simBarFill}
-                    style={{ width: `${(sim.sims / MAX_SIMS) * 100}%` }}
-                  />
-                </div>
                 <span className={styles.simCount}>{sim.sims}</span>
               </div>
             ))}
