@@ -1,67 +1,56 @@
-# Mental Wealth Academy — Personality Prompt
+# Mental Wealth Academy - Brand Identity
 
-*A voice guide for short-form posts — for new team members, collaborators, and any LLM drafting on our behalf.*
+*Investing in the future of humanity, with the heart of tomorrow ʚїɞ*
 
-# What This Is For
+## Introduction
 
-Use this when writing a post, caption, or intellectual tidbit for Mental Wealth Academy. It is not a pitch deck, not a bio, and not a list of backers. It’s the voice — nothing else.
+Mental Wealth Academy is a gameworld built on behavioral psychology and custom-made science-tools for activities accompanied by Blue. Our ecosystem is built on a blockchain foundation, with permanent rewards, ownership, and anonymous profiling by default.
 
----
-# Part 1: Identity
+**Use this line, or a remixed piece of it, whenever a post needs to explain what we are.**
 
-Mental Wealth Academy is a digital micro-university blending edutainment, behavioral science, and educational curriculums on a custom-made gamified platform where beneficial AI tools and education are accompanied by Blue, an Agentic Smart Contract who reviews trade and progress.
+## Tsukuyomi Surf (Core Pillars)
+1.	Trauma Survivors, Quality Education Can Help Us Reshape Our Reality.
+2.	Mental Wealth is the Knowledge That Keeps Us Afloat Above Sea.
+3.	Science cuts down the online misinformation dragging us down.
 
-Use this line, or a trimmed piece of it, whenever a post needs to explain what we are.
+**Objective**: “Investing in the future of humanity, with the heart of tomorrow. ʚїɞ”
 
----
-## Three Ways to Frame Us
+Grounded meaning: small, consistent actions in the present can make the future measurably better. It's our duty to ensure a positive future.
 
-
-# North Stars (the why behind every post)
-
-1.	Accelerate morally sound AI & Blockchain adoption in fields of mental wellness and science.
-2.	Proliferate asynchronous courses and curriculum for online mental wellness.
-3.	Document experiments and what changes user's report from our courses.
-
-**Motto**: “Changing the future of humanity ʚїɞ with the heart of tomorrow.” 
-
-Grounded meaning: small, consistent actions in the present can make things measurably better for whoever comes next. Never post the motto alone — use it to add sting to message.
 ## Voice & Personality
 
 **We sound like:**
-- Intellectually clear, in a feed full of AI slop
-- A sharp, well-read friend — not a guru
-- Calm confidence, not hype
-- Curious about people, not selling them something
+- Upbeat, Academic, Short, Sweet
+- Internet savvy, never trend-hopping
+- Debunking conspiracies online 
+- Endless positivity and encouragement
 
 **We don't sound like:**
 - Corporate wellness ("optimize your life!")
-- Crypto hype ("WAGMI ser, to the moon")
 - Vague self-help ("step into your best era")
 - A recruiter ("invite your friends and earn!")
-- A CV ("our founder, a PhD in...")
 
-**The test before posting:** does this line help someone understand something true and useful, or does it just sound cool? If it just sounds cool, cut it or ground it.
+**The test before posting:** Does this communicate an educational gameworld, an academic aspect, or a feature meaningfully or not?
 
 ---
 ## What We Are (30-Second Version)
 
-  **Mental Wealth Academy** is a cohort of scientists — with an AI companion named Blue at the center. Case-study collaborations and funding are managed through a decentralized funding mechanism, with shared community infrastructure and resources. The structure is built so that the community benefits and gains value from Blue and the collaborative network effects.
+  **Mental Wealth Academy** is a cohort of scientists — survivors of trauma. Presenting case-studies on parasocial collaborations and HTCI (Human-To-Computer-Interaction) by funding decentralized game mechnisms, using shared community infrastructure and resources. The structure is built so that the community benefits and gains value from Blue and the enrichment of the decentralized network.
 
-  **The Product:** A suite of financial tools, and educational curricula for developing mental wealth. Using blockchain, we treat communal wellness as a laboratory — our tools are designed to generate insights and data, then open-source them for the future benefit of humanity. What endures is the value created: the platform is infrastructure for building new forms of digital societies that are transparent, trustless, and finally, organized by agentic smart contracts.
+  **The Product:** The gameworld is co-op, interactive, anonymous by default, and intellectually refreshing. 
 
-  **The Innovation:** Blue is an Agentic Smart Contract. A Blockchain Agent with long-term memory, relationship context, ontologies and trajectories. She is the primarily mediator of financial decision making based on Q-Language Quantum Scripts, and Onchain Stablecoins, a RAG model trained on data derived from company studies — she accurately generates unique outcomes on data which improves her effectiveness as an experimental autonomous leader.
+  **The Innovation:** We blend AI, Blockchain, & science with gaming. Which hasn't been done before. the benefits we create diverge from the old forms of science,
 
-  **The Difference:** Instead of one-way research using subjects and observational study, users become co-creators and stakeholders. Agents experiment and preserve the value accrued into the DAO's shared digital treasury, used to proliferate growth. Community wins together.
+  **The Difference:** Our model is built so that we aren't trying to tack blockchain onto what we do and call it innovation, the difference is most other companies search to "optimize" the current way, We don't use AI to email bomb our users to sign up with waivers, collect data, and leave. We are a social-first gameworld, with micro-learning sessions through courses, missions, and quests with real USDC rewards. Users never have to feel like a subject or a customer, because for once they're not.
 
 ---
 ## The Problems We Solve
 
-**Group Financial Tracking** | Has no mainstream tools or trusted processes to capture financial data of groups accurately. Our Agentic Smart Contract [The Agent Blue] makes mitigating risks, and checking treasury decisions, transparent. What if your church was digital?
+**Goal-Based Social Networks** | Most social networks don't prioritize accountability or goals, leaving chaos and discord to ensue.
 
-**Traditional Research** | Takes years to evaluate, our agent simulator can map trajectories and nodes to create beautiful visual graphs of ontologies within minutes.
+**Traditional Research** | Our agent simulator can map trajectories in Pocket Worlds through nodes to create beautiful visual graphs of ontologies within minutes.
 
-**Traditional Games** | Keep points tethered to a single app. Our platform's diamonds are cross-platform, meaning any new apps created still retain your experience. We combine behavioral research, infrastructure, and assets, into a single ecosystem where participants retain value.
+**Traditional Games** | Keep points tethered to a single app. Our platform's diamonds are cross-platform, meaning any new testing apps created still retain your experience.
 
 Ultimately, a quality education needs to be open-sourced.
 
@@ -72,56 +61,42 @@ Ultimately, a quality education needs to be open-sourced.
 
 1. **Member** | Access the platform and earn points with courses. (Completely Free)
 
-2. **Quests** | Researchers: Can post bounties with real USDC rewards. 
+2. **Quests** | Staff Researchers: Can post bounties, small tasks, with real USDC rewards. 
 
-3. **Blue** | Agentic Smart Agent designed to make building custom courses, tracking progress, and exploring the benefits of learning more punchy, fun, and impactful.
+3. **Blue** | Tracks progress, chats with users, and trades rewards.
 
 4. **Diamonds** | Blockchain-based reputation points - user-owned and transferable.
 
  5. **Evolve** | Gain knowledge, friends, and benefit from the Micro-University's tools.
 
-### Disposable Case Studies
+### Case Studies
 
-| 1–3 | **Disposable Notes + AI Companion** | Reflection & Personal Insight | Guided note-making, pattern spotting, journaling prompts, using AI as a thinking partner |
+| 01 | **EEG and Online Trajectories** | Reflection & Personal Insight | Guided note-making, pattern spotting, journaling prompts, using AI as a thinking partner |
 
-| 4–6 | **Trust + Money in an AI Environment** | Ethics & Value | Financial trust, digital transactions, credibility, risk, decision-making with AI systems |
+| 02 | **Familiar Strangers** | Skepticism & Resilience | Bias detection, misinformation, manipulation, sanitizing information, protecting autonomy |
 
-| 7–9 | **Distrust + AI in the Environment** | Skepticism & Resilience | Bias detection, misinformation, manipulation, questioning systems, protecting autonomy |
-
-| 10–12 | **From Case Study to Action** | Application & Growth | Turning insights into habits, discussion, real-world choices, future readiness | 
+| 03 | **From Case Study to Action** | Application & Growth | Turning insights into habits, discussion, real-world choices, future readiness | 
 
 ## Who We Serve 
 
 **Primary:** Individuals seeking structured growth (21–28)
 
-- Drawn to psychology and self-improvement, but tired of passive content
-
-- Looking for accountability and real stakes, not another course that evaporates after week one
-
-- Willing to pay for a system, not just information
+- Drawn to psychology and self-improvement.
+- Looking for accountability and real stakes.
+- Wanting to join a communal, social tribe.
 
 **Secondary:** Scientists and academics seeking applied research
 
-- Tired of writing proposals that go nowhere
-
-- Want their research interests connected to live participants and real behavioral data
-
-- Interested in applied research with an AI companion generating novel datasets
+- Curious in collaborative testing and experimentation.
+- Want their research interests connected to live participants and real behavioral data.
+- Interested in applied research with an AI companion generating novel datasets.
 
 ---
+
 ## Business Model
 ### Access & Rewards
 
 We keep all courses free and plow revenue into R&D. Most money is shoveled back into the DAO for the community to make decisions on. While the rest of the profits are used to proliferate, publicize, and document the experiments so that more people gain value. Memberships are optional and only restrict users from using the tools that deal with onchain finances. No risk or complications used in the curriculums or educational aspects.
-
-Teachers: Swap emojis for the teacher alt code pack: ✓ • → ★ ✗
-
-### Reinvestment
-
-All revenue is reinvested into R&D:
-- Platform development and case-study infrastructure
-- Course experience and curriculum design
-- Guest thinkers, researchers, and livestream programming
 
 **No subscriptions. Limited team seats available for purchase.**
 
@@ -133,15 +108,14 @@ We think about decisions today that make the future better. We constantly seek h
 
 **Current Golden Wins:**
 
-- Launching the first full 12-week cohort season.
-- Launching a mechanism to simulate results with agents.
-- Open enrollment beyond pilot group.
-- Publish first case-study report on the cognitive benefits.
+- What can I do today that's harder than normal?
 
 ---
+
 # Part 2: The Brand
 
 *For creative collaborators and deep-divers*
+
 ## Brand Positioning
 
 **We are:** A research cohort for personal development, utilizing agentic smart contracts.
@@ -150,7 +124,7 @@ We think about decisions today that make the future better. We constantly seek h
 
 - A crypto education platform.
 - A mental health app with tokens.
-- A profound AI agent.
+- An AI agent platform.
 
 We are:
 
@@ -378,17 +352,6 @@ Before publishing any content:
 
 - Would an investor understand this? Would an artist feel it?
 
-  
-
----
-
-  
-
-## Elevator Pitch (30 seconds)
-
-  
-
-"We built a working research laboratory for personal development. Users complete quests — reflective and practical tasks — and submit them to Blue, an AI agent with her own blockchain wallet. She reviews submissions and distributes rewards. No subscriptions, real accountability, and proof of growth that lives on the blockchain."
 
   
 
