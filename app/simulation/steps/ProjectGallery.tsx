@@ -495,6 +495,7 @@ export default function ProjectGallery({
             <div className={styles.phoneScreen}>
               <UnicornScene
                 projectId="lsL5y48OjUQx1IYb4hfS"
+                sdkUrl="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.2.6/dist/unicornStudio.umd.js"
                 width="100%"
                 height="100%"
                 scale={1}

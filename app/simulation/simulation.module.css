@@ -1292,7 +1292,8 @@
     display: flex;
     overflow: hidden;
     border-radius: 0 0 10px 10px;
-    background: radial-gradient(120% 90% at 50% 0%, #1a2340 0%, #0a0c18 55%, #030406 100%);
+    background: #0a0c18;
+    padding-top: 32px;
   }
   .phoneScene {
     width: 100%;
