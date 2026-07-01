@@ -8,14 +8,6 @@ import type { Project } from '@/lib/simulation-api';
 import { useAsync } from '../usePolling';
 import styles from '../simulation.module.css';
 
-const SIMULATORS = [
-  { name: 'nova', sims: 12, color: '#6c5ce7' },
-  { name: 'frost', sims: 9, color: '#00b894' },
-  { name: 'echo', sims: 8, color: '#fdcb6e' },
-  { name: 'lumen', sims: 6, color: '#e17055' },
-  { name: 'pixel', sims: 5, color: '#0984e3' },
-];
-
 const DEV_MOCK_PROJECTS: Project[] = [
   {
     project_id: 'mock-1',
@@ -245,15 +237,8 @@ export default function ProjectGallery({
               <div className={styles.skeleton} style={{ width: 20, height: 12 }} />
               <div className={styles.skeleton} style={{ height: 14, width: '40%' }} />
             </div>
-            <div className={styles.recentActivityList}>
-              {Array.from({ length: 5 }).map((_, j) => (
-                <div key={j} className={styles.simRow}>
-                  <div className={styles.skeleton} style={{ width: 18, height: 12 }} />
-                  <div className={styles.skeleton} style={{ width: 28, height: 28, borderRadius: '50%' }} />
-                  <div className={styles.skeleton} style={{ flex: 1, height: 12 }} />
-                  <div className={styles.skeleton} style={{ width: 20, height: 12 }} />
-                </div>
-              ))}
+            <div className={styles.phoneStage}>
+              <div className={styles.skeleton} style={{ width: 'min(200px, 100%)', aspectRatio: '9 / 19.5', borderRadius: 34 }} />
             </div>
           </div>
         </aside>
@@ -498,20 +483,24 @@ export default function ProjectGallery({
             <h3 className={styles.recentActivityTitle}>Simulators</h3>
             <span className={styles.recentActivityEyebrow}>top creators</span>
           </div>
-          <div className={styles.recentActivityList}>
-            {SIMULATORS.map((sim, i) => (
-              <div key={sim.name} className={`${styles.simRow} ${i === 0 ? styles.simRowTop : ''}`}>
-                <span className={styles.simRank}>{i + 1}</span>
-                <span
-                  className={styles.simAvatar}
-                  style={{ background: sim.color }}
-                >
-                  {sim.name[0].toUpperCase()}
-                </span>
-                <span className={styles.simName}>{sim.name}</span>
-                <span className={styles.simCount}>{sim.sims}</span>
+          <div className={styles.phoneStage}>
+            <div className={styles.phoneDevice}>
+              <span className={styles.phoneButtonVolUp} aria-hidden="true" />
+              <span className={styles.phoneButtonVolDown} aria-hidden="true" />
+              <span className={styles.phoneButtonPower} aria-hidden="true" />
+              <div className={styles.phoneScreen}>
+                <div className={styles.phoneReflection} aria-hidden="true" />
+                <div className={styles.phoneNotch} aria-hidden="true" />
+                <span className={styles.phoneStatusLabel}>POCKET OS</span>
+                <div className={styles.phoneRadar} aria-hidden="true">
+                  <span className={styles.phoneRadarRing} />
+                  <span className={styles.phoneRadarRing} />
+                  <span className={styles.phoneRadarSweep} />
+                  <span className={styles.phoneRadarCore} />
+                </div>
+                <div className={styles.phoneHomeIndicator} aria-hidden="true" />
               </div>
-            ))}
+            </div>
           </div>
         </article>
       </aside>

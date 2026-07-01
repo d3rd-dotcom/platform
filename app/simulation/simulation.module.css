@@ -1216,12 +1216,12 @@
   .recentActivityLink:hover {
     opacity: 0.8;
   }
-  .recentActivityList {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+  .phoneStage {
     flex: 1;
-    justify-content: space-around;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 0;
   }
   .recentMiniCard {
     display: flex;
@@ -1285,60 +1285,152 @@
     display: block;
   }
 
-  /* ── simulators leaderboard ── */
+  /* ── skeuomorphic device ── */
 
-  .simRow {
+  .phoneDevice {
+    position: relative;
+    width: min(210px, 100%);
+    aspect-ratio: 9 / 19.5;
+    border-radius: 34px;
+    background: linear-gradient(155deg, #3a3d4f 0%, #1c1d28 45%, #08080c 100%);
+    box-shadow:
+      0 0 0 2px rgba(255, 255, 255, 0.07),
+      inset 0 1px 1px rgba(255, 255, 255, 0.18),
+      inset 0 -2px 3px rgba(0, 0, 0, 0.5),
+      0 24px 44px rgba(0, 0, 0, 0.4),
+      0 6px 14px rgba(0, 0, 0, 0.3);
+    padding: 9px;
     display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 6px;
-    border-radius: 10px;
   }
-  .simRowTop {
-    background: color-mix(in oklch, var(--color-primary) 7%, transparent);
+  .phoneButtonPower,
+  .phoneButtonVolUp,
+  .phoneButtonVolDown {
+    position: absolute;
+    background: linear-gradient(180deg, #4a4d60, #16171f);
+    box-shadow: 0 1px 1px rgba(255, 255, 255, 0.08);
   }
-  .simRank {
-    width: 18px;
-    flex-shrink: 0;
-    text-align: center;
-    font-size: 0.82rem;
-    font-weight: 800;
-    color: #9aa0c0;
+  .phoneButtonPower {
+    right: -2px;
+    top: 30%;
+    width: 3px;
+    height: 15%;
+    border-radius: 2px 0 0 2px;
   }
-  .simRowTop .simRank {
-    color: var(--color-primary);
+  .phoneButtonVolUp {
+    left: -2px;
+    top: 22%;
+    width: 3px;
+    height: 9%;
+    border-radius: 0 2px 2px 0;
   }
-  .simAvatar {
-    flex: 0 0 28px;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.78rem;
-    font-weight: 800;
-    color: #fff;
-    flex-shrink: 0;
+  .phoneButtonVolDown {
+    left: -2px;
+    top: 33%;
+    width: 3px;
+    height: 9%;
+    border-radius: 0 2px 2px 0;
   }
-  .simName {
+  .phoneScreen {
+    position: relative;
     flex: 1;
-    min-width: 0;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #2a2f52;
+    border-radius: 25px;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    background: radial-gradient(120% 90% at 50% 0%, #1a2340 0%, #0a0c18 55%, #030406 100%);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
   }
-  :global([data-theme='dark']) .simName {
-    color: rgba(255, 255, 255, 0.9);
+  .phoneReflection {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    background: linear-gradient(115deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.03) 16%, transparent 30%);
+    pointer-events: none;
   }
-  .simCount {
-    flex-shrink: 0;
-    font-size: 0.82rem;
+  .phoneNotch {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 44px;
+    height: 13px;
+    border-radius: 999px;
+    background: #000;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.09);
+    z-index: 3;
+  }
+  .phoneStatusLabel {
+    position: absolute;
+    top: 32px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 8px;
     font-weight: 700;
-    color: var(--color-primary);
+    letter-spacing: 0.16em;
+    color: color-mix(in oklch, var(--color-primary) 55%, rgba(255, 255, 255, 0.4));
+    z-index: 3;
+  }
+  .phoneRadar {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 96px;
+    height: 96px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+  }
+  .phoneRadarRing {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid color-mix(in oklch, var(--color-primary) 35%, transparent);
+  }
+  .phoneRadarRing:nth-child(2) {
+    inset: 20px;
+    border-color: color-mix(in oklch, var(--color-primary) 45%, transparent);
+  }
+  .phoneRadarSweep {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(
+      from 0deg,
+      color-mix(in oklch, var(--color-primary) 55%, transparent) 0deg,
+      transparent 70deg,
+      transparent 360deg
+    );
+    animation: phoneRadarSpin 5s linear infinite;
+  }
+  .phoneRadarCore {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: var(--color-primary);
+    box-shadow: 0 0 12px 4px color-mix(in oklch, var(--color-primary) 65%, transparent);
+  }
+  @keyframes phoneRadarSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .phoneRadarSweep {
+      animation: none;
+    }
+  }
+  .phoneHomeIndicator {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 56px;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.3);
+    z-index: 3;
   }
 
   /* ── panels ── */
