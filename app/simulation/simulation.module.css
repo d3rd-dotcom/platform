@@ -259,9 +259,10 @@
     margin: 0 auto;
     padding: clamp(18px, 4vh, 40px) 32px clamp(16px, 3vh, 32px);
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 440px;
     grid-template-rows: auto auto 1fr;
-    gap: 0;
+    gap: 0 32px;
+    overflow: hidden;
   }
   .galleryWrap {
     width: min(1460px, 100%);
@@ -295,19 +296,13 @@
   .projectGrid {
     grid-column: 1;
     grid-row: 3;
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(520px, 1fr));
     gap: 16px;
     min-width: 0;
     min-height: 0;
-    padding: 3px 32px 32px 0;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    flex-shrink: 0;
-  }
-  .projectGrid::-webkit-scrollbar {
-    display: none;
+    align-content: start;
+    padding: 3px 4px 3px 0;
   }
   .galleryRight {
     grid-column: 2;
@@ -571,8 +566,6 @@
     position: relative;
     isolation: isolate;
     overflow: visible;
-    flex-shrink: 0;
-    width: 480px;
     text-align: left;
     text-transform: none;
     letter-spacing: normal;
@@ -1257,6 +1250,76 @@
     height: 100%;
     object-fit: cover;
     display: block;
+  }
+
+  /* ── simulators leaderboard ── */
+
+  .simRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(125, 135, 200, 0.12);
+  }
+  .simRow:last-child {
+    border-bottom: none;
+  }
+  .simRank {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.35);
+    width: 16px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  :global([data-theme='dark']) .simRank {
+    color: rgba(255, 255, 255, 0.35);
+  }
+  .simAvatar {
+    flex: 0 0 24px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .simName {
+    flex: 1;
+    min-width: 0;
+    font-family: var(--font-primary);
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.85);
+  }
+  :global([data-theme='dark']) .simName {
+    color: rgba(255, 255, 255, 0.9);
+  }
+  .simCount {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+  .simBarTrack {
+    width: 40px;
+    height: 4px;
+    background: rgba(125, 135, 200, 0.12);
+    border-radius: 2px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .simBarFill {
+    height: 100%;
+    background: var(--color-primary);
+    border-radius: 2px;
   }
 
   /* ── panels ── */

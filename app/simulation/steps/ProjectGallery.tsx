@@ -8,6 +8,15 @@ import type { Project } from '@/lib/simulation-api';
 import { useAsync } from '../usePolling';
 import styles from '../simulation.module.css';
 
+const SIMULATORS = [
+  { name: 'nova', sims: 12, color: '#6c5ce7' },
+  { name: 'frost', sims: 9, color: '#00b894' },
+  { name: 'echo', sims: 8, color: '#fdcb6e' },
+  { name: 'lumen', sims: 6, color: '#e17055' },
+  { name: 'pixel', sims: 5, color: '#0984e3' },
+];
+const MAX_SIMS = Math.max(...SIMULATORS.map((s) => s.sims));
+
 const DEV_MOCK_PROJECTS: Project[] = [
   {
     project_id: 'mock-1',
@@ -138,21 +147,6 @@ export default function ProjectGallery({
   const [error, setError] = useState<string | null>(null);
   const [contextOpen, setContextOpen] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
-  const projectGridRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const onWheel = (e: WheelEvent) => {
-      const grid = projectGridRef.current;
-      if (!grid || !grid.contains(e.target as Node)) return;
-      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        e.preventDefault();
-        const px = e.deltaMode === 1 ? e.deltaY * 28 : e.deltaY;
-        grid.scrollBy({ left: px, behavior: 'auto' });
-      }
-    };
-    window.addEventListener('wheel', onWheel, { passive: false });
-    return () => window.removeEventListener('wheel', onWheel);
-  }, []);
 
   useEffect(() => {
     if (!creating) return;
@@ -237,6 +231,24 @@ export default function ProjectGallery({
             </div>
           ))}
         </section>
+        <aside className={styles.galleryRight}>
+          <div className={styles.recentActivityCard}>
+            <div className={styles.recentActivityHeader}>
+              <div className={styles.skeleton} style={{ height: 14, width: '50%' }} />
+            </div>
+            <div className={styles.recentActivityList}>
+              {Array.from({ length: 5 }).map((_, j) => (
+                <div key={j} className={styles.simRow}>
+                  <div className={styles.skeleton} style={{ width: 16, height: 10 }} />
+                  <div className={styles.skeleton} style={{ width: 24, height: 24, borderRadius: '50%' }} />
+                  <div className={styles.skeleton} style={{ flex: 1, height: 10 }} />
+                  <div className={styles.skeleton} style={{ width: 40, height: 4, borderRadius: 2 }} />
+                  <div className={styles.skeleton} style={{ width: 16, height: 10 }} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </aside>
       </div>
     );
   }
@@ -386,7 +398,7 @@ export default function ProjectGallery({
         </div>
       )}
 
-      <section className={styles.projectGrid} ref={projectGridRef}>
+      <section className={styles.projectGrid}>
         {!loading && !isOffline && projects.length === 0 && (
           <p className={styles.muted}>No worlds yet. Create your first one above.</p>
         )}
@@ -464,6 +476,35 @@ export default function ProjectGallery({
           );
         })}
       </section>
+      <aside className={styles.galleryRight}>
+        <article className={styles.recentActivityCard}>
+          <div className={styles.recentActivityHeader}>
+            <h3 className={styles.recentActivityTitle}>Simulators</h3>
+            <span className={styles.recentActivityEyebrow}>top creators</span>
+          </div>
+          <div className={styles.recentActivityList}>
+            {SIMULATORS.map((sim, i) => (
+              <div key={sim.name} className={styles.simRow}>
+                <span className={styles.simRank}>#{i + 1}</span>
+                <span
+                  className={styles.simAvatar}
+                  style={{ background: sim.color }}
+                >
+                  {sim.name[0].toUpperCase()}
+                </span>
+                <span className={styles.simName}>{sim.name}</span>
+                <div className={styles.simBarTrack}>
+                  <div
+                    className={styles.simBarFill}
+                    style={{ width: `${(sim.sims / MAX_SIMS) * 100}%` }}
+                  />
+                </div>
+                <span className={styles.simCount}>{sim.sims}</span>
+              </div>
+            ))}
+          </div>
+        </article>
+      </aside>
       </div>
       </div>
   );
