@@ -336,8 +336,12 @@ def build_graph():
                 "task_id": project.graph_build_task_id
             }), 400
         
-        # If force rebuild, reset status
+        # If force rebuild, reset status. Remember the graph being replaced so the
+        # background task can clean it up from Zep once it confirms nothing else
+        # still references it.
+        old_graph_id = None
         if force and project.status in [ProjectStatus.GRAPH_BUILDING, ProjectStatus.FAILED, ProjectStatus.GRAPH_COMPLETED]:
+            old_graph_id = project.graph_id
             project.status = ProjectStatus.ONTOLOGY_GENERATED
             project.graph_id = None
             project.graph_build_task_id = None
@@ -392,7 +396,30 @@ def build_graph():
                 
                 # Create graph build service
                 builder = GraphBuilderService(api_key=Config.ZEP_API_KEY)
-                
+
+                # Clean up the graph this rebuild replaces — but only if no
+                # simulation still references it. Existing simulations keep their
+                # original graph (as promised in the rebuild dialog) and use it
+                # for Zep retrieval during runs, so an in-use graph is left alone.
+                if old_graph_id:
+                    try:
+                        from ..services.simulation_manager import SimulationManager
+                        still_referenced = any(
+                            sim.graph_id == old_graph_id
+                            for sim in SimulationManager().list_simulations()
+                        )
+                        if still_referenced:
+                            build_logger.info(
+                                f"[{task_id}] Keeping old graph {old_graph_id}; still referenced by a simulation"
+                            )
+                        else:
+                            builder.delete_graph(old_graph_id)
+                            build_logger.info(f"[{task_id}] Deleted orphaned old graph {old_graph_id}")
+                    except Exception as cleanup_err:
+                        build_logger.warning(
+                            f"[{task_id}] Old graph cleanup skipped for {old_graph_id}: {cleanup_err}"
+                        )
+
                 # Chunking
                 task_manager.update_task(
                     task_id,

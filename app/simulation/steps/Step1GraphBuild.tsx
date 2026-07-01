@@ -30,6 +30,8 @@ export default function Step1GraphBuild({
   const [rebuilding, setRebuilding] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+  const [buildProgress, setBuildProgress] = useState(0);
+  const [buildMessage, setBuildMessage] = useState<string | null>(null);
   const [enrichmentContext, setEnrichmentContext] = useState('');
   const [enrichmentTaskId, setEnrichmentTaskId] = useState<string | null>(null);
   const [enriching, setEnriching] = useState(false);
@@ -69,6 +71,8 @@ export default function Step1GraphBuild({
     completingBuild.current = false;
     setBuilding(true);
     setRebuilding(force);
+    setBuildProgress(0);
+    setBuildMessage(null);
     try {
       const res = await api.buildGraph({ project_id: wf.project.project_id, force });
       const nextTaskId = res.data?.task_id;
@@ -119,6 +123,8 @@ export default function Step1GraphBuild({
     stop: (res) => res.data?.status === 'completed' || res.data?.status === 'failed',
     onData: async (res) => {
       const st = res.data?.status;
+      if (typeof res.data?.progress === 'number') setBuildProgress(res.data.progress);
+      if (res.data?.message) setBuildMessage(res.data.message);
       if (st === 'failed') {
         failBuild(res.data?.error || 'Graph build failed');
       } else if (st === 'completed') {
@@ -274,6 +280,21 @@ export default function Step1GraphBuild({
       )}
 
       {error && <p className={styles.errorText}>{error}</p>}
+
+      {building && (
+        <div className={styles.buildProgress}>
+          <div className={styles.buildProgressTrack}>
+            <div
+              className={styles.buildProgressFill}
+              style={{ width: `${Math.max(4, Math.min(100, buildProgress))}%` }}
+            />
+          </div>
+          <div className={styles.buildProgressMeta}>
+            <span>{buildMessage || 'Working…'}</span>
+            <span className={styles.buildProgressPct}>{Math.round(buildProgress)}%</span>
+          </div>
+        </div>
+      )}
 
       <div className={styles.actionRow}>
         {alreadyBuilt && !building ? (

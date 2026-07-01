@@ -91,11 +91,17 @@ function isMetaNode(n: GraphNode) {
     .map((label) => str(label).toLowerCase())
     .filter(Boolean);
   const customLabels = labels.filter((label) => label !== 'entity' && label !== 'node');
-  if (!labels.length || !customLabels.length) return true;
+  // Zep schema/internal nodes are keyed by uuid/id labels — always meta.
   if (customLabels.some((label) => label === 'uuid' || label === 'id')) return true;
 
-  const haystack = [str(n.name).toLowerCase(), ...customLabels].join(' ');
-  return META_NODE_PATTERNS.some((pattern) => haystack.includes(pattern));
+  const name = str(n.name).toLowerCase();
+  const haystack = [name, ...customLabels].join(' ');
+  if (META_NODE_PATTERNS.some((pattern) => haystack.includes(pattern))) return true;
+
+  // Keep untyped-but-named entities: Zep often returns a real entity with only
+  // the generic "Entity" label. Only drop nodes that have neither a usable name
+  // nor a descriptive label — those are unrenderable noise.
+  return !name && !customLabels.length;
 }
 
 function edgeSource(e: GraphEdge) {
@@ -268,13 +274,15 @@ export default function GraphPanel({
       return { nodes: [] as SimNode[], links: [] as SimLink[], types: [] as string[], colorOf: () => '#5168FF' };
     }
 
-    const rawNodes = graph.nodes
+    // Keep every renderable entity as a candidate first; the node cap is applied
+    // later by importance (degree), not by Zep's arbitrary return order.
+    const candidates = graph.nodes
       .map((n) => ({ raw: n, id: nodeId(n) }))
-      .filter((n) => n.id && !isMetaNode(n.raw))
-      .slice(0, MAX_NODES);
-    const ids = new Set(rawNodes.map((n) => n.id));
+      .filter((n) => n.id && !isMetaNode(n.raw));
+    const candidateIds = new Set(candidates.map((n) => n.id));
 
-    const normalizedLinks: SimLink[] = (graph.edges || [])
+    // Normalize every edge whose endpoints are both real candidate entities.
+    const allLinks: SimLink[] = (graph.edges || [])
       .map((e, i) => {
         const source = edgeSource(e);
         const target = edgeTarget(e);
@@ -290,7 +298,30 @@ export default function GraphPanel({
           raw: e,
         };
       })
-      .filter((e) => ids.has(e.source) && ids.has(e.target));
+      .filter((e) => candidateIds.has(e.source) && candidateIds.has(e.target));
+
+    // Degree over the full candidate set decides which nodes survive the cap.
+    const candidateDegree = new Map<string, number>();
+    for (const l of allLinks) {
+      candidateDegree.set(l.source, (candidateDegree.get(l.source) || 0) + 1);
+      candidateDegree.set(l.target, (candidateDegree.get(l.target) || 0) + 1);
+    }
+
+    // Cap by keeping the most-connected entities so large graphs render their
+    // hubs instead of a random truncated slice.
+    const rawNodes =
+      candidates.length > MAX_NODES
+        ? [...candidates]
+            .sort((a, b) => (candidateDegree.get(b.id) || 0) - (candidateDegree.get(a.id) || 0))
+            .slice(0, MAX_NODES)
+        : candidates;
+    const ids = new Set(rawNodes.map((n) => n.id));
+
+    // Re-filter to relationships whose endpoints both survived the cap, then
+    // recompute degree so it reflects only what is actually shown.
+    const normalizedLinks: SimLink[] = allLinks.filter(
+      (e) => ids.has(e.source) && ids.has(e.target),
+    );
 
     const degree = new Map<string, number>();
     for (const l of normalizedLinks) {

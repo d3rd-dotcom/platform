@@ -68,6 +68,26 @@ function formatDate(iso?: string) {
   }
 }
 
+// Drive the card badge + call-to-action from the world's real state so a
+// freshly-created world doesn't advertise "Observe findings" before it has any.
+function worldCardState(p: Project, hasReport: boolean) {
+  if (hasReport) return { badge: 'Report ready', cta: 'Observe findings' };
+  switch (p.status) {
+    case 'graph_building':
+      return { badge: 'Building graph', cta: 'Resume build' };
+    case 'failed':
+    case 'error':
+      return { badge: 'Needs attention', cta: 'Review' };
+    case 'graph_completed':
+    case 'graph_built':
+      return { badge: 'Graph ready', cta: 'Open world' };
+    case 'ontology_generated':
+      return { badge: 'Draft', cta: 'Build graph' };
+    default:
+      return { badge: 'Draft', cta: 'Set up world' };
+  }
+}
+
 export default function ProjectGallery({
   online,
   onOpen,
@@ -403,6 +423,8 @@ export default function ProjectGallery({
         )}
         {displayProjects.map((p, i) => {
           const article = reportByProject.get(p.project_id);
+          const cardState = worldCardState(p, Boolean(article));
+          const excerpt = article?.summary || p.simulation_requirement || '';
           return (
           <button
             key={p.project_id}
@@ -421,9 +443,9 @@ export default function ProjectGallery({
                 <h3 className={styles.projectCardName}>{p.name}</h3>
               )}
               <p className={styles.projectCardAuthor}>by you · {formatDate(p.created_at)}</p>
-              <p className={styles.projectCardExcerpt}>{article?.summary || p.simulation_requirement || ''}</p>
+              <p className={styles.projectCardExcerpt}>{excerpt || 'No description yet.'}</p>
               <span className={styles.observeBtn}>
-                Observe findings
+                {cardState.cta}
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
               </span>
               </div>
@@ -434,7 +456,7 @@ export default function ProjectGallery({
                   backgroundImage: `url(${i === 0 ? '/world-first.png' : '/world-other.png'})`,
                 }}
               >
-                <span className={styles.projectStatus}>Pocket World</span>
+                <span className={styles.projectStatus}>{cardState.badge}</span>
                 <div className={styles.projectCardVisualOverlay}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                 </div>

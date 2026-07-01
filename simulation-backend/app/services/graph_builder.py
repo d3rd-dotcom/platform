@@ -59,12 +59,7 @@ class GraphBuilderService:
         rendered in the live graph.
         """
         labels = [str(label).strip() for label in (getattr(node, "labels", None) or []) if str(label).strip()]
-        if not labels:
-            return True
-
         custom_labels = [label for label in labels if label not in {"Entity", "Node"}]
-        if not custom_labels:
-            return True
 
         lowered_labels = [label.lower() for label in custom_labels]
         lowered_name = str(getattr(node, "name", "") or "").strip().lower()
@@ -83,11 +78,18 @@ class GraphBuilderService:
             "metadata",
         )
 
+        # Zep schema/internal nodes are keyed by uuid/id labels — always meta.
         if any(label in {"uuid", "id"} for label in lowered_labels):
             return True
 
         haystack = " ".join(lowered_labels + [lowered_name])
-        return any(pattern in haystack for pattern in suspicious_patterns)
+        if any(pattern in haystack for pattern in suspicious_patterns):
+            return True
+
+        # Keep untyped-but-named entities: Zep often returns a real entity with
+        # only the generic "Entity" label. Drop a node only when it has neither a
+        # usable name nor a descriptive label — that is unrenderable noise.
+        return not lowered_name and not custom_labels
 
     def _filter_graph_nodes_and_edges(self, nodes, edges):
         visible_nodes = [node for node in nodes if not self._is_meta_node(node)]

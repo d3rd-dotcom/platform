@@ -1341,6 +1341,34 @@
     align-items: center;
     justify-content: center;
   }
+  .buildProgress {
+    margin: 4px 0 16px;
+  }
+  .buildProgressTrack {
+    height: 6px;
+    border-radius: 999px;
+    background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+    overflow: hidden;
+  }
+  .buildProgressFill {
+    height: 100%;
+    border-radius: 999px;
+    background: var(--color-primary);
+    transition: width 0.4s ease;
+  }
+  .buildProgressMeta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 7px;
+    font-size: 11px;
+    opacity: 0.62;
+  }
+  .buildProgressPct {
+    font-variant-numeric: tabular-nums;
+    opacity: 0.8;
+  }
   .enrichmentBox {
     background: color-mix(in oklch, var(--color-primary) 6%, transparent);
     border: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
