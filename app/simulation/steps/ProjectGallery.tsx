@@ -496,6 +496,7 @@ export default function ProjectGallery({
                 dpi={1.5}
                 lazyLoad={false}
                 showPlaceholderWhileLoading={false}
+                production={false}
                 className={styles.phoneScene}
               />
             </div>
