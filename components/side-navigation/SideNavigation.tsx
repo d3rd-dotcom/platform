@@ -82,20 +82,14 @@ const primaryNavItems: NavItem[] = [
     iconSrc: '/icons/nav-home.svg',
   },
   {
-    id: 'quests',
-    label: 'Quests',
-    href: '/quests',
-    iconSrc: '/icons/nav-quests-v3.svg',
-  },
-];
-
-const bottomNavItems: NavItem[] = [
-  {
     id: 'course',
     label: 'Courses',
     href: '/courses',
     iconSrc: '/icons/nav-course-v2.svg',
   },
+];
+
+const bottomNavItems: NavItem[] = [
   { 
     id: 'surveys',
     label: 'Surveys',
@@ -805,7 +799,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
               )}
             </div>
 
-            {/* Bottom group: Surveys, Quests */}
+            {/* Bottom group: Surveys */}
             <div className={styles.navBottomGroup}>
               {bottomNavItems.map((item) => {
                 const active = isActive(item.href);

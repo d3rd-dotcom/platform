@@ -19,6 +19,7 @@ interface NavLink {
 
 const NAV_LINKS: NavLink[] = [
   { label: 'Community', href: '/community', icon: '/icons/nav-world-v2.svg', comingSoon: true },
+  { label: 'Quests', href: '/quests', icon: '/icons/nav-quests-v3.svg' },
   { label: 'Pocket News', href: '/simulation', icon: '/icons/nav-simulations-v2.svg' },
   { label: 'R-Tool', href: '/research', icon: '/icons/nav-laboratory-v3.svg' },
 ];
