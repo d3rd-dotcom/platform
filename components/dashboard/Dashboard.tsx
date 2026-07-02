@@ -106,7 +106,7 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
                     </span>
                   )}
                   <span className={styles.leaderName}>{u.username}</span>
-                  <span className={styles.leaderShards}>{u.shards}</span>
+                  <span className={styles.leaderShards}>{u.shards.toLocaleString()}</span>
                 </li>
               ))}
             </ul>
@@ -156,7 +156,7 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
                       </div>
                     )}
                     <span className={styles.leagueName}>{u.username}</span>
-                    <span className={styles.leagueShards}>{u.shards} diamonds</span>
+                    <span className={styles.leagueShards}>{u.shards.toLocaleString()} diamonds</span>
                   </div>
                 ))
               )}
