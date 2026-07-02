@@ -95,6 +95,7 @@ const TopNavigation: React.FC = () => {
               type="text"
               className={styles.searchInput}
               placeholder="Search Academy"
+              onClick={() => play('input-focus')}
               onKeyDown={() => play('click')}
             />
             <MagnifyingGlass size={20} weight="bold" className={styles.searchIcon} />

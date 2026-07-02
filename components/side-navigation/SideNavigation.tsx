@@ -638,7 +638,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                   setIsProModalOpen(true);
                   setIsMobileMenuOpen(false);
                 }}
-                onMouseEnter={() => play('hover')}
+                onMouseEnter={() => play('soft-hover')}
                 className={`${styles.navItem} ${styles.navItemButton} hover-slide-trigger`}
                 title={isCollapsed ? item.label : undefined}
                 aria-label={`${item.label}, locked; VIP membership required`}
@@ -669,10 +669,10 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                 className={`${styles.navItem} hover-slide-trigger ${active ? styles.navItemActive : ''}`}
                 {...(item.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                 onClick={() => {
-                  play('navigation');
+                  play('soft-hover');
                   setIsMobileMenuOpen(false);
                 }}
-                onMouseEnter={() => play('hover')}
+                onMouseEnter={() => play('soft-hover')}
                 title={isCollapsed ? item.label : undefined}
                 aria-current={active ? 'page' : undefined}
                 data-tour={item.id === 'markets' ? 'markets' : undefined}
@@ -756,10 +756,10 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                   href={item.href}
                   className={`${styles.navItem} hover-slide-trigger ${active ? styles.navItemActive : ''}`}
                   onClick={() => {
-                    play('navigation');
+                    play('soft-hover');
                     setIsMobileMenuOpen(false);
                   }}
-                  onMouseEnter={() => play('hover')}
+                  onMouseEnter={() => play('soft-hover')}
                   title={isCollapsed ? item.label : undefined}
                   aria-current={active ? 'page' : undefined}
                 >
@@ -820,10 +820,10 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                     className={`${styles.navItem} hover-slide-trigger ${active ? styles.navItemActive : ''}`}
                     data-tour={item.id === 'quests' || item.id === 'events' ? 'quests' : undefined}
                     onClick={() => {
-                      play('navigation');
+                      play('soft-hover');
                       setIsMobileMenuOpen(false);
                     }}
-                    onMouseEnter={() => play('hover')}
+                    onMouseEnter={() => play('soft-hover')}
                     title={isCollapsed ? item.label : undefined}
                     aria-current={active ? 'page' : undefined}
                   >

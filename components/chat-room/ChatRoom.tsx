@@ -407,6 +407,7 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
           placeholder="Message..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          onClick={() => play('input-focus')}
           onKeyDown={handleKeyDown}
           onFocus={markRead}
           maxLength={500}

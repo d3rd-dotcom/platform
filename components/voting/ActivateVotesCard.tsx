@@ -80,8 +80,8 @@ const ActivateVotesCard: React.FC = () => {
       </div>
       <button
         className={styles.button}
-        onClick={() => { play('click'); void handleActivate(); }}
-        onMouseEnter={() => play('hover')}
+        onClick={() => { play('soft-hover'); void handleActivate(); }}
+        onMouseEnter={() => play('soft-hover')}
         disabled={working}
         type="button"
       >

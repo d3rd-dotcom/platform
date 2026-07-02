@@ -759,7 +759,7 @@ export default function AccordionJournalCard({
         type="button"
         className={styles.cardFace}
         onClick={() => { if (isSealed || isLocked) return; play(isExpanded ? 'toggle-off' : 'toggle-on'); setIsExpanded(!isExpanded); }}
-        onMouseEnter={() => play('hover')}
+        onMouseEnter={() => play('soft-hover')}
         aria-expanded={isExpanded}
         disabled={isSealed || isLocked}
       >
@@ -851,7 +851,7 @@ export default function AccordionJournalCard({
                 type="button"
                 className={styles.sectionHeader}
                 onClick={() => { play(expandedSections.has(section.id) ? 'toggle-off' : 'toggle-on'); toggleSection(section.id); }}
-                onMouseEnter={() => play('hover')}
+                onMouseEnter={() => play('soft-hover')}
                 aria-expanded={expandedSections.has(section.id)}
               >
                 <div className={styles.sectionHeaderLeft}>
@@ -885,7 +885,7 @@ export default function AccordionJournalCard({
                     type="button"
                     className={styles.readLetterButton}
                     onClick={() => { play('click'); setLetterModal({ title: section.title, content: section.instructions }); }}
-                    onMouseEnter={() => play('hover')}
+                    onMouseEnter={() => play('soft-hover')}
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
@@ -901,7 +901,7 @@ export default function AccordionJournalCard({
                   type="button"
                   className={`${styles.completeButton} ${completedSections.has(section.id) ? styles.completeButtonActive : ''}`}
                   onClick={() => { play('success'); markComplete(section.id); }}
-                  onMouseEnter={() => play('hover')}
+                  onMouseEnter={() => play('soft-hover')}
                   disabled={isSealed}
                 >
                   {completedSections.has(section.id) ? 'Completed' : 'Mark Complete'}
@@ -968,7 +968,7 @@ export default function AccordionJournalCard({
                 type="button"
                 className={`${styles.sealButton} ${canSeal ? styles.sealButtonActive : ''}`}
                 onClick={() => { play('click'); setShowSealModal(true); }}
-                onMouseEnter={() => play('hover')}
+                onMouseEnter={() => play('soft-hover')}
                 disabled={!canSeal}
               >
                 <Image src="/uploads/BlueSeal.svg" width={18} height={18} alt="shield" />

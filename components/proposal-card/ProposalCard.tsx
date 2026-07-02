@@ -331,8 +331,8 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
         </span>
         <button
           className={styles.viewButton}
-          onClick={() => { play('click'); onViewDetails?.(id); }}
-          onMouseEnter={() => play('hover')}
+          onClick={() => { play('soft-hover'); onViewDetails?.(id); }}
+          onMouseEnter={() => play('soft-hover')}
           type="button"
         >
           View Details
