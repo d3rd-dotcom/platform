@@ -152,7 +152,9 @@ export async function POST(req: NextRequest) {
     // Check for a pre-recorded clip first — saves ElevenLabs credits.
     // Multi-take greetings: same text, different audio generations for variance.
     const MULTI_TAKE: Record<string, string[]> = {
-      "h..h-hello...? who's this?": ['greeting-v1', 'greeting-v2', 'greeting-v3'],
+      "hey. you called. i'm glad.": ['greeting-v1', 'greeting-v2', 'greeting-v3'],
+      "oh, hey. i didn't expect you. but i'm happy you're here.": ['greeting-v4', 'greeting-v5', 'greeting-v6'],
+      "you're back. i had a feeling you would be.": ['greeting-v7', 'greeting-v8', 'greeting-v9'],
     };
     const takes = MULTI_TAKE[text];
     if (takes) {

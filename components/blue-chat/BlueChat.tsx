@@ -204,9 +204,9 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
   const { connector, isConnected } = useAccount();
   const currentPathname = usePathname();
   const GREETINGS_VOICE = [
-    "h..h-hello...? who's this?",
-    "oh — hey. didn't see you there. what's up?",
-    "you're back. good. i've got something for you.",
+    "hey. you called. i'm glad.",
+    "oh, hey. i didn't expect you. but i'm happy you're here.",
+    "you're back. i had a feeling you would be.",
   ];
   const GREETINGS_TEXT = [
     "hey, i'm blue. your research partner in the digital matrix. what are we analyzing today?",
@@ -454,7 +454,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
     }
   }, []);
 
-  // When chat is opened via "Call Blue": enable voice, speak the quirky greeting, then return to normal text.
+  // When chat is opened via "Call Blue": enable voice, speak the greeting aloud, then return to normal text.
   useEffect(() => {
     if (!startWithVoice) return;
     setVoiceEnabled(true);
@@ -463,7 +463,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
     setIsSpeaking(true);
     const controller = new AbortController();
     voiceAbortRef.current = controller;
-    speakBlue("h..h-hello...? who's this?", controller.signal)
+    speakBlue(initialGreeting, controller.signal)
       .catch((err) => {
         if (err?.name === 'AbortError') return;
         console.warn('[BlueChat] call greeting TTS failed:', err);

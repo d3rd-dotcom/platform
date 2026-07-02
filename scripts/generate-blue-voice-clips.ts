@@ -56,23 +56,62 @@ const CLIPS: Clip[] = [
   },
 
   // ── Priority 1: Blue's greetings (multiple variants for variance) ──
+  // Line 1 — calm, welcoming
   {
     id: 'greeting-v1',
     dir: 'blue-voice',
     priority: 1,
-    text: "h..h-hello...? who's this?",
+    text: "hey. you called. i'm glad.",
   },
   {
     id: 'greeting-v2',
     dir: 'blue-voice',
     priority: 1,
-    text: "h..h-hello...? who's this?",
+    text: "hey. you called. i'm glad.",
   },
   {
     id: 'greeting-v3',
     dir: 'blue-voice',
     priority: 1,
-    text: "h..h-hello...? who's this?",
+    text: "hey. you called. i'm glad.",
+  },
+  // Line 2 — soft, casual
+  {
+    id: 'greeting-v4',
+    dir: 'blue-voice',
+    priority: 1,
+    text: "oh, hey. i didn't expect you. but i'm happy you're here.",
+  },
+  {
+    id: 'greeting-v5',
+    dir: 'blue-voice',
+    priority: 1,
+    text: "oh, hey. i didn't expect you. but i'm happy you're here.",
+  },
+  {
+    id: 'greeting-v6',
+    dir: 'blue-voice',
+    priority: 1,
+    text: "oh, hey. i didn't expect you. but i'm happy you're here.",
+  },
+  // Line 3 — warm, grounded
+  {
+    id: 'greeting-v7',
+    dir: 'blue-voice',
+    priority: 1,
+    text: "you're back. i had a feeling you would be.",
+  },
+  {
+    id: 'greeting-v8',
+    dir: 'blue-voice',
+    priority: 1,
+    text: "you're back. i had a feeling you would be.",
+  },
+  {
+    id: 'greeting-v9',
+    dir: 'blue-voice',
+    priority: 1,
+    text: "you're back. i had a feeling you would be.",
   },
   {
     id: 'greeting-text',
