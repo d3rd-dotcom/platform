@@ -9,8 +9,8 @@ Mental Wealth Academy is a gameworld built on behavioral psychology and custom-m
 **Use this line, or a remixed piece of it, whenever a post needs to explain what we are.**
 
 ## Tsukuyomi Surf (Core Pillars)
-1.	Quality Education
-2.	Curated Network of Spirit
+1.    Quality Education
+2.    Curated Network of Spirit
 3. Invet In Human Potential
 
 **Objective**: “Investing in the future of humanity, with the heart of tomorrow. ʚїɞ”
@@ -22,7 +22,7 @@ Grounded meaning: small, consistent actions in the present can make the future m
 **We sound like:**
 - Upbeat, Academic, Short, Sweet
 - Internet savvy, never trend-hopping
-- Debunking conspiracies online 
+- Debunking conspiracies online
 - Endless positivity and encouragement
 
 **We don't sound like:**
@@ -37,7 +37,7 @@ Grounded meaning: small, consistent actions in the present can make the future m
 
   **Mental Wealth Academy** is a cohort of scientists — survivors of trauma. Presenting case-studies on parasocial collaborations and HTCI (Human-To-Computer-Interaction) by funding decentralized game mechnisms, using shared community infrastructure and resources. The structure is built so that the community benefits and gains value from Blue and the enrichment of the decentralized network.
 
-  **The Product:** The gameworld is co-op, interactive, anonymous by default, and intellectually refreshing. 
+  **The Product:** The gameworld is co-op, interactive, anonymous by default, and intellectually refreshing.
 
   **The Innovation:** We blend AI, Blockchain, & science with gaming. Which hasn't been done before. the benefits we create diverge from the old forms of science,
 
@@ -61,7 +61,7 @@ Ultimately, a quality education needs to be open-sourced.
 
 1. **Member** | Access the platform and earn points with courses. (Completely Free)
 
-2. **Quests** | Staff Researchers: Can post bounties, small tasks, with real USDC rewards. 
+2. **Quests** | Staff Researchers: Can post bounties, small tasks, with real USDC rewards.
 
 3. **Blue** | Tracks progress, chats with users, and trades rewards.
 
@@ -75,9 +75,9 @@ Ultimately, a quality education needs to be open-sourced.
 
 | 02 | **Familiar Strangers** | Skepticism & Resilience | Bias detection, misinformation, manipulation, sanitizing information, protecting autonomy |
 
-| 03 | **From Case Study to Action** | Application & Growth | Turning insights into habits, discussion, real-world choices, future readiness | 
+| 03 | **From Case Study to Action** | Application & Growth | Turning insights into habits, discussion, real-world choices, future readiness |
 
-## Who We Serve 
+## Who We Serve
 
 **Primary:** Individuals seeking structured growth (21–28)
 
@@ -136,7 +136,7 @@ We are:
 
 ---
 ## Blue — (Asc)ended Agent
-### Autonomous Smart Contract 
+### Autonomous Smart Contract
 
  **What she is (narratively):**
 
@@ -181,7 +181,7 @@ Blue generates ontologies, courses, and guides users with power-tools for high-q
 
 NEVER uses gradients, or cheesy AI design styles.
 
-### Typography  
+### Typography
 
 - **Headlines:** Poppins Bold — clean sans-serif.
 - **Body:** Space Grotesk — readable paragraphs.
@@ -194,7 +194,7 @@ NEVER uses gradients, or cheesy AI design styles.
 - Side Navigation Style.
 - DuoLingo, Bright styled EduTech Components.
 
-### Image Styling Effect 
+### Image Styling Effect
 
 Use this treatment for Blue panels, social media art, review backgrounds, and moments where the image should feel present but secondary to product copy.
 
@@ -248,12 +248,11 @@ Every poetic or narrative claim should be preceded or followed by its concrete m
 
 **❌ Ungrounded:**
 
-> "A new awakening engine guides the self." 
+> "A new awakening engine guides the self."
 
 **✅ Grounded then elevated:**
 
 > "Blue is an Agentic Smart Contract with memory. She reviews platform data in various ways, the submissions and rewards are self-executed. Her characterization makes her feel more like infrastructure, than a feature, a benevolent leader of the Academy."
-
 
 ---
 
@@ -276,19 +275,19 @@ Don't jump straight to #4 without establishing #1–3. Never use "this is x, not
 
 - ❌ "The platform that we built that allows users..."
 
-- ✅ "Our platform allows users..."  
+- ✅ "Our platform allows users..."
 
 **Replace abstractions with specifics:**
 
 - ❌ "communal rewards"
 
-- ✅ "Experiments and courses earn Diamonds"  
+- ✅ "Experiments and courses earn Diamonds"
 
 **Delete hedge words:**
 
 - ❌ "We kind of offer something fresh"
 
-- ✅ "We offer something fresh"  
+- ✅ "We offer something fresh"
 
 **One idea per sentence:**
 
@@ -300,9 +299,9 @@ Don't jump straight to #4 without establishing #1–3. Never use "this is x, not
 
 ## Good Copy vs. Bad Copy — Feature Titles
 
-Feature card titles, nav labels, and section headers should name the **category** of thing the user is entering — not describe its mechanism. 
+Feature card titles, nav labels, and section headers should name the **category** of thing the user is entering — not describe its mechanism.
 
-Mechanism belongs in the body copy directly underneath. 
+Mechanism belongs in the body copy directly underneath.
 
 The "Ground Then Elevate" rule still applies — but at the title-and-paragraph level, not inside the title itself. A short, research-elevated title sets the frame; the description below grounds it.
 
@@ -314,7 +313,7 @@ The "Ground Then Elevate" rule still applies — but at the title-and-paragraph 
 
 | AI Reviews Your Progress | A Curriculum Accompanied By Blue |
 
-| A Crypto Token Called Diamonds | A Universal Community Token | 
+| A Crypto Token Called Diamonds | A Universal Community Token |
 
 | Building Research | Parasocial Research Programs |
 
@@ -322,23 +321,13 @@ The "Ground Then Elevate" rule still applies — but at the title-and-paragraph 
 
 | One NFT, Full Access | Lifetime Membership |
 
-  
-
 **The pattern:** the bad version describes *how it works*. The good version names *what you're joining*. Save mechanism for the sentence underneath.
-
-  
 
 ---
 
-  
-
 ## Revision Checklist
 
-  
-
 Before publishing any content:
-
-  
 
 - Can someone explain what we do after reading this section?
 
@@ -352,12 +341,7 @@ Before publishing any content:
 
 - Would an investor understand this? Would an artist feel it?
 
-
-  
-
 ---
-
-  
 
 *Version 4.0 — April 2026*
 
