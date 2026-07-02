@@ -16,10 +16,6 @@ const CyberpunkDataViz = dynamic(() => import('@/components/cyberpunk-data-viz/C
   ssr: false,
   loading: () => null,
 });
-const DailyReadPopup = dynamic(() => import('@/components/daily-read/DailyReadPopup'), {
-  ssr: false,
-  loading: () => null,
-});
 const BookReaderModal = dynamic(() => import('@/components/book-reader/BookReaderModal'), {
   ssr: false,
 });
@@ -336,7 +332,6 @@ export default function CoursePage() {
     <>
     <MobileSplash />
     <HomeWelcomeFlow onAuthenticated={handleWelcomeAuthenticated} onSettled={() => setAuthFlowSettled(true)}>
-    {authFlowSettled && activeWeek > 0 && <DailyReadPopup activeWeek={activeWeek} />}
     <div className={styles.pageLayout}>
       {showAmbientViz && (
         <div className={styles.bgViz}>

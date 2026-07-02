@@ -87,6 +87,18 @@
   }
 }
 
+/* Phones: the hard-offset card shadows need real air between cards or the
+   stack reads as one clump. */
+@media (max-width: 768px) {
+  .dashboard {
+    gap: 20px;
+  }
+
+  .sidebarWrap {
+    gap: 18px;
+  }
+}
+
 /* ── Field notes ── */
 .fieldNotesShell {
   --mobile-nav-height: calc(74px + max(env(safe-area-inset-bottom, 0px), 20px));

@@ -37,6 +37,18 @@ export function getDiamondsTokenAddress(): string | null {
 }
 
 /**
+ * Most $BLUE one account can receive onchain per UTC day. Sized so a heavy
+ * honest day (field-note seal 700 + daily note 100 + course tasks + quests)
+ * clears it, while a completion-farming burst parks as 'capped' instead of
+ * draining Blue. Capped rows keep their in-app credits and can be released
+ * deliberately with scripts/backfill-diamonds.ts --include-capped.
+ */
+function getDailyMintCap(): number {
+  const cap = Number(process.env.DIAMONDS_DAILY_MINT_CAP || 1500);
+  return Number.isFinite(cap) && cap > 0 ? cap : 1500;
+}
+
+/**
  * ethers v5 defaults EIP-1559 transactions to a 1.5 gwei priority tip —
  * roughly 200x what Base clears at — which drains Blue's gas wallet in a
  * handful of payouts. Price every write from the live base fee instead.
@@ -191,6 +203,22 @@ export async function deliverDiamondsOnchain(input: DeliverInput): Promise<Deliv
       return { delivered: false, duplicate: true };
     }
     const rowId = reserved[0].id;
+
+    const sentToday = await sqlQuery<Array<{ total: string | null }>>(
+      `SELECT SUM(amount)::text AS total FROM diamond_onchain_rewards
+       WHERE user_id = :userId AND status = 'sent'
+         AND updated_at >= date_trunc('day', CURRENT_TIMESTAMP)`,
+      { userId: input.userId },
+    );
+    if (Number(sentToday[0]?.total ?? 0) + Math.round(input.amount) > getDailyMintCap()) {
+      await sqlQuery(
+        `UPDATE diamond_onchain_rewards
+         SET status = 'capped', error = :error, updated_at = CURRENT_TIMESTAMP
+         WHERE id = :id`,
+        { id: rowId, error: `Daily onchain cap (${getDailyMintCap()}) reached — held for review.` },
+      );
+      return { delivered: false, error: 'Daily onchain reward cap reached.' };
+    }
 
     const tokenAddress = getDiamondsTokenAddress();
     if (!tokenAddress) {

@@ -80,6 +80,16 @@ export default function CourseSlugPage({ params }: PageProps) {
   const [rightContent, setRightContent] = useState<'reading' | 'task' | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [pendingConfirm, setPendingConfirm] = useState<CourseComponentRecord | null>(null);
+  const rightPanelRef = useRef<HTMLDivElement>(null);
+
+  // On phones the detail panel stacks below the mission list, so opening a
+  // mission without scrolling to it reads as the tap doing nothing.
+  useEffect(() => {
+    if (isDesktop || !rightContent) return;
+    requestAnimationFrame(() => {
+      rightPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }, [rightContent, selectedTaskId, isDesktop]);
 
   useEffect(() => {
     if (!scrollRestored.current && !loading && vipCourse) {
@@ -417,8 +427,8 @@ export default function CourseSlugPage({ params }: PageProps) {
             )}
           </div>
 
-          {/* ── Right panel (desktop) ── */}
-          <div className={courseStyles.rightPanel}>
+          {/* ── Right panel (below the list on mobile) ── */}
+          <div className={courseStyles.rightPanel} ref={rightPanelRef}>
             {rightContent === 'reading' && readingComponent && (
               <div className={styles.rightPanelReader}>
                 <button

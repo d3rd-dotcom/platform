@@ -572,6 +572,16 @@
   }
 }
 
+/* Below the desktop grid the panel is normal flow — sticky positioning and
+   its own scroll area would trap the mission content in a short inner box. */
+@media (max-width: 1023px) {
+  .rightPanel {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
 @media (max-width: 480px) {
   .content {
     padding: 16px 14px calc(96px + env(safe-area-inset-bottom, 0px));

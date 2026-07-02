@@ -8,6 +8,12 @@
  *   npx tsx --env-file=.env.local scripts/backfill-diamonds.ts --dry-run
  *   npx tsx --env-file=.env.local scripts/backfill-diamonds.ts --limit=1
  *   npx tsx --env-file=.env.local scripts/backfill-diamonds.ts
+ *   npx tsx --env-file=.env.local scripts/backfill-diamonds.ts --include-capped
+ *
+ * Rewards held by the per-account daily cap stay 'capped' until released
+ * with --include-capped — review them first, that is the point of the cap.
+ * A deliberate bulk release also needs the cap lifted for the run:
+ *   DIAMONDS_DAILY_MINT_CAP=1000000 npx tsx ... --include-capped
  */
 import { sqlQuery } from '../lib/db';
 import { deliverDiamondsOnchain } from '../lib/diamonds-onchain';
@@ -22,18 +28,22 @@ interface OwedRow {
 
 async function main() {
   const dryRun = process.argv.includes('--dry-run');
+  const includeCapped = process.argv.includes('--include-capped');
   const limitArg = process.argv.find((a) => a.startsWith('--limit='));
   const limit = limitArg ? parseInt(limitArg.split('=')[1], 10) : Number.POSITIVE_INFINITY;
 
   // A 'failed' row means the transfer never happened (status only becomes
   // 'sent' after the receipt). Clear them so delivery can re-reserve; the
-  // wallet's onchain balance is the ground truth if in doubt.
+  // wallet's onchain balance is the ground truth if in doubt. 'capped' rows
+  // are only released on explicit request.
   if (!dryRun) {
     const cleared = await sqlQuery<Array<{ id: string }>>(
-      `DELETE FROM diamond_onchain_rewards WHERE status = 'failed' RETURNING id`,
+      includeCapped
+        ? `DELETE FROM diamond_onchain_rewards WHERE status IN ('failed', 'capped') RETURNING id`
+        : `DELETE FROM diamond_onchain_rewards WHERE status = 'failed' RETURNING id`,
       {},
     );
-    if (cleared.length > 0) console.log(`Cleared ${cleared.length} failed ledger row(s) for retry.`);
+    if (cleared.length > 0) console.log(`Cleared ${cleared.length} undelivered ledger row(s) for retry.`);
   }
 
   const owed = await sqlQuery<OwedRow[]>(

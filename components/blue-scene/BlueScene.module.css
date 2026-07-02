@@ -359,3 +359,22 @@
     z-index: 6;
   }
 }
+
+/* Phones: the scene is a compact banner, not a hero — Blue scales way down
+   so the cards below get the viewport, and she stands on the dialogue bar
+   instead of being cropped behind it. */
+@media (max-width: 768px) {
+  .scene {
+    min-height: 300px;
+  }
+
+  .blueWrap {
+    width: min(36%, 140px);
+    bottom: 80px;
+  }
+
+  .bubble {
+    max-width: 190px;
+    font-size: var(--font-size-xs, 0.75rem);
+  }
+}

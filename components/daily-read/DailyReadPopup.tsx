@@ -59,9 +59,11 @@ const WEEK_DIALOGUES: Record<number, { emotion: BlueEmotion; message: string }> 
 interface DailyReadPopupProps {
   activeWeek: number;
   onDismiss?: () => void;
+  /** Runs when the CTA button is pressed (after dismissal) — not on overlay click or Escape. */
+  onCta?: () => void;
 }
 
-export default function DailyReadPopup({ activeWeek, onDismiss }: DailyReadPopupProps) {
+export default function DailyReadPopup({ activeWeek, onDismiss, onCta }: DailyReadPopupProps) {
   const { play } = useSound();
   const [visible, setVisible] = useState(false);
 
@@ -147,7 +149,15 @@ export default function DailyReadPopup({ activeWeek, onDismiss }: DailyReadPopup
         </div>
 
         <div className={`${styles.footer} ${styles.footerVisible}`}>
-          <button type="button" className={styles.ctaButton} onClick={handleDismiss} onMouseEnter={() => play('hover')}>
+          <button
+            type="button"
+            className={styles.ctaButton}
+            onClick={() => {
+              handleDismiss();
+              onCta?.();
+            }}
+            onMouseEnter={() => play('hover')}
+          >
             <span className={styles.checkIcon}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M5 12h14M12 5l7 7-7 7" />
