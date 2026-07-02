@@ -12,7 +12,7 @@ import { useSound } from '@/hooks/useSound';
 
 // Reward overlays shared with the Field Notes flow, so sealing a week
 // celebrates the same way completing a field note does.
-const ShardAnimation = dynamic(() => import('@/components/quests/ShardAnimation').then(mod => mod.ShardAnimation), {
+const DiamondReward = dynamic(() => import('@/components/rewards/DiamondReward').then(mod => mod.DiamondReward), {
   ssr: false,
   loading: () => null,
 });
@@ -805,9 +805,9 @@ export default function WeekTasksView({
 
       {/* Per-mission +50 credit pop-up */}
       {showMissionReward && (
-        <ShardAnimation
+        <DiamondReward
           key={missionRewardKey}
-          shards={50}
+          amount={50}
           onComplete={() => setShowMissionReward(false)}
         />
       )}
@@ -816,8 +816,8 @@ export default function WeekTasksView({
       {showRewardAnimation && (
         <>
           <ConfettiCelebration trigger={true} />
-          <ShardAnimation
-            shards={shardsAwarded}
+          <DiamondReward
+            amount={shardsAwarded}
             onComplete={() => setShowRewardAnimation(false)}
           />
         </>

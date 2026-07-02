@@ -617,35 +617,6 @@
   letter-spacing: 0.04em;
 }
 
-/* ── Shard toast ── */
-
-.shardToast {
-  position: fixed;
-  top: 24px;
-  right: 24px;
-  z-index: 999;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 20px;
-  background: linear-gradient(135deg, #fbbf24, #f59e0b);
-  color: #1a1d33;
-  font-weight: 700;
-  font-size: 0.9375rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-  animation: shardIn 0.3s ease;
-}
-
-@keyframes shardIn {
-  from { transform: translateY(-20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-.shardIcon {
-  font-size: 1.2rem;
-}
-
 /* ── Dark mode overrides for task / detail cards ── */
 
 :global([data-theme="dark"]) .taskTitle {

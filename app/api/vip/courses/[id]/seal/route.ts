@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, withTransaction } from '@/lib/db';
 import { getVipCourseFull, getRequiredTaskIds } from '@/lib/vip-course-db';
+import { deliverDiamondsOnchain } from '@/lib/diamonds-onchain';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -83,8 +84,20 @@ export async function POST(request: Request, { params }: { params: { id: string 
     return NextResponse.json({ error: 'Complete every task in this week before sealing it.' }, { status: 400 });
   }
 
+  // Deliver the seal bonus onchain via Blue's CDP wallet (fail-soft).
+  const onchain = await deliverDiamondsOnchain({
+    userId: user.id,
+    walletAddress: user.walletAddress,
+    source: 'course_seal',
+    refId: weekId,
+    amount: SEAL_REWARD,
+    delivery: 'cdp_mint',
+  });
+
   return NextResponse.json({
     sealed: true,
+    diamondsAwarded: result.shardsAwarded,
     shardsAwarded: result.shardsAwarded,
+    onchain: onchain.delivered ? { txHash: onchain.txHash } : null,
   });
 }

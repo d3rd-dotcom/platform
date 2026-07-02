@@ -10,7 +10,7 @@ import { useScrollLock } from '@/hooks/useScrollLock';
 import styles from './DailyNotes.module.css';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 
-const ShardAnimation = dynamic(() => import('@/components/quests/ShardAnimation').then(mod => mod.ShardAnimation), {
+const DiamondReward = dynamic(() => import('@/components/rewards/DiamondReward').then(mod => mod.DiamondReward), {
   ssr: false,
   loading: () => null,
 });
@@ -752,8 +752,8 @@ export default function DailyNotes({
         {showRewardAnimation && rewardData && (
           <>
             <ConfettiCelebration trigger={true} />
-            <ShardAnimation
-              shards={rewardData.shards}
+            <DiamondReward
+              amount={rewardData.shards}
               onComplete={() => setShowRewardAnimation(false)}
             />
           </>
@@ -957,8 +957,8 @@ export default function DailyNotes({
       {showRewardAnimation && rewardData && (
         <>
           <ConfettiCelebration trigger={true} />
-          <ShardAnimation
-            shards={rewardData.shards}
+          <DiamondReward
+            amount={rewardData.shards}
             onComplete={() => setShowRewardAnimation(false)}
           />
         </>

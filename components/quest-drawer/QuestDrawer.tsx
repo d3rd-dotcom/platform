@@ -6,7 +6,7 @@ import { usePrivy } from '@privy-io/react-auth';
 import { useAccount } from 'wagmi';
 import { X, CheckCircle, Circle, UploadSimple, ArrowSquareOut } from '@phosphor-icons/react';
 import { ConfettiCelebration } from '../quests/ConfettiCelebration';
-import { ShardAnimation } from '../quests/ShardAnimation';
+import { DiamondReward } from '../rewards/DiamondReward';
 import { XConnectingModal } from '../x-connecting/XConnectingModal';
 import type { QuestType } from '@/lib/quest-definitions';
 import styles from './QuestDrawer.module.css';
@@ -61,7 +61,7 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
   const [isCheckingFollow, setIsCheckingFollow] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [showShardAnimation, setShowShardAnimation] = useState(false);
+  const [showDiamondReward, setShowDiamondReward] = useState(false);
   const [shardsAwarded, setShardsAwarded] = useState(0);
   const [showConnectingModal, setShowConnectingModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
@@ -223,11 +223,11 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
               if (completeData.ok && completeData.shardsAwarded > 0) {
                 setShardsAwarded(completeData.shardsAwarded);
                 setShowConfetti(true);
-                setShowShardAnimation(true);
+                setShowDiamondReward(true);
                 window.dispatchEvent(new Event('shardsUpdated'));
                 setTimeout(() => {
                   setShowConfetti(false);
-                  setShowShardAnimation(false);
+                  setShowDiamondReward(false);
                 }, 5000);
               }
             } catch (error) {
@@ -337,14 +337,14 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
       if (data.ok) {
         setShardsAwarded(shardReward);
         setShowConfetti(true);
-        setShowShardAnimation(true);
+        setShowDiamondReward(true);
         window.dispatchEvent(new Event('shardsUpdated'));
 
         setTimeout(() => {
           onClose();
           setTimeout(() => {
             setShowConfetti(false);
-            setShowShardAnimation(false);
+            setShowDiamondReward(false);
             setShardsAwarded(0);
             setSelectedFile(null);
           }, 2000);
@@ -727,10 +727,10 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
       </aside>
 
       <ConfettiCelebration trigger={showConfetti} />
-      {showShardAnimation && (
-        <ShardAnimation
-          shards={shardsAwarded}
-          onComplete={() => setShowShardAnimation(false)}
+      {showDiamondReward && (
+        <DiamondReward
+          amount={shardsAwarded}
+          onComplete={() => setShowDiamondReward(false)}
         />
       )}
       <XConnectingModal isOpen={showConnectingModal} />

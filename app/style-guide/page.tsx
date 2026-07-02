@@ -972,9 +972,9 @@ export default function StyleGuidePage() {
               description="User impact metrics display"
             />
             <ComponentIndexItem 
-              name="ShardAnimation" 
-              path="components/quests" 
-              description="Gamification credit reward animation"
+              name="DiamondReward" 
+              path="components/rewards" 
+              description="Diamond reward pop-up from Blue"
             />
             <ComponentIndexItem 
               name="Navbar" 

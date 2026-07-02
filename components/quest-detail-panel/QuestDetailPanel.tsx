@@ -6,7 +6,7 @@ import { usePrivy } from '@privy-io/react-auth';
 import { useAccount } from 'wagmi';
 import { CheckCircle, Circle, ArrowSquareOut, Paperclip } from '@phosphor-icons/react';
 import { ConfettiCelebration } from '../quests/ConfettiCelebration';
-import { ShardAnimation } from '../quests/ShardAnimation';
+import { DiamondReward } from '../rewards/DiamondReward';
 import { XConnectingModal } from '../x-connecting/XConnectingModal';
 import type { DrawerQuest } from '@/components/quest-drawer/QuestDrawer';
 import type { QuestType } from '@/lib/quest-definitions';
@@ -52,7 +52,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
   const [isCheckingFollow, setIsCheckingFollow] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [showShardAnimation, setShowShardAnimation] = useState(false);
+  const [showDiamondReward, setShowDiamondReward] = useState(false);
   const [shardsAwarded, setShardsAwarded] = useState(0);
   const [showConnectingModal, setShowConnectingModal] = useState(false);
   const [usdcClaim, setUsdcClaim] = useState<UsdcClaimState | null>(null);
@@ -195,9 +195,9 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
               if (completeData.ok && completeData.shardsAwarded > 0) {
                 setShardsAwarded(completeData.shardsAwarded);
                 setShowConfetti(true);
-                setShowShardAnimation(true);
+                setShowDiamondReward(true);
                 window.dispatchEvent(new Event('shardsUpdated'));
-                setTimeout(() => { setShowConfetti(false); setShowShardAnimation(false); }, 5000);
+                setTimeout(() => { setShowConfetti(false); setShowDiamondReward(false); }, 5000);
               }
             } catch (error) { console.error('Failed to auto-complete reward:', error); }
           }
@@ -287,13 +287,13 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
       } else if (data.ok) {
         setShardsAwarded(quest.points);
         setShowConfetti(true);
-        setShowShardAnimation(true);
+        setShowDiamondReward(true);
         window.dispatchEvent(new Event('shardsUpdated'));
         setTimeout(() => {
           onDeselect();
           setTimeout(() => {
             setShowConfetti(false);
-            setShowShardAnimation(false);
+            setShowDiamondReward(false);
             setShardsAwarded(0);
             setProofText('');
           }, 2000);
@@ -805,8 +805,8 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
       </div>
 
       <ConfettiCelebration trigger={showConfetti} />
-      {showShardAnimation && (
-        <ShardAnimation shards={shardsAwarded} onComplete={() => setShowShardAnimation(false)} />
+      {showDiamondReward && (
+        <DiamondReward amount={shardsAwarded} onComplete={() => setShowDiamondReward(false)} />
       )}
       <XConnectingModal isOpen={showConnectingModal} />
       </div>

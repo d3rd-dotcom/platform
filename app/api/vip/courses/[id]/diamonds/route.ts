@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, withTransaction } from '@/lib/db';
 import { getVipCourseFull } from '@/lib/vip-course-db';
+import { deliverDiamondsOnchain } from '@/lib/diamonds-onchain';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -83,8 +84,21 @@ export async function POST(request: Request, { params }: { params: { id: string 
     return NextResponse.json({ rewarded: false, error: result.error }, { status: result.status });
   }
 
+  // Deliver the claim onchain — Blue's CDP wallet mints $BLUE to the user.
+  // Fail-soft: the in-app reward stands even if the chain is unreachable.
+  const onchain = await deliverDiamondsOnchain({
+    userId: user.id,
+    walletAddress: user.walletAddress,
+    source: 'course_task',
+    refId: componentId,
+    amount: COMPLETION_REWARD,
+    delivery: 'cdp_mint',
+  });
+
   return NextResponse.json({
     rewarded: true,
+    diamondsAwarded: COMPLETION_REWARD,
     shardsAwarded: COMPLETION_REWARD,
+    onchain: onchain.delivered ? { txHash: onchain.txHash } : null,
   });
 }

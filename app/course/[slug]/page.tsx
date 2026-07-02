@@ -7,6 +7,7 @@ import { CheckCircle, SealCheck, SpinnerGap, ArrowLeft, ArrowRight } from '@phos
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import ComponentRenderer from '@/components/course-renderers/ComponentRenderer';
 import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
+import DiamondReward from '@/components/rewards/DiamondReward';
 import type { CourseRecord, ChapterRecord, LessonRecord } from '@/lib/course-content-db';
 import type { VipCourseFull, VipProgressRecord, CourseComponentRecord } from '@/lib/vip-course-db';
 import styles from './page.module.css';
@@ -75,7 +76,7 @@ export default function CourseSlugPage({ params }: PageProps) {
   const [activeWeek, setActiveWeek] = useState(1);
   const [progress, setProgress] = useState<VipProgressRecord[]>([]);
   const [sealing, setSealing] = useState(false);
-  const [shardAnim, setShardAnim] = useState<number | null>(null);
+  const [diamondReward, setDiamondReward] = useState<number | null>(null);
   const [rightContent, setRightContent] = useState<'reading' | 'task' | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [pendingConfirm, setPendingConfirm] = useState<CourseComponentRecord | null>(null);
@@ -172,8 +173,7 @@ export default function CourseSlugPage({ params }: PageProps) {
         body: JSON.stringify({ componentId: component.id }),
       });
       if (diamRes.ok) {
-        setShardAnim(COMPLETION_REWARD);
-        setTimeout(() => setShardAnim(null), 2000);
+        setDiamondReward(COMPLETION_REWARD);
       }
     } else {
       const data = await res.json().catch(() => ({}));
@@ -207,8 +207,7 @@ export default function CourseSlugPage({ params }: PageProps) {
             sealedAt: new Date().toISOString(), createdAt: '', updatedAt: '',
           }];
         });
-        setShardAnim(SEAL_REWARD);
-        setTimeout(() => setShardAnim(null), 3000);
+        setDiamondReward(SEAL_REWARD);
       }
     } catch { /* ignore */ }
     finally { setSealing(false); }
@@ -273,11 +272,8 @@ export default function CourseSlugPage({ params }: PageProps) {
         <SideNavigation />
         <main className={`${courseStyles.content} ${isDesktop ? courseStyles.contentDesktop : ''}`}>
 
-          {shardAnim !== null && (
-            <div className={styles.shardToast}>
-              <span className={styles.shardIcon}>◆</span>
-              +{shardAnim} diamonds
-            </div>
+          {diamondReward !== null && (
+            <DiamondReward amount={diamondReward} onComplete={() => setDiamondReward(null)} />
           )}
 
           {/* ── Left column ── */}

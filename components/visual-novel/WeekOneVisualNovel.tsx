@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import { ConfettiCelebration } from '@/components/quests/ConfettiCelebration';
-import { ShardAnimation } from '@/components/quests/ShardAnimation';
+import { DiamondReward } from '@/components/rewards/DiamondReward';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 import styles from './WeekOneVisualNovel.module.css';
 
@@ -559,8 +559,8 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
         {showRewardAnimation && (
           <>
             <ConfettiCelebration trigger={true} />
-            <ShardAnimation
-              shards={WEEK_ONE_CHECKIN_REWARD}
+            <DiamondReward
+              amount={WEEK_ONE_CHECKIN_REWARD}
               onComplete={() => setShowRewardAnimation(false)}
             />
           </>

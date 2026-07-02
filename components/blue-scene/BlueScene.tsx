@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Image from 'next/image';
 import { useSound } from '@/hooks/useSound';
 import { GardenShader } from '@/components/garden-shader/GardenShader';
-import { ShardAnimation } from '@/components/quests/ShardAnimation';
+import { DiamondReward } from '@/components/rewards/DiamondReward';
 import styles from './BlueScene.module.css';
 
 const TOTAL_BG = 21;
@@ -349,8 +349,8 @@ export default function BlueScene() {
       </div>
 
       {rewardData && (
-        <ShardAnimation
-          shards={rewardData.shards}
+        <DiamondReward
+          amount={rewardData.shards}
           onComplete={handleRewardComplete}
         />
       )}

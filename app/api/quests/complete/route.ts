@@ -10,6 +10,7 @@ import { getQuestDefinition, getQuestDefinitionForStoredQuestId } from '@/lib/qu
 import { ensureQuestUsdcClaimsSchema } from '@/lib/ensureQuestUsdcClaimsSchema';
 import { isOwnStorageUrl } from '@/lib/supabase-storage';
 import { recordAgentActivity } from '@/lib/room-log';
+import { deliverDiamondsOnchain } from '@/lib/diamonds-onchain';
 import { v4 as uuidv4 } from 'uuid';
 
 interface CustomQuestRow {
@@ -354,6 +355,19 @@ export async function POST(request: Request) {
         hasLinkedAccount: !!shardRows[0]?.wallet_address,
       };
     });
+
+    // Quest diamonds come from Blue herself — a p2p transfer out of her own
+    // 200M $BLUE stash, not a mint (fail-soft, never blocks the completion).
+    if (shardsToAward > 0) {
+      await deliverDiamondsOnchain({
+        userId: user.id,
+        walletAddress: user.walletAddress,
+        source: 'quest',
+        refId: resolvedQuestId,
+        amount: shardsToAward,
+        delivery: 'blue_transfer',
+      });
+    }
 
     try {
       await recordBlueQuestCompletion({

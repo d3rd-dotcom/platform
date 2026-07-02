@@ -4,6 +4,7 @@ import { recordBlueWeekProgressEvent } from '@/lib/blue-memory';
 import { isDbConfigured, sqlQuery, withTransaction, sqlQueryWithClient } from '@/lib/db';
 import { ensureWeeksSchema } from '@/lib/ensureWeeksSchema';
 import { getSeasonInfo } from '@/lib/season';
+import { deliverDiamondsOnchain } from '@/lib/diamonds-onchain';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -186,6 +187,17 @@ export async function POST(request: Request) {
         }
       }
       return completed;
+    });
+
+    // Field-note seals are CDP claim mints — Blue's server wallet signs so
+    // the user never has to (fail-soft, never blocks the seal).
+    await deliverDiamondsOnchain({
+      userId: user.id,
+      walletAddress: user.walletAddress,
+      source: 'field_note',
+      refId: `week-${weekNumber}`,
+      amount: 700,
+      delivery: 'cdp_mint',
     });
 
     try {
