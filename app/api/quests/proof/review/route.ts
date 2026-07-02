@@ -6,6 +6,7 @@ import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { ensureQuestProofSubmissionsSchema } from '@/lib/ensureQuestProofSubmissionsSchema';
 import { walletHoldsVipMembershipCard } from '@/lib/vip-membership-card';
 import { getQuestDefinition } from '@/lib/quest-definitions';
+import { deliverDiamondsOnchain } from '@/lib/diamonds-onchain';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -162,10 +163,27 @@ export async function POST(request: Request) {
           { id: uuidv4(), userId: row.user_id, questId: row.quest_id, shards: row.shards },
         );
       }
-      return row.shards;
+      return { shards: row.shards, userId: row.user_id, questId: row.quest_id, paid: dupe.length === 0 };
     });
 
-    return NextResponse.json({ ok: true, submission: { status: 'approved' }, shardsAwarded: awarded });
+    // Approved proof diamonds are quest rewards — a p2p transfer from Blue's
+    // stash, like any other quest (fail-soft, never blocks the approval).
+    if (awarded.paid && awarded.shards > 0) {
+      const walletRows = await sqlQuery<Array<{ wallet_address: string | null }>>(
+        `SELECT wallet_address FROM users WHERE id = :id LIMIT 1`,
+        { id: awarded.userId },
+      );
+      await deliverDiamondsOnchain({
+        userId: awarded.userId,
+        walletAddress: walletRows[0]?.wallet_address,
+        source: 'quest',
+        refId: awarded.questId,
+        amount: awarded.shards,
+        delivery: 'blue_transfer',
+      });
+    }
+
+    return NextResponse.json({ ok: true, submission: { status: 'approved' }, shardsAwarded: awarded.shards });
   } catch (err: any) {
     if (err?.message === 'SUBMISSION_NOT_PENDING') {
       return NextResponse.json({ error: 'Submission is no longer pending.' }, { status: 409 });

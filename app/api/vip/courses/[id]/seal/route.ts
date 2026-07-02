@@ -30,6 +30,13 @@ export async function POST(request: Request, { params }: { params: { id: string 
   if (!course) {
     return NextResponse.json({ error: 'Course not found.' }, { status: 404 });
   }
+  // Same gates as task claims: live courses only, never the author.
+  if (course.status !== 'published') {
+    return NextResponse.json({ error: 'Rewards unlock when the course is published.' }, { status: 403 });
+  }
+  if (course.userId === user.id) {
+    return NextResponse.json({ error: 'Course authors cannot claim rewards on their own course.' }, { status: 403 });
+  }
 
   const week = course.weeks.find((w) => w.id === weekId);
   if (!week) {

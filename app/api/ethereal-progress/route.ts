@@ -5,6 +5,27 @@ import { isDbConfigured, sqlQuery, withTransaction, sqlQueryWithClient } from '@
 import { ensureWeeksSchema } from '@/lib/ensureWeeksSchema';
 import { getSeasonInfo } from '@/lib/season';
 import { deliverDiamondsOnchain } from '@/lib/diamonds-onchain';
+import { getVipCourseFullBySlug } from '@/lib/vip-course-db';
+
+const PATHWAY_COURSE_SLUG = 'creative-healing';
+
+/**
+ * The task sections of a pathway week, straight from the course content —
+ * the same components the reader renders, minus file uploads (not tasks).
+ * Sealing pays 700 diamonds, so the required list must come from the server,
+ * never the client.
+ */
+async function getRequiredSectionIds(weekNumber: number): Promise<string[] | null> {
+  const course = await getVipCourseFullBySlug(PATHWAY_COURSE_SLUG);
+  const week = course?.weeks.find((w) => w.weekNumber === weekNumber);
+  if (!week) return null;
+  return week.components
+    .filter((comp) => {
+      const c = comp.config as Record<string, unknown>;
+      return !(typeof c.url === 'string' && typeof c.imageUrl === 'string' && typeof c.originalName === 'string');
+    })
+    .map((comp) => comp.id);
+}
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -146,6 +167,20 @@ export async function POST(request: Request) {
 
   // ─── Seal Flow ─────────────────────────────────────────────────────
   if (seal) {
+    // A seal pays 700 diamonds, so every task section of the week must be
+    // complete — checked against the course content, not the client's word.
+    const requiredSectionIds = await getRequiredSectionIds(weekNumber);
+    if (!requiredSectionIds || requiredSectionIds.length === 0) {
+      return NextResponse.json({ error: 'This week has no sealable tasks.' }, { status: 400 });
+    }
+    const completedSet = new Set(currentCompletedSections);
+    if (!requiredSectionIds.every((id) => completedSet.has(id))) {
+      return NextResponse.json(
+        { error: 'Complete every task in this week before sealing it.' },
+        { status: 400 },
+      );
+    }
+
     // Upsert progress, mark sealed, and award credits atomically.
     // Sealing is a normal system action and does not depend on prior weeks
     // or an on-chain attestation.

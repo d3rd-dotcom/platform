@@ -7,6 +7,7 @@ import { ensureCustomQuestsSchema } from '@/lib/ensureCustomQuestsSchema';
 import { ensureQuestUsdcClaimsSchema } from '@/lib/ensureQuestUsdcClaimsSchema';
 import { blueWallet } from '@/lib/blue-wallet';
 import { usdcToUnits } from '@/lib/quest-forge';
+import { deliverDiamondsOnchain } from '@/lib/diamonds-onchain';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -151,7 +152,7 @@ export async function POST(request: Request) {
   // them to the completer atomically. No on-chain payout is involved.
   if (claim.reward_kind === 'credits') {
     try {
-      await withTransaction(async (client) => {
+      const paid = await withTransaction(async (client) => {
         const drawn = await sqlQueryWithClient<Array<{ escrow_remaining: string }>>(
           client,
           `UPDATE custom_quests
@@ -190,7 +191,25 @@ export async function POST(request: Request) {
           `UPDATE quest_usdc_claims SET status = 'paid', updated_at = NOW() WHERE id = :id`,
           { id: claimId },
         );
+        return dupe.length === 0;
       });
+
+      // Deliver the diamonds onchain from Blue's stash, like every quest
+      // reward (fail-soft, never rolls back the approval).
+      if (paid && amount > 0) {
+        const walletRows = await sqlQuery<Array<{ wallet_address: string | null }>>(
+          `SELECT wallet_address FROM users WHERE id = :id LIMIT 1`,
+          { id: claim.user_id },
+        );
+        await deliverDiamondsOnchain({
+          userId: claim.user_id,
+          walletAddress: walletRows[0]?.wallet_address,
+          source: 'quest',
+          refId: claim.quest_id,
+          amount,
+          delivery: 'blue_transfer',
+        });
+      }
 
       return NextResponse.json({ ok: true, claim: { status: 'paid' } });
     } catch (err: any) {

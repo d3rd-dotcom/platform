@@ -29,6 +29,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'title is required.' }, { status: 400 });
     }
 
+    // One course per creator: every course is a surface of mintable task
+    // rewards, so creators can't stamp out new ones to farm diamonds.
+    // Archiving the existing course frees the slot.
+    const existing = await getVipCourses(userId);
+    if (existing.some((c) => c.status !== 'archived')) {
+      return NextResponse.json(
+        { error: 'You already have a course. Archive it before starting a new one.' },
+        { status: 409 },
+      );
+    }
+
     const course = await createVipCourse({
       userId,
       slug: body.slug.trim(),
