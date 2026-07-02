@@ -1,6 +1,6 @@
 import { Contract, utils } from 'ethers';
-import { Coinbase, Wallet as CdpWallet } from '@coinbase/coinbase-sdk';
 import { getBlueSigner } from './blue-membership';
+import { getPaymasterRpcUrl, getBlueSmartAccount, mintDiamondsSponsored } from './diamonds-paymaster';
 import { sqlQuery } from './db';
 
 /**
@@ -8,7 +8,10 @@ import { sqlQuery } from './db';
  *
  * Two delivery paths, per the reward's source:
  * - cdp_mint: course missions/tasks, week seals, and field notes are claim
- *   mints — Blue's CDP server wallet signs the mint so the user never has to.
+ *   mints. Preferred transport is a gas-sponsored user operation through CDP
+ *   Paymaster (Blue's smart account signs — see diamonds-paymaster.ts), with
+ *   a direct owner mint from Blue's key as the fallback so claims never
+ *   stall. Users never sign or pay gas either way.
  * - blue_transfer: quest rewards are true p2p transfers from Blue's own 200M
  *   stash, signed by her key. Quest diamonds genuinely come from her.
  *
@@ -27,19 +30,6 @@ const DIAMONDS_ABI = [
   'function minters(address) view returns (bool)',
   'function setMinter(address minter, bool allowed)',
   'function balanceOf(address) view returns (uint256)',
-];
-
-const MINT_ABI_JSON = [
-  {
-    type: 'function',
-    name: 'mint',
-    stateMutability: 'nonpayable',
-    inputs: [
-      { name: 'to', type: 'address' },
-      { name: 'amount', type: 'uint256' },
-    ],
-    outputs: [],
-  },
 ];
 
 export function getDiamondsTokenAddress(): string | null {
@@ -71,64 +61,50 @@ async function ensureLedgerSchema() {
   schemaEnsured = true;
 }
 
-// ── CDP wallet (claim mints) ──
+// ── Claim mints ──
 
-let cdpWallet: CdpWallet | null = null;
-async function getCdpWallet(): Promise<CdpWallet> {
-  if (cdpWallet) return cdpWallet;
-
-  const apiKeyName = process.env.CDP_API_KEY_NAME;
-  const apiKeyPrivateKey = process.env.CDP_API_KEY_PRIVATE_KEY;
-  if (!apiKeyName || !apiKeyPrivateKey) {
-    throw new Error('CDP credentials not configured (CDP_API_KEY_NAME / CDP_API_KEY_PRIVATE_KEY).');
+/**
+ * The minting address must be authorized on the token. Blue's key is the
+ * token owner, so she grants it once, on demand — no manual setup step.
+ */
+const grantedMinters = new Set<string>();
+async function ensureMinter(tokenAddress: string, minterAddress: string) {
+  const cacheKey = `${tokenAddress}:${minterAddress}`.toLowerCase();
+  if (grantedMinters.has(cacheKey)) return;
+  const contract = new Contract(tokenAddress, DIAMONDS_ABI, getBlueSigner());
+  const isMinter: boolean = await contract.minters(minterAddress);
+  if (!isMinter) {
+    const tx = await contract.setMinter(minterAddress, true);
+    await tx.wait();
+    console.log(`[diamonds] Granted minter to ${minterAddress}`);
   }
-
-  const walletId = process.env.BLUE_WALLET_ID || process.env.AZURA_WALLET_ID;
-  const walletSeed = process.env.BLUE_WALLET_SEED || process.env.AZURA_WALLET_SEED;
-  if (!walletId || !walletSeed) {
-    throw new Error('CDP wallet not configured (BLUE_WALLET_ID / BLUE_WALLET_SEED).');
-  }
-
-  new Coinbase({ apiKeyName, privateKey: apiKeyPrivateKey });
-  cdpWallet = await CdpWallet.import({ walletId, seed: walletSeed });
-  return cdpWallet;
+  grantedMinters.add(cacheKey);
 }
 
 /**
- * The CDP wallet must be an authorized minter. Blue's key is the token owner,
- * so she grants it once, on demand — no manual setup step.
+ * Mint a claim reward. Prefers a gas-sponsored user operation through CDP
+ * Paymaster (burns the sponsorship credits, costs no ETH); falls back to a
+ * direct owner mint signed by Blue's key so claims never stall on paymaster
+ * config or outages.
  */
-let minterEnsured = false;
-async function ensureCdpMinter(tokenAddress: string, cdpAddress: string) {
-  if (minterEnsured) return;
-  const contract = new Contract(tokenAddress, DIAMONDS_ABI, getBlueSigner());
-  const isMinter: boolean = await contract.minters(cdpAddress);
-  if (!isMinter) {
-    const tx = await contract.setMinter(cdpAddress, true);
-    await tx.wait();
-    console.log(`[diamonds] Granted minter to CDP wallet ${cdpAddress}`);
+async function mintDiamonds(tokenAddress: string, to: string, wholeDiamonds: number): Promise<string> {
+  const amountWei = utils.parseUnits(String(wholeDiamonds), 18);
+
+  if (getPaymasterRpcUrl()) {
+    try {
+      const { account } = await getBlueSmartAccount();
+      await ensureMinter(tokenAddress, account.address);
+      const { txHash } = await mintDiamondsSponsored(tokenAddress, to, BigInt(amountWei.toString()));
+      return txHash;
+    } catch (err: any) {
+      console.error('[diamonds] Sponsored mint failed, falling back to owner mint:', err?.message ?? err);
+    }
   }
-  minterEnsured = true;
-}
 
-async function mintViaCdp(tokenAddress: string, to: string, wholeDiamonds: number): Promise<string> {
-  const wallet = await getCdpWallet();
-  const address = await wallet.getDefaultAddress();
-  await ensureCdpMinter(tokenAddress, address.getId());
-
-  const invocation = await address.invokeContract({
-    contractAddress: tokenAddress,
-    method: 'mint',
-    args: {
-      to,
-      amount: utils.parseUnits(String(wholeDiamonds), 18).toString(),
-    },
-    abi: MINT_ABI_JSON,
-  });
-  await invocation.wait();
-  const txHash = invocation.getTransactionHash();
-  if (!txHash) throw new Error('CDP mint broadcast but no transaction hash returned.');
-  return txHash;
+  const contract = new Contract(tokenAddress, DIAMONDS_ABI, getBlueSigner());
+  const tx = await contract.mint(to, amountWei);
+  const receipt = await tx.wait();
+  return receipt.transactionHash;
 }
 
 // ── Blue p2p transfer (quests) ──
@@ -207,7 +183,7 @@ export async function deliverDiamondsOnchain(input: DeliverInput): Promise<Deliv
     try {
       const txHash = input.delivery === 'blue_transfer'
         ? await transferFromBlue(tokenAddress, input.walletAddress, input.amount)
-        : await mintViaCdp(tokenAddress, input.walletAddress, input.amount);
+        : await mintDiamonds(tokenAddress, input.walletAddress, input.amount);
 
       await sqlQuery(
         `UPDATE diamond_onchain_rewards
