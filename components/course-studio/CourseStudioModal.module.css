@@ -735,6 +735,40 @@
   flex: 1;
 }
 
+.publishIssues {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, #ef4444 35%, var(--color-border-subtle));
+  border-radius: 10px;
+  background: color-mix(in srgb, #ef4444 6%, var(--color-surface-base, #ffffff));
+}
+
+.publishIssuesTitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  letter-spacing: 0.03em;
+  color: #b91c1c;
+}
+
+.publishIssuesList {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.publishIssueItem {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--color-text-dark);
+}
+
 .publishActions {
   display: flex;
   align-items: center;

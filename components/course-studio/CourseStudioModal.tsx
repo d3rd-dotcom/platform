@@ -33,6 +33,7 @@ import dynamic from 'next/dynamic';
 const ReadingEditor = dynamic(() => import('./ReadingEditor'), { ssr: false });
 import CourseBuilderTour from './CourseBuilderTour';
 import type { VipCourseFull, CourseComponentRecord, MissionBlockRecord, ComponentType, VipCourseStatus } from '@/lib/vip-course-db';
+import { validateCourseContent, type ValidatableWeek } from '@/lib/course-validation';
 
 interface CourseStudioProps {
   authHeaders: () => Promise<HeadersInit>;
@@ -136,6 +137,7 @@ export default function CourseStudioModal({
   const [reviewDesc, setReviewDesc] = useState('');
   const [reviewSlug, setReviewSlug] = useState('');
   const [reviewCoverImage, setReviewCoverImage] = useState('');
+  const [publishIssues, setPublishIssues] = useState<string[]>([]);
   const undoTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const titleRef = useRef<HTMLInputElement>(null);
 
@@ -607,6 +609,26 @@ export default function CourseStudioModal({
     return currentCourseId;
   };
 
+  const buildValidatableWeeks = (): ValidatableWeek[] =>
+    weeks.map((w) => {
+      const comps = w.components.map((c) => ({
+        componentType: c.componentType,
+        title: c.title,
+        config: c.config,
+        blocks: (c.blocks || []).map((b) => ({ blockType: b.blockType, config: b.config })),
+      }));
+      const reading = readingByWeek[w.id];
+      if (reading?.content) {
+        comps.unshift({
+          componentType: 'rich_text',
+          title: 'Weekly Read',
+          config: { content: reading.content, _isReading: true },
+          blocks: [],
+        });
+      }
+      return { weekNumber: w.weekNumber, components: comps };
+    });
+
   const handleOpenPublishReview = async () => {
     if (dirty) {
       setPhase('saving');
@@ -623,10 +645,16 @@ export default function CourseStudioModal({
     setReviewDesc(focus);
     setReviewSlug(slug || deriveSlug(title));
     setReviewCoverImage(coverImageUrl || '');
+    setPublishIssues(validateCourseContent(buildValidatableWeeks()));
     setShowPublishReview(true);
   };
 
   const confirmPublish = async () => {
+    if (status !== 'published') {
+      const issues = validateCourseContent(buildValidatableWeeks());
+      setPublishIssues(issues);
+      if (issues.length > 0) return;
+    }
     setPublishing(true);
     setError(null);
     try {
@@ -659,6 +687,9 @@ export default function CourseStudioModal({
       });
       if (!pubRes.ok) {
         const data = await pubRes.json().catch(() => ({}));
+        if (Array.isArray(data.issues) && data.issues.length > 0) {
+          setPublishIssues(data.issues);
+        }
         throw new Error(data.error ?? 'Publish failed');
       }
       setTitle(reviewTitle.trim());
@@ -1020,6 +1051,18 @@ export default function CourseStudioModal({
                     className={styles.publishFieldInput}
                   />
                 </label>
+                {publishIssues.length > 0 && status !== 'published' && (
+                  <div className={styles.publishIssues}>
+                    <span className={styles.publishIssuesTitle}>
+                      Fix {publishIssues.length === 1 ? 'this' : `these ${publishIssues.length} things`} before publishing
+                    </span>
+                    <ul className={styles.publishIssuesList}>
+                      {publishIssues.map((issue, i) => (
+                        <li key={i} className={styles.publishIssueItem}>{issue}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
                 <div className={styles.publishActions}>
                   <button
                     type="button"
@@ -1031,7 +1074,7 @@ export default function CourseStudioModal({
                   <button
                     type="button"
                     onClick={confirmPublish}
-                    disabled={publishing || !reviewTitle.trim() || !reviewSlug.trim()}
+                    disabled={publishing || !reviewTitle.trim() || !reviewSlug.trim() || (status !== 'published' && publishIssues.length > 0)}
                     className={styles.publishConfirmBtn}
                   >
                     {publishing ? 'Saving...' : status === 'published' ? 'Save Settings' : 'Confirm & Publish'}
