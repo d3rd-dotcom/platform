@@ -25,12 +25,27 @@ function getPersonalEndDate() {
 
 const COURSE_THUMB = '/uploads/course-shadow-work.jpg';
 
+interface PublicCourseCard {
+  id: string;
+  slug: string;
+  title: string;
+  focus: string;
+  coverImageUrl: string | null;
+  authorName: string;
+  authorAvatar: string | null;
+  weekCount: number;
+  totalTasks: number;
+  memberCount: number;
+  viewerCompletedTasks: number;
+  viewerProgressPct: number;
+}
+
 export default function CoursesPage() {
   const { ready, authenticated, getAccessToken } = usePrivy();
   const [personalCourse, setPersonalCourse] = useState<CourseData | null>(null);
   const [authoredCourses, setAuthoredCourses] = useState<VipCourseRecord[]>([]);
+  const [communityCourses, setCommunityCourses] = useState<PublicCourseCard[]>([]);
   const [coreAuthor, setCoreAuthor] = useState<{ username: string; avatarUrl: string | null } | null>(null);
-  const [skyyeAuthor, setSkyyeAuthor] = useState<{ username: string; avatarUrl: string | null } | null>(null);
   const [academyCourses, setAcademyCourses] = useState<CourseRecord[]>([]);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
@@ -40,15 +55,6 @@ export default function CoursesPage() {
       .then((r) => r.ok ? r.json() : null)
       .then((d) => {
         if (d?.user) setCoreAuthor({ username: d.user.username, avatarUrl: d.user.avatar_url });
-      })
-      .catch(() => {});
-  }, []);
-
-  useEffect(() => {
-    fetch('/api/users/lookup?username=Skyye')
-      .then((r) => r.ok ? r.json() : null)
-      .then((d) => {
-        if (d?.user) setSkyyeAuthor({ username: d.user.username, avatarUrl: d.user.avatar_url });
       })
       .catch(() => {});
   }, []);
@@ -84,11 +90,22 @@ export default function CoursesPage() {
     }
   }, [getAccessToken]);
 
+  const loadCommunityCourses = useCallback(async () => {
+    try {
+      const headers = await authHeaders();
+      const res = await fetch('/api/vip/courses/public', { cache: 'no-store', headers });
+      if (!res.ok) return;
+      const data = await res.json();
+      setCommunityCourses(data.courses ?? []);
+    } catch { /* ignore */ }
+  }, [authHeaders]);
+
   useEffect(() => {
     if (!ready) return;
     loadPersonalCourse();
     loadAuthoredCourses();
-  }, [ready, loadPersonalCourse]);
+    loadCommunityCourses();
+  }, [ready, loadPersonalCourse, loadCommunityCourses]);
 
   useEffect(() => onPersonalCourseUpdated(loadPersonalCourse), [loadPersonalCourse]);
 
@@ -117,6 +134,7 @@ export default function CoursesPage() {
         return;
       }
       setAuthoredCourses((prev) => prev.filter((c) => c.id !== id));
+      setCommunityCourses((prev) => prev.filter((c) => c.id !== id));
       setDeleteTarget(null);
     } catch {
       alert('Failed to delete course');
@@ -124,6 +142,8 @@ export default function CoursesPage() {
       setDeleting(false);
     }
   };
+
+  const shadowStats = communityCourses.find((c) => c.slug === 'creative-healing');
 
   return (
     <div className={styles.layout}>
@@ -168,14 +188,13 @@ export default function CoursesPage() {
                 </div>
                 <div className={styles.cardFooter}>
                   <div className={styles.footerLeft}>
-                    <div className={styles.cardMembers}>
-                      <div className={styles.memberAvatars}>
-                        <span className={styles.memberAvatar} style={{ backgroundImage: 'linear-gradient(135deg, #5168FF, #9b7ed9)' }}>AZ</span>
-                        <span className={styles.memberAvatar} style={{ backgroundImage: 'linear-gradient(135deg, #FF7729, #F472B6)' }}>JM</span>
-                        <span className={styles.memberAvatar} style={{ backgroundImage: 'linear-gradient(135deg, #74C465, #4ECDC4)' }}>KL</span>
+                    {shadowStats && (
+                      <div className={styles.cardMembers}>
+                        <span className={styles.memberCount}>
+                          {shadowStats.memberCount} {shadowStats.memberCount === 1 ? 'member' : 'members'}
+                        </span>
                       </div>
-                      <span className={styles.memberCount}>+23</span>
-                    </div>
+                    )}
                     <div className={styles.courseAuthor}>
                       <span
                         className={styles.authorAvatar}
@@ -189,72 +208,7 @@ export default function CoursesPage() {
                   <span className={styles.cardMembership}>Free</span>
                 </div>
                 <div className={styles.progressDivider}>
-                  <div className={styles.progressFill} style={{ width: '8.3%' }} />
-                </div>
-              </div>
-            </div>
-          </Link>
-        </div>
-
-        <div className={styles.cardWrapper}>
-          <Link href="/course/tap-into-creativity" className={styles.courseCard}>
-            <div className={styles.cardHeader}>
-              <span className={styles.cardKanji}>創造開拓</span>
-              <span className={styles.cardHeaderTitle}>Tap Into Creativity</span>
-            </div>
-            <div className={styles.cardBodyRow}>
-              <span
-                className={styles.thumb}
-                style={{ backgroundImage: `url('/uploads/course-tap-creativity.jpg')` }}>
-                <div className={styles.badgeWrapper}>
-                  <div className={styles.cardBadgeGroup}>
-                    <div className={styles.badgeSection}>
-                      <span className={styles.badgeValue}>4 sessions</span>
-                      <span className={styles.badgeEyebrow}>length</span>
-                    </div>
-                    <span className={styles.badgeDivider} />
-                    <div className={styles.badgeSection}>
-                      <span className={styles.badgeValue}>
-                        <span className={styles.rewardStack}>
-                          <img src="/icons/usdc-logo.svg" alt="" className={styles.usdcIcon} />
-                          <img src="/icons/ui-diamond.svg" alt="" className={styles.diamondIcon} />
-                        </span>
-                      </span>
-                      <span className={styles.badgeEyebrow}>rewards</span>
-                    </div>
-                  </div>
-                </div>
-              </span>
-              <div className={styles.body}>
-                <div className={styles.contentCenter}>
-                  <span className={styles.desc}>
-                    The goal is to help people feel confident and encouraged to express themselves creatively. It&apos;s the advice I wish I had when I was little and afraid to call myself an artist.
-                  </span>
-                </div>
-                <div className={styles.cardFooter}>
-                  <div className={styles.footerLeft}>
-                    <div className={styles.cardMembers}>
-                      <div className={styles.memberAvatars}>
-                        <span className={styles.memberAvatar} style={{ backgroundImage: 'linear-gradient(135deg, #F472B6, #EC4899)' }}>AR</span>
-                        <span className={styles.memberAvatar} style={{ backgroundImage: 'linear-gradient(135deg, #38BDF8, #818CF8)' }}>BN</span>
-                        <span className={styles.memberAvatar} style={{ backgroundImage: 'linear-gradient(135deg, #FBBF24, #F59E0B)' }}>CL</span>
-                      </div>
-                      <span className={styles.memberCount}>+0</span>
-                    </div>
-                    <div className={styles.courseAuthor}>
-                      <span
-                        className={styles.authorAvatar}
-                        style={skyyeAuthor?.avatarUrl ? { backgroundImage: `url(${JSON.stringify(skyyeAuthor.avatarUrl)})` } : { backgroundImage: 'linear-gradient(135deg, #8B5CF6, #F59E0B)' }}
-                      >
-                        {!skyyeAuthor?.avatarUrl ? (skyyeAuthor?.username?.[0] ?? 'S') : ''}
-                      </span>
-                      <span className={styles.authorName}>@{skyyeAuthor?.username ?? 'Skyye'}</span>
-                    </div>
-                  </div>
-                  <span className={styles.cardMembership}>Angels</span>
-                </div>
-                <div className={styles.progressDivider}>
-                  <div className={styles.progressFill} style={{ width: '0%' }} />
+                  <div className={styles.progressFill} style={{ width: `${shadowStats?.viewerProgressPct ?? 0}%` }} />
                 </div>
               </div>
             </div>
@@ -306,7 +260,7 @@ export default function CoursesPage() {
           </div>
         )}
 
-        {authoredCourses.filter((c) => c.status === 'published').map((c) => (
+        {communityCourses.filter((c) => c.slug !== 'creative-healing').map((c) => (
           <div key={c.id} className={styles.cardWrapper}>
             <Link href={`/course/${c.slug}`} className={styles.courseCard}>
               <div className={styles.cardHeader}>
@@ -314,21 +268,28 @@ export default function CoursesPage() {
                 <span className={styles.cardHeaderTitle}>{c.title}</span>
               </div>
               <div className={styles.cardBodyRow}>
-                <span className={styles.thumb} style={{ backgroundImage: `url('/academy-story.png')` }}>
+                <span
+                  className={styles.thumb}
+                  style={{ backgroundImage: `url(${JSON.stringify(c.coverImageUrl || '/academy-story.png')})` }}
+                >
                   <div className={styles.badgeWrapper}>
                     <div className={styles.cardBadgeGroup}>
                       <div className={styles.badgeSection}>
-                        <span className={styles.badgeValue}>Published</span>
-                        <span className={styles.badgeEyebrow}>status</span>
+                        <span className={styles.badgeValue}>{c.weekCount} {c.weekCount === 1 ? 'week' : 'weeks'}</span>
+                        <span className={styles.badgeEyebrow}>length</span>
+                      </div>
+                      <span className={styles.badgeDivider} />
+                      <div className={styles.badgeSection}>
+                        <span className={styles.badgeValue}>{c.memberCount}</span>
+                        <span className={styles.badgeEyebrow}>{c.memberCount === 1 ? 'member' : 'members'}</span>
                       </div>
                     </div>
                   </div>
                 </span>
                 <div className={styles.body}>
                   <div className={styles.contentCenter}>
-                    <span className={styles.category}>Your course</span>
                     <span className={styles.desc}>
-                      {c.focus || 'No description yet'}
+                      {c.focus || 'A community course.'}
                     </span>
                   </div>
                   <div className={styles.cardFooter}>
@@ -348,7 +309,7 @@ export default function CoursesPage() {
                     <span className={styles.cardMembership}>Free</span>
                   </div>
                   <div className={styles.progressDivider}>
-                    <div className={styles.progressFill} style={{ width: '0%' }} />
+                    <div className={styles.progressFill} style={{ width: `${c.viewerProgressPct}%` }} />
                   </div>
                 </div>
               </div>
