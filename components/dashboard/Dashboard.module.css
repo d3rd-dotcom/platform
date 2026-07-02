@@ -69,11 +69,19 @@
 
 }
 
-/* ── Mobile: single column, no explicit grid-row needed (DOM order) ── */
+/* ── Mobile: single column flow, no grid wrapper — content fills naturally ── */
 @media (max-width: 1024px) {
   .dashboard {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
     overflow-x: hidden;
+    padding-top: 12px;
+  }
+
+  .blueSceneWrap {
+    flex: none;
   }
 
   .sidebarWrap {
@@ -92,6 +100,7 @@
 @media (max-width: 768px) {
   .dashboard {
     gap: 20px;
+    padding-top: 8px;
   }
 
   .sidebarWrap {
