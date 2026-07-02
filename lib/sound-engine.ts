@@ -14,7 +14,8 @@ export type SoundType =
   | 'alarm'
   | 'hum'
   | 'pop'
-  | 'ring';
+  | 'ring'
+  | 'logo-hover';
 
 // C pentatonic scale frequencies
 const PENTATONIC_C5 = [523.25, 587.33, 659.25, 783.99, 880.0];
@@ -413,6 +414,16 @@ export class SoundEngine {
         this.mallet(scale[top - 1], now + this.dur(0.11), this.dur(0.14), 0.38);
         this.mallet(scale[top - 2], now + this.dur(0.22), this.dur(0.16), 0.35);
         this.mallet(scale[top], now + this.dur(0.33), this.dur(0.18), 0.32);
+        break;
+      }
+
+      case 'logo-hover': {
+        const idx = pickIndex(PENTATONIC_C5.length - 2);
+        const haste = this.dur(0.06);
+        const fastDecay = this.dur(0.14);
+        for (let i = 0; i < 3; i++) {
+          this.mallet(PENTATONIC_C5[idx + i], now + i * haste, fastDecay, 0.35 + i * 0.08);
+        }
         break;
       }
     }

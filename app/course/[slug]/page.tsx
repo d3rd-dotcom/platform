@@ -121,7 +121,7 @@ export default function CourseSlugPage({ params }: PageProps) {
         }
 
         const headers = await authHeaders();
-        const vipRes = await fetch(`/api/vip/courses/slug/${params.slug}`, { headers });
+        const vipRes = await fetch(`/api/vip/courses/slug/${params.slug}`, { headers, credentials: 'include', cache: 'no-store' });
         if (vipRes.ok) {
           const vipData = await vipRes.json();
           const vc: VipCourseFull = vipData.course;
@@ -131,7 +131,7 @@ export default function CourseSlugPage({ params }: PageProps) {
             return;
           }
           setVipCourse(vc);
-          const progRes = await fetch(`/api/vip/courses/${vc.id}/progress`, { headers });
+          const progRes = await fetch(`/api/vip/courses/${vc.id}/progress`, { headers, credentials: 'include', cache: 'no-store' });
           if (progRes.ok) {
             const progData = await progRes.json();
             setProgress(progData.progress ?? []);
@@ -272,6 +272,8 @@ export default function CourseSlugPage({ params }: PageProps) {
     const readingComponent = components.find((c) => c.componentType === 'rich_text' && c.title === 'Weekly Read');
     const readingImageUrl = readingComponent ? (readingComponent.config as Record<string, string>)?.imageUrl ?? '' : '';
     const taskComponents = components.filter((c) => !(c.componentType === 'rich_text' && c.title === 'Weekly Read'));
+
+
 
     const selectedComponent = rightContent === 'task' && selectedTaskId
       ? components.find((c) => c.id === selectedTaskId) ?? null

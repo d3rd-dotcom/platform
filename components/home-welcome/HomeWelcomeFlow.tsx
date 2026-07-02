@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
-import OnboardingModal from '@/components/onboarding/OnboardingModal';
 
 interface HomeWelcomeFlowProps {
   children: React.ReactNode;
@@ -18,12 +17,18 @@ interface HomeWelcomeFlowProps {
  *   globally by MiniAppAutoAuth; this component just reacts to `authenticated`.
  * - Privy-authenticated: auto-creates server session via wallet-signup.
  * - No auth: renders page content (no redirect).
+ *
+ * NOTE: This component does NOT render its own OnboardingModal. That's owned
+ * by AcademyAccessGate (wraps the entire app). When AcademyAccessGate's modal
+ * completes it dispatches a 'profileUpdated' event — we listen for it here
+ * to call onAuthenticated.
  */
 export default function HomeWelcomeFlow({ children, onAuthenticated, onSettled }: HomeWelcomeFlowProps) {
   const router = useRouter();
   const { ready, authenticated, getAccessToken, user } = usePrivy();
 
-  const [authState, setAuthState] = useState<'checking' | 'needs-onboarding' | 'ready'>('checking');
+  const [authState, setAuthState] = useState<'checking' | 'ready'>('checking');
+  const settledRef = useRef(false);
 
   useEffect(() => {
     if (!ready) return;
@@ -45,7 +50,7 @@ export default function HomeWelcomeFlow({ children, onAuthenticated, onSettled }
               setAuthState('ready');
               onAuthenticated?.();
             } else {
-              setAuthState('needs-onboarding');
+              setAuthState('ready');
             }
             return;
           }
@@ -88,7 +93,7 @@ export default function HomeWelcomeFlow({ children, onAuthenticated, onSettled }
               setAuthState('ready');
               onAuthenticated?.();
             } else {
-              setAuthState('needs-onboarding');
+              setAuthState('ready');
             }
             return;
           }
@@ -103,31 +108,21 @@ export default function HomeWelcomeFlow({ children, onAuthenticated, onSettled }
     })();
   }, [ready, authenticated]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Listen for profileUpdated dispatched by AcademyAccessGate's modal
   useEffect(() => {
-    if (authState !== 'checking') onSettled?.();
-  }, [authState]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const handleOnboardingComplete = useCallback((username: string) => {
-    setAuthState('ready');
-    window.dispatchEvent(new Event('profileUpdated'));
-    onAuthenticated?.();
+    const handler = () => {
+      onAuthenticated?.();
+    };
+    window.addEventListener('profileUpdated', handler);
+    return () => window.removeEventListener('profileUpdated', handler);
   }, [onAuthenticated]);
 
-  if (authState === 'needs-onboarding') {
-    return (
-      <>
-        {children}
-        <OnboardingModal
-          isOpen={true}
-          onClose={() => {
-            setAuthState('ready');
-            onAuthenticated?.();
-          }}
-          onComplete={handleOnboardingComplete}
-        />
-      </>
-    );
-  }
+  useEffect(() => {
+    if (authState !== 'checking' && !settledRef.current) {
+      settledRef.current = true;
+      onSettled?.();
+    }
+  }, [authState]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return <>{children}</>;
 }

@@ -152,10 +152,9 @@
 }
 
 @media (max-width: 768px) {
-  /* Clear the fixed Daily Note + mobile nav so the last cards never slide
-     underneath them. */
+  /* Clear the fixed mobile nav so the last cards never slide underneath. */
   .bentoScrollWithMorningNote {
-    padding-bottom: 240px;
+    padding-bottom: calc(120px + max(env(safe-area-inset-bottom, 0px), 20px));
   }
 }
 

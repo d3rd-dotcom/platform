@@ -77,7 +77,7 @@ const TopNavigation: React.FC = () => {
               <path d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          <a href="/" className={styles.logoLink}>
+          <a href="/" className={styles.logoLink} onMouseEnter={() => play('logo-hover')}>
             <Image
               src="/icons/logo-mwa-horizontal.png"
               alt="Mental Wealth Academy"

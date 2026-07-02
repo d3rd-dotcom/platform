@@ -151,13 +151,14 @@ export async function POST(request: Request) {
   const userId = currentUser.id;
 
   // Check if user already has a profile (not just temporary username)
-  const existingUser = await sqlQuery<Array<{ username: string; avatar_url: string | null }>>(
-    `SELECT username, avatar_url FROM users WHERE id = :userId LIMIT 1`,
+  const userRows = await sqlQuery<Array<{ username: string; avatar_url: string | null; avatar_reroll_count: number }>>(
+    `SELECT username, avatar_url, avatar_reroll_count FROM users WHERE id = :userId LIMIT 1`,
     { userId }
   );
-  const hasExistingProfile = existingUser.length > 0 && 
-    existingUser[0].username && 
-    !existingUser[0].username.startsWith('user_');
+  const existingUser = userRows[0] || { username: null, avatar_url: null };
+  const avatarRerollCount = userRows[0]?.avatar_reroll_count ?? 0;
+  const hasExistingProfile = existingUser.username && 
+    !existingUser.username.startsWith('user_');
 
   try {
     // Avatar selection is now optional - user selects avatar on homepage
@@ -166,10 +167,10 @@ export async function POST(request: Request) {
     if (avatar_id) {
       // Validate avatar is in assigned choices for this user
       // Skip validation if user already has a profile (allowing updates)
-      if (!hasExistingProfile && !(await isAvatarValidForUser(userId, avatar_id))) {
+      if (!hasExistingProfile && !(await isAvatarValidForUser(userId, avatar_id, avatarRerollCount))) {
         // Since this is a new user, we need to get their choices based on the new ID
         // and check if the avatar is valid
-        const assignedAvatars = await getAssignedAvatars(userId);
+        const assignedAvatars = await getAssignedAvatars(userId, avatarRerollCount);
         const validIds = assignedAvatars.map(a => a.id);
         
         return NextResponse.json(
@@ -191,7 +192,7 @@ export async function POST(request: Request) {
           // If avatar_id is invalid, still allow update but log it
           console.warn(`Avatar ${avatar_id} not found for existing profile update`);
           // Use a default or existing avatar_url
-          const existingAvatarUrl = existingUser[0].avatar_url;
+          const existingAvatarUrl = existingUser.avatar_url;
           avatar = existingAvatarUrl ? { id: avatar_id, image_url: existingAvatarUrl, metadata_url: '' } : null;
         }
       } else {
@@ -222,9 +223,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Get all 6 assigned avatars for this user
-    const assignedAvatars = await getAssignedAvatars(userId);
-    
     // Update the user profile and store all avatar choices
     const WELCOME_SHARDS = hasExistingProfile ? undefined : 10; // Don't reset credits for existing profiles
     await withTransaction(async (client) => {
@@ -268,7 +266,7 @@ export async function POST(request: Request) {
 
       // Store all 5 avatar choices for this user (only if not existing profile or if we want to refresh)
       if (!hasExistingProfile) {
-        const assignedAvatarsForDb = await getAssignedAvatars(userId);
+        const assignedAvatarsForDb = await getAssignedAvatars(userId, avatarRerollCount);
         for (const assignedAvatar of assignedAvatarsForDb) {
           await sqlQueryWithClient(
             client,

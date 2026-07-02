@@ -338,7 +338,7 @@
 
 @media (max-width: 1024px) {
   .scene {
-    min-height: 480px;
+    min-height: 520px;
     overflow-anchor: none;
   }
 
@@ -365,7 +365,7 @@
    instead of being cropped behind it. */
 @media (max-width: 768px) {
   .scene {
-    min-height: 300px;
+    min-height: 420px;
   }
 
   .blueWrap {
