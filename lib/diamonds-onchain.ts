@@ -1,4 +1,4 @@
-import { Contract, utils } from 'ethers';
+import { Contract, providers, utils } from 'ethers';
 import { getBlueSigner } from './blue-membership';
 import { getPaymasterRpcUrl, getBlueSmartAccount, mintDiamondsSponsored } from './diamonds-paymaster';
 import { sqlQuery } from './db';
@@ -36,6 +36,21 @@ export function getDiamondsTokenAddress(): string | null {
   return process.env.DIAMONDS_TOKEN_ADDRESS || process.env.NEXT_PUBLIC_DIAMONDS_TOKEN_ADDRESS || null;
 }
 
+/**
+ * ethers v5 defaults EIP-1559 transactions to a 1.5 gwei priority tip —
+ * roughly 200x what Base clears at — which drains Blue's gas wallet in a
+ * handful of payouts. Price every write from the live base fee instead.
+ */
+async function baseFeeOverrides(provider: providers.Provider) {
+  const block = await provider.getBlock('latest');
+  const priority = utils.parseUnits('0.001', 'gwei');
+  const baseFee = block.baseFeePerGas ?? utils.parseUnits('0.05', 'gwei');
+  return {
+    maxPriorityFeePerGas: priority,
+    maxFeePerGas: baseFee.mul(2).add(priority),
+  };
+}
+
 // ── Ledger ──
 
 let schemaEnsured = false;
@@ -71,10 +86,11 @@ const grantedMinters = new Set<string>();
 async function ensureMinter(tokenAddress: string, minterAddress: string) {
   const cacheKey = `${tokenAddress}:${minterAddress}`.toLowerCase();
   if (grantedMinters.has(cacheKey)) return;
-  const contract = new Contract(tokenAddress, DIAMONDS_ABI, getBlueSigner());
+  const signer = getBlueSigner();
+  const contract = new Contract(tokenAddress, DIAMONDS_ABI, signer);
   const isMinter: boolean = await contract.minters(minterAddress);
   if (!isMinter) {
-    const tx = await contract.setMinter(minterAddress, true);
+    const tx = await contract.setMinter(minterAddress, true, await baseFeeOverrides(signer.provider));
     await tx.wait();
     console.log(`[diamonds] Granted minter to ${minterAddress}`);
   }
@@ -101,8 +117,9 @@ async function mintDiamonds(tokenAddress: string, to: string, wholeDiamonds: num
     }
   }
 
-  const contract = new Contract(tokenAddress, DIAMONDS_ABI, getBlueSigner());
-  const tx = await contract.mint(to, amountWei);
+  const signer = getBlueSigner();
+  const contract = new Contract(tokenAddress, DIAMONDS_ABI, signer);
+  const tx = await contract.mint(to, amountWei, await baseFeeOverrides(signer.provider));
   const receipt = await tx.wait();
   return receipt.transactionHash;
 }
@@ -112,7 +129,11 @@ async function mintDiamonds(tokenAddress: string, to: string, wholeDiamonds: num
 async function transferFromBlue(tokenAddress: string, to: string, wholeDiamonds: number): Promise<string> {
   const signer = getBlueSigner();
   const contract = new Contract(tokenAddress, DIAMONDS_ABI, signer);
-  const tx = await contract.transfer(to, utils.parseUnits(String(wholeDiamonds), 18));
+  const tx = await contract.transfer(
+    to,
+    utils.parseUnits(String(wholeDiamonds), 18),
+    await baseFeeOverrides(signer.provider),
+  );
   const receipt = await tx.wait();
   return receipt.transactionHash;
 }
