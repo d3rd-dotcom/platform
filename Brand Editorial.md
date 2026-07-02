@@ -9,9 +9,9 @@ Mental Wealth Academy is a gameworld built on behavioral psychology and custom-m
 **Use this line, or a remixed piece of it, whenever a post needs to explain what we are.**
 
 ## Tsukuyomi Surf (Core Pillars)
-1.	Trauma Survivors, Quality Education Can Help Us Reshape Our Reality.
-2.	Mental Wealth is the Knowledge That Keeps Us Afloat Above Sea.
-3.	Science cuts down the online misinformation dragging us down.
+1.	Quality Education
+2.	Curated Network of Spirit
+3. Invet In Human Potential
 
 **Objective**: “Investing in the future of humanity, with the heart of tomorrow. ʚїɞ”
 
