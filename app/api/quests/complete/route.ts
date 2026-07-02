@@ -115,6 +115,17 @@ export async function POST(request: Request) {
   const definition = getQuestDefinition(questId);
   const customQuest = definition ? null : await loadCustomQuest(questId);
 
+  // SECURITY: only known quests pay out. The old generic 10-diamond fallback
+  // let any invented questId string mint credits (and, now that rewards are
+  // delivered onchain, drain real $BLUE from Blue's stash) without limit.
+  const isDailyNoteQuest = /^daily-notes-w([1-9]|1[0-2])-d[1-7]$/.test(questId);
+  const balloonCount = /^balloon-\d+$/.test(questId) ? parseInt(questId.slice(8), 10) : 0;
+  const isBalloonQuest = balloonCount > 0 && balloonCount % 5 === 0 && balloonCount <= 100;
+  const isKnownFixedQuest = QUEST_REWARDS[questId] !== undefined;
+  if (!definition && !customQuest && !isKnownFixedQuest && !isDailyNoteQuest && !isBalloonQuest) {
+    return NextResponse.json({ error: 'Unknown quest.' }, { status: 404 });
+  }
+
   // SECURITY: proof-required quests can NEVER be self-attested here — that would
   // let anyone mint the diamonds without ever submitting proof. They go through
   // /api/quests/proof/submit and are only awarded on staff approval.

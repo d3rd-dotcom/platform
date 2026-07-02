@@ -134,6 +134,7 @@ export default function WeekTasksView({
   const [showRewardAnimation, setShowRewardAnimation] = useState(false);
   const [showMissionReward, setShowMissionReward] = useState(false);
   const [missionRewardKey, setMissionRewardKey] = useState(0);
+  const [pendingTaskId, setPendingTaskId] = useState<string | null>(null);
   const [sealTxHash, setSealTxHash] = useState<string | null>(initialSealTxHash ?? null);
   const [isLoading, setIsLoading] = useState(true);
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -281,22 +282,25 @@ export default function WeekTasksView({
     setExpandedSection(prev => prev === id ? null : id);
   };
 
+  // Completion is permanent: finished tasks can't be unchecked, and the
+  // diamonds are claimed through an explicit confirm step.
   const markComplete = (id: string) => {
-    const isCurrentlyDone = completedSections.has(id);
-    if (isCurrentlyDone) {
-      play('click');
-    } else {
-      setShowMissionReward(true);
-      setMissionRewardKey(k => k + 1);
-      // Let the first-run course walkthrough know a mission was just finished,
-      // so it can surface its closing spotlights (shop + Ask Blue).
-      if (typeof window !== 'undefined') window.dispatchEvent(new Event('missionCompleted'));
-    }
-    setCompletedSections(prev => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id); else next.add(id);
-      return next;
-    });
+    if (completedSections.has(id)) return;
+    play('click');
+    setPendingTaskId(id);
+  };
+
+  const confirmComplete = () => {
+    const id = pendingTaskId;
+    if (!id || completedSections.has(id)) { setPendingTaskId(null); return; }
+    play('celebration');
+    setPendingTaskId(null);
+    setShowMissionReward(true);
+    setMissionRewardKey(k => k + 1);
+    // Let the first-run course walkthrough know a mission was just finished,
+    // so it can surface its closing spotlights (shop + Ask Blue).
+    if (typeof window !== 'undefined') window.dispatchEvent(new Event('missionCompleted'));
+    setCompletedSections(prev => new Set(prev).add(id));
   };
 
   const handleTextChange = (sectionId: string, index: number | null, value: string) => {
@@ -717,6 +721,7 @@ export default function WeekTasksView({
                     className={`${styles.markDoneBtn} ${isDone ? styles.markDoneBtnActive : ''}`}
                     onClick={() => markComplete(section.id)}
                     onMouseEnter={() => play('hover')}
+                    disabled={isDone}
                   >
                     {isDone ? (
                       'Completed'
@@ -799,6 +804,31 @@ export default function WeekTasksView({
                 <span>Sealing week...</span>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Task completion confirm — completion is permanent */}
+      {pendingTaskId && (
+        <div className={styles.missionModalOverlay} onClick={() => { play('toggle-off'); setPendingTaskId(null); }}>
+          <div className={styles.missionModal} onClick={e => e.stopPropagation()}>
+            <div className={styles.missionModalHeader}>
+              <span className={styles.missionModalKanji}>任務記録</span>
+              <span className={styles.missionModalTitle}>Mission Log</span>
+            </div>
+            <div className={styles.missionModalBody}>
+              <p className={styles.missionModalText}>
+                Completing a task is permanent — it can&apos;t be unchecked later. Ready to finish it and receive your 50 diamonds?
+              </p>
+            </div>
+            <div className={styles.missionModalFooter}>
+              <button className={styles.missionModalBack}
+                onClick={() => { play('toggle-off'); setPendingTaskId(null); }}
+                onMouseEnter={() => play('hover')}>Go Back</button>
+              <button className={styles.missionModalConfirm}
+                onClick={confirmComplete}
+                onMouseEnter={() => play('hover')}>Complete Task</button>
+            </div>
           </div>
         </div>
       )}

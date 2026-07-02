@@ -130,11 +130,19 @@ export async function POST(request: Request) {
   }
 
   const previousCompletedSections = parseCompletedSections(existing[0]?.progress_data);
-  const currentCompletedSections = parseCompletedSections(progressData);
   // Sections that have already been credited — persists even if user unmarks a task.
   const alreadyCredited: string[] = Array.isArray(existing[0]?.credited_sections)
     ? existing[0].credited_sections
     : [];
+
+  // Completion is permanent: a credited section can never leave the completed
+  // list, no matter what the client posts.
+  const currentCompletedSections = Array.from(
+    new Set([...parseCompletedSections(progressData), ...alreadyCredited]),
+  );
+  if (progressData && typeof progressData === 'object') {
+    progressData.completedSections = currentCompletedSections;
+  }
 
   // ─── Seal Flow ─────────────────────────────────────────────────────
   if (seal) {

@@ -491,7 +491,7 @@ export default function CourseSlugPage({ params }: PageProps) {
                   </div>
                   <div className={styles.confirmBody}>
                     <p className={styles.confirmText}>
-                      Complete this task and earn <strong>+{COMPLETION_REWARD} diamonds</strong>?
+                      Completing a task is permanent — it can&apos;t be undone. Finish it and receive <strong>+{COMPLETION_REWARD} diamonds</strong>?
                     </p>
                   </div>
                   <div className={styles.confirmFooter}>
