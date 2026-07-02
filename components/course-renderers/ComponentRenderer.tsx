@@ -30,7 +30,11 @@ const BLOCK_LABELS: Record<string, string> = {
   nft_gate: 'NFT Gate',
 };
 
-type RendererProps = { component: CourseComponentRecord; onComponentUpdate?: (updates: Partial<CourseComponentRecord>) => void };
+type RendererProps = {
+  component: CourseComponentRecord;
+  onComponentUpdate?: (updates: Partial<CourseComponentRecord>) => void;
+  grading?: { courseId: string; blockId: string };
+};
 
 const RENDERER_MAP: Record<string, React.ComponentType<RendererProps>> = {
   rich_text: RichTextRenderer as React.ComponentType<RendererProps>,
@@ -49,7 +53,12 @@ const RENDERER_MAP: Record<string, React.ComponentType<RendererProps>> = {
 export default function ComponentRenderer({
   component,
   onComponentUpdate,
-}: RendererProps) {
+  courseId,
+}: {
+  component: CourseComponentRecord;
+  onComponentUpdate?: (updates: Partial<CourseComponentRecord>) => void;
+  courseId?: string;
+}) {
   // Container mission — render each block
   if (component.componentType === 'mission_container') {
     const blocks = component.blocks || [];
@@ -71,7 +80,11 @@ export default function ComponentRenderer({
               {blocks.length > 1 && (
                 <div className={styles.blockLabel}>{BLOCK_LABELS[block.blockType] || block.blockType}</div>
               )}
-              <BlockRenderer component={blockAsComponent} onComponentUpdate={onComponentUpdate} />
+              <BlockRenderer
+                component={blockAsComponent}
+                onComponentUpdate={onComponentUpdate}
+                grading={courseId ? { courseId, blockId: block.id } : undefined}
+              />
             </div>
           );
         })}
@@ -82,5 +95,11 @@ export default function ComponentRenderer({
   // Single-type component (legacy or non-container)
   const Renderer = RENDERER_MAP[component.componentType];
   if (!Renderer) return null;
-  return <Renderer component={component} onComponentUpdate={onComponentUpdate} />;
+  return (
+    <Renderer
+      component={component}
+      onComponentUpdate={onComponentUpdate}
+      grading={courseId ? { courseId, blockId: component.id } : undefined}
+    />
+  );
 }

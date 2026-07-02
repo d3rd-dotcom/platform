@@ -175,6 +175,9 @@ export default function CourseSlugPage({ params }: PageProps) {
         setShardAnim(COMPLETION_REWARD);
         setTimeout(() => setShardAnim(null), 2000);
       }
+    } else {
+      const data = await res.json().catch(() => ({}));
+      if (data?.error) window.alert(data.error);
     }
   };
 
@@ -460,7 +463,7 @@ export default function CourseSlugPage({ params }: PageProps) {
                   })()}
                 </div>
                 <div className={styles.detailCardContent}>
-                  <ComponentRenderer component={selectedComponent} />
+                  <ComponentRenderer component={selectedComponent} courseId={vipCourse.id} />
                   <div className={styles.detailActions}>
                     {(() => {
                       const blockIds: string[] = selectedComponent.componentType === 'mission_container' && selectedComponent.blocks
