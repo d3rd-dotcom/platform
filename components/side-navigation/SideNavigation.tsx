@@ -55,7 +55,6 @@ const desktopNavSections: NavSection[] = [
     badgeType: 'pro',
     items: [
       { id: 'genetics', label: 'Genetics', href: '/genetics', iconSrc: '/icons/genetics.svg', requiresPro: true },
-      { id: 'markets', label: 'Endowment', href: '/trades', iconSrc: '/icons/nav-trades-v1.svg', requiresPro: true },
     ],
   },
 ];
@@ -67,8 +66,6 @@ const mobileNavSections: NavSection[] = [
     badge: 'Pro',
     badgeType: 'pro',
     items: [
-      { id: 'markets', label: 'Trades', href: '/trades', iconSrc: '/icons/nav-trades-v1.svg', requiresPro: true },
-      { id: 'simulations', label: 'Simulations', href: '/simulation', iconSrc: '/icons/nav-simulations-v2.svg' },
       { id: 'genetics', label: 'Genetics', href: '/genetics', iconSrc: '/icons/genetics.svg', requiresPro: true },
     ],
   },
@@ -87,6 +84,12 @@ const primaryNavItems: NavItem[] = [
     href: '/courses',
     iconSrc: '/icons/nav-course-v2.svg',
   },
+  {
+    id: 'simulations',
+    label: 'Pocket News',
+    href: '/simulation',
+    iconSrc: '/icons/nav-simulations-v2.svg',
+  },
 ];
 
 const bottomNavItems: NavItem[] = [
@@ -95,6 +98,12 @@ const bottomNavItems: NavItem[] = [
     label: 'Surveys',
     href: '/surveys',
     iconSrc: '/icons/nav-surveys-v5.svg',
+  },
+  {
+    id: 'research',
+    label: 'R-Tool',
+    href: '/research',
+    iconSrc: '/icons/nav-laboratory-v3.svg',
   },
 ];
 
@@ -799,7 +808,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
               )}
             </div>
 
-            {/* Bottom group: Surveys */}
+            {/* Bottom group: Surveys, R-Tool */}
             <div className={styles.navBottomGroup}>
               {bottomNavItems.map((item) => {
                 const active = isActive(item.href);
