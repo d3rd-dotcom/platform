@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
-import { isDbConfigured, sqlQuery, withTransaction } from '@/lib/db';
-import { getVipCourseFull } from '@/lib/vip-course-db';
+import { isDbConfigured, withTransaction } from '@/lib/db';
+import { getVipCourseFull, getRequiredTaskIds } from '@/lib/vip-course-db';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -35,6 +35,11 @@ export async function POST(request: Request, { params }: { params: { id: string 
     return NextResponse.json({ error: 'Week not found.' }, { status: 404 });
   }
 
+  const requiredIds = getRequiredTaskIds(week);
+  if (requiredIds.length === 0) {
+    return NextResponse.json({ error: 'This week has no completable tasks.' }, { status: 400 });
+  }
+
   const result = await withTransaction(async (client) => {
     const existing = await client.query(
       `SELECT * FROM vip_progress WHERE user_id = $1 AND course_id = $2 AND week_id = $3`,
@@ -42,7 +47,12 @@ export async function POST(request: Request, { params }: { params: { id: string 
     );
 
     if (existing.rows.length > 0 && existing.rows[0].is_sealed) {
-      return { alreadySealed: true, shardsAwarded: 0 };
+      return { alreadySealed: true, shardsAwarded: 0, incomplete: false };
+    }
+
+    const completed = new Set<string>((existing.rows[0]?.completed_component_ids as string[] | undefined) ?? []);
+    if (!requiredIds.every((id) => completed.has(id))) {
+      return { alreadySealed: false, shardsAwarded: 0, incomplete: true };
     }
 
     if (existing.rows.length > 0) {
@@ -63,11 +73,14 @@ export async function POST(request: Request, { params }: { params: { id: string 
       [SEAL_REWARD, user.id],
     );
 
-    return { alreadySealed: false, shardsAwarded: SEAL_REWARD };
+    return { alreadySealed: false, shardsAwarded: SEAL_REWARD, incomplete: false };
   });
 
   if (result.alreadySealed) {
     return NextResponse.json({ error: 'Week already sealed.', alreadySealed: true }, { status: 409 });
+  }
+  if (result.incomplete) {
+    return NextResponse.json({ error: 'Complete every task in this week before sealing it.' }, { status: 400 });
   }
 
   return NextResponse.json({

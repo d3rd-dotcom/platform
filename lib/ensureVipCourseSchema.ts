@@ -99,6 +99,18 @@ export async function ensureVipCourseSchema() {
       )
     `);
 
+    await sqlQuery(`
+      CREATE TABLE IF NOT EXISTS vip_diamond_claims (
+        id CHAR(36) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+        user_id VARCHAR(36) NOT NULL,
+        course_id CHAR(36) NOT NULL,
+        component_id CHAR(36) NOT NULL,
+        shards INTEGER NOT NULL DEFAULT 0,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE (user_id, component_id)
+      )
+    `);
+
     try {
       await sqlQuery(`ALTER TABLE vip_courses DROP CONSTRAINT IF EXISTS vip_courses_slug_unique`);
       await sqlQuery(`ALTER TABLE vip_courses ADD CONSTRAINT vip_courses_slug_unique UNIQUE (slug)`);

@@ -667,6 +667,24 @@ export async function reorderCourseComponents(
   return rows.map(toCourseComponent);
 }
 
+/**
+ * The ids a user must have in completed_component_ids to finish a week.
+ * Mirrors getAllBlockIds in app/course/[slug]/page.tsx: mission containers
+ * count by their blocks, the Weekly Read has no complete action and is skipped.
+ */
+export function getRequiredTaskIds(week: { components: CourseComponentRecord[] }): string[] {
+  const ids: string[] = [];
+  for (const comp of week.components) {
+    if (comp.componentType === 'rich_text' && comp.title === 'Weekly Read') continue;
+    if (comp.componentType === 'mission_container' && comp.blocks) {
+      for (const block of comp.blocks) ids.push(block.id);
+    } else {
+      ids.push(comp.id);
+    }
+  }
+  return ids;
+}
+
 // ── Progress ──
 
 export interface VipProgressRecord {
