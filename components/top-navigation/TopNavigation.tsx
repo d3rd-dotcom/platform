@@ -15,13 +15,12 @@ interface NavLink {
   href: string;
   icon: string;
   comingSoon?: boolean;
-  vipOnly?: boolean;
 }
 
 const NAV_LINKS: NavLink[] = [
   { label: 'Community', href: '/community', icon: '/icons/nav-world-v2.svg', comingSoon: true },
   { label: 'Quests', href: '/quests', icon: '/icons/nav-quests-v3.svg' },
-  { label: 'Trading', href: '/trades', icon: '/icons/nav-trades-v1.svg', vipOnly: true },
+  { label: 'Trading', href: '/trades', icon: '/icons/nav-trades-v1.svg' },
 ];
 
 const TopNavigation: React.FC = () => {
@@ -102,7 +101,7 @@ const TopNavigation: React.FC = () => {
           </div>
         </div>
         <nav className={styles.centerNav} aria-label="Main navigation">
-          {NAV_LINKS.map(({ label, href, icon, comingSoon, vipOnly }) => {
+          {NAV_LINKS.map(({ label, href, icon, comingSoon }) => {
             const active = pathname === href || pathname?.startsWith(href + '/');
 
             if (comingSoon) {
@@ -124,31 +123,6 @@ const TopNavigation: React.FC = () => {
                   <span className={styles.navDivider} />
                   <span className={styles.navLinkLabel}>
                     <span className={styles.navLinkBadge}>Coming soon</span>
-                  </span>
-                </span>
-              );
-            }
-
-            if (vipOnly) {
-              return (
-                <span
-                  key={href}
-                  className={`${styles.navLink} ${styles.navLinkDisabled}`}
-                  aria-disabled="true"
-                >
-                  <span className={styles.navLinkIconWrap}>
-                    <Image
-                      src={icon}
-                      alt=""
-                      width={16}
-                      height={16}
-                      className={styles.navLinkIcon}
-                    />
-                  </span>
-                  <span className={styles.navDivider} />
-                  <span className={styles.navLinkLabel}>
-                    <HoverSlideText>{label}</HoverSlideText>
-                    <span className={styles.navLinkBadge}>VIP</span>
                   </span>
                 </span>
               );
