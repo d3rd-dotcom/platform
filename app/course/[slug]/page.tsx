@@ -32,6 +32,8 @@ function getArtworkVariant(id: string): string {
 function getAllBlockIds(week: VipCourseFull['weeks'][number]): string[] {
   const ids: string[] = [];
   for (const comp of week.components) {
+    // The Weekly Read has no complete action, so it can't gate the week seal
+    if (comp.componentType === 'rich_text' && comp.title === 'Weekly Read') continue;
     if (comp.componentType === 'mission_container' && comp.blocks) {
       for (const block of comp.blocks) ids.push(block.id);
     } else {
