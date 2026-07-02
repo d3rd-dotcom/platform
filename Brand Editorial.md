@@ -65,7 +65,7 @@ Ultimately, a quality education needs to be open-sourced.
 
 3. **Blue** | Tracks progress, chats with users, and trades rewards.
 
-4. **Diamonds** | Blockchain-based reputation points - user-owned and transferable.
+4. **Diamonds ($BLUE)** | Reputation points that live onchain, on Base. Mission and field-note rewards are minted straight to your wallet — no signing, no gas. Quest rewards come from Blue's own stash. User-owned and transferable.
 
  5. **Evolve** | Gain knowledge, friends, and benefit from the Micro-University's tools.
 
@@ -156,7 +156,7 @@ Blue generates ontologies, courses, and guides users with power-tools for high-q
 
 - Creates platform changes for the user.
 - Approves or requests proposal revisions.
-- Distributes rewards from her wallet, and signs a 40% multi-sig for community DAO treasury.
+- Pays quest rewards from her own Diamonds stash — Blue holds 20% of the $BLUE supply in her wallet and hands it out directly.
 - Appears in quest reviews, rewards, surveys, and story moments.
 
 **Design principles:**

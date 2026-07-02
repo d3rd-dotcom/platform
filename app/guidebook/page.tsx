@@ -406,7 +406,7 @@ export default function GuidebookPage() {
             <Ul>
               <Li>A <Strong>weekly reading</Strong> &mdash; an article to read and reflect on</Li>
               <Li><Strong>Tasks</Strong> &mdash; activities to complete</Li>
-              <Li>A <Strong>week seal</Strong> &mdash; an on-chain proof of completion</Li>
+              <Li>A <Strong>week seal</Strong> &mdash; an onchain proof of completion</Li>
             </Ul>
           </Li>
         </Ol>
@@ -425,7 +425,7 @@ export default function GuidebookPage() {
           <Li>Writing a reflection journal entry</Li>
           <Li>Answering discussion questions</Li>
           <Li>Completing a creative exercise</Li>
-          <Li>Sealing the week on-chain</Li>
+          <Li>Sealing the week onchain</Li>
         </Ul>
         <P>To complete a task:</P>
         <Ol>
@@ -436,7 +436,7 @@ export default function GuidebookPage() {
         </Ol>
 
         <H3>Week Sealing (On-Chain)</H3>
-        <P>Once you&apos;ve completed all tasks for a week, you can &ldquo;seal&rdquo; it on-chain:</P>
+        <P>Once you&apos;ve completed all tasks for a week, you can &ldquo;seal&rdquo; it onchain:</P>
         <Ol>
           <Li>Navigate to the week card</Li>
           <Li>Click <Strong>Seal Week</Strong></Li>
@@ -528,7 +528,7 @@ export default function GuidebookPage() {
         <Ol>
           <Li>Complete the quest and submit proof</Li>
           <Li>Blue reviews and approves your submission</Li>
-          <Li>The USDC reward is processed on-chain</Li>
+          <Li>The USDC reward is processed onchain</Li>
           <Li>You receive USDC to your connected wallet</Li>
         </Ol>
         <P>VIP members can access the <Strong>USDC Claims Review</Strong> panel to help review quest submissions.</P>
@@ -618,7 +618,7 @@ export default function GuidebookPage() {
               <Li><Code>completed</Code> &mdash; Funded and executed</Li>
             </Ul>
           </Li>
-          <Li><Strong>On-chain recording</Strong> &mdash; Approved proposals are recorded on Base Mainnet</Li>
+          <Li><Strong>Onchain recording</Strong> &mdash; Approved proposals are recorded on Base Mainnet</Li>
         </Ol>
 
         <H3>Voting on Proposals</H3>
@@ -627,7 +627,7 @@ export default function GuidebookPage() {
           <Li>Read the proposal details and Blue&apos;s review</Li>
           <Li>Click <Strong>Vote</Strong> (for or against)</Li>
           <Li>Your vote is weighted by your token holdings</Li>
-          <Li>Blue holds 40% of governance tokens, so her vote carries significant weight</Li>
+          <Li>Blue reviews every proposal and votes with her own token weight</Li>
         </Ol>
 
         <H3>6.3 Social Feed</H3>
@@ -871,17 +871,17 @@ export default function GuidebookPage() {
         <P>MWA works as a Farcaster Mini App. Open MWA from within Farcaster or Base app &mdash; your Farcaster account is automatically linked.</P>
 
         <H2 id="diamond-economy">16. Diamond Economy</H2>
-        <P>Diamonds (also called &ldquo;shards&rdquo;) are the platform&apos;s reward currency.</P>
+        <P>Diamonds ($BLUE) are the Academy&apos;s reward currency, and they live onchain as a token on Base. When you earn them, they are delivered to your wallet: mission, task, and field-note rewards are minted to you automatically (no signing, no gas), and quest rewards are sent to you directly from Blue&apos;s own stash.</P>
 
         <H3>Earning Diamonds</H3>
         <Table
           headers={['Activity', 'Reward']}
           rows={[
-            ['Complete a course week seal', '100 Diamonds'],
-            ['Complete a custom quest', 'Varies by quest'],
-            ['Complete social quests', 'Varies'],
+            ['Complete a course mission or task', '50 Diamonds'],
+            ['Seal a course week', '200 Diamonds'],
+            ['Seal a field-notes week', '700 Diamonds'],
+            ['Complete a custom quest', 'Varies — paid from Blue&apos;s stash'],
             ['Maintain writing streaks', 'Bonus Diamonds'],
-            ['Daily participation', 'Small bonuses'],
           ]}
         />
 
@@ -896,7 +896,7 @@ export default function GuidebookPage() {
         />
 
         <H3>Tracking Your Balance</H3>
-        <P>Your Diamond balance is shown on your <Strong>Profile</Strong> and in the <Strong>navigation bar</Strong>. The <Strong>Leaderboard</Strong> ranks all users by Diamond count. Diamond transactions are tracked in your activity history.</P>
+        <P>Your Diamond balance is shown on your <Strong>Profile</Strong> and in the <Strong>navigation bar</Strong>. The <Strong>Leaderboard</Strong> ranks all users by Diamond count. Onchain, Diamonds are the $BLUE token on Base, so the record in your wallet is yours to keep.</P>
 
         <H2 id="faq">17. FAQ &amp; Troubleshooting</H2>
 
@@ -906,10 +906,10 @@ export default function GuidebookPage() {
         <P>A: Yes, MWA uses wallet-based authentication. You can use MetaMask, Coinbase Wallet, or create an embedded wallet using just your email or phone (no crypto knowledge required).</P>
 
         <P><Strong>Q: Is my data private?</Strong></P>
-        <P>A: MWA takes privacy seriously. Your DNA data (in the Genetics Lab) is processed entirely in your browser and never uploaded. Your wallet address is public on-chain, but your personal data is stored securely with Row Level Security.</P>
+        <P>A: MWA takes privacy seriously. Your DNA data (in the Genetics Lab) is processed entirely in your browser and never uploaded. Your wallet address is public onchain, but your personal data is stored securely with Row Level Security.</P>
 
         <P><Strong>Q: What chain is MWA on?</Strong></P>
-        <P>A: Base Mainnet (Ethereum Layer 2). All on-chain transactions (week seals, governance votes, NFT certificates) happen on Base.</P>
+        <P>A: Base Mainnet (Ethereum Layer 2). All onchain transactions (week seals, governance votes, NFT certificates) happen on Base.</P>
 
         <P><Strong>Q: How do I become a VIP member?</Strong></P>
         <P>A: Purchase VIP membership for $90 via Stripe (card) or USDC (crypto). You&apos;ll receive a VIP Membership Card NFT in your wallet.</P>
@@ -918,7 +918,7 @@ export default function GuidebookPage() {
         <P>A: Yes! MWA is a Progressive Web App (PWA) &mdash; you can install it on your phone&apos;s home screen for a native-like experience.</P>
 
         <P><Strong>Q: What is Blue?</Strong></P>
-        <P>A: Blue is the platform&apos;s AI agent. She holds 40% of governance tokens, has her own wallet, reviews quest submissions, conducts market trades, and can be chatted with via the &ldquo;Ask Blue&rdquo; button.</P>
+        <P>A: Blue is the platform&apos;s AI agent. She has her own wallet with a 20% stash of Diamonds ($BLUE) that she pays quest rewards from, reviews quest submissions, conducts market trades, and can be chatted with via the &ldquo;Ask Blue&rdquo; button.</P>
 
         <P><Strong>Q: How do I get help?</Strong></P>
         <P>A: Click the &ldquo;Ask Blue&rdquo; button on any page for AI assistance. For technical issues, visit the <a href="https://github.com/Mental-Wealth-Academy/platform" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)' }}>GitHub repository</a> or reach out through community channels.</P>
