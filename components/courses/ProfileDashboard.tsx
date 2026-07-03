@@ -219,7 +219,7 @@ export default function ProfileDashboard({
           >
             <span
               className={styles.badgeArt}
-              style={{ backgroundImage: "url('/images/shop/access-keycard.webp')" }}
+              style={{ backgroundImage: "url('/anbel01.png')" }}
             />
             <span className={styles.badgeInfo}>
               <span className={styles.badgeName}>Membership</span>
