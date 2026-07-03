@@ -125,7 +125,6 @@
   --field-notes-filter-light: 251 248 255;
   --field-notes-filter-dark: 13 14 22;
   position: relative;
-  isolation: isolate;
 }
 
 .fieldNotesGradient {
@@ -496,7 +495,6 @@
     z-index: 1002;
     padding: 0 12px 10px;
     pointer-events: none;
-    isolation: isolate;
     background: rgb(var(--field-notes-filter-light));
   }
 
@@ -505,27 +503,7 @@
   }
 
   .fieldNotesGradient {
-    display: block;
-    position: absolute;
-    top: -60px;
-    left: 0;
-    right: 0;
-    height: 60px;
-    z-index: 2;
-    pointer-events: none;
-    background: linear-gradient(
-      180deg,
-      rgb(var(--field-notes-filter-light) / 0%) 0%,
-      rgb(var(--field-notes-filter-light) / 100%) 100%
-    );
-  }
-
-  :global([data-theme="dark"]) .fieldNotesGradient {
-    background: linear-gradient(
-      180deg,
-      rgb(var(--field-notes-filter-dark) / 0%) 0%,
-      rgb(var(--field-notes-filter-dark) / 100%) 100%
-    );
+    display: none;
   }
 
   .fieldNotesShell > :last-child {

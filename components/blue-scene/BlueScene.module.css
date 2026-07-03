@@ -386,8 +386,6 @@
   .sceneFooter {
     position: static;
     margin-top: auto;
-    background: transparent;
-    border-top: none;
     z-index: 5;
   }
 
