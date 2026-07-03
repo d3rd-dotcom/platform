@@ -7,6 +7,7 @@ import { PencilSimple, Trash } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import CourseFolderCard from '@/components/courses/CourseFolderCard';
 import ProfileDashboard from '@/components/courses/ProfileDashboard';
+import FieldNotesSheet from '@/components/courses/FieldNotesSheet';
 import type { CourseData } from '@/lib/personal-course';
 import type { VipCourseRecord } from '@/lib/vip-course-db';
 import { onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
@@ -49,6 +50,7 @@ export default function CoursesPage() {
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [isVip, setIsVip] = useState(false);
+  const [fieldNotesOpen, setFieldNotesOpen] = useState(false);
 
   useEffect(() => {
     fetch('/api/course-content')
@@ -163,7 +165,7 @@ export default function CoursesPage() {
           <CourseFolderCard
             title="Your Field Notes"
             count={13}
-            href="/profile"
+            onOpen={() => setFieldNotesOpen(true)}
             images={[]}
             ctaLabel="View Notes"
           />
@@ -358,6 +360,8 @@ export default function CoursesPage() {
         />
       </aside>
       </main>
+
+      {fieldNotesOpen && <FieldNotesSheet onClose={() => setFieldNotesOpen(false)} />}
 
       {deleteTarget && (
         <div className={styles.deleteOverlay} onClick={() => !deleting && setDeleteTarget(null)}>

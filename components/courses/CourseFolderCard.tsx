@@ -11,7 +11,8 @@ const FOLDER_PATH =
 interface CourseFolderCardProps {
   title: string;
   count: number;
-  href: string;
+  href?: string;
+  onOpen?: () => void;
   images: string[];
   ctaLabel?: string;
 }
@@ -20,19 +21,15 @@ export default function CourseFolderCard({
   title,
   count,
   href,
+  onOpen,
   images,
   ctaLabel = 'Start Course',
 }: CourseFolderCardProps) {
   const slots = images.slice(0, 4);
   const { play } = useSound();
 
-  return (
-    <Link
-      href={href}
-      className={styles.folder}
-      onMouseEnter={() => play('soft-hover')}
-      onClick={() => play('click')}
-    >
+  const contents = (
+    <>
       {/* Folder body fill */}
       <svg className={styles.shape} viewBox="0 0 474 330" preserveAspectRatio="none" aria-hidden="true">
         <path d={FOLDER_PATH} className={styles.shapeFill} />
@@ -85,6 +82,33 @@ export default function CourseFolderCard({
       >
         <span className={styles.ctaInner}>{ctaLabel}</span>
       </span>
-    </Link>
+    </>
+  );
+
+  if (href) {
+    return (
+      <Link
+        href={href}
+        className={styles.folder}
+        onMouseEnter={() => play('soft-hover')}
+        onClick={() => play('click')}
+      >
+        {contents}
+      </Link>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      className={`${styles.folder} ${styles.folderButton}`}
+      onMouseEnter={() => play('soft-hover')}
+      onClick={() => {
+        play('click');
+        onOpen?.();
+      }}
+    >
+      {contents}
+    </button>
   );
 }

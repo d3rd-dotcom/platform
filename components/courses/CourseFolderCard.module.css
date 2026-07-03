@@ -11,6 +11,18 @@
   transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), filter 0.2s ease;
 }
 
+.folderButton {
+  text-transform: none;
+  letter-spacing: normal;
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+
 .folder:hover {
   transform: translateY(-3px);
   filter: drop-shadow(0 9px 8px rgba(24, 42, 114, 0.5));
@@ -102,6 +114,7 @@
   top: 0;
   left: 6.5%;
   height: 12.7%; /* 42/330 */
+  padding-top: 7px;
   display: flex;
   align-items: center;
   gap: 12px;
