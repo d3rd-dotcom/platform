@@ -154,7 +154,8 @@
 .balloon {
   position: absolute;
   bottom: -150px;
-  z-index: 2;
+  z-index: 3;
+  opacity: 0.88;
   padding: 0;
   background: none;
   border: none;
@@ -342,8 +343,7 @@
   }
 
   .scene {
-    display: flex;
-    flex-direction: column;
+    min-height: 520px;
     overflow-anchor: none;
   }
 
@@ -367,28 +367,28 @@
   }
 
   .sceneFooter {
-    position: static;
-    margin-top: auto;
     z-index: 5;
   }
 
   .footerTextEn {
     font-size: 0.65rem;
   }
-
-  .footerCounters {
-    position: absolute;
-    top: 14px;
-    left: 66px;
-    right: auto;
-    z-index: 7;
-  }
 }
 
 /* Phones */
 @media (max-width: 768px) {
   .scene {
+    display: flex;
+    flex-direction: column;
     min-height: 100dvh;
+  }
+
+  .sceneFooter {
+    position: static;
+    margin-top: auto;
+    background: transparent;
+    border-top: none;
+    z-index: 5;
   }
 
   .blueWrap {
@@ -399,8 +399,11 @@
   }
 
   .footerCounters {
+    position: absolute;
     top: 12px;
     left: 56px;
+    right: auto;
+    z-index: 7;
   }
 
   .bubble {

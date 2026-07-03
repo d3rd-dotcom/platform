@@ -125,6 +125,7 @@
   --field-notes-filter-light: 251 248 255;
   --field-notes-filter-dark: 13 14 22;
   position: relative;
+  isolation: isolate;
 }
 
 .fieldNotesGradient {
@@ -496,12 +497,17 @@
     padding: 0 12px 10px;
     pointer-events: none;
     isolation: isolate;
+    background: rgb(var(--field-notes-filter-light));
+  }
+
+  :global([data-theme="dark"]) .fieldNotesShell {
+    background: rgb(var(--field-notes-filter-dark));
   }
 
   .fieldNotesGradient {
     display: block;
     position: absolute;
-    top: -40px;
+    top: -60px;
     left: 0;
     right: 0;
     height: 60px;
