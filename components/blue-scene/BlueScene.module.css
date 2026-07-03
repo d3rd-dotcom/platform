@@ -344,7 +344,6 @@
   .scene {
     display: flex;
     flex-direction: column;
-    min-height: 520px;
     overflow-anchor: none;
   }
 
@@ -389,7 +388,7 @@
 /* Phones */
 @media (max-width: 768px) {
   .scene {
-    min-height: 400px;
+    min-height: 100dvh;
   }
 
   .blueWrap {

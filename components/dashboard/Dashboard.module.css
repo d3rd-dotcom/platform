@@ -104,8 +104,13 @@
    stack reads as one clump. */
 @media (max-width: 768px) {
   .dashboard {
-    gap: 20px;
+    gap: 28px;
     padding-top: 8px;
+  }
+
+  .blueSceneWrap {
+    height: 100dvh;
+    flex: none;
   }
 
   .sidebarWrap {
