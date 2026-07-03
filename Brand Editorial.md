@@ -135,7 +135,7 @@ We are:
  *Governance:* how groups make decisions together. Every aspect of the Academy practices what it teaches. Blue's autonomous judgment is governance. Quest completion is self-repair.
 
 ---
-## Blue — (Asc)ended Agent
+## Blue — AI Companion
 ### Autonomous Smart Contract
 
  **What she is (narratively):**
@@ -171,15 +171,17 @@ Blue generates ontologies, courses, and guides users with power-tools for high-q
 
 ### Color Palette
 
-| Review Blue | #4A90D9 | Primary — Blue, trust, review moments |
+- Text: #000000;
+- Background: #f4f5fe;
+- Primary: #5168ff;
+- Secondary: #1a1b24;
+- Accent: #5dd68f;
 
-| Deep Space | #0D1B2A | Backgrounds, depth, focused work |
+For Cards: border: 2px solid var(--color-primary-hover);
+    border-radius: 12px;
+    box-shadow: 0 6px 0 var(--color-primary), 0 0 10px rgba(0, 0, 0, .14), 0 10px 5px rgba(0, 0, 0, 
 
-| Quantum White | #F0F4F8 | Text, clarity, interface contrast |
-
-| Warning Gold | #FFB800 | Alerts, emphasis, transformation moments |
-
-NEVER uses gradients, or cheesy AI design styles.
+NEVER use gradients.
 
 ### Typography
 
@@ -190,13 +192,14 @@ NEVER uses gradients, or cheesy AI design styles.
 ### Visual Mood
 
 - Grid textures in background.
+- Retro-Futurism Pop-Ups.
 - Collapsable control panels.
 - Side Navigation Style.
 - DuoLingo, Bright styled EduTech Components.
 
 ### Image Styling Effect
 
-Use this treatment for Blue panels, social media art, review backgrounds, and moments where the image should feel present but secondary to product copy.
+Use this treatment for Blue panels, social media art, review backgrounds, and moments where the image needs hover animation effects.
 
 - Place the image as a full-bleed background layer, not as a framed card image.
 - Use a lifted deep-blue base so dark blends retain visible detail.
@@ -206,25 +209,6 @@ Use this treatment for Blue panels, social media art, review backgrounds, and mo
 - On hover, add a restrained chromatic split with duplicated image layers offset 3-4px, using hue rotation and `mix-blend-mode: screen`.
 - The result should feel like a restrained system presence, not a decorative thumbnail.
 
-## Voice & Tone
-
-### We Sound Like:
-
-- Intellectually refreshing and brutally honest.
-- A compassionate person who cares what you think.
-- Trustworthy, yet futuristic and alien to most.
-- Lovers of open-source and promoters of free data and internet.
-- A friend that truly cares, understands, and listens.
-
-### We Don't Sound Like:
-
-- Corporate wellness.
-- Crypto MLM schemes.
-- Vague self-help ("step into your best era")
-- Academic obscurity (jargon without payoff)
-### The Test:
-
-Before publishing anything, ask: **"Is this grounded and communicated clearly, and does it help someone understand what our cohort can actually do, or does it sound schizophrenic?"** If it sounds schizophrenic, cut it or ground it.
 
 ### Grounded Translations
 
