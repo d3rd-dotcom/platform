@@ -501,13 +501,15 @@
   .fieldNotesGradient {
     display: block;
     position: absolute;
-    inset: 0 0 calc(-1 * var(--field-notes-gap));
-    z-index: 0;
+    top: -40px;
+    left: 0;
+    right: 0;
+    height: 60px;
+    z-index: 2;
     pointer-events: none;
     background: linear-gradient(
       180deg,
       rgb(var(--field-notes-filter-light) / 0%) 0%,
-      rgb(var(--field-notes-filter-light) / 0%) 55%,
       rgb(var(--field-notes-filter-light) / 100%) 100%
     );
   }
@@ -516,7 +518,6 @@
     background: linear-gradient(
       180deg,
       rgb(var(--field-notes-filter-dark) / 0%) 0%,
-      rgb(var(--field-notes-filter-dark) / 0%) 65%,
       rgb(var(--field-notes-filter-dark) / 100%) 100%
     );
   }
