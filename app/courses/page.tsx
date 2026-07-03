@@ -148,17 +148,26 @@ export default function CoursesPage() {
       <main className={styles.pageColumns}>
       <div className={styles.main}>
 
-        <CourseFolderCard
-          title="Shadow Work"
-          count={13}
-          href="/shadow-work"
-          images={[
-            '/uploads/course-shadow-work.jpg',
-            '/uploads/course-tap-creativity.jpg',
-            '/uploads/course-personal.jpg',
-            '/academy-story.png',
-          ]}
-        />
+        <div className={styles.folderRow}>
+          <CourseFolderCard
+            title="Shadow Work"
+            count={13}
+            href="/shadow-work"
+            images={[
+              '/uploads/course-shadow-work.jpg',
+              '/uploads/course-tap-creativity.jpg',
+              '/uploads/course-personal.jpg',
+              '/academy-story.png',
+            ]}
+          />
+          <CourseFolderCard
+            title="Your Field Notes"
+            count={13}
+            href="/profile"
+            images={[]}
+            ctaLabel="View Notes"
+          />
+        </div>
 
         {personalCourse && (
           <div className={styles.cardWrapper}>

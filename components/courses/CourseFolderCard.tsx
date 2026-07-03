@@ -33,15 +33,25 @@ export default function CourseFolderCard({
 
       {/* Folder contents */}
       <div className={styles.contents}>
-        <div className={styles.imageGrid}>
-          {slots.map((src, i) => (
-            <span
-              key={i}
-              className={styles.imageSlot}
-              style={{ backgroundImage: `url(${JSON.stringify(src)})` }}
-            />
-          ))}
-        </div>
+        {slots.length > 0 ? (
+          <div className={styles.imageGrid}>
+            {slots.map((src, i) => (
+              <span
+                key={i}
+                className={styles.imageSlot}
+                style={{ backgroundImage: `url(${JSON.stringify(src)})` }}
+              />
+            ))}
+          </div>
+        ) : (
+          <svg className={styles.doodle} viewBox="0 0 418 214" aria-hidden="true">
+            <circle cx="160" cy="90" r="70" className={styles.doodleRing} />
+            <circle cx="230" cy="110" r="70" className={styles.doodleRing} />
+            <circle cx="195" cy="60" r="70" className={styles.doodleRing} />
+            <circle cx="255" cy="42" r="18" fill="#ffffff" />
+            <circle cx="105" cy="128" r="18" fill="#ffe9e4" />
+          </svg>
+        )}
       </div>
 
       {/* Bottom gradient with progressive blur, under the stroke */}
