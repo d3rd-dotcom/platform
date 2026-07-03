@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { usePrivy } from '@privy-io/react-auth';
 import type { CourseComponentRecord } from './vip-course-db';
 
 // ── Old JournalSection type (shared between WeekTasksView and AccordionJournalCard) ──
@@ -76,6 +77,7 @@ const FETCH_TIMEOUT = 10_000;
 const courseCache = new Map<string, JournalSection[]>();
 
 export function useCourseSections(slug: string, weekNumber: number) {
+  const { getAccessToken } = usePrivy();
   const [sections, setSections] = useState<JournalSection[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -93,9 +95,21 @@ export function useCourseSections(slug: string, weekNumber: number) {
     const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
 
     try {
+      // The privy-token cookie expires hourly; the SDK's access token is
+      // refreshed on demand. Without the Bearer header, mobile sessions with
+      // a stale cookie get a 401 and every week renders zero missions.
+      let headers: HeadersInit = {};
+      try {
+        const token = await getAccessToken();
+        if (token) headers = { Authorization: `Bearer ${token}` };
+      } catch {
+        // Not signed in — the request proceeds on cookies alone.
+      }
+
       const res = await fetch(`/api/vip/courses/slug/${slug}`, {
         signal: controller.signal,
         credentials: 'include',
+        headers,
       });
       clearTimeout(timer);
       if (!res.ok) {
@@ -138,7 +152,7 @@ export function useCourseSections(slug: string, weekNumber: number) {
       clearTimeout(timer);
       setLoading(false);
     }
-  }, [slug, weekNumber]);
+  }, [slug, weekNumber, getAccessToken]);
 
   useEffect(() => {
     setLoading(true);

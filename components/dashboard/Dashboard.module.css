@@ -74,6 +74,10 @@
   .dashboard {
     display: flex;
     flex-direction: column;
+    /* The base rule's align-items: start is for the desktop grid; in the
+       flex column it stops items stretching, collapsing the Blue scene to
+       its 4px of borders and shrink-wrapping every card. */
+    align-items: stretch;
     gap: 16px;
     width: 100%;
     overflow-x: hidden;
