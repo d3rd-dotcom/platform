@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
 import { PencilSimple, Trash } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
+import CourseFolderCard from '@/components/courses/CourseFolderCard';
+import ProfileDashboard from '@/components/courses/ProfileDashboard';
 import type { CourseData } from '@/lib/personal-course';
 import type { VipCourseRecord } from '@/lib/vip-course-db';
 import { onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
@@ -22,8 +24,6 @@ function getPersonalEndDate() {
   d.setDate(d.getDate() + 28);
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
-
-const COURSE_THUMB = '/uploads/course-shadow-work.jpg';
 
 interface PublicCourseCard {
   id: string;
@@ -45,20 +45,10 @@ export default function CoursesPage() {
   const [personalCourse, setPersonalCourse] = useState<CourseData | null>(null);
   const [authoredCourses, setAuthoredCourses] = useState<VipCourseRecord[]>([]);
   const [communityCourses, setCommunityCourses] = useState<PublicCourseCard[]>([]);
-  const [coreAuthor, setCoreAuthor] = useState<{ username: string; avatarUrl: string | null } | null>(null);
   const [academyCourses, setAcademyCourses] = useState<CourseRecord[]>([]);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [isVip, setIsVip] = useState(false);
-
-  useEffect(() => {
-    fetch('/api/users/lookup?username=Espeon')
-      .then((r) => r.ok ? r.json() : null)
-      .then((d) => {
-        if (d?.user) setCoreAuthor({ username: d.user.username, avatarUrl: d.user.avatar_url });
-      })
-      .catch(() => {});
-  }, []);
 
   useEffect(() => {
     fetch('/api/course-content')
@@ -152,77 +142,23 @@ export default function CoursesPage() {
     }
   };
 
-  const shadowStats = communityCourses.find((c) => c.slug === 'creative-healing');
-
   return (
     <div className={styles.layout}>
       <SideNavigation />
-      <main className={styles.main}>
+      <main className={styles.pageColumns}>
+      <div className={styles.main}>
 
-        <div className={styles.cardWrapper}>
-          <Link href="/shadow-work" className={styles.courseCard}>
-            <div className={styles.cardHeader}>
-              <span className={styles.cardKanji}>影の探求</span>
-              <span className={styles.cardHeaderTitle}>Shadow Work Course</span>
-            </div>
-            <div className={styles.cardBodyRow}>
-              <span
-                className={styles.thumb}
-                style={{ backgroundImage: `url(${JSON.stringify(COURSE_THUMB)})` }}
-              >
-                <div className={styles.badgeWrapper}>
-                  <div className={styles.cardBadgeGroup}>
-                    <div className={styles.badgeSection}>
-                      <span className={styles.badgeValue}>12 sessions</span>
-                      <span className={styles.badgeEyebrow}>length</span>
-                    </div>
-                    <span className={styles.badgeDivider} />
-                    <div className={styles.badgeSection}>
-                      <span className={styles.badgeValue}>
-                        <span className={styles.rewardStack}>
-                          <img src="/icons/usdc-logo.svg" alt="" className={styles.usdcIcon} />
-                          <img src="/icons/ui-diamond.svg" alt="" className={styles.diamondIcon} />
-                        </span>
-                      </span>
-                      <span className={styles.badgeEyebrow}>rewards</span>
-                    </div>
-                  </div>
-                </div>
-              </span>
-              <div className={styles.body}>
-                <div className={styles.contentCenter}>
-                  <span className={styles.desc}>
-                    A journey through rediscovering your creative energy and excavating it to reach your highest horizon.
-                  </span>
-                </div>
-                <div className={styles.cardFooter}>
-                  <div className={styles.footerLeft}>
-                    {shadowStats && (
-                      <div className={styles.cardMembers}>
-                        <span className={styles.memberCount}>
-                          {shadowStats.memberCount} {shadowStats.memberCount === 1 ? 'member' : 'members'}
-                        </span>
-                      </div>
-                    )}
-                    <div className={styles.courseAuthor}>
-                      <span
-                        className={styles.authorAvatar}
-                        style={coreAuthor?.avatarUrl ? { backgroundImage: `url(${JSON.stringify(coreAuthor.avatarUrl)})` } : undefined}
-                      >
-                        {!coreAuthor?.avatarUrl ? (coreAuthor?.username?.[0] ?? 'E') : ''}
-                      </span>
-                      <span className={styles.authorName}>@{coreAuthor?.username ?? 'Espeon'}</span>
-                    </div>
-                  </div>
-                  <span className={styles.cardMembership}>Free</span>
-                </div>
-                <div className={styles.progressDivider}>
-                  <div className={styles.progressFill} style={{ width: `${shadowStats?.viewerProgressPct ?? 0}%` }} />
-                </div>
-              </div>
-            </div>
-          </Link>
-        </div>
+        <CourseFolderCard
+          title="Shadow Work"
+          count={13}
+          href="/shadow-work"
+          images={[
+            '/uploads/course-shadow-work.jpg',
+            '/uploads/course-tap-creativity.jpg',
+            '/uploads/course-personal.jpg',
+            '/academy-story.png',
+          ]}
+        />
 
         {personalCourse && (
           <div className={styles.cardWrapper}>
@@ -405,6 +341,16 @@ export default function CoursesPage() {
           </section>
         )}
 
+      </div>
+
+      <aside className={styles.aside}>
+        <ProfileDashboard
+          level={24}
+          headline="Digital Alchemist!"
+          description="Explore the land beyond the ideas of builders, the future, and seekers of infinite potential!"
+          stats={{ diamonds: 2432, courses: 3, badges: 23, streak: 7 }}
+        />
+      </aside>
       </main>
 
       {deleteTarget && (
