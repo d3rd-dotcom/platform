@@ -79,11 +79,114 @@
 }
 
 /* ============================================ */
-/* BLUE VIDEO                                   */
+/* CONTROL PANEL — matches /home GlobalChat chrome */
 /* ============================================ */
 
-.blueVideo {
-  margin: 16px 0 0;
+/* Shared card chrome — same borders, dividers and drop shadow the home
+   GlobalChat (ChatRoom) uses, reused here for the panel and the right-side
+   pop-ups so the course view reads as the same surface family. */
+.controlPanel,
+.popupCard {
+  position: relative;
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(81,104,255,0.06)'/%3E%3C/svg%3E");
+  border: 2px solid var(--color-primary-hover);
+  border-radius: 12px;
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    0 0px 10px rgba(0, 0, 0, 0.14),
+    0 10px 5px rgba(0, 0, 0, 0.30);
+  overflow: hidden;
+}
+
+.controlPanel {
+  margin: 8px 0 12px;
+}
+
+:global([data-theme="dark"]) .controlPanel,
+:global([data-theme="dark"]) .popupCard {
+  background-color: #15172a;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
+}
+
+/* Banner — full-bleed cover image behind the avatar */
+.panelBanner {
+  height: 150px;
+  width: 100%;
+  background-color: color-mix(in srgb, var(--color-primary) 18%, #ffffff);
+  background-image: linear-gradient(135deg, #5168FF, #9b7ed9);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.panelBody {
+  padding: 0 22px 24px;
+}
+
+/* Blue avatar — rounded-square icon straddling the banner edge */
+.panelAvatarWrap {
+  display: flex;
+  justify-content: center;
+  margin-top: -62px;
+}
+
+.panelAvatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 22px;
+  object-fit: cover;
+  background: #0b1560;
+  border: 3px solid var(--color-surface-base, #ffffff);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-primary) 30%, transparent),
+    0 6px 16px rgba(0, 0, 0, 0.28);
+}
+
+:global([data-theme="dark"]) .panelAvatar {
+  border-color: #15172a;
+}
+
+/* Title + short centered rule + description */
+.panelHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: 16px;
+}
+
+.panelTitle {
+  font-family: var(--font-secondary);
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--color-primary);
+  margin: 0;
+}
+
+.panelTitleDivider {
+  width: 128px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  margin-top: 10px;
+}
+
+.panelDescription {
+  font-family: var(--font-primary);
+  font-size: 15px;
+  line-height: 1.6;
+  color: #141414;
+  margin: 18px 0 0;
+}
+
+:global([data-theme="dark"]) .panelDescription {
+  color: var(--color-text-muted);
+}
+
+.panelDivider {
+  height: 22px;
 }
 
 /* ============================================ */
@@ -207,8 +310,8 @@
   grid-template-columns: auto auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 14px;
-  min-height: 92px;
-  padding: 14px 16px;
+  min-height: 108px;
+  padding: 20px 16px;
   background: color-mix(in srgb, var(--color-primary) 7%, #ffffff);
   border: 1px solid color-mix(in srgb, var(--color-primary) 22%, rgba(26, 29, 51, 0.06));
   border-radius: 14px;
@@ -476,6 +579,14 @@
   flex-direction: column;
   gap: 20px;
   padding: 4px 0 48px;
+}
+
+/* Reading pop-up sits inside .popupCard chrome — supply its inner padding */
+.popupCard .inlineReaderInner {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 22px;
 }
 
 .inlineReaderBack {

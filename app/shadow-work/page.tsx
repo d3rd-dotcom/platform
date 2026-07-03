@@ -7,7 +7,6 @@ import SideNavigation from '@/components/side-navigation/SideNavigation';
 import WeekTasksView from '@/components/week-tasks/WeekTasksView';
 import HomeWelcomeFlow from '@/components/home-welcome/HomeWelcomeFlow';
 import MobileSplash from '@/components/mobile-splash/MobileSplash';
-import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
 import CourseTour from '@/components/feature-tour/CourseTour';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
@@ -344,10 +343,20 @@ export default function CoursePage() {
         {/* ── Left / main column ── */}
         <div className={isDesktop ? styles.leftCol : undefined}>
 
-          <BlueVideoPanel
-            className={styles.blueVideo}
-            message="Reclaim your creative life one week at a time."
-          />
+          <div className={styles.controlPanel}>
+            <div className={styles.panelBanner} aria-hidden="true" />
+            <div className={styles.panelBody}>
+              <div className={styles.panelAvatarWrap}>
+                <img src="/blue/blue-home.png" alt="Blue" className={styles.panelAvatar} />
+              </div>
+              <div className={styles.panelHeader}>
+                <h1 className={styles.panelTitle}>Creative Healing</h1>
+                <span className={styles.panelTitleDivider} aria-hidden="true" />
+                <p className={styles.panelDescription}>
+                  Reclaim your creative life one week at a time.
+                </p>
+              </div>
+              <div className={styles.panelDivider} aria-hidden="true" />
 
           <div className={styles.weekNav}>
             <button
@@ -468,6 +477,8 @@ export default function CoursePage() {
                 />
               </>
             )}
+            </div>
+          </div>
           </div>
 
         </div>
@@ -476,23 +487,29 @@ export default function CoursePage() {
         {isDesktop && rightContent !== null && (
           <div className={styles.rightPanel}>
             {rightContent === 'reading' && (
-              <CourseInlineReader
-                reading={WEEKLY_READINGS[readerIndex]}
-                onBack={() => setRightContent(null)}
-              />
+              <div className={styles.popupCard}>
+                <div className={styles.inlineReaderInner}>
+                  <CourseInlineReader
+                    reading={WEEKLY_READINGS[readerIndex]}
+                    onBack={() => setRightContent(null)}
+                  />
+                </div>
+              </div>
             )}
             {rightContent === 'task' && selectedTaskId && (
-              <WeekTasksView
-                key={`panel-${resolvedViewWeek}`}
-                weekNumber={resolvedViewWeek}
-                enablePersistence={isAuthenticated}
-                isLocked={resolvedViewWeek > activeWeek}
-                initialIsSealed={getWeekStatus(resolvedViewWeek)?.isSealed}
-                initialSealTxHash={getWeekStatus(resolvedViewWeek)?.sealTxHash}
-                onSealComplete={handleSealComplete}
-                onCompletionChange={handleCompletionChange}
-                focusedSectionId={selectedTaskId}
-              />
+              <div className={styles.popupCard} style={{ padding: '18px' }}>
+                <WeekTasksView
+                  key={`panel-${resolvedViewWeek}`}
+                  weekNumber={resolvedViewWeek}
+                  enablePersistence={isAuthenticated}
+                  isLocked={resolvedViewWeek > activeWeek}
+                  initialIsSealed={getWeekStatus(resolvedViewWeek)?.isSealed}
+                  initialSealTxHash={getWeekStatus(resolvedViewWeek)?.sealTxHash}
+                  onSealComplete={handleSealComplete}
+                  onCompletionChange={handleCompletionChange}
+                  focusedSectionId={selectedTaskId}
+                />
+              </div>
             )}
           </div>
         )}

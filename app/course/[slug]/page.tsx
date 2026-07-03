@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { CheckCircle, SealCheck, SpinnerGap, ArrowLeft, ArrowRight } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import ComponentRenderer from '@/components/course-renderers/ComponentRenderer';
-import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
 import DiamondReward from '@/components/rewards/DiamondReward';
 import type { CourseRecord, ChapterRecord, LessonRecord } from '@/lib/course-content-db';
 import type { VipCourseFull, VipProgressRecord, CourseComponentRecord } from '@/lib/vip-course-db';
@@ -293,14 +292,34 @@ export default function CourseSlugPage({ params }: PageProps) {
             <DiamondReward amount={diamondReward} onComplete={() => setDiamondReward(null)} />
           )}
 
-          {/* ── Left column ── */}
+          {/* ── Left column (Control Panel) ── */}
           <div className={isDesktop ? courseStyles.leftCol : undefined}>
+           <div className={courseStyles.controlPanel}>
 
-            {/* Blue video */}
-            <BlueVideoPanel
-              className={courseStyles.blueVideo}
-              message={vipCourse.title || 'Custom course'}
+            {/* Banner */}
+            <div
+              className={courseStyles.panelBanner}
+              style={vipCourse.coverImageUrl ? { backgroundImage: `url(${vipCourse.coverImageUrl})` } : undefined}
+              aria-hidden="true"
             />
+
+            <div className={courseStyles.panelBody}>
+
+            {/* Blue avatar */}
+            <div className={courseStyles.panelAvatarWrap}>
+              <img src="/blue/blue-home.png" alt="Blue" className={courseStyles.panelAvatar} />
+            </div>
+
+            {/* Title + description */}
+            <div className={courseStyles.panelHeader}>
+              <h1 className={courseStyles.panelTitle}>{vipCourse.title || 'Custom course'}</h1>
+              <span className={courseStyles.panelTitleDivider} aria-hidden="true" />
+              {vipCourse.focus && (
+                <p className={courseStyles.panelDescription}>{vipCourse.focus}</p>
+              )}
+            </div>
+
+            <div className={courseStyles.panelDivider} aria-hidden="true" />
 
             {/* Week navigation */}
             <div className={courseStyles.weekNav}>
@@ -374,8 +393,8 @@ export default function CourseSlugPage({ params }: PageProps) {
               </div>
             )}
 
-            {/* Task cards */}
-            <div className={styles.taskList}>
+            {/* Mission blocks */}
+            <div className={styles.missionGrid}>
               {taskComponents.length === 0 && !readingComponent && (
                 <p className={styles.emptyText}>No content in this week yet</p>
               )}
@@ -392,27 +411,24 @@ export default function CourseSlugPage({ params }: PageProps) {
                   <button
                     key={c.id}
                     type="button"
-                    className={`${styles.taskCard} ${isSelected ? styles.taskCardActive : ''} ${isComplete ? styles.taskCardComplete : ''}`}
+                    className={`${styles.missionTile} ${isSelected ? styles.missionTileActive : ''} ${isComplete ? styles.missionTileComplete : ''}`}
                     onClick={() => { setSelectedTaskId(c.id); setRightContent('task'); }}
+                    title={c.title || 'Untitled'}
                   >
-                    <span className={styles.taskAccent} style={{ background: accent }} aria-hidden="true" />
                     <span
-                      className={`${styles.taskArtwork} ${styles[`taskArtwork${variant.charAt(0).toUpperCase() + variant.slice(1)}`] || ''}`}
+                      className={`${styles.taskArtwork} ${styles[`taskArtwork${variant.charAt(0).toUpperCase() + variant.slice(1)}`] || ''} ${styles.missionTileArt}`}
                       style={{ '--task-accent': accent } as React.CSSProperties}
                       aria-hidden="true"
                     />
-                    <span className={styles.taskTitle}>{c.title || 'Untitled'}</span>
-                    <div className={styles.taskRight}>
-                      {isComplete ? (
-                        <div className={styles.taskCheckDone}>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                            <polyline points="20 6 9 17 4 12" />
-                          </svg>
-                        </div>
-                      ) : (
-                        <div className={styles.taskCheckEmpty} />
-                      )}
-                    </div>
+                    <span className={styles.missionTileScrim} aria-hidden="true" />
+                    <span className={styles.missionTileTitle}>{c.title || 'Untitled'}</span>
+                    {isComplete && (
+                      <span className={styles.missionTileCheck} aria-hidden="true">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </span>
+                    )}
                   </button>
                 );
               })}
@@ -432,31 +448,35 @@ export default function CourseSlugPage({ params }: PageProps) {
                 <span>Week {activeWeek} sealed</span>
               </div>
             )}
+            </div>
+           </div>
           </div>
 
           {/* ── Right panel (below the list on mobile) ── */}
           <div className={courseStyles.rightPanel} ref={rightPanelRef}>
             {rightContent === 'reading' && readingComponent && (
-              <div className={styles.rightPanelReader}>
-                <button
-                  type="button"
-                  className={courseStyles.inlineReaderBack}
-                  onClick={() => setRightContent(null)}
-                >
-                  ← Back to missions
-                </button>
-                <div className={courseStyles.inlineReaderHeader}>
-                  <span className={courseStyles.inlineReaderCategory}>{weekTheme || `Week ${activeWeek}`}</span>
-                  <h2 className={courseStyles.inlineReaderTitle}>{weekTitle || 'Weekly Read'}</h2>
-                </div>
-                <div className={courseStyles.inlineReaderBody}>
-                  <ComponentRenderer component={readingComponent} />
+              <div className={courseStyles.popupCard}>
+                <div className={courseStyles.inlineReaderInner}>
+                  <button
+                    type="button"
+                    className={courseStyles.inlineReaderBack}
+                    onClick={() => setRightContent(null)}
+                  >
+                    ← Back to missions
+                  </button>
+                  <div className={courseStyles.inlineReaderHeader}>
+                    <span className={courseStyles.inlineReaderCategory}>{weekTheme || `Week ${activeWeek}`}</span>
+                    <h2 className={courseStyles.inlineReaderTitle}>{weekTitle || 'Weekly Read'}</h2>
+                  </div>
+                  <div className={courseStyles.inlineReaderBody}>
+                    <ComponentRenderer component={readingComponent} />
+                  </div>
                 </div>
               </div>
             )}
 
             {rightContent === 'task' && selectedComponent && (
-              <div className={styles.detailCard}>
+              <div className={`${courseStyles.popupCard} ${styles.detailCard}`}>
                 <div className={styles.detailCardHeader}>
                   {(() => {
                     const i = components.indexOf(selectedComponent);

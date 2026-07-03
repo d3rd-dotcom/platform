@@ -85,7 +85,8 @@
   }
 
   .blueSceneWrap {
-    flex: none;
+    flex: 1;
+    min-height: 0;
   }
 
   .sidebarWrap {
@@ -501,7 +502,7 @@
     background: linear-gradient(
       180deg,
       rgb(var(--field-notes-filter-light) / 0%) 0%,
-      rgb(var(--field-notes-filter-light) / 0%) 20%,
+      rgb(var(--field-notes-filter-light) / 0%) 55%,
       rgb(var(--field-notes-filter-light) / 100%) 100%
     );
   }
@@ -510,7 +511,7 @@
     background: linear-gradient(
       180deg,
       rgb(var(--field-notes-filter-dark) / 0%) 0%,
-      rgb(var(--field-notes-filter-dark) / 0%) 50%,
+      rgb(var(--field-notes-filter-dark) / 0%) 65%,
       rgb(var(--field-notes-filter-dark) / 100%) 100%
     );
   }
