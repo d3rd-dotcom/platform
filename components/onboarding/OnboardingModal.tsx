@@ -417,6 +417,9 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
         {step === 'details' ? (
           <div className={styles.stepContent}>
             <h2 className={`${styles.stepTitle} ${styles.titleAnimated}`}>Character Identifiers</h2>
+            <p className={`${styles.stepDescription} ${styles.descAnimated}`}>
+            Stay private while staying connected. You control how you show up.
+            </p>
 
             <div className={`${styles.formFields} ${styles.formAnimated}`}>
               <div className={styles.inputGroup}>

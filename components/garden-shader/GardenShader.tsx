@@ -13,6 +13,7 @@ const fragmentSrc = [
   'uniform vec2 uRes;',
   'uniform float uTime;',
   'uniform vec2 uMouse;',
+  'uniform float uPixel;',
   '',
   'float hash(vec2 p) {',
   '  vec3 p3 = fract(vec3(p.xyx) * 0.1031);',
@@ -76,7 +77,7 @@ const fragmentSrc = [
   '  float vig = 1.0 - smoothstep(0.15, 1.0, length(uv - 0.5) * 1.4);',
   '  col *= (0.7 + 0.3 * vig);',
   '',
-  '  vec2 grainUV = gl_FragCoord.xy * 0.08;',
+  '  vec2 grainUV = gl_FragCoord.xy * 0.08 * uPixel;',
   '  float gt = uTime * 1.5;',
   '  float gf = fract(gt);',
   '  float g0 = floor(gt);',
@@ -92,6 +93,13 @@ const fragmentSrc = [
   '}',
 ].join('\n');
 
+// The fbm field is soft and low-frequency, so rendering at reduced
+// resolution and letting CSS upscale is visually indistinguishable while
+// cutting fragment work to a quarter. The grain is rescaled in-shader
+// (uPixel) so its size in CSS pixels stays the same.
+const RENDER_SCALE = 0.5;
+const MAX_FPS = 30;
+
 export function GardenShader() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -104,8 +112,8 @@ export function GardenShader() {
     const cvs = canvas;
     const prt = parent;
 
-    let w = prt.clientWidth || window.innerWidth;
-    let h = prt.clientHeight || window.innerHeight;
+    let w = Math.max(1, Math.round((prt.clientWidth || window.innerWidth) * RENDER_SCALE));
+    let h = Math.max(1, Math.round((prt.clientHeight || window.innerHeight) * RENDER_SCALE));
     cvs.width = w;
     cvs.height = h;
 
@@ -113,7 +121,10 @@ export function GardenShader() {
       alpha: true,
       premultipliedAlpha: false,
       antialias: false,
-      failIfMajorPerformanceCaveat: false,
+      // If WebGL would fall back to software rendering (blocklisted GPU
+      // drivers, VMs), skip the effect entirely rather than burn CPU —
+      // the background image underneath stands on its own.
+      failIfMajorPerformanceCaveat: true,
     });
     if (!gl) return;
     gl.enable(gl.BLEND);
@@ -169,22 +180,30 @@ export function GardenShader() {
     const uRes = gl.getUniformLocation(prog, 'uRes');
     const uTime = gl.getUniformLocation(prog, 'uTime');
     const uMouse = gl.getUniformLocation(prog, 'uMouse');
+    const uPixel = gl.getUniformLocation(prog, 'uPixel');
     gl.uniform2f(uRes, w, h);
     gl.uniform1f(uTime, 0);
     gl.uniform2f(uMouse, 0.5, 0.5);
+    gl.uniform1f(uPixel, 1 / RENDER_SCALE);
 
+    // Mousemove can fire far above frame rate (high-polling-rate mice), so
+    // the handler only records raw coordinates; the layout read to resolve
+    // them against the canvas happens at most once per drawn frame.
     let mouseX = 0.5;
     let mouseY = 0.5;
+    let pointerX = -1;
+    let pointerY = -1;
+    let pointerDirty = false;
     function onMouse(e: MouseEvent) {
-      const rect = cvs.getBoundingClientRect();
-      mouseX = (e.clientX - rect.left) / rect.width;
-      mouseY = 1.0 - (e.clientY - rect.top) / rect.height;
+      pointerX = e.clientX;
+      pointerY = e.clientY;
+      pointerDirty = true;
     }
-    document.addEventListener('mousemove', onMouse);
+    document.addEventListener('mousemove', onMouse, { passive: true });
 
     const ro = new ResizeObserver(() => {
-      w = prt.clientWidth || window.innerWidth;
-      h = prt.clientHeight || window.innerHeight;
+      w = Math.max(1, Math.round((prt.clientWidth || window.innerWidth) * RENDER_SCALE));
+      h = Math.max(1, Math.round((prt.clientHeight || window.innerHeight) * RENDER_SCALE));
       cvs.width = w;
       cvs.height = h;
       g.viewport(0, 0, w, h);
@@ -193,20 +212,54 @@ export function GardenShader() {
     ro.observe(prt);
 
     let animId = 0;
+    let running = false;
+    let lastDraw = 0;
+    // Small slack so a 60Hz rAF cadence lands cleanly on every other frame.
+    const minFrameMs = 1000 / MAX_FPS - 2;
     const start = performance.now();
 
-    function frame() {
-      const t = (performance.now() - start) / 1000;
+    function frame(now: number) {
+      animId = requestAnimationFrame(frame);
+      if (now - lastDraw < minFrameMs) return;
+      lastDraw = now;
+
+      if (pointerDirty) {
+        pointerDirty = false;
+        const rect = cvs.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+          mouseX = (pointerX - rect.left) / rect.width;
+          mouseY = 1.0 - (pointerY - rect.top) / rect.height;
+        }
+      }
+
+      const t = (now - start) / 1000;
       g.uniform1f(uTime, t);
       g.uniform2f(uMouse, mouseX, mouseY);
       g.drawArrays(g.TRIANGLES, 0, 6);
-      animId = requestAnimationFrame(frame);
     }
 
-    animId = requestAnimationFrame(frame);
+    const startLoop = () => {
+      if (running) return;
+      running = true;
+      animId = requestAnimationFrame(frame);
+    };
+    const stopLoop = () => {
+      running = false;
+      cancelAnimationFrame(animId);
+    };
+
+    // Don't render while scrolled out of view.
+    const io = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) startLoop();
+      else stopLoop();
+    });
+    io.observe(cvs);
+
+    startLoop();
 
     return () => {
-      cancelAnimationFrame(animId);
+      stopLoop();
+      io.disconnect();
       ro.disconnect();
       document.removeEventListener('mousemove', onMouse);
       g.deleteProgram(prog);
