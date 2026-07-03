@@ -342,6 +342,8 @@
   }
 
   .scene {
+    display: flex;
+    flex-direction: column;
     min-height: 520px;
     overflow-anchor: none;
   }
@@ -366,6 +368,8 @@
   }
 
   .sceneFooter {
+    position: static;
+    margin-top: auto;
     z-index: 5;
   }
 
