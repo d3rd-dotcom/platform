@@ -28,12 +28,26 @@
   transform: translateX(-50%);
   width: 121px;
   height: 121px;
+  padding: 0;
   border-radius: 11px;
   border: 1px solid #a6b7ff;
   background-color: #0c1866;
   background-size: cover;
   background-position: center;
   box-shadow: 0 3.5px 3.5px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-secondary);
+  font-weight: var(--font-weight-bold);
+  font-size: 2.4rem;
+  color: #aab8ff;
+  transition: filter 0.15s ease;
+}
+
+.avatar:hover {
+  filter: brightness(1.1);
 }
 
 .header {
@@ -44,12 +58,37 @@
   margin-top: 44px;
 }
 
-.title {
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel .title {
   margin: 0;
   font-family: var(--font-secondary);
   font-weight: var(--font-weight-bold);
   font-size: 1.15rem;
   color: var(--panel-blue);
+}
+
+.editBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border-radius: 6px;
+  border: 1px solid #94a1ff;
+  background: #f4f5fe;
+  color: var(--panel-blue);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.editBtn:hover {
+  background: #e4e8ff;
 }
 
 .levelPill {
@@ -89,7 +128,7 @@
   color: #141414;
 }
 
-.description {
+.panel .description {
   margin: 0;
   font-family: var(--font-body);
   font-size: 0.85rem;
@@ -146,35 +185,78 @@
 .missionCard {
   display: flex;
   align-items: center;
+  gap: 12px;
   padding: 12px;
   min-height: 71px;
   border-radius: 5px;
   background: var(--panel-blue);
+  text-decoration: none;
+  transition: filter 0.15s ease;
 }
 
-.missionCard::before {
-  content: '';
-  width: 49px;
+a.missionCard:hover {
+  filter: brightness(1.08);
+}
+
+.questPoints {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 49px;
   height: 49px;
   border-radius: 7px;
-  background: #d9d9d9;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  font-family: var(--font-secondary);
+  font-weight: var(--font-weight-bold);
+  font-size: 0.85rem;
+  color: #f6f8ed;
   flex-shrink: 0;
 }
 
-.missionLabel {
-  margin-left: 12px;
+.questBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.questTitle {
   font-family: var(--font-secondary);
   font-weight: var(--font-weight-semibold);
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   color: #f6f8ed;
 }
 
-.controlPanel {
+.questDesc {
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  line-height: 1.35;
+  color: rgba(246, 248, 237, 0.85);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.badges {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 18px 19px 0;
+}
+
+.badgeRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.badge {
   display: flex;
   align-items: center;
-  gap: 7px;
-  margin: 18px 19px 0;
-  padding: 15px;
+  gap: 10px;
+  padding: 10px;
   background: #3b3952;
   border: 1px solid var(--panel-blue);
   border-radius: 10px;
@@ -183,7 +265,12 @@
     0 4.8px 8px rgba(0, 0, 0, 0.55);
 }
 
-.controlAvatar {
+.badgeLocked {
+  opacity: 0.55;
+  filter: saturate(0.4);
+}
+
+.badgeArt {
   width: 44px;
   height: 44px;
   border-radius: 5px;
@@ -193,9 +280,22 @@
   flex-shrink: 0;
 }
 
-.controlAction {
-  flex: 1;
-  height: 44px;
-  border-radius: 5px;
-  background: var(--panel-blue);
+.badgeInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.badgeName {
+  font-family: var(--font-secondary);
+  font-weight: var(--font-weight-semibold);
+  font-size: 0.78rem;
+  color: #f6f8ed;
+}
+
+.badgeState {
+  font-family: var(--font-secondary);
+  font-size: 0.72rem;
+  color: rgba(246, 248, 237, 0.6);
 }

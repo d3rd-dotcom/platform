@@ -354,10 +354,7 @@ export default function CoursesPage() {
 
       <aside className={styles.aside}>
         <ProfileDashboard
-          level={24}
-          headline="Digital Alchemist!"
-          description="Explore the land beyond the ideas of builders, the future, and seekers of infinite potential!"
-          stats={{ diamonds: 2432, courses: 3, badges: 23, streak: 7 }}
+          coursesCount={1 + communityCourses.length + academyCourses.length + (personalCourse ? 1 : 0)}
         />
       </aside>
       </main>
