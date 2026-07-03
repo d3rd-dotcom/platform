@@ -196,7 +196,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const [adminExpanded, setAdminExpanded] = useState(true);
   const [isYourAccountsModalOpen, setIsYourAccountsModalOpen] = useState(false);
   const [isCreatingSession, setIsCreatingSession] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(initialCollapsed);
   const [isLootBoxOpen, setIsLootBoxOpen] = useState(false);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [userLoadComplete, setUserLoadComplete] = useState(false);
@@ -218,6 +218,12 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     return () => clearTimeout(timer);
   }, []);
 
+
+  // Sync CSS variable + data attribute on mount to match persisted preference
+  useEffect(() => {
+    syncSidebarPreference(isCollapsed);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const toggleCollapsed = useCallback(() => {
     const next = !isCollapsed;

@@ -5,6 +5,7 @@ import { usePrivy } from '@privy-io/react-auth';
 import Link from 'next/link';
 import { CheckCircle, SealCheck, SpinnerGap, ArrowLeft, ArrowRight } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
+import Banner from '@/components/banner/Banner';
 import ComponentRenderer from '@/components/course-renderers/ComponentRenderer';
 import DiamondReward from '@/components/rewards/DiamondReward';
 import type { CourseRecord, ChapterRecord, LessonRecord } from '@/lib/course-content-db';
@@ -232,6 +233,7 @@ export default function CourseSlugPage({ params }: PageProps) {
     return (
       <div className={courseStyles.pageLayout}>
         <SideNavigation />
+        <Banner />
         <main className={courseStyles.content}>
           <div className={styles.stateWrap}>
             <SpinnerGap size={24} className={styles.spinner} />
@@ -247,6 +249,7 @@ export default function CourseSlugPage({ params }: PageProps) {
     return (
       <div className={courseStyles.pageLayout}>
         <SideNavigation />
+        <Banner />
         <main className={courseStyles.content}>
           <div className={styles.stateWrap}>
             <h1 className={styles.stateHeading}>Course not found</h1>
@@ -286,6 +289,7 @@ export default function CourseSlugPage({ params }: PageProps) {
     return (
       <div className={courseStyles.pageLayout}>
         <SideNavigation />
+        <Banner />
         <main className={`${courseStyles.content} ${isDesktop ? courseStyles.contentDesktop : ''}`}>
 
           {diamondReward !== null && (
@@ -294,6 +298,14 @@ export default function CourseSlugPage({ params }: PageProps) {
 
           {/* ── Left column (Control Panel) ── */}
           <div className={isDesktop ? courseStyles.leftCol : undefined}>
+
+            <Link href="/courses" className={courseStyles.backBtn}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+              Courses
+            </Link>
+
            <div className={courseStyles.controlPanel}>
 
             {/* Banner */}
@@ -384,6 +396,8 @@ export default function CourseSlugPage({ params }: PageProps) {
               </button>
             )}
 
+
+
             {/* Missions heading */}
             {taskComponents.length > 0 && (
               <div className={courseStyles.missionsHeadingRow} style={{ marginBottom: 12 }} aria-hidden="true">
@@ -420,8 +434,7 @@ export default function CourseSlugPage({ params }: PageProps) {
                       style={{ '--task-accent': accent } as React.CSSProperties}
                       aria-hidden="true"
                     />
-                    <span className={styles.missionTileScrim} aria-hidden="true" />
-                    <span className={styles.missionTileTitle}>{c.title || 'Untitled'}</span>
+
                     {isComplete && (
                       <span className={styles.missionTileCheck} aria-hidden="true">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
@@ -570,6 +583,7 @@ export default function CourseSlugPage({ params }: PageProps) {
     return (
       <div className={styles.layout}>
         <SideNavigation />
+        <Banner />
         <main className={styles.main}>
           <div className={styles.stateWrap}>
             <SpinnerGap size={24} className={styles.spinner} />
@@ -585,6 +599,7 @@ export default function CourseSlugPage({ params }: PageProps) {
     return (
       <div className={styles.layout}>
         <SideNavigation />
+        <Banner />
         <main className={styles.main}>
           <div className={styles.gateCard}>
             <img src={ANGEL_IMAGE} alt="" className={styles.gateImage} />
@@ -603,6 +618,7 @@ export default function CourseSlugPage({ params }: PageProps) {
   return (
     <div className={styles.layout}>
       <SideNavigation />
+      <Banner />
       <main className={styles.main}>
         <Link href="/courses" className={styles.backLink}>← Courses</Link>
 

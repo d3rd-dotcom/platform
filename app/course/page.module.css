@@ -82,6 +82,44 @@
 /* CONTROL PANEL — matches /home GlobalChat chrome */
 /* ============================================ */
 
+/* Game-style back button — sits above the control panel */
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px 8px 12px;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-muted, #6b6e82);
+  background: rgba(255, 255, 255, 0.85);
+  border: 2px solid rgba(26, 29, 51, 0.12);
+  border-radius: 10px;
+  text-decoration: none;
+  width: fit-content;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  backdrop-filter: blur(6px);
+}
+.backBtn:hover {
+  background: #ffffff;
+  border-color: rgba(26, 29, 51, 0.2);
+  color: var(--color-primary);
+}
+.backBtn svg {
+  flex-shrink: 0;
+}
+:global([data-theme="dark"]) .backBtn {
+  background: rgba(21, 23, 42, 0.85);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(227, 225, 238, 0.65);
+}
+:global([data-theme="dark"]) .backBtn:hover {
+  background: #15172a;
+  border-color: rgba(255, 255, 255, 0.18);
+  color: var(--color-primary);
+}
+
 /* Shared card chrome — same borders, dividers and drop shadow the home
    GlobalChat (ChatRoom) uses, reused here for the panel and the right-side
    pop-ups so the course view reads as the same surface family. */
@@ -111,7 +149,7 @@
 
 /* Banner — full-bleed cover image behind the avatar */
 .panelBanner {
-  height: 150px;
+  height: 120px;
   width: 100%;
   background-color: color-mix(in srgb, var(--color-primary) 18%, #ffffff);
   background-image: linear-gradient(135deg, #5168FF, #9b7ed9);
@@ -119,6 +157,7 @@
   background-position: center;
   background-repeat: no-repeat;
   border-bottom: 3px solid var(--color-primary);
+  border-radius: 8px 8px 0 0;
 }
 
 .panelBody {
@@ -129,23 +168,23 @@
 .panelAvatarWrap {
   display: flex;
   justify-content: center;
-  margin-top: -62px;
+  margin-top: -72px;
 }
 
 .panelAvatar {
   width: 120px;
   height: 120px;
-  border-radius: 22px;
+  border-radius: 14px;
   object-fit: cover;
   background: #0b1560;
-  border: 3px solid color-mix(in oklch, var(--color-primary) 35%, white);
+  border: 3px solid var(--color-primary);
   box-shadow:
     0 0 0 1px color-mix(in srgb, var(--color-primary) 30%, transparent),
-    0 4px 10px rgba(0, 0, 0, 0.15);
+    var(--shadow-md);
 }
 
 :global([data-theme="dark"]) .panelAvatar {
-  border-color: color-mix(in oklch, var(--color-primary) 30%, #15172a);
+  border-color: var(--color-primary);
 }
 
 /* Title + short centered rule + description */
@@ -308,6 +347,7 @@
   overflow: hidden;
   width: 100%;
   display: grid;
+  margin-bottom: 20px;
   grid-template-columns: auto auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 14px;
@@ -552,12 +592,19 @@
   align-self: start;
   position: sticky;
   top: calc(72px + 24px);
+  /* Own scroll area: the detail/reading panel scrolls on its own without
+     moving the left mission column. overscroll-behavior stops the scroll
+     from chaining to the page once it bottoms out. The interior padding (and
+     matching negative margin) gives the card's raised-edge drop shadow room
+     so overflow-y clipping doesn't shave it — the column footprint is
+     unchanged. */
   max-height: calc(100vh - 72px - 48px);
   overflow-y: auto;
-  padding-top: 0;
-  margin-top: 0;
+  overscroll-behavior: contain;
   scrollbar-width: thin;
   scrollbar-color: rgba(26, 29, 51, 0.12) transparent;
+  padding: 2px 12px 16px;
+  margin: -2px -12px 0;
 }
 
 .rightPanel > :first-child {
@@ -691,6 +738,8 @@
     position: static;
     max-height: none;
     overflow: visible;
+    padding: 0;
+    margin: 0;
   }
 }
 
@@ -811,4 +860,8 @@
 
 :global([data-theme="dark"]) .readingArrow {
   color: var(--color-text-faint);
+}
+
+:global([data-theme="dark"]) .rightPanel {
+  scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
 }

@@ -6,6 +6,76 @@
   gap: 12px;
 }
 
+/* ═══════════════════════════════════════════════ */
+/* Mission tile grid — mirrors app/course/[slug]    */
+/* Kept in sync via the course-design-parity skill. */
+/* ═══════════════════════════════════════════════ */
+
+.missionGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.missionTile {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid rgba(26, 29, 51, 0.10);
+  background: #e6e7f0;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.06);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.missionTile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(26, 29, 51, 0.16);
+}
+
+.missionTileActive {
+  border-color: var(--color-primary) !important;
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--color-primary) 42%, transparent),
+    0 8px 18px rgba(26, 29, 51, 0.16) !important;
+}
+
+.missionTileComplete .missionTileArt {
+  opacity: 0.7;
+}
+
+/* Full-bleed artwork — reuses the taskArtwork* gradient variants */
+.missionTileArt {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.missionTileCheck {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #22C55E;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+:global([data-theme="dark"]) .missionTile {
+  background: #1b1d2e;
+  border-color: rgba(240, 241, 250, 0.08);
+}
+
 /* Loading */
 .loading {
   display: flex;

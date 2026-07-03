@@ -407,25 +407,19 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
       />
 
       <div className={`${styles.modal} ${isAnimating ? styles.modalOpen : ''} ${showCheckIn ? styles.modalCheckIn : ''}`}>
-        {!showCheckIn && (
-          <>
-            {/* Background image */}
-            <Image
-              key={scene.image}
-              src={scene.image}
-              alt=""
-              fill
-              priority
-              className={styles.bgImage}
-              sizes="(min-width: 900px) min(1120px, calc(100vw - 96px)), 100vw"
-            />
+        {/* Close — mounted on the bezel */}
+        <button
+          type="button"
+          className={`${styles.closeButton} ${showCheckIn ? styles.closeButtonCheckIn : ''}`}
+          onClick={onClose}
+          aria-label="Close"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
 
-            {/* Shading gradients */}
-            <div className={styles.shade} />
-          </>
-        )}
-
-        {/* Narration toggle — opt-in, off by default */}
+        {/* Narration toggle — opt-in, off by default, also mounted on the bezel */}
         {!showCheckIn && (
           <button
             type="button"
@@ -451,19 +445,67 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
           </button>
         )}
 
-        {/* Close */}
-        <button
-          type="button"
-          className={`${styles.closeButton} ${showCheckIn ? styles.closeButtonCheckIn : ''}`}
-          onClick={onClose}
-          aria-label="Close"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
+        {!showCheckIn && (
+          <div className={styles.screen}>
+            {/* Background image */}
+            <Image
+              key={scene.image}
+              src={scene.image}
+              alt=""
+              fill
+              priority
+              className={styles.bgImage}
+              sizes="(min-width: 900px) min(1120px, calc(100vw - 96px)), 100vw"
+            />
 
-        {showCheckIn ? (
+            {/* Shading gradients */}
+            <div className={styles.shade} />
+
+            {/* Story text overlay — top-left, well inset */}
+            <div className={styles.overlay}>
+              <p className={styles.body}>
+                {displayedText}
+                {isTyping && <span className={styles.cursor}>|</span>}
+              </p>
+            </div>
+
+            {/* Invisible tap zones for prev / next */}
+            <button type="button" className={styles.tapPrev} onClick={goPrev} aria-label="Previous scene" disabled={sceneIndex === 0} />
+            <button type="button" className={styles.tapNext} onClick={goNext} aria-label="Next scene" />
+
+            {/* Bottom bar: dots only */}
+            <div className={styles.bottomBar}>
+              <div className={styles.dots} role="tablist">
+                {SCENES.map((s, i) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={i === sceneIndex}
+                    aria-label={`Scene ${i + 1}`}
+                    className={`${styles.dot} ${i === sceneIndex ? styles.dotActive : ''}`}
+                    onClick={() => setSceneIndex(i)}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Portrait hard-block overlay */}
+            {isPortrait && (
+              <div className={styles.portraitOverlay}>
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" className={styles.rotateIcon}>
+                  <path d="M4 9V5a1 1 0 0 1 1-1h4" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M20 15v4a1 1 0 0 1-1 1h-4" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M20 8a8 8 0 0 0-13.66-5.66L4 5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M4 16a8 8 0 0 0 13.66 5.66L20 19" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <p className={styles.portraitText}>Rotate your phone to continue.</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {showCheckIn && (
           <div className={styles.checkInScreen}>
             <div className={styles.checkInCard}>
               <div className={styles.checkInHeader}>
@@ -509,50 +551,6 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
                 Back to story
               </button>
             </div>
-          </div>
-        ) : (
-          <>
-            {/* Story text overlay — top-left, well inset */}
-            <div className={styles.overlay}>
-              <p className={styles.body}>
-                {displayedText}
-                {isTyping && <span className={styles.cursor}>|</span>}
-              </p>
-            </div>
-
-            {/* Invisible tap zones for prev / next */}
-            <button type="button" className={styles.tapPrev} onClick={goPrev} aria-label="Previous scene" disabled={sceneIndex === 0} />
-            <button type="button" className={styles.tapNext} onClick={goNext} aria-label="Next scene" />
-
-            {/* Bottom bar: dots only */}
-            <div className={styles.bottomBar}>
-              <div className={styles.dots} role="tablist">
-                {SCENES.map((s, i) => (
-                  <button
-                    key={s.id}
-                    type="button"
-                    role="tab"
-                    aria-selected={i === sceneIndex}
-                    aria-label={`Scene ${i + 1}`}
-                    className={`${styles.dot} ${i === sceneIndex ? styles.dotActive : ''}`}
-                    onClick={() => setSceneIndex(i)}
-                  />
-                ))}
-              </div>
-            </div>
-          </>
-        )}
-
-        {/* Portrait hard-block overlay */}
-        {isPortrait && !showCheckIn && (
-          <div className={styles.portraitOverlay}>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" className={styles.rotateIcon}>
-              <path d="M4 9V5a1 1 0 0 1 1-1h4" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M20 15v4a1 1 0 0 1-1 1h-4" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M20 8a8 8 0 0 0-13.66-5.66L4 5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M4 16a8 8 0 0 0 13.66 5.66L20 19" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            <p className={styles.portraitText}>Rotate your phone to continue.</p>
           </div>
         )}
 

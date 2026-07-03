@@ -503,14 +503,14 @@
 
 .missionGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(98px, 1fr));
+  grid-template-columns: repeat(5, 1fr);
   gap: 10px;
 }
 
 .missionTile {
   position: relative;
   aspect-ratio: 1;
-  border-radius: 12px;
+  border-radius: 50%;
   overflow: hidden;
   padding: 0;
   border: 1px solid rgba(26, 29, 51, 0.10);
@@ -604,9 +604,7 @@
 }
 
 /* Chrome comes from the shared .popupCard wrapper (matches home GlobalChat) */
-.detailCard {
-  overflow: hidden;
-}
+
 
 .detailCardHeader {
   display: flex;

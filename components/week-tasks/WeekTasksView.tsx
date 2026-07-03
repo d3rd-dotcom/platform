@@ -86,6 +86,13 @@ interface WeekTasksViewProps {
   onCompletionChange?: (weekNumber: number, completedSectionIds: string[]) => void;
   syncedCompletedSections?: string[];
   disableAutoSave?: boolean;
+  /** Render the section list as the round artwork tile grid (matches the
+      custom-course view). Requires onSectionSelect to open the detail panel. */
+  tileGrid?: boolean;
+  /** Section currently open in the detail panel — highlights its tile. */
+  selectedSectionId?: string | null;
+  /** Reports week progress so a parent can render a diamonds/progress badge. */
+  onStats?: (stats: { weekNumber: number; completed: number; total: number }) => void;
 }
 
 export default function WeekTasksView({
@@ -100,6 +107,9 @@ export default function WeekTasksView({
   onCompletionChange,
   syncedCompletedSections,
   disableAutoSave = false,
+  tileGrid = false,
+  selectedSectionId,
+  onStats,
 }: WeekTasksViewProps) {
   const { sections: fetchedSections, loading: sectionsLoading } = useCourseSections('creative-healing', weekNumber);
   const journalSections: JournalSection[] = fetchedSections || [];
@@ -208,6 +218,13 @@ export default function WeekTasksView({
     if (isLoading) return;
     onCompletionChange?.(weekNumber, Array.from(completedSections));
   }, [completedSections, isLoading, weekNumber, onCompletionChange]);
+
+  // Report {completed, total} upward so the panel badge can show diamonds left
+  // and week progress without re-fetching the section list.
+  useEffect(() => {
+    if (isLoading || sectionsLoading) return;
+    onStats?.({ weekNumber, completed: completedSections.size, total: journalSections.length });
+  }, [completedSections, journalSections.length, isLoading, sectionsLoading, weekNumber, onStats]);
 
   // Mirror completions toggled in a sibling (panel) view.
   useEffect(() => {
@@ -660,7 +677,46 @@ export default function WeekTasksView({
         if (tag === 'INPUT' || tag === 'TEXTAREA') play('click');
       }}
     >
-{visibleSections.map((section, idx) => {
+{tileGrid && !focusedSectionId ? (
+        <div className={styles.missionGrid}>
+          {visibleSections.map((section, idx) => {
+            const isDone = completedSections.has(section.id);
+            const isSelected = selectedSectionId === section.id;
+            const artVariant = getTaskArtVariant(section);
+            const taskAccent = TASK_ACCENTS[idx % TASK_ACCENTS.length];
+            const variantClass = styles[`taskArtwork${artVariant[0].toUpperCase()}${artVariant.slice(1)}` as keyof typeof styles];
+            return (
+              <button
+                key={section.id}
+                type="button"
+                data-tour={idx === 0 ? 'course-mission' : undefined}
+                className={`${styles.missionTile} ${isSelected ? styles.missionTileActive : ''} ${isDone ? styles.missionTileComplete : ''}`}
+                style={{ '--task-accent': taskAccent } as React.CSSProperties}
+                onClick={() => {
+                  if (isSealed) return;
+                  play('click');
+                  onSectionSelect?.(section.id);
+                }}
+                onMouseEnter={() => play('hover')}
+                title={section.title}
+              >
+                <div className={`${styles.taskArtwork} ${variantClass} ${styles.missionTileArt}`} aria-hidden="true">
+                  <div className={styles.taskArtworkGlow} />
+                  <div className={styles.taskArtworkLine} />
+                </div>
+                {isDone && (
+                  <span className={styles.missionTileCheck} aria-hidden="true">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      ) : (
+        visibleSections.map((section, idx) => {
         const isOpen = expandedSection === section.id;
         const isDone = completedSections.has(section.id);
         const artVariant = getTaskArtVariant(section);
@@ -749,7 +805,8 @@ export default function WeekTasksView({
             )}
           </div>
         );
-      })}
+      })
+      )}
 
       {/* Seal Button — only in the full list view, not the single-task panel */}
       {!isSealed && !focusedSectionId && (
