@@ -382,7 +382,7 @@
    instead of being cropped behind it. */
 @media (max-width: 768px) {
   .scene {
-    min-height: 0;
+    min-height: 280px;
   }
 
   .blueWrap {
