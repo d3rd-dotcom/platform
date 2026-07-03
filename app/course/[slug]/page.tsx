@@ -45,7 +45,7 @@ function getAllBlockIds(week: VipCourseFull['weeks'][number]): string[] {
 }
 
 export default function CourseSlugPage({ params }: PageProps) {
-  const { ready, authenticated, user, getAccessToken } = usePrivy();
+  const { ready, authenticated, user, getAccessToken, login } = usePrivy();
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
@@ -192,6 +192,11 @@ export default function CourseSlugPage({ params }: PageProps) {
   };
 
   const handleSeal = async () => {
+    // Reading is open to everyone; earning needs an account.
+    if (!authenticated) {
+      login();
+      return;
+    }
     if (!vipCourse || sealing) return;
     const currentWeek = vipCourse.weeks.find((w) => w.weekNumber === activeWeek);
     if (!currentWeek) return;
@@ -483,7 +488,13 @@ export default function CourseSlugPage({ params }: PageProps) {
                           type="button"
                           className={`${styles.completeBtn} ${allDone ? styles.completeBtnDone : ''}`}
                           disabled={allDone}
-                          onClick={() => setPendingConfirm(selectedComponent)}
+                          onClick={() => {
+                            if (!authenticated) {
+                              login();
+                              return;
+                            }
+                            setPendingConfirm(selectedComponent);
+                          }}
                         >
                           {allDone ? 'Task Complete' : `Complete task ◆ +${COMPLETION_REWARD}`}
                         </button>

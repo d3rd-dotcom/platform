@@ -45,10 +45,17 @@ function stripQuizAnswers(course: VipCourseFull): VipCourseFull {
 
 export async function GET(_request: Request, { params }: { params: { slug: string } }) {
   try {
-    await assertCourseUser();
     const course = await getVipCourseFullBySlug(params.slug);
     if (!course) {
       return NextResponse.json({ error: 'Course not found.' }, { status: 404 });
+    }
+    // Published courses are public reading — signing in is only required to
+    // complete things. Drafts stay visible to their author alone.
+    if (course.status !== 'published') {
+      const userId = await assertCourseUser();
+      if (course.userId !== userId) {
+        return NextResponse.json({ error: 'Course not found.' }, { status: 404 });
+      }
     }
     return NextResponse.json({ course: stripQuizAnswers(course) });
   } catch (err: any) {

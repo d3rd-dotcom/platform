@@ -106,7 +106,7 @@ export default function WeekTasksView({
   const weekColor = WEEK_COLORS[weekNumber] || '#5168FF';
 
   const { play } = useSound();
-  const { getAccessToken } = usePrivy();
+  const { authenticated, getAccessToken, login } = usePrivy();
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [completedSections, setCompletedSections] = useState<Set<string>>(new Set());
   const [sectionData, setSectionData] = useState<Record<string, unknown>>({});
@@ -283,9 +283,14 @@ export default function WeekTasksView({
   };
 
   // Completion is permanent: finished tasks can't be unchecked, and the
-  // diamonds are claimed through an explicit confirm step.
+  // diamonds are claimed through an explicit confirm step. Reading is open
+  // to everyone — completing is the moment that needs an account.
   const markComplete = (id: string) => {
     if (completedSections.has(id)) return;
+    if (!authenticated) {
+      login();
+      return;
+    }
     play('click');
     setPendingTaskId(id);
   };
@@ -344,6 +349,10 @@ export default function WeekTasksView({
   };
 
   const handleSealWeek = async () => {
+    if (!authenticated) {
+      login();
+      return;
+    }
     if (!canSeal || isSealing) return;
     setIsSealing(true);
     setSealStep('sealing');
