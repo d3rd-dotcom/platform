@@ -11,20 +11,13 @@ import {
   typography,
   spacing,
   borderRadius,
-  shadows,
   breakpoints,
   durations,
-  easings,
   zIndex,
 } from '@/styles/design-tokens';
 
 // Import actual components from codebase
 import Banner from '@/components/banner/Banner';
-import BookCard from '@/components/book-card/BookCard';
-import EventCard from '@/components/event-card/EventCard';
-import { HelpTooltip } from '@/components/help-tooltip/HelpTooltip';
-import NewsletterCard from '@/components/newsletter-card/NewsletterCard';
-import LibraryCard from '@/components/library-card/LibraryCard';
 import { SoulGemDisplay } from '@/components/soul-gems/SoulGemDisplay';
 import ProposalStages from '@/components/proposal-stages/ProposalStages';
 
@@ -114,7 +107,6 @@ export default function StyleGuidePage() {
           <div className={styles.subsection}>
             <h3 className={styles.subsectionTitle}>Category Colors</h3>
             <div className={styles.colorGrid}>
-              <ColorCard name="Mental Health" value={colors.category.mentalHealth} />
               <ColorCard name="Productivity" value={colors.category.productivity} />
               <ColorCard name="Wealth" value={colors.category.wealth} />
             </div>
@@ -148,12 +140,7 @@ export default function StyleGuidePage() {
               value={gradients.swipeLike}
               description="Positive swipe actions"
             />
-            <GradientCard 
-              name="Swipe Skip" 
-              value={gradients.swipeSkip}
-              description="Negative swipe actions"
-            />
-            <GradientCard 
+            <GradientCard
               name="Swipe Save" 
               value={gradients.swipeSave}
               description="Save/bookmark actions"
@@ -342,28 +329,25 @@ export default function StyleGuidePage() {
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>🌓 Shadows</h2>
           <p className={styles.sectionDescription}>
-            Subtle single shadows with border reinforcement. The craft is in the choice, not the complexity.
+            The four drop-shadow treatments actually in use across the top nav and home bento. Pick the one that matches the surface, not an arbitrary blur value.
           </p>
           <div className={styles.shadowGrid}>
-            {[
-              { name: 'None', value: shadows.none },
-              { name: 'Small', value: shadows.sm },
-              { name: 'Default', value: shadows.DEFAULT },
-              { name: 'Medium', value: shadows.md },
-              { name: 'Large', value: shadows.lg },
-              { name: 'Extra Large', value: shadows.xl },
-              { name: 'Primary', value: shadows.primary },
-              { name: 'Card', value: shadows.card },
-              { name: 'Card Hover', value: shadows.cardHover },
-            ].map((shadow) => (
-              <div 
-                key={shadow.name} 
-                className={styles.shadowCard}
-                style={{ boxShadow: shadow.value }}
-              >
-                <span className={styles.shadowLabel}>{shadow.name}</span>
-              </div>
-            ))}
+            <div className={styles.shadowCard} style={{ boxShadow: '0 22px 50px rgba(26, 29, 51, 0.1)', border: '1px solid color-mix(in oklch, var(--color-primary) 18%, transparent)' }}>
+              <span className={styles.shadowLabel}>Soft Elevated</span>
+              <span className={styles.shadowMeta}>Home gate/modal cards</span>
+            </div>
+            <div className={styles.shadowCard} style={{ boxShadow: '0 6px 0 var(--color-primary), 0 0px 10px rgba(0, 0, 0, 0.14)', border: '2px solid var(--color-primary-hover)' }}>
+              <span className={styles.shadowLabel}>Comic Offset</span>
+              <span className={styles.shadowMeta}>/courses course cards</span>
+            </div>
+            <div className={styles.shadowCard} style={{ boxShadow: '0 3px 0 color-mix(in oklch, var(--color-primary) 25%, transparent)', border: '1.5px solid color-mix(in oklch, var(--color-primary) 30%, transparent)' }}>
+              <span className={styles.shadowLabel}>Pill Offset</span>
+              <span className={styles.shadowMeta}>Top nav search &amp; links</span>
+            </div>
+            <div className={styles.shadowCard} style={{ boxShadow: '0 2px 8px rgba(26, 29, 51, 0.04)', border: '1px solid rgba(26, 29, 51, 0.06)' }}>
+              <span className={styles.shadowLabel}>Subtle Hover</span>
+              <span className={styles.shadowMeta}>/course-builder component rows</span>
+            </div>
           </div>
         </section>
 
@@ -419,22 +403,6 @@ export default function StyleGuidePage() {
               ))}
             </div>
           </div>
-
-          <div className={styles.subsection}>
-            <h3 className={styles.subsectionTitle}>Easing Curves</h3>
-            <div className={styles.animationGrid}>
-              {Object.entries(easings).map(([key, value]) => (
-                <div key={key} className={styles.animationCard}>
-                  <div 
-                    className={styles.animationBox}
-                    style={{ transition: `transform 300ms ${value}` }}
-                  />
-                  <span className={styles.animationLabel}>{key}</span>
-                  <span className={styles.animationValue} style={{ fontSize: '0.5rem' }}>{value}</span>
-                </div>
-              ))}
-            </div>
-          </div>
         </section>
 
         {/* Z-Index Section */}
@@ -475,40 +443,48 @@ export default function StyleGuidePage() {
             <CtaButton variant="primary" size="lg">Large</CtaButton>
             <CtaButton variant="primary" disabled>Disabled</CtaButton>
           </div>
+
+          <div className={styles.subsection} style={{ marginTop: '2rem' }}>
+            <h3 className={styles.subsectionTitle}>Top Nav Pills</h3>
+            <p className={styles.sectionDescription}>
+              Nav links use a chunkier pill with a flat color offset instead of a blurred shadow — the same 3px-drop language as the top nav search bar.
+            </p>
+            <div className={styles.buttonGrid}>
+              <button className={styles.topNavPill}>Courses</button>
+              <button className={`${styles.topNavPill} ${styles.topNavPillActive}`}>Home</button>
+              <button className={styles.topNavPill} disabled>Locked</button>
+            </div>
+          </div>
         </section>
 
         {/* Cards Section */}
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>🃏 Cards</h2>
           <p className={styles.sectionDescription}>
-            Card layouts vary, but surface treatment stays consistent. Each card type shares the same border radius, shadow depth, padding scale, and typography system.
+            Two surfaces cover almost every card in the app: the comic-offset course card from <code>/courses</code>, and the flatter drag-and-drop row from <code>/course-builder</code>.
           </p>
           <div className={styles.cardGrid}>
-            <div className={`${styles.exampleCard} ${styles.cardMentalHealth}`}>
-              <div className={styles.cardCategory} style={{ color: colors.category.mentalHealth }}>
-                Mental Health
+            <div className={styles.courseCardDemo}>
+              <div className={styles.courseCardDemoHeader}>
+                <span className={styles.courseCardDemoKanji}>WK 01</span>
+                <span className={styles.courseCardDemoHeaderTitle}>Foundations</span>
               </div>
-              <div className={styles.cardTitle}>Cyber-Psychology Fundamentals</div>
-              <div className={styles.cardDescription}>
-                Understanding the psychological impact of digital environments on mental wellness.
-              </div>
-            </div>
-            <div className={`${styles.exampleCard} ${styles.cardProductivity}`}>
-              <div className={styles.cardCategory} style={{ color: colors.category.productivity }}>
-                Productivity
-              </div>
-              <div className={styles.cardTitle}>Deep Work Workshop</div>
-              <div className={styles.cardDescription}>
-                Master the art of focused work in an age of constant distraction.
+              <div className={styles.courseCardDemoThumb} />
+              <div className={styles.courseCardDemoBody}>
+                <div className={styles.courseCardDemoCategory}>Productivity</div>
+                <div className={styles.courseCardDemoTitle}>Deep Work Workshop</div>
+                <div className={styles.courseCardDemoDesc}>
+                  Master the art of focused work in an age of constant distraction.
+                </div>
               </div>
             </div>
-            <div className={`${styles.exampleCard} ${styles.cardWealth}`}>
-              <div className={styles.cardCategory} style={{ color: colors.category.wealth }}>
-                Wealth
-              </div>
-              <div className={styles.cardTitle}>Treasury Governance</div>
-              <div className={styles.cardDescription}>
-                Participate in community-driven financial decisions and proposals.
+            <div className={styles.taskCardDemo}>
+              <span className={styles.taskCardDemoHandle}>⠿</span>
+              <span className={styles.taskCardDemoAccent} />
+              <div className={styles.taskCardDemoArtwork} />
+              <div className={styles.taskCardDemoInfo}>
+                <span className={styles.taskCardDemoType}>Reading</span>
+                <span className={styles.taskCardDemoTitle}>Cyber-Psychology Fundamentals</span>
               </div>
             </div>
           </div>
@@ -531,85 +507,6 @@ export default function StyleGuidePage() {
             </div>
             <div className={styles.componentMeta}>
               <code>components/banner/Banner.tsx</code>
-            </div>
-          </div>
-        </section>
-
-        {/* Book Card Component */}
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>📚 Book Card</h2>
-          <p className={styles.sectionDescription}>
-            Library book display card with cover image, title, author, description, and category badge.
-          </p>
-          <div className={styles.componentShowcase}>
-            <div className={styles.componentLabel}>BookCard</div>
-            <div className={styles.componentPreview} style={{ maxWidth: '400px' }}>
-              <BookCard 
-                title="Web3 Education"
-                author="By: Jhinn Bay"
-                description="Learn how blockchain infrastructure can support portable credentials, transparent rewards, and user-owned records."
-                category="Non-Fiction"
-              />
-            </div>
-            <div className={styles.componentMeta}>
-              <code>components/book-card/BookCard.tsx</code>
-            </div>
-          </div>
-        </section>
-
-        {/* Event Card Component */}
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>📅 Event Card</h2>
-          <p className={styles.sectionDescription}>
-            Event listing card with image, title, badges, description, and action buttons.
-          </p>
-          <div className={styles.componentShowcase}>
-            <div className={styles.componentLabel}>EventCard</div>
-            <div className={styles.componentPreview} style={{ maxWidth: '400px' }}>
-              <EventCard 
-                heading="Community Workshop"
-                badge1Text="Workshop"
-                badge2Text="Jan 20, 2026"
-                description="Join us for an interactive session on blockchain governance and community building."
-                secondaryButtonText="Learn More"
-              />
-            </div>
-            <div className={styles.componentMeta}>
-              <code>components/event-card/EventCard.tsx</code>
-            </div>
-          </div>
-        </section>
-
-        {/* Library Card Component */}
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>📖 Library Card</h2>
-          <p className={styles.sectionDescription}>
-            IPFS Library navigation card with badges and transmission indicator.
-          </p>
-          <div className={styles.componentShowcase}>
-            <div className={styles.componentLabel}>LibraryCard</div>
-            <div className={styles.componentPreview} style={{ maxWidth: '350px' }}>
-              <LibraryCard />
-            </div>
-            <div className={styles.componentMeta}>
-              <code>components/library-card/LibraryCard.tsx</code>
-            </div>
-          </div>
-        </section>
-
-        {/* Newsletter Card Component */}
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>📧 Newsletter Card</h2>
-          <p className={styles.sectionDescription}>
-            Daemon newsletter subscription card with button link.
-          </p>
-          <div className={styles.componentShowcase}>
-            <div className={styles.componentLabel}>NewsletterCard</div>
-            <div className={styles.componentPreview} style={{ maxWidth: '300px' }}>
-              <NewsletterCard />
-            </div>
-            <div className={styles.componentMeta}>
-              <code>components/newsletter-card/NewsletterCard.tsx</code>
             </div>
           </div>
         </section>
@@ -642,40 +539,6 @@ export default function StyleGuidePage() {
             </div>
             <div className={styles.componentMeta}>
               <code>components/soul-gems/SoulGemDisplay.tsx</code>
-            </div>
-          </div>
-        </section>
-
-        {/* Help Tooltip Component */}
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>❓ Help Tooltip</h2>
-          <p className={styles.sectionDescription}>
-            Interactive help tooltip with click-to-toggle behavior. Position can be customized.
-          </p>
-          <div className={styles.componentShowcase}>
-            <div className={styles.componentLabel}>HelpTooltip</div>
-            <div className={styles.componentPreviewRow}>
-              <div className={styles.componentVariant}>
-                <span className={styles.variantLabel}>Top Right (default)</span>
-                <div style={{ position: 'relative', width: '40px', height: '40px' }}>
-                  <HelpTooltip 
-                    content="This is helpful information that appears when you click the icon. It can contain detailed explanations." 
-                    position="top-right"
-                  />
-                </div>
-              </div>
-              <div className={styles.componentVariant}>
-                <span className={styles.variantLabel}>Bottom Right</span>
-                <div style={{ position: 'relative', width: '40px', height: '40px' }}>
-                  <HelpTooltip 
-                    content="Tooltips can be positioned in different corners for optimal visibility." 
-                    position="bottom-right"
-                  />
-                </div>
-              </div>
-            </div>
-            <div className={styles.componentMeta}>
-              <code>components/help-tooltip/HelpTooltip.tsx</code>
             </div>
           </div>
         </section>
@@ -921,23 +784,8 @@ export default function StyleGuidePage() {
               path="components/book-card" 
               description="Library book display card"
             />
-            <ComponentIndexItem 
-              name="EventCard" 
-              path="components/event-card" 
-              description="Event listing with registration"
-            />
-            <ComponentIndexItem 
-              name="LibraryCard" 
-              path="components/library-card" 
-              description="IPFS library navigation card"
-            />
-            <ComponentIndexItem 
-              name="NewsletterCard" 
-              path="components/newsletter-card" 
-              description="Newsletter subscription card"
-            />
-            <ComponentIndexItem 
-              name="ProposalCard" 
+            <ComponentIndexItem
+              name="ProposalCard"
               path="components/proposal-card" 
               description="Governance proposal display"
             />
@@ -961,13 +809,8 @@ export default function StyleGuidePage() {
               path="components/treasury-display" 
               description="Treasury balance widget"
             />
-            <ComponentIndexItem 
-              name="HelpTooltip" 
-              path="components/help-tooltip" 
-              description="Contextual help tooltip"
-            />
-            <ComponentIndexItem 
-              name="ImpactSnapshot" 
+            <ComponentIndexItem
+              name="ImpactSnapshot"
               path="components/impact-snapshot" 
               description="User impact metrics display"
             />

@@ -284,20 +284,27 @@
 .shadowCard {
   background: white;
   padding: 2rem;
-  border-radius: 12px;
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 0.375rem;
   text-align: center;
   min-height: 140px;
 }
 
 .shadowLabel {
-  font-family: var(--font-button);
-  font-size: 0.75rem;
+  font-family: var(--font-secondary);
+  font-size: 0.875rem;
+  font-weight: 600;
   color: var(--color-text-dark);
-  margin-top: 0.5rem;
+}
+
+.shadowMeta {
+  font-family: var(--font-button);
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
 }
 
 /* Breakpoints */
@@ -576,54 +583,198 @@
   gap: 1.5rem;
 }
 
-.exampleCard {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 16px color-mix(in oklch, var(--color-primary) 8%, transparent);
-  padding: 1.5rem;
-  border: 0.5px solid rgba(0, 0, 0, 0.08);
-  transition: box-shadow 250ms cubic-bezier(0.25, 1, 0.5, 1), transform 250ms cubic-bezier(0.25, 1, 0.5, 1);
+/* ── Course card (mirrors app/courses/page.module.css .courseCard) ── */
+.courseCardDemo {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface-base, #fff);
+  border: 2px solid var(--color-primary-hover);
+  border-radius: 12px;
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    0 0px 10px rgba(0, 0, 0, 0.14),
+    0 10px 5px rgba(0, 0, 0, 0.30);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
 }
 
-.exampleCard:hover {
-  box-shadow: 0 8px 24px color-mix(in oklch, var(--color-primary) 15%, transparent);
-  transform: translateY(-2px);
+.courseCardDemo:hover {
+  transform: translateY(-1px);
+  border-color: var(--color-primary);
 }
 
-.cardMentalHealth {
-  border-left: 4px solid #9B7ED9;
+.courseCardDemoHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-base));
+  border-bottom: 2px solid var(--color-primary-hover);
 }
 
-.cardProductivity {
-  border-left: 4px solid var(--color-primary);
+.courseCardDemoKanji,
+.courseCardDemoHeaderTitle {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
 }
 
-.cardWealth {
-  border-left: 4px solid #62BE8F;
+.courseCardDemoHeaderTitle {
+  color: #2a2f52;
 }
 
-.cardCategory {
-  font-family: var(--font-button);
-  font-size: 0.625rem;
+.courseCardDemoThumb {
+  width: 100%;
+  height: 110px;
+  background-image: linear-gradient(135deg, var(--color-primary) 0%, #9b7ed9 55%, #e85d3a 120%);
+}
+
+.courseCardDemoBody {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.courseCardDemoCategory {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-primary);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  margin-bottom: 0.5rem;
 }
 
-.cardTitle {
+.courseCardDemoTitle {
   font-family: var(--font-secondary);
-  font-size: 1.125rem;
+  font-size: 20px;
+  font-weight: 800;
+  color: #1A1D33;
+  line-height: 1.2;
+}
+
+.courseCardDemoDesc {
+  font-family: var(--font-secondary);
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(26, 29, 51, 0.6);
+  line-height: 1.5;
+}
+
+/* ── Task row (mirrors components/course-studio/WeekCanvas.module.css .card) ── */
+.taskCardDemo {
+  --comp-accent: var(--color-primary);
+  position: relative;
+  width: 100%;
+  height: fit-content;
+  display: grid;
+  grid-template-columns: 20px 3px 48px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px 14px 6px;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--comp-accent) 22%, rgba(26, 29, 51, 0.06));
+  background: color-mix(in srgb, var(--comp-accent) 7%, #ffffff);
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.taskCardDemo:hover {
+  background: color-mix(in srgb, var(--comp-accent) 11%, #ffffff);
+  border-color: color-mix(in srgb, var(--comp-accent) 38%, rgba(26, 29, 51, 0.06));
+  box-shadow: 0 4px 16px color-mix(in oklch, var(--comp-accent) 14%, transparent);
+  transform: translateY(-1px);
+}
+
+.taskCardDemoHandle {
+  color: var(--color-text-faint, var(--color-text-muted));
+}
+
+.taskCardDemoAccent {
+  width: 3px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--comp-accent);
+  opacity: 0.85;
+}
+
+.taskCardDemoArtwork {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #9b7ed9 55%, #e85d3a 120%);
+  box-shadow:
+    0 0 0 1px color-mix(in oklch, var(--comp-accent) 20%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.taskCardDemoInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.taskCardDemoType {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-primary);
+}
+
+.taskCardDemoTitle {
+  font-family: var(--font-secondary);
+  font-size: 0.9375rem;
   font-weight: 600;
   color: var(--color-text-dark);
-  margin-bottom: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.cardDescription {
+/* ── Top nav pill (mirrors components/top-navigation/TopNavigation.module.css .navLink) ── */
+.topNavPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 18px;
+  border-radius: 9999px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 5%, transparent);
+  box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 22%, transparent);
   font-family: var(--font-primary);
-  font-weight: 300;
-  font-size: 0.875rem;
-  color: var(--color-text-muted);
-  line-height: 1.5;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-soft, var(--color-text-dark));
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+}
+
+.topNavPill:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 45%, transparent);
+  color: var(--color-primary);
+}
+
+.topNavPillActive {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+  box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 40%, transparent);
+}
+
+.topNavPill:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: color-mix(in oklch, var(--color-primary) 18%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 3%, transparent);
 }
 
 /* Component Showcase */

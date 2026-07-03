@@ -882,7 +882,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
             <div className={styles.footerLinksRow}>
               <Link href="/guidebook" className={styles.footerLink}>Guidebook</Link>
               <span className={styles.footerDot}>•</span>
-              <a href="https://github.com/Mental-Wealth-Academy/platform/commits/main/" target="_blank" rel="noopener noreferrer" className={`${styles.footerLink} ${styles.changelogLink}`}>Changelog</a>
+              <Link href="/style-guide" className={`${styles.footerLink} ${styles.changelogLink}`}>Style Guide</Link>
             </div>
             <div className={styles.footerLinksRow}>
               <span className={styles.footerLink} style={{ pointerEvents: 'none', cursor: 'default' }}>Terms</span>

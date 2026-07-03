@@ -49,6 +49,7 @@ export default function CoursesPage() {
   const [academyCourses, setAcademyCourses] = useState<CourseRecord[]>([]);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [isVip, setIsVip] = useState(false);
 
   useEffect(() => {
     fetch('/api/users/lookup?username=Espeon')
@@ -106,6 +107,14 @@ export default function CoursesPage() {
     loadAuthoredCourses();
     loadCommunityCourses();
   }, [ready, loadPersonalCourse, loadCommunityCourses]);
+
+  useEffect(() => {
+    if (!ready || !authenticated) return;
+    fetch('/api/account/status')
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => setIsVip(d?.hasVipMembershipCard ?? false))
+      .catch(() => setIsVip(false));
+  }, [ready, authenticated]);
 
   useEffect(() => onPersonalCourseUpdated(loadPersonalCourse), [loadPersonalCourse]);
 
@@ -317,7 +326,7 @@ export default function CoursesPage() {
           </div>
         ))}
 
-        {authenticated && (
+        {authenticated && isVip && (
           <Link href="/course-builder" className={styles.createCourseBtn}>
             <span className={styles.createCourseIcon}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

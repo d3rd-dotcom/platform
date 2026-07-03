@@ -1,14 +1,12 @@
 import { getCurrentUserFromRequestCookie } from './auth';
 import { getVipCourseById } from './vip-course-db';
+import { walletHoldsVipMembershipCard } from './vip-membership-card';
 
 /**
  * Returns the authenticated user's ID.
  *
  * In development the auth check can be skipped by setting:
  *   DEV_BYPASS_AUTH=true    (no mock — just passes through)
- *
- * The VIP membership card check was removed in a prior commit
- * so all authenticated users can create courses for A/B testing.
  */
 export async function assertCourseUser(): Promise<string> {
   const bypass = process.env.DEV_BYPASS_AUTH;
@@ -20,6 +18,12 @@ export async function assertCourseUser(): Promise<string> {
   if (!user) {
     throw Object.assign(new Error('Sign in to access courses.'), { status: 401 });
   }
+
+  const isVip = await walletHoldsVipMembershipCard(user.walletAddress);
+  if (!isVip) {
+    throw Object.assign(new Error('A VIP membership is required to create courses.'), { status: 403 });
+  }
+
   return user.id;
 }
 
