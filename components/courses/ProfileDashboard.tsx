@@ -7,6 +7,7 @@ import Link from 'next/link';
 import AvatarSelectorModal from '@/components/avatar-selector/AvatarSelectorModal';
 import UsernameChangeModal from '@/components/username-change/UsernameChangeModal';
 import { QUEST_DEFINITIONS, type QuestDefinition } from '@/lib/quest-definitions';
+import { useSound } from '@/hooks/useSound';
 import styles from './ProfileDashboard.module.css';
 
 /* Level curve: quadratic on diamonds so early levels come fast.
@@ -15,20 +16,33 @@ function levelFromDiamonds(diamonds: number): number {
   return Math.floor(Math.sqrt(Math.max(0, diamonds) / 25)) + 1;
 }
 
+/* Accolade titles earned by diamond count */
+const ACCOLADES: Array<[number, string]> = [
+  [5000, 'Infinite Potential'],
+  [2000, 'Digital Alchemist'],
+  [1000, 'Dream Architect'],
+  [400, 'Mind Cartographer'],
+  [100, 'Field Scholar'],
+  [0, 'Curious Seeker'],
+];
+
+function accoladeFromDiamonds(diamonds: number): string {
+  return ACCOLADES.find(([min]) => diamonds >= min)?.[1] ?? 'Curious Seeker';
+}
+
 interface ProfileDashboardProps {
   bannerUrl?: string | null;
   coursesCount?: number;
-  headline?: string;
-  description?: string;
+  bio?: string | null;
 }
 
 export default function ProfileDashboard({
   bannerUrl,
   coursesCount = 0,
-  headline = 'Digital Alchemist!',
-  description = 'Explore the land beyond the ideas of builders, the future, and seekers of infinite potential!',
+  bio = null,
 }: ProfileDashboardProps) {
   const { ready, authenticated, getAccessToken } = usePrivy();
+  const { play } = useSound();
   const [username, setUsername] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [diamonds, setDiamonds] = useState(0);
@@ -104,7 +118,11 @@ export default function ProfileDashboard({
         type="button"
         className={styles.avatar}
         style={avatarUrl ? { backgroundImage: `url(${JSON.stringify(avatarUrl)})` } : undefined}
-        onClick={() => authenticated && setEditingAvatar(true)}
+        onClick={() => {
+          play('click');
+          authenticated && setEditingAvatar(true);
+        }}
+        onMouseEnter={() => play('soft-hover')}
         title={authenticated ? 'Change avatar' : undefined}
         aria-label="Change avatar"
       >
@@ -118,7 +136,11 @@ export default function ProfileDashboard({
             <button
               type="button"
               className={styles.editBtn}
-              onClick={() => setEditingUsername(true)}
+              onClick={() => {
+                play('click');
+                setEditingUsername(true);
+              }}
+              onMouseEnter={() => play('soft-hover')}
               title="Edit username"
               aria-label="Edit username"
             >
@@ -131,8 +153,14 @@ export default function ProfileDashboard({
       </div>
 
       <div className={styles.about}>
-        <span className={styles.headline}>{headline}</span>
-        <p className={styles.description}>{description}</p>
+        <span className={styles.headline}>{accoladeFromDiamonds(diamonds)}</span>
+        {bio ? (
+          <p className={styles.description}>{bio}</p>
+        ) : (
+          <p className={`${styles.description} ${styles.bioPlaceholder}`}>
+            Your bio lives here — tell the Academy who you are and what you are exploring.
+          </p>
+        )}
       </div>
 
       <div className={styles.statsRow}>
@@ -157,8 +185,16 @@ export default function ProfileDashboard({
       <div className={styles.mission}>
         <span className={styles.missionHeading}>Current Quest</span>
         {currentQuest ? (
-          <Link href="/quests" className={styles.missionCard}>
-            <span className={styles.questPoints}>+{currentQuest.points}</span>
+          <Link
+            href="/quests"
+            className={styles.missionCard}
+            onMouseEnter={() => play('hover')}
+            onClick={() => play('click')}
+          >
+            <span className={styles.questPoints}>
+              <img src="/icons/ui-diamond.svg" alt="" className={styles.questDiamond} />
+              {currentQuest.points}
+            </span>
             <span className={styles.questBody}>
               <span className={styles.questTitle}>{currentQuest.title}</span>
               <span className={styles.questDesc}>{currentQuest.desc}</span>
@@ -177,23 +213,29 @@ export default function ProfileDashboard({
       <div className={styles.badges}>
         <span className={styles.missionHeading}>Badges</span>
         <div className={styles.badgeRow}>
-          <div className={`${styles.badge} ${hasAngel ? '' : styles.badgeLocked}`}>
+          <div
+            className={`${styles.badge} ${hasAngel ? '' : styles.badgeLocked}`}
+            onMouseEnter={() => play('soft-hover')}
+          >
             <span
               className={styles.badgeArt}
-              style={{ backgroundImage: "url('/academic-angels.webp')" }}
+              style={{ backgroundImage: "url('/images/shop/access-keycard.webp')" }}
             />
             <span className={styles.badgeInfo}>
-              <span className={styles.badgeName}>Academic Angel</span>
+              <span className={styles.badgeName}>Membership</span>
               <span className={styles.badgeState}>{hasAngel ? 'Held' : 'Locked'}</span>
             </span>
           </div>
-          <div className={`${styles.badge} ${hasVip ? '' : styles.badgeLocked}`}>
+          <div
+            className={`${styles.badge} ${hasVip ? '' : styles.badgeLocked}`}
+            onMouseEnter={() => play('soft-hover')}
+          >
             <span
-              className={styles.badgeArt}
+              className={`${styles.badgeArt} ${styles.badgeArtCard}`}
               style={{ backgroundImage: "url('/uploads/vip-membership-card.png')" }}
             />
             <span className={styles.badgeInfo}>
-              <span className={styles.badgeName}>VIP Member</span>
+              <span className={styles.badgeName}>Soul Key</span>
               <span className={styles.badgeState}>{hasVip ? 'Held' : 'Locked'}</span>
             </span>
           </div>

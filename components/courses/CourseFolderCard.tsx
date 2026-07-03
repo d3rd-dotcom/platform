@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useSound } from '@/hooks/useSound';
 import styles from './CourseFolderCard.module.css';
 
 const FOLDER_PATH =
@@ -23,9 +24,15 @@ export default function CourseFolderCard({
   ctaLabel = 'Start Course',
 }: CourseFolderCardProps) {
   const slots = images.slice(0, 4);
+  const { play } = useSound();
 
   return (
-    <Link href={href} className={styles.folder}>
+    <Link
+      href={href}
+      className={styles.folder}
+      onMouseEnter={() => play('soft-hover')}
+      onClick={() => play('click')}
+    >
       {/* Folder body fill */}
       <svg className={styles.shape} viewBox="0 0 474 330" preserveAspectRatio="none" aria-hidden="true">
         <path d={FOLDER_PATH} className={styles.shapeFill} />
@@ -69,7 +76,13 @@ export default function CourseFolderCard({
       </div>
 
       {/* CTA */}
-      <span className={styles.ctaOuter}>
+      <span
+        className={styles.ctaOuter}
+        onMouseEnter={(e) => {
+          e.stopPropagation();
+          play('hover');
+        }}
+      >
         <span className={styles.ctaInner}>{ctaLabel}</span>
       </span>
     </Link>
