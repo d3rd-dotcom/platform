@@ -6,7 +6,9 @@ import { PencilSimple } from '@phosphor-icons/react';
 import Link from 'next/link';
 import AvatarSelectorModal from '@/components/avatar-selector/AvatarSelectorModal';
 import UsernameChangeModal from '@/components/username-change/UsernameChangeModal';
+import { useAccount } from 'wagmi';
 import { QUEST_DEFINITIONS, type QuestDefinition } from '@/lib/quest-definitions';
+import { fetchDiamondBalance } from '@/lib/diamonds-balance';
 import { useSound } from '@/hooks/useSound';
 import styles from './ProfileDashboard.module.css';
 
@@ -32,22 +34,30 @@ function accoladeFromDiamonds(diamonds: number): string {
 
 type PanelTab = 'badges' | 'courses' | 'certificates';
 
+export interface PanelCourse {
+  title: string;
+  href: string;
+  progressPct: number;
+}
+
 interface ProfileDashboardProps {
   bannerUrl?: string | null;
-  coursesCount?: number;
+  courses?: PanelCourse[];
   bio?: string | null;
 }
 
 export default function ProfileDashboard({
   bannerUrl,
-  coursesCount = 0,
+  courses = [],
   bio = null,
 }: ProfileDashboardProps) {
   const { ready, authenticated, getAccessToken } = usePrivy();
+  const { address } = useAccount();
   const { play } = useSound();
   const [username, setUsername] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [diamonds, setDiamonds] = useState(0);
+  const [creditDiamonds, setCreditDiamonds] = useState(0);
+  const [chainDiamonds, setChainDiamonds] = useState<number | null>(null);
   const [streak, setStreak] = useState(0);
   const [hasVip, setHasVip] = useState(false);
   const [hasAngel, setHasAngel] = useState(false);
@@ -69,7 +79,7 @@ export default function ProfileDashboard({
       if (data?.user) {
         setUsername(data.user.username ?? null);
         setAvatarUrl(data.user.avatarUrl ?? null);
-        setDiamonds(data.user.shardCount ?? 0);
+        setCreditDiamonds(data.user.shardCount ?? 0);
       }
     } catch { /* ignore */ }
   }, [authHeaders]);
@@ -108,6 +118,18 @@ export default function ProfileDashboard({
     if (ready && !authenticated) setCurrentQuest(QUEST_DEFINITIONS[0]);
   }, [ready, authenticated]);
 
+  // Chain is the source of truth for diamonds: prefer the live $BLUE balance
+  // over the in-app mirror whenever the wallet reads successfully.
+  useEffect(() => {
+    if (!address) return;
+    let cancelled = false;
+    fetchDiamondBalance(address).then((balance) => {
+      if (!cancelled && balance !== null) setChainDiamonds(balance);
+    });
+    return () => { cancelled = true; };
+  }, [address]);
+
+  const diamonds = chainDiamonds ?? creditDiamonds;
   const level = levelFromDiamonds(diamonds);
   const badgesHeld = (hasAngel ? 1 : 0) + (hasVip ? 1 : 0);
 
@@ -186,8 +208,8 @@ export default function ProfileDashboard({
           <span className={styles.statLabel}>Diamonds</span>
         </div>
         <div className={styles.stat}>
-          <span className={styles.statValue}>{coursesCount}</span>
-          <span className={styles.statLabel}>{coursesCount === 1 ? 'Course' : 'Courses'}</span>
+          <span className={styles.statValue}>{courses.length}</span>
+          <span className={styles.statLabel}>{courses.length === 1 ? 'Course' : 'Courses'}</span>
         </div>
         <div className={styles.stat}>
           <span className={styles.statValue}>{badgesHeld}</span>
@@ -264,20 +286,55 @@ export default function ProfileDashboard({
       {tab === 'courses' && (
         <div className={styles.badges}>
           <span className={styles.missionHeading}>Courses</span>
-          <div className={styles.tabPanel}>
-            {coursesCount > 0
-              ? `You have access to ${coursesCount} ${coursesCount === 1 ? 'course' : 'courses'} — they are listed on the left. Progress carries the moment you start one.`
-              : 'No courses yet. Start with Shadow Work on the left.'}
-          </div>
+          {courses.length > 0 ? (
+            <div className={styles.courseList}>
+              {courses.map((c) => (
+                <Link
+                  key={c.href}
+                  href={c.href}
+                  className={styles.courseRow}
+                  onMouseEnter={() => play('soft-hover')}
+                  onClick={() => play('click')}
+                >
+                  <span className={styles.courseRowTop}>
+                    <span className={styles.courseRowTitle}>{c.title}</span>
+                    <span className={styles.courseRowPct}>{Math.round(c.progressPct)}%</span>
+                  </span>
+                  <span className={styles.courseRowTrack}>
+                    <span className={styles.courseRowFill} style={{ width: `${Math.min(100, Math.max(0, c.progressPct))}%` }} />
+                  </span>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className={styles.tabPanel}>No courses yet. Start with Shadow Work on the left.</div>
+          )}
         </div>
       )}
 
       {tab === 'certificates' && (
         <div className={styles.badges}>
           <span className={styles.missionHeading}>Certificates</span>
-          <div className={styles.tabPanel}>
-            No certificates yet. Finish a full course to earn your first one.
-          </div>
+          {courses.length > 0 ? (
+            <div className={styles.courseList}>
+              {courses.map((c) => {
+                const earned = c.progressPct >= 100;
+                return (
+                  <div key={c.href} className={`${styles.certRow} ${earned ? '' : styles.certLocked}`}>
+                    <span className={styles.certSealMark}>{earned ? '✓' : ''}</span>
+                    <span className={styles.certInfo}>
+                      <span className={styles.courseRowTitle}>{c.title}</span>
+                      <span className={styles.certState}>
+                        {earned ? 'Earned — minting coming soon' : `Complete ${c.title} to earn this certificate`}
+                      </span>
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className={styles.tabPanel}>No certificates yet. Finish a full course to earn your first one.</div>
+          )}
         </div>
       )}
 

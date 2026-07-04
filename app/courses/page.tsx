@@ -51,6 +51,7 @@ export default function CoursesPage() {
   const [deleting, setDeleting] = useState(false);
   const [isVip, setIsVip] = useState(false);
   const [fieldNotesOpen, setFieldNotesOpen] = useState(false);
+  const [noteCount, setNoteCount] = useState(0);
 
   useEffect(() => {
     fetch('/api/course-content')
@@ -106,6 +107,11 @@ export default function CoursesPage() {
       .then((r) => r.ok ? r.json() : null)
       .then((d) => setIsVip(d?.hasVipMembershipCard ?? false))
       .catch(() => setIsVip(false));
+
+    fetch('/api/daily-notes/count', { credentials: 'include' })
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => setNoteCount(d?.count ?? 0))
+      .catch(() => setNoteCount(0));
   }, [ready, authenticated]);
 
   useEffect(() => onPersonalCourseUpdated(loadPersonalCourse), [loadPersonalCourse]);
@@ -144,6 +150,16 @@ export default function CoursesPage() {
     }
   };
 
+  const shadowStats = communityCourses.find((c) => c.slug === 'creative-healing');
+  const panelCourses = [
+    { title: 'Shadow Work', href: '/shadow-work', progressPct: shadowStats?.viewerProgressPct ?? 0 },
+    ...(personalCourse ? [{ title: personalCourse.title, href: '/course/personal', progressPct: 0 }] : []),
+    ...communityCourses
+      .filter((c) => c.slug !== 'creative-healing')
+      .map((c) => ({ title: c.title, href: `/course/${c.slug}`, progressPct: c.viewerProgressPct })),
+    ...academyCourses.map((c) => ({ title: c.title, href: `/course/${c.slug}`, progressPct: 0 })),
+  ];
+
   return (
     <div className={styles.layout}>
       <SideNavigation />
@@ -153,7 +169,7 @@ export default function CoursesPage() {
         <div className={styles.folderRow}>
           <CourseFolderCard
             title="Shadow Work"
-            count={13}
+            count={12}
             href="/shadow-work"
             images={[
               '/uploads/course-shadow-work.jpg',
@@ -164,7 +180,7 @@ export default function CoursesPage() {
           />
           <CourseFolderCard
             title="Your Field Notes"
-            count={13}
+            count={noteCount}
             onOpen={() => setFieldNotesOpen(true)}
             images={[]}
             ctaLabel="View Notes"
@@ -355,9 +371,7 @@ export default function CoursesPage() {
       </div>
 
       <aside className={styles.aside}>
-        <ProfileDashboard
-          coursesCount={1 + communityCourses.length + academyCourses.length + (personalCourse ? 1 : 0)}
-        />
+        <ProfileDashboard courses={panelCourses} />
       </aside>
       </main>
 

@@ -47,6 +47,115 @@
   color: #55565b;
 }
 
+.courseList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.courseRow {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid #d6cfdf;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.courseRow:hover {
+  transform: translateY(-1px);
+  border-color: #94a1ff;
+}
+
+.courseRowTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.courseRowTitle {
+  font-family: var(--font-secondary);
+  font-weight: var(--font-weight-semibold);
+  font-size: 0.85rem;
+  color: #2c2b3a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.courseRowPct {
+  font-family: var(--font-secondary);
+  font-weight: var(--font-weight-bold);
+  font-size: 0.78rem;
+  color: #5168ff;
+  flex-shrink: 0;
+}
+
+.courseRowTrack {
+  height: 6px;
+  border-radius: 999px;
+  background: #e3e6f5;
+  overflow: hidden;
+}
+
+.courseRowFill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(to right, #5168ff, #7c8bff);
+}
+
+.certRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid #d6cfdf;
+  border-radius: 10px;
+}
+
+.certLocked {
+  opacity: 0.6;
+}
+
+.certSealMark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1.5px dashed #94a1ff;
+  background: #f4f5fe;
+  font-family: var(--font-secondary);
+  font-weight: var(--font-weight-bold);
+  font-size: 0.9rem;
+  color: #5168ff;
+}
+
+.certRow:not(.certLocked) .certSealMark {
+  border-style: solid;
+  background: #5168ff;
+  color: #f6f8ed;
+}
+
+.certInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.certState {
+  font-family: var(--font-secondary);
+  font-size: 0.72rem;
+  color: #8a8da0;
+}
+
 .panel {
   --panel-blue: #5168ff;
   position: relative;
