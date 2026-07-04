@@ -2,11 +2,19 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
+import { useAccount } from 'wagmi';
+import { Contract, providers, utils } from 'ethers';
 import { CaretLeft, CaretRight, LockSimple, X } from '@phosphor-icons/react';
+import { ensureBaseChain, type Eip1193Provider } from '@/lib/ensure-base-chain';
 import { useSound } from '@/hooks/useSound';
 import styles from './FieldNotesSheet.module.css';
 
 const UNSEAL_COST = 400;
+const BURN_ADDRESS = '0x000000000000000000000000000000000000dEaD';
+const DIAMONDS_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_DIAMONDS_TOKEN_ADDRESS || '';
+const ERC20_TRANSFER_ABI = ['function transfer(address to, uint256 amount) returns (bool)'];
+
+type UnsealPhase = 'idle' | 'burning' | 'verifying';
 
 interface UnsealedNote {
   date: string;
@@ -39,10 +47,11 @@ function cipherLine(seed: number, length: number): string {
 
 export default function FieldNotesSheet({ onClose }: FieldNotesSheetProps) {
   const { authenticated } = usePrivy();
+  const { isConnected, connector } = useAccount();
   const { play } = useSound();
   const [notes, setNotes] = useState<UnsealedNote[] | null>(null);
   const [page, setPage] = useState(0);
-  const [unsealing, setUnsealing] = useState(false);
+  const [phase, setPhase] = useState<UnsealPhase>('idle');
   const [error, setError] = useState<string | null>(null);
 
   const cipherLines = useMemo(
@@ -62,7 +71,7 @@ export default function FieldNotesSheet({ onClose }: FieldNotesSheetProps) {
   }, [notes, onClose]);
 
   const unseal = async () => {
-    if (unsealing) return;
+    if (phase !== 'idle') return;
     play('click');
     setError(null);
 
@@ -70,16 +79,42 @@ export default function FieldNotesSheet({ onClose }: FieldNotesSheetProps) {
       setError('Sign in to unseal your field notes.');
       return;
     }
+    if (!isConnected || !connector) {
+      setError('Connect a wallet to burn diamonds.');
+      return;
+    }
+    if (!DIAMONDS_TOKEN_ADDRESS) {
+      setError('Diamonds token is not configured.');
+      return;
+    }
 
-    setUnsealing(true);
+    setPhase('burning');
     try {
-      const res = await fetch('/api/daily-notes/unseal', { method: 'POST', credentials: 'include' });
+      // Burn: a real ERC-20 transfer of $BLUE to the dead address on Base,
+      // signed by the user's wallet. The server verifies before unsealing.
+      const eip1193 = (await connector.getProvider()) as Eip1193Provider;
+      await ensureBaseChain(eip1193);
+      const web3Provider = new providers.Web3Provider(eip1193 as providers.ExternalProvider);
+      const signer = web3Provider.getSigner();
+      const token = new Contract(DIAMONDS_TOKEN_ADDRESS, ERC20_TRANSFER_ABI, signer);
+      const tx = await token.transfer(BURN_ADDRESS, utils.parseUnits(String(UNSEAL_COST), 18));
+      await tx.wait(1);
+
+      setPhase('verifying');
+      const res = await fetch('/api/daily-notes/unseal', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ txHash: tx.hash }),
+      });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        if (data?.error === 'insufficient_shards') {
-          setError(`Not enough diamonds — unsealing costs ${UNSEAL_COST}.`);
-        } else if (data?.error === 'no_notes') {
+        if (data?.error === 'no_notes') {
           setError('No field notes yet. Write a daily note first.');
+        } else if (data?.error === 'burn_not_verified') {
+          setError('The burn could not be verified on Base. Try again in a moment.');
+        } else if (data?.error === 'tx_already_used') {
+          setError('That burn was already redeemed.');
         } else {
           setError('Could not unseal your notes. Try again.');
         }
@@ -87,10 +122,16 @@ export default function FieldNotesSheet({ onClose }: FieldNotesSheetProps) {
       }
       setNotes(data.notes ?? []);
       setPage(0);
-    } catch {
-      setError('Could not unseal your notes. Try again.');
+    } catch (err: any) {
+      if (err?.code === 4001 || err?.code === 'ACTION_REJECTED') {
+        setError('Burn cancelled in wallet.');
+      } else if (err?.code === 'CALL_EXCEPTION' || err?.code === 'UNPREDICTABLE_GAS_LIMIT') {
+        setError(`Not enough diamonds — unsealing burns ${UNSEAL_COST} $BLUE.`);
+      } else {
+        setError(err?.message?.includes('Base') ? err.message : 'Could not complete the burn. Try again.');
+      }
     } finally {
-      setUnsealing(false);
+      setPhase('idle');
     }
   };
 
@@ -127,18 +168,22 @@ export default function FieldNotesSheet({ onClose }: FieldNotesSheetProps) {
                 </span>
                 <span className={styles.sealedTitle}>Field Notes — Sealed</span>
                 <span className={styles.sealedSub}>
-                  Your daily notes are encrypted at rest. Unseal them for this sitting; they re-seal when you close the sheet.
+                  Your daily notes are encrypted at rest. Burning {UNSEAL_COST} diamonds unseals them for this sitting; they re-seal when you close the sheet.
                 </span>
                 <button
                   type="button"
                   className={styles.unsealOuter}
                   onClick={unseal}
                   onMouseEnter={() => play('hover')}
-                  disabled={unsealing}
+                  disabled={phase !== 'idle'}
                 >
                   <span className={styles.unsealInner}>
                     <img src="/icons/ui-diamond.svg" alt="" className={styles.unsealDiamond} />
-                    {unsealing ? 'Unsealing…' : `Unseal for ${UNSEAL_COST}`}
+                    {phase === 'burning'
+                      ? 'Burning…'
+                      : phase === 'verifying'
+                        ? 'Verifying…'
+                        : `Burn ${UNSEAL_COST} to unseal`}
                   </span>
                 </button>
                 {error && <span className={styles.error}>{error}</span>}
