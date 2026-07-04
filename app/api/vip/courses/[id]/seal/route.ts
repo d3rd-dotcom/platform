@@ -7,7 +7,10 @@ import { deliverDiamondsOnchain } from '@/lib/diamonds-onchain';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const SEAL_REWARD = 200;
+// Kept in line with the main pathway week seal: the prestige is the sealed
+// week itself, not the token. A small, fixed diamond bonus on top of the
+// 50-per-task rewards.
+const SEAL_REWARD = 100;
 
 export async function POST(request: Request, { params }: { params: { id: string } }) {
   if (!isDbConfigured()) {

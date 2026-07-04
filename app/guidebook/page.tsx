@@ -879,7 +879,7 @@ export default function GuidebookPage() {
           rows={[
             ['Complete a course mission or task', '50 Diamonds'],
             ['Seal a course week', '200 Diamonds'],
-            ['Seal a field-notes week', '700 Diamonds'],
+            ['Seal a field-notes week', '100 Diamonds'],
             ['Complete a custom quest', 'Varies — paid from Blue&apos;s stash'],
             ['Maintain writing streaks', 'Bonus Diamonds'],
           ]}

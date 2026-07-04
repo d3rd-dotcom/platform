@@ -140,7 +140,7 @@ export default function WeekTasksView({
   const [sealStep, setSealStep] = useState<'confirm' | 'sealing'>('confirm');
   const [showSealModal, setShowSealModal] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
-  const [shardsAwarded, setShardsAwarded] = useState(700);
+  const [shardsAwarded, setShardsAwarded] = useState(100);
   const [showRewardAnimation, setShowRewardAnimation] = useState(false);
   const [showMissionReward, setShowMissionReward] = useState(false);
   const [missionRewardKey, setMissionRewardKey] = useState(0);
@@ -384,7 +384,7 @@ export default function WeekTasksView({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Seal failed');
       setSealTxHash(data.txHash ?? null);
-      setShardsAwarded(typeof data.shardsAwarded === 'number' ? data.shardsAwarded : 700);
+      setShardsAwarded(typeof data.shardsAwarded === 'number' ? data.shardsAwarded : 100);
       setIsSealed(true);
       // Collapse whatever task module was open so the user lands on the
       // celebration rather than a now-locked editor.

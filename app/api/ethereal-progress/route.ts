@@ -9,10 +9,16 @@ import { getVipCourseFullBySlug } from '@/lib/vip-course-db';
 
 const PATHWAY_COURSE_SLUG = 'creative-healing';
 
+// The prestige of sealing a week is the achievement itself — the seal, the
+// streak, the completion badge — not the token grant. $BLUE is a fun, spendable
+// currency, so the seal pays a small, fixed diamond bonus on top of the 50-per
+// -task rewards rather than dominating emission.
+const SEAL_REWARD = 100;
+
 /**
  * The task sections of a pathway week, straight from the course content —
  * the same components the reader renders, minus file uploads (not tasks).
- * Sealing pays 700 diamonds, so the required list must come from the server,
+ * Sealing pays a diamond bonus, so the required list must come from the server,
  * never the client.
  */
 async function getRequiredSectionIds(weekNumber: number): Promise<string[] | null> {
@@ -167,7 +173,7 @@ export async function POST(request: Request) {
 
   // ─── Seal Flow ─────────────────────────────────────────────────────
   if (seal) {
-    // A seal pays 700 diamonds, so every task section of the week must be
+    // A seal pays a diamond bonus, so every task section of the week must be
     // complete — checked against the course content, not the client's word.
     const requiredSectionIds = await getRequiredSectionIds(weekNumber);
     if (!requiredSectionIds || requiredSectionIds.length === 0) {
@@ -206,12 +212,12 @@ export async function POST(request: Request) {
         { userId: user.id, weekNumber }
       );
 
-      // Award 700 credits for sealing a week
+      // Award the seal bonus for sealing a week
       const shardRows = await sqlQueryWithClient<Array<{ shard_count: number }>>(
         client,
-        `UPDATE users SET shard_count = COALESCE(shard_count, 0) + 700 WHERE id = :userId
+        `UPDATE users SET shard_count = COALESCE(shard_count, 0) + :sealReward WHERE id = :userId
          RETURNING shard_count`,
-        { userId: user.id }
+        { userId: user.id, sealReward: SEAL_REWARD }
       );
       newShardCount = Number(shardRows[0]?.shard_count ?? 0);
 
@@ -239,7 +245,7 @@ export async function POST(request: Request) {
       walletAddress: user.walletAddress,
       source: 'field_note',
       refId: `week-${weekNumber}`,
-      amount: 700,
+      amount: SEAL_REWARD,
       delivery: 'cdp_mint',
     });
 
@@ -264,7 +270,7 @@ export async function POST(request: Request) {
       txHash: null,
       contentHash: null,
       pathwayCompleted,
-      shardsAwarded: 700,
+      shardsAwarded: SEAL_REWARD,
       shardCount: newShardCount,
     });
   }

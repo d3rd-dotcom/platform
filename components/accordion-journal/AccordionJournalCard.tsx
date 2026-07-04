@@ -792,7 +792,7 @@ export default function AccordionJournalCard({
 
         <div className={styles.cardFaceRight}>
           {!isSealed && !isLocked && (
-            <span className={styles.shardBadge} title="Earn 700 diamonds for sealing this week">
+            <span className={styles.shardBadge} title="Earn 100 diamonds for sealing this week">
               <Image src="/icons/ui-diamond.svg" alt="diamonds" width={14} height={14} />
               +700
             </span>
@@ -1021,7 +1021,7 @@ export default function AccordionJournalCard({
                     </div>
                     <div className={styles.sealSummaryItem}>
                       <span className={styles.sealSummaryLabel}>Reward</span>
-                      <span className={styles.sealSummaryValue}>+700 diamonds</span>
+                      <span className={styles.sealSummaryValue}>+100 diamonds</span>
                     </div>
                   </div>
                 </>
@@ -1056,7 +1056,7 @@ export default function AccordionJournalCard({
                     Your Week {weekNumber} creative work is now permanently attested on Base.
                   </p>
                   <div className={styles.sealReward}>
-                    <span>+700 diamonds earned</span>
+                    <span>+100 diamonds earned</span>
                   </div>
                 </div>
               )}
