@@ -6,6 +6,7 @@ import { useAccount } from 'wagmi';
 import { Contract, providers, utils } from 'ethers';
 import { CaretLeft, CaretRight, LockSimple, X } from '@phosphor-icons/react';
 import { ensureBaseChain, type Eip1193Provider } from '@/lib/ensure-base-chain';
+import { fetchDiamondBalance } from '@/lib/diamonds-balance';
 import { useSound } from '@/hooks/useSound';
 import styles from './FieldNotesSheet.module.css';
 
@@ -13,6 +14,25 @@ const UNSEAL_COST = 400;
 const BURN_ADDRESS = '0x000000000000000000000000000000000000dEaD';
 const DIAMONDS_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_DIAMONDS_TOKEN_ADDRESS || '';
 const ERC20_TRANSFER_ABI = ['function transfer(address to, uint256 amount) returns (bool)'];
+const BASE_RPC = 'https://mainnet.base.org';
+// A burn is a real user-signed tx, so the wallet needs a little Base ETH for
+// gas. Below this we warn up front instead of letting the transfer fail.
+const GAS_MIN_WEI = utils.parseEther('0.000005');
+
+/**
+ * Read the wallet's native ETH balance on Base and report whether it is too
+ * low to likely cover gas. Returns null when the read is uncertain — callers
+ * treat null as "don't block", so a flaky RPC never traps the user.
+ */
+async function readGasLow(address: string): Promise<boolean | null> {
+  try {
+    const rpc = new providers.JsonRpcProvider(BASE_RPC);
+    const wei = await rpc.getBalance(address);
+    return wei.lt(GAS_MIN_WEI);
+  } catch {
+    return null;
+  }
+}
 
 type UnsealPhase = 'idle' | 'burning' | 'verifying';
 
@@ -47,13 +67,16 @@ function cipherLine(seed: number, length: number): string {
 
 export default function FieldNotesSheet({ onClose }: FieldNotesSheetProps) {
   const { authenticated } = usePrivy();
-  const { isConnected, connector } = useAccount();
+  const { address, isConnected, connector } = useAccount();
   const { play } = useSound();
   const [notes, setNotes] = useState<UnsealedNote[] | null>(null);
   const [page, setPage] = useState(0);
   const [phase, setPhase] = useState<UnsealPhase>('idle');
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [balanceLoading, setBalanceLoading] = useState(false);
+  const [diamondBalance, setDiamondBalance] = useState<number | null>(null);
+  const [gasLow, setGasLow] = useState<boolean | null>(null);
 
   const cipherLines = useMemo(
     () => Array.from({ length: 14 }, (_, i) => cipherLine(i + 3, 34 + ((i * 7) % 12))),
@@ -71,6 +94,37 @@ export default function FieldNotesSheet({ onClose }: FieldNotesSheetProps) {
     return () => window.removeEventListener('keydown', onKey);
   }, [notes, onClose]);
 
+  // Pre-flight when the confirm dialog opens: surface the live diamond balance
+  // and flag a near-empty ETH balance before the user tries to sign. Reads are
+  // best-effort — a null result never blocks the attempt.
+  useEffect(() => {
+    if (!confirmOpen || !address) {
+      setDiamondBalance(null);
+      setGasLow(null);
+      setBalanceLoading(false);
+      return;
+    }
+    let cancelled = false;
+    setBalanceLoading(true);
+    setDiamondBalance(null);
+    setGasLow(null);
+    (async () => {
+      const [diamonds, lowGas] = await Promise.all([
+        fetchDiamondBalance(address),
+        readGasLow(address),
+      ]);
+      if (cancelled) return;
+      setDiamondBalance(diamonds);
+      setGasLow(lowGas);
+      setBalanceLoading(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [confirmOpen, address]);
+
+  const notEnoughDiamonds = diamondBalance !== null && diamondBalance < UNSEAL_COST;
+
   const unseal = async () => {
     if (phase !== 'idle') return;
     setError(null);
@@ -85,6 +139,10 @@ export default function FieldNotesSheet({ onClose }: FieldNotesSheetProps) {
     }
     if (!DIAMONDS_TOKEN_ADDRESS) {
       setError('Diamonds token is not configured.');
+      return;
+    }
+    if (notEnoughDiamonds) {
+      setError(`You need ${UNSEAL_COST} diamonds to unseal — you have ${diamondBalance}.`);
       return;
     }
 
@@ -244,6 +302,20 @@ export default function FieldNotesSheet({ onClose }: FieldNotesSheetProps) {
                 <p className={styles.confirmMessage}>
                   Burn {UNSEAL_COST} diamonds to unseal your notes? They re-seal when you close the sheet.
                 </p>
+                {balanceLoading ? (
+                  <p className={styles.confirmBalance}>Checking your balance…</p>
+                ) : diamondBalance !== null ? (
+                  <p className={`${styles.confirmBalance} ${notEnoughDiamonds ? styles.confirmBalanceLow : ''}`}>
+                    {notEnoughDiamonds
+                      ? `You have ${diamondBalance} diamonds — unsealing needs ${UNSEAL_COST}.`
+                      : `You have ${diamondBalance} diamonds.`}
+                  </p>
+                ) : null}
+                {gasLow === true && (
+                  <p className={styles.confirmHint}>
+                    You will also need a little ETH on Base to cover gas — about a few cents. The burn cannot be signed without it.
+                  </p>
+                )}
                 {error && <p className={styles.confirmError} role="alert">{error}</p>}
                 <div className={styles.confirmButtons}>
                   <button
@@ -260,7 +332,7 @@ export default function FieldNotesSheet({ onClose }: FieldNotesSheetProps) {
                     className={styles.confirmBtnBurn}
                     onClick={() => { play('click'); unseal(); }}
                     onMouseEnter={() => play('hover')}
-                    disabled={phase !== 'idle'}
+                    disabled={phase !== 'idle' || notEnoughDiamonds}
                   >
                     {phase === 'burning' ? 'Burning…' : phase === 'verifying' ? 'Verifying…' : 'Burn'}
                   </button>
