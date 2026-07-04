@@ -52,11 +52,31 @@ function getDailyMintCap(): number {
  * ethers v5 defaults EIP-1559 transactions to a 1.5 gwei priority tip —
  * roughly 200x what Base clears at — which drains Blue's gas wallet in a
  * handful of payouts. Price every write from the live base fee instead.
+ *
+ * The base-fee read is just that — a read — so it's safe to retry a few
+ * times against RPC blips, and safe to fall back to a static estimate if
+ * every attempt fails. It must never throw: a flaky read here used to abort
+ * the whole reward (see diamond_onchain_rewards rows failed on
+ * eth_getBlockByNumber SERVER_ERROR from Alchemy) even though the actual
+ * mint/transfer never got a chance to run.
  */
 async function baseFeeOverrides(provider: providers.Provider) {
-  const block = await provider.getBlock('latest');
   const priority = utils.parseUnits('0.001', 'gwei');
-  const baseFee = block.baseFeePerGas ?? utils.parseUnits('0.05', 'gwei');
+  const fallbackBaseFee = utils.parseUnits('0.05', 'gwei');
+  let baseFee = fallbackBaseFee;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const block = await provider.getBlock('latest');
+      baseFee = block.baseFeePerGas ?? fallbackBaseFee;
+      break;
+    } catch (err: any) {
+      if (attempt === 3) {
+        console.error('[diamonds] base-fee read failed 3x, using fallback gas price:', err?.message ?? err);
+      } else {
+        await new Promise((resolve) => setTimeout(resolve, 300 * attempt));
+      }
+    }
+  }
   return {
     maxPriorityFeePerGas: priority,
     maxFeePerGas: baseFee.mul(2).add(priority),
