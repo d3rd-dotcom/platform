@@ -5,60 +5,63 @@ $BLUE contract is shaped by a decision instead of by a default.
 
 ## The decision this document assumes
 
-James: "I one day see people buying/selling $BLUE on an exchange." So $BLUE is a
-**tradeable utility asset**, not a closed-loop points system. That single fact
-drives everything below — most importantly, it forces us to separate *status you
-earn* from *tokens you can buy*, because the moment $BLUE is liquid, anything
-priced in "current balance" becomes purchasable.
+Two things James has locked in:
+
+1. "I one day see people buying/selling $BLUE on an exchange." $BLUE is a
+   **tradeable utility asset**, not a closed-loop points system.
+2. The token should be **fun and expendable, not hoarded**. You earn it as fair
+   value for your time on the platform, and you *spend* it — to unseal field
+   notes, in the /shop, on games, on perks that lower what things cost you.
+   Status is explicitly **not** the point; a "who earned the most" leaderboard is
+   a popularity contest we don't want.
+
+Together these mean $BLUE is a **high-velocity spend currency**: designed to
+circulate and be burned on fun, not to accumulate as a score. That also cleanly
+removes the "buy your way to status" risk — if status never derives from the
+token, there is nothing to buy your way into.
 
 ## Three assets, three jobs
 
 | Asset | Job | Fungible? | Tradeable? | Earned or bought? |
 |---|---|---|---|---|
-| **$BLUE (Diamonds)** | Utility + reward currency. The thing you earn for doing the work and spend on unlocks. Liquid on a DEX eventually. | Yes (ERC-20) | Yes, someday (deliberate, later) | Both — earned in-app, buyable once liquid |
-| **Votes** (formerly "Cakes") | Governance. Weighting proposals, treasury allocation, market/trader-mode decisions on /trades. | Yes (ERC-20) | Governance-scoped, not a meme trade | Earned/allocated, staked to vote |
+| **$BLUE (Diamonds)** | Fun, expendable reward currency. Earn it for your time; spend it on unseal, /shop, games, perks. Liquid on a DEX eventually. | Yes (ERC-20) | Yes, someday (deliberate, later) | Both — earned in-app, buyable once liquid |
+| **Votes** (formerly "Cakes") | Governance. Weighting proposals, treasury allocation, market/trader-mode decisions on /trades. | Yes (ERC-20) | Governance-scoped, not a meme trade | Earned/allocated (no staking — see below) |
 | **Membership NFTs** — Soul Key (VIP), Academic Angel (Membership) | Access + perks + eligibility (e.g. USDC quest payouts). | No (ERC-721) | Secondary market ok | Bought / granted |
 
 $BLUE should not also try to be the governance token — that's Votes' job. Keeping
-them separate means we can make $BLUE liquid and speculative without handing
+them separate means we can make $BLUE liquid and spendable without handing
 governance weight to whoever buys the most on a DEX.
 
-## The core move: reputation is not balance
+## Reputation comes from what you did, not what you hold
 
-If level / accolade / leaderboard rank are computed from a user's **current
-$BLUE balance**, then once $BLUE is tradeable, someone can buy "Level 24 /
-Digital Alchemist." On a mental-health platform that is actively harmful — it is
-pay-to-appear-well, and it hollows out the one thing that makes the profile mean
-anything.
+$BLUE is spent, not hoarded, so it must not be the basis of status. Level,
+accolade, and leaderboard should read **achievements** — courses completed,
+weeks sealed, streak length, badges held — the prosocial things a person *did*,
+which spending your tokens never erases and buying tokens never grants.
 
-Fix: track two numbers per user.
+This is the concrete change from the current build: the profile Level and
+accolade are currently computed from the diamond balance
+(`levelFromDiamonds(balance)`), which under a spend-economy is backwards —
+spend your $BLUE on something fun and you would "lose levels." Move Level and
+accolade onto an achievement score (completions + streak + badges). No hidden
+lifetime-earned counter, no popularity race — just "here's what you've done."
 
-- **Lifetime earned ($BLUE_earned)** — a monotonic counter that only goes up, and
-  only from *doing the work* (course seals, notes, quests). Never reduced by
-  spending, never affected by buying or receiving transfers. This drives level,
-  accolade, streak, leaderboard — all reputation.
-- **Spendable balance ($BLUE on-chain)** — the ERC-20. Earned rewards mint into
-  it, sinks burn out of it, and someday it trades. This drives what you can
-  *afford*, never who you *are*.
-
-Today `users.shard_count` conflates the two. The architecture keeps them apart:
-reputation reads lifetime-earned; the burn/unseal flow reads on-chain balance
-(already true after the recent chain-balance work). Lifetime-earned can live in
-the DB now and graduate to an on-chain soulbound counter later if we want it
-verifiable.
+`users.shard_count` then becomes purely the spendable wallet, nothing more.
 
 ## What each app surface uses
 
-- **Application** (courses, field notes) — earns $BLUE (mints), spends $BLUE
-  (burn sinks: unseal, re-read, future cosmetic/boost unlocks). Reputation from
-  lifetime-earned.
-- **Trading** (/trades, treasury, markets) — this is **Votes** territory
-  (governance over treasury/markets) plus the real prediction markets. $BLUE is
-  not the trading chip here; keep speculation off the reputation asset until
-  $BLUE liquidity is switched on deliberately.
-- **Social** (community, creator courses, quests) — reputation (lifetime-earned)
-  is the legible, hard-to-fake signal. Creator payouts and quest bounties are
-  USDC / $BLUE as already built.
+- **Application** (courses, field notes) — earns $BLUE, spends it (unseal today;
+  re-reads, cosmetic unlocks, streak insurance next). Reputation from
+  achievements.
+- **Shop** (/shop) — a primary sink. Real and digital goods priced in $BLUE, and
+  $BLUE-for-discount on USDC-priced items ("fair exchange for your time" —
+  spending what you earned lowers what you pay).
+- **Games** — $BLUE as the chip in prosocial mini-games: pay-to-play sinks with
+  reward faucets. A fun, high-velocity sink category, not gambling framing.
+- **Trading** (/trades, treasury, markets) — **Votes** territory (governance)
+  plus the real prediction markets. $BLUE liquidity is a later, deliberate step.
+- **Social** (community, creator courses, quests) — reputation from achievements
+  is the legible signal. Creator payouts and quest bounties stay USDC / $BLUE.
 
 ## Functions the next $BLUE contract needs
 
@@ -76,16 +79,29 @@ Decisions the simulation should inform before we finalize:
   liquid. This is the biggest open question.
 - **Transfer timing** — $BLUE is transferable by design, but liquidity (a DEX
   pool, treasury LP) is a later, capitalized step, not day one.
-- **Soulbound earned-counter on-chain** — nice-to-have; DB is fine to start.
 
 Explicitly *not* on $BLUE: `ERC20Votes` (that's Votes), pausable/blocklist
 (centralization + optics risk on a wellness token).
 
+## Governance without staking
+
+James: staking is a complex feature regular people don't want to learn, and this
+is a gamified education app — lean prosocial and fun, not DeFi. So Votes is not
+stake-to-vote. Two no-staking options:
+
+- **Membership-gated voting** — Soul Key / treasury access already exists; hold
+  the NFT, get a vote. Simple, no new mechanic to teach.
+- **Spend-to-signal** — spend a little $BLUE or Votes to back a proposal
+  (quadratic-ish to blunt whales). Turns governance into another fun sink rather
+  than a lock-up.
+
+Leaning membership-gated for real governance, with spend-to-signal as a light
+community-polling layer. Either way: no lock-ups, no staking UI.
+
 ## Open questions for James
 
-1. Does **lifetime-earned reputation** feel right as the fix, or do you want
-   status to be spendable/at-risk (a different game)?
-2. Should **Votes** be a fresh token, or is it $BLUE staked? (Leaning fresh —
-   separation is the whole point.)
+1. Level/accolade moving to an **achievement score** (completions + streak +
+   badges) — good? And what should count, and how much each?
+2. Governance: **membership-gated**, **spend-to-signal**, or both (my lean)?
 3. When liquidity turns on, does treasury seed the pool, and with what? (Feeds
    the sim's market layer.)
