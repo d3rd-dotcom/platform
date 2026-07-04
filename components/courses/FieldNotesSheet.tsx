@@ -52,6 +52,7 @@ export default function FieldNotesSheet({ onClose }: FieldNotesSheetProps) {
   const [notes, setNotes] = useState<UnsealedNote[] | null>(null);
   const [page, setPage] = useState(0);
   const [phase, setPhase] = useState<UnsealPhase>('idle');
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const cipherLines = useMemo(
@@ -72,7 +73,6 @@ export default function FieldNotesSheet({ onClose }: FieldNotesSheetProps) {
 
   const unseal = async () => {
     if (phase !== 'idle') return;
-    play('click');
     setError(null);
 
     if (!authenticated) {
@@ -122,6 +122,7 @@ export default function FieldNotesSheet({ onClose }: FieldNotesSheetProps) {
       }
       setNotes(data.notes ?? []);
       setPage(0);
+      setConfirmOpen(false);
     } catch (err: any) {
       if (err?.code === 4001 || err?.code === 'ACTION_REJECTED') {
         setError('Burn cancelled in wallet.');
@@ -173,20 +174,15 @@ export default function FieldNotesSheet({ onClose }: FieldNotesSheetProps) {
                 <button
                   type="button"
                   className={styles.unsealOuter}
-                  onClick={unseal}
+                  onClick={() => { play('click'); setError(null); setConfirmOpen(true); }}
                   onMouseEnter={() => play('hover')}
                   disabled={phase !== 'idle'}
                 >
                   <span className={styles.unsealInner}>
                     <img src="/icons/ui-diamond.svg" alt="" className={styles.unsealDiamond} />
-                    {phase === 'burning'
-                      ? 'Burning…'
-                      : phase === 'verifying'
-                        ? 'Verifying…'
-                        : `Burn ${UNSEAL_COST} to unseal`}
+                    Unseal notes
                   </span>
                 </button>
-                {error && <span className={styles.error}>{error}</span>}
               </div>
             </div>
           ) : note ? (
@@ -222,6 +218,68 @@ export default function FieldNotesSheet({ onClose }: FieldNotesSheetProps) {
             </div>
           ) : null}
         </div>
+
+        {confirmOpen && (
+          <div
+            className={styles.confirmOverlay}
+            onClick={() => phase === 'idle' && setConfirmOpen(false)}
+          >
+            <div
+              className={styles.confirmModal}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="unseal-confirm-title"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                type="button"
+                className={styles.confirmClose}
+                onClick={() => setConfirmOpen(false)}
+                aria-label="Close burn confirmation"
+                disabled={phase !== 'idle'}
+              >
+                <X size={18} weight="bold" />
+              </button>
+
+              <div className={styles.confirmEyebrow}>Field Notes Archive</div>
+              <h3 id="unseal-confirm-title" className={styles.confirmTitle}>Burn {UNSEAL_COST} diamonds?</h3>
+
+              <p className={styles.confirmCopy}>
+                Unsealing burns {UNSEAL_COST} $BLUE from your wallet — an onchain transaction on Base you sign, and the diamonds leave supply for good. Your notes stay open for this sitting only and re-seal when you close the sheet.
+              </p>
+              <div className={styles.confirmCostRow}>
+                <span className={styles.confirmCostBadge}>
+                  <img src="/icons/ui-diamond.svg" alt="" width={16} height={16} />
+                  {UNSEAL_COST} diamonds
+                </span>
+              </div>
+              {error && <p className={styles.confirmError} role="alert">{error}</p>}
+              <div className={styles.confirmActions}>
+                <button
+                  type="button"
+                  className={styles.confirmSecondary}
+                  onClick={() => { play('click'); setConfirmOpen(false); }}
+                  disabled={phase !== 'idle'}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className={styles.confirmPrimary}
+                  onClick={() => { play('click'); unseal(); }}
+                  onMouseEnter={() => play('hover')}
+                  disabled={phase !== 'idle'}
+                >
+                  {phase === 'burning'
+                    ? 'Burning…'
+                    : phase === 'verifying'
+                      ? 'Verifying…'
+                      : `Burn ${UNSEAL_COST} diamonds`}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

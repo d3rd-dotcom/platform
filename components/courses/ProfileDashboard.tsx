@@ -30,6 +30,8 @@ function accoladeFromDiamonds(diamonds: number): string {
   return ACCOLADES.find(([min]) => diamonds >= min)?.[1] ?? 'Curious Seeker';
 }
 
+type PanelTab = 'badges' | 'courses' | 'certificates';
+
 interface ProfileDashboardProps {
   bannerUrl?: string | null;
   coursesCount?: number;
@@ -52,6 +54,7 @@ export default function ProfileDashboard({
   const [currentQuest, setCurrentQuest] = useState<QuestDefinition | null>(null);
   const [editingAvatar, setEditingAvatar] = useState(false);
   const [editingUsername, setEditingUsername] = useState(false);
+  const [tab, setTab] = useState<PanelTab>('badges');
 
   const authHeaders = useCallback(async (): Promise<HeadersInit> => {
     const token = await getAccessToken();
@@ -109,6 +112,20 @@ export default function ProfileDashboard({
   const badgesHeld = (hasAngel ? 1 : 0) + (hasVip ? 1 : 0);
 
   return (
+    <>
+    <div className={styles.tabRow}>
+      {(['badges', 'courses', 'certificates'] as const).map((t) => (
+        <button
+          key={t}
+          type="button"
+          className={`${styles.tab} ${tab === t ? styles.tabActive : ''}`}
+          onClick={() => { play('click'); setTab(t); }}
+          onMouseEnter={() => play('soft-hover')}
+        >
+          {t === 'badges' ? 'Badges' : t === 'courses' ? 'Courses' : 'Certificates'}
+        </button>
+      ))}
+    </div>
     <section className={styles.panel}>
       <div
         className={styles.banner}
@@ -210,6 +227,7 @@ export default function ProfileDashboard({
         )}
       </div>
 
+      {tab === 'badges' && (
       <div className={styles.badges}>
         <span className={styles.missionHeading}>Badges</span>
         <div className={styles.badgeRow}>
@@ -241,6 +259,27 @@ export default function ProfileDashboard({
           </div>
         </div>
       </div>
+      )}
+
+      {tab === 'courses' && (
+        <div className={styles.badges}>
+          <span className={styles.missionHeading}>Courses</span>
+          <div className={styles.tabPanel}>
+            {coursesCount > 0
+              ? `You have access to ${coursesCount} ${coursesCount === 1 ? 'course' : 'courses'} — they are listed on the left. Progress carries the moment you start one.`
+              : 'No courses yet. Start with Shadow Work on the left.'}
+          </div>
+        </div>
+      )}
+
+      {tab === 'certificates' && (
+        <div className={styles.badges}>
+          <span className={styles.missionHeading}>Certificates</span>
+          <div className={styles.tabPanel}>
+            No certificates yet. Finish a full course to earn your first one.
+          </div>
+        </div>
+      )}
 
       {editingAvatar && (
         <AvatarSelectorModal
@@ -262,5 +301,6 @@ export default function ProfileDashboard({
         />
       )}
     </section>
+    </>
   );
 }
