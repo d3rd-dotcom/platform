@@ -124,12 +124,16 @@ export default function FieldNotesSheet({ onClose }: FieldNotesSheetProps) {
       setPage(0);
       setConfirmOpen(false);
     } catch (err: any) {
+      console.error('[field-notes] burn failed:', err);
       if (err?.code === 4001 || err?.code === 'ACTION_REJECTED') {
         setError('Burn cancelled in wallet.');
       } else if (err?.code === 'CALL_EXCEPTION' || err?.code === 'UNPREDICTABLE_GAS_LIMIT') {
-        setError(`Not enough diamonds — unsealing burns ${UNSEAL_COST} $BLUE.`);
+        setError(`Not enough diamonds — unsealing burns ${UNSEAL_COST}.`);
+      } else if (err?.code === 'INSUFFICIENT_FUNDS') {
+        setError('Not enough ETH on Base to pay gas for the burn.');
       } else {
-        setError(err?.message?.includes('Base') ? err.message : 'Could not complete the burn. Try again.');
+        const detail = String(err?.reason || err?.shortMessage || err?.message || 'unknown error').slice(0, 140);
+        setError(`Burn failed: ${detail}`);
       }
     } finally {
       setPhase('idle');
@@ -225,57 +229,42 @@ export default function FieldNotesSheet({ onClose }: FieldNotesSheetProps) {
             onClick={() => phase === 'idle' && setConfirmOpen(false)}
           >
             <div
-              className={styles.confirmModal}
+              className={styles.confirmDialog}
               role="dialog"
               aria-modal="true"
-              aria-labelledby="unseal-confirm-title"
               onClick={(e) => e.stopPropagation()}
             >
-              <button
-                type="button"
-                className={styles.confirmClose}
-                onClick={() => setConfirmOpen(false)}
-                aria-label="Close burn confirmation"
-                disabled={phase !== 'idle'}
-              >
-                <X size={18} weight="bold" />
-              </button>
-
-              <div className={styles.confirmEyebrow}>Field Notes Archive</div>
-              <h3 id="unseal-confirm-title" className={styles.confirmTitle}>Burn {UNSEAL_COST} diamonds?</h3>
-
-              <p className={styles.confirmCopy}>
-                Unsealing burns {UNSEAL_COST} $BLUE from your wallet — an onchain transaction on Base you sign, and the diamonds leave supply for good. Your notes stay open for this sitting only and re-seal when you close the sheet.
-              </p>
-              <div className={styles.confirmCostRow}>
-                <span className={styles.confirmCostBadge}>
-                  <img src="/icons/ui-diamond.svg" alt="" width={16} height={16} />
-                  {UNSEAL_COST} diamonds
-                </span>
+              <div className={styles.confirmTitleBar}>
+                <span className={styles.confirmTitleText}>unseal.notes</span>
               </div>
-              {error && <p className={styles.confirmError} role="alert">{error}</p>}
-              <div className={styles.confirmActions}>
-                <button
-                  type="button"
-                  className={styles.confirmSecondary}
-                  onClick={() => { play('click'); setConfirmOpen(false); }}
-                  disabled={phase !== 'idle'}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  className={styles.confirmPrimary}
-                  onClick={() => { play('click'); unseal(); }}
-                  onMouseEnter={() => play('hover')}
-                  disabled={phase !== 'idle'}
-                >
-                  {phase === 'burning'
-                    ? 'Burning…'
-                    : phase === 'verifying'
-                      ? 'Verifying…'
-                      : `Burn ${UNSEAL_COST} diamonds`}
-                </button>
+              <div className={styles.confirmBody}>
+                <div className={styles.confirmIcon}>
+                  <img src="/icons/ui-diamond.svg" alt="" width={26} height={26} />
+                </div>
+                <p className={styles.confirmMessage}>
+                  Burn {UNSEAL_COST} diamonds to unseal your notes? They re-seal when you close the sheet.
+                </p>
+                {error && <p className={styles.confirmError} role="alert">{error}</p>}
+                <div className={styles.confirmButtons}>
+                  <button
+                    type="button"
+                    className={styles.confirmBtnCancel}
+                    onClick={() => { play('click'); setConfirmOpen(false); }}
+                    onMouseEnter={() => play('hover')}
+                    disabled={phase !== 'idle'}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.confirmBtnBurn}
+                    onClick={() => { play('click'); unseal(); }}
+                    onMouseEnter={() => play('hover')}
+                    disabled={phase !== 'idle'}
+                  >
+                    {phase === 'burning' ? 'Burning…' : phase === 'verifying' ? 'Verifying…' : 'Burn'}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
