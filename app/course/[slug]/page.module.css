@@ -335,21 +335,16 @@
   gap: 12px;
 }
 
+/* Wrapper card — the header button and (when expanded) the content pane
+   both live inside this so the accordion reads as one continuous card. */
 .taskCard {
-  display: flex;
-  align-items: center;
-  gap: 12px;
   width: 100%;
-  padding: 14px 16px;
   border-radius: 14px;
+  overflow: hidden;
   background: color-mix(in srgb, var(--task-accent, #6C5CE7) 7%, #ffffff);
   border: 1px solid color-mix(in srgb, var(--task-accent, #6C5CE7) 22%, rgba(26, 29, 51, 0.06));
   box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-align: left;
-  font-family: inherit;
-  box-sizing: border-box;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .taskCard:hover {
@@ -497,103 +492,6 @@
   padding: 24px;
 }
 
-/* ═══════════════════════════════════════════════ */
-/* VIP course — missions as square blocks           */
-/* ═══════════════════════════════════════════════ */
-
-.missionGrid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
-}
-
-.missionTile {
-  position: relative;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  overflow: hidden;
-  padding: 0;
-  border: 1px solid rgba(26, 29, 51, 0.10);
-  background: #e6e7f0;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.06);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-}
-
-.missionTile:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(26, 29, 51, 0.16);
-}
-
-.missionTileActive {
-  border-color: var(--color-primary) !important;
-  box-shadow:
-    0 0 0 2px color-mix(in srgb, var(--color-primary) 42%, transparent),
-    0 8px 18px rgba(26, 29, 51, 0.16) !important;
-}
-
-.missionTileComplete .missionTileArt {
-  opacity: 0.7;
-}
-
-/* Full-bleed artwork — reuses the taskArtwork* gradient variants */
-.missionTileArt {
-  position: absolute;
-  inset: 0;
-  width: 100% !important;
-  height: 100% !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-}
-
-.missionTileScrim {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 62%;
-  background: linear-gradient(to top, rgba(9, 11, 28, 0.85), transparent);
-  pointer-events: none;
-}
-
-.missionTileTitle {
-  position: absolute;
-  left: 9px;
-  right: 9px;
-  bottom: 8px;
-  font-family: var(--font-secondary);
-  font-size: 11px;
-  font-weight: 700;
-  line-height: 1.2;
-  color: #ffffff;
-  text-align: left;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.missionTileCheck {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 22px;
-  height: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: #22C55E;
-  color: #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-}
-
-:global([data-theme="dark"]) .missionTile {
-  background: #1b1d2e;
-  border-color: rgba(240, 241, 250, 0.08);
-}
-
 /* ── Detail card (right panel) ── */
 
 .rightPanelReader {
@@ -607,15 +505,42 @@
 
 
 .detailCardHeader {
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 14px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background 0.15s ease;
+}
+
+.detailCardHeader:hover {
+  background: rgba(26, 29, 51, 0.02);
+}
+
+.expandArrow {
+  color: rgba(26, 29, 51, 0.6);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.expandArrowOpen {
+  transform: rotate(180deg);
 }
 
 .detailCardContent {
-  padding: 18px;
+  padding: 14px 18px 18px;
   border-top: 1px solid rgba(26, 29, 51, 0.06);
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .detailActions {
@@ -737,6 +662,14 @@
 
 :global([data-theme="dark"]) .detailCardContent {
   border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .detailCardHeader:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+:global([data-theme="dark"]) .expandArrow {
+  color: rgba(227, 225, 238, 0.35);
 }
 
 :global([data-theme="dark"]) .rightPanelEmpty {

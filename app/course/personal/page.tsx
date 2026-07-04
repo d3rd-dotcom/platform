@@ -277,16 +277,16 @@ export default function PersonalCoursePage() {
   return (
     <div className={shared.pageLayout}>
       <SideNavigation />
-      <Banner />
+      <Banner
+        backHref="/courses"
+        breadcrumbs={[
+          { label: 'Courses', href: '/courses' },
+          { label: course.title },
+          { label: `Week ${week.weekNumber}` },
+        ]}
+      />
       <main className={`${shared.content} ${isDesktop ? shared.contentDesktop : ''}`}>
         <div className={isDesktop ? shared.leftCol : undefined}>
-
-          <Link href="/courses" className={shared.backBtn}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
-            Courses
-          </Link>
 
           <div className={shared.controlPanel}>
             <div className={shared.panelBanner} aria-hidden="true" />
@@ -296,7 +296,6 @@ export default function PersonalCoursePage() {
               </div>
               <div className={shared.panelHeader}>
                 <h1 className={shared.panelTitle}>{course.title}</h1>
-                <span className={shared.panelTitleDivider} aria-hidden="true" />
               </div>
               <div className={shared.panelDivider} aria-hidden="true" />
               <div className={styles.deleteRow}>

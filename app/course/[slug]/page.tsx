@@ -77,19 +77,19 @@ export default function CourseSlugPage({ params }: PageProps) {
   const [progress, setProgress] = useState<VipProgressRecord[]>([]);
   const [sealing, setSealing] = useState(false);
   const [diamondReward, setDiamondReward] = useState<number | null>(null);
-  const [rightContent, setRightContent] = useState<'reading' | 'task' | null>(null);
-  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+  const [rightContent, setRightContent] = useState<'reading' | null>(null);
+  const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
   const [pendingConfirm, setPendingConfirm] = useState<CourseComponentRecord | null>(null);
   const rightPanelRef = useRef<HTMLDivElement>(null);
 
-  // On phones the detail panel stacks below the mission list, so opening a
-  // mission without scrolling to it reads as the tap doing nothing.
+  // On phones the Weekly Read panel stacks below the missions, so opening it
+  // without scrolling to it reads as the tap doing nothing.
   useEffect(() => {
-    if (isDesktop || !rightContent) return;
+    if (isDesktop || rightContent !== 'reading') return;
     requestAnimationFrame(() => {
       rightPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
-  }, [rightContent, selectedTaskId, isDesktop]);
+  }, [rightContent, isDesktop]);
 
   useEffect(() => {
     if (!scrollRestored.current && !loading && vipCourse) {
@@ -280,16 +280,17 @@ export default function CourseSlugPage({ params }: PageProps) {
     const readingImageUrl = readingComponent ? (readingComponent.config as Record<string, string>)?.imageUrl ?? '' : '';
     const taskComponents = components.filter((c) => !(c.componentType === 'rich_text' && c.title === 'Weekly Read'));
 
-
-
-    const selectedComponent = rightContent === 'task' && selectedTaskId
-      ? components.find((c) => c.id === selectedTaskId) ?? null
-      : null;
-
     return (
       <div className={courseStyles.pageLayout}>
         <SideNavigation />
-        <Banner />
+        <Banner
+          backHref="/courses"
+          breadcrumbs={[
+            { label: 'Courses', href: '/courses' },
+            { label: vipCourse.title || 'Custom course' },
+            { label: `Week ${activeWeek}` },
+          ]}
+        />
         <main className={`${courseStyles.content} ${isDesktop ? courseStyles.contentDesktop : ''}`}>
 
           {diamondReward !== null && (
@@ -298,13 +299,6 @@ export default function CourseSlugPage({ params }: PageProps) {
 
           {/* ── Left column (Control Panel) ── */}
           <div className={isDesktop ? courseStyles.leftCol : undefined}>
-
-            <Link href="/courses" className={courseStyles.backBtn}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="15 18 9 12 15 6" />
-              </svg>
-              Courses
-            </Link>
 
            <div className={courseStyles.controlPanel}>
 
@@ -322,13 +316,9 @@ export default function CourseSlugPage({ params }: PageProps) {
               <img src="/blue/blue-home.png" alt="Blue" className={courseStyles.panelAvatar} />
             </div>
 
-            {/* Title + description */}
+            {/* Title */}
             <div className={courseStyles.panelHeader}>
               <h1 className={courseStyles.panelTitle}>{vipCourse.title || 'Custom course'}</h1>
-              <span className={courseStyles.panelTitleDivider} aria-hidden="true" />
-              {vipCourse.focus && (
-                <p className={courseStyles.panelDescription}>{vipCourse.focus}</p>
-              )}
             </div>
 
             <div className={courseStyles.panelDivider} aria-hidden="true" />
@@ -378,7 +368,7 @@ export default function CourseSlugPage({ params }: PageProps) {
               <button
                 type="button"
                 className={`${courseStyles.readingCard} ${rightContent === 'reading' ? courseStyles.readingCardActive : ''}`}
-                onClick={() => { setRightContent('reading'); setSelectedTaskId(null); }}
+                onClick={() => setRightContent('reading')}
               >
                 <span className={courseStyles.readingAccent} style={{ background: READING_ACCENT }} aria-hidden="true" />
                 <span className={courseStyles.readingThumb} style={{ background: READING_THUMB_BG }} aria-hidden="true">
@@ -407,42 +397,79 @@ export default function CourseSlugPage({ params }: PageProps) {
               </div>
             )}
 
-            {/* Mission blocks */}
-            <div className={styles.missionGrid}>
+            {/* Mission blocks — vertical accordion, expands in place */}
+            <div className={styles.taskList}>
               {taskComponents.length === 0 && !readingComponent && (
                 <p className={styles.emptyText}>No content in this week yet</p>
               )}
               {taskComponents.map((c, i) => {
                 const accent = TASK_ACCENTS[i % TASK_ACCENTS.length];
                 const variant = getArtworkVariant(c.id);
-                const isSelected = rightContent === 'task' && selectedTaskId === c.id;
                 const blockIds = c.componentType === 'mission_container' && c.blocks
                   ? c.blocks.map((b) => b.id)
                   : [c.id];
                 const isComplete = blockIds.every((id) => completedIds.has(id));
+                const isExpanded = expandedTaskId === c.id;
 
                 return (
-                  <button
+                  <div
                     key={c.id}
-                    type="button"
-                    className={`${styles.missionTile} ${isSelected ? styles.missionTileActive : ''} ${isComplete ? styles.missionTileComplete : ''}`}
-                    onClick={() => { setSelectedTaskId(c.id); setRightContent('task'); }}
-                    title={c.title || 'Untitled'}
+                    className={`${styles.taskCard} ${isExpanded ? styles.taskCardActive : ''} ${isComplete ? styles.taskCardComplete : ''}`}
+                    style={{ '--task-accent': accent } as React.CSSProperties}
                   >
-                    <span
-                      className={`${styles.taskArtwork} ${styles[`taskArtwork${variant.charAt(0).toUpperCase() + variant.slice(1)}`] || ''} ${styles.missionTileArt}`}
-                      style={{ '--task-accent': accent } as React.CSSProperties}
-                      aria-hidden="true"
-                    />
-
-                    {isComplete && (
-                      <span className={styles.missionTileCheck} aria-hidden="true">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="20 6 9 17 4 12" />
+                    <button
+                      type="button"
+                      className={styles.detailCardHeader}
+                      onClick={() => setExpandedTaskId((prev) => (prev === c.id ? null : c.id))}
+                    >
+                      <span className={styles.taskAccent} style={{ background: accent }} aria-hidden="true" />
+                      <span
+                        className={`${styles.taskArtwork} ${styles[`taskArtwork${variant.charAt(0).toUpperCase() + variant.slice(1)}`] || ''}`}
+                        aria-hidden="true"
+                      />
+                      <span className={styles.taskTitle}>{c.title || 'Untitled'}</span>
+                      <span className={styles.taskRight}>
+                        {isComplete ? (
+                          <span className={styles.taskCheckDone}>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          </span>
+                        ) : (
+                          <span className={styles.taskCheckEmpty} />
+                        )}
+                        <svg
+                          className={`${styles.expandArrow} ${isExpanded ? styles.expandArrowOpen : ''}`}
+                          width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                        >
+                          <polyline points="6 9 12 15 18 9" />
                         </svg>
                       </span>
+                    </button>
+
+                    {isExpanded && (
+                      <div className={styles.detailCardContent}>
+                        <ComponentRenderer component={c} courseId={vipCourse.id} />
+                        <div className={styles.detailActions}>
+                          <button
+                            type="button"
+                            className={`${styles.completeBtn} ${isComplete ? styles.completeBtnDone : ''}`}
+                            disabled={isComplete}
+                            onClick={() => {
+                              if (!authenticated) {
+                                login();
+                                return;
+                              }
+                              setPendingConfirm(c);
+                            }}
+                          >
+                            {isComplete ? 'Task Complete' : `Complete task ◆ +${COMPLETION_REWARD}`}
+                          </button>
+                        </div>
+                      </div>
                     )}
-                  </button>
+                  </div>
                 );
               })}
             </div>
@@ -483,56 +510,6 @@ export default function CourseSlugPage({ params }: PageProps) {
                   </div>
                   <div className={courseStyles.inlineReaderBody}>
                     <ComponentRenderer component={readingComponent} />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {rightContent === 'task' && selectedComponent && (
-              <div className={`${courseStyles.popupCard} ${styles.detailCard}`}>
-                <div className={styles.detailCardHeader}>
-                  {(() => {
-                    const i = components.indexOf(selectedComponent);
-                    const accent = TASK_ACCENTS[i % TASK_ACCENTS.length];
-                    const variant = getArtworkVariant(selectedComponent.id);
-                    return (
-                      <>
-                        <span className={styles.taskAccent} style={{ background: accent }} aria-hidden="true" />
-                        <span
-                          className={`${styles.taskArtwork} ${styles[`taskArtwork${variant.charAt(0).toUpperCase() + variant.slice(1)}`] || ''}`}
-                          style={{ '--task-accent': accent } as React.CSSProperties}
-                          aria-hidden="true"
-                        />
-                        <span className={styles.taskTitle}>{selectedComponent.title || 'Untitled'}</span>
-                      </>
-                    );
-                  })()}
-                </div>
-                <div className={styles.detailCardContent}>
-                  <ComponentRenderer component={selectedComponent} courseId={vipCourse.id} />
-                  <div className={styles.detailActions}>
-                    {(() => {
-                      const blockIds: string[] = selectedComponent.componentType === 'mission_container' && selectedComponent.blocks
-                        ? selectedComponent.blocks.map((b) => b.id)
-                        : [selectedComponent.id];
-                      const allDone = blockIds.every((id) => completedIds.has(id));
-                      return (
-                        <button
-                          type="button"
-                          className={`${styles.completeBtn} ${allDone ? styles.completeBtnDone : ''}`}
-                          disabled={allDone}
-                          onClick={() => {
-                            if (!authenticated) {
-                              login();
-                              return;
-                            }
-                            setPendingConfirm(selectedComponent);
-                          }}
-                        >
-                          {allDone ? 'Task Complete' : `Complete task ◆ +${COMPLETION_REWARD}`}
-                        </button>
-                      );
-                    })()}
                   </div>
                 </div>
               </div>

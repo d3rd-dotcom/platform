@@ -128,10 +128,10 @@
   position: relative;
   background-color: #ffffff;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(81,104,255,0.06)'/%3E%3C/svg%3E");
-  border: 2px solid var(--color-primary-hover);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
   border-radius: 12px;
   box-shadow:
-    0 6px 0 var(--color-primary),
+    0 3px 0 color-mix(in oklch, var(--color-primary) 22%, transparent),
     0 0px 10px rgba(0, 0, 0, 0.14),
     0 10px 5px rgba(0, 0, 0, 0.30);
   overflow: hidden;
@@ -156,7 +156,7 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  border-bottom: 3px solid var(--color-primary);
+  border-bottom: 2px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
   border-radius: 8px 8px 0 0;
 }
 
@@ -177,14 +177,14 @@
   border-radius: 14px;
   object-fit: cover;
   background: #0b1560;
-  border: 3px solid var(--color-primary);
+  border: 3px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
   box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--color-primary) 30%, transparent),
+    0 3px 0 color-mix(in oklch, var(--color-primary) 22%, transparent),
     var(--shadow-md);
 }
 
 :global([data-theme="dark"]) .panelAvatar {
-  border-color: var(--color-primary);
+  border-color: color-mix(in oklch, var(--color-primary) 38%, transparent);
 }
 
 /* Title + short centered rule + description */

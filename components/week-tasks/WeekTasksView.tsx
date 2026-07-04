@@ -81,16 +81,6 @@ interface WeekTasksViewProps {
   initialIsSealed?: boolean;
   initialSealTxHash?: string | null;
   onSealComplete?: (weekNumber: number, txHash: string | null) => void;
-  onSectionSelect?: (sectionId: string) => void;
-  focusedSectionId?: string | null;
-  onCompletionChange?: (weekNumber: number, completedSectionIds: string[]) => void;
-  syncedCompletedSections?: string[];
-  disableAutoSave?: boolean;
-  /** Render the section list as the round artwork tile grid (matches the
-      custom-course view). Requires onSectionSelect to open the detail panel. */
-  tileGrid?: boolean;
-  /** Section currently open in the detail panel — highlights its tile. */
-  selectedSectionId?: string | null;
   /** Reports week progress so a parent can render a diamonds/progress badge. */
   onStats?: (stats: { weekNumber: number; completed: number; total: number }) => void;
 }
@@ -102,13 +92,6 @@ export default function WeekTasksView({
   initialIsSealed,
   initialSealTxHash,
   onSealComplete,
-  onSectionSelect,
-  focusedSectionId,
-  onCompletionChange,
-  syncedCompletedSections,
-  disableAutoSave = false,
-  tileGrid = false,
-  selectedSectionId,
   onStats,
 }: WeekTasksViewProps) {
   const { sections: fetchedSections, loading: sectionsLoading } = useCourseSections('creative-healing', weekNumber);
@@ -213,24 +196,12 @@ export default function WeekTasksView({
     })();
   }, [weekNumber, enablePersistence, getAuthHeaders]);
 
-  // Report completion changes upward so a sibling list view can mirror them live.
-  useEffect(() => {
-    if (isLoading) return;
-    onCompletionChange?.(weekNumber, Array.from(completedSections));
-  }, [completedSections, isLoading, weekNumber, onCompletionChange]);
-
   // Report {completed, total} upward so the panel badge can show diamonds left
   // and week progress without re-fetching the section list.
   useEffect(() => {
     if (isLoading || sectionsLoading) return;
     onStats?.({ weekNumber, completed: completedSections.size, total: journalSections.length });
   }, [completedSections, journalSections.length, isLoading, sectionsLoading, weekNumber, onStats]);
-
-  // Mirror completions toggled in a sibling (panel) view.
-  useEffect(() => {
-    if (!syncedCompletedSections) return;
-    setCompletedSections(new Set(syncedCompletedSections));
-  }, [syncedCompletedSections]);
 
   // Persist the current progress snapshot. Kept in a ref so the unmount
   // flush below always calls the latest version.
@@ -258,7 +229,7 @@ export default function WeekTasksView({
 
   // Auto-save
   useEffect(() => {
-    if (!hasLoadedRef.current || isSealed || !enablePersistence || disableAutoSave) return;
+    if (!hasLoadedRef.current || isSealed || !enablePersistence) return;
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     pendingSaveRef.current = true;
     saveTimerRef.current = setTimeout(() => {
@@ -266,7 +237,7 @@ export default function WeekTasksView({
       persistProgress();
     }, 1500);
     return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current); };
-  }, [sectionData, blurtEntries, checklistStates, enjoyListEntries, timeMapActivities, lifePieValues, completedSections, weekNumber, isSealed, enablePersistence, disableAutoSave, persistProgress]);
+  }, [sectionData, blurtEntries, checklistStates, enjoyListEntries, timeMapActivities, lifePieValues, completedSections, weekNumber, isSealed, enablePersistence, persistProgress]);
 
   // Flush any pending save on unmount so switching weeks/closing the panel
   // mid-debounce doesn't silently discard the last edit.
@@ -289,10 +260,6 @@ export default function WeekTasksView({
   const completedCount = completedSections.size;
   const totalSections = journalSections.length;
   const canSeal = completedCount >= Math.ceil(totalSections / 2) && !isSealed;
-
-  useEffect(() => {
-    if (focusedSectionId) setExpandedSection(focusedSectionId);
-  }, [focusedSectionId]);
 
   const toggleExpand = (id: string) => {
     play(expandedSection === id ? 'toggle-off' : 'toggle-on');
@@ -663,10 +630,6 @@ export default function WeekTasksView({
     );
   }
 
-  const visibleSections = focusedSectionId
-    ? journalSections.filter(s => s.id === focusedSectionId)
-    : journalSections;
-
   return (
     <div
       className={styles.container}
@@ -677,46 +640,7 @@ export default function WeekTasksView({
         if (tag === 'INPUT' || tag === 'TEXTAREA') play('click');
       }}
     >
-{tileGrid && !focusedSectionId ? (
-        <div className={styles.missionGrid}>
-          {visibleSections.map((section, idx) => {
-            const isDone = completedSections.has(section.id);
-            const isSelected = selectedSectionId === section.id;
-            const artVariant = getTaskArtVariant(section);
-            const taskAccent = TASK_ACCENTS[idx % TASK_ACCENTS.length];
-            const variantClass = styles[`taskArtwork${artVariant[0].toUpperCase()}${artVariant.slice(1)}` as keyof typeof styles];
-            return (
-              <button
-                key={section.id}
-                type="button"
-                data-tour={idx === 0 ? 'course-mission' : undefined}
-                className={`${styles.missionTile} ${isSelected ? styles.missionTileActive : ''} ${isDone ? styles.missionTileComplete : ''}`}
-                style={{ '--task-accent': taskAccent } as React.CSSProperties}
-                onClick={() => {
-                  if (isSealed) return;
-                  play('click');
-                  onSectionSelect?.(section.id);
-                }}
-                onMouseEnter={() => play('hover')}
-                title={section.title}
-              >
-                <div className={`${styles.taskArtwork} ${variantClass} ${styles.missionTileArt}`} aria-hidden="true">
-                  <div className={styles.taskArtworkGlow} />
-                  <div className={styles.taskArtworkLine} />
-                </div>
-                {isDone && (
-                  <span className={styles.missionTileCheck} aria-hidden="true">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
-      ) : (
-        visibleSections.map((section, idx) => {
+      {journalSections.map((section, idx) => {
         const isOpen = expandedSection === section.id;
         const isDone = completedSections.has(section.id);
         const artVariant = getTaskArtVariant(section);
@@ -724,7 +648,7 @@ export default function WeekTasksView({
         return (
           <div
             key={section.id}
-            data-tour={idx === 0 && !focusedSectionId ? 'course-mission' : undefined}
+            data-tour={idx === 0 ? 'course-mission' : undefined}
             className={`${styles.taskCard} ${isDone ? styles.taskCardDone : ''} ${isSealed ? styles.taskCardSealed : ''}`}
             style={{ '--task-accent': taskAccent } as React.CSSProperties}
           >
@@ -733,8 +657,7 @@ export default function WeekTasksView({
               className={styles.taskCardHeader}
               onClick={() => {
                 if (isSealed) return;
-                if (onSectionSelect) { play('click'); onSectionSelect(section.id); }
-                else toggleExpand(section.id);
+                toggleExpand(section.id);
               }}
               onMouseEnter={() => play('hover')}
             >
@@ -756,15 +679,13 @@ export default function WeekTasksView({
                 ) : (
                   <div className={styles.taskCheckEmpty} />
                 )}
-                {!focusedSectionId && (
-                  <svg
-                    className={`${styles.expandArrow} ${onSectionSelect ? styles.expandArrowPanel : (isOpen ? styles.expandArrowOpen : '')}`}
-                    width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-                  >
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
-                )}
+                <svg
+                  className={`${styles.expandArrow} ${isOpen ? styles.expandArrowOpen : ''}`}
+                  width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
               </div>
             </button>
 
@@ -805,11 +726,10 @@ export default function WeekTasksView({
             )}
           </div>
         );
-      })
-      )}
+      })}
 
-      {/* Seal Button — only in the full list view, not the single-task panel */}
-      {!isSealed && !focusedSectionId && (
+      {/* Seal Button */}
+      {!isSealed && (
         <div className={styles.sealSection}>
           <div className={styles.progressInfo}>
             <span className={styles.progressText}>{completedCount} / {totalSections} tasks completed</span>
@@ -829,7 +749,7 @@ export default function WeekTasksView({
         </div>
       )}
 
-      {isSealed && !focusedSectionId && (
+      {isSealed && (
         <div className={styles.sealedBanner}>
           <Image src="/uploads/BlueSeal.svg" alt="" width={20} height={20} />
           <span>Week {weekNumber} sealed</span>

@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { usePrivy } from '@privy-io/react-auth';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
@@ -206,10 +205,6 @@ export default function CoursePage() {
   }, [refreshAuth]);
 
   const handleSealComplete = useCallback((weekNumber: number, txHash: string | null) => {
-    // Close any open task panel so the user lands on the sealed week
-    // overview rather than a now-locked task editor.
-    setRightContent(prev => (prev === 'task' ? null : prev));
-    setSelectedTaskId(null);
     setWeekStatuses(prev => {
       const hasWeek = prev.some(w => w.weekNumber === weekNumber);
       if (!hasWeek) {
@@ -223,13 +218,6 @@ export default function CoursePage() {
   }, []);
 
   const getWeekStatus = (week: number) => weekStatuses.find(w => w.weekNumber === week);
-
-  // Desktop renders the mission list and the task module as separate WeekTasksView
-  // instances. This mirrors completions toggled in the module back to the list.
-  const [liveCompletions, setLiveCompletions] = useState<Record<number, string[]>>({});
-  const handleCompletionChange = useCallback((week: number, completedSectionIds: string[]) => {
-    setLiveCompletions(prev => ({ ...prev, [week]: completedSectionIds }));
-  }, []);
 
   // Per-week {completed, total}, reported by the mission list — powers the
   // panel badge (diamonds left + XP-square progress bar).
@@ -329,8 +317,7 @@ export default function CoursePage() {
     setIsReaderOpen(true);
   }, []);
 
-  const [rightContent, setRightContent] = useState<'reading' | 'task' | null>(null);
-  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+  const [rightContent, setRightContent] = useState<'reading' | null>(null);
   const [isDesktop, setIsDesktop] = useState(false);
   const rightPanelRef = useRef<HTMLDivElement>(null);
 
@@ -341,14 +328,14 @@ export default function CoursePage() {
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  // On phones the detail panel stacks below the mission tiles, so opening a
-  // mission without scrolling to it reads as the tap doing nothing.
+  // On phones the reading panel stacks below the missions, so opening it
+  // without scrolling to it reads as the tap doing nothing.
   useEffect(() => {
-    if (isDesktop || rightContent !== 'task') return;
+    if (isDesktop || rightContent !== 'reading') return;
     requestAnimationFrame(() => {
       rightPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
-  }, [rightContent, selectedTaskId, isDesktop]);
+  }, [rightContent, isDesktop]);
 
   return (
     <>
@@ -361,18 +348,18 @@ export default function CoursePage() {
         </div>
       )}
       <SideNavigation />
-      <Banner />
+      <Banner
+        backHref="/courses"
+        breadcrumbs={[
+          { label: 'Courses', href: '/courses' },
+          { label: 'Creative Healing' },
+          { label: `Week ${resolvedViewWeek}` },
+        ]}
+      />
       <main className={`${styles.content} ${isDesktop ? styles.contentDesktop : ''}`} onFocus={handleFocus}>
 
         {/* ── Left / main column ── */}
         <div className={isDesktop ? styles.leftCol : undefined}>
-
-          <Link href="/courses" className={styles.backBtn}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
-            Courses
-          </Link>
 
           <div className={styles.controlPanel}>
             {(() => {
@@ -410,10 +397,6 @@ export default function CoursePage() {
               </div>
               <div className={styles.panelHeader}>
                 <h1 className={styles.panelTitle}>Creative Healing</h1>
-                <span className={styles.panelTitleDivider} aria-hidden="true" />
-                <p className={styles.panelDescription}>
-                  Reclaim your creative life one week at a time.
-                </p>
               </div>
               <div className={styles.panelDivider} aria-hidden="true" />
 
@@ -476,11 +459,9 @@ export default function CoursePage() {
                   </div>
                 </div>
                 <div className={styles.weekTasksSkeleton}>
-                  <div className={styles.missionGridSkeleton}>
-                    {Array.from({ length: 5 }, (_, i) => (
-                      <div key={i} className={`${styles.missionTileSkeleton} ${styles.skeletonBlock}`} />
-                    ))}
-                  </div>
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <div key={i} className={`${styles.taskCardSkeleton} ${styles.skeletonBlock}`} />
+                  ))}
                   <div className={`${styles.sealButtonSkeleton} ${styles.skeletonBlock}`} />
                 </div>
               </>
@@ -532,11 +513,6 @@ export default function CoursePage() {
                   initialIsSealed={getWeekStatus(resolvedViewWeek)?.isSealed}
                   initialSealTxHash={getWeekStatus(resolvedViewWeek)?.sealTxHash}
                   onSealComplete={handleSealComplete}
-                  tileGrid
-                  selectedSectionId={selectedTaskId}
-                  onSectionSelect={(id) => { setSelectedTaskId(id); setRightContent('task'); }}
-                  disableAutoSave
-                  syncedCompletedSections={liveCompletions[resolvedViewWeek]}
                   onStats={handleStats}
                 />
               </>
@@ -547,34 +523,17 @@ export default function CoursePage() {
 
         </div>
 
-        {/* ── Right panel — detail opens here (stacks below tiles on mobile) ── */}
-        {rightContent !== null && (
+        {/* ── Right panel — Weekly Read opens here (stacks below missions on mobile) ── */}
+        {rightContent === 'reading' && (
           <div className={styles.rightPanel} ref={rightPanelRef}>
-            {rightContent === 'reading' && (
-              <div className={styles.popupCard}>
-                <div className={styles.inlineReaderInner}>
-                  <CourseInlineReader
-                    reading={WEEKLY_READINGS[readerIndex]}
-                    onBack={() => setRightContent(null)}
-                  />
-                </div>
-              </div>
-            )}
-            {rightContent === 'task' && selectedTaskId && (
-              <div className={styles.popupCard} style={{ padding: '18px' }}>
-                <WeekTasksView
-                  key={`panel-${resolvedViewWeek}`}
-                  weekNumber={resolvedViewWeek}
-                  enablePersistence={isAuthenticated}
-                  isLocked={resolvedViewWeek > activeWeek}
-                  initialIsSealed={getWeekStatus(resolvedViewWeek)?.isSealed}
-                  initialSealTxHash={getWeekStatus(resolvedViewWeek)?.sealTxHash}
-                  onSealComplete={handleSealComplete}
-                  onCompletionChange={handleCompletionChange}
-                  focusedSectionId={selectedTaskId}
+            <div className={styles.popupCard}>
+              <div className={styles.inlineReaderInner}>
+                <CourseInlineReader
+                  reading={WEEKLY_READINGS[readerIndex]}
+                  onBack={() => setRightContent(null)}
                 />
               </div>
-            )}
+            </div>
           </div>
         )}
 
