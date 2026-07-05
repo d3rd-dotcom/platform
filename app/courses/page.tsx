@@ -236,7 +236,7 @@ export default function CoursesPage() {
           <div key={c.id} className={styles.cardWrapper}>
             <Link href={`/course/${c.slug}`} className={styles.courseCard}>
               <div className={styles.cardHeader}>
-                <span className={styles.cardKanji}>/{c.slug}</span>
+                <span className={styles.cardKanji}>友達</span>
                 <span className={styles.cardHeaderTitle}>{c.title}</span>
               </div>
               <div className={styles.cardBodyRow}>

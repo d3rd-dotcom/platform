@@ -62,7 +62,7 @@ export default function CourseFolderCard({
       <div className={styles.bottomFade} aria-hidden="true" />
 
       {/* Border stroke on top of gradient */}
-      <svg className={styles.shape} viewBox="0 0 474 330" preserveAspectRatio="none" aria-hidden="true">
+      <svg className={styles.shapeStrokeSvg} viewBox="0 0 474 330" preserveAspectRatio="none" aria-hidden="true">
         <path d={FOLDER_PATH} className={styles.shapeStroke} />
       </svg>
 

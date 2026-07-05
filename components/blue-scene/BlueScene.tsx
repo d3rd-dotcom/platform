@@ -3,7 +3,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useSound } from '@/hooks/useSound';
-import { GardenShader } from '@/components/garden-shader/GardenShader';
 import { DiamondReward } from '@/components/rewards/DiamondReward';
 import styles from './BlueScene.module.css';
 
@@ -263,8 +262,6 @@ export default function BlueScene() {
   return (
     <section className={styles.scene} aria-label="Balloon popping with Blue">
       <div className={styles.bgImage} style={{ backgroundImage: `url(${bgUrl})` }} />
-      <GardenShader />
-
       <div className={styles.sceneHeader}>
         <span className={styles.sceneTitleJa}>幻想庭園</span>
         <span className={styles.sceneTitle}>Ethereal Gardens</span>

@@ -148,7 +148,7 @@
   height: 120px;
   width: 100%;
   background-color: color-mix(in srgb, var(--color-primary) 18%, #ffffff);
-  background-image: url('/stories/week-01/creative-recovery-butterflies.png'), linear-gradient(135deg, #5168FF, #9b7ed9);
+  background-image: url('/worlds/world-06-underwater.png'), linear-gradient(135deg, #5168FF, #9b7ed9);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

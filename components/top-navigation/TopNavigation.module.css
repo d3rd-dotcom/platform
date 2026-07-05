@@ -577,11 +577,12 @@
 
   .searchWrapper {
     padding: 0 12px;
+    flex: 1;
   }
 
   .searchInput {
-    min-width: 130px;
-    max-width: 340px;
+    min-width: 100px;
+    max-width: 280px;
     font-size: 13px;
   }
 
@@ -596,10 +597,24 @@
   }
 }
 
+/* At 1024px and below the topnav can overflow, so the search bar gets
+   flex-shrink room to resize. These sizes just strip non-essentials. */
+
+/* Tablet portrait — hide nav links, keep logo + search */
 @media (max-width: 900px) {
-  .header {
-    display: none;
-  }
+  .centerNav { display: none; }
+  .nav { display: none; }
+  .header { padding: 0 12px; }
+  .searchWrapper { padding: 0 8px; flex: 1; }
+  .searchInput { min-width: 80px; max-width: 100%; }
+}
+
+/* Phone — tighter still */
+@media (max-width: 640px) {
+  .menuButton { display: none; }
+  .logo { width: 100px; }
+  .header { padding: 0 8px; }
+  .searchInput { min-width: 60px; font-size: 12px; }
 }
 
 

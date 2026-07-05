@@ -48,6 +48,16 @@
   vector-effect: non-scaling-stroke;
 }
 
+.shapeStrokeSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 3;
+}
+
 /* Contents clipped to the folder body (below the tab) */
 .contents {
   position: absolute;
