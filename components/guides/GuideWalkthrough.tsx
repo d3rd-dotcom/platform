@@ -1,0 +1,202 @@
+'use client';
+
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
+import { usePrivy } from '@privy-io/react-auth';
+import { CheckCircle, Lock, CircleNotch } from '@phosphor-icons/react';
+import type { Walkthrough, WalkthroughNode } from '@/lib/guides-db';
+import styles from './GuideWalkthrough.module.css';
+
+interface Props {
+  slug: string;
+}
+
+export default function GuideWalkthrough({ slug }: Props) {
+  const { ready, authenticated, getAccessToken, login } = usePrivy();
+  const [walkthrough, setWalkthrough] = useState<Walkthrough | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [completing, setCompleting] = useState<string | null>(null);
+  const [completed, setCompleted] = useState<Set<string>>(new Set());
+
+  const authHeaders = useCallback(async (): Promise<HeadersInit> => {
+    const token = await getAccessToken().catch(() => null);
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  }, [getAccessToken]);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const headers = await authHeaders();
+      const res = await fetch(`/api/guides/${slug}/walkthrough`, { cache: 'no-store', headers });
+      if (!res.ok) {
+        setError('Could not load the walkthrough.');
+        return;
+      }
+      const data = await res.json();
+      const wt: Walkthrough | null = data.walkthrough ?? null;
+      setWalkthrough(wt);
+      setCompleted(new Set((wt?.nodes ?? []).filter((n) => n.completed).map((n) => n.id)));
+    } catch {
+      setError('Could not load the walkthrough.');
+    } finally {
+      setLoading(false);
+    }
+  }, [slug, authHeaders]);
+
+  useEffect(() => {
+    if (!ready) return;
+    load();
+  }, [ready, load]);
+
+  // Group nodes by computed level.
+  const levels = useMemo(() => {
+    const map = new Map<number, WalkthroughNode[]>();
+    for (const n of walkthrough?.nodes ?? []) {
+      const list = map.get(n.level);
+      if (list) list.push(n);
+      else map.set(n.level, [n]);
+    }
+    return Array.from(map.entries()).sort((a, b) => a[0] - b[0]);
+  }, [walkthrough]);
+
+  const totalLevels = walkthrough?.levels ?? 0;
+
+  // A level is unlocked when every guide in every lower level is completed.
+  const isLevelUnlocked = useCallback(
+    (level: number): boolean => {
+      if (level === 0) return true;
+      for (const [lvl, nodes] of levels) {
+        if (lvl >= level) continue;
+        if (!nodes.every((n) => completed.has(n.id))) return false;
+      }
+      return true;
+    },
+    [levels, completed],
+  );
+
+  // Current level = the lowest level not fully completed (1-indexed for display).
+  const currentLevelIndex = useMemo(() => {
+    for (const [lvl, nodes] of levels) {
+      if (!nodes.every((n) => completed.has(n.id))) return lvl;
+    }
+    return totalLevels > 0 ? totalLevels - 1 : 0;
+  }, [levels, completed, totalLevels]);
+
+  const handleComplete = useCallback(
+    async (node: WalkthroughNode) => {
+      if (!authenticated) {
+        login();
+        return;
+      }
+      setCompleting(node.id);
+      try {
+        const headers = { 'Content-Type': 'application/json', ...(await authHeaders()) };
+        const res = await fetch('/api/guides/progress', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ guideId: node.id }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          setError(data.error ?? 'Could not complete this guide.');
+          return;
+        }
+        setError(null);
+        setCompleted((prev) => new Set(prev).add(node.id));
+      } finally {
+        setCompleting(null);
+      }
+    },
+    [authenticated, login, authHeaders],
+  );
+
+  if (loading) {
+    return (
+      <div className={styles.loading}>
+        <CircleNotch size={20} className={styles.spinner} />
+        <span>Loading walkthrough…</span>
+      </div>
+    );
+  }
+
+  if (!walkthrough || walkthrough.nodes.length === 0) {
+    return <div className={styles.empty}>This guide has no prerequisites — start it directly.</div>;
+  }
+
+  return (
+    <div className={styles.wrapper}>
+      <div className={styles.progressHeader}>
+        <span className={styles.progressLabel}>
+          Level {Math.min(currentLevelIndex + 1, totalLevels)} of {totalLevels}
+        </span>
+        <div className={styles.progressTrack}>
+          <div
+            className={styles.progressFill}
+            style={{ width: `${totalLevels ? (completed.size / walkthrough.nodes.length) * 100 : 0}%` }}
+          />
+        </div>
+      </div>
+
+      {error && <div className={styles.error}>{error}</div>}
+
+      <div className={styles.levels}>
+        {levels.map(([level, nodes]) => {
+          const unlocked = isLevelUnlocked(level);
+          return (
+            <section
+              key={level}
+              className={`${styles.level} ${unlocked ? '' : styles.levelLocked}`}
+            >
+              <header className={styles.levelHead}>
+                <span className={styles.levelBadge}>Level {level + 1}</span>
+                {!unlocked && (
+                  <span className={styles.lockedTag}>
+                    <Lock size={12} weight="bold" /> Locked
+                  </span>
+                )}
+              </header>
+              <div className={styles.nodeList}>
+                {nodes.map((node) => {
+                  const isDone = completed.has(node.id);
+                  return (
+                    <div key={node.id} className={styles.node}>
+                      <div className={styles.nodeMain}>
+                        {isDone ? (
+                          <CheckCircle size={18} weight="fill" className={styles.doneIcon} />
+                        ) : (
+                          <span className={styles.dot} />
+                        )}
+                        <Link href={`/courses/guides/${node.slug}`} className={styles.nodeTitle}>
+                          {node.topicTitle}
+                        </Link>
+                      </div>
+                      {unlocked ? (
+                        <button
+                          type="button"
+                          className={`${styles.completeBtn} ${isDone ? styles.completeBtnDone : ''}`}
+                          disabled={isDone || completing === node.id}
+                          onClick={() => handleComplete(node)}
+                        >
+                          {isDone
+                            ? 'Completed'
+                            : completing === node.id
+                              ? 'Saving…'
+                              : 'Mark complete'}
+                        </button>
+                      ) : (
+                        <span className={styles.lockedHint}>
+                          <Lock size={13} weight="bold" />
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          );
+        })}
+      </div>
+    </div>
+  );
+}

@@ -18,8 +18,9 @@
   border: 2px solid var(--color-primary);
   background: color-mix(in oklch, var(--color-primary) 8%, transparent);
   color: var(--color-primary);
-  font-size: 0.8125rem;
-  font-weight: 600;
+  font-family: var(--type-font-label);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-weight-semibold);
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -46,7 +47,9 @@
 }
 
 .caption {
-  font-size: 0.8125rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-lh);
   color: var(--color-text-muted);
   margin-top: 4px;
   text-align: center;

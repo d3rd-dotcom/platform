@@ -4,6 +4,9 @@
   border-radius: 6px;
   border: 1px solid var(--color-border-subtle);
   background: var(--color-surface-base);
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-size);
+  line-height: var(--type-lh-body);
 }
 
 :global([data-theme="dark"]) .input {

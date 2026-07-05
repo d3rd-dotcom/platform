@@ -27,7 +27,7 @@ export const HeroSection: React.FC = () => {
           />
           <div className={styles.heroLine} />
           <p className={styles.heroSubtext}>
-            Learn from your own psychology. Simulate new worlds with our classified AI model: B.L.U.E. to earn while you learn, and tackle quests to evolve your mental state.</p>
+            A gamified educational gameworld built on behavioral psychology, accompanied by B.L.U.E. Level up through knowledge structured in ascending order — no tutorial hell — and own what you earn on-chain.</p>
           <div className={styles.heroActions}>
             <LandingEnterAcademyButton dark />
           </div>

@@ -1,11 +1,15 @@
 .empty_state {
   color: var(--color-text-muted);
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-size);
   font-style: italic;
 }
 
 .prose_container {
   max-width: none;
-  line-height: 1.7;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-lg-size);
+  line-height: var(--type-lh-body);
 }
 
 .list_item {
@@ -13,7 +17,9 @@
 }
 
 .html_container {
-  line-height: 1.7;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-lg-size);
+  line-height: var(--type-lh-body);
   text-align: left;
 }
 
@@ -21,21 +27,22 @@
 .html_container h2,
 .html_container h3,
 .html_container h4 {
-  font-family: var(--font-secondary);
-  font-weight: 700;
+  font-family: var(--type-font-heading);
+  font-weight: var(--type-weight-bold);
   color: var(--color-text-dark);
-  margin: 0 0 8px;
+  line-height: var(--type-lh-heading);
+  margin: var(--type-heading-margin-top) 0 var(--type-heading-margin-bottom);
 }
 
-.html_container h1 { font-size: 1.5rem; }
-.html_container h2 { font-size: 1.25rem; }
-.html_container h3 { font-size: 1.125rem; }
+.html_container h1 { font-size: var(--type-h2-size); letter-spacing: var(--type-h2-track); }
+.html_container h2 { font-size: var(--type-h3-size); letter-spacing: var(--type-h3-track); }
+.html_container h3 { font-size: var(--type-h4-size); letter-spacing: var(--type-h4-track); }
 
 .html_container p {
-  font-family: var(--font-primary);
-  font-size: 0.9375rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-lg-size);
   color: var(--color-text-dark);
-  line-height: 1.7;
+  line-height: var(--type-lh-body);
   margin: 0 0 12px;
 }
 
@@ -46,10 +53,10 @@
 }
 
 .html_container li {
-  font-family: var(--font-primary);
-  font-size: 0.9375rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-lg-size);
   color: var(--color-text-dark);
-  line-height: 1.7;
+  line-height: var(--type-lh-body);
   margin-bottom: 4px;
 }
 

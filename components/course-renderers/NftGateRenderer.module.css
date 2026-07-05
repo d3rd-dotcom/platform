@@ -31,30 +31,35 @@
 }
 
 .collectionName {
-  font-weight: 600;
-  font-size: 0.9375rem;
+  font-family: var(--type-font-heading);
+  font-weight: var(--type-weight-semibold);
+  font-size: var(--type-body-lg-size);
+  letter-spacing: var(--type-track-heading);
   margin: 0 0 4px;
   color: var(--color-text-dark);
 }
 
 .description {
-  font-size: 0.8125rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
   color: var(--color-text-muted);
   margin: 0 0 20px;
-  line-height: 1.5;
+  line-height: var(--type-lh-body);
 }
 
 .statusText {
-  font-weight: 600;
+  font-family: var(--type-font-body);
+  font-weight: var(--type-weight-semibold);
   margin: 0 0 4px;
-  font-size: 0.875rem;
+  font-size: var(--type-body-size);
   color: #22c55e;
 }
 
 .verifyBtn {
   padding: 10px 24px;
-  font-size: 0.8125rem;
-  font-weight: 600;
+  font-family: var(--type-font-label);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-weight-semibold);
   border-radius: 8px;
   border: none;
   background: var(--color-primary);

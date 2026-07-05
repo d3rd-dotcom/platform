@@ -3,8 +3,8 @@
 .textarea {
   width: 100%;
   padding: 12px 16px;
-  font-family: var(--font-primary);
-  font-size: 14px;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-size);
   color: #1A1D33;
   background: #FFFFFF;
   border: 1px solid rgba(26, 29, 51, 0.12);
@@ -28,8 +28,8 @@
 .input {
   width: 100%;
   padding: 10px 14px;
-  font-family: var(--font-primary);
-  font-size: 14px;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-size);
   color: #1A1D33;
   background: #FFFFFF;
   border: 1px solid rgba(26, 29, 51, 0.12);
@@ -61,11 +61,11 @@
 }
 
 .listLabel {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 600;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-semibold);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--type-track-label);
   color: #666666;
 }
 
@@ -91,9 +91,9 @@
   height: 32px;
   background: var(--color-primary);
   color: #FFFFFF;
-  font-family: var(--font-mono);
-  font-size: 14px;
-  font-weight: 700;
+  font-family: var(--type-font-code);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-weight-bold);
   border: none;
   border-radius: 50%;
   flex-shrink: 0;
@@ -103,8 +103,8 @@
 .lifeInput {
   flex: 1;
   padding: 10px 14px;
-  font-family: var(--font-primary);
-  font-size: 14px;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-size);
   color: #1A1D33;
   background: #FFFFFF;
   border: 1px solid rgba(26, 29, 51, 0.12);
@@ -159,8 +159,8 @@
 
 .checklistText {
   flex: 1;
-  font-family: var(--font-primary);
-  font-size: 14px;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-size);
   color: #1A1D33;
   background: transparent;
   border: none;
@@ -182,11 +182,11 @@
   gap: 12px;
   padding-bottom: 8px;
   border-bottom: 2px solid rgba(26, 29, 51, 0.1);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 600;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-semibold);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--type-track-label);
   color: #666666;
 }
 
@@ -213,9 +213,9 @@
   height: 28px;
   background: #F4F5FE;
   color: #1A1D33;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 600;
+  font-family: var(--type-font-code);
+  font-size: var(--type-caption-size);
+  font-weight: var(--type-weight-semibold);
   border: 1px solid rgba(26, 29, 51, 0.08);
   border-radius: 50%;
   flex-shrink: 0;
@@ -224,8 +224,8 @@
 .dateInput {
   width: 100%;
   padding: 10px 12px;
-  font-family: var(--font-primary);
-  font-size: 13px;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
   color: #1A1D33;
   background: #FFFFFF;
   border: 1px solid rgba(26, 29, 51, 0.12);
@@ -250,8 +250,8 @@
 .affirmationInputGreen {
   width: 100%;
   padding: 10px 14px;
-  font-family: var(--font-primary);
-  font-size: 14px;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-size);
   color: #1A1D33;
   background: #F1FBF4;
   border: 1px solid rgba(34, 197, 94, 0.32);
@@ -278,8 +278,8 @@
 }
 
 .lifePieInstructions {
-  font-family: var(--font-primary);
-  font-size: 13px;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
   color: #666666;
   margin: 0;
 }
@@ -300,9 +300,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 600;
+  font-family: var(--type-font-label);
+  font-size: var(--type-caption-size);
+  font-weight: var(--type-weight-semibold);
   color: #1A1D33;
 }
 
@@ -352,7 +352,9 @@
 
 .fallback {
   padding: 16px;
-  font-weight: 500;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-weight-medium);
   color: #1A1D33;
 }
 
@@ -367,9 +369,9 @@
   border: 1px dashed rgba(26, 29, 51, 0.2);
   background: transparent;
   color: #666666;
-  font-family: inherit;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-family: var(--type-font-label);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-weight-semibold);
   cursor: pointer;
   transition: all 0.12s ease;
   align-self: flex-start;
@@ -391,9 +393,9 @@
 
 .sliderLabelInput {
   flex: 1;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 600;
+  font-family: var(--type-font-label);
+  font-size: var(--type-caption-size);
+  font-weight: var(--type-weight-semibold);
   color: #1A1D33;
   background: transparent;
   border: none;

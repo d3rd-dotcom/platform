@@ -7,16 +7,19 @@
 .fallback {
   color: var(--color-text-faint);
   font-style: italic;
-  font-size: 0.8125rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lh);
   padding: 8px 0;
 }
 
 .label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-bold);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--type-label-track);
+  line-height: var(--type-label-lh);
   color: var(--color-text-muted);
   margin: 0;
 }
@@ -24,8 +27,9 @@
 .input {
   width: 100%;
   padding: 10px 12px;
-  font-size: 13px;
-  font-family: var(--font-primary);
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lh);
   color: var(--color-text-dark);
   background: var(--color-surface-base);
   border: 1px solid var(--color-border-subtle);
@@ -46,8 +50,9 @@
 .inputSmall {
   width: 100px;
   padding: 8px 10px;
-  font-size: 13px;
-  font-family: var(--font-primary);
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lh);
   color: var(--color-text-dark);
   background: var(--color-surface-base);
   border: 1px solid var(--color-border-subtle);
@@ -64,8 +69,8 @@
 .textarea {
   width: 100%;
   padding: 10px 12px;
-  font-size: 13px;
-  font-family: var(--font-primary);
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
   color: var(--color-text-dark);
   background: var(--color-surface-base);
   border: 1px solid var(--color-border-subtle);
@@ -75,7 +80,7 @@
   min-height: 60px;
   transition: border-color 0.12s ease;
   box-sizing: border-box;
-  line-height: 1.6;
+  line-height: var(--type-lh-body);
 }
 
 .textarea:focus {
@@ -103,7 +108,9 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lh);
   color: var(--color-text-dark);
   cursor: pointer;
   user-select: none;
@@ -136,9 +143,10 @@
 }
 
 .questionNumber {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 700;
+  font-family: var(--type-font-code);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-bold);
+  line-height: var(--type-lh-solid);
   color: var(--color-text-muted);
 }
 
@@ -197,8 +205,10 @@
   align-items: center;
   gap: 4px;
   padding: 6px 12px;
-  font-size: 11px;
-  font-weight: 600;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-heading);
   border-radius: 6px;
   border: 1px dashed var(--color-border-subtle);
   background: transparent;
@@ -206,7 +216,6 @@
   cursor: pointer;
   align-self: flex-start;
   transition: all 0.12s ease;
-  font-family: var(--font-secondary);
 }
 
 .addBtn:hover {
@@ -265,8 +274,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.8125rem;
-  font-weight: 600;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-weight-semibold);
   background: var(--color-surface-base);
   color: var(--color-text-muted);
   border: 1px solid var(--color-border-subtle);

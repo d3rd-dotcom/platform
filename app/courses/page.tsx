@@ -12,6 +12,7 @@ import type { CourseData } from '@/lib/personal-course';
 import type { VipCourseRecord } from '@/lib/vip-course-db';
 import { onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
 import type { CourseRecord } from '@/lib/course-content-db';
+import type { GuideRecord } from '@/lib/guides-db';
 import styles from './page.module.css';
 
 function getCourseEndDate() {
@@ -47,6 +48,7 @@ export default function CoursesPage() {
   const [authoredCourses, setAuthoredCourses] = useState<VipCourseRecord[]>([]);
   const [communityCourses, setCommunityCourses] = useState<PublicCourseCard[]>([]);
   const [academyCourses, setAcademyCourses] = useState<CourseRecord[]>([]);
+  const [guides, setGuides] = useState<GuideRecord[]>([]);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [isVip, setIsVip] = useState(false);
@@ -58,6 +60,15 @@ export default function CoursesPage() {
       .then((r) => r.ok ? r.json() : null)
       .then((d) => {
         if (d?.courses) setAcademyCourses(d.courses);
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/guides?status=published')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d?.guides) setGuides(d.guides);
       })
       .catch(() => {});
   }, []);
@@ -149,6 +160,19 @@ export default function CoursesPage() {
       setDeleting(false);
     }
   };
+
+  const guidesBySubject = (() => {
+    const map = new Map<string, GuideRecord[]>();
+    for (const g of guides) {
+      const subjects = g.subjects.length > 0 ? g.subjects : ['General'];
+      for (const s of subjects) {
+        const list = map.get(s);
+        if (list) list.push(g);
+        else map.set(s, [g]);
+      }
+    }
+    return Array.from(map.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+  })();
 
   const shadowStats = communityCourses.find((c) => c.slug === 'creative-healing');
   const panelCourses = [
@@ -365,6 +389,30 @@ export default function CoursesPage() {
                 </div>
               ))}
             </div>
+          </section>
+        )}
+
+        {guides.length > 0 && (
+          <section className={styles.authoredSection}>
+            <h2 className={styles.authoredHeading}>Knowledge Base</h2>
+            {guidesBySubject.map(([subject, subjectGuides]) => (
+              <div key={subject} className={styles.guideSubjectGroup}>
+                <span className={styles.guideSubjectLabel}>{subject}</span>
+                <div className={styles.authoredList}>
+                  {subjectGuides.map((g) => (
+                    <Link
+                      key={`${subject}-${g.id}`}
+                      href={`/courses/guides/${g.slug}`}
+                      className={`${styles.authoredCard} ${styles.courseLink}`}
+                    >
+                      <div className={styles.authoredBody}>
+                        <span className={styles.authoredTitle}>{g.topicTitle}</span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ))}
           </section>
         )}
 

@@ -11,12 +11,12 @@
   border: 1px solid #94a1ff;
   background: #f4f5fe;
   box-shadow: 0 3px 0 #d0d6fe;
-  font-family: var(--font-secondary);
-  font-weight: var(--font-weight-semibold);
-  font-size: 0.88rem;
+  font-family: var(--type-font-label);
+  font-weight: var(--type-weight-semibold);
+  font-size: var(--type-body-sm-size);
   color: #55565b;
   text-transform: none;
-  letter-spacing: normal;
+  letter-spacing: var(--type-track-body);
   cursor: pointer;
   transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
 }
@@ -41,9 +41,9 @@
   padding: 14px;
   border: 1px solid #d6cfdf;
   border-radius: 10px;
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  line-height: 1.5;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-size);
+  line-height: var(--type-lh-body);
   color: #55565b;
 }
 
@@ -77,9 +77,10 @@
 }
 
 .courseRowTitle {
-  font-family: var(--font-secondary);
-  font-weight: var(--font-weight-semibold);
-  font-size: 0.85rem;
+  font-family: var(--type-font-heading);
+  font-weight: var(--type-weight-semibold);
+  font-size: var(--type-body-sm-size);
+  letter-spacing: var(--type-track-heading);
   color: #2c2b3a;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -87,9 +88,9 @@
 }
 
 .courseRowPct {
-  font-family: var(--font-secondary);
-  font-weight: var(--font-weight-bold);
-  font-size: 0.78rem;
+  font-family: var(--type-font-label);
+  font-weight: var(--type-weight-bold);
+  font-size: var(--type-caption-size);
   color: #5168ff;
   flex-shrink: 0;
 }
@@ -131,9 +132,9 @@
   border-radius: 50%;
   border: 1.5px dashed #94a1ff;
   background: #f4f5fe;
-  font-family: var(--font-secondary);
-  font-weight: var(--font-weight-bold);
-  font-size: 0.9rem;
+  font-family: var(--type-font-heading);
+  font-weight: var(--type-weight-bold);
+  font-size: var(--type-body-size);
   color: #5168ff;
 }
 
@@ -151,8 +152,8 @@
 }
 
 .certState {
-  font-family: var(--font-secondary);
-  font-size: 0.72rem;
+  font-family: var(--type-font-label);
+  font-size: var(--type-caption-size);
   color: #8a8da0;
 }
 
@@ -197,9 +198,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-secondary);
-  font-weight: var(--font-weight-bold);
-  font-size: 2.4rem;
+  font-family: var(--type-font-display);
+  font-weight: var(--type-weight-bold);
+  font-size: var(--type-h1-size);
+  letter-spacing: var(--type-track-display);
   color: #aab8ff;
   transition: filter 0.15s ease;
 }
@@ -224,9 +226,11 @@
 
 .panel .title {
   margin: 0;
-  font-family: var(--font-secondary);
-  font-weight: var(--font-weight-bold);
-  font-size: 1.15rem;
+  font-family: var(--type-font-heading);
+  font-weight: var(--type-weight-bold);
+  font-size: var(--type-h3-size);
+  letter-spacing: var(--type-h3-track);
+  line-height: var(--type-h3-lh);
   color: var(--panel-blue);
 }
 
@@ -258,8 +262,8 @@
   background: #f4f5fe;
   border: 1px solid #94a1ff;
   box-shadow: 0 3px 0 #d0d6fe;
-  font-family: var(--font-secondary);
-  font-size: 0.8rem;
+  font-family: var(--type-font-label);
+  font-size: var(--type-body-sm-size);
   color: #55565b;
 }
 
@@ -280,17 +284,19 @@
 }
 
 .headline {
-  font-family: var(--font-secondary);
-  font-weight: var(--font-weight-semibold);
-  font-size: 0.95rem;
+  font-family: var(--type-font-heading);
+  font-weight: var(--type-weight-semibold);
+  font-size: var(--type-h4-size);
+  letter-spacing: var(--type-h4-track);
+  line-height: var(--type-h4-lh);
   color: #141414;
 }
 
 .panel .description {
   margin: 0;
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  line-height: 1.45;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-size);
+  line-height: var(--type-lh-body);
   color: #141414;
 }
 
@@ -318,16 +324,17 @@
 }
 
 .statValue {
-  font-family: var(--font-secondary);
-  font-weight: var(--font-weight-bold);
-  font-size: 0.9rem;
+  font-family: var(--type-font-heading);
+  font-weight: var(--type-weight-bold);
+  font-size: var(--type-body-lg-size);
+  letter-spacing: var(--type-track-heading);
   color: #000;
 }
 
 .statLabel {
-  font-family: var(--font-secondary);
-  font-weight: var(--font-weight-medium);
-  font-size: 0.78rem;
+  font-family: var(--type-font-label);
+  font-weight: var(--type-weight-medium);
+  font-size: var(--type-caption-size);
   color: #8a8da0;
 }
 
@@ -339,9 +346,10 @@
 }
 
 .missionHeading {
-  font-family: var(--font-secondary);
-  font-weight: var(--font-weight-semibold);
-  font-size: 0.9rem;
+  font-family: var(--type-font-heading);
+  font-weight: var(--type-weight-semibold);
+  font-size: var(--type-h4-size);
+  letter-spacing: var(--type-h4-track);
   color: #141414;
 }
 
@@ -375,9 +383,9 @@ a.missionCard:hover {
   background: linear-gradient(to bottom, #9dded7, #12a577);
   border: 1px solid #0b7d5c;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  font-family: var(--font-secondary);
-  font-weight: var(--font-weight-bold);
-  font-size: 0.8rem;
+  font-family: var(--type-font-code);
+  font-weight: var(--type-weight-bold);
+  font-size: var(--type-body-sm-size);
   color: #ffffff;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
   flex-shrink: 0;
@@ -397,16 +405,17 @@ a.missionCard:hover {
 }
 
 .questTitle {
-  font-family: var(--font-secondary);
-  font-weight: var(--font-weight-semibold);
-  font-size: 0.88rem;
+  font-family: var(--type-font-heading);
+  font-weight: var(--type-weight-semibold);
+  font-size: var(--type-body-sm-size);
+  letter-spacing: var(--type-track-heading);
   color: #f6f8ed;
 }
 
 .questDesc {
-  font-family: var(--font-body);
-  font-size: 0.76rem;
-  line-height: 1.35;
+  font-family: var(--type-font-body);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-lh);
   color: rgba(246, 248, 237, 0.85);
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -468,14 +477,15 @@ a.missionCard:hover {
 }
 
 .badgeName {
-  font-family: var(--font-secondary);
-  font-weight: var(--font-weight-semibold);
-  font-size: 0.78rem;
+  font-family: var(--type-font-heading);
+  font-weight: var(--type-weight-semibold);
+  font-size: var(--type-body-sm-size);
+  letter-spacing: var(--type-track-heading);
   color: #f6f8ed;
 }
 
 .badgeState {
-  font-family: var(--font-secondary);
-  font-size: 0.72rem;
+  font-family: var(--type-font-label);
+  font-size: var(--type-caption-size);
   color: rgba(246, 248, 237, 0.6);
 }

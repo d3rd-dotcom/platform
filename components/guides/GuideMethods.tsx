@@ -1,0 +1,46 @@
+'use client';
+
+import { useState } from 'react';
+import { CaretDown } from '@phosphor-icons/react';
+import GuideBody from './GuideBody';
+import type { GuideMethodRecord } from '@/lib/guides-db';
+import styles from './GuideMethods.module.css';
+
+export default function GuideMethods({ methods }: { methods: GuideMethodRecord[] }) {
+  const [openId, setOpenId] = useState<string | null>(null);
+
+  if (!methods || methods.length === 0) return null;
+
+  return (
+    <section className={styles.section}>
+      <h2 className={styles.heading}>Methods</h2>
+      <div className={styles.list}>
+        {methods.map((m) => {
+          const open = openId === m.id;
+          return (
+            <div key={m.id} className={styles.item}>
+              <button
+                type="button"
+                className={styles.trigger}
+                onClick={() => setOpenId(open ? null : m.id)}
+                aria-expanded={open}
+              >
+                <span className={styles.triggerTitle}>{m.title}</span>
+                <CaretDown
+                  size={16}
+                  weight="bold"
+                  className={`${styles.caret} ${open ? styles.caretOpen : ''}`}
+                />
+              </button>
+              {open && (
+                <div className={styles.panel}>
+                  <GuideBody body={m.body} />
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}

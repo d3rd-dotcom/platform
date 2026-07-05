@@ -8,7 +8,7 @@ const FAQ_ITEMS = [
   {
     question: 'What is Mental Wealth Academy?',
     answer:
-      'Mental Wealth Academy is a mobile learning and research platform for mental wellness, financial literacy, and behavioral science. Members move through structured curriculum, complete assessments and surveys, work with Blue, and help produce data that can fund the community instead of being extracted by outside platforms.',
+      'Mental Wealth Academy is a gamified educational gameworld built on behavioral psychology, with blockchain-backed ownership of what you earn, accompanied by Blue. Knowledge is structured in ascending levels, so you level up instead of grinding through tutorial hell — each level cleared kills learning fatigue and pays out like a quest. And there is one definitive, verified guide per topic: a one-stop shop for knowledge, level-gated, with no duplicate tutorials to sort through.',
   },
   {
     question: 'How Does MWA Handle Data Gathered?',

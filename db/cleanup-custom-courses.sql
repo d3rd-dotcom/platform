@@ -1,0 +1,43 @@
+-- ============================================================================
+-- OPTIONAL cleanup: delete custom / community-authored courses
+-- ============================================================================
+-- ⚠️  DO NOT auto-run. This is a MANUAL, DESTRUCTIVE, OPTIONAL script.
+--     It is intentionally NOT wired into any migration runner, ensure* helper,
+--     or app code. Run it by hand in the Supabase SQL Editor only when you have
+--     deliberately decided to retire the VIP / community custom-course feature
+--     in favour of the guide knowledge base.
+--
+-- What it deletes:
+--   - vip_courses rows (creator-authored "community" custom courses) and all
+--     dependent rows (course_weeks, course_components, mission_blocks,
+--     vip_progress, vip_diamond_claims) via ON DELETE CASCADE.
+--
+-- What it does NOT touch:
+--   - guides / guide_* tables (the new knowledge base).
+--   - academy_courses / academy_chapters / academy_lessons (curated Academy).
+--   - shadow-work (never referenced here).
+--   - users, quests, XP, diamonds balances.
+--
+-- Take a backup before running. There is no undo.
+-- ============================================================================
+
+-- Uncomment the block below to execute. Left commented so an accidental
+-- full-file run is a no-op.
+
+-- BEGIN;
+--
+--   -- Child tables that do not have ON DELETE CASCADE back to vip_courses are
+--   -- cleaned explicitly first; the rest cascade from the vip_courses delete.
+--   DELETE FROM vip_diamond_claims
+--     WHERE course_id IN (SELECT id FROM vip_courses);
+--   DELETE FROM vip_progress
+--     WHERE course_id IN (SELECT id FROM vip_courses);
+--
+--   -- course_weeks -> course_components -> mission_blocks cascade from here.
+--   DELETE FROM vip_courses;
+--
+-- COMMIT;
+
+-- ============================================================================
+-- END (no statements execute unless the block above is uncommented)
+-- ============================================================================

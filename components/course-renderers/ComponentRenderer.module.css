@@ -12,11 +12,11 @@
 }
 
 .blockLabel {
-  font-size: 0.6875rem;
-  font-weight: 700;
-  font-family: var(--font-mono);
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-bold);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--type-track-label);
   color: var(--color-primary);
   margin-bottom: 8px;
 }
@@ -27,7 +27,9 @@
   border: 1px solid #fcd34d;
   background: #fffbeb;
   color: #d97706;
-  font-size: 0.8125rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lh);
 }
 
 :global([data-theme="dark"]) .unknown_warning {

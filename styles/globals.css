@@ -2,6 +2,11 @@
    next/font/google in layout.tsx (--font-* vars). There is no external Google
    Fonts <link> — everything is local. */
 
+/* Typographic system — fluid type scale, pairing, utility classes.
+   Must be imported before the rules below so its custom properties are
+   available to the rest of the sheet. */
+@import './typography.css';
+
 /**
  * Academy V3 Design System
  * 

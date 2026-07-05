@@ -10,8 +10,9 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-family: var(--type-font-code);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-weight-semibold);
   border: none;
   cursor: pointer;
   display: flex;
@@ -47,12 +48,14 @@
 }
 
 .label_end {
-  font-size: 0.75rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-caption-size);
   color: var(--color-text-muted);
 }
 
 .label_selected {
-  font-size: 0.8125rem;
-  font-weight: 600;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-weight-semibold);
   color: var(--color-text-dark);
 }

@@ -1,0 +1,176 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5rem);
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+}
+
+.voteBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--radius-md, 0.5rem);
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-1);
+  color: var(--color-text-dark);
+  cursor: pointer;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size, 0.75rem);
+  font-weight: var(--type-weight-semibold, 600);
+  letter-spacing: var(--type-track-label, 0.05em);
+  transition:
+    background var(--duration-fast, 200ms) var(--ease-default),
+    border-color var(--duration-fast, 200ms) var(--ease-default),
+    color var(--duration-fast, 200ms) var(--ease-default);
+}
+
+.voteBtn:hover:not(:disabled) {
+  background: var(--color-surface-2);
+  border-color: var(--color-border-strong, var(--color-border-subtle));
+  color: var(--color-primary);
+}
+
+.voteBtn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.voteBtnActive {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-surface-2);
+}
+
+.count {
+  font-family: var(--type-font-code);
+  font-size: var(--type-code-size, 0.875rem);
+  font-variant-numeric: tabular-nums;
+  min-width: 1.25ch;
+  text-align: center;
+}
+
+.spinner {
+  animation: spin 0.9s linear infinite;
+  color: var(--color-text-muted);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error {
+  margin: 0;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size, 0.8125rem);
+  line-height: var(--type-body-sm-lh, 1.4);
+  color: #FF6B6B;
+}
+
+/* ── Downvote rubric picker ─────────────────────────────────────────────── */
+
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 0.75rem);
+  padding: var(--space-4, 1rem);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg, 0.75rem);
+  background: var(--color-surface-base);
+  max-width: 22rem;
+}
+
+.pickerHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2, 0.5rem);
+}
+
+.pickerTitle {
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size, 0.75rem);
+  font-weight: var(--type-weight-bold, 700);
+  text-transform: uppercase;
+  letter-spacing: var(--type-track-label, 0.05em);
+  color: var(--color-text-muted);
+}
+
+.pickerClose {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  border-radius: var(--radius-sm, 0.25rem);
+  transition: color var(--duration-fast, 200ms) var(--ease-default);
+}
+
+.pickerClose:hover {
+  color: var(--color-text-dark);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 0.375rem);
+}
+
+.fieldLabel {
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size, 0.75rem);
+  font-weight: var(--type-weight-medium, 500);
+  color: var(--color-text-muted);
+}
+
+.select {
+  width: 100%;
+  padding: 0.5rem 0.625rem;
+  border-radius: var(--radius-md, 0.5rem);
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-1);
+  color: var(--color-text-dark);
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size, 0.8125rem);
+  cursor: pointer;
+}
+
+.select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.submitBtn {
+  align-self: flex-start;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md, 0.5rem);
+  border: 1px solid var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-text-light, #FFFFFF);
+  cursor: pointer;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size, 0.75rem);
+  font-weight: var(--type-weight-semibold, 600);
+  text-transform: uppercase;
+  letter-spacing: var(--type-track-label, 0.05em);
+  transition: background var(--duration-fast, 200ms) var(--ease-default);
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+.submitBtn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}

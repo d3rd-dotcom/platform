@@ -6,7 +6,7 @@
 [![Solidity](https://img.shields.io/badge/Solidity-0.8.24-363636?style=for-the-badge&logo=solidity&logoColor=white)](https://soliditylang.org/)
 [![Base](https://img.shields.io/badge/Base-Mainnet-0052FF?style=for-the-badge)](https://base.org/)
 
-Decentralized education infrastructure — a micro-university where humans and machines grow through collectively owned online spaces.
+A gamified educational gameworld built on behavioral psychology, with blockchain-backed ownership, accompanied by Blue.
 
 </div>
 
@@ -17,7 +17,21 @@ Decentralized education infrastructure — a micro-university where humans and m
 
 ## 🧿 What This Is
 
-The Platform is the Academy's core agentic environment — an interface exploring the intersection of cyber-psychology, decentralized science (DeSci), and Human-to-Computer Interaction (HTCI). By pairing community-driven infrastructure with autonomous AI coordination, we simulate science and host collaborative, open-source cognitive research.
+Mental Wealth Academy is a gamified educational gameworld built on behavioral psychology, with blockchain-backed ownership of what you earn, accompanied by Blue — the AI companion who reviews, rewards, and keeps the record.
+
+Knowledge is structured in ascending levels, so you level up instead of grinding through tutorial hell. Each level cleared kills learning fatigue and pays out like a quest — you always know the next rung, and you always know why you're on it.
+
+---
+
+## 📚 Knowledge Ecosystem
+
+One definitive, verified guide per topic — a one-stop shop for knowledge. No duplicate tutorials, no contradictory advice, no guessing which source to trust.
+
+- **One guide per topic.** Every subject has a single canonical guide. Spin-offs for genuine niches are tagged and grouped, never scattered.
+- **Level-gated.** Guides form an acyclic prerequisite graph. Level N+1 stays locked until you clear every level-N guide beneath it — knowledge in ascending order, no fatigue.
+- **Verifier jury.** Each guide is reviewed by an odd-numbered panel drawn from users who passed the verifier test for that subject and level. Votes are rubric-bound and require written justification; an AI juror (Chainlink CRE) adds a DON-signed advisory score. Approved work goes on-chain, and every decision is a public audit log.
+
+*Coming from the BlueLearn integration — see [`docs/bluelearn-integration-plan.md`](docs/bluelearn-integration-plan.md).*
 
 ---
 

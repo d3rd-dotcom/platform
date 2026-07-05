@@ -1,0 +1,218 @@
+/**
+ * Mental Wealth Academy — Typographic System
+ * ==========================================
+ * Calm & editorial meets modern, tech-forward. Academic, high-readability,
+ * beautiful fluid scale.
+ *
+ * PAIRING
+ *   Display / headings / labels : Space Grotesk  (var(--font-space-grotesk))
+ *   Body / long-form / inputs   : Inter          (var(--font-inter))
+ *   Accent / annotation only    : Patrick Hand   (var(--font-patrick-hand))  — where already used
+ *
+ * SCALE  (fluid via clamp; base 16px)
+ *   Every step defines size / line-height / tracking as CSS custom properties,
+ *   consumable individually or via the matching utility class.
+ *
+ * SPACING
+ *   4px-based rhythm. Heading margins follow a consistent ratio:
+ *   1.5em above, 0.5em below (via --type-heading-margin-* helpers / .type-* classes).
+ */
+
+:root {
+  /* ---- Type-system font stacks (self-hosted via next/font) ---------------- */
+  --type-font-display: var(--font-space-grotesk), 'Space Grotesk', ui-sans-serif, sans-serif;
+  --type-font-heading: var(--font-space-grotesk), 'Space Grotesk', ui-sans-serif, sans-serif;
+  --type-font-body: var(--font-inter), 'Inter', ui-sans-serif, sans-serif;
+  --type-font-label: var(--font-space-grotesk), 'Space Grotesk', ui-sans-serif, sans-serif;
+  --type-font-code: var(--font-space-grotesk), 'Space Grotesk', ui-monospace, monospace;
+  --type-font-accent: var(--font-patrick-hand), 'Patrick Hand', cursive;
+
+  /* ---- Weights ------------------------------------------------------------ */
+  --type-weight-regular: 400;
+  --type-weight-medium: 500;
+  --type-weight-semibold: 600;
+  --type-weight-bold: 700;
+
+  /* ---- Line heights ------------------------------------------------------- */
+  --type-lh-heading: 1.2;   /* display & headings */
+  --type-lh-snug: 1.3;      /* compact headings / card titles */
+  --type-lh-body: 1.6;      /* body copy */
+  --type-lh-solid: 1;       /* single-line labels, badges, icon glyphs */
+
+  /* ---- Tracking ----------------------------------------------------------- */
+  --type-track-display: -0.02em;  /* large headings */
+  --type-track-heading: -0.015em; /* mid headings */
+  --type-track-body: 0em;
+  --type-track-label: 0.05em;     /* small uppercase labels */
+  --type-track-label-lg: 0.08em;  /* extra-tight uppercase micro labels */
+
+  /* ============================================================
+     FLUID TYPE SCALE  (size / line-height / tracking per step)
+     ============================================================ */
+
+  /* Display — hero / preview stage headline */
+  --type-display-size: clamp(2rem, 1.4rem + 2.2vw, 3.2rem);      /* 32 → 51px */
+  --type-display-lh: var(--type-lh-heading);
+  --type-display-track: var(--type-track-display);
+
+  /* H1 */
+  --type-h1-size: clamp(1.625rem, 1.28rem + 1.5vw, 2.375rem);    /* 26 → 38px */
+  --type-h1-lh: var(--type-lh-heading);
+  --type-h1-track: var(--type-track-display);
+
+  /* H2 */
+  --type-h2-size: clamp(1.375rem, 1.19rem + 0.9vw, 1.75rem);     /* 22 → 28px */
+  --type-h2-lh: var(--type-lh-heading);
+  --type-h2-track: var(--type-track-heading);
+
+  /* H3 */
+  --type-h3-size: clamp(1.1875rem, 1.09rem + 0.5vw, 1.375rem);   /* 19 → 22px */
+  --type-h3-lh: var(--type-lh-snug);
+  --type-h3-track: var(--type-track-heading);
+
+  /* H4 */
+  --type-h4-size: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);       /* 16 → 18px */
+  --type-h4-lh: var(--type-lh-snug);
+  --type-h4-track: var(--type-track-heading);
+
+  /* Body large */
+  --type-body-lg-size: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);  /* 16 → 17px */
+  --type-body-lg-lh: var(--type-lh-body);
+  --type-body-lg-track: var(--type-track-body);
+
+  /* Body (default) */
+  --type-body-size: clamp(0.875rem, 0.85rem + 0.12vw, 0.9375rem);/* 14 → 15px */
+  --type-body-lh: var(--type-lh-body);
+  --type-body-track: var(--type-track-body);
+
+  /* Body small */
+  --type-body-sm-size: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem); /* 13 → 14px */
+  --type-body-sm-lh: var(--type-lh-body);
+  --type-body-sm-track: var(--type-track-body);
+
+  /* Label — small uppercase (Space Grotesk) */
+  --type-label-size: clamp(0.6875rem, 0.66rem + 0.1vw, 0.75rem); /* 11 → 12px */
+  --type-label-lh: var(--type-lh-solid);
+  --type-label-track: var(--type-track-label);
+
+  /* Caption — fine print / meta */
+  --type-caption-size: clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem); /* 12 → 13px */
+  --type-caption-lh: 1.4;
+  --type-caption-track: var(--type-track-body);
+
+  /* Code / mono */
+  --type-code-size: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);   /* 13 → 14px */
+  --type-code-lh: 1.55;
+  --type-code-track: 0em;
+
+  /* ---- Heading spacing rhythm (consistent ratio) -------------------------- */
+  --type-heading-margin-top: 1.5em;
+  --type-heading-margin-bottom: 0.5em;
+}
+
+/* ================================================================
+   UTILITY CLASSES
+   Each applies family + size + line-height + tracking + weight.
+   ================================================================ */
+
+.type-display {
+  font-family: var(--type-font-display);
+  font-size: var(--type-display-size);
+  line-height: var(--type-display-lh);
+  letter-spacing: var(--type-display-track);
+  font-weight: var(--type-weight-bold);
+}
+
+.type-h1 {
+  font-family: var(--type-font-heading);
+  font-size: var(--type-h1-size);
+  line-height: var(--type-h1-lh);
+  letter-spacing: var(--type-h1-track);
+  font-weight: var(--type-weight-bold);
+}
+
+.type-h2 {
+  font-family: var(--type-font-heading);
+  font-size: var(--type-h2-size);
+  line-height: var(--type-h2-lh);
+  letter-spacing: var(--type-h2-track);
+  font-weight: var(--type-weight-bold);
+}
+
+.type-h3 {
+  font-family: var(--type-font-heading);
+  font-size: var(--type-h3-size);
+  line-height: var(--type-h3-lh);
+  letter-spacing: var(--type-h3-track);
+  font-weight: var(--type-weight-semibold);
+}
+
+.type-h4 {
+  font-family: var(--type-font-heading);
+  font-size: var(--type-h4-size);
+  line-height: var(--type-h4-lh);
+  letter-spacing: var(--type-h4-track);
+  font-weight: var(--type-weight-semibold);
+}
+
+.type-body-lg {
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-lg-size);
+  line-height: var(--type-body-lg-lh);
+  letter-spacing: var(--type-body-lg-track);
+  font-weight: var(--type-weight-regular);
+}
+
+.type-body {
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-lh);
+  letter-spacing: var(--type-body-track);
+  font-weight: var(--type-weight-regular);
+}
+
+.type-body-sm {
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lh);
+  letter-spacing: var(--type-body-sm-track);
+  font-weight: var(--type-weight-regular);
+}
+
+.type-label {
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-lh);
+  letter-spacing: var(--type-label-track);
+  font-weight: var(--type-weight-semibold);
+  text-transform: uppercase;
+}
+
+.type-caption {
+  font-family: var(--type-font-body);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-lh);
+  letter-spacing: var(--type-caption-track);
+  font-weight: var(--type-weight-regular);
+}
+
+.type-code {
+  font-family: var(--type-font-code);
+  font-size: var(--type-code-size);
+  line-height: var(--type-code-lh);
+  letter-spacing: var(--type-code-track);
+  font-weight: var(--type-weight-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+.type-accent {
+  font-family: var(--type-font-accent);
+  line-height: var(--type-lh-snug);
+  letter-spacing: 0em;
+}
+
+/* Heading margin rhythm helper — apply to flow headings that need the ratio. */
+.type-heading-rhythm {
+  margin-top: var(--type-heading-margin-top);
+  margin-bottom: var(--type-heading-margin-bottom);
+}

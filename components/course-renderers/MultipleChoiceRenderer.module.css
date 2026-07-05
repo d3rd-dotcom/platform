@@ -1,8 +1,10 @@
 .question_text {
-  font-weight: 600;
-  font-size: 0.9375rem;
+  font-family: var(--type-font-heading);
+  font-weight: var(--type-weight-semibold);
+  font-size: var(--type-body-lg-size);
+  letter-spacing: var(--type-track-heading);
   margin-bottom: 12px;
-  line-height: 1.4;
+  line-height: var(--type-lh-snug);
 }
 
 .options_list > * + * {
@@ -18,7 +20,9 @@
   border: 1px solid var(--color-border-subtle);
   cursor: pointer;
   transition: all 0.12s ease;
-  font-size: 0.875rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-lh);
   user-select: none;
 }
 
@@ -77,8 +81,9 @@
 .submit_btn {
   margin-top: 12px;
   padding: 8px 18px;
-  font-size: 0.8125rem;
-  font-weight: 600;
+  font-family: var(--type-font-label);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-weight-semibold);
   border-radius: 8px;
   border: none;
   cursor: pointer;

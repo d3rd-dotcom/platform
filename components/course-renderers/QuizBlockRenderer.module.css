@@ -1,10 +1,13 @@
 .empty_state {
   color: var(--color-text-muted);
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-size);
   font-style: italic;
 }
 
 .time_limit {
-  font-size: 0.8125rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
   color: var(--color-text-muted);
   margin-bottom: 12px;
 }
@@ -21,7 +24,11 @@
 }
 
 .question_text {
-  font-weight: 500;
+  font-family: var(--type-font-heading);
+  font-size: var(--type-body-lg-size);
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-heading);
+  line-height: var(--type-lh-snug);
   margin-bottom: 8px;
 }
 
@@ -37,7 +44,9 @@
   border-radius: 6px;
   border: 1px solid var(--color-border-subtle);
   cursor: pointer;
-  font-size: 0.8125rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lh);
 }
 
 .option:hover {
@@ -87,7 +96,9 @@
   border-radius: 6px;
   background: var(--color-primary);
   color: #fff;
-  font-size: 0.8125rem;
+  font-family: var(--type-font-label);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-weight-semibold);
   border: none;
   cursor: pointer;
 }
@@ -99,7 +110,9 @@
 .result_card {
   padding: 12px;
   border-radius: 6px;
-  font-size: 0.8125rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lh);
 }
 
 .result_passed {
@@ -123,5 +136,7 @@
 }
 
 .result_title {
-  font-weight: 500;
+  font-family: var(--type-font-heading);
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-heading);
 }

@@ -60,10 +60,12 @@
 }
 
 .itemLabel {
-  font-size: 0.6875rem;
-  font-weight: 600;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-label-track);
   color: var(--color-text-dark);
-  line-height: 1;
+  line-height: var(--type-label-lh);
   white-space: nowrap;
 }
 

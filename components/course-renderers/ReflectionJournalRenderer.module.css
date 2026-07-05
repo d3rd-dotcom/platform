@@ -1,5 +1,9 @@
 .prompt {
-  font-weight: 500;
+  font-family: var(--type-font-heading);
+  font-size: var(--type-body-lg-size);
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-heading);
+  line-height: var(--type-lh-snug);
   margin-bottom: 8px;
 }
 
@@ -11,6 +15,9 @@
   background: var(--color-surface-base);
   min-height: 120px;
   resize: vertical;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-size);
+  line-height: var(--type-lh-body);
 }
 
 :global([data-theme="dark"]) .textarea {
@@ -23,7 +30,8 @@
   align-items: center;
   justify-content: space-between;
   margin-top: 4px;
-  font-size: 0.8125rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
   color: var(--color-text-muted);
 }
 

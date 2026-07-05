@@ -464,6 +464,22 @@
   gap: 8px;
 }
 
+.guideSubjectGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.guideSubjectLabel {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-primary);
+  font-family: var(--font-mono);
+}
+
 .authoredCard {
   display: flex;
   align-items: center;

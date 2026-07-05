@@ -51,22 +51,29 @@
 }
 
 .stepBadge {
-  font-size: 0.75rem;
-  letter-spacing: 0.02em;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-label);
+  text-transform: uppercase;
   color: var(--color-text-faint, #8a8f9c);
 }
 
 .title {
   margin: 0 0 8px;
-  font-size: 1rem;
-  font-weight: 700;
+  font-family: var(--type-font-heading);
+  font-size: var(--type-h4-size);
+  line-height: var(--type-h4-lh);
+  letter-spacing: var(--type-h4-track);
+  font-weight: var(--type-weight-bold);
   color: var(--color-text-dark, #1a1b24);
 }
 
 .body {
   margin: 0 0 18px;
-  font-size: 0.8125rem;
-  line-height: 1.55;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-lh-body);
   color: var(--color-text-soft, #c2c6d0);
 }
 
@@ -90,7 +97,8 @@
 
 .skip {
   padding: 6px 4px;
-  font-size: 0.8125rem;
+  font-family: var(--type-font-label);
+  font-size: var(--type-body-sm-size);
   color: var(--color-text-faint, #8a8f9c);
   background: none;
   border: none;
@@ -104,8 +112,9 @@
 .back {
   flex-shrink: 0;
   padding: 9px 14px;
-  font-size: 0.8125rem;
-  font-weight: 600;
+  font-family: var(--type-font-label);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-weight-semibold);
   color: var(--color-text-soft, #c2c6d0);
   background: rgba(129, 140, 248, 0.06);
   border: 1px solid rgba(129, 140, 248, 0.28);
@@ -122,8 +131,9 @@
 .next {
   flex-shrink: 0;
   padding: 9px 18px;
-  font-size: 0.8125rem;
-  font-weight: 600;
+  font-family: var(--type-font-label);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-weight-semibold);
   white-space: nowrap;
   color: #fff;
   background: var(--color-primary);

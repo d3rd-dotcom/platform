@@ -132,9 +132,11 @@
 }
 
 .tabTitle {
-  font-family: var(--font-secondary);
-  font-weight: var(--font-weight-semibold);
-  font-size: 0.95rem;
+  font-family: var(--type-font-heading);
+  font-weight: var(--type-weight-semibold);
+  font-size: var(--type-h4-size);
+  letter-spacing: var(--type-h4-track);
+  line-height: var(--type-h4-lh);
   color: #f6f8ed;
 }
 
@@ -146,9 +148,9 @@
   padding: 2px 12px;
   border-radius: 999px;
   background: #f6f8ed;
-  font-family: var(--font-secondary);
-  font-weight: var(--font-weight-semibold);
-  font-size: 0.85rem;
+  font-family: var(--type-font-label);
+  font-weight: var(--type-weight-semibold);
+  font-size: var(--type-body-sm-size);
   color: #397bed;
 }
 
@@ -180,9 +182,10 @@
   background: linear-gradient(to bottom, #9dded7, #069865);
   border: 1px solid #78c6af;
   box-shadow: 0 1.5px 9px rgba(0, 0, 0, 0.55);
-  font-family: var(--font-secondary);
-  font-weight: var(--font-weight-semibold);
-  font-size: 0.9rem;
+  font-family: var(--type-font-label);
+  font-weight: var(--type-weight-semibold);
+  font-size: var(--type-body-size);
+  letter-spacing: var(--type-track-label);
   color: #f6f8ed;
   text-shadow: 0 -0.5px 0 rgba(0, 0, 0, 0.9), 0 0 3px rgba(0, 0, 0, 0.35);
 }

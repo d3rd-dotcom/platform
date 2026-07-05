@@ -107,8 +107,8 @@
 }
 
 .cipherLine {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-family: var(--type-font-code);
+  font-size: var(--type-body-sm-size);
   color: #4a4638;
   white-space: nowrap;
 }
@@ -143,16 +143,18 @@
 }
 
 .sealedTitle {
-  font-family: var(--font-secondary);
-  font-weight: var(--font-weight-bold);
-  font-size: 1.05rem;
+  font-family: var(--type-font-heading);
+  font-weight: var(--type-weight-bold);
+  font-size: var(--type-h4-size);
+  letter-spacing: var(--type-h4-track);
+  line-height: var(--type-h4-lh);
   color: #2c2618;
 }
 
 .sealedSub {
-  font-family: var(--font-body);
-  font-size: 0.82rem;
-  line-height: 1.5;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-lh-body);
   color: #6d6450;
 }
 
@@ -187,9 +189,10 @@
   background: linear-gradient(to bottom, #9dded7, #069865);
   border: 1px solid #78c6af;
   box-shadow: 0 1.5px 9px rgba(0, 0, 0, 0.45);
-  font-family: var(--font-secondary);
-  font-weight: var(--font-weight-semibold);
-  font-size: 0.9rem;
+  font-family: var(--type-font-label);
+  font-weight: var(--type-weight-semibold);
+  font-size: var(--type-body-size);
+  letter-spacing: var(--type-track-label);
   color: #f6f8ed;
   text-shadow: 0 -0.5px 0 rgba(0, 0, 0, 0.9);
 }
@@ -200,8 +203,8 @@
 }
 
 .error {
-  font-family: var(--font-secondary);
-  font-size: 0.8rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
   color: #a33030;
 }
 
@@ -236,9 +239,9 @@
 }
 
 .confirmTitleText {
-  font-family: var(--font-mono);
-  font-size: 14px;
-  font-weight: 600;
+  font-family: var(--type-font-code);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-weight-semibold);
   color: rgba(255, 255, 255, 0.5);
 }
 
@@ -261,29 +264,29 @@
 }
 
 .confirmMessage {
-  font-family: var(--font-mono);
-  font-size: 14px;
-  font-weight: 500;
+  font-family: var(--type-font-code);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-weight-medium);
   color: rgba(255, 255, 255, 0.85);
   text-align: center;
-  line-height: 1.6;
+  line-height: var(--type-lh-body);
   margin: 0;
 }
 
 .confirmError {
   margin: 0;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  line-height: 1.5;
+  font-family: var(--type-font-code);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-lh);
   text-align: center;
   color: #FF6B6B;
 }
 
 .confirmBalance {
   margin: -4px 0 0;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  line-height: 1.5;
+  font-family: var(--type-font-code);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-lh);
   text-align: center;
   color: rgba(255, 255, 255, 0.55);
 }
@@ -294,9 +297,9 @@
 
 .confirmHint {
   margin: 0;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  line-height: 1.5;
+  font-family: var(--type-font-code);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-lh);
   text-align: center;
   color: #E5B769;
 }
@@ -312,11 +315,11 @@
 .confirmBtnBurn {
   flex: 1;
   padding: 12px 16px;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 700;
+  font-family: var(--type-font-label);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-weight-bold);
   text-transform: none;
-  letter-spacing: normal;
+  letter-spacing: var(--type-track-body);
   color: #FFFFFF;
   border-radius: 10px;
   cursor: pointer;
@@ -364,15 +367,17 @@
 }
 
 .noteDate {
-  font-family: var(--font-secondary);
-  font-weight: var(--font-weight-bold);
-  font-size: 1rem;
+  font-family: var(--type-font-heading);
+  font-weight: var(--type-weight-bold);
+  font-size: var(--type-h4-size);
+  letter-spacing: var(--type-h4-track);
+  line-height: var(--type-h4-lh);
   color: #2c2618;
 }
 
 .noteMeta {
-  font-family: var(--font-secondary);
-  font-size: 0.76rem;
+  font-family: var(--type-font-label);
+  font-size: var(--type-caption-size);
   color: #8d8266;
 }
 
@@ -380,8 +385,8 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-lg-size);
   line-height: 28px; /* match the ruled lines */
   color: #3a3426;
   white-space: pre-wrap;
@@ -419,7 +424,7 @@
 }
 
 .pageCount {
-  font-family: var(--font-secondary);
-  font-size: 0.8rem;
+  font-family: var(--type-font-label);
+  font-size: var(--type-body-sm-size);
   color: #6d6450;
 }

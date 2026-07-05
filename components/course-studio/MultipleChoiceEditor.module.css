@@ -11,9 +11,10 @@
 
 .questionInput {
   width: 100%;
-  font-family: var(--font-secondary);
-  font-size: 14px;
-  font-weight: 600;
+  font-family: var(--type-font-heading);
+  font-size: var(--type-h4-size);
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-heading);
   color: var(--color-text-dark);
   background: var(--color-surface-base);
   border: 1px solid var(--color-border-subtle);
@@ -118,8 +119,8 @@
 
 .optionInput {
   flex: 1;
-  font-family: var(--font-secondary);
-  font-size: 13px;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
   color: var(--color-text-dark);
   background: transparent;
   border: none;
@@ -164,9 +165,10 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  font-family: var(--font-secondary);
-  font-size: 12px;
-  font-weight: 600;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-heading);
   color: var(--color-primary);
   background: color-mix(in srgb, var(--color-primary) 8%, transparent);
   border: 1px solid color-mix(in srgb, var(--color-primary) 18%, transparent);
@@ -185,9 +187,9 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-family: var(--font-secondary);
-  font-size: 12px;
-  font-weight: 500;
+  font-family: var(--type-font-body);
+  font-size: var(--type-caption-size);
+  font-weight: var(--type-weight-medium);
   color: var(--color-text-muted);
   cursor: pointer;
   user-select: none;

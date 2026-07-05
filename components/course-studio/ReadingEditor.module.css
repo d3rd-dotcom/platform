@@ -14,11 +14,11 @@
 }
 
 .badge {
-  font-family: var(--font-mono);
-  font-size: 0.625rem;
-  font-weight: 700;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-bold);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--type-track-label);
   padding: 3px 8px;
   border-radius: 4px;
   background: var(--color-surface-2);
@@ -26,11 +26,11 @@
 }
 
 .dirtyBadge {
-  font-family: var(--font-mono);
-  font-size: 0.5625rem;
-  font-weight: 700;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-bold);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--type-track-label);
   padding: 2px 7px;
   border-radius: 4px;
   background: color-mix(in srgb, #f59e0b 14%, transparent);
@@ -48,11 +48,11 @@
   border: none;
   background: var(--color-primary);
   color: #fff;
-  font-size: 0.6875rem;
-  font-weight: 700;
-  font-family: var(--font-mono);
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-bold);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--type-track-label);
   cursor: pointer;
   transition: opacity 0.12s ease;
   margin-right: 6px;
@@ -68,9 +68,11 @@
   border: 1px solid var(--color-border-subtle);
   background: transparent;
   color: var(--color-text-muted);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  font-family: inherit;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-label);
+  text-transform: uppercase;
   cursor: pointer;
   transition: all 0.12s ease;
 }
@@ -94,13 +96,13 @@
 .imageInput {
   flex: 1;
   padding: 6px 10px;
-  font-size: 0.75rem;
+  font-family: var(--type-font-code);
+  font-size: var(--type-code-size);
   border-radius: 6px;
   border: 1px solid var(--color-border-subtle);
   background: var(--color-surface-base);
   color: var(--color-text-dark);
   outline: none;
-  font-family: var(--font-mono);
   transition: border-color 0.12s ease;
 }
 
@@ -167,9 +169,10 @@
 }
 
 .headingLvl {
-  font-size: 0.5625rem;
-  font-weight: 700;
-  line-height: 1;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-bold);
+  line-height: var(--type-lh-solid);
 }
 
 .divider {
@@ -197,8 +200,9 @@
   outline: none;
   min-height: 200px;
   color: var(--color-text-dark);
-  font-size: 0.9375rem;
-  line-height: 1.8;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-lg-size);
+  line-height: var(--type-lh-body);
 }
 
 .editorContent p {
@@ -206,29 +210,32 @@
 }
 
 .editorContent h1 {
-  font-family: var(--font-secondary);
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 1.2;
-  margin: 1.6em 0 0.5em;
+  font-family: var(--type-font-heading);
+  font-size: var(--type-h3-size);
+  font-weight: var(--type-weight-bold);
+  letter-spacing: var(--type-h3-track);
+  line-height: var(--type-lh-heading);
+  margin: var(--type-heading-margin-top) 0 var(--type-heading-margin-bottom);
   color: var(--color-text-dark);
 }
 
 .editorContent h2 {
-  font-family: var(--font-secondary);
-  font-size: 17px;
-  font-weight: 700;
-  line-height: 1.2;
-  margin: 1.6em 0 0.5em;
+  font-family: var(--type-font-heading);
+  font-size: var(--type-h4-size);
+  font-weight: var(--type-weight-bold);
+  letter-spacing: var(--type-h4-track);
+  line-height: var(--type-lh-heading);
+  margin: var(--type-heading-margin-top) 0 var(--type-heading-margin-bottom);
   color: var(--color-text-dark);
 }
 
 .editorContent h3 {
-  font-family: var(--font-secondary);
-  font-size: 15px;
-  font-weight: 700;
-  line-height: 1.2;
-  margin: 1.6em 0 0.5em;
+  font-family: var(--type-font-heading);
+  font-size: var(--type-body-lg-size);
+  font-weight: var(--type-weight-bold);
+  letter-spacing: var(--type-h4-track);
+  line-height: var(--type-lh-heading);
+  margin: var(--type-heading-margin-top) 0 var(--type-heading-margin-bottom);
   color: var(--color-text-dark);
 }
 
@@ -253,8 +260,8 @@
 }
 
 .editorContent code {
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
+  font-family: var(--type-font-code);
+  font-size: var(--type-code-size);
   padding: 2px 6px;
   border-radius: 4px;
   background: var(--color-surface-2);
@@ -320,9 +327,9 @@
   border: 1px solid var(--color-border-subtle);
   background: transparent;
   color: var(--color-text-muted);
-  font-size: 0.75rem;
-  font-weight: 600;
-  font-family: inherit;
+  font-family: var(--type-font-label);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-weight-semibold);
   cursor: pointer;
   transition: all 0.12s ease;
 }
@@ -338,9 +345,9 @@
   border: none;
   background: var(--color-primary);
   color: #fff;
-  font-size: 0.75rem;
-  font-weight: 600;
-  font-family: inherit;
+  font-family: var(--type-font-label);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-weight-semibold);
   cursor: pointer;
   transition: all 0.12s ease;
 }

@@ -28,12 +28,16 @@
 }
 
 .dropzone_text {
-  font-size: 0.8125rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lh);
   color: var(--color-text-muted);
 }
 
 .hint_text {
-  font-size: 0.75rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-lh);
   color: var(--color-text-muted);
   margin-top: 4px;
 }
@@ -51,7 +55,9 @@
 }
 
 .file_item {
-  font-size: 0.8125rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lh);
   color: var(--color-text-muted);
   display: flex;
   align-items: center;

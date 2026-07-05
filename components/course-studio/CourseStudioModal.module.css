@@ -100,17 +100,17 @@
 }
 
 .titleInput {
-  font-size: 1.375rem;
-  font-weight: 700;
+  font-family: var(--type-font-heading);
+  font-size: var(--type-h2-size);
+  font-weight: var(--type-weight-bold);
   background: transparent;
   border: none;
   outline: none;
   width: 100%;
   min-width: 120px;
   color: var(--color-text-dark);
-  font-family: var(--font-secondary);
-  letter-spacing: -0.01em;
-  line-height: 1.3;
+  letter-spacing: var(--type-h2-track);
+  line-height: var(--type-lh-snug);
 }
 
 .titleInput::placeholder {
@@ -119,21 +119,21 @@
 }
 
 .slugPrefix {
-  font-size: 0.8125rem;
+  font-family: var(--type-font-code);
+  font-size: var(--type-code-size);
   color: var(--color-text-faint);
-  font-family: var(--font-mono);
   flex-shrink: 0;
 }
 
 .slugInput {
-  font-size: 0.8125rem;
+  font-family: var(--type-font-code);
+  font-size: var(--type-code-size);
   background: transparent;
   border: none;
   border-bottom: 1px solid transparent;
   outline: none;
   width: 160px;
   color: var(--color-text-faint);
-  font-family: var(--font-mono);
   padding: 0 0 2px;
   transition: border-color 0.12s ease, color 0.12s ease;
 }
@@ -169,24 +169,25 @@
 }
 
 .errorText {
-  font-size: 0.75rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-caption-size);
   color: #ef4444;
 }
 
 .saveBtn {
   padding: 7px 18px;
-  font-size: 0.75rem;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
   border-radius: 8px;
   border: none;
   background: var(--color-primary);
   color: #fff;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: var(--type-weight-semibold);
   transition: opacity 0.12s ease;
   white-space: nowrap;
-  font-family: var(--font-mono);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--type-track-label);
 }
 
 .saveBtn:hover {
@@ -203,18 +204,18 @@
   align-items: center;
   gap: 6px;
   padding: 7px 14px;
-  font-size: 0.75rem;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
   border-radius: 8px;
   border: 1px solid var(--color-border-subtle);
   background: var(--color-surface-base);
   color: var(--color-text-muted);
   cursor: pointer;
-  font-weight: 600;
+  font-weight: var(--type-weight-semibold);
   transition: all 0.12s ease;
   white-space: nowrap;
-  font-family: var(--font-mono);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--type-track-label);
 }
 
 .previewBtn:hover {
@@ -230,11 +231,11 @@
 }
 
 .statusBadge {
-  font-size: 0.625rem;
-  font-weight: 700;
-  font-family: var(--font-mono);
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-bold);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--type-track-label);
   padding: 4px 8px;
   border-radius: 4px;
   border: 1px solid #f59e0b;
@@ -256,18 +257,18 @@
 
 .publishBtn {
   padding: 7px 14px;
-  font-size: 0.75rem;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
   border-radius: 8px;
   border: 1px solid #22c55e;
   background: #22c55e;
   color: #fff;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: var(--type-weight-semibold);
   transition: opacity 0.12s ease;
   white-space: nowrap;
-  font-family: var(--font-mono);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--type-track-label);
 }
 
 .publishBtn:hover {
@@ -317,12 +318,12 @@
 }
 
 .floatingDirtyLabel {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  font-weight: 600;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-semibold);
   color: #f59e0b;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--type-track-label);
 }
 
 :global([data-theme="dark"]) .floatingSaveBar {
@@ -351,11 +352,11 @@
   border: none;
   background: var(--color-surface-2);
   color: var(--color-text-muted);
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  font-weight: 700;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-bold);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--type-track-label-lg);
   transition: background 0.12s ease;
 }
 
@@ -431,11 +432,11 @@
 }
 
 .editorEmptyText {
-  font-family: var(--font-secondary);
-  font-size: 0.8125rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
   color: var(--color-text-faint);
   margin: 0;
-  line-height: 1.5;
+  line-height: var(--type-lh-body);
 }
 
 /* ── Right: Mission editor ── */
@@ -487,17 +488,17 @@
   border-radius: 8px;
   background: var(--color-primary);
   color: #fff;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-family: var(--type-font-label);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-weight-semibold);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.2);
   pointer-events: none;
   text-transform: capitalize;
-  font-family: var(--font-mono);
-  letter-spacing: 0.02em;
+  letter-spacing: var(--type-track-label);
 }
 
 .dragOverlayLabel {
-  line-height: 1;
+  line-height: var(--type-lh-solid);
 }
 
 .loadingOverlay {
@@ -526,11 +527,11 @@
 }
 
 .loadingText {
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  font-weight: 600;
+  font-family: var(--type-font-label);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-weight-semibold);
   color: var(--color-text-muted);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--type-track-label);
 }
 
 :global([data-theme="dark"]) .loadingOverlay {
@@ -600,11 +601,11 @@
 }
 
 .previewBadgeValue {
-  font-family: var(--font-secondary);
-  font-size: 11px;
-  font-weight: 700;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-bold);
   color: #fff;
-  letter-spacing: 0.02em;
+  letter-spacing: var(--type-track-label);
 }
 
 .previewCardBody {
@@ -615,11 +616,12 @@
 }
 
 .previewCardTitle {
-  font-family: var(--font-secondary);
-  font-size: 18px;
-  font-weight: 800;
+  font-family: var(--type-font-heading);
+  font-size: var(--type-h4-size);
+  font-weight: var(--type-weight-bold);
+  letter-spacing: var(--type-h4-track);
   color: var(--color-text-dark);
-  line-height: 1.2;
+  line-height: var(--type-lh-heading);
   margin: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -629,11 +631,11 @@
 }
 
 .previewCardDesc {
-  font-family: var(--font-secondary);
-  font-size: 13px;
-  font-weight: 500;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-weight-regular);
   color: var(--color-text-muted);
-  line-height: 1.4;
+  line-height: var(--type-caption-lh);
   margin: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -652,18 +654,21 @@
 }
 
 .publishFormTitle {
-  font-family: var(--font-secondary);
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-family: var(--type-font-heading);
+  font-size: var(--type-h3-size);
+  line-height: var(--type-h3-lh);
+  letter-spacing: var(--type-h3-track);
+  font-weight: var(--type-weight-bold);
   color: var(--color-text-dark);
   margin: 0;
 }
 
 .publishFormSub {
-  font-size: 0.8125rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
   color: var(--color-text-muted);
   margin: -10px 0 0;
-  line-height: 1.4;
+  line-height: var(--type-caption-lh);
 }
 
 .publishField {
@@ -673,24 +678,24 @@
 }
 
 .publishFieldLabel {
-  font-size: 0.6875rem;
-  font-weight: 700;
-  font-family: var(--font-mono);
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-bold);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--type-track-label-lg);
   color: var(--color-text-muted);
 }
 
 .publishFieldInput {
   padding: 10px 12px;
-  font-size: 0.875rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-size);
   border-radius: 8px;
   border: 1.5px solid var(--color-border-subtle);
   background: var(--color-surface-base);
   color: var(--color-text-dark);
   outline: none;
   transition: border-color 0.15s ease;
-  font-family: var(--font-primary);
 }
 
 .publishFieldInput:focus {
@@ -700,17 +705,17 @@
 
 .publishFieldTextarea {
   padding: 10px 12px;
-  font-size: 0.875rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-size);
   border-radius: 8px;
   border: 1.5px solid var(--color-border-subtle);
   background: var(--color-surface-base);
   color: var(--color-text-dark);
   outline: none;
   transition: border-color 0.15s ease;
-  font-family: var(--font-primary);
   resize: vertical;
   min-height: 60px;
-  line-height: 1.5;
+  line-height: var(--type-lh-body);
 }
 
 .publishFieldTextarea:focus {
@@ -725,9 +730,9 @@
 }
 
 .publishSlugPrefix {
-  font-size: 0.875rem;
+  font-family: var(--type-font-code);
+  font-size: var(--type-code-size);
   color: var(--color-text-faint);
-  font-family: var(--font-mono);
   flex-shrink: 0;
 }
 
@@ -746,10 +751,11 @@
 }
 
 .publishIssuesTitle {
-  font-size: 0.75rem;
-  font-weight: 700;
-  font-family: var(--font-mono);
-  letter-spacing: 0.03em;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--type-track-label);
   color: #b91c1c;
 }
 
@@ -764,8 +770,9 @@
 }
 
 .publishIssueItem {
-  font-size: 0.8125rem;
-  line-height: 1.4;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-caption-lh);
   color: var(--color-text-dark);
 }
 
@@ -780,16 +787,16 @@
 
 .publishCancelBtn {
   padding: 8px 18px;
-  font-size: 0.75rem;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
   border-radius: 8px;
   border: 1px solid var(--color-border-subtle);
   background: transparent;
   color: var(--color-text-muted);
   cursor: pointer;
-  font-weight: 600;
-  font-family: var(--font-mono);
+  font-weight: var(--type-weight-semibold);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--type-track-label);
   transition: all 0.12s ease;
 }
 
@@ -800,16 +807,16 @@
 
 .publishConfirmBtn {
   padding: 8px 20px;
-  font-size: 0.75rem;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
   border-radius: 8px;
   border: none;
   background: #22c55e;
   color: #fff;
   cursor: pointer;
-  font-weight: 600;
-  font-family: var(--font-mono);
+  font-weight: var(--type-weight-semibold);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--type-track-label);
   transition: opacity 0.12s ease;
 }
 
@@ -879,7 +886,8 @@
   background: var(--color-surface-3, #2a2b3d);
   border: 1px solid var(--color-border-subtle);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  font-size: 0.8125rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
   color: var(--color-text-dark);
   animation: toastIn 0.2s ease-out;
   pointer-events: auto;
@@ -895,8 +903,9 @@
   align-items: center;
   gap: 4px;
   padding: 5px 10px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-family: var(--type-font-label);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-weight-semibold);
   color: #fff;
   background: var(--color-primary);
   border: none;

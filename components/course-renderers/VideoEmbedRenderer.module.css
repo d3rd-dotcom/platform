@@ -1,5 +1,7 @@
 .empty_state {
   color: var(--color-text-muted);
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-size);
   font-style: italic;
 }
 
@@ -21,7 +23,9 @@
 }
 
 .summary {
-  font-size: 0.8125rem;
+  font-family: var(--type-font-label);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-weight-semibold);
   cursor: pointer;
   color: var(--color-text-muted);
 }
@@ -31,7 +35,9 @@
 }
 
 .transcript_text {
-  font-size: 0.8125rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lh);
   color: var(--color-text-muted);
   margin-top: 4px;
   white-space: pre-wrap;

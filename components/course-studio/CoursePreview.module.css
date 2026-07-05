@@ -171,20 +171,22 @@
 }
 
 .readingCategory {
-  font-family: var(--font-mono);
-  font-size: 0.5625rem;
-  font-weight: 700;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-bold);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--type-track-label-lg);
+  line-height: var(--type-label-lh);
   color: #6C5CE7;
 }
 
 .readingTitle {
-  font-family: var(--font-secondary);
-  font-size: 0.875rem;
-  font-weight: 700;
+  font-family: var(--type-font-heading);
+  font-size: var(--type-h4-size);
+  font-weight: var(--type-weight-bold);
+  letter-spacing: var(--type-track-heading);
   color: #1A1D33;
-  line-height: 1.3;
+  line-height: var(--type-lh-snug);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -212,11 +214,12 @@
 }
 
 .missionsHeading {
-  font-family: var(--font-mono);
-  font-size: 0.625rem;
-  font-weight: 700;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-bold);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--type-track-label-lg);
+  line-height: var(--type-label-lh);
   color: var(--color-text-muted);
   margin: 0;
   white-space: nowrap;
@@ -341,11 +344,12 @@
 
 .taskTitle {
   flex: 1;
-  font-family: var(--font-secondary);
-  font-size: 0.8125rem;
-  font-weight: 700;
+  font-family: var(--type-font-heading);
+  font-size: var(--type-body-lg-size);
+  font-weight: var(--type-weight-bold);
+  letter-spacing: var(--type-track-heading);
   color: #1A1D33;
-  line-height: 1.3;
+  line-height: var(--type-lh-snug);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -359,7 +363,9 @@
 }
 
 .emptyText {
-  font-size: 0.75rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lh);
   color: var(--color-text-faint);
   text-align: center;
   padding: 24px;
@@ -383,11 +389,12 @@
 }
 
 .readerLabel {
-  font-family: var(--font-mono);
-  font-size: 0.625rem;
-  font-weight: 700;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-bold);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--type-track-label);
+  line-height: var(--type-label-lh);
   padding: 3px 8px;
   border-radius: 4px;
   background: var(--color-surface-2);
@@ -396,9 +403,11 @@
 }
 
 .readerTheme {
-  font-family: var(--font-secondary);
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-family: var(--type-font-heading);
+  font-size: var(--type-h3-size);
+  line-height: var(--type-h3-lh);
+  letter-spacing: var(--type-h3-track);
+  font-weight: var(--type-weight-bold);
   color: var(--color-text-dark);
   margin-top: 8px;
 }
@@ -410,35 +419,39 @@
 
 .readerHtml {
   color: var(--color-text-dark);
-  font-size: 15px;
-  line-height: 1.75;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-lg-size);
+  line-height: var(--type-lh-body);
 }
 
 .readerHtml h1 {
-  font-family: var(--font-secondary);
-  font-size: 20px;
-  font-weight: 700;
+  font-family: var(--type-font-heading);
+  font-size: var(--type-h3-size);
+  font-weight: var(--type-weight-bold);
+  letter-spacing: var(--type-h3-track);
   color: #1A1D33;
-  margin: 1.6em 0 0.5em;
-  line-height: 1.2;
+  margin: var(--type-heading-margin-top) 0 var(--type-heading-margin-bottom);
+  line-height: var(--type-lh-heading);
 }
 
 .readerHtml h2 {
-  font-family: var(--font-secondary);
-  font-size: 17px;
-  font-weight: 700;
+  font-family: var(--type-font-heading);
+  font-size: var(--type-h4-size);
+  font-weight: var(--type-weight-bold);
+  letter-spacing: var(--type-h4-track);
   color: #1A1D33;
-  margin: 1.6em 0 0.5em;
-  line-height: 1.2;
+  margin: var(--type-heading-margin-top) 0 var(--type-heading-margin-bottom);
+  line-height: var(--type-lh-heading);
 }
 
 .readerHtml h3 {
-  font-family: var(--font-secondary);
-  font-size: 15px;
-  font-weight: 700;
+  font-family: var(--type-font-heading);
+  font-size: var(--type-body-lg-size);
+  font-weight: var(--type-weight-bold);
+  letter-spacing: var(--type-h4-track);
   color: #1A1D33;
-  margin: 1.6em 0 0.5em;
-  line-height: 1.2;
+  margin: var(--type-heading-margin-top) 0 var(--type-heading-margin-bottom);
+  line-height: var(--type-lh-heading);
 }
 
 .readerHtml p {
@@ -466,8 +479,8 @@
 }
 
 .readerHtml code {
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
+  font-family: var(--type-font-code);
+  font-size: var(--type-code-size);
   padding: 2px 6px;
   border-radius: 4px;
   background: var(--color-surface-2);
@@ -481,7 +494,9 @@
 
 .readerEmpty {
   color: var(--color-text-faint);
-  font-size: 0.875rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-lh);
   font-style: italic;
 }
 
@@ -508,16 +523,16 @@
 }
 
 .taskInstructions {
-  font-family: var(--font-primary);
-  font-size: 15px;
-  font-weight: 400;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-lg-size);
+  font-weight: var(--type-weight-regular);
   color: rgba(26, 29, 51, 0.88);
-  line-height: 1.65;
+  line-height: var(--type-lh-body);
   margin: 14px 0;
 }
 
 .taskEditor {
-  font-family: var(--font-primary);
+  font-family: var(--type-font-body);
 }
 
 .rightPanelEmpty {
@@ -526,7 +541,9 @@
   justify-content: center;
   height: 100%;
   color: var(--color-text-faint);
-  font-size: 0.8125rem;
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lh);
   text-align: center;
 }
 
