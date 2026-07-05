@@ -18,7 +18,7 @@ interface NavLink {
 }
 
 const NAV_LINKS: NavLink[] = [
-  { label: 'Community', href: '/community', icon: '/icons/nav-world-v2.svg', comingSoon: true },
+  { label: 'Home', href: '/community', icon: '/icons/nav-world-v2.svg' },
   { label: 'Quests', href: '/quests', icon: '/icons/nav-quests-v3.svg' },
   { label: 'Trading', href: '/trades', icon: '/icons/nav-trades-v1.svg' },
 ];

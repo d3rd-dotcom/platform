@@ -79,12 +79,6 @@ const primaryNavItems: NavItem[] = [
     iconSrc: '/icons/nav-home.svg',
   },
   {
-    id: 'course',
-    label: 'Courses',
-    href: '/courses',
-    iconSrc: '/icons/nav-course-v2.svg',
-  },
-  {
     id: 'simulations',
     label: 'Pocket News',
     href: '/simulation',
