@@ -22,5 +22,16 @@ export async function ensureGeneratedTestsSchema() {
   await sqlQuery(`ALTER TABLE generated_tests ADD COLUMN IF NOT EXISTS questions JSONB`);
   await sqlQuery(`ALTER TABLE generated_tests ADD COLUMN IF NOT EXISTS answers JSONB`);
 
+  // Phase 7: verifier-qualification tagging (see db/migration-verifier-tests.sql).
+  // NULL for ordinary surveys; 'verifier_qualification' + metadata {subject,level}
+  // for tiered verifier tests. Purely additive — existing rows keep NULL.
+  await sqlQuery(`ALTER TABLE generated_tests ADD COLUMN IF NOT EXISTS purpose VARCHAR(40)`);
+  await sqlQuery(`ALTER TABLE generated_tests ADD COLUMN IF NOT EXISTS metadata JSONB`);
+
   await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_generated_tests_user_id ON generated_tests(user_id)`);
+  await sqlQuery(
+    `CREATE INDEX IF NOT EXISTS idx_generated_tests_verifier
+     ON generated_tests(user_id, purpose)
+     WHERE purpose = 'verifier_qualification'`
+  );
 }

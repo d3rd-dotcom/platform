@@ -8,6 +8,11 @@ import SideNavigation from '@/components/side-navigation/SideNavigation';
 import GuideBody from '@/components/guides/GuideBody';
 import GuideMethods from '@/components/guides/GuideMethods';
 import GuideWalkthrough from '@/components/guides/GuideWalkthrough';
+import GuideVoteBar from '@/components/guides/GuideVoteBar';
+import VerificationLog from '@/components/guides/VerificationLog';
+import DisputeSection from '@/components/guides/DisputeSection';
+import GuideMaterials from '@/components/guides/GuideMaterials';
+import type { GuideMaterial } from '@/lib/guide-materials-db';
 import type { GuideRecord, GuideMethodRecord, GuideLink } from '@/lib/guides-db';
 import styles from './page.module.css';
 
@@ -26,6 +31,16 @@ export default function GuidePage({ params }: PageProps) {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [showWalkthrough, setShowWalkthrough] = useState(false);
+  const [materials, setMaterials] = useState<GuideMaterial[]>([]);
+
+  useEffect(() => {
+    fetch(`/api/guides/${params.slug}/materials`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d?.materials) setMaterials(d.materials);
+      })
+      .catch(() => {});
+  }, [params.slug]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -72,6 +87,16 @@ export default function GuidePage({ params }: PageProps) {
                 </div>
               )}
               <h1 className={styles.title}>{data.guide.topicTitle}</h1>
+              <GuideVoteBar
+                slug={data.guide.slug}
+                sectionTitles={
+                  Array.isArray(data.guide.body)
+                    ? data.guide.body
+                        .map((c) => (typeof c?.title === 'string' ? c.title : ''))
+                        .filter(Boolean)
+                    : []
+                }
+              />
             </header>
 
             {data.prereqs.length > 0 && (
@@ -108,6 +133,8 @@ export default function GuidePage({ params }: PageProps) {
 
             <GuideMethods methods={data.methods} />
 
+            <GuideMaterials materials={materials} />
+
             {data.dependents.length > 0 && (
               <section className={styles.relSection}>
                 <h2 className={styles.relHeading}>Builds toward</h2>
@@ -120,6 +147,10 @@ export default function GuidePage({ params }: PageProps) {
                 </div>
               </section>
             )}
+
+            <VerificationLog guideId={data.guide.id} />
+
+            <DisputeSection guideId={data.guide.id} />
           </>
         )}
       </main>

@@ -978,6 +978,17 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Lenis drives scrolling on the landing page; native smoothing would
+   double-ease its programmatic scrolls. Lenis adds this class itself. */
+html.lenis {
+  scroll-behavior: auto !important;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
 /* Optional: slightly nicer inertia on supported browsers */
 body {
   overscroll-behavior-y: none;

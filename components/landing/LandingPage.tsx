@@ -1,4 +1,3 @@
-import { LandingScene } from './LandingScene';
 import { LandingHeader } from './LandingHeader';
 import { HeroSection } from './HeroSection';
 import { LandingDeferredSections } from './LandingDeferredSections';
@@ -11,10 +10,7 @@ const LandingPage = () => {
       {/* Header - Logo and CTAs */}
       <LandingHeader />
 
-      {/* 3D Scene - Client component, loads after LCP */}
-      <LandingScene />
-
-      {/* Hero Section - Centered headline and CTA */}
+      {/* Hero Section - Centered headline and CTA (canvas inside) */}
       <HeroSection />
 
       {/* Below-the-fold sections are deferred until after the hero is interactive. */}

@@ -1,13 +1,14 @@
 .container {
   position: relative;
   width: 100%;
-  min-height: 100vh;
+  min-height: calc(100vh + 72px);
+  margin-top: -72px;
   overflow-x: hidden;
   overflow-y: auto;
-  background-color: #ffffff;
+  background-color: var(--color-primary);
   background-image:
-    linear-gradient(rgba(128, 128, 128, 0.06) 0.5px, transparent 0.5px),
-    linear-gradient(90deg, rgba(128, 128, 128, 0.06) 0.5px, transparent 0.5px);
+    linear-gradient(rgba(255, 255, 255, 0.04) 0.5px, transparent 0.5px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 0.5px, transparent 0.5px);
   background-size: 40px 40px;
   --hero-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --landing-shell-width: calc(100% - 144px);
@@ -41,6 +42,7 @@
   gap: clamp(28px, 4vw, 72px);
   box-sizing: border-box;
   overflow: visible;
+  background: transparent;
 }
 
 .heroContent {
@@ -87,45 +89,6 @@
   to   { opacity: 1; }
 }
 
-.heroVisualColumn {
-  flex: 1 1 46%;
-  max-width: 46%;
-  min-width: 0;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  align-self: flex-end;
-  animation: heroImageReveal 1.2s var(--hero-ease-out) 0.15s both;
-}
-
-.heroVisualFrame {
-  position: relative;
-  width: min(100%, 620px);
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  line-height: 0;
-  overflow: visible;
-}
-
-/* Mobile-only orb backdrop — anchored to viewport right (see heroShapeBackdrop) */
-.heroShapeBackdrop {
-  display: none;
-}
-
-/* decorative orb/rock shape sitting behind the Blue character (desktop) */
-.heroVisualFrame::before {
-  content: '';
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: clamp(380px, 46vw, 820px);
-  aspect-ratio: 1212 / 1449;
-  background: url('/images/hero-shape.webp') right bottom / contain no-repeat;
-  z-index: 0;
-  pointer-events: none;
-}
-
 @media (min-width: 769px) {
   .heroSection {
     width: 100%;
@@ -139,34 +102,12 @@
     flex: 0 1 calc(var(--hero-inner-max) * 0.54);
     max-width: calc(var(--hero-inner-max) * 0.54);
   }
-
-  .heroVisualColumn {
-    flex: 1 1 auto;
-    max-width: none;
-  }
-
-  .heroVisualFrame {
-    width: 100%;
-    max-width: none;
-  }
-}
-
-.heroVisualImage {
-  position: relative;
-  z-index: 1;
-  display: block;
-  width: 100%;
-  height: auto;
-  max-height: min(76vh, 920px);
-  object-fit: contain;
-  object-position: right bottom;
-  filter: none;
 }
 
 .heroTextBadge {
   display: block;
   margin: 0 0 22px 0;
-  color: rgba(11, 12, 18, 0.88);
+  color: rgba(255, 255, 255, 0.8);
   font-family: var(--font-primary);
   font-size: clamp(0.68rem, 0.95vw, 0.84rem);
   font-weight: 600;
@@ -184,7 +125,7 @@
   line-height: 0.96;
   margin: 0 0 16px 0;
   letter-spacing: -0.035em;
-  color: #0B0C12;
+  color: #ffffff;
   text-transform: uppercase;
   text-shadow: none;
 }
@@ -224,7 +165,7 @@
 }
 
 .heroHeadlineAccent {
-  color: var(--color-primary);
+  color: #ffffff;
 }
 
 .heroLine {
@@ -255,7 +196,7 @@
   font-weight: 400;
   line-height: 1.55;
   margin: 0 0 28px;
-  color: #2B3142;
+  color: rgba(255, 255, 255, 0.75);
   max-width: 34rem;
   animation: heroFadeUp 0.7s var(--hero-ease-out) 0.25s both;
 }
@@ -1127,24 +1068,13 @@
     font-size: clamp(2.2rem, 5vw, 4.4rem);
   }
 
-  .heroVisualFrame {
-    width: min(100%, 540px);
-  }
-
-  @media (min-width: 769px) {
-    .heroVisualFrame {
-      width: 100%;
-      max-width: none;
-    }
-  }
 }
 
 @media (max-width: 768px) {
   .container {
     --landing-shell-width: calc(100% - 32px);
     --landing-shell-padding: 16px;
-    /* Let hero orb bleed to the viewport edge without clipping */
-    overflow-x: visible;
+
   }
 
   .heroSection {
@@ -1170,49 +1100,6 @@
     padding: 0 var(--landing-shell-padding);
     box-sizing: border-box;
     transform: none;
-  }
-
-  .heroVisualColumn {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: none;
-    justify-content: flex-end;
-    align-items: flex-end;
-    align-self: stretch;
-    order: 2;
-    overflow: visible;
-  }
-
-  .heroVisualFrame::before {
-    display: none;
-  }
-
-  .heroShapeBackdrop {
-    display: block;
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    z-index: 0;
-    width: min(92vw, 500px);
-    height: auto;
-    max-height: min(52vh, 420px);
-    object-fit: contain;
-    object-position: right bottom;
-    pointer-events: none;
-  }
-
-  .heroVisualFrame {
-    width: fit-content;
-    max-width: 100%;
-    margin-left: auto;
-  }
-
-  .heroVisualFrame :global(span) {
-    display: block !important;
-    width: fit-content !important;
-    max-width: 100% !important;
-    margin-left: auto !important;
   }
 
   .heroTextBadge {
@@ -1255,15 +1142,6 @@
   .heroSubtextSecondary {
     width: auto;
     max-width: 100%;
-  }
-
-  .heroVisualImage {
-    width: auto !important;
-    max-width: min(88vw, 420px);
-    height: auto !important;
-    max-height: 58vh;
-    margin: 0 0 0 auto;
-    object-position: right bottom;
   }
 
   .heroValueCards {
@@ -1355,11 +1233,6 @@
     padding: 0 var(--landing-shell-padding);
   }
 
-  .heroShapeBackdrop {
-    width: min(96vw, 480px);
-    max-height: min(48vh, 380px);
-  }
-
   .heroTextBadge {
     margin-bottom: 12px;
     font-size: 0.78rem;
@@ -1433,24 +1306,21 @@
 
 .canvas {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
+  inset: 0;
   z-index: 0;
-  background-color: transparent;
+  background-color: var(--color-primary);
   background-image:
-    linear-gradient(color-mix(in oklch, var(--color-primary) 5%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 5%, transparent) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
   background-size: 40px 40px;
   overflow: hidden;
 }
 
 .canvasFallback {
-  background-color: #ffffff;
+  background-color: var(--color-primary);
   background-image:
-    linear-gradient(color-mix(in oklch, var(--color-primary) 5%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 5%, transparent) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
   background-size: 40px 40px;
 }
 

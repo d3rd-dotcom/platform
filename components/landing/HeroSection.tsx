@@ -1,17 +1,19 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 import styles from './LandingPage.module.css';
 import GlitchRevealText from './GlitchRevealText';
 import LandingEnterAcademyButton from './LandingEnterAcademyButton';
-import CompanyLogos from './CompanyLogos';
+import { LandingScene } from './LandingScene';
+import { HeroSting } from './scroll/HeroSting';
 
 export const HeroSection: React.FC = () => {
   return (
     <>
       <div className={styles.heroSection}>
-        <div className={styles.heroContent}>
+        <LandingScene />
+        <HeroSting />
+        <div className={styles.heroContent} data-hero-parallax>
           <p className={styles.heroTextBadge}>Next-Gen Cohort For Scientists &amp; Agents</p>
           <GlitchRevealText
             as="h1"
@@ -32,28 +34,8 @@ export const HeroSection: React.FC = () => {
             <LandingEnterAcademyButton dark />
           </div>
         </div>
-        <div className={styles.heroVisualColumn} aria-hidden="true">
-          <div className={styles.heroVisualFrame}>
-            <Image
-              src="/blue/blue-home.png"
-              alt="Blue, the Academy mascot"
-              width={742}
-              height={705}
-              className={styles.heroVisualImage}
-              priority
-            />
-          </div>
-        </div>
-        {/* Mobile: viewport-anchored backdrop (frame ::before clips inside shell) */}
-        <img
-          src="/images/hero-shape.webp"
-          alt=""
-          className={styles.heroShapeBackdrop}
-          aria-hidden
-        />
-      </div>
 
-      <CompanyLogos />
+      </div>
     </>
   );
 };

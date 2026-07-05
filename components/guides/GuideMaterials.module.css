@@ -1,0 +1,137 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4, 1rem);
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+}
+
+.headerIcon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.title {
+  font-family: var(--type-font-heading);
+  font-size: var(--type-h3-size);
+  line-height: var(--type-h3-lh);
+  letter-spacing: var(--type-h3-track);
+  font-weight: var(--type-weight-semibold);
+  color: var(--color-text-dark);
+  margin: 0;
+}
+
+/* ── Grid of material cards ─────────────────────────────────────────────── */
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-3, 0.75rem);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg, 0.75rem);
+  background: var(--color-surface-base);
+  transition: border-color var(--duration-fast, 200ms) var(--ease-default);
+}
+
+.card:hover {
+  border-color: var(--color-primary);
+}
+
+/* ── Image ──────────────────────────────────────────────────────────────── */
+.imageWrap {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: var(--color-surface-2);
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.imagePlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-faint);
+}
+
+/* ── Body ───────────────────────────────────────────────────────────────── */
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5rem);
+  padding: var(--space-3, 0.75rem);
+}
+
+.nameRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2, 0.5rem);
+}
+
+.name {
+  font-family: var(--type-font-heading);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-lh);
+  font-weight: var(--type-weight-semibold);
+  color: var(--color-text-dark);
+  min-width: 0;
+}
+
+.price {
+  flex-shrink: 0;
+  font-family: var(--type-font-code);
+  font-size: var(--type-label-size);
+  letter-spacing: var(--type-label-track);
+  font-weight: var(--type-weight-semibold);
+  color: var(--color-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.rationale {
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lh);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* ── Link out ───────────────────────────────────────────────────────────── */
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, 0.25rem);
+  align-self: flex-start;
+  margin-top: var(--space-1, 0.25rem);
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-lh);
+  letter-spacing: var(--type-label-track);
+  font-weight: var(--type-weight-semibold);
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--color-primary);
+  transition: opacity var(--duration-fast, 200ms) var(--ease-default);
+}
+
+.link:hover {
+  opacity: 0.78;
+}

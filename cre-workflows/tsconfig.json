@@ -15,6 +15,7 @@
   "include": [
     "auto-execute/**/*.ts",
     "blue-review/**/*.ts",
+    "guide-review/**/*.ts",
     "trade-execute/**/*.ts",
     "shared/**/*.ts"
   ],

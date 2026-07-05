@@ -1,0 +1,29 @@
+# ==========================================================================
+# CRE WORKFLOW SETTINGS: guide-review-verification
+# ==========================================================================
+# Cron-triggered workflow (Phase 3). Polls the app's
+# GET /api/guides?status=pending_verification listing, scores each pending
+# guide against its sources of truth via the Eliza AI API under DON consensus,
+# and POSTs the ADVISORY 0-100 score to the secret-header-authenticated
+# /api/guides/verification/cre-score callback.
+#
+# Unlike blue-review this is NOT EVM-log triggered: guides live off-chain, so
+# there is no on-chain event to listen for. It mirrors auto-execute's cron
+# pattern instead. The DON-signed on-chain write path (a future
+# ActionType.GuideReview on BlueKillStreak) is documented in main.ts.
+
+production-settings:
+  user-workflow:
+    workflow-name: "guide-review-verification"
+  workflow-artifacts:
+    workflow-path: "./main.ts"
+    config-path: "./config.production.json"
+    secrets-path: "../secrets.yaml"
+
+staging-settings:
+  user-workflow:
+    workflow-name: "guide-review-verification-staging"
+  workflow-artifacts:
+    workflow-path: "./main.ts"
+    config-path: "./config.production.json"
+    secrets-path: "../secrets.yaml"

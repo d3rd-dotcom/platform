@@ -101,7 +101,7 @@ export const LandingScene: React.FC = () => {
     <LandingSceneErrorBoundary>
       <div ref={containerRef} className={styles.canvas}>
         {shouldMount ? (
-          <CubesCanvas bgColor="#FFFFFF" animate={inView && !reducedMotion} />
+          <CubesCanvas bgColor="#5168FF" animate={inView && !reducedMotion} />
         ) : null}
       </div>
     </LandingSceneErrorBoundary>
