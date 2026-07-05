@@ -380,7 +380,13 @@
   .scene {
     display: flex;
     flex-direction: column;
-    min-height: 100dvh;
+    height: 100dvh;
+  }
+
+  .sceneHeader {
+    display: flex;
+    position: static;
+    flex-shrink: 0;
   }
 
   .sceneFooter {
@@ -392,13 +398,13 @@
   .blueWrap {
     width: 40px;
     height: 40px;
-    top: 10px;
+    top: 44px;
     left: 8px;
   }
 
   .footerCounters {
     position: absolute;
-    top: 12px;
+    top: 46px;
     left: 56px;
     right: auto;
     z-index: 7;

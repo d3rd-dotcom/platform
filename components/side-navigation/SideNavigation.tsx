@@ -84,6 +84,12 @@ const primaryNavItems: NavItem[] = [
     href: '/simulation',
     iconSrc: '/icons/nav-simulations-v2.svg',
   },
+  {
+    id: 'quests',
+    label: 'Quests',
+    href: '/quests',
+    iconSrc: '/icons/nav-quests-v3.svg',
+  },
 ];
 
 const bottomNavItems: NavItem[] = [

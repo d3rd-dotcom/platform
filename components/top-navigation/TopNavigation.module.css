@@ -609,12 +609,15 @@
   .searchInput { min-width: 80px; max-width: 100%; }
 }
 
-/* Phone — tighter still */
+/* Phone — hide search, centre the logo */
 @media (max-width: 640px) {
   .menuButton { display: none; }
-  .logo { width: 100px; }
+  .searchWrapper { display: none; }
+  .leftSection {
+    flex: 1;
+    justify-content: center;
+  }
   .header { padding: 0 8px; }
-  .searchInput { min-width: 60px; font-size: 12px; }
 }
 
 

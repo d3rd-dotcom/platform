@@ -51,6 +51,7 @@
   .pageLayout {
     margin-left: 0;
     height: 100dvh;
+    padding-top: 72px;
   }
 
   .content {
