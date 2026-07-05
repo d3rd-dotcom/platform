@@ -30,8 +30,8 @@ export default function NotFound() {
             unoptimized
           />
         </div>
-        <Link href="/home" className={styles.cta}>
-          Go to Home
+        <Link href="/courses" className={styles.cta}>
+          Go to Courses
         </Link>
       </div>
     </div>

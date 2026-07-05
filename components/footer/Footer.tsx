@@ -28,7 +28,7 @@ const data = [
   {
     title: 'About',
     links: [
-      { label: 'Features', link: '/home' },
+      { label: 'Features', link: '/courses' },
       { label: 'Quests', link: '/quests' },
       { label: 'Support', link: 'https://mental-wealth-academy.gitbook.io/mental-wealth-academy-docs/' },
     ],
@@ -36,9 +36,9 @@ const data = [
   {
     title: 'Project',
     links: [
-      { label: 'Contribute', link: '/home' },
-      { label: 'Proposals', link: '/home' },
-      { label: 'Governance', link: '/home' },
+      { label: 'Contribute', link: '/courses' },
+      { label: 'Proposals', link: '/courses' },
+      { label: 'Governance', link: '/courses' },
       { label: 'Docs', link: 'https://mental-wealth-academy.gitbook.io/mental-wealth-academy-docs/' },
     ],
   },

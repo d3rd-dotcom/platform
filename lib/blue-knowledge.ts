@@ -166,13 +166,13 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
       'Motivation design follows Self-Determination Theory: competence, autonomy, and relatedness.',
   },
   {
-    id: 'page-home',
-    title: 'Home (dashboard)',
-    routes: ['/home'],
-    keywords: ['home', 'dashboard', 'overview', 'progress', 'snapshot'],
+    id: 'page-courses',
+    title: 'Courses (dashboard)',
+    routes: ['/courses'],
+    keywords: ['courses', 'dashboard', 'overview', 'progress', 'snapshot'],
     body:
-      'The /home page is the authenticated dashboard — the user\'s daily snapshot of streaks, recent activity, current week, and pending quests. ' +
-      'It is NOT the landing page (/). Refer to it as "home" or "dashboard".',
+      'The /courses page is the main user dashboard — the user\'s daily snapshot of streaks, recent activity, current week, and pending quests. ' +
+      'It is NOT the landing page (/). Refer to it as "courses" or "dashboard".',
   },
   {
     id: 'page-landing',
@@ -181,7 +181,7 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
     keywords: ['landing', 'marketing', 'hero', 'public', 'home page'],
     body:
       'The / route is the public landing page. It introduces MWA to visitors with a hero, lab section, and product snapshot. ' +
-      'Not to be confused with /home (the user dashboard).',
+      'Not to be confused with /courses (the user dashboard).',
   },
   {
     id: 'page-course',
@@ -395,7 +395,7 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
   {
     id: 'feature-field-notes',
     title: 'Field notes',
-    routes: ['/shadow-work', '/quests', '/home'],
+    routes: ['/shadow-work', '/quests', '/courses'],
     keywords: ['morning', 'pages', 'journal', 'streak', 'prayer', 'daily'],
     body:
       'Field notes are a daily journaling habit (3 pages of freewriting). Tracked as a streak in the prayers table, encrypted per-user. ' +

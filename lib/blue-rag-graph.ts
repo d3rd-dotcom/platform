@@ -143,7 +143,7 @@ const CONCEPT_ALIASES: Record<string, string[]> = {
 };
 
 const ROUTE_TERMS: Record<string, string[]> = {
-  '/home': ['dashboard', 'progress', 'streak', 'overview'],
+  '/courses': ['dashboard', 'progress', 'streak', 'overview', 'home'],
   '/shadow-work': ['course', 'curriculum', 'week', 'seal', 'pathway'],
   '/quests': ['quests', 'daily', 'field notes', 'completion'],
   '/markets': ['markets', 'kalshi', 'prediction', 'treasury', 'trade'],

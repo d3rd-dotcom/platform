@@ -34,7 +34,7 @@ const TopNavigation: React.FC = () => {
   useEffect(() => {
     if (authenticated && loginTriggered.current) {
       loginTriggered.current = false;
-      router.push('/home');
+      router.push('/courses');
     }
   }, [authenticated, router]);
 
@@ -46,7 +46,7 @@ const TopNavigation: React.FC = () => {
 
   const handleLogin = () => {
     if (authenticated) {
-      router.push('/home');
+      router.push('/courses');
       return;
     }
     loginTriggered.current = true;
@@ -55,7 +55,7 @@ const TopNavigation: React.FC = () => {
 
   const handleJoinNow = () => {
     if (authenticated) {
-      router.push('/home');
+      router.push('/courses');
       return;
     }
     loginTriggered.current = true;

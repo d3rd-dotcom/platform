@@ -8,7 +8,7 @@ import {
   Compass,
   House,
   IconProps,
-  Books,
+  ClipboardText,
   UserCircle,
 } from '@phosphor-icons/react';
 import styles from './MobileBottomNav.module.css';
@@ -17,8 +17,8 @@ type NavIcon = React.ForwardRefExoticComponent<IconProps & React.RefAttributes<S
 
 const NAV_ITEMS = [
   { id: 'profile', label: 'Profile', href: '/profile', icon: UserCircle },
-  { id: 'course', label: 'Course', href: '/shadow-work', icon: Books },
-  { id: 'home', label: 'Home', href: '/home', icon: House },
+  { id: 'surveys', label: 'Surveys', href: '/surveys', icon: ClipboardText },
+  { id: 'home', label: 'Courses', href: '/courses', icon: House },
   { id: 'quests', label: 'Quests', href: '/quests', icon: Compass },
 ] as const;
 

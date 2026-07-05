@@ -125,7 +125,7 @@ export default function AcademyAccessGate({ children }: { children: ReactNode })
     const wallet = getDevWallet();
     try { window.localStorage.setItem('mwa_devonboard', '1'); } catch {}
     try { window.sessionStorage.setItem('mwa_dev_wallet', wallet); } catch {}
-    window.location.href = '/home?devonboard=1';
+    window.location.href = '/courses?devonboard=1';
   };
 
   const viewScreens = () => {

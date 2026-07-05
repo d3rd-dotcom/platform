@@ -12,6 +12,21 @@
   line-height: var(--type-lh-body);
 }
 
+.prose_container h1,
+.prose_container h2,
+.prose_container h3,
+.prose_container h4 {
+  font-family: var(--type-font-heading);
+  font-weight: var(--type-weight-bold);
+  color: var(--color-text-dark);
+  line-height: var(--type-lh-heading);
+  margin: var(--type-heading-margin-top) 0 var(--type-heading-margin-bottom);
+}
+
+.prose_container h1 { font-size: var(--type-h2-size); letter-spacing: var(--type-h2-track); }
+.prose_container h2 { font-size: var(--type-h3-size); letter-spacing: var(--type-h3-track); }
+.prose_container h3 { font-size: var(--type-h4-size); letter-spacing: var(--type-h4-track); }
+
 .list_item {
   margin-left: 16px;
 }

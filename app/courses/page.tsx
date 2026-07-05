@@ -13,6 +13,7 @@ import type { VipCourseRecord } from '@/lib/vip-course-db';
 import { onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
 import type { CourseRecord } from '@/lib/course-content-db';
 import type { GuideRecord } from '@/lib/guides-db';
+import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
 
 function getCourseEndDate() {
@@ -54,6 +55,7 @@ export default function CoursesPage() {
   const [isVip, setIsVip] = useState(false);
   const [fieldNotesOpen, setFieldNotesOpen] = useState(false);
   const [noteCount, setNoteCount] = useState(0);
+  const { play } = useSound();
 
   useEffect(() => {
     fetch('/api/course-content')
@@ -393,27 +395,32 @@ export default function CoursesPage() {
         )}
 
         {guides.length > 0 && (
-          <section className={styles.authoredSection}>
-            <h2 className={styles.authoredHeading}>Knowledge Base</h2>
-            {guidesBySubject.map(([subject, subjectGuides]) => (
-              <div key={subject} className={styles.guideSubjectGroup}>
-                <span className={styles.guideSubjectLabel}>{subject}</span>
-                <div className={styles.authoredList}>
-                  {subjectGuides.map((g) => (
-                    <Link
-                      key={`${subject}-${g.id}`}
-                      href={`/courses/guides/${g.slug}`}
-                      className={`${styles.authoredCard} ${styles.courseLink}`}
-                    >
-                      <div className={styles.authoredBody}>
-                        <span className={styles.authoredTitle}>{g.topicTitle}</span>
-                      </div>
-                    </Link>
-                  ))}
+          <div className={styles.guideSection}>
+            <h2 className={styles.guideSectionHeading}>Knowledge Base</h2>
+            <div className={styles.guideSectionContent}>
+              {guidesBySubject.map(([subject, subjectGuides]) => (
+                <div key={subject} className={styles.guideSubjectGroup}>
+                  <span className={styles.guideSubjectLabel}>{subject}</span>
+                  <div className={styles.authoredList}>
+                    {subjectGuides.map((g) => (
+                      <Link
+                        key={`${subject}-${g.id}`}
+                        href={`/courses/guides/${g.slug}`}
+                        className={styles.guideCard}
+                        onMouseEnter={() => play('soft-hover')}
+                      >
+                        <div className={styles.guideCardBody}>
+                          <span className={styles.guideCardTitle}>{g.topicTitle}</span>
+                        </div>
+                        <span className={styles.guideCardChevron} aria-hidden="true">›</span>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </section>
+              ))}
+            </div>
+            <div className={styles.guideSectionFooter}>guides & references</div>
+          </div>
         )}
 
       </div>

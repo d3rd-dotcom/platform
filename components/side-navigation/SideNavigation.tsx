@@ -75,7 +75,7 @@ const primaryNavItems: NavItem[] = [
   {
     id: 'home',
     label: 'Home',
-    href: '/home',
+    href: '/courses',
     iconSrc: '/icons/nav-home.svg',
   },
   {
@@ -165,6 +165,17 @@ const NavIconMark: React.FC<{
   );
 };
 
+function getPersistedSidebarState(): boolean {
+  try {
+    const saved = localStorage.getItem('sideNavCollapsed');
+    if (saved === 'false') return false;
+    if (saved === 'true') return true;
+  } catch {}
+  const attr = document.documentElement.getAttribute('data-sidebar-collapsed');
+  if (attr === 'false') return false;
+  return true;
+}
+
 const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onExternalMobileClose }) => {
   const initialCollapsed = useInitialSidebarCollapsed();
   const pathname = usePathname();
@@ -196,7 +207,14 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const [adminExpanded, setAdminExpanded] = useState(true);
   const [isYourAccountsModalOpen, setIsYourAccountsModalOpen] = useState(false);
   const [isCreatingSession, setIsCreatingSession] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(initialCollapsed);
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    try {
+      const saved = localStorage.getItem('sideNavCollapsed');
+      if (saved === 'false') return false;
+      if (saved === 'true') return true;
+    } catch {}
+    return initialCollapsed;
+  });
   const [isLootBoxOpen, setIsLootBoxOpen] = useState(false);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [userLoadComplete, setUserLoadComplete] = useState(false);
@@ -563,8 +581,8 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   };
 
   const isActive = (href: string) => {
-    if (href === '/home') {
-      return pathname === '/home' || pathname === '/';
+    if (href === '/courses') {
+      return pathname === '/courses' || pathname === '/';
     }
     return pathname === href || pathname?.startsWith(href + '/');
   };
@@ -718,7 +736,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     <>
       {/* Mobile Top Bar */}
       <div className={styles.mobileTopBar}>
-        <Link href="/home" className={styles.mobileLogoLink}>
+        <Link href="/courses" className={styles.mobileLogoLink}>
           <span className={styles.mobileLogo}>Mental Wealth Academy</span>
         </Link>
         <button

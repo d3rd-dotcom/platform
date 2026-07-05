@@ -464,22 +464,6 @@
   gap: 8px;
 }
 
-.guideSubjectGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.guideSubjectLabel {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--color-primary);
-  font-family: var(--font-mono);
-}
-
 .authoredCard {
   display: flex;
   align-items: center;
@@ -599,6 +583,204 @@
   align-items: center;
   gap: 8px;
   padding-top: 6px;
+}
+
+/* ── Knowledge Base scene ── */
+.guideSection {
+  grid-column: 1 / -1;
+  position: relative;
+  border: 2px solid var(--color-primary-hover);
+  border-radius: 12px;
+  background-color: var(--color-surface-base);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(81,104,255,0.06)'/%3E%3C/svg%3E");
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    0 0px 10px rgba(0, 0, 0, 0.14),
+    0 10px 5px rgba(0, 0, 0, 0.30);
+  padding: 36px 20px 16px;
+  margin-top: 20px;
+}
+
+.guideSectionHeading {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  background: var(--color-background);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.guideSectionHeading::before,
+.guideSectionHeading::after {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 1px;
+  background: var(--color-primary-hover);
+}
+
+.guideSectionContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.guideSubjectGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.guideSubjectLabel {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-primary);
+  font-family: var(--font-mono);
+  padding-left: 16px;
+}
+
+.guideCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-base));
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05), 0 1px 0 color-mix(in oklch, var(--color-primary) 10%, transparent);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+}
+
+.guideCard:hover {
+  border-color: color-mix(in oklch, var(--color-primary) 38%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 7%, var(--color-surface-base));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 0 color-mix(in oklch, var(--color-primary) 16%, transparent);
+}
+
+.guideCard:active {
+  background: color-mix(in oklch, var(--color-primary) 10%, var(--color-surface-base));
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.guideCardBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.guideCardTitle {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #1e1e2a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.15s ease;
+}
+
+.guideCard:hover .guideCardTitle {
+  color: var(--color-primary);
+}
+
+.guideCardChevron {
+  flex-shrink: 0;
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--color-text-faint);
+  transition: color 0.15s ease, transform 0.15s ease;
+  line-height: 1;
+}
+
+.guideCard:hover .guideCardChevron {
+  color: var(--color-primary);
+  transform: translateX(3px);
+}
+
+:global([data-theme="dark"]) .guideSubjectLabel {
+  letter-spacing: 0.1em;
+}
+
+:global([data-theme="dark"]) .guideCard {
+  background: color-mix(in oklch, var(--color-primary) 8%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 22%, transparent);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2), 0 1px 0 color-mix(in oklch, var(--color-primary) 8%, transparent);
+}
+
+:global([data-theme="dark"]) .guideCard:hover {
+  border-color: color-mix(in oklch, var(--color-primary-hover) 50%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 12%, #15172a);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 1px 0 color-mix(in oklch, var(--color-primary) 14%, transparent);
+}
+
+:global([data-theme="dark"]) .guideCard:active {
+  background: color-mix(in oklch, var(--color-primary) 16%, #15172a);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+:global([data-theme="dark"]) .guideCardTitle {
+  color: #d6d9ee;
+}
+
+:global([data-theme="dark"]) .guideCard:hover .guideCardTitle {
+  color: var(--color-primary);
+}
+
+:global([data-theme="dark"]) .guideCardChevron {
+  color: #4a4f6e;
+}
+
+:global([data-theme="dark"]) .guideCard:hover .guideCardChevron {
+  color: var(--color-primary);
+}
+
+.guideSectionFooter {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 2px solid color-mix(in oklch, var(--color-primary) 36%, #000);
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-faint);
+}
+
+:global([data-theme="dark"]) .guideSection {
+  background-color: #15172a;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
+  border-color: color-mix(in oklch, var(--color-primary-hover) 40%, transparent);
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    0 0px 10px rgba(0, 0, 0, 0.14),
+    0 10px 5px rgba(0, 0, 0, 0.30);
+}
+
+:global([data-theme="dark"]) .guideSectionHeading {
+  color: var(--color-text-muted);
+}
+
+:global([data-theme="dark"]) .guideSectionHeading::before,
+:global([data-theme="dark"]) .guideSectionHeading::after {
+  background: color-mix(in oklch, var(--color-primary-hover) 40%, transparent);
+}
+
+:global([data-theme="dark"]) .guideSectionFooter {
+  border-top-color: color-mix(in oklch, var(--color-primary) 28%, transparent);
 }
 
 .authorAvatar {
@@ -768,6 +950,10 @@
 }
 
 @media (max-width: 768px) {
+  .aside {
+    display: none;
+  }
+
   .main {
     padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
   }
@@ -943,6 +1129,92 @@
 
 :global(:root:not([data-theme="dark"])) .deleteBtnConfirm:hover {
   background: rgba(255, 107, 107, 0.22);
+}
+
+/* ── Mobile: Knowledge Base ── */
+@media (max-width: 768px) {
+  .pageColumns {
+    padding: 88px 16px 48px;
+  }
+
+  .guideSection {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+    background-image: none;
+    padding: 0;
+    margin-top: 32px;
+  }
+
+  .guideSectionHeading {
+    position: static;
+    transform: none;
+    background: transparent;
+    padding: 0 16px 4px;
+    margin-bottom: 8px;
+    justify-content: center;
+  }
+
+  .guideSectionHeading::before,
+  .guideSectionHeading::after {
+    width: 24px;
+  }
+
+  .guideSectionContent {
+    gap: 28px;
+  }
+
+  .guideSubjectGroup {
+    gap: 8px;
+  }
+
+  .guideSubjectLabel {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding: 14px 16px 8px;
+    margin: 0;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    background: var(--color-background);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .guideSubjectLabel::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 16px;
+    right: 16px;
+    height: 1px;
+    background: color-mix(in oklch, var(--color-primary-hover) 18%, transparent);
+  }
+
+  .guideCard {
+    padding: 16px 16px;
+    min-height: 56px;
+    border-radius: 10px;
+    border-width: 1.5px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06), 0 1px 0 color-mix(in oklch, var(--color-primary) 10%, transparent);
+  }
+
+  .guideCard:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 1px 0 color-mix(in oklch, var(--color-primary) 16%, transparent);
+  }
+
+  .guideCard:active {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  }
+
+  .guideCardTitle {
+    font-size: 1rem;
+  }
+
+  .guideSectionFooter {
+    margin-top: 8px;
+  }
 }
 
 @media (max-width: 480px) {

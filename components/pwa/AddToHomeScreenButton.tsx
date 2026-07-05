@@ -15,7 +15,7 @@ interface BeforeInstallPromptEvent extends Event {
 type InstallState = 'idle' | 'available' | 'installing' | 'installed';
 type InstallPlatform = 'ios' | 'other';
 
-const INSTALL_TARGET_URL = 'https://mentalwealthacademy.world/home';
+const INSTALL_TARGET_URL = 'https://mentalwealthacademy.world/courses';
 
 function isIosDevice() {
   if (typeof window === 'undefined') {
