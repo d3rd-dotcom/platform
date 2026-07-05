@@ -7,7 +7,9 @@ import {
   CircleNotch,
   Robot,
   Scales,
+  CaretDown,
 } from '@phosphor-icons/react';
+import { useSound } from '@/hooks/useSound';
 import styles from './VerificationLog.module.css';
 
 // Mirrors the shape returned by GET /api/guides/verification/[guideId].
@@ -80,9 +82,11 @@ function formatDate(iso: string): string {
  * guide page — it is NOT imported by app/courses/guides/[slug]/page.tsx here.
  */
 export default function VerificationLog({ guideId }: Props) {
+  const { play } = useSound();
   const [data, setData] = useState<VerificationLogData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [collapsed, setCollapsed] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);

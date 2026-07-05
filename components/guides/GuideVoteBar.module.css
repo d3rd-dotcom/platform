@@ -1,7 +1,7 @@
 .wrapper {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2, 0.5rem);
+  gap: var(--space-3, 0.75rem);
 }
 
 .bar {
@@ -10,14 +10,18 @@
   gap: var(--space-2, 0.5rem);
 }
 
+/* ── Pill vote buttons in the guideCard tint language ───────────────────── */
 .voteBtn {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2, 0.5rem);
-  padding: 0.5rem 0.875rem;
-  border-radius: var(--radius-md, 0.5rem);
-  border: 1px solid var(--color-border-subtle);
-  background: var(--color-surface-1);
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-full, 9999px);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-base));
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.05),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 10%, transparent);
   color: var(--color-text-dark);
   cursor: pointer;
   font-family: var(--type-font-label);
@@ -25,15 +29,25 @@
   font-weight: var(--type-weight-semibold, 600);
   letter-spacing: var(--type-track-label, 0.05em);
   transition:
-    background var(--duration-fast, 200ms) var(--ease-default),
-    border-color var(--duration-fast, 200ms) var(--ease-default),
-    color var(--duration-fast, 200ms) var(--ease-default);
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    color 0.15s ease;
 }
 
 .voteBtn:hover:not(:disabled) {
-  background: var(--color-surface-2);
-  border-color: var(--color-border-strong, var(--color-border-subtle));
+  border-color: color-mix(in oklch, var(--color-primary) 38%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 7%, var(--color-surface-base));
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 0 0 3px color-mix(in oklch, var(--color-primary) 10%, transparent),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 16%, transparent);
   color: var(--color-primary);
+}
+
+.voteBtn:active:not(:disabled) {
+  background: color-mix(in oklch, var(--color-primary) 10%, var(--color-surface-base));
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .voteBtn:disabled {
@@ -42,9 +56,12 @@
 }
 
 .voteBtnActive {
-  border-color: var(--color-primary);
+  border-color: color-mix(in oklch, var(--color-primary) 48%, transparent);
   color: var(--color-primary);
-  background: var(--color-surface-2);
+  background: color-mix(in oklch, var(--color-primary) 9%, var(--color-surface-base));
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.06),
+    0 0 0 3px color-mix(in oklch, var(--color-primary) 12%, transparent);
 }
 
 .count {
@@ -71,19 +88,22 @@
   font-family: var(--type-font-body);
   font-size: var(--type-body-sm-size, 0.8125rem);
   line-height: var(--type-body-sm-lh, 1.4);
-  color: #FF6B6B;
+  color: color-mix(in oklch, #BA1A1A 82%, var(--color-text-dark));
 }
 
-/* ── Downvote rubric picker ─────────────────────────────────────────────── */
-
+/* ── Downvote rubric picker — card popover ──────────────────────────────── */
 .picker {
   display: flex;
   flex-direction: column;
   gap: var(--space-3, 0.75rem);
   padding: var(--space-4, 1rem);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-lg, 0.75rem);
-  background: var(--color-surface-base);
+  border-radius: 12px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-base));
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.1),
+    0 2px 6px rgba(0, 0, 0, 0.06),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 10%, transparent);
   max-width: 22rem;
 }
 
@@ -100,7 +120,7 @@
   font-weight: var(--type-weight-bold, 700);
   text-transform: uppercase;
   letter-spacing: var(--type-track-label, 0.05em);
-  color: var(--color-text-muted);
+  color: var(--color-primary);
 }
 
 .pickerClose {
@@ -113,11 +133,12 @@
   color: var(--color-text-muted);
   cursor: pointer;
   border-radius: var(--radius-sm, 0.25rem);
-  transition: color var(--duration-fast, 200ms) var(--ease-default);
+  transition: color 0.15s ease, background 0.15s ease;
 }
 
 .pickerClose:hover {
-  color: var(--color-text-dark);
+  color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
 }
 
 .field {
@@ -129,7 +150,9 @@
 .fieldLabel {
   font-family: var(--type-font-label);
   font-size: var(--type-label-size, 0.75rem);
-  font-weight: var(--type-weight-medium, 500);
+  font-weight: var(--type-weight-semibold, 600);
+  text-transform: uppercase;
+  letter-spacing: var(--type-track-label, 0.05em);
   color: var(--color-text-muted);
 }
 
@@ -137,24 +160,25 @@
   width: 100%;
   padding: 0.5rem 0.625rem;
   border-radius: var(--radius-md, 0.5rem);
-  border: 1px solid var(--color-border-subtle);
-  background: var(--color-surface-1);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 16%, transparent);
+  background: var(--color-surface-base);
   color: var(--color-text-dark);
   font-family: var(--type-font-body);
   font-size: var(--type-body-sm-size, 0.8125rem);
   cursor: pointer;
+  transition: border-color 0.15s ease;
 }
 
 .select:focus {
   outline: none;
-  border-color: var(--color-primary);
+  border-color: color-mix(in oklch, var(--color-primary) 48%, transparent);
 }
 
 .submitBtn {
   align-self: flex-start;
   padding: 0.5rem 1rem;
-  border-radius: var(--radius-md, 0.5rem);
-  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-full, 9999px);
+  border: 1.5px solid var(--color-primary);
   background: var(--color-primary);
   color: var(--color-text-light, #FFFFFF);
   cursor: pointer;
@@ -163,14 +187,71 @@
   font-weight: var(--type-weight-semibold, 600);
   text-transform: uppercase;
   letter-spacing: var(--type-track-label, 0.05em);
-  transition: background var(--duration-fast, 200ms) var(--ease-default);
+  box-shadow: 0 2px 6px color-mix(in oklch, var(--color-primary) 30%, transparent);
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
 }
 
 .submitBtn:hover:not(:disabled) {
   background: var(--color-primary-hover);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 38%, transparent);
+}
+
+.submitBtn:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 1px 3px color-mix(in oklch, var(--color-primary) 30%, transparent);
 }
 
 .submitBtn:disabled {
   opacity: 0.55;
   cursor: default;
+}
+
+/* ── Dark theme ─────────────────────────────────────────────────────────── */
+:global([data-theme="dark"]) .voteBtn {
+  background: color-mix(in oklch, var(--color-primary) 8%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 22%, transparent);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.2),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 8%, transparent);
+}
+
+:global([data-theme="dark"]) .voteBtn:hover:not(:disabled) {
+  border-color: color-mix(in oklch, var(--color-primary-hover) 50%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 12%, #15172a);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    0 0 0 3px color-mix(in oklch, var(--color-primary) 14%, transparent),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 14%, transparent);
+}
+
+:global([data-theme="dark"]) .voteBtn:active:not(:disabled) {
+  background: color-mix(in oklch, var(--color-primary) 16%, #15172a);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+:global([data-theme="dark"]) .voteBtnActive {
+  border-color: color-mix(in oklch, var(--color-primary-hover) 55%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 14%, #15172a);
+}
+
+:global([data-theme="dark"]) .picker {
+  background: color-mix(in oklch, var(--color-primary) 8%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 22%, transparent);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    0 2px 6px rgba(0, 0, 0, 0.2),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 8%, transparent);
+}
+
+:global([data-theme="dark"]) .select {
+  background: #15172a;
+  border-color: color-mix(in oklch, var(--color-primary-hover) 20%, transparent);
+}
+
+:global([data-theme="dark"]) .select:focus {
+  border-color: color-mix(in oklch, var(--color-primary-hover) 50%, transparent);
+}
+
+:global([data-theme="dark"]) .pickerClose:hover {
+  background: color-mix(in oklch, var(--color-primary) 16%, transparent);
 }

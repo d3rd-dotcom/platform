@@ -8,6 +8,7 @@ import {
   CircleNotch,
   X,
 } from '@phosphor-icons/react';
+import { useSound } from '@/hooks/useSound';
 import styles from './GuideVoteBar.module.css';
 
 // Kept in-file (no import from lib/guide-votes-db) so this stays a lean client
@@ -52,6 +53,7 @@ interface Props {
 
 export default function GuideVoteBar({ slug, sectionTitles = [] }: Props) {
   const { ready, authenticated, getAccessToken, login } = usePrivy();
+  const { play } = useSound();
   const [totals, setTotals] = useState<Totals>({ up: 0, down: 0 });
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -106,9 +108,11 @@ export default function GuideVoteBar({ slug, sectionTitles = [] }: Props) {
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) {
+          play('error');
           setError(data.error ?? 'Could not record your vote.');
           return;
         }
+        play('success');
         if (data.totals) setTotals(data.totals);
         setPickerOpen(false);
         setReason('');
@@ -117,7 +121,7 @@ export default function GuideVoteBar({ slug, sectionTitles = [] }: Props) {
         setSubmitting(false);
       }
     },
-    [ready, authenticated, login, authHeaders, slug],
+    [ready, authenticated, login, authHeaders, slug, play],
   );
 
   const handleUpvote = () => submitVote('up');
@@ -128,11 +132,13 @@ export default function GuideVoteBar({ slug, sectionTitles = [] }: Props) {
       return;
     }
     setError(null);
+    play('click');
     setPickerOpen((open) => !open);
   };
 
   const handleSubmitDownvote = () => {
     if (!reason) {
+      play('error');
       setError('Pick a reason to downvote.');
       return;
     }
@@ -145,6 +151,7 @@ export default function GuideVoteBar({ slug, sectionTitles = [] }: Props) {
         <button
           type="button"
           className={styles.voteBtn}
+          onMouseEnter={() => play('soft-hover')}
           onClick={handleUpvote}
           disabled={submitting}
           aria-label="Upvote this guide"
@@ -156,6 +163,7 @@ export default function GuideVoteBar({ slug, sectionTitles = [] }: Props) {
         <button
           type="button"
           className={`${styles.voteBtn} ${pickerOpen ? styles.voteBtnActive : ''}`}
+          onMouseEnter={() => play('soft-hover')}
           onClick={handleDownvoteClick}
           disabled={submitting}
           aria-expanded={pickerOpen}
@@ -177,7 +185,11 @@ export default function GuideVoteBar({ slug, sectionTitles = [] }: Props) {
             <button
               type="button"
               className={styles.pickerClose}
-              onClick={() => setPickerOpen(false)}
+              onMouseEnter={() => play('soft-hover')}
+              onClick={() => {
+                play('click');
+                setPickerOpen(false);
+              }}
               aria-label="Cancel downvote"
             >
               <X size={14} weight="bold" />
@@ -223,6 +235,7 @@ export default function GuideVoteBar({ slug, sectionTitles = [] }: Props) {
           <button
             type="button"
             className={styles.submitBtn}
+            onMouseEnter={() => play('soft-hover')}
             onClick={handleSubmitDownvote}
             disabled={submitting || !reason}
           >
