@@ -3,6 +3,44 @@
 import Image from 'next/image';
 import styles from './CohortSection.module.css';
 
+const tiers = [
+  {
+    name: 'Explorer',
+    price: 'Free',
+    description: 'Start with community access, public research, and monthly calls.',
+    features: [
+      'Community access',
+      'Public research library',
+      'Discussion forums',
+      'Monthly community calls',
+    ],
+  },
+  {
+    name: 'Researcher',
+    price: 'Coming soon',
+    description: 'Join live studies, earn credits for approved contributions, and help shape proposals.',
+    features: [
+      'Everything in Explorer',
+      'Participate in live research',
+      'Earn credits for contributions',
+      'Shape research proposals',
+      'Access to Blue and EEG tools',
+    ],
+  },
+  {
+    name: 'Architect',
+    price: 'Coming soon',
+    description: 'Help govern the protocols, credentials, and behavioral dataset behind the academy.',
+    features: [
+      'Everything in Researcher',
+      'Co-own shared infrastructure',
+      'Governance and voting rights',
+      'Early access to all research',
+      'Design architecture access',
+    ],
+  },
+];
+
 export const CohortSection = () => {
   return (
     <section id="cohort" className={styles.cohortSection}>
@@ -12,22 +50,11 @@ export const CohortSection = () => {
 
           <div className={styles.titlePanel}>
             <div className={styles.titlePanelText}>
-              <h2 className={styles.cohortTitle}>A Cohort For Humanitarian AI Research</h2>
+              <h2 className={styles.cohortTitle}>Cohort memberships</h2>
               <p className={styles.cohortSubtitle}>
-                A seasonal programme where you design and participate in live research studies, earn tokens and reflections, shape proposals, and co-own the next gen of behavioral science.                 This isn&apos;t a course — it&apos;s a new kind of lab, and you&apos;re a superhero.
+                Choose how you want to participate in Mental Wealth Academy. Start free, join live research, or help govern the infrastructure behind quests, credits, and community-funded studies.
               </p>
             </div>
-            <a
-              href="https://t.me/mentalwealthacademy"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.telegramPill}
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM16.64 8.8C16.49 9.57 15.84 13.08 15.51 14.68C15.37 15.35 15.1 15.59 14.83 15.62C14.27 15.67 13.85 15.25 13.31 14.89C12.47 14.32 11.99 13.97 11.17 13.41C10.23 12.76 10.84 12.41 11.38 11.83C11.52 11.68 13.93 9.49 13.98 9.29C13.99 9.24 14.01 9.09 13.89 8.99C13.77 8.89 13.63 8.92 13.53 8.94C13.41 8.97 11.92 9.97 9.28 11.78C8.9 12.04 8.56 12.17 8.26 12.16C7.93 12.15 7.3 11.97 6.83 11.83C6.25 11.65 5.79 11.55 5.83 11.23C5.85 11.07 6.08 10.9 6.51 10.73C9.42 9.5 11.4 8.67 12.46 8.24C15.21 7.14 15.77 6.93 16.14 6.93C16.22 6.93 16.4 6.94 16.52 7.05C16.62 7.14 16.65 7.26 16.66 7.35C16.65 7.42 16.66 7.62 16.64 8.8Z" fill="white"/>
-              </svg>
-              <span>Join the Telegram</span>
-            </a>
           </div>
 
           <div className={styles.cohortContentGrid}>
@@ -55,49 +82,22 @@ export const CohortSection = () => {
               </div>
             </div>
 
-            {/* Right: Features */}
-            <div className={styles.cohortFeatures}>
-
-              <div className={styles.cohortFeatureBlock}>
-                <div className={styles.cohortFeatureHeader}>
-                  <div className={styles.cohortFeatureIcon}>
-                    <Image src="/icons/refreshment.svg" alt="" width={35} height={35} />
+            {/* Right: Membership tiers */}
+            <div className={styles.tiers}>
+              {tiers.map((tier) => (
+                <div key={tier.name} className={styles.tierCard}>
+                  <div className={styles.tierHeader}>
+                    <h3 className={styles.tierName}>{tier.name}</h3>
+                    <span className={styles.tierPrice}>{tier.price}</span>
                   </div>
-                  <h3 className={styles.cohortFeatureTitle}>Participatory Research</h3>
+                  <p className={styles.tierDescription}>{tier.description}</p>
+                  <ul className={styles.tierFeatureList}>
+                    {tier.features.map((f) => (
+                      <li key={f} className={styles.tierFeatureItem}>{f}</li>
+                    ))}
+                  </ul>
                 </div>
-                <p className={styles.cohortFeatureText}>
-                  Complete experiments on your psychology — every quest adds to the research and pays you.
-                </p>
-              </div>
-
-              <div className={styles.cohortDivider} />
-
-              <div className={styles.cohortFeatureBlock}>
-                <div className={styles.cohortFeatureHeader}>
-                  <div className={styles.cohortFeatureIcon}>
-                    <Image src="/icons/atom.svg" alt="" width={35} height={35} />
-                  </div>
-                  <h3 className={styles.cohortFeatureTitle}>DeFi Ecosystem</h3>
-                </div>
-                <p className={styles.cohortFeatureText}>
-                  Get paid in tokens for every approved contribution — your work is valued, verified, and settled onchain, no middlemen.
-                </p>
-              </div>
-
-              <div className={styles.cohortDivider} />
-
-              <div className={styles.cohortFeatureBlock}>
-                <div className={styles.cohortFeatureHeader}>
-                  <div className={`${styles.cohortFeatureIcon} ${styles.cohortFeatureIconLight}`}>
-                    <Image src="/icons/survey.svg" alt="" width={35} height={35} />
-                  </div>
-                  <h3 className={styles.cohortFeatureTitle}>Shared Infrastructure</h3>
-                </div>
-                <p className={styles.cohortFeatureText}>
-                  Co-own the protocols, credentials, and behavioral dataset.
-                </p>
-              </div>
-
+              ))}
             </div>
           </div>
         </div>

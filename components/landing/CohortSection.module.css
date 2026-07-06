@@ -69,48 +69,35 @@
   }
 }
 
-/* Features Column */
-.cohortFeatures {
+/* Tiers Column */
+.tiers {
   display: flex;
   flex-direction: column;
   justify-content: center;
   border-left: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 0;
 }
 
-.cohortDivider {
-  height: 1px;
-  margin: 0 80px;
-  background-color: rgba(255, 255, 255, 0.08);
+.tierCard {
+  padding: 28px 80px;
 }
 
-.cohortFeatureBlock {
-  padding: 24px 80px;
+.tierCard + .tierCard {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.cohortFeatureHeader {
+.tierHeader {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 12px;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
 }
 
-.cohortFeatureIcon {
-  width: 35px;
-  height: 35px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* survey.svg is a flat black icon — invert it to white for the dark card */
-.cohortFeatureIconLight img {
-  filter: brightness(0) invert(1);
-}
-
-.cohortFeatureTitle {
+.tierName {
   font-family: var(--font-primary);
-  font-size: 0.9375rem;
+  font-size: 1rem;
   font-weight: 800;
   letter-spacing: 0.03em;
   text-transform: uppercase;
@@ -119,12 +106,46 @@
   line-height: 1.2;
 }
 
-.cohortFeatureText {
+.tierPrice {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.tierDescription {
   font-family: var(--font-primary);
-  font-size: 0.9375rem;
-  line-height: 1.7;
+  font-size: 0.9rem;
+  line-height: 1.6;
   color: rgba(255, 255, 255, 0.62);
+  margin: 0 0 14px;
+}
+
+.tierFeatureList {
+  list-style: none;
   margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tierFeatureItem {
+  font-family: var(--font-primary);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.48);
+  padding-left: 16px;
+  position: relative;
+}
+
+.tierFeatureItem::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
 }
 
 /* Cohort Photo Grid */
@@ -171,46 +192,9 @@
   transform: scale(1.05);
 }
 
-/* Board footer / CTA */
-.boardFooter {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 20px 28px;
-}
-
-.ctaButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 32px;
-  background-color: var(--color-primary);
-  color: #F6F8ED;
-  border: 1px solid #3a4ecc;
-  border-radius: 0;
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 3px 3px 0 #1A1D33;
-}
-
-.ctaButton:hover {
-  background-color: #6278ff;
-  box-shadow: 5px 5px 0 #1A1D33;
-}
-
-.ctaButton:active {
-  box-shadow: 1px 1px 0 #1A1D33;
-}
-
 /* Mobile */
 @media (max-width: 1023px) {
-  .cohortFeatures {
+  .tiers {
     border-left: 0;
   }
 }
@@ -235,47 +219,7 @@
     font-size: 15px;
   }
 
-  .cohortFeatureBlock {
+  .tierCard {
     padding: 20px 24px;
   }
-
-  .boardFooter {
-    padding: 16px 20px;
-  }
-
-  .ctaButton {
-    padding: 12px 24px;
-    font-size: 0.72rem;
-  }
-}
-
-.telegramPill {
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  padding: 15px 30px;
-  border-radius: 999px;
-  background: #28A8E8;
-  color: #ffffff;
-  font-family: var(--font-primary);
-  font-size: 0.95rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-  text-decoration: none;
-  text-transform: uppercase;
-  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-  box-shadow: 0 8px 20px rgba(40, 168, 232, 0.28);
-}
-
-.telegramPill svg {
-  flex-shrink: 0;
-  display: block;
-}
-
-.telegramPill:hover {
-  background: #1b8fc4;
-  box-shadow: 0 10px 26px rgba(40, 168, 232, 0.38);
-  transform: translateY(-1px);
 }
