@@ -51,6 +51,13 @@ export default function CoursesPage() {
   const [academyCourses, setAcademyCourses] = useState<CourseRecord[]>([]);
   const [guides, setGuides] = useState<GuideRecord[]>([]);
   const [myGuides, setMyGuides] = useState<GuideRecord[]>([]);
+  const [guideProgress, setGuideProgress] = useState<{
+    totalGuides: number;
+    completedGuides: number;
+    totalDiamondsEarned: number;
+    subjects: Array<{ subject: string; total: number; completed: number }>;
+    lastCompletedAt: string | null;
+  } | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [isVip, setIsVip] = useState(false);
@@ -75,6 +82,18 @@ export default function CoursesPage() {
       })
       .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (!ready || !authenticated) return;
+    (async () => {
+      try {
+        const token = await getAccessToken();
+        const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+        const res = await fetch('/api/guides/progress/stats', { cache: 'no-store', headers });
+        if (res.ok) setGuideProgress(await res.json());
+      } catch {}
+    })();
+  }, [ready, authenticated, getAccessToken]);
 
   const authHeaders = useCallback(async (): Promise<HeadersInit> => {
     const token = await getAccessToken();
@@ -403,6 +422,28 @@ export default function CoursesPage() {
           <div className={styles.guideSection}>
             <h2 className={styles.guideSectionHeading}>Knowledge Base</h2>
             <div className={styles.guideSectionContent}>
+              {guideProgress && authenticated && (
+                <div className={styles.guideProgressCard}>
+                  <div className={styles.guideProgressStats}>
+                    <span className={styles.guideProgressStat}>
+                      <span className={styles.guideProgressNum}>{guideProgress.completedGuides}</span>
+                      <span className={styles.guideProgressLabel}>of {guideProgress.totalGuides} guides complete</span>
+                    </span>
+                    <span className={styles.guideProgressStat}>
+                      <span className={styles.guideProgressNum}>{guideProgress.totalDiamondsEarned}</span>
+                      <span className={styles.guideProgressLabel}>diamonds earned</span>
+                    </span>
+                  </div>
+                  {guideProgress.totalGuides > 0 && (
+                    <div className={styles.guideProgressTrack}>
+                      <div
+                        className={styles.guideProgressFill}
+                        style={{ width: `${(guideProgress.completedGuides / guideProgress.totalGuides) * 100}%` }}
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
               {authenticated && isVip && (
                 <div className={styles.guideAuthorRow}>
                   <div className={styles.guideAuthorCopy}>

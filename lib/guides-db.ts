@@ -529,6 +529,56 @@ export async function getUserGuideProgress(userId: string): Promise<Set<string>>
   return new Set(rows.map((r) => r.guide_id));
 }
 
+export interface GuideProgressStats {
+  totalGuides: number;
+  completedGuides: number;
+  totalDiamondsEarned: number;
+  subjects: Array<{ subject: string; total: number; completed: number }>;
+  lastCompletedAt: string | null;
+}
+
+export async function getGuideProgressStats(userId: string): Promise<GuideProgressStats> {
+  const [[totalRow], [diamondRow], subjectRows, [lastRow]] = await Promise.all([
+    sqlQuery<Array<{ count: number }>>(
+      `SELECT COUNT(*)::int AS count FROM guides WHERE status = 'published'`,
+    ),
+    sqlQuery<Array<{ sum: number | null }>>(
+      `SELECT SUM(diamonds)::int AS sum FROM guide_diamond_claims WHERE user_id = :userId`,
+      { userId },
+    ),
+    sqlQuery<Array<{ subject: string; total: number; completed: number }>>(
+      `SELECT
+         gs.subject,
+         COUNT(*)::int AS total,
+         COUNT(gp.id) FILTER (WHERE gp.user_id = :userId)::int AS completed
+       FROM guide_subjects gs
+       JOIN guides g ON g.id = gs.guide_id AND g.status = 'published'
+       LEFT JOIN guide_progress gp ON gp.guide_id = gs.guide_id AND gp.user_id = :userId2
+       GROUP BY gs.subject
+       ORDER BY gs.subject ASC`,
+      { userId, userId2: userId },
+    ),
+    sqlQuery<Array<{ completed_at: string | null }>>(
+      `SELECT MAX(completed_at)::text AS completed_at
+       FROM guide_progress WHERE user_id = :userId`,
+      { userId },
+    ),
+  ]);
+
+  const completedCount = await sqlQuery<Array<{ count: number }>>(
+    `SELECT COUNT(*)::int AS count FROM guide_progress WHERE user_id = :userId`,
+    { userId },
+  );
+
+  return {
+    totalGuides: totalRow?.count ?? 0,
+    completedGuides: completedCount[0]?.count ?? 0,
+    totalDiamondsEarned: diamondRow?.sum ?? 0,
+    subjects: subjectRows,
+    lastCompletedAt: lastRow?.completed_at ?? null,
+  };
+}
+
 /**
  * Marks a guide complete for a user, enforcing the gate: every DIRECT prereq of
  * the guide must already be in guide_progress for this user. Throws a 409 error

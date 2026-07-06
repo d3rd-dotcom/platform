@@ -215,6 +215,20 @@ export const progressListResponseSchema = z.object({
 });
 export type ProgressListResponse = z.infer<typeof progressListResponseSchema>;
 
+/** GET /api/guides/progress/stats — aggregate progress stats. */
+export const progressStatsResponseSchema = z.object({
+  totalGuides: z.number(),
+  completedGuides: z.number(),
+  totalDiamondsEarned: z.number(),
+  subjects: z.array(z.object({
+    subject: z.string(),
+    total: z.number(),
+    completed: z.number(),
+  })),
+  lastCompletedAt: z.string().nullable(),
+});
+export type ProgressStatsResponse = z.infer<typeof progressStatsResponseSchema>;
+
 /**
  * POST /api/guides/progress — completion result incl. diamond rewards.
  * `completedAt` mirrors completeGuide's return (a Date serialized to JSON, or a

@@ -586,6 +586,70 @@
 }
 
 /* ── Knowledge Base scene ── */
+/* ── Knowledge Base progress card ────────────────────────────────────────── */
+.guideProgressCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-base));
+}
+
+.guideProgressStats {
+  display: flex;
+  gap: 20px;
+  align-items: baseline;
+}
+
+.guideProgressStat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.guideProgressNum {
+  font-family: var(--type-font-display);
+  font-size: 1.25rem;
+  font-weight: var(--type-weight-bold);
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.guideProgressLabel {
+  font-family: var(--type-font-body);
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.guideProgressTrack {
+  height: 6px;
+  border-radius: var(--radius-full, 9999px);
+  background: color-mix(in oklch, var(--color-primary) 12%, var(--color-surface-base));
+  border: 1px solid color-mix(in oklch, var(--color-primary) 16%, transparent);
+  overflow: hidden;
+}
+
+.guideProgressFill {
+  height: 100%;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--color-primary);
+  box-shadow: 0 0 6px color-mix(in oklch, var(--color-primary) 35%, transparent);
+  transition: width var(--duration-normal, 300ms) var(--ease-out);
+}
+
+:global([data-theme="dark"]) .guideProgressCard {
+  background: color-mix(in oklch, var(--color-primary) 8%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 22%, transparent);
+}
+
+:global([data-theme="dark"]) .guideProgressTrack {
+  background: color-mix(in oklch, var(--color-primary) 14%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 22%, transparent);
+}
+
+/* ── Knowledge Base section (existing) ──────────────────────────────────── */
 .guideSection {
   grid-column: 1 / -1;
   position: relative;
