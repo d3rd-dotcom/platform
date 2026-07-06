@@ -7,7 +7,7 @@
 - `db/migration-guide-rewards.sql` → `guide_diamond_claims` ledger, mirrors `vip_diamond_claims`: one immutable row per reward, `ON CONFLICT DO NOTHING` idempotency. **Applied to production.**
 - `lib/guide-rewards-db.ts` — tiers: guide complete = 50 (matches VIP `COMPLETION_REWARD`), level clear = 150 (3×), walkthrough complete = 500 + 10 spin-equivalent (loot-box has no persistent spin ledger — spins are shard-funded at cost 10 — so the free spin is credited as diamonds; documented in code). All credit `users.shard_count`, same balance as VIP.
 - `app/api/guides/progress/route.ts` — POST response gains additive fields `{diamonds, levelCleared, walkthroughComplete, spinGranted}`.
-- `components/guides/RewardToast.tsx` — payout toast in the guideCard language, wired into GuideWalkthrough's completion flow (reviewer).
+- Payout toast in the guideCard language, implemented inline in `components/guides/GuideWalkthrough.tsx` (reward state + toast markup in the completion flow). A standalone `RewardToast.tsx` component was built but never wired up and has been removed.
 
 ## 2. Skill-tree constellation view
 
