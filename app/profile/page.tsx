@@ -8,6 +8,7 @@ import ProfileDashboard from '@/components/courses/ProfileDashboard';
 import type { PanelCourse } from '@/components/courses/ProfileDashboard';
 import VerifierBadges from '@/components/guides/VerifierBadges';
 import VerifierCredentials from '@/components/guides/VerifierCredentials';
+import VerifierPanelQueue from '@/components/guides/VerifierPanelQueue';
 import styles from './page.module.css';
 
 export default function ProfilePage() {
@@ -64,6 +65,9 @@ export default function ProfilePage() {
         <section className={styles.shell}>
           <VerifierBadges />
           <VerifierCredentials />
+        </section>
+        <section className={styles.shell}>
+          <VerifierPanelQueue />
         </section>
       </main>
     </div>

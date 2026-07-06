@@ -525,6 +525,115 @@ export async function getVerificationLog(guideId: string): Promise<VerificationL
   };
 }
 
+// ── Member assignment queue ──────────────────────────────────────────────────
+
+export interface MemberPanelAssignment {
+  panelId: string;
+  guideId: string;
+  guideSlug: string;
+  guideTitle: string;
+  status: PanelStatus;
+  createdAt: string;
+  /** Whether the current member has already cast their vote on this panel. */
+  hasVoted: boolean;
+  /** The member's own decision, present only when hasVoted. */
+  myDecision: PanelDecision | null;
+  /** The member's own rubric item, present only when hasVoted. */
+  myRubricItem: RubricItem | null;
+  /** Vote counts so far (all decisions), for a light progress hint. */
+  voteCount: number;
+  /** DON-signed advisory CRE score, if one has been recorded for this panel. */
+  creScore: number | null;
+}
+
+/**
+ * Verification panels this user was drawn onto — their personal assignment queue.
+ *
+ * Returns, per panel: the guide (slug + title for linking), the panel status, and
+ * whether the caller has already voted (with their own decision/rubric so the UI
+ * can render a voted state). Open panels the caller has NOT voted on come first
+ * (actionable), then the rest, newest first within each group. Recently resolved
+ * panels are included so the member sees the outcome of juries they served on.
+ */
+export async function getPanelsForMember(userId: string): Promise<MemberPanelAssignment[]> {
+  const rows = await sqlQuery<
+    Array<{
+      panel_id: string;
+      guide_id: string;
+      guide_slug: string;
+      guide_title: string;
+      status: PanelStatus;
+      created_at: string;
+      my_vote_decision: PanelDecision | null;
+      my_vote_rubric: RubricItem | null;
+      vote_count: number;
+      cre_score: number | null;
+    }>
+  >(
+    `SELECT p.id AS panel_id,
+            p.guide_id,
+            g.slug AS guide_slug,
+            g.topic_title AS guide_title,
+            p.status,
+            p.created_at,
+            mv.decision AS my_vote_decision,
+            mv.rubric_item AS my_vote_rubric,
+            (SELECT COUNT(*) FROM verifier_panel_votes v WHERE v.panel_id = p.id)::int
+              AS vote_count,
+            cs.score AS cre_score
+     FROM verifier_panel_members m
+     JOIN verifier_panels p ON p.id = m.panel_id
+     JOIN guides g ON g.id = p.guide_id
+     LEFT JOIN verifier_panel_votes mv
+       ON mv.panel_id = p.id AND mv.user_id = m.user_id
+     LEFT JOIN guide_cre_scores cs ON cs.panel_id = p.id
+     WHERE m.user_id = :userId
+     ORDER BY
+       (p.status = 'open' AND mv.id IS NULL) DESC,
+       p.created_at DESC`,
+    { userId },
+  );
+
+  return rows.map((r) => ({
+    panelId: r.panel_id,
+    guideId: r.guide_id,
+    guideSlug: r.guide_slug,
+    guideTitle: r.guide_title,
+    status: r.status,
+    createdAt: r.created_at,
+    hasVoted: r.my_vote_decision != null,
+    myDecision: r.my_vote_decision,
+    myRubricItem: r.my_vote_rubric,
+    voteCount: r.vote_count,
+    creScore: r.cre_score,
+  }));
+}
+
+/**
+ * How many OPEN verification panels this user was drawn onto for a given guide
+ * and has NOT yet voted on. Powers the "you have votes awaiting" pill on the
+ * guide page's verification log. Returns 0 for a null/anonymous user.
+ */
+export async function countPendingPanelVotesForGuide(
+  guideId: string,
+  userId: string | null,
+): Promise<number> {
+  if (!userId) return 0;
+  const rows = await sqlQuery<Array<{ n: number }>>(
+    `SELECT COUNT(*)::int AS n
+     FROM verifier_panel_members m
+     JOIN verifier_panels p ON p.id = m.panel_id
+     LEFT JOIN verifier_panel_votes v
+       ON v.panel_id = p.id AND v.user_id = m.user_id
+     WHERE m.user_id = :userId
+       AND p.guide_id = :guideId
+       AND p.status = 'open'
+       AND v.id IS NULL`,
+    { guideId, userId },
+  );
+  return rows[0]?.n ?? 0;
+}
+
 // ── Row mappers ──────────────────────────────────────────────────────────────
 
 interface PanelVoteRow {
