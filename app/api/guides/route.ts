@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { assertCourseUser } from '@/lib/assert-course-auth';
+import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { listGuides, createGuide, type GuideStatus } from '@/lib/guides-db';
 
 export const runtime = 'nodejs';
@@ -26,6 +27,22 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const subject = searchParams.get('subject') ?? undefined;
+
+    // `?mine=1` returns the caller's own in-progress guides (draft +
+    // pending_verification) so authors can find their way back to them from the
+    // Knowledge Base. Unauthenticated callers get an empty list, not an error.
+    if (searchParams.get('mine') === '1') {
+      const user = await getCurrentUserFromRequestCookie();
+      if (!user) {
+        return NextResponse.json({ guides: [] });
+      }
+      const guides = await listGuides({
+        authorId: user.id,
+        statuses: ['draft', 'pending_verification'],
+      });
+      return NextResponse.json({ guides });
+    }
+
     const statusParam = searchParams.get('status');
     // Public listing defaults to published; other statuses are readable but the
     // knowledge base surfaces only published guides.

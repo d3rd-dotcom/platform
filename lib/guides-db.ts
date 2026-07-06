@@ -162,6 +162,8 @@ export async function getGuideBySlug(slug: string): Promise<GuideRecord | null> 
 export async function listGuides(filter?: {
   subject?: string;
   status?: GuideStatus;
+  statuses?: GuideStatus[];
+  authorId?: string;
 }): Promise<GuideRecord[]> {
   const clauses: string[] = [];
   const params: Record<string, unknown> = {};
@@ -169,6 +171,14 @@ export async function listGuides(filter?: {
   if (filter?.status) {
     clauses.push('g.status = :status');
     params.status = filter.status;
+  }
+  if (filter?.statuses && filter.statuses.length > 0) {
+    clauses.push('g.status = ANY(:statuses)');
+    params.statuses = filter.statuses;
+  }
+  if (filter?.authorId) {
+    clauses.push('g.author_id = :authorId');
+    params.authorId = filter.authorId;
   }
   if (filter?.subject) {
     clauses.push(
@@ -240,6 +250,127 @@ export async function createGuide(input: {
     },
   );
   return toGuide(rows[0], []);
+}
+
+/**
+ * Updates a guide's editable content (topic title, body, subjects). Author-only
+ * enforcement lives in the route; this function just writes. Subjects, when
+ * provided, fully replace the existing set. The slug is intentionally immutable
+ * after creation (it's the guide's public URL and canonical identity).
+ */
+export async function updateGuide(input: {
+  id: string;
+  topicTitle?: string;
+  body?: GuideBodyComponent[];
+  subjects?: string[];
+}): Promise<GuideRecord> {
+  const sets: string[] = [];
+  const params: Record<string, unknown> = { id: input.id };
+
+  if (typeof input.topicTitle === 'string') {
+    sets.push('topic_title = :topicTitle');
+    params.topicTitle = input.topicTitle;
+  }
+  if (input.body !== undefined) {
+    sets.push('body = :body::jsonb');
+    params.body = JSON.stringify(input.body);
+  }
+
+  if (sets.length > 0) {
+    sets.push('updated_at = CURRENT_TIMESTAMP');
+    await sqlQuery(
+      `UPDATE guides SET ${sets.join(', ')} WHERE id = :id`,
+      params,
+    );
+  }
+
+  if (input.subjects !== undefined) {
+    await setGuideSubjects(input.id, input.subjects);
+  }
+
+  const rows = await sqlQuery<GuideRow[]>(`SELECT * FROM guides WHERE id = :id`, { id: input.id });
+  if (!rows[0]) {
+    throw Object.assign(new Error('Guide not found.'), { status: 404 });
+  }
+  const subjects = await getSubjectsForGuides([input.id]);
+  return toGuide(rows[0], subjects.get(input.id) ?? []);
+}
+
+/**
+ * Replaces a guide's subject tags with the given (deduped, trimmed) set.
+ */
+export async function setGuideSubjects(guideId: string, subjects: string[]): Promise<void> {
+  const cleaned = Array.from(
+    new Set(subjects.map((s) => s.trim()).filter(Boolean)),
+  ).slice(0, 24);
+
+  await sqlQuery(`DELETE FROM guide_subjects WHERE guide_id = :guideId`, { guideId });
+  for (const subject of cleaned) {
+    await sqlQuery(
+      `INSERT INTO guide_subjects (guide_id, subject) VALUES (:guideId, :subject)
+       ON CONFLICT (guide_id, subject) DO NOTHING`,
+      { guideId, subject },
+    );
+  }
+}
+
+/**
+ * Adds a prerequisite edge (prereqId → guideId). The DB cycle-guard trigger
+ * rejects edges that would introduce a cycle by raising a P0001 exception; the
+ * calling route catches that and surfaces a clean 400. Idempotent on the unique
+ * (prereq_id, guide_id) pair.
+ */
+export async function addGuidePrereq(guideId: string, prereqId: string): Promise<void> {
+  if (guideId === prereqId) {
+    throw Object.assign(new Error('A guide cannot be its own prerequisite.'), { status: 400 });
+  }
+  await sqlQuery(
+    `INSERT INTO guide_edges (prereq_id, guide_id) VALUES (:prereqId, :guideId)
+     ON CONFLICT (prereq_id, guide_id) DO NOTHING`,
+    { guideId, prereqId },
+  );
+}
+
+/**
+ * Removes a prerequisite edge (prereqId → guideId). No-op if the edge is absent.
+ */
+export async function removeGuidePrereq(guideId: string, prereqId: string): Promise<void> {
+  await sqlQuery(
+    `DELETE FROM guide_edges WHERE prereq_id = :prereqId AND guide_id = :guideId`,
+    { guideId, prereqId },
+  );
+}
+
+/**
+ * Searches PUBLISHED guides by topic title / slug for the prerequisite picker.
+ * Excludes the given guide id (a guide can never be its own prereq). Only
+ * published guides are eligible prerequisites — a draft can't gate a learner.
+ */
+export async function searchPublishedGuides(input: {
+  query?: string;
+  excludeId?: string;
+  limit?: number;
+}): Promise<GuideLink[]> {
+  const clauses: string[] = [`g.status = 'published'`];
+  const params: Record<string, unknown> = {};
+
+  if (input.excludeId) {
+    clauses.push('g.id != :excludeId');
+    params.excludeId = input.excludeId;
+  }
+  if (input.query && input.query.trim()) {
+    clauses.push('(g.topic_title ILIKE :q OR g.slug ILIKE :q)');
+    params.q = `%${input.query.trim()}%`;
+  }
+
+  return sqlQuery<GuideLink[]>(
+    `SELECT g.id, g.slug, g.topic_title AS "topicTitle", g.status
+     FROM guides g
+     WHERE ${clauses.join(' AND ')}
+     ORDER BY g.topic_title ASC
+     LIMIT :limit`,
+    { ...params, limit: Math.min(Math.max(input.limit ?? 20, 1), 50) },
+  );
 }
 
 // ── Walkthrough + level computation ──────────────────────────────────────────

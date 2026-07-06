@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
-import { PencilSimple, Trash } from '@phosphor-icons/react';
+import { PencilSimple, Trash, Plus } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import CourseFolderCard from '@/components/courses/CourseFolderCard';
 import ProfileDashboard from '@/components/courses/ProfileDashboard';
@@ -50,6 +50,7 @@ export default function CoursesPage() {
   const [communityCourses, setCommunityCourses] = useState<PublicCourseCard[]>([]);
   const [academyCourses, setAcademyCourses] = useState<CourseRecord[]>([]);
   const [guides, setGuides] = useState<GuideRecord[]>([]);
+  const [myGuides, setMyGuides] = useState<GuideRecord[]>([]);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [isVip, setIsVip] = useState(false);
@@ -126,6 +127,21 @@ export default function CoursesPage() {
       .then((d) => setNoteCount(d?.count ?? 0))
       .catch(() => setNoteCount(0));
   }, [ready, authenticated]);
+
+  const loadMyGuides = useCallback(async () => {
+    try {
+      const headers = await authHeaders();
+      const res = await fetch('/api/guides?mine=1', { cache: 'no-store', headers });
+      if (!res.ok) return;
+      const data = await res.json();
+      setMyGuides(data.guides ?? []);
+    } catch { /* ignore */ }
+  }, [authHeaders]);
+
+  useEffect(() => {
+    if (!ready || !authenticated) return;
+    loadMyGuides();
+  }, [ready, authenticated, loadMyGuides]);
 
   useEffect(() => onPersonalCourseUpdated(loadPersonalCourse), [loadPersonalCourse]);
 
@@ -394,10 +410,56 @@ export default function CoursesPage() {
           </section>
         )}
 
-        {guides.length > 0 && (
+        {(guides.length > 0 || (authenticated && (isVip || myGuides.length > 0))) && (
           <div className={styles.guideSection}>
             <h2 className={styles.guideSectionHeading}>Knowledge Base</h2>
             <div className={styles.guideSectionContent}>
+              {authenticated && isVip && (
+                <div className={styles.guideAuthorRow}>
+                  <div className={styles.guideAuthorCopy}>
+                    <span className={styles.guideAuthorTitle}>Author a guide</span>
+                    <span className={styles.guideAuthorHint}>
+                      Write the definitive guide for a topic, then submit it for verification.
+                    </span>
+                  </div>
+                  <Link
+                    href="/course-studio/guide/new"
+                    className={styles.guideAuthorBtn}
+                    onMouseEnter={() => play('soft-hover')}
+                  >
+                    <Plus size={14} weight="bold" /> New guide
+                  </Link>
+                </div>
+              )}
+
+              {myGuides.length > 0 && (
+                <div className={styles.guideSubjectGroup}>
+                  <span className={styles.guideSubjectLabel}>Your guides in progress</span>
+                  <div className={styles.guideDraftGroup}>
+                    {myGuides.map((g) => (
+                      <div key={`mine-${g.id}`} className={styles.guideDraftCard}>
+                        <span
+                          className={`${styles.guideDraftStatus} ${g.status === 'pending_verification' ? styles.guideDraftStatusPending : ''}`}
+                        >
+                          {g.status === 'pending_verification' ? 'In review' : 'Draft'}
+                        </span>
+                        <Link
+                          href={`/course-studio/guide/${g.slug}`}
+                          className={styles.guideCard}
+                          style={{ flex: 1 }}
+                          onMouseEnter={() => play('soft-hover')}
+                        >
+                          <div className={styles.guideCardBody}>
+                            <span className={styles.guideCardTitle}>{g.topicTitle}</span>
+                          </div>
+                          <span className={styles.guideCardChevron} aria-hidden="true">›</span>
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {guidesBySubject.map(([subject, subjectGuides]) => (
                 <div key={subject} className={styles.guideSubjectGroup}>
                   <span className={styles.guideSubjectLabel}>{subject}</span>
