@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { CaretDown } from '@phosphor-icons/react';
+import { CaretDown, Path } from '@phosphor-icons/react';
 import { useSound } from '@/hooks/useSound';
 import GuideBody from './GuideBody';
 import type { GuideMethodRecord } from '@/lib/guides-db';
@@ -15,7 +15,10 @@ export default function GuideMethods({ methods }: { methods: GuideMethodRecord[]
 
   return (
     <section className={styles.section}>
-      <h2 className={styles.heading}>Methods</h2>
+      <h2 className={styles.heading}>
+        <Path size={18} weight="fill" className={styles.headingIcon} aria-hidden />
+        Methods
+      </h2>
       <div className={styles.list}>
         {methods.map((m) => {
           const open = openId === m.id;

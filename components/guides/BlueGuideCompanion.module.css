@@ -46,3 +46,17 @@
     animation: none;
   }
 }
+
+/* Tighten the space under the chat: the flattened bubble keeps a tall
+   avatar column; center the row and pull the message baseline in. */
+.companion {
+  padding: 10px 14px;
+}
+
+.companion :global([data-blue-chat-bubble='true']) {
+  align-items: center;
+}
+
+.companion :global([data-blue-chat-bubble='true']) > div:last-child {
+  margin-bottom: 0;
+}

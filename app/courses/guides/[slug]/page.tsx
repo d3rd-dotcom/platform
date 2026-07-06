@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ArrowRight, GraduationCap } from '@phosphor-icons/react';
+import { ArrowLeft, ArrowRight, GraduationCap, TreeStructure, RocketLaunch } from '@phosphor-icons/react';
 import { usePrivy } from '@privy-io/react-auth';
 import { useSound } from '@/hooks/useSound';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
@@ -25,6 +25,7 @@ interface GuidePayload {
   methods: GuideMethodRecord[];
   prereqs: GuideLink[];
   dependents: GuideLink[];
+  level?: number;
 }
 
 export default function GuidePage({ params }: PageProps) {
@@ -82,31 +83,25 @@ export default function GuidePage({ params }: PageProps) {
         {data && !loading && (
           <>
             <header className={styles.header}>
-              {data.guide.subjects.length > 0 && (
-                <div className={styles.subjects}>
-                  {data.guide.subjects.map((s) => (
-                    <span key={s} className={styles.subjectTag}>{s}</span>
-                  ))}
-                </div>
-              )}
+              <div className={styles.subjects}>
+                {data.guide.subjects.map((s) => (
+                  <span key={s} className={styles.subjectTag}>{s}</span>
+                ))}
+                {typeof data.level === 'number' && (
+                  <span className={styles.levelChip}>Level {data.level}</span>
+                )}
+              </div>
               <h1 className={styles.title}>{data.guide.topicTitle}</h1>
-              <GuideVoteBar
-                slug={data.guide.slug}
-                sectionTitles={
-                  Array.isArray(data.guide.body)
-                    ? data.guide.body
-                        .map((c) => (typeof c?.title === 'string' ? c.title : ''))
-                        .filter(Boolean)
-                    : []
-                }
-              />
             </header>
 
             <BlueGuideCompanion guide={data.guide} prereqs={data.prereqs} />
 
             {data.prereqs.length > 0 && (
               <section className={styles.relSection}>
-                <h2 className={styles.relHeading}>Prerequisites</h2>
+                <h2 className={styles.relHeading}>
+                  <TreeStructure size={16} weight="duotone" className={styles.relIcon} />
+                  Prerequisites
+                </h2>
                 <div className={styles.chips}>
                   {data.prereqs.map((p) => (
                     <Link
@@ -146,13 +141,29 @@ export default function GuidePage({ params }: PageProps) {
               <GuideBody body={data.guide.body} />
             </article>
 
+            <div className={styles.voteRow}>
+              <GuideVoteBar
+                slug={data.guide.slug}
+                sectionTitles={
+                  Array.isArray(data.guide.body)
+                    ? data.guide.body
+                        .map((c) => (typeof c?.title === 'string' ? c.title : ''))
+                        .filter(Boolean)
+                    : []
+                }
+              />
+            </div>
+
             <GuideMethods methods={data.methods} />
 
             <GuideMaterials materials={materials} />
 
             {data.dependents.length > 0 && (
               <section className={styles.relSection}>
-                <h2 className={styles.relHeading}>Builds toward</h2>
+                <h2 className={styles.relHeading}>
+                  <RocketLaunch size={16} weight="duotone" className={styles.relIcon} />
+                  Builds toward
+                </h2>
                 <div className={styles.chips}>
                   {data.dependents.map((d) => (
                     <Link

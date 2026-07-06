@@ -67,23 +67,39 @@
   gap: 6px;
 }
 
+/* Eyebrow tags — deliberately larger than the back-link eyebrow (0.75rem). */
 .subjectTag {
   font-family: var(--font-mono);
-  font-size: var(--font-size-xs, 0.618rem);
+  font-size: 0.875rem;
   font-weight: var(--font-weight-semibold, 600);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--color-primary);
   background: color-mix(in oklch, var(--color-primary) 10%, transparent);
-  padding: 3px 10px;
+  padding: 5px 14px;
   border-radius: var(--radius-full, 9999px);
 }
 
+/* Level indicator — filled chip so it reads as rank, not just another tag. */
+.levelChip {
+  font-family: var(--font-departure-mono), var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-semibold, 600);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #ffffff;
+  background: var(--color-primary);
+  padding: 5px 14px;
+  border-radius: var(--radius-full, 9999px);
+  box-shadow: 0 1px 4px color-mix(in oklch, var(--color-primary) 40%, transparent);
+}
+
 .title {
-  font-family: var(--font-secondary);
-  font-size: var(--font-size-2xl, 2.618rem);
-  font-weight: var(--font-weight-bold, 700);
-  line-height: 1.15;
+  font-family: var(--font-departure-mono), var(--font-mono), monospace;
+  font-size: clamp(1.625rem, 1.2rem + 1.8vw, 2.375rem);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
   color: var(--color-text-dark);
   margin: 0;
 }
@@ -140,6 +156,20 @@
   background: color-mix(in oklch, var(--color-primary) 26%, transparent);
 }
 
+/* Icon before important section titles — chunks the page (per Disputes). */
+.relIcon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+/* Vote bar sits after the content with equal breathing room both sides
+   (the page's 28px section gap applies above and below equally). */
+.voteRow {
+  display: flex;
+  justify-content: center;
+  padding: 4px 0;
+}
+
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -151,9 +181,9 @@
 .chipNext {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   font-family: var(--type-font-label);
-  font-size: var(--type-body-sm-size, 0.8125rem);
+  font-size: 0.9375rem;
   font-weight: var(--type-weight-medium, 500);
   color: var(--color-text-dark);
   background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-base));
@@ -162,7 +192,7 @@
   box-shadow:
     0 2px 6px rgba(0, 0, 0, 0.05),
     0 1px 0 color-mix(in oklch, var(--color-primary) 10%, transparent);
-  padding: 6px 14px;
+  padding: 8px 18px;
   text-decoration: none;
   transition:
     border-color 0.15s ease,
@@ -197,29 +227,45 @@
   transform: translateX(3px);
 }
 
+/* Hero action — the biggest interactive element on the page. */
 .walkthroughBtn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: 10px;
   width: fit-content;
-  font-family: var(--type-font-label);
-  font-size: var(--type-label-size, 0.75rem);
+  min-width: 260px;
+  font-family: var(--font-departure-mono), var(--font-mono), monospace;
+  font-size: 1rem;
   font-weight: var(--type-weight-semibold, 600);
   text-transform: uppercase;
-  letter-spacing: var(--type-track-label, 0.05em);
+  letter-spacing: 0.04em;
   color: var(--color-text-light);
-  background: var(--color-primary);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    color-mix(in oklch, var(--color-primary) 72%, #8a94ff) 100%
+  );
   border: 1.5px solid var(--color-primary);
   border-radius: var(--radius-full, 9999px);
-  padding: 10px 18px;
+  padding: 14px 28px;
   cursor: pointer;
-  box-shadow: 0 2px 6px color-mix(in oklch, var(--color-primary) 30%, transparent);
-  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
+  box-shadow:
+    0 4px 14px color-mix(in oklch, var(--color-primary) 35%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.08s ease;
 }
 
 .walkthroughBtn:hover {
-  background: var(--color-primary-hover);
-  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 38%, transparent);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-hover) 0%,
+    color-mix(in oklch, var(--color-primary-hover) 72%, #8a94ff) 100%
+  );
+  box-shadow:
+    0 6px 20px color-mix(in oklch, var(--color-primary) 45%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transform: translateY(-1px);
 }
 
 .walkthroughBtn:active {

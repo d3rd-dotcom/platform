@@ -6,7 +6,7 @@
 --
 -- Shape of the DAG (prereq → guide), 3 levels deep, 7 published guides:
 --
---   Level 0 (primitives — no prereqs):
+--   Level 0 (primitives, no prereqs):
 --     attention-basics
 --     emotional-vocabulary
 --
@@ -20,7 +20,7 @@
 --     values-clarification      (needs cognitive-reframing, journaling-practice)
 --
 -- body JSONB is an array of components matching the course_components renderer
--- format ({ id, componentType, title, config }) — only 'rich_text' is used here
+-- format ({ id, componentType, title, config }), only 'rich_text' is used here
 -- so the guide page renders cleanly with components/course-renderers.
 -- Does NOT reference or modify shadow-work.
 -- ============================================================================
@@ -60,7 +60,7 @@ INSERT INTO guides (slug, topic_title, status, body) VALUES
   'published',
   '[
     {"id":"cr-1","componentType":"rich_text","title":"Catching and re-testing thoughts",
-     "config":{"format":"markdown","content":"# Cognitive Reframing\n\nReframing is noticing an automatic thought and asking whether it is actually true. It needs attention (to catch the thought) and emotional vocabulary (to see what it is doing to you).\n\n## The move\n\n1. Catch the thought: ''I always mess this up.''\n2. Name the distortion: over-generalization.\n3. Write a fairer version: ''I struggled this time; here is one thing I would change.''\n\nYou are not forcing positivity — you are restoring accuracy."}}
+     "config":{"format":"markdown","content":"# Cognitive Reframing\n\nReframing is noticing an automatic thought and asking whether it is actually true. It needs attention (to catch the thought) and emotional vocabulary (to see what it is doing to you).\n\n## The move\n\n1. Catch the thought: ''I always mess this up.''\n2. Name the distortion: over-generalization.\n3. Write a fairer version: ''I struggled this time; here is one thing I would change.''\n\nYou are not forcing positivity, you are restoring accuracy."}}
   ]'::jsonb
 ),
 (
@@ -69,7 +69,7 @@ INSERT INTO guides (slug, topic_title, status, body) VALUES
   'published',
   '[
     {"id":"mb-1","componentType":"rich_text","title":"Using the breath as an anchor",
-     "config":{"format":"markdown","content":"# Mindful Breathing\n\nThe breath is a portable anchor for attention. This guide turns the raw skill of focusing into something you can do to settle your nervous system on demand.\n\n## Box breathing\n\nInhale 4, hold 4, exhale 4, hold 4. Repeat for a minute. When your mind drifts, that is expected — return to the count."}}
+     "config":{"format":"markdown","content":"# Mindful Breathing\n\nThe breath is a portable anchor for attention. This guide turns the raw skill of focusing into something you can do to settle your nervous system on demand.\n\n## Box breathing\n\nInhale 4, hold 4, exhale 4, hold 4. Repeat for a minute. When your mind drifts, that is expected, return to the count."}}
   ]'::jsonb
 ),
 (
@@ -122,7 +122,7 @@ JOIN (VALUES
   ('building-a-daily-practice', 'Habit stacking', 1,
    '[{"id":"m-stack","componentType":"rich_text","title":"","config":{"format":"markdown","content":"Attach the new practice to an existing anchor: ''After I pour my coffee, I do one breath drill.''"}}]'),
   ('journaling-practice', 'The three-line entry', 0,
-   '[{"id":"m-3line","componentType":"rich_text","title":"","config":{"format":"markdown","content":"Facts, feeling, meaning — one line each. Enough to get the loop onto the page."}}]')
+   '[{"id":"m-3line","componentType":"rich_text","title":"","config":{"format":"markdown","content":"Facts, feeling, meaning, one line each. Enough to get the loop onto the page."}}]')
 ) AS m(slug, title, sort_order, body) ON m.slug = g.slug;
 
 -- ── Edges (prereq -> guide). Trigger enforces acyclicity. ───────────────────

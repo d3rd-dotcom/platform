@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import type { CSSProperties, ReactNode } from 'react';
 import { Poppins, Space_Grotesk, Inter, Patrick_Hand } from 'next/font/google';
+import localFont from 'next/font/local';
 import '@/styles/globals.css';
 import { RouteShell } from '@/components/layout/RouteShell';
 
@@ -29,6 +30,12 @@ const patrickHand = Patrick_Hand({
   subsets: ['latin'],
   weight: ['400'],
   variable: '--font-patrick-hand',
+  display: 'swap',
+});
+
+const departureMono = localFont({
+  src: './fonts/DepartureMono-Regular.otf',
+  variable: '--font-departure-mono',
   display: 'swap',
 });
 
@@ -106,7 +113,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${poppins.variable} ${spaceGrotesk.variable} ${patrickHand.variable}`}
+      className={`${inter.variable} ${poppins.variable} ${spaceGrotesk.variable} ${patrickHand.variable} ${departureMono.variable}`}
       data-sidebar-collapsed="false"
       style={{ '--sidebar-width': '265px' } as CSSProperties}
       suppressHydrationWarning

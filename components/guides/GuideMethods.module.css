@@ -5,6 +5,9 @@
 }
 
 .heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-family: var(--type-font-heading);
   font-size: var(--type-h3-size);
   line-height: var(--type-h3-lh);
@@ -122,4 +125,9 @@
 
 :global([data-theme="dark"]) .panel {
   border-top-color: color-mix(in oklch, var(--color-primary-hover) 20%, transparent);
+}
+
+.headingIcon {
+  color: var(--color-primary);
+  flex-shrink: 0;
 }

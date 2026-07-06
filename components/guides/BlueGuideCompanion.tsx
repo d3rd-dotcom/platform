@@ -25,10 +25,10 @@ function hashId(id: string): number {
 // upbeat, academic, short, sweet. Rotated by guide-id hash (not random per render)
 // so a given guide always greets you the same way.
 const READY_LINES = [
-  'The base layer is solid under you — this topic is ready to climb. Take the first hold.',
+  'The base layer is solid under you. This topic is ready to climb, so take the first hold.',
   'Everything below this is charted. Nothing between you and the summit but the reading. Onward.',
   'Prereqs cleared, footing steady. This is exactly the right rung to reach for next.',
-  'You built the groundwork already — now we get to the good part. Let’s scale this one.',
+  'You built the groundwork already. Now we get to the good part: let’s scale this one.',
 ];
 
 export default function BlueGuideCompanion({ guide, prereqs }: BlueGuideCompanionProps) {
@@ -73,22 +73,22 @@ export default function BlueGuideCompanion({ guide, prereqs }: BlueGuideCompanio
     // 1. Verification states take priority — the reader should know why a guide
     //    looks the way it does before anything else.
     if (guide.status === 'pending_verification') {
-      return 'Heads up — the jury’s still reading this one over. Everything here is a working draft until the review lands.';
+      return 'Heads up: the jury’s still reading this one over. Everything here is a working draft until the review lands.';
     }
     if (guide.status === 'unpublished') {
-      return 'This one went back to its author after some community notes. A revised edition is on the way — hold tight.';
+      return 'This one went back to its author after some community notes. A revised edition is on the way, hold tight.';
     }
 
     // 2. Signed-out → one warm invite to sign in and track the climb.
     if (!authenticated) {
-      return 'New face! Sign in and I’ll keep a marker on every rung you climb — your progress, saved as you go.';
+      return 'New face! Sign in and I’ll keep a marker on every rung you climb: your progress, saved as you go.';
     }
 
     // 3. Above-your-level nudge — signed in, but missing a prerequisite.
     if (completedIds) {
       const missing = prereqs.find((p) => !completedIds.has(p.id));
       if (missing) {
-        return `A quick note — “${missing.topicTitle}” comes before this one. Start the walkthrough from the bottom and you’ll reach this summit with steadier footing.`;
+        return `A quick note: “${missing.topicTitle}” comes before this one. Start the walkthrough from the bottom and you’ll reach this summit with steadier footing.`;
       }
     }
 

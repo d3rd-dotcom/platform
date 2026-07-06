@@ -26,3 +26,61 @@
   border: 1px dashed var(--color-border-subtle);
   border-radius: var(--radius-lg, 0.75rem);
 }
+
+/* ── Reading prose — Wikipedia-grade legibility for guide content ─────────
+   Doubled .body.body selector outranks the renderer's own class rules
+   without !important. Element-level overrides only inside guide bodies. */
+.body.body p {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  letter-spacing: 0.002em;
+  color: var(--color-text-dark);
+  margin: 0 0 1.05em;
+  max-width: 68ch;
+}
+
+.body.body li {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  margin: 0 0 0.4em;
+  max-width: 64ch;
+}
+
+.body.body ul,
+.body.body ol {
+  margin: 0.35em 0 1.05em;
+  padding-left: 1.5em;
+}
+
+.body.body h1,
+.body.body h2,
+.body.body h3,
+.body.body h4 {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  line-height: 1.25;
+  margin: 1.4em 0 0.45em;
+}
+
+.body.body h1:first-child,
+.body.body h2:first-child,
+.body.body h3:first-child {
+  margin-top: 0;
+}
+
+.body.body blockquote {
+  margin: 1em 0;
+  padding: 0.5em 0 0.5em 1.1em;
+  border-left: 3px solid color-mix(in oklch, var(--color-primary) 40%, transparent);
+  color: var(--color-text-muted);
+}
+
+.body.body strong {
+  font-weight: 600;
+}
+
+:global([data-theme='dark']) .body.body p,
+:global([data-theme='dark']) .body.body li {
+  color: #e8e9f4;
+}
