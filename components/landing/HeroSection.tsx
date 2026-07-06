@@ -29,7 +29,7 @@ export const HeroSection: React.FC = () => {
           />
           <div className={styles.heroLine} />
           <p className={styles.heroSubtext}>
-            A gamified educational gameworld built on behavioral psychology, accompanied by B.L.U.E. Level up through knowledge structured in ascending order — no tutorial hell — and own what you earn on-chain.</p>
+            An open-world of knowledge structured like a video game. Level-up through quests, earn rewards, and learn at your own pace.</p>
           <div className={styles.heroActions}>
             <LandingEnterAcademyButton dark />
           </div>
