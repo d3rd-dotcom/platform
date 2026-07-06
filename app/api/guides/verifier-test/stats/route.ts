@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
-import { getCurrentUserFromRequestCookie } from '@/lib/auth';
+import { requireUser } from '@/lib/guide-api-auth';
 import { isDbConfigured } from '@/lib/db';
 import { getVerifierStats } from '@/lib/verifier-prestige-db';
+import type { VerifierStatsResponse } from '@/lib/guide-api-schemas';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -15,13 +16,15 @@ export async function GET() {
   if (!isDbConfigured()) {
     return NextResponse.json({ error: 'Database not configured.' }, { status: 503 });
   }
-  const user = await getCurrentUserFromRequestCookie();
-  if (!user) {
-    return NextResponse.json({ error: 'Not authenticated.' }, { status: 401 });
+  let userId: string;
+  try {
+    ({ userId } = await requireUser());
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: err.status ?? 401 });
   }
   try {
-    const stats = await getVerifierStats(user.id);
-    return NextResponse.json({ stats });
+    const stats = await getVerifierStats(userId);
+    return NextResponse.json({ stats } satisfies VerifierStatsResponse);
   } catch (err: any) {
     const status = err.status ?? 500;
     return NextResponse.json({ error: err.message }, { status });

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { isDbConfigured } from '@/lib/db';
 import { runRevisionCheck } from '@/lib/guide-votes-db';
+import type { RevisionCheckResponse } from '@/lib/guide-api-schemas';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -48,7 +49,7 @@ async function handleRevisionCheck(request: Request) {
         result.unpublished.map((u) => `${u.slug} (${u.reasons.join(', ')})`).join('; '),
       );
     }
-    return NextResponse.json({ ok: true, ...result });
+    return NextResponse.json({ ok: true, ...result } satisfies RevisionCheckResponse);
   } catch (error) {
     console.error('[guides] revision-check failed:', error);
     return NextResponse.json({ error: 'Revision check failed.' }, { status: 500 });

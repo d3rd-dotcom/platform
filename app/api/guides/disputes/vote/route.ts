@@ -1,7 +1,12 @@
 import { NextResponse } from 'next/server';
-import { getCurrentUserFromRequestCookie } from '@/lib/auth';
+import { requireUser } from '@/lib/guide-api-auth';
 import { isDbConfigured } from '@/lib/db';
 import { castDisputeVote } from '@/lib/guide-disputes-db';
+import {
+  disputeVoteBodySchema,
+  zodErrorBody,
+  type DisputeVoteResponse,
+} from '@/lib/guide-api-schemas';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -21,36 +26,23 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Database not configured.' }, { status: 503 });
   }
 
-  const user = await getCurrentUserFromRequestCookie();
-  if (!user) {
-    return NextResponse.json({ error: 'Not authenticated.' }, { status: 401 });
+  let userId: string;
+  try {
+    ({ userId } = await requireUser(request));
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: err.status ?? 401 });
   }
 
-  const body = (await request.json().catch(() => ({}))) as {
-    disputeId?: unknown;
-    verdict?: unknown;
-    justification?: unknown;
-    originalSubject?: unknown;
-    forkSubject?: unknown;
-  };
-
-  if (!body.disputeId || typeof body.disputeId !== 'string') {
-    return NextResponse.json({ error: 'disputeId is required.' }, { status: 400 });
+  const parsed = disputeVoteBodySchema.safeParse(await request.json().catch(() => ({})));
+  if (!parsed.success) {
+    return NextResponse.json(zodErrorBody(parsed.error), { status: 400 });
   }
-  if (typeof body.verdict !== 'string') {
-    return NextResponse.json({ error: 'verdict is required.' }, { status: 400 });
-  }
-  if (typeof body.justification !== 'string') {
-    return NextResponse.json(
-      { error: 'A written justification is required.' },
-      { status: 400 },
-    );
-  }
+  const body = parsed.data;
 
   try {
     const result = await castDisputeVote({
       disputeId: body.disputeId,
-      userId: user.id,
+      userId,
       verdict: body.verdict,
       justification: body.justification,
       originalSubject:
@@ -63,7 +55,7 @@ export async function POST(request: Request) {
       resolved: result.resolved,
       status: result.status,
       forkGuideId: result.forkGuideId,
-    });
+    } satisfies DisputeVoteResponse);
   } catch (err: any) {
     const status = err.status ?? 500;
     return NextResponse.json({ error: err.message }, { status });

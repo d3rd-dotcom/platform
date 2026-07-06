@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { isDbConfigured } from '@/lib/db';
 import { getVerificationLog } from '@/lib/guide-verification-db';
+import type { VerificationLogResponse } from '@/lib/guide-api-schemas';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -24,7 +25,7 @@ export async function GET(
     if (!log) {
       return NextResponse.json({ error: 'Guide not found.' }, { status: 404 });
     }
-    return NextResponse.json({ log });
+    return NextResponse.json({ log } satisfies VerificationLogResponse);
   } catch (err: any) {
     const status = err.status ?? 500;
     return NextResponse.json({ error: err.message }, { status });

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getCurrentUserFromRequestCookie } from '@/lib/auth';
+import { requireUser } from '@/lib/guide-api-auth';
 import { isDbConfigured } from '@/lib/db';
 import { getGuideBySlug } from '@/lib/guides-db';
 import {
@@ -8,6 +8,14 @@ import {
   removeMaterial,
   type MaterialLinkType,
 } from '@/lib/guide-materials-db';
+import {
+  addMaterialBodySchema,
+  deleteMaterialBodySchema,
+  zodErrorBody,
+  type MaterialsListResponse,
+  type MaterialAddResponse,
+  type OkResponse,
+} from '@/lib/guide-api-schemas';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -25,7 +33,7 @@ export async function GET(_request: Request, { params }: { params: { slug: strin
     return NextResponse.json({ error: 'Guide not found.' }, { status: 404 });
   }
   const materials = await getMaterialsForGuide(guide.id);
-  return NextResponse.json({ materials });
+  return NextResponse.json({ materials } satisfies MaterialsListResponse);
 }
 
 /**
@@ -40,9 +48,11 @@ export async function POST(request: Request, { params }: { params: { slug: strin
   if (!isDbConfigured()) {
     return NextResponse.json({ error: 'Database not configured.' }, { status: 503 });
   }
-  const user = await getCurrentUserFromRequestCookie();
-  if (!user) {
-    return NextResponse.json({ error: 'Not authenticated.' }, { status: 401 });
+  let userId: string;
+  try {
+    ({ userId } = await requireUser(request));
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: err.status ?? 401 });
   }
 
   const guide = await getGuideBySlug(params.slug);
@@ -51,35 +61,18 @@ export async function POST(request: Request, { params }: { params: { slug: strin
   }
   // Only the guide's author may attach materials (contextual matching is the
   // author's editorial call; verifiers review it downstream).
-  if (guide.authorId !== user.id) {
+  if (guide.authorId !== userId) {
     return NextResponse.json(
       { error: 'Only the guide author can add materials.' },
       { status: 403 },
     );
   }
 
-  const body = (await request.json().catch(() => ({}))) as {
-    name?: unknown;
-    linkUrl?: unknown;
-    linkType?: unknown;
-    rationale?: unknown;
-    imageUrl?: unknown;
-    priceLabel?: unknown;
-    sortOrder?: unknown;
-  };
-
-  if (typeof body.name !== 'string' || typeof body.linkUrl !== 'string') {
-    return NextResponse.json(
-      { error: 'name and linkUrl are required.' },
-      { status: 400 },
-    );
+  const parsed = addMaterialBodySchema.safeParse(await request.json().catch(() => ({})));
+  if (!parsed.success) {
+    return NextResponse.json(zodErrorBody(parsed.error), { status: 400 });
   }
-  if (typeof body.rationale !== 'string') {
-    return NextResponse.json(
-      { error: 'rationale is required — explain how the guide uses this material.' },
-      { status: 400 },
-    );
-  }
+  const body = parsed.data;
 
   const linkType: MaterialLinkType =
     body.linkType === 'internal_shop' ? 'internal_shop' : 'external';
@@ -95,7 +88,7 @@ export async function POST(request: Request, { params }: { params: { slug: strin
       priceLabel: typeof body.priceLabel === 'string' ? body.priceLabel : null,
       sortOrder: typeof body.sortOrder === 'number' ? body.sortOrder : 0,
     });
-    return NextResponse.json({ ok: true, material }, { status: 201 });
+    return NextResponse.json({ ok: true, material } satisfies MaterialAddResponse, { status: 201 });
   } catch (err: any) {
     const status = err.status ?? 500;
     return NextResponse.json({ error: err.message }, { status });
@@ -111,30 +104,32 @@ export async function DELETE(request: Request, { params }: { params: { slug: str
   if (!isDbConfigured()) {
     return NextResponse.json({ error: 'Database not configured.' }, { status: 503 });
   }
-  const user = await getCurrentUserFromRequestCookie();
-  if (!user) {
-    return NextResponse.json({ error: 'Not authenticated.' }, { status: 401 });
+  let userId: string;
+  try {
+    ({ userId } = await requireUser(request));
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: err.status ?? 401 });
   }
 
   const guide = await getGuideBySlug(params.slug);
   if (!guide) {
     return NextResponse.json({ error: 'Guide not found.' }, { status: 404 });
   }
-  if (guide.authorId !== user.id) {
+  if (guide.authorId !== userId) {
     return NextResponse.json(
       { error: 'Only the guide author can remove materials.' },
       { status: 403 },
     );
   }
 
-  const body = (await request.json().catch(() => ({}))) as { materialId?: unknown };
-  if (typeof body.materialId !== 'string' || !body.materialId.trim()) {
+  const parsed = deleteMaterialBodySchema.safeParse(await request.json().catch(() => ({})));
+  if (!parsed.success || !parsed.data.materialId.trim()) {
     return NextResponse.json({ error: 'materialId is required.' }, { status: 400 });
   }
 
-  const { removed } = await removeMaterial(guide.id, body.materialId.trim());
+  const { removed } = await removeMaterial(guide.id, parsed.data.materialId.trim());
   if (!removed) {
     return NextResponse.json({ error: 'Material not found.' }, { status: 404 });
   }
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true } satisfies OkResponse);
 }

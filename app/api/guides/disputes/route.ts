@@ -1,7 +1,13 @@
 import { NextResponse } from 'next/server';
-import { getCurrentUserFromRequestCookie } from '@/lib/auth';
+import { requireUser } from '@/lib/guide-api-auth';
 import { isDbConfigured } from '@/lib/db';
 import { openDispute, getDisputes } from '@/lib/guide-disputes-db';
+import {
+  openDisputeBodySchema,
+  zodErrorBody,
+  type DisputesListResponse,
+  type DisputeOpenResponse,
+} from '@/lib/guide-api-schemas';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -23,7 +29,7 @@ export async function GET(request: Request) {
 
   try {
     const disputes = await getDisputes(guideId);
-    return NextResponse.json({ disputes });
+    return NextResponse.json({ disputes } satisfies DisputesListResponse);
   } catch (err: any) {
     const status = err.status ?? 500;
     return NextResponse.json({ error: err.message }, { status });
@@ -33,7 +39,7 @@ export async function GET(request: Request) {
 /**
  * POST /api/guides/disputes
  * Opens a dispute against a guide. Auth mirrors app/api/guides/progress
- * (getCurrentUserFromRequestCookie). The standing gate, evidence-length rule and
+ * (requireUser). The standing gate, evidence-length rule and
  * spam guard are enforced in lib/guide-disputes-db.ts openDispute.
  *
  * Body: { guideId, disputeType, evidence }
@@ -43,31 +49,23 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Database not configured.' }, { status: 503 });
   }
 
-  const user = await getCurrentUserFromRequestCookie();
-  if (!user) {
-    return NextResponse.json({ error: 'Not authenticated.' }, { status: 401 });
+  let userId: string;
+  try {
+    ({ userId } = await requireUser(request));
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: err.status ?? 401 });
   }
 
-  const body = (await request.json().catch(() => ({}))) as {
-    guideId?: unknown;
-    disputeType?: unknown;
-    evidence?: unknown;
-  };
-
-  if (!body.guideId || typeof body.guideId !== 'string') {
-    return NextResponse.json({ error: 'guideId is required.' }, { status: 400 });
+  const parsed = openDisputeBodySchema.safeParse(await request.json().catch(() => ({})));
+  if (!parsed.success) {
+    return NextResponse.json(zodErrorBody(parsed.error), { status: 400 });
   }
-  if (typeof body.disputeType !== 'string') {
-    return NextResponse.json({ error: 'disputeType is required.' }, { status: 400 });
-  }
-  if (typeof body.evidence !== 'string') {
-    return NextResponse.json({ error: 'evidence is required.' }, { status: 400 });
-  }
+  const body = parsed.data;
 
   try {
     const result = await openDispute({
       guideId: body.guideId,
-      openerId: user.id,
+      openerId: userId,
       disputeType: body.disputeType,
       evidence: body.evidence,
     });
@@ -76,7 +74,7 @@ export async function POST(request: Request) {
         ok: true,
         dispute: result.dispute,
         panelMemberCount: result.memberIds.length,
-      },
+      } satisfies DisputeOpenResponse,
       { status: 201 },
     );
   } catch (err: any) {

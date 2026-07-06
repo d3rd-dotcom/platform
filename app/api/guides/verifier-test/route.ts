@@ -1,7 +1,13 @@
 import { NextResponse } from 'next/server';
-import { getCurrentUserFromRequestCookie } from '@/lib/auth';
+import { requireUser } from '@/lib/guide-api-auth';
 import { isDbConfigured } from '@/lib/db';
 import { requestVerifierTest, getCredentials } from '@/lib/verifier-tests-db';
+import {
+  verifierTestRequestBodySchema,
+  zodErrorBody,
+  type VerifierCredentialsResponse,
+  type VerifierTestResponse,
+} from '@/lib/guide-api-schemas';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -14,13 +20,15 @@ export async function GET() {
   if (!isDbConfigured()) {
     return NextResponse.json({ error: 'Database not configured.' }, { status: 503 });
   }
-  const user = await getCurrentUserFromRequestCookie();
-  if (!user) {
-    return NextResponse.json({ error: 'Not authenticated.' }, { status: 401 });
+  let userId: string;
+  try {
+    ({ userId } = await requireUser());
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: err.status ?? 401 });
   }
   try {
-    const credentials = await getCredentials(user.id);
-    return NextResponse.json({ credentials });
+    const credentials = await getCredentials(userId);
+    return NextResponse.json({ credentials } satisfies VerifierCredentialsResponse);
   } catch (err: any) {
     const status = err.status ?? 500;
     return NextResponse.json({ error: err.message }, { status });
@@ -36,16 +44,22 @@ export async function POST(request: Request) {
   if (!isDbConfigured()) {
     return NextResponse.json({ error: 'Database not configured.' }, { status: 503 });
   }
-  const user = await getCurrentUserFromRequestCookie();
-  if (!user) {
-    return NextResponse.json({ error: 'Not authenticated.' }, { status: 401 });
+  let userId: string;
+  try {
+    ({ userId } = await requireUser(request));
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: err.status ?? 401 });
   }
 
-  const body = (await request.json().catch(() => ({}))) as { subject?: unknown; level?: unknown };
+  const parsed = verifierTestRequestBodySchema.safeParse(await request.json().catch(() => ({})));
+  if (!parsed.success) {
+    return NextResponse.json(zodErrorBody(parsed.error), { status: 400 });
+  }
+  const body = parsed.data;
 
   try {
-    const test = await requestVerifierTest(user.id, body.subject, body.level);
-    return NextResponse.json({ test }, { status: 201 });
+    const test = await requestVerifierTest(userId, body.subject, body.level);
+    return NextResponse.json({ test } satisfies VerifierTestResponse, { status: 201 });
   } catch (err: any) {
     const status = err.status ?? 500;
     return NextResponse.json({ error: err.message }, { status });

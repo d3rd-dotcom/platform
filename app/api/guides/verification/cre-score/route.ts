@@ -2,6 +2,11 @@ import { NextResponse } from 'next/server';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { elizaAPI } from '@/lib/eliza-api';
 import { recordCreScore, getOpenPanelForGuide } from '@/lib/guide-verification-db';
+import {
+  creScoreBodySchema,
+  zodErrorBody,
+  type CreScoreResponse,
+} from '@/lib/guide-api-schemas';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -95,15 +100,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Database not configured.' }, { status: 503 });
   }
 
-  const body = (await request.json().catch(() => ({}))) as {
-    panelId?: unknown;
-    guideId?: unknown;
-    score?: unknown;
-    summary?: unknown;
-    sources?: unknown;
-    donSignature?: unknown;
-    trigger?: unknown;
-  };
+  const parsed = creScoreBodySchema.safeParse(await request.json().catch(() => ({})));
+  if (!parsed.success) {
+    return NextResponse.json(zodErrorBody(parsed.error), { status: 400 });
+  }
+  const body = parsed.data;
 
   // Resolve the panel: prefer explicit panelId, else the guide's open panel.
   let panelId = typeof body.panelId === 'string' ? body.panelId : null;
@@ -128,7 +129,7 @@ export async function POST(request: Request) {
         sources: body.sources ?? null,
         donSignature: typeof body.donSignature === 'string' ? body.donSignature : null,
       });
-      return NextResponse.json({ ok: true, source: 'don', panelId });
+      return NextResponse.json({ ok: true, source: 'don', panelId } satisfies CreScoreResponse);
     }
 
     // Path 2: server-side fallback scoring via Eliza (multi-source of truth).
@@ -188,7 +189,10 @@ export async function POST(request: Request) {
     if (!scored) {
       // Do not fabricate a score — leave the panel without an advisory number.
       return NextResponse.json(
-        { ok: false, message: 'Advisory scoring unavailable; panel proceeds without a CRE score.' },
+        {
+          ok: false,
+          message: 'Advisory scoring unavailable; panel proceeds without a CRE score.',
+        } satisfies CreScoreResponse,
         { status: 200 },
       );
     }
@@ -201,7 +205,9 @@ export async function POST(request: Request) {
       donSignature: null, // server-side fallback is not DON-signed
     });
 
-    return NextResponse.json({ ok: true, source: 'server-fallback', panelId, score: scored.score });
+    return NextResponse.json(
+      { ok: true, source: 'server-fallback', panelId, score: scored.score } satisfies CreScoreResponse,
+    );
   } catch (err: any) {
     const status = err.status ?? 500;
     return NextResponse.json({ error: err.message }, { status });
