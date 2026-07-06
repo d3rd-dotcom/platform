@@ -2,6 +2,15 @@
 
 Base mainnet. Deployer and owner: Blue (key in `BLUE_PRIVATE_KEY`, legacy fallback `AZURA_PRIVATE_KEY`).
 Written 2026-07-06. Executor: any agent session with this repo, `.env.local`, and Foundry.
+
+**Status 2026-07-06: Phase A complete.** `DiamondsV2.sol` + `ReflectionVault.sol` are in
+`contracts/src/` with 18 tests green (140/140 suite-wide) and a successful mainnet-fork
+dry run (~3.57M gas, ~0.000037 ETH). Not deployed, not airdropped — Phases B–E remain.
+One as-built simplification vs the original spec: the token never swaps fees itself. AMM
+fees move plain BLUE to a settable `feeRecipient` (the treasury); the treasury converts
+and funds reflections via `depositReflections` — same pipeline as day-one deposits, and
+nothing but one balance move ever happens inside a user's trade. LP sizing theory lives
+in [blue-lp-allocation.md](blue-lp-allocation.md).
 Format: every move states its expected observation; every fork has a trigger. No speculative
 hardening — every guard in here counters a cause verified during recon.
 
@@ -78,7 +87,7 @@ atomic and the vault's token address is immutable.
 | `setAmmPair(address pair, bool isPair)` | onlyOwner | Flags an address as a DEX pair — fees apply only to transfers touching a flagged pair |
 | `setFeeBps(uint16 bps)` | onlyOwner | `require(bps <= MAX_FEE_BPS)` where `MAX_FEE_BPS = 200` is a **constant**. Launch value: 100 (1%) |
 | `setFeeExempt(address, bool)` | onlyOwner | Exempt game/treasury contracts from AMM fees |
-| `setSwapThreshold(uint256)` | onlyOwner | BLUE accumulated before fee-swap to cbBTC fires |
+| `setFeeRecipient(address)` | onlyOwner | Where AMM fees land as plain BLUE (the treasury). No in-contract swaps — the treasury converts and deposits cbBTC to the vault |
 | `transferOwnership` / `renounceOwnership` | onlyOwner | Standard Ownable. Renounce = supply finalization, deliberately not scheduled in this op |
 | `_update(from, to, value)` override | internal | Takes the AMM fee when a flagged pair is involved and neither side is exempt; syncs `vault.setShare()` for both sides inside `try/catch` so **vault failure can never revert a transfer** |
 
@@ -95,11 +104,10 @@ family as the reference `DistributionEngine`), reward token cbBTC.
 |---|---|---|
 | `setShare(address holder, uint256 balance)` | only token | Called from `_update`; holders below `minShareBalance` (launch: 1,000 BLUE) or excluded get share 0 |
 | `depositReflections(uint256 amount)` | anyone | `transferFrom` cbBTC in, bumps dividends-per-share. This is the primary funding path: treasury deposits, day one, no LP required |
-| `notifyDeposit()` payable-style for swap path | only token | Credits cbBTC arriving from the token's fee swap |
 | `claim()` | any holder | Pays pending cbBTC to caller |
 | `process(uint256 gas)` | anyone | Walks the holder queue auto-paying until gas budget (launch: 300,000) is spent; never reverts |
 | `pendingRewards(address)` | view | Basescan-friendly |
-| `setExcluded(address, bool)`, `setMinShareBalance(uint256)` | only token owner | Blue's stash is excluded — with 200M of ~200M supply she would otherwise take ~100% of every deposit. Users get the reflections |
+| `setExcluded(address, bool)`, `setMinShareBalance(uint256)` | token or token's owner (freezes with renounce) | Blue's stash is excluded — with 200M of ~200M supply she would otherwise take ~100% of every deposit. Users get the reflections |
 
 ## 2. Enemy contact one — the 200x priority tip
 
@@ -143,7 +151,8 @@ never source-verified, which is why Basescan shows "UNKNOWN reputation" today.
 
 1. No trading gate of any kind — v2 transfers work from the constructor onward. (a)
 2. `MAX_FEE_BPS = 200` is a compile-time constant; scanners can read that fees can never
-   exceed 2%. Single fee destination (the vault), no recipient-wallet spray. (b)
+   exceed 2%. Single fee destination (the treasury `feeRecipient`), no recipient-wallet
+   spray, and no swap machinery anywhere in the transfer path. (b)
 3. `vault.setShare` wrapped in `try/catch` and `process()` is pull-based with a fixed gas
    budget, never called inside a user's sell. A transfer cannot revert or run out of gas
    because of reflections. (c)
@@ -164,8 +173,8 @@ a buy/sell simulation is only possible once an LP exists.
   false-positive form; Coinbase Wallet inherits the fix), citing verified source, constant
   fee cap, no gate, no blacklist. Do not change the contract for a label.
 - Trigger: a simulated sell genuinely fails → the flag is right, the bug is real. Reproduce
-  on a Base fork, fix vault config first (`setSwapThreshold` higher, `process` gas lower) —
-  config before code, code only if config can't reach it.
+  on a Base fork, fix config first (`setMinShareBalance`, `process` gas budget,
+  `setFeeExempt`) — config before code, code only if config can't reach it.
 - Trigger: Basescan verification fails → fix `foundry.toml` metadata settings and re-run
   `forge verify-contract`; do not announce until both contracts show verified source.
 
@@ -260,7 +269,9 @@ Preconditions (run before anything): `forge build` clean; `BLUE_PRIVATE_KEY` or
 created. Expected observation: all four true, else stop and fix — nothing below depends on
 anything not listed here.
 
-**Phase A — Build (repo, no chain writes)**
+**Phase A — Build (repo, no chain writes)** — *A1 and A2 done 2026-07-06 (18 tests green;
+8-decimal reward math covered by an 8-decimal mock). A3's fork dry run of the deploy
+passed (~3.57M gas); the real-cbBTC `deal` fork test remains a pre-broadcast nicety.*
 - A1. Write `DiamondsV2.sol` + `ReflectionVault.sol` per section 1. Expect: `forge build` clean.
 - A2. `contracts/test/DiamondsV2.t.sol`: renounce bricks `mint` (owner and minters both);
   permit → burnFrom flow; fee applies only when a flagged pair is party; transfers succeed
