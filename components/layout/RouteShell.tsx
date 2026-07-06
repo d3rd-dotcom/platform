@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
 
@@ -15,6 +15,10 @@ interface RouteShellProps {
 
 export function RouteShell({ children, initialCollapsed = true }: RouteShellProps) {
   const pathname = usePathname();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   if (pathname === '/') {
     return <>{children}</>;

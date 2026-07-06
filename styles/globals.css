@@ -973,13 +973,6 @@ h6 { font-size: var(--font-size-xs); }
    Scroll System Upgrade (Smooth + Themed Scrollbar)
    ============================================ */
 
-/* Native smooth scroll baseline */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Lenis drives scrolling on the landing page; native smoothing would
-   double-ease its programmatic scrolls. Lenis adds this class itself. */
 html.lenis {
   scroll-behavior: auto !important;
 }

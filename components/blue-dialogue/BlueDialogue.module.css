@@ -44,8 +44,8 @@
  * Mirrored per the Figma transform (scaleX(-1)). */
 .torso {
   position: absolute;
-  left: 50%;
-  bottom: 210px; /* lifts her so the box crosses her lower third */
+  left: 35%;
+  bottom: 270px; /* rests the character's base on top of the dialogue box */
   transform: translateX(-50%) scaleX(-1);
   height: clamp(320px, 60vh, 530px);
   pointer-events: none;
@@ -84,10 +84,10 @@
   box-sizing: border-box;
 }
 
-/* Name card: 215x69 tab overlapping the box top-left. */
+/* Name card: tab behind the box top-left edge. */
 .nameCard {
   position: relative;
-  z-index: 2;
+  z-index: 0;
   width: 215px;
   height: 69px;
   margin: 0 0 -14px 88px; /* pull down to overlap the box top edge */
@@ -102,18 +102,12 @@
 }
 
 .nameText {
-  font-family: var(--font-departure-mono), 'Departure Mono', monospace;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 1.75rem;
-  line-height: 1;
+  line-height: 1.2;
   letter-spacing: 0.02em;
-  /* Solid primary fallback first; the gradient-clip layers on top. */
   color: var(--color-primary);
-  -webkit-text-stroke: 2px var(--color-primary);
-  background: linear-gradient(180deg, #ffffff 0%, #e9ecff 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  padding-bottom: 2px;
+  -webkit-text-stroke: 1px var(--color-primary);
 }
 
 /* Dialogue box. */
@@ -210,7 +204,9 @@
 .menuItems {
   display: flex;
   align-items: center;
-  gap: clamp(14px, 3vw, 40px);
+  justify-content: space-between;
+  flex: 1;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
@@ -238,8 +234,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 56px;
+  height: 56px;
   border: 2px solid var(--color-primary);
   border-radius: 50%;
   background: #ffffff;
@@ -254,6 +250,34 @@
   background: var(--color-primary);
   color: #ffffff;
   transform: translateX(2px);
+  outline: none;
+}
+
+/* Big floating next button above the card, right of Blue. */
+.bigNext {
+  position: absolute;
+  right: 12%;
+  bottom: clamp(340px, 40vh, 440px);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border: 2px solid var(--color-primary);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: transform 0.14s ease, background-color 0.14s ease,
+    color 0.14s ease;
+}
+
+.bigNext:hover,
+.bigNext:focus-visible {
+  background: var(--color-primary);
+  color: #ffffff;
+  transform: translateX(3px);
   outline: none;
 }
 
@@ -353,12 +377,16 @@
   }
 
   .menuItems {
-    gap: 12px;
+    gap: 6px;
   }
 
   .menuButton {
     font-size: 0.8rem;
     letter-spacing: 0.03em;
+  }
+
+  .bigNext {
+    display: none;
   }
 
   .historyPanel {

@@ -234,14 +234,35 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
       <div className={styles.stage}>
         <div className={`${styles.torso} ${styles[`emotion_${emotion}`] ?? ''}`}>
           <Image
-            src="/images/blue-fullbody.png"
+            src="/images/blue-dialogue-torso.png?v=2"
             alt="Blue"
-            width={861}
-            height={1543}
+            width={1254}
+            height={1254}
             priority
             className={styles.torsoImage}
           />
         </div>
+
+        <button
+          type="button"
+          className={styles.bigNext}
+          onClick={handleAdvance}
+          onMouseEnter={hover}
+          aria-label={
+            safeIndex < safeLines.length - 1 ? 'Next line' : 'Close dialogue'
+          }
+        >
+          <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true">
+            <path
+              d="M9 5l7 7-7 7"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
 
         <div className={styles.bottom}>
           <div className={styles.nameCard}>
@@ -303,7 +324,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
                   safeIndex < safeLines.length - 1 ? 'Next line' : 'Close dialogue'
                 }
               >
-                <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true">
                   <path
                     d="M9 5l7 7-7 7"
                     fill="none"

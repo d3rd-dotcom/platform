@@ -35,6 +35,9 @@ function authError(message: string, status: number): GuideAuthError {
  * (whichever the request carries), mirroring the routes that used
  * getCurrentUserFromRequestCookie directly.
  *
+ * In development the auth check can be skipped by setting:
+ *   DEV_BYPASS_AUTH=true
+ *
  * Throws { status: 401 } with the same message the routes surfaced
  * ('Not authenticated.') when no user is resolved.
  *
@@ -43,6 +46,11 @@ function authError(message: string, status: number): GuideAuthError {
  * exactly as the current routes do.
  */
 export async function requireUser(_request?: Request): Promise<{ userId: string }> {
+  const bypass = process.env.DEV_BYPASS_AUTH;
+  if (bypass && bypass !== '0' && bypass !== 'false' && bypass !== 'no') {
+    return { userId: 'dev-bypass-user' };
+  }
+
   const user = await getCurrentUserFromRequestCookie();
   if (!user) {
     throw authError('Not authenticated.', 401);
