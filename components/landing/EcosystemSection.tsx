@@ -18,24 +18,27 @@ export const EcosystemSection: React.FC = () => {
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
-    const textElements = gsap.utils.toArray<HTMLElement>(`.${styles.text}`);
 
-    textElements.forEach((text) => {
-      gsap.to(text, {
-        backgroundSize: '100%',
-        ease: 'none',
-        scrollTrigger: {
-          trigger: text,
-          start: 'center 80%',
-          end: 'center 20%',
-          scrub: true,
-        },
+    // Scope to this section: a global ScrollTrigger.getAll() kill here would
+    // also destroy the page-level scroll experience's triggers.
+    const ctx = gsap.context(() => {
+      const textElements = gsap.utils.toArray<HTMLElement>(`.${styles.text}`);
+
+      textElements.forEach((text) => {
+        gsap.to(text, {
+          backgroundSize: '100%',
+          ease: 'none',
+          scrollTrigger: {
+            trigger: text,
+            start: 'center 80%',
+            end: 'center 20%',
+            scrub: true,
+          },
+        });
       });
-    });
+    }, sectionRef);
 
-    return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
-    };
+    return () => ctx.revert();
   }, []);
 
   return (
