@@ -91,6 +91,14 @@
   color: #ffffff;
 }
 
+.subtitle {
+  margin: 8px 0 0;
+  font-family: var(--font-primary);
+  font-size: clamp(14px, 1.6vw, 18px);
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.4;
+}
+
 @media (max-width: 768px) {
   .band {
     height: 54vh;

@@ -10,6 +10,7 @@ interface BrollBandProps {
   tone: Tone;
   eyebrow: string;
   title: string;
+  subtitle?: string;
   pin?: boolean;
 }
 
@@ -23,7 +24,7 @@ const toneClass: Record<Tone, string> = {
 // Full-bleed cinematic band between story acts. The clip only loads once the
 // band nears the viewport, plays while visible, and falls back to the tone
 // gradient if the asset is missing or reduced motion is requested.
-export function BrollBand({ src, tone, eyebrow, title, pin }: BrollBandProps) {
+export function BrollBand({ src, tone, eyebrow, title, subtitle, pin }: BrollBandProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const bandRef = useRef<HTMLDivElement>(null);
   const [videoOk, setVideoOk] = useState(true);
@@ -79,6 +80,7 @@ export function BrollBand({ src, tone, eyebrow, title, pin }: BrollBandProps) {
       <div className={styles.card}>
         <p className={styles.eyebrow}>{eyebrow}</p>
         <h2 className={styles.title}>{title}</h2>
+        {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
       </div>
     </div>
   );

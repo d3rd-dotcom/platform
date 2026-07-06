@@ -70,8 +70,8 @@ export function LandingDeferredSections() {
         <BrollBand
           src="/landing/broll/broll-simulate.mp4"
           tone="indigo"
-          eyebrow="Act I"
-          title="A world you can simulate"
+          eyebrow="Unlimited Learning & Connection"
+          title="Trees of Knowledge"
         />
         <div data-reveal>
           <FeaturesSection />
@@ -83,8 +83,9 @@ export function LandingDeferredSections() {
         <BrollBand
           src="/landing/broll/broll-ecosystem.mp4"
           tone="teal"
-          eyebrow="Act II"
+          eyebrow="A garden of digital connections, built onchain"
           title="A place, not a product"
+          subtitle="Ethereal Horizon"
         />
         <div data-reveal>
           <EcosystemSection />
