@@ -672,6 +672,10 @@
     color: #000;
     margin: 0;
     line-height: 1.55;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   .observeBtn {
     display: inline-flex;
