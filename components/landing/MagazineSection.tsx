@@ -11,10 +11,9 @@ export const MagazineSection: React.FC = () => {
           <p className={styles.eyebrow}>Mental Wealth Magazine</p>
           <h2 className={styles.heading}>Read the Vision</h2>
           <p className={styles.description}>
-            Every issue of <em>Mental Wealth</em> explores the frontier where
-            cyberculture, consciousness, and capital converge. From
-            psychedelic science to decentralised governance — if it rewires
-            how we think, it lives here.
+            Every issue of <em>Mental Wealth</em> covers the research behind
+            the Academy — behavioral science, onchain governance, and the
+            case studies that shape what Blue teaches next.
           </p>
           <a
             href="https://zora.co/coin/base:0xbfa7ba543ec90ccd9c30de7a76a5a23e1f18f92c?referrer=0x8c0704cde03a42f1a9362e574addb156bb7e8c95"

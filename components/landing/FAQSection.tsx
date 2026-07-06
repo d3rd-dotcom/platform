@@ -8,32 +8,32 @@ const FAQ_ITEMS = [
   {
     question: 'What is Mental Wealth Academy?',
     answer:
-      'Mental Wealth Academy is a gamified educational gameworld built on behavioral psychology, with blockchain-backed ownership of what you earn, accompanied by Blue. Knowledge is structured in ascending levels, so you level up instead of grinding through tutorial hell — each level cleared kills learning fatigue and pays out like a quest. And there is one definitive, verified guide per topic: a one-stop shop for knowledge, level-gated, with no duplicate tutorials to sort through.',
+      'A gameworld built on behavioral psychology, with Blue as your reviewer and reward-keeper. Knowledge is structured in levels, so you level up instead of grinding through tutorial hell. Every topic has one verified guide — level-gated, with no duplicate tutorials to sort through.',
   },
   {
-    question: 'How Does MWA Handle Data Gathered?',
+    question: 'How does MWA handle the data gathered?',
     answer:
-      'MWA treats the Academy like a live behavioral science laboratory. We clean consented survey, reflection, quest, and assessment data; protect personal-linked information (PLI); and use R-based research tools to score validated measures, check outliers, audit reliability, and improve accuracy before data enters model-training workflows. The goal is to fine-tune institutional-grade models that understand behavior, learning, resilience, and decision-making. Your contribution strengthens a proprietary research flywheel: better data creates better models, better models create better tools, and better tools return more value to members while helping build AI with a more human psychological foundation.',
+      'MWA runs like a live behavioral science laboratory. We clean consented survey, reflection, quest, and assessment data, protect personally linked information, and score validated measures before anything enters a model-training workflow. Better data builds better tools, and better tools return more value to members.',
   },
   {
-    question: 'How do I exchange my diamonds for cash?',
+    question: 'How do I exchange my Diamonds for cash?',
     answer:
-      'Users exchange diamonds for cash through our partners at Coinbase Exchange. When a redemption campaign is open, eligible diamonds can be converted into USDC or another supported payout asset and sent to a connected Coinbase account or compatible wallet. Redemption rates, minimum balances, availability, and identity checks may vary by campaign and partner requirements.',
+      'During an open redemption campaign, Diamonds convert to USDC through Coinbase and land in a connected account or compatible wallet. Rates, minimum balances, and identity checks can vary by campaign.',
   },
   {
     question: 'Who is Blue?',
     answer:
-      'Blue is the AI companion architecture inside MWA, built to help with reflection, assessment review, research workflows, reward decisions, and market analysis. Her name is Blue, not an acronym. She is not a generic chatbot pasted onto a course.',
+      'Blue is an agentic smart contract with memory. She reviews your submissions, requests a revision when one is needed, approves the work that\'s ready, and pays your reward straight from her own wallet — she holds 20% of the $BLUE supply.',
   },
   {
     question: 'How does membership work?',
     answer:
-      'Explorer members can start free with the core course, journaling, weekly quests, community access, and credit rewards. Paid members unlock governance, research tools, proposal access, and deeper Blue features. The $90 VIP membership is the lifetime option with an on-chain membership card.',
+      'Every course is free, no matter your membership. The $90 VIP membership is a one-time, lifetime option with an onchain membership card on Base — it unlocks research tools and deeper Blue features, not the curriculum.',
   },
   {
     question: 'How does the 12-week course work?',
     answer:
-      'The first season is organized around Security, Identity, Power, and Connection. Each module combines reading, reflection, behavioral exercises, and research-backed assessments such as WHO-5, PSS-10, GSE, and BRS so progress creates useful longitudinal signal, not just app engagement.',
+      'The first season is organized around Security, Identity, Power, and Connection. Each module pairs reading and reflection with research-backed assessments — WHO-5, PSS-10, GSE, and BRS — so your progress means something real.',
   },
 ];
 

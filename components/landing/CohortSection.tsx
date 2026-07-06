@@ -7,7 +7,7 @@ const tiers = [
   {
     name: 'Explorer',
     price: 'Free',
-    description: 'Start with community access, public research, and monthly calls.',
+    description: 'Start free with courses, community access, and monthly calls.',
     features: [
       'Community access',
       'Public research library',
@@ -18,7 +18,7 @@ const tiers = [
   {
     name: 'Researcher',
     price: 'Coming soon',
-    description: 'Join live studies, earn credits for approved contributions, and help shape proposals.',
+    description: 'Join live studies, earn credits for approved work, and help shape proposals.',
     features: [
       'Everything in Explorer',
       'Participate in live research',
@@ -30,7 +30,7 @@ const tiers = [
   {
     name: 'Architect',
     price: 'Coming soon',
-    description: 'Help govern the protocols, credentials, and behavioral dataset behind the academy.',
+    description: 'Help govern the protocols and behavioral dataset behind the academy.',
     features: [
       'Everything in Researcher',
       'Co-own shared infrastructure',
@@ -52,7 +52,7 @@ export const CohortSection = () => {
             <div className={styles.titlePanelText}>
               <h2 className={styles.cohortTitle}>Cohort memberships</h2>
               <p className={styles.cohortSubtitle}>
-                Choose how you want to participate in Mental Wealth Academy. Start free, join live research, or help govern the infrastructure behind quests, credits, and community-funded studies.
+                Choose how you want to participate. Start free, join live research, or help govern the infrastructure behind quests, credits, and community-funded studies.
               </p>
             </div>
           </div>

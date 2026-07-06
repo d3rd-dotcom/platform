@@ -1,6 +1,6 @@
 # Ground Then Elevate
 
-The central rule of MWA writing. Every poetic or narrative claim is preceded or followed by its concrete meaning.
+The central rule of MWA writing (`EDITORIAL.md` Part 3). Every poetic or narrative claim is preceded or followed by its concrete meaning.
 
 ## The pattern
 
@@ -18,23 +18,34 @@ Reader has no idea what exists, what it does, or why it matters.
 
 ### Good (grounded then elevated)
 
-> "Blue is an AI agent with memory and a wallet on Base. She reviews quest submissions and sends rewards when work is approved. The story layer makes that infrastructure feel like part of the Academy instead of a disconnected admin system."
+> "Blue is an agentic smart contract with memory. She reviews platform data and submissions, and the rewards are self-executed. Her characterization makes her feel more like infrastructure than a feature — a benevolent leader of the Academy."
 
 Reader knows the function before they meet the story layer.
 
-## Grounded translations (memorize these)
+## Hierarchy of information (the order that grounds)
 
-These are recurring failure modes from prior drafts. Replace the left side with the right side wherever you find it:
+Every concept introduction follows this order. Grounding first is what makes elevation land.
+
+1. **What it is** — functional definition
+2. **What it does** — practical reality
+3. **Why it matters** — value proposition
+4. **What it means** — narrative / philosophical layer
+
+Most drafts jump to #4 without earning #1–3. Reorder before publishing. And never frame via "this is X, not Y" — state what it is.
+
+## Grounded translations (memorize)
+
+Replace the left side with the right side wherever you find it:
 
 | Ungrounded | Grounded |
 |---|---|
-| "Meaningful experience" | "Live behavioral studies with verified rewards" |
+| "Meaningful experience" | "Behavioral studies, events, and community with real rewards" |
+| "The alien machine God" | "A system that uses an AI mascot (Blue) for everything" |
 | "Fresh perspectives" | "Psychology frameworks most people never encounter" |
 | "Quality storytelling" | "A story layer that makes the technology legible" |
 | "Interactive NPCs" | "Blue, an AI agent who reviews and rewards your work" |
-| "Digital opportunities" | "Credentials that prove your growth" |
-| "Mystical blue beacon" | "Blue's visual identity: blue, luminous, and tied to review moments" |
-| "Sentient AI fantasy" | "An AI agent operating autonomously" |
+| "Digital opportunities" | "Diamonds and USDC you actually own" |
+| "Sentient AI fantasy" | "An agentic smart contract operating autonomously" |
 
 ## When story-only is OK
 

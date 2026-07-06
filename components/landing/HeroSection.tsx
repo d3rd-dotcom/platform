@@ -14,7 +14,7 @@ export const HeroSection: React.FC = () => {
         <LandingScene />
         <HeroSting />
         <div className={styles.heroContent} data-hero-parallax>
-          <p className={styles.heroTextBadge}>Next-Gen Cohort For Scientists &amp; Agents</p>
+          <p className={styles.heroTextBadge}>A Gameworld For Structured Growth</p>
           <GlitchRevealText
             as="h1"
             className={styles.heroHeadline}
@@ -29,7 +29,7 @@ export const HeroSection: React.FC = () => {
           />
           <div className={styles.heroLine} />
           <p className={styles.heroSubtext}>
-            An open-world of knowledge structured like a video game. Level-up through quests, earn rewards, and learn at your own pace.</p>
+            Study behavioral psychology like a game. Level up through courses and quests. Blue reviews your work and pays real rewards straight to your wallet.</p>
           <div className={styles.heroActions}>
             <LandingEnterAcademyButton dark />
           </div>

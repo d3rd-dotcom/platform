@@ -1,40 +1,40 @@
 # Sentence-Level Rules
 
-Line-level mechanics. Apply on every pass.
+Line-level mechanics from `EDITORIAL.md` Part 3. Apply on every pass.
 
 ## Cut "that" constructions
 
 The word "that" is almost always a stall before the verb.
 
-- ❌ "The platform that we built that allows users to..."
-- ✅ "Our platform allows users to..."
+- No: "The platform that we built that allows users to..."
+- Yes: "Our platform allows users to..."
 
 ## Replace abstractions with specifics
 
-Abstractions read as filler. A reader's eye skips over "meaningful experiences." It does not skip over "behavioral studies with real rewards."
+Abstractions read as filler. A reader's eye skips "communal rewards." It does not skip "Experiments and courses earn Diamonds."
 
-- ❌ "meaningful experiences"
-- ✅ "behavioral studies with real rewards"
+- No: "communal rewards"
+- Yes: "Experiments and courses earn Diamonds"
 
 If you can't replace an abstraction with a number, a name, a date, a verb, or a noun, the abstraction is doing nothing — cut it.
 
 ## Delete hedge words
 
-Hedges signal that the writer doesn't believe their own claim. The reader will believe the writer.
+Hedges signal the writer doesn't believe their own claim.
 
 Cut on sight: *kind of, sort of, maybe, possibly, somewhat, a bit, fairly, pretty, just, simply, basically, essentially, really, very, quite, often, sometimes*.
 
-- ❌ "We kind of offer something fresh"
-- ✅ "We offer something fresh"
+- No: "We kind of offer something fresh"
+- Yes: "We offer something fresh"
 
 If the claim is too strong without the hedge, the claim itself is wrong — make a smaller, true claim instead of a bigger, hedged one.
 
 ## One idea per sentence
 
-Run-on sentences hide thinking. Break them up.
+Run-on sentences hide thinking. Break them up. Short and sweet is the house voice.
 
-- ❌ "We skip forceful subscriptions and instead offer meaningful experiences, fresh perspectives, quality storytelling, and characters and interactive NPCs that blend into our app."
-- ✅ "No subscriptions. A research cohort with quests, rewards, and an AI agent who makes it all accountable."
+- No: "We skip forceful subscriptions and instead offer meaningful experiences, fresh perspectives, most organizations have their treasuries private, and characters and interactive NPCs that blend into our app."
+- Yes: "No subscriptions. A cohort with rewards, and an AI agent who keeps it all transparent."
 
 Short sentences carry weight. Use periods.
 
@@ -43,34 +43,34 @@ Short sentences carry weight. Use periods.
 | Generic | Specific |
 |---|---|
 | "users" | "members" or "participants" |
-| "rewards" | "credits", stablecoins, or non-transferable membership NFTs |
-| "the platform" | name the actual surface (the cohort dashboard, the Treasury page, etc.) |
-| "AI" | "Blue" (when it's her) or "an LLM with persistent memory" (when it's the underlying tech) |
-| "blockchain" | "Base" or "smart contracts on Base" |
+| "rewards" | "Diamonds ($BLUE)", "real USDC", or a lifetime membership card |
+| "the platform" | name the actual surface (the gameworld, the quest board, the Treasury page) |
+| "AI" | "Blue" (when it's her) or "an agentic smart contract with memory" (the underlying tech) |
+| "blockchain" | "Base" or "onchain, on Base" |
 
 ## Numbers earn their place
 
 Wherever a number is real, use it.
 
-- ❌ "a small but growing community"
-- ✅ "20 enrolled members, 5 active pilot users"
+- No: "a small but growing community"
+- Yes: "20 enrolled members, 5 active pilot users"
 
-- ❌ "modest funding"
-- ✅ "$20K raised through Artizen Season 6"
+- No: "modest funding"
+- Yes: "$20K raised through Artizen Season 6"
 
-If a number would change the reader's understanding, include it. If it wouldn't, leave it out — don't pad with stats.
+Real MWA numbers to reach for: **$20K** (Artizen Season 6), **8** recent awards, **5+** experiments, **Blue holds 20%** of the $BLUE supply, quests pay **real USDC**, gasless mints on **Base**. If a number would change the reader's understanding, include it. If it wouldn't, leave it out — don't pad with stats, and never invent one.
 
 ## Active voice, present tense
 
-- ❌ "Submissions are reviewed by Blue"
-- ✅ "Blue reviews submissions."
+- No: "Submissions are reviewed by Blue"
+- Yes: "Blue reviews submissions."
 
-- ❌ "Will be launched next year"
-- ✅ "Launches Q3 2026"
+- No: "Will be launched next year"
+- Yes: "Launches Q3 2026"
 
-## Avoid title-case marketing
+## Capitalization
 
-Sentence case for headings unless it's a proper noun. ALL CAPS only for short labels (3 words max). Title Case Everywhere reads as ad copy.
+Title Case is fine for feature titles and section headers — the brand's good-copy examples use it (e.g. "A Micro-University For Intellectual Refreshment"). Sentence case is also fine for body-level headings. **Never use ALL CAPS** for words or headings; caps are not a house style here. Her name is written **Blue** in user-facing copy; use `BLUE` (or `$BLUE`) only for the token, code, and contract identifiers.
 
 ## The cut test
 

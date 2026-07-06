@@ -6,31 +6,31 @@ import styles from './TestimonialSection.module.css';
 
 const testimonials = [
   {
-    quote: 'The weekly sessions helped me get out of a pretty burnt-out place. I feel more clear, more consistent, and more connected to what I actually want to make.',
+    quote: 'The weekly sessions helped me get out of a burnt-out place. I feel clearer, more consistent, and more connected to what I want to make.',
     name: 'Jordan K.',
     title: 'Product designer',
     avatar: '/anbel03.png',
   },
   {
-    quote: 'I joined because I wanted more structure and support in my life. What surprised me most was how thoughtful the community felt and how much people actually listened to each other.',
+    quote: 'I joined because I wanted more structure and support in my life. What surprised me most was how thoughtful the community felt and how much people listened to each other.',
     name: 'Maya T.',
     title: 'Graduate student',
     avatar: '/anbel07.png',
   },
   {
-    quote: 'I usually fall off with programs like this, but the small prompts and check-ins kept me engaged. It made taking care of myself feel easier to come back to.',
+    quote: 'I usually fall off with programs like this, but the small prompts and check-ins kept me engaged. It made taking care of myself easier to come back to.',
     name: 'Aisha R.',
     title: 'UX researcher',
     avatar: '/anbel10.png',
   },
   {
-    quote: 'I came for the wellness tools, but I stayed because it felt like a real community. People support each other here in a way that feels practical, not performative.',
+    quote: 'I came for the tools, but I stayed because it felt like a real community. People support each other here in a way that feels practical.',
     name: 'Ezra M.',
     title: 'Community organizer',
     avatar: '/anbel04.png',
   },
   {
-    quote: 'The morning journaling practice genuinely changed my routine. It gave me a calmer start to the day and helped me notice patterns I normally ignore.',
+    quote: 'The morning journaling practice changed my routine. It gave me a calmer start to the day and helped me notice patterns I normally ignore.',
     name: 'Priya S.',
     title: 'College student',
     avatar: '/anbel09.png',

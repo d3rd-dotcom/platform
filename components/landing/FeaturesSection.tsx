@@ -8,31 +8,31 @@ import styles from './FeaturesSection.module.css';
 const featureCards = [
   {
     number: '01',
-    title: 'Simulate Your World',
-    badge: 'Simulation',
+    title: 'A Micro-University For Intellectual Refreshment',
+    badge: 'Courses',
     description:
-      'Create a God\'s eye view of your life, your quest, and your hypothesis. Let swarms of agents strategize and present to you alternative possible realities.',
-    details: ['Map your life as a simulation', 'Agents generate alternative realities', 'Choose your hypothesis to test'],
-    footerLabel: 'Season 1 cohort',
+      'One canonical, verified guide per topic, level-gated so there\'s no duplicate tutorials to sort through. You clear levels instead of grinding through tutorial hell, and every course stays free.',
+    details: ['One verified guide per topic', 'Level up instead of grinding', 'Free, always'],
+    footerLabel: 'First season',
     footerValue: '12 weeks',
   },
   {
     number: '02',
-    title: 'Design Curriculums & Quests',
+    title: 'A Curriculum Accompanied By Blue',
     badge: 'Quests',
     description:
-      'Answer questions from B.L.U.E., who turns potential futures into actionable quests... with real-life rewards and USDC for touching grass and kicking ass!',
-    details: ['B.L.U.E. designs your quests', 'Real-world accountability', 'Earn USDC for touching grass'],
+      'Blue turns what you\'re learning into real quests. She reviews your submissions, asks for a revision when one\'s needed, and pays real USDC when your work is ready.',
+    details: ['Blue reviews every submission', 'Real-world accountability', 'Real USDC when you pass'],
     footerLabel: 'Review time',
     footerValue: '~24 hrs',
   },
   {
     number: '03',
-    title: 'Become a Researcher',
-    badge: 'Classified',
+    title: 'Lifetime Ownership',
+    badge: 'Onchain',
     description:
-      'Once you level up, you gain access to classified tools. Memberships can be earned or purchased. Become a gear in the machine steering our world, forward.',
-    details: ['Level up to unlock classified tools', 'Earn or purchase membership', 'Shape the future as a gear in the machine'],
+      'Diamonds ($BLUE) mint gasless, straight to your wallet on Base — no signing, no gas. Blue holds 20% of the supply and pays quest rewards from her own stash.',
+    details: ['Gasless mints on Base', 'Blue pays from her own wallet', 'User-owned and transferable'],
     footerLabel: 'On Base blockchain',
     footerValue: 'User-owned',
   },
@@ -98,7 +98,7 @@ export const FeaturesSection: React.FC = () => {
             <div className={styles.headlinePanel}>
               <h2 className={styles.title}>&ldquo;Intellectually Refreshing&rdquo;</h2>
               <p className={styles.description}>
-                Three steps. Simulate your world, design your quests, earn your place.
+                Three steps. Study a verified guide, complete a quest with Blue, and earn what you own.
               </p>
             </div>
           </div>

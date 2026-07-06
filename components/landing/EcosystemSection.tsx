@@ -6,11 +6,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import styles from './EcosystemSection.module.css';
 
 const words = [
-  { text: 'Wellness', reveal: 'is Currency' },
-  { text: 'Hope', reveal: 'is Fuel' },
-  { text: 'Presence', reveal: 'is Medicine' },
   { text: 'Knowledge', reveal: 'is Power' },
-  { text: 'Growth', reveal: 'is Choice' },
+  { text: 'Quests', reveal: 'pay Real USDC' },
+  { text: 'Diamonds', reveal: 'are Yours to Keep' },
+  { text: 'Blue', reveal: 'reviews the Work' },
+  { text: 'Growth', reveal: 'is a Choice' },
 ];
 
 export const EcosystemSection: React.FC = () => {

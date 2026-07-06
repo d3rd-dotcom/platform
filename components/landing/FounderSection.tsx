@@ -23,7 +23,7 @@ export const FounderSection: React.FC = () => {
           </h2>
           <div className={founderStyles.body}>
             <p>
-            Most education treats you like a container to fill. We treat you like a system to upgrade.             Blue runs experiments on your own data, you keep the rewards, and you walk away sharper than you came in.
+            I review your work myself. I ask for a revision when it needs one, and I pay the reward from my own wallet when it&apos;s ready. You keep everything you earn, and you leave sharper than you came in.
             </p>
             <a
               href="https://cal.com/blue.ai/strategy?overlayCalendar=true"
