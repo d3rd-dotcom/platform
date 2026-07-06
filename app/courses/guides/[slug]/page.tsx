@@ -4,10 +4,12 @@ import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, GraduationCap } from '@phosphor-icons/react';
 import { usePrivy } from '@privy-io/react-auth';
+import { useSound } from '@/hooks/useSound';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import GuideBody from '@/components/guides/GuideBody';
 import GuideMethods from '@/components/guides/GuideMethods';
 import GuideWalkthrough from '@/components/guides/GuideWalkthrough';
+import BlueGuideCompanion from '@/components/guides/BlueGuideCompanion';
 import GuideVoteBar from '@/components/guides/GuideVoteBar';
 import VerificationLog from '@/components/guides/VerificationLog';
 import DisputeSection from '@/components/guides/DisputeSection';
@@ -27,6 +29,7 @@ interface GuidePayload {
 
 export default function GuidePage({ params }: PageProps) {
   const { ready, getAccessToken } = usePrivy();
+  const { play } = useSound();
   const [data, setData] = useState<GuidePayload | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -99,12 +102,20 @@ export default function GuidePage({ params }: PageProps) {
               />
             </header>
 
+            <BlueGuideCompanion guide={data.guide} prereqs={data.prereqs} />
+
             {data.prereqs.length > 0 && (
               <section className={styles.relSection}>
                 <h2 className={styles.relHeading}>Prerequisites</h2>
                 <div className={styles.chips}>
                   {data.prereqs.map((p) => (
-                    <Link key={p.id} href={`/courses/guides/${p.slug}`} className={styles.chip}>
+                    <Link
+                      key={p.id}
+                      href={`/courses/guides/${p.slug}`}
+                      className={styles.chip}
+                      onMouseEnter={() => play('soft-hover')}
+                      onClick={() => play('navigation')}
+                    >
                       {p.topicTitle}
                     </Link>
                   ))}
@@ -115,7 +126,11 @@ export default function GuidePage({ params }: PageProps) {
             <button
               type="button"
               className={styles.walkthroughBtn}
-              onClick={() => setShowWalkthrough((v) => !v)}
+              onMouseEnter={() => play('soft-hover')}
+              onClick={() => {
+                play('click');
+                setShowWalkthrough((v) => !v);
+              }}
             >
               <GraduationCap size={18} weight="bold" />
               {showWalkthrough ? 'Hide walkthrough' : 'Start walkthrough'}
@@ -140,7 +155,13 @@ export default function GuidePage({ params }: PageProps) {
                 <h2 className={styles.relHeading}>Builds toward</h2>
                 <div className={styles.chips}>
                   {data.dependents.map((d) => (
-                    <Link key={d.id} href={`/courses/guides/${d.slug}`} className={styles.chipNext}>
+                    <Link
+                      key={d.id}
+                      href={`/courses/guides/${d.slug}`}
+                      className={styles.chipNext}
+                      onMouseEnter={() => play('soft-hover')}
+                      onClick={() => play('navigation')}
+                    >
                       {d.topicTitle} <ArrowRight size={13} weight="bold" />
                     </Link>
                   ))}

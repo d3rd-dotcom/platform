@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured } from '@/lib/db';
 import { completeGuide, getUserGuideProgress } from '@/lib/guides-db';
+import { awardGuideRewards } from '@/lib/guide-rewards-db';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -36,7 +37,18 @@ export async function POST(request: Request) {
     // completeGuide enforces the gate server-side: all direct prereqs must be
     // completed by this user, otherwise it throws with .status = 409.
     const result = await completeGuide(user.id, body.guideId);
-    return NextResponse.json({ ok: true, completedAt: result.completedAt });
+    // Idempotent diamond payout for this completion (per-guide reward, plus
+    // level-clear / walkthrough-complete bonuses when applicable). Additive to
+    // the response; existing fields are unchanged.
+    const rewards = await awardGuideRewards(user.id, body.guideId);
+    return NextResponse.json({
+      ok: true,
+      completedAt: result.completedAt,
+      diamonds: rewards.diamonds,
+      levelCleared: rewards.levelCleared,
+      walkthroughComplete: rewards.walkthroughComplete,
+      spinGranted: rewards.spinGranted,
+    });
   } catch (err: any) {
     const status = err.status ?? 500;
     return NextResponse.json({ error: err.message }, { status });

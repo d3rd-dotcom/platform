@@ -8,6 +8,7 @@ import {
   Plus,
   X,
 } from '@phosphor-icons/react';
+import { useSound } from '@/hooks/useSound';
 import styles from './DisputeSection.module.css';
 
 // Mirrors DISPUTE_TYPES in lib/guide-disputes-db.ts. Kept in-file so this stays
@@ -91,6 +92,7 @@ function statusClass(status: string): string {
  */
 export default function DisputeSection({ guideId }: Props) {
   const { ready, authenticated, getAccessToken, login } = usePrivy();
+  const { play } = useSound();
 
   const [disputes, setDisputes] = useState<Dispute[]>([]);
   const [loading, setLoading] = useState(true);
@@ -139,6 +141,7 @@ export default function DisputeSection({ guideId }: Props) {
       return;
     }
     setFormError(null);
+    play('click');
     setFormOpen((open) => !open);
   };
 
@@ -148,10 +151,12 @@ export default function DisputeSection({ guideId }: Props) {
       return;
     }
     if (!disputeType) {
+      play('error');
       setFormError('Pick a dispute type.');
       return;
     }
     if (evidence.trim().length < MIN_EVIDENCE_LENGTH) {
+      play('error');
       setFormError(`Evidence must be at least ${MIN_EVIDENCE_LENGTH} characters.`);
       return;
     }
@@ -167,9 +172,11 @@ export default function DisputeSection({ guideId }: Props) {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
+        play('error');
         setFormError(data.error ?? 'Could not open the dispute.');
         return;
       }
+      play('success');
       setFormOpen(false);
       setDisputeType('');
       setEvidence('');
@@ -177,7 +184,7 @@ export default function DisputeSection({ guideId }: Props) {
     } finally {
       setSubmitting(false);
     }
-  }, [authenticated, login, disputeType, evidence, authHeaders, guideId, load]);
+  }, [authenticated, login, disputeType, evidence, authHeaders, guideId, load, play]);
 
   const evidenceRemaining = MIN_EVIDENCE_LENGTH - evidence.trim().length;
 
@@ -189,6 +196,7 @@ export default function DisputeSection({ guideId }: Props) {
         <button
           type="button"
           className={`${styles.openBtn} ${formOpen ? styles.openBtnActive : ''}`}
+          onMouseEnter={() => play('soft-hover')}
           onClick={handleToggleForm}
           disabled={submitting}
           aria-expanded={formOpen}
@@ -237,6 +245,7 @@ export default function DisputeSection({ guideId }: Props) {
           <button
             type="button"
             className={styles.submitBtn}
+            onMouseEnter={() => play('soft-hover')}
             onClick={handleSubmit}
             disabled={submitting || !disputeType || evidence.trim().length < MIN_EVIDENCE_LENGTH}
           >
@@ -257,7 +266,11 @@ export default function DisputeSection({ guideId }: Props) {
       ) : (
         <ul className={styles.list}>
           {disputes.map((d) => (
-            <li key={d.id} className={styles.dispute}>
+            <li
+              key={d.id}
+              className={styles.dispute}
+              onMouseEnter={() => play('soft-hover')}
+            >
               <div className={styles.disputeHead}>
                 <span className={styles.typeChip}>
                   {DISPUTE_TYPE_LABELS[d.disputeType] ?? d.disputeType}

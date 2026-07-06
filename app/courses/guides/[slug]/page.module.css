@@ -26,7 +26,8 @@
   padding: 48px 24px;
   display: flex;
   flex-direction: column;
-  gap: var(--space-md, 1.625rem);
+  /* Consistent vertical rhythm between sections (28px on a 4px grid). */
+  gap: 28px;
 }
 
 .back {
@@ -90,17 +91,29 @@
 .relSection {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2, 0.5rem);
+  gap: 12px;
 }
 
+/* Section heading echoing .guideSectionHeading — small caps + trailing rule */
 .relHeading {
-  font-family: var(--font-mono);
-  font-size: var(--font-size-xs, 0.618rem);
-  font-weight: var(--font-weight-bold, 700);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size, 0.75rem);
+  font-weight: var(--type-weight-bold, 700);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--type-track-label-lg, 0.08em);
   color: var(--color-text-muted);
+  white-space: nowrap;
   margin: 0;
+}
+
+.relHeading::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: color-mix(in oklch, var(--color-primary) 26%, transparent);
 }
 
 .chips {
@@ -109,27 +122,55 @@
   gap: 8px;
 }
 
+/* Chips in guideCard hover language — tint, 1.5px border, glow on hover */
 .chip,
 .chipNext {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-family: var(--font-secondary);
-  font-size: var(--font-size-sm, 0.75rem);
-  font-weight: var(--font-weight-medium, 500);
+  font-family: var(--type-font-label);
+  font-size: var(--type-body-sm-size, 0.8125rem);
+  font-weight: var(--type-weight-medium, 500);
   color: var(--color-text-dark);
-  background: var(--color-surface-base);
-  border: 1px solid var(--color-border-subtle);
+  background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-base));
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
   border-radius: var(--radius-full, 9999px);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.05),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 10%, transparent);
   padding: 6px 14px;
   text-decoration: none;
-  transition: border-color var(--duration-fast, 200ms) var(--ease-default);
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease,
+    color 0.15s ease;
 }
 
 .chip:hover,
 .chipNext:hover {
-  border-color: var(--color-primary);
+  border-color: color-mix(in oklch, var(--color-primary) 38%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 7%, var(--color-surface-base));
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 0 0 3px color-mix(in oklch, var(--color-primary) 10%, transparent),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 16%, transparent);
   color: var(--color-primary);
+}
+
+.chip:active,
+.chipNext:active {
+  background: color-mix(in oklch, var(--color-primary) 10%, var(--color-surface-base));
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+/* "Builds toward" arrow translates on hover, like guideCardChevron */
+.chipNext svg {
+  transition: transform 0.15s ease;
+}
+
+.chipNext:hover svg {
+  transform: translateX(3px);
 }
 
 .walkthroughBtn {
@@ -137,34 +178,80 @@
   align-items: center;
   gap: 8px;
   width: fit-content;
-  font-family: var(--font-button);
-  font-size: var(--font-size-sm, 0.75rem);
-  font-weight: var(--font-weight-medium, 500);
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size, 0.75rem);
+  font-weight: var(--type-weight-semibold, 600);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--type-track-label, 0.05em);
   color: var(--color-text-light);
   background: var(--color-primary);
-  border: none;
-  border-radius: var(--radius-md, 0.5rem);
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-full, 9999px);
   padding: 10px 18px;
   cursor: pointer;
-  transition: background var(--duration-fast, 200ms) var(--ease-default);
+  box-shadow: 0 2px 6px color-mix(in oklch, var(--color-primary) 30%, transparent);
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
 }
 
 .walkthroughBtn:hover {
   background: var(--color-primary-hover);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 38%, transparent);
+}
+
+.walkthroughBtn:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 3px color-mix(in oklch, var(--color-primary) 30%, transparent);
 }
 
 .walkthroughPanel {
-  border: 1px solid var(--color-border-subtle);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
   border-radius: var(--radius-xl, 1.25rem);
-  background: var(--color-surface-1);
+  background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-base));
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.05),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 10%, transparent);
   padding: var(--space-4, 1rem);
 }
 
 .content {
   border-top: 1px solid var(--color-border-subtle);
   padding-top: var(--space-md, 1.625rem);
+}
+
+/* ── Dark theme ─────────────────────────────────────────────────────────── */
+:global([data-theme="dark"]) .relHeading::after {
+  background: color-mix(in oklch, var(--color-primary-hover) 30%, transparent);
+}
+
+:global([data-theme="dark"]) .chip,
+:global([data-theme="dark"]) .chipNext {
+  background: color-mix(in oklch, var(--color-primary) 8%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 22%, transparent);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.2),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 8%, transparent);
+}
+
+:global([data-theme="dark"]) .chip:hover,
+:global([data-theme="dark"]) .chipNext:hover {
+  border-color: color-mix(in oklch, var(--color-primary-hover) 50%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 12%, #15172a);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    0 0 0 3px color-mix(in oklch, var(--color-primary) 14%, transparent),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 14%, transparent);
+}
+
+:global([data-theme="dark"]) .subjectTag {
+  background: color-mix(in oklch, var(--color-primary) 16%, transparent);
+}
+
+:global([data-theme="dark"]) .walkthroughPanel {
+  background: color-mix(in oklch, var(--color-primary) 8%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 22%, transparent);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.2),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 8%, transparent);
 }
 
 @media (max-width: 1024px) {

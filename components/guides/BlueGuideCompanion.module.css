@@ -1,0 +1,48 @@
+/* Blue floats just below the guide header as a companion presence.
+   guideCard-style oklch tint panel wrapping the compact chat bubble, with a
+   gentle fade+rise entrance that respects prefers-reduced-motion. */
+.companion {
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  border-radius: var(--radius-xl, 1.25rem);
+  background: color-mix(in oklch, var(--color-primary) 5%, var(--color-surface-base));
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.05),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 10%, transparent);
+  padding: var(--space-3, 0.75rem);
+  animation: blueCompanionRise 0.42s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+/* Let the wrapped bubble sit flush inside the tint panel — the panel is the
+   card now, so drop the bubble's own card chrome. */
+.companion :global([data-blue-chat-bubble="true"]) {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+@keyframes blueCompanionRise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Dark theme — guideCard dark tint language ──────────────────────────── */
+:global([data-theme="dark"]) .companion {
+  background: color-mix(in oklch, var(--color-primary) 9%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 22%, transparent);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.22),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 8%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .companion {
+    animation: none;
+  }
+}

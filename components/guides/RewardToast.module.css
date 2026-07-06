@@ -1,0 +1,127 @@
+/* ── Reward toast in the guideCard oklch tint language ──────────────────────
+   Mirrors the tint / border / shadow recipe used across guide components
+   (see GuideVoteBar.module.css). Purely presentational; wiring lives elsewhere.
+*/
+
+.toast {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5rem);
+  padding: var(--space-4, 1rem) var(--space-4, 1.15rem);
+  border-radius: 14px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 28%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 6%, var(--color-surface-base));
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.06),
+    0 0 0 3px color-mix(in oklch, var(--color-primary) 8%, transparent),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 12%, transparent);
+  max-width: 22rem;
+  animation: rewardIn 0.28s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
+@keyframes rewardIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ── Diamond count — prominent, Space Grotesk (--type-font-display) ───────── */
+.diamondRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2, 0.5rem);
+}
+
+.diamondIcon {
+  display: inline-flex;
+  align-self: center;
+  color: var(--color-primary);
+  filter: drop-shadow(0 1px 2px color-mix(in oklch, var(--color-primary) 40%, transparent));
+}
+
+.diamondCount {
+  font-family: var(--type-font-display);
+  font-size: var(--type-h1-size, 2rem);
+  line-height: var(--type-h1-lh, 1.1);
+  font-weight: var(--type-weight-bold, 700);
+  letter-spacing: var(--type-track-display, -0.01em);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-primary);
+}
+
+.diamondLabel {
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size, 0.75rem);
+  font-weight: var(--type-weight-semibold, 600);
+  text-transform: uppercase;
+  letter-spacing: var(--type-track-label, 0.05em);
+  color: var(--color-text-muted);
+}
+
+/* ── Bonus lines ────────────────────────────────────────────────────────── */
+.bonusList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 0.375rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bonus,
+.bonusStrong {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size, 0.8125rem);
+  line-height: var(--type-body-sm-lh, 1.4);
+  color: var(--color-text-dark);
+}
+
+.bonusStrong {
+  font-family: var(--type-font-label);
+  font-weight: var(--type-weight-semibold, 600);
+  color: var(--color-primary);
+}
+
+.bonusDot {
+  flex: none;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary) 16%, transparent);
+}
+
+/* ── Dark theme ─────────────────────────────────────────────────────────── */
+:global([data-theme="dark"]) .toast {
+  background: color-mix(in oklch, var(--color-primary) 10%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 30%, transparent);
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.45),
+    0 2px 6px rgba(0, 0, 0, 0.25),
+    0 0 0 3px color-mix(in oklch, var(--color-primary) 12%, transparent),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 12%, transparent);
+}
+
+:global([data-theme="dark"]) .diamondCount,
+:global([data-theme="dark"]) .diamondIcon,
+:global([data-theme="dark"]) .bonusStrong {
+  color: var(--color-primary-hover);
+}
+
+:global([data-theme="dark"]) .bonusDot {
+  background: var(--color-primary-hover);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary) 20%, transparent);
+}
+
+:global([data-theme="dark"]) .bonus {
+  color: color-mix(in oklch, var(--color-text-dark) 88%, #ffffff);
+}

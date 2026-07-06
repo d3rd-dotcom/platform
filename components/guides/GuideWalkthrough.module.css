@@ -9,14 +9,16 @@
   display: flex;
   align-items: center;
   gap: var(--space-2, 0.5rem);
-  font-family: var(--font-primary);
-  font-size: var(--font-size-sm, 0.75rem);
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lh);
   color: var(--color-text-muted);
   padding: var(--space-4, 1rem) 0;
 }
 
 .spinner {
   animation: spin 0.9s linear infinite;
+  color: var(--color-text-muted);
 }
 
 @keyframes spin {
@@ -25,25 +27,28 @@
   }
 }
 
+/* ── Progress header ────────────────────────────────────────────────────── */
 .progressHeader {
   display: flex;
   flex-direction: column;
   gap: var(--space-2, 0.5rem);
 }
 
+/* "Level N of M" — prominent Space Grotesk */
 .progressLabel {
-  font-family: var(--font-mono);
-  font-size: var(--font-size-sm, 0.75rem);
-  font-weight: var(--font-weight-semibold, 600);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  font-family: var(--type-font-display);
+  font-size: var(--type-h4-size);
+  line-height: var(--type-lh-snug);
+  letter-spacing: var(--type-track-heading);
+  font-weight: var(--type-weight-bold);
   color: var(--color-primary);
 }
 
 .progressTrack {
-  height: 6px;
+  height: 8px;
   border-radius: var(--radius-full, 9999px);
-  background: var(--color-surface-3);
+  background: color-mix(in oklch, var(--color-primary) 12%, var(--color-surface-base));
+  border: 1px solid color-mix(in oklch, var(--color-primary) 16%, transparent);
   overflow: hidden;
 }
 
@@ -51,18 +56,22 @@
   height: 100%;
   border-radius: var(--radius-full, 9999px);
   background: var(--color-primary);
+  box-shadow: 0 0 8px color-mix(in oklch, var(--color-primary) 40%, transparent);
   transition: width var(--duration-normal, 300ms) var(--ease-out);
 }
 
 .error {
-  font-family: var(--font-primary);
-  font-size: var(--font-size-sm, 0.75rem);
-  color: var(--color-text-light);
-  background: #BA1A1A;
-  border-radius: var(--radius-md, 0.5rem);
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lh);
+  color: color-mix(in oklch, #BA1A1A 82%, var(--color-text-dark));
+  background: color-mix(in oklch, #BA1A1A 8%, var(--color-surface-base));
+  border: 1.5px solid color-mix(in oklch, #BA1A1A 22%, transparent);
+  border-radius: 12px;
   padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
 }
 
+/* ── Level clusters ─────────────────────────────────────────────────────── */
 .levels {
   /* Bottom-up: level 0 (primitives) appears at the visual bottom, target on top */
   display: flex;
@@ -70,19 +79,27 @@
   gap: var(--space-3, 0.75rem);
 }
 
+/* Level = a tinted card cluster */
 .level {
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-lg, 0.75rem);
-  background: var(--color-surface-base);
-  padding: var(--space-3, 0.75rem);
   display: flex;
   flex-direction: column;
   gap: var(--space-2, 0.5rem);
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-base));
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.05),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 10%, transparent);
+  transition: opacity 0.15s ease;
 }
 
+/* Locked = reduced opacity + muted (not gray) */
 .levelLocked {
-  opacity: 0.55;
-  background: var(--color-surface-2);
+  opacity: 0.62;
+  border-style: dashed;
+  border-color: color-mix(in oklch, var(--color-primary) 22%, transparent);
+  box-shadow: none;
 }
 
 .levelHead {
@@ -93,21 +110,29 @@
 }
 
 .levelBadge {
-  font-family: var(--font-mono);
-  font-size: var(--font-size-xs, 0.618rem);
-  font-weight: var(--font-weight-bold, 700);
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-lh);
+  letter-spacing: var(--type-track-label-lg);
+  font-weight: var(--type-weight-bold);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--color-text-muted);
+  color: var(--color-primary);
 }
 
 .lockedTag {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-family: var(--font-mono);
-  font-size: var(--font-size-xs, 0.618rem);
-  color: var(--color-text-faint);
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  letter-spacing: var(--type-track-label);
+  font-weight: var(--type-weight-semibold);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
+  border-radius: var(--radius-full, 9999px);
+  padding: 2px 8px;
 }
 
 .nodeList {
@@ -116,15 +141,36 @@
   gap: var(--space-2, 0.5rem);
 }
 
+/* Row = guideCard */
 .node {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3, 0.75rem);
-  padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
-  border-radius: var(--radius-md, 0.5rem);
-  background: var(--color-surface-1);
-  border: 1px solid var(--color-border-subtle);
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 16%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-base));
+  box-shadow: 0 1px 0 color-mix(in oklch, var(--color-primary) 8%, transparent);
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.node:hover {
+  border-color: color-mix(in oklch, var(--color-primary) 38%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 7%, var(--color-surface-base));
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 16%, transparent);
+}
+
+.nodeDone {
+  border-color: color-mix(in oklch, var(--color-tertiary) 22%, transparent);
+  background: color-mix(in oklch, var(--color-tertiary) 5%, var(--color-surface-base));
+}
+
+.nodeDone:hover {
+  border-color: color-mix(in oklch, var(--color-tertiary) 36%, transparent);
+  background: color-mix(in oklch, var(--color-tertiary) 8%, var(--color-surface-base));
 }
 
 .nodeMain {
@@ -138,48 +184,59 @@
   width: 10px;
   height: 10px;
   border-radius: var(--radius-full, 9999px);
-  border: 2px solid var(--color-border-strong);
+  border: 2px solid color-mix(in oklch, var(--color-primary) 42%, transparent);
   flex-shrink: 0;
 }
 
 .doneIcon {
-  color: var(--color-tertiary, #1F7A3A);
+  color: var(--color-tertiary);
   flex-shrink: 0;
 }
 
 .nodeTitle {
-  font-family: var(--font-secondary);
-  font-size: var(--font-size-md, 1rem);
-  font-weight: var(--font-weight-medium, 500);
+  font-family: var(--type-font-heading);
+  font-size: var(--type-body-lg-size);
+  line-height: var(--type-lh-snug);
+  font-weight: var(--type-weight-medium);
   color: var(--color-text-dark);
   text-decoration: none;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: color 0.15s ease;
 }
 
-.nodeTitle:hover {
+.node:hover .nodeTitle {
   color: var(--color-primary);
 }
 
+/* Complete button — pill in the vote language */
 .completeBtn {
   flex-shrink: 0;
-  font-family: var(--font-button);
-  font-size: var(--font-size-xs, 0.618rem);
-  font-weight: var(--font-weight-medium, 500);
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-lh);
+  letter-spacing: var(--type-track-label);
+  font-weight: var(--type-weight-semibold);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 6px 12px;
-  border-radius: var(--radius-sm, 0.25rem);
-  border: 1px solid var(--color-primary);
+  padding: 6px 13px;
+  border-radius: var(--radius-full, 9999px);
+  border: 1.5px solid var(--color-primary);
   background: var(--color-primary);
   color: var(--color-text-light);
   cursor: pointer;
-  transition: background var(--duration-fast, 200ms) var(--ease-default);
+  box-shadow: 0 2px 6px color-mix(in oklch, var(--color-primary) 30%, transparent);
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
 }
 
 .completeBtn:hover:not(:disabled) {
   background: var(--color-primary-hover);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 38%, transparent);
+}
+
+.completeBtn:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 1px 3px color-mix(in oklch, var(--color-primary) 30%, transparent);
 }
 
 .completeBtn:disabled {
@@ -187,12 +244,71 @@
 }
 
 .completeBtnDone {
-  background: transparent;
-  color: var(--color-tertiary, #1F7A3A);
-  border-color: var(--color-tertiary, #1F7A3A);
+  background: color-mix(in oklch, var(--color-tertiary) 8%, transparent);
+  color: var(--color-tertiary);
+  border-color: color-mix(in oklch, var(--color-tertiary) 40%, transparent);
+  box-shadow: none;
+  opacity: 1;
 }
 
 .lockedHint {
   color: var(--color-text-faint);
   flex-shrink: 0;
+}
+
+/* ── Dark theme ─────────────────────────────────────────────────────────── */
+:global([data-theme="dark"]) .progressTrack {
+  background: color-mix(in oklch, var(--color-primary) 14%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 22%, transparent);
+}
+
+:global([data-theme="dark"]) .level {
+  background: color-mix(in oklch, var(--color-primary) 8%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 22%, transparent);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.2),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 8%, transparent);
+}
+
+:global([data-theme="dark"]) .levelLocked {
+  border-color: color-mix(in oklch, var(--color-primary-hover) 26%, transparent);
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .node {
+  background: color-mix(in oklch, var(--color-primary) 8%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 20%, transparent);
+}
+
+:global([data-theme="dark"]) .node:hover {
+  border-color: color-mix(in oklch, var(--color-primary-hover) 50%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 12%, #15172a);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 14%, transparent);
+}
+
+:global([data-theme="dark"]) .nodeDone {
+  background: color-mix(in oklch, var(--color-tertiary) 12%, #15172a);
+  border-color: color-mix(in oklch, var(--color-tertiary) 30%, transparent);
+}
+
+:global([data-theme="dark"]) .lockedTag {
+  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 28%, transparent);
+}
+
+:global([data-theme="dark"]) .dot {
+  border-color: color-mix(in oklch, var(--color-primary-hover) 50%, transparent);
+}
+
+:global([data-theme="dark"]) .completeBtnDone {
+  background: color-mix(in oklch, var(--color-tertiary) 14%, transparent);
+  border-color: color-mix(in oklch, var(--color-tertiary) 40%, transparent);
+}
+
+:global([data-theme="dark"]) .error {
+  color: color-mix(in oklch, #FF6B6B 88%, var(--color-text-dark));
+  background: color-mix(in oklch, #BA1A1A 14%, #15172a);
+  border-color: color-mix(in oklch, #BA1A1A 30%, transparent);
 }

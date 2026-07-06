@@ -177,7 +177,10 @@ export default function VerificationLog({ guideId }: Props) {
                 {panel.votes.map((vote) => (
                   <li
                     key={`${panel.id}-${vote.voterId}`}
-                    className={styles.vote}
+                    className={`${styles.vote} ${
+                      vote.decision === 'approve' ? styles.voteApprove : styles.voteReject
+                    }`}
+                    onMouseEnter={() => play('soft-hover')}
                   >
                     <div className={styles.voteHead}>
                       {vote.decision === 'approve' ? (

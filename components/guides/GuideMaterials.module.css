@@ -26,7 +26,7 @@
   margin: 0;
 }
 
-/* ── Grid of material cards ─────────────────────────────────────────────── */
+/* ── Grid of material cards — guideCard language ────────────────────────── */
 .grid {
   list-style: none;
   margin: 0;
@@ -40,21 +40,28 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-lg, 0.75rem);
-  background: var(--color-surface-base);
-  transition: border-color var(--duration-fast, 200ms) var(--ease-default);
+  border-radius: 12px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-base));
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.05),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 10%, transparent);
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
 }
 
 .card:hover {
-  border-color: var(--color-primary);
+  border-color: color-mix(in oklch, var(--color-primary) 38%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 7%, var(--color-surface-base));
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 16%, transparent);
 }
 
 /* ── Image ──────────────────────────────────────────────────────────────── */
 .imageWrap {
   position: relative;
   aspect-ratio: 4 / 3;
-  background: var(--color-surface-2);
+  background: color-mix(in oklch, var(--color-primary) 6%, var(--color-surface-base));
   overflow: hidden;
 }
 
@@ -77,7 +84,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-2, 0.5rem);
-  padding: var(--space-3, 0.75rem);
+  padding: 12px 16px 16px;
 }
 
 .nameRow {
@@ -90,31 +97,41 @@
 .name {
   font-family: var(--type-font-heading);
   font-size: var(--type-body-size);
-  line-height: var(--type-body-lh);
+  line-height: var(--type-lh-snug);
   font-weight: var(--type-weight-semibold);
   color: var(--color-text-dark);
   min-width: 0;
+  transition: color 0.15s ease;
 }
 
+.card:hover .name {
+  color: var(--color-primary);
+}
+
+/* Price chip */
 .price {
   flex-shrink: 0;
   font-family: var(--type-font-code);
   font-size: var(--type-label-size);
-  letter-spacing: var(--type-label-track);
+  letter-spacing: var(--type-track-label);
   font-weight: var(--type-weight-semibold);
   color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
+  border-radius: var(--radius-full, 9999px);
+  padding: 2px 9px;
   font-variant-numeric: tabular-nums;
 }
 
 .rationale {
   font-family: var(--type-font-body);
   font-size: var(--type-body-sm-size);
-  line-height: var(--type-body-sm-lh);
+  line-height: 1.6;
   color: var(--color-text-muted);
   margin: 0;
 }
 
-/* ── Link out ───────────────────────────────────────────────────────────── */
+/* ── Link out — external arrow translates on hover ──────────────────────── */
 .link {
   display: inline-flex;
   align-items: center;
@@ -124,14 +141,44 @@
   font-family: var(--type-font-label);
   font-size: var(--type-label-size);
   line-height: var(--type-label-lh);
-  letter-spacing: var(--type-label-track);
+  letter-spacing: var(--type-track-label);
   font-weight: var(--type-weight-semibold);
   text-transform: uppercase;
   text-decoration: none;
   color: var(--color-primary);
-  transition: opacity var(--duration-fast, 200ms) var(--ease-default);
+  transition: color 0.15s ease;
 }
 
-.link:hover {
-  opacity: 0.78;
+.linkArrow {
+  transition: transform 0.15s ease;
+}
+
+.link:hover .linkArrow {
+  transform: translate(2px, -2px);
+}
+
+/* ── Dark theme ─────────────────────────────────────────────────────────── */
+:global([data-theme="dark"]) .card {
+  background: color-mix(in oklch, var(--color-primary) 8%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 22%, transparent);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.2),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 8%, transparent);
+}
+
+:global([data-theme="dark"]) .card:hover {
+  border-color: color-mix(in oklch, var(--color-primary-hover) 50%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 12%, #15172a);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 14%, transparent);
+}
+
+:global([data-theme="dark"]) .imageWrap {
+  background: color-mix(in oklch, var(--color-primary) 12%, #15172a);
+}
+
+:global([data-theme="dark"]) .price {
+  background: color-mix(in oklch, var(--color-primary) 16%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 30%, transparent);
 }

@@ -8,6 +8,7 @@ import {
   Trophy,
   ArrowRight,
 } from '@phosphor-icons/react';
+import { useSound } from '@/hooks/useSound';
 import styles from './VerifierCredentials.module.css';
 
 // Mirrors VerifierCredential from lib/verifier-tests-db (kept in-file so this
@@ -50,6 +51,7 @@ const MAX_LEVEL = 5;
  */
 export default function VerifierCredentials() {
   const { ready, authenticated, getAccessToken, login } = usePrivy();
+  const { play } = useSound();
 
   const [credentials, setCredentials] = useState<Credential[]>([]);
   const [loadingCreds, setLoadingCreds] = useState(true);
@@ -119,6 +121,7 @@ export default function VerifierCredentials() {
     }
     const trimmed = subject.trim();
     if (trimmed.length < 2) {
+      play('error');
       setError('Choose or enter a subject first.');
       return;
     }
@@ -133,15 +136,17 @@ export default function VerifierCredentials() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
+        play('error');
         setError(data.error ?? 'Could not start the verifier test.');
         return;
       }
+      play('navigation');
       setTest(data.test ?? null);
       setAnswers({});
     } finally {
       setRequesting(false);
     }
-  }, [ready, authenticated, login, subject, level, authHeaders]);
+  }, [ready, authenticated, login, subject, level, authHeaders, play]);
 
   const submitTest = useCallback(async () => {
     if (!test) return;
@@ -155,19 +160,23 @@ export default function VerifierCredentials() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
+        play('error');
         setError(data.error ?? 'Could not submit your answers.');
         return;
       }
       setResult({ score: data.score, passed: data.passed, passThreshold: data.passThreshold });
       if (data.passed) {
+        play('celebration');
         setTest(null);
         setAnswers({});
         await loadCredentials();
+      } else {
+        play('error');
       }
     } finally {
       setSubmitting(false);
     }
-  }, [test, answers, authHeaders, loadCredentials]);
+  }, [test, answers, authHeaders, loadCredentials, play]);
 
   const levelOptions = useMemo(
     () => Array.from({ length: MAX_LEVEL + 1 }, (_, i) => i),
@@ -261,6 +270,7 @@ export default function VerifierCredentials() {
           <button
             type="button"
             className={styles.primaryBtn}
+            onMouseEnter={() => play('soft-hover')}
             onClick={requestTest}
             disabled={requesting}
           >
@@ -342,6 +352,7 @@ export default function VerifierCredentials() {
           <button
             type="button"
             className={styles.primaryBtn}
+            onMouseEnter={() => play('soft-hover')}
             onClick={submitTest}
             disabled={submitting}
           >

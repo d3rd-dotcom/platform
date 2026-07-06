@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
 import { CheckCircle, Lock, CircleNotch } from '@phosphor-icons/react';
+import { useSound } from '@/hooks/useSound';
 import type { Walkthrough, WalkthroughNode } from '@/lib/guides-db';
 import styles from './GuideWalkthrough.module.css';
 
@@ -13,6 +14,7 @@ interface Props {
 
 export default function GuideWalkthrough({ slug }: Props) {
   const { ready, authenticated, getAccessToken, login } = usePrivy();
+  const { play } = useSound();
   const [walkthrough, setWalkthrough] = useState<Walkthrough | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -99,16 +101,26 @@ export default function GuideWalkthrough({ slug }: Props) {
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) {
+          // 409 = prerequisite gate rejection.
+          play('error');
           setError(data.error ?? 'Could not complete this guide.');
           return;
         }
         setError(null);
-        setCompleted((prev) => new Set(prev).add(node.id));
+        setCompleted((prev) => {
+          const next = new Set(prev).add(node.id);
+          // Celebration when this completion finishes every guide in the level;
+          // otherwise a plain success chime.
+          const siblings = (walkthrough?.nodes ?? []).filter((n) => n.level === node.level);
+          const levelDone = siblings.length > 0 && siblings.every((n) => next.has(n.id));
+          play(levelDone ? 'celebration' : 'success');
+          return next;
+        });
       } finally {
         setCompleting(null);
       }
     },
-    [authenticated, login, authHeaders],
+    [authenticated, login, authHeaders, play, walkthrough],
   );
 
   if (loading) {
@@ -160,14 +172,22 @@ export default function GuideWalkthrough({ slug }: Props) {
                 {nodes.map((node) => {
                   const isDone = completed.has(node.id);
                   return (
-                    <div key={node.id} className={styles.node}>
+                    <div
+                      key={node.id}
+                      className={`${styles.node} ${isDone ? styles.nodeDone : ''}`}
+                      onMouseEnter={() => unlocked && play('soft-hover')}
+                    >
                       <div className={styles.nodeMain}>
                         {isDone ? (
                           <CheckCircle size={18} weight="fill" className={styles.doneIcon} />
                         ) : (
                           <span className={styles.dot} />
                         )}
-                        <Link href={`/courses/guides/${node.slug}`} className={styles.nodeTitle}>
+                        <Link
+                          href={`/courses/guides/${node.slug}`}
+                          className={styles.nodeTitle}
+                          onClick={() => play('click')}
+                        >
                           {node.topicTitle}
                         </Link>
                       </div>
@@ -176,6 +196,7 @@ export default function GuideWalkthrough({ slug }: Props) {
                           type="button"
                           className={`${styles.completeBtn} ${isDone ? styles.completeBtnDone : ''}`}
                           disabled={isDone || completing === node.id}
+                          onMouseEnter={() => !isDone && play('soft-hover')}
                           onClick={() => handleComplete(node)}
                         >
                           {isDone

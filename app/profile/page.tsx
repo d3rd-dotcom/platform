@@ -6,6 +6,8 @@ import SideNavigation from '@/components/side-navigation/SideNavigation';
 import CyberpunkDataViz from '@/components/cyberpunk-data-viz/CyberpunkDataViz';
 import ProfileDashboard from '@/components/courses/ProfileDashboard';
 import type { PanelCourse } from '@/components/courses/ProfileDashboard';
+import VerifierBadges from '@/components/guides/VerifierBadges';
+import VerifierCredentials from '@/components/guides/VerifierCredentials';
 import styles from './page.module.css';
 
 export default function ProfilePage() {
@@ -58,6 +60,10 @@ export default function ProfilePage() {
       <main className={styles.page}>
         <section className={styles.shell}>
           <ProfileDashboard courses={courses} />
+        </section>
+        <section className={styles.shell}>
+          <VerifierBadges />
+          <VerifierCredentials />
         </section>
       </main>
     </div>

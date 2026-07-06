@@ -1,6 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
+'use client';
+
 import Link from 'next/link';
-import { ArrowUpRight, Package } from '@phosphor-icons/react/dist/ssr';
+import { ArrowUpRight, Package } from '@phosphor-icons/react';
+import { useSound } from '@/hooks/useSound';
 import type { GuideMaterial } from '@/lib/guide-materials-db';
 import styles from './GuideMaterials.module.css';
 
@@ -16,6 +19,8 @@ import styles from './GuideMaterials.module.css';
  * Empty state: render nothing (no heading, no placeholder).
  */
 export default function GuideMaterials({ materials }: { materials: GuideMaterial[] }) {
+  const { play } = useSound();
+
   if (!materials || materials.length === 0) return null;
 
   return (
@@ -27,7 +32,11 @@ export default function GuideMaterials({ materials }: { materials: GuideMaterial
 
       <ul className={styles.grid}>
         {materials.map((m) => (
-          <li key={m.id} className={styles.card}>
+          <li
+            key={m.id}
+            className={styles.card}
+            onMouseEnter={() => play('soft-hover')}
+          >
             {m.imageUrl ? (
               <div className={styles.imageWrap}>
                 <img
@@ -53,7 +62,7 @@ export default function GuideMaterials({ materials }: { materials: GuideMaterial
 
               <p className={styles.rationale}>{m.rationale}</p>
 
-              <MaterialLink material={m} />
+              <MaterialLink material={m} onNavigate={() => play('navigation')} />
             </div>
           </li>
         ))}
@@ -62,14 +71,20 @@ export default function GuideMaterials({ materials }: { materials: GuideMaterial
   );
 }
 
-function MaterialLink({ material }: { material: GuideMaterial }) {
+function MaterialLink({
+  material,
+  onNavigate,
+}: {
+  material: GuideMaterial;
+  onNavigate: () => void;
+}) {
   const label = material.linkType === 'internal_shop' ? 'View in shop' : 'View product';
 
   if (material.linkType === 'internal_shop') {
     return (
-      <Link href={material.linkUrl} className={styles.link}>
+      <Link href={material.linkUrl} className={styles.link} onClick={onNavigate}>
         <span>{label}</span>
-        <ArrowUpRight size={14} weight="bold" aria-hidden />
+        <ArrowUpRight size={14} weight="bold" className={styles.linkArrow} aria-hidden />
       </Link>
     );
   }
@@ -80,9 +95,10 @@ function MaterialLink({ material }: { material: GuideMaterial }) {
       className={styles.link}
       target="_blank"
       rel="noopener nofollow"
+      onClick={onNavigate}
     >
       <span>{label}</span>
-      <ArrowUpRight size={14} weight="bold" aria-hidden />
+      <ArrowUpRight size={14} weight="bold" className={styles.linkArrow} aria-hidden />
     </a>
   );
 }

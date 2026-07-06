@@ -29,3 +29,16 @@ tracks and every current consumer (panel selection in `guide-verification-db`)
 reads from `verifier_credentials`. Revisit if verifier status needs to be
 portable across apps or provable without trusting our DB. Until then: no on-chain
 code, no new deps, `verifier_credentials.earned_via = 'tiered_test'` is the record.
+
+## Prestige & minting
+
+Phase 8 added the read-only verifier **prestige track** (`lib/verifier-prestige-db.ts`,
+`components/guides/VerifierBadges.tsx`, `/api/leaderboard/verifiers`): per-subject
+credential tiers (Reader → Verifier → Arbiter), panels served, and an *upheld rate*
+derived from how often a member's panel vote matched the final panel decision and
+survived any dispute. That standing is the natural trigger for the deferred mint
+above: the **top-tier** verifiers — Arbiters with a high upheld rate and many panels
+served — are the capstone cohort whose credential would first be minted as a soulbound
+`SurveyCertificates` token when/if the on-chain path is revisited. Nothing here adds
+a contract, web3 dependency, or `contracts/` change; the prestige metrics simply give
+a future mint a principled, earned allowlist instead of minting every passing test.
