@@ -1,0 +1,60 @@
+<svg width="680" height="552" viewBox="0 0 680 552" role="img" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif">
+<title>Diamonds ($BLUE) token economy</title>
+<desc>Members earn BLUE in the Academy, spend it on sinks that burn supply, and holders receive Bitcoin reflections from the treasury-funded vault; a future DEX pool feeds the treasury with a 1% trade fee. Trust rails: fee capped at 2%, no blacklist, no trading switch, renounce ends minting.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+
+<rect x="0" y="0" width="680" height="552" fill="#FFFFFF"/>
+
+<g>
+  <rect x="40" y="40" width="180" height="64" rx="4" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+  <text x="130" y="66" text-anchor="middle" font-size="14" font-weight="500" fill="#085041">The Academy</text>
+  <text x="130" y="86" text-anchor="middle" font-size="12" fill="#0F6E56">earning mints BLUE</text>
+</g>
+<g>
+  <rect x="460" y="40" width="180" height="64" rx="4" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/>
+  <text x="550" y="66" text-anchor="middle" font-size="14" font-weight="500" fill="#712B13">Fun sinks</text>
+  <text x="550" y="86" text-anchor="middle" font-size="12" fill="#993C1D">spending burns supply</text>
+</g>
+
+<g>
+  <rect x="250" y="170" width="180" height="64" rx="4" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+  <text x="340" y="196" text-anchor="middle" font-size="14" font-weight="500" fill="#444441">Member wallet</text>
+  <text x="340" y="216" text-anchor="middle" font-size="12" fill="#5F5E5A">gas-free, self-custody</text>
+</g>
+
+<g>
+  <rect x="40" y="310" width="180" height="64" rx="4" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.5"/>
+  <text x="130" y="336" text-anchor="middle" font-size="14" font-weight="500" fill="#633806">Treasury</text>
+  <text x="130" y="356" text-anchor="middle" font-size="12" fill="#854F0B">deposits cbBTC</text>
+</g>
+<g>
+  <rect x="250" y="310" width="180" height="64" rx="4" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.5"/>
+  <text x="340" y="336" text-anchor="middle" font-size="14" font-weight="500" fill="#633806">Reflection vault</text>
+  <text x="340" y="356" text-anchor="middle" font-size="12" fill="#854F0B">pays holders in cbBTC</text>
+</g>
+<g>
+  <rect x="460" y="310" width="180" height="64" rx="4" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5" stroke-dasharray="4 3"/>
+  <text x="550" y="336" text-anchor="middle" font-size="14" font-weight="500" fill="#444441">DEX pool, later</text>
+  <text x="550" y="356" text-anchor="middle" font-size="12" fill="#5F5E5A">1% fee funds treasury</text>
+</g>
+
+<path d="M130 104 V202 H246" fill="none" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M430 202 H550 V108" fill="none" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M220 342 H246" fill="none" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M340 310 V238" fill="none" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M550 374 V404 H130 V378" fill="none" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<rect x="40" y="428" width="600" height="68" rx="4" fill="none" stroke="#B4B2A9" stroke-width="0.5" stroke-dasharray="4 3"/>
+<text x="60" y="452" font-size="14" font-weight="500" fill="#2C2C2A">Trust rails, verifiable onchain</text>
+<text x="60" y="478" font-size="12" fill="#5F5E5A">fee capped at 2%</text>
+<text x="200" y="478" font-size="12" fill="#5F5E5A">no blacklist</text>
+<text x="320" y="478" font-size="12" fill="#5F5E5A">no trading switch</text>
+<text x="470" y="478" font-size="12" fill="#5F5E5A">renounce ends minting</text>
+
+<rect x="154" y="516" width="10" height="10" rx="2" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+<text x="170" y="525" font-size="12" fill="#5F5E5A">earn</text>
+<rect x="236" y="516" width="10" height="10" rx="2" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/>
+<text x="252" y="525" font-size="12" fill="#5F5E5A">spend and burn</text>
+<rect x="383" y="516" width="10" height="10" rx="2" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.5"/>
+<text x="399" y="525" font-size="12" fill="#5F5E5A">Bitcoin yield</text>
+</svg>
