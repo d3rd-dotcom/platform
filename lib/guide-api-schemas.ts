@@ -283,12 +283,15 @@ export const verificationSubmitResponseSchema = z.object({
 });
 export type VerificationSubmitResponse = z.infer<typeof verificationSubmitResponseSchema>;
 
-/** POST /api/guides/verification/vote — panel-vote result. */
+/**
+ * POST /api/guides/verification/vote — panel-vote result. `guideStatus` mirrors
+ * castPanelVote's return (`string | null` — null until the panel resolves).
+ */
 export const verificationVoteResponseSchema = z.object({
   ok: z.literal(true),
   resolved: z.boolean(),
   panelStatus: z.string(),
-  guideStatus: z.string(),
+  guideStatus: z.string().nullable(),
 });
 export type VerificationVoteResponse = z.infer<typeof verificationVoteResponseSchema>;
 

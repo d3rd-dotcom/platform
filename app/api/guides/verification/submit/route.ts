@@ -1,7 +1,12 @@
 import { NextResponse } from 'next/server';
-import { assertCourseUser } from '@/lib/assert-course-auth';
+import { requireVip } from '@/lib/guide-api-auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { submitGuideForVerification } from '@/lib/guide-verification-db';
+import {
+  verificationSubmitBodySchema,
+  zodErrorBody,
+  type VerificationSubmitResponse,
+} from '@/lib/guide-api-schemas';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -11,7 +16,7 @@ export const dynamic = 'force-dynamic';
  * Author submits their own DRAFT guide for verification. Draws an odd-numbered
  * verifier panel and flips the guide to `pending_verification`.
  *
- * Auth mirrors the guide-authoring routes (assertCourseUser). Ownership is
+ * Auth mirrors the guide-authoring routes (requireVip). Ownership is
  * enforced here: a user may only submit a guide they authored.
  */
 export async function POST(request: Request) {
@@ -20,12 +25,13 @@ export async function POST(request: Request) {
   }
 
   try {
-    const userId = await assertCourseUser();
+    const { userId } = await requireVip(request);
 
-    const body = (await request.json().catch(() => ({}))) as { guideId?: unknown };
-    if (!body.guideId || typeof body.guideId !== 'string') {
-      return NextResponse.json({ error: 'guideId is required.' }, { status: 400 });
+    const parsed = verificationSubmitBodySchema.safeParse(await request.json().catch(() => ({})));
+    if (!parsed.success) {
+      return NextResponse.json(zodErrorBody(parsed.error), { status: 400 });
     }
+    const body = parsed.data;
 
     // Ownership check — only the author may submit their draft.
     const rows = await sqlQuery<Array<{ author_id: string | null }>>(
@@ -56,7 +62,7 @@ export async function POST(request: Request) {
         panelId: panel.id,
         memberCount: panel.memberIds.length,
         status: panel.status,
-      },
+      } satisfies VerificationSubmitResponse,
       { status: 201 },
     );
   } catch (err: any) {

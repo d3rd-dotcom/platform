@@ -1,7 +1,12 @@
 import { NextResponse } from 'next/server';
-import { getCurrentUserFromRequestCookie } from '@/lib/auth';
+import { requireUser } from '@/lib/guide-api-auth';
 import { isDbConfigured } from '@/lib/db';
 import { gradeVerifierTest } from '@/lib/verifier-tests-db';
+import {
+  verifierTestCompleteBodySchema,
+  zodErrorBody,
+  type VerifierTestCompleteResponse,
+} from '@/lib/guide-api-schemas';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -23,28 +28,27 @@ export async function POST(request: Request) {
   if (!isDbConfigured()) {
     return NextResponse.json({ error: 'Database not configured.' }, { status: 503 });
   }
-  const user = await getCurrentUserFromRequestCookie();
-  if (!user) {
-    return NextResponse.json({ error: 'Not authenticated.' }, { status: 401 });
+  let userId: string;
+  try {
+    ({ userId } = await requireUser(request));
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: err.status ?? 401 });
   }
 
-  const body = (await request.json().catch(() => ({}))) as { testId?: unknown; answers?: unknown };
-  const testId = typeof body.testId === 'string' ? body.testId : '';
-  if (!UUID_RE.test(testId)) {
+  const parsed = verifierTestCompleteBodySchema.safeParse(await request.json().catch(() => ({})));
+  if (!parsed.success) {
+    return NextResponse.json(zodErrorBody(parsed.error), { status: 400 });
+  }
+  const body = parsed.data;
+
+  // testId format is a semantic rule beyond the schema (must look like a UUID).
+  if (!UUID_RE.test(body.testId)) {
     return NextResponse.json({ error: 'A valid testId is required.' }, { status: 400 });
   }
 
-  const answers =
-    body.answers && typeof body.answers === 'object' && !Array.isArray(body.answers)
-      ? (body.answers as Record<string, unknown>)
-      : null;
-  if (!answers) {
-    return NextResponse.json({ error: 'answers must be an object keyed by question id.' }, { status: 400 });
-  }
-
   try {
-    const result = await gradeVerifierTest(testId, user.id, answers);
-    return NextResponse.json({ ok: true, ...result });
+    const result = await gradeVerifierTest(body.testId, userId, body.answers);
+    return NextResponse.json({ ok: true, ...result } satisfies VerifierTestCompleteResponse);
   } catch (err: any) {
     const status = err.status ?? 500;
     return NextResponse.json({ error: err.message }, { status });
