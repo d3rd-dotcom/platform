@@ -484,3 +484,62 @@
   align-items: center;
   flex-wrap: wrap;
 }
+
+/* ── DAG position indicator ─────────────────────────────────────────────── */
+.dagPosition {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-base));
+}
+
+.dagPositionLabel {
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  letter-spacing: var(--type-track-label);
+  font-weight: var(--type-weight-semibold);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.dagPositionBody {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.dagLevelBadge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-departure-mono), var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: var(--type-weight-bold);
+  color: #ffffff;
+  background: var(--color-primary);
+  padding: 4px 12px;
+  border-radius: var(--radius-full, 9999px);
+  box-shadow: 0 1px 4px color-mix(in oklch, var(--color-primary) 40%, transparent);
+}
+
+.dagPrereqCount,
+.dagDepCount {
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-semibold);
+  color: var(--color-text-dark);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  padding: 3px 10px;
+  border-radius: var(--radius-full, 9999px);
+}
+
+.dagPrimitive {
+  font-family: var(--type-font-body);
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}

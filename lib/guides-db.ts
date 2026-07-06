@@ -1,4 +1,9 @@
 import { sqlQuery } from './db';
+import {
+  GUIDE_COMPLETE_REWARD,
+  LEVEL_CLEAR_REWARD,
+  WALKTHROUGH_COMPLETE_REWARD,
+} from './guide-rewards-db';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -58,10 +63,18 @@ export interface WalkthroughNode extends GuideLink {
   completed: boolean;
 }
 
+export interface WalkthroughRewardPreview {
+  guideComplete: number;
+  levelClear: number;
+  walkthroughComplete: number;
+  spinGranted: boolean;
+}
+
 export interface Walkthrough {
   targetId: string;
   levels: number; // total number of levels (max level + 1)
   nodes: WalkthroughNode[];
+  rewardPreview: WalkthroughRewardPreview;
 }
 
 // ── Row types ────────────────────────────────────────────────────────────────
@@ -493,7 +506,17 @@ export async function getWalkthrough(
   }));
 
   const maxLevel = nodes.reduce((m, n) => Math.max(m, n.level), 0);
-  return { targetId: targetGuideId, levels: nodes.length ? maxLevel + 1 : 0, nodes };
+  return {
+    targetId: targetGuideId,
+    levels: nodes.length ? maxLevel + 1 : 0,
+    nodes,
+    rewardPreview: {
+      guideComplete: GUIDE_COMPLETE_REWARD,
+      levelClear: LEVEL_CLEAR_REWARD,
+      walkthroughComplete: WALKTHROUGH_COMPLETE_REWARD,
+      spinGranted: true,
+    },
+  };
 }
 
 // ── Progress ─────────────────────────────────────────────────────────────────

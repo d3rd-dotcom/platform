@@ -367,3 +367,105 @@
   background: color-mix(in oklch, var(--color-primary) 26%, #15172a);
   color: color-mix(in oklch, var(--color-primary) 70%, white);
 }
+
+/* ── Reward preview summary ─────────────────────────────────────────────── */
+.rewardSummary {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in oklch, var(--color-tertiary) 22%, transparent);
+  background: color-mix(in oklch, var(--color-tertiary) 5%, var(--color-surface-base));
+}
+
+.rewardSummaryLabel {
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  letter-spacing: var(--type-track-label);
+  font-weight: var(--type-weight-semibold);
+  text-transform: uppercase;
+  color: var(--color-tertiary);
+}
+
+.rewardSummaryTiers {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+}
+
+.rewardTier {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--type-font-display);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-weight-semibold);
+  color: var(--color-text-dark);
+}
+
+.rewardIcon {
+  width: 12px;
+  height: 12px;
+}
+
+.levelRewardIcon {
+  width: 10px;
+  height: 10px;
+}
+
+.nodeRewardIcon {
+  width: 10px;
+  height: 10px;
+}
+
+.rewardDivider {
+  width: 1px;
+  height: 14px;
+  background: color-mix(in oklch, var(--color-tertiary) 22%, transparent);
+  flex-shrink: 0;
+}
+
+/* ── Per-level & per-node reward badges ─────────────────────────────────── */
+.levelRewardBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-family: var(--type-font-display);
+  font-size: 0.75rem;
+  font-weight: var(--type-weight-bold);
+  color: var(--color-tertiary);
+  background: color-mix(in oklch, var(--color-tertiary) 8%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-tertiary) 22%, transparent);
+  border-radius: var(--radius-full, 9999px);
+  padding: 2px 8px;
+}
+
+.nodeActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.nodeRewardBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--type-font-display);
+  font-size: 0.75rem;
+  font-weight: var(--type-weight-semibold);
+  color: var(--color-tertiary);
+  white-space: nowrap;
+}
+
+:global([data-theme="dark"]) .rewardSummary {
+  border-color: color-mix(in oklch, var(--color-tertiary) 30%, transparent);
+  background: color-mix(in oklch, var(--color-tertiary) 10%, #15172a);
+}
+
+:global([data-theme="dark"]) .levelRewardBadge {
+  background: color-mix(in oklch, var(--color-tertiary) 14%, transparent);
+  border-color: color-mix(in oklch, var(--color-tertiary) 30%, transparent);
+}

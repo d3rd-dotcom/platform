@@ -5,7 +5,7 @@ import type { PoolClient } from 'pg';
 // Base per-guide reward matches the VIP flow's COMPLETION_REWARD
 // (app/api/vip/courses/[id]/diamonds/route.ts), so a guide completion pays the
 // same as a VIP course task.
-const GUIDE_COMPLETE_REWARD = 50;
+export const GUIDE_COMPLETE_REWARD = 50;
 
 // Bonus tiers, expressed as multiples of the base reward.
 const LEVEL_CLEAR_MULTIPLIER = 3;
@@ -17,8 +17,8 @@ const WALKTHROUGH_COMPLETE_MULTIPLIER = 10;
 // diamond-equivalent of one free spin, letting the user spin at no net cost.
 const SPIN_COST = 10;
 
-const LEVEL_CLEAR_REWARD = GUIDE_COMPLETE_REWARD * LEVEL_CLEAR_MULTIPLIER;
-const WALKTHROUGH_COMPLETE_REWARD = GUIDE_COMPLETE_REWARD * WALKTHROUGH_COMPLETE_MULTIPLIER;
+export const LEVEL_CLEAR_REWARD = GUIDE_COMPLETE_REWARD * LEVEL_CLEAR_MULTIPLIER;
+export const WALKTHROUGH_COMPLETE_REWARD = GUIDE_COMPLETE_REWARD * WALKTHROUGH_COMPLETE_MULTIPLIER;
 
 export interface GuideRewardResult {
   diamonds: number;

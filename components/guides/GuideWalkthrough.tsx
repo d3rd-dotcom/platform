@@ -240,6 +240,35 @@ export default function GuideWalkthrough({ slug }: Props) {
         onClose={() => setReward(null)}
       />
 
+      {/* ── Reward preview summary ────────────────────────────────────── */}
+      {authenticated && (
+        <div className={styles.rewardSummary}>
+          <span className={styles.rewardSummaryLabel}>Diamond rewards</span>
+          <div className={styles.rewardSummaryTiers}>
+            <span className={styles.rewardTier}>
+              <img src="/icons/ui-diamond.svg" alt="" className={styles.rewardIcon} />
+              +{walkthrough.rewardPreview.guideComplete} per guide
+            </span>
+            <span className={styles.rewardDivider} />
+            <span className={styles.rewardTier}>
+              <img src="/icons/ui-diamond.svg" alt="" className={styles.rewardIcon} />
+              +{walkthrough.rewardPreview.levelClear} per level clear
+            </span>
+            <span className={styles.rewardDivider} />
+            <span className={styles.rewardTier}>
+              <img src="/icons/ui-diamond.svg" alt="" className={styles.rewardIcon} />
+              +{walkthrough.rewardPreview.walkthroughComplete} full clear
+            </span>
+            {walkthrough.rewardPreview.spinGranted && (
+              <>
+                <span className={styles.rewardDivider} />
+                <span className={styles.rewardTier}>+free spin</span>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       {view === 'tree' && (
         <GuideSkillTree walkthrough={walkthrough} completed={completed} currentSlug={slug} />
       )}
@@ -254,6 +283,12 @@ export default function GuideWalkthrough({ slug }: Props) {
             >
               <header className={styles.levelHead}>
                 <span className={styles.levelBadge}>Level {level + 1}</span>
+                {authenticated && unlocked && (
+                  <span className={styles.levelRewardBadge}>
+                    <img src="/icons/ui-diamond.svg" alt="" className={styles.levelRewardIcon} />
+                    +{walkthrough.rewardPreview.levelClear}
+                  </span>
+                )}
                 {!unlocked && (
                   <span className={styles.lockedTag}>
                     <Lock size={12} weight="bold" /> Locked
@@ -284,19 +319,27 @@ export default function GuideWalkthrough({ slug }: Props) {
                         </Link>
                       </div>
                       {unlocked ? (
-                        <button
-                          type="button"
-                          className={`${styles.completeBtn} ${isDone ? styles.completeBtnDone : ''}`}
-                          disabled={isDone || completing === node.id}
-                          onMouseEnter={() => !isDone && play('soft-hover')}
-                          onClick={() => handleComplete(node)}
-                        >
-                          {isDone
-                            ? 'Completed'
-                            : completing === node.id
-                              ? 'Saving…'
-                              : 'Mark complete'}
-                        </button>
+                        <div className={styles.nodeActions}>
+                          {authenticated && !isDone && (
+                            <span className={styles.nodeRewardBadge}>
+                              <img src="/icons/ui-diamond.svg" alt="" className={styles.nodeRewardIcon} />
+                              +{walkthrough.rewardPreview.guideComplete}
+                            </span>
+                          )}
+                          <button
+                            type="button"
+                            className={`${styles.completeBtn} ${isDone ? styles.completeBtnDone : ''}`}
+                            disabled={isDone || completing === node.id}
+                            onMouseEnter={() => !isDone && play('soft-hover')}
+                            onClick={() => handleComplete(node)}
+                          >
+                            {isDone
+                              ? 'Completed'
+                              : completing === node.id
+                                ? 'Saving…'
+                                : 'Mark complete'}
+                          </button>
+                        </div>
                       ) : (
                         <span className={styles.lockedHint}>
                           <Lock size={13} weight="bold" />

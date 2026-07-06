@@ -65,6 +65,8 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
   const [body, setBody] = useState<GuideBodyComponent[]>([]);
   const [dirty, setDirty] = useState(false);
 
+  const [dagLevel, setDagLevel] = useState<number>(0);
+  const [dependents, setDependents] = useState<GuideLink[]>([]);
   const [prereqs, setPrereqs] = useState<GuideLink[]>([]);
   const [prereqQuery, setPrereqQuery] = useState('');
   const [prereqCandidates, setPrereqCandidates] = useState<GuideLink[]>([]);
@@ -93,7 +95,9 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
         setTopicTitle(guide.topicTitle);
         setSubjects(guide.subjects ?? []);
         setBody(Array.isArray(guide.body) ? guide.body : []);
+        setDagLevel(typeof data.level === 'number' ? data.level : 0);
         setPrereqs(Array.isArray(data.prereqs) ? data.prereqs : []);
+        setDependents(Array.isArray(data.dependents) ? data.dependents : []);
         setDirty(false);
       } catch {
         setNotFound(true);
@@ -112,14 +116,23 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
     if (!currentSlug || status !== 'draft') return;
     try {
       const headers = await authHeaders();
-      const res = await fetch(
-        `/api/guides/${currentSlug}/prereqs?q=${encodeURIComponent(prereqQuery)}`,
-        { cache: 'no-store', headers },
-      );
-      if (!res.ok) return;
-      const data = await res.json();
-      setPrereqs(data.prereqs ?? []);
-      setPrereqCandidates(data.candidates ?? []);
+      const [prereqRes, detailRes] = await Promise.all([
+        fetch(
+          `/api/guides/${currentSlug}/prereqs?q=${encodeURIComponent(prereqQuery)}`,
+          { cache: 'no-store', headers },
+        ),
+        fetch(`/api/guides/${currentSlug}`, { cache: 'no-store', headers }),
+      ]);
+      if (prereqRes.ok) {
+        const data = await prereqRes.json();
+        setPrereqs(data.prereqs ?? []);
+        setPrereqCandidates(data.candidates ?? []);
+      }
+      if (detailRes.ok) {
+        const detail = await detailRes.json();
+        if (typeof detail.level === 'number') setDagLevel(detail.level);
+        if (Array.isArray(detail.dependents)) setDependents(detail.dependents);
+      }
     } catch {
       /* ignore */
     }
@@ -539,6 +552,30 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
                 ) : (
                   <>
                     {prereqError && <span className={styles.errorText}>{prereqError}</span>}
+
+                    {/* DAG position indicator */}
+                    <div className={styles.dagPosition}>
+                      <span className={styles.dagPositionLabel}>Skill tree position</span>
+                      <div className={styles.dagPositionBody}>
+                        <span className={styles.dagLevelBadge}>
+                          Level {dagLevel}
+                        </span>
+                        {prereqs.length > 0 && (
+                          <span className={styles.dagPrereqCount}>
+                            {prereqs.length} prereq{prereqs.length === 1 ? '' : 's'}
+                          </span>
+                        )}
+                        {dependents.length > 0 && (
+                          <span className={styles.dagDepCount}>
+                            {dependents.length} dependent{dependents.length === 1 ? '' : 's'}
+                          </span>
+                        )}
+                        {prereqs.length === 0 && dependents.length === 0 && (
+                          <span className={styles.dagPrimitive}>Primitive guide (starts a new branch)</span>
+                        )}
+                      </div>
+                    </div>
+
                     {prereqs.length > 0 && (
                       <div className={styles.prereqList}>
                         {prereqs.map((p) => (
