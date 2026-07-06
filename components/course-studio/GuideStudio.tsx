@@ -1,0 +1,633 @@
+'use client';
+
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { ArrowLeft, Trash, Eye, PencilSimple, X, Plus } from '@phosphor-icons/react';
+import SideNavigation from '@/components/side-navigation/SideNavigation';
+import CtaButton from '@/components/shared/CtaButton';
+import ComponentPalette from './ComponentPalette';
+import ComponentConfigEditor from './ComponentConfigEditor';
+import GuideBody from '@/components/guides/GuideBody';
+import type { GuideRecord, GuideBodyComponent, GuideLink } from '@/lib/guides-db';
+import type { ComponentType } from '@/lib/vip-course-db';
+import styles from './GuideStudio.module.css';
+
+interface GuideStudioProps {
+  /** Slug of an existing draft to edit; omit to create a new guide. */
+  slug?: string;
+  authHeaders: () => Promise<HeadersInit>;
+  onExit: () => void;
+  /** Called with the new slug once a fresh guide is created (so the route can update). */
+  onCreated?: (slug: string) => void;
+}
+
+const COMPONENT_LABELS: Record<string, string> = {
+  rich_text: 'Rich text',
+  text_input: 'Text input',
+  multiple_choice: 'Multiple choice',
+  rating_scale: 'Rating scale',
+  media_embed: 'Media',
+  image_embed: 'Image',
+  video_embed: 'Video',
+  reflection_journal: 'Field notes',
+  file_upload: 'File upload',
+  quiz_block: 'Quiz',
+  nft_gate: 'NFT gate',
+};
+
+function tempId() {
+  return `blk-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function deriveSlug(val: string) {
+  return val
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 140);
+}
+
+export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: GuideStudioProps) {
+  const [loading, setLoading] = useState(!!slug);
+  const [notFound, setNotFound] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [previewMode, setPreviewMode] = useState(false);
+
+  const [guideId, setGuideId] = useState<string | null>(null);
+  const [currentSlug, setCurrentSlug] = useState<string | undefined>(slug);
+  const [status, setStatus] = useState<GuideRecord['status']>('draft');
+  const [topicTitle, setTopicTitle] = useState('');
+  const [subjects, setSubjects] = useState<string[]>([]);
+  const [subjectInput, setSubjectInput] = useState('');
+  const [body, setBody] = useState<GuideBodyComponent[]>([]);
+  const [dirty, setDirty] = useState(false);
+
+  const [prereqs, setPrereqs] = useState<GuideLink[]>([]);
+  const [prereqQuery, setPrereqQuery] = useState('');
+  const [prereqCandidates, setPrereqCandidates] = useState<GuideLink[]>([]);
+  const [prereqError, setPrereqError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitResult, setSubmitResult] = useState<{ memberCount: number } | null>(null);
+
+  const titleRef = useRef<HTMLInputElement>(null);
+
+  // ── Load existing draft ────────────────────────────────────────────────────
+  useEffect(() => {
+    if (!slug) return;
+    (async () => {
+      setLoading(true);
+      try {
+        const headers = await authHeaders();
+        const res = await fetch(`/api/guides/${slug}`, { cache: 'no-store', headers });
+        if (!res.ok) {
+          setNotFound(true);
+          return;
+        }
+        const data = await res.json();
+        const guide: GuideRecord = data.guide;
+        setGuideId(guide.id);
+        setStatus(guide.status);
+        setTopicTitle(guide.topicTitle);
+        setSubjects(guide.subjects ?? []);
+        setBody(Array.isArray(guide.body) ? guide.body : []);
+        setPrereqs(Array.isArray(data.prereqs) ? data.prereqs : []);
+        setDirty(false);
+      } catch {
+        setNotFound(true);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [slug, authHeaders]);
+
+  useEffect(() => {
+    if (!slug && titleRef.current) titleRef.current.focus();
+  }, [slug]);
+
+  // ── Prereq candidate search (only meaningful once the guide exists) ─────────
+  const refreshPrereqs = useCallback(async () => {
+    if (!currentSlug || status !== 'draft') return;
+    try {
+      const headers = await authHeaders();
+      const res = await fetch(
+        `/api/guides/${currentSlug}/prereqs?q=${encodeURIComponent(prereqQuery)}`,
+        { cache: 'no-store', headers },
+      );
+      if (!res.ok) return;
+      const data = await res.json();
+      setPrereqs(data.prereqs ?? []);
+      setPrereqCandidates(data.candidates ?? []);
+    } catch {
+      /* ignore */
+    }
+  }, [currentSlug, status, prereqQuery, authHeaders]);
+
+  useEffect(() => {
+    if (!currentSlug || status !== 'draft') return;
+    const t = setTimeout(refreshPrereqs, 250);
+    return () => clearTimeout(t);
+  }, [currentSlug, status, prereqQuery, refreshPrereqs]);
+
+  // ── Body editing ────────────────────────────────────────────────────────────
+  const addComponent = (type: ComponentType, config?: Record<string, unknown>) => {
+    setBody((prev) => [
+      ...prev,
+      { id: tempId(), componentType: type, title: '', config: config ?? {} },
+    ]);
+    setDirty(true);
+  };
+
+  const updateComponent = (id: string, updates: Partial<GuideBodyComponent>) => {
+    setBody((prev) => prev.map((c) => (c.id === id ? { ...c, ...updates } : c)));
+    setDirty(true);
+  };
+
+  const moveComponent = (id: string, dir: -1 | 1) => {
+    setBody((prev) => {
+      const idx = prev.findIndex((c) => c.id === id);
+      const next = idx + dir;
+      if (idx === -1 || next < 0 || next >= prev.length) return prev;
+      const copy = [...prev];
+      [copy[idx], copy[next]] = [copy[next], copy[idx]];
+      return copy;
+    });
+    setDirty(true);
+  };
+
+  const removeComponent = (id: string) => {
+    setBody((prev) => prev.filter((c) => c.id !== id));
+    setDirty(true);
+  };
+
+  // ── Subjects ─────────────────────────────────────────────────────────────────
+  const addSubject = () => {
+    const s = subjectInput.trim();
+    if (!s) return;
+    if (!subjects.some((x) => x.toLowerCase() === s.toLowerCase())) {
+      setSubjects((prev) => [...prev, s]);
+      setDirty(true);
+    }
+    setSubjectInput('');
+  };
+
+  const removeSubject = (s: string) => {
+    setSubjects((prev) => prev.filter((x) => x !== s));
+    setDirty(true);
+  };
+
+  // ── Save (create or update draft) ────────────────────────────────────────────
+  const save = useCallback(async (): Promise<string | null> => {
+    if (!topicTitle.trim()) {
+      setError('Give the guide a topic title first.');
+      return null;
+    }
+    setError(null);
+    setSaving(true);
+    try {
+      const headers = { 'Content-Type': 'application/json', ...(await authHeaders()) };
+
+      if (!currentSlug) {
+        // Create the draft, then persist body + subjects via PATCH.
+        const createRes = await fetch('/api/guides', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ topicTitle: topicTitle.trim() }),
+        });
+        const createData = await createRes.json().catch(() => ({}));
+        if (!createRes.ok) throw new Error(createData.error ?? 'Failed to create guide.');
+        const guide: GuideRecord = createData.guide;
+        setGuideId(guide.id);
+        setCurrentSlug(guide.slug);
+        setStatus(guide.status);
+
+        const patchRes = await fetch(`/api/guides/${guide.slug}`, {
+          method: 'PATCH',
+          headers,
+          body: JSON.stringify({ body, subjects }),
+        });
+        const patchData = await patchRes.json().catch(() => ({}));
+        if (!patchRes.ok) throw new Error(patchData.error ?? 'Failed to save guide content.');
+
+        setDirty(false);
+        onCreated?.(guide.slug);
+        return guide.slug;
+      }
+
+      // Update existing draft.
+      const res = await fetch(`/api/guides/${currentSlug}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify({ topicTitle: topicTitle.trim(), body, subjects }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error ?? 'Failed to save guide.');
+      setDirty(false);
+      return currentSlug;
+    } catch (err: any) {
+      setError(err.message ?? 'Save failed.');
+      return null;
+    } finally {
+      setSaving(false);
+    }
+  }, [topicTitle, currentSlug, body, subjects, authHeaders, onCreated]);
+
+  // ── Prereqs ──────────────────────────────────────────────────────────────────
+  const addPrereq = async (prereqId: string) => {
+    if (!currentSlug) return;
+    setPrereqError(null);
+    try {
+      const headers = { 'Content-Type': 'application/json', ...(await authHeaders()) };
+      const res = await fetch(`/api/guides/${currentSlug}/prereqs`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ prereqId }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setPrereqError(data.error ?? 'Could not add prerequisite.');
+        return;
+      }
+      setPrereqs(data.prereqs ?? []);
+      setPrereqCandidates((prev) => prev.filter((c) => c.id !== prereqId));
+    } catch {
+      setPrereqError('Could not add prerequisite.');
+    }
+  };
+
+  const removePrereq = async (prereqId: string) => {
+    if (!currentSlug) return;
+    setPrereqError(null);
+    try {
+      const headers = await authHeaders();
+      const res = await fetch(
+        `/api/guides/${currentSlug}/prereqs?prereqId=${encodeURIComponent(prereqId)}`,
+        { method: 'DELETE', headers },
+      );
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setPrereqError(data.error ?? 'Could not remove prerequisite.');
+        return;
+      }
+      setPrereqs(data.prereqs ?? []);
+      refreshPrereqs();
+    } catch {
+      setPrereqError('Could not remove prerequisite.');
+    }
+  };
+
+  // ── Submit for verification ──────────────────────────────────────────────────
+  const submitForVerification = async () => {
+    // Persist any pending edits first.
+    if (dirty || !currentSlug) {
+      const savedSlug = await save();
+      if (!savedSlug) return;
+    }
+    if (!guideId) {
+      setError('Save the guide before submitting.');
+      return;
+    }
+    setSubmitting(true);
+    setError(null);
+    try {
+      const headers = { 'Content-Type': 'application/json', ...(await authHeaders()) };
+      const res = await fetch('/api/guides/verification/submit', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ guideId }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error ?? 'Submission failed.');
+      setStatus('pending_verification');
+      setSubmitResult({ memberCount: data.memberCount ?? 0 });
+    } catch (err: any) {
+      setError(err.message ?? 'Submission failed.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const statusLabel =
+    status === 'published'
+      ? 'Published'
+      : status === 'pending_verification'
+        ? 'In review'
+        : 'Draft';
+  const statusClass =
+    status === 'published'
+      ? styles.statusPublished
+      : status === 'pending_verification'
+        ? styles.statusPending
+        : styles.statusDraft;
+
+  const previewSlug = currentSlug ?? deriveSlug(topicTitle);
+  const isDraft = status === 'draft';
+
+  return (
+    <div className={styles.layout}>
+      <SideNavigation />
+      <div className={styles.body}>
+        <header className={styles.header}>
+          <div className={styles.headerLeft}>
+            <button type="button" className={styles.backBtn} onClick={onExit}>
+              <ArrowLeft size={15} weight="bold" /> Knowledge Base
+            </button>
+            <span className={`${styles.statusBadge} ${statusClass}`}>{statusLabel}</span>
+            <span className={styles.slugRow}>/courses/guides/{previewSlug || '…'}</span>
+          </div>
+          <div className={styles.headerActions}>
+            {error && <span className={styles.errorText}>{error}</span>}
+            {dirty && <span className={styles.dirtyLabel}>Unsaved changes</span>}
+            <CtaButton
+              variant="secondary"
+              size="sm"
+              onClick={() => setPreviewMode((p) => !p)}
+            >
+              {previewMode ? (
+                <><PencilSimple size={14} weight="bold" /> Edit</>
+              ) : (
+                <><Eye size={14} weight="bold" /> Preview</>
+              )}
+            </CtaButton>
+            {isDraft && (
+              <CtaButton size="sm" onClick={save} disabled={saving}>
+                {saving ? 'Saving…' : currentSlug ? 'Save draft' : 'Create draft'}
+              </CtaButton>
+            )}
+          </div>
+        </header>
+
+        {loading && <div className={styles.state}>Loading guide…</div>}
+        {notFound && !loading && (
+          <div className={styles.state}>
+            Guide not found, or it is not yours to edit.
+          </div>
+        )}
+
+        {!loading && !notFound && (
+          <div className={styles.content}>
+            {previewMode ? (
+              <>
+                <h1 style={{ margin: 0 }}>{topicTitle || 'Untitled guide'}</h1>
+                <GuideBody body={body} />
+              </>
+            ) : (
+              <>
+                {/* Topic title */}
+                <div className={styles.field}>
+                  <label className={styles.fieldLabel} htmlFor="guide-topic">Topic title</label>
+                  <input
+                    id="guide-topic"
+                    ref={titleRef}
+                    className={styles.titleInput}
+                    value={topicTitle}
+                    onChange={(e) => {
+                      setTopicTitle(e.target.value);
+                      setDirty(true);
+                    }}
+                    placeholder="e.g. Understanding compound interest"
+                    disabled={!isDraft}
+                  />
+                  <span className={styles.fieldHint}>
+                    One definitive guide per topic. The URL slug is derived from the title when the draft is created and stays fixed after that.
+                  </span>
+                </div>
+
+                {/* Subjects */}
+                <div className={styles.field}>
+                  <label className={styles.fieldLabel}>Subjects</label>
+                  <span className={styles.fieldHint}>
+                    Tags used to group the guide in the Knowledge Base. Add one or more.
+                  </span>
+                  {subjects.length > 0 && (
+                    <div className={styles.chips}>
+                      {subjects.map((s) => (
+                        <span key={s} className={styles.chip}>
+                          {s}
+                          {isDraft && (
+                            <button
+                              type="button"
+                              className={styles.chipRemove}
+                              onClick={() => removeSubject(s)}
+                              aria-label={`Remove ${s}`}
+                            >
+                              <X size={12} weight="bold" />
+                            </button>
+                          )}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {isDraft && (
+                    <div className={styles.subjectAddRow}>
+                      <input
+                        className={styles.textInput}
+                        value={subjectInput}
+                        onChange={(e) => setSubjectInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            addSubject();
+                          }
+                        }}
+                        placeholder="Add a subject and press enter"
+                      />
+                      <CtaButton variant="secondary" size="sm" onClick={addSubject}>
+                        <Plus size={14} weight="bold" /> Add
+                      </CtaButton>
+                    </div>
+                  )}
+                </div>
+
+                <hr className={styles.divider} />
+
+                {/* Body */}
+                <div>
+                  <h2 className={styles.sectionHeading}>Guide content</h2>
+                  <p className={styles.sectionSub}>
+                    Build the guide from the same content blocks used across courses. Reorder or remove blocks as needed.
+                  </p>
+                </div>
+
+                {body.length === 0 ? (
+                  <div className={styles.emptyBody}>
+                    No content yet. Add a block from the palette below.
+                  </div>
+                ) : (
+                  <div className={styles.componentList}>
+                    {body.map((c, i) => (
+                      <div key={c.id} className={styles.componentCard}>
+                        <div className={styles.componentHeader}>
+                          <span className={styles.componentType}>
+                            {COMPONENT_LABELS[c.componentType] ?? c.componentType}
+                          </span>
+                          <input
+                            className={styles.componentTitleInput}
+                            value={c.title ?? ''}
+                            onChange={(e) => updateComponent(c.id, { title: e.target.value })}
+                            placeholder="Optional section title"
+                            disabled={!isDraft}
+                          />
+                          {isDraft && (
+                            <>
+                              <button
+                                type="button"
+                                className={styles.iconBtn}
+                                onClick={() => moveComponent(c.id, -1)}
+                                disabled={i === 0}
+                                aria-label="Move up"
+                              >
+                                ↑
+                              </button>
+                              <button
+                                type="button"
+                                className={styles.iconBtn}
+                                onClick={() => moveComponent(c.id, 1)}
+                                disabled={i === body.length - 1}
+                                aria-label="Move down"
+                              >
+                                ↓
+                              </button>
+                              <button
+                                type="button"
+                                className={`${styles.iconBtn} ${styles.iconBtnDanger}`}
+                                onClick={() => removeComponent(c.id)}
+                                aria-label="Remove block"
+                              >
+                                <Trash size={15} weight="bold" />
+                              </button>
+                            </>
+                          )}
+                        </div>
+                        {isDraft && (
+                          <div className={styles.componentBody}>
+                            <ComponentConfigEditor
+                              componentType={c.componentType}
+                              config={c.config}
+                              onUpdate={(config) => updateComponent(c.id, { config })}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {isDraft && (
+                  <div className={styles.paletteWrap}>
+                    <p className={styles.paletteHint}>Add a block</p>
+                    <ComponentPalette onAddComponent={addComponent} />
+                  </div>
+                )}
+
+                <hr className={styles.divider} />
+
+                {/* Prerequisites */}
+                <div>
+                  <h2 className={styles.sectionHeading}>Prerequisites</h2>
+                  <p className={styles.sectionSub}>
+                    Published guides a learner should complete before this one. These form the knowledge-base skill tree.
+                  </p>
+                </div>
+
+                {!currentSlug ? (
+                  <p className={styles.fieldHint}>
+                    Create the draft first to link prerequisites.
+                  </p>
+                ) : (
+                  <>
+                    {prereqError && <span className={styles.errorText}>{prereqError}</span>}
+                    {prereqs.length > 0 && (
+                      <div className={styles.prereqList}>
+                        {prereqs.map((p) => (
+                          <div key={p.id} className={styles.prereqRow}>
+                            <span className={styles.prereqName}>{p.topicTitle}</span>
+                            {isDraft && (
+                              <button
+                                type="button"
+                                className={`${styles.iconBtn} ${styles.iconBtnDanger}`}
+                                onClick={() => removePrereq(p.id)}
+                                aria-label={`Remove ${p.topicTitle}`}
+                              >
+                                <X size={15} weight="bold" />
+                              </button>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {isDraft && (
+                      <div className={styles.field}>
+                        <input
+                          className={styles.textInput}
+                          value={prereqQuery}
+                          onChange={(e) => setPrereqQuery(e.target.value)}
+                          placeholder="Search published guides to add as a prerequisite"
+                        />
+                        <div className={styles.searchResults}>
+                          {prereqCandidates.length === 0 ? (
+                            <span className={styles.searchEmpty}>
+                              {prereqQuery ? 'No matching published guides.' : 'Start typing to search published guides.'}
+                            </span>
+                          ) : (
+                            prereqCandidates.map((c) => (
+                              <button
+                                key={c.id}
+                                type="button"
+                                className={styles.searchResult}
+                                onClick={() => addPrereq(c.id)}
+                              >
+                                <span>{c.topicTitle}</span>
+                                <Plus size={15} weight="bold" />
+                              </button>
+                            ))
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                <hr className={styles.divider} />
+
+                {/* Submit for verification */}
+                {status === 'pending_verification' ? (
+                  <div className={styles.pendingBanner}>
+                    This guide is in review. A jury of credentialed verifiers is evaluating it.
+                    {submitResult && submitResult.memberCount > 0
+                      ? ` ${submitResult.memberCount} verifier${submitResult.memberCount === 1 ? '' : 's'} were drawn for the panel.`
+                      : ''}{' '}
+                    You will be able to publish once the panel reaches a verdict. Editing is locked while in review.
+                  </div>
+                ) : status === 'published' ? (
+                  <div className={styles.pendingBanner}>
+                    This guide is published and live in the Knowledge Base.
+                  </div>
+                ) : (
+                  <div className={styles.submitPanel}>
+                    <h2 className={styles.submitPanelTitle}>Submit for verification</h2>
+                    <p className={styles.submitPanelText}>
+                      When your draft is ready, submit it for review. Here is what happens next:
+                    </p>
+                    <ol className={styles.submitPanelSteps}>
+                      <li>A panel of credentialed verifiers is drawn to review your guide.</li>
+                      <li>They evaluate it for accuracy, clarity, and fit as the definitive guide for this topic.</li>
+                      <li>Editing is locked while in review; once the panel reaches a verdict, the guide can be published.</li>
+                    </ol>
+                    <div className={styles.actionsRow}>
+                      <CtaButton onClick={submitForVerification} disabled={submitting || saving}>
+                        {submitting ? 'Submitting…' : 'Submit for verification'}
+                      </CtaButton>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
