@@ -215,6 +215,27 @@ export const progressListResponseSchema = z.object({
 });
 export type ProgressListResponse = z.infer<typeof progressListResponseSchema>;
 
+/** GET /api/guides/author-stats — contribution analytics for guide authors. */
+export const authorStatsResponseSchema = z.object({
+  totalAuthored: z.number(),
+  publishedCount: z.number(),
+  draftCount: z.number(),
+  inReviewCount: z.number(),
+  totalLearnerCompletions: z.number(),
+  totalUpvotes: z.number(),
+  totalDownvotes: z.number(),
+  guides: z.array(z.object({
+    id: z.string(),
+    slug: z.string(),
+    topicTitle: z.string(),
+    status: z.string(),
+    completions: z.number(),
+    upvotes: z.number(),
+    downvotes: z.number(),
+  })),
+});
+export type AuthorStatsResponse = z.infer<typeof authorStatsResponseSchema>;
+
 /** GET /api/guides/progress/stats — aggregate progress stats. */
 export const progressStatsResponseSchema = z.object({
   totalGuides: z.number(),

@@ -705,6 +705,50 @@
   gap: 10px;
 }
 
+/* ── Author impact stats row ────────────────────────────────────────────── */
+.authorStatsRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 16%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 3%, var(--color-surface-base));
+}
+
+.authorStat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.authorStatNum {
+  font-family: var(--type-font-display);
+  font-size: 1.125rem;
+  font-weight: var(--type-weight-bold);
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.authorStatLabel {
+  font-family: var(--type-font-body);
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.authorStatDivider {
+  width: 1px;
+  height: 16px;
+  background: color-mix(in oklch, var(--color-primary) 18%, transparent);
+  flex-shrink: 0;
+}
+
+:global([data-theme="dark"]) .authorStatsRow {
+  background: color-mix(in oklch, var(--color-primary) 6%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 20%, transparent);
+}
+
 .guideSubjectLabel {
   font-size: 0.6875rem;
   font-weight: 600;

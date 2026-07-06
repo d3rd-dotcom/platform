@@ -58,6 +58,13 @@ export default function CoursesPage() {
     subjects: Array<{ subject: string; total: number; completed: number }>;
     lastCompletedAt: string | null;
   } | null>(null);
+  const [authorStats, setAuthorStats] = useState<{
+    totalAuthored: number;
+    publishedCount: number;
+    totalLearnerCompletions: number;
+    totalUpvotes: number;
+    totalDownvotes: number;
+  } | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [isVip, setIsVip] = useState(false);
@@ -150,10 +157,24 @@ export default function CoursesPage() {
   const loadMyGuides = useCallback(async () => {
     try {
       const headers = await authHeaders();
-      const res = await fetch('/api/guides?mine=1', { cache: 'no-store', headers });
-      if (!res.ok) return;
-      const data = await res.json();
-      setMyGuides(data.guides ?? []);
+      const [guidesRes, statsRes] = await Promise.all([
+        fetch('/api/guides?mine=1', { cache: 'no-store', headers }),
+        fetch('/api/guides/author-stats', { cache: 'no-store', headers }),
+      ]);
+      if (guidesRes.ok) {
+        const data = await guidesRes.json();
+        setMyGuides(data.guides ?? []);
+      }
+      if (statsRes.ok) {
+        const stats = await statsRes.json();
+        setAuthorStats({
+          totalAuthored: stats.totalAuthored,
+          publishedCount: stats.publishedCount,
+          totalLearnerCompletions: stats.totalLearnerCompletions,
+          totalUpvotes: stats.totalUpvotes,
+          totalDownvotes: stats.totalDownvotes,
+        });
+      }
     } catch { /* ignore */ }
   }, [authHeaders]);
 
@@ -486,6 +507,37 @@ export default function CoursesPage() {
                         </Link>
                       </div>
                     ))}
+                  </div>
+                </div>
+              )}
+
+              {authorStats && authorStats.totalAuthored > 0 && (
+                <div className={styles.guideSubjectGroup}>
+                  <span className={styles.guideSubjectLabel}>Author impact</span>
+                  <div className={styles.authorStatsRow}>
+                    <span className={styles.authorStat}>
+                      <span className={styles.authorStatNum}>{authorStats.totalAuthored}</span>
+                      <span className={styles.authorStatLabel}>authored</span>
+                    </span>
+                    <span className={styles.authorStatDivider} />
+                    <span className={styles.authorStat}>
+                      <span className={styles.authorStatNum}>{authorStats.publishedCount}</span>
+                      <span className={styles.authorStatLabel}>published</span>
+                    </span>
+                    <span className={styles.authorStatDivider} />
+                    <span className={styles.authorStat}>
+                      <span className={styles.authorStatNum}>{authorStats.totalLearnerCompletions}</span>
+                      <span className={styles.authorStatLabel}>learner completions</span>
+                    </span>
+                    {authorStats.totalUpvotes + authorStats.totalDownvotes > 0 && (
+                      <>
+                        <span className={styles.authorStatDivider} />
+                        <span className={styles.authorStat}>
+                          <span className={styles.authorStatNum}>{authorStats.totalUpvotes}</span>
+                          <span className={styles.authorStatLabel}>upvotes</span>
+                        </span>
+                      </>
+                    )}
                   </div>
                 </div>
               )}

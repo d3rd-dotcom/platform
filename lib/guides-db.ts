@@ -579,6 +579,104 @@ export async function getGuideProgressStats(userId: string): Promise<GuideProgre
   };
 }
 
+export interface AuthorGuideStats {
+  totalAuthored: number;
+  publishedCount: number;
+  draftCount: number;
+  inReviewCount: number;
+  totalLearnerCompletions: number;
+  totalUpvotes: number;
+  totalDownvotes: number;
+  guides: Array<{
+    id: string;
+    slug: string;
+    topicTitle: string;
+    status: string;
+    completions: number;
+    upvotes: number;
+    downvotes: number;
+  }>;
+}
+
+export async function getAuthorGuideStats(userId: string): Promise<AuthorGuideStats> {
+  const guideRows = await sqlQuery<
+    Array<{
+      id: string;
+      slug: string;
+      topic_title: string;
+      status: string;
+      completions: number;
+    }>
+  >(
+    `SELECT
+       g.id, g.slug, g.topic_title, g.status,
+       COUNT(gp.id)::int AS completions
+     FROM guides g
+     LEFT JOIN guide_progress gp ON gp.guide_id = g.id
+     WHERE g.author_id = :userId
+     GROUP BY g.id, g.slug, g.topic_title, g.status
+     ORDER BY g.topic_title ASC`,
+    { userId },
+  );
+
+  const guideIds = guideRows.map((r) => r.id);
+
+  const voteRows = guideIds.length
+    ? await sqlQuery<Array<{ guide_id: string; direction: string; count: number }>>(
+        `SELECT guide_id, direction, COUNT(*)::int AS count
+         FROM guide_votes
+         WHERE guide_id = ANY(:ids)
+         GROUP BY guide_id, direction`,
+        { ids: guideIds },
+      )
+    : [];
+
+  const voteMap = new Map<string, { up: number; down: number }>();
+  for (const v of voteRows) {
+    const entry = voteMap.get(v.guide_id) ?? { up: 0, down: 0 };
+    if (v.direction === 'up') entry.up += v.count;
+    else entry.down += v.count;
+    voteMap.set(v.guide_id, entry);
+  }
+
+  let totalCompletions = 0;
+  let totalUpvotes = 0;
+  let totalDownvotes = 0;
+  let published = 0;
+  let draft = 0;
+  let inReview = 0;
+
+  const guides = guideRows.map((r) => {
+    const votes = voteMap.get(r.id) ?? { up: 0, down: 0 };
+    totalCompletions += r.completions;
+    totalUpvotes += votes.up;
+    totalDownvotes += votes.down;
+    if (r.status === 'published') published++;
+    else if (r.status === 'draft') draft++;
+    else if (r.status === 'pending_verification') inReview++;
+    return {
+      id: r.id,
+      slug: r.slug,
+      topicTitle: r.topic_title,
+      status: r.status,
+      completions: r.completions,
+      upvotes: votes.up,
+      downvotes: votes.down,
+    };
+  });
+
+  return {
+    totalAuthored: guideRows.length,
+    publishedCount: published,
+    draftCount: draft,
+    inReviewCount: inReview,
+    totalLearnerCompletions: totalCompletions,
+    totalUpvotes,
+    totalDownvotes,
+    guides,
+  };
+}
+
 /**
  * Marks a guide complete for a user, enforcing the gate: every DIRECT prereq of
  * the guide must already be in guide_progress for this user. Throws a 409 error
