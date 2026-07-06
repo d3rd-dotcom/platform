@@ -59,6 +59,33 @@
   margin: 0;
 }
 
+/* "Votes awaiting" pill — routes a drawn panel member to their queue */
+.pendingPill {
+  margin-left: auto;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-lh);
+  letter-spacing: var(--type-track-label);
+  font-weight: var(--type-weight-bold);
+  text-transform: uppercase;
+  color: var(--color-text-light);
+  background: var(--color-primary);
+  border-radius: var(--radius-full, 9999px);
+  padding: 4px 12px;
+  text-decoration: none;
+  box-shadow: 0 2px 6px color-mix(in oklch, var(--color-primary) 30%, transparent);
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
+}
+
+.pendingPill:hover {
+  background: var(--color-primary-hover);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 38%, transparent);
+}
+
+.pendingPill:active {
+  transform: translateY(1px);
+}
+
 /* ── Panels ─────────────────────────────────────────────────────────────── */
 .panels {
   display: flex;

@@ -1,6 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import Link from 'next/link';
+import { usePrivy } from '@privy-io/react-auth';
 import {
   CheckCircle,
   XCircle,
@@ -82,11 +84,13 @@ function formatDate(iso: string): string {
  * guide page — it is NOT imported by app/courses/guides/[slug]/page.tsx here.
  */
 export default function VerificationLog({ guideId }: Props) {
+  const { ready, authenticated, getAccessToken } = usePrivy();
   const { play } = useSound();
   const [data, setData] = useState<VerificationLogData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [collapsed, setCollapsed] = useState(false);
+  const [pending, setPending] = useState(0);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -109,6 +113,34 @@ export default function VerificationLog({ guideId }: Props) {
   useEffect(() => {
     load();
   }, [load]);
+
+  // Whether the signed-in viewer is a pending panel member for this guide — powers
+  // the "votes awaiting" pill that routes them to their queue on the profile page.
+  useEffect(() => {
+    if (!ready || !authenticated) {
+      setPending(0);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        const token = await getAccessToken().catch(() => null);
+        const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+        const res = await fetch(`/api/guides/verification/${guideId}/pending`, {
+          cache: 'no-store',
+          headers,
+        });
+        if (!res.ok) return;
+        const json = await res.json();
+        if (!cancelled) setPending(typeof json.pending === 'number' ? json.pending : 0);
+      } catch {
+        /* non-fatal — the pill just stays hidden */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [ready, authenticated, getAccessToken, guideId]);
 
   if (loading) {
     return (
@@ -136,6 +168,16 @@ export default function VerificationLog({ guideId }: Props) {
       <header className={styles.header}>
         <Scales size={18} weight="fill" className={styles.headerIcon} />
         <h2 className={styles.title}>Verification audit log</h2>
+        {pending > 0 && (
+          <Link
+            href="/profile"
+            className={styles.pendingPill}
+            onMouseEnter={() => play('soft-hover')}
+            onClick={() => play('navigation')}
+          >
+            {pending} panel{pending === 1 ? '' : 's'} awaiting your vote
+          </Link>
+        )}
       </header>
 
       <div className={styles.panels}>

@@ -714,6 +714,97 @@ export async function getDisputes(guideId: string): Promise<
   }));
 }
 
+// ── Member assignment queue ──────────────────────────────────────────────────
+
+export interface MemberDisputeAssignment {
+  disputeId: string;
+  guideId: string;
+  guideSlug: string;
+  guideTitle: string;
+  disputeType: DisputeType;
+  evidence: string;
+  status: DisputeStatus;
+  resolutionNote: string | null;
+  openerUsername: string | null;
+  createdAt: string;
+  /** Whether the caller has already cast their verdict on this dispute. */
+  hasVoted: boolean;
+  /** The caller's own verdict, present only when hasVoted. */
+  myVerdict: DisputeVerdict | null;
+  /** Verdict votes cast so far, for a light progress hint. */
+  voteCount: number;
+}
+
+/**
+ * Dispute panels this moderator was drawn onto — their personal assignment queue.
+ *
+ * Returns, per dispute: the guide (slug + title for linking), the dispute's type,
+ * evidence and status, the caller's own verdict (if cast), and the running tally.
+ * Actionable disputes (still 'panel_drawn' and NOT voted by the caller) come
+ * first, then the rest, newest first within each group.
+ */
+export async function getDisputePanelsForMember(
+  userId: string,
+): Promise<MemberDisputeAssignment[]> {
+  const rows = await sqlQuery<
+    Array<{
+      dispute_id: string;
+      guide_id: string;
+      guide_slug: string;
+      guide_title: string;
+      dispute_type: DisputeType;
+      evidence: string;
+      status: DisputeStatus;
+      resolution_note: string | null;
+      opener_username: string | null;
+      created_at: string;
+      my_verdict: DisputeVerdict | null;
+      vote_count: number;
+    }>
+  >(
+    `SELECT d.id AS dispute_id,
+            d.guide_id,
+            g.slug AS guide_slug,
+            g.topic_title AS guide_title,
+            d.dispute_type,
+            d.evidence,
+            d.status,
+            d.resolution_note,
+            u.username AS opener_username,
+            d.created_at,
+            mv.verdict AS my_verdict,
+            (SELECT COUNT(*) FROM dispute_panel_votes v WHERE v.dispute_id = d.id)::int
+              AS vote_count
+     FROM dispute_panel_members m
+     JOIN guide_disputes d ON d.id = m.dispute_id
+     JOIN guides g ON g.id = d.guide_id
+     LEFT JOIN users u ON u.id = d.opener_id
+     LEFT JOIN dispute_panel_votes mv
+       ON mv.dispute_id = d.id AND mv.user_id = m.user_id
+     WHERE m.user_id = :userId
+     ORDER BY
+       (d.status = 'panel_drawn' AND mv.id IS NULL) DESC,
+       d.created_at DESC`,
+    { userId },
+  );
+
+  return rows.map((r) => ({
+    disputeId: r.dispute_id,
+    guideId: r.guide_id,
+    guideSlug: r.guide_slug,
+    guideTitle: r.guide_title,
+    disputeType: r.dispute_type,
+    evidence: r.evidence,
+    status: r.status,
+    resolutionNote: r.resolution_note,
+    openerUsername: r.opener_username,
+    createdAt: r.created_at,
+    hasVoted: r.my_verdict != null,
+    myVerdict: r.my_verdict,
+    voteCount: r.vote_count,
+  }));
+}
+
 // ── Row mappers ──────────────────────────────────────────────────────────────
 
 interface DisputeVoteRow {
