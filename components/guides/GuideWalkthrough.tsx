@@ -5,11 +5,20 @@ import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
 import { CheckCircle, Lock, CircleNotch } from '@phosphor-icons/react';
 import { useSound } from '@/hooks/useSound';
+import GuideSkillTree from '@/components/guides/GuideSkillTree';
+import RewardToast from '@/components/guides/RewardToast';
 import type { Walkthrough, WalkthroughNode } from '@/lib/guides-db';
 import styles from './GuideWalkthrough.module.css';
 
 interface Props {
   slug: string;
+}
+
+interface RewardInfo {
+  diamonds: number;
+  levelCleared: boolean;
+  walkthroughComplete: boolean;
+  spinGranted: boolean;
 }
 
 export default function GuideWalkthrough({ slug }: Props) {
@@ -20,6 +29,15 @@ export default function GuideWalkthrough({ slug }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [completing, setCompleting] = useState<string | null>(null);
   const [completed, setCompleted] = useState<Set<string>>(new Set());
+  const [view, setView] = useState<'list' | 'tree'>('list');
+  const [reward, setReward] = useState<RewardInfo | null>(null);
+
+  // Tree is the default on wide screens; measured once on mount.
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth >= 900) {
+      setView('tree');
+    }
+  }, []);
 
   const authHeaders = useCallback(async (): Promise<HeadersInit> => {
     const token = await getAccessToken().catch(() => null);
@@ -116,6 +134,15 @@ export default function GuideWalkthrough({ slug }: Props) {
           play(levelDone ? 'celebration' : 'success');
           return next;
         });
+        // Diamond payout toast (additive fields from the progress API).
+        if (typeof data.diamonds === 'number' && data.diamonds > 0) {
+          setReward({
+            diamonds: data.diamonds,
+            levelCleared: Boolean(data.levelCleared),
+            walkthroughComplete: Boolean(data.walkthroughComplete),
+            spinGranted: Boolean(data.spinGranted),
+          });
+        }
       } finally {
         setCompleting(null);
       }
@@ -148,11 +175,44 @@ export default function GuideWalkthrough({ slug }: Props) {
             style={{ width: `${totalLevels ? (completed.size / walkthrough.nodes.length) * 100 : 0}%` }}
           />
         </div>
+        <div className={styles.viewToggle} role="tablist" aria-label="Walkthrough view">
+          {(['tree', 'list'] as const).map((v) => (
+            <button
+              key={v}
+              type="button"
+              role="tab"
+              aria-selected={view === v}
+              className={`${styles.viewBtn} ${view === v ? styles.viewBtnActive : ''}`}
+              onMouseEnter={() => play('soft-hover')}
+              onClick={() => {
+                if (view === v) return;
+                play(v === 'tree' ? 'toggle-on' : 'toggle-off');
+                setView(v);
+              }}
+            >
+              {v === 'tree' ? 'Tree' : 'List'}
+            </button>
+          ))}
+        </div>
       </div>
 
       {error && <div className={styles.error}>{error}</div>}
 
-      <div className={styles.levels}>
+      {reward && (
+        <RewardToast
+          diamonds={reward.diamonds}
+          levelCleared={reward.levelCleared}
+          walkthroughComplete={reward.walkthroughComplete}
+          spinGranted={reward.spinGranted}
+          onDone={() => setReward(null)}
+        />
+      )}
+
+      {view === 'tree' && (
+        <GuideSkillTree walkthrough={walkthrough} completed={completed} currentSlug={slug} />
+      )}
+
+      <div className={styles.levels} style={view === 'tree' ? { display: 'none' } : undefined}>
         {levels.map(([level, nodes]) => {
           const unlocked = isLevelUnlocked(level);
           return (

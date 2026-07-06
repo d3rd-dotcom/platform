@@ -1,0 +1,313 @@
+/* ============================================================================
+   GuideSkillTree — constellation view of the walkthrough DAG.
+   Speaks the .guideCard language: oklch primary tints, 1.5px borders, glow on
+   hover, dark-theme variants. SVG nodes are <g>/<rect>/<text>; states are
+   node_completed / node_available / node_locked, target ring + "you are here".
+   ========================================================================== */
+
+.wrapper {
+  display: flex;
+  gap: 16px;
+  align-items: stretch;
+}
+
+/* ── Progress rail ──────────────────────────────────────────────────────── */
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 10px;
+  border-radius: 12px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-base));
+  flex-shrink: 0;
+}
+
+.railLabel {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: var(--type-label-size);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--type-label-track);
+  text-transform: uppercase;
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+.railTicks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.tick {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 5%, var(--color-surface-base));
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tickDone {
+  background: color-mix(in oklch, var(--color-primary) 26%, var(--color-surface-base));
+  border-color: color-mix(in oklch, var(--color-primary) 55%, transparent);
+}
+
+.tickCurrent {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary) 18%, transparent);
+}
+
+.tickNum {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-dark);
+  line-height: 1;
+}
+
+.tickDone .tickNum {
+  color: var(--color-primary);
+}
+
+/* ── Canvas + SVG ───────────────────────────────────────────────────────── */
+
+.canvas {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
+  background:
+    radial-gradient(
+      ellipse at 50% 110%,
+      color-mix(in oklch, var(--color-primary) 7%, transparent),
+      transparent 65%
+    ),
+    color-mix(in oklch, var(--color-primary) 2%, var(--color-surface-base));
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-width: 480px;
+}
+
+/* ── Edges ──────────────────────────────────────────────────────────────── */
+
+.edges {
+  pointer-events: none;
+}
+
+.edge {
+  stroke: color-mix(in oklch, var(--color-primary) 22%, transparent);
+  stroke-width: 1.5;
+  transition: stroke 0.2s ease, stroke-width 0.2s ease;
+}
+
+.edgeActive {
+  stroke: url(#mwa-edge);
+  stroke-width: 2.25;
+}
+
+/* ── Nodes (SVG groups) ─────────────────────────────────────────────────── */
+
+.node {
+  cursor: pointer;
+  outline: none;
+}
+
+.node:focus-visible .nodeBox {
+  stroke: var(--color-primary);
+  stroke-width: 2.5;
+}
+
+.nodeBox {
+  fill: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-base));
+  stroke: color-mix(in oklch, var(--color-primary) 18%, transparent);
+  stroke-width: 1.5;
+  transition: fill 0.15s ease, stroke 0.15s ease, filter 0.2s ease;
+}
+
+.nodeLabel {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  fill: var(--color-text-dark);
+  transition: fill 0.15s ease;
+  pointer-events: none;
+}
+
+/* Available — inviting, glows on hover */
+.node_available:hover .nodeBox {
+  fill: color-mix(in oklch, var(--color-primary) 9%, var(--color-surface-base));
+  stroke: color-mix(in oklch, var(--color-primary) 45%, transparent);
+  filter: drop-shadow(0 0 6px color-mix(in oklch, var(--color-primary) 30%, transparent));
+}
+
+.node_available:hover .nodeLabel {
+  fill: var(--color-primary);
+}
+
+/* Completed — lit up, gentle pulse */
+.node_completed .nodeBox {
+  fill: color-mix(in oklch, var(--color-primary) 16%, var(--color-surface-base));
+  stroke: color-mix(in oklch, var(--color-primary) 55%, transparent);
+  filter: drop-shadow(0 0 5px color-mix(in oklch, var(--color-primary) 35%, transparent));
+  animation: nodeGlow 3.2s ease-in-out infinite;
+}
+
+.node_completed .nodeLabel {
+  fill: var(--color-primary);
+  font-weight: 600;
+}
+
+@keyframes nodeGlow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 4px color-mix(in oklch, var(--color-primary) 28%, transparent));
+  }
+  50% {
+    filter: drop-shadow(0 0 9px color-mix(in oklch, var(--color-primary) 45%, transparent));
+  }
+}
+
+/* Locked — dimmed, dashed, padlock */
+.node_locked {
+  cursor: not-allowed;
+}
+
+.node_locked .nodeBox {
+  fill: color-mix(in oklch, var(--color-primary) 2%, var(--color-surface-base));
+  stroke: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  stroke-dasharray: 5 4;
+}
+
+.node_locked .nodeLabel {
+  fill: var(--color-text-faint);
+}
+
+.lockMark rect,
+.lockMark path {
+  stroke: var(--color-text-faint);
+  fill: color-mix(in oklch, var(--color-text-faint) 30%, transparent);
+}
+
+.lockMark path {
+  fill: none;
+}
+
+/* Target — the summit: larger presence via ring */
+.targetRing {
+  fill: none;
+  stroke: color-mix(in oklch, var(--color-primary) 40%, transparent);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 5;
+  animation: ringSpin 14s linear infinite;
+}
+
+.nodeTarget .nodeBox {
+  stroke-width: 2;
+}
+
+/* "You are here" */
+.nodeHere .nodeBox {
+  stroke: var(--color-primary);
+  stroke-width: 2.25;
+}
+
+@keyframes ringSpin {
+  to {
+    stroke-dashoffset: -80;
+  }
+}
+
+/* ── Motion safety ──────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .node_completed .nodeBox {
+    animation: none;
+  }
+  .targetRing {
+    animation: none;
+  }
+  .edge,
+  .nodeBox,
+  .nodeLabel,
+  .tick {
+    transition: none;
+  }
+}
+
+/* ── Narrow screens: rail goes horizontal above the canvas ──────────────── */
+
+@media (max-width: 640px) {
+  .wrapper {
+    flex-direction: column;
+  }
+  .rail {
+    flex-direction: row;
+    padding: 10px 14px;
+  }
+  .railLabel {
+    writing-mode: horizontal-tb;
+    transform: none;
+  }
+  .railTicks {
+    flex-direction: row;
+    margin-top: 0;
+    margin-left: auto;
+  }
+}
+
+/* ── Dark theme ─────────────────────────────────────────────────────────── */
+
+:global([data-theme='dark']) .rail {
+  background: color-mix(in oklch, var(--color-primary) 10%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary) 26%, transparent);
+}
+
+:global([data-theme='dark']) .tickNum {
+  color: #e8e9f4;
+}
+
+:global([data-theme='dark']) .canvas {
+  background:
+    radial-gradient(
+      ellipse at 50% 110%,
+      color-mix(in oklch, var(--color-primary) 14%, transparent),
+      transparent 65%
+    ),
+    #15172a;
+  border-color: color-mix(in oklch, var(--color-primary) 22%, transparent);
+}
+
+:global([data-theme='dark']) .nodeBox {
+  fill: color-mix(in oklch, var(--color-primary) 10%, #15172a);
+  stroke: color-mix(in oklch, var(--color-primary) 30%, transparent);
+}
+
+:global([data-theme='dark']) .nodeLabel {
+  fill: #e8e9f4;
+}
+
+:global([data-theme='dark']) .node_completed .nodeBox {
+  fill: color-mix(in oklch, var(--color-primary) 24%, #15172a);
+}
+
+:global([data-theme='dark']) .node_completed .nodeLabel {
+  fill: color-mix(in oklch, var(--color-primary) 70%, white);
+}
+
+:global([data-theme='dark']) .node_locked .nodeBox {
+  fill: color-mix(in oklch, var(--color-primary) 4%, #15172a);
+}
