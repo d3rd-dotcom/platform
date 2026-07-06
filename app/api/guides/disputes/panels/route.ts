@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { isDbConfigured } from '@/lib/db';
-import { getCurrentUserFromRequestCookie } from '@/lib/auth';
+import { requireUser } from '@/lib/guide-api-auth';
 import { getDisputePanelsForMember } from '@/lib/guide-disputes-db';
 
 export const runtime = 'nodejs';
@@ -17,13 +17,15 @@ export async function GET() {
     return NextResponse.json({ error: 'Database not configured.' }, { status: 503 });
   }
 
-  const user = await getCurrentUserFromRequestCookie();
-  if (!user) {
-    return NextResponse.json({ error: 'Not authenticated.' }, { status: 401 });
+  let userId: string;
+  try {
+    ({ userId } = await requireUser());
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: err.status ?? 401 });
   }
 
   try {
-    const disputes = await getDisputePanelsForMember(user.id);
+    const disputes = await getDisputePanelsForMember(userId);
     return NextResponse.json({ disputes });
   } catch (err: any) {
     const status = err.status ?? 500;

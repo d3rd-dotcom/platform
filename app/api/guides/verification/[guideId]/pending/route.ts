@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { isDbConfigured } from '@/lib/db';
-import { getCurrentUserFromRequestCookie } from '@/lib/auth';
+import { optionalUser } from '@/lib/guide-api-auth';
 import { countPendingPanelVotesForGuide } from '@/lib/guide-verification-db';
 
 export const runtime = 'nodejs';
@@ -21,13 +21,13 @@ export async function GET(
     return NextResponse.json({ error: 'Database not configured.' }, { status: 503 });
   }
 
-  const user = await getCurrentUserFromRequestCookie();
+  const user = await optionalUser();
   if (!user) {
     return NextResponse.json({ pending: 0 });
   }
 
   try {
-    const pending = await countPendingPanelVotesForGuide(params.guideId, user.id);
+    const pending = await countPendingPanelVotesForGuide(params.guideId, user.userId);
     return NextResponse.json({ pending });
   } catch (err: any) {
     const status = err.status ?? 500;
