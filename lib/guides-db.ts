@@ -77,6 +77,16 @@ export interface Walkthrough {
   rewardPreview: WalkthroughRewardPreview;
 }
 
+export interface ForwardRef {
+  id: string;
+  guideId: string;
+  topicTitle: string;
+  createdBy: string;
+  resolvedGuideId: string | null;
+  createdAt: string;
+  resolvedAt: string | null;
+}
+
 // ── Row types ────────────────────────────────────────────────────────────────
 
 interface GuideRow {
@@ -384,6 +394,101 @@ export async function searchPublishedGuides(input: {
      LIMIT :limit`,
     { ...params, limit: Math.min(Math.max(input.limit ?? 20, 1), 50) },
   );
+}
+
+// ── Forward references ─────────────────────────────────────────────────────────
+
+/**
+ * Declares a forward reference: "this guide depends on topic X, which does not
+ * yet exist as a guide." The ref is unresolved until a guide with a matching
+ * topic_title is created (see resolveForwardRefs). Unresolved refs do not
+ * participate in DAG level computation or walkthrough gating.
+ */
+export async function createForwardRef(
+  guideId: string,
+  topicTitle: string,
+  userId: string,
+): Promise<ForwardRef> {
+  const rows = await sqlQuery<ForwardRef[]>(
+    `INSERT INTO guide_forward_refs (guide_id, topic_title, created_by)
+     VALUES (:guideId, :topicTitle, :userId)
+     RETURNING
+       id,
+       guide_id AS "guideId",
+       topic_title AS "topicTitle",
+       created_by AS "createdBy",
+       resolved_guide_id AS "resolvedGuideId",
+       created_at AS "createdAt",
+       resolved_at AS "resolvedAt"`,
+    { guideId, topicTitle, userId },
+  );
+  return rows[0];
+}
+
+export async function removeForwardRef(refId: string): Promise<void> {
+  await sqlQuery(`DELETE FROM guide_forward_refs WHERE id = :id`, { id: refId });
+}
+
+export async function getForwardRefs(guideId: string): Promise<ForwardRef[]> {
+  return sqlQuery<ForwardRef[]>(
+    `SELECT
+       id,
+       guide_id AS "guideId",
+       topic_title AS "topicTitle",
+       created_by AS "createdBy",
+       resolved_guide_id AS "resolvedGuideId",
+       created_at AS "createdAt",
+       resolved_at AS "resolvedAt"
+     FROM guide_forward_refs
+     WHERE guide_id = :guideId
+     ORDER BY created_at ASC`,
+    { guideId },
+  );
+}
+
+/**
+ * Called after a guide is created. Finds any unresolved forward refs whose
+ * topic_title matches the new guide's title (case-insensitive) and resolves
+ * them: inserts an actual guide_edges row and marks the ref as resolved.
+ *
+ * Returns the number of refs resolved. Edges that would create a cycle are
+ * silently skipped (the ref is still marked resolved so it is not re-tried).
+ */
+export async function resolveForwardRefs(guideId: string): Promise<number> {
+  const guide = await sqlQuery<Array<{ topic_title: string }>>(
+    `SELECT topic_title FROM guides WHERE id = :id`,
+    { id: guideId },
+  );
+  if (!guide[0]) return 0;
+
+  const refs = await sqlQuery<Array<{ id: string; guide_id: string }>>(
+    `SELECT fr.id, fr.guide_id
+     FROM guide_forward_refs fr
+     WHERE LOWER(fr.topic_title) = LOWER(:topicTitle) AND fr.resolved_guide_id IS NULL`,
+    { topicTitle: guide[0].topic_title },
+  );
+
+  if (refs.length === 0) return 0;
+
+  for (const ref of refs) {
+    try {
+      await sqlQuery(
+        `INSERT INTO guide_edges (prereq_id, guide_id) VALUES (:prereqId, :guideId)
+         ON CONFLICT (prereq_id, guide_id) DO NOTHING`,
+        { prereqId: guideId, guideId: ref.guide_id },
+      );
+    } catch {
+      // Cycle guard (P0001) — skip the edge but still mark resolved.
+    }
+    await sqlQuery(
+      `UPDATE guide_forward_refs
+       SET resolved_guide_id = :resolvedGuideId, resolved_at = now()
+       WHERE id = :id`,
+      { resolvedGuideId: guideId, id: ref.id },
+    );
+  }
+
+  return refs.length;
 }
 
 // ── Walkthrough + level computation ──────────────────────────────────────────
@@ -694,12 +799,15 @@ export async function completeGuide(
     throw Object.assign(new Error('Guide not found.'), { status: 404 });
   }
 
-  // Direct prereqs the user has NOT completed yet.
+  // Direct PREREQs the user has NOT completed yet. Only published prereqs gate
+  // completion — draft/unpublished guides (e.g. auto-resolved forward refs)
+  // are not blocked.
   const missing = await sqlQuery<Array<{ topic_title: string }>>(
     `SELECT p.topic_title
      FROM guide_edges e
      JOIN guides p ON p.id = e.prereq_id
      WHERE e.guide_id = :guideId
+       AND p.status = 'published'
        AND NOT EXISTS (
          SELECT 1 FROM guide_progress gp
          WHERE gp.user_id = :userId AND gp.guide_id = e.prereq_id

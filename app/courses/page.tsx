@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
 import { PencilSimple, Trash, Plus } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
+import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import CourseFolderCard from '@/components/courses/CourseFolderCard';
 import ProfileDashboard from '@/components/courses/ProfileDashboard';
 import FieldNotesSheet from '@/components/courses/FieldNotesSheet';
@@ -14,6 +15,7 @@ import { onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-cours
 import type { CourseRecord } from '@/lib/course-content-db';
 import type { GuideRecord } from '@/lib/guides-db';
 import { useSound } from '@/hooks/useSound';
+import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 import styles from './page.module.css';
 
 function getCourseEndDate() {
@@ -70,7 +72,22 @@ export default function CoursesPage() {
   const [isVip, setIsVip] = useState(false);
   const [fieldNotesOpen, setFieldNotesOpen] = useState(false);
   const [noteCount, setNoteCount] = useState(0);
+  const [introOpen, setIntroOpen] = useState(false);
   const { play } = useSound();
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const seen = getStorageItem('mwa-courses-intro-seen');
+    if (!seen) {
+      const timer = setTimeout(() => setIntroOpen(true), 500);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const handleIntroClose = () => {
+    setIntroOpen(false);
+    setStorageItem('mwa-courses-intro-seen', 'true');
+  };
 
   useEffect(() => {
     fetch('/api/course-content')
@@ -575,6 +592,18 @@ export default function CoursesPage() {
       </main>
 
       {fieldNotesOpen && <FieldNotesSheet onClose={() => setFieldNotesOpen(false)} />}
+
+      <BlueDialogue
+        open={introOpen}
+        lines={[
+          "Hey, welcome to the Mental Wealth Academy learning hub!",
+          "You'll find a lot of guides made by our community on many topics. You can start from level-1 or skip.",
+          "You earn diamonds ($BLUE) for each level. The more Blue Diamonds you hold, the more Blue Bitcoin you'll accumulate.",
+          "Continue exploring and contributing to the platform to earn.",
+        ]}
+        emotion="happy"
+        onClose={handleIntroClose}
+      />
 
       {deleteTarget && (
         <div className={styles.deleteOverlay} onClick={() => !deleting && setDeleteTarget(null)}>

@@ -4,12 +4,14 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { usePrivy } from '@privy-io/react-auth';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
+import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import Banner from '@/components/banner/Banner';
 import WeekTasksView from '@/components/week-tasks/WeekTasksView';
 import HomeWelcomeFlow from '@/components/home-welcome/HomeWelcomeFlow';
 import MobileSplash from '@/components/mobile-splash/MobileSplash';
 import CourseTour from '@/components/feature-tour/CourseTour';
 import { useSound } from '@/hooks/useSound';
+import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 import styles from './page.module.css';
 
 const CyberpunkDataViz = dynamic(() => import('@/components/cyberpunk-data-viz/CyberpunkDataViz'), {
@@ -119,6 +121,21 @@ export default function CoursePage() {
   const [weekStatuses, setWeekStatuses] = useState<WeekStatus[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authFlowSettled, setAuthFlowSettled] = useState(false);
+  const [introOpen, setIntroOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const seen = getStorageItem('mwa-shadow-work-intro-seen');
+    if (!seen) {
+      const timer = setTimeout(() => setIntroOpen(true), 500);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const handleIntroClose = () => {
+    setIntroOpen(false);
+    setStorageItem('mwa-shadow-work-intro-seen', 'true');
+  };
   const [isReaderOpen, setIsReaderOpen] = useState(false);
   const [isWeekOneNovelOpen, setIsWeekOneNovelOpen] = useState(false);
   const [readerIndex, setReaderIndex] = useState(0);
@@ -556,6 +573,17 @@ export default function CoursePage() {
         />
       )}
       <CourseTour />
+
+      <BlueDialogue
+        open={introOpen}
+        lines={[
+          "Heya! Welcome to the shadow work course.",
+          "This is a special seasonal class that operates on a weekly basis. Some people come in during the middle of the season, but that's okay!",
+          "The story starts from week 1 and continues up until the [E]nd.",
+        ]}
+        emotion="happy"
+        onClose={handleIntroClose}
+      />
 
     </div>
     </HomeWelcomeFlow>

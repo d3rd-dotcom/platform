@@ -7,7 +7,7 @@ import CtaButton from '@/components/shared/CtaButton';
 import ComponentPalette from './ComponentPalette';
 import ComponentConfigEditor from './ComponentConfigEditor';
 import GuideBody from '@/components/guides/GuideBody';
-import type { GuideRecord, GuideBodyComponent, GuideLink } from '@/lib/guides-db';
+import type { GuideRecord, GuideBodyComponent, GuideLink, ForwardRef } from '@/lib/guides-db';
 import type { ComponentType } from '@/lib/vip-course-db';
 import styles from './GuideStudio.module.css';
 
@@ -71,6 +71,8 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
   const [prereqQuery, setPrereqQuery] = useState('');
   const [prereqCandidates, setPrereqCandidates] = useState<GuideLink[]>([]);
   const [prereqError, setPrereqError] = useState<string | null>(null);
+  const [forwardRefs, setForwardRefs] = useState<ForwardRef[]>([]);
+  const [forwardRefInput, setForwardRefInput] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState<{ memberCount: number } | null>(null);
 
@@ -127,6 +129,7 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
         const data = await prereqRes.json();
         setPrereqs(data.prereqs ?? []);
         setPrereqCandidates(data.candidates ?? []);
+        setForwardRefs(data.forwardRefs ?? []);
       }
       if (detailRes.ok) {
         const detail = await detailRes.json();
@@ -288,6 +291,49 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
       refreshPrereqs();
     } catch {
       setPrereqError('Could not remove prerequisite.');
+    }
+  };
+
+  // ── Forward refs ──────────────────────────────────────────────────────────────
+  const addForwardRef = async () => {
+    if (!currentSlug || !forwardRefInput.trim()) return;
+    setPrereqError(null);
+    try {
+      const headers = { 'Content-Type': 'application/json', ...(await authHeaders()) };
+      const res = await fetch(`/api/guides/${currentSlug}/prereqs`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ forwardRef: true, topicTitle: forwardRefInput.trim() }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setPrereqError(data.error ?? 'Could not add forward reference.');
+        return;
+      }
+      setForwardRefs(data.forwardRefs ?? []);
+      setForwardRefInput('');
+    } catch {
+      setPrereqError('Could not add forward reference.');
+    }
+  };
+
+  const removeForwardRef = async (refId: string) => {
+    if (!currentSlug) return;
+    setPrereqError(null);
+    try {
+      const headers = await authHeaders();
+      const res = await fetch(
+        `/api/guides/${currentSlug}/prereqs?forwardRefId=${encodeURIComponent(refId)}`,
+        { method: 'DELETE', headers },
+      );
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setPrereqError(data.error ?? 'Could not remove forward reference.');
+        return;
+      }
+      setForwardRefs(data.forwardRefs ?? []);
+    } catch {
+      setPrereqError('Could not remove forward reference.');
     }
   };
 
@@ -622,6 +668,55 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
                             ))
                           )}
                         </div>
+                      </div>
+                    )}
+
+                    {/* Forward references */}
+                    {forwardRefs.length > 0 && (
+                      <div className={styles.forwardRefList}>
+                        {forwardRefs.map((ref) => (
+                          <div key={ref.id} className={styles.forwardRefRow}>
+                            <div className={styles.forwardRefInfo}>
+                              <span className={styles.forwardRefTitle}>
+                                {ref.topicTitle}
+                              </span>
+                              <span className={`${styles.forwardRefStatus} ${
+                                ref.resolvedGuideId ? styles.forwardRefResolved : styles.forwardRefPending
+                              }`}>
+                                {ref.resolvedGuideId ? 'Resolved' : 'Forthcoming'}
+                              </span>
+                            </div>
+                            {isDraft && (
+                              <button
+                                type="button"
+                                className={`${styles.iconBtn} ${styles.iconBtnDanger}`}
+                                onClick={() => removeForwardRef(ref.id)}
+                                aria-label={`Remove forward ref ${ref.topicTitle}`}
+                              >
+                                <X size={15} weight="bold" />
+                              </button>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {isDraft && (
+                      <div className={styles.forwardRefAddRow}>
+                        <input
+                          className={styles.textInput}
+                          value={forwardRefInput}
+                          onChange={(e) => setForwardRefInput(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              addForwardRef();
+                            }
+                          }}
+                          placeholder="Add a forthcoming prerequisite topic"
+                        />
+                        <CtaButton variant="secondary" size="sm" onClick={addForwardRef}>
+                          <Plus size={14} weight="bold" /> Add future topic
+                        </CtaButton>
                       </div>
                     )}
                   </>

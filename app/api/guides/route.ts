@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireVip, optionalUser } from '@/lib/guide-api-auth';
-import { listGuides, createGuide, type GuideStatus } from '@/lib/guides-db';
+import { listGuides, createGuide, resolveForwardRefs, type GuideStatus } from '@/lib/guides-db';
 import {
   createGuideBodySchema,
   zodErrorBody,
@@ -96,6 +96,11 @@ export async function POST(request: Request) {
       authorId: userId,
       status: 'draft',
     });
+
+    // Auto-resolve any forward references whose topic_title matches this new
+    // guide. This runs in the background — it is informational and the response
+    // should not wait for it to complete.
+    resolveForwardRefs(guide.id).catch(() => {});
 
     return NextResponse.json({ guide } satisfies GuideCreateResponse, { status: 201 });
   } catch (err: any) {

@@ -53,12 +53,17 @@
 
 ---
 
-## Remaining tasks
+## Completed tasks
 
-The other 3 areas from the original analysis are still open:
+| # | Area | Status |
+|---|------|--------|
+| 2 | Reward preview data (walkthrough) | Done — `7c1e31d7` |
+| 3 | DAG visualization for contributors (editor) | Done — `7c1e31d7` |
+| 1 | Aggregate Knowledge Base progress (dashboard) | Done — `279f64b1` |
+| 5 | Contribution-impact analytics (author stats) | Done — `1c559df9` |
+
+## Remaining tasks
 
 | # | Area | Focus | Effort |
 |---|------|-------|--------|
-| 1 | Aggregate Knowledge Base progress | User-facing — overall guide completion stats across all DAGs | Medium (materialized view + dashboard card) |
 | 4 | Prereq placeholder / forward references | Contributor-facing — allow marking "this guide depends on a topic that doesn't exist yet" | High (schema + trigger changes) |
-| 5 | Contribution-impact analytics | Contributor-facing — per-author stats (completion rate, votes, verifier feedback) | Medium (query + dashboard tab) |

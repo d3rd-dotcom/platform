@@ -7,6 +7,9 @@ import {
   addGuidePrereq,
   removeGuidePrereq,
   searchPublishedGuides,
+  createForwardRef,
+  removeForwardRef,
+  getForwardRefs,
 } from '@/lib/guides-db';
 
 export const runtime = 'nodejs';
@@ -18,6 +21,10 @@ export const dynamic = 'force-dynamic';
  * guide"). The DB cycle-guard trigger rejects edges that would create a cycle in
  * the DAG (Postgres P0001); we translate that into a clean 400 with a human
  * message. Only PUBLISHED guides are eligible prerequisites.
+ *
+ * Forward references let authors declare a dependency on a topic that does not
+ * yet exist as a published guide. They appear in the prereq list with a
+ * "forthcoming" tag and auto-resolve when a matching guide is created.
  */
 
 /** True when the error is the guide_edges cycle-guard trigger firing. */
@@ -44,9 +51,9 @@ async function requireDraftOwner(slug: string) {
 }
 
 /**
- * GET /api/guides/[slug]/prereqs — current prerequisites plus a search of
- * eligible published guides (via ?q=). Author-only (a draft's prereqs are part
- * of authoring). Returns { prereqs, candidates }.
+ * GET /api/guides/[slug]/prereqs — current prerequisites, forward refs, and a
+ * search of eligible published guides (via ?q=). Author-only.
+ * Returns { prereqs, candidates, forwardRefs }.
  */
 export async function GET(request: Request, { params }: { params: { slug: string } }) {
   if (!isDbConfigured()) {
@@ -57,9 +64,10 @@ export async function GET(request: Request, { params }: { params: { slug: string
     const { searchParams } = new URL(request.url);
     const q = searchParams.get('q') ?? undefined;
 
-    const [prereqs, candidates] = await Promise.all([
+    const [prereqs, candidates, forwardRefs] = await Promise.all([
       getDirectPrereqs(guide.id),
       searchPublishedGuides({ query: q, excludeId: guide.id }),
+      getForwardRefs(guide.id),
     ]);
 
     // Hide already-linked prereqs from the candidate list.
@@ -67,6 +75,7 @@ export async function GET(request: Request, { params }: { params: { slug: string
     return NextResponse.json({
       prereqs,
       candidates: candidates.filter((c) => !linked.has(c.id)),
+      forwardRefs,
     });
   } catch (err: any) {
     const status = err.status ?? 500;
@@ -75,8 +84,11 @@ export async function GET(request: Request, { params }: { params: { slug: string
 }
 
 /**
- * POST /api/guides/[slug]/prereqs — add a prerequisite edge.
- * Body: { prereqId }
+ * POST /api/guides/[slug]/prereqs
+ *
+ * Two modes:
+ *   { prereqId: "..." }        — add a real prerequisite edge (existing guide)
+ *   { forwardRef: true, topicTitle: "..." } — add a forward reference to a future topic
  */
 export async function POST(request: Request, { params }: { params: { slug: string } }) {
   if (!isDbConfigured()) {
@@ -84,7 +96,26 @@ export async function POST(request: Request, { params }: { params: { slug: strin
   }
   try {
     const guide = await requireDraftOwner(params.slug);
-    const body = (await request.json().catch(() => ({}))) as { prereqId?: unknown };
+    const body = (await request.json().catch(() => ({}))) as {
+      prereqId?: unknown;
+      forwardRef?: unknown;
+      topicTitle?: unknown;
+    };
+
+    // Forward reference mode.
+    if (body.forwardRef) {
+      if (!body.topicTitle || typeof body.topicTitle !== 'string' || !body.topicTitle.trim()) {
+        return NextResponse.json(
+          { error: 'topicTitle is required for a forward reference.' },
+          { status: 400 },
+        );
+      }
+      const ref = await createForwardRef(guide.id, body.topicTitle.trim(), guide.authorId!);
+      const forwardRefs = await getForwardRefs(guide.id);
+      return NextResponse.json({ forwardRefs, forwardRef: ref }, { status: 201 });
+    }
+
+    // Regular prereq mode.
     if (!body.prereqId || typeof body.prereqId !== 'string') {
       return NextResponse.json({ error: 'prereqId is required.' }, { status: 400 });
     }
@@ -112,7 +143,11 @@ export async function POST(request: Request, { params }: { params: { slug: strin
 }
 
 /**
- * DELETE /api/guides/[slug]/prereqs?prereqId=... — remove a prerequisite edge.
+ * DELETE /api/guides/[slug]/prereqs
+ *
+ * Two modes:
+ *   ?prereqId=...     — remove a real prerequisite edge
+ *   ?forwardRefId=... — remove a forward reference
  */
 export async function DELETE(request: Request, { params }: { params: { slug: string } }) {
   if (!isDbConfigured()) {
@@ -122,8 +157,19 @@ export async function DELETE(request: Request, { params }: { params: { slug: str
     const guide = await requireDraftOwner(params.slug);
     const { searchParams } = new URL(request.url);
     const prereqId = searchParams.get('prereqId');
+    const forwardRefId = searchParams.get('forwardRefId');
+
+    if (forwardRefId) {
+      await removeForwardRef(forwardRefId);
+      const forwardRefs = await getForwardRefs(guide.id);
+      return NextResponse.json({ forwardRefs });
+    }
+
     if (!prereqId) {
-      return NextResponse.json({ error: 'prereqId is required.' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'prereqId or forwardRefId is required.' },
+        { status: 400 },
+      );
     }
 
     await removeGuidePrereq(guide.id, prereqId);
