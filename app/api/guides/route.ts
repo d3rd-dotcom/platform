@@ -1,6 +1,12 @@
 import { NextResponse } from 'next/server';
-import { assertCourseUser } from '@/lib/assert-course-auth';
+import { requireVip } from '@/lib/guide-api-auth';
 import { listGuides, createGuide, type GuideStatus } from '@/lib/guides-db';
+import {
+  createGuideBodySchema,
+  zodErrorBody,
+  type GuidesListResponse,
+  type GuideCreateResponse,
+} from '@/lib/guide-api-schemas';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -34,7 +40,7 @@ export async function GET(request: Request) {
       : 'published';
 
     const guides = await listGuides({ subject, status });
-    return NextResponse.json({ guides });
+    return NextResponse.json({ guides } satisfies GuidesListResponse);
   } catch (err: any) {
     const status = err.status ?? 500;
     return NextResponse.json({ error: err.message }, { status });
@@ -43,14 +49,16 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const userId = await assertCourseUser();
-    const body = (await request.json()) as {
-      topicTitle?: unknown;
-      slug?: unknown;
-      body?: unknown;
-    };
+    const { userId } = await requireVip(request);
+    const parsed = createGuideBodySchema.safeParse(await request.json());
+    if (!parsed.success) {
+      return NextResponse.json(zodErrorBody(parsed.error), { status: 400 });
+    }
+    const body = parsed.data;
 
-    if (!body.topicTitle || typeof body.topicTitle !== 'string' || !body.topicTitle.trim()) {
+    // Presence/emptiness is a semantic rule beyond the schema (empty/whitespace
+    // titles are rejected with the historical message).
+    if (!body.topicTitle.trim()) {
       return NextResponse.json({ error: 'topicTitle is required.' }, { status: 400 });
     }
 
@@ -73,7 +81,7 @@ export async function POST(request: Request) {
       status: 'draft',
     });
 
-    return NextResponse.json({ guide }, { status: 201 });
+    return NextResponse.json({ guide } satisfies GuideCreateResponse, { status: 201 });
   } catch (err: any) {
     // Unique violation on slug / topic_title
     if (err?.code === '23505') {

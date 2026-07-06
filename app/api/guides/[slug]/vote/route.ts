@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getCurrentUserFromRequestCookie } from '@/lib/auth';
+import { requireUser } from '@/lib/guide-api-auth';
 import { isDbConfigured } from '@/lib/db';
 import { getGuideBySlug } from '@/lib/guides-db';
 import {
@@ -8,6 +8,12 @@ import {
   isRubricReason,
   type VoteDirection,
 } from '@/lib/guide-votes-db';
+import {
+  voteBodySchema,
+  zodErrorBody,
+  type VoteTotalsResponse,
+  type VoteCastResponse,
+} from '@/lib/guide-api-schemas';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -24,7 +30,7 @@ export async function GET(_request: Request, { params }: { params: { slug: strin
     return NextResponse.json({ error: 'Guide not found.' }, { status: 404 });
   }
   const totals = await getVoteTotals(guide.id);
-  return NextResponse.json({ totals });
+  return NextResponse.json({ totals } satisfies VoteTotalsResponse);
 }
 
 /**
@@ -38,23 +44,19 @@ export async function POST(request: Request, { params }: { params: { slug: strin
   if (!isDbConfigured()) {
     return NextResponse.json({ error: 'Database not configured.' }, { status: 503 });
   }
-  const user = await getCurrentUserFromRequestCookie();
-  if (!user) {
-    return NextResponse.json({ error: 'Not authenticated.' }, { status: 401 });
+  let userId: string;
+  try {
+    ({ userId } = await requireUser(request));
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: err.status ?? 401 });
   }
 
-  const body = (await request.json().catch(() => ({}))) as {
-    direction?: unknown;
-    rubricReason?: unknown;
-    sectionPointer?: unknown;
-  };
-
-  if (body.direction !== 'up' && body.direction !== 'down') {
-    return NextResponse.json(
-      { error: 'direction must be "up" or "down".' },
-      { status: 400 },
-    );
+  const parsed = voteBodySchema.safeParse(await request.json().catch(() => ({})));
+  if (!parsed.success) {
+    return NextResponse.json(zodErrorBody(parsed.error), { status: 400 });
   }
+  const body = parsed.data;
+
   const direction = body.direction as VoteDirection;
 
   const rubricReason =
@@ -68,8 +70,10 @@ export async function POST(request: Request, { params }: { params: { slug: strin
   }
 
   try {
-    const result = await castVote(user.id, guide.id, direction, rubricReason, sectionPointer);
-    return NextResponse.json({ ok: true, direction: result.direction, totals: result.totals });
+    const result = await castVote(userId, guide.id, direction, rubricReason, sectionPointer);
+    return NextResponse.json(
+      { ok: true, direction: result.direction, totals: result.totals } satisfies VoteCastResponse,
+    );
   } catch (err: any) {
     const status = err.status ?? 500;
     return NextResponse.json({ error: err.message }, { status });

@@ -20,7 +20,9 @@
     "check-interactions": "tsx scripts/check-contract-interactions.ts",
     "seed:blue-rag": "tsx scripts/seed-blue-rag.ts",
     "eval:blue-rag": "tsx scripts/evaluate-blue-rag.ts",
-    "collect:kalshi": "tsx scripts/collect-kalshi-snapshot.ts"
+    "collect:kalshi": "tsx scripts/collect-kalshi-snapshot.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@coinbase/coinbase-sdk": "^0.25.0",
@@ -110,6 +112,8 @@
     "eslint-config-next": "^14.0.0",
     "raw-loader": "^4.0.2",
     "tsx": "^4.7.0",
-    "typescript": "^5.2.0"
+    "typescript": "^5.2.0",
+    "vitest": "^2.1.9",
+    "@vitest/coverage-v8": "^2.1.9"
   }
 }

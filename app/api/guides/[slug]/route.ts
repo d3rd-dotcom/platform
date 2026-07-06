@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { assertCourseUser } from '@/lib/assert-course-auth';
+import { requireVip } from '@/lib/guide-api-auth';
 import {
   getGuideBySlug,
   getGuideMethods,
@@ -7,6 +7,7 @@ import {
   getDirectDependents,
   getWalkthrough,
 } from '@/lib/guides-db';
+import type { GuideDetailResponse } from '@/lib/guide-api-schemas';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -21,7 +22,7 @@ export async function GET(_request: Request, { params }: { params: { slug: strin
     // Published guides are public reading. Unpublished/draft/etc. are visible to
     // their author alone (mirrors the VIP course-by-slug convention).
     if (guide.status !== 'published') {
-      const userId = await assertCourseUser();
+      const { userId } = await requireVip(_request);
       if (guide.authorId !== userId) {
         return NextResponse.json({ error: 'Guide not found.' }, { status: 404 });
       }
@@ -37,7 +38,9 @@ export async function GET(_request: Request, { params }: { params: { slug: strin
     // The guide's own level = height of its prerequisite closure (1-based).
     const level = Math.max(walkthrough?.levels ?? 1, 1);
 
-    return NextResponse.json({ guide, methods, prereqs, dependents, level });
+    return NextResponse.json(
+      { guide, methods, prereqs, dependents, level } satisfies GuideDetailResponse,
+    );
   } catch (err: any) {
     const status = err.status ?? 500;
     return NextResponse.json({ error: err.message }, { status });
