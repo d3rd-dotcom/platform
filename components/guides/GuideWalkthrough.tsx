@@ -6,7 +6,7 @@ import { usePrivy } from '@privy-io/react-auth';
 import { CheckCircle, Lock, CircleNotch } from '@phosphor-icons/react';
 import { useSound } from '@/hooks/useSound';
 import GuideSkillTree from '@/components/guides/GuideSkillTree';
-import RewardToast from '@/components/guides/RewardToast';
+import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import type { Walkthrough, WalkthroughNode } from '@/lib/guides-db';
 import styles from './GuideWalkthrough.module.css';
 
@@ -19,6 +19,42 @@ interface RewardInfo {
   levelCleared: boolean;
   walkthroughComplete: boolean;
   spinGranted: boolean;
+}
+
+/**
+ * Compose Blue's completion-reward dialogue in her voice: upbeat, academic,
+ * short, sweet, and no em dashes anywhere. Each element becomes one line
+ * advanced with the arrow.
+ */
+function buildRewardLines(reward: RewardInfo): string[] {
+  const lines: string[] = [];
+
+  // Base line for every guide completion, naming the diamond payout.
+  lines.push(
+    `Nice work. That guide is logged and I just sent +${reward.diamonds} diamonds straight to your wallet. Small consistent wins, that is the whole game.`,
+  );
+
+  // Level-clear flavor (Figma sample copy, kept verbatim).
+  if (reward.levelCleared && !reward.walkthroughComplete) {
+    lines.push(
+      "Hey, just because you got it right, doesn't make you a genius or anything. If you're ready to level-up and try something a bit harder we have the next level of knowledge on this topic unlocked and available for you.",
+    );
+  }
+
+  // The big finish: the full walkthrough is done.
+  if (reward.walkthroughComplete) {
+    lines.push(
+      `You cleared the entire walkthrough. That is a 500+ diamond payout landing in your wallet, and the whole topic tree is yours now. Go pick the next hard thing.`,
+    );
+  }
+
+  if (reward.spinGranted) {
+    lines.push(
+      `One more thing. You earned a free loot-box spin. Claim it whenever you want a little surprise.`,
+    );
+  }
+
+  return lines;
 }
 
 export default function GuideWalkthrough({ slug }: Props) {
@@ -198,15 +234,11 @@ export default function GuideWalkthrough({ slug }: Props) {
 
       {error && <div className={styles.error}>{error}</div>}
 
-      {reward && (
-        <RewardToast
-          diamonds={reward.diamonds}
-          levelCleared={reward.levelCleared}
-          walkthroughComplete={reward.walkthroughComplete}
-          spinGranted={reward.spinGranted}
-          onDone={() => setReward(null)}
-        />
-      )}
+      <BlueDialogue
+        open={reward !== null}
+        lines={reward ? buildRewardLines(reward) : []}
+        onClose={() => setReward(null)}
+      />
 
       {view === 'tree' && (
         <GuideSkillTree walkthrough={walkthrough} completed={completed} currentSlug={slug} />

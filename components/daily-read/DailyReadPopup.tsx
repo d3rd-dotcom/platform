@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import BlueDialogue, { BlueEmotion } from '@/components/blue-dialogue/BlueDialogue';
+import type { BlueEmotion } from '@/components/blue-dialogue/BlueDialogue';
 import { useSound } from '@/hooks/useSound';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import styles from './DailyReadPopup.module.css';
@@ -113,14 +113,9 @@ export default function DailyReadPopup({ activeWeek, onDismiss, onCta }: DailyRe
         aria-labelledby="daily-read-popup-title"
       >
         <div className={styles.dialogueWrap}>
-          <BlueDialogue
-            key={activeWeek}
-            message={dialogueMessage}
-            emotion={weekDialogue.emotion}
-            variant="overlay"
-            fixedHeight
-            showSkip={false}
-          />
+          <p className={styles.dialogueMessage} data-emotion={weekDialogue.emotion}>
+            {dialogueMessage}
+          </p>
         </div>
 
         <div className={`${styles.header} ${styles.headerVisible}`}>

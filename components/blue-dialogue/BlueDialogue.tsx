@@ -1,274 +1,321 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import Image from 'next/image';
+import { useSound } from '@/hooks/useSound';
+import { useScrollLock } from '@/hooks/useScrollLock';
 import styles from './BlueDialogue.module.css';
 
 export type BlueEmotion = 'happy' | 'confused' | 'sad' | 'pain';
 
-interface BlueDialogueProps {
-  message: string;
+export interface BlueDialogueProps {
+  /** Controls whether the full-screen overlay is mounted + visible. */
+  open: boolean;
+  /** Ordered dialogue lines. The arrow advances through them; the last closes. */
+  lines: string[];
+  /** Emotion tint applied to the torso art (subtle hue shift). */
   emotion?: BlueEmotion;
-  onComplete?: () => void;
-  speed?: number; // Characters per interval (lower = faster)
-  autoStart?: boolean;
-  showSkip?: boolean;
-  onSkip?: () => void;
-  avatarSrc?: string;
-  fixedHeight?: boolean;
-  variant?: 'default' | 'overlay';
+  /** Fired on close (arrow-past-last, ESC, backdrop, or a stub button). */
+  onClose: () => void;
+  /** Milliseconds per typewritten character. */
+  speed?: number;
 }
 
-function getPageCharacterLimit(variant: 'default' | 'overlay', isCompactViewport: boolean): number {
-  if (isCompactViewport) {
-    return variant === 'overlay' ? 135 : 150;
-  }
+/**
+ * Session-scoped history of every line Blue has spoken. Module-level so it
+ * survives remounts within a single browser session (spec requirement).
+ */
+interface HistoryEntry {
+  speaker: 'Blue';
+  text: string;
+}
+const dialogueHistory: HistoryEntry[] = [];
 
-  return variant === 'overlay' ? 220 : 260;
+function pushHistory(text: string) {
+  const trimmed = text.trim();
+  if (!trimmed) return;
+  const last = dialogueHistory[dialogueHistory.length - 1];
+  if (last && last.text === trimmed) return; // de-dupe consecutive repeats
+  dialogueHistory.push({ speaker: 'Blue', text: trimmed });
 }
 
-function paginateMessage(message: string, pageCharacterLimit: number): string[] {
-  const trimmedMessage = message.replace(/\r\n/g, '\n').trim();
-
-  if (!trimmedMessage) {
-    return [''];
-  }
-
-  const paragraphs = trimmedMessage
-    .split(/\n+/)
-    .map((paragraph) => paragraph.trim())
-    .filter(Boolean);
-
-  const pages: string[] = [];
-  let currentPage = '';
-
-  const pushCurrentPage = () => {
-    if (currentPage.trim()) {
-      pages.push(currentPage.trim());
-      currentPage = '';
-    }
-  };
-
-  for (const paragraph of paragraphs) {
-    const words = paragraph.split(/\s+/).filter(Boolean);
-
-    for (const word of words) {
-      const candidate = currentPage ? `${currentPage} ${word}` : word;
-
-      if (candidate.length > pageCharacterLimit && currentPage) {
-        pushCurrentPage();
-        currentPage = word;
-      } else {
-        currentPage = candidate;
-      }
-    }
-
-    if (!currentPage) continue;
-
-    if (currentPage.length + 2 <= pageCharacterLimit) {
-      currentPage = `${currentPage}\n\n`;
-    } else {
-      pushCurrentPage();
-    }
-  }
-
-  pushCurrentPage();
-
-  return pages.length > 0 ? pages : [''];
+function prefersReducedMotion(): boolean {
+  if (typeof window === 'undefined' || !window.matchMedia) return false;
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
+
+const FOCUSABLE =
+  'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
 const BlueDialogue: React.FC<BlueDialogueProps> = ({
-  message,
-  onComplete,
-  speed = 20, // milliseconds per character
-  autoStart = true,
-  showSkip = true,
-  onSkip,
-  fixedHeight = false,
-  variant = 'default',
+  open,
+  lines,
+  emotion = 'happy',
+  onClose,
+  speed = 22,
 }) => {
-  const [isCompactViewport, setIsCompactViewport] = useState(false);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [displayedText, setDisplayedText] = useState('');
+  const { play } = useSound();
+  const overlayRef = useRef<HTMLDivElement | null>(null);
+  const arrowRef = useRef<HTMLButtonElement | null>(null);
+  const typeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const previouslyFocused = useRef<HTMLElement | null>(null);
+
+  const safeLines = useMemo(
+    () => (lines.length > 0 ? lines : ['']),
+    [lines],
+  );
+
+  const [lineIndex, setLineIndex] = useState(0);
+  const [displayed, setDisplayed] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const isCompleteRef = useRef(false);
-  const lastPageKeyRef = useRef<string>('');
+  const [historyOpen, setHistoryOpen] = useState(false);
 
+  const safeIndex = lineIndex >= safeLines.length ? safeLines.length - 1 : lineIndex;
+  const activeLine = safeLines[safeIndex] ?? '';
+
+  useScrollLock(open);
+
+  // Reset to the first line whenever the overlay opens or the script changes.
   useEffect(() => {
-    if (typeof window === 'undefined') {
-      return;
+    if (!open) return;
+    setLineIndex(0);
+    setHistoryOpen(false);
+  }, [open, safeLines]);
+
+  const clearTyping = useCallback(() => {
+    if (typeTimer.current) {
+      clearTimeout(typeTimer.current);
+      typeTimer.current = null;
     }
-
-    const syncViewport = () => {
-      setIsCompactViewport(window.innerWidth <= 768);
-    };
-
-    syncViewport();
-    window.addEventListener('resize', syncViewport);
-
-    return () => {
-      window.removeEventListener('resize', syncViewport);
-    };
   }, []);
 
-  const pageCharacterLimit = getPageCharacterLimit(variant, isCompactViewport);
-  const pages = paginateMessage(message, pageCharacterLimit);
-  const safeCurrentPage = currentPage >= pages.length ? 0 : currentPage;
-  const activePage = pages[safeCurrentPage] ?? '';
-  const pageKey = `${message}::${pageCharacterLimit}::${safeCurrentPage}`;
-  const isOverlayVariant = variant === 'overlay';
-
+  // Typewriter reveal for the active line (instant under reduced-motion).
   useEffect(() => {
-    setCurrentPage(0);
-  }, [message, pageCharacterLimit]);
+    if (!open) return;
+    clearTyping();
 
-  useEffect(() => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-
-    const pageChanged = lastPageKeyRef.current !== pageKey;
-
-    if (pageChanged) {
-      lastPageKeyRef.current = pageKey;
-      isCompleteRef.current = false;
-    }
-
-    if (!autoStart) {
-      if (pageChanged || !isCompleteRef.current) {
-        setDisplayedText('');
-        setIsTyping(false);
-      }
+    if (prefersReducedMotion() || speed <= 0) {
+      setDisplayed(activeLine);
+      setIsTyping(false);
+      pushHistory(activeLine);
       return;
     }
 
-    if (pageChanged || !isCompleteRef.current) {
-      setDisplayedText('');
-      setIsTyping(true);
-      isCompleteRef.current = false;
-
-      let currentIndex = 0;
-
-      const typeNextChar = () => {
-        if (currentIndex < activePage.length) {
-          setDisplayedText(activePage.slice(0, currentIndex + 1));
-          currentIndex++;
-          timeoutRef.current = setTimeout(typeNextChar, speed);
-        } else {
-          setIsTyping(false);
-          isCompleteRef.current = true;
-          if (safeCurrentPage === pages.length - 1 && onComplete) {
-            onComplete();
-          }
-        }
-      };
-
-      timeoutRef.current = setTimeout(typeNextChar, 100);
-    }
-
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
+    setDisplayed('');
+    setIsTyping(true);
+    let i = 0;
+    const step = () => {
+      if (i < activeLine.length) {
+        setDisplayed(activeLine.slice(0, i + 1));
+        i += 1;
+        typeTimer.current = setTimeout(step, speed);
+      } else {
+        setIsTyping(false);
+        pushHistory(activeLine);
       }
     };
-  }, [activePage, autoStart, onComplete, pageKey, pages.length, safeCurrentPage, speed]);
+    typeTimer.current = setTimeout(step, 90);
 
-  const completeCurrentPage = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
+    return clearTyping;
+  }, [open, activeLine, speed, clearTyping]);
 
-    setDisplayedText(activePage);
+  const finishTyping = useCallback(() => {
+    clearTyping();
+    setDisplayed(activeLine);
     setIsTyping(false);
-    isCompleteRef.current = true;
+    pushHistory(activeLine);
+  }, [activeLine, clearTyping]);
 
-    if (safeCurrentPage === pages.length - 1 && onComplete) {
-      onComplete();
-    }
-  };
+  const close = useCallback(() => {
+    play('navigation');
+    onClose();
+  }, [onClose, play]);
 
-  const handleSkip = () => {
-    completeCurrentPage();
-
-    if (onSkip) {
-      onSkip();
-    }
-  };
-
-  const handleNextPage = () => {
+  // Right arrow: advance if more lines remain, otherwise close.
+  const handleAdvance = useCallback(() => {
+    play('click');
     if (isTyping) {
-      completeCurrentPage();
+      finishTyping();
       return;
     }
-
-    if (safeCurrentPage < pages.length - 1) {
-      setCurrentPage((page) => page + 1);
+    if (safeIndex < safeLines.length - 1) {
+      setLineIndex((n) => n + 1);
+    } else {
+      close();
     }
-  };
+  }, [play, isTyping, finishTyping, safeIndex, safeLines.length, close]);
 
-  const handlePreviousPage = () => {
-    if (isTyping || safeCurrentPage === 0) {
-      return;
+  // SKIP: jump the typewriter to full; if already full, close.
+  const handleSkip = useCallback(() => {
+    play('click');
+    if (isTyping) {
+      finishTyping();
+    } else {
+      close();
     }
+  }, [play, isTyping, finishTyping, close]);
 
-    setCurrentPage((page) => page - 1);
-  };
+  const handleHistory = useCallback(() => {
+    play('click');
+    setHistoryOpen((v) => !v);
+  }, [play]);
+
+  const handleStubClose = useCallback(() => {
+    // SAVE / LOAD / SETTINGS are stubs for now.
+    play('click');
+    onClose();
+  }, [play, onClose]);
+
+  // ESC closes; focus trap keeps Tab inside the dialog.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        close();
+        return;
+      }
+      if (e.key === 'Tab' && overlayRef.current) {
+        const nodes = Array.from(
+          overlayRef.current.querySelectorAll<HTMLElement>(FOCUSABLE),
+        ).filter((el) => !el.hasAttribute('disabled'));
+        if (nodes.length === 0) return;
+        const first = nodes[0];
+        const last = nodes[nodes.length - 1];
+        const active = document.activeElement as HTMLElement | null;
+        if (e.shiftKey && active === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && active === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open, close]);
+
+  // Focus management: capture, focus the arrow on open, restore on close.
+  useEffect(() => {
+    if (!open) return;
+    previouslyFocused.current = document.activeElement as HTMLElement | null;
+    const t = setTimeout(() => arrowRef.current?.focus(), 30);
+    return () => {
+      clearTimeout(t);
+      previouslyFocused.current?.focus?.();
+    };
+  }, [open]);
+
+  if (!open) return null;
+
+  const hover = () => play('soft-hover');
+
+  const menuItems: { label: string; onClick: () => void }[] = [
+    { label: 'History', onClick: handleHistory },
+    { label: 'Skip', onClick: handleSkip },
+    { label: 'Save', onClick: handleStubClose }, // TODO: real save-state
+    { label: 'Load', onClick: handleStubClose }, // TODO: real load-state
+    { label: 'Settings', onClick: handleStubClose }, // TODO: real settings panel
+  ];
 
   return (
-    <div className={`${styles.container} ${isOverlayVariant ? styles.containerOverlay : ''}`}>
-      <div
-        className={`${styles.dialogueContent} ${fixedHeight ? styles.dialogueContentFixed : ''} ${isOverlayVariant ? styles.dialogueContentOverlay : ''}`}
-      >
-        <div className={styles.screenHeader}>
-          <div className={styles.screenBadge}>Blue Terminal</div>
-          <div className={styles.pageStatus}>
-            {safeCurrentPage + 1}/{pages.length}
-          </div>
+    <div
+      ref={overlayRef}
+      className={styles.overlay}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Blue dialogue"
+      onMouseDown={(e) => {
+        // Backdrop click (not a click bubbling up from the panel) closes.
+        if (e.target === e.currentTarget) close();
+      }}
+    >
+      <div className={styles.stage}>
+        <div className={`${styles.torso} ${styles[`emotion_${emotion}`] ?? ''}`}>
+          <Image
+            src="/images/blue-fullbody.png"
+            alt="Blue"
+            width={861}
+            height={1543}
+            priority
+            className={styles.torsoImage}
+          />
         </div>
 
-        <div
-          className={`${styles.viewport} ${isOverlayVariant ? styles.viewportOverlay : ''}`}
-        >
-          <div
-            className={`${styles.message} ${fixedHeight ? styles.messageFixed : ''} ${isOverlayVariant ? styles.messageOverlay : ''}`}
-          >
-            {displayedText}
-            {isTyping && <span className={styles.cursor}>|</span>}
+        <div className={styles.bottom}>
+          <div className={styles.nameCard}>
+            <span className={styles.nameText}>Blue</span>
           </div>
-        </div>
 
-        <div className={styles.controls}>
-          <div className={styles.controlsLeft}>
-            {showSkip && isTyping && (
-              <button className={styles.skipButton} onClick={handleSkip} type="button">
-                Skip
-              </button>
+          <div className={styles.box}>
+            <p className={styles.text} aria-live="polite">
+              <span className={styles.quote} aria-hidden="true">
+                &ldquo;
+              </span>
+              {displayed}
+              {isTyping && <span className={styles.cursor} aria-hidden="true" />}
+              {!isTyping && (
+                <span className={styles.quote} aria-hidden="true">
+                  &rdquo;
+                </span>
+              )}
+            </p>
+
+            {historyOpen && (
+              <div className={styles.historyPanel}>
+                <div className={styles.historyHead}>History</div>
+                <ul className={styles.historyList}>
+                  {dialogueHistory.length === 0 && (
+                    <li className={styles.historyEmpty}>No lines yet this session.</li>
+                  )}
+                  {dialogueHistory.map((entry, idx) => (
+                    <li key={idx} className={styles.historyItem}>
+                      <span className={styles.historySpeaker}>{entry.speaker}</span>
+                      <span className={styles.historyLine}>{entry.text}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
-          </div>
 
-          {pages.length > 1 && (
-            <div className={styles.pager}>
+            <div className={styles.menuRow}>
+              <div className={styles.menuItems}>
+                {menuItems.map((item) => (
+                  <button
+                    key={item.label}
+                    type="button"
+                    className={styles.menuButton}
+                    onClick={item.onClick}
+                    onMouseEnter={hover}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
               <button
-                className={styles.pageButton}
-                onClick={handlePreviousPage}
+                ref={arrowRef}
                 type="button"
-                disabled={isTyping || safeCurrentPage === 0}
+                className={styles.arrow}
+                onClick={handleAdvance}
+                onMouseEnter={hover}
+                aria-label={
+                  safeIndex < safeLines.length - 1 ? 'Next line' : 'Close dialogue'
+                }
               >
-                &lt;
-              </button>
-              <button
-                className={styles.pageButton}
-                onClick={handleNextPage}
-                type="button"
-                disabled={!isTyping && safeCurrentPage === pages.length - 1}
-              >
-                &gt;
+                <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+                  <path
+                    d="M9 5l7 7-7 7"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
               </button>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>

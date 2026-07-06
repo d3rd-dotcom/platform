@@ -1,259 +1,377 @@
-/* BlueDialogue - Fixed-screen terminal dialogue module */
+/* BlueDialogue — full-screen visual-novel overlay.
+ *
+ * Self-contained: the backdrop is a hard-coded dim indigo constant so the
+ * overlay reads identically under any [data-theme]. Colors inside the panel
+ * are spec-fixed (#11055F text, white box) rather than theme tokens, except
+ * the primary border which correctly follows --color-primary.
+ */
 
-.container {
-  width: 100%;
-  max-width: 100%;
-  padding: 0;
-}
-
-.containerOverlay {
-  width: 100%;
-}
-
-.dialogueContent {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: 14px;
-  width: 100%;
-  min-height: 252px;
-  height: 252px;
-  padding: 18px;
-  border-radius: 24px;
-  border: 1px solid rgba(141, 160, 255, 0.58);
-  background:
-    linear-gradient(180deg, rgba(243, 247, 255, 0.98) 0%, rgba(222, 230, 255, 0.98) 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.94),
-    0 18px 44px rgba(66, 83, 160, 0.14);
-}
-
-.dialogueContentOverlay {
-  min-height: 238px;
-  height: 238px;
-  padding: 16px;
-  border-radius: 24px;
-  border-color: rgba(154, 173, 255, 0.62);
-  background:
-    linear-gradient(180deg, rgba(246, 249, 255, 0.99) 0%, rgba(229, 236, 255, 0.98) 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.94),
-    0 18px 42px rgba(71, 87, 157, 0.12);
-}
-
-.dialogueContentFixed {
-  min-height: 252px;
-  height: 252px;
-}
-
-.screenHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  min-height: 30px;
-}
-
-.screenBadge,
-.pageStatus {
-  display: inline-flex;
-  align-items: center;
-  min-height: 28px;
-  padding: 0 10px;
-  border-radius: 10px;
-  border: 1px solid rgba(122, 141, 227, 0.28);
-  background: rgba(255, 255, 255, 0.55);
-  color: rgba(72, 88, 152, 0.94);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.pageStatus {
-  min-width: 58px;
-  justify-content: center;
-}
-
-.viewport {
-  position: relative;
-  min-height: 0;
-  height: 100%;
-  padding: 16px 18px;
-  border-radius: 18px;
-  border: 1px solid rgba(124, 143, 231, 0.22);
-  background:
-    linear-gradient(180deg, rgba(251, 253, 255, 0.96) 0%, rgba(237, 243, 255, 0.96) 100%);
-  overflow: hidden;
-}
-
-.viewport::after {
-  content: '';
-  position: absolute;
+.overlay {
+  position: fixed;
   inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  /* 1. Backdrop: solid dim indigo, no blur. */
+  background: rgba(30, 25, 87, 0.85);
+  overscroll-behavior: contain;
+  animation: overlayIn 0.18s ease-out;
+}
+
+@keyframes overlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.stage {
+  position: relative;
+  width: 100%;
+  max-width: 1504px;
+  height: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* 2. Torso: Blue art anchored so the dialogue box overlaps her lower third.
+ * Mirrored per the Figma transform (scaleX(-1)). */
+.torso {
+  position: absolute;
+  left: 50%;
+  bottom: 210px; /* lifts her so the box crosses her lower third */
+  transform: translateX(-50%) scaleX(-1);
+  height: clamp(320px, 60vh, 530px);
   pointer-events: none;
-  background:
-    repeating-linear-gradient(
-      180deg,
-      rgba(109, 130, 228, 0.05) 0,
-      rgba(109, 130, 228, 0.05) 1px,
-      transparent 1px,
-      transparent 20px
-    );
+  user-select: none;
+  filter: drop-shadow(0 12px 30px rgba(10, 8, 40, 0.45));
 }
 
-.viewportOverlay {
-  padding: 15px 16px;
+.torsoImage {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
 }
 
-.message {
+/* Subtle emotion tints on the torso. */
+.emotion_happy {
+}
+.emotion_confused {
+  filter: drop-shadow(0 12px 30px rgba(10, 8, 40, 0.45)) hue-rotate(-8deg)
+    saturate(1.05);
+}
+.emotion_sad {
+  filter: drop-shadow(0 12px 30px rgba(10, 8, 40, 0.45)) hue-rotate(12deg)
+    saturate(0.88) brightness(0.96);
+}
+.emotion_pain {
+  filter: drop-shadow(0 12px 30px rgba(10, 8, 40, 0.45)) hue-rotate(-18deg)
+    saturate(1.1) brightness(0.97);
+}
+
+/* 3. Bottom block — anchored to the viewport bottom, full width. */
+.bottom {
   position: relative;
   z-index: 1;
-  height: 100%;
+  width: 100%;
+  padding: 0 24px 24px;
+  box-sizing: border-box;
+}
+
+/* Name card: 215x69 tab overlapping the box top-left. */
+.nameCard {
+  position: relative;
+  z-index: 2;
+  width: 215px;
+  height: 69px;
+  margin: 0 0 -14px 88px; /* pull down to overlap the box top edge */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #dad6e5 0%, #ffffff 100%);
+  border: 3px solid var(--color-primary);
+  border-bottom: none;
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 -3px 14px rgba(0, 0, 0, 0.18);
+}
+
+.nameText {
+  font-family: var(--font-departure-mono), 'Departure Mono', monospace;
+  font-size: 1.75rem;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  /* Solid primary fallback first; the gradient-clip layers on top. */
+  color: var(--color-primary);
+  -webkit-text-stroke: 2px var(--color-primary);
+  background: linear-gradient(180deg, #ffffff 0%, #e9ecff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding-bottom: 2px;
+}
+
+/* Dialogue box. */
+.box {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-height: 313px;
+  box-sizing: border-box;
+  padding: 29px 142px;
+  border-radius: 36px;
+  border: 5px solid var(--color-primary);
+  box-shadow: 0 0 16.8px rgba(0, 0, 0, 0.55);
+  /* Faint wavy moire "paper ripple": layered repeating-radial-gradients on
+   * white, ~20% strength. Two offset ring systems interfere to make a gentle
+   * moire, not noise. */
+  background-color: #ffffff;
+  background-image: repeating-radial-gradient(
+      circle at 18% 30%,
+      rgba(81, 104, 255, 0.05) 0,
+      rgba(81, 104, 255, 0.05) 1.5px,
+      transparent 1.5px,
+      transparent 11px
+    ),
+    repeating-radial-gradient(
+      circle at 82% 74%,
+      rgba(81, 104, 255, 0.045) 0,
+      rgba(81, 104, 255, 0.045) 1.5px,
+      transparent 1.5px,
+      transparent 13px
+    ),
+    repeating-radial-gradient(
+      circle at 50% 120%,
+      rgba(53, 26, 119, 0.03) 0,
+      rgba(53, 26, 119, 0.03) 1px,
+      transparent 1px,
+      transparent 17px
+    );
+  display: flex;
+  flex-direction: column;
+}
+
+/* Dialogue text. */
+.text {
+  position: relative;
+  z-index: 1;
+  flex: 1;
   margin: 0;
-  font-family: var(--font-mono);
-  font-weight: 400;
-  font-size: 14px;
+  font-family: var(--font-departure-mono), 'Departure Mono', monospace;
+  font-size: clamp(1.05rem, 1rem + 0.5vw, 1.375rem);
   line-height: 1.55;
-  letter-spacing: 0.01em;
-  color: rgba(60, 71, 118, 0.98);
+  color: #11055f;
   white-space: pre-wrap;
   word-break: break-word;
-  overflow: hidden;
 }
 
-.messageOverlay {
-  font-size: 13px;
-  line-height: 1.58;
-  color: rgba(61, 71, 114, 0.98);
-}
-
-.messageFixed {
-  height: 100%;
+.quote {
+  color: #11055f;
+  opacity: 0.85;
 }
 
 .cursor {
   display: inline-block;
-  width: 2px;
+  width: 3px;
   height: 1.05em;
-  margin-left: 2px;
-  background-color: rgba(86, 104, 220, 0.92);
-  animation: blink 0.8s infinite;
-  vertical-align: baseline;
+  margin-left: 3px;
+  background: var(--color-primary);
+  vertical-align: text-bottom;
+  animation: blink 0.85s steps(1) infinite;
 }
 
 @keyframes blink {
-  0%, 50% {
+  0%,
+  50% {
     opacity: 1;
   }
-  51%, 100% {
+  51%,
+  100% {
     opacity: 0;
   }
 }
 
-.controls {
+/* Menu row at the box bottom. */
+.menuRow {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  min-height: 42px;
+  gap: 16px;
+  margin-top: 22px;
 }
 
-.controlsLeft {
+.menuItems {
   display: flex;
   align-items: center;
-  gap: 10px;
-  min-width: 0;
+  gap: clamp(14px, 3vw, 40px);
+  flex-wrap: wrap;
 }
 
-.pager {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-left: auto;
+.menuButton {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-departure-mono), 'Departure Mono', monospace;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #341a77;
+  transition: color 0.14s ease;
 }
 
-.skipButton,
-.pageButton,
-.startButton {
+.menuButton:hover,
+.menuButton:focus-visible {
+  color: var(--color-primary);
+  outline: none;
+}
+
+.arrow {
+  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 34px;
-  padding: 0 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(112, 130, 224, 0.24);
-  background: rgba(255, 255, 255, 0.54);
-  color: rgba(60, 74, 138, 0.96);
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--color-primary);
+  border-radius: 50%;
+  background: #ffffff;
+  color: var(--color-primary);
   cursor: pointer;
-  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+  transition: transform 0.14s ease, background-color 0.14s ease,
+    color 0.14s ease;
 }
 
-.skipButton:hover,
-.pageButton:hover,
-.startButton:hover {
-  transform: translateY(-1px);
-  background: rgba(112, 130, 224, 0.12);
-  border-color: rgba(112, 130, 224, 0.34);
+.arrow:hover,
+.arrow:focus-visible {
+  background: var(--color-primary);
+  color: #ffffff;
+  transform: translateX(2px);
+  outline: none;
 }
 
-.pageButton {
-  min-width: 34px;
+/* In-overlay history panel. */
+.historyPanel {
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
+  top: 5px;
+  z-index: 3;
+  padding: 24px 32px;
+  border-radius: 31px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: inset 0 0 0 1px rgba(81, 104, 255, 0.2);
+  overflow-y: auto;
+}
+
+.historyHead {
+  font-family: var(--font-departure-mono), 'Departure Mono', monospace;
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: 14px;
+}
+
+.historyList {
+  list-style: none;
+  margin: 0;
   padding: 0;
-  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.pageButton:disabled {
-  opacity: 0.4;
-  cursor: default;
-  transform: none;
+.historyItem {
+  display: flex;
+  gap: 10px;
+  font-family: var(--font-departure-mono), 'Departure Mono', monospace;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #11055f;
 }
 
+.historySpeaker {
+  flex-shrink: 0;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.historyLine {
+  color: #341a77;
+}
+
+.historyEmpty {
+  font-family: var(--font-departure-mono), 'Departure Mono', monospace;
+  font-size: 0.9rem;
+  color: #6a63a0;
+}
+
+/* Mobile clamp-down. */
 @media (max-width: 768px) {
-  .dialogueContent,
-  .dialogueContentOverlay {
-    width: 100%;
-    min-height: 222px;
-    height: 222px;
-    padding: 14px;
-    border-radius: 20px;
+  .overlay {
+    align-items: flex-end;
   }
 
-  .dialogueContentFixed {
-    min-height: 222px;
-    height: 222px;
+  .torso {
+    bottom: 180px;
+    height: clamp(240px, 42vh, 360px);
   }
 
-  .screenHeader {
-    min-height: 28px;
+  .bottom {
+    padding: 0 12px 12px;
   }
 
-  .screenBadge,
-  .pageStatus {
-    min-height: 24px;
-    padding: 0 8px;
-    font-size: 9px;
+  .box {
+    min-height: 0;
+    padding: 20px 24px;
+    border-radius: 26px;
+    border-width: 4px;
   }
 
-  .message {
-    font-size: 12px;
-    line-height: 1.5;
+  .nameCard {
+    width: 150px;
+    height: 52px;
+    margin-left: 24px;
+    margin-bottom: -10px;
   }
 
-  .messageOverlay {
-    font-size: 12px;
+  .nameText {
+    font-size: 1.35rem;
   }
 
-  .viewport,
-  .viewportOverlay {
-    padding: 12px 13px;
+  .menuRow {
+    margin-top: 16px;
   }
 
-  .controls {
-    min-height: 36px;
+  .menuItems {
+    gap: 12px;
+  }
+
+  .menuButton {
+    font-size: 0.8rem;
+    letter-spacing: 0.03em;
+  }
+
+  .historyPanel {
+    border-radius: 22px;
+    padding: 18px 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay {
+    animation: none;
+  }
+  .cursor {
+    animation: none;
   }
 }

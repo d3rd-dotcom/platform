@@ -11,8 +11,6 @@ interface OnboardingTourProps {
 
 const OnboardingTour: React.FC<OnboardingTourProps> = ({ isBlocked = false }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
-  const [isTyping, setIsTyping] = useState(true);
 
   const messages: Array<{ message: string; emotion: BlueEmotion }> = [
     {
@@ -57,58 +55,18 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ isBlocked = false }) =>
     }
   }, [isBlocked, isOpen]);
 
-  const handleMessageComplete = () => {
-    setIsTyping(false);
-    
-    // Move to next message after a short delay
-    if (currentMessageIndex < messages.length - 1) {
-      setTimeout(() => {
-        setCurrentMessageIndex(currentMessageIndex + 1);
-        setIsTyping(true);
-      }, 1500);
-    }
-  };
-
   const handleClose = () => {
     setIsOpen(false);
     setStorageItem('hasSeenOnboardingTour', 'true');
   };
 
-  if (!isOpen) return null;
-
-  const currentMessage = messages[currentMessageIndex];
-
   return (
-    <div className={styles.overlay} onClick={handleClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button className={styles.closeButton} onClick={handleClose} type="button" aria-label="Close">
-          ×
-        </button>
-        <div className={styles.content}>
-          <BlueDialogue
-            key={currentMessageIndex}
-            message={currentMessage.message}
-            emotion={currentMessage.emotion}
-            onComplete={handleMessageComplete}
-            autoStart={isTyping}
-            showSkip={true}
-            onSkip={() => {
-              if (currentMessageIndex < messages.length - 1) {
-                setCurrentMessageIndex(currentMessageIndex + 1);
-                setIsTyping(true);
-              } else {
-                handleClose();
-              }
-            }}
-          />
-          {!isTyping && currentMessageIndex === messages.length - 1 && (
-            <button className={styles.doneButton} onClick={handleClose} type="button">
-              Got it!
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
+    <BlueDialogue
+      open={isOpen}
+      lines={messages.map((m) => m.message)}
+      emotion={messages[0]?.emotion}
+      onClose={handleClose}
+    />
   );
 };
 
