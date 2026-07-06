@@ -10,6 +10,10 @@ interface BlueChatBubbleProps {
   message: string;
   className?: string;
   variant?: 'default' | 'featured' | 'compact';
+  avatarSrc?: string;
+  avatarWidth?: number;
+  avatarHeight?: number;
+  pixelatedAvatar?: boolean;
   /** Optional eyebrow context shown after the name, e.g. "Review" -> "Blue · Review". */
   context?: string;
   ariaLive?: 'off' | 'polite' | 'assertive';
@@ -22,6 +26,10 @@ export default function BlueChatBubble({
   message,
   className = '',
   variant = 'default',
+  avatarSrc = BLUE_AVATAR_SRC,
+  avatarWidth = 72,
+  avatarHeight = 48,
+  pixelatedAvatar = false,
   context,
   ariaLive = 'off',
   stackOnMobile = false,
@@ -40,8 +48,8 @@ export default function BlueChatBubble({
       aria-live={ariaLive}
     >
       <div className={styles.avatarColumn}>
-        <div className={styles.avatar}>
-          <Image src={BLUE_AVATAR_SRC} alt="Blue" width={72} height={48} unoptimized />
+        <div className={`${styles.avatar} ${pixelatedAvatar ? styles.pixelatedAvatar : ''}`}>
+          <Image src={avatarSrc} alt="Blue" width={avatarWidth} height={avatarHeight} unoptimized />
         </div>
         <span className={styles.sender}>
           Blue{context ? <span className={styles.context}> · {context}</span> : null}
