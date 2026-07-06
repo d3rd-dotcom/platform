@@ -103,10 +103,12 @@ family as the reference `DistributionEngine`), reward token cbBTC.
 
 ## 2. Enemy contact one — the 200x priority tip
 
-**Cause (verified in this repo's history):** fee estimators on some Base RPCs return
-`maxPriorityFeePerGas` around 0.2 gwei and up while Base actually includes at ~0.001 gwei —
-a ~200x overpay on the tip, which dominates cost when the base fee is tiny. A 4–5M gas
-deploy is where it actually bites; this is why `baseFeeOverrides()` exists.
+**Cause (verified — this already hit us on 2026-07-02):** default fee logic overpays the
+tip on Base by ~200x. The recorded incident: ethers v5's default 1.5 gwei priority tip vs
+Base's going rate of ~0.001–0.01 gwei drained Blue's gas in just 4 payouts; some RPC
+estimators do the same via `eth_maxPriorityFeePerGas`. The tip dominates cost when the
+base fee is tiny, and a 4–5M gas deploy is where it bites hardest — this is exactly why
+`baseFeeOverrides()` exists.
 
 **Counter:** never let an RPC choose the tip. Every broadcast in this op pins gas.
 
@@ -358,7 +360,7 @@ DEX buys and sells carry a fee capped in the contract at 2% (launching at 1%) th
 the reflection pool. Wallet-to-wallet transfers and everything you do in the app are
 always fee-free.
 
-**Trust, verifiable on-chain.** Source code verified; the fee ceiling is a constant; there
+**Trust, verifiable onchain.** Source code verified; the fee ceiling is a constant; there
 is no blacklist, no trading switch, and no way for anyone to burn your tokens without your
 signature. Minting is owner-only and permanently self-destructs when Blue renounces
-ownership — the supply-finalization switch, on-chain for anyone to check.
+ownership — the supply-finalization switch, onchain for anyone to check.
