@@ -113,6 +113,10 @@ export default function BlueGuideCompanion({ guide, prereqs }: BlueGuideCompanio
         message={message}
         variant="compact"
         context="Guide"
+        avatarSrc="/images/blue-guide-sprites/standing-front.png"
+        avatarWidth={68}
+        avatarHeight={68}
+        pixelatedAvatar
         ariaLive="polite"
         stackOnMobile
       />
