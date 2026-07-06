@@ -331,17 +331,6 @@ export default function CoursesPage() {
           </div>
         ))}
 
-        {authenticated && isVip && (
-          <Link href="/course-builder" className={styles.createCourseBtn}>
-            <span className={styles.createCourseIcon}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 5v14M5 12h14" />
-              </svg>
-            </span>
-            <span className={styles.createCourseLabel}>Create Course</span>
-          </Link>
-        )}
-
         {academyCourses.length > 0 && (
           <section className={styles.authoredSection}>
             <h2 className={styles.authoredHeading}>Academy courses</h2>

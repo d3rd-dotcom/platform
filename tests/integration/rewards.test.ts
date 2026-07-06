@@ -194,7 +194,7 @@ describe.skipIf(!TEST_DB_URL)('guide rewards (integration)', () => {
     await pool.query(`SET search_path TO ${SCHEMA}, public`);
     await pool.query(`CREATE EXTENSION IF NOT EXISTS "pgcrypto"`);
     await pool.query(PREREQ_SQL);
-    const migration = readFileSync(resolve(__dirname, '../../db/migration-guides.sql'), 'utf8');
+    const migration = readFileSync(resolve(__dirname, '../../supabase/migrations/20260705090000_guides_dag.sql'), 'utf8');
     await pool.query(migration);
     await pool.query(CLAIMS_SQL);
     await pool.query(`SET search_path TO ${SCHEMA}, public`);

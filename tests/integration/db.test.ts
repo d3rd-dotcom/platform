@@ -110,7 +110,7 @@ describe.skipIf(!TEST_DB_URL)('guide DAG schema (integration)', () => {
     await pool.query(PREREQ_SQL);
 
     const migration = readFileSync(
-      resolve(__dirname, '../../db/migration-guides.sql'),
+      resolve(__dirname, '../../supabase/migrations/20260705090000_guides_dag.sql'),
       'utf8',
     );
     await pool.query(migration);

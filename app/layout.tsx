@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import type { CSSProperties, ReactNode } from 'react';
-import { Poppins, Space_Grotesk, Inter, Patrick_Hand } from 'next/font/google';
+import { Poppins, Space_Grotesk, Inter, Patrick_Hand, Instrument_Serif } from 'next/font/google';
 import localFont from 'next/font/local';
 import '@/styles/globals.css';
 import { RouteShell } from '@/components/layout/RouteShell';
@@ -30,6 +30,17 @@ const patrickHand = Patrick_Hand({
   subsets: ['latin'],
   weight: ['400'],
   variable: '--font-patrick-hand',
+  display: 'swap',
+});
+
+/* Editorial serif for long-form guide headings. Instrument Serif is the
+   free stand-in for PP Editorial New; swap the source here once the
+   licensed PP files land in app/fonts/. */
+const editorialSerif = Instrument_Serif({
+  subsets: ['latin'],
+  weight: '400',
+  style: ['normal', 'italic'],
+  variable: '--font-editorial',
   display: 'swap',
 });
 
@@ -113,7 +124,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${poppins.variable} ${spaceGrotesk.variable} ${patrickHand.variable} ${departureMono.variable}`}
+      className={`${inter.variable} ${poppins.variable} ${spaceGrotesk.variable} ${patrickHand.variable} ${departureMono.variable} ${editorialSerif.variable}`}
       data-sidebar-collapsed="false"
       style={{ '--sidebar-width': '265px' } as CSSProperties}
       suppressHydrationWarning

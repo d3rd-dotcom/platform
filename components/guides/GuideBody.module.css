@@ -11,9 +11,10 @@
 }
 
 .blockTitle {
-  font-family: var(--font-secondary);
-  font-size: var(--font-size-lg, 1.125rem);
-  font-weight: var(--font-weight-semibold, 600);
+  font-family: var(--font-editorial), 'PP Editorial New', Georgia, serif;
+  font-size: 1.75rem;
+  font-weight: var(--font-weight-regular, 400);
+  line-height: 1.2;
   color: var(--color-text-dark);
   margin: 0;
 }
@@ -31,21 +32,21 @@
    Doubled .body.body selector outranks the renderer's own class rules
    without !important. Element-level overrides only inside guide bodies. */
 .body.body p {
-  font-family: var(--font-inter), 'Inter', sans-serif;
-  font-size: 1.0625rem;
-  line-height: 1.7;
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 1.125rem;
+  line-height: 1.75;
   letter-spacing: 0.002em;
   color: var(--color-text-dark);
-  margin: 0 0 1.05em;
-  max-width: 68ch;
+  margin: 0 0 1.1em;
+  max-width: 70ch;
 }
 
 .body.body li {
-  font-family: var(--font-inter), 'Inter', sans-serif;
-  font-size: 1.0625rem;
-  line-height: 1.65;
-  margin: 0 0 0.4em;
-  max-width: 64ch;
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 1.125rem;
+  line-height: 1.7;
+  margin: 0 0 0.45em;
+  max-width: 66ch;
 }
 
 .body.body ul,
@@ -58,9 +59,28 @@
 .body.body h2,
 .body.body h3,
 .body.body h4 {
-  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
-  line-height: 1.25;
-  margin: 1.4em 0 0.45em;
+  font-family: var(--font-editorial), 'PP Editorial New', Georgia, serif;
+  font-weight: var(--font-weight-regular, 400);
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  color: var(--color-text-dark);
+  margin: 1.5em 0 0.5em;
+}
+
+.body.body h1 {
+  font-size: 2rem;
+}
+
+.body.body h2 {
+  font-size: 1.75rem;
+}
+
+.body.body h3 {
+  font-size: 1.5rem;
+}
+
+.body.body h4 {
+  font-size: 1.25rem;
 }
 
 .body.body h1:first-child,

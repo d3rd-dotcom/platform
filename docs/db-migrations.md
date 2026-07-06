@@ -33,14 +33,18 @@ guide-system SQL out of `db/` into timestamped files, in dependency order:
 | `20260705090300_guide_materials.sql`         | `db/migration-guide-materials.sql`    |
 | `20260705090400_verifier_tests.sql`          | `db/migration-verifier-tests.sql`     |
 | `20260705090500_guide_rewards.sql`           | `db/migration-guide-rewards.sql`      |
+| `20260705090600_guide_rls_policies.sql`      | `db/migration-rls-policies.sql`       |
 
 `supabase/seed.sql` is a verbatim copy of `db/seed-guides.sql`.
 
-> **RLS policies:** there is no `db/migration-rls-policies.sql` in this repo, so
-> no such migration was created. RLS is *enabled* on the guide tables inside
-> `20260705090000_guides_dag.sql` and its siblings (locked down, no policies —
-> matching the repo convention). If dedicated policy SQL is written later, add it
-> as a new migration (see below).
+> **RLS policies:** lifted as migration `20260705090600_guide_rls_policies.sql`. This
+> is a **genuinely new migration** — the RLS policies it defines are **not yet
+> applied** to production. The six earlier guide migrations only *enable* RLS with
+> zero policies (locked down — matching the repo convention at the time). The new
+> migration adds real per-table policies scoped to an `app_service` role
+> (NOBYPASSRLS). It is safe to apply at any time: `postgres` continues to bypass
+> RLS until the app connection is migrated. Push it to production via
+> `supabase db push` after baselining the first six.
 
 All lifted migrations are idempotent (`CREATE ... IF NOT EXISTS`,
 `DROP TRIGGER IF EXISTS` before `CREATE TRIGGER`, `ADD COLUMN IF NOT EXISTS`), so
@@ -154,8 +158,9 @@ supabase migration repair --status applied \
 ```
 
 After this, `supabase migration list` should show these six as applied both
-locally and remotely, and `supabase db push` will be a no-op until you add a
-genuinely new migration.
+locally and remotely, and `supabase db push` will apply only genuinely new
+migrations (including `20260705090600_guide_rls_policies.sql`, which is NOT
+included in the repair because it has never been run on production).
 
 ### Step 3 (optional) — capture the rest of the pre-existing schema
 
@@ -195,10 +200,16 @@ ones lifted into `supabase/migrations/`:
   `migration-verifier-tests.sql`, `migration-guide-rewards.sql`
 - `seed-guides.sql` (lifted into `supabase/seed.sql`)
 
+One additional `db/` file has been lifted as a **new** migration (not yet applied
+to production):
+
+- `migration-rls-policies.sql` → `20260705090600_guide_rls_policies.sql`
+
 The remaining `db/` files (`schema.sql`, `migration-proposals.sql`,
-`migration-events.sql`, `migration-membership-orders.sql`, the various
-`*-rls*.sql`, rename/cleanup scripts, etc.) also represent live production state
-but have **not** been lifted into migrations. Capture them via `supabase db pull`
+`migration-events.sql`, `migration-membership-orders.sql`,
+`migration-enable-rls.sql`, `migration-enable-rls-all-tables.sql`,
+rename/cleanup scripts, etc.) also represent live production state but have
+**not** been lifted into migrations. Capture them via `supabase db pull`
 (Step 3 above) if and when you want them under CLI management.
 
 **Rule going forward:** treat `db/` as read-only history. Every new change is a

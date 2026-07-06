@@ -15,6 +15,7 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     include: ['tests/**/*.test.ts'],
+    globalSetup: ['tests/integration/setup.ts'],
     // Integration tests open a real pg pool; give them room and run serially so
     // fixtures in a shared schema never race each other.
     testTimeout: 30000,
