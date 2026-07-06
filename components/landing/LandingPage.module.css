@@ -1084,7 +1084,9 @@
     width: 100%;
     max-width: none;
     margin: 0;
-    padding: 122px 0 0 var(--landing-shell-padding);
+    /* Container pulls itself up 72px (margin-top: -72px on .container);
+       mobile needs that added back so the headline clears the fixed header. */
+    padding: 194px 0 0 var(--landing-shell-padding);
     gap: 28px;
     overflow: visible;
   }
@@ -1225,7 +1227,7 @@
     width: 100%;
     max-width: none;
     margin: 0;
-    padding: 108px 0 0 var(--landing-shell-padding);
+    padding: 180px 0 0 var(--landing-shell-padding);
     gap: 12px;
   }
 
