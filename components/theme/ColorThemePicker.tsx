@@ -6,14 +6,14 @@ import { useTheme, COLOR_THEMES } from '@/components/theme/ThemeProvider';
 import styles from './ColorThemePicker.module.css';
 
 /**
- * Accent-colour picker. Sits beside the light/dark toggle and lets users tint
- * the whole UI with a calmer palette — an accessibility option for
- * light-sensitive and neurodivergent users. The lightness (light/dark) and
- * hue (this picker) axes are independent.
+ * Colour theme popover. Holds both the light/dark switch and the accent-hue
+ * picker, which lets users tint the whole UI with a calmer palette — an
+ * accessibility option for light-sensitive and neurodivergent users. The
+ * lightness (light/dark) and hue (colour theme) axes are independent.
  */
 const ColorThemePicker: React.FC = () => {
   const { play } = useSound();
-  const { colorTheme, setColorTheme } = useTheme();
+  const { theme, toggleTheme, colorTheme, setColorTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
 
@@ -49,7 +49,7 @@ const ColorThemePicker: React.FC = () => {
         onMouseEnter={() => play('hover')}
         aria-haspopup="true"
         aria-expanded={open}
-        aria-label={`Colour theme: ${activeLabel}. Change colour theme`}
+        aria-label={`Appearance: ${theme} mode, ${activeLabel} colour theme. Change appearance`}
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" />
@@ -62,6 +62,40 @@ const ColorThemePicker: React.FC = () => {
 
       {open && (
         <div className={styles.popover} role="menu" aria-label="Colour themes">
+          <p className={styles.heading}>Appearance</p>
+          <div className={styles.modeRow} role="radiogroup" aria-label="Light or dark mode">
+            <button
+              type="button"
+              role="radio"
+              aria-checked={theme === 'light'}
+              className={`${styles.modeBtn} ${theme === 'light' ? styles.modeActive : ''}`}
+              onClick={() => {
+                if (theme !== 'light') {
+                  play('toggle-on');
+                  toggleTheme();
+                }
+              }}
+              onMouseEnter={() => play('hover')}
+            >
+              Light
+            </button>
+            <button
+              type="button"
+              role="radio"
+              aria-checked={theme === 'dark'}
+              className={`${styles.modeBtn} ${theme === 'dark' ? styles.modeActive : ''}`}
+              onClick={() => {
+                if (theme !== 'dark') {
+                  play('toggle-on');
+                  toggleTheme();
+                }
+              }}
+              onMouseEnter={() => play('hover')}
+            >
+              Dark
+            </button>
+          </div>
+
           <p className={styles.heading}>Colour theme</p>
           <div className={styles.grid}>
             {COLOR_THEMES.map((c) => {

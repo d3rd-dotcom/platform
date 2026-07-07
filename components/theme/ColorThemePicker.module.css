@@ -59,6 +59,34 @@
   color: var(--color-text-muted);
 }
 
+.modeRow {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.modeBtn {
+  flex: 1;
+  padding: 7px 8px;
+  background: transparent;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-dark);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.modeBtn:hover {
+  background: var(--color-surface-2);
+}
+.modeActive {
+  border-color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  color: var(--color-primary);
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

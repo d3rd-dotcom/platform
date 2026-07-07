@@ -5,12 +5,6 @@ import type { CourseComponentRecord } from '@/lib/vip-course-db';
 import type { GuideBodyComponent } from '@/lib/guides-db';
 import styles from './GuideBody.module.css';
 
-/**
- * Adapts a guide body component (stored as { id, componentType, title, config })
- * into the CourseComponentRecord the existing course renderers expect, then
- * hands it to ComponentRenderer. Guides are read-only content, so no
- * onComponentUpdate / grading is wired in.
- */
 function toComponentRecord(c: GuideBodyComponent): CourseComponentRecord {
   return {
     id: c.id,
@@ -26,18 +20,33 @@ function toComponentRecord(c: GuideBodyComponent): CourseComponentRecord {
   };
 }
 
-export default function GuideBody({ body }: { body: GuideBodyComponent[] }) {
+export default function GuideBody({ body, topicTitle }: { body: GuideBodyComponent[]; topicTitle?: string }) {
   if (!body || body.length === 0) {
     return <div className={styles.empty}>This guide has no content yet.</div>;
   }
   return (
     <div className={styles.body}>
-      {body.map((c) => (
-        <div key={c.id} className={styles.block}>
-          {c.title ? <h3 className={styles.blockTitle}>{c.title}</h3> : null}
-          <ComponentRenderer component={toComponentRecord(c)} />
-        </div>
-      ))}
+      {body.map((c, i) => {
+        const isFirst = i === 0;
+        const titleMatch = c.title && topicTitle &&
+          c.title.trim().toLowerCase() === topicTitle.trim().toLowerCase();
+        const showTitle = !isFirst && c.title && !titleMatch;
+
+        if (isFirst) {
+          return (
+            <div key={c.id} className={styles.lede}>
+              <ComponentRenderer component={toComponentRecord(c)} />
+            </div>
+          );
+        }
+
+        return (
+          <section key={c.id} className={styles.section}>
+            {showTitle && <h2 className={styles.sectionTitle}>{c.title}</h2>}
+            <ComponentRenderer component={toComponentRecord(c)} />
+          </section>
+        );
+      })}
     </div>
   );
 }

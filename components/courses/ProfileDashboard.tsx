@@ -32,7 +32,7 @@ function accoladeFromDiamonds(diamonds: number): string {
   return ACCOLADES.find(([min]) => diamonds >= min)?.[1] ?? 'Curious Seeker';
 }
 
-type PanelTab = 'badges' | 'courses' | 'certificates';
+type PanelTab = 'badges' | 'certificates';
 
 export interface PanelCourse {
   title: string;
@@ -44,12 +44,16 @@ interface ProfileDashboardProps {
   bannerUrl?: string | null;
   courses?: PanelCourse[];
   bio?: string | null;
+  noteCount?: number;
+  onOpenNotes?: () => void;
 }
 
 export default function ProfileDashboard({
   bannerUrl,
   courses = [],
   bio = null,
+  noteCount = 0,
+  onOpenNotes,
 }: ProfileDashboardProps) {
   const { ready, authenticated, getAccessToken } = usePrivy();
   const { address } = useAccount();
@@ -136,7 +140,7 @@ export default function ProfileDashboard({
   return (
     <>
     <div className={styles.tabRow}>
-      {(['badges', 'courses', 'certificates'] as const).map((t) => (
+      {(['badges', 'certificates'] as const).map((t) => (
         <button
           key={t}
           type="button"
@@ -144,9 +148,17 @@ export default function ProfileDashboard({
           onClick={() => { play('click'); setTab(t); }}
           onMouseEnter={() => play('soft-hover')}
         >
-          {t === 'badges' ? 'Badges' : t === 'courses' ? 'Courses' : 'Certificates'}
+          {t === 'badges' ? 'Badges' : 'Certificates'}
         </button>
       ))}
+      <button
+        type="button"
+        className={styles.tab}
+        onClick={() => { play('click'); onOpenNotes?.(); }}
+        onMouseEnter={() => play('soft-hover')}
+      >
+        Notes{noteCount > 0 ? ` (${noteCount})` : ''}
+      </button>
     </div>
     <section className={styles.panel}>
       <div
@@ -281,35 +293,6 @@ export default function ProfileDashboard({
           </div>
         </div>
       </div>
-      )}
-
-      {tab === 'courses' && (
-        <div className={styles.badges}>
-          <span className={styles.missionHeading}>Courses</span>
-          {courses.length > 0 ? (
-            <div className={styles.courseList}>
-              {courses.map((c) => (
-                <Link
-                  key={c.href}
-                  href={c.href}
-                  className={styles.courseRow}
-                  onMouseEnter={() => play('soft-hover')}
-                  onClick={() => play('click')}
-                >
-                  <span className={styles.courseRowTop}>
-                    <span className={styles.courseRowTitle}>{c.title}</span>
-                    <span className={styles.courseRowPct}>{Math.round(c.progressPct)}%</span>
-                  </span>
-                  <span className={styles.courseRowTrack}>
-                    <span className={styles.courseRowFill} style={{ width: `${Math.min(100, Math.max(0, c.progressPct))}%` }} />
-                  </span>
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <div className={styles.tabPanel}>No courses yet. Start with Shadow Work on the left.</div>
-          )}
-        </div>
       )}
 
       {tab === 'certificates' && (

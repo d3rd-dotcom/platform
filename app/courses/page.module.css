@@ -42,15 +42,9 @@
 .folderRow {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 24px;
   margin-bottom: 8px;
-}
-
-@media (max-width: 720px) {
-  .folderRow {
-    grid-template-columns: 1fr;
-  }
 }
 
 .aside {

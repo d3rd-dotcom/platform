@@ -293,13 +293,6 @@ export default function CoursesPage() {
               '/academy-story.png',
             ]}
           />
-          <CourseFolderCard
-            title="Your Field Notes"
-            count={noteCount}
-            onOpen={() => setFieldNotesOpen(true)}
-            images={[]}
-            ctaLabel="View Notes"
-          />
         </div>
 
         {personalCourse && (
@@ -645,7 +638,7 @@ export default function CoursesPage() {
       </div>
 
       <aside className={styles.aside}>
-        <ProfileDashboard courses={panelCourses} />
+        <ProfileDashboard courses={panelCourses} noteCount={noteCount} onOpenNotes={() => setFieldNotesOpen(true)} />
       </aside>
       </main>
 

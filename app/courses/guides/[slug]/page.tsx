@@ -1,10 +1,12 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
-import { ArrowLeft, ArrowRight, GraduationCap, TreeStructure, RocketLaunch } from '@phosphor-icons/react';
+import { ArrowLeft, ArrowRight, Circle, GraduationCap, TreeStructure, RocketLaunch, X } from '@phosphor-icons/react';
 import { usePrivy } from '@privy-io/react-auth';
 import { useSound } from '@/hooks/useSound';
+import { useScrollLock } from '@/hooks/useScrollLock';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import GuideBody from '@/components/guides/GuideBody';
 import GuideMethods from '@/components/guides/GuideMethods';
@@ -26,6 +28,51 @@ interface GuidePayload {
   prereqs: GuideLink[];
   dependents: GuideLink[];
   level?: number;
+}
+
+function WalkthroughOverlay({ slug, onClose }: { slug: string; onClose: () => void }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  useScrollLock(mounted);
+
+  useEffect(() => {
+    if (!mounted) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [mounted, onClose]);
+
+  if (!mounted || typeof document === 'undefined' || !document.body) return null;
+
+  return createPortal(
+    <div
+      className={styles.overlay}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div className={styles.overlayModal} role="dialog" aria-modal="true" aria-label="Walkthrough">
+        <div className={styles.overlayHeader}>
+          <h2 className={styles.overlayTitle}>
+            <GraduationCap size={18} weight="bold" />
+            Walkthrough
+          </h2>
+          <button type="button" className={styles.overlayClose} onClick={onClose} aria-label="Close walkthrough">
+            <X size={16} weight="bold" />
+          </button>
+        </div>
+        <div className={styles.overlayBody}>
+          <GuideWalkthrough slug={slug} />
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
 }
 
 export default function GuidePage({ params }: PageProps) {
@@ -90,6 +137,18 @@ export default function GuidePage({ params }: PageProps) {
                 {typeof data.level === 'number' && (
                   <span className={styles.levelChip}>Level {data.level}</span>
                 )}
+                <button
+                  type="button"
+                  className={styles.walkthroughTrigger}
+                  onMouseEnter={() => play('soft-hover')}
+                  onClick={() => {
+                    play('click');
+                    setShowWalkthrough(true);
+                  }}
+                >
+                  <GraduationCap size={14} weight="bold" />
+                  Walkthrough
+                </button>
               </div>
               <h1 className={styles.title}>{data.guide.topicTitle}</h1>
             </header>
@@ -118,27 +177,14 @@ export default function GuidePage({ params }: PageProps) {
               </section>
             )}
 
-            <button
-              type="button"
-              className={styles.walkthroughBtn}
-              onMouseEnter={() => play('soft-hover')}
-              onClick={() => {
-                play('click');
-                setShowWalkthrough((v) => !v);
-              }}
-            >
-              <GraduationCap size={18} weight="bold" />
-              {showWalkthrough ? 'Hide walkthrough' : 'Start walkthrough'}
-            </button>
-
-            {showWalkthrough && (
-              <section className={styles.walkthroughPanel}>
-                <GuideWalkthrough slug={data.guide.slug} />
-              </section>
-            )}
+            <div className={styles.divider}>
+              <span className={styles.dividerRule} />
+              <Circle size={8} weight="fill" className={styles.dividerIcon} />
+              <span className={styles.dividerRule} />
+            </div>
 
             <article className={styles.content}>
-              <GuideBody body={data.guide.body} />
+              <GuideBody body={data.guide.body} topicTitle={data.guide.topicTitle} />
             </article>
 
             <div className={styles.voteRow}>
@@ -183,6 +229,13 @@ export default function GuidePage({ params }: PageProps) {
             <VerificationLog guideId={data.guide.id} />
 
             <DisputeSection guideId={data.guide.id} />
+
+            {showWalkthrough && (
+              <WalkthroughOverlay
+                slug={data.guide.slug}
+                onClose={() => setShowWalkthrough(false)}
+              />
+            )}
           </>
         )}
       </main>
