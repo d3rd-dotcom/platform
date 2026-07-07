@@ -1,8 +1,7 @@
-import { Contract, providers, utils } from 'ethers';
-import { getBlueSigner } from './blue-membership';
+import { Contract, providers, utils, Wallet } from 'ethers';
 import { getPaymasterRpcUrl, getBlueSmartAccount, mintDiamondsSponsored } from './diamonds-paymaster';
 import { sqlQuery } from './db';
-import { getDiamondsTokenAddress as getTokenAddress } from './chain-config';
+import { getDiamondsTokenAddress as getTokenAddress, getChainConfig } from './chain-config';
 
 /**
  * Onchain delivery of Diamonds ($BLUE) rewards.
@@ -35,6 +34,25 @@ const DIAMONDS_ABI = [
 
 export function getDiamondsTokenAddress(): string | null {
   return getTokenAddress();
+}
+
+/**
+ * Blue's wallet as an ethers signer on the ACTIVE Diamonds chain. Unlike
+ * blue-membership's getBlueSigner (mainnet-pinned for VIP card sales), every
+ * Diamonds write must follow chain-config, or testnet-mode transfers and
+ * mints land on mainnet as codeless-address no-ops that still ledger 'sent'.
+ */
+function getBlueSigner(): Wallet {
+  const cfg = getChainConfig();
+  const key = process.env.BLUE_PRIVATE_KEY || process.env.AZURA_PRIVATE_KEY;
+  if (!key) {
+    throw new Error('BLUE_PRIVATE_KEY or AZURA_PRIVATE_KEY is not set — Blue cannot sign Diamonds rewards.');
+  }
+  const provider = new providers.StaticJsonRpcProvider(cfg.rpcUrl, {
+    chainId: cfg.chainId,
+    name: cfg.chainName.toLowerCase().replace(/\s+/g, '-'),
+  });
+  return new Wallet(key.startsWith('0x') ? key : `0x${key}`, provider);
 }
 
 /**
