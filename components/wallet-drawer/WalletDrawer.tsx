@@ -221,13 +221,9 @@ export default function WalletDrawer({
             <div className={styles.tokenGrid}>
               <div className={styles.tokenCard}>
                 <div className={styles.tokenTop}>
-                  <div className={styles.tokenIcon}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                      <path d="M12 2L2 7l10 5 10-5-10-5z" fill="#8A92B2" />
-                      <path d="M2 17l10 5 10-5" fill="#62688F" />
-                      <path d="M2 12l10 5 10-5" fill="#8A92B2" />
-                    </svg>
-                  </div>
+                   <div className={styles.tokenIcon}>
+                     <Image src="/tokens/eth.png" alt="" width={14} height={14} />
+                   </div>
                   <span className={styles.tokenName}>ETH</span>
                 </div>
                 <span className={styles.tokenValue}>{address ? (onchainEth ?? '—') : '—'}</span>
@@ -235,12 +231,9 @@ export default function WalletDrawer({
 
               <div className={styles.tokenCard}>
                 <div className={styles.tokenTop}>
-                  <div className={styles.tokenIcon}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                      <circle cx="12" cy="12" r="10" fill="#2775CA" />
-                      <text x="12" y="16.5" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">$</text>
-                    </svg>
-                  </div>
+                   <div className={styles.tokenIcon}>
+                     <Image src="/tokens/usdc.webp" alt="" width={14} height={14} />
+                   </div>
                   <span className={styles.tokenName}>USDC</span>
                 </div>
                 <span className={styles.tokenValue}>{address ? (onchainUsdc ?? '—') : '—'}</span>
@@ -249,14 +242,9 @@ export default function WalletDrawer({
               {hasBtc && (
                 <div className={styles.tokenCard}>
                   <div className={styles.tokenTop}>
-                    <div className={styles.tokenIcon}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                        <circle cx="12" cy="12" r="10" fill="#0052FF" />
-                        <path d="M12 6v12" stroke="white" strokeWidth="1.5" />
-                        <path d="M9.5 8.5h4.5a2.5 2.5 0 0 1 0 5h-4.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-                        <path d="M9.5 13.5h5a2 2 0 0 1 0 4h-5" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-                      </svg>
-                    </div>
+                     <div className={styles.tokenIcon}>
+                       <Image src="/tokens/cbbtc.webp" alt="" width={14} height={14} />
+                     </div>
                     <span className={styles.tokenName}>cbBTC</span>
                   </div>
                   <span className={styles.tokenValue}>{address ? (onchainBtc ?? '—') : '—'}</span>
