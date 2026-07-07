@@ -53,6 +53,44 @@
 
 ---
 
+## Verifier credential seeding (bootstrap the jury pool)
+
+**Goal:** `createVerifierPanel` / `submitGuideForVerification` in `lib/guide-verification-db.ts` draws its jury from `verifier_credentials`, and the only path that ever wrote to that table was passing a tiered verifier test (`lib/verifier-tests-db.ts`). At launch nobody holds a credential, so the first guide submission always dead-ends on "No verifiers are credentialed for this subject yet." The verification migration's comments anticipated `earned_via` values `'seed'` and `'admin_grant'`, but no code granted them.
+
+### Changes
+
+| File | Change |
+|------|--------|
+| `scripts/seed-verifier-credentials.ts` | New script — grants `verifier_credentials` rows with `earned_via = 'seed'`, idempotent on `(user_id, subject)`. Also supports `--list` to audit who holds credentials per subject |
+| `lib/guide-verification-db.ts` | Reworded the empty-pool error in `submitGuideForVerification` to be clearer and warmer; added a comment documenting that the check runs before any write in the transaction, so an empty pool never leaves a guide stranded in `pending_verification` |
+
+### Usage
+
+```
+npx tsx --env-file=.env.local scripts/seed-verifier-credentials.ts \
+  --user=<id|email|wallet> --subject="Anxiety" --subject="Sleep hygiene" [--max-level=5]
+
+npx tsx --env-file=.env.local scripts/seed-verifier-credentials.ts \
+  --user=james@example.com --subjects="Anxiety,Sleep hygiene,Boundaries"
+
+npx tsx --env-file=.env.local scripts/seed-verifier-credentials.ts --list
+npx tsx --env-file=.env.local scripts/seed-verifier-credentials.ts --list --subject="Anxiety"
+```
+
+`--user` accepts a user id, email, or wallet address (auto-detected). `--max-level` defaults to 5 (the top tier reachable via the test path), so a seeded verifier is fully qualified out of the gate. Re-running with the same user and subject is a no-op — it will not raise an existing credential's level; use the tiered test path for that.
+
+### What this unlocks
+
+- James (or any trusted early contributor) can seat an initial jury pool per subject before the first guide is ever submitted, so `submitGuideForVerification` has someone to draw from
+- `--list` gives a quick audit of coverage — which subjects have verifiers, and how many
+
+### What to watch
+
+- `submitGuideForVerification` already ran the empty-pool check before any INSERT/UPDATE inside its `withTransaction` block, so this was already fail-closed at the DB level — the fix here is purely about giving the pool a way to be non-empty, plus a clearer author-facing message
+- Seeded credentials carry no test-taking history — treat them as a manual trust decision, same as any other admin action
+
+---
+
 ## Completed tasks
 
 | # | Area | Status |
