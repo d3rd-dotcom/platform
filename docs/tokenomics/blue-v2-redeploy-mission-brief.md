@@ -3,7 +3,7 @@
 Base mainnet. Deployer and owner: Blue (key in `BLUE_PRIVATE_KEY`, legacy fallback `AZURA_PRIVATE_KEY`).
 Written 2026-07-06. Executor: any agent session with this repo, `.env.local`, and Foundry.
 
-**Status 2026-07-06: Phase A complete.** `DiamondsV2.sol` + `ReflectionVault.sol` are in
+**Status 2026-07-06: Phase A complete.** `Diamonds.sol` + `ReflectionVault.sol` are in
 `contracts/src/` with 18 tests green (140/140 suite-wide) and a successful mainnet-fork
 dry run (~3.57M gas, ~0.000037 ETH). Not deployed, not airdropped — Phases B–E remain.
 One as-built simplification vs the original spec: the token never swaps fees itself. AMM
@@ -29,7 +29,7 @@ Replace Diamonds v1 with v2 on Base:
 ### Ground truth (verified 2026-07-06 — trust this over memory)
 
 - v1: `0x4A25Cea1f05C6725dC90849FBaafF00d67342B3f`. Plain OZ `ERC20 + Ownable` with a
-  `minters` mapping ([contracts/src/Diamonds.sol](../../contracts/src/Diamonds.sol)). No
+  `minters` mapping ([contracts/src/legacy/DiamondsV1.sol](../../contracts/src/legacy/DiamondsV1.sol)). No
   `burn`, no `burnFrom`, no `permit`. **Source never verified on Basescan** — the page shows
   "UNKNOWN reputation". 15 holders. Total supply 200,000,001 BLUE.
 - Burns today: the user's own wallet signs a `transfer` to `0x…dEaD`;
@@ -63,14 +63,14 @@ game activity. Every platform action (mint, burn, p2p quest payout) stays 100% f
 forever. The AMM fee machinery ships dormant and only ever touches DEX trades, if and when
 an LP exists. Holding earns a bonus; spending is never punished.
 
-## 1. New ERC20 — DiamondsV2 spec
+## 1. New ERC20 — Diamonds spec
 
 Same identity as v1 so wallets and UI carry over: name `Diamonds`, symbol `BLUE`,
 18 decimals. Solidity 0.8.24, OpenZeppelin v5 (already vendored in `contracts/lib`).
 
 Inheritance: `ERC20, ERC20Burnable, ERC20Permit, Ownable`.
 
-File: `contracts/src/DiamondsV2.sol` (keep v1 in place for reference). The constructor
+File: `contracts/src/Diamonds.sol` (keep v1 in place for reference). The constructor
 deploys the `ReflectionVault` itself, same pattern as the reference contract, so the pair is
 atomic and the vault's token address is immutable.
 
@@ -253,7 +253,7 @@ airdrop is ~14 mints.
 
 | Item | Estimate | Basis |
 |---|---|---|
-| Deploy DiamondsV2 + ReflectionVault | < $1 (≈ 4–5M gas at ≤ 0.05 gwei effective) | Pinned gas, section 2 |
+| Deploy Diamonds + ReflectionVault | < $1 (≈ 4–5M gas at ≤ 0.05 gwei effective) | Pinned gas, section 2 |
 | Basescan source verification | $0 | Free (needs an Etherscan API key — free account if none in env) |
 | Airdrop (~14 mints ≈ 60k gas each) | < $0.10 | Pinned gas |
 | Gasless burns, ongoing | $0 up to ~$50/mo sponsored gas, then ~10% markup | Alchemy free tier; one burn userop ≈ 150–250k gas ≈ small fractions of a cent on Base, so free tier covers thousands of burns monthly |
@@ -272,8 +272,8 @@ anything not listed here.
 **Phase A — Build (repo, no chain writes)** — *A1 and A2 done 2026-07-06 (18 tests green;
 8-decimal reward math covered by an 8-decimal mock). A3's fork dry run of the deploy
 passed (~3.57M gas); the real-cbBTC `deal` fork test remains a pre-broadcast nicety.*
-- A1. Write `DiamondsV2.sol` + `ReflectionVault.sol` per section 1. Expect: `forge build` clean.
-- A2. `contracts/test/DiamondsV2.t.sol`: renounce bricks `mint` (owner and minters both);
+- A1. Write `Diamonds.sol` + `ReflectionVault.sol` per section 1. Expect: `forge build` clean.
+- A2. `contracts/test/Diamonds.t.sol`: renounce bricks `mint` (owner and minters both);
   permit → burnFrom flow; fee applies only when a flagged pair is party; transfers succeed
   when the vault is made to revert (the try/catch guarantee); vault deposit → pending →
   claim math; excluded addresses earn nothing; `process()` respects its gas budget.
@@ -289,7 +289,7 @@ passed (~3.57M gas); the real-cbBTC `deal` fork test remains a pre-broadcast nic
 
 **Phase C — Chain (all pinned-gas)**
 - C1. Snapshot (section 5). Expect: sums check out.
-- C2. `forge script script/DeployDiamondsV2.s.sol --rpc-url $BASE_RPC_URL` (dry run).
+- C2. `forge script script/DeployDiamonds.s.sol --rpc-url $BASE_RPC_URL` (dry run).
   Expect: both addresses simulated, gas ~4–5M, Blue printed as owner.
 - C3. Same + `--broadcast --priority-gas-price 1000000 --with-gas-price 100000000`.
   Expect: both contracts live; deploy cost < 0.0001 ETH.
