@@ -3,6 +3,7 @@ import { providers, utils } from 'ethers';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { getDiamondsTokenAddress } from '@/lib/diamonds-onchain';
+import { getChainConfig } from '@/lib/chain-config';
 import { getDiamondPrice } from '@/lib/shop-catalog';
 import { checkRateLimit, getRateLimitHeaders } from '@/lib/rate-limit';
 
@@ -17,7 +18,10 @@ const ERC20_INTERFACE = new utils.Interface([
 ]);
 
 function getBaseProvider(): providers.JsonRpcProvider {
-  const rpcUrl = process.env.BASE_RPC_URL || 'https://mainnet.base.org';
+  const cfg = getChainConfig();
+  const rpcUrl = cfg.chainId === 8453
+    ? process.env.BASE_RPC_URL || cfg.rpcUrl
+    : cfg.rpcUrl;
   return new providers.JsonRpcProvider(rpcUrl);
 }
 

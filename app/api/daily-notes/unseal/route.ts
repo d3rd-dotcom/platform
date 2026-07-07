@@ -5,6 +5,7 @@ import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { ensurePrayersSchema } from '@/lib/ensurePrayersSchema';
 import { decryptForUser } from '@/lib/encrypt';
 import { getDiamondsTokenAddress } from '@/lib/diamonds-onchain';
+import { getChainConfig } from '@/lib/chain-config';
 import { checkRateLimit, getRateLimitHeaders } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
@@ -86,7 +87,10 @@ async function ensureBurnLedgerSchema() {
 }
 
 function getBaseProvider(): providers.JsonRpcProvider {
-  const rpcUrl = process.env.BASE_RPC_URL || 'https://mainnet.base.org';
+  const cfg = getChainConfig();
+  const rpcUrl = cfg.chainId === 8453
+    ? process.env.BASE_RPC_URL || cfg.rpcUrl
+    : cfg.rpcUrl;
   return new providers.JsonRpcProvider(rpcUrl);
 }
 

@@ -304,15 +304,6 @@
   background: color-mix(in oklch, var(--color-primary) 20%, transparent);
   color: #7B93FF;
 }
-.tokenEth {
-  background: rgba(138,146,178,0.12);
-}
-.tokenDiamond {
-  background: rgba(99,102,241,0.12);
-}
-.tokenBtc {
-  background: rgba(247,147,26,0.12);
-}
 .tokenName {
   font-size: 12px;
   font-weight: 600;

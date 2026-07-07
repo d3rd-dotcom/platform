@@ -276,3 +276,41 @@
 :global(:root:not([data-theme="dark"])) .menuDivider {
   background: rgba(26, 27, 36, 0.08);
 }
+
+.balanceSection {
+  padding: 4px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.balanceRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tokenIcon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.06);
+}
+
+.tokenName {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(227, 225, 238, 0.7);
+  flex: 1;
+}
+
+.balanceVal {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(227, 225, 238, 0.92);
+}

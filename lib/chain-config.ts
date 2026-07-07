@@ -16,6 +16,7 @@ export interface ChainConfig {
   diamondsTokenAddress: string;
   reflectionVaultAddress: string | null;
   cbBTcAddress: string | null;
+  usdcAddress: string;
 }
 
 const MAINNET: ChainConfig = {
@@ -31,6 +32,9 @@ const MAINNET: ChainConfig = {
     '0x4A25Cea1f05C6725dC90849FBaafF00d67342B3f',
   reflectionVaultAddress: null,
   cbBTcAddress: null,
+  usdcAddress:
+    process.env.NEXT_PUBLIC_USDC_ADDRESS ||
+    '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
 };
 
 const SEPOLIA: ChainConfig = {
@@ -55,6 +59,10 @@ const SEPOLIA: ChainConfig = {
     process.env.DIAMONDS_SEPOLIA_CBBTC_ADDRESS ||
     process.env.NEXT_PUBLIC_DIAMONDS_SEPOLIA_CBBTC_ADDRESS ||
     '0x71a92f9b94646e5119f82cd7b01c69da8ec3a352',
+  // Circle's canonical USDC on Base Sepolia
+  usdcAddress:
+    process.env.NEXT_PUBLIC_USDC_SEPOLIA_ADDRESS ||
+    '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
 };
 
 function isTestnet(): boolean {

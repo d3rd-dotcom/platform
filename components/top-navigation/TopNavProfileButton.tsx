@@ -7,9 +7,6 @@ import { useAccount } from 'wagmi';
 import { providers, Contract } from 'ethers';
 import { useRouter } from 'next/navigation';
 import { CaretLeft, CaretRight, Robot, X } from '@phosphor-icons/react';
-import { createPublicClient, http, formatEther, erc20Abi } from 'viem';
-import { base, baseSepolia } from 'viem/chains';
-import { getChainConfig } from '@/lib/chain-config';
 import styles from './TopNavProfileButton.module.css';
 
 const CONTRACT_ADDRESS =
@@ -48,7 +45,7 @@ function truncateAddr(addr: string) { return `${addr.slice(0, 6)}...${addr.slice
 
 export default function TopNavProfileButton() {
   const router = useRouter();
-  const { authenticated, getAccessToken, user: privyUser } = usePrivy();
+  const { authenticated, getAccessToken } = usePrivy();
   const { address } = useAccount();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -61,23 +58,6 @@ export default function TopNavProfileButton() {
   const [usdcBalance, setUsdcBalance] = useState<string | null>(null);
   const [votingPower, setVotingPower] = useState<string | null>(null);
   const [hasVip, setHasVip] = useState<boolean | null>(null);
-
-  // Onchain wallet balances
-  const [onchainEth, setOnchainEth] = useState<string | null>(null);
-  const [onchainDiamonds, setOnchainDiamonds] = useState<string | null>(null);
-  const [onchainBtc, setOnchainBtc] = useState<string | null>(null);
-
-  // Derive wallet address from Privy linked wallets first, then wagmi
-  const walletAddress: string | null = (() => {
-    if (privyUser?.linkedAccounts && privyUser.linkedAccounts.length > 0) {
-      const w = privyUser.linkedAccounts.find(
-        (a: { type: string; address?: string }) => a.type === 'wallet' && a.address,
-      ) as { type: string; address: string } | undefined;
-      if (w?.address) return w.address;
-    }
-    if (address) return address;
-    return null;
-  })();
 
   // Calendar
   const [streak, setStreak] = useState(0);
@@ -165,43 +145,6 @@ export default function TopNavProfileButton() {
   useEffect(() => {
     if (address) void fetchInventory();
   }, [address, fetchInventory]);
-
-  // Fetch onchain wallet balances when drawer opens
-  const fetchOnchainBalances = useCallback(async (addr: string) => {
-    const cfg = getChainConfig();
-    const chain = cfg.chainId === 84532 ? baseSepolia : base;
-    const client = createPublicClient({ chain, transport: http(cfg.rpcUrl) });
-    try {
-      const a = addr as `0x${string}`;
-      const eth = await client.getBalance({ address: a });
-      setOnchainEth(Number(formatEther(eth)).toFixed(4));
-
-      const [diamondR, btcR] = await client.multicall({
-        contracts: [
-          { address: cfg.diamondsTokenAddress as `0x${string}`, abi: erc20Abi, functionName: 'balanceOf', args: [a] },
-          ...(cfg.cbBTcAddress ? [{ address: cfg.cbBTcAddress as `0x${string}`, abi: erc20Abi, functionName: 'balanceOf', args: [a] }] : []),
-        ],
-        allowFailure: true,
-      });
-
-      if (diamondR.status === 'success') {
-        const d = Number(diamondR.result) / 1e18;
-        setOnchainDiamonds(d < 1 ? d.toFixed(2) : Math.floor(d).toLocaleString());
-      }
-      if (btcR && 'status' in btcR && btcR.status === 'success') {
-        setOnchainBtc((Number(btcR.result) / 1e8).toFixed(8));
-      }
-    } catch { /* silent */ }
-  }, []);
-
-  useEffect(() => {
-    if (drawerOpen && walletAddress) void fetchOnchainBalances(walletAddress);
-    else if (!drawerOpen) {
-      setOnchainEth(null);
-      setOnchainDiamonds(null);
-      setOnchainBtc(null);
-    }
-  }, [drawerOpen, walletAddress, fetchOnchainBalances]);
 
   // Fetch calendar data when drawer opens
   const fetchCalendar = useCallback(async () => {
@@ -411,53 +354,6 @@ export default function TopNavProfileButton() {
               </div>
               <span className={styles.balanceVal}>{usdcBalance ?? '0.00'}</span>
             </div>
-
-            <div className={styles.divider} />
-
-            <div className={styles.balanceRow}>
-              <div className={styles.tokenLeft}>
-                <div className={`${styles.tokenIcon} ${styles.tokenEth}`}>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2L2 7l10 5 10-5-10-5z" fill="#8A92B2" />
-                    <path d="M2 17l10 5 10-5" fill="#62688F" />
-                    <path d="M2 12l10 5 10-5" fill="#8A92B2" />
-                  </svg>
-                </div>
-                <span className={styles.tokenName}>ETH</span>
-              </div>
-              <span className={styles.balanceVal}>{onchainEth ?? '—'}</span>
-            </div>
-
-            <div className={styles.balanceRow}>
-              <div className={styles.tokenLeft}>
-                <div className={`${styles.tokenIcon} ${styles.tokenDiamond}`}>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2L2 7l10 5 10-5-10-5z" fill="#6366F1" />
-                    <path d="M2 17l10 5 10-5" fill="#4F46E5" />
-                    <path d="M2 12l10 5 10-5" fill="#6366F1" />
-                  </svg>
-                </div>
-                <span className={styles.tokenName}>$BLUE</span>
-              </div>
-              <span className={styles.balanceVal}>{onchainDiamonds ?? '—'}</span>
-            </div>
-
-            {getChainConfig().cbBTcAddress && (
-              <div className={styles.balanceRow}>
-                <div className={styles.tokenLeft}>
-                  <div className={`${styles.tokenIcon} ${styles.tokenBtc}`}>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-                      <circle cx="12" cy="12" r="10" fill="#F7931A" />
-                      <path d="M12 6v12" stroke="white" strokeWidth="1.5" />
-                      <path d="M9.5 8.5h4.5a2.5 2.5 0 0 1 0 5h-4.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-                      <path d="M9.5 13.5h5a2 2 0 0 1 0 4h-5" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-                    </svg>
-                  </div>
-                  <span className={styles.tokenName}>Bitcoin</span>
-                </div>
-                <span className={styles.balanceVal}>{onchainBtc ?? '—'}</span>
-              </div>
-            )}
           </div>
 
           {/* Calendar section */}

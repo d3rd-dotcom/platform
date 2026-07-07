@@ -1,7 +1,10 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import { createPublicClient, http, formatEther, erc20Abi } from 'viem';
+import { base, baseSepolia } from 'viem/chains';
+import { getChainConfig } from '@/lib/chain-config';
 import styles from './SidebarProfileCard.module.css';
 
 interface SidebarProfileCardProps {
@@ -35,6 +38,62 @@ export default function SidebarProfileCard({
   const [addressCopied, setAddressCopied] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Onchain wallet balances
+  const [onchainEth, setOnchainEth] = useState<string | null>(null);
+  const [onchainDiamonds, setOnchainDiamonds] = useState<string | null>(null);
+  const [onchainBtc, setOnchainBtc] = useState<string | null>(null);
+  const [onchainUsdc, setOnchainUsdc] = useState<string | null>(null);
+
+  const fetchOnchainBalances = useCallback(async (addr: string) => {
+    const cfg = getChainConfig();
+    const chain = cfg.chainId === 84532 ? baseSepolia : base;
+    const client = createPublicClient({ chain, transport: http(cfg.rpcUrl) });
+    try {
+      const a = addr as `0x${string}`;
+      const eth = await client.getBalance({ address: a });
+      setOnchainEth(Number(formatEther(eth)).toFixed(4));
+
+      const balanceOf = (token: string) => ({
+        address: token as `0x${string}`,
+        abi: erc20Abi,
+        functionName: 'balanceOf' as const,
+        args: [a] as const,
+      });
+      const [diamondsR, usdcR, btcR] = await client.multicall({
+        contracts: [
+          balanceOf(cfg.diamondsTokenAddress),
+          balanceOf(cfg.usdcAddress),
+          ...(cfg.cbBTcAddress ? [balanceOf(cfg.cbBTcAddress)] : []),
+        ],
+        allowFailure: true,
+      });
+
+      if (diamondsR.status === 'success') {
+        const d = Number(diamondsR.result) / 1e18;
+        setOnchainDiamonds(d < 1 ? d.toFixed(2) : Math.floor(d).toLocaleString());
+      }
+      if (usdcR.status === 'success') {
+        setOnchainUsdc((Number(usdcR.result) / 1e6).toLocaleString('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }));
+      }
+      if (btcR && btcR.status === 'success') {
+        setOnchainBtc((Number(btcR.result) / 1e8).toFixed(8));
+      }
+    } catch { /* silent */ }
+  }, []);
+
+  useEffect(() => {
+    if (menuOpen && address) void fetchOnchainBalances(address);
+    else if (!menuOpen) {
+      setOnchainEth(null);
+      setOnchainDiamonds(null);
+      setOnchainBtc(null);
+      setOnchainUsdc(null);
+    }
+  }, [menuOpen, address, fetchOnchainBalances]);
   const displayName = username && !username.startsWith('user_') ? username : null;
   const initials = displayName
     ? displayName.slice(0, 2).toUpperCase()
@@ -157,6 +216,56 @@ export default function SidebarProfileCard({
             >
               {addressCopied ? 'Copied Address' : 'Copy Address'}
             </button>
+          )}
+          {address && (
+            <>
+              <div className={styles.menuDivider} />
+              <div className={styles.balanceSection}>
+                <div className={styles.balanceRow}>
+                  <div className={styles.tokenIcon}>
+                    <Image src="/icons/ui-diamond.svg" alt="" width={12} height={12} />
+                  </div>
+                  <span className={styles.tokenName}>Diamonds</span>
+                  <span className={styles.balanceVal}>{onchainDiamonds ?? '—'}</span>
+                </div>
+                {getChainConfig().cbBTcAddress && (
+                  <div className={styles.balanceRow}>
+                    <div className={styles.tokenIcon}>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="10" fill="#0052FF" />
+                        <path d="M12 6v12" stroke="white" strokeWidth="1.5" />
+                        <path d="M9.5 8.5h4.5a2.5 2.5 0 0 1 0 5h-4.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+                        <path d="M9.5 13.5h5a2 2 0 0 1 0 4h-5" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+                      </svg>
+                    </div>
+                    <span className={styles.tokenName}>cbBTC</span>
+                    <span className={styles.balanceVal}>{onchainBtc ?? '—'}</span>
+                  </div>
+                )}
+                <div className={styles.balanceRow}>
+                  <div className={styles.tokenIcon}>
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
+                      <circle cx="12" cy="12" r="10" fill="#2775CA" />
+                      <text x="12" y="16" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">$</text>
+                    </svg>
+                  </div>
+                  <span className={styles.tokenName}>USDC</span>
+                  <span className={styles.balanceVal}>{onchainUsdc ?? '—'}</span>
+                </div>
+                <div className={styles.balanceRow}>
+                  <div className={styles.tokenIcon}>
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 2L2 7l10 5 10-5-10-5z" fill="#8A92B2" />
+                      <path d="M2 17l10 5 10-5" fill="#62688F" />
+                      <path d="M2 12l10 5 10-5" fill="#8A92B2" />
+                    </svg>
+                  </div>
+                  <span className={styles.tokenName}>ETH</span>
+                  <span className={styles.balanceVal}>{onchainEth ?? '—'}</span>
+                </div>
+              </div>
+              <div className={styles.menuDivider} />
+            </>
           )}
           <button className={styles.menuItem} onClick={() => { setMenuOpen(false); onConnections(); }} type="button">Connections</button>
           <div className={styles.menuDivider} />
