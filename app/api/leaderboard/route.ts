@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createPublicClient, http, erc20Abi } from 'viem';
-import { base } from 'viem/chains';
+import { base, baseSepolia } from 'viem/chains';
 import { sqlQuery, isDbConfigured } from '@/lib/db';
-import { getDiamondsTokenAddress } from '@/lib/diamonds-onchain';
+import { getDiamondsTokenAddress, getChainConfig } from '@/lib/chain-config';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,15 +23,6 @@ interface UserRow {
 const CACHE_TTL_MS = 60_000;
 let cache: { at: number; users: LeaderboardUser[] } | null = null;
 
-function getBaseRpcUrl(): string {
-  return (
-    process.env.BASE_MAINNET_RPC_URL ||
-    process.env.BASE_RPC_URL ||
-    process.env.NEXT_PUBLIC_BASE_RPC_URL ||
-    'https://mainnet.base.org'
-  );
-}
-
 /**
  * The leaderboard is the actual Diamonds ($BLUE) balance of each member's
  * wallet, read from the token contract — Blue included, with her 200M stash.
@@ -44,7 +35,9 @@ async function rankByOnchainBalance(rows: UserRow[], tokenAddress: string): Prom
   );
   if (holders.length === 0) return [];
 
-  const client = createPublicClient({ chain: base, transport: http(getBaseRpcUrl()) });
+  const cfg = getChainConfig();
+  const chain = cfg.chainId === 84532 ? baseSepolia : base;
+  const client = createPublicClient({ chain, transport: http(cfg.rpcUrl) });
   const results = await client.multicall({
     contracts: holders.map((r) => ({
       address: tokenAddress as `0x${string}`,
