@@ -502,6 +502,12 @@ export async function resolveForwardRefs(guideId: string): Promise<number> {
  * the graph is a DAG (enforced by the guide_edges cycle trigger), the recursion
  * terminates.
  *
+ * Only PUBLISHED prereqs are traversed (the target itself is included whatever
+ * its status, so authors can preview a draft's walkthrough). This mirrors
+ * completeGuide's gate — non-published guides can't be completed, don't gate,
+ * and don't count toward level/walkthrough closure — so the rewards closure in
+ * lib/guide-rewards-db.ts must stay in lockstep with this query.
+ *
  * Recursive CTE strategy:
  *   1. `closure` collects the set of guides reachable by walking prereq edges
  *      upward from the target (the sub-DAG we care about).
@@ -537,6 +543,7 @@ export async function getWalkthrough(
       SELECT e.prereq_id
       FROM guide_edges e
       JOIN closure c ON e.guide_id = c.id
+      JOIN guides p ON p.id = e.prereq_id AND p.status = 'published'
     ),
     -- edges that live entirely inside the closure
     sub_edges AS (
@@ -783,20 +790,31 @@ export async function getAuthorGuideStats(userId: string): Promise<AuthorGuideSt
 }
 
 /**
- * Marks a guide complete for a user, enforcing the gate: every DIRECT prereq of
- * the guide must already be in guide_progress for this user. Throws a 409 error
- * (with .status) listing the missing prereqs otherwise. Idempotent.
+ * Marks a guide complete for a user, enforcing two gates:
+ *   1. Only PUBLISHED guides can be completed — drafts never pass the verifier
+ *      jury, so completing one must not be possible (it feeds the diamond
+ *      reward path). Throws a 403 error (with .status) otherwise.
+ *   2. Every DIRECT prereq of the guide must already be in guide_progress for
+ *      this user. Throws a 409 error (with .status) listing the missing
+ *      prereqs otherwise.
+ * Idempotent.
  */
 export async function completeGuide(
   userId: string,
   guideId: string,
 ): Promise<{ completedAt: string }> {
-  const guideRows = await sqlQuery<Array<{ id: string; topic_title: string }>>(
-    `SELECT id, topic_title FROM guides WHERE id = :guideId`,
+  const guideRows = await sqlQuery<Array<{ id: string; topic_title: string; status: string }>>(
+    `SELECT id, topic_title, status FROM guides WHERE id = :guideId`,
     { guideId },
   );
   if (!guideRows[0]) {
     throw Object.assign(new Error('Guide not found.'), { status: 404 });
+  }
+  if (guideRows[0].status !== 'published') {
+    throw Object.assign(
+      new Error('Only published guides can be completed.'),
+      { status: 403 },
+    );
   }
 
   // Direct PREREQs the user has NOT completed yet. Only published prereqs gate

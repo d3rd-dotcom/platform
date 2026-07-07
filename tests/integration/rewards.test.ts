@@ -62,6 +62,17 @@ const gid = (tag: string) => `rw-${tag}-${(seq++).toString().padStart(30, '0')}`
 
 // Verbatim port of lib/guide-rewards-db.ts:awardGuideRewards, run on `client`.
 async function awardGuideRewards(client: PoolClient, userId: string, guideId: string) {
+  // Fail-closed guards: no payout for a missing or non-published guide, or for
+  // the guide's own author.
+  const guideRes = await client.query<{ author_id: string | null; status: string }>(
+    `SELECT author_id, status FROM guides WHERE id = $1`,
+    [guideId],
+  );
+  const guide = guideRes.rows[0];
+  if (!guide || guide.status !== 'published' || guide.author_id === userId) {
+    return { diamonds: 0, levelCleared: false, walkthroughComplete: false, spinGranted: false };
+  }
+
   const closureRes = await client.query<{ id: string; level: number }>(
     `
     WITH RECURSIVE closure AS (
@@ -70,6 +81,7 @@ async function awardGuideRewards(client: PoolClient, userId: string, guideId: st
       SELECT e.prereq_id
       FROM guide_edges e
       JOIN closure c ON e.guide_id = c.id
+      JOIN guides p ON p.id = e.prereq_id AND p.status = 'published'
     ),
     sub_edges AS (
       SELECT e.prereq_id, e.guide_id
@@ -179,6 +191,19 @@ async function shardCount(userId: string): Promise<number> {
   return Number(rows[0]?.shard_count ?? 0);
 }
 
+// Guides default to 'published' here because only published guides pay rewards.
+async function insertGuide(
+  id: string,
+  slug: string,
+  title: string,
+  opts: { status?: string; authorId?: string | null } = {},
+) {
+  await pool.query(
+    `INSERT INTO guides (id, slug, topic_title, status, author_id) VALUES ($1, $2, $3, $4, $5)`,
+    [id, slug, title, opts.status ?? 'published', opts.authorId ?? null],
+  );
+}
+
 describe.skipIf(!TEST_DB_URL)('guide rewards (integration)', () => {
   beforeAll(async () => {
     pool = new Pool({
@@ -211,9 +236,7 @@ describe.skipIf(!TEST_DB_URL)('guide rewards (integration)', () => {
     const u = gid('idem-u');
     const g = gid('idem-g');
     await pool.query(`INSERT INTO users (id, username) VALUES ($1, $2)`, [u, 'idem']);
-    await pool.query(`INSERT INTO guides (id, slug, topic_title) VALUES ($1, $2, $3)`, [
-      g, 'idem-g', 'Idem G',
-    ]);
+    await insertGuide(g, 'idem-g', 'Idem G');
 
     // Single-node walkthrough: completing it clears its level AND the whole
     // walkthrough at once -> 50 + 150 + 510 = 710.
@@ -240,9 +263,7 @@ describe.skipIf(!TEST_DB_URL)('guide rewards (integration)', () => {
       [b, 'lc-b', 'LC B'],
       [c, 'lc-c', 'LC C'],
     ] as const) {
-      await pool.query(`INSERT INTO guides (id, slug, topic_title) VALUES ($1, $2, $3)`, [
-        id, slug, title,
-      ]);
+      await insertGuide(id, slug, title);
     }
     await pool.query(`INSERT INTO guide_edges (prereq_id, guide_id) VALUES ($1, $2)`, [a, c]);
     await pool.query(`INSERT INTO guide_edges (prereq_id, guide_id) VALUES ($1, $2)`, [b, c]);
@@ -274,9 +295,7 @@ describe.skipIf(!TEST_DB_URL)('guide rewards (integration)', () => {
     const u = gid('wt-u');
     const g = gid('wt-g');
     await pool.query(`INSERT INTO users (id, username) VALUES ($1, $2)`, [u, 'wt']);
-    await pool.query(`INSERT INTO guides (id, slug, topic_title) VALUES ($1, $2, $3)`, [
-      g, 'wt-g', 'WT G',
-    ]);
+    await insertGuide(g, 'wt-g', 'WT G');
     await completeAndAward(u, g);
 
     const { rows } = await pool.query<{ diamonds: number }>(
@@ -286,5 +305,65 @@ describe.skipIf(!TEST_DB_URL)('guide rewards (integration)', () => {
     );
     expect(rows).toHaveLength(1);
     expect(Number(rows[0].diamonds)).toBe(WALKTHROUGH_PAYOUT); // 510
+  });
+
+  it('pays nothing for a non-published guide (fail-closed)', async () => {
+    const u = gid('dft-u');
+    const g = gid('dft-g');
+    await pool.query(`INSERT INTO users (id, username) VALUES ($1, $2)`, [u, 'dft']);
+    await insertGuide(g, 'dft-g', 'Draft G', { status: 'draft' });
+
+    const result = await completeAndAward(u, g);
+    expect(result.diamonds).toBe(0);
+    expect(result.levelCleared).toBe(false);
+    expect(result.walkthroughComplete).toBe(false);
+    expect(result.spinGranted).toBe(false);
+    expect(await shardCount(u)).toBe(0);
+  });
+
+  it('pays nothing to the guide author, but pays other users normally', async () => {
+    const author = gid('au-a');
+    const learner = gid('au-l');
+    const g = gid('au-g');
+    await pool.query(`INSERT INTO users (id, username) VALUES ($1, $2), ($3, $4)`, [
+      author, 'au-author', learner, 'au-learner',
+    ]);
+    await insertGuide(g, 'au-g', 'Authored G', { authorId: author });
+
+    // The author's own completion records progress but earns zero diamonds.
+    const selfClaim = await completeAndAward(author, g);
+    expect(selfClaim.diamonds).toBe(0);
+    expect(selfClaim.spinGranted).toBe(false);
+    expect(await shardCount(author)).toBe(0);
+
+    // A different user still collects the full single-node payout.
+    const other = await completeAndAward(learner, g);
+    expect(other.diamonds).toBe(GUIDE_COMPLETE_REWARD + LEVEL_CLEAR_REWARD + WALKTHROUGH_PAYOUT);
+  });
+
+  it('ignores non-published prereqs in the closure, so bonuses are not stranded', async () => {
+    // Published target T has a published prereq P and a draft prereq D. D can
+    // never be completed, so the closure must exclude it or the walkthrough
+    // bonus would be unreachable.
+    const u = gid('str-u');
+    const t = gid('str-t');
+    const p = gid('str-p');
+    const d = gid('str-d');
+    await pool.query(`INSERT INTO users (id, username) VALUES ($1, $2)`, [u, 'str']);
+    await insertGuide(t, 'str-t', 'Str T');
+    await insertGuide(p, 'str-p', 'Str P');
+    await insertGuide(d, 'str-d', 'Str D', { status: 'draft' });
+    await pool.query(`INSERT INTO guide_edges (prereq_id, guide_id) VALUES ($1, $2)`, [p, t]);
+    await pool.query(`INSERT INTO guide_edges (prereq_id, guide_id) VALUES ($1, $2)`, [d, t]);
+
+    // Completing P clears level 0 (D is not counted as a peer).
+    const rP = await completeAndAward(u, p);
+    expect(rP.diamonds).toBe(GUIDE_COMPLETE_REWARD + LEVEL_CLEAR_REWARD);
+    expect(rP.levelCleared).toBe(true);
+
+    // Completing T finishes the (published-only) closure -> walkthrough bonus.
+    const rT = await completeAndAward(u, t);
+    expect(rT.walkthroughComplete).toBe(true);
+    expect(rT.diamonds).toBe(GUIDE_COMPLETE_REWARD + LEVEL_CLEAR_REWARD + WALKTHROUGH_PAYOUT);
   });
 });

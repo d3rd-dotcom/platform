@@ -50,15 +50,33 @@ interface ClosureNode {
  * Diamonds are credited to users.shard_count, the same balance the VIP claim flow
  * credits. Must be called AFTER guide_progress has recorded the completion, so
  * that the closure's completion counts already include this guide.
+ *
+ * Fail-closed guards (money path — no payout, though completion itself stands):
+ *   - the target guide must exist and be PUBLISHED (completeGuide enforces this
+ *     too; re-checked here so the payout path never trusts its caller);
+ *   - the completing user must not be the guide's author — authors may complete
+ *     their own guide to progress through walkthroughs, but earn nothing for it.
  */
 export async function awardGuideRewards(
   userId: string,
   guideId: string,
 ): Promise<GuideRewardResult> {
   return withTransaction(async (client) => {
+    const guideRes = await client.query<{ author_id: string | null; status: string }>(
+      `SELECT author_id, status FROM guides WHERE id = $1`,
+      [guideId],
+    );
+    const guide = guideRes.rows[0];
+    if (!guide || guide.status !== 'published' || guide.author_id === userId) {
+      return { diamonds: 0, levelCleared: false, walkthroughComplete: false, spinGranted: false };
+    }
+
     // Compute the walkthrough closure of guideId with per-node levels. This is
     // the same recursive-CTE strategy as getWalkthrough, restricted to what the
-    // reward tiers need (id + level).
+    // reward tiers need (id + level). Like getWalkthrough, only PUBLISHED
+    // prereqs are traversed — non-published guides can't be completed, so
+    // counting them here would strand the level_clear / walkthrough_complete
+    // bonuses forever.
     const closureRes = await client.query<ClosureNode>(
       `
       WITH RECURSIVE closure AS (
@@ -67,6 +85,7 @@ export async function awardGuideRewards(
         SELECT e.prereq_id
         FROM guide_edges e
         JOIN closure c ON e.guide_id = c.id
+        JOIN guides p ON p.id = e.prereq_id AND p.status = 'published'
       ),
       sub_edges AS (
         SELECT e.prereq_id, e.guide_id

@@ -38,7 +38,8 @@ const PREREQ_SQL = `
 `;
 
 // Copied verbatim from lib/guides-db.ts:getWalkthrough — the closure + longest-path
-// level CTE. Parameterised on $1 = target guide id.
+// level CTE. Parameterised on $1 = target guide id. Only PUBLISHED prereqs are
+// traversed (matching completeGuide's gate and the reward closure).
 const LEVEL_CTE = `
   WITH RECURSIVE closure AS (
     SELECT $1::char(36) AS id
@@ -46,6 +47,7 @@ const LEVEL_CTE = `
     SELECT e.prereq_id
     FROM guide_edges e
     JOIN closure c ON e.guide_id = c.id
+    JOIN guides p ON p.id = e.prereq_id AND p.status = 'published'
   ),
   sub_edges AS (
     SELECT e.prereq_id, e.guide_id
@@ -205,9 +207,9 @@ describe.skipIf(!TEST_DB_URL)('guide DAG schema (integration)', () => {
       const a = gid('lvl-a');
       const b = gid('lvl-b');
       const c = gid('lvl-c');
-      await insertGuide(a, 'lvl-a', 'Lvl A');
-      await insertGuide(b, 'lvl-b', 'Lvl B');
-      await insertGuide(c, 'lvl-c', 'Lvl C');
+      await insertGuide(a, 'lvl-a', 'Lvl A', 'published');
+      await insertGuide(b, 'lvl-b', 'Lvl B', 'published');
+      await insertGuide(c, 'lvl-c', 'Lvl C', 'published');
       await insertEdge(a, b); // A prereq of B
       await insertEdge(b, c); // B prereq of C
       const lvl = await levels(c);
@@ -233,7 +235,7 @@ describe.skipIf(!TEST_DB_URL)('guide DAG schema (integration)', () => {
         [x, 'dia-x', 'Dia X'],
         [y, 'dia-y', 'Dia Y'],
       ] as const) {
-        await insertGuide(id, slug, title);
+        await insertGuide(id, slug, title, 'published');
       }
       await insertEdge(a, b);
       await insertEdge(a, c);
@@ -251,6 +253,28 @@ describe.skipIf(!TEST_DB_URL)('guide DAG schema (integration)', () => {
       expect(lvl.get(y)).toBe(2);
       // D's level is the MAX over all incoming paths: longest = A->X->Y->D = 3.
       expect(lvl.get(d)).toBe(3);
+    });
+
+    it('excludes non-published prereqs (and anything reachable only through them)', async () => {
+      // Draft D and its published prereq P feed target T; published Q also
+      // feeds T. Traversal stops at D, so only T and Q are in the closure.
+      const t = gid('pub-t');
+      const q = gid('pub-q');
+      const d = gid('pub-d');
+      const p = gid('pub-p');
+      await insertGuide(t, 'pub-t', 'Pub T', 'published');
+      await insertGuide(q, 'pub-q', 'Pub Q', 'published');
+      await insertGuide(d, 'pub-d', 'Pub D', 'draft');
+      await insertGuide(p, 'pub-p', 'Pub P', 'published');
+      await insertEdge(q, t);
+      await insertEdge(d, t);
+      await insertEdge(p, d);
+
+      const lvl = await levels(t);
+      expect(lvl.get(q)).toBe(0);
+      expect(lvl.get(t)).toBe(1);
+      expect(lvl.has(d)).toBe(false);
+      expect(lvl.has(p)).toBe(false);
     });
   });
 });
