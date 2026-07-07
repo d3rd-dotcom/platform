@@ -236,6 +236,18 @@ export const authorStatsResponseSchema = z.object({
 });
 export type AuthorStatsResponse = z.infer<typeof authorStatsResponseSchema>;
 
+/** GET /api/guides/frontier — next-unlock guides for the caller. */
+export const frontierGuidesResponseSchema = z.object({
+  guides: z.array(z.object({
+    id: z.string(),
+    slug: z.string(),
+    topicTitle: z.string(),
+    status: guideStatusSchema,
+    prereqCount: z.number(),
+  })),
+});
+export type FrontierGuidesResponse = z.infer<typeof frontierGuidesResponseSchema>;
+
 /** GET /api/guides/progress/stats — aggregate progress stats. */
 export const progressStatsResponseSchema = z.object({
   totalGuides: z.number(),

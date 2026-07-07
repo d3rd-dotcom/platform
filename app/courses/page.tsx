@@ -13,7 +13,7 @@ import type { CourseData } from '@/lib/personal-course';
 import type { VipCourseRecord } from '@/lib/vip-course-db';
 import { onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
 import type { CourseRecord } from '@/lib/course-content-db';
-import type { GuideRecord } from '@/lib/guides-db';
+import type { GuideRecord, FrontierGuide } from '@/lib/guides-db';
 import { useSound } from '@/hooks/useSound';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 import styles from './page.module.css';
@@ -67,6 +67,7 @@ export default function CoursesPage() {
     totalUpvotes: number;
     totalDownvotes: number;
   } | null>(null);
+  const [frontierGuides, setFrontierGuides] = useState<FrontierGuide[] | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [isVip, setIsVip] = useState(false);
@@ -115,6 +116,21 @@ export default function CoursesPage() {
         const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
         const res = await fetch('/api/guides/progress/stats', { cache: 'no-store', headers });
         if (res.ok) setGuideProgress(await res.json());
+      } catch {}
+    })();
+  }, [ready, authenticated, getAccessToken]);
+
+  useEffect(() => {
+    if (!ready || !authenticated) return;
+    (async () => {
+      try {
+        const token = await getAccessToken();
+        const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+        const res = await fetch('/api/guides/frontier', { cache: 'no-store', headers });
+        if (res.ok) {
+          const d = await res.json();
+          setFrontierGuides(d.guides ?? []);
+        }
       } catch {}
     })();
   }, [ready, authenticated, getAccessToken]);
@@ -460,6 +476,38 @@ export default function CoursesPage() {
           <div className={styles.guideSection}>
             <h2 className={styles.guideSectionHeading}>Knowledge Base</h2>
             <div className={styles.guideSectionContent}>
+              {authenticated && frontierGuides && frontierGuides.length > 0 && (
+                <div className={styles.guideSubjectGroup}>
+                  <span className={styles.guideSubjectLabel}>
+                    {(guideProgress?.completedGuides ?? 0) === 0 ? 'Start here' : 'Next unlocks'}
+                  </span>
+                  <div className={styles.authoredList}>
+                    {frontierGuides.slice(0, 6).map((g) => (
+                      <Link
+                        key={`frontier-${g.id}`}
+                        href={`/courses/guides/${g.slug}`}
+                        className={styles.guideCard}
+                        onMouseEnter={() => play('soft-hover')}
+                      >
+                        <div className={styles.guideCardBody}>
+                          <span className={styles.guideCardTitle}>{g.topicTitle}</span>
+                        </div>
+                        <span className={styles.guideCardChevron} aria-hidden="true">›</span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {authenticated &&
+                frontierGuides &&
+                frontierGuides.length === 0 &&
+                guideProgress &&
+                guideProgress.totalGuides > 0 &&
+                guideProgress.completedGuides >= guideProgress.totalGuides && (
+                  <p className={styles.guideAllDoneLine}>
+                    You&apos;ve completed every guide here. Nice work.
+                  </p>
+                )}
               {guideProgress && authenticated && (
                 <div className={styles.guideProgressCard}>
                   <div className={styles.guideProgressStats}>

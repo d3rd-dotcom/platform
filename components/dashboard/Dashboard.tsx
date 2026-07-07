@@ -1,9 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { usePrivy } from '@privy-io/react-auth';
 import BlueScene from '@/components/blue-scene/BlueScene';
 import ChatRoom from '@/components/chat-room/ChatRoom';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
+import type { FrontierGuide } from '@/lib/guides-db';
 import styles from './Dashboard.module.css';
 
 interface DashboardProps {
@@ -27,8 +30,10 @@ function avatarColor(name: string): string {
 }
 
 export default function Dashboard({ enableMorningPagesPersistence = false }: DashboardProps) {
+  const { ready, authenticated, getAccessToken } = usePrivy();
   const [leaderboard, setLeaderboard] = useState<LeaderUser[]>([]);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [nextUpGuides, setNextUpGuides] = useState<FrontierGuide[]>([]);
 
   useEffect(() => {
     if (!showLeaderboard) return;
@@ -50,6 +55,23 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
       .catch(() => {/* leaderboard is best-effort */});
   }, []);
 
+  // Knowledge Base "next up": a small taste of the guides frontier, linking
+  // out to the full picture on /courses.
+  useEffect(() => {
+    if (!ready || !authenticated) return;
+    (async () => {
+      try {
+        const token = await getAccessToken();
+        const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+        const res = await fetch('/api/guides/frontier', { cache: 'no-store', headers });
+        if (res.ok) {
+          const d = await res.json();
+          setNextUpGuides(Array.isArray(d.guides) ? d.guides.slice(0, 3) : []);
+        }
+      } catch {/* next-up is best-effort */}
+    })();
+  }, [ready, authenticated, getAccessToken]);
+
   return (
     <div className={styles.dashboard}>
 
@@ -69,6 +91,25 @@ export default function Dashboard({ enableMorningPagesPersistence = false }: Das
             compact
           />
         </div>
+
+        {nextUpGuides.length > 0 && (
+          <div className={styles.leaderboardCard}>
+            <div className={styles.leaderHead}>
+              <span className={styles.leaderIcon}>次</span>
+              <span className={styles.leaderTitle}>Next up</span>
+            </div>
+            <ul className={styles.nextUpList}>
+              {nextUpGuides.map((g) => (
+                <li key={g.id}>
+                  <Link href={`/courses/guides/${g.slug}`} className={styles.nextUpRow}>
+                    <span className={styles.nextUpTitle}>{g.topicTitle}</span>
+                    <span className={styles.nextUpChevron} aria-hidden="true">›</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <button
           type="button"

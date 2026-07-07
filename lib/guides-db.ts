@@ -57,6 +57,11 @@ export interface GuideLink {
   status: GuideStatus;
 }
 
+/** A frontier guide: not yet completed, all direct (published) prereqs done. */
+export interface FrontierGuide extends GuideLink {
+  prereqCount: number;
+}
+
 export interface WalkthroughNode extends GuideLink {
   level: number;
   prereqIds: string[];
@@ -248,6 +253,52 @@ export async function getDirectDependents(guideId: string): Promise<GuideLink[]>
      WHERE e.prereq_id = :guideId
      ORDER BY g.topic_title ASC`,
     { guideId },
+  );
+}
+
+/**
+ * Returns the "frontier" for a user: PUBLISHED guides they have NOT completed,
+ * whose direct prereqs are ALL satisfied. A prereq only gates when it is itself
+ * published — draft/unpublished prereqs don't block, mirroring completeGuide's
+ * gate above (`p.status = 'published'`) so a guide never appears here that
+ * completeGuide would then reject with a 409. Guides with zero published
+ * prereqs (primitives) are included — the frontier for a brand-new user.
+ *
+ * Single query, no N+1: prereqCount is a scalar subquery per row, and the gate
+ * itself is a correlated NOT EXISTS, both evaluated by Postgres per candidate
+ * guide rather than fetched round-trip by round-trip.
+ */
+export async function getFrontierGuides(userId: string): Promise<FrontierGuide[]> {
+  return sqlQuery<FrontierGuide[]>(
+    `SELECT
+       g.id,
+       g.slug,
+       g.topic_title AS "topicTitle",
+       g.status,
+       (
+         SELECT COUNT(*)::int
+         FROM guide_edges pe
+         JOIN guides pg ON pg.id = pe.prereq_id AND pg.status = 'published'
+         WHERE pe.guide_id = g.id
+       ) AS "prereqCount"
+     FROM guides g
+     WHERE g.status = 'published'
+       AND NOT EXISTS (
+         SELECT 1 FROM guide_progress gp
+         WHERE gp.user_id = :userId AND gp.guide_id = g.id
+       )
+       AND NOT EXISTS (
+         SELECT 1
+         FROM guide_edges e
+         JOIN guides pr ON pr.id = e.prereq_id AND pr.status = 'published'
+         WHERE e.guide_id = g.id
+           AND NOT EXISTS (
+             SELECT 1 FROM guide_progress gp2
+             WHERE gp2.user_id = :userId AND gp2.guide_id = e.prereq_id
+           )
+       )
+     ORDER BY "prereqCount" ASC, g.topic_title ASC`,
+    { userId },
   );
 }
 

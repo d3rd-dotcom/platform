@@ -305,6 +305,53 @@
   color: #9aa0c0;
 }
 
+/* ── Next up (guides frontier) list ── */
+.nextUpList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nextUpRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 4px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.nextUpRow:hover {
+  background: color-mix(in oklch, var(--color-primary) 7%, transparent);
+}
+
+.nextUpTitle {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2a2f52;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nextUpChevron {
+  flex-shrink: 0;
+  font-size: 0.95rem;
+  color: #9aa0c0;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.nextUpRow:hover .nextUpChevron {
+  color: var(--color-primary);
+  transform: translateX(2px);
+}
+
 /* ── Leaderboard modal ── */
 .leaderModalOverlay {
   position: fixed;
@@ -806,6 +853,10 @@
 }
 
 :global([data-theme="dark"]) .leaderName {
+  color: #d6d9ee;
+}
+
+:global([data-theme="dark"]) .nextUpTitle {
   color: #d6d9ee;
 }
 
