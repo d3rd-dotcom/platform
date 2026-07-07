@@ -193,6 +193,13 @@ export const walkthroughResponseSchema = z.object({
 });
 export type WalkthroughResponse = z.infer<typeof walkthroughResponseSchema>;
 
+/** GET /api/guides/map — the whole published guide graph, personalized if signed in. */
+export const knowledgeMapResponseSchema = z.object({
+  map: looseRecord,
+  authenticated: z.boolean(),
+});
+export type KnowledgeMapResponse = z.infer<typeof knowledgeMapResponseSchema>;
+
 /** Vote totals object (also nested in the vote-cast response). */
 export const voteTotalsSchema = z.object({ up: z.number(), down: z.number() });
 export type VoteTotalsPayload = z.infer<typeof voteTotalsSchema>;
