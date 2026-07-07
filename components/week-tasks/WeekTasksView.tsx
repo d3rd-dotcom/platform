@@ -122,6 +122,7 @@ export default function WeekTasksView({
   const [isSealing, setIsSealing] = useState(false);
   const [sealStep, setSealStep] = useState<'confirm' | 'sealing'>('confirm');
   const [showSealModal, setShowSealModal] = useState(false);
+  const [sealError, setSealError] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
   const [shardsAwarded, setShardsAwarded] = useState(100);
   const [showRewardAnimation, setShowRewardAnimation] = useState(false);
@@ -259,7 +260,7 @@ export default function WeekTasksView({
 
   const completedCount = completedSections.size;
   const totalSections = journalSections.length;
-  const canSeal = completedCount >= Math.ceil(totalSections / 2) && !isSealed;
+  const canSeal = completedCount >= totalSections && !isSealed;
 
   const toggleExpand = (id: string) => {
     play(expandedSection === id ? 'toggle-off' : 'toggle-on');
@@ -340,6 +341,7 @@ export default function WeekTasksView({
     if (!canSeal || isSealing) return;
     setIsSealing(true);
     setSealStep('sealing');
+    setSealError(null);
     try {
       const authHeaders = await getAuthHeaders();
       const res = await fetch('/api/ethereal-progress', {
@@ -378,6 +380,7 @@ export default function WeekTasksView({
       if (typeof window !== 'undefined' && 'vibrate' in navigator) navigator.vibrate([50, 30, 50, 30, 100]);
     } catch (err) {
       console.error('Seal failed:', err);
+      setSealError(err instanceof Error ? err.message : 'Seal failed. Please try again.');
       setSealStep('confirm');
     } finally { setIsSealing(false); }
   };
@@ -738,13 +741,13 @@ export default function WeekTasksView({
             type="button"
             className={`${styles.sealBtn} ${canSeal ? styles.sealBtnReady : ''}`}
             disabled={!canSeal}
-            onClick={() => { play('click'); setShowSealModal(true); }}
+            onClick={() => { play('click'); setSealError(null); setShowSealModal(true); }}
             onMouseEnter={() => play('hover')}
           >
             Seal The Week
           </button>
           {!canSeal && (
-            <span className={styles.sealHint}>Complete at least {Math.ceil(totalSections / 2)} tasks to seal</span>
+            <span className={styles.sealHint}>Complete all {totalSections} tasks to seal</span>
           )}
         </div>
       )}
@@ -773,10 +776,13 @@ export default function WeekTasksView({
                   <p className={styles.missionModalText}>
                     Are you really sure you&apos;re ready to wrap up this mission? After completion, there&apos;s no turning back...
                   </p>
+                  {sealError && (
+                    <p className={styles.missionModalError}>{sealError}</p>
+                  )}
                 </div>
                 <div className={styles.missionModalFooter}>
                   <button className={styles.missionModalBack}
-                    onClick={() => { play('toggle-off'); setShowSealModal(false); }}
+                    onClick={() => { play('toggle-off'); setShowSealModal(false); setSealError(null); }}
                     onMouseEnter={() => play('hover')}>Go Back</button>
                   <button className={styles.missionModalConfirm}
                     onClick={() => { play('celebration'); handleSealWeek(); }}

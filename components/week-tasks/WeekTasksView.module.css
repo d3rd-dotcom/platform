@@ -538,6 +538,14 @@
   margin: 0;
 }
 
+.missionModalError {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  color: #C0392B;
+  line-height: 1.5;
+  margin: 12px 0 0;
+}
+
 .missionModalFooter {
   display: flex;
   gap: 12px;
@@ -756,6 +764,10 @@
 
 :global([data-theme="dark"]) .missionModalText {
   color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .missionModalError {
+  color: #E57373;
 }
 
 :global([data-theme="dark"]) .missionModalBack {
