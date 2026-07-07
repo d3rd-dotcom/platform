@@ -161,8 +161,12 @@ export async function submitGuideForVerification(guideId: string): Promise<Verif
     const pool = poolRows.map((r) => r.user_id);
 
     if (pool.length < 1) {
+      // Thrown before any INSERT/UPDATE in this transaction, so withTransaction's
+      // ROLLBACK is a no-op here — the guide stays exactly as it was (still
+      // 'draft', no panel, no partial rows). Fail-closed by construction, not by
+      // cleanup: nothing gets left stranded in pending_verification.
       throw httpError(
-        'No eligible verifiers hold a credential for this guide\'s subject(s) yet.',
+        'No verifiers are credentialed for this subject yet. Your draft is safe — try again once verifiers exist.',
         409,
       );
     }
