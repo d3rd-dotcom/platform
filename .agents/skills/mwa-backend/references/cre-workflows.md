@@ -1,5 +1,7 @@
 # Chainlink CRE Workflows
 
+> Status (2026-07-06): dormant. Kalshi trading and the CRE workflows are not in active use; this doc is kept for reference. Do not build on these paths without asking James.
+
 Self-contained TypeScript workflows that run on Chainlink CRE (DON-signed off-chain compute that delivers reports on-chain). Live in `cre-workflows/`.
 
 ## The three workflows

@@ -2,7 +2,7 @@
 pragma solidity 0.8.24;
 
 import "forge-std/Test.sol";
-import "../src/DiamondsV2.sol";
+import "../src/Diamonds.sol";
 import "../src/ReflectionVault.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
@@ -19,8 +19,8 @@ contract MockCbBTC is ERC20 {
     }
 }
 
-contract DiamondsV2Test is Test {
-    DiamondsV2 public token;
+contract DiamondsTest is Test {
+    Diamonds public token;
     ReflectionVault public vault;
     MockCbBTC public cbbtc;
 
@@ -50,7 +50,7 @@ contract DiamondsV2Test is Test {
         cbbtc = new MockCbBTC();
         // Mirror production: Blue deploys, so Blue is owner.
         vm.prank(blue);
-        token = new DiamondsV2(blue, address(cbbtc));
+        token = new Diamonds(blue, address(cbbtc));
         vault = token.vault();
     }
 
@@ -75,7 +75,7 @@ contract DiamondsV2Test is Test {
 
     function test_MintGating() public {
         vm.prank(user);
-        vm.expectRevert(DiamondsV2.NotMinter.selector);
+        vm.expectRevert(Diamonds.NotMinter.selector);
         token.mint(user, 1e18);
 
         vm.prank(blue);
@@ -99,12 +99,12 @@ contract DiamondsV2Test is Test {
 
         // Owner path dead.
         vm.prank(blue);
-        vm.expectRevert(DiamondsV2.MintingFinalized.selector);
+        vm.expectRevert(Diamonds.MintingFinalized.selector);
         token.mint(user, 1e18);
 
         // Previously granted minters dead too — full supply finalization.
         vm.prank(cdp);
-        vm.expectRevert(DiamondsV2.MintingFinalized.selector);
+        vm.expectRevert(Diamonds.MintingFinalized.selector);
         token.mint(user, 1e18);
 
         // Burns, transfers, and reflections survive renounce.
@@ -202,7 +202,7 @@ contract DiamondsV2Test is Test {
 
     function test_FeeCapIsHard() public {
         vm.prank(blue);
-        vm.expectRevert(DiamondsV2.FeeTooHigh.selector);
+        vm.expectRevert(Diamonds.FeeTooHigh.selector);
         token.setFeeBps(201);
 
         vm.startPrank(blue);

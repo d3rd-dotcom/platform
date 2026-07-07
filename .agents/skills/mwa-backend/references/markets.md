@@ -1,5 +1,7 @@
 # Markets — Kalshi (current), Polymarket (deprecated)
 
+> Status (2026-07-06): dormant. Kalshi trading and the CRE workflows are not in active use; this doc is kept for reference. Do not build on these paths without asking James.
+
 Treasury market data and prediction-market trading. **Kalshi is the live integration.** Polymarket is no longer used — the old `lib/market-api.ts` is now a Kalshi re-export shim.
 
 ## Files
