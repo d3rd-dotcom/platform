@@ -3,6 +3,19 @@
 Base mainnet. Deployer and owner: Blue (key in `BLUE_PRIVATE_KEY`, legacy fallback `AZURA_PRIVATE_KEY`).
 Written 2026-07-06. Executor: any agent session with this repo, `.env.local`, and Foundry.
 
+**Status 2026-07-06 late: live on Base Sepolia, rehearsal passed.** Deployed by Blue for
+0.0000195 ETH with pinned gas: token `0xd116e780ca9ec3984e7682e095aab50006a9c160`, vault
+`0xc8FfD11F157C71F58477Cc49a2bf25bc69683b20`, TestnetCbBTC
+`0x71a92f9b94646e5119f82cd7b01c69da8ec3a352` — all three source-verified on Blockscout
+(Basescan verify still wants a `BASESCAN_API_KEY`). End-to-end rehearsal on the live
+testnet: a zero-ETH wallet was minted 2,000 BLUE, signed a permit offline, had 400 burned
+by the relayer (supply shrank exactly 400), and received 0.99999999 cbBTC from a 1.0
+deposit via `process()` — without ever sending a transaction. One field note: submitting
+`permit` and `burnFrom` as two separate transactions tripped RPC replica lag at gas
+estimation; the production relayer batches both calls in one Alchemy user operation, which
+makes this a non-issue by construction. Addresses recorded in `.env.local`
+(`DIAMONDS_SEPOLIA_*`). Mainnet remains v1; Phases B–E of this brief still stand.
+
 **Status 2026-07-06: Phase A complete.** `Diamonds.sol` + `ReflectionVault.sol` are in
 `contracts/src/` with 18 tests green (140/140 suite-wide) and a successful mainnet-fork
 dry run (~3.57M gas, ~0.000037 ETH). Not deployed, not airdropped — Phases B–E remain.
