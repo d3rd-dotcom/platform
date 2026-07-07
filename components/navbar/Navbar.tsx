@@ -6,6 +6,9 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAccount } from 'wagmi';
 import { usePrivy } from '@privy-io/react-auth';
+import { createPublicClient, http, formatEther, erc20Abi } from 'viem';
+import { base, baseSepolia } from 'viem/chains';
+import { getChainConfig } from '@/lib/chain-config';
 import YourAccountsModal from '@/components/nav-buttons/YourAccountsModal';
 import AvatarSelectorModal from '@/components/avatar-selector/AvatarSelectorModal';
 import UsernameChangeModal from '@/components/username-change/UsernameChangeModal';
@@ -83,6 +86,10 @@ const Navbar: React.FC = () => {
   const [shardCount, setShardCount] = useState<number | null>(null);
   const [username, setUsername] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [walletEthBalance, setWalletEthBalance] = useState<string | null>(null);
+  const [walletDiamondBalance, setWalletDiamondBalance] = useState<string | null>(null);
+  const [walletBtcBalance, setWalletBtcBalance] = useState<string | null>(null);
+  const [walletCopied, setWalletCopied] = useState(false);
   const profileDropdownRef = useRef<HTMLDivElement>(null);
 
   // Fetch user data - wait for Privy ready + authenticated
@@ -140,6 +147,72 @@ const Navbar: React.FC = () => {
       return pathname === '/courses' || pathname === '/';
     }
     return pathname === path || pathname?.startsWith(path + '/');
+  };
+
+  // Fetch wallet balances when address changes
+  useEffect(() => {
+    if (!isConnected || !address) {
+      setWalletEthBalance(null);
+      setWalletDiamondBalance(null);
+      setWalletBtcBalance(null);
+      return;
+    }
+
+    const cfg = getChainConfig();
+    const chain = cfg.chainId === 84532 ? baseSepolia : base;
+    const client = createPublicClient({ chain, transport: http(cfg.rpcUrl) });
+
+    const fetchBalances = async () => {
+      try {
+        const addr = address as `0x${string}`;
+
+        const eth = await client.getBalance({ address: addr });
+        setWalletEthBalance(Number(formatEther(eth)).toFixed(4));
+
+        const [diamondResult, btcResult] = await client.multicall({
+          contracts: [
+            {
+              address: cfg.diamondsTokenAddress as `0x${string}`,
+              abi: erc20Abi,
+              functionName: 'balanceOf',
+              args: [addr],
+            },
+            ...(cfg.cbBTcAddress
+              ? [{
+                  address: cfg.cbBTcAddress as `0x${string}`,
+                  abi: erc20Abi,
+                  functionName: 'balanceOf',
+                  args: [addr],
+                }]
+              : []),
+          ],
+          allowFailure: true,
+        });
+
+        if (diamondResult.status === 'success') {
+          setWalletDiamondBalance(Number(diamondResult.result) / 1e18 < 1
+            ? (Number(diamondResult.result) / 1e18).toFixed(2)
+            : Math.floor(Number(diamondResult.result) / 1e18).toLocaleString());
+        }
+
+        if (btcResult && 'status' in btcResult && btcResult.status === 'success') {
+          setWalletBtcBalance((Number(btcResult.result) / 1e8).toFixed(8));
+        }
+      } catch (err) {
+        console.error('[wallet] balance fetch failed:', err);
+      }
+    };
+
+    fetchBalances();
+  }, [isConnected, address]);
+
+  const handleCopyWallet = async () => {
+    if (!address) return;
+    try {
+      await navigator.clipboard.writeText(address);
+      setWalletCopied(true);
+      setTimeout(() => setWalletCopied(false), 1400);
+    } catch {}
   };
 
   // Close dropdown when clicking outside
@@ -379,6 +452,56 @@ const Navbar: React.FC = () => {
                       </Link>
                     </div>
                     <div className={styles.profileDropdownMenu}>
+                      {/* Wallet Balances */}
+                      {isConnected && address && (
+                        <div className={styles.walletSection}>
+                          <button
+                            className={styles.walletAddressRow}
+                            onClick={handleCopyWallet}
+                            type="button"
+                          >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.walletIcon}>
+                              <rect x="1" y="6" width="22" height="15" rx="2" ry="2" />
+                              <circle cx="17" cy="13.5" r="1.5" fill="currentColor" stroke="none" />
+                              <path d="M5 6V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v2" />
+                            </svg>
+                            <span className={styles.walletAddressText}>
+                              {walletCopied ? 'copied' : `${address.slice(0, 6)}...${address.slice(-4)}`}
+                            </span>
+                          </button>
+                          <div className={styles.walletBalanceRow}>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.walletIcon}>
+                              <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                              <path d="M2 17l10 5 10-5" />
+                              <path d="M2 12l10 5 10-5" />
+                            </svg>
+                            <span className={styles.walletLabel}>ETH</span>
+                            <span className={styles.walletValue}>{walletEthBalance ?? '—'}</span>
+                          </div>
+                          <div className={styles.walletBalanceRow}>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.walletIcon}>
+                              <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                              <path d="M2 17l10 5 10-5" />
+                              <path d="M2 12l10 5 10-5" />
+                            </svg>
+                            <span className={styles.walletLabel}>Diamonds</span>
+                            <span className={styles.walletValue}>{walletDiamondBalance ?? '—'}</span>
+                          </div>
+                          {getChainConfig().cbBTcAddress && (
+                            <div className={styles.walletBalanceRow}>
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.walletIcon}>
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 6v12" />
+                                <path d="M9.5 8.5h4.5a2.5 2.5 0 0 1 0 5h-4.5" />
+                                <path d="M9.5 13.5h5a2 2 0 0 1 0 4h-5" />
+                              </svg>
+                              <span className={styles.walletLabel}>Bitcoin</span>
+                              <span className={styles.walletValue}>{walletBtcBalance ?? '—'}</span>
+                            </div>
+                          )}
+                          <div className={styles.dropdownDivider} />
+                        </div>
+                      )}
                       {/* Mobile Credits Counter in Dropdown */}
                       <div className={styles.mobileShardsInDropdown}>
                         <Image
