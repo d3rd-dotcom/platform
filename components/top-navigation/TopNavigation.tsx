@@ -196,6 +196,39 @@ const TopNavigation: React.FC = () => {
           {/* Profile card slot — SideNavigation portals the profile card here */}
           <div id="topnav-profile-slot" className={styles.profileSlot} />
         </nav>
+
+        {/* Mobile-only action — replaces the search bar on small screens */}
+        <div className={styles.mobileActions}>
+          {authenticated ? (
+            <button
+              type="button"
+              className={styles.mobileIconButton}
+              onClick={() => { play('click'); window.dispatchEvent(new Event('openWalletDrawer')); }}
+              onMouseEnter={() => play('hover')}
+              aria-label="Open wallet and profile"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M20 12V8a2 2 0 0 0-2-2H6a2 2 0 0 1 0-4h12" />
+                <path d="M4 6v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4" />
+                <circle cx="16" cy="14" r="1.4" fill="currentColor" stroke="none" />
+              </svg>
+            </button>
+          ) : (
+            <button
+              type="button"
+              className={styles.mobileIconButton}
+              onClick={handleLogin}
+              onMouseEnter={() => play('hover')}
+              aria-label="Login"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                <path d="M10 17l5-5-5-5" />
+                <path d="M15 12H3" />
+              </svg>
+            </button>
+          )}
+        </div>
       </div>
     </header>
   );

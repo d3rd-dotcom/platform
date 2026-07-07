@@ -18,6 +18,7 @@ import HoverSlideText from '@/components/shared/HoverSlideText';
 const BlueChat = dynamic(() => import('../blue-chat/BlueChat'), { ssr: false });
 const BlueCallingOverlay = dynamic(() => import('../blue-calling-overlay/BlueCallingOverlay'), { ssr: false });
 const SidebarProfileCard = dynamic(() => import('../sidebar-profile-card/SidebarProfileCard'), { ssr: false });
+const WalletDrawer = dynamic(() => import('../wallet-drawer/WalletDrawer'), { ssr: false });
 const AvatarSelectorModal = dynamic(() => import('../avatar-selector/AvatarSelectorModal'), { ssr: false });
 const UsernameChangeModal = dynamic(() => import('../username-change/UsernameChangeModal'), { ssr: false });
 const ProMembershipModal = dynamic(() => import('../pro-membership-modal/ProMembershipModal'), { ssr: false });
@@ -227,6 +228,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const hamburgerRef = useRef<HTMLButtonElement>(null);
   const [accountMenuStyle, setAccountMenuStyle] = useState<React.CSSProperties>({});
   const [profileSlot, setProfileSlot] = useState<HTMLElement | null>(null);
+  const [walletDrawerOpen, setWalletDrawerOpen] = useState(false);
 
   // Locate the top-nav slot the profile card portals into.
   useEffect(() => {
@@ -234,6 +236,13 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
       setProfileSlot(document.getElementById('topnav-profile-slot'));
     }, 0);
     return () => clearTimeout(timer);
+  }, []);
+
+  // The mobile top-nav profile icon opens the wallet drawer via a window event.
+  useEffect(() => {
+    const open = () => setWalletDrawerOpen(true);
+    window.addEventListener('openWalletDrawer', open);
+    return () => window.removeEventListener('openWalletDrawer', open);
   }, []);
 
 
@@ -724,13 +733,17 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
         avatarUrl={avatarUrl}
         address={address}
         isCollapsed={collapsed}
-        onChangeAvatar={handleAvatarClick}
-        onChangeUsername={handleUsernameClick}
-        onConnections={() => setIsYourAccountsModalOpen(true)}
-        onSignOut={handleSignOut}
+        onOpenWallet={() => setWalletDrawerOpen(true)}
       />
     );
   };
+
+  const walletDisplayName = username && !username.startsWith('user_') ? username : null;
+  const walletInitials = walletDisplayName
+    ? walletDisplayName.slice(0, 2).toUpperCase()
+    : address
+    ? address.slice(2, 4).toUpperCase()
+    : '??';
 
   return (
     <>
@@ -950,6 +963,20 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
       )}
       {isYourAccountsModalOpen && (
         <YourAccountsModal onClose={() => setIsYourAccountsModalOpen(false)} />
+      )}
+      {shouldShowProfileCards && (
+        <WalletDrawer
+          open={walletDrawerOpen}
+          onClose={() => setWalletDrawerOpen(false)}
+          displayName={walletDisplayName}
+          initials={walletInitials}
+          avatarUrl={avatarUrl}
+          address={address}
+          onChangeAvatar={handleAvatarClick}
+          onChangeUsername={handleUsernameClick}
+          onConnections={() => setIsYourAccountsModalOpen(true)}
+          onSignOut={handleSignOut}
+        />
       )}
       {isAvatarSelectorOpen && (
         <AvatarSelectorModal
