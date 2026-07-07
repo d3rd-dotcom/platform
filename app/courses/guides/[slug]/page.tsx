@@ -120,16 +120,15 @@ export default function GuidePage({ params }: PageProps) {
     <div className={styles.layout}>
       <SideNavigation />
       <main className={styles.page}>
-        <Link href="/courses" className={styles.back}>
-          <ArrowLeft size={16} weight="bold" /> Knowledge Base
-        </Link>
-
         {loading && <div className={styles.state}>Loading guide…</div>}
         {notFound && !loading && <div className={styles.state}>Guide not found.</div>}
 
         {data && !loading && (
           <>
             <header className={styles.header}>
+              <Link href="/courses" className={styles.back}>
+                <ArrowLeft size={16} weight="bold" /> Knowledge Base
+              </Link>
               <div className={styles.subjects}>
                 {data.guide.subjects.map((s) => (
                   <span key={s} className={styles.subjectTag}>{s}</span>

@@ -43,6 +43,7 @@
   color: var(--color-text-muted);
   text-decoration: none;
   width: fit-content;
+  margin-bottom: 0.5rem;
 }
 
 .back:hover {
