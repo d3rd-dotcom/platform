@@ -11,10 +11,10 @@ import { ensureBaseChain, type Eip1193Provider } from '@/lib/ensure-base-chain';
 import { fetchDiamondBalance } from '@/lib/diamonds-balance';
 import { getDiamondPrice } from '@/lib/shop-catalog';
 import { useSound } from '@/hooks/useSound';
+import { getDiamondsTokenAddress, getRpcUrl, BURN_ADDRESS } from '@/lib/chain-config';
 import styles from './page.module.css';
 
-const BURN_ADDRESS = '0x000000000000000000000000000000000000dEaD';
-const DIAMONDS_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_DIAMONDS_TOKEN_ADDRESS || '';
+const DIAMONDS_TOKEN_ADDRESS = getDiamondsTokenAddress();
 const ERC20_TRANSFER_ABI = ['function transfer(address to, uint256 amount) returns (bool)'];
 
 type PayPhase = 'idle' | 'burning' | 'verifying' | 'done';

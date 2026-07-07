@@ -1,0 +1,90 @@
+/**
+ * Chain-aware configuration for Diamonds ($BLUE) and related contracts.
+ *
+ * Toggle between Base mainnet and Base Sepolia via NEXT_PUBLIC_USE_TESTNET.
+ * When set to 'true' (or '1'), all Diamonds flows (balance reads, mints,
+ * burns, reflections) target the Sepolia deployment.
+ */
+
+export interface ChainConfig {
+  chainId: number;
+  chainIdHex: string;
+  chainName: string;
+  nativeCurrency: { name: string; symbol: string; decimals: number };
+  rpcUrl: string;
+  explorerUrl: string;
+  diamondsTokenAddress: string;
+  reflectionVaultAddress: string | null;
+  cbBTcAddress: string | null;
+}
+
+const MAINNET: ChainConfig = {
+  chainId: 8453,
+  chainIdHex: '0x2105',
+  chainName: 'Base',
+  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+  rpcUrl: process.env.NEXT_PUBLIC_BASE_RPC_URL || 'https://mainnet.base.org',
+  explorerUrl: 'https://basescan.org',
+  diamondsTokenAddress:
+    process.env.DIAMONDS_TOKEN_ADDRESS ||
+    process.env.NEXT_PUBLIC_DIAMONDS_TOKEN_ADDRESS ||
+    '0x4A25Cea1f05C6725dC90849FBaafF00d67342B3f',
+  reflectionVaultAddress: null,
+  cbBTcAddress: null,
+};
+
+const SEPOLIA: ChainConfig = {
+  chainId: 84532,
+  chainIdHex: '0x14a34',
+  chainName: 'Base Sepolia',
+  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+  rpcUrl:
+    process.env.BASE_SEPOLIA_RPC_URL ||
+    process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL ||
+    'https://sepolia.base.org',
+  explorerUrl: 'https://sepolia.basescan.org',
+  diamondsTokenAddress:
+    process.env.DIAMONDS_SEPOLIA_TOKEN_ADDRESS ||
+    process.env.NEXT_PUBLIC_DIAMONDS_SEPOLIA_TOKEN_ADDRESS ||
+    '0xd116e780ca9ec3984e7682e095aab50006a9c160',
+  reflectionVaultAddress:
+    process.env.DIAMONDS_SEPOLIA_VAULT_ADDRESS ||
+    process.env.NEXT_PUBLIC_DIAMONDS_SEPOLIA_VAULT_ADDRESS ||
+    '0xc8FfD11F157C71F58477Cc49a2bf25bc69683b20',
+  cbBTcAddress:
+    process.env.DIAMONDS_SEPOLIA_CBBTC_ADDRESS ||
+    process.env.NEXT_PUBLIC_DIAMONDS_SEPOLIA_CBBTC_ADDRESS ||
+    '0x71a92f9b94646e5119f82cd7b01c69da8ec3a352',
+};
+
+function isTestnet(): boolean {
+  if (typeof process === 'undefined') return false;
+  const v = process.env.NEXT_PUBLIC_USE_TESTNET || process.env.USE_TESTNET || '';
+  return v === 'true' || v === '1' || v === 'yes';
+}
+
+export function getChainConfig(): ChainConfig {
+  return isTestnet() ? SEPOLIA : MAINNET;
+}
+
+export function getDiamondsTokenAddress(): string {
+  return getChainConfig().diamondsTokenAddress;
+}
+
+export function getReflectionVaultAddress(): string | null {
+  return getChainConfig().reflectionVaultAddress;
+}
+
+export function getCbBTCAddress(): string | null {
+  return getChainConfig().cbBTcAddress;
+}
+
+export function getRpcUrl(): string {
+  return getChainConfig().rpcUrl;
+}
+
+export function getChainId(): number {
+  return getChainConfig().chainId;
+}
+
+export const BURN_ADDRESS = '0x000000000000000000000000000000000000dEaD';

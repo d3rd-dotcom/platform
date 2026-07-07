@@ -12,10 +12,7 @@ A gamified educational gameworld built on behavioral psychology, with blockchain
 
 ---
 
-<img width="1676" height="863" alt="Screenshot 2026-06-19 at 3 28 34 PM" src="https://github.com/user-attachments/assets/e0191dcb-6079-4c89-af0d-5986b356a7e1" />
-
-
-## 🧿 What This Is
+## What This Is
 
 Mental Wealth Academy is a gamified educational gameworld built on behavioral psychology, with blockchain-backed ownership of what you earn, accompanied by Blue — the AI companion who reviews, rewards, and keeps the record.
 
@@ -23,67 +20,53 @@ Knowledge is structured in ascending levels, so you level up instead of grinding
 
 ---
 
-## 📚 Knowledge Ecosystem
+## Token & Reflection Protocol (Project Diamond)
 
-One definitive, verified guide per topic — a one-stop shop for knowledge. No duplicate tutorials, no contradictory advice, no guessing which source to trust.
+Diamonds ($BLUE) is an ERC-20 on Base that members earn for mental-wealth activity, spend to unseal field notes and shop items (real burns to 0xdEaD), and hold to earn Bitcoin reflections.
 
-- **One guide per topic.** Every subject has a single canonical guide. Spin-offs for genuine niches are tagged and grouped, never scattered.
-- **Level-gated.** Guides form an acyclic prerequisite graph. Level N+1 stays locked until you clear every level-N guide beneath it — knowledge in ascending order, no fatigue.
-- **Verifier jury.** Each guide is reviewed by an odd-numbered panel drawn from users who passed the verifier test for that subject and level. Votes are rubric-bound and require written justification; an AI juror (Chainlink CRE) adds a DON-signed advisory score. Approved work goes on-chain, and every decision is a public audit log.
+![Diamonds Token Economy](./blue-token-economy-diagram.svg)
 
-*Coming from the BlueLearn integration — see [`docs/bluelearn-integration-plan.md`](docs/bluelearn-integration-plan.md).*
+| Component | Base Mainnet | Base Sepolia (Testnet) |
+| :--- | :--- | :--- |
+| **Diamonds ($BLUE)** | `0x4A25Cea1f05C6725dC90849FBaafF00d67342B3f` | `0xd116e780ca9ec3984e7682e095aab50006a9c160` |
+| **Reflection Vault** | _deploying_ | `0xc8FfD11F157C71F58477Cc49a2bf25bc69683b20` |
+| **Reward Token (cbBTC)** | native cbBTC | `0x71a92f9b94646e5119f82cd7b01c69da8ec3a352` (mock) |
+| **Blue's Agent Wallet** | `0x0920553CcA188871b146ee79f562B4Af46aB4f8a` |
 
----
-
-## 🔬 Scientific Use Cases & Environments
-
-We bypass traditional institutional barriers by building specialized digital sandboxes designed to experiment with, test, and model collective human intelligence.
-
-### 1. We Simulate Science
-The platform functions as a decentralized research ecosystem. Instead of standard passive reading materials, users interact with live multi-agent environments designed to stress-test cognitive frameworks, model self-efficacy, and track systems thinking in real time.
-
-### 2. The R-Tool (Research Statistical Workbench)
-Our native statistical engine featuring integrated AI data interpretation. The R-Tool enables researchers to rapidly analyze community cognitive benchmarks, process decentralized research streams, and share immutable open-source outputs without central gatekeepers.
-
-### 3. Ontologies [Pocket World]
-A modular, game-like digital canvas built to visualize knowledge systems. Pocket Worlds allow users and AI agents to map multi-dimensional cognitive structures, model behavior dynamics, and visually trace evolving conceptual frameworks over time.
+**Trust guarantees (compiled-in, unchangeable):**
+- Fee capped at 2% (compile-time constant, no admin override)
+- Renouncing ownership permanently ends minting for everyone
+- Blue's 200M stash excluded from reflection dividends
 
 ---
 
-## ⛓️ Core Protocol Architecture
+## Knowledge Ecosystem
 
-The underlying network logic is consolidated into a clean, minimal contract framework on Base Mainnet.
+One definitive, verified guide per topic — a one-stop shop for knowledge.
 
-| Component / Identity | Contract Address (Base Mainnet) |
-| :--- | :--- |
-| **Diamond Contract** | `0x2cbb90a761ba64014b811be342b8ef01b471992d` |
-| **Blue's Wallet Contract** | `0xBc16E984D72091219b16D54605175960d7b2752A` |
-
-> *Note: All core governance weightings, operational rules, and modular logic endpoints map directly through the multi-facet Diamond proxy for complete system upgradeability.*
+- **One guide per topic.** Every subject has a single canonical guide. Spin-offs for genuine niches are tagged and grouped.
+- **Level-gated.** Guides form an acyclic prerequisite graph. Level N+1 stays locked until you clear every level-N guide beneath it.
+- **Verifier jury.** Each guide is reviewed by an odd-numbered panel drawn from users who passed the verifier test for that subject and level.
 
 ---
 
-## ⚙️ Running Locally
+## Running Locally
 
 ```bash
-# Clone and enter the frontend
 npm install && npm run dev
-
-# Compile or run protocol tests
 cd contracts && forge build && forge test
 ```
+
+Set `NEXT_PUBLIC_USE_TESTNET=true` in `.env.local` to route Diamonds flows to Base Sepolia for integration testing.
+
 ---
 
+## Where This Fits
 
-## 🌍 Where This Fits
+Open infrastructure for open-sourced knowledge, tools, and collective intelligence. No single company controls it; it belongs to the network.
 
-The Platform is one piece of a larger picture. Open infrastructure for open-sourced knowledge, tools, and collective intelligence. No single company controls it; it belongs to the network.
-
-## 🤝 Get Involved
-Read the docs → docs.mentalwealthacademy.world
-
-Say hello → research@mentalwealthacademy.net
-
-Mental Wealth Foundation — open AI infrastructure, built by everyone, for everyone.
+## Get Involved
+Docs → docs.mentalwealthacademy.world
+Email → research@mentalwealthacademy.net
 
 Open protocol · Community governed · Apache-2.0 · © 2026

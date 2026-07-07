@@ -8,13 +8,13 @@ import { CaretLeft, CaretRight, LockSimple, X } from '@phosphor-icons/react';
 import { ensureBaseChain, type Eip1193Provider } from '@/lib/ensure-base-chain';
 import { fetchDiamondBalance } from '@/lib/diamonds-balance';
 import { useSound } from '@/hooks/useSound';
+import { getDiamondsTokenAddress, getRpcUrl, BURN_ADDRESS } from '@/lib/chain-config';
 import styles from './FieldNotesSheet.module.css';
 
 const UNSEAL_COST = 400;
-const BURN_ADDRESS = '0x000000000000000000000000000000000000dEaD';
-const DIAMONDS_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_DIAMONDS_TOKEN_ADDRESS || '';
+const DIAMONDS_TOKEN_ADDRESS = getDiamondsTokenAddress();
 const ERC20_TRANSFER_ABI = ['function transfer(address to, uint256 amount) returns (bool)'];
-const BASE_RPC = 'https://mainnet.base.org';
+const BASE_RPC = getRpcUrl();
 // A burn is a real user-signed tx, so the wallet needs a little Base ETH for
 // gas. Below this we warn up front instead of letting the transfer fail.
 const GAS_MIN_WEI = utils.parseEther('0.000005');

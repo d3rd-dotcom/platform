@@ -2,16 +2,17 @@ import { Contract, providers, utils } from 'ethers';
 import { getBlueSigner } from './blue-membership';
 import { getPaymasterRpcUrl, getBlueSmartAccount, mintDiamondsSponsored } from './diamonds-paymaster';
 import { sqlQuery } from './db';
+import { getDiamondsTokenAddress as getTokenAddress } from './chain-config';
 
 /**
  * Onchain delivery of Diamonds ($BLUE) rewards.
  *
  * Two delivery paths, per the reward's source:
  * - cdp_mint: course missions/tasks, week seals, and field notes are claim
- *   mints. Preferred transport is a gas-sponsored user operation through CDP
- *   Paymaster (Blue's smart account signs — see diamonds-paymaster.ts), with
- *   a direct owner mint from Blue's key as the fallback so claims never
- *   stall. Users never sign or pay gas either way.
+ *   mints. Preferred transport is a gas-sponsored user operation through
+ *   Alchemy Gas Manager (Blue's smart account signs — see
+ *   diamonds-paymaster.ts), with a direct owner mint from Blue's key as the
+ *   fallback so claims never stall. Users never sign or pay gas either way.
  * - blue_transfer: quest rewards are true p2p transfers from Blue's own 200M
  *   stash, signed by her key. Quest diamonds genuinely come from her.
  *
@@ -33,7 +34,7 @@ const DIAMONDS_ABI = [
 ];
 
 export function getDiamondsTokenAddress(): string | null {
-  return process.env.DIAMONDS_TOKEN_ADDRESS || process.env.NEXT_PUBLIC_DIAMONDS_TOKEN_ADDRESS || null;
+  return getTokenAddress();
 }
 
 /**
@@ -130,10 +131,9 @@ async function ensureMinter(tokenAddress: string, minterAddress: string) {
 }
 
 /**
- * Mint a claim reward. Prefers a gas-sponsored user operation through CDP
- * Paymaster (burns the sponsorship credits, costs no ETH); falls back to a
- * direct owner mint signed by Blue's key so claims never stall on paymaster
- * config or outages.
+ * Mint a claim reward. Prefers a gas-sponsored user operation through Alchemy
+ * Gas Manager (costs no ETH); falls back to a direct owner mint signed by
+ * Blue's key so claims never stall on Gas Manager config or outages.
  */
 async function mintDiamonds(tokenAddress: string, to: string, wholeDiamonds: number): Promise<string> {
   const amountWei = utils.parseUnits(String(wholeDiamonds), 18);

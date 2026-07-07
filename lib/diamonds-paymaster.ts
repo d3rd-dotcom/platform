@@ -1,5 +1,5 @@
 import { createPublicClient, encodeFunctionData, http } from 'viem';
-import { base } from 'viem/chains';
+import { base, baseSepolia } from 'viem/chains';
 import { privateKeyToAccount } from 'viem/accounts';
 import {
   createBundlerClient,
@@ -7,20 +7,24 @@ import {
   type SmartAccount,
   type BundlerClient,
 } from 'viem/account-abstraction';
+import { getChainConfig } from './chain-config';
 
 /**
- * Gas-sponsored Diamonds minting through CDP Paymaster & Bundler.
+ * Gas-sponsored Diamonds minting through Alchemy Gas Manager.
  *
  * Blue's key owns a Coinbase Smart Account; claim mints are sent as user
- * operations through the CDP Paymaster RPC, so gas is covered by the CDP
- * sponsorship credits instead of anyone's ETH. The smart account is
- * counterfactual — its first sponsored operation deploys it.
+ * operations through Alchemy's ERC-4337 bundler with the Gas Manager policy
+ * applied, so gas is covered by the Alchemy sponsorship credits instead of
+ * anyone's ETH. The smart account is counterfactual — its first sponsored
+ * operation deploys it.
  *
- * Setup (CDP portal, one time):
- * 1. Paymaster & Bundler → Base Mainnet → copy the RPC URL into
- *    CDP_PAYMASTER_RPC_URL (Vercel + .env.local).
- * 2. In the paymaster policy, allowlist the Diamonds token contract
- *    (DIAMONDS_TOKEN_ADDRESS) and its mint function.
+ * Setup (Alchemy dashboard, one time):
+ * 1. Create an Alchemy app (any Base network) → enable Gas Manager.
+ * 2. Create a Gas Manager policy at
+ *    https://dashboard.alchemy.com/gas-manager, allowlist the Diamonds token
+ *    contract address and its mint function. Copy the Policy ID.
+ * 3. Set ALCHEMY_API_KEY and ALCHEMY_GAS_POLICY_ID in Vercel + .env.local.
+ *    The bundler URL is derived from ALCHEMY_API_KEY + the active chain.
  */
 
 const MINT_ABI = [
@@ -37,7 +41,16 @@ const MINT_ABI = [
 ] as const;
 
 export function getPaymasterRpcUrl(): string | null {
-  return process.env.CDP_PAYMASTER_RPC_URL || null;
+  const apiKey = process.env.ALCHEMY_API_KEY;
+  const policyId = process.env.ALCHEMY_GAS_POLICY_ID;
+  if (!apiKey || !policyId) return null;
+  const cfg = getChainConfig();
+  const network = cfg.chainId === 84532 ? 'base-sepolia' : 'base-mainnet';
+  return `https://${network}.g.alchemy.com/v2/${apiKey}`;
+}
+
+function getAlchemyGasPolicyId(): string | null {
+  return process.env.ALCHEMY_GAS_POLICY_ID || null;
 }
 
 function getBluePrivateKeyHex(): `0x${string}` {
@@ -49,33 +62,40 @@ function getBluePrivateKeyHex(): `0x${string}` {
 }
 
 function getBaseRpcUrl(): string {
-  return (
-    process.env.BASE_MAINNET_RPC_URL ||
-    process.env.BASE_RPC_URL ||
-    process.env.NEXT_PUBLIC_BASE_RPC_URL ||
-    'https://mainnet.base.org'
-  );
+  const cfg = getChainConfig();
+  return cfg.rpcUrl;
 }
 
 let cached: { account: SmartAccount; bundlerClient: BundlerClient } | null = null;
 
-/** Blue's smart account + a bundler client pointed at the CDP Paymaster RPC. */
+/** Blue's smart account + a bundler client pointed at Alchemy's bundler endpoint. */
 export async function getBlueSmartAccount(): Promise<{ account: SmartAccount; bundlerClient: BundlerClient }> {
   if (cached) return cached;
 
   const paymasterUrl = getPaymasterRpcUrl();
   if (!paymasterUrl) {
-    throw new Error('CDP_PAYMASTER_RPC_URL not configured.');
+    throw new Error('ALCHEMY_API_KEY + ALCHEMY_GAS_POLICY_ID not configured.');
   }
 
+  const cfg = getChainConfig();
+  const chain = cfg.chainId === 84532 ? baseSepolia : base;
+
   const owner = privateKeyToAccount(getBluePrivateKeyHex());
-  const client = createPublicClient({ chain: base, transport: http(getBaseRpcUrl()) });
+  const client = createPublicClient({ chain, transport: http(getBaseRpcUrl()) });
   const account = await toCoinbaseSmartAccount({ client, owners: [owner], version: '1.1' });
   const bundlerClient = createBundlerClient({
     account,
     client,
     transport: http(paymasterUrl),
     paymaster: true,
+    userOperation: {
+      estimateFeesPerGas: async () => {
+        return {
+          maxFeePerGas: 0n,
+          maxPriorityFeePerGas: 0n,
+        };
+      },
+    },
   });
 
   cached = { account, bundlerClient };
@@ -92,6 +112,7 @@ export async function mintDiamondsSponsored(
   amountWei: bigint,
 ): Promise<{ txHash: string; smartAccountAddress: string }> {
   const { account, bundlerClient } = await getBlueSmartAccount();
+  const policyId = getAlchemyGasPolicyId();
 
   const hash = await bundlerClient.sendUserOperation({
     calls: [
@@ -104,6 +125,11 @@ export async function mintDiamondsSponsored(
         }),
       },
     ],
+    ...(policyId ? {
+      alchemy: {
+        gasPolicyId: policyId,
+      },
+    } : {}),
   });
 
   const receipt = await bundlerClient.waitForUserOperationReceipt({ hash });
