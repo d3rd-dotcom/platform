@@ -508,6 +508,16 @@ export default function CoursesPage() {
                     You&apos;ve completed every guide here. Nice work.
                   </p>
                 )}
+              <Link
+                href="/courses/guides/map"
+                className={styles.guideCard}
+                onMouseEnter={() => play('soft-hover')}
+              >
+                <div className={styles.guideCardBody}>
+                  <span className={styles.guideCardTitle}>See the knowledge map</span>
+                </div>
+                <span className={styles.guideCardChevron} aria-hidden="true">›</span>
+              </Link>
               {guideProgress && authenticated && (
                 <div className={styles.guideProgressCard}>
                   <div className={styles.guideProgressStats}>

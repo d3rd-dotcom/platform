@@ -82,6 +82,21 @@ export interface Walkthrough {
   rewardPreview: WalkthroughRewardPreview;
 }
 
+/**
+ * One node in the global knowledge map. A WalkthroughNode (the shape
+ * GuideSkillTree already renders) plus its subject tags, so the map can group or
+ * tint by subject without a second round-trip.
+ */
+export interface KnowledgeMapNode extends WalkthroughNode {
+  subjects: string[];
+}
+
+export interface KnowledgeMap {
+  /** Total number of levels (max level + 1); 0 when the graph is empty. */
+  levels: number;
+  nodes: KnowledgeMapNode[];
+}
+
 export interface ForwardRef {
   id: string;
   guideId: string;
@@ -680,6 +695,116 @@ export async function getWalkthrough(
       spinGranted: true,
     },
   };
+}
+
+/**
+ * The global knowledge map: EVERY published guide, with a level computed by
+ * longest prerequisite path across the WHOLE published graph (a primitive — a
+ * guide with no published prereqs — is level 0). This is the same longest-path
+ * CTE technique getWalkthrough uses, but seeded from the entire published set
+ * rather than one target's closure.
+ *
+ * Only published-to-published edges participate, exactly as getWalkthrough and
+ * completeGuide's gate do: a draft prereq never gates and never shifts a level,
+ * so a guide whose only prereqs are unpublished reads as a primitive here. The
+ * graph is a DAG (guide_edges cycle trigger), so every node has a path back to
+ * some primitive and thus appears in the `lvl` recursion.
+ *
+ * When `userId` is given, each node carries a `completed` flag; "unlocked" is
+ * derived client-side the same way GuideSkillTree does (all direct prereqs
+ * completed), so it is not duplicated here.
+ */
+export async function getKnowledgeMap(userId?: string | null): Promise<KnowledgeMap> {
+  const rows = await sqlQuery<
+    Array<{
+      id: string;
+      slug: string;
+      topicTitle: string;
+      status: string;
+      level: number;
+    }>
+  >(
+    `
+    WITH RECURSIVE pub AS (
+      SELECT id FROM guides WHERE status = 'published'
+    ),
+    -- edges connecting two published guides
+    sub_edges AS (
+      SELECT e.prereq_id, e.guide_id
+      FROM guide_edges e
+      JOIN pub a ON a.id = e.prereq_id
+      JOIN pub b ON b.id = e.guide_id
+    ),
+    lvl AS (
+      -- primitives (no published prereq) start at level 0
+      SELECT p.id, 0 AS level
+      FROM pub p
+      WHERE NOT EXISTS (
+        SELECT 1 FROM sub_edges se WHERE se.guide_id = p.id
+      )
+      UNION ALL
+      -- relax: reaching a node via a prereq gives it prereq.level + 1
+      SELECT se.guide_id, l.level + 1
+      FROM lvl l
+      JOIN sub_edges se ON se.prereq_id = l.id
+    )
+    SELECT
+      g.id,
+      g.slug,
+      g.topic_title AS "topicTitle",
+      g.status,
+      MAX(lvl.level) AS level
+    FROM lvl
+    JOIN guides g ON g.id = lvl.id
+    GROUP BY g.id, g.slug, g.topic_title, g.status
+    ORDER BY MAX(lvl.level) ASC, g.topic_title ASC
+    `,
+  );
+
+  const nodeIds = rows.map((r) => r.id);
+  if (nodeIds.length === 0) {
+    return { levels: 0, nodes: [] };
+  }
+
+  // Published-to-published edges among the mapped nodes → prereqIds per node.
+  const prereqRows = await sqlQuery<Array<{ prereq_id: string; guide_id: string }>>(
+    `SELECT prereq_id, guide_id FROM guide_edges
+     WHERE guide_id = ANY(:ids) AND prereq_id = ANY(:ids)`,
+    { ids: nodeIds },
+  );
+  const prereqMap = new Map<string, string[]>();
+  for (const r of prereqRows) {
+    const list = prereqMap.get(r.guide_id);
+    if (list) list.push(r.prereq_id);
+    else prereqMap.set(r.guide_id, [r.prereq_id]);
+  }
+
+  // Completion state for the viewer.
+  const completed = new Set<string>();
+  if (userId) {
+    const doneRows = await sqlQuery<Array<{ guide_id: string }>>(
+      `SELECT guide_id FROM guide_progress
+       WHERE user_id = :userId AND guide_id = ANY(:ids)`,
+      { userId, ids: nodeIds },
+    );
+    for (const r of doneRows) completed.add(r.guide_id);
+  }
+
+  const subjectsMap = await getSubjectsForGuides(nodeIds);
+
+  const nodes: KnowledgeMapNode[] = rows.map((r) => ({
+    id: r.id,
+    slug: r.slug,
+    topicTitle: r.topicTitle,
+    status: (r.status as GuideStatus) || 'draft',
+    level: Number(r.level) || 0,
+    prereqIds: prereqMap.get(r.id) ?? [],
+    completed: completed.has(r.id),
+    subjects: subjectsMap.get(r.id) ?? [],
+  }));
+
+  const maxLevel = nodes.reduce((m, n) => Math.max(m, n.level), 0);
+  return { levels: maxLevel + 1, nodes };
 }
 
 // ── Progress ─────────────────────────────────────────────────────────────────

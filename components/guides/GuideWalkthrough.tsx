@@ -270,7 +270,13 @@ export default function GuideWalkthrough({ slug }: Props) {
       )}
 
       {view === 'tree' && (
-        <GuideSkillTree walkthrough={walkthrough} completed={completed} currentSlug={slug} />
+        <GuideSkillTree
+          nodes={walkthrough.nodes}
+          levels={walkthrough.levels}
+          targetId={walkthrough.targetId}
+          completed={completed}
+          currentSlug={slug}
+        />
       )}
 
       <div className={styles.levels} style={view === 'tree' ? { display: 'none' } : undefined}>

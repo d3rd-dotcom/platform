@@ -1,0 +1,249 @@
+/* ============================================================================
+   Knowledge map — the whole published guide graph as one skill tree.
+   Borrows the guide-page layout language (dot-grid canvas, left-anchored
+   reading column, primary-tinted panel) so it reads as part of the same system.
+   ========================================================================== */
+
+.layout {
+  position: relative;
+  margin-left: var(--sidebar-width, 265px);
+  min-height: 100vh;
+  background-color: var(--color-background, #ffffff);
+  background-image: radial-gradient(
+    color-mix(in oklch, var(--color-primary) 16%, transparent) 1px,
+    transparent 1.5px
+  );
+  background-size: 24px 24px;
+  background-position: -1px -1px;
+  transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+:global([data-theme="dark"]) .layout {
+  background-color: #0d0e16;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1.5px);
+}
+
+.page {
+  position: relative;
+  z-index: 1;
+  /* Wider than a reading column — the graph wants room to breathe. */
+  max-width: 1180px;
+  margin: 0;
+  padding: 48px 32px 48px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm, 0.75rem);
+  font-weight: var(--font-weight-medium, 500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  width: fit-content;
+}
+
+.back:hover {
+  color: var(--color-primary);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-primary);
+}
+
+.title {
+  font-family: var(--font-editorial), 'PP Editorial New', Georgia, serif;
+  font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: 1.12;
+  letter-spacing: -0.005em;
+  color: var(--color-text-dark);
+  margin: 0;
+}
+
+.lede {
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  max-width: 60ch;
+  margin: 0;
+}
+
+/* Count eyebrow above the graph. */
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+}
+
+.stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.statNum {
+  font-family: var(--type-font-display, var(--font-mono));
+  font-size: 1.125rem;
+  font-weight: var(--type-weight-bold, 700);
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.statLabel {
+  font-family: var(--type-font-body, var(--font-primary));
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.statDivider {
+  width: 1px;
+  height: 16px;
+  background: color-mix(in oklch, var(--color-primary) 18%, transparent);
+}
+
+/* The graph surface — same panel language as .walkthroughPanel. */
+.panel {
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  border-radius: var(--radius-xl, 1.25rem);
+  background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-base));
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.05),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 10%, transparent);
+  padding: var(--space-4, 1rem);
+  /* Keep any overflow inside the panel — never let the page scroll sideways. */
+  overflow: hidden;
+}
+
+:global([data-theme="dark"]) .panel {
+  background: color-mix(in oklch, var(--color-primary) 8%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 22%, transparent);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.2),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 8%, transparent);
+}
+
+/* Loading / error simple states. */
+.state {
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  padding: 32px 0;
+}
+
+/* Contribution line — always present, the invitation to grow the graph. */
+.contribute {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 1.5px dashed color-mix(in oklch, var(--color-primary) 28%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 3%, var(--color-surface-base));
+}
+
+.contributeCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.contributeTitle {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+}
+
+.contributeHint {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.contributeBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: none;
+  background: var(--color-primary);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 0.12s ease;
+}
+
+.contributeBtn:hover {
+  opacity: 0.9;
+}
+
+:global([data-theme="dark"]) .contribute {
+  background: color-mix(in oklch, var(--color-primary) 6%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 26%, transparent);
+}
+
+/* Empty graph — a bigger, centered invitation instead of a bare panel. */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  padding: 56px 24px;
+}
+
+.emptyTitle {
+  font-family: var(--font-editorial), 'PP Editorial New', Georgia, serif;
+  font-size: 1.5rem;
+  color: var(--color-text-dark);
+  margin: 0;
+}
+
+.emptyHint {
+  font-family: var(--font-primary);
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+  max-width: 46ch;
+  margin: 0;
+}
+
+@media (max-width: 1024px) {
+  .layout {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 24px 16px calc(96px + env(safe-area-inset-bottom, 0px));
+    margin: 0;
+  }
+  .title {
+    font-size: var(--font-size-xl, 1.618rem);
+  }
+}

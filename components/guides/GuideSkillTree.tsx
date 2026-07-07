@@ -3,11 +3,16 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSound } from '@/hooks/useSound';
-import type { Walkthrough, WalkthroughNode } from '@/lib/guides-db';
+import type { WalkthroughNode } from '@/lib/guides-db';
 import styles from './GuideSkillTree.module.css';
 
 interface Props {
-  walkthrough: Walkthrough;
+  /** Nodes to place, each carrying a computed level + direct prereq ids. */
+  nodes: WalkthroughNode[];
+  /** Total number of level bands (max level + 1). */
+  levels: number;
+  /** The summit guide, ringed as "the goal". Omit for a targetless graph (the map). */
+  targetId?: string;
   /** Guide ids the viewer has completed (client-tracked, kept in sync by parent). */
   completed: Set<string>;
   /** Slug currently being viewed, so we can mark the "you are here" node. */
@@ -37,7 +42,13 @@ const PAD_X = 40;
 const PAD_TOP = 44;
 const PAD_BOTTOM = 44;
 
-export default function GuideSkillTree({ walkthrough, completed, currentSlug }: Props) {
+export default function GuideSkillTree({
+  nodes: inputNodes,
+  levels: totalLevels,
+  targetId,
+  completed,
+  currentSlug,
+}: Props) {
   const router = useRouter();
   const { play } = useSound();
   const svgRef = useRef<SVGSVGElement>(null);
@@ -46,7 +57,7 @@ export default function GuideSkillTree({ walkthrough, completed, currentSlug }: 
   // Group nodes by level, sorted ascending (0 = primitives).
   const bands = useMemo(() => {
     const map = new Map<number, WalkthroughNode[]>();
-    for (const n of walkthrough.nodes) {
+    for (const n of inputNodes) {
       const list = map.get(n.level);
       if (list) list.push(n);
       else map.set(n.level, [n]);
@@ -56,9 +67,7 @@ export default function GuideSkillTree({ walkthrough, completed, currentSlug }: 
       list.sort((a, b) => a.topicTitle.localeCompare(b.topicTitle));
     }
     return Array.from(map.entries()).sort((a, b) => a[0] - b[0]);
-  }, [walkthrough.nodes]);
-
-  const totalLevels = walkthrough.levels;
+  }, [inputNodes]);
 
   // A node is available when every DIRECT prereq is completed; completed wins;
   // otherwise locked. (Mirrors the server-side gate, applied per-node.)
@@ -92,14 +101,14 @@ export default function GuideSkillTree({ walkthrough, completed, currentSlug }: 
           x: startX + col * (NODE_W + COL_GAP),
           y,
           state: stateOf(node),
-          isTarget: node.id === walkthrough.targetId,
+          isTarget: node.id === targetId,
         });
       });
     }
     const idMap = new Map<string, Placed>();
     for (const p of placedList) idMap.set(p.node.id, p);
     return { placed: placedList, byId: idMap, width: w, height: h };
-  }, [bands, totalLevels, stateOf, walkthrough.targetId]);
+  }, [bands, totalLevels, stateOf, targetId]);
 
   // Edges: from each node down to its direct prereqs (within the closure).
   const edges = useMemo(() => {
