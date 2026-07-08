@@ -178,7 +178,7 @@ export default function ProfileDashboard({
               onClick={() => { play('click'); setTab(t); }}
               onMouseEnter={() => play('soft-hover')}
             >
-              {t === 'badges' ? 'NFT Collection' : 'Certificates'}
+              {t === 'badges' ? 'Items' : 'Awards'}
             </button>
           ))}
           <button
@@ -187,7 +187,7 @@ export default function ProfileDashboard({
             onClick={() => { play('click'); onOpenNotes?.(); }}
             onMouseEnter={() => play('soft-hover')}
           >
-            Notes{noteCount > 0 ? ` (${noteCount})` : ''}
+            Quests{noteCount > 0 ? ` (${noteCount})` : ''}
           </button>
         </div>
       </div>
@@ -203,7 +203,7 @@ export default function ProfileDashboard({
         </div>
         <div className={styles.stat}>
           <span className={styles.statValue}>{badgesHeld}</span>
-          <span className={styles.statLabel}>NFT Collection</span>
+          <span className={styles.statLabel}>Items</span>
         </div>
         <div className={styles.stat}>
           <span className={styles.statValue}>{streak}</span>
@@ -248,7 +248,7 @@ export default function ProfileDashboard({
 
       {tab === 'badges' && (
       <div className={styles.badges}>
-        <span className={styles.missionHeading}>NFT Collection</span>
+        <span className={styles.missionHeading}>Items</span>
         <div className={styles.badgeRow}>
           <div
             className={`${styles.badge} ${hasAngel ? '' : styles.badgeLocked}`}
@@ -282,7 +282,7 @@ export default function ProfileDashboard({
 
       {tab === 'certificates' && (
         <div className={styles.badges}>
-          <span className={styles.missionHeading}>Certificates</span>
+          <span className={styles.missionHeading}>Awards</span>
           {courses.length > 0 ? (
             <div className={styles.courseList}>
               {courses.map((c) => {

@@ -811,7 +811,7 @@ export default function DailyNotes({
             ) : (
               <span className={styles.shardBadge} title="Earn 100 diamonds per day completed">
                 <Image src="/icons/ui-diamond.svg" alt="diamonds" width={14} height={14} />
-                +100
+                +100 daily
               </span>
             )}
           </div>
