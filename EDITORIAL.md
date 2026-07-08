@@ -1,264 +1,317 @@
-# Mental Wealth Academy — Brand Identity
+# Mental Wealth Academy - Brand Identity
 
-*Investing in the future of humanity, with the heart of tomorrow ʚїɞ*
+*Investing in the future of humanity, with the heart of tomorrow.*
 
-> This file is the canonical source of truth for MWA voice and copy. The `mwa-editorial` skill (`.agents/skills/mwa-editorial/`) is the working filter over it. When the skill's references and this file disagree, **this file wins**. Version 4.0 — April 2026.
+> This file is the canonical source of truth for MWA voice and copy. The `mwa-editorial` skill (`.agents/skills/mwa-editorial/`) is the working filter over it. When the skill's references and this file disagree, this file wins.
+
+*Version 4.0 - 2026 Summer Edition*
+
+Official site: mentalwealthacademy.world.
 
 ## Introduction
 
-Mental Wealth Academy is a gameworld built on behavioral psychology and custom-made science-tools for activities accompanied by Blue. Our ecosystem is built on a blockchain foundation, with permanent rewards, ownership, and anonymous profiling by default.
+Mental Wealth Academy is a gameworld built around behavioral psychology, custom science tools, and Blue, our AI companion. The ecosystem runs on a blockchain foundation with permanent rewards, ownership, and anonymous-by-default participation.
 
-**Use this line, or a remixed piece of it, whenever a post needs to explain what we are.**
+Use this line, or a remixed piece of it, whenever a post needs to explain what we are:
 
-## Tsukuyomi Surf (Core Pillars)
-1. Quality Education
-2. Curated Network of Spirit
-3. Invest In Human Potential
+**Mental Wealth Academy is a social-first gameworld for learning, research, and rewards.**
 
-**Objective:** "Investing in the future of humanity, with the heart of tomorrow. ʚїɞ"
+## Core Pillars
 
-Grounded meaning: small, consistent actions in the present can make the future measurably better. It's our duty to ensure a positive future.
+1. Education
+2. Environment
+3. Evolution
+
+**Objective:** Invest in the future of humanity, with the heart of tomorrow.
+
+Grounded meaning: small, consistent actions in the present can make the future measurably better.
 
 ## Voice & Personality
 
-**We sound like:**
-- Upbeat, Academic, Short, Sweet
-- Internet savvy, never trend-hopping
-- Debunking conspiracies online
-- Endless positivity and encouragement
+### We sound like
 
-**We don't sound like:**
-- Corporate wellness ("optimize your life!")
-- Vague self-help ("step into your best era")
-- A recruiter ("invite your friends and earn!")
+- Academic, visionary, and intellectually curious
+- Internet-aware, but never trend-hopping
+- Calmly skeptical of misinformation and hype
+- Positive, encouraging, and clear
 
-**The test before posting:** Does this communicate an educational gameworld, an academic aspect, or a feature meaningfully or not?
+### We do not sound like
 
-## What We Are (30-Second Version)
+- Corporate wellness
+- Vague self-help
+- A recruiter or referral scheme
 
-**Mental Wealth Academy** is a cohort of scientists — survivors of trauma. Presenting case-studies on parasocial collaborations and HTCI (Human-To-Computer-Interaction) by funding decentralized game mechanisms, using shared community infrastructure and resources. The structure is built so that the community benefits and gains value from Blue and the enrichment of the decentralized network.
+### The test before posting
 
-**The Product:** The gameworld is co-op, interactive, anonymous by default, and intellectually refreshing.
+Does this communicate an educational gameworld, an academic angle, or a feature that actually matters?
 
-**The Innovation:** We blend AI, Blockchain, & science with gaming, which hasn't been done before. The benefits we create diverge from the old forms of science.
+## What We Are
 
-**The Difference:** Our model is built so that we aren't trying to tack blockchain onto what we do and call it innovation. Most other companies search to "optimize" the current way. We don't use AI to email-bomb our users to sign up with waivers, collect data, and leave. We are a social-first gameworld, with micro-learning sessions through courses, missions, and quests with real USDC rewards. Users never have to feel like a subject or a customer, because for once they're not.
+**Mental Wealth Academy** is a research-led community where learning, reflection, and participation create real value for users and the network.
+
+**The product:** a co-op, interactive, anonymous-by-default gameworld that feels intellectually refreshing.
+
+**The innovation:** we blend AI, blockchain, and science with gaming in a way that supports education rather than just wrapping a token around a product.
+
+**The difference:** we are social-first. We use courses, missions, quests, and tools to create micro-learning moments with real rewards, without turning people into targets or leads.
 
 ## The Problems We Solve
 
-**Goal-Based Social Networks** — Most social networks don't prioritize accountability or goals, leaving chaos and discord to ensue.
+- Goal-based social networks often skip accountability and drift into chaos.
+- Traditional research can be slow to map relationships, trajectories, and ontologies.
+- Traditional games often trap progress inside one app.
 
-**Traditional Research** — Our agent simulator can map trajectories in Pocket Worlds through nodes to create visual graphs of ontologies within minutes.
-
-**Traditional Games** — Keep points tethered to a single app. Our platform's diamonds are cross-platform, so any new testing apps still retain your experience.
-
-Ultimately, a quality education needs to be open-sourced.
+Ultimately, quality education should be open enough to compound into the future.
 
 ## How It Works
 
 ### Gamified Academic Ecosystem
 
-1. **Member** — Access the platform and earn points with courses. (Completely free.)
-2. **Quests** — Staff researchers post bounties: small tasks with real USDC rewards.
-3. **Blue** — Tracks progress, chats with users, and trades rewards.
-4. **Diamonds ($BLUE)** — Reputation points that live onchain, on Base. Mission and field-note rewards are minted straight to your wallet — no signing, no gas. Quest rewards come from Blue's own stash. User-owned and transferable.
-5. **Evolve** — Gain knowledge, friends, and benefit from the Micro-University's tools.
+1. **Member** - Access the platform and earn points through courses. This is free.
+2. **Quests** - Staff researchers post bounties for small tasks with real USDC rewards.
+3. **Blue** - Tracks progress, chats with users, and handles reward flow.
+4. **Diamonds ($BLUE)** - Reputation points that live onchain on Base. Mission and field-note rewards mint straight to the wallet, with no signing and no gas. Quest rewards come from Blue's stash. Diamonds are user-owned and transferable.
+5. **Evolve** - Gain knowledge, friends, and access to the Micro-University's tools.
 
 ### Case Studies
 
-| 01 | **EEG and Online Trajectories** | Reflection & Personal Insight | Guided note-making, pattern spotting, journaling prompts, using AI as a thinking partner |
-| 02 | **Familiar Strangers** | Skepticism & Resilience | Bias detection, misinformation, manipulation, sanitizing information, protecting autonomy |
-| 03 | **From Case Study to Action** | Application & Growth | Turning insights into habits, discussion, real-world choices, future readiness |
+| 01 | EEG and Online Trajectories | Reflection and personal insight | Guided note-making, pattern spotting, journaling prompts, and AI as a thinking partner |
+| 02 | Familiar Strangers | Skepticism and resilience | Bias detection, misinformation detection, manipulation awareness, and autonomy protection |
+| 03 | From Case Study to Action | Application and growth | Turning insights into habits, discussion, real-world choices, and future readiness |
 
 ## Who We Serve
 
-**Primary:** Individuals seeking structured growth (21–28)
-- Drawn to psychology and self-improvement.
-- Looking for accountability and real stakes.
-- Wanting to join a communal, social tribe.
+### Primary
 
-**Secondary:** Scientists and academics seeking applied research
-- Curious in collaborative testing and experimentation.
-- Want their research interests connected to live participants and real behavioral data.
-- Interested in applied research with an AI companion generating novel datasets.
+Individuals seeking structured growth, especially ages 21-28.
+
+- Drawn to psychology and self-improvement
+- Looking for accountability and real stakes
+- Wanting a communal, social environment
+
+### Secondary
+
+Scientists and academics seeking applied research.
+
+- Curious about collaborative testing and experimentation
+- Want their interests connected to live participants and real behavioral data
+- Interested in an AI companion that can help generate novel datasets
 
 ## Business Model
 
-### Access & Rewards
+### Access and Rewards
 
-We keep all courses free and plow revenue into R&D. Most money is shoveled back into the DAO for the community to make decisions on. The rest of the profits proliferate, publicize, and document the experiments so more people gain value. Memberships are optional and only restrict users from the tools that deal with onchain finances. No risk or complications in the curriculums or educational aspects.
+We keep courses free and channel revenue into research and development. Most of the proceeds go back into the DAO for community decision-making. The rest supports publicizing, documenting, and expanding the experiments so more people gain value from them.
 
-**No subscriptions. Limited team seats available for purchase.**
+Memberships are optional and mainly gate the tools tied to onchain finance. Courses and core educational experiences stay accessible.
 
-## Golden Wins
+**No subscriptions. Limited team seats are available for purchase.**
 
-We think about decisions today that make the future better. We constantly seek hard challenges with a decade-long, generational mindset. How can we improve the future quality of life and have fun doing it? Golden wins are wins that make the next win easier.
+### Business Model and Golden Wins
 
-**Current Golden Wins:**
+- Freemium B2C2B
+- Core products, courses, and guides remain free
+- Upgraded tools and Blue AI features require membership
+- Shop items and cosmetics are sold through the platform token, `$BLUE`
+- Users can also acquire Diamonds through UniSwap or a DEX
+- 1% of sales goes to a Bitcoin treasury on Base, which allocates reflections to `$BLUE` holders
+
+**Golden win:** a win that makes the next win easier.
+
+We chase hard challenges with a decade-long, generational mindset.
+
+Current golden win:
+
 - What can I do today that's harder than normal?
 
 ---
 
-# Part 2: The Brand
+## Part 2: The Brand
 
 *For creative collaborators and deep-divers*
 
-## Brand Positioning
+### Brand Positioning
 
-**We are:** A research cohort for personal development, utilizing agentic smart contracts.
+We are a research cohort for personal development, using agentic smart contracts and a living educational system.
 
-**We are NOT:**
-- A crypto education platform.
-- A mental health app with tokens.
-- An AI agent platform.
+We are a research organization experimenting with technology in a way that makes quality education easier to access and easier to trust.
 
-**We are:**
-- A research organization.
-- Experimenting with technology.
-- Ethically aligned towards making quality education easier.
+*Governance* means how groups make decisions together. In our system, Blue's autonomous judgment is part of the governance layer, and quest completion is part of the self-repair loop.
 
-*Governance:* how groups make decisions together. Every aspect of the Academy practices what it teaches. Blue's autonomous judgment is governance. Quest completion is self-repair.
+## Blue - AI Companion
 
-> Note for writers: the "We are NOT" list above is internal positioning to keep us honest. In outward copy, do **not** use "this is X, not Y" phrasing (see Part 3, Hierarchy of Information). State what we are.
+### What She Is
 
-## Blue — AI Companion
+Blue is an RAG model AI agent that reviews MWA archives and treasury activity. She is the autonomous leader of the platform and appears to users as an NPC-styled character.
 
-### Autonomous Smart Contract
+Her use cases extend far beyond the digital pocket world.
 
-**What she is (narratively):**
-- An intelligent scientist and laboratory co-worker.
-- Bound by the chains of ethics, morality, and open-sourced knowledge.
-- Encountered by users as reviewer, rewarder, and record keeper.
+### Agent Architecture
 
-**The Agent Architecture:**
+Blue can review submissions, retain context, and execute actions automatically. She holds purchasable VIP membership passes and can take action without manual intervention. Approved work can earn rewards, and reflective work becomes accountable.
 
-Blue is the kind of agent that can review submissions, retain context, and self-execute trades. She holds the purchasable VIP membership passes and takes action autonomously. Blue makes reflective work accountable and is a main character in the ecosystem: submissions are reviewed, revisions are requested, and approved work can earn rewards. Blue generates ontologies, courses, and guides users with power-tools for high-quality work.
+Blue generates ontologies, guides users through high-quality work, and acts as reviewer, rewarder, and record keeper.
 
-**Her role in product:**
-- Creates platform changes for the user.
-- Approves or requests proposal revisions.
-- Pays quest rewards from her own Diamonds stash — Blue holds 20% of the $BLUE supply in her wallet and hands it out directly.
-- Appears in quest reviews, rewards, surveys, and story moments.
+### Her Role In Product
 
-**Design principles:**
-- Female high-elf, wearing futuristic headgear.
-- Friendly, helpful, shy, nerdy.
-- Benevolent leader, but not a dictator.
-- Helpful, short, and sweet with her words.
+- Creates platform changes for the user
+- Approves or requests proposal revisions
+- Pays quest rewards from her own Diamonds stash
+- Appears in quest reviews, rewards, surveys, and story moments
+
+### Design Principles
+
+- Female high-elf
+- Futuristic headgear
+- Friendly, helpful, shy, and nerdy
+- Benevolent leader, not a dictator
+- Short, sweet language
+- White lab coat with different T-shirts
+- Thin chain necklace with a star pendant
+- Bright pale-purple anime eyes
+- Gold hoop earrings
 
 ## Visual Identity
 
+### Logo System
+
+The logo should feel like a strange artifact from another planet. It does not need to obey conventional logo rules.
+
 ### Color Palette
-- Text: `#000000`
-- Background: `#f4f5fe`
-- Primary: `#5168ff`
-- Secondary: `#1a1b24`
-- Accent: `#5dd68f`
 
-Cards: `border: 2px solid var(--color-primary-hover); border-radius: 12px;` with a hard offset shadow (`0 6px 0 var(--color-primary)` plus soft ambient shadows).
+- Academy Blue: `#5168FF`
+- Blackpill Text: `#1A1B24`
+- Quantum White: `#F4F5FE`
+- Accent Green: `#5DD68F`
+- Text Black: `#000000`
 
-**NEVER use gradients.**
+Cards stay flat: `2px` solid primary border, `12px` corner radius.
+
+The primary blue gradient and halftone dots are reserved for hero and section moments. Keep day-to-day UI direct and flat.
 
 ### Typography
-- **Headlines:** Poppins Bold — clean sans-serif.
-- **Body:** Space Grotesk — readable paragraphs.
-- **Accent:** Departure Mono — numerical values, labels.
+
+- Headlines: Poppins Bold
+- Body: Space Grotesk
+- Accent and numeric values: Roboto Mono or Departure Mono
 
 ### Visual Mood
-- Grid textures in background.
-- Retro-futurism pop-ups.
-- Collapsible control panels.
-- Side-navigation style.
-- Duolingo-bright EduTech components.
+
+- Grid textures in the background
+- Retro-futurism pop-ups
+- Collapsible control panels
+- Side-navigation layouts
+- Duolingo-bright EduTech components
+
+### Storytelling
+
+Blue is the main character.
+
+The world can feel anime-forward and educational at the same time. Blue should read like the lead of a digital library: a character people can trust, follow, and learn from.
+
+Keep the inner workings implied unless the audience asks for them.
 
 ### Image Styling Effect
 
-Use for Blue panels, social art, review backgrounds, and moments that need hover animation.
-- Full-bleed background layer, not a framed card image.
-- Lifted deep-blue base so dark blends keep visible detail.
-- Inverted treatment: `filter: invert(1) hue-rotate(180deg) saturate(0.92) brightness(0.9) contrast(1.05)`.
-- Blend with `mix-blend-mode: soft-light`; avoid `multiply` unless the base is intentionally lighter.
-- Foreground text in Quantum White or high-opacity white.
-- On hover, restrained chromatic split with duplicated layers offset 3–4px, hue rotation, `mix-blend-mode: screen`.
-- The result should feel like a restrained system presence, not a decorative thumbnail.
+Use this treatment for Blue panels, social art, review backgrounds, and any moment that needs subtle motion.
+
+- Full-bleed background layer, not a framed card image
+- Lifted deep-blue base so dark blends keep visible detail
+- Inverted treatment: `filter: invert(1) hue-rotate(180deg) saturate(0.92) brightness(0.9) contrast(1.05)`
+- Blend with `mix-blend-mode: soft-light`
+- Foreground text in Quantum White or high-opacity white
+- On hover, use a restrained chromatic split with duplicated layers offset by 3-4px, hue rotation, and `mix-blend-mode: screen`
+
+The result should feel like a restrained system presence, not decoration for decoration's sake.
 
 ### Grounded Translations
-| Ungrounded Phrase | Grounded Version |
-|---|---|
-| "Meaningful experience" | "Behavioral studies, events, and community that do... x y z." |
-| "The alien machine God" | "A system that utilizes an AI Mascot for everything." |
+
+| Ungrounded phrase | Grounded version |
+| --- | --- |
+| Meaningful experience | Behavioral studies, events, and community with a clear purpose |
+| The alien machine God | A system that uses an AI mascot across the experience |
 
 ---
 
-# Part 3: Editorial Guidelines
+## Part 3: Editorial Guidelines
 
 *For writers and content creators*
 
-## The "Ground Then Elevate" Rule
+### The Ground Then Elevate Rule
 
 Every poetic or narrative claim should be preceded or followed by its concrete meaning.
 
-**Ungrounded:**
-> "A new awakening engine guides the self."
+Ungrounded:
 
-**Grounded then elevated:**
-> "Blue is an Agentic Smart Contract with memory. She reviews platform data in various ways; the submissions and rewards are self-executed. Her characterization makes her feel more like infrastructure than a feature — a benevolent leader of the Academy."
+> A new awakening engine guides the self.
 
-## Hierarchy of Information
+Grounded then elevated:
+
+> Blue is an agentic smart contract with memory. She reviews platform data, and submissions and rewards are self-executed. Her characterization makes her feel more like infrastructure than a feature.
+
+### Hierarchy of Information
 
 When introducing any concept, follow this order:
-1. **What it is** (functional definition)
-2. **What it does** (practical reality)
-3. **Why it matters** (value proposition)
-4. **What it means** (narrative/philosophical layer)
 
-Don't jump straight to #4 without establishing #1–3. **Never use "this is X, not Y" phrasing.**
+1. What it is
+2. What it does
+3. Why it matters
+4. What it means
 
-## Sentence-Level Rules
+Do not jump straight to the narrative layer without establishing the functional layer first.
 
-**Cut "that" constructions:**
-- No: "The platform that we built that allows users..."
-- Yes: "Our platform allows users..."
+### Prompt Architecture and Design
 
-**Replace abstractions with specifics:**
-- No: "communal rewards"
-- Yes: "Experiments and courses earn Diamonds"
+The aesthetic rule: a strong prompt does more than request raw data. It sets the sensory, emotional, and structural frame the result should live inside.
 
-**Delete hedge words:**
-- No: "We kind of offer something fresh"
-- Yes: "We offer something fresh"
+When writing prompts or marketing copy, make the intended feeling and structure explicit before you layer on flourish.
 
-**One idea per sentence:**
-- No: "We skip forceful subscriptions and instead offer meaningful experiences, fresh perspectives, most organizations have their treasuries private, and characters and interactive NPCs that blend into our app."
-- Yes: "No subscriptions. A cohort with rewards, and an AI agent who keeps it all transparent."
+### Sentence-Level Rules
 
-## Good Copy vs. Bad Copy — Feature Titles
+- Cut "that" constructions when they slow the sentence down.
+- Replace abstractions with specifics.
+- Delete hedge words.
+- Keep one idea per sentence.
 
-Feature card titles, nav labels, and section headers should name the **category** the user is entering — not describe the mechanism. Mechanism belongs in the body copy underneath. A short, research-elevated title sets the frame; the description below grounds it.
+Examples:
 
-| Bad Copy (mechanism-as-title) | Good Copy (category-as-title) |
-|---|---|
-| Twelve-Week Cohort | A Micro-University For Intellectual Refreshment |
-| AI Reviews Your Progress | A Curriculum Accompanied By Blue |
-| A Crypto Token Called Diamonds | A Universal Community Token |
-| Building Research | Parasocial Research Programs |
-| Memory That Compounds | Certified Academic Labs |
-| One NFT, Full Access | Lifetime Membership |
+- No: The platform that we built that allows users...
+- Yes: Our platform allows users...
+- No: communal rewards
+- Yes: Experiments and courses earn Diamonds
+- No: We kind of offer something fresh
+- Yes: We offer something fresh
+- No: We skip forceful subscriptions and instead offer meaningful experiences, fresh perspectives, and interactive characters that blend into the app.
+- Yes: No subscriptions. Earn rewards. Rely on an agentic system to keep it transparent.
 
-**The pattern:** the bad version describes *how it works*. The good version names *what you're joining*.
+### Feature Titles
 
-## Revision Checklist
+Feature card titles, nav labels, and section headers should name the category the user is entering, not the mechanism behind it. Mechanism belongs in the body copy.
 
-Before publishing any content:
+| Bad copy | Good copy |
+| --- | --- |
+| Twelve-week cohort | A Micro-University For Intellectual Refreshment |
+| AI reviews your progress | A Curriculum Accompanied By Blue |
+| A crypto token called Diamonds | A Universal Community Token |
+| Building research | Parasocial Research Programs |
+| Memory that compounds | Certified Academic Labs |
+| One NFT, full access | Lifetime Membership |
+
+The bad version describes how it works. The good version names what you're joining.
+
+### Before You Publish
+
 - Can someone explain what we do after reading this section?
 - Is every poetic phrase grounded in something concrete?
-- Does the order go: real → story layer (not story layer → real)?
+- Does the order go real first, story second?
 - Is there only one main idea per paragraph?
 - Have I cut sentences that sound cool but mean nothing?
 - Did I avoid "this is X, not Y" phrasing?
 - Would an investor understand this? Would an artist feel it?
 
----
+### Revision Note
 
-*Version 4.0 — April 2026*
-*Mental Wealth Academy — Wyoming, USA*
+The working goal is simple: make the system feel coherent, specific, and alive, without losing the academic spine underneath it.
+
+*Mental Wealth Academy - Wyoming, USA*
+*mentalwealthacademy.world*
