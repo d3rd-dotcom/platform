@@ -107,7 +107,7 @@ RotatingCube.displayName = 'RotatingCube';
 
 const CubesScene = memo(({ bgColor }: { bgColor: THREE.Vector3 }) => {
   const cubes = [];
-  const count = 10;
+  const count = 8;
   const cameraZ = 10;
   const fov = 75;
   const aspect = typeof window !== 'undefined' ? window.innerWidth / window.innerHeight : 16 / 9;
@@ -115,45 +115,27 @@ const CubesScene = memo(({ bgColor }: { bgColor: THREE.Vector3 }) => {
   const visibleHeight = 2 * Math.tan(fovRad / 2) * cameraZ;
   const visibleWidth = visibleHeight * aspect;
 
-  // Place cubes heavily biased to the right so some are always visible on load.
-  // On landscape: 2 left (mostly hidden / peek-in), 8 right (always visible).
-  // On portrait: 2 top, 8 bottom.
-  const rightCount = 8;
-  const leftCount = count - rightCount;
+  // Keep an even number of cubes along both edges so the hero stays balanced.
+  // Portrait layouts use smaller cubes to preserve space around the copy.
+  const cubesPerSide = count / 2;
   const isLandscape = aspect >= 1;
 
   for (let i = 0; i < count; i++) {
-    const side = i < leftCount ? -1 : 1;
-    const idx = side === -1 ? i : i - leftCount;
-    const groupSize = side === -1 ? leftCount : rightCount;
-    const t = groupSize > 1 ? idx / (groupSize - 1) : 0;
-
-    let x: number, y: number;
-    if (isLandscape) {
-      if (side === -1) {
-        const xBase = visibleWidth * (0.48 + Math.random() * 0.06);
-        x = -(xBase + Math.random() * visibleWidth * 0.04);
-      } else {
-        const xBase = visibleWidth * (0.25 + Math.random() * 0.18);
-        x = xBase + (Math.random() - 0.5) * visibleWidth * 0.04;
-      }
-      y = (t - 0.5) * visibleHeight * 0.92 + (Math.random() - 0.5) * visibleHeight * 0.10;
-    } else {
-      x = (t - 0.5) * visibleWidth * 0.88 + (Math.random() - 0.5) * visibleWidth * 0.08;
-      const yBase = visibleHeight * (0.28 + Math.random() * 0.18);
-      y = side * yBase;
-    }
-
-    // Pin the topmost right-side cube to a guaranteed top-right position.
-    if (isLandscape && side === 1 && idx === rightCount - 1) {
-      x = visibleWidth * 0.38;
-      y = visibleHeight * 0.42;
-    }
+    const side = i < cubesPerSide ? -1 : 1;
+    const idx = i % cubesPerSide;
+    const t = idx / (cubesPerSide - 1);
+    const edgeDistance = isLandscape ? 0.34 : 0.38;
+    const edgeSpread = isLandscape ? 0.1 : 0.06;
+    const x = side * visibleWidth * (edgeDistance + Math.random() * edgeSpread);
+    const verticalRange = isLandscape ? 0.86 : 0.7;
+    const y =
+      (t - 0.5) * visibleHeight * verticalRange +
+      (Math.random() - 0.5) * visibleHeight * 0.06;
 
     cubes.push({
       position: [x, y, (Math.random() - 0.5) * 6] as [number, number, number],
       rotationSpeed: [(Math.random() - 0.5) * 0.4, (Math.random() - 0.5) * 0.4, (Math.random() - 0.5) * 0.4] as [number, number, number],
-      scale: 1.5 + Math.random() * 2.0,
+      scale: isLandscape ? 1.3 + Math.random() * 1.5 : 0.9 + Math.random() * 0.9,
       verticalSpeed: (Math.random() - 0.5) * 0.8,
       horizontalOnly: Math.random() < 0.4,
     });
