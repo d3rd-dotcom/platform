@@ -150,8 +150,45 @@
   flex-direction: column;
 }
 
-/* Dialogue text. */
-.text {
+/* Reward chip: diamond payout presented above the dialogue text. */
+.rewardChip {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  align-self: flex-start;
+  margin: 0 0 14px;
+  padding: 8px 18px;
+  border: 3px solid var(--color-primary);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #eef1ff 0%, #ffffff 100%);
+  box-shadow: 0 4px 14px rgba(81, 104, 255, 0.22);
+}
+
+.rewardIcon {
+  align-self: center;
+}
+
+.rewardAmount {
+  font-family: var(--font-departure-mono), 'Departure Mono', monospace;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--color-primary);
+}
+
+.rewardLabel {
+  font-family: var(--font-departure-mono), 'Departure Mono', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #341a77;
+}
+
+/* Dialogue text. The `.box .text` compound keeps this above the global
+   `[data-theme="dark"] p` rule, which would otherwise paint light text onto
+   this always-white box and make it unreadable in dark mode. */
+.box .text {
   position: relative;
   z-index: 1;
   flex: 1;

@@ -19,6 +19,8 @@ export interface BlueDialogueProps {
   onClose: () => void;
   /** Milliseconds per typewritten character. */
   speed?: number;
+  /** Diamond amount to present as a reward chip above the dialogue text. */
+  reward?: number;
 }
 
 /**
@@ -53,6 +55,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   emotion = 'happy',
   onClose,
   speed = 22,
+  reward,
 }) => {
   const { play } = useSound();
   const overlayRef = useRef<HTMLDivElement | null>(null);
@@ -69,6 +72,27 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   const [displayed, setDisplayed] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [displayReward, setDisplayReward] = useState(0);
+
+  // Count the reward chip up from zero when the overlay opens.
+  useEffect(() => {
+    if (!open || !reward) return;
+    if (prefersReducedMotion()) {
+      setDisplayReward(reward);
+      return;
+    }
+    setDisplayReward(0);
+    const duration = 900;
+    const start = performance.now();
+    let frame: number;
+    const tick = (now: number) => {
+      const progress = Math.min((now - start) / duration, 1);
+      setDisplayReward(Math.round(reward * (1 - Math.pow(1 - progress, 3))));
+      if (progress < 1) frame = window.requestAnimationFrame(tick);
+    };
+    frame = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(frame);
+  }, [open, reward]);
 
   const safeIndex = lineIndex >= safeLines.length ? safeLines.length - 1 : lineIndex;
   const activeLine = safeLines[safeIndex] ?? '';
@@ -270,6 +294,19 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
           </div>
 
           <div className={styles.box}>
+            {typeof reward === 'number' && reward > 0 && (
+              <div className={styles.rewardChip} role="status">
+                <Image
+                  src="/icons/ui-diamond.svg"
+                  alt=""
+                  width={22}
+                  height={22}
+                  className={styles.rewardIcon}
+                />
+                <span className={styles.rewardAmount}>+{displayReward}</span>
+                <span className={styles.rewardLabel}>diamonds</span>
+              </div>
+            )}
             <p className={styles.text} aria-live="polite">
               <span className={styles.quote} aria-hidden="true">
                 &ldquo;

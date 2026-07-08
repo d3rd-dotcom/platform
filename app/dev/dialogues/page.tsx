@@ -14,6 +14,7 @@ interface Scenario {
   label: string;
   lines: string[];
   emotion?: BlueEmotion;
+  reward?: number;
 }
 
 const LONG_TEXT =
@@ -23,6 +24,13 @@ const LONG_TEXT =
   'On mobile this same block should clamp its padding down and remain fully readable without horizontal scroll.';
 
 const SCENARIOS: Scenario[] = [
+  {
+    id: 'diamond-reward',
+    label: 'Diamond reward',
+    lines: ['Logged it. You are my favorite data point today.'],
+    emotion: 'happy',
+    reward: 50,
+  },
   {
     id: 'guide-complete',
     label: 'Guide complete',
@@ -46,7 +54,7 @@ const SCENARIOS: Scenario[] = [
     lines: [
       'Nice work. That guide is logged and I just sent +80 diamonds straight to your wallet. Small consistent wins, that is the whole game.',
       'You cleared the entire walkthrough. That is a 500+ diamond payout landing in your wallet, and the whole topic tree is yours now. Go pick the next hard thing.',
-      'One more thing. You earned a free loot-box spin. Claim it whenever you want a little surprise.',
+      'One more thing. I tucked a little bonus on top of the payout. Ten extra diamonds, because finishing deserves a flourish.',
     ],
     emotion: 'happy',
   },
@@ -147,6 +155,7 @@ export default function DevDialoguesPage() {
         open={active !== null}
         lines={active?.lines ?? []}
         emotion={active?.emotion}
+        reward={active?.reward}
         onClose={() => setActive(null)}
       />
     </div>

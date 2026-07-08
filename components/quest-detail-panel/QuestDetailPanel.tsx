@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import { useAccount } from 'wagmi';
@@ -53,6 +53,8 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
   const [isCompleting, setIsCompleting] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [showDiamondReward, setShowDiamondReward] = useState(false);
+  // Cleanup to run once the player dismisses the reward dialogue.
+  const afterRewardRef = useRef<(() => void) | null>(null);
   const [shardsAwarded, setShardsAwarded] = useState(0);
   const [showConnectingModal, setShowConnectingModal] = useState(false);
   const [usdcClaim, setUsdcClaim] = useState<UsdcClaimState | null>(null);
@@ -197,7 +199,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
                 setShowConfetti(true);
                 setShowDiamondReward(true);
                 window.dispatchEvent(new Event('shardsUpdated'));
-                setTimeout(() => { setShowConfetti(false); setShowDiamondReward(false); }, 5000);
+                setTimeout(() => setShowConfetti(false), 5000);
               }
             } catch (error) { console.error('Failed to auto-complete reward:', error); }
           }
@@ -289,15 +291,12 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
         setShowConfetti(true);
         setShowDiamondReward(true);
         window.dispatchEvent(new Event('shardsUpdated'));
-        setTimeout(() => {
+        afterRewardRef.current = () => {
           onDeselect();
-          setTimeout(() => {
-            setShowConfetti(false);
-            setShowDiamondReward(false);
-            setShardsAwarded(0);
-            setProofText('');
-          }, 2000);
-        }, 5000);
+          setShowConfetti(false);
+          setShardsAwarded(0);
+          setProofText('');
+        };
       } else {
         alert(data.error || 'Failed to complete quest. Please try again.');
       }
@@ -806,7 +805,14 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
 
       <ConfettiCelebration trigger={showConfetti} />
       {showDiamondReward && (
-        <DiamondReward amount={shardsAwarded} onComplete={() => setShowDiamondReward(false)} />
+        <DiamondReward
+          amount={shardsAwarded}
+          onComplete={() => {
+            setShowDiamondReward(false);
+            afterRewardRef.current?.();
+            afterRewardRef.current = null;
+          }}
+        />
       )}
       <XConnectingModal isOpen={showConnectingModal} />
       </div>

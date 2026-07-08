@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import { useAccount } from 'wagmi';
@@ -62,6 +62,8 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
   const [isCompleting, setIsCompleting] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [showDiamondReward, setShowDiamondReward] = useState(false);
+  // Cleanup to run once the player dismisses the reward dialogue.
+  const afterRewardRef = useRef<(() => void) | null>(null);
   const [shardsAwarded, setShardsAwarded] = useState(0);
   const [showConnectingModal, setShowConnectingModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
@@ -225,10 +227,7 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
                 setShowConfetti(true);
                 setShowDiamondReward(true);
                 window.dispatchEvent(new Event('shardsUpdated'));
-                setTimeout(() => {
-                  setShowConfetti(false);
-                  setShowDiamondReward(false);
-                }, 5000);
+                setTimeout(() => setShowConfetti(false), 5000);
               }
             } catch (error) {
               console.error('Failed to auto-complete reward:', error);
@@ -339,16 +338,12 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
         setShowConfetti(true);
         setShowDiamondReward(true);
         window.dispatchEvent(new Event('shardsUpdated'));
-
-        setTimeout(() => {
+        afterRewardRef.current = () => {
           onClose();
-          setTimeout(() => {
-            setShowConfetti(false);
-            setShowDiamondReward(false);
-            setShardsAwarded(0);
-            setSelectedFile(null);
-          }, 2000);
-        }, 5000);
+          setShowConfetti(false);
+          setShardsAwarded(0);
+          setSelectedFile(null);
+        };
       } else {
         alert(data.error || 'Failed to complete quest. Please try again.');
       }
@@ -730,7 +725,11 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
       {showDiamondReward && (
         <DiamondReward
           amount={shardsAwarded}
-          onComplete={() => setShowDiamondReward(false)}
+          onComplete={() => {
+            setShowDiamondReward(false);
+            afterRewardRef.current?.();
+            afterRewardRef.current = null;
+          }}
         />
       )}
       <XConnectingModal isOpen={showConnectingModal} />
