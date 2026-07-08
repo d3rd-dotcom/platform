@@ -50,7 +50,7 @@ function buildRewardLines(reward: RewardInfo): string[] {
 
   if (reward.spinGranted) {
     lines.push(
-      `One more thing. You earned a free loot-box spin. Claim it whenever you want a little surprise.`,
+      `One more thing. I tucked a little bonus on top of the payout. Ten extra diamonds, because finishing deserves a flourish.`,
     );
   }
 

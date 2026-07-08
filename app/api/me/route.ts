@@ -3,6 +3,7 @@ import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { getWalletAddressFromRequest } from '@/lib/wallet-auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
+import { fetchDiamondBalance } from '@/lib/diamonds-balance';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -29,12 +30,15 @@ export async function GET() {
       });
     }
 
-    // Get credit count and onboarding status from database
+    // Get onboarding status from database
     const userRows = await sqlQuery<Array<{ shard_count: number; selected_avatar_id: string | null; avatar_url: string | null }>>(
       `SELECT shard_count, selected_avatar_id, avatar_url FROM users WHERE id = :id LIMIT 1`,
       { id: user.id }
     );
-    const shardCount = userRows[0]?.shard_count ?? 0;
+    // The balance is the wallet's real $BLUE holdings; the DB shard_count is
+    // only the fallback for when the RPC read fails.
+    const onchainBalance = await fetchDiamondBalance(user.walletAddress);
+    const shardCount = onchainBalance ?? userRows[0]?.shard_count ?? 0;
     // Onboarding is complete if user picked a platform avatar OR has an external avatar (e.g. Farcaster pfp)
     const onboardingComplete = !!userRows[0]?.selected_avatar_id || !!userRows[0]?.avatar_url;
 

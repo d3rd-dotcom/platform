@@ -148,8 +148,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Claim is no longer pending.' }, { status: 409 });
   }
 
-  // Credit rewards stay in-app: draw the creator's escrowed diamonds and award
-  // them to the completer atomically. No on-chain payout is involved.
+  // Credit rewards: draw down the quest's escrow accounting atomically, then
+  // pay the completer in real $BLUE from Blue's wallet (the creator's deposit
+  // funded her for it at forge time).
   if (claim.reward_kind === 'credits') {
     try {
       const paid = await withTransaction(async (client) => {

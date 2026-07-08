@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { ensureCustomQuestsSchema } from '@/lib/ensureCustomQuestsSchema';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
-import { isDbConfigured, sqlQuery, withTransaction, sqlQueryWithClient } from '@/lib/db';
+import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { walletHoldsVipMembershipCard } from '@/lib/vip-membership-card';
 import { getBlueWalletAddress } from '@/lib/blue-membership';
 import { BASE_CHAIN_ID, USDC_ADDRESS } from '@/lib/crypto-payment';
@@ -187,7 +187,7 @@ export async function POST(request: Request) {
   // For credits the reward IS the points value; USDC quests grant no credits.
   const points = rewardKind === 'credits' ? reward.amount : 0;
   // USDC quests stay hidden until the creator funds the escrow on-chain.
-  const escrowStatus = rewardKind === 'usdc' ? 'pending_funding' : 'funded';
+  const escrowStatus = 'pending_funding';
 
   const insertParams = {
     id,
@@ -216,37 +216,11 @@ export async function POST(request: Request) {
         :creatorWallet, :creatorHandle, :assigneeWallet, :expiresAt,
         :rewardKind, :rewardAmount, :escrowTotal, :escrowTotal, :escrowStatus)`;
 
-  if (rewardKind === 'credits') {
-    // Escrow credits up front: debit the creator's balance, then create the
-    // quest in one transaction so we never publish an unfunded credit quest.
-    try {
-      await withTransaction(async (client) => {
-        const debited = await sqlQueryWithClient<Array<{ shard_count: number }>>(
-          client,
-          `UPDATE users SET shard_count = shard_count - :total
-           WHERE id = :id AND shard_count >= :total
-           RETURNING shard_count`,
-          { id: user.id, total: reward.escrowTotal },
-        );
-        if (debited.length === 0) {
-          throw new Error('INSUFFICIENT_CREDITS');
-        }
-        await sqlQueryWithClient(client, insertSql, insertParams);
-      });
-    } catch (err: any) {
-      if (err?.message === 'INSUFFICIENT_CREDITS') {
-        return NextResponse.json(
-          { error: `Not enough diamonds to fund this quest. It needs ${reward.escrowTotal} diamonds held in escrow.` },
-          { status: 402 },
-        );
-      }
-      console.error('Error creating credit quest:', err);
-      return NextResponse.json({ error: 'Failed to create quest.' }, { status: 500 });
-    }
-  } else {
-    // USDC: create the quest unfunded; the creator deposits to Blue next.
-    await sqlQuery(insertSql, insertParams);
-  }
+  // Both reward kinds are escrowed onchain now: the quest is created unfunded
+  // and stays hidden until the creator's deposit to Blue's wallet is verified
+  // by /api/quests/forge/confirm-funding — $BLUE for credit quests, USDC for
+  // USDC quests. No server-side balance is ever debited.
+  await sqlQuery(insertSql, insertParams);
 
   const rows = await sqlQuery<CustomQuestRow[]>(
     `SELECT ${ROW_COLUMNS} FROM custom_quests WHERE id = :id LIMIT 1`,
@@ -254,32 +228,35 @@ export async function POST(request: Request) {
   );
   const quest = rows[0] ? rowToJson(rows[0]) : null;
 
-  // USDC quests need an on-chain deposit to Blue before they go live. Hand the
+  // Every quest needs an onchain deposit to Blue before it goes live. Hand the
   // client everything it needs to send that transfer; /api/quests/forge/
   // confirm-funding verifies it and flips the quest to 'funded'.
-  if (rewardKind === 'usdc') {
-    let blueWallet: string | null = null;
-    try {
-      blueWallet = getBlueWalletAddress();
-    } catch (err) {
-      console.error('[quests] Blue wallet not configured for USDC escrow:', err);
-    }
-    return NextResponse.json(
-      {
-        quest,
-        funding: blueWallet
+  let blueWallet: string | null = null;
+  try {
+    blueWallet = getBlueWalletAddress();
+  } catch (err) {
+    console.error('[quests] Blue wallet not configured for escrow:', err);
+  }
+  return NextResponse.json(
+    {
+      quest,
+      funding: blueWallet
+        ? rewardKind === 'usdc'
           ? {
+              kind: 'usdc',
               blueWallet,
               usdcAddress: USDC_ADDRESS,
               chainId: BASE_CHAIN_ID,
               amount: usdcToUnits(reward.escrowTotal),
               amountDisplay: reward.escrowTotal,
             }
-          : null,
-      },
-      { status: 201 },
-    );
-  }
-
-  return NextResponse.json({ quest }, { status: 201 });
+          : {
+              kind: 'credits',
+              blueWallet,
+              amountDisplay: reward.escrowTotal,
+            }
+        : null,
+    },
+    { status: 201 },
+  );
 }

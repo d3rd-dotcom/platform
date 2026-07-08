@@ -9,6 +9,7 @@ import { NextResponse } from 'next/server';
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
+import { fetchDiamondBalance } from '@/lib/diamonds-balance';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -76,7 +77,7 @@ export async function GET() {
         id: user.id,
         username: user.username,
         avatarUrl: user.avatarUrl,
-        shardCount: user.shardCount,
+        shardCount: (await fetchDiamondBalance(user.walletAddress)) ?? user.shardCount,
         walletAddress: user.walletAddress,
         createdAt: user.createdAt,
         gender: profile.gender,

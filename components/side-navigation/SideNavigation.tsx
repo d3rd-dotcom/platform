@@ -25,7 +25,6 @@ const ProMembershipModal = dynamic(() => import('../pro-membership-modal/ProMemb
 const AngelUpsellModal = dynamic(() => import('../angel-upsell-modal/AngelUpsellModal'), { ssr: false });
 
 const YourAccountsModal = dynamic(() => import('../nav-buttons/YourAccountsModal'), { ssr: false });
-const LootBoxModal = dynamic(() => import('../loot-box/LootBoxModal'), { ssr: false });
 const SubmitProposalModal = dynamic(() => import('../voting/SubmitProposalModal'), { ssr: false });
 
 interface NavItem {
@@ -216,7 +215,6 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     } catch {}
     return initialCollapsed;
   });
-  const [isLootBoxOpen, setIsLootBoxOpen] = useState(false);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [userLoadComplete, setUserLoadComplete] = useState(false);
   const [hasVipMembershipCard, setHasVipMembershipCard] = useState<boolean | null>(null);
@@ -942,14 +940,6 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
         <BlueCallingOverlay
           onAccept={() => { setIsCallingBlue(false); setStartWithVoice(true); setIsChatOpen(true); }}
           onDecline={() => setIsCallingBlue(false)}
-        />
-      )}
-      {isLootBoxOpen && (
-        <LootBoxModal
-          isOpen={isLootBoxOpen}
-          onClose={() => setIsLootBoxOpen(false)}
-          shardCount={shardCount}
-          onShardsSpent={(newCount: number) => setShardCount(newCount)}
         />
       )}
       {isProModalOpen && (

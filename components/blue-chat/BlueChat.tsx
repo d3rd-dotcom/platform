@@ -17,6 +17,7 @@ import type { AutoDistributionRequest } from './AutoDistributionInline';
 import QuestForgeInline from './QuestForgeInline';
 import type { QuestForgeDraft, QuestForgeRequest } from './QuestForgeInline';
 import { sendUsdcOnBase, type Eip1193Provider } from '@/lib/usdc-base-transfer';
+import { sendDiamonds, sendDiamondsBurn } from '@/lib/diamonds-base-transfer';
 import { broadcastPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
 
 const ProMembershipModal = dynamic(() => import('../pro-membership-modal/ProMembershipModal'), { ssr: false });
@@ -597,31 +598,60 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
       return;
     }
 
-    setIsTyping(true);
     setShardUpsell(null);
+
+    // Chat costs a real $BLUE burn signed by the user's own wallet. Research
+    // is the VIP benefit and stays free.
+    let burnTxHash: string | undefined;
+    if (mode !== 'research') {
+      if (!isConnected || !connector) {
+        addBlueMessage(`each message costs ${SHARD_COST} diamonds, burned straight from your wallet — connect your wallet and try again.`);
+        return;
+      }
+      if (shardCount !== null && shardCount < SHARD_COST) {
+        openShardUpsell(SHARD_COST, 'chat');
+        return;
+      }
+      setIsTyping(true);
+      try {
+        const eip1193 = (await connector.getProvider()) as Eip1193Provider;
+        burnTxHash = await sendDiamondsBurn(eip1193, SHARD_COST);
+      } catch (err) {
+        setIsTyping(false);
+        const code = (err as { code?: string | number })?.code;
+        if (code === 'ACTION_REJECTED' || code === 4001) {
+          addBlueMessage(`no burn, no message — each one costs ${SHARD_COST} diamonds. confirm it in your wallet when you're ready.`);
+        } else {
+          openShardUpsell(SHARD_COST, 'chat');
+        }
+        return;
+      }
+    }
+
+    setIsTyping(true);
     try {
       const res = await fetch('/api/chat/blue', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
         credentials: 'include',
-        body: JSON.stringify({ message: text, mode, attachments, pathname: currentPathname }),
+        body: JSON.stringify({ message: text, mode, attachments, pathname: currentPathname, burnTxHash }),
       });
       const data = await res.json();
 
       if (res.ok && data.response) {
-        setShardCount(data.shardsRemaining ?? shardCount);
+        fetchShardCount();
+        window.dispatchEvent(new Event('shardsUpdated'));
         setIsTyping(false);
         addBlueMessage(data.response, {
           ...(data.debug || {}),
-          shardBalance: data.shardsRemaining ?? shardCount ?? null,
+          shardBalance: shardCount ?? null,
         });
         return;
       }
 
-      if (data.error === 'insufficient_shards') {
-        setShardCount(data.shardCount);
+      if (data.error === 'burn_required' || data.error === 'burn_not_verified' || data.error === 'tx_already_used') {
         setIsTyping(false);
-        openShardUpsell(SHARD_COST, 'chat');
+        addBlueMessage("i couldn't verify that diamond burn yet — give it a few seconds and send your message again.");
         return;
       }
 
@@ -960,36 +990,34 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
         return;
       }
 
-      if (req.rewardKind === 'credits') {
-        setQuestForgeVisible(false);
-        setQuestDraft(null);
-        fetchShardCount();
-        window.dispatchEvent(new Event('shardsUpdated'));
-        addBlueMessage(`done — "${req.title}" is live on the quests board. ${req.rewardAmount} diamonds each${req.targetCount > 1 ? `, up to ${req.targetCount} people` : ''}.`);
-        return;
-      }
-
-      // USDC: fund the escrow on-chain from the creator's own wallet.
+      // Fund the escrow onchain from the creator's own wallet — $BLUE for
+      // credit quests, USDC for USDC quests. No server-side balance involved.
+      const isCredits = req.rewardKind === 'credits';
+      const escrowLabel = isCredits
+        ? `${data.funding?.amountDisplay ?? req.rewardAmount} diamonds`
+        : `$${data.funding?.amountDisplay ?? req.rewardAmount} USDC`;
       const funding = data.funding;
       const questId = data.quest?.id;
       if (!funding || !questId) {
-        addBlueMessage("the escrow wallet isn't set up, so i can't take USDC quests right now. ping the team.");
+        addBlueMessage("the escrow wallet isn't set up, so i can't take funded quests right now. ping the team.");
         return;
       }
       if (!isConnected || !connector) {
-        addBlueMessage(`"${req.title}" is saved but stays hidden until it's funded. connect your wallet, then forge it again to send $${funding.amountDisplay} USDC into escrow.`);
+        addBlueMessage(`"${req.title}" is saved but stays hidden until it's funded. connect your wallet, then forge it again to send ${escrowLabel} into escrow.`);
         return;
       }
 
-      addBlueMessage(`confirm the $${funding.amountDisplay} USDC transfer in your wallet — that funds the escrow i hold for "${req.title}".`);
+      addBlueMessage(`confirm the ${escrowLabel} transfer in your wallet — that funds the escrow i hold for "${req.title}".`);
       let txHash: string;
       try {
         const eip1193 = (await connector.getProvider()) as Eip1193Provider;
-        txHash = await sendUsdcOnBase(eip1193, funding.usdcAddress, funding.blueWallet, funding.amount);
+        txHash = isCredits
+          ? await sendDiamonds(eip1193, funding.blueWallet, Number(funding.amountDisplay))
+          : await sendUsdcOnBase(eip1193, funding.usdcAddress, funding.blueWallet, funding.amount);
       } catch (err) {
         const code = (err as { code?: string | number })?.code;
         if (code === 'ACTION_REJECTED' || code === 4001) {
-          addBlueMessage(`no worries — "${req.title}" is saved but stays hidden until it's funded. forge it again when you're ready to send the USDC.`);
+          addBlueMessage(`no worries — "${req.title}" is saved but stays hidden until it's funded. forge it again when you're ready to send the ${isCredits ? 'diamonds' : 'USDC'}.`);
         } else {
           addBlueMessage("that transfer didn't go through. the quest's saved but unfunded — try forging it again.");
         }
@@ -1011,7 +1039,11 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
 
       setQuestForgeVisible(false);
       setQuestDraft(null);
-      addBlueMessage(`funded and live — "${req.title}" pays $${req.rewardAmount} USDC each. you approve every completion before i release the money.`);
+      fetchShardCount();
+      window.dispatchEvent(new Event('shardsUpdated'));
+      addBlueMessage(isCredits
+        ? `funded and live — "${req.title}" pays ${req.rewardAmount} diamonds each${req.targetCount > 1 ? `, up to ${req.targetCount} people` : ''}. the escrow sits in my wallet and i pay every completion onchain.`
+        : `funded and live — "${req.title}" pays $${req.rewardAmount} USDC each. you approve every completion before i release the money.`);
     } catch {
       addBlueMessage('something went wrong forging that quest. try again.');
     } finally {

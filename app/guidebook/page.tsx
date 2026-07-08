@@ -707,7 +707,7 @@ export default function GuidebookPage() {
         <P>Your <Strong>streak calendar</Strong> on the Profile page shows a monthly calendar view, highlighted days you wrote, your current streak count, and longest streak record.</P>
 
         <H3>Rereading Past Entries</H3>
-        <P>Go to <Strong>Profile &gt; Field Notes</Strong> to browse your entries organized by date. Cost: 50 Diamonds per reread (makes re-reading a deliberate choice).</P>
+        <P>Go to <Strong>Profile &gt; Field Notes</Strong> to browse your entries organized by date.</P>
 
         <H3>Streak Motivation</H3>
         <P>Maintaining a daily writing habit unlocks higher Diamond bonuses, leaderboard ranking, and visible proof of commitment on your profile.</P>

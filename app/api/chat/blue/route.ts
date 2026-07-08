@@ -5,6 +5,7 @@ import { getWalletAddressFromRequest } from '@/lib/wallet-auth';
 import { walletHoldsVipMembershipCard } from '@/lib/vip-membership-card';
 import { buildBlueContext, storeBlueChatMessage, touchBlueRelationship, upsertBlueFacts } from '@/lib/blue-memory';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
+import { verifyDiamondBurnTx, recordDiamondBurn, releaseDiamondBurn, TX_HASH_PATTERN } from '@/lib/diamond-burns';
 import { elizaAPI } from '@/lib/eliza-api';
 import bluePersona from '@/lib/bluepersonality.json';
 import { runBlueRagGraph, type BlueRagResult } from '@/lib/blue-rag-graph';
@@ -496,7 +497,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
 
-  let body: { message: string; mode?: string; attachments?: ChatAttachment[]; pathname?: string | null };
+  let body: { message: string; mode?: string; attachments?: ChatAttachment[]; pathname?: string | null; burnTxHash?: string };
   try {
     body = await request.json();
   } catch {
@@ -564,41 +565,42 @@ export async function POST(request: Request) {
     }
   }
 
-  // Normal chat: check credit balance
-  const rows = await sqlQuery<Array<{ shard_count: number }>>(
-    'SELECT shard_count FROM users WHERE id = :id LIMIT 1',
-    { id: user.id }
-  );
-  if (!rows.length) {
+  // Normal chat costs a real $BLUE burn: the client sends SHARD_COST diamonds
+  // from the user's wallet to the dead address and posts the tx hash here.
+  const burnTxHash = typeof body.burnTxHash === 'string' ? body.burnTxHash.trim() : '';
+  if (!burnTxHash || !TX_HASH_PATTERN.test(burnTxHash)) {
     return NextResponse.json({
-      error: 'user_not_found',
-      message: 'User record not found for the current session.',
-    }, { status: 404 });
-  }
-  const shardCount = rows[0].shard_count ?? 0;
-
-  if (shardCount < SHARD_COST) {
-    return NextResponse.json({
-      error: 'insufficient_shards',
-      shardCount,
+      error: 'burn_required',
       cost: SHARD_COST,
     }, { status: 402 });
   }
 
-  // Deduct credits atomically
-  const updated = await sqlQuery<Array<{ shard_count: number }>>(
-    `UPDATE users SET shard_count = shard_count - :cost
-     WHERE id = :id AND shard_count >= :cost
-     RETURNING shard_count`,
-    { id: user.id, cost: SHARD_COST }
-  );
-
-  if (!updated.length) {
+  let verification;
+  try {
+    verification = await verifyDiamondBurnTx(burnTxHash, user.walletAddress, SHARD_COST);
+  } catch (err) {
+    console.error('Blue chat burn verification error:', err);
+    return NextResponse.json({ error: 'verify_failed' }, { status: 502 });
+  }
+  if (!verification.ok) {
     return NextResponse.json({
-      error: 'insufficient_shards',
-      shardCount,
+      error: 'burn_not_verified',
+      reason: verification.reason,
       cost: SHARD_COST,
     }, { status: 402 });
+  }
+
+  // Reserve the burn before the AI call so two requests can't spend one tx;
+  // release it if the turn fails, so the user's burn buys a retry, not nothing.
+  const reserved = await recordDiamondBurn({
+    userId: user.id,
+    walletAddress: user.walletAddress,
+    purpose: 'blue_chat',
+    amount: SHARD_COST,
+    txHash: burnTxHash,
+  });
+  if (!reserved) {
+    return NextResponse.json({ error: 'tx_already_used' }, { status: 409 });
   }
 
   try {
@@ -616,15 +618,11 @@ export async function POST(request: Request) {
     return NextResponse.json({
       response: result.response,
       debug: result.debug,
-      shardsRemaining: updated[0].shard_count,
-      shardsDeducted: SHARD_COST,
+      diamondsBurned: SHARD_COST,
     });
   } catch (err: unknown) {
-    // Refund credits on failure
-    await sqlQuery(
-      'UPDATE users SET shard_count = shard_count + :cost WHERE id = :id',
-      { id: user.id, cost: SHARD_COST }
-    );
+    // The turn produced nothing — release the burn so the same tx can retry.
+    await releaseDiamondBurn(burnTxHash, user.id);
 
     const msg = err instanceof Error ? err.message : 'AI error';
     console.error('Blue chat error:', msg);

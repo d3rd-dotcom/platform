@@ -11,10 +11,9 @@ export const GUIDE_COMPLETE_REWARD = 50;
 const LEVEL_CLEAR_MULTIPLIER = 3;
 const WALKTHROUGH_COMPLETE_MULTIPLIER = 10;
 
-// Spin grants are ad-hoc in this codebase: app/api/loot-box/spin/route.ts simply
-// deducts SPIN_COST (10) diamonds from users.shard_count — there is no persistent
-// spin-grant ledger to write to. So instead of granting a spin token we award the
-// diamond-equivalent of one free spin, letting the user spin at no net cost.
+// Legacy of the retired loot box: the walkthrough payout includes the diamond
+// value of one free spin. The amount stays so existing claims and payouts keep
+// their meaning.
 const SPIN_COST = 10;
 
 export const LEVEL_CLEAR_REWARD = GUIDE_COMPLETE_REWARD * LEVEL_CLEAR_MULTIPLIER;
