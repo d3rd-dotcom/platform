@@ -9,6 +9,7 @@ import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import CourseFolderCard from '@/components/courses/CourseFolderCard';
 import ProfileDashboard from '@/components/courses/ProfileDashboard';
 import FieldNotesSheet from '@/components/courses/FieldNotesSheet';
+import ReflectionsOverlay from '@/components/courses/ReflectionsOverlay';
 import type { CourseData } from '@/lib/personal-course';
 import type { VipCourseRecord } from '@/lib/vip-course-db';
 import { onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
@@ -72,6 +73,7 @@ export default function CoursesPage() {
   const [deleting, setDeleting] = useState(false);
   const [isVip, setIsVip] = useState(false);
   const [fieldNotesOpen, setFieldNotesOpen] = useState(false);
+  const [reflectionsOpen, setReflectionsOpen] = useState(false);
   const [noteCount, setNoteCount] = useState(0);
   const [introOpen, setIntroOpen] = useState(false);
   const { play } = useSound();
@@ -280,20 +282,6 @@ export default function CoursesPage() {
       <SideNavigation />
       <main className={styles.pageColumns}>
       <div className={styles.main}>
-
-        <div className={styles.folderRow}>
-          <CourseFolderCard
-            title="Shadow Work"
-            count={12}
-            href="/shadow-work"
-            images={[
-              '/uploads/course-shadow-work.jpg',
-              '/uploads/course-tap-creativity.jpg',
-              '/uploads/course-personal.jpg',
-              '/academy-story.png',
-            ]}
-          />
-        </div>
 
         {personalCourse && (
           <div className={styles.cardWrapper}>
@@ -635,6 +623,31 @@ export default function CoursesPage() {
           </div>
         )}
 
+        <div className={styles.folderRow}>
+          <CourseFolderCard
+            title="Shadow Work"
+            count={12}
+            href="/shadow-work"
+            images={[
+              '/uploads/course-shadow-work.jpg',
+              '/uploads/course-tap-creativity.jpg',
+              '/uploads/course-personal.jpg',
+              '/academy-story.png',
+            ]}
+          />
+          <CourseFolderCard
+            title="Reflections"
+            count={0}
+            onOpen={() => setReflectionsOpen(true)}
+            ctaLabel="View treasury"
+            images={[
+              '/uploads/course-personal.jpg',
+              '/uploads/course-tap-creativity.jpg',
+              '/academy-story.png',
+            ]}
+          />
+        </div>
+
       </div>
 
       <aside className={styles.aside}>
@@ -643,6 +656,7 @@ export default function CoursesPage() {
       </main>
 
       {fieldNotesOpen && <FieldNotesSheet onClose={() => setFieldNotesOpen(false)} />}
+      {reflectionsOpen && <ReflectionsOverlay onClose={() => setReflectionsOpen(false)} />}
 
       <BlueDialogue
         open={introOpen}
