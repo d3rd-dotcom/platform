@@ -12,7 +12,7 @@ export const HeroSection: React.FC = () => {
       <div className={styles.heroSection}>
         <LandingScene />
         <div className={styles.heroContent}>
-          <p className={styles.heroTextBadge}>An educational gameworld on Base</p>
+          <p className={styles.heroTextBadge}>The next-gen learning game for education</p>
           <GlitchRevealText
             as="h1"
             className={styles.heroHeadline}
