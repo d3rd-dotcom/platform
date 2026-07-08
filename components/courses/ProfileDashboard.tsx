@@ -33,7 +33,7 @@ function accoladeFromDiamonds(diamonds: number): string {
   return ACCOLADES.find(([min]) => diamonds >= min)?.[1] ?? 'Curious Seeker';
 }
 
-type PanelTab = 'badges' | 'certificates';
+type PanelTab = 'badges' | 'certificates' | 'quests';
 
 export interface PanelCourse {
   title: string;
@@ -169,27 +169,6 @@ export default function ProfileDashboard({
 
       <div className={styles.about}>
         <span className={styles.headline}>{accoladeFromDiamonds(diamonds)}</span>
-        <div className={styles.tabRow}>
-          {(['badges', 'certificates'] as const).map((t) => (
-            <button
-              key={t}
-              type="button"
-              className={`${styles.tab} ${tab === t ? styles.tabActive : ''}`}
-              onClick={() => { play('click'); setTab(t); }}
-              onMouseEnter={() => play('soft-hover')}
-            >
-              {t === 'badges' ? 'Items' : 'Awards'}
-            </button>
-          ))}
-          <button
-            type="button"
-            className={styles.tab}
-            onClick={() => { play('click'); onOpenNotes?.(); }}
-            onMouseEnter={() => play('soft-hover')}
-          >
-            Quests{noteCount > 0 ? ` (${noteCount})` : ''}
-          </button>
-        </div>
       </div>
 
       <div className={styles.statsRow}>
@@ -213,7 +192,20 @@ export default function ProfileDashboard({
 
       <div className={styles.mission}>
         <span className={styles.missionHeading}>Current Quest</span>
-        {currentQuest ? (
+        <div className={styles.tabRow}>
+          {(['badges', 'certificates', 'quests'] as const).map((t) => (
+            <button
+              key={t}
+              type="button"
+              className={`${styles.tab} ${tab === t ? styles.tabActive : ''}`}
+              onClick={() => { play('click'); setTab(t); }}
+              onMouseEnter={() => play('soft-hover')}
+            >
+              {t === 'badges' ? 'Items' : t === 'certificates' ? 'Awards' : 'Quests'}
+            </button>
+          ))}
+        </div>
+        {tab === 'quests' && (currentQuest ? (
           <Link
             href="/quests"
             className={styles.missionCard}
@@ -236,7 +228,7 @@ export default function ProfileDashboard({
               <span className={styles.questDesc}>New quests are on the way. Nice work.</span>
             </span>
           </div>
-        )}
+        ))}
       </div>
 
       <div className={styles.fieldNotesSection}>
