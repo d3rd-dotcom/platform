@@ -6,7 +6,7 @@
 [![Solidity](https://img.shields.io/badge/Solidity-0.8.24-363636?style=for-the-badge&logo=solidity&logoColor=white)](https://soliditylang.org/)
 [![Base](https://img.shields.io/badge/Base-Mainnet%20%2B%20Sepolia-0052FF?style=for-the-badge)](https://base.org/)
 
-A gamified educational gameworld built on behavioral psychology, with blockchain-backed ownership, accompanied by Blue.
+An interactive archive of knowledge built on psychology, with blockchain-based ownership, accompanied by Blue.
 
 </div>
 
