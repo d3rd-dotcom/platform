@@ -29,6 +29,13 @@ interface VerifierTestQuestion {
   options?: string[];
 }
 
+interface ReviewItem {
+  id: number;
+  correct: boolean;
+  correctAnswer: string | null;
+  explanation: string | null;
+}
+
 interface VerifierTest {
   testId: string;
   subject: string;
@@ -66,6 +73,8 @@ export default function VerifierCredentials() {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<{ score: number; passed: boolean; passThreshold: number } | null>(null);
+  // Snapshot of the just-graded test + per-question feedback, shown after submit.
+  const [reviewData, setReviewData] = useState<{ questions: VerifierTestQuestion[]; review: ReviewItem[] } | null>(null);
 
   const authHeaders = useCallback(async (): Promise<HeadersInit> => {
     const token = await getAccessToken().catch(() => null);
@@ -128,6 +137,7 @@ export default function VerifierCredentials() {
     setRequesting(true);
     setError(null);
     setResult(null);
+    setReviewData(null);
     try {
       const res = await fetch('/api/guides/verifier-test', {
         method: 'POST',
@@ -165,6 +175,9 @@ export default function VerifierCredentials() {
         return;
       }
       setResult({ score: data.score, passed: data.passed, passThreshold: data.passThreshold });
+      if (Array.isArray(data.review) && test) {
+        setReviewData({ questions: test.questions, review: data.review as ReviewItem[] });
+      }
       if (data.passed) {
         play('celebration');
         setTest(null);
@@ -218,6 +231,9 @@ export default function VerifierCredentials() {
       {!test && (
         <div className={styles.form}>
           <span className={styles.formTitle}>Become a verifier</span>
+          <p className={styles.formIntro}>
+            Pass a short quiz on a subject and you can review and approve community guides on it. Questions come from the subject itself, so answer from what you actually know.
+          </p>
 
           <label className={styles.field}>
             <span className={styles.fieldLabel}>Subject</span>
@@ -364,6 +380,31 @@ export default function VerifierCredentials() {
               'Submit answers'
             )}
           </button>
+        </div>
+      )}
+
+      {/* ── Post-submit review: what was right, and why ── */}
+      {reviewData && (
+        <div className={styles.review}>
+          <span className={styles.reviewTitle}>Answer review</span>
+          <ol className={styles.reviewList}>
+            {reviewData.questions.map((q) => {
+              const item = reviewData.review.find((r) => r.id === q.id);
+              if (!item) return null;
+              return (
+                <li key={q.id} className={styles.reviewItem}>
+                  <p className={styles.reviewQuestion}>{q.question}</p>
+                  <span className={item.correct ? styles.reviewCorrect : styles.reviewIncorrect}>
+                    {item.correct ? 'Correct' : 'Not quite'}
+                  </span>
+                  {item.correctAnswer && !item.correct && (
+                    <p className={styles.reviewAnswer}>Best answer: {item.correctAnswer}</p>
+                  )}
+                  {item.explanation && <p className={styles.reviewWhy}>{item.explanation}</p>}
+                </li>
+              );
+            })}
+          </ol>
         </div>
       )}
     </section>
