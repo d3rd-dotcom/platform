@@ -8,9 +8,9 @@ import styles from './EcosystemSection.module.css';
 const words = [
   { text: 'Knowledge', reveal: 'is Power' },
   { text: 'Quests', reveal: 'pay Real USDC' },
-  { text: 'Diamonds', reveal: 'are Yours to Keep' },
-  { text: 'Blue', reveal: 'reviews the Work' },
-  { text: 'Growth', reveal: 'is a Choice' },
+  { text: 'Community', reveal: 'is Yours to Keep' },
+  { text: 'Education', reveal: 'is a Game' },
+  { text: 'Evolution', reveal: 'is a Choice' },
 ];
 
 export const EcosystemSection: React.FC = () => {

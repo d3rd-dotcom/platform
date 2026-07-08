@@ -5,22 +5,20 @@ import styles from './LandingPage.module.css';
 import GlitchRevealText from './GlitchRevealText';
 import LandingEnterAcademyButton from './LandingEnterAcademyButton';
 import { LandingScene } from './LandingScene';
-import { HeroSting } from './scroll/HeroSting';
 
 export const HeroSection: React.FC = () => {
   return (
     <>
       <div className={styles.heroSection}>
         <LandingScene />
-        <HeroSting />
-        <div className={styles.heroContent} data-hero-parallax>
-          <p className={styles.heroTextBadge}>A Gameworld For Structured Growth</p>
+        <div className={styles.heroContent}>
+          <p className={styles.heroTextBadge}>An educational gameworld on Base</p>
           <GlitchRevealText
             as="h1"
             className={styles.heroHeadline}
             lines={[
-              { text: 'Mental Wealth' },
-              { text: 'Academy', accent: true },
+              { text: 'A Micro-University For' },
+              { text: 'Intellectual Refreshment', accent: true },
             ]}
             accentClassName={styles.heroHeadlineAccent}
             staggerDelay={50}
@@ -29,7 +27,7 @@ export const HeroSection: React.FC = () => {
           />
           <div className={styles.heroLine} />
           <p className={styles.heroSubtext}>
-            Study behavioral psychology like a game. Level up through courses and quests. Blue reviews your work and pays real rewards straight to your wallet.</p>
+            Learn anything and earn while you do it. No lectures, no gurus. It&apos;s all led by a superpowered quantum alien named Blue.</p>
           <div className={styles.heroActions}>
             <LandingEnterAcademyButton dark />
           </div>

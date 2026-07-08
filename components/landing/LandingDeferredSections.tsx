@@ -3,8 +3,6 @@
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { KeyFiguresSection } from './KeyFiguresSection';
-import { ScrollExperience } from './scroll/ScrollExperience';
-import { BrollBand } from './scroll/BrollBand';
 const CohortSection = dynamic(() =>
   import('./CohortSection').then((mod) => mod.CohortSection),
   { ssr: false }
@@ -63,77 +61,15 @@ export function LandingDeferredSections() {
 
   return (
     <>
-      <ScrollExperience />
-
-      {/* Act I — the promise: simulate your world. */}
-      <div data-act="simulate">
-        <BrollBand
-          src="/landing/broll/broll-simulate.mp4"
-          tone="indigo"
-          eyebrow="One Verified Guide Per Topic"
-          title="Trees of Knowledge"
-        />
-        <div data-reveal>
-          <FeaturesSection />
-        </div>
-      </div>
-
-      {/* Act II — the world: a living ecosystem. */}
-      <div data-act="ecosystem">
-        <BrollBand
-          src="/landing/broll/broll-ecosystem.mp4"
-          tone="teal"
-          eyebrow="Built Onchain, on Base"
-          title="A living gameworld"
-          subtitle="Ethereal Horizon"
-        />
-        <div data-reveal>
-          <EcosystemSection />
-        </div>
-      </div>
-
-      {/* Act III — the people: human proof, at reading pace. */}
-      <div data-act="belonging">
-        <BrollBand
-          src="/landing/broll/broll-belonging.mp4"
-          tone="amber"
-          eyebrow="Act III"
-          title="Built by and for people like you"
-        />
-        <div data-reveal>
-          <FounderSection />
-        </div>
-        <div data-reveal>
-          <TestimonialSection />
-        </div>
-        <div data-reveal>
-          <KeyFiguresSection />
-        </div>
-        <div data-reveal>
-          <MagazineSection />
-        </div>
-      </div>
-
-      {/* Act IV — the invitation: ascend. The page's only pin. */}
-      <div data-act="ascend">
-        <BrollBand
-          src="/landing/broll/broll-ascend.mp4"
-          tone="dawn"
-          eyebrow="Act IV"
-          title="Enter the academy"
-          pin
-        />
-        <div data-reveal>
-          <CohortSection />
-        </div>
-        <div data-reveal>
-          <PatternTextSection />
-        </div>
-        <div data-reveal>
-          <FAQSection />
-        </div>
-      </div>
-
+      <FeaturesSection />
+      <EcosystemSection />
+      <FounderSection />
+      <TestimonialSection />
+      <KeyFiguresSection />
+      <MagazineSection />
+      <CohortSection />
+      <PatternTextSection />
+      <FAQSection />
       <LandingFooter />
       <DonationPopup />
     </>
