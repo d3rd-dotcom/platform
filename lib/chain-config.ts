@@ -119,12 +119,16 @@ export async function resolveVerifiedRpcUrl(): Promise<string> {
   const cfg = getChainConfig();
   if (verifiedRpcCache?.chainId === cfg.chainId) return verifiedRpcCache.url;
 
-  // balanceOf(BURN_ADDRESS) on the Diamonds token — any healthy right-chain
-  // endpoint returns a 32-byte word.
+  // balanceOf(BURN_ADDRESS) against the least-privileged contract we touch:
+  // prefer cbBTC over the token, because an Alchemy app allowlisted only for
+  // the Diamonds token (per the Gas Manager setup) passes token calls while
+  // refusing cbBTC calls — probing the token waved exactly that endpoint
+  // through on 2026-07-08. Any healthy endpoint returns a 32-byte word.
+  const probeTarget = cfg.cbBTcAddress || cfg.diamondsTokenAddress;
   const probeBody = JSON.stringify({
     jsonrpc: '2.0', id: 1, method: 'eth_call',
     params: [{
-      to: cfg.diamondsTokenAddress,
+      to: probeTarget,
       data: `0x70a08231000000000000000000000000${BURN_ADDRESS.slice(2).toLowerCase()}`,
     }, 'latest'],
   });
