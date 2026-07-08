@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
-import { PencilSimple } from '@phosphor-icons/react';
+
 import Link from 'next/link';
 import AvatarSelectorModal from '@/components/avatar-selector/AvatarSelectorModal';
 import UsernameChangeModal from '@/components/username-change/UsernameChangeModal';
@@ -138,28 +138,6 @@ export default function ProfileDashboard({
   const badgesHeld = (hasAngel ? 1 : 0) + (hasVip ? 1 : 0);
 
   return (
-    <>
-    <div className={styles.tabRow}>
-      {(['badges', 'certificates'] as const).map((t) => (
-        <button
-          key={t}
-          type="button"
-          className={`${styles.tab} ${tab === t ? styles.tabActive : ''}`}
-          onClick={() => { play('click'); setTab(t); }}
-          onMouseEnter={() => play('soft-hover')}
-        >
-          {t === 'badges' ? 'Badges' : 'Certificates'}
-        </button>
-      ))}
-      <button
-        type="button"
-        className={styles.tab}
-        onClick={() => { play('click'); onOpenNotes?.(); }}
-        onMouseEnter={() => play('soft-hover')}
-      >
-        Notes{noteCount > 0 ? ` (${noteCount})` : ''}
-      </button>
-    </div>
     <section className={styles.panel}>
       <div
         className={styles.banner}
@@ -183,35 +161,34 @@ export default function ProfileDashboard({
       <div className={styles.header}>
         <div className={styles.titleRow}>
           <h2 className={styles.title}>{username ? `@${username}` : 'User Profile'}</h2>
-          {authenticated && (
-            <button
-              type="button"
-              className={styles.editBtn}
-              onClick={() => {
-                play('click');
-                setEditingUsername(true);
-              }}
-              onMouseEnter={() => play('soft-hover')}
-              title="Edit username"
-              aria-label="Edit username"
-            >
-              <PencilSimple size={14} weight="bold" />
-            </button>
-          )}
+          <span className={styles.levelPill}>Level {level}</span>
         </div>
-        <span className={styles.levelPill}>Level {level}</span>
         <div className={styles.headerDivider} />
       </div>
 
       <div className={styles.about}>
         <span className={styles.headline}>{accoladeFromDiamonds(diamonds)}</span>
-        {bio ? (
-          <p className={styles.description}>{bio}</p>
-        ) : (
-          <p className={`${styles.description} ${styles.bioPlaceholder}`}>
-            Your bio lives here — tell the Academy who you are and what you are exploring.
-          </p>
-        )}
+        <div className={styles.tabRow}>
+          {(['badges', 'certificates'] as const).map((t) => (
+            <button
+              key={t}
+              type="button"
+              className={`${styles.tab} ${tab === t ? styles.tabActive : ''}`}
+              onClick={() => { play('click'); setTab(t); }}
+              onMouseEnter={() => play('soft-hover')}
+            >
+              {t === 'badges' ? 'NFT Collection' : 'Certificates'}
+            </button>
+          ))}
+          <button
+            type="button"
+            className={styles.tab}
+            onClick={() => { play('click'); onOpenNotes?.(); }}
+            onMouseEnter={() => play('soft-hover')}
+          >
+            Notes{noteCount > 0 ? ` (${noteCount})` : ''}
+          </button>
+        </div>
       </div>
 
       <div className={styles.statsRow}>
@@ -225,7 +202,7 @@ export default function ProfileDashboard({
         </div>
         <div className={styles.stat}>
           <span className={styles.statValue}>{badgesHeld}</span>
-          <span className={styles.statLabel}>{badgesHeld === 1 ? 'Badge' : 'Badges'}</span>
+          <span className={styles.statLabel}>NFT Collection</span>
         </div>
         <div className={styles.stat}>
           <span className={styles.statValue}>{streak}</span>
@@ -263,7 +240,7 @@ export default function ProfileDashboard({
 
       {tab === 'badges' && (
       <div className={styles.badges}>
-        <span className={styles.missionHeading}>Badges</span>
+        <span className={styles.missionHeading}>NFT Collection</span>
         <div className={styles.badgeRow}>
           <div
             className={`${styles.badge} ${hasAngel ? '' : styles.badgeLocked}`}
@@ -271,7 +248,7 @@ export default function ProfileDashboard({
           >
             <span
               className={styles.badgeArt}
-              style={{ backgroundImage: "url('/anbel01.png')" }}
+              style={{ backgroundImage: "url('/anbel03.png')" }}
             />
             <span className={styles.badgeInfo}>
               <span className={styles.badgeName}>Membership</span>
@@ -341,6 +318,5 @@ export default function ProfileDashboard({
         />
       )}
     </section>
-    </>
   );
 }
