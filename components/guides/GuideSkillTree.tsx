@@ -1,14 +1,19 @@
 'use client';
 
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSound } from '@/hooks/useSound';
 import type { WalkthroughNode } from '@/lib/guides-db';
+import { getWellbeingDomain } from '@/lib/wellbeing-domains';
 import styles from './GuideSkillTree.module.css';
+
+/** A node with optional subject tags — KnowledgeMapNode satisfies this; a plain
+ * WalkthroughNode (no subjects) still satisfies it since the field is optional. */
+type ClusterableNode = WalkthroughNode & { subjects?: string[] };
 
 interface Props {
   /** Nodes to place, each carrying a computed level + direct prereq ids. */
-  nodes: WalkthroughNode[];
+  nodes: ClusterableNode[];
   /** Total number of level bands (max level + 1). */
   levels: number;
   /** The summit guide, ringed as "the goal". Omit for a targetless graph (the map). */
@@ -17,12 +22,31 @@ interface Props {
   completed: Set<string>;
   /** Slug currently being viewed, so we can mark the "you are here" node. */
   currentSlug?: string;
+  /**
+   * Opt-in subject-cluster overlay: a per-subject accent dot on each node plus
+   * a legend that filters by subject. Off by default so existing callers (the
+   * walkthrough view) render exactly as before. Level bands stay authoritative
+   * — this never rearranges layout, only tints/dims what's already placed.
+   */
+  clusterBySubject?: boolean;
+}
+
+// A small, deterministic hue palette (oklch), picked from a subject's name so
+// the same subject always gets the same accent without a lookup table.
+const SUBJECT_HUES = [255, 205, 150, 320, 30, 95, 0, 170, 60, 280];
+
+function hueForSubject(subject: string): number {
+  let hash = 0;
+  for (let i = 0; i < subject.length; i++) {
+    hash = (hash * 31 + subject.charCodeAt(i)) >>> 0;
+  }
+  return SUBJECT_HUES[hash % SUBJECT_HUES.length];
 }
 
 type NodeState = 'completed' | 'available' | 'locked';
 
 interface Placed {
-  node: WalkthroughNode;
+  node: ClusterableNode;
   /** Column index within its level band. */
   col: number;
   /** Count of nodes in its level band. */
@@ -48,11 +72,31 @@ export default function GuideSkillTree({
   targetId,
   completed,
   currentSlug,
+  clusterBySubject = false,
 }: Props) {
   const router = useRouter();
   const { play } = useSound();
   const svgRef = useRef<SVGSVGElement>(null);
   const [hoverId, setHoverId] = useState<string | null>(null);
+  const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+
+  // Legend entries: every distinct subject across the graph, each with a
+  // deterministic accent hue and (when we have one) its wellbeing domain.
+  // Only meaningful when clusterBySubject is on; cheap to compute either way.
+  const subjectLegend = useMemo(() => {
+    if (!clusterBySubject) return [];
+    const seen = new Set<string>();
+    for (const n of inputNodes) {
+      for (const s of n.subjects ?? []) seen.add(s);
+    }
+    return Array.from(seen)
+      .sort((a, b) => a.localeCompare(b))
+      .map((subject) => ({
+        subject,
+        hue: hueForSubject(subject),
+        domain: getWellbeingDomain(subject),
+      }));
+  }, [inputNodes, clusterBySubject]);
 
   // Group nodes by level, sorted ascending (0 = primitives).
   const bands = useMemo(() => {
@@ -176,6 +220,7 @@ export default function GuideSkillTree({
   };
 
   return (
+    <div className={styles.outer}>
     <div className={styles.wrapper}>
       {/* ── Progress rail ─────────────────────────────────────────────── */}
       <aside className={styles.rail} aria-hidden="true">
@@ -237,28 +282,39 @@ export default function GuideSkillTree({
           <g>
             {placed.map((p) => {
               const isHere = p.node.slug === currentSlug;
+              const primarySubject = clusterBySubject ? p.node.subjects?.[0] : undefined;
+              const nodeSubjects = clusterBySubject ? p.node.subjects ?? [] : [];
+              const isDimmed =
+                clusterBySubject &&
+                selectedSubject !== null &&
+                !nodeSubjects.includes(selectedSubject);
               const cls = [
                 styles.node,
                 styles[`node_${p.state}`],
                 p.isTarget ? styles.nodeTarget : '',
                 isHere ? styles.nodeHere : '',
+                isDimmed ? styles.nodeDimmed : '',
               ]
                 .filter(Boolean)
                 .join(' ');
-              const cx = p.x + NODE_W / 2;
-              const cy = p.y + NODE_H / 2;
               const label =
                 p.node.topicTitle.length > 26
                   ? `${p.node.topicTitle.slice(0, 25)}…`
                   : p.node.topicTitle;
+              const accentStyle = primarySubject
+                ? ({ '--subject-hue': hueForSubject(primarySubject) } as CSSProperties)
+                : undefined;
               return (
                 <g
                   key={p.node.id}
                   className={cls}
                   transform={`translate(${p.x} ${p.y})`}
+                  style={accentStyle}
                   role="button"
                   tabIndex={0}
-                  aria-label={`${p.node.topicTitle} — ${p.state}`}
+                  aria-label={`${p.node.topicTitle} — ${p.state}${
+                    primarySubject ? `, subject: ${primarySubject}` : ''
+                  }`}
                   onMouseEnter={() => handleHover(p)}
                   onMouseLeave={() => setHoverId(null)}
                   onClick={() => handleActivate(p)}
@@ -286,6 +342,16 @@ export default function GuideSkillTree({
                     height={NODE_H}
                     rx={12}
                   />
+                  {primarySubject && (
+                    <rect
+                      className={styles.subjectAccent}
+                      x={0}
+                      y={0}
+                      width={4}
+                      height={NODE_H}
+                      rx={2}
+                    />
+                  )}
                   {p.state === 'locked' && (
                     <g
                       className={styles.lockMark}
@@ -315,6 +381,34 @@ export default function GuideSkillTree({
           </g>
         </svg>
       </div>
+    </div>
+
+      {/* ── Subject legend / filter (opt-in overlay, layout untouched) ────── */}
+      {clusterBySubject && subjectLegend.length > 0 && (
+        <div className={styles.legend} role="group" aria-label="Filter by subject">
+          {subjectLegend.map(({ subject, hue, domain }) => {
+            const isSelected = selectedSubject === subject;
+            return (
+              <button
+                key={subject}
+                type="button"
+                className={`${styles.legendItem} ${isSelected ? styles.legendItemSelected : ''}`}
+                style={{ '--subject-hue': hue } as CSSProperties}
+                title={domain ? domain.blurb : undefined}
+                aria-pressed={isSelected}
+                onClick={() => {
+                  play('soft-hover');
+                  setSelectedSubject((prev) => (prev === subject ? null : subject));
+                }}
+              >
+                <span className={styles.legendDot} aria-hidden="true" />
+                <span className={styles.legendLabel}>{subject}</span>
+                {domain && <span className={styles.legendDomain}>{domain.label}</span>}
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

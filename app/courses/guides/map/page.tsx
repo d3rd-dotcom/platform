@@ -108,7 +108,12 @@ export default function KnowledgeMapPage() {
               </Link>
             </div>
           ) : (
-            <GuideSkillTree nodes={map!.nodes} levels={map!.levels} completed={completed} />
+            <GuideSkillTree
+              nodes={map!.nodes}
+              levels={map!.levels}
+              completed={completed}
+              clusterBySubject
+            />
           )}
         </section>
 

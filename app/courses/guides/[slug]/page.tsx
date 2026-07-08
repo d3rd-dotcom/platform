@@ -18,6 +18,7 @@ import DisputeSection from '@/components/guides/DisputeSection';
 import GuideMaterials from '@/components/guides/GuideMaterials';
 import type { GuideMaterial } from '@/lib/guide-materials-db';
 import type { GuideRecord, GuideMethodRecord, GuideLink } from '@/lib/guides-db';
+import { getWellbeingDomain } from '@/lib/wellbeing-domains';
 import styles from './page.module.css';
 
 type PageProps = { params: { slug: string } };
@@ -130,9 +131,14 @@ export default function GuidePage({ params }: PageProps) {
                 <ArrowLeft size={16} weight="bold" /> Knowledge Base
               </Link>
               <div className={styles.subjects}>
-                {data.guide.subjects.map((s) => (
-                  <span key={s} className={styles.subjectTag}>{s}</span>
-                ))}
+                {data.guide.subjects.map((s) => {
+                  const domain = getWellbeingDomain(s);
+                  return (
+                    <span key={s} className={styles.subjectTag} title={domain ? domain.blurb : undefined}>
+                      {s}
+                    </span>
+                  );
+                })}
                 {typeof data.level === 'number' && (
                   <span className={styles.levelChip}>Level {data.level}</span>
                 )}

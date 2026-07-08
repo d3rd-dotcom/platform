@@ -5,6 +5,12 @@
    node_completed / node_available / node_locked, target ring + "you are here".
    ========================================================================== */
 
+.outer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .wrapper {
   display: flex;
   gap: 16px;
@@ -206,6 +212,20 @@
   fill: none;
 }
 
+/* Dimmed — subject filter is active and this node isn't in the selected subject */
+.nodeDimmed {
+  opacity: 0.32;
+  transition: opacity 0.15s ease;
+}
+
+/* Per-subject accent bar on the left edge of the node box. Hue comes from the
+   --subject-hue custom property set per-node (deterministic per subject name),
+   chroma/lightness pinned so every accent reads consistently against the card. */
+.subjectAccent {
+  fill: oklch(64% 0.14 var(--subject-hue, 255));
+  pointer-events: none;
+}
+
 /* Target — the summit: larger presence via ring */
 .targetRing {
   fill: none;
@@ -231,6 +251,64 @@
   }
 }
 
+/* ── Subject legend / filter ────────────────────────────────────────────── */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 14%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 3%, var(--color-surface-base));
+  cursor: pointer;
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  transition: border-color 0.15s ease, background 0.15s ease, opacity 0.15s ease;
+}
+
+.legendItem:hover {
+  border-color: color-mix(in oklch, var(--color-primary) 35%, transparent);
+}
+
+.legendItemSelected {
+  border-color: oklch(64% 0.14 var(--subject-hue, 255));
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-base));
+}
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: oklch(64% 0.14 var(--subject-hue, 255));
+}
+
+.legendLabel {
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-dark);
+}
+
+.legendDomain {
+  font-size: 0.6875rem;
+  color: var(--color-text-faint);
+}
+
+:global([data-theme='dark']) .legendItem {
+  background: color-mix(in oklch, var(--color-primary) 8%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary) 22%, transparent);
+}
+
+:global([data-theme='dark']) .legendLabel {
+  color: #e8e9f4;
+}
+
 /* ── Motion safety ──────────────────────────────────────────────────────── */
 
 @media (prefers-reduced-motion: reduce) {
@@ -243,7 +321,9 @@
   .edge,
   .nodeBox,
   .nodeLabel,
-  .tick {
+  .tick,
+  .nodeDimmed,
+  .legendItem {
     transition: none;
   }
 }
