@@ -15,6 +15,7 @@ interface CourseFolderCardProps {
   onOpen?: () => void;
   images: string[];
   ctaLabel?: string;
+  dark?: boolean;
 }
 
 export default function CourseFolderCard({
@@ -24,6 +25,7 @@ export default function CourseFolderCard({
   onOpen,
   images,
   ctaLabel = 'Start Course',
+  dark,
 }: CourseFolderCardProps) {
   const slots = images.slice(0, 4);
   const { play } = useSound();
@@ -85,11 +87,13 @@ export default function CourseFolderCard({
     </>
   );
 
+  const cls = `${styles.folder} ${dark ? styles.folderDark : ''}`;
+
   if (href) {
     return (
       <Link
         href={href}
-        className={styles.folder}
+        className={cls}
         onMouseEnter={() => play('soft-hover')}
         onClick={() => play('click')}
       >
@@ -101,7 +105,7 @@ export default function CourseFolderCard({
   return (
     <button
       type="button"
-      className={`${styles.folder} ${styles.folderButton}`}
+      className={`${cls} ${styles.folderButton}`}
       onMouseEnter={() => play('soft-hover')}
       onClick={() => {
         play('click');

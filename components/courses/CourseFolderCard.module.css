@@ -23,6 +23,15 @@
   font: inherit;
 }
 
+.folderDark {
+  --folder-blue: #2a2a2e;
+  --folder-stroke: #1a1a1d;
+}
+
+.folderDark:hover {
+  filter: drop-shadow(0 9px 8px rgba(0, 0, 0, 0.5));
+}
+
 .folder:hover {
   transform: translateY(-3px);
   filter: drop-shadow(0 9px 8px rgba(24, 42, 114, 0.5));

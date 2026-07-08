@@ -44,7 +44,6 @@
   background: #e4e8ff;
 }
 
-/* Sheets peeking out behind the top page */
 .stackSheet {
   position: absolute;
   inset: 0;
@@ -83,66 +82,16 @@
   overflow: hidden;
 }
 
-/* Sealed state */
-.sealedFace {
-  position: relative;
-  flex: 1;
+/* Ledger header */
+.ledgerHeader {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 32px;
-}
-
-.cipherBlock {
-  position: absolute;
-  inset: 36px 24px 24px 64px;
-  display: flex;
-  flex-direction: column;
-  gap: 13px;
-  filter: blur(2.5px);
-  opacity: 0.55;
-  pointer-events: none;
-  user-select: none;
-  overflow: hidden;
-}
-
-.cipherLine {
-  font-family: var(--type-font-code);
-  font-size: var(--type-body-sm-size);
-  color: #4a4638;
-  white-space: nowrap;
-}
-
-.sealCenter {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  align-items: baseline;
   gap: 12px;
-  max-width: 340px;
-  text-align: center;
-  padding: 26px 24px;
-  background: rgba(250, 246, 234, 0.88);
-  border: 1px solid #ddd3bc;
-  border-radius: 10px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  padding: 22px 24px 10px 66px;
+  flex-shrink: 0;
 }
 
-.sealStamp {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 58px;
-  height: 58px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #8a3d3d, #5f1f1f);
-  border: 2px solid #4a1717;
-  color: #f3e3c8;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35), inset 0 2px 4px rgba(255, 255, 255, 0.2);
-}
-
-.sealedTitle {
+.ledgerTitle {
   font-family: var(--type-font-heading);
   font-weight: var(--type-weight-bold);
   font-size: var(--type-h4-size);
@@ -151,280 +100,61 @@
   color: #2c2618;
 }
 
-.sealedSub {
-  font-family: var(--type-font-body);
-  font-size: var(--type-body-sm-size);
-  line-height: var(--type-lh-body);
-  color: #6d6450;
-}
-
-.unsealOuter {
-  text-transform: none;
-  letter-spacing: normal;
-  display: inline-flex;
-  padding: 2px;
-  margin-top: 4px;
-  border-radius: 999px;
-  border: 1px solid #12bdba;
-  background: linear-gradient(to bottom, #63fcff, #69d9d0 50%, #4affbd);
-  cursor: pointer;
-  transition: transform 0.15s ease;
-}
-
-.unsealOuter:hover:not(:disabled) {
-  transform: scale(1.04);
-}
-
-.unsealOuter:disabled {
-  opacity: 0.6;
-  cursor: default;
-}
-
-.unsealInner {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 22px;
-  border-radius: 999px;
-  background: linear-gradient(to bottom, #9dded7, #069865);
-  border: 1px solid #78c6af;
-  box-shadow: 0 1.5px 9px rgba(0, 0, 0, 0.45);
-  font-family: var(--type-font-label);
-  font-weight: var(--type-weight-semibold);
-  font-size: var(--type-body-size);
-  letter-spacing: var(--type-track-label);
-  color: #f6f8ed;
-  text-shadow: 0 -0.5px 0 rgba(0, 0, 0, 0.9);
-}
-
-.unsealDiamond {
-  width: 16px;
-  height: 16px;
-}
-
-.error {
-  font-family: var(--type-font-body);
-  font-size: var(--type-body-sm-size);
-  color: #a33030;
-}
-
-/* Burn confirmation — mirrors the field-notes close-warning dialog */
-.confirmOverlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1200;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-}
-
-.confirmDialog {
-  width: 100%;
-  max-width: 400px;
-  background: #1A1D33;
-  border: 1px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
-  border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  overflow: hidden;
-}
-
-.confirmTitleBar {
-  padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
-}
-
-.confirmTitleText {
-  font-family: var(--type-font-code);
-  font-size: var(--type-body-size);
-  font-weight: var(--type-weight-semibold);
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.confirmBody {
-  padding: 24px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-}
-
-.confirmIcon {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: color-mix(in oklch, var(--color-primary) 20%, transparent);
-  border-radius: 50%;
-}
-
-.confirmMessage {
-  font-family: var(--type-font-code);
-  font-size: var(--type-body-size);
-  font-weight: var(--type-weight-medium);
-  color: rgba(255, 255, 255, 0.85);
-  text-align: center;
-  line-height: var(--type-lh-body);
-  margin: 0;
-}
-
-.confirmError {
-  margin: 0;
-  font-family: var(--type-font-code);
-  font-size: var(--type-caption-size);
-  line-height: var(--type-caption-lh);
-  text-align: center;
-  color: #FF6B6B;
-}
-
-.confirmBalance {
-  margin: -4px 0 0;
-  font-family: var(--type-font-code);
-  font-size: var(--type-caption-size);
-  line-height: var(--type-caption-lh);
-  text-align: center;
-  color: rgba(255, 255, 255, 0.55);
-}
-
-.confirmBalanceLow {
-  color: #FF6B6B;
-}
-
-.confirmHint {
-  margin: 0;
-  font-family: var(--type-font-code);
-  font-size: var(--type-caption-size);
-  line-height: var(--type-caption-lh);
-  text-align: center;
-  color: #E5B769;
-}
-
-.confirmButtons {
-  display: flex;
-  gap: 12px;
-  width: 100%;
-  margin-top: 4px;
-}
-
-.confirmBtnCancel,
-.confirmBtnBurn {
-  flex: 1;
-  padding: 12px 16px;
+.ledgerCount {
   font-family: var(--type-font-label);
   font-size: var(--type-body-sm-size);
-  font-weight: var(--type-weight-bold);
-  text-transform: none;
-  letter-spacing: var(--type-track-body);
-  color: #FFFFFF;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.15s ease;
+  color: #8d8266;
 }
 
-.confirmBtnCancel {
-  background: transparent;
-  border: 1px solid color-mix(in oklch, var(--color-primary) 40%, transparent);
-}
-
-.confirmBtnCancel:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.confirmBtnBurn {
-  background: rgba(255, 107, 107, 0.25);
-  border: 1px solid rgba(255, 107, 107, 0.4);
-}
-
-.confirmBtnBurn:hover:not(:disabled) {
-  background: rgba(255, 107, 107, 0.4);
-}
-
-.confirmBtnCancel:disabled,
-.confirmBtnBurn:disabled {
-  opacity: 0.6;
-  cursor: wait;
-}
-
-/* Unsealed note pages */
-.noteFace {
+/* Ledger scrollable list */
+.ledgerList {
   flex: 1;
-  display: flex;
-  flex-direction: column;
   min-height: 0;
-  padding: 30px 30px 20px 72px;
+  overflow-y: auto;
+  padding: 4px 16px 20px 66px;
 }
 
-.noteHeader {
+.ledgerEmpty {
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-size);
+  line-height: var(--type-lh-body);
+  color: #8d8266;
+  padding: 40px 0;
+}
+
+.ledgerRow {
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(96, 128, 190, 0.2);
+}
+
+.ledgerRow:last-child {
+  border-bottom: none;
+}
+
+.ledgerRowMeta {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding-bottom: 14px;
+  gap: 10px;
+  align-items: baseline;
+  margin-bottom: 4px;
 }
 
-.noteDate {
-  font-family: var(--type-font-heading);
-  font-weight: var(--type-weight-bold);
-  font-size: var(--type-h4-size);
-  letter-spacing: var(--type-h4-track);
-  line-height: var(--type-h4-lh);
-  color: #2c2618;
+.ledgerRowDate {
+  font-family: var(--type-font-label);
+  font-weight: var(--type-weight-semibold);
+  font-size: var(--type-body-sm-size);
+  color: #5c5340;
 }
 
-.noteMeta {
+.ledgerRowWeek {
   font-family: var(--type-font-label);
   font-size: var(--type-caption-size);
   color: #8d8266;
 }
 
-.noteBody {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
+.ledgerRowContent {
   font-family: var(--type-font-body);
-  font-size: var(--type-body-lg-size);
-  line-height: 28px; /* match the ruled lines */
+  font-size: var(--type-body-size);
+  line-height: var(--type-lh-body);
   color: #3a3426;
   white-space: pre-wrap;
-  padding-right: 8px;
-}
-
-.pager {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  padding-top: 14px;
-}
-
-.pagerBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid #cfc4a6;
-  background: #f4efe2;
-  color: #5c5340;
-  cursor: pointer;
-}
-
-.pagerBtn:hover:not(:disabled) {
-  background: #ebe4d0;
-}
-
-.pagerBtn:disabled {
-  opacity: 0.35;
-  cursor: default;
-}
-
-.pageCount {
-  font-family: var(--type-font-label);
-  font-size: var(--type-body-sm-size);
-  color: #6d6450;
 }
