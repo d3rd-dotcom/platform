@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import { createPublicClient, http, formatEther, erc20Abi } from 'viem';
+import { createPublicClient, http, erc20Abi } from 'viem';
 import { base, baseSepolia } from 'viem/chains';
 import { getChainConfig } from '@/lib/chain-config';
 import styles from './WalletDrawer.module.css';
@@ -40,7 +40,6 @@ export default function WalletDrawer({
   const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Onchain wallet balances
-  const [onchainEth, setOnchainEth] = useState<string | null>(null);
   const [onchainDiamonds, setOnchainDiamonds] = useState<string | null>(null);
   const [onchainBtc, setOnchainBtc] = useState<string | null>(null);
   const [onchainUsdc, setOnchainUsdc] = useState<string | null>(null);
@@ -53,8 +52,6 @@ export default function WalletDrawer({
     const client = createPublicClient({ chain, transport: http(cfg.rpcUrl) });
     try {
       const a = addr as `0x${string}`;
-      const eth = await client.getBalance({ address: a });
-      setOnchainEth(Number(formatEther(eth)).toFixed(4));
 
       const balanceOf = (token: string) => ({
         address: token as `0x${string}`,
@@ -92,7 +89,6 @@ export default function WalletDrawer({
     if (open && address) {
       void fetchOnchainBalances(address);
     } else if (!open) {
-      setOnchainEth(null);
       setOnchainDiamonds(null);
       setOnchainBtc(null);
       setOnchainUsdc(null);
@@ -219,16 +215,6 @@ export default function WalletDrawer({
 
             {/* Other tokens */}
             <div className={styles.tokenGrid}>
-              <div className={styles.tokenCard}>
-                <div className={styles.tokenTop}>
-                   <div className={styles.tokenIcon}>
-                     <Image src="/tokens/eth.png" alt="" width={14} height={14} />
-                   </div>
-                  <span className={styles.tokenName}>ETH</span>
-                </div>
-                <span className={styles.tokenValue}>{address ? (onchainEth ?? '—') : '—'}</span>
-              </div>
-
               <div className={styles.tokenCard}>
                 <div className={styles.tokenTop}>
                    <div className={styles.tokenIcon}>

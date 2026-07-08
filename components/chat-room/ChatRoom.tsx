@@ -75,7 +75,6 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
   const newestIdRef = useRef<number | null>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
-  const autoScrollRef = useRef(true);
   const subRef = useRef<RealtimeChannel>();
 
   // ── Fetch new messages after a given id ──
@@ -144,31 +143,17 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
     }
   }, []);
 
-  // ── Auto-scroll to bottom when new messages arrive ──
+  // ── Always scroll to bottom when messages update ──
   useEffect(() => {
-    if (autoScrollRef.current && bottomRef.current) {
-      requestAnimationFrame(() => {
-        bottomRef.current?.scrollIntoView({ behavior: 'instant', block: 'end' });
-      });
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: 'instant', block: 'end' });
     }
   }, [messages]);
 
-  // ── Always scroll to bottom on initial mount after layout settles ──
-  useEffect(() => {
-    if (bottomRef.current && messages.length > 0) {
-      const raf = requestAnimationFrame(() => {
-        bottomRef.current?.scrollIntoView({ behavior: 'instant', block: 'end' });
-      });
-      return () => cancelAnimationFrame(raf);
-    }
-  }, [messages.length]);
-
-  // ── Detect manual scroll-up (user reading history) ──
+  // ── Infinite scroll for older messages ──
   const handleScroll = useCallback(() => {
     if (!listRef.current) return;
-    const { scrollTop, scrollHeight, clientHeight } = listRef.current;
-    autoScrollRef.current = scrollHeight - scrollTop - clientHeight < 40;
-
+    const { scrollTop } = listRef.current;
     if (scrollTop < 60 && hasMore && !loadingOlder) {
       loadOlder();
     }
@@ -320,7 +305,6 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
     if (res.ok) {
       const data = await res.json();
       setInput('');
-      autoScrollRef.current = true;
       // optimistic insert so the message appears instantly
       const optimistic: ChatMessage = {
         id: data.message.id,

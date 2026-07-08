@@ -75,29 +75,8 @@ export default function Dashboard() {
         <BlueScene />
       </div>
 
-      {/* ── Sidebar: ChatRoom + Leaderboard + FieldNotes ── */}
+      {/* ── Sidebar: Leaderboard + Knowledge Tree + ChatRoom ── */}
       <aside className={styles.sidebarWrap}>
-        <div className={styles.chatRoomDesktopOnly}><ChatRoom fullPage /></div>
-
-        {nextUpGuides.length > 0 && (
-          <div className={styles.leaderboardCard}>
-            <div className={styles.leaderHead}>
-              <span className={styles.leaderIcon}>木</span>
-              <span className={styles.leaderTitle}>Knowledge Tree</span>
-            </div>
-            <ul className={styles.nextUpList}>
-              {nextUpGuides.map((g) => (
-                <li key={g.id}>
-                  <Link href={`/courses/guides/${g.slug}`} className={styles.nextUpRow}>
-                    <span className={styles.nextUpTitle}>{g.topicTitle}</span>
-                    <span className={styles.nextUpChevron} aria-hidden="true">›</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
         <button
           type="button"
           className={styles.leaderboardCard}
@@ -130,6 +109,27 @@ export default function Dashboard() {
             </div>
           )}
         </button>
+
+        {nextUpGuides.length > 0 && (
+          <div className={styles.leaderboardCard}>
+            <div className={styles.leaderHead}>
+              <span className={styles.leaderIcon}>木</span>
+              <span className={styles.leaderTitle}>Knowledge Tree</span>
+            </div>
+            <ul className={styles.nextUpList}>
+              {nextUpGuides.map((g) => (
+                <li key={g.id}>
+                  <Link href={`/courses/guides/${g.slug}`} className={styles.nextUpRow}>
+                    <span className={styles.nextUpTitle}>{g.topicTitle}</span>
+                    <span className={styles.nextUpChevron} aria-hidden="true">›</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div className={styles.chatRoomDesktopOnly}><ChatRoom fullPage /></div>
       </aside>
 
       {showLeaderboard && (

@@ -216,23 +216,6 @@
   background: var(--color-primary);
 }
 
-.leaderAvatarItem:first-child .leaderAvatarItemImg {
-  width: 52px;
-  height: 52px;
-  font-size: 1.1rem;
-  box-shadow: 0 0 0 2px var(--color-primary), 0 0 12px color-mix(in oklch, var(--color-primary) 30%, transparent);
-}
-
-.leaderAvatarItem:first-child .leaderAvatarItemRank {
-  top: -4px;
-  right: -4px;
-  width: 20px;
-  height: 20px;
-  font-size: 0.7rem;
-  background: #f5a623;
-  box-shadow: 0 0 6px rgba(245, 166, 35, 0.5);
-}
-
 .leaderEmpty {
   margin: 0;
   font-size: 0.85rem;
