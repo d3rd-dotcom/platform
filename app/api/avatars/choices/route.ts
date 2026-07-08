@@ -12,7 +12,7 @@ import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { getAssignedAvatars } from '@/lib/avatars';
 
 // Credits charged per avatar reroll. Shared with the reroll route + UI.
-export const REROLL_COST = 200;
+const REROLL_COST = 200;
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
