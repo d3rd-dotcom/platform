@@ -107,16 +107,27 @@ let verifiedRpcCache: { chainId: number; url: string } | null = null;
 
 /**
  * Server-side guard: find an RPC that provably serves the active chain and
- * answers real state reads. The probe is eth_getCode on the Diamonds token —
- * it fails on a wrong-network URL (no code) AND on degraded endpoints that
- * still answer cheap calls like eth_chainId but refuse state reads (seen on
- * over-quota Alchemy free tier: the 2026-07-08 reflections-cron outage).
- * Tries the configured URL first, then public fallbacks; caches the winner
- * for the process lifetime.
+ * answers the operation class Diamonds writes depend on. The probe is a real
+ * eth_call (balanceOf on the Diamonds token): it fails on a wrong-network
+ * URL (no code, empty return) AND on endpoints that answer cheap methods
+ * like eth_chainId or eth_getCode but refuse eth_call — the 2026-07-08
+ * reflections-cron outage, where prod's Alchemy app served getCode fine and
+ * rejected every eth_call. Tries the configured URL first, then public
+ * fallbacks; caches the winner for the process lifetime.
  */
 export async function resolveVerifiedRpcUrl(): Promise<string> {
   const cfg = getChainConfig();
   if (verifiedRpcCache?.chainId === cfg.chainId) return verifiedRpcCache.url;
+
+  // balanceOf(BURN_ADDRESS) on the Diamonds token — any healthy right-chain
+  // endpoint returns a 32-byte word.
+  const probeBody = JSON.stringify({
+    jsonrpc: '2.0', id: 1, method: 'eth_call',
+    params: [{
+      to: cfg.diamondsTokenAddress,
+      data: `0x70a08231000000000000000000000000${BURN_ADDRESS.slice(2).toLowerCase()}`,
+    }, 'latest'],
+  });
 
   const candidates = [cfg.rpcUrl, ...(FALLBACK_RPCS[cfg.chainId] || [])];
   for (const url of candidates) {
@@ -124,17 +135,14 @@ export async function resolveVerifiedRpcUrl(): Promise<string> {
       const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0', id: 1, method: 'eth_getCode',
-          params: [cfg.diamondsTokenAddress, 'latest'],
-        }),
+        body: probeBody,
         signal: AbortSignal.timeout(5000),
       });
       const data = await res.json().catch(() => null);
-      const code: string | undefined = data?.result;
-      if (typeof code === 'string' && code.length > 2) {
+      const result: string | undefined = data?.result;
+      if (typeof result === 'string' && result.length === 66) {
         if (url !== cfg.rpcUrl) {
-          console.error(`[chain-config] Configured RPC failed the state-read probe — using ${url}`);
+          console.error(`[chain-config] Configured RPC failed the eth_call probe — using ${url}`);
         }
         verifiedRpcCache = { chainId: cfg.chainId, url };
         return url;
