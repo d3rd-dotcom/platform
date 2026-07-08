@@ -72,6 +72,41 @@ export async function getWalletFromPrivyToken(token: string): Promise<string | n
 }
 
 /**
+ * Verifies a raw Privy access token and returns the user's email address,
+ * if one is linked (direct email login, or Gmail/Google OAuth).
+ * Returns null if the user has no email-based account linked (e.g. wallet-only).
+ */
+export async function getEmailFromPrivyToken(token: string): Promise<string | null> {
+  if (!token) {
+    console.warn('[Privy Auth] No token provided');
+    return null;
+  }
+
+  try {
+    const client = getPrivyClient();
+    const { userId } = await client.verifyAuthToken(token);
+    const user = await client.getUser(userId);
+
+    // Prefer a direct email account; fall back to Google OAuth's email
+    const emailAccount = user.linkedAccounts.find((a: any) => a.type === 'email');
+    const googleAccount = user.linkedAccounts.find((a: any) => a.type === 'google_oauth');
+    const account = emailAccount || googleAccount;
+
+    if (!account || !('address' in account) && !('email' in account)) {
+      console.warn('[Privy Auth] User has no email-based account linked. userId:', userId);
+      return null;
+    }
+
+    // 'email' type accounts use `address`; 'google_oauth' accounts use `email`
+    const email = (account as any).address || (account as any).email;
+    return email ? String(email).trim().toLowerCase() : null;
+  } catch (error: any) {
+    console.error('[Privy Auth] Email lookup failed:', error?.message || error);
+    return null;
+  }
+}
+
+/**
  * Verifies a raw Privy access token and returns the user's
  * Telegram user ID from linked accounts, and wallet address.
  */

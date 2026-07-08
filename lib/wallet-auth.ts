@@ -1,7 +1,7 @@
 import { createHash } from 'crypto';
 import { headers, cookies } from 'next/headers';
 import { recoverMessageAddress } from 'viem';
-import { getWalletFromPrivyToken } from './privy-auth';
+import { getWalletFromPrivyToken, getEmailFromPrivyToken } from './privy-auth';
 import { sqlQuery } from './db';
 
 /**
@@ -103,6 +103,37 @@ export async function getWalletAddressFromRequest(): Promise<string | null> {
     return null;
   } catch (error) {
     console.error('getWalletAddressFromRequest error:', error);
+    return null;
+  }
+}
+
+/**
+ * Resolves the email address linked to the current request's Privy account,
+ * if any. Only real Privy JWTs carry an email — agent API keys and legacy
+ * signed-wallet auth have no associated email, so those paths return null.
+ *
+ * Separate from getWalletAddressFromRequest() by design: that function is
+ * called from 22+ routes and its return shape is load-bearing everywhere,
+ * so this is additive rather than changing its signature.
+ */
+export async function getEmailAddressFromRequest(): Promise<string | null> {
+  try {
+    const headersList = await headers();
+    const authHeader = headersList.get('authorization');
+
+    if (authHeader?.startsWith('Bearer ')) {
+      const token = authHeader.substring(7);
+
+      // Only real Privy JWTs (contain dots) carry linked-account data
+      if (token.includes('.') && !token.startsWith('mwa_ag_')) {
+        const email = await getEmailFromPrivyToken(token);
+        if (email) return email;
+      }
+    }
+
+    return null;
+  } catch (error) {
+    console.error('getEmailAddressFromRequest error:', error);
     return null;
   }
 }
