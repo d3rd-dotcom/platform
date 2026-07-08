@@ -232,6 +232,18 @@
   margin: 0;
 }
 
+.authorReward {
+  margin: 0;
+  padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
+  border-radius: var(--radius-md, 0.5rem);
+  background: color-mix(in oklch, var(--color-tertiary, var(--color-primary)) 8%, var(--color-surface-base));
+  border-left: 2px solid var(--color-tertiary, var(--color-primary));
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: 1.55;
+  color: var(--color-text-dark);
+}
+
 /* ── Votes ──────────────────────────────────────────────────────────────── */
 .noVotes {
   font-family: var(--type-font-body);

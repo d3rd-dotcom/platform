@@ -36,6 +36,12 @@ export interface GuideRecord {
   authorId: string | null;
   canonicalGroupId: string | null;
   subjects: string[];
+  /**
+   * Observable "evidence criteria" — short statements of what a learner can do
+   * once they have the topic ("The learner can name three cognitive distortions
+   * in their own thinking"). Author-authored guidance; empty when none set.
+   */
+  evidenceCriteria: string[];
   createdAt: string;
   updatedAt: string;
 }
@@ -117,6 +123,7 @@ interface GuideRow {
   status: string;
   author_id: string | null;
   canonical_group_id: string | null;
+  evidence_criteria: unknown;
   created_at: string;
   updated_at: string;
 }
@@ -146,6 +153,45 @@ function parseBody(raw: unknown): GuideBodyComponent[] {
   return Array.isArray(value) ? (value as GuideBodyComponent[]) : [];
 }
 
+/**
+ * Coerce the nullable guides.evidence_criteria JSONB into a clean string[]: keep
+ * only non-empty trimmed strings. Tolerates a JSON string or a parsed array.
+ */
+function parseEvidenceCriteria(raw: unknown): string[] {
+  if (!raw) return [];
+  let value: unknown = raw;
+  if (typeof raw === 'string') {
+    try {
+      value = JSON.parse(raw);
+    } catch {
+      return [];
+    }
+  }
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((v) => (typeof v === 'string' ? v.trim() : ''))
+    .filter((v) => v.length > 0);
+}
+
+/**
+ * Clean an author-supplied criteria list for storage: trim, drop empties and
+ * dedupe (case-insensitive), then clamp to at most 5 (the studio offers 2–5).
+ */
+function cleanEvidenceCriteria(criteria: string[]): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const raw of criteria) {
+    const s = (typeof raw === 'string' ? raw : '').trim();
+    if (!s) continue;
+    const key = s.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(s);
+    if (out.length === 5) break;
+  }
+  return out;
+}
+
 function toGuide(row: GuideRow, subjects: string[] = []): GuideRecord {
   return {
     id: row.id,
@@ -156,6 +202,7 @@ function toGuide(row: GuideRow, subjects: string[] = []): GuideRecord {
     authorId: row.author_id,
     canonicalGroupId: row.canonical_group_id,
     subjects,
+    evidenceCriteria: parseEvidenceCriteria(row.evidence_criteria),
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -325,10 +372,17 @@ export async function createGuide(input: {
   body?: GuideBodyComponent[];
   authorId?: string | null;
   status?: GuideStatus;
+  evidenceCriteria?: string[];
 }): Promise<GuideRecord> {
+  // NULL (not an empty array) when no criteria are supplied, keeping the column's
+  // "author hasn't set these yet" semantics distinct from "set to none".
+  const criteria =
+    input.evidenceCriteria !== undefined
+      ? cleanEvidenceCriteria(input.evidenceCriteria)
+      : null;
   const rows = await sqlQuery<GuideRow[]>(
-    `INSERT INTO guides (slug, topic_title, body, author_id, status)
-     VALUES (:slug, :topicTitle, :body::jsonb, :authorId, :status)
+    `INSERT INTO guides (slug, topic_title, body, author_id, status, evidence_criteria)
+     VALUES (:slug, :topicTitle, :body::jsonb, :authorId, :status, :evidenceCriteria::jsonb)
      RETURNING *`,
     {
       slug: input.slug,
@@ -336,6 +390,7 @@ export async function createGuide(input: {
       body: JSON.stringify(input.body ?? []),
       authorId: input.authorId ?? null,
       status: input.status ?? 'draft',
+      evidenceCriteria: criteria ? JSON.stringify(criteria) : null,
     },
   );
   return toGuide(rows[0], []);
@@ -352,6 +407,7 @@ export async function updateGuide(input: {
   topicTitle?: string;
   body?: GuideBodyComponent[];
   subjects?: string[];
+  evidenceCriteria?: string[];
 }): Promise<GuideRecord> {
   const sets: string[] = [];
   const params: Record<string, unknown> = { id: input.id };
@@ -363,6 +419,12 @@ export async function updateGuide(input: {
   if (input.body !== undefined) {
     sets.push('body = :body::jsonb');
     params.body = JSON.stringify(input.body);
+  }
+  if (input.evidenceCriteria !== undefined) {
+    // An empty list clears the column back to NULL.
+    const cleaned = cleanEvidenceCriteria(input.evidenceCriteria);
+    sets.push('evidence_criteria = :evidenceCriteria::jsonb');
+    params.evidenceCriteria = cleaned.length ? JSON.stringify(cleaned) : null;
   }
 
   if (sets.length > 0) {

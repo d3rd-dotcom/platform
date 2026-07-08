@@ -82,6 +82,7 @@ export async function PATCH(request: Request, { params }: { params: { slug: stri
       topicTitle?: unknown;
       body?: unknown;
       subjects?: unknown;
+      evidenceCriteria?: unknown;
     };
 
     const patch: {
@@ -89,6 +90,7 @@ export async function PATCH(request: Request, { params }: { params: { slug: stri
       topicTitle?: string;
       body?: GuideBodyComponent[];
       subjects?: string[];
+      evidenceCriteria?: string[];
     } = { id: guide.id };
 
     if (raw.topicTitle !== undefined) {
@@ -108,6 +110,18 @@ export async function PATCH(request: Request, { params }: { params: { slug: stri
         return NextResponse.json({ error: 'subjects must be an array of strings.' }, { status: 400 });
       }
       patch.subjects = raw.subjects as string[];
+    }
+    if (raw.evidenceCriteria !== undefined) {
+      if (
+        !Array.isArray(raw.evidenceCriteria) ||
+        raw.evidenceCriteria.some((c) => typeof c !== 'string')
+      ) {
+        return NextResponse.json(
+          { error: 'evidenceCriteria must be an array of strings.' },
+          { status: 400 },
+        );
+      }
+      patch.evidenceCriteria = raw.evidenceCriteria as string[];
     }
 
     const updated = await updateGuide(patch);

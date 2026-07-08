@@ -62,6 +62,7 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
   const [topicTitle, setTopicTitle] = useState('');
   const [subjects, setSubjects] = useState<string[]>([]);
   const [subjectInput, setSubjectInput] = useState('');
+  const [evidenceCriteria, setEvidenceCriteria] = useState<string[]>([]);
   const [body, setBody] = useState<GuideBodyComponent[]>([]);
   const [dirty, setDirty] = useState(false);
 
@@ -96,6 +97,7 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
         setStatus(guide.status);
         setTopicTitle(guide.topicTitle);
         setSubjects(guide.subjects ?? []);
+        setEvidenceCriteria(Array.isArray(guide.evidenceCriteria) ? guide.evidenceCriteria : []);
         setBody(Array.isArray(guide.body) ? guide.body : []);
         setDagLevel(typeof data.level === 'number' ? data.level : 0);
         setPrereqs(Array.isArray(data.prereqs) ? data.prereqs : []);
@@ -194,6 +196,22 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
     setDirty(true);
   };
 
+  // ── Evidence criteria (2–5 observable statements) ────────────────────────────
+  const addCriterion = () => {
+    setEvidenceCriteria((prev) => (prev.length >= 5 ? prev : [...prev, '']));
+    setDirty(true);
+  };
+
+  const updateCriterion = (index: number, value: string) => {
+    setEvidenceCriteria((prev) => prev.map((c, i) => (i === index ? value : c)));
+    setDirty(true);
+  };
+
+  const removeCriterion = (index: number) => {
+    setEvidenceCriteria((prev) => prev.filter((_, i) => i !== index));
+    setDirty(true);
+  };
+
   // ── Save (create or update draft) ────────────────────────────────────────────
   const save = useCallback(async (): Promise<string | null> => {
     if (!topicTitle.trim()) {
@@ -222,7 +240,7 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
         const patchRes = await fetch(`/api/guides/${guide.slug}`, {
           method: 'PATCH',
           headers,
-          body: JSON.stringify({ body, subjects }),
+          body: JSON.stringify({ body, subjects, evidenceCriteria }),
         });
         const patchData = await patchRes.json().catch(() => ({}));
         if (!patchRes.ok) throw new Error(patchData.error ?? 'Failed to save guide content.');
@@ -236,7 +254,7 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
       const res = await fetch(`/api/guides/${currentSlug}`, {
         method: 'PATCH',
         headers,
-        body: JSON.stringify({ topicTitle: topicTitle.trim(), body, subjects }),
+        body: JSON.stringify({ topicTitle: topicTitle.trim(), body, subjects, evidenceCriteria }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error ?? 'Failed to save guide.');
@@ -248,7 +266,7 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
     } finally {
       setSaving(false);
     }
-  }, [topicTitle, currentSlug, body, subjects, authHeaders, onCreated]);
+  }, [topicTitle, currentSlug, body, subjects, evidenceCriteria, authHeaders, onCreated]);
 
   // ── Prereqs ──────────────────────────────────────────────────────────────────
   const addPrereq = async (prereqId: string) => {
@@ -495,6 +513,47 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
                       />
                       <CtaButton variant="secondary" size="sm" onClick={addSubject}>
                         <Plus size={14} weight="bold" /> Add
+                      </CtaButton>
+                    </div>
+                  )}
+                </div>
+
+                {/* Evidence criteria */}
+                <div className={styles.field}>
+                  <label className={styles.fieldLabel}>Evidence criteria</label>
+                  <span className={styles.fieldHint}>
+                    {'How a learner knows they have got it. Write two to five short, observable statements, like "The learner can name three cognitive distortions in their own thinking". Verifiers read these when they review your guide.'}
+                  </span>
+                  {evidenceCriteria.length > 0 && (
+                    <div className={styles.criterionList}>
+                      {evidenceCriteria.map((c, i) => (
+                        <div key={i} className={styles.criterionRow}>
+                          <span className={styles.criterionNum}>{i + 1}</span>
+                          <input
+                            className={styles.textInput}
+                            value={c}
+                            onChange={(e) => updateCriterion(i, e.target.value)}
+                            placeholder="The learner can…"
+                            disabled={!isDraft}
+                          />
+                          {isDraft && (
+                            <button
+                              type="button"
+                              className={`${styles.iconBtn} ${styles.iconBtnDanger}`}
+                              onClick={() => removeCriterion(i)}
+                              aria-label={`Remove criterion ${i + 1}`}
+                            >
+                              <X size={15} weight="bold" />
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {isDraft && evidenceCriteria.length < 5 && (
+                    <div className={styles.criterionAddRow}>
+                      <CtaButton variant="secondary" size="sm" onClick={addCriterion}>
+                        <Plus size={14} weight="bold" /> Add criterion
                       </CtaButton>
                     </div>
                   )}

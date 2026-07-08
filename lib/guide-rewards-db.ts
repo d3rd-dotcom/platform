@@ -19,6 +19,13 @@ const SPIN_COST = 10;
 export const LEVEL_CLEAR_REWARD = GUIDE_COMPLETE_REWARD * LEVEL_CLEAR_MULTIPLIER;
 export const WALKTHROUGH_COMPLETE_REWARD = GUIDE_COMPLETE_REWARD * WALKTHROUGH_COMPLETE_MULTIPLIER;
 
+// One-time reward paid to a guide's AUTHOR when a verifier panel approves it and
+// it flips to published. Authoring a verified guide should outweigh completing
+// one (GUIDE_COMPLETE_REWARD = 50) or clearing a level (LEVEL_CLEAR_REWARD = 150),
+// but stay below clearing a whole walkthrough (WALKTHROUGH_COMPLETE_REWARD = 500).
+// Single source of truth — never hardcode this number elsewhere.
+export const GUIDE_VERIFIED_AUTHOR_REWARD = 250;
+
 export interface GuideRewardResult {
   diamonds: number;
   levelCleared: boolean;
@@ -191,4 +198,63 @@ async function creditShards(client: PoolClient, userId: string, amount: number):
     `UPDATE users SET shard_count = shard_count + $1 WHERE id = $2`,
     [amount, userId],
   );
+}
+
+export interface AuthorRewardResult {
+  awarded: boolean;
+  diamonds: number;
+  authorId: string | null;
+}
+
+/**
+ * Pays a guide's author the one-time GUIDE_VERIFIED_AUTHOR_REWARD when the guide
+ * is approved by a verifier panel and published.
+ *
+ * MUST run inside the same transaction that flips the guide to 'published' (see
+ * lib/guide-verification-db.ts castPanelVote) so publishing and paying are atomic:
+ * if the credit fails, the whole verification transaction rolls back rather than
+ * publishing without accounting.
+ *
+ * Money-path guards, mirroring awardGuideRewards + the guide_diamond_claims
+ * pattern:
+ *   - Fail-closed on a missing author: author_id NULL means no payout, silently
+ *     (the guide still publishes — authorship reward is separate from the verdict).
+ *   - Idempotent, one payout per guide EVER: the credit is gated by a
+ *     guide_author_claims row with UNIQUE (guide_id) and ON CONFLICT DO NOTHING,
+ *     so a reject-and-resubmit-and-reapprove cycle, or any re-verification, never
+ *     pays twice.
+ *   - users.shard_count is credited only when a claim row was actually inserted,
+ *     never outside this transaction.
+ */
+export async function awardAuthorVerificationReward(
+  client: PoolClient,
+  guideId: string,
+): Promise<AuthorRewardResult> {
+  const guideRes = await client.query<{ author_id: string | null }>(
+    `SELECT author_id FROM guides WHERE id = $1`,
+    [guideId],
+  );
+  const authorId = guideRes.rows[0]?.author_id ?? null;
+
+  // Fail-closed: no author, no payout — silently.
+  if (!authorId) {
+    return { awarded: false, diamonds: 0, authorId: null };
+  }
+
+  // One claim per guide, ever. A row is inserted only the first time; every
+  // subsequent approval conflicts on UNIQUE (guide_id) and inserts nothing.
+  const claimRes = await client.query<{ id: string }>(
+    `INSERT INTO guide_author_claims (guide_id, user_id, diamonds)
+     VALUES ($1, $2, $3)
+     ON CONFLICT (guide_id) DO NOTHING
+     RETURNING id`,
+    [guideId, authorId, GUIDE_VERIFIED_AUTHOR_REWARD],
+  );
+
+  if (claimRes.rows.length === 0) {
+    return { awarded: false, diamonds: 0, authorId };
+  }
+
+  await creditShards(client, authorId, GUIDE_VERIFIED_AUTHOR_REWARD);
+  return { awarded: true, diamonds: GUIDE_VERIFIED_AUTHOR_REWARD, authorId };
 }

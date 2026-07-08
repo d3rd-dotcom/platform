@@ -60,6 +60,10 @@ export const createGuideBodySchema = z.object({
   topicTitle: z.string(),
   slug: z.string().optional(),
   body: z.array(z.unknown()).optional(),
+  // Observable "evidence criteria" — short strings of what a learner can do once
+  // they have the topic. The studio offers 2–5; the DB layer trims/dedupes and
+  // clamps to 5, so the schema stays permissive here.
+  evidenceCriteria: z.array(z.string()).optional(),
 });
 export type CreateGuideBody = z.infer<typeof createGuideBodySchema>;
 

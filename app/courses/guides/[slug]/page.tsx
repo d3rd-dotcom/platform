@@ -176,6 +176,17 @@ export default function GuidePage({ params }: PageProps) {
               </section>
             )}
 
+            {data.guide.evidenceCriteria.length > 0 && (
+              <section className={styles.criteria} aria-label="What you will be able to do">
+                <span className={styles.criteriaLabel}>{"What you'll be able to do"}</span>
+                <ul className={styles.criteriaList}>
+                  {data.guide.evidenceCriteria.map((c, i) => (
+                    <li key={i} className={styles.criteriaItem}>{c}</li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
             <div className={styles.divider}>
               <span className={styles.dividerRule} />
               <Circle size={8} weight="fill" className={styles.dividerIcon} />

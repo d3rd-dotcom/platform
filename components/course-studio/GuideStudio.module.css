@@ -228,6 +228,39 @@
   max-width: 420px;
 }
 
+/* ── Evidence criteria ── */
+.criterionList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.criterionRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.criterionRow .textInput {
+  flex: 1;
+}
+
+.criterionNum {
+  flex: none;
+  width: 18px;
+  text-align: center;
+  font-family: var(--type-font-code);
+  font-size: var(--type-code-size);
+  color: var(--color-text-faint);
+}
+
+.criterionAddRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+}
+
 /* ── Section headings ── */
 .sectionHeading {
   font-family: var(--type-font-heading);

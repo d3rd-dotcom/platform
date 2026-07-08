@@ -92,6 +92,7 @@ interface PanelAssignment {
   myRubricItem: RubricItem | null;
   voteCount: number;
   creScore: number | null;
+  evidenceCriteria: string[];
 }
 
 interface DisputeAssignment {
@@ -228,6 +229,20 @@ function VerificationCard({
           {panel.voteCount} vote{panel.voteCount === 1 ? '' : 's'} cast
         </span>
       </p>
+
+      {panel.evidenceCriteria.length > 0 && (
+        <div className={styles.criteria}>
+          <span className={styles.criteriaLabel}>What a learner should be able to do</span>
+          <ul className={styles.criteriaList}>
+            {panel.evidenceCriteria.map((c, i) => (
+              <li key={i} className={styles.criteriaItem}>{c}</li>
+            ))}
+          </ul>
+          <span className={styles.criteriaNote}>
+            Weigh these against the guide when you judge scope and soundness.
+          </span>
+        </div>
+      )}
 
       {votable ? (
         <div className={styles.form}>

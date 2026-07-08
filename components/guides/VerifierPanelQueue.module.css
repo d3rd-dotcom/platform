@@ -285,6 +285,48 @@
   white-space: pre-wrap;
 }
 
+/* ── Evidence criteria (guidance for the jury) ──────────────────────────── */
+.criteria {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5rem);
+  padding: var(--space-3, 0.75rem);
+  border-radius: var(--radius-md, 0.5rem);
+  background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-base));
+  border: 1px solid color-mix(in oklch, var(--color-primary) 16%, transparent);
+}
+
+.criteriaLabel {
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-lh);
+  letter-spacing: var(--type-track-label);
+  font-weight: var(--type-weight-semibold);
+  color: var(--color-text-muted);
+}
+
+.criteriaList {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 0.375rem);
+}
+
+.criteriaItem {
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: 1.55;
+  color: var(--color-text-dark);
+}
+
+.criteriaNote {
+  font-family: var(--type-font-body);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-lh);
+  color: var(--color-text-muted);
+}
+
 /* ── Voted / resolved note ──────────────────────────────────────────────── */
 .voted {
   display: flex;

@@ -1,4 +1,8 @@
 import { sqlQuery, withTransaction, sqlQueryWithClient } from './db';
+import {
+  awardAuthorVerificationReward,
+  GUIDE_VERIFIED_AUTHOR_REWARD,
+} from './guide-rewards-db';
 
 /**
  * Phase 3 — Verifier Jury data access.
@@ -63,6 +67,13 @@ export interface CreScoreRecord {
 export interface VerificationLog {
   guideId: string;
   guideStatus: string;
+  /**
+   * The one-time diamond reward the guide's author receives when a panel approves
+   * the guide (GUIDE_VERIFIED_AUTHOR_REWARD). Surfaced so the author-facing log
+   * can tell authors that a verified guide pays. Single source of truth is the
+   * exported constant — this field just forwards it to the client.
+   */
+  authorReward: number;
   panels: Array<{
     id: string;
     status: PanelStatus;
@@ -365,6 +376,17 @@ export async function castPanelVote(input: {
         `UPDATE guides SET status = :status WHERE id = :guideId`,
         { status: guideStatus, guideId: panel.guide_id },
       );
+
+      // Money path: on APPROVAL (guide flips to 'published'), pay the guide's
+      // author their one-time verified-author reward inside THIS transaction, so
+      // publishing and paying are atomic. Fail-closed (no author = no payout,
+      // silently) and idempotent (one payout per guide ever, guarded by
+      // guide_author_claims UNIQUE (guide_id)). If the credit throws, the whole
+      // verification transaction rolls back rather than publishing without
+      // accounting — we deliberately do not swallow the error.
+      if (panelStatus === 'approved') {
+        await awardAuthorVerificationReward(client, panel.guide_id);
+      }
     }
 
     return { vote, panelStatus, guideStatus, resolved };
@@ -519,6 +541,7 @@ export async function getVerificationLog(guideId: string): Promise<VerificationL
   return {
     guideId: guideRows[0].id,
     guideStatus: guideRows[0].status,
+    authorReward: GUIDE_VERIFIED_AUTHOR_REWARD,
     panels: panelRows.map((p) => ({
       id: p.id,
       status: p.status,
@@ -548,6 +571,12 @@ export interface MemberPanelAssignment {
   voteCount: number;
   /** DON-signed advisory CRE score, if one has been recorded for this panel. */
   creScore: number | null;
+  /**
+   * The guide's observable evidence criteria ("how a learner knows they've got
+   * it"). Shown to the jury so they can weigh scope and soundness against what
+   * the author claims a learner will be able to do. Empty when none were set.
+   */
+  evidenceCriteria: string[];
 }
 
 /**
@@ -572,6 +601,7 @@ export async function getPanelsForMember(userId: string): Promise<MemberPanelAss
       my_vote_rubric: RubricItem | null;
       vote_count: number;
       cre_score: number | null;
+      evidence_criteria: unknown;
     }>
   >(
     `SELECT p.id AS panel_id,
@@ -584,7 +614,8 @@ export async function getPanelsForMember(userId: string): Promise<MemberPanelAss
             mv.rubric_item AS my_vote_rubric,
             (SELECT COUNT(*) FROM verifier_panel_votes v WHERE v.panel_id = p.id)::int
               AS vote_count,
-            cs.score AS cre_score
+            cs.score AS cre_score,
+            g.evidence_criteria
      FROM verifier_panel_members m
      JOIN verifier_panels p ON p.id = m.panel_id
      JOIN guides g ON g.id = p.guide_id
@@ -610,7 +641,29 @@ export async function getPanelsForMember(userId: string): Promise<MemberPanelAss
     myRubricItem: r.my_vote_rubric,
     voteCount: r.vote_count,
     creScore: r.cre_score,
+    evidenceCriteria: parseEvidenceCriteria(r.evidence_criteria),
   }));
+}
+
+/**
+ * Coerce the guides.evidence_criteria JSONB column into a clean string[]. Nullable
+ * column, may arrive as a JSON string or an already-parsed array depending on the
+ * driver; either way we keep only non-empty trimmed strings.
+ */
+function parseEvidenceCriteria(raw: unknown): string[] {
+  if (!raw) return [];
+  let value: unknown = raw;
+  if (typeof raw === 'string') {
+    try {
+      value = JSON.parse(raw);
+    } catch {
+      return [];
+    }
+  }
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((v) => (typeof v === 'string' ? v.trim() : ''))
+    .filter((v) => v.length > 0);
 }
 
 /**

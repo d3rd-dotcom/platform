@@ -42,6 +42,8 @@ interface Panel {
 interface VerificationLogData {
   guideId: string;
   guideStatus: string;
+  /** One-time reward the author receives when the guide is verified. */
+  authorReward: number;
   panels: Panel[];
 }
 
@@ -179,6 +181,13 @@ export default function VerificationLog({ guideId }: Props) {
           </Link>
         )}
       </header>
+
+      {data.guideStatus === 'published' && data.authorReward > 0 && (
+        <p className={styles.authorReward}>
+          Verified by the jury. The author earned {data.authorReward} credits for
+          getting this guide published.
+        </p>
+      )}
 
       <div className={styles.panels}>
         {data.panels.map((panel, i) => (

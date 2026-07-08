@@ -95,6 +95,9 @@ export async function POST(request: Request) {
       body: Array.isArray(body.body) ? (body.body as any[]) : [],
       authorId: userId,
       status: 'draft',
+      ...(Array.isArray(body.evidenceCriteria)
+        ? { evidenceCriteria: body.evidenceCriteria }
+        : {}),
     });
 
     // Auto-resolve any forward references whose topic_title matches this new

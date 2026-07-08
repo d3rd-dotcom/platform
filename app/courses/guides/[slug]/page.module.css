@@ -187,6 +187,46 @@
   gap: 12px;
 }
 
+/* "What you'll be able to do" — compact evidence-criteria list near the top,
+   above the article divider so the lede still leads the article cleanly. */
+.criteria {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: color-mix(in oklch, var(--color-primary) 4%, var(--color-background, #ffffff));
+  border: 1px solid color-mix(in oklch, var(--color-primary) 16%, transparent);
+}
+
+.criteriaLabel {
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size, 0.75rem);
+  font-weight: var(--type-weight-bold, 700);
+  text-transform: uppercase;
+  letter-spacing: var(--type-track-label-lg, 0.08em);
+  color: var(--color-text-muted);
+}
+
+.criteriaList {
+  margin: 0;
+  padding-left: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.criteriaItem {
+  font-family: var(--type-font-body);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--color-text-dark);
+}
+
+:global([data-theme="dark"]) .criteria {
+  background: color-mix(in oklch, var(--color-primary) 10%, #0d0e16);
+}
+
 /* Section heading echoing .guideSectionHeading — small caps + trailing rule */
 .relHeading {
   display: flex;

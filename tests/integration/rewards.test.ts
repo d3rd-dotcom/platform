@@ -26,6 +26,8 @@ const LEVEL_CLEAR_REWARD = GUIDE_COMPLETE_REWARD * 3; // 150
 const WALKTHROUGH_COMPLETE_REWARD = GUIDE_COMPLETE_REWARD * 10; // 500
 const SPIN_COST = 10;
 const WALKTHROUGH_PAYOUT = WALKTHROUGH_COMPLETE_REWARD + SPIN_COST; // 510
+// One-time author payout when a guide is verified/published (money path).
+const GUIDE_VERIFIED_AUTHOR_REWARD = 250;
 
 const PREREQ_SQL = `
   CREATE TABLE IF NOT EXISTS users (
@@ -53,6 +55,20 @@ const CLAIMS_SQL = `
     diamonds INTEGER NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (user_id, guide_id, claim_type)
+  );
+`;
+
+// guide_author_claims — the one-per-guide author payout ledger
+// (supabase/migrations/20260708120100_guide_author_rewards.sql). UNIQUE (guide_id)
+// is what makes awardAuthorVerificationReward pay the author exactly once ever.
+const AUTHOR_CLAIMS_SQL = `
+  CREATE TABLE IF NOT EXISTS guide_author_claims (
+    id CHAR(36) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    guide_id CHAR(36) NOT NULL,
+    user_id CHAR(36) NOT NULL,
+    diamonds INTEGER NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (guide_id)
   );
 `;
 
@@ -183,6 +199,61 @@ async function completeAndAward(userId: string, guideId: string) {
   }
 }
 
+// Verbatim port of lib/guide-rewards-db.ts:awardAuthorVerificationReward, run on
+// `client`. Fail-closed on a null author; idempotent one-per-guide credit gated by
+// guide_author_claims UNIQUE (guide_id) + ON CONFLICT DO NOTHING.
+async function awardAuthorVerificationReward(client: PoolClient, guideId: string) {
+  const guideRes = await client.query<{ author_id: string | null }>(
+    `SELECT author_id FROM guides WHERE id = $1`,
+    [guideId],
+  );
+  const authorId = guideRes.rows[0]?.author_id ?? null;
+  if (!authorId) {
+    return { awarded: false, diamonds: 0, authorId: null };
+  }
+  const claimRes = await client.query<{ id: string }>(
+    `INSERT INTO guide_author_claims (guide_id, user_id, diamonds)
+     VALUES ($1, $2, $3)
+     ON CONFLICT (guide_id) DO NOTHING
+     RETURNING id`,
+    [guideId, authorId, GUIDE_VERIFIED_AUTHOR_REWARD],
+  );
+  if (claimRes.rows.length === 0) {
+    return { awarded: false, diamonds: 0, authorId };
+  }
+  await client.query(`UPDATE users SET shard_count = shard_count + $1 WHERE id = $2`, [
+    GUIDE_VERIFIED_AUTHOR_REWARD,
+    authorId,
+  ]);
+  return { awarded: true, diamonds: GUIDE_VERIFIED_AUTHOR_REWARD, authorId };
+}
+
+// Mirrors castPanelVote's approve branch: flip the guide to 'published' and pay
+// the author, atomically, in one transaction.
+async function approveAndRewardAuthor(guideId: string) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    await client.query(`UPDATE guides SET status = 'published' WHERE id = $1`, [guideId]);
+    const result = await awardAuthorVerificationReward(client, guideId);
+    await client.query('COMMIT');
+    return result;
+  } catch (e) {
+    await client.query('ROLLBACK');
+    throw e;
+  } finally {
+    client.release();
+  }
+}
+
+async function authorClaimCount(guideId: string): Promise<number> {
+  const { rows } = await pool.query<{ n: number }>(
+    `SELECT COUNT(*)::int AS n FROM guide_author_claims WHERE guide_id = $1`,
+    [guideId],
+  );
+  return Number(rows[0]?.n ?? 0);
+}
+
 async function shardCount(userId: string): Promise<number> {
   const { rows } = await pool.query<{ shard_count: number }>(
     `SELECT shard_count FROM users WHERE id = $1`,
@@ -222,6 +293,7 @@ describe.skipIf(!TEST_DB_URL)('guide rewards (integration)', () => {
     const migration = readFileSync(resolve(__dirname, '../../supabase/migrations/20260705090000_guides_dag.sql'), 'utf8');
     await pool.query(migration);
     await pool.query(CLAIMS_SQL);
+    await pool.query(AUTHOR_CLAIMS_SQL);
     await pool.query(`SET search_path TO ${SCHEMA}, public`);
   });
 
@@ -365,5 +437,39 @@ describe.skipIf(!TEST_DB_URL)('guide rewards (integration)', () => {
     const rT = await completeAndAward(u, t);
     expect(rT.walkthroughComplete).toBe(true);
     expect(rT.diamonds).toBe(GUIDE_COMPLETE_REWARD + LEVEL_CLEAR_REWARD + WALKTHROUGH_PAYOUT);
+  });
+
+  // ── Author verification reward (money path) ─────────────────────────────────
+
+  it('pays the author once, even across a double approval (idempotent per guide)', async () => {
+    const author = gid('avr-a');
+    const g = gid('avr-g');
+    await pool.query(`INSERT INTO users (id, username) VALUES ($1, $2)`, [author, 'avr-author']);
+    await insertGuide(g, 'avr-g', 'AVR G', { status: 'draft', authorId: author });
+
+    // First approval pays the flat author reward and credits the author's balance.
+    const first = await approveAndRewardAuthor(g);
+    expect(first.awarded).toBe(true);
+    expect(first.diamonds).toBe(GUIDE_VERIFIED_AUTHOR_REWARD);
+    expect(await shardCount(author)).toBe(GUIDE_VERIFIED_AUTHOR_REWARD);
+
+    // A second approval (e.g. after a reject-and-resubmit cycle, or re-verification)
+    // pays nothing: one payout per guide EVER.
+    const second = await approveAndRewardAuthor(g);
+    expect(second.awarded).toBe(false);
+    expect(second.diamonds).toBe(0);
+    expect(await shardCount(author)).toBe(GUIDE_VERIFIED_AUTHOR_REWARD);
+    expect(await authorClaimCount(g)).toBe(1);
+  });
+
+  it('pays nothing when the guide has no author (fail-closed, silent)', async () => {
+    const g = gid('avr-noauthor-g');
+    await insertGuide(g, 'avr-noauthor-g', 'AVR No Author', { status: 'draft', authorId: null });
+
+    const result = await approveAndRewardAuthor(g);
+    expect(result.awarded).toBe(false);
+    expect(result.diamonds).toBe(0);
+    expect(result.authorId).toBeNull();
+    expect(await authorClaimCount(g)).toBe(0);
   });
 });
