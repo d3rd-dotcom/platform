@@ -300,11 +300,7 @@ export default function CoursesPage() {
             onOpen={() => setFieldNotesOpen(true)}
             ctaLabel="Open notes"
             dark
-            images={[
-              '/uploads/course-personal.jpg',
-              '/uploads/course-tap-creativity.jpg',
-              '/academy-story.png',
-            ]}
+            images={[]}
           />
         </div>
 

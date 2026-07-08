@@ -489,3 +489,7 @@ a.missionCard:hover {
   font-size: var(--type-caption-size);
   color: rgba(246, 248, 237, 0.6);
 }
+
+.fieldNotesSection {
+  margin: 18px 19px 0;
+}

@@ -6,6 +6,7 @@ import { usePrivy } from '@privy-io/react-auth';
 import Link from 'next/link';
 import AvatarSelectorModal from '@/components/avatar-selector/AvatarSelectorModal';
 import UsernameChangeModal from '@/components/username-change/UsernameChangeModal';
+import DailyNotes from '@/components/daily-notes/DailyNotes';
 import { useAccount } from 'wagmi';
 import { QUEST_DEFINITIONS, type QuestDefinition } from '@/lib/quest-definitions';
 import { fetchDiamondBalance } from '@/lib/diamonds-balance';
@@ -236,6 +237,13 @@ export default function ProfileDashboard({
             </span>
           </div>
         )}
+      </div>
+
+      <div className={styles.fieldNotesSection}>
+        <DailyNotes
+          enablePersistence={authenticated && ready}
+          compact
+        />
       </div>
 
       {tab === 'badges' && (

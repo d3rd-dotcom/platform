@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { usePrivy } from '@privy-io/react-auth';
 import Dashboard from '@/components/dashboard/Dashboard';
 import styles from './HomeBento.module.css';
 
@@ -10,11 +9,9 @@ import styles from './HomeBento.module.css';
 // user with no course was forced through the intake flow on every visit, and
 // completing it silently recreated a course they had deleted.
 export default function HomeBento() {
-  const { authenticated } = usePrivy();
-
   return (
     <div className={`${styles.bentoScroll} ${styles.bentoScrollWithMorningNote}`}>
-      <Dashboard enableMorningPagesPersistence={authenticated} />
+      <Dashboard />
     </div>
   );
 }
