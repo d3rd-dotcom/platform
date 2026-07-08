@@ -97,39 +97,50 @@ export function getChainId(): number {
 
 export const BURN_ADDRESS = '0x000000000000000000000000000000000000dEaD';
 
-/** Canonical public RPC per chain — the safe fallback when env is wrong. */
-const CANONICAL_RPC: Record<number, string> = {
-  8453: 'https://mainnet.base.org',
-  84532: 'https://sepolia.base.org',
+/** Public fallback RPCs per chain, tried in order after the configured URL. */
+const FALLBACK_RPCS: Record<number, string[]> = {
+  8453: ['https://mainnet.base.org', 'https://base-rpc.publicnode.com'],
+  84532: ['https://sepolia.base.org', 'https://base-sepolia-rpc.publicnode.com'],
 };
 
+let verifiedRpcCache: { chainId: number; url: string } | null = null;
+
 /**
- * Server-side guard: confirm the configured RPC actually serves the active
- * chain, falling back to the canonical public RPC when it does not. A wrong
- * BASE_SEPOLIA_RPC_URL on Vercel once pointed Diamonds writes at mainnet —
- * StaticJsonRpcProvider trusts the declared chainId, so calls against
- * addresses with no code there fail with empty revert data (or worse,
- * silently no-op). Never trust the URL; ask it.
+ * Server-side guard: find an RPC that provably serves the active chain and
+ * answers real state reads. The probe is eth_getCode on the Diamonds token —
+ * it fails on a wrong-network URL (no code) AND on degraded endpoints that
+ * still answer cheap calls like eth_chainId but refuse state reads (seen on
+ * over-quota Alchemy free tier: the 2026-07-08 reflections-cron outage).
+ * Tries the configured URL first, then public fallbacks; caches the winner
+ * for the process lifetime.
  */
 export async function resolveVerifiedRpcUrl(): Promise<string> {
   const cfg = getChainConfig();
-  const canonical = CANONICAL_RPC[cfg.chainId] || cfg.rpcUrl;
-  try {
-    const res = await fetch(cfg.rpcUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'eth_chainId', params: [] }),
-      signal: AbortSignal.timeout(5000),
-    });
-    const data = await res.json().catch(() => null);
-    const reported = data?.result ? parseInt(data.result, 16) : null;
-    if (reported === cfg.chainId) return cfg.rpcUrl;
-    console.error(
-      `[chain-config] Configured RPC reports chain ${reported}, expected ${cfg.chainId} (${cfg.chainName}) — using ${canonical}`,
-    );
-    return canonical;
-  } catch {
-    console.error(`[chain-config] Configured RPC unreachable — using ${canonical}`);
-    return canonical;
+  if (verifiedRpcCache?.chainId === cfg.chainId) return verifiedRpcCache.url;
+
+  const candidates = [cfg.rpcUrl, ...(FALLBACK_RPCS[cfg.chainId] || [])];
+  for (const url of candidates) {
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0', id: 1, method: 'eth_getCode',
+          params: [cfg.diamondsTokenAddress, 'latest'],
+        }),
+        signal: AbortSignal.timeout(5000),
+      });
+      const data = await res.json().catch(() => null);
+      const code: string | undefined = data?.result;
+      if (typeof code === 'string' && code.length > 2) {
+        if (url !== cfg.rpcUrl) {
+          console.error(`[chain-config] Configured RPC failed the state-read probe — using ${url}`);
+        }
+        verifiedRpcCache = { chainId: cfg.chainId, url };
+        return url;
+      }
+    } catch { /* try the next candidate */ }
   }
+  console.error('[chain-config] No candidate RPC passed the probe — using the configured URL as-is.');
+  return cfg.rpcUrl;
 }
