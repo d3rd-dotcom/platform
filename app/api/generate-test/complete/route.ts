@@ -3,6 +3,7 @@ import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQueryWithClient, withTransaction } from '@/lib/db';
 import { ensureGeneratedTestsSchema } from '@/lib/ensureGeneratedTestsSchema';
 import { MIN_SHORT_ANSWER_CHARS } from '@/lib/test-rewards';
+import { deliverDiamondsOnchain } from '@/lib/diamonds-onchain';
 
 interface StoredQuestion {
   id: number;
@@ -115,6 +116,19 @@ export async function POST(request: Request) {
         newShardCount: userRows[0]?.shard_count ?? user.shardCount + shardReward,
       };
     });
+
+    // Survey diamonds are a claim mint, one-time per test via the
+    // diamond_onchain_rewards ledger (fail-soft, never blocks the completion).
+    if (result.shardsAwarded > 0) {
+      await deliverDiamondsOnchain({
+        userId: user.id,
+        walletAddress: user.walletAddress,
+        source: 'survey',
+        refId: testId,
+        amount: result.shardsAwarded,
+        delivery: 'cdp_mint',
+      });
+    }
 
     return NextResponse.json({ ok: true, ...result });
   } catch (error) {

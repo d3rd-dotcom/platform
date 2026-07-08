@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { requireUser } from '@/lib/guide-api-auth';
-import { isDbConfigured } from '@/lib/db';
+import { isDbConfigured, sqlQuery } from '@/lib/db';
+import { deliverDiamondsOnchain } from '@/lib/diamonds-onchain';
 import { completeGuide, getUserGuideProgress } from '@/lib/guides-db';
 import { awardGuideRewards } from '@/lib/guide-rewards-db';
 import {
@@ -54,6 +55,23 @@ export async function POST(request: Request) {
     // level-clear / walkthrough-complete bonuses when applicable). Additive to
     // the response; existing fields are unchanged.
     const rewards = await awardGuideRewards(userId, body.guideId);
+    // Guide diamonds are a claim mint — one delivery per (user, guide) covering
+    // every tier this completion earned, deduped by the diamond_onchain_rewards
+    // ledger (fail-soft, never blocks the completion).
+    if (rewards.diamonds > 0) {
+      const walletRows = await sqlQuery<Array<{ wallet_address: string | null }>>(
+        `SELECT wallet_address FROM users WHERE id = :userId LIMIT 1`,
+        { userId },
+      );
+      await deliverDiamondsOnchain({
+        userId,
+        walletAddress: walletRows[0]?.wallet_address,
+        source: 'guide',
+        refId: body.guideId,
+        amount: rewards.diamonds,
+        delivery: 'cdp_mint',
+      });
+    }
     return NextResponse.json({
       ok: true,
       completedAt: result.completedAt,

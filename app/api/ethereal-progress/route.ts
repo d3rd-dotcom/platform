@@ -14,6 +14,7 @@ const PATHWAY_COURSE_SLUG = 'creative-healing';
 // currency, so the seal pays a small, fixed diamond bonus on top of the 50-per
 // -task rewards rather than dominating emission.
 const SEAL_REWARD = 100;
+const TASK_REWARD = 50;
 
 /**
  * The task sections of a pathway week, straight from the course content —
@@ -31,6 +32,18 @@ async function getRequiredSectionIds(weekNumber: number): Promise<string[] | nul
       return !(typeof c.url === 'string' && typeof c.imageUrl === 'string' && typeof c.originalName === 'string');
     })
     .map((comp) => comp.id);
+}
+
+/**
+ * Every component id of a pathway week. Section credits pay real $BLUE, so a
+ * section only counts if it exists in the course content — a client-invented
+ * section id earns nothing.
+ */
+async function getWeekComponentIds(weekNumber: number): Promise<Set<string> | null> {
+  const course = await getVipCourseFullBySlug(PATHWAY_COURSE_SLUG);
+  const week = course?.weeks.find((w) => w.weekNumber === weekNumber);
+  if (!week) return null;
+  return new Set(week.components.map((comp) => comp.id));
 }
 
 export const runtime = 'nodejs';
@@ -285,13 +298,16 @@ export async function POST(request: Request) {
     { userId: user.id, weekNumber, progressData: JSON.stringify(progressData) }
   );
 
-  // Award 50 credits only for sections never credited before — toggle-proof.
+  // Award task credits only for sections never credited before — toggle-proof —
+  // and only for sections that exist in the week's course content (fail-closed:
+  // no course content, no payout).
+  const knownSectionIds = await getWeekComponentIds(weekNumber);
   const newlyCompleted = currentCompletedSections.filter(
-    s => !alreadyCredited.includes(s)
+    s => !alreadyCredited.includes(s) && (knownSectionIds?.has(s) ?? false)
   );
   let creditsAwarded = 0;
   if (newlyCompleted.length > 0) {
-    creditsAwarded = newlyCompleted.length * 50;
+    creditsAwarded = newlyCompleted.length * TASK_REWARD;
     const updatedCredited = [...alreadyCredited, ...newlyCompleted];
     await sqlQuery(
       `UPDATE users SET shard_count = COALESCE(shard_count, 0) + :credits WHERE id = :userId`,
@@ -302,6 +318,20 @@ export async function POST(request: Request) {
        WHERE user_id = :userId AND week_number = :weekNumber`,
       { userId: user.id, weekNumber, credited: JSON.stringify(updatedCredited) }
     );
+
+    // Task credits are CDP claim mints, one per course component. The refId is
+    // the component id — the same ref the VIP claim flow uses — so a task can
+    // never be paid onchain twice across the two routes (fail-soft per section).
+    for (const sectionId of newlyCompleted) {
+      await deliverDiamondsOnchain({
+        userId: user.id,
+        walletAddress: user.walletAddress,
+        source: 'course_task',
+        refId: sectionId,
+        amount: TASK_REWARD,
+        delivery: 'cdp_mint',
+      });
+    }
   }
 
   try {

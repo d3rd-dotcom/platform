@@ -21,7 +21,14 @@ import { getDiamondsTokenAddress as getTokenAddress, getChainConfig } from './ch
  * the reward route.
  */
 
-export type RewardSource = 'course_task' | 'course_seal' | 'field_note' | 'quest';
+export type RewardSource =
+  | 'course_task'
+  | 'course_seal'
+  | 'field_note'
+  | 'quest'
+  | 'guide'
+  | 'survey'
+  | 'welcome';
 export type DeliveryMethod = 'cdp_mint' | 'blue_transfer';
 
 const DIAMONDS_ABI = [

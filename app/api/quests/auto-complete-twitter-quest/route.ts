@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
+import { deliverDiamondsOnchain } from '@/lib/diamonds-onchain';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -202,6 +203,17 @@ export async function POST() {
        VALUES (:id, :userId, :questId, :shards)`,
       { id: completionId, userId: user.id, questId: TWITTER_FOLLOW_QUEST_ID, shards: SHARD_REWARD }
     );
+
+    // Quest diamonds are a p2p transfer from Blue's own stash — one-time per
+    // user via the diamond_onchain_rewards ledger (fail-soft, never blocks).
+    await deliverDiamondsOnchain({
+      userId: user.id,
+      walletAddress: user.walletAddress,
+      source: 'quest',
+      refId: TWITTER_FOLLOW_QUEST_ID,
+      amount: SHARD_REWARD,
+      delivery: 'blue_transfer',
+    });
 
     // Get updated credit count
     const shardRowsAfter = await sqlQuery<Array<{ shard_count: number }>>(

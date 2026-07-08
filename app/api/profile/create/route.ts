@@ -20,6 +20,7 @@ import { isDbConfigured, sqlQuery, withTransaction, sqlQueryWithClient } from '@
 import { v4 as uuidv4 } from 'uuid';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isAvatarValidForUser, getAvatarByAvatarId, getAssignedAvatars } from '@/lib/avatars';
+import { deliverDiamondsOnchain } from '@/lib/diamonds-onchain';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -287,9 +288,23 @@ export async function POST(request: Request) {
       }
     });
 
+    // Welcome diamonds go out onchain too — a one-time p2p transfer from Blue,
+    // deduped by the diamond_onchain_rewards ledger (fail-soft, never blocks
+    // profile creation).
+    if (WELCOME_SHARDS !== undefined) {
+      await deliverDiamondsOnchain({
+        userId,
+        walletAddress: currentUser.walletAddress,
+        source: 'welcome',
+        refId: 'signup',
+        amount: WELCOME_SHARDS,
+        delivery: 'blue_transfer',
+      });
+    }
+
     // Note: Session was already created during signup, so we don't need to create a new one
     // The session cookie is already set from the signup step
-    
+
     return NextResponse.json({
       ok: true,
       message: 'Profile created successfully!',
