@@ -188,15 +188,6 @@
   color: #ffffff;
 }
 
-.heroLine {
-  width: 120px;
-  height: 4px;
-  background: var(--color-secondary);
-  border-radius: 2px;
-  margin: 0 auto 16px;
-  animation: heroFadeUp 0.7s var(--hero-ease-out) 0.06s both;
-}
-
 .heroSubheadline {
   font-family: var(--font-primary);
   font-size: 1.5rem;

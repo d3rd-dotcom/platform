@@ -1,8 +1,8 @@
 'use client';
 
-import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
+import LandingKnowledgeGraph from './LandingKnowledgeGraph';
 import styles from './FeaturesSection.module.css';
 
 const featureCards = [
@@ -72,33 +72,15 @@ export const FeaturesSection: React.FC = () => {
           </div>
 
           <div className={styles.topPanel}>
-            <div className={styles.phonePanel}>
-              <div className={styles.phoneStack}>
-                <div className={`${styles.phoneMockup} ${styles.phoneRear} ${styles.phoneReveal}`}>
-                  <Image
-                    src="/uploads/mockup-app-landing-2.png"
-                    alt="Course reading screen on phone"
-                    fill
-                    sizes="140px"
-                    className={styles.phoneImage}
-                  />
-                </div>
-                <div className={`${styles.phoneMockup} ${styles.phoneFront} ${styles.phoneReveal}`}>
-                  <Image
-                    src="/uploads/mockup-app-landing.png"
-                    alt="Week one tasks screen on phone"
-                    fill
-                    sizes="155px"
-                    className={styles.phoneImage}
-                  />
-                </div>
-              </div>
+            <div className={styles.graphPanel}>
+              <LandingKnowledgeGraph />
             </div>
 
             <div className={styles.headlinePanel}>
-              <h2 className={styles.title}>&ldquo;Intellectually Refreshing&rdquo;</h2>
+              <h2 className={styles.title}>A Living Map Of What You Can Learn</h2>
               <p className={styles.description}>
-                Three steps. Study a verified guide, complete a quest with Blue, and earn what you own.
+                Every verified guide joins the same prerequisite graph. Rotate the map, trace a
+                topic back to its foundations, and find the next concept ready to explore.
               </p>
             </div>
           </div>

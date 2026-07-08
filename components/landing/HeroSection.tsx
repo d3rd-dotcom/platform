@@ -35,16 +35,11 @@ export const HeroSection: React.FC = () => {
           <GlitchRevealText
             as="h1"
             className={styles.heroHeadline}
-            lines={[
-              { text: 'Global Quality Education' },
-              { text: 'Built As A Video Game', accent: true },
-            ]}
-            accentClassName={styles.heroHeadlineAccent}
+            lines={[{ text: 'Global Quality Education' }]}
             staggerDelay={50}
             duration={1000}
             startDelay={200}
           />
-          <div className={styles.heroLine} />
           <p className={styles.heroSubtext}>
             A micro-university for intellectual refreshment. Explore courses, guides, and quests
             while earning real rewards and Bitcoin. Blue, our agentic co-researcher, reviews your
