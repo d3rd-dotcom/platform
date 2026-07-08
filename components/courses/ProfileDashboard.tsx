@@ -205,7 +205,19 @@ export default function ProfileDashboard({
             </button>
           ))}
         </div>
-        {tab === 'quests' && (currentQuest ? (
+      </div>
+
+      <div className={styles.fieldNotesSection}>
+        <DailyNotes
+          enablePersistence={authenticated && ready}
+          compact
+        />
+      </div>
+
+      {tab === 'quests' && (
+      <div className={styles.badges}>
+        <span className={styles.missionHeading}>Current Quest</span>
+        {currentQuest ? (
           <Link
             href="/quests"
             className={styles.missionCard}
@@ -228,15 +240,9 @@ export default function ProfileDashboard({
               <span className={styles.questDesc}>New quests are on the way. Nice work.</span>
             </span>
           </div>
-        ))}
+        )}
       </div>
-
-      <div className={styles.fieldNotesSection}>
-        <DailyNotes
-          enablePersistence={authenticated && ready}
-          compact
-        />
-      </div>
+      )}
 
       {tab === 'badges' && (
       <div className={styles.badges}>
