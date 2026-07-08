@@ -96,3 +96,40 @@ export function getChainId(): number {
 }
 
 export const BURN_ADDRESS = '0x000000000000000000000000000000000000dEaD';
+
+/** Canonical public RPC per chain — the safe fallback when env is wrong. */
+const CANONICAL_RPC: Record<number, string> = {
+  8453: 'https://mainnet.base.org',
+  84532: 'https://sepolia.base.org',
+};
+
+/**
+ * Server-side guard: confirm the configured RPC actually serves the active
+ * chain, falling back to the canonical public RPC when it does not. A wrong
+ * BASE_SEPOLIA_RPC_URL on Vercel once pointed Diamonds writes at mainnet —
+ * StaticJsonRpcProvider trusts the declared chainId, so calls against
+ * addresses with no code there fail with empty revert data (or worse,
+ * silently no-op). Never trust the URL; ask it.
+ */
+export async function resolveVerifiedRpcUrl(): Promise<string> {
+  const cfg = getChainConfig();
+  const canonical = CANONICAL_RPC[cfg.chainId] || cfg.rpcUrl;
+  try {
+    const res = await fetch(cfg.rpcUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'eth_chainId', params: [] }),
+      signal: AbortSignal.timeout(5000),
+    });
+    const data = await res.json().catch(() => null);
+    const reported = data?.result ? parseInt(data.result, 16) : null;
+    if (reported === cfg.chainId) return cfg.rpcUrl;
+    console.error(
+      `[chain-config] Configured RPC reports chain ${reported}, expected ${cfg.chainId} (${cfg.chainName}) — using ${canonical}`,
+    );
+    return canonical;
+  } catch {
+    console.error(`[chain-config] Configured RPC unreachable — using ${canonical}`);
+    return canonical;
+  }
+}

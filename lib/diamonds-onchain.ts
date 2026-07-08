@@ -1,7 +1,7 @@
 import { Contract, providers, utils, Wallet } from 'ethers';
 import { getPaymasterRpcUrl, getBlueSmartAccount, mintDiamondsSponsored } from './diamonds-paymaster';
 import { sqlQuery } from './db';
-import { getDiamondsTokenAddress as getTokenAddress, getChainConfig } from './chain-config';
+import { getDiamondsTokenAddress as getTokenAddress, getChainConfig, resolveVerifiedRpcUrl } from './chain-config';
 
 /**
  * Onchain delivery of Diamonds ($BLUE) rewards.
@@ -48,14 +48,16 @@ export function getDiamondsTokenAddress(): string | null {
  * blue-membership's getBlueSigner (mainnet-pinned for VIP card sales), every
  * Diamonds write must follow chain-config, or testnet-mode transfers and
  * mints land on mainnet as codeless-address no-ops that still ledger 'sent'.
+ * The RPC is verified against the expected chain id before use — a wrong
+ * BASE_SEPOLIA_RPC_URL in prod env has pointed these writes at mainnet.
  */
-function getBlueSigner(): Wallet {
+async function getBlueSigner(): Promise<Wallet> {
   const cfg = getChainConfig();
   const key = process.env.BLUE_PRIVATE_KEY || process.env.AZURA_PRIVATE_KEY;
   if (!key) {
     throw new Error('BLUE_PRIVATE_KEY or AZURA_PRIVATE_KEY is not set — Blue cannot sign Diamonds rewards.');
   }
-  const provider = new providers.StaticJsonRpcProvider(cfg.rpcUrl, {
+  const provider = new providers.StaticJsonRpcProvider(await resolveVerifiedRpcUrl(), {
     chainId: cfg.chainId,
     name: cfg.chainName.toLowerCase().replace(/\s+/g, '-'),
   });
@@ -144,7 +146,7 @@ const grantedMinters = new Set<string>();
 async function ensureMinter(tokenAddress: string, minterAddress: string) {
   const cacheKey = `${tokenAddress}:${minterAddress}`.toLowerCase();
   if (grantedMinters.has(cacheKey)) return;
-  const signer = getBlueSigner();
+  const signer = await getBlueSigner();
   const contract = new Contract(tokenAddress, DIAMONDS_ABI, signer);
   const isMinter: boolean = await contract.minters(minterAddress);
   if (!isMinter) {
@@ -174,7 +176,7 @@ async function mintDiamonds(tokenAddress: string, to: string, wholeDiamonds: num
     }
   }
 
-  const signer = getBlueSigner();
+  const signer = await getBlueSigner();
   const contract = new Contract(tokenAddress, DIAMONDS_ABI, signer);
   const tx = await contract.mint(to, amountWei, await baseFeeOverrides(signer.provider));
   const receipt = await tx.wait();
@@ -184,7 +186,7 @@ async function mintDiamonds(tokenAddress: string, to: string, wholeDiamonds: num
 // ── Blue p2p transfer (quests) ──
 
 async function transferFromBlue(tokenAddress: string, to: string, wholeDiamonds: number): Promise<string> {
-  const signer = getBlueSigner();
+  const signer = await getBlueSigner();
   const contract = new Contract(tokenAddress, DIAMONDS_ABI, signer);
   const tx = await contract.transfer(
     to,

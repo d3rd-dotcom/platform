@@ -7,7 +7,7 @@ import {
   type SmartAccount,
   type BundlerClient,
 } from 'viem/account-abstraction';
-import { getChainConfig } from './chain-config';
+import { getChainConfig, resolveVerifiedRpcUrl } from './chain-config';
 
 /**
  * Gas-sponsored Diamonds minting through Alchemy Gas Manager.
@@ -61,9 +61,8 @@ function getBluePrivateKeyHex(): `0x${string}` {
   return (key.startsWith('0x') ? key : `0x${key}`) as `0x${string}`;
 }
 
-function getBaseRpcUrl(): string {
-  const cfg = getChainConfig();
-  return cfg.rpcUrl;
+function getBaseRpcUrl(): Promise<string> {
+  return resolveVerifiedRpcUrl();
 }
 
 let cached: { account: SmartAccount; bundlerClient: BundlerClient } | null = null;
@@ -81,7 +80,7 @@ export async function getBlueSmartAccount(): Promise<{ account: SmartAccount; bu
   const chain = cfg.chainId === 84532 ? baseSepolia : base;
 
   const owner = privateKeyToAccount(getBluePrivateKeyHex());
-  const client = createPublicClient({ chain, transport: http(getBaseRpcUrl()) });
+  const client = createPublicClient({ chain, transport: http(await getBaseRpcUrl()) });
   const account = await toCoinbaseSmartAccount({ client, owners: [owner], version: '1.1' });
   const bundlerClient = createBundlerClient({
     account,

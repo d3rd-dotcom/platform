@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { Contract, providers, utils, Wallet } from 'ethers';
-import { getChainConfig } from '@/lib/chain-config';
+import { getChainConfig, resolveVerifiedRpcUrl } from '@/lib/chain-config';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -63,7 +63,7 @@ async function runReflections(request: Request) {
   }
 
   try {
-    const provider = new providers.StaticJsonRpcProvider(cfg.rpcUrl, {
+    const provider = new providers.StaticJsonRpcProvider(await resolveVerifiedRpcUrl(), {
       chainId: cfg.chainId,
       name: cfg.chainName.toLowerCase().replace(/\s+/g, '-'),
     });
