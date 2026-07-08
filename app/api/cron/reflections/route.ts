@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
-import { Contract, providers, utils, Wallet } from 'ethers';
+import { createPublicClient, createWalletClient, http, formatUnits } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
+import { base, baseSepolia } from 'viem/chains';
 import { getChainConfig, resolveVerifiedRpcUrl } from '@/lib/chain-config';
 
 export const runtime = 'nodejs';
@@ -19,6 +21,10 @@ export const maxDuration = 60;
  *      pending cbBTC straight to their wallet. Holders can also pull with
  *      claim() themselves at any time.
  *
+ * Built on viem, not ethers: ethers v5's node HTTP transport fails inside
+ * Vercel lambdas ("missing response", 2026-07-08 outage) while fetch-based
+ * transports work. viem rides the platform fetch.
+ *
  * No-ops cleanly when the active chain has no vault (mainnet until the V2
  * deploy), when the treasury is under the floor, or when there is nothing
  * pending. If CRON_SECRET is set, requests must present it as a bearer
@@ -26,21 +32,22 @@ export const maxDuration = 60;
  */
 
 const ERC20_ABI = [
-  'function balanceOf(address) view returns (uint256)',
-  'function approve(address spender, uint256 amount) returns (bool)',
-  'function allowance(address owner, address spender) view returns (uint256)',
-];
+  { type: 'function', name: 'balanceOf', stateMutability: 'view', inputs: [{ type: 'address' }], outputs: [{ type: 'uint256' }] },
+  { type: 'function', name: 'approve', stateMutability: 'nonpayable', inputs: [{ type: 'address' }, { type: 'uint256' }], outputs: [{ type: 'bool' }] },
+  { type: 'function', name: 'allowance', stateMutability: 'view', inputs: [{ type: 'address' }, { type: 'address' }], outputs: [{ type: 'uint256' }] },
+] as const;
+
 const VAULT_ABI = [
-  'function totalShares() view returns (uint256)',
-  'function holderCount() view returns (uint256)',
-  'function depositReflections(uint256 amount)',
-  'function process(uint256 gasBudget) returns (uint256 iterations, uint256 claims)',
-];
+  { type: 'function', name: 'totalShares', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
+  { type: 'function', name: 'holderCount', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
+  { type: 'function', name: 'depositReflections', stateMutability: 'nonpayable', inputs: [{ type: 'uint256' }], outputs: [] },
+  { type: 'function', name: 'process', stateMutability: 'nonpayable', inputs: [{ type: 'uint256' }], outputs: [{ type: 'uint256' }, { type: 'uint256' }] },
+] as const;
 
 /** Smallest treasury balance worth a deposit, in cbBTC base units (8 dec). */
-function getDepositFloor(): number {
+function getDepositFloor(): bigint {
   const floor = Number(process.env.REFLECTIONS_MIN_DEPOSIT_SATS || 1000);
-  return Number.isFinite(floor) && floor > 0 ? floor : 1000;
+  return BigInt(Number.isFinite(floor) && floor > 0 ? Math.round(floor) : 1000);
 }
 
 async function runReflections(request: Request) {
@@ -57,74 +64,30 @@ async function runReflections(request: Request) {
     return NextResponse.json({ skipped: `No reflection vault on ${cfg.chainName}.` });
   }
 
-  // Temporary diagnostic for the 2026-07-08 outage: reports what this lambda
-  // actually sees through the resolved RPC, with credentials masked.
-  if (new URL(request.url).searchParams.get('debug') === '1') {
-    const url = await resolveVerifiedRpcUrl();
-    const probe = async (method: string, params: unknown[]) => {
-      try {
-        const res = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
-          signal: AbortSignal.timeout(8000),
-        });
-        const data = await res.json().catch(() => null);
-        if (data?.error) return `rpc error: ${JSON.stringify(data.error).slice(0, 120)}`;
-        const r = String(data?.result ?? 'null');
-        return r.length > 20 ? `${r.slice(0, 18)}… (${r.length} chars)` : r;
-      } catch (e: unknown) {
-        return `fetch failed: ${e instanceof Error ? e.message : 'unknown'}`;
-      }
-    };
-    // The exact failing call, via ethers, surfacing the inner server error
-    // that the generic CALL_EXCEPTION message swallows.
-    let ethersCall = 'not attempted';
-    const dbgKey = process.env.BLUE_PRIVATE_KEY || process.env.AZURA_PRIVATE_KEY;
-    if (dbgKey) {
-      try {
-        const dbgProvider = new providers.StaticJsonRpcProvider(url, {
-          chainId: cfg.chainId,
-          name: cfg.chainName.toLowerCase().replace(/\s+/g, '-'),
-        });
-        const dbgBlue = new Wallet(dbgKey.startsWith('0x') ? dbgKey : `0x${dbgKey}`, dbgProvider);
-        const dbgCb = new Contract(cfg.cbBTcAddress, ERC20_ABI, dbgBlue);
-        const bal = await dbgCb.balanceOf(dbgBlue.address);
-        ethersCall = `OK ${bal.toString()}`;
-      } catch (e: unknown) {
-        const err = e as { message?: string; error?: { message?: string; body?: string; code?: unknown } };
-        ethersCall = JSON.stringify({
-          inner: err?.error?.message,
-          body: String(err?.error?.body ?? '').slice(0, 200),
-          code: err?.error?.code,
-          msg: String(err?.message ?? '').slice(0, 120),
-        });
-      }
-    }
-    return NextResponse.json({
-      chain: cfg.chainName,
-      rpcHost: new URL(url).host,
-      configuredHost: new URL(cfg.rpcUrl).host,
-      chainIdReported: await probe('eth_chainId', []),
-      tokenCode: await probe('eth_getCode', [cfg.diamondsTokenAddress, 'latest']),
-      cbbtcCode: await probe('eth_getCode', [cfg.cbBTcAddress, 'latest']),
-      ethersCall,
-    });
-  }
-
   const key = process.env.BLUE_PRIVATE_KEY || process.env.AZURA_PRIVATE_KEY;
   if (!key) {
     return NextResponse.json({ error: 'Treasury key not configured.' }, { status: 500 });
   }
 
   try {
-    const provider = new providers.StaticJsonRpcProvider(await resolveVerifiedRpcUrl(), {
-      chainId: cfg.chainId,
-      name: cfg.chainName.toLowerCase().replace(/\s+/g, '-'),
-    });
-    const blue = new Wallet(key.startsWith('0x') ? key : `0x${key}`, provider);
-    const cbbtc = new Contract(cfg.cbBTcAddress, ERC20_ABI, blue);
-    const vault = new Contract(cfg.reflectionVaultAddress, VAULT_ABI, blue);
+    const rpcUrl = await resolveVerifiedRpcUrl();
+    const chain = cfg.chainId === baseSepolia.id ? baseSepolia : base;
+    const blue = privateKeyToAccount((key.startsWith('0x') ? key : `0x${key}`) as `0x${string}`);
+    const client = createPublicClient({ chain, transport: http(rpcUrl) });
+    const wallet = createWalletClient({ account: blue, chain, transport: http(rpcUrl) });
+
+    const vault = cfg.reflectionVaultAddress as `0x${string}`;
+    const cbbtc = cfg.cbBTcAddress as `0x${string}`;
+
+    // Sequential txs from one account: manage the nonce explicitly so a
+    // lagging replica cannot hand out a duplicate.
+    let nonce = await client.getTransactionCount({ address: blue.address, blockTag: 'pending' });
+    const send = async (tx: Parameters<typeof wallet.writeContract>[0]) => {
+      const hash = await wallet.writeContract({ ...tx, nonce: nonce++ } as Parameters<typeof wallet.writeContract>[0]);
+      const receipt = await client.waitForTransactionReceipt({ hash });
+      if (receipt.status !== 'success') throw new Error(`${String(tx.functionName)} reverted (${hash})`);
+      return receipt;
+    };
 
     const result: {
       chain: string;
@@ -135,28 +98,31 @@ async function runReflections(request: Request) {
     } = { chain: cfg.chainName, deposited: null, depositTx: null, processed: null, processTx: null };
 
     // 1. Sweep the treasury into the vault.
-    const balance = await cbbtc.balanceOf(blue.address);
-    const totalShares = await vault.totalShares();
-    if (balance.gte(getDepositFloor()) && totalShares.gt(0)) {
-      const approveTx = await cbbtc.approve(cfg.reflectionVaultAddress, balance);
-      await approveTx.wait();
-      const depositTx = await vault.depositReflections(balance);
-      await depositTx.wait();
-      result.deposited = utils.formatUnits(balance, 8);
-      result.depositTx = depositTx.hash;
+    const [balance, totalShares] = await Promise.all([
+      client.readContract({ address: cbbtc, abi: ERC20_ABI, functionName: 'balanceOf', args: [blue.address] }),
+      client.readContract({ address: vault, abi: VAULT_ABI, functionName: 'totalShares' }),
+    ]);
+    if (balance >= getDepositFloor() && totalShares > 0n) {
+      await send({ address: cbbtc, abi: ERC20_ABI, functionName: 'approve', args: [vault, balance] });
+      const depositReceipt = await send({
+        address: vault, abi: VAULT_ABI, functionName: 'depositReflections', args: [balance],
+      });
+      result.deposited = formatUnits(balance, 8);
+      result.depositTx = depositReceipt.transactionHash;
     }
 
-    // 2. Push payouts to every holder with pending rewards.
-    const holderCount = await vault.holderCount();
-    if (holderCount.gt(0)) {
-      const processTx = await vault.process(600_000, { gasLimit: 1_500_000 });
-      const receipt = await processTx.wait();
-      const vaultAddr = cfg.reflectionVaultAddress.toLowerCase();
-      const claims = receipt.logs.filter(
-        (log: { address: string }) => log.address.toLowerCase() === vaultAddr,
+    // 2. Push payouts to every holder with pending rewards. Explicit gas so a
+    // stale estimate cannot starve the payout loop.
+    const holderCount = await client.readContract({ address: vault, abi: VAULT_ABI, functionName: 'holderCount' });
+    if (holderCount > 0n) {
+      const processReceipt = await send({
+        address: vault, abi: VAULT_ABI, functionName: 'process', args: [600_000n], gas: 1_500_000n,
+      });
+      const claims = processReceipt.logs.filter(
+        (log) => log.address.toLowerCase() === vault.toLowerCase(),
       ).length;
       result.processed = { claims };
-      result.processTx = receipt.transactionHash;
+      result.processTx = processReceipt.transactionHash;
     }
 
     return NextResponse.json(result);
