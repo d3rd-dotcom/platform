@@ -77,6 +77,30 @@ async function runReflections(request: Request) {
         return `fetch failed: ${e instanceof Error ? e.message : 'unknown'}`;
       }
     };
+    // The exact failing call, via ethers, surfacing the inner server error
+    // that the generic CALL_EXCEPTION message swallows.
+    let ethersCall = 'not attempted';
+    const dbgKey = process.env.BLUE_PRIVATE_KEY || process.env.AZURA_PRIVATE_KEY;
+    if (dbgKey) {
+      try {
+        const dbgProvider = new providers.StaticJsonRpcProvider(url, {
+          chainId: cfg.chainId,
+          name: cfg.chainName.toLowerCase().replace(/\s+/g, '-'),
+        });
+        const dbgBlue = new Wallet(dbgKey.startsWith('0x') ? dbgKey : `0x${dbgKey}`, dbgProvider);
+        const dbgCb = new Contract(cfg.cbBTcAddress, ERC20_ABI, dbgBlue);
+        const bal = await dbgCb.balanceOf(dbgBlue.address);
+        ethersCall = `OK ${bal.toString()}`;
+      } catch (e: unknown) {
+        const err = e as { message?: string; error?: { message?: string; body?: string; code?: unknown } };
+        ethersCall = JSON.stringify({
+          inner: err?.error?.message,
+          body: String(err?.error?.body ?? '').slice(0, 200),
+          code: err?.error?.code,
+          msg: String(err?.message ?? '').slice(0, 120),
+        });
+      }
+    }
     return NextResponse.json({
       chain: cfg.chainName,
       rpcHost: new URL(url).host,
@@ -84,8 +108,7 @@ async function runReflections(request: Request) {
       chainIdReported: await probe('eth_chainId', []),
       tokenCode: await probe('eth_getCode', [cfg.diamondsTokenAddress, 'latest']),
       cbbtcCode: await probe('eth_getCode', [cfg.cbBTcAddress, 'latest']),
-      cbbtcAddressUsed: cfg.cbBTcAddress,
-      tokenAddressUsed: cfg.diamondsTokenAddress,
+      ethersCall,
     });
   }
 
