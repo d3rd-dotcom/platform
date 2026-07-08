@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
-import { getWalletAddressFromRequest } from '@/lib/wallet-auth';
+import { getWalletAddressFromRequest, getEmailAddressFromRequest } from '@/lib/wallet-auth';
+import { sendMeetBlueEmail } from '@/lib/email';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -92,6 +93,19 @@ export async function POST(request: Request) {
       `INSERT INTO users (id, wallet_address, username, avatar_url) VALUES (:id, :walletAddress, :username, :avatarUrl)`,
       { id: userId, walletAddress: walletAddressClean, username, avatarUrl: farcasterPfp || null }
     );
+
+    // Feature 2: welcome email on signup — only fires for genuinely new
+    // accounts, and only if the user has an email-based Privy account
+    // linked (wallet-only signups have no email to send to, by design).
+    // Wrapped so a Resend/Privy hiccup can never fail account creation.
+    try {
+      const email = await getEmailAddressFromRequest();
+      if (email) {
+        await sendMeetBlueEmail(email);
+      }
+    } catch (notifyErr) {
+      console.error('Welcome email failed (non-blocking):', notifyErr);
+    }
 
     return NextResponse.json({ ok: true, userId, existing: false });
   } catch (err: any) {
