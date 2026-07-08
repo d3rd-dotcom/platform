@@ -57,6 +57,38 @@ async function runReflections(request: Request) {
     return NextResponse.json({ skipped: `No reflection vault on ${cfg.chainName}.` });
   }
 
+  // Temporary diagnostic for the 2026-07-08 outage: reports what this lambda
+  // actually sees through the resolved RPC, with credentials masked.
+  if (new URL(request.url).searchParams.get('debug') === '1') {
+    const url = await resolveVerifiedRpcUrl();
+    const probe = async (method: string, params: unknown[]) => {
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
+          signal: AbortSignal.timeout(8000),
+        });
+        const data = await res.json().catch(() => null);
+        if (data?.error) return `rpc error: ${JSON.stringify(data.error).slice(0, 120)}`;
+        const r = String(data?.result ?? 'null');
+        return r.length > 20 ? `${r.slice(0, 18)}… (${r.length} chars)` : r;
+      } catch (e: unknown) {
+        return `fetch failed: ${e instanceof Error ? e.message : 'unknown'}`;
+      }
+    };
+    return NextResponse.json({
+      chain: cfg.chainName,
+      rpcHost: new URL(url).host,
+      configuredHost: new URL(cfg.rpcUrl).host,
+      chainIdReported: await probe('eth_chainId', []),
+      tokenCode: await probe('eth_getCode', [cfg.diamondsTokenAddress, 'latest']),
+      cbbtcCode: await probe('eth_getCode', [cfg.cbBTcAddress, 'latest']),
+      cbbtcAddressUsed: cfg.cbBTcAddress,
+      tokenAddressUsed: cfg.diamondsTokenAddress,
+    });
+  }
+
   const key = process.env.BLUE_PRIVATE_KEY || process.env.AZURA_PRIVATE_KEY;
   if (!key) {
     return NextResponse.json({ error: 'Treasury key not configured.' }, { status: 500 });
