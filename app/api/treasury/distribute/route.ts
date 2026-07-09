@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { Contract, providers, utils } from 'ethers';
 import { isValidAdminSecret } from '@/lib/admin-secret';
 import { getAppleHolders } from '@/lib/apple-holders';
-import { blueWallet } from '@/lib/blue-wallet';
+import { getBlueWalletAddress } from '@/lib/blue-membership';
+import { distributeUSDC } from '@/lib/blue-usdc';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { ensureTreasuryDistributionSchema } from '@/lib/ensureTreasuryDistributionSchema';
 
@@ -87,7 +88,7 @@ function usdcUnitsToUsd(units: string | bigint): number {
 }
 
 async function fetchBlueUsdcBalance(): Promise<BlueUsdcBalance> {
-  const walletAddress = await blueWallet.getWalletAddress();
+  const walletAddress = getBlueWalletAddress();
   const provider = new providers.JsonRpcProvider(RPC_URL);
   const usdc = new Contract(USDC_ADDRESS, USDC_ABI, provider);
   const [raw, decimals] = await Promise.all([usdc.balanceOf(walletAddress), usdc.decimals()]);
@@ -340,7 +341,7 @@ export async function POST(request: Request) {
     let txHashes: string[];
     let failed: { address: string; error: string }[];
     try {
-      ({ txHashes, failed } = await blueWallet.distributeUSDC(recipients));
+      ({ txHashes, failed } = await distributeUSDC(recipients));
     } catch (err) {
       await completeDistributionEpoch({
         epochKey,

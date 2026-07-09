@@ -6,7 +6,7 @@ import { ensureQuestUsdcClaimsSchema } from '@/lib/ensureQuestUsdcClaimsSchema';
 import { walletHoldsVipMembershipCard } from '@/lib/vip-membership-card';
 import { walletHoldsAcademicAngel } from '@/lib/academic-angels';
 import { getQuestDefinition } from '@/lib/quest-definitions';
-import { blueWallet } from '@/lib/blue-wallet';
+import { distributeUSDC } from '@/lib/blue-usdc';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -154,7 +154,7 @@ export async function POST(request: Request) {
   const amountUnits = BigInt(Math.round(Number(claim.usdc_amount) * 10 ** USDC_DECIMALS)).toString();
 
   try {
-    const { txHashes, failed } = await blueWallet.distributeUSDC([
+    const { txHashes, failed } = await distributeUSDC([
       { address: claim.recipient_wallet, amount: amountUnits },
     ]);
 

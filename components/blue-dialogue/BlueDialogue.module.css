@@ -1,21 +1,30 @@
 /* BlueDialogue — centered visual-novel panel based on the Researcher frame. */
 
+/*
+ * Anchored dialogue box: docked to the bottom-centre of the viewport in the
+ * visual-novel convention, with no darkening backdrop and no full-page
+ * centring. The wrapper spans the width but ignores pointer events so the page
+ * behind stays interactive — only the stage panel itself is clickable.
+ */
 .overlay {
   position: fixed;
-  inset: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 9999;
-  display: grid;
-  place-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
   padding: 16px;
   box-sizing: border-box;
-  background: rgba(13, 27, 42, 0.82);
-  overscroll-behavior: contain;
-  animation: overlayIn 180ms ease-out;
+  pointer-events: none;
+  animation: overlayIn 220ms ease-out;
 }
 
 @keyframes overlayIn {
   from {
     opacity: 0;
+    transform: translateY(12px);
   }
 }
 
@@ -39,6 +48,7 @@
   transform: translateY(6px) scale(0.985);
   overflow: hidden;
   isolation: isolate;
+  pointer-events: auto;
   border: 6px solid #3a2096;
   border-radius: 24px;
   box-sizing: border-box;
@@ -202,9 +212,9 @@
 .menuItems {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   flex: 1;
-  gap: 6%;
+  gap: 7cqw;
   padding-inline: 1%;
 }
 
@@ -225,6 +235,37 @@
   color: #f4f5fe;
   outline: none;
   text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+}
+
+.voiceButton {
+  display: grid;
+  place-items: center;
+  width: 5.4cqw;
+  height: 5.4cqw;
+  min-width: 22px;
+  min-height: 22px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #241363;
+  cursor: pointer;
+}
+
+.voiceButton svg {
+  width: 100%;
+  height: 100%;
+}
+
+.voiceButtonActive {
+  color: #f4f5fe;
+  filter: drop-shadow(0 0 6px rgba(244, 245, 254, 0.75));
+}
+
+.voiceButton:hover,
+.voiceButton:focus-visible {
+  color: #f4f5fe;
+  outline: none;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
 }
 
 .arrow {

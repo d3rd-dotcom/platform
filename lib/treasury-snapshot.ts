@@ -63,7 +63,6 @@ export interface TreasurySnapshot {
   balances: {
     cbBtc: TreasuryMetric;
     credits: TreasuryMetric;
-    usdc: TreasuryMetric;
     eth: TreasuryMetric;
   };
   vault: {
@@ -126,7 +125,6 @@ export async function fetchTreasurySnapshot(): Promise<TreasurySnapshot> {
     balances: {
       cbBtc: { amount: null, symbol: 'cbBTC' },
       credits: { amount: null, symbol: 'BLUE' },
-      usdc: { amount: null, symbol: 'USDC' },
       eth: { amount: null, symbol: 'ETH' },
     },
     vault: {
@@ -155,12 +153,6 @@ export async function fetchTreasurySnapshot(): Promise<TreasurySnapshot> {
     }),
     client.readContract({
       address: cfg.diamondsTokenAddress as Address,
-      abi: ERC20_BALANCE_ABI,
-      functionName: 'balanceOf',
-      args: [treasuryAddress],
-    }),
-    client.readContract({
-      address: cfg.usdcAddress as Address,
       abi: ERC20_BALANCE_ABI,
       functionName: 'balanceOf',
       args: [treasuryAddress],
@@ -199,19 +191,18 @@ export async function fetchTreasurySnapshot(): Promise<TreasurySnapshot> {
 
   const cbBtcBalance = fulfilledValue(reads[0]);
   const creditsBalance = fulfilledValue(reads[1]);
-  const usdcBalance = fulfilledValue(reads[2]);
-  const ethBalance = fulfilledValue(reads[3]);
-  const vaultBalance = fulfilledValue(reads[4]);
-  const totalDistributed = fulfilledValue(reads[5]);
-  const holderCount = fulfilledValue(reads[6]);
-  const totalShares = fulfilledValue(reads[7]);
-  const walletReadCount = [cbBtcBalance, creditsBalance, usdcBalance, ethBalance]
+  const ethBalance = fulfilledValue(reads[2]);
+  const vaultBalance = fulfilledValue(reads[3]);
+  const totalDistributed = fulfilledValue(reads[4]);
+  const holderCount = fulfilledValue(reads[5]);
+  const totalShares = fulfilledValue(reads[6]);
+  const walletReadCount = [cbBtcBalance, creditsBalance, ethBalance]
     .filter((value) => value !== null)
     .length;
 
   return {
     ...emptySnapshot,
-    status: walletReadCount === 4 ? 'live' : walletReadCount > 0 ? 'partial' : 'unavailable',
+    status: walletReadCount === 3 ? 'live' : walletReadCount > 0 ? 'partial' : 'unavailable',
     balances: {
       cbBtc: {
         amount: cbBtcBalance === null ? null : formatUnits(cbBtcBalance, 8),
@@ -220,10 +211,6 @@ export async function fetchTreasurySnapshot(): Promise<TreasurySnapshot> {
       credits: {
         amount: creditsBalance === null ? null : formatUnits(creditsBalance, 18),
         symbol: 'BLUE',
-      },
-      usdc: {
-        amount: usdcBalance === null ? null : formatUnits(usdcBalance, 6),
-        symbol: 'USDC',
       },
       eth: {
         amount: ethBalance === null ? null : formatEther(ethBalance),

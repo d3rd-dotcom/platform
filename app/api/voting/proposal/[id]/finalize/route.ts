@@ -3,9 +3,55 @@ import { v4 as uuidv4 } from 'uuid';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { ensureProposalSchema } from '@/lib/ensureProposalSchema';
 import { getUserFromRequest } from '@/lib/auth';
-import { blueWallet } from '@/lib/blue-wallet';
+import { createPublicClient, createWalletClient, http } from 'viem';
+import { base } from 'viem/chains';
+import { privateKeyToAccount } from 'viem/accounts';
 import { providers, Contract } from 'ethers';
 import { BLUE_KILLSTREAK_ABI } from '@/lib/blue-contract';
+
+/**
+ * Governance-token allocation, signed with Blue's raw key via viem (formerly
+ * the Coinbase CDP managed wallet). The DAO/proposal flow is dormant; this is
+ * a like-for-like migration off CDP that preserves the pool-percentage math
+ * and the balance pre-check. Idempotency is owned by the partial unique index
+ * on proposal_transactions (status IN ('pending','confirmed')), not by any
+ * in-process bookkeeping, so no allocation cache is needed here.
+ *
+ * The governance token lives on Base mainnet, so this path stays mainnet-
+ * pinned regardless of the Diamonds testnet flag.
+ */
+const GOV_TOKEN_ABI = [
+  { type: 'function', name: 'transfer', stateMutability: 'nonpayable', inputs: [{ type: 'address' }, { type: 'uint256' }], outputs: [{ type: 'bool' }] },
+  { type: 'function', name: 'balanceOf', stateMutability: 'view', inputs: [{ type: 'address' }], outputs: [{ type: 'uint256' }] },
+] as const;
+
+function getGovTokenAddress(): `0x${string}` {
+  const addr =
+    process.env.VOTING_TOKEN_CONTRACT_ADDRESS ||
+    process.env.NEXT_PUBLIC_GOVERNANCE_TOKEN_ADDRESS ||
+    '';
+  if (!/^0x[a-fA-F0-9]{40}$/.test(addr)) {
+    throw new Error('Governance token address not configured.');
+  }
+  return addr as `0x${string}`;
+}
+
+function getBlueKey(): `0x${string}` {
+  const key = process.env.BLUE_PRIVATE_KEY || process.env.AZURA_PRIVATE_KEY;
+  if (!key) throw new Error('BLUE_PRIVATE_KEY or AZURA_PRIVATE_KEY is not set.');
+  return (key.startsWith('0x') ? key : `0x${key}`) as `0x${string}`;
+}
+
+/** Whole allocation, in token base units, for a 1–40% slice of the pool. */
+function govAllocationAmount(percentage: number): bigint {
+  if (percentage < 1 || percentage > 40) {
+    throw new Error('Percentage must be between 1 and 40');
+  }
+  const pool = process.env.BLUE_TOTAL_TOKEN_POOL || '1000000';
+  const decimals = parseInt(process.env.VOTING_TOKEN_DECIMALS || '18', 10);
+  const total = BigInt(pool) * BigInt(10) ** BigInt(decimals);
+  return (total * BigInt(percentage)) / BigInt(100);
+}
 
 interface ProposalData {
   id: string;
@@ -118,15 +164,33 @@ export async function POST(
       );
     }
 
-    // Initialize Blue wallet and pre-check allocation BEFORE we claim the
-    // DB lock — avoids leaving a stuck 'pending' row when the request was
+    // Pre-check the allocation against Blue's on-chain balance BEFORE we claim
+    // the DB lock — avoids leaving a stuck 'pending' row when the request was
     // never going to succeed.
-    await blueWallet.initialize();
+    const account = privateKeyToAccount(getBlueKey());
+    const govToken = getGovTokenAddress();
+    const govRpcUrl = process.env.NEXT_PUBLIC_BASE_RPC_URL || 'https://mainnet.base.org';
+    const govPublicClient = createPublicClient({ chain: base, transport: http(govRpcUrl) });
 
-    const canAllocate = await blueWallet.canAllocate(proposal.token_allocation_percentage);
-    if (!canAllocate.canAllocate) {
+    let allocationAmount: bigint;
+    try {
+      allocationAmount = govAllocationAmount(proposal.token_allocation_percentage);
+    } catch (allocErr) {
       return NextResponse.json(
-        { error: `Cannot allocate tokens: ${canAllocate.reason}` },
+        { error: `Cannot allocate tokens: ${allocErr instanceof Error ? allocErr.message : 'invalid allocation'}` },
+        { status: 400 }
+      );
+    }
+
+    const blueBalance = await govPublicClient.readContract({
+      address: govToken,
+      abi: GOV_TOKEN_ABI,
+      functionName: 'balanceOf',
+      args: [account.address],
+    });
+    if (blueBalance < allocationAmount) {
+      return NextResponse.json(
+        { error: 'Cannot allocate tokens: Insufficient balance in Blue wallet.' },
         { status: 400 }
       );
     }
@@ -165,13 +229,22 @@ export async function POST(
     // failed rows).
     console.log(`Finalizing proposal ${proposalId} with ${proposal.token_allocation_percentage}% allocation`);
 
-    let allocation;
+    let allocation: { txHash: string; amount: bigint; estimatedGas: string };
     try {
-      allocation = await blueWallet.allocateTokens(
-        userWalletAddress,
-        proposal.token_allocation_percentage,
-        proposalId
-      );
+      const walletClient = createWalletClient({ account, chain: base, transport: http(govRpcUrl) });
+      const nonce = await govPublicClient.getTransactionCount({ address: account.address, blockTag: 'pending' });
+      const txHash = await walletClient.writeContract({
+        address: govToken,
+        abi: GOV_TOKEN_ABI,
+        functionName: 'transfer',
+        args: [userWalletAddress as `0x${string}`, allocationAmount],
+        nonce,
+      });
+      const receipt = await govPublicClient.waitForTransactionReceipt({ hash: txHash });
+      if (receipt.status !== 'success') {
+        throw new Error(`Token allocation reverted (${txHash})`);
+      }
+      allocation = { txHash, amount: allocationAmount, estimatedGas: receipt.gasUsed.toString() };
     } catch (allocErr: any) {
       await sqlQuery(
         `UPDATE proposal_transactions
@@ -220,7 +293,7 @@ export async function POST(
     console.error('Error finalizing proposal:', error);
     
     // Provide helpful error messages
-    if (error.message?.includes('CDP API credentials')) {
+    if (error.message?.includes('not set') || error.message?.includes('not configured')) {
       return NextResponse.json(
         { error: 'Blockchain service not configured. Please contact support.' },
         { status: 503 }

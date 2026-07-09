@@ -128,9 +128,9 @@ export default function Dashboard() {
           <div className={styles.leaderHead}>
             <span className={styles.leaderIcon}>財</span>
             <span id="home-treasury-title" className={`${styles.leaderTitle} ${styles.treasuryTitle}`}>
-              Blue&apos;s treasury
+              BLUE&apos;S TREASURY
             </span>
-            {treasury?.status === 'live' && <span className={styles.treasuryLive}>Live</span>}
+            {treasury?.status === 'live' && <span className={styles.treasuryBadge}>Swap</span>}
           </div>
 
           {treasuryFailed ? (
@@ -146,17 +146,17 @@ export default function Dashboard() {
                   </strong>
                 </div>
                 <div className={styles.treasuryMetric}>
-                  <span className={styles.treasuryMetricLabel}>Credits held</span>
+                  <span className={styles.treasuryMetricLabel}>Diamonds held</span>
                   <strong className={styles.treasuryMetricValue}>
                     {treasury ? formatBalance(treasury.balances.credits.amount, 2) : '—'}
-                    {treasury?.balances.credits.amount !== null && <small> credits</small>}
+                    {treasury?.balances.credits.amount !== null && <small> diamonds</small>}
                   </strong>
                 </div>
                 <div className={styles.treasuryMetric}>
-                  <span className={styles.treasuryMetricLabel}>Reward reserve</span>
+                  <span className={styles.treasuryMetricLabel}>Vault cbBTC</span>
                   <strong className={styles.treasuryMetricValue}>
-                    {treasury ? formatBalance(treasury.balances.usdc.amount, 2) : '—'}
-                    {treasury?.balances.usdc.amount !== null && <small> USDC</small>}
+                    {treasury ? formatBalance(treasury.vault.cbBtcBalance, 8) : '—'}
+                    {treasury?.vault.cbBtcBalance !== null && <small> cbBTC</small>}
                   </strong>
                 </div>
                 <div className={styles.treasuryMetric}>

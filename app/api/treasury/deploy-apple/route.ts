@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { isValidAdminSecret } from '@/lib/admin-secret';
 import { deployAppleToken } from '@/lib/clanker-deploy';
-import { blueWallet } from '@/lib/blue-wallet';
+import { getBlueWalletAddress } from '@/lib/blue-membership';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const walletAddress = await blueWallet.getWalletAddress();
+    const walletAddress = getBlueWalletAddress();
     const result = await deployAppleToken(walletAddress);
 
     return NextResponse.json({

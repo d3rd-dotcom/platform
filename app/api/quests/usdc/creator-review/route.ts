@@ -5,7 +5,7 @@ import { isDbConfigured, sqlQuery, withTransaction, sqlQueryWithClient } from '@
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { ensureCustomQuestsSchema } from '@/lib/ensureCustomQuestsSchema';
 import { ensureQuestUsdcClaimsSchema } from '@/lib/ensureQuestUsdcClaimsSchema';
-import { blueWallet } from '@/lib/blue-wallet';
+import { distributeUSDC } from '@/lib/blue-usdc';
 import { usdcToUnits } from '@/lib/quest-forge';
 import { deliverDiamondsOnchain } from '@/lib/diamonds-onchain';
 
@@ -259,7 +259,7 @@ export async function POST(request: Request) {
 
   // Pay the completer from Blue's wallet (the escrow custodian).
   try {
-    const { txHashes, failed } = await blueWallet.distributeUSDC([
+    const { txHashes, failed } = await distributeUSDC([
       { address: claim.recipient_wallet, amount: usdcToUnits(amount) },
     ]);
 

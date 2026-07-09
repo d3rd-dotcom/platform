@@ -240,12 +240,12 @@
   text-transform: none;
 }
 
-.treasuryLive {
+.treasuryBadge {
   margin-left: auto;
   padding: 3px 7px;
   border-radius: 999px;
-  color: #247a55;
-  background: rgba(98, 190, 143, 0.16);
+  color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
   font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.02em;

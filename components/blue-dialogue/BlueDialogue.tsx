@@ -3,8 +3,42 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useSound } from '@/hooks/useSound';
-import { useScrollLock } from '@/hooks/useScrollLock';
+import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 import styles from './BlueDialogue.module.css';
+
+// ── Blue Voice TTS ──────────────────────────────────────────
+// Opt-in, off by default. Mirrors the pattern in BlueChat: a persisted
+// preference gates an ElevenLabs-backed read-aloud of each spoken line.
+const VOICE_PREF_KEY = 'blueDialogue.voiceEnabled';
+
+/** Strip single-letter hotkey brackets (e.g. "[E]nd" → "End") before speaking. */
+function sanitizeForSpeech(text: string): string {
+  return text.replace(/\[([A-Za-z0-9])\]/g, '$1').trim();
+}
+
+/** Fetch ElevenLabs audio for a line and return a ready-to-play element. */
+async function fetchBlueAudio(
+  text: string,
+  signal: AbortSignal,
+): Promise<HTMLAudioElement> {
+  const res = await fetch('/api/voice/tts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text }),
+    signal,
+  });
+  if (!res.ok) throw new Error('TTS request failed');
+  const { audio } = await res.json();
+  if (!audio) throw new Error('No audio data');
+
+  const bytes = Uint8Array.from(atob(audio), (c) => c.charCodeAt(0));
+  const blob = new Blob([bytes], { type: 'audio/mpeg' });
+  const url = URL.createObjectURL(blob);
+  const el = new Audio(url);
+  el.volume = 0.5;
+  el.addEventListener('ended', () => URL.revokeObjectURL(url));
+  return el;
+}
 
 export type BlueEmotion =
   | 'neutral'
@@ -54,9 +88,6 @@ function prefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-const FOCUSABLE =
-  'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
-
 const EXPRESSION_POSITION: Record<
   BlueEmotion,
   { left: string; top: string }
@@ -97,6 +128,10 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   const [historyOpen, setHistoryOpen] = useState(false);
   const [portraitReady, setPortraitReady] = useState(false);
   const [displayReward, setDisplayReward] = useState(0);
+  const [voiceEnabled, setVoiceEnabled] = useState(false);
+  const voiceEnabledRef = useRef(false);
+  const voiceAbortRef = useRef<AbortController | null>(null);
+  const currentAudioRef = useRef<HTMLAudioElement | null>(null);
 
   // Count the reward chip up from zero when the overlay opens.
   useEffect(() => {
@@ -121,7 +156,65 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   const safeIndex = lineIndex >= safeLines.length ? safeLines.length - 1 : lineIndex;
   const activeLine = safeLines[safeIndex] ?? '';
 
-  useScrollLock(open && portraitReady);
+  // Stop any in-flight fetch and pause any playing audio.
+  const stopVoice = useCallback(() => {
+    voiceAbortRef.current?.abort();
+    voiceAbortRef.current = null;
+    if (currentAudioRef.current) {
+      currentAudioRef.current.pause();
+      currentAudioRef.current = null;
+    }
+  }, []);
+
+  // Load the persisted voice preference (default off) once on mount.
+  useEffect(() => {
+    if (getStorageItem(VOICE_PREF_KEY) === '1') {
+      setVoiceEnabled(true);
+      voiceEnabledRef.current = true;
+    }
+  }, []);
+
+  const toggleVoice = useCallback(() => {
+    play('click');
+    setVoiceEnabled((prev) => {
+      const next = !prev;
+      voiceEnabledRef.current = next;
+      setStorageItem(VOICE_PREF_KEY, next ? '1' : '0');
+      if (!next) stopVoice();
+      return next;
+    });
+  }, [play, stopVoice]);
+
+  // Read the active line aloud when voice is on. Fires as the line becomes
+  // active (in parallel with the typewriter) and cancels the previous line's
+  // audio if the user advances early. Failures are swallowed so the dialogue
+  // keeps working without audio.
+  useEffect(() => {
+    if (!open || !portraitReady || !voiceEnabled) return;
+    const line = sanitizeForSpeech(activeLine);
+    if (!line) return;
+
+    stopVoice();
+    const controller = new AbortController();
+    voiceAbortRef.current = controller;
+    fetchBlueAudio(line, controller.signal)
+      .then((el) => {
+        if (controller.signal.aborted) return;
+        currentAudioRef.current = el;
+        el.play().catch(() => {});
+      })
+      .catch((err) => {
+        if (err?.name === 'AbortError') return;
+        console.warn('[BlueDialogue] TTS failed:', err);
+      });
+
+    return () => controller.abort();
+  }, [open, portraitReady, voiceEnabled, activeLine, safeIndex, stopVoice]);
+
+  // Cut audio when the dialogue closes.
+  useEffect(() => {
+    if (!open) stopVoice();
+  }, [open, stopVoice]);
 
   // Reset to the first line whenever the overlay opens or the script changes.
   useEffect(() => {
@@ -176,8 +269,9 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
 
   const close = useCallback(() => {
     play('navigation');
+    stopVoice();
     onClose();
-  }, [onClose, play]);
+  }, [onClose, play, stopVoice]);
 
   // Right arrow: advance if more lines remain, otherwise close.
   const handleAdvance = useCallback(() => {
@@ -225,7 +319,8 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
     onClose();
   }, [play, onClose]);
 
-  // ESC closes; focus trap keeps Tab inside the dialog.
+  // ESC closes. The dialogue is no longer a modal (the page behind stays
+  // interactive), so Tab is left free to move focus in and out of the panel.
   useEffect(() => {
     if (!open || !portraitReady) return;
     const onKey = (e: KeyboardEvent) => {
@@ -236,23 +331,6 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
           return;
         }
         close();
-        return;
-      }
-      if (e.key === 'Tab' && overlayRef.current) {
-        const nodes = Array.from(
-          overlayRef.current.querySelectorAll<HTMLElement>(FOCUSABLE),
-        ).filter((el) => !el.hasAttribute('disabled'));
-        if (nodes.length === 0) return;
-        const first = nodes[0];
-        const last = nodes[nodes.length - 1];
-        const active = document.activeElement as HTMLElement | null;
-        if (e.shiftKey && active === first) {
-          e.preventDefault();
-          last.focus();
-        } else if (!e.shiftKey && active === last) {
-          e.preventDefault();
-          first.focus();
-        }
       }
     };
     document.addEventListener('keydown', onKey);
@@ -299,12 +377,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
       ref={overlayRef}
       className={styles.overlay}
       role="dialog"
-      aria-modal="true"
       aria-label="Blue dialogue"
-      onMouseDown={(e) => {
-        // Backdrop click (not a click bubbling up from the panel) closes.
-        if (e.target === e.currentTarget) close();
-      }}
     >
       <div
         className={`${styles.stage} ${portraitReady ? styles.stageReady : ''}`}
@@ -401,6 +474,33 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
                   {item.label}
                 </button>
               ))}
+              <button
+                type="button"
+                className={`${styles.voiceButton} ${voiceEnabled ? styles.voiceButtonActive : ''}`}
+                onClick={toggleVoice}
+                onMouseEnter={hover}
+                aria-pressed={voiceEnabled}
+                aria-label={voiceEnabled ? 'Turn off Blue voice' : 'Turn on Blue voice'}
+                title={
+                  voiceEnabled
+                    ? 'Voice on — Blue reads each line aloud'
+                    : 'Voice off — tap to let Blue read lines aloud'
+                }
+              >
+                {voiceEnabled ? (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M11 5L6 9H2v6h4l5 4z" fill="currentColor" stroke="none" />
+                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M11 5L6 9H2v6h4l5 4z" fill="currentColor" stroke="none" />
+                    <line x1="22" y1="9" x2="16" y2="15" />
+                    <line x1="16" y1="9" x2="22" y2="15" />
+                  </svg>
+                )}
+              </button>
             </div>
             <button
               ref={arrowRef}
