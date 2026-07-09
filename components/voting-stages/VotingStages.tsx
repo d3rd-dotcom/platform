@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 import styles from './VotingStages.module.css';
 import { BlueEmotion } from '@/components/blue-dialogue/BlueDialogue';
 
@@ -18,13 +17,6 @@ const emotionMap: Record<Stage1Variant, BlueEmotion> = {
   waiting: 'confused',
   authenticated: 'happy',
   success: 'happy',
-};
-
-const emotionImages: Record<BlueEmotion, string> = {
-  happy: 'https://i.imgur.com/3Y3KrnJ.png',
-  confused: 'https://i.imgur.com/ePrWP7A.png',
-  sad: 'https://i.imgur.com/XIe1jZy.png',
-  pain: 'https://i.imgur.com/ZYpNkse.png',
 };
 
 const stage1Config: Record<Stage1Variant, { title: string; description: string }> = {
@@ -80,20 +72,17 @@ const VotingStages: React.FC<VotingStageProps> = ({ stage, variants }) => {
   const renderStage1Item = (variant: Stage1Variant, index: number) => {
     const config = stage1Config[variant];
     const emotion = emotionMap[variant];
-    const emoteSrc = emotionImages[emotion];
 
     return (
       <div key={`stage1-${variant}-${index}`} className={styles.stageItem}>
         <div className={styles.baseItem}>
           <div className={styles.itemHeader}>
             <div className={styles.iconContainer}>
-              <Image
-                src={emoteSrc}
-                alt={`${emotion} emote`}
-                width={24}
-                height={24}
+              <span
                 className={styles.emoteIcon}
-                unoptimized
+                data-emotion={emotion}
+                role="img"
+                aria-label={`Blue, ${emotion}`}
               />
             </div>
             <span className={styles.itemTitle}>{config.title}</span>

@@ -6,14 +6,22 @@ import { useSound } from '@/hooks/useSound';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import styles from './BlueDialogue.module.css';
 
-export type BlueEmotion = 'happy' | 'confused' | 'sad' | 'pain';
+export type BlueEmotion =
+  | 'neutral'
+  | 'happy'
+  | 'sad'
+  | 'angry'
+  | 'surprised'
+  | 'confused'
+  | 'pain'
+  | 'calm';
 
 export interface BlueDialogueProps {
   /** Controls whether the full-screen overlay is mounted + visible. */
   open: boolean;
   /** Ordered dialogue lines. The arrow advances through them; the last closes. */
   lines: string[];
-  /** Emotion tint applied to the torso art (subtle hue shift). */
+  /** Selects one of Blue's eight distinct expression portraits. */
   emotion?: BlueEmotion;
   /** Fired on close (arrow-past-last, ESC, backdrop, or a stub button). */
   onClose: () => void;
@@ -48,6 +56,20 @@ function prefersReducedMotion(): boolean {
 
 const FOCUSABLE =
   'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
+const EXPRESSION_POSITION: Record<
+  BlueEmotion,
+  { x: string; y: string }
+> = {
+  neutral: { x: '5%', y: '0%' },
+  happy: { x: '35%', y: '0%' },
+  sad: { x: '65%', y: '0%' },
+  angry: { x: '95%', y: '0%' },
+  surprised: { x: '5%', y: '100%' },
+  confused: { x: '35%', y: '100%' },
+  pain: { x: '65%', y: '100%' },
+  calm: { x: '95%', y: '100%' },
+};
 
 const BlueDialogue: React.FC<BlueDialogueProps> = ({
   open,
@@ -185,7 +207,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   }, [play]);
 
   const handleStubClose = useCallback(() => {
-    // SAVE / LOAD / SETTINGS are stubs for now.
+    // Load is a stub for now.
     play('click');
     onClose();
   }, [play, onClose]);
@@ -234,13 +256,12 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   if (!open) return null;
 
   const hover = () => play('soft-hover');
+  const expressionPosition = EXPRESSION_POSITION[emotion];
 
   const menuItems: { label: string; onClick: () => void }[] = [
     { label: 'History', onClick: handleHistory },
     { label: 'Skip', onClick: handleSkip },
-    { label: 'Save', onClick: handleStubClose }, // TODO: real save-state
     { label: 'Load', onClick: handleStubClose }, // TODO: real load-state
-    { label: 'Settings', onClick: handleStubClose }, // TODO: real settings panel
   ];
 
   return (
@@ -256,44 +277,25 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
       }}
     >
       <div className={styles.stage}>
-        <div className={`${styles.torso} ${styles[`emotion_${emotion}`] ?? ''}`}>
-          <Image
-            src="/images/blue-dialogue-torso.png?v=2"
-            alt="Blue"
-            width={1254}
-            height={1254}
-            priority
-            className={styles.torsoImage}
-          />
-        </div>
-
-        <button
-          type="button"
-          className={styles.bigNext}
-          onClick={handleAdvance}
-          onMouseEnter={hover}
-          aria-label={
-            safeIndex < safeLines.length - 1 ? 'Next line' : 'Close dialogue'
+        <div
+          className={styles.portrait}
+          style={
+            {
+              '--portrait-x': expressionPosition.x,
+              '--portrait-y': expressionPosition.y,
+            } as React.CSSProperties
           }
+          role="img"
+          aria-label={`Blue, ${emotion}`}
         >
-          <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true">
-            <path
-              d="M9 5l7 7-7 7"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
-
-        <div className={styles.bottom}>
+          <span className={styles.portraitImage} aria-hidden="true" />
           <div className={styles.nameCard}>
             <span className={styles.nameText}>Blue</span>
           </div>
+        </div>
 
-          <div className={styles.box}>
+        <div className={styles.box}>
+          <div className={styles.message}>
             {typeof reward === 'number' && reward > 0 && (
               <div className={styles.rewardChip} role="status">
                 <Image
@@ -319,60 +321,60 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
                 </span>
               )}
             </p>
+          </div>
 
-            {historyOpen && (
-              <div className={styles.historyPanel}>
-                <div className={styles.historyHead}>History</div>
-                <ul className={styles.historyList}>
-                  {dialogueHistory.length === 0 && (
-                    <li className={styles.historyEmpty}>No lines yet this session.</li>
-                  )}
-                  {dialogueHistory.map((entry, idx) => (
-                    <li key={idx} className={styles.historyItem}>
-                      <span className={styles.historySpeaker}>{entry.speaker}</span>
-                      <span className={styles.historyLine}>{entry.text}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            <div className={styles.menuRow}>
-              <div className={styles.menuItems}>
-                {menuItems.map((item) => (
-                  <button
-                    key={item.label}
-                    type="button"
-                    className={styles.menuButton}
-                    onClick={item.onClick}
-                    onMouseEnter={hover}
-                  >
-                    {item.label}
-                  </button>
+          {historyOpen && (
+            <div className={styles.historyPanel}>
+              <div className={styles.historyHead}>History</div>
+              <ul className={styles.historyList}>
+                {dialogueHistory.length === 0 && (
+                  <li className={styles.historyEmpty}>No lines yet this session.</li>
+                )}
+                {dialogueHistory.map((entry, idx) => (
+                  <li key={idx} className={styles.historyItem}>
+                    <span className={styles.historySpeaker}>{entry.speaker}</span>
+                    <span className={styles.historyLine}>{entry.text}</span>
+                  </li>
                 ))}
-              </div>
-              <button
-                ref={arrowRef}
-                type="button"
-                className={styles.arrow}
-                onClick={handleAdvance}
-                onMouseEnter={hover}
-                aria-label={
-                  safeIndex < safeLines.length - 1 ? 'Next line' : 'Close dialogue'
-                }
-              >
-                <svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true">
-                  <path
-                    d="M9 5l7 7-7 7"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
+              </ul>
             </div>
+          )}
+
+          <div className={styles.controls}>
+            <div className={styles.menuItems}>
+              {menuItems.map((item) => (
+                <button
+                  key={item.label}
+                  type="button"
+                  className={styles.menuButton}
+                  onClick={item.onClick}
+                  onMouseEnter={hover}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+            <button
+              ref={arrowRef}
+              type="button"
+              className={styles.arrow}
+              onClick={handleAdvance}
+              onMouseEnter={hover}
+              aria-label={
+                safeIndex < safeLines.length - 1 ? 'Next line' : 'Close dialogue'
+              }
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M9 5l7 7-7 7"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
           </div>
         </div>
       </div>

@@ -53,10 +53,45 @@
 }
 
 .emoteIcon {
+  display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
   border-radius: 50%;
+  background-image: url('/images/blue-dialogue-expressions.png');
+  background-repeat: no-repeat;
+  background-size: 400% 200%;
+}
+
+.emoteIcon[data-emotion='neutral'] {
+  background-position: 0 0;
+}
+
+.emoteIcon[data-emotion='happy'] {
+  background-position: 33.333% 0;
+}
+
+.emoteIcon[data-emotion='sad'] {
+  background-position: 66.667% 0;
+}
+
+.emoteIcon[data-emotion='angry'] {
+  background-position: 100% 0;
+}
+
+.emoteIcon[data-emotion='surprised'] {
+  background-position: 0 100%;
+}
+
+.emoteIcon[data-emotion='confused'] {
+  background-position: 33.333% 100%;
+}
+
+.emoteIcon[data-emotion='pain'] {
+  background-position: 66.667% 100%;
+}
+
+.emoteIcon[data-emotion='calm'] {
+  background-position: 100% 100%;
 }
 
 .badgeContainer {

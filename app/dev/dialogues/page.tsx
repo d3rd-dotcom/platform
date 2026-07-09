@@ -69,10 +69,28 @@ const SCENARIOS: Scenario[] = [
     emotion: 'happy',
   },
   {
+    id: 'emotion-neutral',
+    label: 'Emotion: neutral',
+    lines: ['I logged the result. The next step is ready when you are.'],
+    emotion: 'neutral',
+  },
+  {
     id: 'emotion-happy',
     label: 'Emotion: happy',
     lines: ['Feeling great about your progress today.'],
     emotion: 'happy',
+  },
+  {
+    id: 'emotion-angry',
+    label: 'Emotion: angry',
+    lines: ['That result needs another look. I am holding the reward for now.'],
+    emotion: 'angry',
+  },
+  {
+    id: 'emotion-surprised',
+    label: 'Emotion: surprised',
+    lines: ['That changed the pattern. I did not expect this result.'],
+    emotion: 'surprised',
   },
   {
     id: 'emotion-confused',
@@ -91,6 +109,12 @@ const SCENARIOS: Scenario[] = [
     label: 'Emotion: pain',
     lines: ['Ouch. That was a tough one. Take a breath and try once more.'],
     emotion: 'pain',
+  },
+  {
+    id: 'emotion-calm',
+    label: 'Emotion: calm',
+    lines: ['The review is complete. I saved the result to your record.'],
+    emotion: 'calm',
   },
   {
     id: 'long-text',
