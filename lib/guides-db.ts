@@ -95,6 +95,8 @@ export interface Walkthrough {
  */
 export interface KnowledgeMapNode extends WalkthroughNode {
   subjects: string[];
+  /** Short plain-text lede pulled from the guide body, for map hover cards. */
+  summary: string;
 }
 
 export interface KnowledgeMap {
@@ -218,6 +220,40 @@ function toMethod(row: GuideMethodRow): GuideMethodRecord {
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
+}
+
+/**
+ * Reduce a guide body to a short, plain-text lede for map hover cards: take the
+ * first block's markdown content, strip the lightweight markup (headings, bold,
+ * links, list bullets), collapse whitespace, and clamp to ~200 chars on a word
+ * boundary. Best-effort and display-only — never used for gating or payouts.
+ */
+function deriveSummary(body: GuideBodyComponent[]): string {
+  const first = body.find((c) => {
+    const content = (c.config as { content?: unknown } | undefined)?.content;
+    return typeof content === 'string' && content.trim().length > 0;
+  });
+  let raw = (first?.config as { content?: string } | undefined)?.content ?? '';
+  // Legacy seed bodies open with a "# Title" heading that just echoes the topic
+  // title; drop that whole first line so the lede starts at the real sentence.
+  raw = raw.trimStart();
+  if (raw.startsWith('#')) {
+    const newline = raw.indexOf('\n');
+    raw = newline >= 0 ? raw.slice(newline + 1) : '';
+  }
+  const text = raw
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/^\s*[-*]\s+/gm, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (text.length <= 200) return text;
+  const clipped = text.slice(0, 200);
+  const lastSpace = clipped.lastIndexOf(' ');
+  return `${clipped.slice(0, lastSpace > 120 ? lastSpace : 200).trimEnd()}…`;
 }
 
 async function getSubjectsForGuides(guideIds: string[]): Promise<Map<string, string[]>> {
@@ -854,6 +890,16 @@ export async function getKnowledgeMap(userId?: string | null): Promise<Knowledge
 
   const subjectsMap = await getSubjectsForGuides(nodeIds);
 
+  // Bodies → short lede summaries for hover cards (display-only).
+  const bodyRows = await sqlQuery<Array<{ id: string; body: unknown }>>(
+    `SELECT id, body FROM guides WHERE id = ANY(:ids)`,
+    { ids: nodeIds },
+  );
+  const summaryMap = new Map<string, string>();
+  for (const r of bodyRows) {
+    summaryMap.set(r.id, deriveSummary(parseBody(r.body)));
+  }
+
   const nodes: KnowledgeMapNode[] = rows.map((r) => ({
     id: r.id,
     slug: r.slug,
@@ -863,6 +909,7 @@ export async function getKnowledgeMap(userId?: string | null): Promise<Knowledge
     prereqIds: prereqMap.get(r.id) ?? [],
     completed: completed.has(r.id),
     subjects: subjectsMap.get(r.id) ?? [],
+    summary: summaryMap.get(r.id) ?? '',
   }));
 
   const maxLevel = nodes.reduce((m, n) => Math.max(m, n.level), 0);

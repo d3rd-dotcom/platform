@@ -5,9 +5,9 @@ export const KeyFiguresSection: React.FC = () => {
     <section className={styles.section}>
       <div className={styles.container}>
         <div className={styles.figure}>
-          <span className={styles.label}>Recent Awards</span>
+          <span className={styles.label}>Recent Grants</span>
           <div className={styles.valueRow}>
-            <span className={styles.number}>8</span>
+            <span className={styles.number}>3</span>
             <span className={styles.unit}>Awards</span>
           </div>
         </div>
@@ -28,7 +28,7 @@ export const KeyFiguresSection: React.FC = () => {
         <div className={styles.figure}>
           <span className={styles.label}>Community Funds</span>
           <div className={styles.valueRow}>
-            <span className={styles.number}>$20K</span>
+            <span className={styles.number}>$40K</span>
             <span className={styles.unit}>Funded</span>
           </div>
         </div>

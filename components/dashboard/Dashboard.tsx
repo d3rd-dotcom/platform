@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import BlueScene from '@/components/blue-scene/BlueScene';
 import ChatRoom from '@/components/chat-room/ChatRoom';
+import TreasurySwapModal from '@/components/treasury-swap/TreasurySwapModal';
 import type { TreasurySnapshot } from '@/lib/treasury-snapshot';
 import styles from './Dashboard.module.css';
 
@@ -43,6 +45,7 @@ export default function Dashboard() {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [treasury, setTreasury] = useState<TreasurySnapshot | null>(null);
   const [treasuryFailed, setTreasuryFailed] = useState(false);
+  const [showTreasurySwap, setShowTreasurySwap] = useState(false);
 
   useEffect(() => {
     if (!showLeaderboard) return;
@@ -130,7 +133,13 @@ export default function Dashboard() {
             <span id="home-treasury-title" className={`${styles.leaderTitle} ${styles.treasuryTitle}`}>
               BLUE&apos;S TREASURY
             </span>
-            {treasury?.status === 'live' && <span className={styles.treasuryBadge}>Swap</span>}
+            <button
+              type="button"
+              className={styles.treasuryBadge}
+              onClick={() => setShowTreasurySwap(true)}
+            >
+              Swap
+            </button>
           </div>
 
           {treasuryFailed ? (
@@ -139,13 +148,27 @@ export default function Dashboard() {
             <>
               <div className={styles.treasuryGrid} aria-live="polite">
                 <div className={styles.treasuryMetric}>
-                  <span className={styles.treasuryMetricLabel}>cbBTC reserve</span>
+                  <Image
+                    className={styles.treasuryMetricIcon}
+                    src="/tokens/cbbtc.webp"
+                    alt=""
+                    width={20}
+                    height={20}
+                  />
+                  <span className={styles.treasuryMetricLabel}>Bitcoin reserve</span>
                   <strong className={styles.treasuryMetricValue}>
                     {treasury ? formatBalance(treasury.balances.cbBtc.amount, 8) : '—'}
-                    {treasury?.balances.cbBtc.amount !== null && <small> cbBTC</small>}
+                    {treasury?.balances.cbBtc.amount !== null && <small> Bitcoin</small>}
                   </strong>
                 </div>
                 <div className={styles.treasuryMetric}>
+                  <Image
+                    className={styles.treasuryMetricIcon}
+                    src="/icons/ui-diamond.svg"
+                    alt=""
+                    width={20}
+                    height={20}
+                  />
                   <span className={styles.treasuryMetricLabel}>Diamonds held</span>
                   <strong className={styles.treasuryMetricValue}>
                     {treasury ? formatBalance(treasury.balances.credits.amount, 2) : '—'}
@@ -153,13 +176,27 @@ export default function Dashboard() {
                   </strong>
                 </div>
                 <div className={styles.treasuryMetric}>
-                  <span className={styles.treasuryMetricLabel}>Vault cbBTC</span>
+                  <Image
+                    className={styles.treasuryMetricIcon}
+                    src="/tokens/cbbtc.webp"
+                    alt=""
+                    width={20}
+                    height={20}
+                  />
+                  <span className={styles.treasuryMetricLabel}>Vault Bitcoin</span>
                   <strong className={styles.treasuryMetricValue}>
                     {treasury ? formatBalance(treasury.vault.cbBtcBalance, 8) : '—'}
-                    {treasury?.vault.cbBtcBalance !== null && <small> cbBTC</small>}
+                    {treasury?.vault.cbBtcBalance !== null && <small> Bitcoin</small>}
                   </strong>
                 </div>
                 <div className={styles.treasuryMetric}>
+                  <Image
+                    className={styles.treasuryMetricIcon}
+                    src="/tokens/eth.png"
+                    alt=""
+                    width={20}
+                    height={20}
+                  />
                   <span className={styles.treasuryMetricLabel}>Base gas</span>
                   <strong className={styles.treasuryMetricValue}>
                     {treasury ? formatBalance(treasury.balances.eth.amount, 6) : '—'}
@@ -172,7 +209,7 @@ export default function Dashboard() {
                 <p className={styles.treasuryNote}>
                   {treasury.vault.totalDistributed === null
                     ? 'Reflection vault data is unavailable.'
-                    : `${formatBalance(treasury.vault.totalDistributed, 4)} cbBTC distributed`}
+                    : `${formatBalance(treasury.vault.totalDistributed, 4)} Bitcoin distributed`}
                   {treasury.vault.eligibleHolders !== null
                     ? ` across ${treasury.vault.eligibleHolders.toLocaleString()} eligible holders.`
                     : '.'}
@@ -198,6 +235,11 @@ export default function Dashboard() {
 
         <div className={styles.chatRoomDesktopOnly}><ChatRoom fullPage /></div>
       </aside>
+
+      <TreasurySwapModal
+        open={showTreasurySwap}
+        onClose={() => setShowTreasurySwap(false)}
+      />
 
       {showLeaderboard && (
         <div className={styles.leaderModalOverlay} onClick={() => setShowLeaderboard(false)}>

@@ -16,6 +16,7 @@ interface PlacedNode {
   subject: string;
   color: string;
   unlockCount: number;
+  seed: number;
 }
 
 interface GraphLayout {
@@ -25,7 +26,16 @@ interface GraphLayout {
   subjects: string[];
 }
 
-const SUBJECT_COLORS = ['#5168ff', '#8f7cff', '#69a7ff', '#f277a5', '#d6a4ff', '#ffb86b'];
+// Kept inside the brand blue-violet family so the graph reads on-system rather
+// than as a luminous rainbow. Anchored on --color-primary (#5168FF).
+const SUBJECT_COLORS = ['#5168ff', '#6f7cf0', '#4257c9', '#8478e6', '#5b86d4', '#3f4bb0'];
+
+// Entrance timing: diamonds rise in from the foundations up.
+const RISE = 0.7;
+const LEVEL_STAGGER = 0.5;
+// Slow universal rotation of the whole graph (radians/sec), instead of each
+// node spinning on its own — one calm drift reads far less busy.
+const SPIN_SPEED = 0.09;
 
 function hashText(value: string): number {
   let hash = 2166136261;
@@ -85,6 +95,7 @@ function buildLayout(map: KnowledgeMap): GraphLayout {
         subject,
         color: SUBJECT_COLORS[subjectSlot % SUBJECT_COLORS.length],
         unlockCount: dependentCount.get(node.id) ?? 0,
+        seed: hashText(`${node.id}:seed`) * Math.PI * 2,
         position: [Math.cos(angle) * radius, y, Math.sin(angle) * radius] as Position,
       };
     });
@@ -146,33 +157,64 @@ function connectedIds(selectedId: string | null, byId: Map<string, PlacedNode>):
   return connected;
 }
 
+/** A single diamond node: a stretched octahedron with a facet wireframe and an
+ *  additive glow shell, so it reads as a cut gem / molecule rather than a dot. */
 function GraphNode({
   item,
-  active,
+  appearDelay,
+  reducedMotion,
+  highlighted,
   dimmed,
   selected,
   onSelect,
   onHover,
 }: {
   item: PlacedNode;
-  active: boolean;
+  appearDelay: number;
+  reducedMotion: boolean;
+  highlighted: boolean;
   dimmed: boolean;
   selected: boolean;
   onSelect: (id: string) => void;
-  onHover: (id: string | null) => void;
+  onHover: (id: string | null, clientX?: number, clientY?: number) => void;
 }) {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const scale = 0.19 + Math.min(item.unlockCount, 6) * 0.024;
+  const groupRef = useRef<THREE.Group>(null);
+  const coreMat = useRef<THREE.MeshBasicMaterial>(null);
+  const wireMat = useRef<THREE.MeshBasicMaterial>(null);
+  const glowMat = useRef<THREE.MeshBasicMaterial>(null);
+
+  const baseScale = 0.2 + Math.min(item.unlockCount, 6) * 0.035;
+  const baseCore = dimmed ? 0.14 : item.node.completed ? 1 : 0.9;
+  const baseWire = dimmed ? 0.08 : 0.5;
+  const baseGlow = dimmed ? 0.02 : 0.1;
 
   useFrame(({ clock }) => {
-    if (!meshRef.current || !active) return;
-    const pulse = 1 + Math.sin(clock.elapsedTime * 1.8 + hashText(item.node.id) * 8) * 0.08;
-    meshRef.current.scale.setScalar(pulse);
+    const g = groupRef.current;
+    if (!g) return;
+    const t = clock.elapsedTime;
+    const appear = reducedMotion ? 1 : Math.min(1, Math.max(0, (t - appearDelay) / RISE));
+    const eased = appear * appear * (3 - 2 * appear); // smoothstep
+
+    // Rise up into place from just below.
+    g.position.set(item.position[0], item.position[1] - (1 - eased) * 0.7, item.position[2]);
+
+    const pulse = highlighted && !reducedMotion ? 1 + Math.sin(t * 3 + item.seed) * 0.07 : 1;
+    g.scale.setScalar(baseScale * eased * pulse * (selected ? 1.28 : 1));
+
+    // Fixed per-node facet orientation (no per-node spin — the whole graph
+    // drifts as one instead, see GraphScene).
+    g.rotation.y = item.seed;
+
+    if (coreMat.current) coreMat.current.opacity = baseCore * eased;
+    if (wireMat.current) wireMat.current.opacity = baseWire * eased;
+    if (glowMat.current) glowMat.current.opacity = baseGlow * eased;
   });
 
+  const color = selected ? '#ffffff' : item.color;
+
   return (
-    <mesh
-      ref={meshRef}
+    <group
+      ref={groupRef}
       position={item.position}
       onClick={(event) => {
         event.stopPropagation();
@@ -181,71 +223,40 @@ function GraphNode({
       onPointerOver={(event) => {
         event.stopPropagation();
         document.body.style.cursor = 'pointer';
-        onHover(item.node.id);
+        onHover(item.node.id, event.nativeEvent.clientX, event.nativeEvent.clientY);
+      }}
+      onPointerMove={(event) => {
+        event.stopPropagation();
+        onHover(item.node.id, event.nativeEvent.clientX, event.nativeEvent.clientY);
       }}
       onPointerOut={() => {
         document.body.style.cursor = '';
         onHover(null);
       }}
     >
-      <sphereGeometry args={[scale, 18, 18]} />
-      <meshBasicMaterial
-        color={selected ? '#ffffff' : item.color}
-        transparent
-        opacity={dimmed ? 0.16 : item.node.completed ? 1 : 0.82}
-      />
-      <mesh scale={2.2}>
-        <sphereGeometry args={[scale, 18, 18]} />
-        <meshBasicMaterial color={item.color} transparent opacity={dimmed ? 0.025 : 0.1} />
+      {/* Gem body */}
+      <mesh scale={[1, 1.4, 1]}>
+        <octahedronGeometry args={[1, 0]} />
+        <meshBasicMaterial ref={coreMat} color={color} transparent opacity={baseCore} />
       </mesh>
-      {selected && (
-        <mesh scale={1.75}>
-          <sphereGeometry args={[scale, 18, 18]} />
-          <meshBasicMaterial color="#5168ff" wireframe transparent opacity={0.9} />
-        </mesh>
-      )}
-    </mesh>
-  );
-}
-
-function NodeLabel({ item }: { item: PlacedNode }) {
-  const texture = useMemo(() => {
-    const canvas = document.createElement('canvas');
-    canvas.width = 640;
-    canvas.height = 112;
-    const context = canvas.getContext('2d');
-    if (!context) return null;
-
-    context.fillStyle = 'rgba(5, 6, 10, 0.92)';
-    context.beginPath();
-    context.roundRect(4, 4, 632, 104, 22);
-    context.fill();
-    context.strokeStyle = 'rgba(81, 104, 255, 0.9)';
-    context.lineWidth = 3;
-    context.stroke();
-    context.fillStyle = '#ffffff';
-    context.font = '600 28px sans-serif';
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-    const label =
-      item.node.topicTitle.length > 38
-        ? `${item.node.topicTitle.slice(0, 37)}…`
-        : item.node.topicTitle;
-    context.fillText(label, 320, 56);
-
-    const nextTexture = new THREE.CanvasTexture(canvas);
-    nextTexture.colorSpace = THREE.SRGBColorSpace;
-    nextTexture.needsUpdate = true;
-    return nextTexture;
-  }, [item]);
-
-  useEffect(() => () => texture?.dispose(), [texture]);
-  if (!texture) return null;
-
-  return (
-    <sprite position={[item.position[0], item.position[1] + 0.48, item.position[2]]} scale={[3.1, 0.54, 1]}>
-      <spriteMaterial map={texture} transparent depthTest={false} />
-    </sprite>
+      {/* Facet lines */}
+      <mesh scale={[1.03, 1.44, 1.03]}>
+        <octahedronGeometry args={[1, 0]} />
+        <meshBasicMaterial ref={wireMat} color={color} wireframe transparent opacity={baseWire} />
+      </mesh>
+      {/* Additive glow halo */}
+      <mesh scale={[1.7, 2.1, 1.7]}>
+        <octahedronGeometry args={[1, 0]} />
+        <meshBasicMaterial
+          ref={glowMat}
+          color={item.color}
+          transparent
+          opacity={baseGlow}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </mesh>
+    </group>
   );
 }
 
@@ -263,32 +274,54 @@ function CameraRig({ distance }: { distance: number }) {
 function GraphScene({
   layout,
   selectedId,
-  activeSubject,
-  animate,
+  reducedMotion,
   rotation,
   cameraDistance,
   hoveredId,
+  dragging,
   onSelect,
   onHover,
 }: {
   layout: GraphLayout;
   selectedId: string | null;
-  activeSubject: string;
-  animate: boolean;
+  reducedMotion: boolean;
   rotation: { x: number; y: number };
   cameraDistance: number;
   hoveredId: string | null;
+  dragging: boolean;
   onSelect: (id: string) => void;
-  onHover: (id: string | null) => void;
+  onHover: (id: string | null, clientX?: number, clientY?: number) => void;
 }) {
   const groupRef = useRef<THREE.Group>(null);
+  const edgeMat = useRef<THREE.LineBasicMaterial>(null);
+  const autoSpinRef = useRef(0);
   const connected = useMemo(() => connectedIds(selectedId, layout.byId), [layout.byId, selectedId]);
 
+  // Static render path (reduced motion / off-screen 'demand' loop): reflect the
+  // drag rotation without the animated spin below overriding it every frame.
   useEffect(() => {
     if (!groupRef.current) return;
     groupRef.current.rotation.x = rotation.x;
-    groupRef.current.rotation.y = rotation.y;
+    groupRef.current.rotation.y = rotation.y + autoSpinRef.current;
   }, [rotation]);
+
+  useFrame(({ clock }, delta) => {
+    // One slow universal drift for the whole graph; paused while dragging so the
+    // pointer stays in control.
+    const g = groupRef.current;
+    if (g) {
+      if (!reducedMotion && !dragging) autoSpinRef.current += delta * SPIN_SPEED;
+      g.rotation.x = rotation.x;
+      g.rotation.y = rotation.y + autoSpinRef.current;
+    }
+
+    // Neon edges fade in just behind the nodes.
+    if (edgeMat.current) {
+      const target = selectedId ? 0.28 : 0.5;
+      const appear = reducedMotion ? 1 : Math.min(1, Math.max(0, (clock.elapsedTime - 0.4) / 1.2));
+      edgeMat.current.opacity = target * appear;
+    }
+  });
 
   return (
     <>
@@ -298,31 +331,43 @@ function GraphScene({
           <bufferGeometry>
             <bufferAttribute attach="attributes-position" args={[layout.edgePositions, 3]} />
           </bufferGeometry>
-          <lineBasicMaterial color="#7184ff" transparent opacity={selectedId ? 0.22 : 0.44} />
+          <lineBasicMaterial
+            ref={edgeMat}
+            color="#7fd0ff"
+            transparent
+            opacity={0}
+            blending={THREE.AdditiveBlending}
+            depthWrite={false}
+          />
         </lineSegments>
 
         {layout.nodes.map((item) => {
-          const subjectDimmed = activeSubject !== 'All topics' && item.subject !== activeSubject;
           const pathDimmed = selectedId !== null && !connected.has(item.node.id);
+          const highlighted = item.node.id === hoveredId || item.node.id === selectedId;
           return (
             <GraphNode
               key={item.node.id}
               item={item}
-              active={animate}
-              dimmed={subjectDimmed || pathDimmed}
+              appearDelay={item.node.level * LEVEL_STAGGER + hashText(item.node.id) * 0.2}
+              reducedMotion={reducedMotion}
+              highlighted={highlighted}
+              dimmed={pathDimmed}
               selected={item.node.id === selectedId}
               onSelect={onSelect}
               onHover={onHover}
             />
           );
         })}
-
-        {(hoveredId || selectedId) && (
-          <NodeLabel item={layout.byId.get(hoveredId ?? selectedId!)!} />
-        )}
       </group>
     </>
   );
+}
+
+interface HoverPos {
+  x: number;
+  y: number;
+  flipX: boolean;
+  flipY: boolean;
 }
 
 export default function LandingKnowledgeGraph() {
@@ -336,9 +381,9 @@ export default function LandingKnowledgeGraph() {
   const [status, setStatus] = useState<'loading' | 'ready' | 'empty' | 'error'>('loading');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const [activeSubject, setActiveSubject] = useState('All topics');
+  const [hoverPos, setHoverPos] = useState<HoverPos | null>(null);
   const [rotation, setRotation] = useState({ x: -0.12, y: 0.28 });
-  const [cameraDistance, setCameraDistance] = useState(10.2);
+  const [cameraDistance, setCameraDistance] = useState(11.5);
   const [dragging, setDragging] = useState(false);
   const [inView, setInView] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -387,10 +432,21 @@ export default function LandingKnowledgeGraph() {
   }, []);
 
   const layout = useMemo(() => (map ? buildLayout(map) : null), [map]);
+  const hoverItem =
+    hoveredId && layout ? layout.byId.get(hoveredId) ?? null : null;
   const selected = selectedId && layout ? layout.byId.get(selectedId) ?? null : null;
-  const subjectTabs = useMemo(
-    () => ['All topics', ...(layout?.subjects.slice(0, 4) ?? [])],
-    [layout],
+
+  const handleHover = useCallback(
+    (id: string | null, clientX?: number, clientY?: number) => {
+      setHoveredId(id);
+      if (id !== null && clientX !== undefined && clientY !== undefined && wrapperRef.current) {
+        const rect = wrapperRef.current.getBoundingClientRect();
+        const x = clientX - rect.left;
+        const y = clientY - rect.top;
+        setHoverPos({ x, y, flipX: x > rect.width * 0.58, flipY: y > rect.height * 0.55 });
+      }
+    },
+    [],
   );
 
   const handlePointerDown = useCallback(
@@ -408,79 +464,56 @@ export default function LandingKnowledgeGraph() {
       };
       event.currentTarget.setPointerCapture(event.pointerId);
       setDragging(true);
+      setHoveredId(null);
     },
     [rotation],
   );
 
-  const handlePointerMove = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
-    const drag = dragRef.current;
-    if (!drag) return;
-    const nextX = Math.max(-0.8, Math.min(0.55, drag.rotationX + (event.clientY - drag.y) * 0.004));
-    const nextY = drag.rotationY + (event.clientX - drag.x) * 0.006;
-    velocityRef.current = {
-      x: Math.max(-0.035, Math.min(0.035, nextX - rotation.x)),
-      y: Math.max(-0.055, Math.min(0.055, nextY - rotation.y)),
-    };
-    setRotation({ x: nextX, y: nextY });
-  }, [rotation]);
+  const handlePointerMove = useCallback(
+    (event: React.PointerEvent<HTMLDivElement>) => {
+      const drag = dragRef.current;
+      if (!drag) return;
+      const nextX = Math.max(-0.8, Math.min(0.55, drag.rotationX + (event.clientY - drag.y) * 0.004));
+      const nextY = drag.rotationY + (event.clientX - drag.x) * 0.006;
+      velocityRef.current = {
+        x: Math.max(-0.035, Math.min(0.035, nextX - rotation.x)),
+        y: Math.max(-0.055, Math.min(0.055, nextY - rotation.y)),
+      };
+      setRotation({ x: nextX, y: nextY });
+    },
+    [rotation],
+  );
 
-  const endDrag = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
-    dragRef.current = null;
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
-    }
-    setDragging(false);
-
-    if (reducedMotion) return;
-    const step = () => {
-      velocityRef.current.x *= 0.91;
-      velocityRef.current.y *= 0.91;
-      const { x, y } = velocityRef.current;
-      if (Math.abs(x) + Math.abs(y) < 0.0004) {
-        inertiaFrameRef.current = null;
-        return;
+  const endDrag = useCallback(
+    (event: React.PointerEvent<HTMLDivElement>) => {
+      dragRef.current = null;
+      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.releasePointerCapture(event.pointerId);
       }
-      setRotation((current) => ({
-        x: Math.max(-0.8, Math.min(0.55, current.x + x)),
-        y: current.y + y,
-      }));
+      setDragging(false);
+
+      if (reducedMotion) return;
+      const step = () => {
+        velocityRef.current.x *= 0.91;
+        velocityRef.current.y *= 0.91;
+        const { x, y } = velocityRef.current;
+        if (Math.abs(x) + Math.abs(y) < 0.0004) {
+          inertiaFrameRef.current = null;
+          return;
+        }
+        setRotation((current) => ({
+          x: Math.max(-0.8, Math.min(0.55, current.x + x)),
+          y: current.y + y,
+        }));
+        inertiaFrameRef.current = requestAnimationFrame(step);
+      };
       inertiaFrameRef.current = requestAnimationFrame(step);
-    };
-    inertiaFrameRef.current = requestAnimationFrame(step);
-  }, [reducedMotion]);
+    },
+    [reducedMotion],
+  );
 
   return (
     <div className={styles.graphShell}>
-      <div className={styles.graphToolbar}>
-        <div className={styles.tabs} aria-label="Filter knowledge graph by subject">
-          {subjectTabs.map((subject) => (
-            <button
-              key={subject}
-              type="button"
-              className={`${styles.tab} ${activeSubject === subject ? styles.tabActive : ''}`}
-              onClick={() => setActiveSubject(subject)}
-            >
-              {subject}
-            </button>
-          ))}
-        </div>
-        <button
-          type="button"
-          className={styles.resetButton}
-          onClick={() => {
-            if (inertiaFrameRef.current !== null) cancelAnimationFrame(inertiaFrameRef.current);
-            inertiaFrameRef.current = null;
-            velocityRef.current = { x: 0, y: 0 };
-            setRotation({ x: -0.12, y: 0.28 });
-            setCameraDistance(10.2);
-            setSelectedId(null);
-            setActiveSubject('All topics');
-          }}
-        >
-          Reset view
-        </button>
-      </div>
-
       <div
         ref={wrapperRef}
         className={`${styles.viewport} ${dragging ? styles.viewportDragging : ''}`}
@@ -492,7 +525,7 @@ export default function LandingKnowledgeGraph() {
         onWheel={(event) => {
           event.preventDefault();
           setCameraDistance((current) =>
-            Math.max(7.2, Math.min(14.5, current + event.deltaY * 0.008)),
+            Math.max(7.5, Math.min(15, current + event.deltaY * 0.008)),
           );
         }}
       >
@@ -507,13 +540,13 @@ export default function LandingKnowledgeGraph() {
             <GraphScene
               layout={layout}
               selectedId={selectedId}
-              activeSubject={activeSubject}
-              animate={inView && !reducedMotion && !dragging}
+              reducedMotion={reducedMotion}
               rotation={rotation}
               cameraDistance={cameraDistance}
               hoveredId={hoveredId}
+              dragging={dragging}
               onSelect={setSelectedId}
-              onHover={setHoveredId}
+              onHover={handleHover}
             />
           </Canvas>
         ) : (
@@ -529,7 +562,38 @@ export default function LandingKnowledgeGraph() {
           <span>Foundations</span>
         </div>
 
-        <div className={styles.graphHint}>Drag to rotate · Scroll to zoom · Select a node</div>
+        {hoverItem && hoverPos && !dragging && (
+          <div
+            className={styles.hoverAnchor}
+            style={{
+              left: hoverPos.x,
+              top: hoverPos.y,
+              transform: `translate(${hoverPos.flipX ? 'calc(-100% - 18px)' : '18px'}, ${
+                hoverPos.flipY ? '-100%' : '0'
+              })`,
+            }}
+          >
+            <div className={styles.hoverCard}>
+              <div className={styles.hoverHead}>
+                <span
+                  className={styles.hoverDot}
+                  style={{ background: hoverItem.color }}
+                  aria-hidden="true"
+                />
+                <span className={styles.hoverMeta}>
+                  {hoverItem.subject} · Level {hoverItem.node.level + 1}
+                </span>
+              </div>
+              <strong className={styles.hoverTitle}>{hoverItem.node.topicTitle}</strong>
+              {hoverItem.node.summary && (
+                <p className={styles.hoverBody}>{hoverItem.node.summary}</p>
+              )}
+              <span className={styles.hoverStats}>
+                {hoverItem.node.prereqIds.length} prerequisites · {hoverItem.unlockCount} unlocks
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className={styles.detailPanel} aria-live="polite">

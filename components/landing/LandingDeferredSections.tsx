@@ -74,11 +74,11 @@ export function LandingDeferredSections() {
 
   return (
     <>
+      <LazySection minHeight="70vh"><KeyFiguresSection /></LazySection>
       <LazySection minHeight="90vh"><FeaturesSection /></LazySection>
       <LazySection minHeight="90vh"><EcosystemSection /></LazySection>
       <LazySection minHeight="80vh"><FounderSection /></LazySection>
       <LazySection minHeight="80vh"><TestimonialSection /></LazySection>
-      <LazySection minHeight="70vh"><KeyFiguresSection /></LazySection>
       <LazySection minHeight="90vh"><MagazineSection /></LazySection>
       <LazySection minHeight="90vh"><CohortSection /></LazySection>
       <LazySection minHeight="60vh"><PatternTextSection /></LazySection>

@@ -23,13 +23,15 @@ interface LazySectionProps {
  * sections across the scroll instead of firing them all at once, and gives the
  * page its full scrollable height immediately via the reserved min-height.
  *
- * The min-height stays applied to the wrapper even after `shown` flips true —
- * never just to a pre-mount placeholder. Children are next/dynamic(ssr:false)
- * imports that render nothing for a moment while their chunk resolves; without
- * a persistent min-height that null render collapses this section, which slides
- * the NEXT section's wrapper into the intersection zone and mounts it too — a
- * cascade that converts every section within one frame of load regardless of
- * scroll position, defeating the point of deferring by scroll.
+ * The min-height stays applied until the section actually mounts real content.
+ * Children are next/dynamic(ssr:false) imports that render nothing for a moment
+ * while their chunk resolves; without a placeholder height during that gap, the
+ * section collapses, which slides the NEXT section's wrapper into the
+ * intersection zone and mounts it too — a cascade that converts every section
+ * within one frame of load regardless of scroll position, defeating the point
+ * of deferring by scroll. Once `shown` is true the children have real height,
+ * so the estimate is dropped — keeping it would leave a gap any time the guess
+ * overshoots the section's actual rendered height.
  */
 export function LazySection({
   children,
@@ -64,7 +66,7 @@ export function LazySection({
   }, [shown, rootMargin]);
 
   return (
-    <div ref={ref} style={{ minHeight }} aria-hidden={shown ? undefined : true}>
+    <div ref={ref} style={shown ? undefined : { minHeight }} aria-hidden={shown ? undefined : true}>
       {shown ? children : null}
     </div>
   );

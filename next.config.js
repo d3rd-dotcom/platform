@@ -152,12 +152,8 @@ const nextConfig = {
     };
 
 
-    // Ignore optional Solana/Coinbase dependencies that aren't needed for Ethereum-only
+    // Ignore optional browser dependencies that aren't needed for the web app
     config.plugins.push(
-      new webpack.IgnorePlugin({
-        resourceRegExp: /^bs58$/,
-        contextRegExp: /@coinbase\/cdp-sdk/,
-      }),
       // Suppress MetaMask SDK async-storage warning (React Native dependency not needed in browser)
       new webpack.IgnorePlugin({
         resourceRegExp: /^@react-native-async-storage\/async-storage$/,
