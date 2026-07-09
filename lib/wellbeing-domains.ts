@@ -137,6 +137,11 @@ const SUBJECT_TO_DOMAIN: Record<string, WellbeingDomain> = {
   'wellness science': DOMAINS.energy,
   'research and statistics': DOMAINS.thinkingClearly,
   'social psychology': DOMAINS.feelingClose,
+  'learning science': DOMAINS.thinkingClearly,
+  neuroscience: DOMAINS.thinkingClearly,
+  'public health': DOMAINS.feelingUseful,
+  'lifespan development': DOMAINS.curiosity,
+  'ethics and society': DOMAINS.independentMind,
   cheerfulness: DOMAINS.cheerfulness,
   humor: DOMAINS.cheerfulness,
 };
