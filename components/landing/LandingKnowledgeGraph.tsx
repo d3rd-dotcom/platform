@@ -26,11 +26,21 @@ interface GraphLayout {
   subjects: string[];
 }
 
-// Kept inside the brand blue-violet family so the graph reads on-system rather
-// than as a luminous rainbow. Anchored on --color-primary (#5168FF).
-const SUBJECT_COLORS = ['#5168ff', '#6f7cf0', '#4257c9', '#8478e6', '#5b86d4', '#3f4bb0'];
+// Varied editorial palette chosen to read against the academy-blue field the
+// graph now sits on: cream, coral, pink, deep navy, periwinkle, amber, and a
+// teal secondary accent. Each node also gets a small lightness jitter below.
+const SUBJECT_COLORS = [
+  '#f2ede0',
+  '#ff5d47',
+  '#35d0ba',
+  '#a8bcff',
+  '#ff9eb5',
+  '#1d2f7a',
+  '#ffb36b',
+  '#7ee0ff',
+];
 
-// Entrance timing: diamonds rise in from the foundations up.
+// Entrance timing: nodes rise in from the foundations up.
 const RISE = 0.7;
 const LEVEL_STAGGER = 0.5;
 // Slow universal rotation of the whole graph (radians/sec), instead of each
@@ -90,10 +100,13 @@ function buildLayout(map: KnowledgeMap): GraphLayout {
       const radius = funnelRadius * (0.9 + hashText(`${node.id}:radius`) * 0.18);
       const angle = subjectAngle + localSpread + jitter;
 
+      const baseColor = new THREE.Color(SUBJECT_COLORS[subjectSlot % SUBJECT_COLORS.length]);
+      baseColor.offsetHSL(0, 0, (hashText(`${node.id}:tint`) - 0.5) * 0.16);
+
       return {
         node,
         subject,
-        color: SUBJECT_COLORS[subjectSlot % SUBJECT_COLORS.length],
+        color: `#${baseColor.getHexString()}`,
         unlockCount: dependentCount.get(node.id) ?? 0,
         seed: hashText(`${node.id}:seed`) * Math.PI * 2,
         position: [Math.cos(angle) * radius, y, Math.sin(angle) * radius] as Position,
@@ -157,8 +170,8 @@ function connectedIds(selectedId: string | null, byId: Map<string, PlacedNode>):
   return connected;
 }
 
-/** A single diamond node: a stretched octahedron with a facet wireframe and an
- *  additive glow shell, so it reads as a cut gem / molecule rather than a dot. */
+/** A single node: a flat-shaded sphere that reads as a solid circle from any
+ *  angle, wrapped in an additive glow shell. */
 function GraphNode({
   item,
   appearDelay,
@@ -180,13 +193,11 @@ function GraphNode({
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const coreMat = useRef<THREE.MeshBasicMaterial>(null);
-  const wireMat = useRef<THREE.MeshBasicMaterial>(null);
   const glowMat = useRef<THREE.MeshBasicMaterial>(null);
 
   const baseScale = 0.2 + Math.min(item.unlockCount, 6) * 0.035;
-  const baseCore = dimmed ? 0.14 : item.node.completed ? 1 : 0.9;
-  const baseWire = dimmed ? 0.08 : 0.5;
-  const baseGlow = dimmed ? 0.02 : 0.1;
+  const baseCore = dimmed ? 0.14 : 1;
+  const baseGlow = dimmed ? 0.02 : 0.07;
 
   useFrame(({ clock }) => {
     const g = groupRef.current;
@@ -201,12 +212,7 @@ function GraphNode({
     const pulse = highlighted && !reducedMotion ? 1 + Math.sin(t * 3 + item.seed) * 0.07 : 1;
     g.scale.setScalar(baseScale * eased * pulse * (selected ? 1.28 : 1));
 
-    // Fixed per-node facet orientation (no per-node spin — the whole graph
-    // drifts as one instead, see GraphScene).
-    g.rotation.y = item.seed;
-
     if (coreMat.current) coreMat.current.opacity = baseCore * eased;
-    if (wireMat.current) wireMat.current.opacity = baseWire * eased;
     if (glowMat.current) glowMat.current.opacity = baseGlow * eased;
   });
 
@@ -234,19 +240,14 @@ function GraphNode({
         onHover(null);
       }}
     >
-      {/* Gem body */}
-      <mesh scale={[1, 1.4, 1]}>
-        <octahedronGeometry args={[1, 0]} />
+      {/* Circle body */}
+      <mesh>
+        <sphereGeometry args={[1, 20, 20]} />
         <meshBasicMaterial ref={coreMat} color={color} transparent opacity={baseCore} />
       </mesh>
-      {/* Facet lines */}
-      <mesh scale={[1.03, 1.44, 1.03]}>
-        <octahedronGeometry args={[1, 0]} />
-        <meshBasicMaterial ref={wireMat} color={color} wireframe transparent opacity={baseWire} />
-      </mesh>
       {/* Additive glow halo */}
-      <mesh scale={[1.7, 2.1, 1.7]}>
-        <octahedronGeometry args={[1, 0]} />
+      <mesh scale={[1.7, 1.7, 1.7]}>
+        <sphereGeometry args={[1, 20, 20]} />
         <meshBasicMaterial
           ref={glowMat}
           color={item.color}
@@ -315,9 +316,9 @@ function GraphScene({
       g.rotation.y = rotation.y + autoSpinRef.current;
     }
 
-    // Neon edges fade in just behind the nodes.
+    // Soft white edges fade in just behind the nodes.
     if (edgeMat.current) {
-      const target = selectedId ? 0.28 : 0.5;
+      const target = selectedId ? 0.2 : 0.38;
       const appear = reducedMotion ? 1 : Math.min(1, Math.max(0, (clock.elapsedTime - 0.4) / 1.2));
       edgeMat.current.opacity = target * appear;
     }
@@ -333,10 +334,9 @@ function GraphScene({
           </bufferGeometry>
           <lineBasicMaterial
             ref={edgeMat}
-            color="#7fd0ff"
+            color="#eef2ff"
             transparent
             opacity={0}
-            blending={THREE.AdditiveBlending}
             depthWrite={false}
           />
         </lineSegments>
