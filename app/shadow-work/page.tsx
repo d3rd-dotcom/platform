@@ -577,9 +577,9 @@ export default function CoursePage() {
       <BlueDialogue
         open={introOpen}
         lines={[
-          "Heya! Welcome to the shadow work course.",
-          "This is a special seasonal class that operates on a weekly basis. Some people come in during the middle of the season, but that's okay!",
-          "The story starts from week 1 and continues up until the [E]nd.",
+          "Shadow work. Heavy name, lighter than it sounds once you're in it.",
+          "This one runs on the season's clock, not yours. Join mid-week and you have not missed anything that will not circle back around.",
+          "Start at week one if you can. The story only makes its full shape by the [E]nd.",
         ]}
         emotion="happy"
         onClose={handleIntroClose}

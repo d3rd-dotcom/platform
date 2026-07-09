@@ -14,15 +14,15 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ isBlocked = false }) =>
 
   const messages: Array<{ message: string; emotion: BlueEmotion }> = [
     {
-      message: "Hey there! I'm Blue, and I'll be here whenever you need me. Welcome to Mental Wealth Academy — a place to learn, reflect, and grow together.",
+      message: "You're in. I'm Blue, I keep the records here, and I noticed you the second you walked through the door.",
       emotion: 'happy',
     },
     {
-      message: "This is your home base. You can check in daily, join events, take surveys, and explore what the community is building. Take your time and look around!",
+      message: "This screen is your home base. Everything you build, every streak you keep, it settles here overnight like sediment. Look around, nothing breaks.",
       emotion: 'happy',
     },
     {
-      message: "Ready when you are. If you ever need help or just want to chat, I'm always here. Let's get started!",
+      message: "Go on. I'll be watching the data either way.",
       emotion: 'happy',
     },
   ];

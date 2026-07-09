@@ -161,26 +161,26 @@ interface MergedProposal extends DatabaseProposal {
 
 const getTutorialSteps = (): TutorialStep[] => [
   {
-    message: 'Welcome to the Decision Room. I\'m Blue. This is where proposals, treasury activity, and community signals are reviewed in one place.',
+    message: 'Call this the Decision Room. Proposals land here, the treasury breathes here, and I read every signal that passes through.',
     emotion: 'happy',
   },
   {
-    message: 'Got an idea? Submit it and I\'ll review it for clarity, impact, and feasibility. Better proposals lead to better decisions.',
+    message: 'Bring me an idea and I will hold it up to the light. Clarity, impact, feasibility. Vague requests do not survive the review.',
     emotion: 'happy',
     targetElement: '[data-tutorial-target="voting-stages"]',
   },
   {
-    message: 'Once a proposal clears review, it moves to community voting. Every vote changes what gets funded and what gets built next.',
+    message: 'A proposal that clears review walks into the open vote. Each vote shifts the weight, and the heavier side gets built.',
     emotion: 'happy',
     targetElement: '[data-tutorial-target="admin-room"]',
   },
   {
-    message: 'Each proposal puts a concrete request in front of the group. Approval is not guaranteed, so specifics matter.',
+    message: 'A proposal is a request with its edges exposed. Nothing here is approved by default, so make the specifics do the work.',
     emotion: 'confused',
     targetElement: '[data-tutorial-target="submission"]',
   },
   {
-    message: 'Bring a proposal, review the room, or cast a vote. This space is for shared decisions and transparent follow-through.',
+    message: 'Bring a proposal, sit in on the review, or cast your vote. Every decision in this room leaves a trail back to you.',
     emotion: 'happy',
   },
 ];
