@@ -1,11 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { usePrivy } from '@privy-io/react-auth';
 import BlueScene from '@/components/blue-scene/BlueScene';
 import ChatRoom from '@/components/chat-room/ChatRoom';
-import type { FrontierGuide } from '@/lib/guides-db';
+import type { TreasurySnapshot } from '@/lib/treasury-snapshot';
 import styles from './Dashboard.module.css';
 
 interface LeaderUser {
@@ -24,11 +22,27 @@ function avatarColor(name: string): string {
   return colors[Math.abs(hash) % colors.length];
 }
 
+function formatBalance(amount: string | null, maximumFractionDigits: number): string {
+  if (amount === null) return 'Unavailable';
+  const value = Number(amount);
+  if (!Number.isFinite(value)) return 'Unavailable';
+  if (value === 0) return '0';
+
+  return value.toLocaleString('en-US', {
+    maximumFractionDigits,
+    minimumFractionDigits: value < 0.01 ? Math.min(maximumFractionDigits, 4) : 0,
+  });
+}
+
+function shortAddress(address: string): string {
+  return `${address.slice(0, 6)}…${address.slice(-4)}`;
+}
+
 export default function Dashboard() {
-  const { ready, authenticated, getAccessToken } = usePrivy();
   const [leaderboard, setLeaderboard] = useState<LeaderUser[]>([]);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
-  const [nextUpGuides, setNextUpGuides] = useState<FrontierGuide[]>([]);
+  const [treasury, setTreasury] = useState<TreasurySnapshot | null>(null);
+  const [treasuryFailed, setTreasuryFailed] = useState(false);
 
   useEffect(() => {
     if (!showLeaderboard) return;
@@ -50,22 +64,22 @@ export default function Dashboard() {
       .catch(() => {/* leaderboard is best-effort */});
   }, []);
 
-  // Knowledge Base "next up": a small taste of the guides frontier, linking
-  // out to the full picture on /courses.
   useEffect(() => {
-    if (!ready || !authenticated) return;
-    (async () => {
-      try {
-        const token = await getAccessToken();
-        const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
-        const res = await fetch('/api/guides/frontier', { cache: 'no-store', headers });
-        if (res.ok) {
-          const d = await res.json();
-          setNextUpGuides(Array.isArray(d.guides) ? d.guides.slice(0, 3) : []);
-        }
-      } catch {/* next-up is best-effort */}
-    })();
-  }, [ready, authenticated, getAccessToken]);
+    const controller = new AbortController();
+
+    fetch('/api/treasury/snapshot', { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error('Treasury request failed');
+        return response.json() as Promise<TreasurySnapshot>;
+      })
+      .then((snapshot) => setTreasury(snapshot))
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === 'AbortError') return;
+        setTreasuryFailed(true);
+      });
+
+    return () => controller.abort();
+  }, []);
 
   return (
     <div className={styles.dashboard}>
@@ -75,7 +89,7 @@ export default function Dashboard() {
         <BlueScene />
       </div>
 
-      {/* ── Sidebar: Leaderboard + Knowledge Tree + ChatRoom ── */}
+      {/* ── Sidebar: Leaderboard + Treasury + ChatRoom ── */}
       <aside className={styles.sidebarWrap}>
         <button
           type="button"
@@ -110,24 +124,77 @@ export default function Dashboard() {
           )}
         </button>
 
-        {nextUpGuides.length > 0 && (
-          <div className={styles.leaderboardCard}>
-            <div className={styles.leaderHead}>
-              <span className={styles.leaderIcon}>木</span>
-              <span className={styles.leaderTitle}>Knowledge Tree</span>
-            </div>
-            <ul className={styles.nextUpList}>
-              {nextUpGuides.map((g) => (
-                <li key={g.id}>
-                  <Link href={`/courses/guides/${g.slug}`} className={styles.nextUpRow}>
-                    <span className={styles.nextUpTitle}>{g.topicTitle}</span>
-                    <span className={styles.nextUpChevron} aria-hidden="true">›</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
+        <section className={`${styles.leaderboardCard} ${styles.treasuryCard}`} aria-labelledby="home-treasury-title">
+          <div className={styles.leaderHead}>
+            <span className={styles.leaderIcon}>財</span>
+            <span id="home-treasury-title" className={`${styles.leaderTitle} ${styles.treasuryTitle}`}>
+              Blue&apos;s treasury
+            </span>
+            {treasury?.status === 'live' && <span className={styles.treasuryLive}>Live</span>}
           </div>
-        )}
+
+          {treasuryFailed ? (
+            <p className={styles.leaderEmpty}>Treasury balances are temporarily unavailable.</p>
+          ) : (
+            <>
+              <div className={styles.treasuryGrid} aria-live="polite">
+                <div className={styles.treasuryMetric}>
+                  <span className={styles.treasuryMetricLabel}>cbBTC reserve</span>
+                  <strong className={styles.treasuryMetricValue}>
+                    {treasury ? formatBalance(treasury.balances.cbBtc.amount, 8) : '—'}
+                    {treasury?.balances.cbBtc.amount !== null && <small> cbBTC</small>}
+                  </strong>
+                </div>
+                <div className={styles.treasuryMetric}>
+                  <span className={styles.treasuryMetricLabel}>Credits held</span>
+                  <strong className={styles.treasuryMetricValue}>
+                    {treasury ? formatBalance(treasury.balances.credits.amount, 2) : '—'}
+                    {treasury?.balances.credits.amount !== null && <small> credits</small>}
+                  </strong>
+                </div>
+                <div className={styles.treasuryMetric}>
+                  <span className={styles.treasuryMetricLabel}>Reward reserve</span>
+                  <strong className={styles.treasuryMetricValue}>
+                    {treasury ? formatBalance(treasury.balances.usdc.amount, 2) : '—'}
+                    {treasury?.balances.usdc.amount !== null && <small> USDC</small>}
+                  </strong>
+                </div>
+                <div className={styles.treasuryMetric}>
+                  <span className={styles.treasuryMetricLabel}>Base gas</span>
+                  <strong className={styles.treasuryMetricValue}>
+                    {treasury ? formatBalance(treasury.balances.eth.amount, 6) : '—'}
+                    {treasury?.balances.eth.amount !== null && <small> ETH</small>}
+                  </strong>
+                </div>
+              </div>
+
+              {treasury?.vault.address ? (
+                <p className={styles.treasuryNote}>
+                  {treasury.vault.totalDistributed === null
+                    ? 'Reflection vault data is unavailable.'
+                    : `${formatBalance(treasury.vault.totalDistributed, 4)} cbBTC distributed`}
+                  {treasury.vault.eligibleHolders !== null
+                    ? ` across ${treasury.vault.eligibleHolders.toLocaleString()} eligible holders.`
+                    : '.'}
+                </p>
+              ) : treasury ? (
+                <p className={styles.treasuryNote}>The reflection vault is awaiting its Base deployment.</p>
+              ) : null}
+
+              {treasury?.wallet.address && treasury.wallet.explorerUrl && (
+                <a
+                  className={styles.treasuryWalletLink}
+                  href={treasury.wallet.explorerUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <span>Wallet {shortAddress(treasury.wallet.address)}</span>
+                  <span aria-hidden="true">↗</span>
+                </a>
+              )}
+            </>
+          )}
+        </section>
 
         <div className={styles.chatRoomDesktopOnly}><ChatRoom fullPage /></div>
       </aside>

@@ -223,51 +223,98 @@
   color: #9aa0c0;
 }
 
-/* ── Next up (guides frontier) list ── */
-.nextUpList {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+/* ── Treasury snapshot ── */
+.treasuryCard {
+  cursor: default;
 }
 
-.nextUpRow {
-  display: flex;
-  align-items: center;
+.treasuryCard:hover {
+  transform: none;
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    0 0px 10px rgba(0, 0, 0, 0.14),
+    0 10px 5px rgba(0, 0, 0, 0.30);
+}
+
+.treasuryTitle {
+  text-transform: none;
+}
+
+.treasuryLive {
+  margin-left: auto;
+  padding: 3px 7px;
+  border-radius: 999px;
+  color: #247a55;
+  background: rgba(98, 190, 143, 0.16);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.treasuryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
-  padding: 8px 4px;
-  border-radius: 10px;
-  text-decoration: none;
-  transition: background 0.15s ease;
 }
 
-.nextUpRow:hover {
-  background: color-mix(in oklch, var(--color-primary) 7%, transparent);
-}
-
-.nextUpTitle {
-  flex: 1;
+.treasuryMetric {
   min-width: 0;
-  font-size: 0.9rem;
-  font-weight: 600;
+  padding: 9px 10px;
+  border-radius: 10px;
+  background: color-mix(in oklch, var(--color-primary) 5%, #ffffff);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
+}
+
+.treasuryMetricLabel {
+  display: block;
+  margin-bottom: 4px;
+  color: #7a809f;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.treasuryMetricValue {
+  display: block;
   color: #2a2f52;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.nextUpChevron {
-  flex-shrink: 0;
-  font-size: 0.95rem;
-  color: #9aa0c0;
-  transition: color 0.15s ease, transform 0.15s ease;
+.treasuryMetricValue small {
+  color: #7a809f;
+  font-size: 0.62rem;
+  font-weight: 800;
 }
 
-.nextUpRow:hover .nextUpChevron {
+.treasuryNote {
+  margin: 10px 2px 0;
+  color: #7a809f;
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+.treasuryWalletLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 9px;
+  padding: 7px 2px 0;
+  border-top: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
   color: var(--color-primary);
-  transform: translateX(2px);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.treasuryWalletLink:hover {
+  color: var(--color-primary-hover);
 }
 
 /* ── Leaderboard modal ── */
@@ -747,8 +794,19 @@
   color: #d6d9ee;
 }
 
-:global([data-theme="dark"]) .nextUpTitle {
+:global([data-theme="dark"]) .treasuryMetric {
+  background: color-mix(in oklch, var(--color-primary) 10%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary) 24%, transparent);
+}
+
+:global([data-theme="dark"]) .treasuryMetricValue {
   color: #d6d9ee;
+}
+
+:global([data-theme="dark"]) .treasuryMetricLabel,
+:global([data-theme="dark"]) .treasuryMetricValue small,
+:global([data-theme="dark"]) .treasuryNote {
+  color: #9da3c3;
 }
 
 :global([data-theme="dark"]) .leaderModalCard {

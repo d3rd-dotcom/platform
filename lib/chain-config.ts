@@ -30,8 +30,14 @@ const MAINNET: ChainConfig = {
     process.env.DIAMONDS_TOKEN_ADDRESS ||
     process.env.NEXT_PUBLIC_DIAMONDS_TOKEN_ADDRESS ||
     '0x4A25Cea1f05C6725dC90849FBaafF00d67342B3f',
-  reflectionVaultAddress: null,
-  cbBTcAddress: null,
+  reflectionVaultAddress:
+    process.env.DIAMONDS_VAULT_ADDRESS ||
+    process.env.NEXT_PUBLIC_REFLECTION_VAULT_ADDRESS ||
+    null,
+  cbBTcAddress:
+    process.env.DIAMONDS_CBBTC_ADDRESS ||
+    process.env.NEXT_PUBLIC_DIAMONDS_CBBTC_ADDRESS ||
+    '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf',
   usdcAddress:
     process.env.NEXT_PUBLIC_USDC_ADDRESS ||
     '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
