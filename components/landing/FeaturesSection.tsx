@@ -9,19 +9,19 @@ const featureCards = [
   {
     title: 'The Micro-University',
     description:
-      'One canonical, verified guide per topic, level-gated so there are no duplicate tutorials to sort through. Every course stays free.',
+      'One verified guide per topic, level-gated so there are no duplicate tutorials to sort through.',
     details: ['One verified guide per topic', 'Free, always'],
   },
   {
     title: 'Quests With Blue',
     description:
-      'Blue turns what you are learning into real quests, reviews every submission, and pays real USDC when your work is ready.',
+      'The community uses Blue to turn what you are learning into real quests with real cash prizes.',
     details: ['Blue reviews every submission', 'Real USDC when you pass'],
   },
   {
-    title: 'Own What You Earn',
+    title: 'Invest In Your Future',
     description:
-      'Diamonds ($BLUE) mint gasless, straight to your wallet on Base. Blue pays quest rewards from her own stash.',
+      'Mental Wealth is about creating a new form of digital space, and ecosystem that invests back in your future.',
     details: ['Gasless mints on Base', 'User-owned and transferable'],
   },
 ];
@@ -64,7 +64,7 @@ export const FeaturesSection: React.FC = () => {
             </div>
 
             <div className={styles.headlinePanel}>
-              <h2 className={styles.title}>How Can We Reach Our Dreams?</h2>
+              <h2 className={styles.title}>Access Quality Education</h2>
               <p className={styles.description}>
                 Every verified guide joins the same prerequisite graph. Rotate the map, trace a
                 topic back to its foundations, and find the next concept ready to explore.
