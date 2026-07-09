@@ -7,34 +7,22 @@ import styles from './FeaturesSection.module.css';
 
 const featureCards = [
   {
-    number: '01',
-    title: 'A Micro-University For Intellectual Refreshment',
-    badge: 'Courses',
+    title: 'The Micro-University',
     description:
-      'One canonical, verified guide per topic, level-gated so there\'s no duplicate tutorials to sort through. You clear levels instead of grinding through tutorial hell, and every course stays free.',
-    details: ['One verified guide per topic', 'Level up instead of grinding', 'Free, always'],
-    footerLabel: 'First season',
-    footerValue: '12 weeks',
+      'One canonical, verified guide per topic, level-gated so there are no duplicate tutorials to sort through. Every course stays free.',
+    details: ['One verified guide per topic', 'Free, always'],
   },
   {
-    number: '02',
-    title: 'A Curriculum Accompanied By Blue',
-    badge: 'Quests',
+    title: 'Quests With Blue',
     description:
-      'Blue turns what you\'re learning into real quests. She reviews your submissions, asks for a revision when one\'s needed, and pays real USDC when your work is ready.',
-    details: ['Blue reviews every submission', 'Real-world accountability', 'Real USDC when you pass'],
-    footerLabel: 'Review time',
-    footerValue: '~24 hrs',
+      'Blue turns what you are learning into real quests, reviews every submission, and pays real USDC when your work is ready.',
+    details: ['Blue reviews every submission', 'Real USDC when you pass'],
   },
   {
-    number: '03',
-    title: 'Lifetime Ownership',
-    badge: 'Onchain',
+    title: 'Own What You Earn',
     description:
-      'Diamonds ($BLUE) mint gasless, straight to your wallet on Base — no signing, no gas. Blue holds 20% of the supply and pays quest rewards from her own stash.',
-    details: ['Gasless mints on Base', 'Blue pays from her own wallet', 'User-owned and transferable'],
-    footerLabel: 'On Base blockchain',
-    footerValue: 'User-owned',
+      'Diamonds ($BLUE) mint gasless, straight to your wallet on Base. Blue pays quest rewards from her own stash.',
+    details: ['Gasless mints on Base', 'User-owned and transferable'],
   },
 ];
 
@@ -66,9 +54,8 @@ export const FeaturesSection: React.FC = () => {
       <div className={styles.container}>
         <div className={styles.board}>
           <div className={styles.boardHeader}>
-            <p className={styles.eyebrow}>
-              <span className={styles.eyebrowAccent}>How It Works</span>
-            </p>
+            <span className={styles.headerJa}>仕組み</span>
+            <span className={styles.headerTitle}>How It Works</span>
           </div>
 
           <div className={styles.topPanel}>
@@ -87,11 +74,7 @@ export const FeaturesSection: React.FC = () => {
 
           <div className={styles.cardGrid}>
             {featureCards.map((card) => (
-              <article key={card.number} className={styles.card}>
-                <div className={styles.cardTop}>
-                  <span className={styles.cardNumber}>{card.number}</span>
-                  <span className={styles.badge}>{card.badge}</span>
-                </div>
+              <article key={card.title} className={styles.card}>
                 <h3 className={styles.cardTitle}>{card.title}</h3>
                 <p className={styles.cardDescription}>{card.description}</p>
                 <div className={styles.cardList}>
@@ -101,10 +84,6 @@ export const FeaturesSection: React.FC = () => {
                       <span>{detail}</span>
                     </div>
                   ))}
-                </div>
-                <div className={styles.cardFooter}>
-                  <span>{card.footerLabel}</span>
-                  <strong>{card.footerValue}</strong>
                 </div>
               </article>
             ))}
