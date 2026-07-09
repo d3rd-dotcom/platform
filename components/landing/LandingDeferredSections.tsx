@@ -2,7 +2,9 @@
 
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
+import { LazySection } from './LazySection';
 import { KeyFiguresSection } from './KeyFiguresSection';
+
 const CohortSection = dynamic(() =>
   import('./CohortSection').then((mod) => mod.CohortSection),
   { ssr: false }
@@ -44,34 +46,45 @@ const DonationPopup = dynamic(() =>
   { ssr: false }
 );
 
+/**
+ * Below-the-fold sections. Each mounts as it nears the viewport (LazySection),
+ * so hydration spreads across the scroll instead of firing all at once, and the
+ * page is scrollable from first paint via the reserved placeholder heights.
+ * The min-heights are estimates of each section's real height, kept close so the
+ * content swap does not shift the scroll position.
+ */
 export function LandingDeferredSections() {
-  const [mounted, setMounted] = useState(false);
+  // The donation popup is an overlay, not a scroll section, so it can't be
+  // gated on scroll. Hold it until the browser is idle so it never competes
+  // with the hero and first sections on initial load.
+  const [popupReady, setPopupReady] = useState(false);
 
   useEffect(() => {
-    if ('requestIdleCallback' in window) {
-      const id = window.requestIdleCallback(() => setMounted(true), { timeout: 1200 });
-      return () => window.cancelIdleCallback(id);
+    const win = window as Window & {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+    if (typeof win.requestIdleCallback === 'function') {
+      const id = win.requestIdleCallback(() => setPopupReady(true), { timeout: 2500 });
+      return () => win.cancelIdleCallback?.(id);
     }
-
-    const id = setTimeout(() => setMounted(true), 700);
-    return () => clearTimeout(id);
+    const id = window.setTimeout(() => setPopupReady(true), 1800);
+    return () => window.clearTimeout(id);
   }, []);
-
-  if (!mounted) return null;
 
   return (
     <>
-      <FeaturesSection />
-      <EcosystemSection />
-      <FounderSection />
-      <TestimonialSection />
-      <KeyFiguresSection />
-      <MagazineSection />
-      <CohortSection />
-      <PatternTextSection />
-      <FAQSection />
-      <LandingFooter />
-      <DonationPopup />
+      <LazySection minHeight="90vh"><FeaturesSection /></LazySection>
+      <LazySection minHeight="90vh"><EcosystemSection /></LazySection>
+      <LazySection minHeight="80vh"><FounderSection /></LazySection>
+      <LazySection minHeight="80vh"><TestimonialSection /></LazySection>
+      <LazySection minHeight="70vh"><KeyFiguresSection /></LazySection>
+      <LazySection minHeight="90vh"><MagazineSection /></LazySection>
+      <LazySection minHeight="90vh"><CohortSection /></LazySection>
+      <LazySection minHeight="60vh"><PatternTextSection /></LazySection>
+      <LazySection minHeight="80vh"><FAQSection /></LazySection>
+      <LazySection minHeight="40vh"><LandingFooter /></LazySection>
+      {popupReady && <DonationPopup />}
     </>
   );
 }
