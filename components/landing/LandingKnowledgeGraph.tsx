@@ -194,7 +194,7 @@ function GraphNode({
   const groupRef = useRef<THREE.Group>(null);
   const coreMat = useRef<THREE.MeshBasicMaterial>(null);
 
-  const baseScale = 0.2 + Math.min(item.unlockCount, 6) * 0.035;
+  const baseScale = 0.11 + Math.min(item.unlockCount, 6) * 0.02;
   const baseCore = dimmed ? 0.14 : 1;
 
   useFrame(({ clock }) => {
