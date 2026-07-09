@@ -22,7 +22,6 @@ flowchart TB
         HOLDERS["MWG holders<br/>self-delegate + vote"]:::actor
         VIP["VIP ERC-1155 holders<br/>staff and live-Kalshi gate"]:::actor
         ANGELS["Academic Angel ERC-721 holders<br/>quest payout eligibility"]:::actor
-        ADMIN["Server ADMIN_SECRET holder"]:::actor
     end
 
     subgraph BASE["Base Mainnet - chain ID 8453"]
@@ -35,8 +34,6 @@ flowchart TB
         OPWALLET[["Operational USDC / ETH balance<br/>held by Blue CDP wallet"]]:::pool
         VIPNFT["VIP Membership Card ERC-1155<br/>0x5da790...d6fc, token ID 1"]:::asset
         ANGELNFT["Academic Angels ERC-721<br/>address supplied by config"]:::asset
-        APPLE["APPLE ERC-20<br/>fallback 0xE8a48d...1FB07"]:::asset
-        UNIPOOL[["Uniswap V3 APPLE / USDC pool<br/>APPLE_UNISWAP_POOL configured externally"]]:::pool
         PATHWAY["EtherealHorizonPathway<br/>0xd116e7...9c160<br/>seal state only; no asset transfer"]:::dormant
     end
 
@@ -47,12 +44,6 @@ flowchart TB
         TRADEWF["CRE trade-execute"]:::external
         FORWARDER["Chainlink KeystoneForwarder<br/>plus pinned workflow owner/name"]:::external
         DRIFT["Committed CRE drift<br/>review + auto target legacy 0x2cbb...<br/>trade traderAddress is zero"]:::warning
-    end
-
-    subgraph APPLEFLOW["APPLE distribution rail"]
-        CLANKER["Clanker deployment API"]:::external
-        DISTRIBUTE["Admin distribution route<br/>80% verified epoch profit paid<br/>20% retained; capped"]:::control
-        APPLEHOLDERS["Eligible APPLE holders"]:::actor
     end
 
     subgraph PAYMENTS["Membership and rewards"]
@@ -110,16 +101,6 @@ flowchart TB
     OPWALLET -->|blueWallet.distributeUSDC| QUEST
     QUEST -->|USDC payment| RECIPIENT
 
-    ADMIN -->|deploy trigger| CLANKER
-    BLUECDP -->|token admin, rewards recipient, 3% vault recipient| CLANKER
-    CLANKER -->|creates token paired with USDC| APPLE
-    APPLE --- UNIPOOL
-    USDC --- UNIPOOL
-    APPLE -->|holder snapshot| DISTRIBUTE
-    ADMIN -->|distribution trigger| DISTRIBUTE
-    OPWALLET -->|USDC source| DISTRIBUTE
-    DISTRIBUTE -->|pro-rata USDC| APPLEHOLDERS
-
     BUYER -->|USDC or ETH membership payment| BLUEEOA
     BLUEEOA -->|ERC-1155 inventory transfer after verification| BUYER
     VIPNFT -. inventory and ownership record .-> BLUEEOA
@@ -139,9 +120,8 @@ flowchart TB
 | Governance micro-treasury | USDC held by `BlueKillStreak` `0x09a4...f7Fc` | MWG holders vote; Blue/CRE sets initial review weight; 50% approval executes; Safe can emergency-withdraw and configure CRE/admins | USDC to a proposal recipient, including potentially `BlueMarketTrader`. |
 | On-chain trading treasury | USDC held by `BlueMarketTrader` `0xAFa538...fd92` | Safe owner can configure/execute/withdraw/claim/refund; an accepted CRE report can execute a trade; anyone can deposit | `MockPredictionMarket` positions only when a prediction market is configured. |
 | Mock prediction-market position pool | USDC held by `MockPredictionMarket` | Trader buys positions; anyone can resolve a mock market; position holder claims/refunds | Returns USDC to the position holder, normally `BlueMarketTrader`. This is a demo rail, not Kalshi. |
-| Blue operational payout balance | USDC/ETH in the Coinbase SDK `blueWallet` account | Server CDP wallet credentials; `ADMIN_SECRET` for APPLE distribution; VIP holder approval for quest claims | Quest USDC recipients and APPLE holders. This wallet is not proven in code to be either governed contract pool. |
+| Blue operational payout balance | USDC/ETH in the Coinbase SDK `blueWallet` account | Server CDP wallet credentials; VIP holder approval for quest claims | Quest USDC recipients. This wallet is not proven in code to be either governed contract pool. |
 | MWG proposal allocation rail | Configured governance token balance in the Coinbase SDK `blueWallet` account | A proposal owner finalizes a database-approved review; CDP wallet signs `allocateTokens` | MWG token transfer to the proposal owner, separate from `BlueKillStreak` USDC execution. |
-| APPLE liquidity / reward rail | APPLE paired with USDC through Clanker / optional Uniswap V3 pool | `ADMIN_SECRET` starts deploy/distribution; Blue CDP wallet is requested as token admin/rewards/vault recipient | USDC distributions to eligible APPLE holders; 80% distributed and 20% retained subject to caps. |
 | Membership sale rail | ETH or USDC paid to Blue private-key wallet; VIP ERC-1155 inventory | Buyer pays; server verifies payment; Blue signer sends NFT | One VIP Membership Card to buyer. VIP ownership gates staff review and live Kalshi ordering. |
 | Kalshi execution rail | External Kalshi account, outside Base contracts | Any authenticated VIP-card holder can call the endpoint; server Kalshi RSA credentials sign the order | Live Kalshi orders. No coded movement from `BlueMarketTrader` or a Base USDC pool into Kalshi. |
 
@@ -159,7 +139,6 @@ flowchart TB
 | Blue contract agent / Safe signer | V2 broadcast and Safe artifact | `0x0920553CcA188871b146ee79f562B4Af46aB4f8a` |
 | Pathway state contract | Pathway broadcast and app config example | `0xd116e780Ca9Ec3984e7682e095aaB50006A9c160` |
 | VIP membership ERC-1155 | Membership library configuration default | `0x5da79055cf8ca6482c997df58822e08e5707d6fc`, token ID `1` |
-| APPLE token | Holder-indexer fallback value | `0xE8a48daB9d307d74aBC8657421f8a2803661FB07` |
 
 ## Wiring Gaps And Drift
 
@@ -180,5 +159,5 @@ flowchart TB
 | Deployment and Safe ownership | `contracts/broadcast/DeployV2.s.sol/8453/run-latest.json`, `contracts/broadcast/TransferOwnership.s.sol/8453/run-latest.json`, `contracts/migration/safe.json` |
 | CRE influence path | `cre-workflows/*/main.ts`, `cre-workflows/*/config.production.json` |
 | On-chain and Kalshi market rails | `lib/market-api.ts`, `lib/trading-engine.ts`, `lib/kalshi-trading.ts`, `app/api/treasury/trade/execute/route.ts` |
-| Operational USDC and APPLE payouts | `lib/blue-wallet.ts`, `lib/clanker-deploy.ts`, `lib/apple-holders.ts`, `app/api/treasury/distribute/route.ts` |
+| Operational USDC payouts | `lib/blue-wallet.ts` |
 | Membership and quest payouts | `lib/crypto-payment.ts`, `lib/blue-membership.ts`, `lib/vip-membership-card.ts`, `lib/academic-angels.ts`, `app/api/quests/usdc/review/route.ts` |

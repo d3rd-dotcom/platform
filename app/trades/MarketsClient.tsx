@@ -11,7 +11,7 @@ import CtaButton from '@/components/shared/CtaButton';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
-import type { CoinPrice, TreasuryBalance, CategorizedMarkets, MarketCategory, MarketRow, AppleTokenStats as ShardTokenStats } from '@/lib/market-api';
+import type { CoinPrice, TreasuryBalance, CategorizedMarkets, MarketCategory, MarketRow } from '@/lib/market-api';
 
 // ── Helpers ──
 
@@ -495,7 +495,6 @@ export default function Markets() {
   const [prices, setPrices] = useState<CoinPrice[] | null>(null);
   const [balance, setBalance] = useState<TreasuryBalance | null>(null);
   const [kalshiMarkets, setKalshiMarkets] = useState<CategorizedMarkets | null>(null);
-  const [shardStats, setShardStats] = useState<ShardTokenStats | null>(null);
   const [executionLogs, setExecutionLogs] = useState<ExecutionLogEntry[]>([]);
   const [livePositions, setLivePositions] = useState<LivePosition[]>([]);
   const [balanceError, setBalanceError] = useState(false);
@@ -572,15 +571,6 @@ export default function Markets() {
     } catch {
       setKalshiError(true);
     }
-  }, []);
-
-  const fetchShardStats = useCallback(async () => {
-    try {
-      const res = await fetch('/api/treasury/apple-stats');
-      if (!res.ok) return;
-      const data: ShardTokenStats = await res.json();
-      setShardStats(data);
-    } catch { /* silent */ }
   }, []);
 
   const fetchExecutionLogs = useCallback(async () => {
@@ -679,20 +669,17 @@ export default function Markets() {
     setStorageItem(CHAT_SPOTLIGHT_KEY, '1');
   }, []);
 
-  // Fetch credit stats, execution logs, and the actively-voted markets
+  // Fetch execution logs and the actively-voted markets
   useEffect(() => {
-    fetchShardStats();
     fetchExecutionLogs();
     fetchActiveMarkets();
-    const shardInterval = setInterval(fetchShardStats, 60_000);
     const logsInterval = setInterval(fetchExecutionLogs, 30_000);
     const activeInterval = setInterval(fetchActiveMarkets, 30_000);
     return () => {
-      clearInterval(shardInterval);
       clearInterval(logsInterval);
       clearInterval(activeInterval);
     };
-  }, [fetchShardStats, fetchExecutionLogs, fetchActiveMarkets]);
+  }, [fetchExecutionLogs, fetchActiveMarkets]);
 
   // Fast tick for live model parameter animation
   const modelTick = useLiveTick(1200);
@@ -897,7 +884,6 @@ export default function Markets() {
       `price gap: ${derived.divergence >= 0 ? '+' : ''}${derived.divergence.toFixed(2)}%`,
       `size cap: 0.25x`,
       `USDC markets balance: ${balance ? '$' + balance.formatted : 'not loaded'}`,
-      `Credits price: ${shardStats ? formatPrice(shardStats.price) : 'not loaded'}`,
       '',
       'Price snapshot:',
       priceSnapshot,
@@ -913,7 +899,7 @@ export default function Markets() {
       '',
       `User command: ${userMessage}`,
     ].join('\n');
-  }, [shardStats, balance, deferredKalshiMarkets, derived, executionLogs, livePositions, prices]);
+  }, [balance, deferredKalshiMarkets, derived, executionLogs, livePositions, prices]);
 
   const generateLocalTradeResponse = useCallback((userMessage: string) => {
     const command = userMessage.toLowerCase();

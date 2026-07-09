@@ -33,10 +33,7 @@ Under `app/api/treasury/`:
 
 ```
 treasury/
-├── apple-stats/    — derived stats
 ├── balance/        — treasury balance reads
-├── deploy-apple/   — deployment helper for an apple-related contract
-├── distribute/     — distribution endpoint
 ├── execution-logs/ — ops visibility
 ├── kalshi/         — Kalshi-specific endpoints
 ├── prices/         — pricing reads
