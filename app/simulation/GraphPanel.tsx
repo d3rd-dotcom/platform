@@ -47,6 +47,8 @@ const W = 1120;
 const H = 760;
 const MAX_NODES = 160;
 const MAX_EDGE_LABELS = 80;
+const MIN_ZOOM = 0.2;
+const MAX_ZOOM = 3.2;
 
 const TYPE_COLORS = ['#5168FF', '#9724A6', '#1FAA8C', '#E0701A', '#C73E6B', '#3B82F6', '#8B5CF6'];
 const META_NODE_PATTERNS = [
@@ -65,11 +67,27 @@ const META_NODE_PATTERNS = [
 
 const str = (v: unknown) => (typeof v === 'string' && v.trim() ? v.trim() : '');
 
-function initialViewFor(count: number) {
-  const k = count > 90 ? 0.9 : count > 55 ? 0.98 : count > 24 ? 1.06 : 1.16;
+function fitViewFor(ns: SimNode[]) {
+  if (!ns.length) return { x: 0, y: 0, k: 1 };
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+  for (const n of ns) {
+    minX = Math.min(minX, n.x - n.r);
+    maxX = Math.max(maxX, n.x + n.r);
+    minY = Math.min(minY, n.y - n.r);
+    maxY = Math.max(maxY, n.y + n.r);
+  }
+  // Padding leaves room for node labels rendered outside the node radius.
+  const pad = 72;
+  const k = Math.max(
+    MIN_ZOOM,
+    Math.min(1.15, W / (maxX - minX + pad * 2), H / (maxY - minY + pad * 2)),
+  );
   return {
-    x: W / (2 * k) - W / 2,
-    y: H / (2 * k) - H / 2,
+    x: W / 2 - ((minX + maxX) / 2) * k,
+    y: H / 2 - ((minY + maxY) / 2) * k,
     k,
   };
 }
@@ -247,6 +265,9 @@ export default function GraphPanel({
   const rafRef = useRef<number>();
   const dragRef = useRef<{ x: number; y: number; viewX: number; viewY: number } | null>(null);
   const nodeDragRef = useRef<{ id: string; startX: number; startY: number; moved: boolean } | null>(null);
+  // While the layout settles, the camera auto-fits the growing graph. Any
+  // manual pan/zoom/node-grab hands camera control back to the user.
+  const userAdjustedViewRef = useRef(false);
 
   useEffect(() => {
     const svg = svgRef.current;
@@ -256,10 +277,11 @@ export default function GraphPanel({
     // scrolling while the cursor is over the graph canvas.
     const onWheel = (e: WheelEvent) => {
       e.preventDefault();
+      userAdjustedViewRef.current = true;
       const delta = Math.max(-120, Math.min(120, e.deltaY));
       setView((current) => ({
         ...current,
-        k: Math.max(0.45, Math.min(3.2, current.k * Math.exp(-delta * 0.00045))),
+        k: Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, current.k * Math.exp(-delta * 0.00045))),
       }));
     };
 
@@ -370,7 +392,8 @@ export default function GraphPanel({
 
   useEffect(() => {
     nodesRef.current = nodes;
-    setView(initialViewFor(nodes.length));
+    userAdjustedViewRef.current = false;
+    setView(fitViewFor(nodes));
     setSelected(null);
     if (!nodes.length) return;
 
@@ -433,10 +456,11 @@ export default function GraphPanel({
         n.vy *= 0.84;
         n.x += n.vx;
         n.y += n.vy;
-        const m = n.r + 22;
-        n.x = Math.max(m, Math.min(W - m, n.x));
-        n.y = Math.max(m, Math.min(H - m, n.y));
       }
+
+      // The layout is unbounded, so the camera zooms out to keep the whole
+      // graph in frame instead of walls pinning nodes into the corners.
+      if (!userAdjustedViewRef.current) setView(fitViewFor(ns));
 
       ticks++;
       force((c) => c + 1);
@@ -493,7 +517,10 @@ export default function GraphPanel({
   const selectedEdgeEpisodes = detailList(selectedEdgeRaw?.episodes || selectedEdgeRaw?.attributes?.episodes);
   const selectedEdgeProperties = detailEntries(selectedEdgeRaw?.attributes);
 
-  const zoom = (next: number) => setView((v) => ({ ...v, k: Math.max(0.45, Math.min(3.2, next)) }));
+  const zoom = (next: number) => {
+    userAdjustedViewRef.current = true;
+    setView((v) => ({ ...v, k: Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, next)) }));
+  };
   const clientToGraphPoint = (clientX: number, clientY: number) => {
     const rect = svgRef.current?.getBoundingClientRect();
     if (!rect) return null;
@@ -557,7 +584,15 @@ export default function GraphPanel({
         <div className={styles.graphHeaderTools} aria-label="Graph controls">
           <button type="button" onClick={() => zoom(view.k / 1.08)}>−</button>
           <button type="button" onClick={() => zoom(view.k * 1.08)}>+</button>
-          <button type="button" onClick={() => setView(initialViewFor(nodesRef.current.length || nodes.length))}>Reset</button>
+          <button
+            type="button"
+            onClick={() => {
+              userAdjustedViewRef.current = false;
+              setView(fitViewFor(nodesRef.current));
+            }}
+          >
+            Reset
+          </button>
         </div>
       </div>
 
@@ -582,6 +617,7 @@ export default function GraphPanel({
         className={styles.graphSvg}
         onPointerDown={(e) => {
           if (nodeDragRef.current) return;
+          userAdjustedViewRef.current = true;
           dragRef.current = { x: e.clientX, y: e.clientY, viewX: view.x, viewY: view.y };
           e.currentTarget.setPointerCapture(e.pointerId);
         }}
@@ -714,6 +750,7 @@ export default function GraphPanel({
                   transform={`translate(${n.x},${n.y})`}
                   onPointerDown={(e) => {
                     e.stopPropagation();
+                    userAdjustedViewRef.current = true;
                     dragRef.current = null;
                     nodeDragRef.current = { id: n.id, startX: e.clientX, startY: e.clientY, moved: false };
                     n.vx = 0;
@@ -729,9 +766,8 @@ export default function GraphPanel({
                     if (distance > 3) active.moved = true;
                     const p = clientToGraphPoint(e.clientX, e.clientY);
                     if (!p) return;
-                    const m = n.r + 22;
-                    n.x = Math.max(m, Math.min(W - m, p.x));
-                    n.y = Math.max(m, Math.min(H - m, p.y));
+                    n.x = p.x;
+                    n.y = p.y;
                     n.vx = 0;
                     n.vy = 0;
                     force((c) => c + 1);
