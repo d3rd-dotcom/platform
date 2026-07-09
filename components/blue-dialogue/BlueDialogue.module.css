@@ -19,13 +19,24 @@
   }
 }
 
+.preloadImage {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  opacity: 0;
+  pointer-events: none;
+}
+
 .stage {
   container-type: inline-size;
   position: relative;
   display: grid;
   grid-template-columns: 35.59% 64.41%;
-  width: min(1065px, calc(100vw - 32px), calc(166.667dvh - 53.334px));
+  width: min(900px, calc(100vw - 32px), calc(166.667dvh - 53.334px));
   aspect-ratio: 1065 / 639;
+  opacity: 0;
+  transform: translateY(6px) scale(0.985);
   overflow: hidden;
   isolation: isolate;
   border: 6px solid #3a2096;
@@ -33,17 +44,21 @@
   box-sizing: border-box;
   background-color: #5168ff;
   background-image:
-    radial-gradient(circle at 76% 14%, rgba(255, 255, 255, 0.34) 0 1px, transparent 1.6px),
-    radial-gradient(circle at 54% 58%, rgba(255, 255, 255, 0.2) 0 1px, transparent 1.7px),
-    radial-gradient(circle at 91% 74%, rgba(191, 208, 255, 0.28) 0 1px, transparent 1.8px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.3) 0 1px, transparent 1.7px),
+    radial-gradient(circle, rgba(198, 213, 255, 0.2) 0 0.8px, transparent 1.5px),
     linear-gradient(135deg, rgba(25, 76, 230, 0.18), rgba(128, 51, 204, 0.16));
-  background-size: 83px 91px, 117px 109px, 151px 137px, auto;
+  background-position: 0 0, 42px 62px, 0 0;
+  background-size: 84px 124px, 84px 124px, auto;
   box-shadow: 0 11px 4px rgba(0, 0, 0, 0.5), 0 4px 0 #5168ff;
+  transition: opacity 160ms ease-out, transform 160ms ease-out;
+}
+
+.stageReady {
+  opacity: 1;
+  transform: none;
 }
 
 .portrait {
-  --portrait-x: 35%;
-  --portrait-y: 0%;
   position: relative;
   min-width: 0;
   overflow: hidden;
@@ -53,11 +68,12 @@
 
 .portraitImage {
   position: absolute;
-  inset: 0;
-  background-image: url('/images/blue-dialogue-expressions.png');
-  background-repeat: no-repeat;
-  background-size: auto 200%;
-  background-position: var(--portrait-x) var(--portrait-y);
+  top: var(--portrait-top);
+  left: var(--portrait-left);
+  width: auto;
+  max-width: none;
+  height: 200%;
+  object-fit: contain;
 }
 
 .nameCard {
@@ -215,30 +231,31 @@
   flex: 0 0 auto;
   display: grid;
   place-items: center;
-  width: 15.8%;
-  max-width: 108px;
+  width: 13%;
+  max-width: 78px;
   aspect-ratio: 1;
   padding: 0;
-  border: 2px solid rgba(81, 104, 255, 0.9);
-  border-radius: 0;
-  background: rgba(81, 104, 255, 0.24);
-  color: #f4f5fe;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
   cursor: pointer;
-  box-shadow: inset 0 0 14px rgba(154, 180, 255, 0.28);
-  transition: background-color 140ms ease, transform 140ms ease;
+  filter: drop-shadow(0 4px 8px rgba(25, 24, 94, 0.36));
+  transition: filter 140ms ease, transform 140ms ease;
 }
 
-.arrow svg {
-  width: 60%;
-  height: 60%;
+.arrowIcon {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .arrow:hover,
 .arrow:focus-visible {
-  background: rgba(81, 104, 255, 0.72);
-  transform: translateX(2px);
+  background: transparent;
+  filter: drop-shadow(0 0 10px rgba(244, 245, 254, 0.7));
+  transform: translateX(3px) scale(1.06);
   outline: 2px solid #f4f5fe;
-  outline-offset: -5px;
+  outline-offset: 3px;
 }
 
 .historyPanel {
@@ -254,11 +271,36 @@
   backdrop-filter: blur(10px);
 }
 
-.historyHead {
+.historyHeadRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
   margin-bottom: 1em;
+}
+
+.historyHead {
   font-family: var(--font-departure-mono);
   font-size: clamp(0.62rem, 1.8cqw, 1.1rem);
   color: #9eb1ff;
+}
+
+.historyClose {
+  padding: 0.5em 0.8em;
+  border: 1px solid rgba(244, 245, 254, 0.52);
+  border-radius: 999px;
+  background: rgba(81, 104, 255, 0.2);
+  color: #f4f5fe;
+  cursor: pointer;
+  font-family: var(--font-departure-mono);
+  font-size: clamp(0.55rem, 1.45cqw, 0.85rem);
+}
+
+.historyClose:hover,
+.historyClose:focus-visible {
+  background: rgba(81, 104, 255, 0.52);
+  outline: 2px solid #f4f5fe;
+  outline-offset: 2px;
 }
 
 .historyList {
@@ -325,7 +367,7 @@
   }
 
   .arrow {
-    border-width: 1px;
+    width: 15%;
   }
 }
 
@@ -336,6 +378,10 @@
   }
 
   .arrow {
+    transition: none;
+  }
+
+  .stage {
     transition: none;
   }
 }

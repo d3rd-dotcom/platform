@@ -59,16 +59,16 @@ const FOCUSABLE =
 
 const EXPRESSION_POSITION: Record<
   BlueEmotion,
-  { x: string; y: string }
+  { left: string; top: string }
 > = {
-  neutral: { x: '5%', y: '0%' },
-  happy: { x: '35%', y: '0%' },
-  sad: { x: '65%', y: '0%' },
-  angry: { x: '95%', y: '0%' },
-  surprised: { x: '5%', y: '100%' },
-  confused: { x: '35%', y: '100%' },
-  pain: { x: '65%', y: '100%' },
-  calm: { x: '95%', y: '100%' },
+  neutral: { left: '-25.5%', top: '0%' },
+  happy: { left: '-176.5%', top: '0%' },
+  sad: { left: '-327.5%', top: '0%' },
+  angry: { left: '-478.5%', top: '0%' },
+  surprised: { left: '-25.5%', top: '-100%' },
+  confused: { left: '-176.5%', top: '-100%' },
+  pain: { left: '-327.5%', top: '-100%' },
+  calm: { left: '-478.5%', top: '-100%' },
 };
 
 const BlueDialogue: React.FC<BlueDialogueProps> = ({
@@ -82,6 +82,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   const { play } = useSound();
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const arrowRef = useRef<HTMLButtonElement | null>(null);
+  const historyCloseRef = useRef<HTMLButtonElement | null>(null);
   const typeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
 
@@ -94,11 +95,12 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   const [displayed, setDisplayed] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [portraitReady, setPortraitReady] = useState(false);
   const [displayReward, setDisplayReward] = useState(0);
 
   // Count the reward chip up from zero when the overlay opens.
   useEffect(() => {
-    if (!open || !reward) return;
+    if (!open || !portraitReady || !reward) return;
     if (prefersReducedMotion()) {
       setDisplayReward(reward);
       return;
@@ -114,12 +116,12 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
     };
     frame = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(frame);
-  }, [open, reward]);
+  }, [open, portraitReady, reward]);
 
   const safeIndex = lineIndex >= safeLines.length ? safeLines.length - 1 : lineIndex;
   const activeLine = safeLines[safeIndex] ?? '';
 
-  useScrollLock(open);
+  useScrollLock(open && portraitReady);
 
   // Reset to the first line whenever the overlay opens or the script changes.
   useEffect(() => {
@@ -137,7 +139,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
 
   // Typewriter reveal for the active line (instant under reduced-motion).
   useEffect(() => {
-    if (!open) return;
+    if (!open || !portraitReady) return;
     clearTyping();
 
     if (prefersReducedMotion() || speed <= 0) {
@@ -163,7 +165,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
     typeTimer.current = setTimeout(step, 90);
 
     return clearTyping;
-  }, [open, activeLine, speed, clearTyping]);
+  }, [open, portraitReady, activeLine, speed, clearTyping]);
 
   const finishTyping = useCallback(() => {
     clearTyping();
@@ -206,6 +208,17 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
     setHistoryOpen((v) => !v);
   }, [play]);
 
+  const closeHistory = useCallback(() => {
+    play('click');
+    setHistoryOpen(false);
+    window.setTimeout(() => arrowRef.current?.focus(), 0);
+  }, [play]);
+
+  useEffect(() => {
+    if (!historyOpen) return;
+    historyCloseRef.current?.focus();
+  }, [historyOpen]);
+
   const handleStubClose = useCallback(() => {
     // Load is a stub for now.
     play('click');
@@ -214,10 +227,14 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
 
   // ESC closes; focus trap keeps Tab inside the dialog.
   useEffect(() => {
-    if (!open) return;
+    if (!open || !portraitReady) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault();
+        if (historyOpen) {
+          closeHistory();
+          return;
+        }
         close();
         return;
       }
@@ -240,20 +257,33 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, close]);
+  }, [open, portraitReady, close, historyOpen, closeHistory]);
 
   // Focus management: capture, focus the arrow on open, restore on close.
   useEffect(() => {
-    if (!open) return;
+    if (!open || !portraitReady) return;
     previouslyFocused.current = document.activeElement as HTMLElement | null;
     const t = setTimeout(() => arrowRef.current?.focus(), 30);
     return () => {
       clearTimeout(t);
       previouslyFocused.current?.focus?.();
     };
-  }, [open]);
+  }, [open, portraitReady]);
 
-  if (!open) return null;
+  if (!open || !portraitReady) {
+    return (
+      <Image
+        src="/images/blue-dialogue-expressions.png"
+        alt=""
+        width={2752}
+        height={1536}
+        sizes="(max-width: 560px) 1400px, 1800px"
+        priority
+        className={styles.preloadImage}
+        onLoad={() => setPortraitReady(true)}
+      />
+    );
+  }
 
   const hover = () => play('soft-hover');
   const expressionPosition = EXPRESSION_POSITION[emotion];
@@ -276,19 +306,26 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
         if (e.target === e.currentTarget) close();
       }}
     >
-      <div className={styles.stage}>
-        <div
-          className={styles.portrait}
-          style={
-            {
-              '--portrait-x': expressionPosition.x,
-              '--portrait-y': expressionPosition.y,
-            } as React.CSSProperties
-          }
-          role="img"
-          aria-label={`Blue, ${emotion}`}
-        >
-          <span className={styles.portraitImage} aria-hidden="true" />
+      <div
+        className={`${styles.stage} ${portraitReady ? styles.stageReady : ''}`}
+      >
+        <div className={styles.portrait}>
+          <Image
+            src="/images/blue-dialogue-expressions.png"
+            alt={`Blue, ${emotion}`}
+            width={2752}
+            height={1536}
+            sizes="(max-width: 560px) 1400px, 1800px"
+            priority
+            className={styles.portraitImage}
+            style={
+              {
+                '--portrait-left': expressionPosition.left,
+                '--portrait-top': expressionPosition.top,
+              } as React.CSSProperties
+            }
+            onLoad={() => setPortraitReady(true)}
+          />
           <div className={styles.nameCard}>
             <span className={styles.nameText}>Blue</span>
           </div>
@@ -325,7 +362,18 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
 
           {historyOpen && (
             <div className={styles.historyPanel}>
-              <div className={styles.historyHead}>History</div>
+              <div className={styles.historyHeadRow}>
+                <div className={styles.historyHead}>History</div>
+                <button
+                  ref={historyCloseRef}
+                  type="button"
+                  className={styles.historyClose}
+                  onClick={closeHistory}
+                  onMouseEnter={hover}
+                >
+                  Close
+                </button>
+              </div>
               <ul className={styles.historyList}>
                 {dialogueHistory.length === 0 && (
                   <li className={styles.historyEmpty}>No lines yet this session.</li>
@@ -364,16 +412,13 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
                 safeIndex < safeLines.length - 1 ? 'Next line' : 'Close dialogue'
               }
             >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M9 5l7 7-7 7"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <Image
+                src="/icons/ui-arrow.svg"
+                alt=""
+                width={77}
+                height={77}
+                className={styles.arrowIcon}
+              />
             </button>
           </div>
         </div>
