@@ -171,7 +171,7 @@ function connectedIds(selectedId: string | null, byId: Map<string, PlacedNode>):
 }
 
 /** A single node: a flat-shaded sphere that reads as a solid circle from any
- *  angle, wrapped in an additive glow shell. */
+ *  angle. */
 function GraphNode({
   item,
   appearDelay,
@@ -193,11 +193,9 @@ function GraphNode({
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const coreMat = useRef<THREE.MeshBasicMaterial>(null);
-  const glowMat = useRef<THREE.MeshBasicMaterial>(null);
 
   const baseScale = 0.2 + Math.min(item.unlockCount, 6) * 0.035;
   const baseCore = dimmed ? 0.14 : 1;
-  const baseGlow = dimmed ? 0.02 : 0.07;
 
   useFrame(({ clock }) => {
     const g = groupRef.current;
@@ -213,7 +211,6 @@ function GraphNode({
     g.scale.setScalar(baseScale * eased * pulse * (selected ? 1.28 : 1));
 
     if (coreMat.current) coreMat.current.opacity = baseCore * eased;
-    if (glowMat.current) glowMat.current.opacity = baseGlow * eased;
   });
 
   const color = selected ? '#ffffff' : item.color;
@@ -240,22 +237,9 @@ function GraphNode({
         onHover(null);
       }}
     >
-      {/* Circle body */}
       <mesh>
         <sphereGeometry args={[1, 20, 20]} />
         <meshBasicMaterial ref={coreMat} color={color} transparent opacity={baseCore} />
-      </mesh>
-      {/* Additive glow halo */}
-      <mesh scale={[1.7, 1.7, 1.7]}>
-        <sphereGeometry args={[1, 20, 20]} />
-        <meshBasicMaterial
-          ref={glowMat}
-          color={item.color}
-          transparent
-          opacity={baseGlow}
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-        />
       </mesh>
     </group>
   );
