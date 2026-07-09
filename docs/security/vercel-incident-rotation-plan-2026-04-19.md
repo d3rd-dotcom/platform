@@ -27,10 +27,6 @@ This project has server-side endpoints on Vercel that can trigger financial or p
   Uses `CRON_SECRET` and can run the trading cycle.
 - `app/api/treasury/execute/route.ts`
   Uses `INTERNAL_API_SECRET` and can place Polymarket orders.
-- `app/api/treasury/distribute/route.ts`
-  Uses `ADMIN_SECRET` and can distribute USDC to holders.
-- `app/api/treasury/deploy-apple/route.ts`
-  Uses `ADMIN_SECRET` and can deploy a token.
 - `app/api/voting/proposal/review/route.ts`
   Uses `INTERNAL_API_SECRET` and `BLUE_PRIVATE_KEY`; can submit on-chain review actions.
 - `app/api/voting/proposal/review-sweep/route.ts`
@@ -145,7 +141,6 @@ These can cause account abuse, quota burn, impersonation, or downstream compromi
 - `NOSANA_API_KEY`
 - `MAILCHIMP_API_KEY`
 - `PADLET_API`
-- `CLANKER_API_KEY`
 - `CDP_API_KEY_NAME` if paired operationally with the regenerated CDP private key
 
 ### P2: Rotate If Exposed or If Abuse Appears
@@ -243,7 +238,6 @@ After each rotation batch:
 - verify old deployment URLs are not unintentionally public
 - verify `/api/treasury/trade` rejects old auth
 - verify `/api/treasury/execute` rejects old auth
-- verify `/api/treasury/distribute` rejects old auth
 - verify `/api/webhooks/cdp` rejects old signatures
 - verify DB reads and writes still work
 - verify encrypted note read/write still works
@@ -276,7 +270,6 @@ High-confidence secret-bearing env vars found in code or local env inventory:
 - `CDP_API_KEY_NAME`
 - `CDP_API_KEY_PRIVATE_KEY`
 - `CDP_WEBHOOK_SECRET`
-- `CLANKER_API_KEY`
 - `CRON_SECRET`
 - `DATABASE_URL`
 - `DEEPSEEK_API_KEY`
