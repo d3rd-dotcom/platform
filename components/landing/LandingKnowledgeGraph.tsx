@@ -598,14 +598,12 @@ export default function LandingKnowledgeGraph() {
           </>
         ) : (
           <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img className={styles.detailGif} src="/images/walking.gif" alt="Blue walking" />
             <div className={styles.detailCopy}>
-              <span className={styles.detailMeta}>Live guide graph</span>
               <strong className={styles.detailTitle}>
                 {map?.nodes.length ?? 0} verified topics across {map?.levels ?? 0} levels
               </strong>
-              <span className={styles.detailStats}>
-                Height follows prerequisite depth. Color follows subject.
-              </span>
             </div>
             <Link className={styles.detailLink} href="/courses/guides/map">
               Open full map

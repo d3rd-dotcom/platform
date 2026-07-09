@@ -140,7 +140,15 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  flex: 1;
   gap: 3px;
+}
+
+.detailGif {
+  height: 44px;
+  width: auto;
+  flex-shrink: 0;
+  image-rendering: pixelated;
 }
 
 .detailMeta,
