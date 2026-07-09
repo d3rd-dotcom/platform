@@ -159,13 +159,13 @@
 .topPanel {
   display: grid;
   grid-template-columns: minmax(0, 1.85fr) minmax(280px, 0.8fr);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 38%, transparent);
   min-height: 520px;
 }
 
 .graphPanel {
   position: relative;
-  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  border-right: 1px solid color-mix(in oklch, var(--color-primary) 38%, transparent);
   overflow: hidden;
 }
 
@@ -235,7 +235,7 @@
   flex-direction: column;
   gap: 14px;
   padding: 26px 24px 22px;
-  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  border-right: 1px solid color-mix(in oklch, var(--color-primary) 38%, transparent);
   transition: background-color 0.22s ease;
 }
 
@@ -299,7 +299,7 @@
 
   .graphPanel {
     border-right: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 38%, transparent);
   }
 
   .headlinePanel {
@@ -311,7 +311,7 @@
   }
 
   .card {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 38%, transparent);
   }
 
   .card:nth-child(2n) {
@@ -347,7 +347,7 @@
 
   .card {
     border-right: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 38%, transparent);
     padding: 20px 18px 18px;
   }
 

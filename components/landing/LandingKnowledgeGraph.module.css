@@ -132,7 +132,7 @@
   gap: 18px;
   min-height: 84px;
   padding: 14px 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid color-mix(in oklch, var(--color-primary) 38%, transparent);
   background: color-mix(in oklch, var(--color-primary) 6%, #05060a);
 }
 
