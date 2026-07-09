@@ -7,8 +7,8 @@
   overflow-y: auto;
   background-color: #000000;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.04) 0.5px, transparent 0.5px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 0.5px, transparent 0.5px);
+    linear-gradient(rgba(255, 255, 255, 0.09) 0.5px, transparent 0.5px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.09) 0.5px, transparent 0.5px);
   background-size: 40px 40px;
   --hero-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --landing-shell-width: calc(100% - 144px);
@@ -1344,8 +1344,8 @@
   z-index: 0;
   background-color: #000000;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.09) 1px, transparent 1px);
   background-size: 40px 40px;
   overflow: hidden;
 }
@@ -1353,8 +1353,8 @@
 .canvasFallback {
   background-color: #000000;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.09) 1px, transparent 1px);
   background-size: 40px 40px;
 }
 
