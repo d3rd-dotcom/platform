@@ -30,20 +30,27 @@ export const HeroSection: React.FC = () => {
           priority
           aria-hidden="true"
         />
+        <Image
+          src="/images/blueastro.png"
+          alt=""
+          width={400}
+          height={400}
+          className={styles.heroCharacter}
+          priority
+          aria-hidden="true"
+        />
         <div className={styles.heroContent}>
-          <p className={styles.heroTextBadge}>The Next-Gen Education Game For Students</p>
+
           <GlitchRevealText
             as="h1"
             className={styles.heroHeadline}
-            lines={[{ text: 'Global Quality Education' }]}
+            lines={[{ text: 'Academy' }]}
             staggerDelay={50}
             duration={1000}
             startDelay={200}
           />
           <p className={styles.heroSubtext}>
-            A micro-university for intellectual refreshment. Explore courses, guides, and quests
-            while earning real rewards and Bitcoin. Blue, our agentic co-researcher, reviews your
-            work, guides your progress, and keeps the joy of discovery in your hands.
+            Because learning is something everyone should have access to.
           </p>
           <div className={styles.heroActions}>
             <LandingEnterAcademyButton dark />

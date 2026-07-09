@@ -77,7 +77,7 @@ export const FeaturesSection: React.FC = () => {
             </div>
 
             <div className={styles.headlinePanel}>
-              <h2 className={styles.title}>A Living Map Of What You Can Learn</h2>
+              <h2 className={styles.title}>How Can We Reach Our Dreams?</h2>
               <p className={styles.description}>
                 Every verified guide joins the same prerequisite graph. Rotate the map, trace a
                 topic back to its foundations, and find the next concept ready to explore.

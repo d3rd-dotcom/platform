@@ -9,7 +9,7 @@ export const FounderSection: React.FC = () => {
       <div className={founderStyles.container}>
         <div className={founderStyles.avatarWrap} aria-hidden="true">
           <Image
-            src="/images/blue-portrait-flat.png"
+            src="/blue/blue-home.png"
             alt=""
             width={160}
             height={160}

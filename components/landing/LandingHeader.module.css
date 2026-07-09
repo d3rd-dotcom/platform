@@ -6,7 +6,7 @@
   width: min(1280px, var(--landing-shell-width, calc(100% - 144px)));
   z-index: 100;
   padding: 10px var(--landing-shell-padding, 24px);
-  background: rgba(251, 248, 255, 0.78);
+  background: rgba(11, 12, 18, 0.82);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-radius: 20px;
@@ -61,11 +61,11 @@
 .headerScrolled {
   width: min(950px, var(--landing-shell-width, calc(100% - 144px)));
   padding: 8px clamp(20px, var(--landing-shell-padding, 24px), 24px);
-  background: rgba(251, 248, 255, 0.9);
+  background: rgba(11, 12, 18, 0.92);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-radius: 100px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
 }
 
 .headerMenuOpen {
@@ -90,7 +90,6 @@
   width: 110px;
   height: auto;
   object-fit: contain;
-  filter: brightness(0);
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -107,7 +106,7 @@
 }
 
 .sectionNavLink {
-  color: rgba(11, 12, 18, 0.72);
+  color: rgba(255, 255, 255, 0.7);
   font-family: var(--font-primary);
   font-size: 0.72rem;
   font-weight: 500;
@@ -119,7 +118,7 @@
 }
 
 .sectionNavLink:hover {
-  color: #000000;
+  color: #ffffff;
 }
 
 .nav {
@@ -144,10 +143,10 @@
   justify-content: center;
   flex-direction: column;
   gap: 5px;
-  border: 1px solid rgba(11, 12, 18, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 14px;
-  background: rgba(11, 12, 18, 0.04);
-  color: #11131B;
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
   cursor: pointer;
 }
 
@@ -201,6 +200,13 @@
   font-size: 0.75rem;
 }
 
+.mobileMenuPanel {
+  background: rgba(11, 12, 18, 0.95);
+  border-radius: 16px;
+  padding: 12px 16px;
+  margin-top: 8px;
+}
+
 .discordButton:hover {
   background: #1A1A1A;
   border-color: #1A1A1A;
@@ -212,10 +218,10 @@
   align-items: center;
   justify-content: center;
   background: transparent;
-  border: 1px solid rgba(11, 12, 18, 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.35);
   padding: 0.68rem 1.4rem 0.58rem;
   border-radius: 100px;
-  color: #11131B;
+  color: #ffffff;
   font-size: 0.875rem;
   font-weight: var(--font-weight-medium);
   font-family: var(--font-button);
@@ -232,9 +238,9 @@
 }
 
 .loginButton:hover {
-  background: rgba(11, 12, 18, 0.06);
-  border-color: rgba(11, 12, 18, 0.7);
-  color: #000000;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.7);
+  color: #ffffff;
 }
 
 .joinButton {
@@ -373,7 +379,10 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding: 12px 2px 2px;
+    background: rgba(11, 12, 18, 0.95);
+    border-radius: 16px;
+    padding: 12px 16px;
+    margin-top: 8px;
   }
 
   .mobileSectionNav {
@@ -383,7 +392,7 @@
   }
 
   .mobileSectionNavLink {
-    color: #11131B;
+    color: rgba(255, 255, 255, 0.8);
     font-family: var(--font-primary);
     font-size: 0.78rem;
     font-weight: 500;
