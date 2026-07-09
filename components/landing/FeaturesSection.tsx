@@ -10,7 +10,7 @@ const featureCards = [
     title: 'The Micro-University',
     description:
       'One verified guide per topic, level-gated so there are no duplicate tutorials to sort through.',
-    details: ['One verified guide per topic', 'Free, always'],
+    details: ['Level-up and earn xp + rewards', 'Join a cohort of amazing builders and creators'],
   },
   {
     title: 'Quests With Blue',
