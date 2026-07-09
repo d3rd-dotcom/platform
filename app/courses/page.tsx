@@ -19,6 +19,90 @@ import { useSound } from '@/hooks/useSound';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 import styles from './page.module.css';
 
+const COURSES_INTRO_SEEN_KEY = 'mwa-courses-intro-seen';
+const COURSES_DIALOGUE_DATE_KEY = 'mwa-courses-dialogue-date';
+
+interface CourseDialogue {
+  emotion: 'neutral' | 'happy' | 'confused' | 'surprised' | 'calm';
+  lines: string[];
+}
+
+const FIRST_COURSES_DIALOGUE: CourseDialogue = {
+  emotion: 'neutral',
+  lines: [
+    'I keep the Academy learning records. This page is where courses, guides, and field notes meet.',
+    'Start with one guide, continue a course, or record an observation. I remember what you finish.',
+    'Completing lessons and guides earns diamonds. Your progress unlocks the next branch.',
+  ],
+};
+
+const DAILY_COURSES_DIALOGUES: CourseDialogue[] = [
+  {
+    emotion: 'calm',
+    lines: [
+      'One completed guide teaches me more than five open tabs.',
+      'Choose the next node. Finish it, then follow the branch it unlocks.',
+    ],
+  },
+  {
+    emotion: 'neutral',
+    lines: [
+      'Retrieval strengthens memory.',
+      'Read one guide, close it, then explain the idea without looking.',
+    ],
+  },
+  {
+    emotion: 'confused',
+    lines: [
+      'I found several unfinished threads in the learning record.',
+      'Pick one lesson small enough to complete today. Give me a clean result.',
+    ],
+  },
+  {
+    emotion: 'surprised',
+    lines: [
+      'A field note can turn a passing thought into evidence.',
+      'Capture one pattern or anomaly before memory rewrites it.',
+    ],
+  },
+  {
+    emotion: 'calm',
+    lines: [
+      'The knowledge tree maps dependencies.',
+      'Clear the next prerequisite and the harder branch opens.',
+    ],
+  },
+  {
+    emotion: 'happy',
+    lines: [
+      'A course is a hypothesis with a schedule.',
+      'Build one when you can name what should change by the final week.',
+    ],
+  },
+  {
+    emotion: 'neutral',
+    lines: [
+      'Questions improve when you return to them.',
+      'Choose one topic you can test, revise, and study from another angle.',
+    ],
+  },
+];
+
+function localDateKey(date = new Date()): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function dialogueIndexForDate(dateKey: string): number {
+  let hash = 0;
+  for (const character of dateKey) {
+    hash = (hash * 31 + character.charCodeAt(0)) >>> 0;
+  }
+  return hash % DAILY_COURSES_DIALOGUES.length;
+}
+
 function getCourseEndDate() {
   const d = new Date();
   d.setDate(d.getDate() + 84);
@@ -75,20 +159,32 @@ export default function CoursesPage() {
   const [fieldNotesOpen, setFieldNotesOpen] = useState(false);
   const [noteCount, setNoteCount] = useState(0);
   const [introOpen, setIntroOpen] = useState(false);
+  const [courseDialogue, setCourseDialogue] = useState<CourseDialogue>(
+    FIRST_COURSES_DIALOGUE,
+  );
   const { play } = useSound();
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const seen = getStorageItem('mwa-courses-intro-seen');
-    if (!seen) {
-      const timer = setTimeout(() => setIntroOpen(true), 500);
-      return () => clearTimeout(timer);
-    }
+
+    const today = localDateKey();
+    if (getStorageItem(COURSES_DIALOGUE_DATE_KEY) === today) return;
+
+    const hasSeenIntro = getStorageItem(COURSES_INTRO_SEEN_KEY) === 'true';
+    const dialogue = hasSeenIntro
+      ? DAILY_COURSES_DIALOGUES[dialogueIndexForDate(today)]
+      : FIRST_COURSES_DIALOGUE;
+
+    setCourseDialogue(dialogue);
+    setStorageItem(COURSES_DIALOGUE_DATE_KEY, today);
+    if (!hasSeenIntro) setStorageItem(COURSES_INTRO_SEEN_KEY, 'true');
+
+    const timer = window.setTimeout(() => setIntroOpen(true), 500);
+    return () => window.clearTimeout(timer);
   }, []);
 
   const handleIntroClose = () => {
     setIntroOpen(false);
-    setStorageItem('mwa-courses-intro-seen', 'true');
   };
 
   useEffect(() => {
@@ -655,13 +751,8 @@ export default function CoursesPage() {
 
       <BlueDialogue
         open={introOpen}
-        lines={[
-          "Hey, welcome to the Mental Wealth Academy learning hub!",
-          "You'll find a lot of guides made by our community on many topics. You can start from level-1 or skip.",
-          "You earn diamonds ($BLUE) for each level. The more Blue Diamonds you hold, the more Blue Bitcoin you'll accumulate.",
-          "Continue exploring and contributing to the platform to earn.",
-        ]}
-        emotion="happy"
+        lines={courseDialogue.lines}
+        emotion={courseDialogue.emotion}
         onClose={handleIntroClose}
       />
 

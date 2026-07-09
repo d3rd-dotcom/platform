@@ -52,8 +52,8 @@ interface IntroStep {
 
 const INTRO_STEPS: IntroStep[] = [
   {
-    title: 'Field Notes — Your Research Log',
-    body: 'Write about science, patterns, things you\'ve observed recently. That\'s the whole game — keep your eyes open and scribble it down. No rules, no grades, just notes.',
+    title: 'Signal acquired',
+    body: 'The day leaves traces. Field notes preserve one before memory edits the file.',
   },
 ];
 
@@ -333,7 +333,7 @@ export default function FeatureTour() {
 
   if (typeof document === 'undefined') return null;
 
-  const blueHeader = (extra?: ReactNode, name: string = 'Daemon') => (
+  const blueHeader = (extra?: ReactNode, name: string = 'Blue') => (
     <div className={styles.blueHead}>
       <span className={styles.blueAvatar}>
         <Image
@@ -355,12 +355,12 @@ export default function FeatureTour() {
       <div className={`${styles.scrim} ${styles.scrimSolid}`} />
       <div ref={calloutRef} className={`${styles.callout} ${styles.calloutCentered}`}>
         {blueHeader()}
-        <h3 className={styles.title}>First Field Note Locked</h3>
+        <h3 className={styles.title}>First signal archived</h3>
         <p className={styles.body}>
-          One down. Keep that streak alive and your course is waiting — weekly tasks, activities, the real work.
+          I saved the entry. Your course turns one observation into a pattern you can test.
         </p>
         <p className={styles.bodyFaint}>
-          Want to know how something works? Just ask me.
+          Choose one mission. I will remember the result.
         </p>
         <div className={styles.actions}>
           <span className={styles.skipSlot}>
@@ -448,12 +448,12 @@ export default function FeatureTour() {
       )}
 
       <div ref={calloutRef} className={styles.callout}>
-        {blueHeader(undefined, 'Daemon')}
+        {blueHeader()}
         {remindMode === 'done' ? (
           <>
-            <h3 className={styles.title}>Field Notes Locked</h3>
+            <h3 className={styles.title}>Record sealed</h3>
             <p className={styles.body}>
-              Today&rsquo;s observations are sealed. Streak lives. Back tomorrow for more.
+              Today&rsquo;s signal is in the archive. Your streak holds. Return when the world gives you another anomaly.
             </p>
             <div className={styles.actions}>
               <span className={styles.skipSlot} />
@@ -466,9 +466,9 @@ export default function FeatureTour() {
           </>
         ) : (
           <>
-            <h3 className={styles.title}>Field Notes Are Due</h3>
+            <h3 className={styles.title}>The archive is listening</h3>
             <p className={styles.body}>
-              Your daily log needs fresh observations. Science, patterns, anomalies — whatever crossed your path. Just get it down.
+              Bring me one pattern, question, or anomaly from today. I will keep it beside the rest of your work.
             </p>
             <div className={styles.actions}>
               <span className={styles.skipSlot}>
