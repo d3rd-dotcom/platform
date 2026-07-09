@@ -1,4 +1,4 @@
-import { sqlQuery } from './db';
+import { sqlQuery, sqlQueryWithClient, withTransaction } from './db';
 import {
   GUIDE_COMPLETE_REWARD,
   LEVEL_CLEAR_REWARD,
@@ -31,11 +31,18 @@ export interface GuideRecord {
   id: string;
   slug: string;
   topicTitle: string;
+  topicAliases: string[];
+  summary: string;
+  intendedAudience: string;
+  estimatedMinutes: number | null;
+  sourceProvenance: string;
+  sourceReviewedAt: string | null;
   body: GuideBodyComponent[];
   status: GuideStatus;
   authorId: string | null;
   canonicalGroupId: string | null;
   subjects: string[];
+  subjectIds: string[];
   /**
    * Observable "evidence criteria" — short statements of what a learner can do
    * once they have the topic ("The learner can name three cognitive distortions
@@ -44,6 +51,14 @@ export interface GuideRecord {
   evidenceCriteria: string[];
   createdAt: string;
   updatedAt: string;
+}
+
+export interface GuideSubjectDefinition {
+  id: string;
+  label: string;
+  description: string;
+  aliases: string[];
+  sortOrder: number;
 }
 
 export interface GuideMethodRecord {
@@ -121,6 +136,11 @@ interface GuideRow {
   id: string;
   slug: string;
   topic_title: string;
+  summary: string | null;
+  intended_audience: string | null;
+  estimated_minutes: number | null;
+  source_provenance: string | null;
+  source_reviewed_at: string | null;
   body: unknown;
   status: string;
   author_id: string | null;
@@ -194,16 +214,31 @@ function cleanEvidenceCriteria(criteria: string[]): string[] {
   return out;
 }
 
-function toGuide(row: GuideRow, subjects: string[] = []): GuideRecord {
+function toGuide(
+  row: GuideRow,
+  subjects: string[] = [],
+  subjectIds: string[] = [],
+  topicAliases: string[] = [],
+): GuideRecord {
   return {
     id: row.id,
     slug: row.slug,
     topicTitle: row.topic_title,
+    topicAliases,
+    summary: row.summary?.trim() ?? '',
+    intendedAudience: row.intended_audience?.trim() ?? '',
+    estimatedMinutes:
+      row.estimated_minutes === null || row.estimated_minutes === undefined
+        ? null
+        : Number(row.estimated_minutes),
+    sourceProvenance: row.source_provenance?.trim() ?? '',
+    sourceReviewedAt: row.source_reviewed_at ?? null,
     body: parseBody(row.body),
     status: (row.status as GuideStatus) || 'draft',
     authorId: row.author_id,
     canonicalGroupId: row.canonical_group_id,
     subjects,
+    subjectIds,
     evidenceCriteria: parseEvidenceCriteria(row.evidence_criteria),
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -273,6 +308,40 @@ async function getSubjectsForGuides(guideIds: string[]): Promise<Map<string, str
   return map;
 }
 
+async function getSubjectIdsForGuides(guideIds: string[]): Promise<Map<string, string[]>> {
+  const map = new Map<string, string[]>();
+  if (guideIds.length === 0) return map;
+  const rows = await sqlQuery<Array<{ guide_id: string; subject_id: string }>>(
+    `SELECT guide_id, subject_id FROM guide_subjects
+     WHERE guide_id = ANY(:ids) AND subject_id IS NOT NULL
+     ORDER BY subject ASC`,
+    { ids: guideIds },
+  );
+  for (const row of rows) {
+    const list = map.get(row.guide_id);
+    if (list) list.push(row.subject_id);
+    else map.set(row.guide_id, [row.subject_id]);
+  }
+  return map;
+}
+
+async function getTopicAliasesForGuides(guideIds: string[]): Promise<Map<string, string[]>> {
+  const map = new Map<string, string[]>();
+  if (guideIds.length === 0) return map;
+  const rows = await sqlQuery<Array<{ guide_id: string; alias: string }>>(
+    `SELECT guide_id, alias FROM guide_topic_aliases
+     WHERE guide_id = ANY(:ids)
+     ORDER BY alias ASC`,
+    { ids: guideIds },
+  );
+  for (const row of rows) {
+    const list = map.get(row.guide_id);
+    if (list) list.push(row.alias);
+    else map.set(row.guide_id, [row.alias]);
+  }
+  return map;
+}
+
 // ── Reads ────────────────────────────────────────────────────────────────────
 
 export async function getGuideBySlug(slug: string): Promise<GuideRecord | null> {
@@ -281,8 +350,17 @@ export async function getGuideBySlug(slug: string): Promise<GuideRecord | null> 
     { slug },
   );
   if (!rows[0]) return null;
-  const subjects = await getSubjectsForGuides([rows[0].id]);
-  return toGuide(rows[0], subjects.get(rows[0].id) ?? []);
+  const [subjects, subjectIds, topicAliases] = await Promise.all([
+    getSubjectsForGuides([rows[0].id]),
+    getSubjectIdsForGuides([rows[0].id]),
+    getTopicAliasesForGuides([rows[0].id]),
+  ]);
+  return toGuide(
+    rows[0],
+    subjects.get(rows[0].id) ?? [],
+    subjectIds.get(rows[0].id) ?? [],
+    topicAliases.get(rows[0].id) ?? [],
+  );
 }
 
 export async function listGuides(filter?: {
@@ -318,8 +396,33 @@ export async function listGuides(filter?: {
     `SELECT g.* FROM guides g ${where} ORDER BY g.topic_title ASC`,
     params,
   );
-  const subjects = await getSubjectsForGuides(rows.map((r) => r.id));
-  return rows.map((r) => toGuide(r, subjects.get(r.id) ?? []));
+  const ids = rows.map((row) => row.id);
+  const [subjects, subjectIds, topicAliases] = await Promise.all([
+    getSubjectsForGuides(ids),
+    getSubjectIdsForGuides(ids),
+    getTopicAliasesForGuides(ids),
+  ]);
+  return rows.map((row) =>
+    toGuide(
+      row,
+      subjects.get(row.id) ?? [],
+      subjectIds.get(row.id) ?? [],
+      topicAliases.get(row.id) ?? [],
+    ),
+  );
+}
+
+export async function listGuideSubjectCatalog(): Promise<GuideSubjectDefinition[]> {
+  return sqlQuery<GuideSubjectDefinition[]>(
+    `SELECT
+       id,
+       label,
+       description,
+       aliases,
+       sort_order AS "sortOrder"
+     FROM guide_subject_catalog
+     ORDER BY sort_order ASC, label ASC`,
+  );
 }
 
 export async function getGuideMethods(guideId: string): Promise<GuideMethodRecord[]> {
@@ -405,10 +508,17 @@ export async function getFrontierGuides(userId: string): Promise<FrontierGuide[]
 export async function createGuide(input: {
   slug: string;
   topicTitle: string;
+  topicAliases?: string[];
+  summary?: string;
+  intendedAudience?: string;
+  estimatedMinutes?: number | null;
+  sourceProvenance?: string;
+  sourceReviewedAt?: string | null;
   body?: GuideBodyComponent[];
   authorId?: string | null;
   status?: GuideStatus;
   evidenceCriteria?: string[];
+  subjectIds?: string[];
 }): Promise<GuideRecord> {
   // NULL (not an empty array) when no criteria are supplied, keeping the column's
   // "author hasn't set these yet" semantics distinct from "set to none".
@@ -417,19 +527,64 @@ export async function createGuide(input: {
       ? cleanEvidenceCriteria(input.evidenceCriteria)
       : null;
   const rows = await sqlQuery<GuideRow[]>(
-    `INSERT INTO guides (slug, topic_title, body, author_id, status, evidence_criteria)
-     VALUES (:slug, :topicTitle, :body::jsonb, :authorId, :status, :evidenceCriteria::jsonb)
+    `INSERT INTO guides (
+       slug,
+       topic_title,
+       summary,
+       intended_audience,
+       estimated_minutes,
+       source_provenance,
+       source_reviewed_at,
+       body,
+       author_id,
+       status,
+       evidence_criteria
+     )
+     VALUES (
+       :slug,
+       :topicTitle,
+       :summary,
+       :intendedAudience,
+       :estimatedMinutes,
+       :sourceProvenance,
+       :sourceReviewedAt,
+       :body::jsonb,
+       :authorId,
+       :status,
+       :evidenceCriteria::jsonb
+     )
      RETURNING *`,
     {
       slug: input.slug,
       topicTitle: input.topicTitle,
+      summary: input.summary?.trim() || null,
+      intendedAudience: input.intendedAudience?.trim() || null,
+      estimatedMinutes: input.estimatedMinutes ?? null,
+      sourceProvenance: input.sourceProvenance?.trim() || null,
+      sourceReviewedAt: input.sourceReviewedAt ?? null,
       body: JSON.stringify(input.body ?? []),
       authorId: input.authorId ?? null,
       status: input.status ?? 'draft',
       evidenceCriteria: criteria ? JSON.stringify(criteria) : null,
     },
   );
-  return toGuide(rows[0], []);
+  if (input.subjectIds !== undefined) {
+    await setGuideCanonicalSubjects(rows[0].id, input.subjectIds);
+  }
+  if (input.topicAliases !== undefined) {
+    await setGuideTopicAliases(rows[0].id, input.topicAliases, input.topicTitle);
+  }
+  const [subjects, subjectIds, aliases] = await Promise.all([
+    getSubjectsForGuides([rows[0].id]),
+    getSubjectIdsForGuides([rows[0].id]),
+    getTopicAliasesForGuides([rows[0].id]),
+  ]);
+  return toGuide(
+    rows[0],
+    subjects.get(rows[0].id) ?? [],
+    subjectIds.get(rows[0].id) ?? [],
+    aliases.get(rows[0].id) ?? [],
+  );
 }
 
 /**
@@ -441,8 +596,15 @@ export async function createGuide(input: {
 export async function updateGuide(input: {
   id: string;
   topicTitle?: string;
+  topicAliases?: string[];
+  summary?: string;
+  intendedAudience?: string;
+  estimatedMinutes?: number | null;
+  sourceProvenance?: string;
+  sourceReviewedAt?: string | null;
   body?: GuideBodyComponent[];
   subjects?: string[];
+  subjectIds?: string[];
   evidenceCriteria?: string[];
 }): Promise<GuideRecord> {
   const sets: string[] = [];
@@ -451,6 +613,26 @@ export async function updateGuide(input: {
   if (typeof input.topicTitle === 'string') {
     sets.push('topic_title = :topicTitle');
     params.topicTitle = input.topicTitle;
+  }
+  if (typeof input.summary === 'string') {
+    sets.push('summary = :summary');
+    params.summary = input.summary.trim() || null;
+  }
+  if (typeof input.intendedAudience === 'string') {
+    sets.push('intended_audience = :intendedAudience');
+    params.intendedAudience = input.intendedAudience.trim() || null;
+  }
+  if (input.estimatedMinutes !== undefined) {
+    sets.push('estimated_minutes = :estimatedMinutes');
+    params.estimatedMinutes = input.estimatedMinutes;
+  }
+  if (typeof input.sourceProvenance === 'string') {
+    sets.push('source_provenance = :sourceProvenance');
+    params.sourceProvenance = input.sourceProvenance.trim() || null;
+  }
+  if (input.sourceReviewedAt !== undefined) {
+    sets.push('source_reviewed_at = :sourceReviewedAt');
+    params.sourceReviewedAt = input.sourceReviewedAt;
   }
   if (input.body !== undefined) {
     sets.push('body = :body::jsonb');
@@ -474,13 +656,28 @@ export async function updateGuide(input: {
   if (input.subjects !== undefined) {
     await setGuideSubjects(input.id, input.subjects);
   }
+  if (input.subjectIds !== undefined) {
+    await setGuideCanonicalSubjects(input.id, input.subjectIds);
+  }
+  if (input.topicAliases !== undefined) {
+    await setGuideTopicAliases(input.id, input.topicAliases, input.topicTitle);
+  }
 
   const rows = await sqlQuery<GuideRow[]>(`SELECT * FROM guides WHERE id = :id`, { id: input.id });
   if (!rows[0]) {
     throw Object.assign(new Error('Guide not found.'), { status: 404 });
   }
-  const subjects = await getSubjectsForGuides([input.id]);
-  return toGuide(rows[0], subjects.get(input.id) ?? []);
+  const [subjects, subjectIds, topicAliases] = await Promise.all([
+    getSubjectsForGuides([input.id]),
+    getSubjectIdsForGuides([input.id]),
+    getTopicAliasesForGuides([input.id]),
+  ]);
+  return toGuide(
+    rows[0],
+    subjects.get(input.id) ?? [],
+    subjectIds.get(input.id) ?? [],
+    topicAliases.get(input.id) ?? [],
+  );
 }
 
 /**
@@ -499,6 +696,88 @@ export async function setGuideSubjects(guideId: string, subjects: string[]): Pro
       { guideId, subject },
     );
   }
+}
+
+export async function setGuideCanonicalSubjects(
+  guideId: string,
+  subjectIds: string[],
+): Promise<void> {
+  const cleaned = Array.from(
+    new Set(subjectIds.map((id) => id.trim()).filter(Boolean)),
+  ).slice(0, 12);
+  await withTransaction(async (client) => {
+    const catalog = cleaned.length
+      ? await sqlQueryWithClient<Array<{ id: string; label: string }>>(
+          client,
+          `SELECT id, label
+           FROM guide_subject_catalog
+           WHERE id = ANY(:ids)`,
+          { ids: cleaned },
+        )
+      : [];
+    if (catalog.length !== cleaned.length) {
+      throw Object.assign(new Error('One or more subjects are unavailable.'), { status: 400 });
+    }
+
+    const byId = new Map(catalog.map((subject) => [subject.id, subject.label]));
+    await sqlQueryWithClient(
+      client,
+      `DELETE FROM guide_subjects WHERE guide_id = :guideId`,
+      { guideId },
+    );
+    for (const subjectId of cleaned) {
+      await sqlQueryWithClient(
+        client,
+        `INSERT INTO guide_subjects (guide_id, subject, subject_id)
+         VALUES (:guideId, :subject, :subjectId)
+         ON CONFLICT (guide_id, subject) DO UPDATE SET subject_id = EXCLUDED.subject_id`,
+        { guideId, subject: byId.get(subjectId), subjectId },
+      );
+    }
+  });
+}
+
+export async function setGuideTopicAliases(
+  guideId: string,
+  aliases: string[],
+  topicTitle?: string,
+): Promise<void> {
+  let canonicalTitle = topicTitle;
+  await withTransaction(async (client) => {
+    if (!canonicalTitle) {
+      const rows = await sqlQueryWithClient<Array<{ topic_title: string }>>(
+        client,
+        `SELECT topic_title FROM guides WHERE id = :guideId`,
+        { guideId },
+      );
+      canonicalTitle = rows[0]?.topic_title;
+    }
+    const titleKey = canonicalTitle?.trim().toLowerCase();
+    const seen = new Set<string>();
+    const cleaned: string[] = [];
+    for (const raw of aliases) {
+      const alias = raw.trim().replace(/\s+/g, ' ').slice(0, 255);
+      const key = alias.toLowerCase();
+      if (!alias || key === titleKey || seen.has(key)) continue;
+      seen.add(key);
+      cleaned.push(alias);
+      if (cleaned.length === 12) break;
+    }
+
+    await sqlQueryWithClient(
+      client,
+      `DELETE FROM guide_topic_aliases WHERE guide_id = :guideId`,
+      { guideId },
+    );
+    for (const alias of cleaned) {
+      await sqlQueryWithClient(
+        client,
+        `INSERT INTO guide_topic_aliases (guide_id, alias)
+         VALUES (:guideId, :alias)`,
+        { guideId, alias },
+      );
+    }
+  });
 }
 
 /**
@@ -546,7 +825,15 @@ export async function searchPublishedGuides(input: {
     params.excludeId = input.excludeId;
   }
   if (input.query && input.query.trim()) {
-    clauses.push('(g.topic_title ILIKE :q OR g.slug ILIKE :q)');
+    clauses.push(`(
+      g.topic_title ILIKE :q
+      OR g.slug ILIKE :q
+      OR EXISTS (
+        SELECT 1
+        FROM guide_topic_aliases gta
+        WHERE gta.guide_id = g.id AND gta.alias ILIKE :q
+      )
+    )`);
     params.q = `%${input.query.trim()}%`;
   }
 
@@ -890,14 +1177,14 @@ export async function getKnowledgeMap(userId?: string | null): Promise<Knowledge
 
   const subjectsMap = await getSubjectsForGuides(nodeIds);
 
-  // Bodies → short lede summaries for hover cards (display-only).
-  const bodyRows = await sqlQuery<Array<{ id: string; body: unknown }>>(
-    `SELECT id, body FROM guides WHERE id = ANY(:ids)`,
+  // Prefer the contributor-authored summary, with a body-derived legacy fallback.
+  const bodyRows = await sqlQuery<Array<{ id: string; body: unknown; summary: string | null }>>(
+    `SELECT id, body, summary FROM guides WHERE id = ANY(:ids)`,
     { ids: nodeIds },
   );
   const summaryMap = new Map<string, string>();
   for (const r of bodyRows) {
-    summaryMap.set(r.id, deriveSummary(parseBody(r.body)));
+    summaryMap.set(r.id, r.summary?.trim() || deriveSummary(parseBody(r.body)));
   }
 
   const nodes: KnowledgeMapNode[] = rows.map((r) => ({

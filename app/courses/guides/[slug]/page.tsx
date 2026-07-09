@@ -3,7 +3,18 @@
 import { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
-import { ArrowLeft, ArrowRight, Circle, GraduationCap, TreeStructure, RocketLaunch, X } from '@phosphor-icons/react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  BookOpenText,
+  Circle,
+  Clock,
+  GraduationCap,
+  RocketLaunch,
+  TreeStructure,
+  UsersThree,
+  X,
+} from '@phosphor-icons/react';
 import { usePrivy } from '@privy-io/react-auth';
 import { useSound } from '@/hooks/useSound';
 import { useScrollLock } from '@/hooks/useScrollLock';
@@ -29,6 +40,15 @@ interface GuidePayload {
   prereqs: GuideLink[];
   dependents: GuideLink[];
   level?: number;
+}
+
+function formatReviewedDate(value: string): string {
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(`${value.slice(0, 10)}T00:00:00Z`));
 }
 
 function WalkthroughOverlay({ slug, onClose }: { slug: string; onClose: () => void }) {
@@ -140,7 +160,7 @@ export default function GuidePage({ params }: PageProps) {
                   );
                 })}
                 {typeof data.level === 'number' && (
-                  <span className={styles.levelChip}>Level {data.level}</span>
+                  <span className={styles.levelChip}>Depth {data.level}</span>
                 )}
                 <button
                   type="button"
@@ -156,6 +176,25 @@ export default function GuidePage({ params }: PageProps) {
                 </button>
               </div>
               <h1 className={styles.title}>{data.guide.topicTitle}</h1>
+              {data.guide.summary && (
+                <p className={styles.topicSummary}>{data.guide.summary}</p>
+              )}
+              {(data.guide.estimatedMinutes || data.guide.intendedAudience) && (
+                <div className={styles.topicMeta}>
+                  {data.guide.estimatedMinutes && (
+                    <span className={styles.topicMetaItem}>
+                      <Clock size={15} weight="bold" />
+                      {data.guide.estimatedMinutes} min
+                    </span>
+                  )}
+                  {data.guide.intendedAudience && (
+                    <span className={styles.topicMetaItem}>
+                      <UsersThree size={15} weight="bold" />
+                      {data.guide.intendedAudience}
+                    </span>
+                  )}
+                </div>
+              )}
             </header>
 
             <BlueGuideCompanion guide={data.guide} prereqs={data.prereqs} />
@@ -219,6 +258,23 @@ export default function GuidePage({ params }: PageProps) {
             <GuideMethods methods={data.methods} />
 
             <GuideMaterials materials={materials} />
+
+            {(data.guide.sourceProvenance || data.guide.sourceReviewedAt) && (
+              <section className={styles.sourceSection}>
+                <h2 className={styles.relHeading}>
+                  <BookOpenText size={16} weight="duotone" className={styles.relIcon} />
+                  Source record
+                </h2>
+                {data.guide.sourceProvenance && (
+                  <p className={styles.sourceText}>{data.guide.sourceProvenance}</p>
+                )}
+                {data.guide.sourceReviewedAt && (
+                  <p className={styles.sourceDate}>
+                    Sources reviewed {formatReviewedDate(data.guide.sourceReviewedAt)}
+                  </p>
+                )}
+              </section>
+            )}
 
             {data.dependents.length > 0 && (
               <section className={styles.relSection}>

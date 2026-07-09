@@ -7,7 +7,13 @@ import CtaButton from '@/components/shared/CtaButton';
 import ComponentPalette from './ComponentPalette';
 import ComponentConfigEditor from './ComponentConfigEditor';
 import GuideBody from '@/components/guides/GuideBody';
-import type { GuideRecord, GuideBodyComponent, GuideLink, ForwardRef } from '@/lib/guides-db';
+import type {
+  GuideRecord,
+  GuideBodyComponent,
+  GuideLink,
+  ForwardRef,
+  GuideSubjectDefinition,
+} from '@/lib/guides-db';
 import type { ComponentType } from '@/lib/vip-course-db';
 import styles from './GuideStudio.module.css';
 
@@ -60,7 +66,16 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
   const [currentSlug, setCurrentSlug] = useState<string | undefined>(slug);
   const [status, setStatus] = useState<GuideRecord['status']>('draft');
   const [topicTitle, setTopicTitle] = useState('');
-  const [subjects, setSubjects] = useState<string[]>([]);
+  const [topicAliases, setTopicAliases] = useState<string[]>([]);
+  const [aliasInput, setAliasInput] = useState('');
+  const [summary, setSummary] = useState('');
+  const [intendedAudience, setIntendedAudience] = useState('');
+  const [estimatedMinutes, setEstimatedMinutes] = useState('');
+  const [sourceProvenance, setSourceProvenance] = useState('');
+  const [sourceReviewedAt, setSourceReviewedAt] = useState('');
+  const [subjectCatalog, setSubjectCatalog] = useState<GuideSubjectDefinition[]>([]);
+  const [subjectIds, setSubjectIds] = useState<string[]>([]);
+  const [legacySubjects, setLegacySubjects] = useState<string[]>([]);
   const [subjectInput, setSubjectInput] = useState('');
   const [evidenceCriteria, setEvidenceCriteria] = useState<string[]>([]);
   const [body, setBody] = useState<GuideBodyComponent[]>([]);
@@ -96,7 +111,18 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
         setGuideId(guide.id);
         setStatus(guide.status);
         setTopicTitle(guide.topicTitle);
-        setSubjects(guide.subjects ?? []);
+        setTopicAliases(guide.topicAliases ?? []);
+        setSummary(guide.summary ?? '');
+        setIntendedAudience(guide.intendedAudience ?? '');
+        setEstimatedMinutes(
+          guide.estimatedMinutes === null || guide.estimatedMinutes === undefined
+            ? ''
+            : String(guide.estimatedMinutes),
+        );
+        setSourceProvenance(guide.sourceProvenance ?? '');
+        setSourceReviewedAt(guide.sourceReviewedAt?.slice(0, 10) ?? '');
+        setSubjectIds(guide.subjectIds ?? []);
+        setLegacySubjects(guide.subjects ?? []);
         setEvidenceCriteria(Array.isArray(guide.evidenceCriteria) ? guide.evidenceCriteria : []);
         setBody(Array.isArray(guide.body) ? guide.body : []);
         setDagLevel(typeof data.level === 'number' ? data.level : 0);
@@ -110,6 +136,33 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
       }
     })();
   }, [slug, authHeaders]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch('/api/guides/subjects', { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json();
+        setSubjectCatalog(Array.isArray(data.subjects) ? data.subjects : []);
+      } catch {
+        /* The author can keep editing while the catalog request is unavailable. */
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (subjectCatalog.length === 0 || subjectIds.length > 0 || legacySubjects.length === 0) {
+      return;
+    }
+    const legacyKeys = new Set(legacySubjects.map((subject) => subject.trim().toLowerCase()));
+    const matched = subjectCatalog
+      .filter((subject) => {
+        const names = [subject.label, ...subject.aliases].map((name) => name.toLowerCase());
+        return names.some((name) => legacyKeys.has(name));
+      })
+      .map((subject) => subject.id);
+    if (matched.length > 0) setSubjectIds(matched);
+  }, [legacySubjects, subjectCatalog, subjectIds.length]);
 
   useEffect(() => {
     if (!slug && titleRef.current) titleRef.current.focus();
@@ -180,19 +233,33 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
     setDirty(true);
   };
 
-  // ── Subjects ─────────────────────────────────────────────────────────────────
+  // ── Canonical metadata ───────────────────────────────────────────────────────
   const addSubject = () => {
-    const s = subjectInput.trim();
-    if (!s) return;
-    if (!subjects.some((x) => x.toLowerCase() === s.toLowerCase())) {
-      setSubjects((prev) => [...prev, s]);
+    if (!subjectInput) return;
+    if (!subjectIds.includes(subjectInput)) {
+      setSubjectIds((prev) => [...prev, subjectInput]);
       setDirty(true);
     }
     setSubjectInput('');
   };
 
-  const removeSubject = (s: string) => {
-    setSubjects((prev) => prev.filter((x) => x !== s));
+  const removeSubject = (subjectId: string) => {
+    setSubjectIds((prev) => prev.filter((id) => id !== subjectId));
+    setDirty(true);
+  };
+
+  const addAlias = () => {
+    const alias = aliasInput.trim().replace(/\s+/g, ' ');
+    if (!alias || alias.toLowerCase() === topicTitle.trim().toLowerCase()) return;
+    if (!topicAliases.some((item) => item.toLowerCase() === alias.toLowerCase())) {
+      setTopicAliases((prev) => [...prev, alias].slice(0, 12));
+      setDirty(true);
+    }
+    setAliasInput('');
+  };
+
+  const removeAlias = (alias: string) => {
+    setTopicAliases((prev) => prev.filter((item) => item !== alias));
     setDirty(true);
   };
 
@@ -240,7 +307,17 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
         const patchRes = await fetch(`/api/guides/${guide.slug}`, {
           method: 'PATCH',
           headers,
-          body: JSON.stringify({ body, subjects, evidenceCriteria }),
+          body: JSON.stringify({
+            body,
+            topicAliases,
+            summary,
+            intendedAudience,
+            estimatedMinutes: estimatedMinutes ? Number(estimatedMinutes) : null,
+            sourceProvenance,
+            sourceReviewedAt: sourceReviewedAt || null,
+            subjectIds,
+            evidenceCriteria,
+          }),
         });
         const patchData = await patchRes.json().catch(() => ({}));
         if (!patchRes.ok) throw new Error(patchData.error ?? 'Failed to save guide content.');
@@ -254,7 +331,18 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
       const res = await fetch(`/api/guides/${currentSlug}`, {
         method: 'PATCH',
         headers,
-        body: JSON.stringify({ topicTitle: topicTitle.trim(), body, subjects, evidenceCriteria }),
+        body: JSON.stringify({
+          topicTitle: topicTitle.trim(),
+          topicAliases,
+          summary,
+          intendedAudience,
+          estimatedMinutes: estimatedMinutes ? Number(estimatedMinutes) : null,
+          sourceProvenance,
+          sourceReviewedAt: sourceReviewedAt || null,
+          body,
+          subjectIds,
+          evidenceCriteria,
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error ?? 'Failed to save guide.');
@@ -266,7 +354,21 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
     } finally {
       setSaving(false);
     }
-  }, [topicTitle, currentSlug, body, subjects, evidenceCriteria, authHeaders, onCreated]);
+  }, [
+    topicTitle,
+    currentSlug,
+    topicAliases,
+    summary,
+    intendedAudience,
+    estimatedMinutes,
+    sourceProvenance,
+    sourceReviewedAt,
+    body,
+    subjectIds,
+    evidenceCriteria,
+    authHeaders,
+    onCreated,
+  ]);
 
   // ── Prereqs ──────────────────────────────────────────────────────────────────
   const addPrereq = async (prereqId: string) => {
@@ -448,6 +550,7 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
             {previewMode ? (
               <>
                 <h1 style={{ margin: 0 }}>{topicTitle || 'Untitled guide'}</h1>
+                {summary && <p className={styles.previewSummary}>{summary}</p>}
                 <GuideBody body={body} />
               </>
             ) : (
@@ -472,23 +575,48 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
                   </span>
                 </div>
 
-                {/* Subjects */}
+                {/* Topic metadata */}
+                <div>
+                  <h2 className={styles.sectionHeading}>Topic record</h2>
+                  <p className={styles.sectionSub}>
+                    Give learners a clear preview and help contributors find the canonical topic.
+                  </p>
+                </div>
+
                 <div className={styles.field}>
-                  <label className={styles.fieldLabel}>Subjects</label>
+                  <label className={styles.fieldLabel} htmlFor="guide-summary">Summary</label>
+                  <textarea
+                    id="guide-summary"
+                    className={styles.textArea}
+                    value={summary}
+                    onChange={(event) => {
+                      setSummary(event.target.value);
+                      setDirty(true);
+                    }}
+                    placeholder="Explain what the learner will understand or practice."
+                    maxLength={280}
+                    rows={3}
+                    disabled={!isDraft}
+                  />
+                  <span className={styles.fieldCounter}>{summary.length}/280</span>
+                </div>
+
+                <div className={styles.field}>
+                  <label className={styles.fieldLabel}>Topic aliases</label>
                   <span className={styles.fieldHint}>
-                    Tags used to group the guide in the Knowledge Base. Add one or more.
+                    Add common names and search terms for this topic.
                   </span>
-                  {subjects.length > 0 && (
+                  {topicAliases.length > 0 && (
                     <div className={styles.chips}>
-                      {subjects.map((s) => (
-                        <span key={s} className={styles.chip}>
-                          {s}
+                      {topicAliases.map((alias) => (
+                        <span key={alias} className={styles.chip}>
+                          {alias}
                           {isDraft && (
                             <button
                               type="button"
                               className={styles.chipRemove}
-                              onClick={() => removeSubject(s)}
-                              aria-label={`Remove ${s}`}
+                              onClick={() => removeAlias(alias)}
+                              aria-label={`Remove ${alias}`}
                             >
                               <X size={12} weight="bold" />
                             </button>
@@ -497,25 +625,157 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
                       ))}
                     </div>
                   )}
-                  {isDraft && (
+                  {isDraft && topicAliases.length < 12 && (
                     <div className={styles.subjectAddRow}>
                       <input
                         className={styles.textInput}
-                        value={subjectInput}
-                        onChange={(e) => setSubjectInput(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault();
-                            addSubject();
+                        value={aliasInput}
+                        onChange={(event) => setAliasInput(event.target.value)}
+                        onKeyDown={(event) => {
+                          if (event.key === 'Enter') {
+                            event.preventDefault();
+                            addAlias();
                           }
                         }}
-                        placeholder="Add a subject and press enter"
+                        placeholder="Add an alias"
                       />
+                      <CtaButton variant="secondary" size="sm" onClick={addAlias}>
+                        <Plus size={14} weight="bold" /> Add
+                      </CtaButton>
+                    </div>
+                  )}
+                </div>
+
+                <div className={styles.metadataGrid}>
+                  <div className={styles.field}>
+                    <label className={styles.fieldLabel} htmlFor="guide-audience">
+                      Intended audience
+                    </label>
+                    <input
+                      id="guide-audience"
+                      className={styles.textInput}
+                      value={intendedAudience}
+                      onChange={(event) => {
+                        setIntendedAudience(event.target.value);
+                        setDirty(true);
+                      }}
+                      placeholder="Who benefits from this guide?"
+                      maxLength={280}
+                      disabled={!isDraft}
+                    />
+                  </div>
+                  <div className={styles.field}>
+                    <label className={styles.fieldLabel} htmlFor="guide-minutes">
+                      Estimated minutes
+                    </label>
+                    <input
+                      id="guide-minutes"
+                      className={styles.textInput}
+                      type="number"
+                      min={1}
+                      max={600}
+                      step={1}
+                      value={estimatedMinutes}
+                      onChange={(event) => {
+                        setEstimatedMinutes(event.target.value);
+                        setDirty(true);
+                      }}
+                      placeholder="15"
+                      disabled={!isDraft}
+                    />
+                  </div>
+                </div>
+
+                {/* Subjects */}
+                <div className={styles.field}>
+                  <label className={styles.fieldLabel}>Subjects</label>
+                  <span className={styles.fieldHint}>
+                    Choose the academic areas used across the knowledge map.
+                  </span>
+                  {subjectIds.length > 0 && (
+                    <div className={styles.chips}>
+                      {subjectIds.map((subjectId) => {
+                        const subject = subjectCatalog.find((item) => item.id === subjectId);
+                        return (
+                        <span key={subjectId} className={styles.chip}>
+                          {subject?.label ?? subjectId}
+                          {isDraft && (
+                            <button
+                              type="button"
+                              className={styles.chipRemove}
+                              onClick={() => removeSubject(subjectId)}
+                              aria-label={`Remove ${subject?.label ?? subjectId}`}
+                            >
+                              <X size={12} weight="bold" />
+                            </button>
+                          )}
+                        </span>
+                        );
+                      })}
+                    </div>
+                  )}
+                  {isDraft && (
+                    <div className={styles.subjectAddRow}>
+                      <select
+                        className={styles.selectInput}
+                        value={subjectInput}
+                        onChange={(event) => setSubjectInput(event.target.value)}
+                        aria-label="Choose a subject"
+                      >
+                        <option value="">Choose a subject</option>
+                        {subjectCatalog
+                          .filter((subject) => !subjectIds.includes(subject.id))
+                          .map((subject) => (
+                            <option key={subject.id} value={subject.id}>
+                              {subject.label}
+                            </option>
+                          ))}
+                      </select>
                       <CtaButton variant="secondary" size="sm" onClick={addSubject}>
                         <Plus size={14} weight="bold" /> Add
                       </CtaButton>
                     </div>
                   )}
+                </div>
+
+                <div className={styles.metadataGrid}>
+                  <div className={styles.field}>
+                    <label className={styles.fieldLabel} htmlFor="guide-provenance">
+                      Source provenance
+                    </label>
+                    <textarea
+                      id="guide-provenance"
+                      className={styles.textArea}
+                      value={sourceProvenance}
+                      onChange={(event) => {
+                        setSourceProvenance(event.target.value);
+                        setDirty(true);
+                      }}
+                      placeholder="Name the research, publication, or lived-experience source."
+                      maxLength={4000}
+                      rows={4}
+                      disabled={!isDraft}
+                    />
+                  </div>
+                  <div className={styles.field}>
+                    <label className={styles.fieldLabel} htmlFor="guide-reviewed-at">
+                      Sources reviewed
+                    </label>
+                    <input
+                      id="guide-reviewed-at"
+                      className={styles.textInput}
+                      type="date"
+                      value={sourceReviewedAt}
+                      onChange={(event) => {
+                        setSourceReviewedAt(event.target.value);
+                        setDirty(true);
+                      }}
+                      disabled={!isDraft}
+                    />
+                    <span className={styles.fieldHint}>
+                      Record when you last checked the source material.
+                    </span>
+                  </div>
                 </div>
 
                 {/* Evidence criteria */}
@@ -663,7 +923,7 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
                       <span className={styles.dagPositionLabel}>Skill tree position</span>
                       <div className={styles.dagPositionBody}>
                         <span className={styles.dagLevelBadge}>
-                          Level {dagLevel}
+                          Depth {dagLevel}
                         </span>
                         {prereqs.length > 0 && (
                           <span className={styles.dagPrereqCount}>

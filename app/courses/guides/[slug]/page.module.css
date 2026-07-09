@@ -138,6 +138,35 @@
   margin: 0;
 }
 
+.topicSummary {
+  max-width: 68ch;
+  margin: 0;
+  font-family: var(--type-font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+.topicMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+}
+
+.topicMetaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  color: var(--color-text-muted);
+}
+
+.topicMetaItem svg {
+  color: var(--color-primary);
+}
+
 /* ── Article divider — Wikipedia-style ruled separator ──────────────────── */
 .divider {
   display: flex;
@@ -185,6 +214,30 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.sourceSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sourceText,
+.sourceDate {
+  font-family: var(--type-font-body);
+  line-height: 1.55;
+  color: var(--color-text-muted);
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.sourceText {
+  font-size: 0.9375rem;
+}
+
+.sourceDate {
+  font-family: var(--type-font-code);
+  font-size: var(--type-code-size);
 }
 
 /* "What you'll be able to do" — compact evidence-criteria list near the top,

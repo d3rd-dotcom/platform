@@ -47,7 +47,16 @@ export default function KnowledgeMapPage() {
 
   const nodeCount = map?.nodes.length ?? 0;
   const completedCount = completed.size;
-  const levelCount = map?.levels ?? 0;
+  const depthCount = map?.levels ?? 0;
+  const readyCount = useMemo(
+    () =>
+      (map?.nodes ?? []).filter(
+        (node) =>
+          !completed.has(node.id) &&
+          node.prereqIds.every((prereqId) => completed.has(prereqId)),
+      ).length,
+    [completed, map],
+  );
 
   return (
     <div className={styles.layout}>
@@ -74,18 +83,21 @@ export default function KnowledgeMapPage() {
             </span>
             <span className={styles.statDivider} />
             <span className={styles.stat}>
-              <span className={styles.statNum}>{levelCount}</span>
-              <span className={styles.statLabel}>{levelCount === 1 ? 'level' : 'levels'}</span>
+              <span className={styles.statNum}>{depthCount}</span>
+              <span className={styles.statLabel}>
+                {depthCount === 1 ? 'depth' : 'depths'}
+              </span>
             </span>
-            {completedCount > 0 && (
-              <>
-                <span className={styles.statDivider} />
-                <span className={styles.stat}>
-                  <span className={styles.statNum}>{completedCount}</span>
-                  <span className={styles.statLabel}>completed</span>
-                </span>
-              </>
-            )}
+            <span className={styles.statDivider} />
+            <span className={styles.stat}>
+              <span className={styles.statNum}>{completedCount}</span>
+              <span className={styles.statLabel}>cleared</span>
+            </span>
+            <span className={styles.statDivider} />
+            <span className={styles.stat}>
+              <span className={styles.statNum}>{readyCount}</span>
+              <span className={styles.statLabel}>ready now</span>
+            </span>
           </div>
         )}
 

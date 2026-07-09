@@ -15,6 +15,7 @@ import type { Walkthrough, WalkthroughNode } from '@/lib/guides-db';
 // ─────────────────────────────────────────────────────────────────────────────
 
 type NodeState = 'completed' | 'available' | 'locked';
+type ClusterableNode = WalkthroughNode & { subjects?: string[] };
 
 // Verbatim from GuideSkillTree.tsx `bands` useMemo: group by level, sort each
 // band by title, then order bands by ascending level.
@@ -37,6 +38,35 @@ function stateOf(node: WalkthroughNode, completed: Set<string>): NodeState {
   if (completed.has(node.id)) return 'completed';
   const gated = node.prereqIds.some((pid) => !completed.has(pid));
   return gated ? 'locked' : 'available';
+}
+
+function computeDepthProgress(
+  nodes: ClusterableNode[],
+  totalLevels: number,
+  completed: Set<string>,
+  selectedSubject: string | null = null,
+) {
+  const visibleNodes = selectedSubject
+    ? nodes.filter((entry) => entry.subjects?.includes(selectedSubject))
+    : nodes;
+  const stats = Array.from({ length: totalLevels }, (_, level) => {
+    const levelNodes = visibleNodes.filter((entry) => entry.level === level);
+    return {
+      level,
+      total: levelNodes.length,
+      completed: levelNodes.filter((entry) => completed.has(entry.id)).length,
+      available: levelNodes.filter((entry) => stateOf(entry, completed) === 'available').length,
+    };
+  }).filter((stat) => stat.total > 0);
+  const completedNodes = visibleNodes.filter((entry) => completed.has(entry.id));
+  const deepestCompleted =
+    completedNodes.length > 0
+      ? Math.max(...completedNodes.map((entry) => entry.level))
+      : null;
+  const available = visibleNodes.filter(
+    (entry) => stateOf(entry, completed) === 'available',
+  ).length;
+  return { stats, deepestCompleted, available };
 }
 
 // ── Seed-shaped fixture ──────────────────────────────────────────────────────
@@ -155,5 +185,38 @@ describe('stateOf gating', () => {
 
     // Clear level 1 -> target available.
     expect(s('E', ['A', 'B', 'C', 'D'])).toBe('available');
+  });
+});
+
+describe('branch-aware depth progress', () => {
+  it('reports each depth independently when a shallow branch remains incomplete', () => {
+    const walkthrough = makeWalkthrough();
+    const progress = computeDepthProgress(
+      walkthrough.nodes,
+      walkthrough.levels,
+      new Set(['A', 'B', 'C']),
+    );
+
+    expect(progress.deepestCompleted).toBe(1);
+    expect(progress.stats).toEqual([
+      { level: 0, total: 2, completed: 2, available: 0 },
+      { level: 1, total: 2, completed: 1, available: 1 },
+      { level: 2, total: 1, completed: 0, available: 0 },
+    ]);
+  });
+
+  it('narrows progress counts to the selected canonical subject', () => {
+    const nodes: ClusterableNode[] = makeWalkthrough().nodes.map((entry) => ({
+      ...entry,
+      subjects: entry.id === 'A' || entry.id === 'C' ? ['Focus'] : ['Habits'],
+    }));
+    const progress = computeDepthProgress(nodes, 3, new Set(['A']), 'Focus');
+
+    expect(progress.stats).toEqual([
+      { level: 0, total: 1, completed: 1, available: 0 },
+      { level: 1, total: 1, completed: 0, available: 0 },
+    ]);
+    expect(progress.deepestCompleted).toBe(0);
+    expect(progress.available).toBe(0);
   });
 });

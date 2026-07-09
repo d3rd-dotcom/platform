@@ -92,6 +92,13 @@ export async function POST(request: Request) {
     const guide = await createGuide({
       slug,
       topicTitle,
+      topicAliases: body.topicAliases,
+      summary: body.summary,
+      intendedAudience: body.intendedAudience,
+      estimatedMinutes: body.estimatedMinutes,
+      sourceProvenance: body.sourceProvenance,
+      sourceReviewedAt: body.sourceReviewedAt,
+      subjectIds: body.subjectIds,
       body: Array.isArray(body.body) ? (body.body as any[]) : [],
       authorId: userId,
       status: 'draft',

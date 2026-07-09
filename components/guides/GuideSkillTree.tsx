@@ -176,12 +176,27 @@ export default function GuideSkillTree({
     return list;
   }, [placed, byId, hoverId]);
 
-  const currentLevel = useMemo(() => {
-    for (const [level, list] of bands) {
-      if (!list.every((n) => completed.has(n.id))) return level;
-    }
-    return totalLevels > 0 ? totalLevels - 1 : 0;
-  }, [bands, completed, totalLevels]);
+  const depthProgress = useMemo(() => {
+    const visibleNodes = selectedSubject
+      ? inputNodes.filter((node) => node.subjects?.includes(selectedSubject))
+      : inputNodes;
+    const stats = Array.from({ length: totalLevels }, (_, level) => {
+      const nodes = visibleNodes.filter((node) => node.level === level);
+      return {
+        level,
+        total: nodes.length,
+        completed: nodes.filter((node) => completed.has(node.id)).length,
+        available: nodes.filter((node) => stateOf(node) === 'available').length,
+      };
+    }).filter((stat) => stat.total > 0);
+    const completedNodes = visibleNodes.filter((node) => completed.has(node.id));
+    const deepestCompleted =
+      completedNodes.length > 0
+        ? Math.max(...completedNodes.map((node) => node.level))
+        : null;
+    const available = visibleNodes.filter((node) => stateOf(node) === 'available').length;
+    return { stats, deepestCompleted, available };
+  }, [completed, inputNodes, selectedSubject, stateOf, totalLevels]);
 
   const handleActivate = useCallback(
     (p: Placed) => {
@@ -222,27 +237,43 @@ export default function GuideSkillTree({
   return (
     <div className={styles.outer}>
     <div className={styles.wrapper}>
-      {/* ── Progress rail ─────────────────────────────────────────────── */}
-      <aside className={styles.rail} aria-hidden="true">
-        <span className={styles.railLabel}>
-          Level {Math.min(currentLevel + 1, totalLevels)} of {totalLevels}
-        </span>
+      {/* ── Branch-aware progress ─────────────────────────────────────── */}
+      <aside className={styles.rail} aria-label="Knowledge depth progress">
+        <div className={styles.railHeader}>
+          <span className={styles.railLabel}>
+            {selectedSubject ?? 'All subjects'}
+          </span>
+          <span className={styles.railMilestone}>
+            {depthProgress.deepestCompleted === null
+              ? 'First clear ready'
+              : `Depth ${depthProgress.deepestCompleted + 1} reached`}
+          </span>
+          <span className={styles.railReady}>
+            {depthProgress.available} ready now
+          </span>
+        </div>
         <div className={styles.railTicks}>
-          {Array.from({ length: totalLevels }).map((_, i) => {
-            // Rail is bottom-up too: last tick = target level.
-            const level = totalLevels - 1 - i;
-            const bandNodes = bands.find(([l]) => l === level)?.[1] ?? [];
-            const bandDone =
-              bandNodes.length > 0 && bandNodes.every((n) => completed.has(n.id));
-            const isCurrent = level === currentLevel;
+          {[...depthProgress.stats].reverse().map((stat) => {
+            const bandDone = stat.completed === stat.total;
+            const isCurrent = stat.available > 0;
             return (
               <span
-                key={level}
+                key={stat.level}
                 className={`${styles.tick} ${bandDone ? styles.tickDone : ''} ${
                   isCurrent ? styles.tickCurrent : ''
                 }`}
+                title={`Depth ${stat.level + 1}: ${stat.completed} of ${stat.total} cleared`}
               >
-                <span className={styles.tickNum}>{level + 1}</span>
+                <span className={styles.tickRow}>
+                  <span className={styles.tickNum}>Depth {stat.level + 1}</span>
+                  <span className={styles.tickCount}>{stat.completed}/{stat.total}</span>
+                </span>
+                <span className={styles.tickTrack} aria-hidden="true">
+                  <span
+                    className={styles.tickFill}
+                    style={{ width: `${(stat.completed / stat.total) * 100}%` }}
+                  />
+                </span>
               </span>
             );
           })}

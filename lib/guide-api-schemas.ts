@@ -60,6 +60,13 @@ export const createGuideBodySchema = z.object({
   topicTitle: z.string(),
   slug: z.string().optional(),
   body: z.array(z.unknown()).optional(),
+  topicAliases: z.array(z.string()).max(12).optional(),
+  summary: z.string().max(280).optional(),
+  intendedAudience: z.string().max(280).optional(),
+  estimatedMinutes: z.number().int().min(1).max(600).nullable().optional(),
+  sourceProvenance: z.string().max(4000).optional(),
+  sourceReviewedAt: z.string().date().nullable().optional(),
+  subjectIds: z.array(z.string()).max(12).optional(),
   // Observable "evidence criteria" — short strings of what a learner can do once
   // they have the topic. The studio offers 2–5; the DB layer trims/dedupes and
   // clamps to 5, so the schema stays permissive here.
@@ -174,6 +181,17 @@ export type GuidesListResponse = z.infer<typeof guidesListResponseSchema>;
 
 export const guideCreateResponseSchema = z.object({ guide: looseRecord });
 export type GuideCreateResponse = z.infer<typeof guideCreateResponseSchema>;
+
+export const guideSubjectsResponseSchema = z.object({
+  subjects: z.array(z.object({
+    id: z.string(),
+    label: z.string(),
+    description: z.string(),
+    aliases: z.array(z.string()),
+    sortOrder: z.number(),
+  })),
+});
+export type GuideSubjectsResponse = z.infer<typeof guideSubjectsResponseSchema>;
 
 /** GET /api/guides/[slug] — guide detail incl. level field. */
 export const guideDetailResponseSchema = z.object({
