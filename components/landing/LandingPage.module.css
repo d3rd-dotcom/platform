@@ -150,6 +150,24 @@
   object-fit: contain;
   pointer-events: none;
   user-select: none;
+  /* Sway around the cord anchor so the bottom of the image never moves. */
+  transform-origin: bottom center;
+  animation: heroCharacterSway 7s ease-in-out infinite alternate;
+}
+
+@keyframes heroCharacterSway {
+  from {
+    transform: rotate(-2deg);
+  }
+  to {
+    transform: rotate(2.4deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroCharacter {
+    animation: none;
+  }
 }
 
 .heroHeadline {
