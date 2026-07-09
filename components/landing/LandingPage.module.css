@@ -71,13 +71,12 @@
 .heroEarth {
   position: absolute;
   z-index: 2;
-  margin-top: -40px;
-  top: 50%;
+  top: 0;
   left: 50%;
   width: min(72vw, 860px);
   height: auto;
   opacity: 0.8;
-  transform: translate(-50%, -48%);
+  transform: translate(-50%, -50%);
   pointer-events: none;
   user-select: none;
 }
@@ -1146,7 +1145,7 @@
   .heroEarth {
     width: min(145vw, 640px);
     opacity: 0.42;
-    transform: translate(-50%, -46%);
+    transform: translate(-50%, -50%);
   }
 
   .heroTextBadge {
