@@ -40,6 +40,7 @@ export const PixelCursorTrail: React.FC = () => {
     let raf = 0;
     let px = -1;
     let py = -1;
+    let pointerActive = false;
     let hasHeat = false;
 
     const size = () => {
@@ -77,8 +78,10 @@ export const PixelCursorTrail: React.FC = () => {
 
     // Stamp along the pointer path so fast flicks stay continuous
     const onMove = (e: PointerEvent) => {
-      const x = e.clientX;
-      const y = e.clientY;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      pointerActive = true;
       if (px < 0) {
         px = x;
         py = y;
@@ -95,6 +98,10 @@ export const PixelCursorTrail: React.FC = () => {
       py = y;
     };
 
+    const onLeave = () => {
+      pointerActive = false;
+    };
+
     const render = () => {
       raf = requestAnimationFrame(render);
       if (!hasHeat) return;
@@ -103,6 +110,10 @@ export const PixelCursorTrail: React.FC = () => {
         heat[i] *= DECAY;
         if (heat[i] < 0.003) heat[i] = 0;
         else alive = true;
+      }
+      // Keep a crisp live blob under a stationary cursor while the older path fades.
+      if (pointerActive && px >= 0 && py >= 0) {
+        deposit(px, py, DEPOSIT, BRUSH * 0.5);
       }
       ctx.clearRect(0, 0, width, height);
       const side = CELL - 1;
@@ -125,12 +136,16 @@ export const PixelCursorTrail: React.FC = () => {
     size();
     window.addEventListener('resize', size);
     window.addEventListener('pointermove', onMove, { passive: true });
+    window.addEventListener('blur', onLeave);
+    document.addEventListener('mouseleave', onLeave);
     raf = requestAnimationFrame(render);
 
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener('resize', size);
       window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('blur', onLeave);
+      document.removeEventListener('mouseleave', onLeave);
     };
   }, []);
 
