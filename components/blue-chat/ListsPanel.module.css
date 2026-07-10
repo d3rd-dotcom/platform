@@ -3,8 +3,9 @@
   flex-direction: column;
   min-height: 0;
   height: 100%;
+  max-height: 100%;
   padding: 28px 32px 24px;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .header {
@@ -50,8 +51,9 @@
   flex: 1;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 64px;
   min-height: 0;
+  overflow: hidden;
 }
 
 .column {
@@ -68,20 +70,22 @@
 .columnTitle {
   margin: 0;
   font-family: var(--font-editorial), 'PP Editorial New', Georgia, serif;
-  font-size: 1.875rem;
+  font-size: 2.5rem;
   font-weight: 400;
   line-height: 1.2;
   letter-spacing: -0.005em;
   color: rgba(255, 255, 255, 0.96);
+  text-align: center;
 }
 
 .columnSubtitle {
   margin: 5px 0 0;
   font-family: var(--font-editorial), 'PP Editorial New', Georgia, serif;
-  font-size: 1.15rem;
+  font-size: 1.35rem;
   font-style: italic;
   line-height: 1.4;
   color: rgba(255, 255, 255, 0.66);
+  text-align: center;
 }
 
 .columnBlurb {
@@ -91,6 +95,7 @@
   line-height: 1.6;
   letter-spacing: 0.002em;
   color: rgba(255, 255, 255, 0.52);
+  text-align: center;
 }
 
 /* Add row */
@@ -285,7 +290,7 @@
 @media (max-width: 1180px) {
   .columns {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 32px;
   }
 
   .column {

@@ -44,7 +44,7 @@ export const HeroSection: React.FC = () => {
         <div className={styles.heroContent}>
 
           <h1 className={styles.heroHeadline}>
-            The free, social platform, for education and finance.
+            The free, social platform, for worldwide quality education.
           </h1>
           <div className={styles.heroActions}>
             <LandingEnterAcademyButton dark />

@@ -212,7 +212,7 @@ const ListsPanel: React.FC<ListsPanelProps> = ({ authHeaders, isAuthenticated, o
               <ul className={styles.items}>
                 {loading && <li className={styles.placeholder}>Loading…</li>}
                 {!loading && items.length === 0 && (
-                  <li className={styles.placeholder}>Nothing here yet.</li>
+                  <li className={styles.placeholder} aria-hidden="true"></li>
                 )}
                 {!loading && items.map((item) => (
                   <li key={item.id} className={`${styles.item} ${item.done ? styles.itemDone : ''}`}>

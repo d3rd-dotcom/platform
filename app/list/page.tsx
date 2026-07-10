@@ -2,6 +2,7 @@
 
 import React, { useCallback } from 'react';
 import Image from 'next/image';
+
 import { usePrivy } from '@privy-io/react-auth';
 import ListsPanel from '@/components/blue-chat/ListsPanel';
 import { LandingScene } from '@/components/landing/LandingScene';
@@ -43,31 +44,23 @@ export default function ListPage() {
       </div>
 
       <div className={styles.layout}>
-        {/* Floating Blue */}
-        <div className={styles.blueColumn}>
-          <div className={styles.blueWrap}>
-            <Image
-              src="/blue/blue-left.png"
-              alt="Blue"
-              fill
-              className={styles.blueImage}
-              unoptimized
-              priority
-            />
-            <div className={styles.blueGlow} aria-hidden="true" />
-          </div>
-        </div>
-
-        {/* The three lists */}
-        <div className={styles.listsColumn}>
-          <ListsPanel
-            authHeaders={authHeaders}
-            isAuthenticated={ready && authenticated}
-            onSound={play}
-            showHeader={false}
-          />
-        </div>
+        <ListsPanel
+          authHeaders={authHeaders}
+          isAuthenticated={ready && authenticated}
+          onSound={play}
+          showHeader={false}
+        />
       </div>
+
+      <Image
+        src="/images/blueastro.png"
+        alt=""
+        width={400}
+        height={400}
+        className={styles.heroCharacter}
+        priority
+        aria-hidden="true"
+      />
     </main>
   );
 }

@@ -1,7 +1,7 @@
 .page {
   position: relative;
-  min-height: 100vh;
-  min-height: 100svh;
+  height: 100vh;
+  height: 100svh;
   /* Sit clear of the fixed 72px top navigation. */
   padding-top: 72px;
   box-sizing: border-box;
@@ -27,100 +27,56 @@
 .layout {
   position: relative;
   z-index: 1;
-  display: grid;
-  grid-template-columns: minmax(280px, 0.9fr) minmax(0, 2.1fr);
-  gap: clamp(24px, 4vw, 72px);
-  align-items: stretch;
-  width: min(1440px, 100% - 96px);
-  margin: 0 auto;
-  min-height: calc(100vh - 72px);
-  min-height: calc(100svh - 72px);
-  padding: clamp(24px, 4vh, 56px) 0;
-  box-sizing: border-box;
-}
-
-/* Floating Blue */
-.blueColumn {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  min-width: 0;
-}
-
-.blueWrap {
-  position: relative;
   width: 100%;
-  max-width: 460px;
-  aspect-ratio: 3 / 4;
-  min-height: 460px;
-  animation: blueFloat 7s ease-in-out infinite alternate;
+  height: calc(100vh - 72px);
+  height: calc(100svh - 72px);
+  padding: 0 128px;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
-.blueImage {
+.heroCharacter {
+  position: fixed;
+  z-index: 1;
+  bottom: 0;
+  left: 5%;
+  width: clamp(200px, 28vw, 400px);
+  height: auto;
   object-fit: contain;
-  object-position: center bottom;
-  filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.55));
-}
-
-.blueGlow {
-  position: absolute;
-  bottom: -6%;
-  left: 50%;
-  width: 70%;
-  height: 40%;
-  transform: translateX(-50%);
-  background: radial-gradient(
-    ellipse,
-    color-mix(in oklch, var(--color-primary) 22%, transparent) 0%,
-    rgba(100, 80, 180, 0.1) 45%,
-    transparent 72%
-  );
   pointer-events: none;
-  z-index: -1;
-  animation: blueGlowPulse 4.5s ease-in-out infinite;
+  user-select: none;
+  transform-origin: bottom center;
+  animation: heroSway 7s ease-in-out infinite alternate;
 }
 
-@keyframes blueFloat {
-  from { transform: translateY(0); }
-  to { transform: translateY(-14px); }
-}
-
-@keyframes blueGlowPulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
-}
-
-/* The three lists */
-.listsColumn {
-  display: flex;
-  min-width: 0;
-}
-
-.listsColumn > :global(*) {
-  flex: 1;
-  min-width: 0;
+@keyframes heroSway {
+  from { transform: scaleX(-1) rotate(-2deg); }
+  to { transform: scaleX(-1) rotate(2.4deg); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .blueWrap,
-  .blueGlow {
+  .heroCharacter {
     animation: none;
   }
 }
 
-/* ── Responsive — stack Blue above the lists ────────────────────────────── */
 @media (max-width: 960px) {
   .page {
     overflow: visible;
   }
 
   .layout {
-    grid-template-columns: 1fr;
-    width: min(720px, 100% - 40px);
-    min-height: 0;
+    padding-left: 24px;
+    padding-right: 24px;
+    height: auto;
+    min-height: calc(100vh - 72px);
+    min-height: calc(100svh - 72px);
   }
 
-  .blueColumn {
+  .heroCharacter {
     display: none;
   }
 }
