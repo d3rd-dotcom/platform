@@ -125,7 +125,7 @@
 
 /* Background image */
 .bgImage {
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
   border-radius: 10px;
 }

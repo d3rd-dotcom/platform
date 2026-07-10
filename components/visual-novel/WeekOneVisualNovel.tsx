@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import { ConfettiCelebration } from '@/components/quests/ConfettiCelebration';
@@ -19,20 +19,22 @@ const CHECK_IN_QUESTIONS = [
 interface WeekOneVisualNovelProps {
   isOpen: boolean;
   onClose: () => void;
+  weekNumber?: number;
+  weekTitle?: string;
 }
 
 interface Scene {
   id: string;
-  body: string;
+  body?: string;
   image: string;
-  audio: string;
+  audio?: string;
 }
 
 const WEEK_ONE_TYPING_DELAY_MS = 34;
 const WEEK_ONE_CHECKIN_QUEST_ID = 'week-1-story-checkin';
 const WEEK_ONE_CHECKIN_REWARD = 50;
 
-const SCENES: Scene[] = [
+const WEEK_ONE_SCENES: Scene[] = [
   {
     id: 'creative-recovery',
     body: 'This is your creative recovery, you may feel excited, giddy and defiant, hopeful, skeptical. But the readings, tasks, and exercises aim at allowing you to establish a sense of safety, which will enable you to explore your creativity with less fear.',
@@ -107,11 +109,31 @@ const SCENES: Scene[] = [
   },
 ];
 
+const WEEK_ART_COUNTS: Record<number, number> = {
+  2: 9, 3: 9, 4: 8, 5: 8, 6: 8, 7: 9, 8: 9, 9: 4, 10: 5, 11: 4, 12: 4,
+};
+
+function getScenesForWeek(weekNumber: number): Scene[] {
+  if (weekNumber === 1) return WEEK_ONE_SCENES;
+
+  const count = WEEK_ART_COUNTS[weekNumber] ?? 0;
+  const weekPath = String(weekNumber).padStart(2, '0');
+  return Array.from({ length: count }, (_, index) => ({
+    id: `week-${weekPath}-${index + 1}`,
+    image: `/stories/week-${weekPath}/${String(index + 1).padStart(2, '0')}.png`,
+  }));
+}
+
 type ScreenOrientationWithLock = ScreenOrientation & {
   lock?: (orientation: 'landscape' | 'portrait' | 'any' | 'natural' | 'portrait-primary' | 'portrait-secondary' | 'landscape-primary' | 'landscape-secondary') => Promise<void>;
 };
 
-export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNovelProps) {
+export default function WeekOneVisualNovel({
+  isOpen,
+  onClose,
+  weekNumber = 1,
+  weekTitle = 'Creative Healing',
+}: WeekOneVisualNovelProps) {
   const { ready, authenticated, login, getAccessToken } = usePrivy();
   const [shouldRender, setShouldRender] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -129,6 +151,8 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
   const spokenSceneRef = useRef<string | null>(null);
   const [narrationEnabled, setNarrationEnabled] = useState(false);
   const narrationEnabledRef = useRef(false);
+  const scenes = useMemo(() => getScenesForWeek(weekNumber), [weekNumber]);
+  const hasCheckIn = weekNumber === 1;
 
   useEffect(() => {
     const stored = getStorageItem(NARRATION_PREF_KEY);
@@ -163,7 +187,7 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
       return;
     }
 
-    const fullText = SCENES[sceneIndex].body;
+    const fullText = scenes[sceneIndex]?.body ?? '';
     setDisplayedText('');
     setIsTyping(true);
     spokenSceneRef.current = null;
@@ -183,7 +207,7 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [sceneIndex, shouldRender, showCheckIn]);
+  }, [sceneIndex, scenes, shouldRender, showCheckIn]);
 
   // Load current scene audio as soon as scene changes (during typing).
   // Also preload the next scene's audio so it's ready when the user advances.
@@ -191,8 +215,8 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
     if (!shouldRender || showCheckIn) return;
     if (!narrationEnabledRef.current) return;
 
-    const currentScene = SCENES[sceneIndex];
-    if (!currentScene || spokenSceneRef.current === currentScene.id) return;
+    const currentScene = scenes[sceneIndex];
+    if (!currentScene?.audio || spokenSceneRef.current === currentScene.id) return;
 
     spokenSceneRef.current = currentScene.id;
 
@@ -206,13 +230,13 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
 
     // Preload next scene audio
     const nextIndex = sceneIndex + 1;
-    if (nextIndex < SCENES.length) {
+    if (nextIndex < scenes.length && scenes[nextIndex].audio) {
       const nextEl = preloadAudioRef.current ?? new Audio();
       preloadAudioRef.current = nextEl;
       nextEl.preload = 'auto';
-      nextEl.src = SCENES[nextIndex].audio;
+      nextEl.src = scenes[nextIndex].audio!;
     }
-  }, [sceneIndex, shouldRender, showCheckIn, narrationEnabled]);
+  }, [sceneIndex, scenes, shouldRender, showCheckIn, narrationEnabled]);
 
   // Play narration once the typewriter animation finishes.
   useEffect(() => {
@@ -278,8 +302,11 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
       if (!isOpen) return;
       if (e.key === 'Escape') onClose();
       if (showCheckIn) return;
-      if (e.key === 'ArrowRight' && sceneIndex < SCENES.length - 1) setSceneIndex((c) => c + 1);
-      if (e.key === 'ArrowRight' && sceneIndex === SCENES.length - 1) setShowCheckIn(true);
+      if (e.key === 'ArrowRight' && sceneIndex < scenes.length - 1) setSceneIndex((c) => c + 1);
+      if (e.key === 'ArrowRight' && sceneIndex === scenes.length - 1) {
+        if (hasCheckIn) setShowCheckIn(true);
+        else onClose();
+      }
       if (e.key === 'ArrowLeft' && sceneIndex > 0) setSceneIndex((c) => c - 1);
     };
 
@@ -309,18 +336,18 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
       document.body.style.overflow = 'unset';
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen, onClose, sceneIndex, showCheckIn]);
+  }, [hasCheckIn, isOpen, onClose, sceneIndex, scenes.length, showCheckIn]);
 
   if (!shouldRender) return null;
 
-  const scene = SCENES[sceneIndex];
-  const isLast = sceneIndex === SCENES.length - 1;
+  const scene = scenes[sceneIndex];
+  const isLast = sceneIndex === scenes.length - 1;
 
   const goNext = () => {
     if (isTyping) {
       // Skip animation on tap if still typing
       if (intervalRef.current) clearInterval(intervalRef.current);
-      setDisplayedText(scene.body);
+      setDisplayedText(scene.body ?? '');
       setIsTyping(false);
     } else if (!isLast) {
       spokenSceneRef.current = null;
@@ -329,7 +356,8 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
       spokenSceneRef.current = null;
       audioRef.current?.pause();
       if (audioRef.current) audioRef.current.currentTime = 0;
-      setShowCheckIn(true);
+      if (hasCheckIn) setShowCheckIn(true);
+      else onClose();
     }
   };
 
@@ -420,7 +448,7 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
         </button>
 
         {/* Narration toggle — opt-in, off by default, also mounted on the bezel */}
-        {!showCheckIn && (
+        {!showCheckIn && weekNumber === 1 && (
           <button
             type="button"
             className={`${styles.audioButton} ${narrationEnabled ? styles.audioButtonOn : ''}`}
@@ -451,7 +479,7 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
             <Image
               key={scene.image}
               src={scene.image}
-              alt=""
+              alt={`${weekTitle}, scene ${sceneIndex + 1}`}
               fill
               priority
               className={styles.bgImage}
@@ -476,7 +504,7 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
             {/* Bottom bar: dots only */}
             <div className={styles.bottomBar}>
               <div className={styles.dots} role="tablist">
-                {SCENES.map((s, i) => (
+                {scenes.map((s, i) => (
                   <button
                     key={s.id}
                     type="button"
@@ -513,7 +541,7 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
                   <Image src="/images/blue-portrait.png" alt="Blue" width={56} height={56} unoptimized />
                 </div>
                 <div className={styles.checkInHeading}>
-                  <span className={styles.checkInEyebrow}>Week 1 · Check-in</span>
+                  <span className={styles.checkInEyebrow}>Week {weekNumber} · Check-in</span>
                   <h2 className={styles.checkInTitle}>You made it to the end of the week.</h2>
                 </div>
               </div>

@@ -324,15 +324,8 @@ export default function CoursePage() {
   const resolvedViewWeek = viewWeek ?? 1;
   const weekReading = WEEKLY_READINGS[Math.min(resolvedViewWeek, WEEKLY_READINGS.length - 1)];
   const handleOpenReading = useCallback((index: number) => {
-    const reading = WEEKLY_READINGS[index];
-    if (reading?.slug === 'sense-of-safety') {
-      setReaderIndex(index);
-      setIsWeekOneNovelOpen(true);
-      return;
-    }
-
     setReaderIndex(index);
-    setIsReaderOpen(true);
+    setIsWeekOneNovelOpen(true);
   }, []);
 
   const [rightContent, setRightContent] = useState<'reading' | null>(null);
@@ -492,13 +485,7 @@ export default function CoursePage() {
                   onClick={() => {
                     play('click');
                     const idx = Math.min(resolvedViewWeek, WEEKLY_READINGS.length - 1);
-                    const reading = WEEKLY_READINGS[idx];
-                    if (isDesktop && reading?.slug !== 'sense-of-safety') {
-                      setReaderIndex(idx);
-                      setRightContent('reading');
-                    } else {
-                      handleOpenReading(idx);
-                    }
+                    handleOpenReading(idx);
                   }}
                   onMouseEnter={() => play('hover')}
                 >
@@ -571,6 +558,8 @@ export default function CoursePage() {
         <WeekOneVisualNovel
           isOpen={isWeekOneNovelOpen}
           onClose={() => setIsWeekOneNovelOpen(false)}
+          weekNumber={readerIndex}
+          weekTitle={currentReading.title}
         />
       )}
       <CourseTour />
