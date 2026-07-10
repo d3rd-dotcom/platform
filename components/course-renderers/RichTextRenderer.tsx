@@ -1,5 +1,7 @@
 'use client';
 
+import React from 'react';
+import ReactMarkdown from 'react-markdown';
 import type { CourseComponentRecord } from '@/lib/vip-course-db';
 import styles from './RichTextRenderer.module.css';
 
@@ -17,6 +19,10 @@ function sanitizeHtml(html: string): string {
     .replace(/(?:href|src|action|formaction)\s*=\s*javascript:[^\s>]+/gi, 'href="#"');
 }
 
+function transformMarkdownUrl(url: string): string {
+  return /^(?:https?:|mailto:|tel:|\/|#)/i.test(url) ? url : '';
+}
+
 export default function RichTextRenderer({ component }: { component: CourseComponentRecord }) {
   const config = component.config as RichTextConfig;
   const content = config.content ?? '';
@@ -31,13 +37,9 @@ export default function RichTextRenderer({ component }: { component: CourseCompo
 
   return (
     <div className={styles.prose_container}>
-      {content.split('\n').map((line, i) => {
-        if (line.startsWith('## ')) return <h2 key={i}>{line.slice(3)}</h2>;
-        if (line.startsWith('# ')) return <h1 key={i}>{line.slice(2)}</h1>;
-        if (line.startsWith('- ')) return <li key={i} className={styles.list_item}>{line.slice(2)}</li>;
-        if (line.trim() === '') return <br key={i} />;
-        return <p key={i}>{line}</p>;
-      })}
+      <ReactMarkdown urlTransform={transformMarkdownUrl}>
+        {content}
+      </ReactMarkdown>
     </div>
   );
 }

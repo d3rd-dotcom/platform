@@ -27,8 +27,39 @@
 .prose_container h2 { font-size: var(--type-h3-size); letter-spacing: var(--type-h3-track); }
 .prose_container h3 { font-size: var(--type-h4-size); letter-spacing: var(--type-h4-track); }
 
-.list_item {
-  margin-left: 16px;
+.prose_container p {
+  margin: 0 0 12px;
+}
+
+.prose_container ul,
+.prose_container ol {
+  padding-left: 24px;
+  margin: 0 0 12px;
+}
+
+.prose_container li {
+  margin-bottom: 4px;
+}
+
+.prose_container blockquote {
+  margin: 0 0 12px;
+  padding: 8px 16px;
+  border-left: 3px solid var(--color-primary);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.prose_container a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.prose_container strong {
+  font-weight: 700;
+}
+
+.prose_container em {
+  font-style: italic;
 }
 
 .html_container {
