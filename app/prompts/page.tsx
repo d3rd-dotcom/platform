@@ -36,6 +36,13 @@ const SKILLS: Skill[] = [
     promptPath: '/prompts/blue-persona.md',
   },
   {
+    name: 'Academy Editorial',
+    category: 'Editorial',
+    added: '2026-07-10',
+    type: 'EDIT',
+    promptPath: '/prompts/academy-editorial.md',
+  },
+  {
     name: 'Academy Art Style',
     category: 'Content Creation',
     added: '2026-05-22',
