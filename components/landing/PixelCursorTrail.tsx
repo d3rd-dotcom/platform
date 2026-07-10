@@ -2,17 +2,18 @@
 
 import { useEffect, useRef } from 'react';
 
-// Pixel-grid cursor trail: the pointer deposits "heat" into a coarse grid,
+// Pixel-grid cursor trail: the pointer deposits heat into a coarse grid,
 // which renders as chunky squares through a color-band lookup and decays
 // each frame. Desktop pointers only; skipped on touch and reduced motion.
-const CELL = 8;
+const CELL = 9;
 const BRUSH = 10;
-const DECAY = 0.9;
+const DEPOSIT = 0.34;
+const DECAY = 0.88;
 const BANDS: Array<[number, string]> = [
-  [0.3, '#1B2A6B'],
-  [0.46, '#324BE4'],
-  [0.62, '#5168FF'],
-  [0.78, '#8FA0FF'],
+  [0.1, '#1B2A6B'],
+  [0.24, '#324BE4'],
+  [0.42, '#5168FF'],
+  [0.66, '#8FA0FF'],
 ];
 const HOT = '#FF7729';
 
@@ -88,7 +89,7 @@ export const PixelCursorTrail: React.FC = () => {
       const steps = Math.max(1, Math.min(48, Math.round(dist / (CELL * 0.8))));
       for (let s = 1; s <= steps; s++) {
         const f = s / steps;
-        deposit(px + dx * f, py + dy * f, 0.16, BRUSH * 0.5);
+        deposit(px + dx * f, py + dy * f, DEPOSIT, BRUSH * 0.5);
       }
       px = x;
       py = y;
