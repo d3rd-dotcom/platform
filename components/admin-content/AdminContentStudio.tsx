@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import styles from './AdminContentStudio.module.css';
 
 type Status = 'draft' | 'published' | 'archived';
@@ -161,7 +161,7 @@ export default function AdminContentStudio() {
     [secret],
   );
 
-  const loadContent = async (activeSecret = secret) => {
+  const loadContent = useCallback(async (activeSecret = secret) => {
     setLoading(true);
     setError(null);
     try {
@@ -185,7 +185,7 @@ export default function AdminContentStudio() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [secret]);
 
   useEffect(() => {
     const saved = loadSecret();
@@ -194,7 +194,7 @@ export default function AdminContentStudio() {
       setIsAuthed(true);
       void loadContent(saved);
     }
-  }, []);
+  }, [loadContent]);
 
   const submitSecret = async () => {
     saveSecret(secret);

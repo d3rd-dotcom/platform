@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
@@ -88,7 +88,10 @@ export default function AccordionJournalCard({
   weekEndsAt,
 }: AccordionJournalCardProps) {
   const { sections: fetchedSections } = useCourseSections('creative-healing', weekNumber);
-  const journalSections = sections || fetchedSections || [];
+  const journalSections = useMemo(
+    () => sections || fetchedSections || [],
+    [sections, fetchedSections],
+  );
 
   const { play } = useSound();
   const { getAccessToken } = usePrivy();

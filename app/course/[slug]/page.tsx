@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import Link from 'next/link';
+import Image from 'next/image';
 import { CheckCircle, SealCheck, SpinnerGap, ArrowLeft, ArrowRight } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import Banner from '@/components/banner/Banner';
@@ -313,7 +314,7 @@ export default function CourseSlugPage({ params }: PageProps) {
 
             {/* Blue avatar */}
             <div className={courseStyles.panelAvatarWrap}>
-              <img src="/blue/blue-home.png" alt="Blue" className={courseStyles.panelAvatar} />
+              <Image src="/blue/blue-home.png" alt="Blue" width={120} height={120} className={courseStyles.panelAvatar} />
             </div>
 
             {/* Title */}
@@ -373,7 +374,7 @@ export default function CourseSlugPage({ params }: PageProps) {
                 <span className={courseStyles.readingAccent} style={{ background: READING_ACCENT }} aria-hidden="true" />
                 <span className={courseStyles.readingThumb} style={{ background: READING_THUMB_BG }} aria-hidden="true">
                   {readingImageUrl && (
-                    <img src={readingImageUrl} alt="" className={courseStyles.readingThumbImg} />
+                    <Image src={readingImageUrl} alt="" fill sizes="64px" unoptimized className={courseStyles.readingThumbImg} />
                   )}
                 </span>
                 <div className={courseStyles.readingInfo}>
@@ -579,7 +580,7 @@ export default function CourseSlugPage({ params }: PageProps) {
         <Banner />
         <main className={styles.main}>
           <div className={styles.gateCard}>
-            <img src={ANGEL_IMAGE} alt="" className={styles.gateImage} />
+            <Image src={ANGEL_IMAGE} alt="" width={140} height={140} className={styles.gateImage} />
             <h1 className={styles.gateTitle}>Academic Angels only</h1>
             <p className={styles.gateDesc}>
               This course requires an <strong>Academic Angel NFT</strong>. Hold one to unlock access.

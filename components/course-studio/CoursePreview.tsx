@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import type { CourseComponentRecord } from '@/lib/vip-course-db';
 import ComponentRenderer from '@/components/course-renderers/ComponentRenderer';
 import styles from './CoursePreview.module.css';
@@ -74,7 +75,7 @@ export default function CoursePreview({ weeks, readingByWeek }: CoursePreviewPro
             <span className={styles.readingAccent} style={{ background: READING_ACCENT }} aria-hidden="true" />
             <span className={styles.readingThumb} style={{ background: READING_THUMB_BG }} aria-hidden="true">
               {readingImageUrl && (
-                <img src={readingImageUrl} alt="" className={styles.readingThumbImg} />
+                <Image src={readingImageUrl} alt="" fill sizes="48px" unoptimized className={styles.readingThumbImg} />
               )}
             </span>
             <div className={styles.readingInfo}>

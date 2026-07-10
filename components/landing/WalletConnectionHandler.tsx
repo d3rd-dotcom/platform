@@ -62,7 +62,7 @@ export function WalletConnectionHandler({ onWalletConnected, buttonText = 'Conne
     } finally {
       setIsProcessing(false);
     }
-  }, [isProcessing]);
+  }, [getAccessToken, isProcessing]);
 
   // When authenticated via Privy, process the connection
   useEffect(() => {

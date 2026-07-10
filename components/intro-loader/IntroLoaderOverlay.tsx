@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import styles from './IntroLoaderOverlay.module.css';
@@ -21,11 +21,11 @@ export default function IntroLoaderOverlay({
   useScrollLock(true);
   const finishedRef = useRef(false);
 
-  const finish = () => {
+  const finish = useCallback(() => {
     if (finishedRef.current) return;
     finishedRef.current = true;
     onFinish();
-  };
+  }, [onFinish]);
 
   useEffect(() => {
     finishedRef.current = false;
@@ -33,7 +33,7 @@ export default function IntroLoaderOverlay({
     return () => {
       window.clearTimeout(timeout);
     };
-  }, [src, durationMs]);
+  }, [src, durationMs, finish]);
 
   return (
     <div className={styles.overlay} role="presentation">

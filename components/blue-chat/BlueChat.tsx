@@ -470,7 +470,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
         console.warn('[BlueChat] call greeting TTS failed:', err);
       })
       .finally(() => setIsSpeaking(false));
-  }, [startWithVoice]);
+  }, [startWithVoice, initialGreeting]);
 
   const toggleVoice = useCallback(() => {
     setVoiceEnabled((prev) => {

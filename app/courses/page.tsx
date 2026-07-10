@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import { PencilSimple, Trash, Plus } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
@@ -265,13 +266,6 @@ export default function CoursesPage() {
   }, [authHeaders]);
 
   useEffect(() => {
-    if (!ready) return;
-    loadPersonalCourse();
-    loadAuthoredCourses();
-    loadCommunityCourses();
-  }, [ready, loadPersonalCourse, loadCommunityCourses]);
-
-  useEffect(() => {
     if (!ready || !authenticated) return;
     fetch('/api/account/status')
       .then((r) => r.ok ? r.json() : null)
@@ -325,6 +319,13 @@ export default function CoursesPage() {
     } catch { /* ignore */ }
   }, [authHeaders]);
 
+  useEffect(() => {
+    if (!ready) return;
+    loadPersonalCourse();
+    loadAuthoredCourses();
+    loadCommunityCourses();
+  }, [ready, loadPersonalCourse, loadAuthoredCourses, loadCommunityCourses]);
+
   const confirmDelete = async () => {
     const id = deleteTarget;
     if (!id) return;
@@ -364,7 +365,7 @@ export default function CoursesPage() {
 
   const shadowStats = communityCourses.find((c) => c.slug === 'creative-healing');
   const panelCourses = [
-    { title: 'Shadow Work', href: '/shadow-work', progressPct: shadowStats?.viewerProgressPct ?? 0 },
+    { title: "Blue's Quest", href: '/shadow-work', progressPct: shadowStats?.viewerProgressPct ?? 0 },
     ...(personalCourse ? [{ title: personalCourse.title, href: '/course/personal', progressPct: 0 }] : []),
     ...communityCourses
       .filter((c) => c.slug !== 'creative-healing')
@@ -380,7 +381,7 @@ export default function CoursesPage() {
 
         <div className={styles.folderRow}>
           <CourseFolderCard
-            title="Shadow Work"
+            title="Blue's Quest"
             count={12}
             href="/shadow-work"
             images={[
@@ -417,8 +418,8 @@ export default function CoursesPage() {
                   <div className={styles.badgeSection}>
                     <span className={styles.badgeValue}>
                       <span className={styles.rewardStack}>
-                        <img src="/icons/usdc-logo.svg" alt="" className={styles.usdcIcon} />
-                        <img src="/icons/ui-diamond.svg" alt="" className={styles.diamondIcon} />
+                        <Image src="/icons/usdc-logo.svg" alt="" width={18} height={18} className={styles.usdcIcon} />
+                        <Image src="/icons/ui-diamond.svg" alt="" width={18} height={18} className={styles.diamondIcon} />
                       </span>
                     </span>
                     <span className={styles.badgeEyebrow}>rewards</span>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useAccount } from 'wagmi';
 import { usePrivy } from '@privy-io/react-auth';
@@ -19,7 +19,7 @@ const CreateAccountButton: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
-  async function refreshMe() {
+  const refreshMe = useCallback(async () => {
     const token = await getAccessToken();
     const res = await fetch('/api/me', {
       cache: 'no-store',
@@ -29,15 +29,15 @@ const CreateAccountButton: React.FC = () => {
     const data = (await res.json()) as MeResponse;
     setMe(data.user);
     if (data.user) setUsername(data.user.username);
-  }
+  }, [getAccessToken]);
 
   useEffect(() => {
     refreshMe().catch(() => {});
-  }, []);
+  }, [refreshMe]);
 
   useEffect(() => {
     if (authenticated) refreshMe().catch(() => {});
-  }, [authenticated]);
+  }, [authenticated, refreshMe]);
 
   async function handleSave() {
     if (!authenticated || !address) {

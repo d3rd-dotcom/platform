@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import {
   SCATTER_COLLECTION_SLUG,
@@ -141,15 +141,15 @@ export const MembershipSection: React.FC = () => {
     }
   };
 
-  const openModal = () => {
+  const openModal = useCallback(() => {
     play('click');
     setShowModal(true);
-  };
+  }, [play]);
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     play('click');
     setShowModal(false);
-  };
+  }, [play]);
 
   useEffect(() => {
     if (!showModal) return;
@@ -158,14 +158,14 @@ export const MembershipSection: React.FC = () => {
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [showModal]);
+  }, [showModal, closeModal]);
 
   // Allow other sections to open the purchase modal
   useEffect(() => {
     const handler = () => openModal();
     window.addEventListener('openPurchaseModal', handler);
     return () => window.removeEventListener('openPurchaseModal', handler);
-  }, []);
+  }, [openModal]);
 
   return (
     <section ref={sectionRef} id="membership" className={`${styles.section} ${isVisible ? styles.sectionVisible : ''}`}>

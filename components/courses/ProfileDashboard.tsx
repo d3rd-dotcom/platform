@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useState } from 'react';
+import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 
 import Link from 'next/link';
@@ -226,7 +227,7 @@ export default function ProfileDashboard({
             onClick={() => play('click')}
           >
             <span className={styles.questPoints}>
-              <img src="/icons/ui-diamond.svg" alt="" className={styles.questDiamond} />
+              <Image src="/icons/ui-diamond.svg" alt="" width={16} height={16} className={styles.questDiamond} />
               {currentQuest.points}
             </span>
             <span className={styles.questBody}>

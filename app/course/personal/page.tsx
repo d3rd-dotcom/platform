@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
+import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import Banner from '@/components/banner/Banner';
 import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
@@ -292,7 +293,7 @@ export default function PersonalCoursePage() {
             <div className={shared.panelBanner} aria-hidden="true" />
             <div className={shared.panelBody}>
               <div className={shared.panelAvatarWrap}>
-                <img src="/blue/blue-home.png" alt="Blue" className={shared.panelAvatar} />
+                <Image src="/blue/blue-home.png" alt="Blue" width={120} height={120} className={shared.panelAvatar} />
               </div>
               <div className={shared.panelHeader}>
                 <h1 className={shared.panelTitle}>{course.title}</h1>

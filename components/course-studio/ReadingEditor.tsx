@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import LinkExtension from '@tiptap/extension-link';
@@ -142,7 +143,7 @@ export default function ReadingEditor({ content, imageUrl, onImageUrlChange, onS
         />
         {imageUrl && (
           <span className={styles.imagePreview}>
-            <img src={imageUrl} alt="" className={styles.imagePreviewImg} />
+            <Image src={imageUrl} alt="" width={28} height={28} unoptimized className={styles.imagePreviewImg} />
           </span>
         )}
       </div>

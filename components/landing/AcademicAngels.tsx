@@ -139,15 +139,15 @@ export const AcademicAngels: React.FC = () => {
     }
   };
 
-  const openModal = () => {
+  const openModal = useCallback(() => {
     play('click');
     setShowModal(true);
-  };
+  }, [play]);
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     play('click');
     setShowModal(false);
-  };
+  }, [play]);
 
   useEffect(() => {
     if (!showModal) return;
@@ -156,14 +156,14 @@ export const AcademicAngels: React.FC = () => {
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [showModal]);
+  }, [showModal, closeModal]);
 
   // Allow other sections to open the purchase modal
   useEffect(() => {
     const handler = () => openModal();
     window.addEventListener('openPurchaseModal', handler);
     return () => window.removeEventListener('openPurchaseModal', handler);
-  }, []);
+  }, [openModal]);
 
   return (
     <section ref={sectionRef} className={`${styles.section} ${isVisible ? styles.sectionVisible : ''}`}>

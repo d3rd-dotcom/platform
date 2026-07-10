@@ -72,9 +72,11 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
   };
 
   const usdcReward = quest?.usdcReward ?? 0;
+  const questId = quest?.id;
+  const questRewardType = quest?.rewardType;
 
   useEffect(() => {
-    if (!quest || !usdcReward) {
+    if (!questId || !usdcReward) {
       setUsdcClaim(null);
       return;
     }
@@ -85,7 +87,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
     (async () => {
       try {
         const headers = await getAuthHeaders();
-        const res = await fetch(`/api/quests/usdc/submit?questId=${encodeURIComponent(quest.id)}`, {
+        const res = await fetch(`/api/quests/usdc/submit?questId=${encodeURIComponent(questId)}`, {
           credentials: 'include',
           cache: 'no-store',
           headers,
@@ -109,23 +111,23 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
 
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [quest?.id, usdcReward]);
+  }, [questId, usdcReward]);
 
   useEffect(() => {
-    if (!quest) {
+    if (!questId) {
       setProofText('');
       setAttachmentUrl(null);
       setAttachmentName(null);
       setStep1Completed(false);
       setStep2Completed(false);
     }
-  }, [quest?.id]);
+  }, [questId]);
 
   // Proof-required quests are reviewed by staff — load any existing submission so
   // the panel reflects pending / approved / rejected state instead of pretending
   // the reflections are instantly claimable.
   useEffect(() => {
-    if (!quest || quest.rewardType !== 'proof-required' || quest.id.startsWith('cq_')) {
+    if (!questId || questRewardType !== 'proof-required' || questId.startsWith('cq_')) {
       setProof(null);
       return;
     }
@@ -139,7 +141,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
     (async () => {
       try {
         const headers = await getAuthHeaders();
-        const res = await fetch(`/api/quests/proof/submit?questId=${encodeURIComponent(quest.id)}`, {
+        const res = await fetch(`/api/quests/proof/submit?questId=${encodeURIComponent(questId)}`, {
           credentials: 'include',
           cache: 'no-store',
           headers,
@@ -166,10 +168,10 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
 
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [quest?.id, quest?.rewardType]);
+  }, [questId, questRewardType]);
 
   useEffect(() => {
-    if (!quest || quest.rewardType !== 'twitter-follow' || !isConnected) {
+    if (!questId || questRewardType !== 'twitter-follow' || !isConnected) {
       setStep1Completed(false);
       setStep2Completed(false);
       return;
@@ -221,7 +223,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
       window.removeEventListener('focus', handleFocus);
       window.removeEventListener('xAccountUpdated', handleXAccountUpdate);
     };
-  }, [quest?.id, isConnected, address, step2Completed]);
+  }, [questId, questRewardType, isConnected, address, step2Completed]);
 
   const handleConnectTwitter = async () => {
     try {

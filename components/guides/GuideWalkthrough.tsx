@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import { CheckCircle, Lock, CircleNotch } from '@phosphor-icons/react';
 import { useSound } from '@/hooks/useSound';
@@ -246,17 +247,17 @@ export default function GuideWalkthrough({ slug }: Props) {
           <span className={styles.rewardSummaryLabel}>Diamond rewards</span>
           <div className={styles.rewardSummaryTiers}>
             <span className={styles.rewardTier}>
-              <img src="/icons/ui-diamond.svg" alt="" className={styles.rewardIcon} />
+              <Image src="/icons/ui-diamond.svg" alt="" width={12} height={12} className={styles.rewardIcon} />
               +{walkthrough.rewardPreview.guideComplete} per guide
             </span>
             <span className={styles.rewardDivider} />
             <span className={styles.rewardTier}>
-              <img src="/icons/ui-diamond.svg" alt="" className={styles.rewardIcon} />
+              <Image src="/icons/ui-diamond.svg" alt="" width={12} height={12} className={styles.rewardIcon} />
               +{walkthrough.rewardPreview.levelClear} per level clear
             </span>
             <span className={styles.rewardDivider} />
             <span className={styles.rewardTier}>
-              <img src="/icons/ui-diamond.svg" alt="" className={styles.rewardIcon} />
+              <Image src="/icons/ui-diamond.svg" alt="" width={12} height={12} className={styles.rewardIcon} />
               +{walkthrough.rewardPreview.walkthroughComplete} full clear
             </span>
             {walkthrough.rewardPreview.spinGranted && (
@@ -291,7 +292,7 @@ export default function GuideWalkthrough({ slug }: Props) {
                 <span className={styles.levelBadge}>Level {level + 1}</span>
                 {authenticated && unlocked && (
                   <span className={styles.levelRewardBadge}>
-                    <img src="/icons/ui-diamond.svg" alt="" className={styles.levelRewardIcon} />
+                    <Image src="/icons/ui-diamond.svg" alt="" width={10} height={10} className={styles.levelRewardIcon} />
                     +{walkthrough.rewardPreview.levelClear}
                   </span>
                 )}
@@ -328,7 +329,7 @@ export default function GuideWalkthrough({ slug }: Props) {
                         <div className={styles.nodeActions}>
                           {authenticated && !isDone && (
                             <span className={styles.nodeRewardBadge}>
-                              <img src="/icons/ui-diamond.svg" alt="" className={styles.nodeRewardIcon} />
+                              <Image src="/icons/ui-diamond.svg" alt="" width={10} height={10} className={styles.nodeRewardIcon} />
                               +{walkthrough.rewardPreview.guideComplete}
                             </span>
                           )}

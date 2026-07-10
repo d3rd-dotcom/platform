@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { usePrivy } from '@privy-io/react-auth';
@@ -95,7 +95,10 @@ export default function WeekTasksView({
   onStats,
 }: WeekTasksViewProps) {
   const { sections: fetchedSections, loading: sectionsLoading } = useCourseSections('creative-healing', weekNumber);
-  const journalSections: JournalSection[] = fetchedSections || [];
+  const journalSections: JournalSection[] = useMemo(
+    () => fetchedSections || [],
+    [fetchedSections],
+  );
   const weekColor = WEEK_COLORS[weekNumber] || '#5168FF';
 
   const { play } = useSound();

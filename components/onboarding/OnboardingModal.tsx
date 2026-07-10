@@ -117,7 +117,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
     })();
 
     return () => { cancelled = true; };
-  }, [isOpen, authenticated, getAccessToken, devOnboarding]);
+  }, [isOpen, authenticated, getAccessToken, devOnboarding, forceReady]);
 
   useEffect(() => {
     if (!isOpen || authStatus !== 'ready') return;

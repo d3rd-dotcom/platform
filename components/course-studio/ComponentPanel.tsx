@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
+import Image from 'next/image';
 import { useDroppable } from '@dnd-kit/core';
 import { Plus, ArrowLeft, ArrowRight, Trash } from '@phosphor-icons/react';
 import { useSound } from '@/hooks/useSound';
@@ -192,7 +193,7 @@ export default function ComponentPanel({
         <span className={styles.readingAccent} aria-hidden="true" />
         <span className={styles.readingThumb} aria-hidden="true">
           {readingImageUrl ? (
-            <img src={readingImageUrl} alt="" className={styles.readingThumbImg} />
+            <Image src={readingImageUrl} alt="" fill sizes="48px" unoptimized className={styles.readingThumbImg} />
           ) : (
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={styles.readingThumbIcon}>
               <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { usePrivy } from '@privy-io/react-auth';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
@@ -386,7 +387,7 @@ export default function CoursePage() {
               return (
                 <div className={styles.panelBadgeRow}>
                   <span className={styles.panelBadgeDiamonds}>
-                    <img src="/icons/ui-diamond.svg" alt="" width={13} height={13} />
+                    <Image src="/icons/ui-diamond.svg" alt="" width={13} height={13} />
                     {diamondsLeft}
                   </span>
                   <span
@@ -410,7 +411,7 @@ export default function CoursePage() {
             <div className={styles.panelBanner} aria-hidden="true" />
             <div className={styles.panelBody}>
               <div className={styles.panelAvatarWrap}>
-                <img src="/blue/blue-home.png" alt="Blue" className={styles.panelAvatar} />
+                <Image src="/blue/blue-home.png" alt="Blue" width={120} height={120} className={styles.panelAvatar} />
               </div>
               <div className={styles.panelHeader}>
                 <h1 className={styles.panelTitle}>Creative Healing</h1>

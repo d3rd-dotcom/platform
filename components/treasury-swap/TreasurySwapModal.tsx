@@ -140,7 +140,7 @@ export default function TreasurySwapModal({ open, onClose }: TreasurySwapModalPr
     setSwapError('');
     setSwapHash(null);
     if (swapState !== 'success') setSwapState('idle');
-  }, [amount, fromAsset, toAsset]);
+  }, [amount, fromAsset, toAsset, swapState]);
 
   useEffect(() => {
     if (open) return;

@@ -103,6 +103,8 @@ export default function MediaEmbedRenderer({
 
   return (
     <figure className={`${styles.figure} ${alignClass}`} style={{ width: config.width ?? 'auto' }}>
+      {/* Contributor media can use arbitrary hosts and dimensions, so preserve its native aspect ratio. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={config.url}
         alt={config.alt ?? ''}

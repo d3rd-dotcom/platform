@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import styles from './CoursesShowcase.module.css';
 
 interface CourseData {
@@ -470,9 +471,11 @@ export const CoursesShowcase: React.FC = () => {
                       <span className={styles.badgeDivider} />
                       <span className={styles.badgeItem}>
                         12k
-                        <img
+                        <Image
                           src="/icons/ui-diamond.svg"
                           alt=""
+                          width={16}
+                          height={16}
                           className={styles.diamondIcon}
                         />
                       </span>
