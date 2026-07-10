@@ -11,10 +11,7 @@ import { useSound } from '@/hooks/useSound';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 
 const VOICE_PREF_KEY = 'blueChat.voiceEnabled';
-import TimeManagementInline from './TimeManagementInline';
 import ListsPanel from './ListsPanel';
-import AutoDistributionInline from './AutoDistributionInline';
-import type { AutoDistributionRequest } from './AutoDistributionInline';
 import QuestForgeInline from './QuestForgeInline';
 import type { QuestForgeDraft, QuestForgeRequest } from './QuestForgeInline';
 import { sendUsdcOnBase, type Eip1193Provider } from '@/lib/usdc-base-transfer';
@@ -89,13 +86,7 @@ interface ViewerProfile {
   username: string | null;
 }
 
-interface AutoDistributionXConnection {
-  loading: boolean;
-  connected: boolean;
-  username: string | null;
-  error: string | null;
-}
-
+/** Blue's replies can still carry attachments; the chat no longer sends them. */
 interface UploadedAttachment {
   id: string;
   mime: string;
@@ -235,8 +226,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
   const [shardCount, setShardCount] = useState<number | null>(null);
   const [shardUpsell, setShardUpsell] = useState<ShardUpsellState | null>(null);
   const [viewerProfile, setViewerProfile] = useState<ViewerProfile | null>(null);
-  const [researchMode, setResearchMode] = useState(false);
-  const [researchUploaderVisible, setResearchUploaderVisible] = useState(false);
   const [isVipMember, setIsVipMember] = useState(false);
   const [showMembershipModal, setShowMembershipModal] = useState(false);
   const [treasury, setTreasury] = useState<TreasuryContext>({
@@ -251,27 +240,16 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(false);
   const voiceEnabledRef = useRef(false);
-  const [isUploadingAttachment, setIsUploadingAttachment] = useState(false);
-  const [pendingAttachments, setPendingAttachments] = useState<UploadedAttachment[]>([]);
-  const [timeManagementVisible, setTimeManagementVisible] = useState(false);
-  const [autoDistributionVisible, setAutoDistributionVisible] = useState(false);
   const [questForgeVisible, setQuestForgeVisible] = useState(false);
   const [questDraft, setQuestDraft] = useState<QuestForgeDraft | null>(null);
   const [questDraftNonce, setQuestDraftNonce] = useState(0);
   const [questForgeBusy, setQuestForgeBusy] = useState(false);
   const [pendingCourseDelete, setPendingCourseDelete] = useState<string | null>(null);
-  const [autoDistributionXConnection, setAutoDistributionXConnection] = useState<AutoDistributionXConnection>({
-    loading: false,
-    connected: false,
-    username: null,
-    error: null,
-  });
   const [openDebugMessageId, setOpenDebugMessageId] = useState<string | null>(null);
   const voiceAbortRef = useRef<AbortController | null>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const attachmentInputRef = useRef<HTMLInputElement>(null);
 
   const authHeaders = useCallback(async (): Promise<HeadersInit> => {
     if (!ready || !authenticated) return {};
@@ -400,46 +378,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
     }
   }, [isOpen]);
 
-  const fetchAutoDistributionXConnection = useCallback(async () => {
-    setAutoDistributionXConnection((prev) => ({ ...prev, loading: true, error: null }));
-    try {
-      const res = await fetch('/api/x-auth/status', { credentials: 'include' });
-      if (!res.ok) {
-        setAutoDistributionXConnection({
-          loading: false,
-          connected: false,
-          username: null,
-          error: 'x status unavailable',
-        });
-        return;
-      }
-
-      const data = await res.json();
-      setAutoDistributionXConnection({
-        loading: false,
-        connected: Boolean(data.connected),
-        username: data.xAccount?.username ?? null,
-        error: null,
-      });
-    } catch {
-      setAutoDistributionXConnection({
-        loading: false,
-        connected: false,
-        username: null,
-        error: 'x status unavailable',
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!autoDistributionVisible) return;
-
-    fetchAutoDistributionXConnection();
-    const sync = () => fetchAutoDistributionXConnection();
-    window.addEventListener('xAccountUpdated', sync);
-    return () => window.removeEventListener('xAccountUpdated', sync);
-  }, [autoDistributionVisible, fetchAutoDistributionXConnection]);
-
   useEffect(() => {
     if (isOpen) document.body.style.overflow = 'hidden';
     return () => {
@@ -518,7 +456,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
         setInputText(transcript.trim());
         setTimeout(() => {
           setInputText('');
-          submitUserMessage(transcript.trim(), []);
+          submitUserMessage(transcript.trim());
         }, 300);
       }
     };
@@ -591,11 +529,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
     window.dispatchEvent(new Event('openPurchaseModal'));
   }, [play]);
 
-  const sendToEliza = async (
-    text: string,
-    mode?: 'research' | 'auto-distribution',
-    attachments?: UploadedAttachment[]
-  ) => {
+  const sendToEliza = async (text: string) => {
     if (!ready || !authenticated) {
       addBlueMessage('sign in first so i can access your account and respond here.');
       return;
@@ -603,32 +537,29 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
 
     setShardUpsell(null);
 
-    // Chat costs a real $BLUE burn signed by the user's own wallet. Research
-    // is the VIP benefit and stays free.
+    // Chat costs a real $BLUE burn signed by the user's own wallet.
     let burnTxHash: string | undefined;
-    if (mode !== 'research') {
-      if (!isConnected || !connector) {
-        addBlueMessage(`each message costs ${SHARD_COST} diamonds, burned straight from your wallet — connect your wallet and try again.`);
-        return;
-      }
-      if (shardCount !== null && shardCount < SHARD_COST) {
+    if (!isConnected || !connector) {
+      addBlueMessage(`each message costs ${SHARD_COST} diamonds, burned straight from your wallet — connect your wallet and try again.`);
+      return;
+    }
+    if (shardCount !== null && shardCount < SHARD_COST) {
+      openShardUpsell(SHARD_COST, 'chat');
+      return;
+    }
+    setIsTyping(true);
+    try {
+      const eip1193 = (await connector.getProvider()) as Eip1193Provider;
+      burnTxHash = await sendDiamondsBurn(eip1193, SHARD_COST);
+    } catch (err) {
+      setIsTyping(false);
+      const code = (err as { code?: string | number })?.code;
+      if (code === 'ACTION_REJECTED' || code === 4001) {
+        addBlueMessage(`no burn, no message — each one costs ${SHARD_COST} diamonds. confirm it in your wallet when you're ready.`);
+      } else {
         openShardUpsell(SHARD_COST, 'chat');
-        return;
       }
-      setIsTyping(true);
-      try {
-        const eip1193 = (await connector.getProvider()) as Eip1193Provider;
-        burnTxHash = await sendDiamondsBurn(eip1193, SHARD_COST);
-      } catch (err) {
-        setIsTyping(false);
-        const code = (err as { code?: string | number })?.code;
-        if (code === 'ACTION_REJECTED' || code === 4001) {
-          addBlueMessage(`no burn, no message — each one costs ${SHARD_COST} diamonds. confirm it in your wallet when you're ready.`);
-        } else {
-          openShardUpsell(SHARD_COST, 'chat');
-        }
-        return;
-      }
+      return;
     }
 
     setIsTyping(true);
@@ -637,7 +568,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
         credentials: 'include',
-        body: JSON.stringify({ message: text, mode, attachments, pathname: currentPathname, burnTxHash }),
+        body: JSON.stringify({ message: text, pathname: currentPathname, burnTxHash }),
       });
       const data = await res.json();
 
@@ -668,10 +599,8 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
 
       if (res.status === 403 || data.error === 'vip_required') {
         setIsTyping(false);
-        setResearchMode(false);
-        setResearchUploaderVisible(false);
         setIsVipMember(false);
-        addBlueMessage("research mode needs an active VIP membership. grab a membership card and it unlocks again.");
+        addBlueMessage("that one needs an active VIP membership. grab a membership card and it unlocks again.");
         setShowMembershipModal(true);
         return;
       }
@@ -685,7 +614,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
       setIsTyping(false);
       addBlueMessage(generateBlueResponse(text), {
         source: 'local-fallback',
-        mode: mode ?? 'chat',
+        mode: 'chat',
         shardsDeducted: 0,
         shardBalance: shardCount,
         notes,
@@ -694,7 +623,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
       setIsTyping(false);
       addBlueMessage(generateBlueResponse(text), {
         source: 'local-fallback',
-        mode: mode ?? 'chat',
+        mode: 'chat',
         shardsDeducted: 0,
         shardBalance: shardCount,
         notes: ['Network or runtime error on /api/chat/blue.'],
@@ -702,144 +631,47 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
     }
   };
 
-  // Reference files are read in the browser — .txt/.md are plain text, so
-  // there is no need to round-trip through an upload endpoint. The text is
-  // sent inline with the next message.
-  const uploadAttachmentFiles = async (files: FileList | null) => {
-    if (!files?.length || isUploadingAttachment) return;
-
-    setIsUploadingAttachment(true);
-
-    try {
-      const slots = Math.max(0, 4 - pendingAttachments.length);
-      for (const file of Array.from(files).slice(0, slots)) {
-        const lower = file.name.toLowerCase();
-        if (!lower.endsWith('.txt') && !lower.endsWith('.md')) {
-          addBlueMessage(`skipped ${file.name} — only .txt and .md files are supported.`);
-          continue;
-        }
-        if (file.size > 2 * 1024 * 1024) {
-          addBlueMessage(`skipped ${file.name} — keep reference files under 2MB.`);
-          continue;
-        }
-        const text = (await file.text()).slice(0, 12000).trim();
-        if (!text) {
-          addBlueMessage(`skipped ${file.name} — the file looks empty.`);
-          continue;
-        }
-        setPendingAttachments((prev) => [
-          ...prev,
-          {
-            id: `${file.name}:${Date.now()}`,
-            mime: lower.endsWith('.md') ? 'text/markdown' : 'text/plain',
-            size: file.size,
-            name: file.name,
-            extractedText: text,
-          },
-        ]);
-      }
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'could not read file';
-      addBlueMessage(`couldn't read that file: ${message}`);
-    } finally {
-      if (attachmentInputRef.current) {
-        attachmentInputRef.current.value = '';
-      }
-      setIsUploadingAttachment(false);
-    }
-  };
-
-  const removePendingAttachment = (attachmentId: string) => {
-    setPendingAttachments((prev) => prev.filter((attachment) => attachment.id !== attachmentId));
-  };
-
   // Shared pipeline for typed and voice input — appends the user message,
-  // runs intent detection (quest forge, course delete), then routes by mode.
-  const submitUserMessage = (text: string, attachments: UploadedAttachment[]) => {
+  // runs intent detection (quest forge, course delete), then sends to Blue.
+  const submitUserMessage = (text: string) => {
     setMessages((prev) => [...prev, {
       id: Date.now().toString(),
       text,
       sender: 'user' as const,
       timestamp: new Date(),
-      attachments: attachments.length ? attachments : undefined,
     }]);
 
-    if (!researchMode && !autoDistributionVisible) {
-      // Awaiting confirmation on a course delete — "yes" commits, anything else keeps it.
-      if (pendingCourseDelete) {
-        if (isAffirmative(text)) {
-          confirmCourseDelete();
-        } else {
-          setPendingCourseDelete(null);
-          addBlueMessage('kept it — your course is untouched.');
-        }
-        return;
+    // Awaiting confirmation on a course delete — "yes" commits, anything else keeps it.
+    if (pendingCourseDelete) {
+      if (isAffirmative(text)) {
+        confirmCourseDelete();
+      } else {
+        setPendingCourseDelete(null);
+        addBlueMessage('kept it — your course is untouched.');
       }
-      if (isCourseDeleteIntent(text)) {
-        startCourseDelete();
-        return;
-      }
-      // "make a quest…" — draft and open the forge instead of a normal reply.
-      if (isQuestForgeIntent(text)) {
-        draftQuestFromPrompt(text);
-        return;
-      }
+      return;
     }
-
-    if (researchMode) {
-      setResearchUploaderVisible(false);
-      sendToEliza(text, 'research', attachments);
+    if (isCourseDeleteIntent(text)) {
+      startCourseDelete();
+      return;
+    }
+    // "make a quest…" — draft and open the forge instead of a normal reply.
+    if (isQuestForgeIntent(text)) {
+      draftQuestFromPrompt(text);
       return;
     }
 
-    if (autoDistributionVisible) {
-      sendToEliza(text, 'auto-distribution', attachments);
-      return;
-    }
-
-    sendToEliza(text, undefined, attachments);
+    sendToEliza(text);
   };
 
   const handleSend = async () => {
-    if (isTyping || isUploadingAttachment) return;
-    if (!inputText.trim() && pendingAttachments.length === 0) return;
+    if (isTyping) return;
+    if (!inputText.trim()) return;
     setShardUpsell(null);
 
-    const text = inputText.trim() || 'Please review these attachments and help me continue.';
-    const attachments = pendingAttachments;
+    const text = inputText.trim();
     setInputText('');
-    setPendingAttachments([]);
-    submitUserMessage(text, attachments);
-  };
-
-  // Activate research mode. Research mode is a VIP-membership benefit — the
-  // server confirms the wallet holds a membership card before unlocking.
-  const activateResearchMode = async () => {
-    try {
-      const res = await fetch('/api/research/activate', {
-        method: 'POST',
-        credentials: 'include',
-      });
-      const data = await res.json().catch(() => ({}));
-
-      if (res.status === 403 || data.error === 'vip_required') {
-        setIsVipMember(false);
-        addBlueMessage("research mode is a VIP membership benefit — full grant, proposal, and thesis drafting. grab a membership card and it unlocks for good.");
-        setShowMembershipModal(true);
-        return;
-      }
-      if (!res.ok || !data.ok) {
-        addBlueMessage("couldn't unlock research mode. try again.");
-        return;
-      }
-
-      setIsVipMember(true);
-      setResearchMode(true);
-      setResearchUploaderVisible(true);
-      addBlueMessage("research mode is live — unlocked with your VIP membership. tell me what you're writing — a grant, a proposal, a thesis chapter — plus the topic and any constraints (funder, length, deadline). drop any reference material in the card above. i'll draft it in full report form and we can refine section by section.");
-    } catch {
-      addBlueMessage("something went wrong unlocking research mode. try again.");
-    }
+    submitUserMessage(text);
   };
 
   // ── Custom course deletion ─────────────────────────────────
@@ -903,20 +735,12 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
   // ── Quest forge (VIP) ──────────────────────────────────────
   // A membership-NFT holder can have Blue draft and publish a community quest,
   // funding the reward (credits or USDC) up front so Blue holds it in escrow.
-  const closeInlinePanels = () => {
-    setResearchMode(false);
-    setAutoDistributionVisible(false);
-    setTimeManagementVisible(false);
-    setPendingAttachments([]);
-  };
-
   const openQuestForge = () => {
     if (!isVipMember) {
       addBlueMessage("forging quests is a VIP membership perk. grab a membership card and i can spin up quests with credit or USDC rewards for you.");
       setShowMembershipModal(true);
       return;
     }
-    closeInlinePanels();
     setQuestForgeVisible(true);
   };
 
@@ -930,7 +754,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
       setShowMembershipModal(true);
       return;
     }
-    closeInlinePanels();
     setQuestForgeVisible(true);
     setQuestForgeBusy(true);
     setIsTyping(true);
@@ -1343,112 +1166,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
     return fallbacks[Math.floor(Math.random() * fallbacks.length)];
   };
 
-  const handleQuickAction = (action: string) => {
-    if (isTyping) return;
-
-    const send = (text: string) => {
-      setMessages((prev) => [...prev, {
-        id: Date.now().toString(),
-        text,
-        sender: 'user' as const,
-        timestamp: new Date(),
-      }]);
-    };
-
-    if (action === 'time') {
-      send('Help me time block');
-      setPendingAttachments([]);
-      setAutoDistributionVisible(false);
-      setQuestForgeVisible(false);
-      setTimeManagementVisible(true);
-      addBlueMessage(
-        "drop in your blocks. keep it lean. hit start and i'll keep the flow moving."
-      );
-    } else if (action === 'auto-distribution') {
-      setResearchMode(false);
-      setPendingAttachments([]);
-      setTimeManagementVisible(false);
-      setQuestForgeVisible(false);
-      if (autoDistributionVisible) {
-        send('Open auto-distribution');
-        addBlueMessage("auto-distribution is already open. connect your channels and tell me what you're pushing.");
-        return;
-      }
-      send('Open auto-distribution');
-      setAutoDistributionVisible(true);
-      addBlueMessage(
-        "auto-distribution is live. connect approved channels, tell me the campaign, and i'll draft posts, image prompts, video concepts, ad angles, and engagement targets."
-      );
-    } else if (action === 'research') {
-      setPendingAttachments([]);
-      setAutoDistributionVisible(false);
-      if (researchMode) {
-        send('Open research mode');
-        addBlueMessage("research mode is already open. tell me the document — grant, proposal, thesis chapter — the topic, and any constraints.");
-        return;
-      }
-      send('Open research mode');
-      setQuestForgeVisible(false);
-      activateResearchMode();
-    }
-  };
-
-  const connectAutoDistributionX = async () => {
-    setAutoDistributionXConnection((prev) => ({ ...prev, loading: true, error: null }));
-    try {
-      const response = await fetch('/api/x-auth/initiate', { credentials: 'include' });
-      const data = await response.json().catch(() => ({}));
-
-      if (!response.ok || !data.authUrl) {
-        const errorMessage = typeof data.error === 'string' ? data.error : 'x connection failed';
-        setAutoDistributionXConnection((prev) => ({ ...prev, loading: false, error: errorMessage }));
-        addBlueMessage(`${errorMessage}.`);
-        return;
-      }
-
-      window.location.href = data.authUrl;
-    } catch {
-      setAutoDistributionXConnection((prev) => ({ ...prev, loading: false, error: 'x connection failed' }));
-      addBlueMessage('x connection failed.');
-    }
-  };
-
-  const handleAutoDistributionGenerate = (request: AutoDistributionRequest) => {
-    const hasShards = shardCount !== null && shardCount >= SHARD_COST;
-    const platformLabels = request.platforms.map((platform) => {
-      if (platform === 'twitter') {
-        return autoDistributionXConnection.connected && autoDistributionXConnection.username
-          ? `x (@${autoDistributionXConnection.username})`
-          : 'x';
-      }
-      return platform;
-    });
-
-    setMessages((prev) => [...prev, {
-      id: Date.now().toString(),
-      text: `Auto-Distribution: ${request.brief}`,
-      sender: 'user',
-      timestamp: new Date(),
-    }]);
-
-    if (!hasShards) {
-      openShardUpsell(SHARD_COST, 'chat');
-      return;
-    }
-
-    const prompt = [
-      `Campaign brief: ${request.brief}`,
-      `Goal: ${request.goal}`,
-      `Platforms: ${platformLabels.join(', ')}`,
-      `Deliverables: ${request.deliverables.join(', ')}`,
-      `Connection state: Gmail draft only; X ${autoDistributionXConnection.connected ? `connected${autoDistributionXConnection.username ? ` as @${autoDistributionXConnection.username}` : ''}` : 'not connected'}; Bluesky draft only.`,
-      'Create a launch-ready distribution plan with channel-specific drafts, image prompts, short-form video concepts, ad angles, search queries for relevant conversations, and the single strongest marketing improvement you recommend.',
-      'Assume explicit user approval is required before any publishing. Do not suggest spam, fake engagement, mass unsolicited outreach, or manipulative tactics.',
-    ].join('\n');
-
-    sendToEliza(prompt, 'auto-distribution');
-  };
-
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     play('click');
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -1597,16 +1314,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
           </div>
         )}
 
-        {autoDistributionVisible && (
-          <AutoDistributionInline
-            isBusy={isTyping}
-            xConnection={autoDistributionXConnection}
-            onConnectX={connectAutoDistributionX}
-            onGenerate={handleAutoDistributionGenerate}
-            onClose={() => setAutoDistributionVisible(false)}
-          />
-        )}
-
         {questForgeVisible && (
           <QuestForgeInline
             isBusy={questForgeBusy}
@@ -1621,19 +1328,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
         <div ref={messagesEndRef} />
       </div>
 
-      {timeManagementVisible && (
-        <TimeManagementInline
-          onTimerStarted={(taskTitle, durationMinutes) => {
-            addBlueMessage(`timer's live. ${taskTitle} for ${durationMinutes} minutes.`);
-          }}
-          onNextTask={(taskTitle, durationMinutes) => {
-            addBlueMessage(`next up: ${taskTitle}. ${durationMinutes} minutes. go.`);
-          }}
-          onSessionComplete={() => {
-            addBlueMessage("clean run. you're done.");
-          }}
-        />
-      )}
 
 
       {shardUpsell && (
@@ -1656,73 +1350,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
         </div>
       )}
 
-      {/* Research context uploader — shown right after research mode unlocks */}
-      {researchMode && researchUploaderVisible && (
-        <div className={styles.researchUploader}>
-          <div className={styles.researchUploaderHead}>
-            <span className={styles.researchUploaderTitle}>Add reference material</span>
-            <button
-              type="button"
-              className={styles.researchUploaderDismiss}
-              onClick={() => setResearchUploaderVisible(false)}
-              aria-label="Dismiss uploader"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-          <p className={styles.researchUploaderDesc}>
-            Upload notes, a prior draft, or the call for proposals as a .txt or .md file and Blue will draft from them. Optional — you can also just describe what you need.
-          </p>
-          {pendingAttachments.length > 0 && (
-            <div className={styles.researchUploaderChips}>
-              {pendingAttachments.map((attachment) => (
-                <span key={attachment.id} className={styles.researchUploaderChip}>
-                  <span className={styles.researchUploaderChipIcon} aria-hidden="true">
-                    {fileTypeLabel(attachment.mime)}
-                  </span>
-                  <span className={styles.researchUploaderChipName}>{attachment.name}</span>
-                  <button
-                    type="button"
-                    className={styles.researchUploaderChipRemove}
-                    onClick={() => removePendingAttachment(attachment.id)}
-                    aria-label={`Remove ${attachment.name}`}
-                  >
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
-                      <path d="M18 6L6 18M6 6l12 12" />
-                    </svg>
-                  </button>
-                </span>
-              ))}
-            </div>
-          )}
-          <button
-            type="button"
-            className={styles.researchUploaderButton}
-            onClick={() => attachmentInputRef.current?.click()}
-            disabled={isUploadingAttachment || pendingAttachments.length >= 4}
-          >
-            {isUploadingAttachment
-              ? 'Uploading...'
-              : pendingAttachments.length >= 4
-                ? 'Maximum of 4 files'
-                : pendingAttachments.length > 0
-                  ? 'Add another file'
-                  : 'Choose files'}
-          </button>
-        </div>
-      )}
-
-      <input
-        ref={attachmentInputRef}
-        type="file"
-        accept=".txt,.md,text/plain,text/markdown"
-        multiple
-        hidden
-        onChange={(e) => uploadAttachmentFiles(e.target.files)}
-      />
-
       {/* Quick Actions */}
       <div className={styles.quickActions}>
         {shardCount !== null && (
@@ -1731,13 +1358,13 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
             <span>{shardCount}</span>
           </div>
         )}
-        <button className={styles.quickAction} onClick={() => { play('click'); submitUserMessage('give me a task', []); }} type="button">
+        <button className={styles.quickAction} onClick={() => { play('click'); submitUserMessage('give me a task'); }} type="button">
           task
         </button>
-        <button className={styles.quickAction} onClick={() => { play('click'); submitUserMessage('what do you remember about me?', []); }} type="button">
+        <button className={styles.quickAction} onClick={() => { play('click'); submitUserMessage('what do you remember about me?'); }} type="button">
           memories
         </button>
-        <button className={styles.quickAction} onClick={() => { play('click'); submitUserMessage('what missions are up?', []); }} type="button">
+        <button className={styles.quickAction} onClick={() => { play('click'); submitUserMessage('what missions are up?'); }} type="button">
           missions
         </button>
       </div>
@@ -1752,14 +1379,13 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           onKeyDown={handleKeyPress}
-          disabled={isTyping || isUploadingAttachment}
+          disabled={isTyping}
         />
         <button
           className={`${styles.voiceButton} ${isRecording ? styles.voiceActive : ''} ${isSpeaking ? styles.voiceSpeaking : ''}`}
           onClick={startVoiceChat}
           type="button"
           aria-label={isRecording ? 'Stop recording' : 'Voice chat'}
-          disabled={isUploadingAttachment}
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
             <rect x="9" y="1" width="6" height="12" rx="3" fill="currentColor"/>
@@ -1771,7 +1397,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
         <button
           className={styles.sendButton}
           onClick={handleSend}
-          disabled={(!inputText.trim() && pendingAttachments.length === 0) || isTyping || isUploadingAttachment}
+          disabled={!inputText.trim() || isTyping}
           type="button"
           aria-label="Send message"
         >
