@@ -42,8 +42,10 @@ const nextConfig = {
             value: 'strict-origin-when-cross-origin'
           },
           {
+            // Microphone stays enabled for same-origin so the ElevenLabs
+            // voice widget can run a call after the user opts in.
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=()'
+            value: 'camera=(), microphone=(self), geolocation=()'
           },
         ],
       },
