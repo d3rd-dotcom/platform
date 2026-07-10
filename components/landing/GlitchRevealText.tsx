@@ -35,24 +35,31 @@ export const GlitchRevealText: React.FC<GlitchRevealTextProps> = ({
     <Tag className={className} aria-label={lines.map((l) => l.text).join(' ')}>
       {lines.map((line, lineIndex) => (
         <span key={lineIndex} className={styles.line}>
-          {line.text.split('').map((char) => {
-            const idx = charIndex++;
-            const offset = X_OFFSETS[idx % X_OFFSETS.length];
-            const delay = startDelay + idx * staggerDelay;
-            return (
-              <span
-                key={idx}
-                className={`${styles.char}${line.accent && accentClassName ? ` ${accentClassName}` : ''}`}
-                style={{
-                  '--delay': `${delay}ms`,
-                  '--duration': `${duration}ms`,
-                  '--x-offset': `${offset}px`,
-                } as React.CSSProperties}
-              >
-                {char === ' ' ? '\u00A0' : char}
+          {line.text.split(' ').map((word, wordIndex) => (
+            <React.Fragment key={wordIndex}>
+              {wordIndex > 0 && ' '}
+              <span className={styles.word}>
+                {word.split('').map((char) => {
+                  const idx = charIndex++;
+                  const offset = X_OFFSETS[idx % X_OFFSETS.length];
+                  const delay = startDelay + idx * staggerDelay;
+                  return (
+                    <span
+                      key={idx}
+                      className={`${styles.char}${line.accent && accentClassName ? ` ${accentClassName}` : ''}`}
+                      style={{
+                        '--delay': `${delay}ms`,
+                        '--duration': `${duration}ms`,
+                        '--x-offset': `${offset}px`,
+                      } as React.CSSProperties}
+                    >
+                      {char}
+                    </span>
+                  );
+                })}
               </span>
-            );
-          })}
+            </React.Fragment>
+          ))}
         </span>
       ))}
     </Tag>

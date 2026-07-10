@@ -3,7 +3,6 @@
 import React from 'react';
 import Image from 'next/image';
 import styles from './LandingPage.module.css';
-import GlitchRevealText from './GlitchRevealText';
 import LandingEnterAcademyButton from './LandingEnterAcademyButton';
 import { LandingScene } from './LandingScene';
 
@@ -41,17 +40,9 @@ export const HeroSection: React.FC = () => {
         />
         <div className={styles.heroContent}>
 
-          <GlitchRevealText
-            as="h1"
-            className={styles.heroHeadline}
-            lines={[{ text: 'Academy' }]}
-            staggerDelay={50}
-            duration={1000}
-            startDelay={200}
-          />
-          <p className={styles.heroSubtext}>
-            Because learning is something everyone should have access to.
-          </p>
+          <h1 className={styles.heroHeadline}>
+            The free, social platform, for education and finance.
+          </h1>
           <div className={styles.heroActions}>
             <LandingEnterAcademyButton dark />
           </div>

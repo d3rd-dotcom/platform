@@ -1,5 +1,10 @@
 .line {
   display: block;
+  white-space: normal;
+}
+
+.word {
+  display: inline-block;
   white-space: nowrap;
 }
 

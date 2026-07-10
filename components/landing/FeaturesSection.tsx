@@ -52,10 +52,13 @@ export const FeaturesSection: React.FC = () => {
       className={`${styles.featuresSection} ${isVisible ? styles.sectionVisible : ''}`}
     >
       <div className={styles.container}>
+        <p className={styles.sectionLead}>
+          Because quality education shouldn&apos;t rely on a zip code.
+        </p>
         <div className={styles.board}>
           <div className={styles.boardHeader}>
             <span className={styles.headerJa}>仕組み</span>
-            <span className={styles.headerTitle}>How It Works</span>
+            <span className={styles.headerTitle}>The Next-Gen of Education</span>
           </div>
 
           <div className={styles.topPanel}>
@@ -66,8 +69,9 @@ export const FeaturesSection: React.FC = () => {
             <div className={styles.headlinePanel}>
               <h2 className={styles.title}>Access Quality Education</h2>
               <p className={styles.description}>
-                Every verified guide joins the same prerequisite graph. Rotate the map, trace a
-                topic back to its foundations, and find the next concept ready to explore.
+                617 million children and teens can&apos;t read a basic sentence or do simple math
+                — and most are already in school. The lessons exist; the access doesn&apos;t. That
+                gap is where dreams quietly disappear and true potential is lost.
               </p>
             </div>
           </div>
