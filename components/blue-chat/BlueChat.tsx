@@ -10,7 +10,6 @@ import styles from './BlueChat.module.css';
 import { useSound } from '@/hooks/useSound';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 
-const VOICE_PREF_KEY = 'blueChat.voiceEnabled';
 import ListsPanel from './ListsPanel';
 import QuestForgeInline from './QuestForgeInline';
 import type { QuestForgeDraft, QuestForgeRequest } from './QuestForgeInline';
@@ -19,6 +18,19 @@ import { sendDiamonds, sendDiamondsBurn } from '@/lib/diamonds-base-transfer';
 import { broadcastPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
 
 const ProMembershipModal = dynamic(() => import('../pro-membership-modal/ProMembershipModal'), { ssr: false });
+
+const VOICE_PREF_KEY = 'blueChat.voiceEnabled';
+
+const GREETINGS_VOICE = [
+  "hey. you called. i'm glad.",
+  "oh, hey. i didn't expect you. but i'm happy you're here.",
+  "you're back. i had a feeling you would be.",
+];
+const GREETINGS_TEXT = [
+  "hey, i'm blue. your research partner in the digital matrix. what are we analyzing today?",
+  "good to see you. what are we looking at?",
+  "you're here. let's get into it.",
+];
 
 // ── Blue Voice TTS ──────────────────────────────────────────
 async function speakBlue(text: string, signal?: AbortSignal): Promise<void> {
@@ -39,9 +51,25 @@ async function speakBlue(text: string, signal?: AbortSignal): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     const el = new Audio(url);
     el.volume = 0.4;
-    el.onended = () => { URL.revokeObjectURL(url); resolve(); };
-    el.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Audio playback error')); };
-    el.play().catch(reject);
+
+    // Aborting mid-playback has to stop the audio too, or a superseded line
+    // keeps talking over the new one.
+    const stop = () => {
+      el.pause();
+      cleanup();
+      reject(new DOMException('Aborted', 'AbortError'));
+    };
+    const cleanup = () => {
+      signal?.removeEventListener('abort', stop);
+      URL.revokeObjectURL(url);
+    };
+
+    if (signal?.aborted) { stop(); return; }
+    signal?.addEventListener('abort', stop);
+
+    el.onended = () => { cleanup(); resolve(); };
+    el.onerror = () => { cleanup(); reject(new Error('Audio playback error')); };
+    el.play().catch((err) => { cleanup(); reject(err); });
   });
 }
 
@@ -196,20 +224,13 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
   const { ready, authenticated, getAccessToken } = usePrivy();
   const { connector, isConnected } = useAccount();
   const currentPathname = usePathname();
-  const GREETINGS_VOICE = [
-    "hey. you called. i'm glad.",
-    "oh, hey. i didn't expect you. but i'm happy you're here.",
-    "you're back. i had a feeling you would be.",
-  ];
-  const GREETINGS_TEXT = [
-    "hey, i'm blue. your research partner in the digital matrix. what are we analyzing today?",
-    "good to see you. what are we looking at?",
-    "you're here. let's get into it.",
-  ];
-  const initialGreeting = startWithVoice
-    ? GREETINGS_VOICE[Math.floor(Math.random() * GREETINGS_VOICE.length)]
-    : GREETINGS_TEXT[Math.floor(Math.random() * GREETINGS_TEXT.length)];
-  const [messages, setMessages] = useState<Message[]>([
+  // Picked once per mount. Re-rolling this on every render would change the
+  // greeting effect's dependency and speak a fresh line each time.
+  const [initialGreeting] = useState(() => {
+    const pool = startWithVoice ? GREETINGS_VOICE : GREETINGS_TEXT;
+    return pool[Math.floor(Math.random() * pool.length)];
+  });
+  const [messages, setMessages] = useState<Message[]>(() => [
     {
       id: '1',
       text: initialGreeting,
@@ -397,12 +418,16 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
   }, []);
 
   // When chat is opened via "Call Blue": enable voice, speak the greeting aloud, then return to normal text.
+  // The ref keeps this to exactly one utterance per mount, even under StrictMode's double-invoke.
+  const greetingSpokenRef = useRef(false);
   useEffect(() => {
-    if (!startWithVoice) return;
+    if (!startWithVoice || greetingSpokenRef.current) return;
+    greetingSpokenRef.current = true;
     setVoiceEnabled(true);
     voiceEnabledRef.current = true;
     setStorageItem(VOICE_PREF_KEY, '1');
     setIsSpeaking(true);
+    voiceAbortRef.current?.abort();
     const controller = new AbortController();
     voiceAbortRef.current = controller;
     speakBlue(initialGreeting, controller.signal)
