@@ -6,14 +6,15 @@ import { useSound } from '@/hooks/useSound';
 import { DiamondReward } from '@/components/rewards/DiamondReward';
 import styles from './BlueScene.module.css';
 
-const TOTAL_BG = 21;
+// bg-02 through bg-04 were removed from the rotation and must never be selected again.
+const BACKGROUND_INDICES = [1, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
 
 function bgIndex(): number {
   const now = new Date();
   const start = new Date(now.getFullYear(), 0, 0);
   const diff = now.getTime() - start.getTime();
   const day = Math.floor(diff / (1000 * 60 * 60 * 24));
-  return (day % TOTAL_BG) + 1;
+  return BACKGROUND_INDICES[day % BACKGROUND_INDICES.length];
 }
 
 function pad(n: number): string {

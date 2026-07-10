@@ -1,6 +1,6 @@
 ---
 name: guide-wikipedia-style
-description: Wikipedia-style structure, sizing, and spacing for guide article pages. Use when editing the layout, typography, headings, dividers, or spacing of guide articles (app/courses/guides/[slug]), the GuideBody renderer, or when normalizing guide body content stored in the guides table. Also covers the walkthrough trigger placement and overlay behavior on guide pages.
+description: Wikipedia-style structure, sizing, and spacing for guide article pages. Use when editing the layout, typography, headings, dividers, or spacing of guide articles (app/home/guides/[slug]), the GuideBody renderer, or when normalizing guide body content stored in the guides table. Also covers the walkthrough trigger placement and overlay behavior on guide pages.
 version: 1.0.0
 user-invocable: true
 ---
@@ -50,7 +50,7 @@ Never render a body block title that repeats the guide's `topicTitle` (case-inse
 
 ## Where the code lives
 
-- Page: `app/courses/guides/[slug]/page.tsx` + `page.module.css` — header, level chip, walkthrough trigger, article wrapper.
+- Page: `app/home/guides/[slug]/page.tsx` + `page.module.css` — header, level chip, walkthrough trigger, article wrapper.
 - Body renderer: `components/guides/GuideBody.tsx` + `GuideBody.module.css` — block mapping and the typographic overrides.
 - Walkthrough: `components/guides/GuideWalkthrough.tsx` — currently toggled inline by `showWalkthrough` state on the page; the overlay wraps this component, it does not change it.
 

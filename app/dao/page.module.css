@@ -1,0 +1,36 @@
+/* Home Page — Blue course-builder bento */
+
+.pageLayout {
+  position: relative;
+  margin-left: var(--sidebar-width, 265px);
+  height: calc(100dvh - 72px);
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+  transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.content {
+  flex: 1;
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Collapse sidebar offset on mobile */
+@media (max-width: 900px) {
+  .pageLayout {
+    margin-left: 0;
+    height: 100dvh;
+    padding-top: 72px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pageLayout {
+    --mobile-nav-clearance: calc(74px + max(env(safe-area-inset-bottom, 0px), 20px));
+    height: calc(100dvh - var(--mobile-nav-clearance));
+  }
+}
+

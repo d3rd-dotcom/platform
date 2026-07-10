@@ -1007,7 +1007,7 @@ export default function CourseStudioModal({
               </div>
               <div className={styles.publishForm}>
                 <h2 className={styles.publishFormTitle}>{status === 'published' ? 'Course Card Settings' : 'Pre-publish Review'}</h2>
-                <p className={styles.publishFormSub}>{status === 'published' ? 'Edit the title, description, URL slug, and card preview shown on /courses.' : 'Set the title, description, and URL slug before publishing.'}</p>
+                <p className={styles.publishFormSub}>{status === 'published' ? 'Edit the title, description, URL slug, and card preview shown on Home.' : 'Set the title, description, and URL slug before publishing.'}</p>
                 <label className={styles.publishField}>
                   <span className={styles.publishFieldLabel}>Title</span>
                   <input

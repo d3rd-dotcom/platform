@@ -12,7 +12,7 @@ export default function LandingEnterAcademyButton({ showIcon = true, dark = fals
   return (
     <button
       type="button"
-      onClick={() => { play('click'); router.push('/courses'); }}
+      onClick={() => { play('click'); router.push('/home'); }}
       onMouseEnter={() => play('hover')}
       className={`${styles.fancyButton} ${styles.fancyButtonHero}`}
     >

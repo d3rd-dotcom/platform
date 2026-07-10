@@ -20,7 +20,7 @@ export default function NotFound() {
               Sorry! The page you&apos;re looking for doesn&apos;t exist or has been moved.
             </p>
           </div>
-          <Link href="/courses" className={styles.cta}>
+          <Link href="/home" className={styles.cta}>
             Return to Safety
           </Link>
         </div>

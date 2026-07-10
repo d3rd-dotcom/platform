@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 /**
  * GET /api/guides/frontier — the caller's "next unlocks": published guides not
  * yet completed whose direct prereqs are all satisfied. Powers the "Next
- * unlocks" row on /courses and the home dashboard's Knowledge Base card.
+ * unlocks" row on /home and the home dashboard's Knowledge Base card.
  */
 export async function GET() {
   if (!isDbConfigured()) {

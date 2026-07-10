@@ -514,7 +514,7 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
               <ArrowLeft size={15} weight="bold" /> Knowledge Base
             </button>
             <span className={`${styles.statusBadge} ${statusClass}`}>{statusLabel}</span>
-            <span className={styles.slugRow}>/courses/guides/{previewSlug || '…'}</span>
+            <span className={styles.slugRow}>/home/guides/{previewSlug || '…'}</span>
           </div>
           <div className={styles.headerActions}>
             {error && <span className={styles.errorText}>{error}</span>}

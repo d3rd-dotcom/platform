@@ -83,7 +83,7 @@ function formatDate(iso: string): string {
  * rubric-bound juror vote with its written justification and timestamp.
  *
  * This component is self-fetching and read-only. The reviewer wires it into the
- * guide page — it is NOT imported by app/courses/guides/[slug]/page.tsx here.
+ * guide page — it is NOT imported by app/home/guides/[slug]/page.tsx here.
  */
 export default function VerificationLog({ guideId }: Props) {
   const { ready, authenticated, getAccessToken } = usePrivy();

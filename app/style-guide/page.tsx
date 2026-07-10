@@ -338,7 +338,7 @@ export default function StyleGuidePage() {
             </div>
             <div className={styles.shadowCard} style={{ boxShadow: '0 6px 0 var(--color-primary), 0 0px 10px rgba(0, 0, 0, 0.14)', border: '2px solid var(--color-primary-hover)' }}>
               <span className={styles.shadowLabel}>Comic Offset</span>
-              <span className={styles.shadowMeta}>/courses course cards</span>
+              <span className={styles.shadowMeta}>/home course cards</span>
             </div>
             <div className={styles.shadowCard} style={{ boxShadow: '0 3px 0 color-mix(in oklch, var(--color-primary) 25%, transparent)', border: '1.5px solid color-mix(in oklch, var(--color-primary) 30%, transparent)' }}>
               <span className={styles.shadowLabel}>Pill Offset</span>
@@ -461,7 +461,7 @@ export default function StyleGuidePage() {
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>🃏 Cards</h2>
           <p className={styles.sectionDescription}>
-            Two surfaces cover almost every card in the app: the comic-offset course card from <code>/courses</code>, and the flatter drag-and-drop row from <code>/course-builder</code>.
+            Two surfaces cover almost every card in the app: the comic-offset course card from <code>/home</code>, and the flatter drag-and-drop row from <code>/course-builder</code>.
           </p>
           <div className={styles.cardGrid}>
             <div className={styles.courseCardDemo}>

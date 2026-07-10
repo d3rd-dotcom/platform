@@ -583,7 +583,7 @@
   gap: 1.5rem;
 }
 
-/* ── Course card (mirrors app/courses/page.module.css .courseCard) ── */
+/* ── Course card (mirrors app/home/page.module.css .courseCard) ── */
 .courseCardDemo {
   position: relative;
   overflow: hidden;

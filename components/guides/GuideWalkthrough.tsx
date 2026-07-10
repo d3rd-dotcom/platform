@@ -318,7 +318,7 @@ export default function GuideWalkthrough({ slug }: Props) {
                           <span className={styles.dot} />
                         )}
                         <Link
-                          href={`/courses/guides/${node.slug}`}
+                          href={`/home/guides/${node.slug}`}
                           className={styles.nodeTitle}
                           onClick={() => play('click')}
                         >

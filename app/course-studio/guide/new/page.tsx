@@ -17,7 +17,7 @@ export default function NewGuidePage() {
   return (
     <GuideStudio
       authHeaders={authHeaders}
-      onExit={() => router.push('/courses')}
+      onExit={() => router.push('/home')}
       onCreated={(slug) => {
         // Move to the stable edit URL once the draft exists (keeps refreshes sane).
         router.replace(`/course-studio/guide/${slug}`);

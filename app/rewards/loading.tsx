@@ -1,6 +1,6 @@
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import LottieLoader from '@/components/lottie-loader/LottieLoader';
-import styles from '../home/loading.module.css';
+import styles from '../dao/loading.module.css';
 
 export default function RewardsLoading() {
   return (

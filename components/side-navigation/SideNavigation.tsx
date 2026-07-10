@@ -74,8 +74,8 @@ const mobileNavSections: NavSection[] = [
 const primaryNavItems: NavItem[] = [
   {
     id: 'home',
-    label: 'Guides',
-    href: '/courses',
+    label: 'Home',
+    href: '/home',
     iconSrc: '/icons/nav-home.svg',
   },
   {
@@ -83,12 +83,6 @@ const primaryNavItems: NavItem[] = [
     label: 'Pocket News',
     href: '/simulation',
     iconSrc: '/icons/nav-simulations-v2.svg',
-  },
-  {
-    id: 'quests',
-    label: 'Quests',
-    href: '/quests',
-    iconSrc: '/icons/nav-quests-v3.svg',
   },
 ];
 
@@ -98,12 +92,6 @@ const bottomNavItems: NavItem[] = [
     label: 'Surveys',
     href: '/surveys',
     iconSrc: '/icons/nav-surveys-v5.svg',
-  },
-  {
-    id: 'research',
-    label: 'R-Tool',
-    href: '/research',
-    iconSrc: '/icons/nav-laboratory-v3.svg',
   },
 ];
 
@@ -588,8 +576,8 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   };
 
   const isActive = (href: string) => {
-    if (href === '/courses') {
-      return pathname === '/courses' || pathname === '/';
+    if (href === '/home') {
+      return pathname === '/home' || pathname === '/';
     }
     return pathname === href || pathname?.startsWith(href + '/');
   };
@@ -747,7 +735,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     <>
       {/* Mobile Top Bar */}
       <div className={styles.mobileTopBar}>
-        <Link href="/courses" className={styles.mobileLogoLink}>
+        <Link href="/home" className={styles.mobileLogoLink}>
           <span className={styles.mobileLogo}>Mental Wealth Academy</span>
         </Link>
         <button
@@ -843,7 +831,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
               )}
             </div>
 
-            {/* Bottom group: Surveys, R-Tool */}
+            {/* Bottom group: Surveys */}
             <div className={styles.navBottomGroup}>
               {bottomNavItems.map((item) => {
                 const active = isActive(item.href);

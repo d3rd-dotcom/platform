@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useSound } from '@/hooks/useSound';
+import { useScrollLock } from '@/hooks/useScrollLock';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 import styles from './BlueDialogue.module.css';
 
@@ -50,6 +51,13 @@ export type BlueEmotion =
   | 'pain'
   | 'calm';
 
+export interface BlueChatback {
+  /** Placeholder shown in the empty reply field. */
+  placeholder?: string;
+  /** Receives each sent reply along with the index of the line it answered. */
+  onSubmit?: (reply: string, lineIndex: number) => void;
+}
+
 export interface BlueDialogueProps {
   /** Controls whether the full-screen overlay is mounted + visible. */
   open: boolean;
@@ -63,24 +71,41 @@ export interface BlueDialogueProps {
   speed?: number;
   /** Diamond amount to present as a reward chip above the dialogue text. */
   reward?: number;
+  /** Heading rendered above Blue's line, e.g. "Check-in [Week 7]". */
+  title?: string;
+  /** Supporting line rendered under the title. */
+  subtitle?: string;
+  /**
+   * 'bottom' docks the panel in the visual-novel convention (default).
+   * 'center' floats it in the middle of the viewport over a dimmed,
+   * click-to-dismiss backdrop, ignoring the topnav/sidenav offsets.
+   */
+  placement?: 'bottom' | 'center';
+  /**
+   * When set, a reply field appears under Blue's line. Sending a reply logs
+   * it to the session history and advances the script; the arrow still works
+   * for members who would rather not answer.
+   */
+  chatback?: BlueChatback;
 }
 
 /**
- * Session-scoped history of every line Blue has spoken. Module-level so it
- * survives remounts within a single browser session (spec requirement).
+ * Session-scoped history of every line spoken. Module-level so it survives
+ * remounts within a single browser session (spec requirement). Chatback
+ * replies land here as "You" entries.
  */
 interface HistoryEntry {
-  speaker: 'Blue';
+  speaker: 'Blue' | 'You';
   text: string;
 }
 const dialogueHistory: HistoryEntry[] = [];
 
-function pushHistory(text: string) {
+function pushHistory(text: string, speaker: HistoryEntry['speaker'] = 'Blue') {
   const trimmed = text.trim();
   if (!trimmed) return;
   const last = dialogueHistory[dialogueHistory.length - 1];
-  if (last && last.text === trimmed) return; // de-dupe consecutive repeats
-  dialogueHistory.push({ speaker: 'Blue', text: trimmed });
+  if (last && last.text === trimmed && last.speaker === speaker) return; // de-dupe consecutive repeats
+  dialogueHistory.push({ speaker, text: trimmed });
 }
 
 function prefersReducedMotion(): boolean {
@@ -109,10 +134,15 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   onClose,
   speed = 22,
   reward,
+  title,
+  subtitle,
+  placement = 'bottom',
+  chatback,
 }) => {
   const { play } = useSound();
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const arrowRef = useRef<HTMLButtonElement | null>(null);
+  const chatbackInputRef = useRef<HTMLInputElement | null>(null);
   const historyCloseRef = useRef<HTMLButtonElement | null>(null);
   const typeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
@@ -128,10 +158,21 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   const [historyOpen, setHistoryOpen] = useState(false);
   const [portraitReady, setPortraitReady] = useState(false);
   const [displayReward, setDisplayReward] = useState(0);
+  const [reply, setReply] = useState('');
   const [voiceEnabled, setVoiceEnabled] = useState(false);
   const voiceEnabledRef = useRef(false);
   const voiceAbortRef = useRef<AbortController | null>(null);
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Centered pop-up mode freezes the page behind it.
+  useScrollLock(open && placement === 'center');
+
+  // The expressions sprite can finish loading before hydration attaches
+  // onLoad (SSR + warm cache), which would leave portraitReady false forever.
+  // The ref callback double-checks completeness at attach time.
+  const preloadImgRef = useCallback((img: HTMLImageElement | null) => {
+    if (img && img.complete && img.naturalWidth > 0) setPortraitReady(true);
+  }, []);
 
   // Count the reward chip up from zero when the overlay opens.
   useEffect(() => {
@@ -221,6 +262,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
     if (!open) return;
     setLineIndex(0);
     setHistoryOpen(false);
+    setReply('');
   }, [open, safeLines]);
 
   const clearTyping = useCallback(() => {
@@ -287,6 +329,42 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
     }
   }, [play, isTyping, finishTyping, safeIndex, safeLines.length, close]);
 
+  // Chatback: log the member's reply to history, hand it to the parent, and
+  // advance the script (the last line closes, matching the arrow).
+  const sendReply = useCallback(() => {
+    const trimmed = reply.trim();
+    if (!trimmed) return;
+    play('click');
+    if (isTyping) finishTyping();
+    pushHistory(trimmed, 'You');
+    chatback?.onSubmit?.(trimmed, safeIndex);
+    setReply('');
+    if (safeIndex < safeLines.length - 1) {
+      setLineIndex((n) => n + 1);
+    } else {
+      close();
+    }
+  }, [reply, play, isTyping, finishTyping, chatback, safeIndex, safeLines.length, close]);
+
+  const handleChatbackSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      sendReply();
+    },
+    [sendReply],
+  );
+
+  // Explicit Enter-to-send so the reply never depends on implicit form
+  // submission (preventDefault stops the form from double-firing).
+  const handleChatbackKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      sendReply();
+    },
+    [sendReply],
+  );
+
   // SKIP: jump the typewriter to full; if already full, close.
   const handleSkip = useCallback(() => {
     play('click');
@@ -337,11 +415,14 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
     return () => document.removeEventListener('keydown', onKey);
   }, [open, portraitReady, close, historyOpen, closeHistory]);
 
-  // Focus management: capture, focus the arrow on open, restore on close.
+  // Focus management: capture, focus the reply field (or the arrow) on open,
+  // restore on close.
   useEffect(() => {
     if (!open || !portraitReady) return;
     previouslyFocused.current = document.activeElement as HTMLElement | null;
-    const t = setTimeout(() => arrowRef.current?.focus(), 30);
+    const t = setTimeout(() => {
+      (chatbackInputRef.current ?? arrowRef.current)?.focus();
+    }, 30);
     return () => {
       clearTimeout(t);
       previouslyFocused.current?.focus?.();
@@ -351,6 +432,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   if (!open || !portraitReady) {
     return (
       <Image
+        ref={preloadImgRef}
         src="/images/blue-dialogue-expressions.png"
         alt=""
         width={2752}
@@ -375,9 +457,16 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   return (
     <div
       ref={overlayRef}
-      className={styles.overlay}
+      className={`${styles.overlay} ${placement === 'center' ? styles.overlayCenter : ''}`}
       role="dialog"
       aria-label="Blue dialogue"
+      onClick={
+        placement === 'center'
+          ? (e) => {
+              if (e.target === e.currentTarget) close();
+            }
+          : undefined
+      }
     >
       <div
         className={`${styles.stage} ${portraitReady ? styles.stageReady : ''}`}
@@ -432,7 +521,15 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
               </svg>
             )}
           </button>
-          <div className={styles.message}>
+          {(title || subtitle) && (
+            <div className={styles.header}>
+              {title && <h2 className={styles.title}>{title}</h2>}
+              {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
+            </div>
+          )}
+          <div
+            className={`${styles.message} ${title || subtitle ? styles.messageBelowHeader : ''}`}
+          >
             {typeof reward === 'number' && reward > 0 && (
               <div className={styles.rewardChip} role="status">
                 <Image
@@ -486,6 +583,41 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
                 ))}
               </ul>
             </div>
+          )}
+
+          {chatback && (
+            <form className={styles.chatback} onSubmit={handleChatbackSubmit}>
+              <input
+                ref={chatbackInputRef}
+                type="text"
+                className={styles.chatbackInput}
+                value={reply}
+                onChange={(e) => setReply(e.target.value)}
+                onKeyDown={handleChatbackKeyDown}
+                placeholder={chatback.placeholder ?? 'Answer Blue'}
+                aria-label="Reply to Blue"
+                autoComplete="off"
+                spellCheck={false}
+              />
+              <button
+                type="submit"
+                className={styles.chatbackSend}
+                onMouseEnter={hover}
+                aria-label="Send reply"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </button>
+            </form>
           )}
 
           <div className={styles.controls}>

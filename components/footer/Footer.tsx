@@ -28,7 +28,7 @@ const data = [
   {
     title: 'About',
     links: [
-      { label: 'Features', link: '/courses' },
+      { label: 'Features', link: '/home' },
       { label: 'Quests', link: '/quests' },
       { label: 'Support', link: 'https://mental-wealth-academy.gitbook.io/mental-wealth-academy-docs/' },
     ],
@@ -36,9 +36,9 @@ const data = [
   {
     title: 'Project',
     links: [
-      { label: 'Contribute', link: '/courses' },
-      { label: 'Proposals', link: '/courses' },
-      { label: 'Governance', link: '/courses' },
+      { label: 'Contribute', link: '/home' },
+      { label: 'Proposals', link: '/home' },
+      { label: 'Governance', link: '/home' },
       { label: 'Docs', link: 'https://mental-wealth-academy.gitbook.io/mental-wealth-academy-docs/' },
     ],
   },
@@ -137,4 +137,3 @@ export function Footer() {
     </footer>
   );
 }
-

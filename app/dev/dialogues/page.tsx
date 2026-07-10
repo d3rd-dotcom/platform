@@ -15,6 +15,10 @@ interface Scenario {
   lines: string[];
   emotion?: BlueEmotion;
   reward?: number;
+  title?: string;
+  subtitle?: string;
+  placement?: 'bottom' | 'center';
+  chatback?: boolean;
 }
 
 const LONG_TEXT =
@@ -122,6 +126,32 @@ const SCENARIOS: Scenario[] = [
     lines: [LONG_TEXT],
     emotion: 'happy',
   },
+  {
+    id: 'weekly-check-in',
+    label: 'Weekly check-in (centered + chatback)',
+    title: 'Check-in [Week 7]',
+    subtitle: 'Let this frame the week, then keep the mission alive in your field notes.',
+    placement: 'center',
+    chatback: true,
+    lines: [
+      'So. How many days this week did you fill out your field notes?',
+      'Did you take your artist date? What risk did it carry?',
+      'Did you notice any useful timing, support, or opportunity this week? What was it?',
+    ],
+    emotion: 'calm',
+  },
+  {
+    id: 'titled-intro',
+    label: 'Titled intro (centered, no chatback)',
+    title: 'Recovering a Sense of Abundance',
+    subtitle: 'Let this frame the week, then keep the mission alive in your field notes.',
+    placement: 'center',
+    lines: [
+      'Week 6 examines money as a creative constraint.',
+      'You will study the stories you carry about scarcity, worth, and what you are allowed to receive.',
+    ],
+    emotion: 'sad',
+  },
 ];
 
 const CHECKLIST = [
@@ -180,6 +210,10 @@ export default function DevDialoguesPage() {
         lines={active?.lines ?? []}
         emotion={active?.emotion}
         reward={active?.reward}
+        title={active?.title}
+        subtitle={active?.subtitle}
+        placement={active?.placement}
+        chatback={active?.chatback ? { placeholder: 'Answer Blue' } : undefined}
         onClose={() => setActive(null)}
       />
     </div>

@@ -33,7 +33,7 @@ const COURSE_NUDGE_KEY = 'mwa-home-course-nudge-seen';
 // Armed when the user accepts the Phase B nudge — tells the course page's
 // CourseTour to pick the walkthrough back up the moment they land there.
 const COURSE_TOUR_PENDING_KEY = 'mwa-course-tour-pending';
-// Recurring daily-note nudge: shown once per calendar day, on the first /home
+// Recurring daily-note nudge: shown once per calendar day, on the first /dao
 // visit of the day, regardless of time of day (no "morning only" gate).
 const DAILY_SPOTLIGHT_PREFIX = 'mwa-daily-spotlight-shown';
 const dailySpotlightKey = () =>
@@ -169,7 +169,7 @@ export default function FeatureTour() {
       return;
     }
 
-    // Daily reminder — once per calendar day, on the first /home visit. Waits
+    // Daily reminder — once per calendar day, on the first /dao visit. Waits
     // for the Daily Note card to resolve its status, then spotlights it with a
     // reminder (note still pending) or a brief confirmation (already done).
     if (getStorageItem(dailyKey) !== '1') {

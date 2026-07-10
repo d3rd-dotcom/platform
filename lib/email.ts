@@ -55,7 +55,7 @@ export async function sendEventReminderEmail(to: string, ev: EventItem): Promise
   }
 
   const when = formatWhen(ev);
-  const homeUrl = `${SITE_URL}/courses`;
+  const homeUrl = `${SITE_URL}/home`;
   const html = `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 480px; margin: 0 auto; color: #1a1a1a;">
       <p style="font-size: 13px; letter-spacing: 0.04em; color: #5168FF; margin: 0 0 8px;">${ev.category} · reminder</p>
@@ -100,7 +100,7 @@ export async function sendMeetBlueEmail(to: string): Promise<boolean> {
     return false;
   }
 
-  const homeUrl = `${SITE_URL}/courses`;
+  const homeUrl = `${SITE_URL}/home`;
   // Structured like a short letter from the Academy, signed off by Blue with a
   // cursive signature in the footer (font stack degrades gracefully per client).
   const html = `

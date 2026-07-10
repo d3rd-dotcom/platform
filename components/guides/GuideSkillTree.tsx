@@ -202,11 +202,11 @@ export default function GuideSkillTree({
     (p: Placed) => {
       if (p.state === 'available') {
         play('navigation');
-        router.push(`/courses/guides/${p.node.slug}`);
+        router.push(`/home/guides/${p.node.slug}`);
       } else if (p.state === 'completed') {
         // Completed nodes are revisitable — soft feedback, still navigate.
         play('soft-hover');
-        router.push(`/courses/guides/${p.node.slug}`);
+        router.push(`/home/guides/${p.node.slug}`);
       } else {
         // Locked — reject with error feedback.
         play('error');

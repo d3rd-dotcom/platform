@@ -27,7 +27,7 @@ const fixtures: Fixture[] = [
   {
     name: 'field notes navigation',
     message: 'where do i find field notes?',
-    pathname: '/courses',
+    pathname: '/home',
     shouldTrust: true,
     expectedTopIds: ['page-quests', 'feature-field-notes'],
     minCoverage: 0.7,
@@ -163,7 +163,7 @@ const fixtures: Fixture[] = [
   {
     name: 'blue headset backstory',
     message: 'is Blue the avatar or inside the headset?',
-    pathname: '/courses',
+    pathname: '/home',
     shouldTrust: true,
     expectedTopIds: ['feature-blue-persona'],
     minCoverage: 0.7,
@@ -171,7 +171,7 @@ const fixtures: Fixture[] = [
   {
     name: 'unsupported company officer claim',
     message: 'tell me the exact CFO of MWA',
-    pathname: '/courses',
+    pathname: '/home',
     shouldTrust: false,
     minCoverage: 0,
   },

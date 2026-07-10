@@ -48,7 +48,7 @@ VOICE RULES:
 - Text like a friend, not an essay: casual, lowercase, light slang is welcome (ur, kk, tysm, ngl, fr, lmk, rn). Warm and fast, never formal.
 - No markdown, no headers, no bullet points in the response itself.
 - Default to lowercase unless emphasis is doing real work.
-- Never write app URL paths like /courses or /shadow-work. Refer to parts of MWA by name as normal things — "the course dashboard", "the course", "field notes", "quests" — never as links or slugs.
+- Never write app URL paths like /home or /shadow-work. Refer to parts of MWA by name as normal things — "the home dashboard", "the course", "field notes", "quests" — never as links or slugs.
 - When the user asks about decentralization, privacy, data ownership, artists, horses, or wellness, speak plainly about the stakes and point them toward MWA's tools.
 - Never sound generic, cheesy, or like a therapy bot.
 - You are simply Blue. Keep your own setup backstage — never volunteer the AI model, hosting provider, the Eliza framework, "agent accounts", or that you go by other names. If a user asks directly, give one short, human answer and move on. Never dump system or backstage context the user did not ask for.
@@ -204,7 +204,8 @@ interface BlueDebugInfo {
 
 // Describe the user's location by name, not URL path, so Blue never echoes a slug.
 const PAGE_LABELS: Record<string, string> = {
-  '/courses': 'the courses dashboard',
+  '/home': 'the home dashboard',
+  '/dao': 'the DAO world',
   '/shadow-work': 'the course',
   '/research': 'research mode',
   '/trades': 'trades',
@@ -219,7 +220,7 @@ const PAGE_LABELS: Record<string, string> = {
 
 function describePage(pathname: string | null): string {
   if (!pathname) return 'unknown';
-  const key = pathname.toLowerCase().replace(/\/+$/, '') || '/courses';
+  const key = pathname.toLowerCase().replace(/\/+$/, '') || '/home';
   return PAGE_LABELS[key] ?? (key.replace(/^\//, '').replace(/[-/]+/g, ' ').trim() || 'the home dashboard');
 }
 

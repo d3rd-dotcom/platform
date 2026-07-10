@@ -136,8 +136,8 @@ const Navbar: React.FC = () => {
   }, [ready, authenticated, getAccessToken]);
 
   const isActive = (path: string) => {
-    if (path === '/courses') {
-      return pathname === '/courses' || pathname === '/';
+    if (path === '/home') {
+      return pathname === '/home' || pathname === '/';
     }
     return pathname === path || pathname?.startsWith(path + '/');
   };
@@ -225,7 +225,7 @@ const Navbar: React.FC = () => {
           >
             <MenuIcon size={22} />
           </button>
-          <Link href="/courses" className={styles.brandLink} aria-label="Mental Wealth Academy">
+          <Link href="/home" className={styles.brandLink} aria-label="Mental Wealth Academy">
             <div className={styles.logoWrapper}>
               <Image
                 src="/icons/logo-mwa.png"
@@ -244,10 +244,10 @@ const Navbar: React.FC = () => {
           {/* Desktop Navigation Links */}
           <div className={styles.linksContainer}>
             {/* Home Button */}
-            <Link href="/courses" className={`${styles.navButton} ${isActive('/courses') ? styles.navButtonActive : ''}`}>
+            <Link href="/home" className={`${styles.navButton} ${isActive('/home') ? styles.navButtonActive : ''}`}>
               <HomeIcon size={20} className={styles.homeIcon} />
-              <span className={isActive('/courses') ? styles.buttonLabelActive : styles.buttonLabel}>
-                <span className={styles.slideWrap}><span className={styles.slideText}>Courses</span><span className={`${styles.slideText} ${styles.slideClone}`}>Courses</span></span>
+              <span className={isActive('/home') ? styles.buttonLabelActive : styles.buttonLabel}>
+                <span className={styles.slideWrap}><span className={styles.slideText}>Home</span><span className={`${styles.slideText} ${styles.slideClone}`}>Home</span></span>
               </span>
             </Link>
 
@@ -267,6 +267,14 @@ const Navbar: React.FC = () => {
               </span>
             </Link>
 
+            {/* Quests Button */}
+            <Link href="/quests" className={`${styles.navButton} ${isActive('/quests') ? styles.navButtonActive : ''}`}>
+              <QuestsIcon size={20} className={styles.questIcon} />
+              <span className={isActive('/quests') ? styles.buttonLabelActive : styles.buttonLabel}>
+                <span className={styles.slideWrap}><span className={styles.slideText}>Quests</span><span className={`${styles.slideText} ${styles.slideClone}`}>Quests</span></span>
+              </span>
+            </Link>
+
             {/* Social Button */}
             <Link href="/community" className={`${styles.navButton} ${isActive('/community') ? styles.navButtonActive : ''}`}>
               <Image src="/icons/nav-community-v2.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/community') ? styles.navImgIconActive : ''}`} />
@@ -280,14 +288,6 @@ const Navbar: React.FC = () => {
               <Image src="/icons/nav-surveys-v4.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/prompts') ? styles.navImgIconActive : ''}`} />
               <span className={isActive('/prompts') ? styles.buttonLabelActive : styles.buttonLabel}>
                 <span className={styles.slideWrap}><span className={styles.slideText}>Prompts</span><span className={`${styles.slideText} ${styles.slideClone}`}>Prompts</span></span>
-              </span>
-            </Link>
-
-            {/* Quests Button */}
-            <Link href="/quests" className={`${styles.navButton} ${isActive('/quests') ? styles.navButtonActive : ''}`}>
-              <QuestsIcon size={20} className={styles.questIcon} />
-              <span className={isActive('/quests') ? styles.buttonLabelActive : styles.buttonLabel}>
-                <span className={styles.slideWrap}><span className={styles.slideText}>Quests</span><span className={`${styles.slideText} ${styles.slideClone}`}>Quests</span></span>
               </span>
             </Link>
 
@@ -354,7 +354,7 @@ const Navbar: React.FC = () => {
                   <div className={styles.profileDropdown}>
                     <div className={styles.profileDropdownContent}>
                       <Link 
-                        href="/courses" 
+                        href="/home"
                         className={styles.profileLink}
                         onClick={() => setIsProfileDropdownOpen(false)}
                       >
@@ -449,7 +449,7 @@ const Navbar: React.FC = () => {
                   // Dispatch event to open onboarding modal (works if already on home page)
                   window.dispatchEvent(new Event('openOnboarding'));
                   // Navigate to home with query param to trigger onboarding
-                  router.push('/courses?onboarding=true');
+                  router.push('/home?onboarding=true');
                 }}
                 type="button"
               >
@@ -464,7 +464,7 @@ const Navbar: React.FC = () => {
                   // Dispatch event to open onboarding modal (works if already on home page)
                   window.dispatchEvent(new Event('openOnboarding'));
                   // Navigate to home with query param to trigger onboarding
-                  router.push('/courses?onboarding=true');
+                  router.push('/home?onboarding=true');
                 }}
                 type="button"
               >

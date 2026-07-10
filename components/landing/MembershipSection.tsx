@@ -209,7 +209,7 @@ export const MembershipSection: React.FC = () => {
               </li>
             </ul>
             <a
-              href="/courses"
+              href="/home"
               className={styles.tierBtnSecondary}
               onClick={() => play('click')}
               onMouseEnter={() => play('hover')}

@@ -62,7 +62,7 @@ export default function KnowledgeMapPage() {
     <div className={styles.layout}>
       <SideNavigation />
       <main className={styles.page}>
-        <Link href="/courses" className={styles.back}>
+        <Link href="/home" className={styles.back}>
           <ArrowLeft size={16} weight="bold" /> Back to courses
         </Link>
 

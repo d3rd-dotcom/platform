@@ -18,29 +18,35 @@
 /* ── Desktop: two-column fill-height layout ── */
 @media (min-width: 1025px) {
   .dashboard {
-    grid-template-columns: 1fr 380px;
-    grid-template-rows: auto 1fr auto;
+    grid-template-columns: 380px 1fr;
+    grid-template-rows: minmax(0, 1fr);
     gap: 16px;
     min-height: 100%;
+    height: 100%;
     align-items: stretch;
   }
 
   .blueSceneWrap {
-    grid-column: 1;
-    grid-row: 2 / 4;
+    grid-column: 2;
+    grid-row: 1;
     height: 100%;
+    box-sizing: border-box;
+    padding: 16px 0;
   }
 
   .sidebarWrap {
-    grid-column: 2;
-    grid-row: 2 / 4;
+    grid-column: 1;
+    grid-row: 1;
     display: flex;
     flex-direction: column;
     gap: 14px;
     overflow-x: visible;
     overflow-y: auto;
     scrollbar-width: none;
-    padding: 0 8px 24px;
+    box-sizing: border-box;
+    padding: 16px 8px;
+    min-height: 0;
+    height: 100%;
   }
 
   .sidebarWrap::-webkit-scrollbar {
@@ -264,6 +270,32 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
+}
+
+.treasuryLoadButton {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  align-self: center;
+  margin-inline: auto;
+}
+
+.treasurySkeleton {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.treasurySkeleton span {
+  display: block;
+  height: 64px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, rgba(81, 104, 255, 0.08) 25%, rgba(81, 104, 255, 0.18) 50%, rgba(81, 104, 255, 0.08) 75%);
+  background-size: 200% 100%;
+  animation: treasuryShimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes treasuryShimmer {
+  to { background-position: -200% 0; }
 }
 
 .treasuryMetric {

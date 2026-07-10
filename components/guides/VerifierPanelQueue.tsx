@@ -212,7 +212,7 @@ function VerificationCard({
       </div>
 
       <Link
-        href={`/courses/guides/${panel.guideSlug}`}
+        href={`/home/guides/${panel.guideSlug}`}
         className={styles.guideLink}
         onMouseEnter={() => play('soft-hover')}
         onClick={() => play('navigation')}
@@ -409,7 +409,7 @@ function DisputeCard({
       </div>
 
       <Link
-        href={`/courses/guides/${dispute.guideSlug}`}
+        href={`/home/guides/${dispute.guideSlug}`}
         className={styles.guideLink}
         onMouseEnter={() => play('soft-hover')}
         onClick={() => play('navigation')}

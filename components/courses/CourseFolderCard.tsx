@@ -1,12 +1,17 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { motion, type PanInfo } from 'framer-motion';
 import { useSound } from '@/hooks/useSound';
 import styles from './CourseFolderCard.module.css';
 
 const FOLDER_PATH =
   'M0 26 Q0 2 24 2 H224 Q242 2 252 14 L266 32 Q276 44 292 44 H450 Q472 44 472 68 V304 Q472 328 448 328 H24 Q0 328 0 304 Z';
+
+const TAB_DRAG_LIMIT = 40;
+const TAB_DRAG_COMMIT = 26;
 
 interface CourseFolderCardProps {
   title: string;
@@ -29,6 +34,16 @@ export default function CourseFolderCard({
 }: CourseFolderCardProps) {
   const slots = images.slice(0, 4);
   const { play } = useSound();
+  const router = useRouter();
+  const [tabDragging, setTabDragging] = useState(false);
+
+  // Pulling the tab down past the commit distance opens the folder,
+  // mirroring the drag-a-tab interaction at lucasch.me.
+  const openByTabPull = () => {
+    play('click');
+    if (href) router.push(href);
+    else onOpen?.();
+  };
 
   const contents = (
     <>
@@ -68,11 +83,29 @@ export default function CourseFolderCard({
         <path d={FOLDER_PATH} className={styles.shapeStroke} />
       </svg>
 
-      {/* Tab label */}
-      <div className={styles.tabRow}>
+      {/* Tab label — drag it down to pull the folder open */}
+      <motion.div
+        className={styles.tabRow}
+        drag="y"
+        dragConstraints={{ top: 0, bottom: TAB_DRAG_LIMIT }}
+        dragElastic={0.25}
+        dragSnapToOrigin
+        onDragStart={(e) => {
+          e.stopPropagation();
+          setTabDragging(true);
+        }}
+        onDragEnd={(e, info: PanInfo) => {
+          e.stopPropagation();
+          setTabDragging(false);
+          if (info.offset.y >= TAB_DRAG_COMMIT) openByTabPull();
+        }}
+        onPointerDown={(e) => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
+        style={{ cursor: tabDragging ? 'grabbing' : 'grab', touchAction: 'none' }}
+      >
         <span className={styles.tabTitle}>{title}</span>
         <span className={styles.tabBadge}>{count}</span>
-      </div>
+      </motion.div>
 
       {/* CTA */}
       <span

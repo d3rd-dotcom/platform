@@ -66,8 +66,8 @@ function CourseBuilderInner() {
   return (
     <CourseStudioModal
       authHeaders={authHeaders}
-      onClose={() => router.push('/courses')}
-      onCourseCreated={() => router.push('/courses')}
+      onClose={() => router.push('/home')}
+      onCourseCreated={() => router.push('/home')}
       existingCourseId={editId ?? undefined}
       initialCourse={initialCourse ?? undefined}
     />

@@ -13,7 +13,7 @@ export default function GuideWalkthroughPage({ params }: PageProps) {
     <div className={styles.layout}>
       <SideNavigation />
       <main className={styles.page}>
-        <Link href={`/courses/guides/${params.slug}`} className={styles.back}>
+        <Link href={`/home/guides/${params.slug}`} className={styles.back}>
           <ArrowLeft size={16} weight="bold" /> Back to guide
         </Link>
         <header className={styles.header}>

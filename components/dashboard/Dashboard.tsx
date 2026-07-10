@@ -1,28 +1,13 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import Image from 'next/image';
 import BlueScene from '@/components/blue-scene/BlueScene';
 import ChatRoom from '@/components/chat-room/ChatRoom';
 import TreasurySwapModal from '@/components/treasury-swap/TreasurySwapModal';
+import CtaButton from '@/components/shared/CtaButton';
 import type { TreasurySnapshot } from '@/lib/treasury-snapshot';
 import styles from './Dashboard.module.css';
-
-interface LeaderUser {
-  rank: number;
-  username: string;
-  avatarUrl: string | null;
-  shards: number;
-}
-
-function avatarColor(name: string): string {
-  const colors = ['#5168FF', '#E85D3A', '#62BE8F', '#9B7ED9', '#F5A623'];
-  let hash = 0;
-  for (let i = 0; i < name.length; i += 1) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return colors[Math.abs(hash) % colors.length];
-}
 
 function formatBalance(amount: string | null, maximumFractionDigits: number): string {
   if (amount === null) return 'Unavailable';
@@ -41,34 +26,15 @@ function shortAddress(address: string): string {
 }
 
 export default function Dashboard() {
-  const [leaderboard, setLeaderboard] = useState<LeaderUser[]>([]);
-  const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [treasury, setTreasury] = useState<TreasurySnapshot | null>(null);
+  const [treasuryLoading, setTreasuryLoading] = useState(false);
   const [treasuryFailed, setTreasuryFailed] = useState(false);
   const [showTreasurySwap, setShowTreasurySwap] = useState(false);
 
-  useEffect(() => {
-    if (!showLeaderboard) return;
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setShowLeaderboard(false);
-    };
-    window.addEventListener('keydown', handler);
-    document.body.style.overflow = 'hidden';
-    return () => {
-      window.removeEventListener('keydown', handler);
-      document.body.style.overflow = '';
-    };
-  }, [showLeaderboard]);
-
-  useEffect(() => {
-    fetch('/api/leaderboard')
-      .then((r) => r.json())
-      .then((d) => setLeaderboard(Array.isArray(d.users) ? d.users : []))
-      .catch(() => {/* leaderboard is best-effort */});
-  }, []);
-
-  useEffect(() => {
+  const loadTreasury = useCallback(() => {
+    if (treasuryLoading || treasury !== null) return;
     const controller = new AbortController();
+    setTreasuryLoading(true);
 
     fetch('/api/treasury/snapshot', { signal: controller.signal })
       .then(async (response) => {
@@ -79,10 +45,11 @@ export default function Dashboard() {
       .catch((error: unknown) => {
         if (error instanceof DOMException && error.name === 'AbortError') return;
         setTreasuryFailed(true);
-      });
+      })
+      .finally(() => setTreasuryLoading(false));
 
     return () => controller.abort();
-  }, []);
+  }, [treasury, treasuryLoading]);
 
   return (
     <div className={styles.dashboard}>
@@ -92,46 +59,13 @@ export default function Dashboard() {
         <BlueScene />
       </div>
 
-      {/* ── Sidebar: Leaderboard + Blue's Wallet + ChatRoom ── */}
+      {/* ── Sidebar: Blue's Treasures + ChatRoom ── */}
       <aside className={styles.sidebarWrap}>
-        <button
-          type="button"
-          className={styles.leaderboardCard}
-          onClick={() => setShowLeaderboard(true)}
-        >
+        <section className={`${styles.leaderboardCard} ${styles.treasuryCard}`} aria-labelledby="home-blue-treasures-title">
           <div className={styles.leaderHead}>
-            <span className={styles.leaderIcon}>金剛</span>
-            <span className={styles.leaderTitle}>Leaderboard</span>
-          </div>
-          {leaderboard.length === 0 ? (
-            <p className={styles.leaderEmpty}>No rankings yet — be the first to show up.</p>
-          ) : (
-            <div className={styles.leaderAvatarRow}>
-              {leaderboard.slice(0, 3).map((u) => (
-                <div key={u.rank} className={styles.leaderAvatarItem}>
-                  <span className={styles.leaderAvatarItemRank}>{u.rank}</span>
-                  {u.avatarUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={u.avatarUrl} alt={u.username} className={styles.leaderAvatarItemImg} />
-                  ) : (
-                    <span
-                      className={styles.leaderAvatarItemImg}
-                      style={{ background: avatarColor(u.username || '?') }}
-                    >
-                      {(u.username || '?').charAt(0).toUpperCase()}
-                    </span>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </button>
-
-        <section className={`${styles.leaderboardCard} ${styles.treasuryCard}`} aria-labelledby="home-blue-wallet-title">
-          <div className={styles.leaderHead}>
-            <span className={styles.leaderIcon}>財</span>
-            <span id="home-blue-wallet-title" className={`${styles.leaderTitle} ${styles.treasuryTitle}`}>
-              Blue&apos;s Wallet
+            <span className={styles.leaderIcon}>宝物</span>
+            <span id="home-blue-treasures-title" className={`${styles.leaderTitle} ${styles.treasuryTitle}`}>
+              BLUE&apos;S TREASURES
             </span>
             <button
               type="button"
@@ -142,7 +76,13 @@ export default function Dashboard() {
             </button>
           </div>
 
-          {treasuryFailed ? (
+          {treasuryLoading ? (
+            <div className={styles.treasurySkeleton} aria-label="Loading Blue's treasures" aria-live="polite">
+              <span /><span /><span /><span />
+            </div>
+          ) : treasury === null && !treasuryFailed ? (
+            <CtaButton className={styles.treasuryLoadButton} size="sm" onClick={loadTreasury}>Load</CtaButton>
+          ) : treasuryFailed ? (
             <p className={styles.leaderEmpty}>Blue&apos;s Wallet balances are temporarily unavailable.</p>
           ) : (
             <>
@@ -241,48 +181,6 @@ export default function Dashboard() {
         onClose={() => setShowTreasurySwap(false)}
       />
 
-      {showLeaderboard && (
-        <div className={styles.leaderModalOverlay} onClick={() => setShowLeaderboard(false)}>
-          <div className={styles.leaderModalCard} onClick={(e) => e.stopPropagation()}>
-            <button
-              type="button"
-              className={styles.leaderModalClose}
-              onClick={() => setShowLeaderboard(false)}
-              aria-label="Close leaderboard"
-            >
-              &times;
-            </button>
-            <div className={styles.leaderModalHeader}>
-              <span className={styles.leaderModalIcon}>金剛</span>
-              <span className={styles.leaderModalTitle}>Leaderboard</span>
-            </div>
-            <div className={styles.leaderModalList}>
-              {leaderboard.length === 0 ? (
-                <p className={styles.leaderEmpty}>No rankings yet</p>
-              ) : (
-                leaderboard.map((u) => (
-                  <div key={u.rank} className={styles.leagueRow}>
-                    <span className={styles.leagueRank}>{u.rank}</span>
-                    {u.avatarUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={u.avatarUrl} alt={u.username} className={styles.leagueAvatar} />
-                    ) : (
-                      <div
-                        className={styles.leagueAvatar}
-                        style={{ background: avatarColor(u.username || '?') }}
-                      >
-                        {(u.username || '?').charAt(0).toUpperCase()}
-                      </div>
-                    )}
-                    <span className={styles.leagueName}>{u.username}</span>
-                    <span className={styles.leagueShards}>{u.shards.toLocaleString()} diamonds</span>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

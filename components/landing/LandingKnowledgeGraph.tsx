@@ -592,7 +592,7 @@ export default function LandingKnowledgeGraph() {
                 {selected.node.prereqIds.length} prerequisites · {selected.unlockCount} direct unlocks
               </span>
             </div>
-            <Link className={styles.detailLink} href={`/courses/guides/${selected.node.slug}`}>
+            <Link className={styles.detailLink} href={`/home/guides/${selected.node.slug}`}>
               Open guide
             </Link>
           </>
@@ -605,7 +605,7 @@ export default function LandingKnowledgeGraph() {
                 {map?.nodes.length ?? 0} verified topics across {map?.levels ?? 0} levels
               </strong>
             </div>
-            <Link className={styles.detailLink} href="/courses/guides/map">
+            <Link className={styles.detailLink} href="/home/guides/map">
               Open full map
             </Link>
           </>

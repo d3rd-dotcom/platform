@@ -200,7 +200,7 @@ export default function PersonalCoursePage() {
             <p className={styles.stateText}>
               Build a 4-week course with Blue, then it&apos;ll show up here.
             </p>
-            <Link href="/courses" className={styles.stateBtn}>Back to courses</Link>
+            <Link href="/home" className={styles.stateBtn}>Back to home</Link>
           </div>
         </main>
       </div>
@@ -279,9 +279,9 @@ export default function PersonalCoursePage() {
     <div className={shared.pageLayout}>
       <SideNavigation />
       <Banner
-        backHref="/courses"
+        backHref="/home"
         breadcrumbs={[
-          { label: 'Courses', href: '/courses' },
+          { label: 'Home', href: '/home' },
           { label: course.title },
           { label: `Week ${week.weekNumber}` },
         ]}

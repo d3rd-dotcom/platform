@@ -11,7 +11,7 @@ export function LandingAuthButtons() {
 
   const handleJoinNow = () => {
     play('click');
-    router.push('/courses');
+    router.push('/home');
   };
 
   return (

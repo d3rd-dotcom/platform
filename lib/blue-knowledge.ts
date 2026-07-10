@@ -166,13 +166,21 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
       'Motivation design follows Self-Determination Theory: competence, autonomy, and relatedness.',
   },
   {
-    id: 'page-courses',
-    title: 'Courses (dashboard)',
-    routes: ['/courses'],
-    keywords: ['courses', 'dashboard', 'overview', 'progress', 'snapshot'],
+    id: 'page-home',
+    title: 'Home',
+    routes: ['/home'],
+    keywords: ['home', 'guides', 'courses', 'dashboard', 'overview', 'progress', 'snapshot'],
     body:
-      'The /courses page is the main user dashboard — the user\'s daily snapshot of streaks, recent activity, current week, and pending quests. ' +
-      'It is NOT the landing page (/). Refer to it as "courses" or "dashboard".',
+      'The /home page is the main member dashboard. It brings together the guides knowledge graph, courses, progress, and field notes. ' +
+      'Refer to it as "Home" or "the home dashboard".',
+  },
+  {
+    id: 'page-dao',
+    title: 'DAO world',
+    routes: ['/dao'],
+    keywords: ['dao', 'world', 'treasury', 'blue', 'chat'],
+    body:
+      'The /dao page is the DAO world. It contains Blue\'s scene, treasury information, and the community chat room.',
   },
   {
     id: 'page-landing',
@@ -181,7 +189,7 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
     keywords: ['landing', 'marketing', 'hero', 'public', 'home page'],
     body:
       'The / route is the public landing page. It introduces MWA to visitors with a hero, lab section, and product snapshot. ' +
-      'Not to be confused with /courses (the user dashboard).',
+      'Signed-in members enter the application through /home.',
   },
   {
     id: 'page-course',
@@ -395,7 +403,7 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
   {
     id: 'feature-field-notes',
     title: 'Field notes',
-    routes: ['/shadow-work', '/quests', '/courses'],
+    routes: ['/shadow-work', '/quests', '/home'],
     keywords: ['morning', 'pages', 'journal', 'streak', 'prayer', 'daily'],
     body:
       'Field notes are a daily journaling habit (3 pages of freewriting). Tracked as a streak in the prayers table, encrypted per-user. ' +

@@ -18,7 +18,7 @@ interface NavLink {
 }
 
 const NAV_LINKS: NavLink[] = [
-  { label: 'World', href: '/home', icon: '/icons/nav-world-v2.svg' },
+  { label: 'World', href: '/dao', icon: '/icons/nav-world-v2.svg' },
   { label: 'Trading', href: '/trades', icon: '/icons/nav-trades-v1.svg' },
 ];
 
@@ -29,11 +29,11 @@ const TopNavigation: React.FC = () => {
   const { login, authenticated } = usePrivy();
   const loginTriggered = useRef(false);
 
-  // After Privy login succeeds, redirect to /home
+  // After Privy login succeeds, redirect to /home.
   useEffect(() => {
     if (authenticated && loginTriggered.current) {
       loginTriggered.current = false;
-      router.push('/courses');
+      router.push('/home');
     }
   }, [authenticated, router]);
 
@@ -45,7 +45,7 @@ const TopNavigation: React.FC = () => {
 
   const handleLogin = () => {
     if (authenticated) {
-      router.push('/courses');
+      router.push('/home');
       return;
     }
     loginTriggered.current = true;
@@ -54,7 +54,7 @@ const TopNavigation: React.FC = () => {
 
   const handleJoinNow = () => {
     if (authenticated) {
-      router.push('/courses');
+      router.push('/home');
       return;
     }
     loginTriggered.current = true;

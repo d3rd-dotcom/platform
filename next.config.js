@@ -98,6 +98,16 @@ const nextConfig = {
         destination: '/style-guide',
         permanent: true,
       },
+      {
+        source: '/courses/guides/:path*',
+        destination: '/home/guides/:path*',
+        permanent: true,
+      },
+      {
+        source: '/courses',
+        destination: '/home',
+        permanent: true,
+      },
     ];
   },
   // Proxy external resources to avoid CORS issues

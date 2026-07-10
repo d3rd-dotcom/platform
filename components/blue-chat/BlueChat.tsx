@@ -1708,13 +1708,9 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
               </svg>
             )}
           </button>
-          {!isMobile && (
-            <button className={styles.expandButton} onClick={() => setIsExpanded(true)} type="button" aria-label="Expand to fullscreen">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
-              </svg>
-            </button>
-          )}
+          {/* Expanded mode is shelved — the fullscreen layout, ListsPanel, and
+              radar remain in this file with no trigger. Restore by re-adding an
+              expand button that calls setIsExpanded(true). */}
           <button className={styles.closeButton} onClick={onClose} type="button" aria-label="Close chat">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M18 6L6 18M6 6l12 12" />

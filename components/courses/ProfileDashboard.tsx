@@ -14,26 +14,6 @@ import { fetchDiamondBalance } from '@/lib/diamonds-balance';
 import { useSound } from '@/hooks/useSound';
 import styles from './ProfileDashboard.module.css';
 
-/* Level curve: quadratic on diamonds so early levels come fast.
-   0 → 1, 100 → 3, 625 → 6, 2432 → 10 */
-function levelFromDiamonds(diamonds: number): number {
-  return Math.floor(Math.sqrt(Math.max(0, diamonds) / 25)) + 1;
-}
-
-/* Accolade titles earned by diamond count */
-const ACCOLADES: Array<[number, string]> = [
-  [5000, 'Infinite Potential'],
-  [2000, 'Digital Alchemist'],
-  [1000, 'Dream Architect'],
-  [400, 'Mind Cartographer'],
-  [100, 'Field Scholar'],
-  [0, 'Curious Seeker'],
-];
-
-function accoladeFromDiamonds(diamonds: number): string {
-  return ACCOLADES.find(([min]) => diamonds >= min)?.[1] ?? 'Curious Seeker';
-}
-
 type PanelTab = 'badges' | 'certificates' | 'quests';
 
 export interface PanelCourse {
@@ -136,64 +116,9 @@ export default function ProfileDashboard({
     return () => { cancelled = true; };
   }, [address]);
 
-  const diamonds = chainDiamonds ?? creditDiamonds;
-  const level = levelFromDiamonds(diamonds);
-  const badgesHeld = (hasAngel ? 1 : 0) + (hasVip ? 1 : 0);
-
   return (
     <section className={styles.panel}>
-      <div
-        className={styles.banner}
-        style={bannerUrl ? { backgroundImage: `url(${JSON.stringify(bannerUrl)})` } : undefined}
-      />
-      <button
-        type="button"
-        className={styles.avatar}
-        style={avatarUrl ? { backgroundImage: `url(${JSON.stringify(avatarUrl)})` } : undefined}
-        onClick={() => {
-          play('click');
-          authenticated && setEditingAvatar(true);
-        }}
-        onMouseEnter={() => play('soft-hover')}
-        title={authenticated ? 'Change avatar' : undefined}
-        aria-label="Change avatar"
-      >
-        {!avatarUrl && username ? username[0].toUpperCase() : ''}
-      </button>
-
-      <div className={styles.header}>
-        <div className={styles.titleRow}>
-          <h2 className={styles.title}>{username ? `@${username}` : 'User Profile'}</h2>
-          <span className={styles.levelPill}>Level {level}</span>
-        </div>
-        <div className={styles.headerDivider} />
-      </div>
-
-      <div className={styles.about}>
-        <span className={styles.headline}>{accoladeFromDiamonds(diamonds)}</span>
-      </div>
-
-      <div className={styles.statsRow}>
-        <div className={styles.stat}>
-          <span className={styles.statValue}>{diamonds.toLocaleString()}</span>
-          <span className={styles.statLabel}>Diamonds</span>
-        </div>
-        <div className={styles.stat}>
-          <span className={styles.statValue}>{courses.length}</span>
-          <span className={styles.statLabel}>{courses.length === 1 ? 'Course' : 'Courses'}</span>
-        </div>
-        <div className={styles.stat}>
-          <span className={styles.statValue}>{badgesHeld}</span>
-          <span className={styles.statLabel}>Items</span>
-        </div>
-        <div className={styles.stat}>
-          <span className={styles.statValue}>{streak}</span>
-          <span className={styles.statLabel}>Streak</span>
-        </div>
-      </div>
-
       <div className={styles.mission}>
-        <span className={styles.missionHeading}>Current Quest</span>
         <div className={styles.tabRow}>
           {(['badges', 'certificates', 'quests'] as const).map((t) => (
             <button

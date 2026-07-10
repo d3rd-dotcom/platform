@@ -18,7 +18,7 @@ export default function EditGuidePage({ params }: { params: { slug: string } }) 
     <GuideStudio
       slug={params.slug}
       authHeaders={authHeaders}
-      onExit={() => router.push('/courses')}
+      onExit={() => router.push('/home')}
     />
   );
 }

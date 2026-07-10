@@ -88,7 +88,7 @@ function statusClass(status: string): string {
  * resolution note) and — for signed-in users — an "Open dispute" form.
  *
  * Self-fetching and standalone. The reviewer wires it into the guide page — it
- * is NOT imported by app/courses/guides/[slug]/page.tsx here.
+ * is NOT imported by app/home/guides/[slug]/page.tsx here.
  */
 export default function DisputeSection({ guideId }: Props) {
   const { ready, authenticated, getAccessToken, login } = usePrivy();

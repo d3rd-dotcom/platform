@@ -360,9 +360,9 @@ export default function CoursePage() {
       )}
       <SideNavigation />
       <Banner
-        backHref="/courses"
+        backHref="/home"
         breadcrumbs={[
-          { label: 'Courses', href: '/courses' },
+          { label: 'Home', href: '/home' },
           { label: 'Creative Healing' },
           { label: `Week ${resolvedViewWeek}` },
         ]}

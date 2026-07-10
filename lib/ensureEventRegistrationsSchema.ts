@@ -8,7 +8,7 @@ declare global {
 }
 
 /**
- * Per-user RSVP ledger for the events shown on /home.
+ * Per-user RSVP ledger for the events shown on /dao.
  *
  * One row per (user, event). `email` is captured at registration time — sourced
  * from the user's Privy-linked address, or asked for inline when they're

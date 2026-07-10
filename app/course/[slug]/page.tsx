@@ -255,7 +255,7 @@ export default function CourseSlugPage({ params }: PageProps) {
           <div className={styles.stateWrap}>
             <h1 className={styles.stateHeading}>Course not found</h1>
             <p className={styles.stateText}>This course doesn&apos;t exist or hasn&apos;t been published yet.</p>
-            <Link href="/courses" className={styles.backBtn}>Back to courses</Link>
+            <Link href="/home" className={styles.backBtn}>Back to home</Link>
           </div>
         </main>
       </div>
@@ -285,9 +285,9 @@ export default function CourseSlugPage({ params }: PageProps) {
       <div className={courseStyles.pageLayout}>
         <SideNavigation />
         <Banner
-          backHref="/courses"
+          backHref="/home"
           breadcrumbs={[
-            { label: 'Courses', href: '/courses' },
+            { label: 'Home', href: '/home' },
             { label: vipCourse.title || 'Custom course' },
             { label: `Week ${activeWeek}` },
           ]}
@@ -585,7 +585,7 @@ export default function CourseSlugPage({ params }: PageProps) {
             <p className={styles.gateDesc}>
               This course requires an <strong>Academic Angel NFT</strong>. Hold one to unlock access.
             </p>
-            <Link href="/courses" className={styles.backBtn}>Back to courses</Link>
+            <Link href="/home" className={styles.backBtn}>Back to home</Link>
           </div>
         </main>
       </div>
@@ -598,7 +598,7 @@ export default function CourseSlugPage({ params }: PageProps) {
       <SideNavigation />
       <Banner />
       <main className={styles.main}>
-        <Link href="/courses" className={styles.backLink}>← Courses</Link>
+        <Link href="/home" className={styles.backLink}>← Home</Link>
 
         <div className={styles.courseHeader}>
           <h1 className={styles.courseTitle}>{course!.title}</h1>

@@ -34,18 +34,18 @@ export async function GET(request: Request) {
   const denied = searchParams.get('denied');
 
   if (denied) {
-    return NextResponse.redirect(new URL('/courses?x_auth=denied', request.url));
+    return NextResponse.redirect(new URL('/home?x_auth=denied', request.url));
   }
 
   if (!oauthToken || !oauthVerifier) {
-    return NextResponse.redirect(new URL('/courses?x_auth=error', request.url));
+    return NextResponse.redirect(new URL('/home?x_auth=error', request.url));
   }
 
   const xApiKey = process.env.X_API_KEY;
   const xSecret = process.env.X_SECRET;
 
   if (!xApiKey || !xSecret) {
-    return NextResponse.redirect(new URL('/courses?x_auth=error', request.url));
+    return NextResponse.redirect(new URL('/home?x_auth=error', request.url));
   }
 
   try {
@@ -65,7 +65,7 @@ export async function GET(request: Request) {
     );
 
     if (stateRows.length === 0) {
-      return NextResponse.redirect(new URL('/courses?x_auth=expired', request.url));
+      return NextResponse.redirect(new URL('/home?x_auth=expired', request.url));
     }
 
     const stateData = stateRows[0];
@@ -102,7 +102,7 @@ export async function GET(request: Request) {
       const text = await response.text();
       // SECURITY: Don't log full OAuth response (may contain sensitive data)
       console.error('X OAuth access token error - status:', response.status);
-      return NextResponse.redirect(new URL('/courses?x_auth=error', request.url));
+      return NextResponse.redirect(new URL('/home?x_auth=error', request.url));
     }
 
     const responseText = await response.text();
@@ -113,7 +113,7 @@ export async function GET(request: Request) {
     const xUsername = params.get('screen_name');
 
     if (!accessToken || !accessTokenSecret || !xUserId || !xUsername) {
-      return NextResponse.redirect(new URL('/courses?x_auth=error', request.url));
+      return NextResponse.redirect(new URL('/home?x_auth=error', request.url));
     }
 
     // Store X account (we already have user_id and screen_name from access_token response)
@@ -142,10 +142,9 @@ export async function GET(request: Request) {
     );
 
     // Redirect with auto_check flag - client will handle the check
-    return NextResponse.redirect(new URL('/courses?x_auth=success&auto_check=true', request.url));
+    return NextResponse.redirect(new URL('/home?x_auth=success&auto_check=true', request.url));
   } catch (error: any) {
     console.error('X OAuth callback error:', error);
-    return NextResponse.redirect(new URL('/courses?x_auth=error', request.url));
+    return NextResponse.redirect(new URL('/home?x_auth=error', request.url));
   }
 }
-

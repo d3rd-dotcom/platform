@@ -1,5 +1,5 @@
 /**
- * Shared catalog of the events shown on /home.
+ * Shared catalog of the events shown on /dao.
  *
  * This is the single source of truth for event data: the Dashboard renders from
  * it, and the reminder cron (app/api/events/reminders) reads the same list to

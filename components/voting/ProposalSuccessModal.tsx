@@ -74,7 +74,7 @@ export default function ProposalSuccessModal({
           </div>
 
           <div className={styles.actions}>
-            <Link href="/courses" className={styles.primaryButton} onClick={() => { play('navigation'); onClose(); }} onMouseEnter={() => play('hover')}>
+            <Link href="/home" className={styles.primaryButton} onClick={() => { play('navigation'); onClose(); }} onMouseEnter={() => play('hover')}>
               {isExperiment ? 'View All Experiments' : 'View All Proposals'}
             </Link>
             <button className={styles.secondaryButton} onClick={() => { play('click'); onClose(); }} onMouseEnter={() => play('hover')}>
@@ -86,4 +86,3 @@ export default function ProposalSuccessModal({
     </>
   );
 }
-
