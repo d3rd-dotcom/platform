@@ -493,3 +493,9 @@ a.missionCard:hover {
 .fieldNotesSection {
   margin: 18px 19px 0;
 }
+
+.questFolderWrap {
+  margin: 18px 12px 4px;
+  transform: scale(0.92);
+  transform-origin: top center;
+}

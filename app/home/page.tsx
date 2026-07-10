@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
-import { PencilSimple, Trash, Plus } from '@phosphor-icons/react';
+import { Plus } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import { scriptForWeek, WEEKLY_SEEN_KEY } from '@/components/daily-read/weeklyScripts';
@@ -13,7 +13,6 @@ import ProfileDashboard from '@/components/courses/ProfileDashboard';
 import FieldNotesSheet from '@/components/courses/FieldNotesSheet';
 
 import type { CourseData } from '@/lib/personal-course';
-import type { VipCourseRecord } from '@/lib/vip-course-db';
 import { onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
 import type { CourseRecord } from '@/lib/course-content-db';
 import type { GuideRecord, FrontierGuide } from '@/lib/guides-db';
@@ -105,38 +104,9 @@ function dialogueIndexForDate(dateKey: string): number {
   return hash % DAILY_COURSES_DIALOGUES.length;
 }
 
-function getCourseEndDate() {
-  const d = new Date();
-  d.setDate(d.getDate() + 84);
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-}
-
-function getPersonalEndDate() {
-  const d = new Date();
-  d.setDate(d.getDate() + 28);
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-}
-
-interface PublicCourseCard {
-  id: string;
-  slug: string;
-  title: string;
-  focus: string;
-  coverImageUrl: string | null;
-  authorName: string;
-  authorAvatar: string | null;
-  weekCount: number;
-  totalTasks: number;
-  memberCount: number;
-  viewerCompletedTasks: number;
-  viewerProgressPct: number;
-}
-
 export default function HomePage() {
   const { ready, authenticated, getAccessToken } = usePrivy();
   const [personalCourse, setPersonalCourse] = useState<CourseData | null>(null);
-  const [authoredCourses, setAuthoredCourses] = useState<VipCourseRecord[]>([]);
-  const [communityCourses, setCommunityCourses] = useState<PublicCourseCard[]>([]);
   const [academyCourses, setAcademyCourses] = useState<CourseRecord[]>([]);
   const [guides, setGuides] = useState<GuideRecord[]>([]);
   const [myGuides, setMyGuides] = useState<GuideRecord[]>([]);
@@ -155,8 +125,7 @@ export default function HomePage() {
     totalDownvotes: number;
   } | null>(null);
   const [frontierGuides, setFrontierGuides] = useState<FrontierGuide[] | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
-  const [deleting, setDeleting] = useState(false);
+
   const [isVip, setIsVip] = useState(false);
   const [fieldNotesOpen, setFieldNotesOpen] = useState(false);
   const [noteCount, setNoteCount] = useState(0);
@@ -306,15 +275,10 @@ export default function HomePage() {
     }
   }, [getAccessToken]);
 
-  const loadCommunityCourses = useCallback(async () => {
-    try {
-      const headers = await authHeaders();
-      const res = await fetch('/api/vip/courses/public', { cache: 'no-store', headers });
-      if (!res.ok) return;
-      const data = await res.json();
-      setCommunityCourses(data.courses ?? []);
-    } catch { /* ignore */ }
-  }, [authHeaders]);
+  useEffect(() => {
+    if (!ready) return;
+    loadPersonalCourse();
+  }, [ready, loadPersonalCourse]);
 
   useEffect(() => {
     if (!ready || !authenticated) return;
@@ -360,47 +324,6 @@ export default function HomePage() {
 
   useEffect(() => onPersonalCourseUpdated(loadPersonalCourse), [loadPersonalCourse]);
 
-  const loadAuthoredCourses = useCallback(async () => {
-    try {
-      const headers = await authHeaders();
-      const res = await fetch('/api/vip/courses', { cache: 'no-store', headers });
-      if (!res.ok) return;
-      const data = await res.json();
-      setAuthoredCourses(data.courses ?? []);
-    } catch { /* ignore */ }
-  }, [authHeaders]);
-
-  useEffect(() => {
-    if (!ready) return;
-    loadPersonalCourse();
-    loadAuthoredCourses();
-    loadCommunityCourses();
-  }, [ready, loadPersonalCourse, loadAuthoredCourses, loadCommunityCourses]);
-
-  const confirmDelete = async () => {
-    const id = deleteTarget;
-    if (!id) return;
-    setDeleting(true);
-    try {
-      const headers = await authHeaders();
-      const res = await fetch(`/api/vip/courses/${id}`, { method: 'DELETE', headers });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        alert(data.error ?? 'Failed to delete course');
-        setDeleting(false);
-        setDeleteTarget(null);
-        return;
-      }
-      setAuthoredCourses((prev) => prev.filter((c) => c.id !== id));
-      setCommunityCourses((prev) => prev.filter((c) => c.id !== id));
-      setDeleteTarget(null);
-    } catch {
-      alert('Failed to delete course');
-    } finally {
-      setDeleting(false);
-    }
-  };
-
   const guidesBySubject = (() => {
     const map = new Map<string, GuideRecord[]>();
     for (const g of guides) {
@@ -414,13 +337,9 @@ export default function HomePage() {
     return Array.from(map.entries()).sort((a, b) => a[0].localeCompare(b[0]));
   })();
 
-  const shadowStats = communityCourses.find((c) => c.slug === 'creative-healing');
   const panelCourses = [
-    { title: "Blue's Quest", href: '/shadow-work', progressPct: shadowStats?.viewerProgressPct ?? 0 },
+    { title: "Blue's Quest", href: '/shadow-work', progressPct: 0 },
     ...(personalCourse ? [{ title: personalCourse.title, href: '/course/personal', progressPct: 0 }] : []),
-    ...communityCourses
-      .filter((c) => c.slug !== 'creative-healing')
-      .map((c) => ({ title: c.title, href: `/course/${c.slug}`, progressPct: c.viewerProgressPct })),
     ...academyCourses.map((c) => ({ title: c.title, href: `/course/${c.slug}`, progressPct: 0 })),
   ];
 
@@ -429,15 +348,12 @@ export default function HomePage() {
       <SideNavigation />
       <main className={styles.pageColumns}>
       <aside className={styles.aside}>
-        <ProfileDashboard courses={panelCourses} noteCount={noteCount} onOpenNotes={() => setFieldNotesOpen(true)} />
-        <div className={styles.asideQuestFolder}>
-          <CourseFolderCard
-            title="Blue's Quest"
-            count={12}
-            href="/shadow-work"
-            images={[]}
-          />
-        </div>
+        <ProfileDashboard
+          courses={panelCourses}
+          noteCount={noteCount}
+          onOpenNotes={() => setFieldNotesOpen(true)}
+          questFolder={{ title: "Blue's Quest", count: 12, href: '/shadow-work' }}
+        />
         <div className={styles.asideQuestFolder}>
           <CourseFolderCard
             title="Field Notes"
@@ -496,63 +412,6 @@ export default function HomePage() {
           </div>
         )}
 
-        {communityCourses.filter((c) => c.slug !== 'creative-healing').map((c) => (
-          <div key={c.id} className={styles.cardWrapper}>
-            <Link href={`/course/${c.slug}`} className={styles.courseCard}>
-              <div className={styles.cardHeader}>
-                <span className={styles.cardKanji}>友達</span>
-                <span className={styles.cardHeaderTitle}>{c.title}</span>
-              </div>
-              <div className={styles.cardBodyRow}>
-                <span
-                  className={styles.thumb}
-                  style={{ backgroundImage: `url(${JSON.stringify(c.coverImageUrl || '/academy-story.png')})` }}
-                >
-                  <div className={styles.badgeWrapper}>
-                    <div className={styles.cardBadgeGroup}>
-                      <div className={styles.badgeSection}>
-                        <span className={styles.badgeValue}>{c.weekCount} {c.weekCount === 1 ? 'week' : 'weeks'}</span>
-                        <span className={styles.badgeEyebrow}>length</span>
-                      </div>
-                      <span className={styles.badgeDivider} />
-                      <div className={styles.badgeSection}>
-                        <span className={styles.badgeValue}>{c.memberCount}</span>
-                        <span className={styles.badgeEyebrow}>{c.memberCount === 1 ? 'member' : 'members'}</span>
-                      </div>
-                    </div>
-                  </div>
-                </span>
-                <div className={styles.body}>
-                  <div className={styles.contentCenter}>
-                    <span className={styles.desc}>
-                      {c.focus || 'A community course.'}
-                    </span>
-                  </div>
-                  <div className={styles.cardFooter}>
-                    <div className={styles.footerLeft}>
-                      {c.authorName && (
-                        <div className={styles.courseAuthor}>
-                          <span
-                            className={styles.authorAvatar}
-                            style={c.authorAvatar ? { backgroundImage: `url(${JSON.stringify(c.authorAvatar)})` } : undefined}
-                          >
-                            {!c.authorAvatar ? c.authorName[0].toUpperCase() : ''}
-                          </span>
-                          <span className={styles.authorName}>@{c.authorName}</span>
-                        </div>
-                      )}
-                    </div>
-                    <span className={styles.cardMembership}>Free</span>
-                  </div>
-                  <div className={styles.progressDivider}>
-                    <div className={styles.progressFill} style={{ width: `${c.viewerProgressPct}%` }} />
-                  </div>
-                </div>
-              </div>
-            </Link>
-          </div>
-        ))}
-
         {academyCourses.length > 0 && (
           <section className={styles.authoredSection}>
             <h2 className={styles.authoredHeading}>Academy courses</h2>
@@ -569,53 +428,6 @@ export default function HomePage() {
                     )}
                   </div>
                 </Link>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {authoredCourses.length > 0 && (
-          <section className={styles.authoredSection}>
-            <h2 className={styles.authoredHeading}>Your authored courses</h2>
-            <div className={styles.authoredList}>
-              {authoredCourses.map((c) => (
-                <div key={c.id} className={styles.authoredCard}>
-                  <div className={styles.authoredBody}>
-                    <span className={styles.authoredTitle}>{c.title}</span>
-                    <span className={styles.authoredSlug}>/{c.slug}</span>
-                    <span className={`${styles.authoredStatus} ${c.status === 'published' ? styles.authoredStatusPublished : ''}`}>
-                      {c.status === 'published' ? 'Published' : 'Draft'}
-                    </span>
-                    {c.authorName && (
-                      <div className={styles.courseAuthor}>
-                        <span
-                          className={styles.authorAvatar}
-                          style={c.authorAvatar ? { backgroundImage: `url(${JSON.stringify(c.authorAvatar)})` } : undefined}
-                        >
-                          {!c.authorAvatar ? c.authorName[0].toUpperCase() : ''}
-                        </span>
-                        <span className={styles.authorName}>@{c.authorName}</span>
-                      </div>
-                    )}
-                  </div>
-                  <div className={styles.authoredActions}>
-                    <button
-                      type="button"
-                      onClick={() => setDeleteTarget(c.id)}
-                      className={styles.authoredDeleteBtn}
-                      title="Delete course"
-                    >
-                      <Trash size={16} weight="bold" />
-                    </button>
-                    <Link
-                      href={`/course-builder?edit=${c.id}`}
-                      className={styles.authoredEditBtn}
-                      title="Edit course"
-                    >
-                      <PencilSimple size={16} weight="bold" />
-                    </Link>
-                  </div>
-                </div>
               ))}
             </div>
           </section>
@@ -816,41 +628,6 @@ export default function HomePage() {
         />
       )}
 
-      {deleteTarget && (
-        <div className={styles.deleteOverlay} onClick={() => !deleting && setDeleteTarget(null)}>
-          <div className={styles.deleteDialog} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.deleteTitleBar}>
-              <span className={styles.deleteTitleText}>delete.course</span>
-            </div>
-            <div className={styles.deleteBody}>
-              <div className={styles.deleteIcon}>
-                <Trash size={28} weight="bold" />
-              </div>
-              <p className={styles.deleteMessage}>
-                Are you sure you want to delete this course? This cannot be undone.
-              </p>
-              <div className={styles.deleteButtons}>
-                <button
-                  type="button"
-                  className={styles.deleteBtnCancel}
-                  disabled={deleting}
-                  onClick={() => setDeleteTarget(null)}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  className={styles.deleteBtnConfirm}
-                  disabled={deleting}
-                  onClick={confirmDelete}
-                >
-                  {deleting ? 'Deleting...' : 'Delete'}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

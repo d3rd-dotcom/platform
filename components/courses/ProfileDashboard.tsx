@@ -8,6 +8,7 @@ import Link from 'next/link';
 import AvatarSelectorModal from '@/components/avatar-selector/AvatarSelectorModal';
 import UsernameChangeModal from '@/components/username-change/UsernameChangeModal';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
+import CourseFolderCard from '@/components/courses/CourseFolderCard';
 import { useAccount } from 'wagmi';
 import { QUEST_DEFINITIONS, type QuestDefinition } from '@/lib/quest-definitions';
 import { fetchDiamondBalance } from '@/lib/diamonds-balance';
@@ -28,6 +29,7 @@ interface ProfileDashboardProps {
   bio?: string | null;
   noteCount?: number;
   onOpenNotes?: () => void;
+  questFolder?: { title: string; count: number; href: string };
 }
 
 export default function ProfileDashboard({
@@ -36,6 +38,7 @@ export default function ProfileDashboard({
   bio = null,
   noteCount = 0,
   onOpenNotes,
+  questFolder,
 }: ProfileDashboardProps) {
   const { ready, authenticated, getAccessToken } = usePrivy();
   const { address } = useAccount();
@@ -249,6 +252,17 @@ export default function ProfileDashboard({
             setEditingUsername(false);
           }}
         />
+      )}
+
+      {questFolder && (
+        <div className={styles.questFolderWrap}>
+          <CourseFolderCard
+            title={questFolder.title}
+            count={questFolder.count}
+            href={questFolder.href}
+            images={[]}
+          />
+        </div>
       )}
     </section>
   );
