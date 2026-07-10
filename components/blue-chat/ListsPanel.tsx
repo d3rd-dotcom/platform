@@ -43,9 +43,11 @@ interface ListsPanelProps {
   authHeaders: () => Promise<HeadersInit>;
   isAuthenticated: boolean;
   onSound?: (name: 'click' | 'hover') => void;
+  /* The /list page owns its own hero heading, so it hides this one. */
+  showHeader?: boolean;
 }
 
-const ListsPanel: React.FC<ListsPanelProps> = ({ authHeaders, isAuthenticated, onSound }) => {
+const ListsPanel: React.FC<ListsPanelProps> = ({ authHeaders, isAuthenticated, onSound, showHeader = true }) => {
   const [lists, setLists] = useState<Lists>(EMPTY_LISTS);
   const [drafts, setDrafts] = useState<Record<ListKey, string>>({ todo: '', watch: '', later: '' });
   const [loading, setLoading] = useState(true);
@@ -162,10 +164,12 @@ const ListsPanel: React.FC<ListsPanelProps> = ({ authHeaders, isAuthenticated, o
 
   return (
     <div className={styles.panel}>
-      <div className={styles.header}>
-        <h2 className={styles.heading}>Keep Yourself Organized</h2>
-        <p className={styles.subheading}>Everything you are carrying goes in one of them.</p>
-      </div>
+      {showHeader && (
+        <div className={styles.header}>
+          <h2 className={styles.heading}>Keep Yourself Organized</h2>
+          <p className={styles.subheading}>Everything you are carrying goes in one of them.</p>
+        </div>
+      )}
 
       {error && <p className={styles.error} role="alert">{error}</p>}
 
