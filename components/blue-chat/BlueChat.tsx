@@ -12,6 +12,7 @@ import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 
 const VOICE_PREF_KEY = 'blueChat.voiceEnabled';
 import TimeManagementInline from './TimeManagementInline';
+import ListsPanel from './ListsPanel';
 import AutoDistributionInline from './AutoDistributionInline';
 import type { AutoDistributionRequest } from './AutoDistributionInline';
 import QuestForgeInline from './QuestForgeInline';
@@ -229,6 +230,8 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
   const [isTyping, setIsTyping] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  // Which surface fills the main column of the expanded layout.
+  const [expandedPane, setExpandedPane] = useState<'chat' | 'lists'>('chat');
   const [shardCount, setShardCount] = useState<number | null>(null);
   const [shardUpsell, setShardUpsell] = useState<ShardUpsellState | null>(null);
   const [viewerProfile, setViewerProfile] = useState<ViewerProfile | null>(null);
@@ -1791,7 +1794,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
   if (isExpanded && !isMobile) {
     return (
       <>
-        <div className={styles.backdrop} onClick={() => setIsExpanded(false)} />
+        <div className={styles.backdrop} onClick={() => { setIsExpanded(false); setExpandedPane('chat'); }} />
         <div className={styles.expandedContainer}>
           {/* Top bar */}
           <div className={styles.expandedTopBar}>
@@ -1820,7 +1823,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
                   </svg>
                 )}
               </button>
-              <button className={styles.expandButton} onClick={() => setIsExpanded(false)} type="button" aria-label="Collapse">
+              <button className={styles.expandButton} onClick={() => { setIsExpanded(false); setExpandedPane('chat'); }} type="button" aria-label="Collapse">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                   <path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7" />
                 </svg>
@@ -1834,50 +1837,8 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
           </div>
 
           <div className={styles.expandedBody}>
-            {/* Left — Full body character */}
+            {/* Left — Radar above Blue, power tools beneath her */}
             <div className={styles.expandedRight}>
-              <div className={styles.fullBodyWrap}>
-                <div className={styles.knowledgeOrbit} aria-hidden="true">
-                  {KNOWLEDGE_DOMAINS.map((domain, index) => {
-                    const pos = BUBBLE_SCATTER[index];
-                    return (
-                      <span
-                        key={domain}
-                        className={styles.knowledgeBubble}
-                        style={{
-                          ['--bubble-index' as string]: String(index),
-                          ['--bx' as string]: pos.x,
-                          ['--by' as string]: pos.y,
-                          ['--dx' as string]: pos.dx,
-                          ['--dy' as string]: pos.dy,
-                          animationDelay: pos.delay,
-                          animationDuration: `${10 + index * 0.9}s`,
-                        }}
-                      >
-                        {domain}
-                      </span>
-                    );
-                  })}
-                </div>
-                <Image
-                  src="/blue/blue-left.png"
-                  alt="Blue full body"
-                  fill
-                  className={styles.fullBodyImage}
-                  unoptimized
-                  priority
-                />
-                <div className={styles.fullBodyGlow} />
-              </div>
-            </div>
-
-            {/* Center — Chat (no duplicate emote image) */}
-            <div className={styles.expandedCenter}>
-              {chatContent}
-            </div>
-
-            {/* Right panel — Knowledge & tools */}
-            <div className={styles.expandedLeft}>
               {/* Radar chart */}
               <div className={styles.radarSection}>
                 <div className={styles.radarWrap}>
@@ -1975,51 +1936,86 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
                 </div>
               </div>
 
+              <div className={styles.fullBodyWrap}>
+                <div className={styles.knowledgeOrbit} aria-hidden="true">
+                  {KNOWLEDGE_DOMAINS.map((domain, index) => {
+                    const pos = BUBBLE_SCATTER[index];
+                    return (
+                      <span
+                        key={domain}
+                        className={styles.knowledgeBubble}
+                        style={{
+                          ['--bubble-index' as string]: String(index),
+                          ['--bx' as string]: pos.x,
+                          ['--by' as string]: pos.y,
+                          ['--dx' as string]: pos.dx,
+                          ['--dy' as string]: pos.dy,
+                          animationDelay: pos.delay,
+                          animationDuration: `${10 + index * 0.9}s`,
+                        }}
+                      >
+                        {domain}
+                      </span>
+                    );
+                  })}
+                </div>
+                <Image
+                  src="/blue/blue-left.png"
+                  alt="Blue full body"
+                  fill
+                  className={styles.fullBodyImage}
+                  unoptimized
+                  priority
+                />
+                <div className={styles.fullBodyGlow} />
+              </div>
+
               {/* Power Tools */}
               <div className={styles.expandedQuickPanel}>
                 <h3 className={styles.panelHeading}>Power Tools</h3>
                 <div className={styles.expandedQuickGrid}>
-                  <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => { play('click'); handleQuickAction('research'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
+                  <button
+                    className={`${styles.expandedQuickCard} ${expandedPane === 'lists' ? styles.expandedQuickCardActive : ''}`}
+                    onClick={() => { play('click'); setExpandedPane((pane) => (pane === 'lists' ? 'chat' : 'lists')); }}
+                    onMouseEnter={() => play('hover')}
+                    type="button"
+                    aria-pressed={expandedPane === 'lists'}
+                  >
                     <span className={styles.toolCardTop}>
                       <span className={styles.toolCardText}>
                         <span className={styles.toolSlideWrap}>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Research</span>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Research</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Lists</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Lists</span>
                         </span>
-                        <span className={styles.toolCardMeta}>Draft grant applications, research proposals, and thesis chapters with Blue — full report drafts refined section by section.</span>
+                        <span className={styles.toolCardMeta}>Three lists hold everything: what you must do, what you are tracking, and everything else.</span>
                         <span className={styles.toolCardCost}>
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z"/></svg>
-                          {researchMode
-                            ? 'Research mode active'
-                            : isVipMember
-                              ? 'Included with VIP membership'
-                              : 'VIP membership required'}
+                          {expandedPane === 'lists' ? 'Back to chat' : 'Open your lists'}
                         </span>
                       </span>
                       <span className={styles.toolCardIcon} aria-hidden="true">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M10 2a8 8 0 0 1 6.32 12.9l5.39 5.39-1.42 1.42-5.39-5.39A8 8 0 1 1 10 2Zm0 2a6 6 0 1 0 0 12 6 6 0 0 0 0-12Zm-.9 2.4h1.8v2.7h2.7v1.8h-2.7v2.7H9.1v-2.7H6.4V9.1h2.7Z"/></svg>
-                      </span>
-                    </span>
-                    <span className={styles.toolCardBottom} aria-hidden="true" />
-                  </button>
-                  <button className={styles.expandedQuickCard} onClick={() => { play('click'); handleQuickAction('time'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
-                    <span className={styles.toolCardTop}>
-                      <span className={styles.toolCardText}>
-                        <span className={styles.toolSlideWrap}>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Focus Blocks</span>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Focus Blocks</span>
-                        </span>
-                        <span className={styles.toolCardMeta}>Stack up to four timed work blocks and keep the session moving.</span>
-                      </span>
-                      <span className={styles.toolCardIcon} aria-hidden="true">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.11-.9-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M8 6h13M8 12h13M8 18h13" />
+                          <path d="M3 6h.01M3 12h.01M3 18h.01" />
+                        </svg>
                       </span>
                     </span>
                     <span className={styles.toolCardBottom} aria-hidden="true" />
                   </button>
                 </div>
               </div>
+            </div>
 
+            {/* Main column — chat, or the three lists */}
+            <div className={`${styles.expandedCenter} ${expandedPane === 'lists' ? styles.expandedCenterLists : ''}`}>
+              {expandedPane === 'lists' ? (
+                <ListsPanel
+                  authHeaders={authHeaders}
+                  isAuthenticated={ready && authenticated}
+                  onSound={play}
+                />
+              ) : (
+                chatContent
+              )}
             </div>
           </div>
         </div>
