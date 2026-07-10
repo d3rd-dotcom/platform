@@ -5,6 +5,7 @@
 > This file is the canonical source of truth for MWA voice and copy. The `mwa-editorial` skill (`.agents/skills/mwa-editorial/`) is the working filter over it. When the skill's references and this file disagree, this file wins.
 
 *Version 4.0 - 2026 Summer Edition*
+*Synced with the MWA Brand Guidelines deck (V2) on 2026-07-10.*
 
 Official site: mentalwealthacademy.world.
 
@@ -16,11 +17,19 @@ Use this line, or a remixed piece of it, whenever a post needs to explain what w
 
 **Mental Wealth Academy is a social-first gameworld for learning, research, and rewards.**
 
+## Our Story
+
+The path to quality education got branded as a dark road. When we lose our flashlight, we sink into the black mirror: entertainment and misinformation drown out truth, and our autonomy erodes with them.
+
+Who will save the future, if we don't reclaim control?
+
+The Academy is our answer. Learning that is free, social, and rewarding, where the mechanics of persuasion are taught in the open instead of used against you.
+
 ## Core Pillars
 
-1. Education
-2. Environment
-3. Evolution
+1. **Education** - Accelerate quality education. Make it sensible, free to all, and rewarding to learn.
+2. **Environment** - Mental wealth is our social ability to redefine prosperity beyond material assets.
+3. **Evolution** - Invest in human potential. Compounding virtuous actions lead us to a better future.
 
 **Objective:** Invest in the future of humanity, with the heart of tomorrow.
 
@@ -34,6 +43,8 @@ Grounded meaning: small, consistent actions in the present can make the future m
 - Internet-aware, but never trend-hopping
 - Calmly skeptical of misinformation and hype
 - Positive, encouraging, and clear
+- Investigating hidden structures with statistics, theory, and academic framing
+- Cyberpunk philosophy and decentralization, kept legible
 
 ### We do not sound like
 
@@ -85,8 +96,11 @@ Ultimately, quality education should be open enough to compound into the future.
 
 Individuals seeking structured growth, especially ages 21-28.
 
+- Grew up online, already technolyzed
 - Drawn to psychology and self-improvement
 - Looking for accountability and real stakes
+- Motivated by XP, rewards, and badges
+- Thrive on quick, well-scoped tasks
 - Wanting a communal, social environment
 
 ### Secondary
@@ -96,6 +110,7 @@ Scientists and academics seeking applied research.
 - Curious about collaborative testing and experimentation
 - Want their interests connected to live participants and real behavioral data
 - Interested in an AI companion that can help generate novel datasets
+- Includes citizen scientists, status seekers, and special-interest groups
 
 ## Business Model
 
@@ -162,9 +177,10 @@ Blue generates ontologies, guides users through high-quality work, and acts as r
 ### Design Principles
 
 - Female high-elf
-- Futuristic headgear
+- Her name is always Blue; earlier drafts used Alara and Elara, and both are retired
+- Futuristic headgear, worn as a light head attachment (no full helmets)
 - Friendly, helpful, shy, and nerdy
-- Benevolent leader, not a dictator
+- Benevolent leader who governs with a light touch
 - Short, sweet language
 - White lab coat with different T-shirts
 - Thin chain necklace with a star pendant
@@ -177,13 +193,17 @@ Blue generates ontologies, guides users through high-quality work, and acts as r
 
 The logo should feel like a strange artifact from another planet. It does not need to obey conventional logo rules.
 
+- Primary lockup: the artifact mark
+- Logotype variant: type with atomic edges
+- Color variants: Academy Blue, and black and white
+
 ### Color Palette
 
-- Academy Blue: `#5168FF`
-- Blackpill Text: `#1A1B24`
-- Quantum White: `#F4F5FE`
-- Accent Green: `#5DD68F`
-- Text Black: `#000000`
+- Academy Blue: `#5168FF` - our flagship shade; primary actions
+- Blackpill Text: `#1A1B24` - bluish black for smooth dark text
+- Quantum White: `#F4F5FE` - backgrounds; calm and sharp
+- Accent Green: `#5DD68F` - rewards and positive signals
+- Text Black: `#000000` - precision
 
 Cards stay flat: `2px` solid primary border, `12px` corner radius.
 
@@ -206,6 +226,8 @@ The primary blue gradient and halftone dots are reserved for hero and section mo
 ### Storytelling
 
 Blue is the main character.
+
+Blue is an AI agent who leads a team of subagents, and she is integrated across the entire platform.
 
 The world can feel anime-forward and educational at the same time. Blue should read like the lead of a digital library: a character people can trust, follow, and learn from.
 
@@ -266,6 +288,16 @@ The aesthetic rule: a strong prompt does more than request raw data. It sets the
 
 When writing prompts or marketing copy, make the intended feeling and structure explicit before you layer on flourish.
 
+Flat request:
+
+> Baking bread involves mixing flour, water, yeast, and salt, then baking it in an oven.
+
+Framed result:
+
+> The kitchen filled with the golden, yeasty warmth of a Sunday morning long past. Flour dusted the oak table like fresh snow while the dough breathed under a damp linen cloth.
+
+The framed version dictates the sensory, emotional, and structural frame instead of only requesting data.
+
 ### Sentence-Level Rules
 
 - Cut "that" constructions when they slow the sentence down.
@@ -291,17 +323,22 @@ Feature card titles, nav labels, and section headers should name the category th
 | Bad copy | Good copy |
 | --- | --- |
 | Twelve-week cohort | A Micro-University For Intellectual Refreshment |
-| AI reviews your progress | A Curriculum Accompanied By Blue |
-| A crypto token called Diamonds | A Universal Community Token |
+| AI reviews your progress | A Platform Governed By A Shade Of Blue |
+| A crypto token called Diamonds | A Community Token That Earns Bitcoin |
 | Building research | Parasocial Research Programs |
 | Memory that compounds | Certified Academic Labs |
-| One NFT, full access | Lifetime Membership |
+| One NFT, full access | Lifetime Membership NFTs You Own Forever |
+
+Hold the "Earns Bitcoin" line until the ReflectionVault is live on mainnet.
 
 The bad version describes how it works. The good version names what you're joining.
 
 ### Before You Publish
 
 - Can someone explain what we do after reading this section?
+- Is the point of the message certain and confident?
+- Does every sentence deliver one clear thought or emotion?
+- Have I named tangible benefits the reader can picture?
 - Is every poetic phrase grounded in something concrete?
 - Does the order go real first, story second?
 - Is there only one main idea per paragraph?
