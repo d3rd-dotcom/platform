@@ -565,7 +565,7 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
                     ) : usdcClaim.status === 'pending' ? (
                       <div className={styles.callout} data-state="info">
                         <span className={styles.calloutDot} aria-hidden="true" />
-                        <span>Submitted. A staff member will review your work and release the USDC.</span>
+                        <span>Submitted. Staff will review your work before Blue sends the payout.</span>
                       </div>
                     ) : usdcClaim.status === 'rejected' ? (
                       <div className={styles.callout} data-state="waiting">
@@ -575,7 +575,7 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
                     ) : usdcClaim.eligible ? (
                       <>
                         <p className={styles.actionDesc}>
-                          Submit your work for staff review. Once approved, Blue sends ${usdcClaim.reward} USDC straight to your wallet.
+                          Submit your work for review. Approved entries receive ${usdcClaim.reward} USDC in your wallet.
                         </p>
                         <button
                           type="button"

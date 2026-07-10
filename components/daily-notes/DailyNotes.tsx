@@ -9,6 +9,7 @@ import { useSound } from '@/hooks/useSound';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import styles from './DailyNotes.module.css';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
+import { getLocalDateKey } from '@/lib/date-key';
 
 const DiamondReward = dynamic(() => import('@/components/rewards/DiamondReward').then(mod => mod.DiamondReward), {
   ssr: false,
@@ -118,7 +119,7 @@ export default function DailyNotes({
   }, [showAuthPrompt]);
 
   const fieldNotes = allWeekPages[currentWeek] ?? [];
-  const todayDateStr = new Date().toISOString().split('T')[0];
+  const todayDateStr = getLocalDateKey();
   const weekColor = WEEK_COLORS[(currentWeek - 1) % WEEK_COLORS.length];
   const authPending = authenticated && !enablePersistence;
 
@@ -165,7 +166,7 @@ export default function DailyNotes({
         ? 'This week is complete. Seven entries are on the record.'
         : !isWeekUnlocked
           ? 'Finish the previous week first. The next page opens after seven completed entries.'
-          : 'A new field note will unlock tomorrow. One entry per day keeps the practice clean.';
+          : 'Your next field note opens tomorrow.';
 
   const formatTimer = (s: number) =>
     `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;

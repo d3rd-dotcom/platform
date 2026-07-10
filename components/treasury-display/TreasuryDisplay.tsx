@@ -96,18 +96,6 @@ const TreasuryDisplay: React.FC<TreasuryDisplayProps> = ({
             <h3 className={styles.title}>Blue&apos;s Wallet</h3>
           </div>
         </div>
-        <div className={styles.infoWrap}>
-          <button
-            className={styles.infoButton}
-            type="button"
-            aria-label="Explain A.R.M. voting and treasury control"
-          >
-            i
-          </button>
-          <div className={styles.infoTooltip} role="tooltip">
-            The DAO&apos;s Autonomous Resource Mechanism A.R.M. is governed by Blue, and her level of control is at 40%. This explains the voting mechanism used for proposals and the DAO treasury.
-          </div>
-        </div>
       </div>
 
       <div className={styles.balanceRow}>
