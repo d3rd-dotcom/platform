@@ -5,7 +5,7 @@ import styles from './MagazineSection.module.css';
 
 export const MagazineSection: React.FC = () => {
   return (
-    <section className={styles.section}>
+    <section id="vision" className={styles.section}>
       <div className={styles.container}>
         <div className={styles.textColumn}>
           <p className={styles.eyebrow}>Mental Wealth Magazine</p>
