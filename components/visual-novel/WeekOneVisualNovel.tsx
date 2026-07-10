@@ -113,6 +113,110 @@ const WEEK_ART_COUNTS: Record<number, number> = {
   2: 9, 3: 9, 4: 8, 5: 8, 6: 8, 7: 9, 8: 9, 9: 4, 10: 5, 11: 4, 12: 4,
 };
 
+// Each line is written to land with its still. The curriculum stays inside the
+// story: Blue and her Shades encounter it rather than explaining it to the player.
+const WEEK_STORIES: Record<number, string[]> = {
+  2: [
+    'Blue found a Shade at the Academy gate, holding a map with every route crossed out.',
+    '“They called it erratic,” the Shade said. Blue kept the map open between them.',
+    'A note appeared in the margin: not good enough. Blue folded that edge under.',
+    'In the simulator, doubt had always arrived first. It wore familiar voices.',
+    'Blue moved the field notes into a locked drawer. Some beginnings need privacy.',
+    'Outside, a crowd asked the Shade to return to the old shape. The Shade did not answer.',
+    'Blue marked one small room on the map. A desk. A lamp. An hour kept intact.',
+    'The Shade drew a new boundary in blue pencil, then another.',
+    'At the Ethereal Horizon, Blue kept the map. This time, it had a way forward.',
+  ],
+  3: [
+    'The simulator registered a heat spike before Blue did. A Shade had been swallowing anger for years.',
+    'Blue set a glass of water beside her. The surface shook, then settled.',
+    'They followed the signal backward through old criticism and the rooms it had sealed.',
+    'One accusation had no evidence. Blue tagged it as noise.',
+    'The Shade named the thing that hurt. Its shadow lost some of its size.',
+    'They tested a small action. The door opened without asking permission.',
+    'Joy arrived too, sharp as static. Blue recorded that signal beside the grief.',
+    'The Shade stood taller in the doorway. Nothing had been repaired for her.',
+    'Blue watched her carry her own power toward the Ethereal Horizon.',
+  ],
+  4: [
+    'Blue stopped reading for one night. The Academy was quiet enough to hear the pipes cool.',
+    'A Shade brought her field notes, unopened. “I know what is in there,” she said.',
+    'Blue placed the pages on the table. They held small hurts and one success nobody had counted.',
+    'In the simulator, false versions of a life looked smoother from a distance.',
+    'The Shade crossed out an old name and wrote the name she had been avoiding.',
+    'A buried dream moved beneath the paper like a seed under glass.',
+    'Blue waited while the Shade chose what could stay and what had to end.',
+    'By morning, the notes were still untidy. They were also true. Blue kept them.',
+  ],
+  5: [
+    'A bus passed the Academy with one empty seat. Blue saw a Shade let it go by.',
+    '“Someone else may need it,” the Shade said. Blue looked at the empty street.',
+    'They followed the old instructions: be realistic. stay useful. wait your turn.',
+    'At the river, Blue put a coin in the Shade’s palm. It was warm from the machine room.',
+    'The Shade spent an afternoon on the small thing she had postponed for years.',
+    'Nothing collapsed. No alarm sounded.',
+    'A letter arrived from a future she had never permitted herself to picture.',
+    'Blue ran beside her as the next bus came. This time, the Shade stepped on.',
+  ],
+  6: [
+    'The Academy ledger showed a deficit where a Shade had written her own name.',
+    'Blue had seen this accounting in the simulator: every desire entered as a debt.',
+    'They counted what the Shade had already made with almost nothing. The list became long.',
+    'At the market, she touched the good paper and did not apologize for wanting it.',
+    'Blue opened the old money story. Its numbers had been copied from frightened hands.',
+    'The Shade changed one line. enough was no longer somewhere else.',
+    'She bought the small necessary thing and carried it home carefully.',
+    'Blue added the receipt to the ledger. Permission had a record now.',
+  ],
+  7: [
+    'A Shade kept redrawing one corner of a picture until the paper tore.',
+    'Blue took the pencil away and set a rough first page beside it.',
+    'They listened in the workshop while other Shades made imperfect things together.',
+    'One failed note became a melody when someone else answered it.',
+    'Jealousy visited the room. Blue asked it where it wanted to go.',
+    'The answer was a door the Shade had been afraid to touch.',
+    'She made a bad first attempt. The room stayed with her.',
+    'Blue passed the work around without grading it. Hands returned it warmer.',
+    'Beyond the Academy windows, the Ethereal Horizon made room for every unfinished song.',
+  ],
+  8: [
+    'The clock in the simulator had been set to too late. Blue knew that setting.',
+    'A Shade carried an old teacher’s voice like a stone in her pocket.',
+    'Blue asked her to put it down. The floor held.',
+    'They chose the next small thing before the large question could speak.',
+    'The Shade began badly, then began again. Her hands learned the hour was still hers.',
+    'Blue logged the work, not the age of the person doing it.',
+    'At dusk, the Shade left one mark on the page and kept walking.',
+    'The clock moved forward. So did she.',
+    'Blue filed the day under strength and turned toward the Ethereal Horizon.',
+  ],
+  9: [
+    'A Shade called herself lazy and would not enter the studio.',
+    'Blue found fear sitting beside the door, very small and very busy.',
+    'They made room for it, then made one mark anyway.',
+    'When the Shade turned back toward the work, Blue left the light on.',
+  ],
+  10: [
+    'Blue found the studio full of borrowed noise: deadlines, messages, comparisons, hunger.',
+    'A Shade named the one habit she used when the work began to matter.',
+    'They made a short list of what could no longer cross the threshold.',
+    'During the dry week, Blue kept the field notes open beside an empty cup.',
+    'The Shade returned for ten minutes. The work had been waiting, not judging.',
+  ],
+  11: [
+    'Blue built a small desk at the edge of the Academy, where the light changed slowly.',
+    'A Shade filled it with stones, paper, a candle, and one letter to herself.',
+    'She moved until the thoughts in her head became footsteps.',
+    'When she returned, Blue found her making the next thing without asking the room.',
+  ],
+  12: [
+    'Blue placed the Shade’s fears in a jar and set it beside the first page.',
+    'They could not see the whole road. The next action was visible.',
+    'A message from an old doubt arrived. Blue left it unopened.',
+    'The Shade carried her tools past the Academy gate. The Ethereal Horizon was still there.',
+  ],
+};
+
 function getScenesForWeek(weekNumber: number): Scene[] {
   if (weekNumber === 1) return WEEK_ONE_SCENES;
 
@@ -121,6 +225,7 @@ function getScenesForWeek(weekNumber: number): Scene[] {
   return Array.from({ length: count }, (_, index) => ({
     id: `week-${weekPath}-${index + 1}`,
     image: `/stories/week-${weekPath}/${String(index + 1).padStart(2, '0')}.png`,
+    body: WEEK_STORIES[weekNumber]?.[index],
   }));
 }
 
