@@ -50,13 +50,10 @@ const departureMono = localFont({
   display: 'swap',
 });
 
-import { MiniAppProvider } from '@/components/miniapp/MiniAppProvider';
 import { SoundProvider } from '@/components/sound/SoundProvider';
 import PwaRegistrar from '@/components/pwa/PwaRegistrar';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/next';
-
-const APP_URL = process.env.NEXT_PUBLIC_URL || 'https://mentalwealthacademy.world';
 
 export const metadata: Metadata = {
   title: 'Mental Wealth Academy',
@@ -97,22 +94,6 @@ export const metadata: Metadata = {
     title: 'Mental Wealth Academy',
     description: 'Unlock your potential, reach your horizon.',
     images: ['https://imgur.com'],
-  },
-  other: {
-    'fc:miniapp': JSON.stringify({
-      version: 'next',
-      imageUrl: 'https://imgur.com',
-      button: {
-        title: 'Launch Mental Wealth Academy',
-        action: {
-          type: 'launch_miniapp',
-          name: 'Mental Wealth Academy',
-          url: APP_URL,
-          splashImageUrl: `${APP_URL}/splashlogo.png`,
-          splashBackgroundColor: '#000000',
-        },
-      },
-    }),
   },
 };
 
@@ -231,9 +212,7 @@ export default function RootLayout({
       </head>
       <body>
         <SoundProvider>
-          <MiniAppProvider>
-            <RouteShell>{children}</RouteShell>
-          </MiniAppProvider>
+          <RouteShell>{children}</RouteShell>
         </SoundProvider>
         <PwaRegistrar />
         <SpeedInsights />

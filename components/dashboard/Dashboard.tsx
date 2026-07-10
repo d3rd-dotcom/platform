@@ -92,7 +92,7 @@ export default function Dashboard() {
         <BlueScene />
       </div>
 
-      {/* ── Sidebar: Leaderboard + Treasury + ChatRoom ── */}
+      {/* ── Sidebar: Leaderboard + Blue's Wallet + ChatRoom ── */}
       <aside className={styles.sidebarWrap}>
         <button
           type="button"
@@ -127,11 +127,11 @@ export default function Dashboard() {
           )}
         </button>
 
-        <section className={`${styles.leaderboardCard} ${styles.treasuryCard}`} aria-labelledby="home-treasury-title">
+        <section className={`${styles.leaderboardCard} ${styles.treasuryCard}`} aria-labelledby="home-blue-wallet-title">
           <div className={styles.leaderHead}>
             <span className={styles.leaderIcon}>財</span>
-            <span id="home-treasury-title" className={`${styles.leaderTitle} ${styles.treasuryTitle}`}>
-              BLUE&apos;S TREASURY
+            <span id="home-blue-wallet-title" className={`${styles.leaderTitle} ${styles.treasuryTitle}`}>
+              Blue&apos;s Wallet
             </span>
             <button
               type="button"
@@ -143,7 +143,7 @@ export default function Dashboard() {
           </div>
 
           {treasuryFailed ? (
-            <p className={styles.leaderEmpty}>Treasury balances are temporarily unavailable.</p>
+            <p className={styles.leaderEmpty}>Blue&apos;s Wallet balances are temporarily unavailable.</p>
           ) : (
             <>
               <div className={styles.treasuryGrid} aria-live="polite">
@@ -155,7 +155,7 @@ export default function Dashboard() {
                     width={20}
                     height={20}
                   />
-                  <span className={styles.treasuryMetricLabel}>Bitcoin reserve</span>
+                  <span className={styles.treasuryMetricLabel}>Bitcoin held</span>
                   <strong className={styles.treasuryMetricValue}>
                     {treasury ? formatBalance(treasury.balances.cbBtc.amount, 8) : '—'}
                     {treasury?.balances.cbBtc.amount !== null && <small> Bitcoin</small>}

@@ -101,7 +101,8 @@ export default function ProfileDashboard({
       })
       .catch(() => {});
 
-    fetch('/api/daily-notes/streak', { credentials: 'include' })
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    fetch(`/api/daily-notes/streak?tz=${encodeURIComponent(timeZone)}`, { credentials: 'include' })
       .then((r) => r.ok ? r.json() : null)
       .then((d) => setStreak(d?.streak ?? 0))
       .catch(() => {});

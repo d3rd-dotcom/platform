@@ -13,8 +13,6 @@ interface HomeWelcomeFlowProps {
 /**
  * Wraps the home page content.
  * - Checks server session (which now also reads Privy cookie on the server).
- * - Mini-app auto-sign-in (silent SIWF via the mini-app SDK) is handled
- *   globally by MiniAppAutoAuth; this component just reacts to `authenticated`.
  * - Privy-authenticated: auto-creates server session via wallet-signup.
  * - No auth: renders page content (no redirect).
  *
@@ -25,7 +23,7 @@ interface HomeWelcomeFlowProps {
  */
 export default function HomeWelcomeFlow({ children, onAuthenticated, onSettled }: HomeWelcomeFlowProps) {
   const router = useRouter();
-  const { ready, authenticated, getAccessToken, user } = usePrivy();
+  const { ready, authenticated, getAccessToken } = usePrivy();
 
   const [authState, setAuthState] = useState<'checking' | 'ready'>('checking');
   const settledRef = useRef(false);
@@ -56,8 +54,7 @@ export default function HomeWelcomeFlow({ children, onAuthenticated, onSettled }
           }
         }
 
-        // 2. Privy-authenticated (incl. silent mini-app SIWF handled by
-        //    MiniAppAutoAuth) — create server session automatically.
+        // 2. Privy-authenticated — create the server session automatically.
         if (authenticated) {
           const token = await getAccessToken();
           if (!token) {
@@ -66,8 +63,6 @@ export default function HomeWelcomeFlow({ children, onAuthenticated, onSettled }
           }
           const authHeaders: HeadersInit = { Authorization: `Bearer ${token}` };
 
-          // Back-fill Farcaster profile data on the server session
-          const fcProfile = user?.farcaster;
           const signupRes = await fetch('/api/auth/wallet-signup', {
             method: 'POST',
             credentials: 'include',
@@ -75,10 +70,6 @@ export default function HomeWelcomeFlow({ children, onAuthenticated, onSettled }
               ...authHeaders,
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-              farcasterUsername: fcProfile?.username || undefined,
-              farcasterPfp: fcProfile?.pfp || undefined,
-            }),
           });
 
           if (signupRes.ok) {

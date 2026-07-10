@@ -3,6 +3,7 @@ import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { ensurePrayersSchema } from '@/lib/ensurePrayersSchema';
 import { decryptForUser } from '@/lib/encrypt';
+import { getDateKeyInTimeZone, isValidTimeZone, shiftDateKey } from '@/lib/date-key';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -18,7 +19,7 @@ interface FieldNoteEntry {
  * Returns the current consecutive-day streak and which days of the
  * current week have been completed.
  */
-export async function GET() {
+export async function GET(request: Request) {
   if (!isDbConfigured()) {
     return NextResponse.json({ streak: 0, completedDays: [] });
   }
@@ -64,31 +65,33 @@ export async function GET() {
     }
   }
 
-  // Calculate consecutive-day streak ending today or yesterday
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const todayStr = today.toISOString().split('T')[0];
+  // Entries are written with the browser's local calendar date. Reuse that
+  // timezone here so the server's UTC clock cannot move a user's day forward
+  // or backward around midnight.
+  const requestedTimeZone = new URL(request.url).searchParams.get('tz');
+  const timeZone = requestedTimeZone && isValidTimeZone(requestedTimeZone)
+    ? requestedTimeZone
+    : 'UTC';
+  const todayStr = getDateKeyInTimeZone(new Date(), timeZone);
 
   let streak = 0;
-  let checkDate = new Date(today);
+  let checkDate = todayStr;
 
   // If today is not done, start from yesterday
   if (!allDates.has(todayStr)) {
-    checkDate.setDate(checkDate.getDate() - 1);
+    checkDate = shiftDateKey(checkDate, -1);
   }
 
-  while (allDates.has(checkDate.toISOString().split('T')[0])) {
+  while (allDates.has(checkDate)) {
     streak++;
-    checkDate.setDate(checkDate.getDate() - 1);
+    checkDate = shiftDateKey(checkDate, -1);
   }
 
   // Get day-of-week completions for the current 5-day display
   // Show the last 5 days (today and 4 before)
   const completedDays: boolean[] = [];
   for (let i = 4; i >= 0; i--) {
-    const d = new Date(today);
-    d.setDate(d.getDate() - i);
-    completedDays.push(allDates.has(d.toISOString().split('T')[0]));
+    completedDays.push(allDates.has(shiftDateKey(todayStr, -i)));
   }
 
   return NextResponse.json({ streak, completedDays });
