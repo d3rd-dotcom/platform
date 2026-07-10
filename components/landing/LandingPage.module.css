@@ -3146,3 +3146,140 @@
   font-weight: var(--font-weight-regular);
   margin: 0;
 }
+
+/* Donation Popup */
+.donationPopup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 93vh;
+  z-index: 50;
+  pointer-events: none;
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .donationPopup {
+    display: block;
+  }
+}
+
+.donationPopupContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  height: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 45px;
+  box-sizing: border-box;
+}
+
+.donationPopupContent {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding-top: 24px;
+  padding-bottom: 30px;
+  padding-left: 56px;
+  padding-right: 61px;
+  background-color: #000000;
+  color: #ffffff;
+  pointer-events: auto;
+}
+
+.donationPopupCorner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.donationPopupText {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  z-index: 10;
+}
+
+.donationPopupHeading {
+  font-family: var(--font-primary);
+  font-size: 29px;
+  line-height: 38px;
+  font-weight: var(--font-weight-bold);
+  max-width: 250px;
+  padding-right: 16px;
+  border-right: 1px solid #666666;
+  margin: 0;
+  color: #ffffff;
+}
+
+.donationPopupDescription {
+  font-size: 14px;
+  line-height: 18px;
+  max-width: 322px;
+  color: #CDCDCD;
+  margin: 0;
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-regular);
+}
+
+.donationPopupButton {
+  font-family: var(--font-button);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 12px 24px;
+  background-color: #ffffff;
+  color: #111111;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+  pointer-events: auto;
+  display: inline-block;
+}
+
+.donationPopupButton:hover {
+  background-color: #C9C9BB;
+  color: #000000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.donationPopupClose {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  transition: opacity 0.3s ease;
+}
+
+.donationPopupClose:hover {
+  opacity: 0.7;
+}
+
+.donationPopupClose svg {
+  display: block;
+}
+
+@media (max-width: 1023px) {
+  .donationPopup {
+    display: none;
+  }
+}

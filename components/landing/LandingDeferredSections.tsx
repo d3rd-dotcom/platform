@@ -41,6 +41,10 @@ const LandingFooter = dynamic(() =>
   import('./LandingFooter').then((mod) => mod.LandingFooter),
   { ssr: false }
 );
+const DonationPopup = dynamic(() =>
+  import('./DonationPopup').then((mod) => mod.DonationPopup),
+  { ssr: false }
+);
 const ElevenLabsAgentWidget = dynamic(() =>
   import('./ElevenLabsAgentWidget').then((mod) => mod.ElevenLabsAgentWidget),
   { ssr: false }
@@ -54,9 +58,9 @@ const ElevenLabsAgentWidget = dynamic(() =>
  * content swap does not shift the scroll position.
  */
 export function LandingDeferredSections() {
-  // The voice widget is an overlay, not a scroll section, so it can't be
-  // gated on scroll. Hold it until the browser is idle so it never competes
-  // with the hero and first sections on initial load.
+  // The donation popup and voice widget are overlays, not scroll sections, so
+  // they can't be gated on scroll. Hold them until the browser is idle so they
+  // never compete with the hero and first sections on initial load.
   const [overlaysReady, setOverlaysReady] = useState(false);
 
   useEffect(() => {
@@ -84,6 +88,7 @@ export function LandingDeferredSections() {
       <LazySection minHeight="60vh"><PatternTextSection /></LazySection>
       <LazySection minHeight="80vh"><FAQSection /></LazySection>
       <LazySection minHeight="40vh"><LandingFooter /></LazySection>
+      {overlaysReady && <DonationPopup />}
       {overlaysReady && <ElevenLabsAgentWidget />}
     </>
   );
