@@ -1,7 +1,7 @@
 ---
 name: mwa-editorial
 description: Mental Wealth Academy editorial voice + copy review. Use when writing or reviewing landing copy, app strings, marketing prose, blog posts, social posts, error messages, empty states, or any user-visible text. Enforces the EDITORIAL.md brand book (v4.0).
-version: 2.0.0
+version: 2.1.0
 user-invocable: true
 ---
 
@@ -17,7 +17,7 @@ If it doesn't land on one of those three concretely, cut it or ground it. This s
 
 ## Voice in one breath
 
-**Upbeat, academic, short, sweet.** Internet savvy, never trend-hopping. The energy of debunking conspiracies online — curious, evidence-first. Endless positivity and encouragement, where the lift comes from concrete wins, not hype adjectives.
+**Calm, academic, short, sweet.** Internet-aware, never trend-hopping. Calmly skeptical of AI and its hype — awe and intellectual rebellion, delivered with evidence. Positive and encouraging, where the lift comes from concrete wins, not hype adjectives.
 
 ## Routing
 
@@ -26,7 +26,7 @@ Pick the reference that matches the task:
 - **Writing new copy** → `references/voice.md` (what we sound like + who we serve) + `references/sentence-rules.md` (line-level mechanics)
 - **Reviewing/editing existing copy** → `references/anti-patterns.md` (what to cut) + `references/sentence-rules.md`
 - **Blue, narrative copy, or anything that risks sounding inflated** → `references/ground-then-elevate.md` (the central rule of the brand)
-- **Choosing how to frame the product to a specific audience** → `references/voice.md` (Primary = individuals 21–28; Secondary = scientists/academics)
+- **Choosing how to frame the product to a specific audience** → `references/voice.md` (Primary = Gen-Z, ages 18 and up; Secondary = scientists/academics)
 
 When in doubt, load all four references — they're short — and check `EDITORIAL.md` for anything they don't cover.
 
@@ -49,6 +49,9 @@ Most drafts jump straight to #4 without earning #1–3. Reorder before publishin
 ## Final checklist before shipping copy (from EDITORIAL.md Revision Checklist)
 
 - Can someone explain what we do after reading this?
+- Is the point of the message certain and confident?
+- Does every sentence deliver one clear thought or emotion?
+- Have I named tangible benefits the reader can picture?
 - Is every poetic phrase grounded in something concrete?
 - Does the order go real → story layer, not story layer → real?
 - One main idea per paragraph?

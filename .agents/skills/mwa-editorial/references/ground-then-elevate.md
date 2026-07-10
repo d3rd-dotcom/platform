@@ -18,7 +18,7 @@ Reader has no idea what exists, what it does, or why it matters.
 
 ### Good (grounded then elevated)
 
-> "Blue is an agentic smart contract with memory. She reviews platform data and submissions, and the rewards are self-executed. Her characterization makes her feel more like infrastructure than a feature — a benevolent leader of the Academy."
+> "Blue is an agentic smart contract with memory. She reviews platform data and submissions, and the rewards are self-executed. Her characterization makes her feel more like infrastructure than a feature — the mascot of the Academy and a champion for your mental wealth."
 
 Reader knows the function before they meet the story layer.
 
@@ -39,8 +39,8 @@ Replace the left side with the right side wherever you find it:
 
 | Ungrounded | Grounded |
 |---|---|
-| "Meaningful experience" | "Behavioral studies, events, and community with real rewards" |
-| "The alien machine God" | "A system that uses an AI mascot (Blue) for everything" |
+| "Meaningful experience" | "Behavioral studies, events, and community with a clear purpose" |
+| "The alien machine God" | "A system that uses an AI mascot (Blue) across the experience" |
 | "Fresh perspectives" | "Psychology frameworks most people never encounter" |
 | "Quality storytelling" | "A story layer that makes the technology legible" |
 | "Interactive NPCs" | "Blue, an AI agent who reviews and rewards your work" |

@@ -42,7 +42,7 @@ If the page describes a feature ChatGPT, Claude, and 50 other AI products also h
 
 ## Audience-mixing in one section
 
-The Primary reader is an individual 21–28 seeking growth; the Secondary reader is a scientist/academic. Don't start a section speaking to the individual and end it pitching researchers. Pick one audience per surface (`voice.md`). If you need both, separate them physically.
+The Primary reader is a Gen-Z individual (ages 18 and up) seeking growth; the Secondary reader is a scientist/academic. Don't start a section speaking to the individual and end it pitching researchers. Pick one audience per surface (`voice.md`). If you need both, separate them physically.
 
 ## Repeated information
 
@@ -62,13 +62,13 @@ Feature titles, nav labels, and section headers name the **category** the user i
 | Mechanism-as-title | Category-as-title |
 |---|---|
 | Twelve-Week Cohort | A Micro-University For Intellectual Refreshment |
-| AI Reviews Your Progress | A Curriculum Accompanied By Blue |
-| A Crypto Token Called Diamonds | A Universal Community Token |
+| AI Reviews Your Progress | A Platform Governed By A Shade Of Blue |
+| A Crypto Token Called Diamonds | A Community Token That Earns Bitcoin |
 | Building Research | Parasocial Research Programs |
 | Memory That Compounds | Certified Academic Labs |
-| One NFT, Full Access | Lifetime Membership |
+| One NFT, Full Access | Lifetime Membership NFTs You Own Forever |
 
-The pattern: bad titles describe *how it works*. Good titles name *what you're joining*. A short, research-elevated title sets the frame; the sentence below grounds it.
+The pattern: bad titles describe *how it works*. Good titles name *what you're joining*. A short, research-elevated title sets the frame; the sentence below grounds it. Hold the "Earns Bitcoin" line until the ReflectionVault is live on mainnet.
 
 ## ALL CAPS
 

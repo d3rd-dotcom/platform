@@ -17,14 +17,6 @@ Use this line, or a remixed piece of it, whenever a post needs to explain what w
 
 **Mental Wealth Academy is a social-first gameworld for learning, research, and rewards.**
 
-## Our Story
-
-The path to quality education got branded as a dark road. When we lose our flashlight, we sink into the black mirror: entertainment and misinformation drown out truth, and our autonomy erodes with them.
-
-Who will save the future, if we don't reclaim control?
-
-The Academy is our answer. Learning that is free, social, and rewarding, where the mechanics of persuasion are taught in the open instead of used against you.
-
 ## Core Pillars
 
 1. **Education** - Accelerate quality education. Make it sensible, free to all, and rewarding to learn.
@@ -41,7 +33,8 @@ Grounded meaning: small, consistent actions in the present can make the future m
 
 - Academic, visionary, and intellectually curious
 - Internet-aware, but never trend-hopping
-- Calmly skeptical of misinformation and hype
+- Calmly skeptical of AI and its hype
+- Awe and intellectual rebellion, delivered calmly
 - Positive, encouraging, and clear
 - Investigating hidden structures with statistics, theory, and academic framing
 - Cyberpunk philosophy and decentralization, kept legible
@@ -68,11 +61,13 @@ Does this communicate an educational gameworld, an academic angle, or a feature 
 
 ## The Problems We Solve
 
+The path to quality education got branded as a dark road. When we lose our flashlight, we sink into the black mirror: entertainment and misinformation drown out truth, and our autonomy erodes with them. Who will save the future, if we don't reclaim control?
+
 - Goal-based social networks often skip accountability and drift into chaos.
 - Traditional research can be slow to map relationships, trajectories, and ontologies.
 - Traditional games often trap progress inside one app.
 
-Ultimately, quality education should be open enough to compound into the future.
+Ultimately, quality education should be open enough to compound into the future. The Academy is our answer: learning that is free, social, and rewarding, where the mechanics of persuasion are taught in the open instead of used against you.
 
 ## How It Works
 
@@ -94,7 +89,7 @@ Ultimately, quality education should be open enough to compound into the future.
 
 ### Primary
 
-Individuals seeking structured growth, especially ages 21-28.
+Gen-Z individuals seeking structured growth, ages 18 and up.
 
 - Grew up online, already technolyzed
 - Drawn to psychology and self-improvement
@@ -157,7 +152,7 @@ We are a research organization experimenting with technology in a way that makes
 
 ### What She Is
 
-Blue is an RAG model AI agent that reviews MWA archives and treasury activity. She is the autonomous leader of the platform and appears to users as an NPC-styled character.
+Blue is an RAG model AI agent that reviews MWA archives and treasury activity. To users she is the mascot of Mental Wealth Academy and a champion for your mental wealth, appearing as an NPC-styled character.
 
 Her use cases extend far beyond the digital pocket world.
 
@@ -298,12 +293,15 @@ Framed result:
 
 The framed version dictates the sensory, emotional, and structural frame instead of only requesting data.
 
+Prompt examples follow house rules too: no all-caps, even for energy.
+
 ### Sentence-Level Rules
 
 - Cut "that" constructions when they slow the sentence down.
 - Replace abstractions with specifics.
 - Delete hedge words.
 - Keep one idea per sentence.
+- Never set words or headings in all caps. Title Case is fine for feature titles.
 
 Examples:
 
