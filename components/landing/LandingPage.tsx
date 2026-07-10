@@ -1,5 +1,4 @@
 import { LandingHeader } from './LandingHeader';
-import { PixelCursorTrail } from './PixelCursorTrail';
 import { HeroSection } from './HeroSection';
 import { LandingDeferredSections } from './LandingDeferredSections';
 import styles from './LandingPage.module.css';
@@ -8,9 +7,6 @@ import styles from './LandingPage.module.css';
 const LandingPage = () => {
   return (
     <div className={styles.container}>
-      {/* Pixel-grid cursor trail behind content */}
-      <PixelCursorTrail />
-
       {/* Header - Logo and CTAs */}
       <LandingHeader />
 

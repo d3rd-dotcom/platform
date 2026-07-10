@@ -5,6 +5,7 @@ import Image from 'next/image';
 import styles from './LandingPage.module.css';
 import LandingEnterAcademyButton from './LandingEnterAcademyButton';
 import { LandingScene } from './LandingScene';
+import { PixelCursorTrail } from './PixelCursorTrail';
 
 export const HeroSection: React.FC = () => {
   return (
@@ -38,6 +39,8 @@ export const HeroSection: React.FC = () => {
           priority
           aria-hidden="true"
         />
+        {/* Keep the cursor field above the scene layers, below readable content. */}
+        <PixelCursorTrail />
         <div className={styles.heroContent}>
 
           <h1 className={styles.heroHeadline}>
