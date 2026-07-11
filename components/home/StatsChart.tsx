@@ -26,11 +26,27 @@ const BALLOONS = '#FF7729';
 
 const font = "'Space Grotesk', sans-serif";
 
+// A gentle, obviously-decorative sample so the card always reads as a chart
+// before any real activity exists. Never presented as the user's real numbers.
+function sampleSeries(): Series {
+  const today = new Date();
+  const days: string[] = [];
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(today);
+    d.setUTCDate(d.getUTCDate() - i);
+    days.push(d.toISOString().slice(0, 10));
+  }
+  const notes = days.map((_, i) => Math.max(0, Math.round(1.5 + 1.3 * Math.sin(i / 3))));
+  const missions = days.map((_, i) => Math.max(0, Math.round(1 + Math.cos(i / 4))));
+  const balloons = days.map((_, i) => Math.max(0, Math.round(18 + 13 * Math.sin(i / 5 + 1))));
+  return { days, notes, missions, balloons };
+}
+
 export default function StatsChart() {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const [data, setData] = useState<Series | null>(null);
-  const [status, setStatus] = useState<'loading' | 'ready' | 'empty' | 'error'>('loading');
+  const [status, setStatus] = useState<'loading' | 'ready' | 'sample'>('loading');
 
   useEffect(() => {
     let alive = true;
@@ -38,35 +54,49 @@ export default function StatsChart() {
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
       .then((json: Series) => {
         if (!alive) return;
-        setData(json);
         const hasAny = [json.missions, json.notes, json.balloons].some((s) => s?.some((v) => v > 0));
-        setStatus(hasAny ? 'ready' : 'empty');
+        if (hasAny) {
+          setData(json);
+          setStatus('ready');
+        } else {
+          setData(sampleSeries());
+          setStatus('sample');
+        }
       })
-      .catch(() => alive && setStatus('error'));
+      .catch(() => {
+        if (!alive) return;
+        setData(sampleSeries());
+        setStatus('sample');
+      });
     return () => {
       alive = false;
     };
   }, []);
 
+  const isSample = status === 'sample';
   const gridColor = isDark ? 'rgba(235,232,247,0.10)' : 'rgba(26,27,36,0.07)';
   const tickColor = isDark ? 'rgba(235,232,247,0.55)' : '#6b6890';
   const labelColor = isDark ? 'rgba(247,245,255,0.88)' : '#1A1B24';
+  const alpha = isSample ? 0.35 : 1;
 
   const chartData = useMemo(() => {
     if (!data) return null;
-    // Show a short weekday-ish label only every ~5 days to avoid crowding.
     const labels = data.days.map((d) => {
       const dt = new Date(`${d}T00:00:00Z`);
       return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
     });
+    const rgba = (hex: string, a: number) => {
+      const n = parseInt(hex.slice(1), 16);
+      return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
+    };
     const line = (label: string, values: number[], color: string, axis: 'y' | 'y1') => ({
       label,
       data: values,
-      borderColor: color,
-      backgroundColor: axis === 'y1' ? `${color}22` : 'transparent',
+      borderColor: rgba(color, alpha),
+      backgroundColor: axis === 'y1' ? rgba(color, 0.13 * alpha) : 'transparent',
       borderWidth: 2,
       pointRadius: 0,
-      pointHoverRadius: 4,
+      pointHoverRadius: isSample ? 0 : 4,
       pointHoverBackgroundColor: color,
       tension: 0.35,
       fill: axis === 'y1',
@@ -80,16 +110,9 @@ export default function StatsChart() {
         line('Balloons popped', data.balloons, BALLOONS, 'y1'),
       ],
     };
-  }, [data]);
+  }, [data, alpha, isSample]);
 
   if (status === 'loading') return <div className={styles.state}>Loading your activity…</div>;
-  if (status === 'error') return <div className={styles.state}>Could not load your stats.</div>;
-  if (status === 'empty')
-    return (
-      <div className={styles.state}>
-        No activity yet. Write a field note, finish a mission, or pop a balloon and it charts here.
-      </div>
-    );
 
   const axisTicks = {
     font: { family: font, size: 9 },
@@ -104,6 +127,7 @@ export default function StatsChart() {
         options={{
           responsive: true,
           maintainAspectRatio: false,
+          layout: { padding: { top: 4, right: 6, bottom: 2, left: 6 } },
           interaction: { mode: 'index', intersect: false },
           plugins: {
             legend: {
@@ -119,6 +143,7 @@ export default function StatsChart() {
               },
             },
             tooltip: {
+              enabled: !isSample,
               titleFont: { family: font, size: 11 },
               bodyFont: { family: font, size: 11 },
             },
@@ -131,20 +156,23 @@ export default function StatsChart() {
             y: {
               position: 'left',
               beginAtZero: true,
-              title: { display: true, text: 'notes / missions', font: { family: font, size: 9 }, color: tickColor },
               grid: { color: gridColor },
               ticks: axisTicks,
             },
             y1: {
               position: 'right',
               beginAtZero: true,
-              title: { display: true, text: 'balloons', font: { family: font, size: 9 }, color: tickColor },
               grid: { drawOnChartArea: false },
               ticks: axisTicks,
             },
           },
         }}
       />
+      {isSample && (
+        <div className={styles.sampleBadge} aria-hidden="true">
+          Sample — your activity charts here as you go
+        </div>
+      )}
     </div>
   );
 }

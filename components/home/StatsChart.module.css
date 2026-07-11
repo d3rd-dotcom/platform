@@ -2,7 +2,23 @@
   position: relative;
   width: 100%;
   height: 100%;
-  padding: 10px 12px;
+  padding: 0;
+}
+
+.sampleBadge {
+  position: absolute;
+  left: 50%;
+  bottom: 30px;
+  transform: translateX(-50%);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--color-surface-base) 82%, transparent);
+  font-family: var(--font-body, 'Space Grotesk', sans-serif);
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: var(--color-text-muted, #6b6890);
+  pointer-events: none;
 }
 
 .state {

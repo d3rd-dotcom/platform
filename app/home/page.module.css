@@ -610,10 +610,11 @@
 
 .statsChart {
   position: relative;
-  height: 192px;
-  margin-top: 20px;
+  height: 210px;
+  /* Bleed past the card's 28px side / 22px bottom padding so the chart runs
+     edge-to-edge; the card's own overflow:hidden + radius clip the corners. */
+  margin: 20px -28px -22px;
   overflow: hidden;
-  border-radius: 10px;
   background:
     linear-gradient(180deg, color-mix(in oklch, var(--color-primary) 10%, transparent), transparent 72%),
     color-mix(in oklch, var(--color-primary) 3%, var(--color-surface-base));
