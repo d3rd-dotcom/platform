@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { sqlQuery, isDbConfigured } from '@/lib/db';
 import { ensureBalloonPopsSchema } from '@/lib/ensureBalloonPopsSchema';
+import { recordActivityEvent } from '@/lib/ensureActivityEventsSchema';
+import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { checkRateLimit, getClientIdentifier, getRateLimitHeaders } from '@/lib/rate-limit';
 
 export const dynamic = 'force-dynamic';
@@ -63,6 +65,17 @@ export async function POST(request: Request) {
        RETURNING total`,
       { count }
     );
+
+    // Attribute the pops to the signed-in user (if any) for the My Stats chart.
+    // Anonymous pops still bump the global counter; they just aren't charted.
+    try {
+      const user = await getCurrentUserFromRequestCookie();
+      if (user) await recordActivityEvent(user.id, 'balloon_pop', count);
+    } catch (ledgerError: unknown) {
+      const message = ledgerError instanceof Error ? ledgerError.message : 'unknown activity ledger error';
+      console.error('Balloon pop activity ledger error:', message);
+    }
+
     return NextResponse.json({ total: Number(rows[0]?.total ?? 0) });
   } catch {
     return NextResponse.json({ error: 'update_failed' }, { status: 500 });

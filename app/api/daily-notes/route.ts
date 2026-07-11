@@ -3,6 +3,7 @@ import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { recordBlueMorningPagesEvent } from '@/lib/blue-memory';
 import { ensurePrayersSchema } from '@/lib/ensurePrayersSchema';
+import { recordActivityEvent } from '@/lib/ensureActivityEventsSchema';
 import { encryptForUser, decryptForUser } from '@/lib/encrypt';
 import { recordAgentActivity } from '@/lib/room-log';
 import { postSystemMessage } from '@/lib/chat';
@@ -233,6 +234,14 @@ export async function POST(request: Request) {
   const nextCount = countMorningPageEntries(nextAllWeekPages);
 
   if (nextCount > previousCount) {
+    // Ledger the write(s) for the My Stats chart — count only, never content.
+    try {
+      await recordActivityEvent(user.id, 'field_note', nextCount - previousCount);
+    } catch (ledgerError: unknown) {
+      const message = ledgerError instanceof Error ? ledgerError.message : 'unknown activity ledger error';
+      console.error('Field note activity ledger error:', message);
+    }
+
     try {
       await recordBlueMorningPagesEvent({
         userId: user.id,

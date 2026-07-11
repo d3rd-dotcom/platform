@@ -14,6 +14,7 @@ import FolderCardWrapper from '@/components/home/FolderCardWrapper';
 import ProfileDashboard from '@/components/home/ProfileDashboard';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
 import FieldNotesSheet from '@/components/home/FieldNotesSheet';
+import StatsChart from '@/components/home/StatsChart';
 
 import type { CourseData } from '@/lib/personal-course';
 import { onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
@@ -809,24 +810,8 @@ export default function HomePage() {
         <section className={styles.dashboardInsights} aria-label="Learning insights">
           <article className={styles.insightCard}>
             <h2 className={styles.insightTitle}>My Stats</h2>
-            <div className={styles.statsChart} aria-label="Learning activity from March through October">
-              <div className={styles.chartTooltip}><span>↗</span> 178</div>
-              <svg className={styles.chartLines} viewBox="0 0 520 190" role="img" aria-hidden="true" preserveAspectRatio="none">
-                <defs>
-                  <linearGradient id="stats-area" x1="0" x2="0" y1="0" y2="1">
-                    <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.22" />
-                    <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0" />
-                  </linearGradient>
-                </defs>
-                <path className={styles.chartArea} d="M0 128 L20 141 L40 124 L60 125 L80 151 L100 158 L120 140 L140 96 L160 125 L180 136 L200 130 L220 67 L240 50 L260 103 L280 126 L300 130 L320 115 L340 120 L360 145 L380 150 L400 162 L420 145 L440 155 L460 140 L480 146 L500 118 L520 95 L520 190 L0 190 Z" />
-                <path className={styles.chartLineMuted} d="M0 120 L20 136 L40 119 L60 119 L80 148 L100 153 L120 128 L140 135 L160 108 L180 139 L200 120 L220 125 L240 101 L260 114 L280 108 L300 95 L320 108 L340 127 L360 140 L380 133 L400 149 L420 140 L440 158 L460 147 L480 153 L500 132 L520 112" />
-                <path className={styles.chartLinePrimary} d="M0 128 L20 141 L40 124 L60 125 L80 151 L100 158 L120 140 L140 96 L160 125 L180 136 L200 130 L220 67 L240 50 L260 103 L280 126 L300 130 L320 115 L340 120 L360 145 L380 150 L400 162 L420 145 L440 155 L460 140 L480 146 L500 118 L520 95" />
-                <line className={styles.chartMarkerLine} x1="342" x2="342" y1="95" y2="190" />
-                <circle className={styles.chartMarker} cx="342" cy="120" r="5" />
-              </svg>
-              <div className={styles.chartMonths} aria-hidden="true">
-                {['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'].map((month) => <span key={month}>{month}</span>)}
-              </div>
+            <div className={styles.statsChart} aria-label="Your field notes, missions, and balloons popped over the last 30 days">
+              <StatsChart />
             </div>
           </article>
 

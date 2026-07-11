@@ -13,6 +13,8 @@
   background: var(--color-background, #ffffff);
 }
 
+/* Blurple field with self-similar ridge lines: the same zigzag drawn at
+   three halving scales, so the linework reads as a fractal contour. */
 .banner::before {
   content: '';
   position: absolute;
@@ -21,11 +23,11 @@
   right: 0;
   bottom: 0;
   background-image:
-    linear-gradient(rgba(8, 6, 16, 0.78), rgba(8, 6, 16, 0.78)),
-    url('/worlds/world-07-library.png');
-  background-size: cover;
-  background-position: center 38%;
-  background-repeat: no-repeat;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='53' viewBox='0 0 160 53'%3E%3Cg fill='none' stroke-linejoin='round'%3E%3Cpolyline points='0,34 20,16 40,30 60,12 80,32 100,14 120,28 140,10 160,34' stroke='rgba(255,255,255,0.16)' stroke-width='1.4'/%3E%3Cpolyline points='0,40 10,31 20,38 30,26 40,36 50,25 60,34 70,24 80,38 90,27 100,35 110,23 120,33 130,22 140,31 150,24 160,40' stroke='rgba(255,255,255,0.10)' stroke-width='1'/%3E%3Cpolyline points='0,46 5,42 10,45 15,39 20,44 25,38 30,43 35,37 40,44 45,39 50,45 55,38 60,43 65,37 70,44 75,40 80,46 85,41 90,44 95,38 100,43 105,37 110,42 115,38 120,44 125,39 130,43 135,36 140,42 145,38 150,44 155,40 160,46' stroke='rgba(255,255,255,0.06)' stroke-width='0.8'/%3E%3Cpolyline points='0,12 20,26 40,10 60,24 80,8 100,22 120,9 140,25 160,12' stroke='rgba(255,255,255,0.07)' stroke-width='1.2'/%3E%3C/g%3E%3C/svg%3E"),
+    linear-gradient(115deg, #3D2FD1 0%, #5168FF 48%, #7A5CFF 100%);
+  background-size: 160px 100%, cover;
+  background-position: left center, center;
+  background-repeat: repeat-x, no-repeat;
 }
 
 .bannerText {
