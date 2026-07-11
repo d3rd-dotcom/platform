@@ -438,6 +438,7 @@ export default function HomePage() {
       </section>
       )}
       {!learnOnly && (
+        <div className={styles.folderSection}>
         <FolderCardWrapper>
           <section className={styles.folderRow} aria-label="Course folders">
             <CourseFolderCard
@@ -471,6 +472,7 @@ export default function HomePage() {
             />
           </section>
         </FolderCardWrapper>
+        </div>
       )}
       <div className={styles.main}>
 
