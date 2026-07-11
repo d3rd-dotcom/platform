@@ -7,13 +7,13 @@ import styles from './FeaturesSection.module.css';
 
 const featureCards = [
   {
-    title: 'The Micro-University',
+    title: 'Learn Any Topic',
     description:
       'One verified guide per topic, level-gated so there are no duplicate tutorials to sort through.',
     details: ['Level-up and earn xp + rewards', 'Join a cohort of amazing builders and creators'],
   },
   {
-    title: 'Quests With Blue',
+    title: 'Community Based',
     description:
       'The community uses Blue to turn what you are learning into real quests with real cash prizes.',
     details: ['Blue reviews every submission', 'Real USDC when you pass'],
@@ -69,9 +69,10 @@ export const FeaturesSection: React.FC = () => {
             <div className={styles.headlinePanel}>
               <h2 className={styles.title}>Access Quality Education</h2>
               <p className={styles.description}>
-                617 million children and teens can&apos;t read a basic sentence or do simple math
-                — and most are already in school. The lessons exist; the access doesn&apos;t. That
-                gap is where dreams quietly disappear and true potential is lost.
+                Over 617 million children and teens globally are affected by the literacy crisis
+                — basic math and reading skill levels are declining. The information exists; but
+                we still haven&apos;t used the right format. A fun-first learning platform for
+                the next gen.
               </p>
             </div>
           </div>

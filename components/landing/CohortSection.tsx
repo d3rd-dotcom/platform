@@ -1,42 +1,38 @@
 'use client';
 
 import Image from 'next/image';
+import CtaButton from '../shared/CtaButton';
 import styles from './CohortSection.module.css';
 
 const tiers = [
   {
     name: 'Explorer',
-    price: 'Free',
+    price: '$0/mo',
     description: 'Start free with courses, community access, and monthly calls.',
     features: [
       'Community access',
       'Public research library',
-      'Discussion forums',
       'Monthly community calls',
     ],
   },
   {
     name: 'Researcher',
-    price: 'Coming soon',
+    price: '$3/mo',
     description: 'Join live studies, earn credits for approved work, and help shape proposals.',
     features: [
       'Everything in Explorer',
       'Participate in live research',
       'Earn credits for contributions',
-      'Shape research proposals',
-      'Access to Blue and EEG tools',
     ],
   },
   {
     name: 'Architect',
-    price: 'Coming soon',
+    price: '$20/mo',
     description: 'Help govern the protocols and behavioral dataset behind the academy.',
     features: [
       'Everything in Researcher',
-      'Co-own shared infrastructure',
       'Governance and voting rights',
       'Early access to all research',
-      'Design architecture access',
     ],
   },
 ];
@@ -96,6 +92,13 @@ export const CohortSection = () => {
                       <li key={f} className={styles.tierFeatureItem}>{f}</li>
                     ))}
                   </ul>
+                  <CtaButton
+                    variant={tier.name === 'Explorer' ? 'secondary' : 'primary'}
+                    size="sm"
+                    className={styles.tierCta}
+                  >
+                    {tier.name === 'Explorer' ? 'Get started' : `Join ${tier.name}`}
+                  </CtaButton>
                 </div>
               ))}
             </div>

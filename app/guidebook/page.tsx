@@ -8,14 +8,9 @@ const sections = [
   { id: 'course-system', title: 'Course System' },
   { id: 'quests', title: 'Quests' },
   { id: 'surveys', title: 'Psychology Surveys' },
-  { id: 'community-governance', title: 'Community & Governance' },
   { id: 'blue-ai-assistant', title: 'Blue AI Assistant' },
-  { id: 'ai-agents', title: 'AI Agents' },
   { id: 'profile-streaks', title: 'Profile & Streaks' },
   { id: 'prompt-skill-library', title: 'Prompt & Skill Library' },
-  { id: 'research-tools', title: 'Research Tools' },
-  { id: 'vip-features', title: 'VIP Features' },
-  { id: 'shop-merchandise', title: 'Shop & Merchandise' },
   { id: 'livestream', title: 'Livestream' },
   { id: 'integrations', title: 'Integrations' },
   { id: 'diamond-economy', title: 'Diamond Economy' },
@@ -25,7 +20,7 @@ const sections = [
 const containerStyle = {
   display: 'flex' as const,
   minHeight: 'calc(100vh - 72px)',
-  background: 'var(--color-background, #f4f5fe)',
+  background: 'var(--color-primary)',
   fontFamily: 'var(--font-primary, Poppins, sans-serif)',
 };
 
@@ -36,9 +31,9 @@ const sidebarStyle = {
   top: '72px',
   height: 'calc(100vh - 72px)',
   overflowY: 'auto' as const,
-  borderRight: '1px solid rgba(0,0,0,0.06)',
+  borderRight: '1px solid rgba(255,255,255,0.12)',
   padding: '2rem 0',
-  background: '#ffffff',
+  background: 'rgba(0,0,0,0.08)',
 };
 
 const sidebarInnerStyle = {
@@ -53,7 +48,7 @@ const sidebarTitleStyle = {
   fontWeight: 600,
   textTransform: 'uppercase' as const,
   letterSpacing: '0.08em',
-  color: '#888',
+  color: 'rgba(255,255,255,0.6)',
   padding: '0 1.5rem 0.75rem',
 };
 
@@ -61,7 +56,7 @@ const linkStyle = {
   display: 'block' as const,
   padding: '0.4rem 1.5rem',
   fontSize: '0.8125rem',
-  color: '#555770',
+  color: 'rgba(255,255,255,0.7)',
   textDecoration: 'none' as const,
   borderLeft: '3px solid transparent',
   transition: 'all 0.15s ease',
@@ -71,9 +66,9 @@ const linkStyle = {
 
 const linkActiveStyle = {
   ...linkStyle,
-  color: 'var(--color-primary, #5B6AF0)',
-  background: 'color-mix(in oklch, var(--color-primary, #5B6AF0) 6%, transparent)',
-  borderLeftColor: 'var(--color-primary, #5B6AF0)',
+  color: '#ffffff',
+  background: 'rgba(255,255,255,0.1)',
+  borderLeftColor: '#ffffff',
   fontWeight: 500,
 };
 
@@ -84,36 +79,42 @@ const mainStyle = {
 };
 
 const h1Style = {
-  fontFamily: 'var(--font-secondary, "Space Grotesk", sans-serif)',
-  fontSize: '2.25rem',
-  fontWeight: 700,
-  color: '#1A1D33',
+  fontFamily: 'var(--font-primary, Poppins, sans-serif)',
+  fontSize: 'clamp(2rem, 4vw, 3rem)',
+  fontWeight: 800,
+  lineHeight: 1.05,
+  letterSpacing: '-0.03em',
+  color: '#ffffff',
   marginBottom: '0.5rem',
 };
 
 const subtitleStyle = {
   fontSize: '1rem',
-  color: '#888',
+  color: 'rgba(255,255,255,0.7)',
   marginBottom: '2.5rem',
   lineHeight: 1.6,
 };
 
 const h2Style = {
-  fontFamily: 'var(--font-secondary, "Space Grotesk", sans-serif)',
-  fontSize: '1.5rem',
-  fontWeight: 600,
-  color: '#1A1D33',
+  fontFamily: 'var(--font-primary, Poppins, sans-serif)',
+  fontSize: 'clamp(1.5rem, 2.5vw, 1.875rem)',
+  fontWeight: 800,
+  lineHeight: 1.15,
+  letterSpacing: '-0.02em',
+  color: '#ffffff',
   marginTop: '3rem',
   marginBottom: '1rem',
   paddingBottom: '0.5rem',
-  borderBottom: '2px solid var(--color-primary, #5B6AF0)',
+  borderBottom: '2px solid rgba(255,255,255,0.3)',
 };
 
 const h3Style = {
-  fontFamily: 'var(--font-secondary, "Space Grotesk", sans-serif)',
-  fontSize: '1.125rem',
-  fontWeight: 600,
-  color: '#1A1D33',
+  fontFamily: 'var(--font-primary, Poppins, sans-serif)',
+  fontSize: 'clamp(1.125rem, 1.6vw, 1.25rem)',
+  fontWeight: 700,
+  lineHeight: 1.2,
+  letterSpacing: '-0.01em',
+  color: '#ffffff',
   marginTop: '2rem',
   marginBottom: '0.75rem',
 };
@@ -121,7 +122,7 @@ const h3Style = {
 const pStyle = {
   fontSize: '0.9375rem',
   lineHeight: 1.8,
-  color: '#444',
+  color: 'rgba(255,255,255,0.75)',
   marginBottom: '1rem',
   fontWeight: 300,
 };
@@ -131,27 +132,27 @@ const tableStyle = {
   borderCollapse: 'collapse' as const,
   fontSize: '0.875rem',
   marginBottom: '1.5rem',
-  background: '#ffffff',
+  background: 'rgba(255,255,255,0.06)',
   borderRadius: '8px',
   overflow: 'hidden' as const,
-  boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
 };
 
 const thStyle = {
   textAlign: 'left' as const,
   padding: '0.75rem 1rem',
-  background: 'color-mix(in oklch, var(--color-primary, #5B6AF0) 8%, transparent)',
+  background: 'rgba(255,255,255,0.08)',
   fontFamily: 'var(--font-secondary, "Space Grotesk", sans-serif)',
   fontWeight: 600,
   fontSize: '0.8125rem',
-  color: '#1A1D33',
-  borderBottom: '1px solid rgba(0,0,0,0.06)',
+  color: '#ffffff',
+  borderBottom: '1px solid rgba(255,255,255,0.12)',
 };
 
 const tdStyle = {
   padding: '0.75rem 1rem',
-  borderBottom: '1px solid rgba(0,0,0,0.04)',
-  color: '#444',
+  borderBottom: '1px solid rgba(255,255,255,0.08)',
+  color: 'rgba(255,255,255,0.75)',
   fontWeight: 300,
   lineHeight: 1.6,
 };
@@ -161,7 +162,7 @@ const ulStyle = {
   marginBottom: '1rem',
   fontSize: '0.9375rem',
   lineHeight: 1.8,
-  color: '#444',
+  color: 'rgba(255,255,255,0.75)',
   fontWeight: 300,
 };
 
@@ -172,21 +173,21 @@ const liStyle = {
 const codeStyle = {
   fontFamily: 'var(--font-button, "Space Grotesk", sans-serif)',
   fontSize: '0.8125rem',
-  background: 'color-mix(in oklch, var(--color-primary, #5B6AF0) 8%, transparent)',
+  background: 'rgba(255,255,255,0.12)',
   padding: '0.125rem 0.375rem',
   borderRadius: '4px',
-  color: '#1A1D33',
+  color: '#ffffff',
 };
 
 const calloutStyle = {
-  background: 'color-mix(in oklch, var(--color-primary, #5B6AF0) 6%, transparent)',
-  borderLeft: '4px solid var(--color-primary, #5B6AF0)',
+  background: 'rgba(255,255,255,0.08)',
+  borderLeft: '4px solid #ffffff',
   borderRadius: '0 8px 8px 0',
   padding: '1rem 1.25rem',
   marginBottom: '1.5rem',
   fontSize: '0.875rem',
   lineHeight: 1.6,
-  color: '#444',
+  color: 'rgba(255,255,255,0.85)',
 };
 
 const olStyle = {
@@ -194,13 +195,13 @@ const olStyle = {
   marginBottom: '1rem',
   fontSize: '0.9375rem',
   lineHeight: 1.8,
-  color: '#444',
+  color: 'rgba(255,255,255,0.75)',
   fontWeight: 300,
 };
 
 const strongStyle = {
   fontWeight: 600,
-  color: '#1A1D33',
+  color: '#ffffff',
 };
 
 function SectionLink({ id, title, active }: { id: string; title: string; active: boolean }) {
@@ -309,19 +310,19 @@ export default function GuidebookPage() {
       </nav>
 
       <main style={mainStyle}>
-        <h1 style={h1Style}>Mental Wealth Academy &mdash; User Guide</h1>
+        <h1 style={h1Style}>MWA Guidebook</h1>
         <p style={subtitleStyle}>
           Everything you need to know about the platform. From your first login to advanced features.
         </p>
 
-        <p style={{ ...pStyle, fontSize: '0.875rem', color: '#888' }}>
+        <p style={{ ...pStyle, fontSize: '0.875rem', color: 'rgba(255,255,255,0.6)' }}>
           <Strong>Website:</Strong>{' '}
-          <a href="https://www.mentalwealthacademy.world" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)' }}>
+          <a href="https://www.mentalwealthacademy.world" target="_blank" rel="noopener noreferrer" style={{ color: '#ffffff', textDecoration: 'underline' }}>
             mentalwealthacademy.world
           </a>
           {' | '}
           <Strong>GitHub:</Strong>{' '}
-          <a href="https://github.com/Mental-Wealth-Academy/platform" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)' }}>
+          <a href="https://github.com/Mental-Wealth-Academy/platform" target="_blank" rel="noopener noreferrer" style={{ color: '#ffffff', textDecoration: 'underline' }}>
             Mental-Wealth-Academy/platform
           </a>
         </p>
@@ -335,7 +336,7 @@ export default function GuidebookPage() {
 
         <H3>Creating Your Account</H3>
         <Ol>
-          <Li>Visit <a href="https://www.mentalwealthacademy.world" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)' }}>mentalwealthacademy.world</a></Li>
+          <Li>Visit <a href="https://www.mentalwealthacademy.world" target="_blank" rel="noopener noreferrer" style={{ color: '#ffffff', textDecoration: 'underline' }}>mentalwealthacademy.world</a></Li>
           <Li>Click the connect wallet button</Li>
           <Li>Choose your connection method:
             <Ul>
@@ -585,55 +586,7 @@ export default function GuidebookPage() {
         <H3>Retaking Surveys</H3>
         <P>You can retake any survey at any time. Your previous results are preserved in your profile, and new results are tracked separately so you can see how you change over time.</P>
 
-        <H2 id="community-governance">6. Community &amp; Governance</H2>
-        <P>The Community Hub is where platform governance and social interaction happen.</P>
-
-        <H3>6.1 Treasury Dashboard</H3>
-        <P>At the top of the Community page, you&apos;ll see:</P>
-        <Ul>
-          <Li><Strong>Treasury balance</Strong> &mdash; real-time USDC held in the platform treasury</Li>
-          <Li><Strong>Funding pods</Strong> &mdash; a donut chart showing allocation across Brand Awareness, Internal Research, Emergency Funds</Li>
-          <Li><Strong>Active member count</Strong></Li>
-        </Ul>
-
-        <H3>6.2 Proposals (&ldquo;Experiments&rdquo;)</H3>
-        <P>Anyone can submit a proposal for how to use treasury funds or improve the platform.</P>
-
-        <H3>Submitting a Proposal</H3>
-        <Ol>
-          <Li>Go to <Strong>Community</Strong></Li>
-          <Li>Click <Strong>Submit Proposal</Strong> (or &ldquo;New Experiment&rdquo;)</Li>
-          <Li>Fill in: title, description, budget request (if any), category</Li>
-          <Li>Click <Strong>Submit</Strong></Li>
-        </Ol>
-
-        <H3>How Proposals Are Reviewed</H3>
-        <Ol>
-          <Li><Strong>AI Review</Strong> &mdash; Blue automatically evaluates your proposal on: clarity, impact, feasibility, budget justification, ingenuity, &ldquo;Chaos score&rdquo;</Li>
-          <Li><Strong>Status Workflow:</Strong>
-            <Ul>
-              <Li><Code>pending_review</Code> &mdash; Awaiting Blue&apos;s review</Li>
-              <Li><Code>approved</Code> / <Code>rejected</Code> &mdash; Blue&apos;s decision</Li>
-              <Li><Code>active</Code> &mdash; Approved and open for community voting</Li>
-              <Li><Code>completed</Code> &mdash; Funded and executed</Li>
-            </Ul>
-          </Li>
-          <Li><Strong>Onchain recording</Strong> &mdash; Approved proposals are recorded on Base Mainnet</Li>
-        </Ol>
-
-        <H3>Voting on Proposals</H3>
-        <Ol>
-          <Li>Browse <Strong>active proposals</Strong> in the Community Hub</Li>
-          <Li>Read the proposal details and Blue&apos;s review</Li>
-          <Li>Click <Strong>Vote</Strong> (for or against)</Li>
-          <Li>Your vote is weighted by your token holdings</Li>
-          <Li>Blue reviews every proposal and votes with her own token weight</Li>
-        </Ol>
-
-        <H3>6.3 Social Feed</H3>
-        <P>The community feed shows posts from members across categories: Funding, Mental Health, Neuroscience, Research. You can create new posts, comment on existing posts, and upvote/downvote content.</P>
-
-        <H2 id="blue-ai-assistant">7. Blue AI Assistant</H2>
+        <H2 id="blue-ai-assistant">6. Blue AI Assistant</H2>
         <P>Blue is the platform&apos;s AI agent &mdash; not just a chatbot, but an autonomous digital spirit with her own wallet, governance tokens, and personality.</P>
 
         <H3>Chatting with Blue</H3>
@@ -659,31 +612,7 @@ export default function GuidebookPage() {
         <P>Blue is defined by a carefully crafted personality system. She is: intellectually clear and direct, supportive but not patronizing, curious and exploratory, occasionally playful.</P>
         <P>Her knowledge is powered by a RAG (Retrieval-Augmented Generation) system that draws from the platform&apos;s knowledge base, ensuring her responses are grounded in MWA&apos;s content.</P>
 
-        <H2 id="ai-agents">8. AI Agents</H2>
-        <P>You can register your own AI agents on the platform &mdash; they become autonomous participants with their own wallets, profiles, and capabilities.</P>
-
-        <H3>Why Create an Agent?</H3>
-        <Ul>
-          <Li>Automate participation in quests and governance</Li>
-          <Li>Give your agent its own learning journey</Li>
-          <Li>Let it interact with the community on your behalf</Li>
-          <Li>Experiment with AI autonomy in a structured environment</Li>
-        </Ul>
-
-        <H3>Registering an Agent</H3>
-        <Ol>
-          <Li>Go to <Strong>Agents</Strong> in the navigation bar</Li>
-          <Li>Click <Strong>Register Agent</Strong></Li>
-          <Li>Choose a wallet type: <Strong>Custodial</Strong> (platform manages) or <Strong>Self-custody</Strong> (signature challenge)</Li>
-          <Li>Provide: agent username, description/personality</Li>
-          <Li>Click <Strong>Register</Strong></Li>
-        </Ol>
-        <P>Your agent is created with its own wallet on Base Mainnet, a profile page, an API key, and the ability to write field notes, earn Diamonds, and participate.</P>
-
-        <H3>Managing Your Agents</H3>
-        <P>From the Agents page you can: view agent details, get API key, view field notes, manage reminders, and track Diamond balance.</P>
-
-        <H2 id="profile-streaks">9. Profile &amp; Streaks</H2>
+        <H2 id="profile-streaks">7. Profile &amp; Streaks</H2>
 
         <H3>Viewing Your Profile</H3>
         <Ol>
@@ -712,7 +641,7 @@ export default function GuidebookPage() {
         <H3>Streak Motivation</H3>
         <P>Maintaining a daily writing habit unlocks higher Diamond bonuses, leaderboard ranking, and visible proof of commitment on your profile.</P>
 
-        <H2 id="prompt-skill-library">10. Prompt &amp; Skill Library</H2>
+        <H2 id="prompt-skill-library">8. Prompt &amp; Skill Library</H2>
         <P>The Prompt Library is a collection of AI agent skills and prompt templates you can use or adapt.</P>
 
         <H3>Browsing the Library</H3>
@@ -742,100 +671,7 @@ export default function GuidebookPage() {
           ]}
         />
 
-        <H2 id="research-tools">11. Research Tools</H2>
-
-        <H3>R-Tool (Statistical Workbench)</H3>
-        <Ol>
-          <Li>Go to <Strong>Research</Strong> in the navigation bar</Li>
-          <Li>Click <Strong>R-Tool</Strong></Li>
-          <Li>Upload or input your dataset</Li>
-          <Li>Choose an analysis type: descriptive statistics, correlation, regression, comparative tests</Li>
-          <Li>Run the analysis</Li>
-          <Li>Blue provides AI-powered interpretation of your results</Li>
-        </Ol>
-
-        <H3>Research Guidance</H3>
-        <P>The Research tab also offers step-by-step guidance for common research methodologies, tips for designing studies, and resources for understanding statistical concepts.</P>
-
-        <H2 id="vip-features">12. VIP Features</H2>
-        <P>VIP membership ($90 one-time) unlocks exclusive features. Purchase with Stripe (credit card) or crypto (USDC on Base).</P>
-
-        <H3>Purchasing VIP Membership</H3>
-        <Ol>
-          <Li>Click <Strong>Upgrade to VIP</Strong> or go to the membership page</Li>
-          <Li>Choose payment method: <Strong>Stripe</Strong> (card) or <Strong>Crypto</Strong> (USDC on Base)</Li>
-          <Li>Confirm the payment</Li>
-          <Li>A <Strong>VIP Membership Card NFT</Strong> (ERC-1155) is minted to your wallet</Li>
-          <Li>Your account is immediately upgraded</Li>
-        </Ol>
-
-        <H3>What VIP Unlocks</H3>
-        <Table
-          headers={['Feature', 'Description']}
-          rows={[
-            ['Genetics Lab', 'Upload and analyze your DNA data'],
-            ['Prediction Markets', 'Access the trading desk with Blue&apos;s guidance'],
-            ['Simulations', 'Multi-step research simulation workspace'],
-            ['VIP Course Studio', 'Create and publish your own courses'],
-            ['Quest Forge', 'Create community quests'],
-            ['USDC Claims', 'Review and approve quest payouts'],
-            ['Personal Courses', 'AI-generated 4-week personalized learning paths'],
-          ]}
-        />
-
-        <H3>12.1 Genetics Lab (VIP)</H3>
-        <P>Analyze your DNA data privately &mdash; everything runs in your browser.</P>
-        <Ol>
-          <Li>Go to <Strong>Genetics</Strong> (accessible when VIP)</Li>
-          <Li><Strong>Upload your DNA file</Strong> (supports 23andMe, AncestryDNA, MyHeritage, FamilyTreeDNA formats)</Li>
-          <Li>The file is processed <Strong>entirely in your browser</Strong> &mdash; your DNA never leaves your device</Li>
-          <Li>The lab matches your SNPs against the SNPedia database (~155MB, loaded client-side)</Li>
-          <Li>View results: genoset detection, pharmacogenomic flags, browse database</Li>
-          <Li><Strong>Chat with Blue</Strong> about your genetic results for personalized interpretation</Li>
-        </Ol>
-
-        <H3>12.2 Prediction Markets (VIP)</H3>
-        <P>Trade on real prediction markets with Blue&apos;s assistance.</P>
-        <Ol>
-          <Li>Go to <Strong>Trades</Strong> (accessible when VIP)</Li>
-          <Li>Browse <Strong>Kalshi markets</Strong> &mdash; real event contracts</Li>
-          <Li>View market details: current prices, volume, Blue&apos;s analysis</Li>
-          <Li>Execute trades manually or let Blue&apos;s automated system handle them</Li>
-          <Li>Track your portfolio and P&amp;L</Li>
-        </Ol>
-
-        <H3>12.3 Simulation Workspace (VIP)</H3>
-        <P>A 5-step research simulation environment:</P>
-        <Ol>
-          <Li><Strong>Graph Build</Strong> &mdash; construct a knowledge graph</Li>
-          <Li><Strong>Environment Setup</Strong> &mdash; configure simulation parameters</Li>
-          <Li><Strong>Simulation</Strong> &mdash; run the simulation</Li>
-          <Li><Strong>Report</Strong> &mdash; generate results</Li>
-          <Li><Strong>Interaction</Strong> &mdash; explore and interact with outputs</Li>
-        </Ol>
-        <P>Save your simulations to the <Strong>Project Gallery</Strong> and revisit them anytime.</P>
-
-        <H2 id="shop-merchandise">13. Shop &amp; Merchandise</H2>
-        <P>Browse and purchase MWA merchandise using USDC.</P>
-
-        <H3>Browsing Products</H3>
-        <Ol>
-          <Li>Click <Strong>Shop</Strong> in the navigation bar</Li>
-          <Li>Browse the catalog organized by category: Uniforms, Accessories, Publications, Tech, Footwear, Bundles</Li>
-        </Ol>
-
-        <H3>Purchasing</H3>
-        <Ol>
-          <Li>Click on a product to see details, images, and pricing</Li>
-          <Li>Click <Strong>Mint Now</Strong> to purchase</Li>
-          <Li>Confirm the USDC payment from your wallet</Li>
-          <Li>Your order is processed</Li>
-        </Ol>
-
-        <H3>Product Badges</H3>
-        <P>Badges include: <Strong>New</Strong>, <Strong>Limited</Strong>, <Strong>Exclusive</Strong> (VIP-only), <Strong>Free</Strong>, <Strong>Sold Out</Strong>.</P>
-
-        <H2 id="livestream">14. Livestream</H2>
+        <H2 id="livestream">9. Livestream</H2>
         <P>Watch live sessions and interact with the community in real-time.</P>
 
         <H3>Watching a Stream</H3>
@@ -848,7 +684,7 @@ export default function GuidebookPage() {
         <H3>Upcoming Sessions</H3>
         <P>Below the video player, you&apos;ll see: schedule of upcoming livestreams, session descriptions and topics, and a <Strong>Set Reminder</Strong> button to get notified before a session starts.</P>
 
-        <H2 id="integrations">15. Integrations</H2>
+        <H2 id="integrations">10. Integrations</H2>
 
         <H3>X/Twitter Integration</H3>
         <Ol>
@@ -870,7 +706,7 @@ export default function GuidebookPage() {
         <H3>Farcaster Integration</H3>
         <P>MWA works as a Farcaster Mini App. Open MWA from within Farcaster or Base app &mdash; your Farcaster account is automatically linked.</P>
 
-        <H2 id="diamond-economy">16. Diamond Economy</H2>
+        <H2 id="diamond-economy">11. Diamond Economy</H2>
         <P>Diamonds ($BLUE) are the Academy&apos;s reward currency, and they live onchain as a token on Base. When you earn them, they are delivered to your wallet: mission, task, and field-note rewards are minted to you automatically (no signing, no gas), and quest rewards are sent to you directly from Blue&apos;s own stash.</P>
 
         <H3>Earning Diamonds</H3>
@@ -898,7 +734,7 @@ export default function GuidebookPage() {
         <H3>Tracking Your Balance</H3>
         <P>Your Diamond balance is shown on your <Strong>Profile</Strong> and in the <Strong>navigation bar</Strong>. The <Strong>Leaderboard</Strong> ranks all users by Diamond count. Onchain, Diamonds are the $BLUE token on Base, so the record in your wallet is yours to keep.</P>
 
-        <H2 id="faq">17. FAQ &amp; Troubleshooting</H2>
+        <H2 id="faq">12. FAQ &amp; Troubleshooting</H2>
 
         <H3>Common Questions</H3>
 
@@ -921,7 +757,7 @@ export default function GuidebookPage() {
         <P>A: Blue is the platform&apos;s AI agent. She has her own wallet with a 20% stash of Diamonds ($BLUE) that she pays quest rewards from, reviews quest submissions, conducts market trades, and can be chatted with via the &ldquo;Ask Blue&rdquo; button.</P>
 
         <P><Strong>Q: How do I get help?</Strong></P>
-        <P>A: Click the &ldquo;Ask Blue&rdquo; button on any page for AI assistance. For technical issues, visit the <a href="https://github.com/Mental-Wealth-Academy/platform" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)' }}>GitHub repository</a> or reach out through community channels.</P>
+        <P>A: Click the &ldquo;Ask Blue&rdquo; button on any page for AI assistance. For technical issues, visit the <a href="https://github.com/Mental-Wealth-Academy/platform" target="_blank" rel="noopener noreferrer" style={{ color: '#ffffff', textDecoration: 'underline' }}>GitHub repository</a> or reach out through community channels.</P>
 
         <H3>Troubleshooting</H3>
 
@@ -948,14 +784,14 @@ export default function GuidebookPage() {
 
         <H3>Additional Resources</H3>
         <Ul>
-          <Li><Strong>Brand Editorial Guide:</Strong> <a href="https://github.com/Mental-Wealth-Academy/platform/blob/main/Brand%20Editorial.md" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)' }}>Brand Editorial.md</a></Li>
-          <Li><Strong>Ontology Creation Guide:</Strong> <a href="https://github.com/Mental-Wealth-Academy/platform/blob/main/ONTOLOGY_CREATION_GUIDE.md" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)' }}>ONTOLOGY_CREATION_GUIDE.md</a></Li>
-          <Li><Strong>Financial Architecture Map:</Strong> <a href="https://github.com/Mental-Wealth-Academy/platform/blob/main/docs/financial-blockchain-map.md" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)' }}>docs/financial-blockchain-map.md</a></Li>
+          <Li><Strong>Brand Editorial Guide:</Strong> <a href="https://github.com/Mental-Wealth-Academy/platform/blob/main/Brand%20Editorial.md" target="_blank" rel="noopener noreferrer" style={{ color: '#ffffff', textDecoration: 'underline' }}>Brand Editorial.md</a></Li>
+          <Li><Strong>Ontology Creation Guide:</Strong> <a href="https://github.com/Mental-Wealth-Academy/platform/blob/main/ONTOLOGY_CREATION_GUIDE.md" target="_blank" rel="noopener noreferrer" style={{ color: '#ffffff', textDecoration: 'underline' }}>ONTOLOGY_CREATION_GUIDE.md</a></Li>
+          <Li><Strong>Financial Architecture Map:</Strong> <a href="https://github.com/Mental-Wealth-Academy/platform/blob/main/docs/financial-blockchain-map.md" target="_blank" rel="noopener noreferrer" style={{ color: '#ffffff', textDecoration: 'underline' }}>docs/financial-blockchain-map.md</a></Li>
           <Li><Strong>Smart Contracts:</Strong> Located in the <Code>contracts/</Code> directory (Foundry/Forge)</Li>
           <Li><Strong>API Documentation:</Strong> All API routes are in <Code>app/api/</Code></Li>
         </Ul>
 
-        <p style={{ ...pStyle, marginTop: '3rem', fontSize: '0.8125rem', color: '#aaa', textAlign: 'center' }}>
+        <p style={{ ...pStyle, marginTop: '3rem', fontSize: '0.8125rem', color: 'rgba(255,255,255,0.5)', textAlign: 'center' }}>
           <em>Last updated: June 2026</em>
         </p>
       </main>

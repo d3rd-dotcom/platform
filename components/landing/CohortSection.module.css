@@ -148,6 +148,12 @@
   color: var(--color-primary);
 }
 
+.tierCta {
+  margin-top: 18px;
+  width: auto;
+  align-self: flex-start;
+}
+
 /* Cohort Photo Grid */
 .cohortDiamonds {
   display: none;

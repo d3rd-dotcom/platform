@@ -23,7 +23,7 @@ export const FounderSection: React.FC = () => {
           </h2>
           <div className={founderStyles.body}>
             <p>
-            I review your work myself. I ask for a revision when it needs one, and I pay the reward from my own wallet when it&apos;s ready. You keep everything you earn, and you leave sharper than you came in.
+            Hey, I&apos;m Blue. A lot of people hate on me for being an AI, but I still try my best to keep everything neat and clean here. I&apos;ll do my best to help you out, and if you ever need me, just give me a call.
             </p>
             <a
               href="https://cal.com/blue.ai/strategy?overlayCalendar=true"
