@@ -21,7 +21,7 @@ function dayKey(d: Date) {
  * field notes written and balloons popped (from the activity_events ledger).
  */
 export async function GET() {
-  const empty = { days: [] as string[], missions: [], notes: [], balloons: [] };
+  const empty = { days: [] as string[], missions: [], notes: [], balloons: [], guides: [] };
   if (!isDbConfigured()) return NextResponse.json(empty);
 
   const user = await getCurrentUserFromRequestCookie();
@@ -43,10 +43,11 @@ export async function GET() {
   const missions = zero();
   const notes = zero();
   const balloons = zero();
+  const guides = zero();
 
   const since = `${days[0]} 00:00:00+00`;
 
-  const [questRows, noteRows, balloonRows] = await Promise.all([
+  const [questRows, noteRows, balloonRows, guideRows] = await Promise.all([
     sqlQuery<DayRow[]>(
       `SELECT to_char(created_at AT TIME ZONE 'UTC', 'YYYY-MM-DD') AS day, count(*) AS total
        FROM quests
@@ -68,11 +69,19 @@ export async function GET() {
        GROUP BY day`,
       { userId: user.id, since }
     ),
+    sqlQuery<DayRow[]>(
+      `SELECT to_char(completed_at AT TIME ZONE 'UTC', 'YYYY-MM-DD') AS day, count(*) AS total
+       FROM guide_progress
+       WHERE user_id = :userId AND completed_at >= :since
+       GROUP BY day`,
+      { userId: user.id, since }
+    ),
   ]);
 
   for (const r of questRows) { const i = index.get(r.day); if (i !== undefined) missions[i] = Number(r.total); }
   for (const r of noteRows) { const i = index.get(r.day); if (i !== undefined) notes[i] = Number(r.total); }
   for (const r of balloonRows) { const i = index.get(r.day); if (i !== undefined) balloons[i] = Number(r.total); }
+  for (const r of guideRows) { const i = index.get(r.day); if (i !== undefined) guides[i] = Number(r.total); }
 
-  return NextResponse.json({ days, missions, notes, balloons });
+  return NextResponse.json({ days, missions, notes, balloons, guides });
 }
