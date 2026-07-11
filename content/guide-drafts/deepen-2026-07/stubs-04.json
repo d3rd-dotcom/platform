@@ -1,0 +1,354 @@
+[
+ {
+  "slug": "divergent-thinking",
+  "blocks": [
+   {
+    "id": "divergent-thinking-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Generate multiple possibilities before selecting a direction.\n\nDivergent thinking expands options through fluency, flexibility, originality, and elaboration. Evaluation belongs after idea generation so early judgment stays open during the search.\n\n**Four qualities of a wide search**\n\nCreativity research describes divergent thinking along four dimensions. Fluency: how many ideas you produce; quantity matters, because good ideas are rare and more attempts mean more chances. Flexibility: how many different categories your ideas span; twenty variations on one approach is fluent but narrow. Originality: how far ideas depart from the obvious; the first few ideas anyone lists are usually the same ones everyone lists. Elaboration: how far you can develop an idea beyond its first mention. A strong divergent session scores on all four, producing many ideas across several approaches, including a few strange ones, with some worked out in detail.\n\n**Why judgment must wait**\n\nThe central discipline is separating generation from evaluation. Judging ideas while producing them kills the unusual ones first, and the unusual ones are the point, an inner critic saying \"that's silly\" during the search shrinks the search to the safe and familiar. Deferring evaluation is a deliberate protocol: for a set time, everything goes on the list, including bad ideas, because bad ideas often contain the seed of a good one and because permission for bad ideas is what keeps the flow moving.\n\n**An everyday example**\n\nBrainstorming fundraiser ideas, a group that judges each suggestion as it arrives produces six cautious options. The same group deferring judgment produces thirty, and idea twenty-three, half a joke, becomes the plan after a small repair."
+    }
+   },
+   {
+    "id": "divergent-thinking-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Run one full divergent session. Fifteen minutes, timer and paper.\n\n1. Pick a real prompt: improving a shared space works well, a room at school, a park, a group chat.\n2. Set ten minutes and write twenty ideas. No judging, no editing, no stopping before twenty. If you stall, force a category switch: cheaper, weirder, smaller, social, digital.\n3. When time ends, group the ideas by approach and count the groups, that is your flexibility score.\n4. Mark the three you would develop, noting whether any came from the second, harder half of the list.\n5. Record: write one sentence on when the obvious ideas ran out and what happened after."
+    }
+   },
+   {
+    "id": "divergent-thinking-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Divergent thinking is half a process; without the convergent step that selects and refines, a long list is just a long list, and the pair matters more than either alone. Idea counts also measure the search rather than its value, a session can be fluent and useless if the prompt was wrong. Group brainstorming has a documented failure mode too: people anchor on each other's ideas, which is why writing alone before sharing usually widens the pool. Deferred judgment is a protocol for the session, never a claim that all ideas are equal.\n\nFollow-up questions: do your original ideas cluster late in the list, and does generating alone before a group session change what the group produces?\n\nYou're ready to build on this guide when you can:\n\n- Use a divergent process to create and organize multiple ideas.\n- Produce twenty ideas, group them, and select three to develop.\n- Name one limit of divergent thinking without convergence."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "effect-sizes-and-uncertainty",
+  "blocks": [
+   {
+    "id": "effect-sizes-and-uncertainty-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Describe how large a difference or relationship appears and how much confidence the estimate deserves.\n\nAn effect size gives scale to a result. Uncertainty reflects variation, sample information, and measurement limits. A statistically impressive result can still have a small practical effect.\n\n**Direction is not enough**\n\n\"Sleep improves memory\" and \"a new app improves grades\" state directions. The question that decides whether anyone should care is magnitude: improves by how much? An effect size answers it, in raw units, ten minutes more sleep, or two points on a test, or in standardized terms that let different studies be compared. Two studies can both truthfully report the same direction while describing effects so different in size that one matters for your life and the other never will.\n\n**Every estimate wears an uncertainty band**\n\nNo study measures an effect exactly. Samples vary, instruments are imperfect, and people differ, so an honest result comes as an estimate plus a range of plausible values around it. Bigger samples and better measures narrow the range; small samples leave ranges so wide that the true effect could be large, tiny, or nothing. This is also where the phrase \"statistically significant\" misleads: with a large enough sample, even a trivial effect earns the label. Significant means detectable, and detectable is a much lower bar than important.\n\n**An everyday example**\n\nA headline says a study technique \"significantly boosts scores.\" The effect size underneath is half a point on a hundred-point exam. Real, detectable, and almost certainly not worth reorganizing your studying around, which is precisely what magnitude and uncertainty exist to tell you."
+    }
+   },
+   {
+    "id": "effect-sizes-and-uncertainty-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Compare two results that share a direction and differ in size. Ten minutes, journal.\n\n1. Write two hypothetical findings, for example: technique A improves recall by 2 percent, technique B improves recall by 25 percent, both \"significant.\"\n2. For each, write one sentence on what adopting it would actually change in a week of studying.\n3. Now give each a wide and a narrow uncertainty range, and note which version you would trust enough to act on.\n4. Find one real headline claiming a \"significant\" effect and hunt for the size behind it.\n5. Record: write one sentence on how the claim reads once the magnitude is visible next to the direction."
+    }
+   },
+   {
+    "id": "effect-sizes-and-uncertainty-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Judging whether an effect is big enough to matter is a values call, not a statistics call: a small effect on something vital, applied across many people, can matter more than a large effect on something trivial. Standardized effect sizes also carry their own conventions and misuses, and comparing them across very different studies takes care that this guide only gestures at. Many popular articles simply omit magnitude, in which case the honest conclusion is that the report does not support a decision either way.\n\nFollow-up questions: what size of improvement would actually change your behavior, and how do reviews combine effect sizes across many studies?\n\nYou're ready to build on this guide when you can:\n\n- Describe why magnitude and uncertainty belong beside a statistical result.\n- Compare two same-direction results and say what each would mean in daily life.\n- Name one limit of the word significant."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "embodied-cognition",
+  "blocks": [
+   {
+    "id": "embodied-cognition-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Explore how body position, movement, sensation, and environment participate in thinking.\n\nCognition unfolds through brain, body, and surroundings. Movement and sensory cues can change what information is available for a task, while the size of any effect depends on context and measurement.\n\n**Thinking beyond the skull**\n\nThe classical picture treats thinking as computation happening entirely in the head, with the body as a vehicle. Embodied cognition challenges that: the body and environment are participants in thought, not just carriers of it. Gesture is a clear case, people gesture more when problems get harder, and preventing gesture can measurably impair reasoning about spatial problems, which suggests the hands are doing some of the thinking. Counting on fingers, sketching a diagram, rearranging physical pieces of a problem: each offloads mental work onto body and world, freeing limited working memory for the harder parts.\n\n**Movement, state, and available information**\n\nBody state also shapes what the mind has to work with. Walking changes pacing and often loosens idea generation; posture and breath feed back into alertness and mood; the room you think in supplies cues that prompt or suppress thoughts. None of this makes the body magic, the honest summary is that some embodied effects are robust, like gesture and sketching, while others reported in famous studies, like power posing, shrank or vanished on replication. The reliable core is practical: changing your body or environment changes the information available for a task.\n\n**An everyday example**\n\nStuck on an essay plan at a desk, a student takes a slow walk and talks the argument aloud. Two paragraphs untangle. Nothing mystical, a different body state and a different information channel got engaged."
+    }
+   },
+   {
+    "id": "embodied-cognition-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Run one seated-versus-walking comparison. Fifteen minutes.\n\n1. Choose a simple repeatable thinking task: listing uses for an object, planning a paragraph, mental math of similar difficulty.\n2. Do version one seated at a desk for five minutes. Note the output, ideas, progress, answers.\n3. Do a matched version while walking slowly for five minutes, speaking or voice-noting your thinking.\n4. Compare the two outputs by count and by quality.\n5. Record: write one sentence on the task result in each setting and one on how each setting felt, keeping result and feeling separate."
+    }
+   },
+   {
+    "id": "embodied-cognition-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Embodied effects are real, modest, and task-dependent, and this area of psychology includes both solid findings and famous failures to replicate, so specific bold claims deserve the same scrutiny as any brain claim. Your two-condition comparison has an obvious confound, the tasks and moments differ, so treat it as an observation, not an experiment. The practical takeaway survives the caveats: when thinking stalls, changing body, posture, or environment is a cheap experiment with occasional large payoffs.\n\nFollow-up questions: which of your tasks benefit from movement and which need stillness, and what happened when famous embodiment studies were rerun with bigger samples?\n\nYou're ready to build on this guide when you can:\n\n- Give an example of how body and environment can participate in cognition.\n- Run a seated-versus-walking comparison and record results separately from feelings.\n- Name one limit of embodiment claims."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "emotion-focused-coping",
+  "blocks": [
+   {
+    "id": "emotion-focused-coping-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Use soothing, meaning, expression, and support when the emotional load needs attention.\n\nEmotion-focused coping changes the relationship to a stressful feeling. It can include rest, breathing, journaling, perspective, creative expression, and connection while the situation unfolds.\n\n**When the feeling is the workload**\n\nSome stressors can be fixed, and problem-focused coping fixes them. But often the situation is already in motion, a result is pending, a loss has happened, a condition cannot be changed this week, and what remains to manage is the feeling itself. Emotion-focused coping is that management. It does not alter the stressor; it alters your relationship to the emotional load it generates, so you can function, recover, and stay present while the situation unfolds. Research on coping treats this as the fitting strategy when control is low, which is much of life.\n\n**The four families**\n\n- Soothing: tools that settle the body carrying the feeling, slow breathing, rest, warmth, movement.\n- Expression: getting the feeling out of the loop and into form, journaling, talking, music, art. Expression converts a fog into an object you can look at.\n- Meaning: finding a way to hold what happened, perspective, values, what this chapter is teaching you. Meaning does not require pretending the thing is good.\n- Support: bringing another person in, for comfort, perspective, or simply not being alone with it.\n\n**An everyday example**\n\nWaiting on college decisions, nothing left to submit, a student journals the dread, runs, and spends the evening with a friend. The situation is untouched. The relationship to it is transformed, and the week becomes livable."
+    }
+   },
+   {
+    "id": "emotion-focused-coping-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Use one emotion-focused tool deliberately. Ten minutes, during or after a real stress.\n\n1. Name the feeling and confirm the situation is genuinely low-control right now, if it's fixable, fix it instead.\n2. Choose one tool from one family: soothing, expression, meaning, or support.\n3. Use it for five focused minutes, slow breathing, a journal page, a voice note to a friend.\n4. Afterward, check three things: the emotion's intensity, your body state, and what you want to do next.\n5. Record: write one sentence on what the tool changed, and one on which family you never reach for."
+    }
+   },
+   {
+    "id": "emotion-focused-coping-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "The strategy has a failure mode: applied to a controllable problem, emotion-focused coping becomes avoidance, feeling better about the essay you still have not started. The control check in step one is what keeps the tool honest. Some popular forms of it, venting on repeat, numbing with scrolling or substances, provide relief while making things worse, and they are not what this guide means. Feelings that stay overwhelming despite real coping deserve support from a qualified professional, and reaching for that support is itself emotion-focused coping done well.\n\nFollow-up questions: which family works fastest for you under real stress, and how do you tell soothing apart from avoiding?\n\nYou're ready to build on this guide when you can:\n\n- Choose an emotion-focused tool and describe what it changed.\n- Run the control check before applying it.\n- Name one way emotion-focused coping turns into avoidance."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "emotion-regulation-models",
+  "blocks": [
+   {
+    "id": "emotion-regulation-models-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Compare ways people influence the timing, intensity, meaning, and expression of emotion.\n\nEmotion regulation can involve changing a situation, shifting attention, reappraising meaning, accepting experience, or choosing an action. Different strategies fit different conditions.\n\n**Emotions unfold, and each stage is a doorway**\n\nAn emotion is not a single instant; it unfolds as a sequence. A situation arises, attention lands on parts of it, an interpretation forms, and a response, bodily and behavioral, follows. A widely used model of regulation maps one family of strategies onto each stage. Situation: choose or modify what you walk into, skipping the account that reliably enrages you, studying somewhere calmer. Attention: shift what you attend to within the situation, refocusing on the task rather than the judging faces. Meaning: reappraise the interpretation, a racing heart before a speech reread as readiness. Response: shape what you do with a feeling already at full strength, breathe, pause, choose the action.\n\n**Earlier is cheaper**\n\nA practical pattern falls out of the sequence: strategies applied earlier generally cost less effort than strategies applied at the peak. Adjusting the situation or the interpretation heads the wave off; suppressing a full-strength emotion is expensive, and chronic suppression tends to backfire, the feeling persists while the effort of hiding it drains you. No single doorway is right everywhere: some situations cannot be chosen, some interpretations are accurate and need acceptance rather than revision, and sometimes response-stage tools are all you have.\n\n**An everyday example**\n\nDreading a group chat argument, you can mute it (situation), check it once at a set time (attention), reread a jab as carelessness rather than attack (meaning), or draft your reply and wait an hour before sending (response). Four doorways into the same emotion."
+    }
+   },
+   {
+    "id": "emotion-regulation-models-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Map one recent emotion across its stages. Ten minutes, journal.\n\n1. Pick a recent, specific emotional moment, strong enough to remember, small enough to examine.\n2. Write five lines: the situation, the body signal you noticed, the interpretation you made, the action urge, and what you actually did.\n3. For each of the first four lines, note one strategy that could have applied at that stage.\n4. Mark the earliest stage where a small move would have changed the whole sequence.\n5. Record: write one sentence on which stage you usually try to regulate at, and which stage this map suggests you are ignoring."
+    }
+   },
+   {
+    "id": "emotion-regulation-models-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Regulation is influence rather than command, the goal is shaping how emotions unfold, never eliminating them, and a life without unwanted feelings is neither possible nor desirable. Strategy fit is contextual: reappraisal helps when interpretations overreach and misleads when they are accurate, and situation-selection becomes avoidance if it shrinks your life. The stage model is also cleaner than real emotions, which loop and blend. Emotions that feel unmanageable despite practice, or that drive harm, deserve support from a qualified professional.\n\nFollow-up questions: which stage do your successful regulations already use, and what does research say about suppression's costs across cultures?\n\nYou're ready to build on this guide when you can:\n\n- Name several points in an emotion process where regulation can occur.\n- Map a real emotion across stages and spot the earliest doorway.\n- Name one limit of any single strategy."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "emotional-boundaries",
+  "blocks": [
+   {
+    "id": "emotional-boundaries-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Set clear limits around responsibility, availability, privacy, and emotional labor.\n\nA boundary communicates what a person can offer, what they need, and what action they will take. Good boundaries respect another person while preserving safety and agency.\n\n**What a boundary actually is**\n\nA boundary is a statement about you, what you can offer, what you need, and what you will do, rather than a rule imposed on someone else. \"You can't text me at midnight\" tries to control another person's behavior; \"I turn my phone off at ten\" states your own. The distinction matters because your own actions are the only part you fully control, and boundaries built on them hold even when the other person pushes. Boundaries commonly cover responsibility, whose problems you carry, availability, when and how much you can be reached, privacy, what you share and keep, and emotional labor, how much support you can supply without depleting.\n\n**Boundaries protect relationships**\n\nA reputation follows boundaries: that they are cold or selfish. In practice, the reverse tends to hold. Unlimited availability runs on hidden resentment, and resentment corrodes relationships from inside; a stated limit replaces silent scorekeeping with honest terms both people can work with. A friend who knows you cannot take crisis calls during exams, but will call back tomorrow, has something better than a depleted, secretly angry listener: a sustainable one. Boundaries also require enforcement, the named next action, or they become suggestions that teach people the limit is negotiable.\n\n**An everyday example**\n\nA friend leans on you nightly for hours of emotional support, and your own schoolwork is sinking. A boundary: \"I care about what you're going through. I can talk for twenty minutes tonight, and if it's heavier than that, I think it needs an adult or a counselor. After that I have to study.\" Care, limit, action."
+    }
+   },
+   {
+    "id": "emotional-boundaries-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Write and rehearse one real boundary. Ten minutes.\n\n1. Identify one place you feel stretched, resentful, or drained, resentment is usually a boundary reading empty.\n2. Write the situation in one neutral sentence.\n3. Write the limit as a statement about yourself: what you can offer or need, without controlling the other person.\n4. Write the next action: what you will do, kindly and concretely, if the limit is crossed.\n5. Practice saying the full sentence in a calm voice until it sounds like information rather than an accusation.\n6. Record: write one sentence on what you predict will happen when you use it, then, after you do, one on what actually happened."
+    }
+   },
+   {
+    "id": "emotional-boundaries-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Expect pushback: people accustomed to your old limits often test new ones, and holding calmly through the test is part of the boundary, not a sign it failed. Context changes the calculus, with a boss, a parent, or anyone holding power over you, enforcement options differ, and safety comes before assertion. Boundaries can also be misused as walls against all closeness or as ultimatums dressed in therapy language; the aim is sustainable connection, and a boundary that only ever pushes people away deserves a second look. Situations involving control, fear, or harm are a matter for a trusted adult or professional, not a better sentence.\n\nFollow-up questions: where does your resentment point to a missing boundary, and how does a boundary differ from an ultimatum?\n\nYou're ready to build on this guide when you can:\n\n- Write a clear boundary that includes a limit and a next action.\n- Deliver it calmly and hold it through the first test.\n- Name one context where asserting a boundary needs extra care."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "environment-and-wellness",
+  "blocks": [
+   {
+    "id": "environment-and-wellness-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Examine how rooms, schedules, technology, transportation, and access shape everyday well-being.\n\nWellness happens inside environments. Light, noise, privacy, food access, movement options, safety, and social expectations can support or strain a routine.\n\n**The invisible half of every habit**\n\nWellness advice usually addresses the person: sleep more, move more, eat better. Each of those behaviors, though, happens inside an environment that makes it easy, hard, or impossible. Light and noise shape sleep more than resolve does. Food environment, what is cheap, near, and visible, shapes eating. Whether movement happens depends on safe places to walk, time in the schedule, and distance to anything active. Screens and their defaults shape attention and bedtime. When a wellness routine keeps failing, the honest question is often not \"what's wrong with me\" but \"what is this environment set up to produce?\"\n\n**Reading an environment**\n\nAn environment audit looks at a daily setting through four lenses. Cues: what the space prompts, a bed that means scrolling, a kitchen that means snacking. Barriers: friction between you and the good behavior, the gym bag buried in a closet. Supports: what the space already makes easy. Access: the deeper layer of what is even available, quiet, safety, food options, transportation, which varies enormously between people and is often the real constraint. The same audit that redesigns a bedroom also explains why willpower advice fails people whose environments fight them.\n\n**An everyday example**\n\nA student blames themselves for sleeping badly, then audits the room: overhead light until midnight, phone charging on the pillow, street noise. Three environmental fixes later, dim lamp, charger across the room, earplugs, the \"discipline problem\" mostly dissolves."
+    }
+   },
+   {
+    "id": "environment-and-wellness-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Audit one daily setting. Fifteen minutes.\n\n1. Choose the setting where a wellness routine keeps struggling: bedroom, desk, kitchen, commute.\n2. List its cues: what the space currently prompts you to do.\n3. List barriers: every point of friction between you and the behavior you want.\n4. List supports: what already works, so you keep it.\n5. Choose one change that improves access or removes a barrier, small and doable this week.\n6. Record: after three days with the change, write one sentence on what shifted, and whether the environment or your effort was doing the work."
+    }
+   },
+   {
+    "id": "environment-and-wellness-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Personal audits work on the parts of an environment you control, and much of what shapes wellness, housing, neighborhood safety, food access, schedules set by others, sits outside individual redesign. Naming that is accuracy rather than excuse: environmental constraints explain a great deal of what gets misread as personal failure, and some fixes are community and policy work rather than bedroom adjustments. One audit also captures one moment; environments and needs drift, so re-auditing occasionally beats a single verdict.\n\nFollow-up questions: which constraint in your setting is genuinely yours to change, and how do communities change shared environments, lighting, parks, food options, at scale?\n\nYou're ready to build on this guide when you can:\n\n- Identify an environmental factor that shapes a wellness routine.\n- Audit a real setting for cues, barriers, supports, and one change.\n- Name one limit of individual-level environmental fixes."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "ethics-and-everyday-decisions",
+  "blocks": [
+   {
+    "id": "ethics-and-everyday-decisions-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Use values, duties, consequences, care, and fairness to reason through ordinary choices.\n\nEthics asks what people ought to do and why. Multiple frameworks can reveal different parts of a choice, especially when values conflict.\n\n**Ethics is not just for dilemmas in textbooks**\n\nOrdinary days are full of ethical choices wearing casual clothes: whether to tell a friend a hard truth, whether to report something you saw, how to split credit on a group project, what to do with a rumor. Ethical frameworks are organized ways of reasoning about such choices, each asking a different question, and each catching something the others miss.\n\n**Four lenses**\n\n- Consequences: which option produces the best outcomes for everyone affected? This lens counts effects, and forces you to include people you would rather not think about.\n- Duties: are there things one must or must not do here, regardless of outcome, promises kept, truths told, rights respected? This lens holds the line consequences might trade away.\n- Care: what do the specific relationships here need, and who is vulnerable? This lens sees the people where other lenses see principles.\n- Fairness: how would this look if you were anyone else in the situation, and would you accept the rule your choice implies? This lens catches self-serving exceptions.\n\nWhen the lenses agree, the choice is usually easy. The interesting cases are conflicts, where telling the truth (duty) will hurt someone (care), and the work is deciding which value leads here, knowingly rather than by default.\n\n**An everyday example**\n\nYou saw a friend cheat. Consequences ask what reporting or silence each sets in motion. Duty says honesty and rules matter. Care weighs the friendship and the pressure they were under. Fairness asks about everyone who did not cheat."
+    }
+   },
+   {
+    "id": "ethics-and-everyday-decisions-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Run four lenses over one real dilemma. Fifteen minutes, journal.\n\n1. Write an everyday dilemma you actually face or recently faced, in two sentences.\n2. Apply each lens in turn, one or two sentences each: what consequences says, what duty says, what care says, what fairness says.\n3. After each lens, note the value it made visible that the others missed.\n4. Where lenses conflict, name the conflict explicitly, which value is trading against which.\n5. Record: write which lens you weighted most and one sentence on why, that sentence is your actual ethic, made visible."
+    }
+   },
+   {
+    "id": "ethics-and-everyday-decisions-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Frameworks structure reasoning; they do not produce answers mechanically, and two thoughtful people can run the same lenses and land differently, which is a feature of ethics rather than a failure of the method. Each lens also has famous weaknesses, consequences can justify too much, duties can be rigid, care can be partial, fairness can be cold, which is exactly why they work better together. Real decisions also include facts you may have wrong, so ethical care includes checking them. The lenses are for your own choices first; wielding them mainly to judge others misses the practice.\n\nFollow-up questions: which lens does your family or culture default to, and what dilemma would make you override your usual lens?\n\nYou're ready to build on this guide when you can:\n\n- Compare several ethical lenses in an everyday decision.\n- Apply four lenses to a real dilemma and name the conflict between them.\n- Name one weakness of your most-used lens."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "executive-functions",
+  "blocks": [
+   {
+    "id": "executive-functions-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Study planning, working memory, inhibition, and flexible switching as coordinated control skills.\n\nExecutive functions help a person hold a goal, select information, pause a response, and shift strategies. They operate within energy, emotion, environment, and task demands.\n\n**The brain's management layer**\n\nExecutive functions are the control processes that organize thinking toward a goal. Four do most of the visible work. Planning: breaking a goal into ordered steps and sequencing them in time. Working memory: holding and updating information while you use it, the mental desk space where the current step, the instructions, and the goal all sit. Inhibition: pausing the automatic response, the notification reach, the blurted answer, long enough to choose. Flexibility: noticing a strategy is failing and switching, rather than repeating it harder. They develop across childhood and adolescence, with the supporting prefrontal systems maturing into the mid-twenties.\n\n**Skills with operating conditions**\n\nExecutive functions are less like fixed traits and more like capacities with operating conditions. Fatigue, stress, strong emotion, hunger, and cluttered environments all degrade them, which is why the same student plans beautifully on Tuesday and cannot start anything on Friday night. This reframing is practical: when control fails, the fix is often conditions, sleep, a cleared desk, a written plan that unburdens working memory, rather than more self-blame. Externalizing helps enormously: lists, timers, and visible steps are executive function moved onto paper, where it does not degrade.\n\n**An everyday example**\n\nWriting an essay uses all four: planning the outline, working memory holding the argument while typing, inhibition ignoring the phone, flexibility abandoning a paragraph that is not working. A weak spot in any one shows up as a different kind of stuck."
+    }
+   },
+   {
+    "id": "executive-functions-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Support a real task with external structure. Twenty minutes.\n\n1. Choose a task with at least two steps that you have been avoiding.\n2. Write the goal in one line, and the two or three steps under it, planning, externalized.\n3. Remove one distraction from the environment before starting, inhibition, made cheaper.\n4. Set a timer for fifteen minutes and start on step one, the timer holds time so working memory doesn't have to.\n5. If a step stalls, change approach once instead of pushing, flexibility, on purpose.\n6. Record: write one sentence on where the plan needed revision, and which of the four functions the external structure helped most."
+    }
+   },
+   {
+    "id": "executive-functions-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Everyone's executive functions wobble under load, and a bad week proves nothing; persistent, cross-setting difficulty, the kind that shows up at home, school, and work over years, can point to ADHD or other differences that deserve assessment by a qualified professional rather than harder self-discipline. Strategies also do not transfer automatically, a planner that works for one person fails another, so testing beats copying. And the popular framing of these skills as pure willpower misses their conditions: sleep, stress, and environment move them more than exhortation does.\n\nFollow-up questions: which of the four functions fails first when you are tired, and which single piece of external structure buys you the most?\n\nYou're ready to build on this guide when you can:\n\n- Identify planning, working memory, inhibition, and flexibility in an everyday task.\n- Support a task with external structure and record where the plan changed.\n- Name one condition that degrades your control skills."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "fairness-and-equity",
+  "blocks": [
+   {
+    "id": "fairness-and-equity-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Compare equal treatment, equitable support, procedural fairness, and outcomes.\n\nFairness can concern rules, opportunity, treatment, voice, and results. Equity asks what different people need to participate meaningfully under different conditions.\n\n**Four things people mean by fair**\n\nFairness arguments often run in circles because the word carries several distinct meanings. Equal treatment: everyone gets the same thing, the same rule, the same portion. Equity: people get what they need to participate meaningfully, which differs because starting conditions differ, glasses for the student who cannot see the board is equity, identical no-glasses-for-anyone is equality. Procedural fairness: the process is fair, transparent rules, applied consistently, with voice for those affected, regardless of who wins. Outcome fairness: the results land reasonably across people. A policy can be fair on one definition and unfair on another at the same time, which is where most real disputes live.\n\n**Why the distinctions matter**\n\nEqual treatment feels obviously fair and quietly favors whoever the default was designed for: the same stairs treat everyone equally and exclude the wheelchair user entirely. Equity corrects for that, and raises its own hard questions, who decides what different people need, and by what process? That is where procedural fairness earns its place: a transparent process with real voice is what keeps equity from becoming arbitrary. Holding all the definitions at once turns \"that's unfair\" from an ending of arguments into the start of a precise one: unfair in which sense, to whom?\n\n**An everyday example**\n\nA teacher gives every student two days for the essay, equal, extends it for a student who was hospitalized, equitable, announces the extension policy in advance and applies it to anyone in similar shape, procedural. Each layer answers a different fairness question."
+    }
+   },
+   {
+    "id": "fairness-and-equity-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Work one shared-resource scenario three ways. Fifteen minutes.\n\n1. Pick a real scenario: limited tutoring slots, club funding, computer lab time, tickets.\n2. Write the equal option: the same allocation for everyone. Note who it quietly disadvantages.\n3. Write the equity option: allocation by need. Note what information it requires and who decides.\n4. Design the process: how the rule gets made, published, and challenged, including a feedback channel for people affected.\n5. Record: write one sentence on which option you'd defend and in which fairness sense it is fair, and one sentence on the strongest objection from another sense."
+    }
+   },
+   {
+    "id": "fairness-and-equity-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "These definitions clarify disagreements without resolving them: people weigh the fairness senses differently for principled reasons, and real allocation decisions also collide with privacy, since need-based support requires knowing about need, which people may not want to disclose. Equity judgments depend on information that is often incomplete or contested. And classroom-scale examples simplify what policy-scale fairness involves, where history, measurement, and competing groups complicate every layer. The tool here is precision, arguing about the same thing at the same time.\n\nFollow-up questions: how can a system offer need-based support without forcing disclosure, and which fairness sense does your school or workplace default to?\n\nYou're ready to build on this guide when you can:\n\n- Distinguish equal treatment from equity and procedural fairness.\n- Produce an equal option, an equity option, and a fair process for a real scenario.\n- Name one tension between two senses of fairness."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "feedback-and-creative-work",
+  "blocks": [
+   {
+    "id": "feedback-and-creative-work-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Use feedback to strengthen a creative work while preserving the creator's purpose.\n\nUseful creative feedback names the intended effect, the observed effect, a specific moment, and a possible revision. The creator decides which feedback fits the purpose.\n\n**The purpose comes first**\n\nFeedback on creative work fails in two familiar ways: vague praise that teaches nothing, and confident advice that quietly rewrites the work into what the reviewer would have made. Both errors share a root, skipping the creator's purpose. Useful feedback starts by asking what the work is trying to do, because a piece can only be evaluated against its own intent: a horror story that unsettles you is succeeding, and \"make it less unsettling\" is not feedback, it is a request for a different story.\n\n**A four-part structure**\n\nStrong creative feedback carries four parts. The intended effect, learned by asking. The observed effect: what actually happened to you as reader, viewer, listener, reported honestly, \"I lost track of who was speaking,\" \"the ending landed hard.\" A specific moment: the line, the measure, the corner of the image where the effect occurred, since generalities cannot be acted on. And a possible revision, offered as an option. The observed effect is the gold: a creator cannot experience their own work fresh, and your genuine reaction is data they can get nowhere else. The revision is the least important part, and the creator, who holds the purpose, decides what to use.\n\n**An everyday example**\n\nInstead of \"it's good, maybe make it shorter,\" a four-part response: \"You said you wanted the reveal to surprise. It surprised me, but I felt it coming from the diary scene, that's where the tension leaked. One option is holding the diary back a scene. Your call.\""
+    }
+   },
+   {
+    "id": "feedback-and-creative-work-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Give one structured response to a real piece. Fifteen minutes; use a friend's work, or trade with a classmate.\n\n1. Ask the creator what the piece is trying to do, and listen before consuming the work.\n2. Experience the work once without composing your response, just notice your reactions.\n3. Write four lines: one strength tied to the purpose, one observed effect in you, one honest question, and one revision option.\n4. Deliver it, and end by saying the decision is theirs.\n5. Record: write one sentence on how the creator responded, and whether the observed-effect line did more than the advice line."
+    }
+   },
+   {
+    "id": "feedback-and-creative-work-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "One reader's reaction is one data point: creators should weigh patterns across several readers over any single response, including yours, and feedback on early drafts should aim at the big shapes rather than the commas. Trust changes what lands, the same sentence reads differently from a stranger and a friend, and timing matters, feedback a creator did not ask for rarely helps. There is also a real tension between honesty and encouragement for beginners, where crushing the motivation destroys more value than the critique adds; purpose-aware honesty, delivered kindly, is the balance this structure aims at.\n\nFollow-up questions: how many readers make a reaction a pattern, and how does giving structured feedback change how you receive it?\n\nYou're ready to build on this guide when you can:\n\n- Give specific and purpose-aware feedback on creative work.\n- Deliver a four-part response and leave the decision with the creator.\n- Name one limit of a single reader's reaction."
+    }
+   }
+  ]
+ }
+]

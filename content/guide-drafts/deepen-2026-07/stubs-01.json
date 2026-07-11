@@ -1,0 +1,354 @@
+[
+ {
+  "slug": "acceptance-and-reappraisal",
+  "blocks": [
+   {
+    "id": "acceptance-and-reappraisal-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Use acceptance and meaning-shifts as distinct tools for responding to difficult feelings.\n\nAcceptance makes room for present experience while reappraisal changes the interpretation of a situation. Both can support deliberate action when used with accurate facts and clear boundaries.\n\n**Two different moves**\n\nAcceptance means letting a feeling be present without fighting it, suppressing it, or treating it as an emergency. The feeling is acknowledged as real and allowed to run its course while you keep acting on what matters. Reappraisal means re-reading the situation itself: taking the same facts and finding an interpretation that fits them better. A friend's short reply can be read as rejection or as a busy afternoon; reappraisal checks which reading the evidence supports.\n\nResearch on emotion regulation treats these as separate strategies with different best uses. Reappraisal tends to help when the situation is genuinely ambiguous and a fairer reading exists. Acceptance tends to help when the feeling is proportionate and the facts are what they are, such as grief after a loss or nerves before a real test. Trying to reappraise an accurate feeling turns into arguing with reality, and trying to accept a distorted interpretation leaves a fixable error in place.\n\n**Choosing between them**\n\nA practical rule: check the interpretation first. If the story you are telling about the situation overreaches the facts, reappraise. If the story is accurate and the feeling simply hurts, practice acceptance and put your energy into the next action within your control."
+    }
+   },
+   {
+    "id": "acceptance-and-reappraisal-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "You need ten minutes and your journal, ideally after a moment that carried a difficult feeling.\n\n1. Describe one feeling in neutral language: name it and what set it off, without judgment.\n2. Write the interpretation underneath it in one sentence, the story you are telling about the event.\n3. Test the story against the facts. If it overreaches, write one grounded reappraisal that fits the available evidence.\n4. If the story is accurate, write one acceptance line instead: \"This feeling fits the situation, and I can carry it while I do the next thing.\"\n5. Record: note which tool you used and one sentence on what shifted, even slightly, afterward."
+    }
+   },
+   {
+    "id": "acceptance-and-reappraisal-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "These tools work on everyday difficulty. They are supports around a hard situation, never a reason to stay in a harmful one, and reappraisal must stay honest: a rewrite that ignores real evidence is denial with better wording. Feelings that are intense, lasting, and interfering with daily life deserve care from a qualified professional alongside any self-practice. One honest limit: in the moment, telling an accurate story from a distorted one is hard, which is why the written version beats the mental version.\n\nFollow-up questions: which tool do you reach for by default, and does the choice change under time pressure?\n\nYou're ready to build on this guide when you can:\n\n- Compare acceptance with reappraisal and choose the fitting one for a situation.\n- Run the practice and record one observation.\n- Name one context or limit where each tool needs care."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "adolescence-and-brain",
+  "blocks": [
+   {
+    "id": "adolescence-and-brain-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Explore adolescence through brain development, social context, learning, and growing autonomy.\n\nAdolescence includes changing cognitive capacities, relationships, identity, sleep, and social roles. A balanced account includes both support needs and growing agency.\n\n**What changes, and what it means**\n\nThe adolescent brain is a construction site rather than a defective adult brain. Regions involved in reward and social sensitivity mature earlier, while the prefrontal areas that support planning and impulse control continue developing into the mid-twenties. This gap helps explain why social feedback lands so hard in these years and why novelty and peers matter so much. It also has an upside: heightened plasticity makes adolescence a powerful window for learning skills, forming identity, and building durable interests.\n\nBiology is only part of the account. Sleep timing genuinely shifts later during puberty, which collides with early school start times. Social context shapes which risks are available and which supports exist. And autonomy itself is developmental: making real choices, with room to recover from mistakes, is how judgment gets built. A teenager treated as incapable of decisions gets no practice making them.\n\n**An everyday example**\n\nA student who stays up late, takes a social risk, and melts down over a group chat is not broken. Each behavior tracks a documented developmental shift. The useful response pairs structure where stakes are high, like driving and safety, with genuine agency where stakes are recoverable, like scheduling, style, and projects."
+    }
+   },
+   {
+    "id": "adolescence-and-brain-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Design a school routine on paper that takes adolescent development seriously. Fifteen minutes, journal or a blank page.\n\n1. Draw four columns: sleep, autonomy, connection, learning.\n2. Under sleep, set a schedule that respects a later natural sleep window while still meeting real obligations.\n3. Under autonomy, list two decisions a student would fully own, with recoverable stakes.\n4. Under connection, add one structure that uses peer influence for good, such as study pairs or a team role.\n5. Under learning, place the hardest cognitive work at the time of day your design leaves students most rested.\n6. Record: write one sentence on the biggest conflict between your design and how school actually runs, and which side has the evidence."
+    }
+   },
+   {
+    "id": "adolescence-and-brain-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Development varies widely between individuals, so age-based generalizations describe averages rather than any specific person. Brain findings about adolescence are also easy to overread: a maturing prefrontal cortex explains tendencies, and it neither excuses harm nor predicts any one teenager's choices. Culture, resources, and family context shape what autonomy safely looks like. Persistent distress, withdrawal, or risk-taking that escalates deserves attention from a qualified professional rather than a developmental shrug.\n\nFollow-up questions: what does research show about later school start times and outcomes, and how does autonomy-supportive parenting differ from permissiveness?\n\nYou're ready to build on this guide when you can:\n\n- Connect adolescent development with context, support, and agency.\n- Complete the routine-design practice and record one observation.\n- Name one limit of brain-based explanations for teenage behavior."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "aging-and-learning",
+  "blocks": [
+   {
+    "id": "aging-and-learning-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Explore learning, memory, roles, and connection across later life.\n\nAging includes variation in health, experience, environment, relationships, and opportunity. Learning continues through practice, meaning, adaptation, and access to supportive settings.\n\n**What actually changes**\n\nSome cognitive abilities shift with age on average: processing speed tends to slow, and holding many new items in mind at once can take more effort. Other abilities hold steady or keep growing, especially vocabulary, accumulated knowledge, and the pattern recognition that comes from decades of experience. Psychologists sometimes call these fluid and crystallized abilities. The practical point: later-life learning looks different rather than lesser, favoring depth, meaning, and connection to what is already known.\n\n**Why variation and access matter**\n\nThe range between individuals widens with age. Health, hearing and vision, sleep, social connection, and opportunity all shape how much someone can learn, and these differ enormously from person to person. Two seventy-year-olds can differ more from each other than two twenty-year-olds do. Access matters just as much: a person with transportation, materials designed for their senses, and a setting where questions are welcome learns far more than ability alone would predict.\n\n**An everyday example**\n\nA grandmother learning a phone struggles with a rushed demonstration, then masters it when a grandchild slows down, connects features to things she already does, and lets her drive. Nothing about her ability changed. The teaching adapted, and access did the rest."
+    }
+   },
+   {
+    "id": "aging-and-learning-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Design one intergenerational learning activity on paper. Fifteen minutes.\n\n1. Pick a skill an older person in your life knows deeply and one they might want from you.\n2. Sketch a session where each person teaches for ten minutes, so experience flows both directions.\n3. Build in multiple ways to participate: watching, doing, telling a story about the skill, asking questions.\n4. Adapt the setting: pacing that fits both people, materials both can see and hear, and connection of the new skill to something each already knows.\n5. Record: run the session if you can, or walk through it mentally, and write one sentence on which adaptation mattered most and what surprised you."
+    }
+   },
+   {
+    "id": "aging-and-learning-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Averages about aging hide more than they reveal; any claim starting with \"older people can't\" fails against the width of individual variation. This guide describes typical healthy aging, and it says nothing about conditions like dementia, which are diseases rather than normal aging and belong with qualified professionals. Much of the research also compares generations who had different education and technology, which can masquerade as an age effect.\n\nFollow-up questions: what does research on lifelong learning say about cognitive health, and how do cultures differ in the roles they give older adults?\n\nYou're ready to build on this guide when you can:\n\n- Describe how later-life learning depends on variation and access.\n- Complete the intergenerational design practice and record one observation.\n- Name one limit of age-based generalizations."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "ai-and-human-judgment",
+  "blocks": [
+   {
+    "id": "ai-and-human-judgment-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Compare automated outputs with human judgment, evidence, accountability, and context.\n\nAn AI output is a produced result shaped by data, objective, model, prompt, and evaluation. Human judgment remains responsible for context, values, privacy, and consequences.\n\n**What an output actually is**\n\nAn automated suggestion, a generated answer, a ranking, a flag, arrives looking confident and complete. Underneath, it is the product of choices: what data the system learned from, what objective it was trained to optimize, what the prompt asked, and how anyone checked the results. Each choice imports assumptions and gaps. A system trained on past decisions inherits their patterns, including the unfair ones. Fluency is easy to mistake for accuracy, but a well-worded output can be confidently wrong.\n\n**Where judgment and accountability belong**\n\nJudgment belongs at three points. Before: deciding whether this question should be automated at all, and what an error would cost. During: reading the output against evidence, context, and the people affected, rather than accepting it because it sounds finished. After: owning the outcome. Accountability cannot transfer to a tool; when an automated decision harms someone, a person or institution chose to deploy it, tune it, and act on it. \"The system decided\" describes a chain of human decisions.\n\n**An everyday example**\n\nAn app suggests a study plan that quietly drops the subject you struggle with, because your history shows you skip it. The output is plausible and personalized, and following it would optimize for comfort. Human judgment catches what the objective missed: struggle was the point."
+    }
+   },
+   {
+    "id": "ai-and-human-judgment-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Evaluate one automated suggestion using a five-question review. Ten minutes; use a real recommendation you received recently or invent a fictional one, such as an app suggesting you drop a class.\n\n1. Goal: what was the system likely optimizing for, and is that your goal?\n2. Evidence: what data could it actually have, and what does it not know about your situation?\n3. Uncertainty: how confident should this output really be, regardless of how confident it sounds?\n4. Affected people: who bears the cost if it is wrong?\n5. Human review: what would a thoughtful person check before acting on it?\n6. Record: write one sentence on where the output most needed a human, and whether you would follow it."
+    }
+   },
+   {
+    "id": "ai-and-human-judgment-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "The right amount of scrutiny scales with stakes: a music recommendation needs none of this, while anything touching health, money, safety, or another person's opportunities needs all of it. This guide generalizes across very different systems, and specific tools differ in transparency and quality, so conclusions about one do not automatically transfer. The field also moves quickly, which makes ongoing skepticism more durable than any fixed rule about what systems can and cannot do.\n\nFollow-up questions: how do the systems you use daily make money, and what would you need to see to trust an automated decision about something important?\n\nYou're ready to build on this guide when you can:\n\n- Identify where human judgment and accountability belong around an AI output.\n- Run the five-question review and record one observation.\n- Name one limit of generalizing about automated systems."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "algorithmic-recommendations",
+  "blocks": [
+   {
+    "id": "algorithmic-recommendations-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Study how recommendation systems use signals, objectives, feedback, and user data.\n\nA recommendation system ranks possible content using a model and an objective. Feedback loops can narrow exposure, reward attention, or amplify patterns already present in the data.\n\n**The parts of the loop**\n\nEvery feed works from the same skeleton. Signals: what you watched, paused on, liked, searched, and how long you lingered. An objective: the number the system is tuned to increase, often watch time or engagement. A ranking model: the machinery that predicts which item best serves the objective for you right now. A result: what you see. And feedback: your reaction to the result becomes the next signal, closing the loop.\n\n**Why the loop matters**\n\nThe objective is not your objective. A system optimizing engagement will happily serve whatever holds attention, and outrage, anxiety, and novelty hold attention well. The feedback structure adds a second effect: because you only react to what you were shown, the system learns from a sample it created. Interests you were never shown look like interests you lack, and exposure narrows without anyone deciding it should. Patterns already in the data, including stereotypes, get amplified by the same mechanism.\n\n**An everyday example**\n\nWatch two videos about one exam topic and the feed fills with them. Linger once on a stressful clip and the system reads the pause as appetite. It has no idea whether the content helps you. It knows you stayed."
+    }
+   },
+   {
+    "id": "algorithmic-recommendations-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Draw one recommendation loop for an app you actually use. Ten minutes, paper or notes app.\n\n1. Draw five boxes in a circle: user signal, ranking objective, result shown, your reaction, back to signal.\n2. Fill each box with real specifics: which signals this app can see, what its objective probably is, what it showed you today.\n3. Add one arrow labeled with a possible bias, a place where the loop could narrow or distort what you see.\n4. Test it: for one day, note when the feed shows you something similar to what you just engaged with.\n5. Record: write one sentence on the clearest loop effect you caught in your own feed."
+    }
+   },
+   {
+    "id": "algorithmic-recommendations-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Real systems are more complicated than the five-box loop: platforms blend many objectives, run experiments constantly, and change without notice, so any specific claim about how one feed works is a hypothesis rather than a fact. Recommendations also do real good, surfacing music, ideas, and communities you would never have searched for. The skill is seeing the loop, and what you observe from the outside is always partial evidence.\n\nFollow-up questions: how would a feed behave differently if it optimized for your stated goals instead of engagement, and what happens to your feed after a week of deliberate signals?\n\nYou're ready to build on this guide when you can:\n\n- Describe the parts and risks of a recommendation loop.\n- Map a real app's loop and record one observation.\n- Name one limit of reasoning about systems you cannot inspect."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "anger-as-information",
+  "blocks": [
+   {
+    "id": "anger-as-information-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Treat anger as a signal to investigate needs, limits, expectations, and possible action.\n\nAnger can point toward perceived unfairness, blocked goals, threat, or violated boundaries. The signal deserves attention while the chosen behavior still needs care and proportion.\n\n**Signal and behavior are separate**\n\nThe central move in this guide is a separation. Anger, the feeling, is information: a fast, bodily report that something you care about seems threatened or crossed. Aggression, the behavior, is one possible response among many. Cultures and families often collapse the two, treating the feeling as dangerous because some behaviors are. Kept separate, the feeling becomes readable. You can be fully angry and still choose the response.\n\n**Reading the signal**\n\nAnger usually sits on top of an expectation. \"I'm furious she told them my secret\" contains a violated boundary and an expectation of confidence. \"I'm angry I got cut from the team\" contains a blocked goal and maybe a fairness judgment. Asking what the anger is protecting turns heat into data: a need to assert a limit, repair something, renegotiate an expectation, or accept a loss. Sometimes the investigation finds the expectation itself was off, and the anger dissolves; sometimes it confirms a real violation that deserves a response.\n\n**An everyday example**\n\nA group project teammate misses another deadline and you feel the spike. The signal: your effort is being spent unfairly. The behaviors available range from an outburst to silence to a direct sentence about what you need by Friday. Same information, very different outcomes."
+    }
+   },
+   {
+    "id": "anger-as-information-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Analyze one real anger event on paper. Ten minutes, best done after the heat has passed.\n\n1. Describe the event in one factual sentence, no interpretation.\n2. Write the expectation underneath it: what did you believe should have happened?\n3. Name the boundary or need involved: fairness, respect, effort, safety, being heard.\n4. List three possible responses, from doing nothing to direct confrontation, and mark which protects both your boundary and everyone's safety.\n5. Record: write one sentence on what the anger was protecting, and whether the expectation itself held up under inspection."
+    }
+   },
+   {
+    "id": "anger-as-information-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Reading anger works best after the first surge has settled; in the hot moment, the tools are distance and time, and analysis comes later. The signal is also not always accurate: anger can ride on tiredness, hunger, or a misread situation, which is why step two checks the expectation. Anger that turns toward harming yourself or others, or that feels constant and uncontrollable, deserves support from a qualified professional. If you are in an unsafe situation, the priority is safety and a trusted adult rather than reflection.\n\nFollow-up questions: what patterns show up across five anger entries, and how do different cultures teach people to express the same signal?\n\nYou're ready to build on this guide when you can:\n\n- Separate anger as information from the behavior chosen afterward.\n- Analyze one anger event and record what it was protecting.\n- Name one limit of treating anger as always accurate."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "assertive-communication",
+  "blocks": [
+   {
+    "id": "assertive-communication-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Express needs and limits with direct language, respect, and room for another person's agency.\n\nAssertive communication states facts, feelings, needs, limits, and requests clearly. It avoids guessing another person's motives and leaves space for a response.\n\n**The middle path**\n\nAssertiveness sits between two failure modes. Passive communication hides the need: hints, silence, and hoping someone guesses, which breeds resentment when they don't. Aggressive communication attaches the need to an attack: blame, motive-guessing, and pressure, which makes the other person defend instead of listen. Assertive communication carries the need in plain language while leaving the other person their full agency to respond, negotiate, or decline.\n\n**The anatomy of an assertive sentence**\n\nA reliable structure has four parts. Situation: the observable fact, without interpretation. Feeling or stake: what it costs you, owned as yours. Need or limit: the thing you actually require. Request: a specific, doable ask. \"When the plans change an hour before we meet, I end up scrambling. I need more notice. Can you tell me by the morning of?\" Notice what is absent: no \"you always,\" no assigned motives, no apology for having the need.\n\n**Why it works**\n\nMotive-guessing (\"you clearly don't care\") gives the other person something false to argue with, and the real request gets lost. Facts plus an owned feeling are hard to dispute, and a specific request is easy to grant. Respecting their agency also means accepting that a clear request can get a no, which then becomes information for your next decision."
+    }
+   },
+   {
+    "id": "assertive-communication-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Convert one indirect request into an assertive sentence. Ten minutes.\n\n1. Find a real hint you have dropped recently, or a need you have been carrying silently.\n2. Write the four parts separately: the observable situation, your feeling or stake, the need or limit, and one specific request.\n3. Assemble them into two or three sentences. Strike any motive-guess, \"always,\" \"never,\" or apology for the need itself.\n4. Say it aloud once; edit anything that sounds like an accusation rather than a request.\n5. Record: if you deliver it, write one sentence on how the response differed from what the hint had been getting. If you don't yet, write what makes delivery hard."
+    }
+   },
+   {
+    "id": "assertive-communication-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Assertiveness assumes a relationship where directness is safe; with someone who punishes honesty or holds power over you, protecting yourself may reasonably come first, and support from a trusted adult matters more than a well-built sentence. Norms also vary across cultures and families, so calibrated directness looks different in different rooms. And a perfect assertive sentence guarantees nothing: the other person keeps their agency, including the option to refuse.\n\nFollow-up questions: which of the four parts do you tend to drop under pressure, and how does written assertiveness differ from spoken?\n\nYou're ready to build on this guide when you can:\n\n- State a need or limit using clear and respectful language.\n- Convert one real hint into a four-part request and record what happened.\n- Name one context where directness needs care."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "attachment-and-connection",
+  "blocks": [
+   {
+    "id": "attachment-and-connection-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Study how dependable relationships support exploration, comfort, and social learning.\n\nEarly and ongoing relationships can shape expectations about safety, support, and connection. Relationships remain changeable through new experiences, repair, and context.\n\n**The secure base idea**\n\nAttachment research began with a simple observation: children explore more bravely when a dependable caregiver is nearby. The caregiver works as a secure base to explore from and a safe haven to return to when things go wrong. The same pattern shows up far beyond childhood. Students take more intellectual risks with a teacher who responds predictably to mistakes; adults attempt harder things when someone reliable has their back. Dependability, meaning consistent and repairable responses over time, is what converts a relationship into a base.\n\n**Expectations, and their revision**\n\nRepeated experiences with caregivers and close others build working models: quiet expectations about whether people will show up, whether needs are acceptable to have, whether comfort is available. These models shape how someone reads new relationships. They are starting points rather than verdicts. New dependable relationships, repaired ruptures, and changed contexts revise the models throughout life, which is why one steady mentor or friend can matter so much.\n\n**An everyday example**\n\nTwo students face the same confusing assignment. One asks the teacher immediately; the other hides the confusion for a week. Often the difference is a history: what happened, in each of their lives, the last hundred times they showed someone they needed help."
+    }
+   },
+   {
+    "id": "attachment-and-connection-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Map the support signals in one real setting. Ten minutes.\n\n1. Pick a setting where someone has to learn or try new things: a classroom, a team, a job, a family table.\n2. List the signals that tell a newcomer it is safe to explore: how mistakes are answered, whether questions get welcomed, whether help arrives when asked, whether the key person is predictable.\n3. Mark the two signals that matter most, and one signal in the setting that currently says the opposite.\n4. Record: write one sentence on what one person could change to make exploration safer there, and if you can, watch how one such signal plays out this week."
+    }
+   },
+   {
+    "id": "attachment-and-connection-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Attachment language is easy to overapply: popular quizzes that assign fixed \"styles\" flatten research that describes patterns, which vary across relationships and change over time. Early experience shapes expectations without sealing them, so a hard start is a risk factor rather than a destiny. Culture also shapes what dependable care looks like. Relationships involving fear, control, or harm are a safety matter for a trusted adult or qualified professional rather than an attachment exercise.\n\nFollow-up questions: how does the secure base idea apply to online relationships, and what does research say about earned security in adulthood?\n\nYou're ready to build on this guide when you can:\n\n- Describe how connection can support exploration and learning.\n- Map the support signals of one setting and record one observation.\n- Name one limit of attachment-style labels."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "attention-anchors",
+  "blocks": [
+   {
+    "id": "attention-anchors-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Compare breath, sound, sensation, movement, and visual anchors for attention practice.\n\nAn anchor gives the mind a repeatable place to return. The best anchor is usable in the person's setting and can be noticed with enough detail to support a return.\n\n**The menu of anchors**\n\nBreath is the classic anchor: always present, rhythmic, and detailed, with temperature, depth, and pace to notice. Sound works with the environment instead of against it, resting attention on whatever arrives, traffic, a fan, birds, without chasing or naming. Body sensation uses a fixed point of contact, feet on the floor or hands on a desk, and suits moments when the breath feels uncomfortable to watch. Movement anchors attention to a repeating action, walking, stretching, washing dishes, and suits people who settle badly while still. Visual anchors rest the gaze on one object, a candle, a leaf, a point on the wall.\n\n**What makes an anchor good**\n\nTwo tests decide. Usability: can you actually attend to it in your real setting? A visual anchor fails on a noisy bus; sound might thrive there. Detail: does it offer enough texture that you can tell when you are on it versus drifting? The richer the detail, the easier the return. Fit is personal and situational, which is why comparing anchors directly, as this guide's practice does, beats adopting whatever anchor a video happened to teach."
+    }
+   },
+   {
+    "id": "attention-anchors-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Run a two-anchor comparison. You need five minutes and a timer.\n\n1. Pick two anchors from the menu that fit your current setting.\n2. Set the timer for two minutes and rest attention on the first anchor. When attention wanders, return without a verdict.\n3. Take thirty seconds to jot: which details were easiest to notice, and how hard was the return?\n4. Repeat two minutes with the second anchor, then jot the same two notes.\n5. Record: write one sentence naming which anchor supported the return better and why, then use that anchor for the rest of the week's practices."
+    }
+   },
+   {
+    "id": "attention-anchors-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Anchor fit changes with setting and state, so a winner from one comparison is not permanent; a stressful week or a loud room can flip the result. For some people, breath-watching increases discomfort or anxiety, and the right response is switching anchors rather than pushing through. A two-minute comparison is also a small sample, useful for choosing rather than concluding. If practice consistently increases distress, adjust or stop, and bring persistent distress to a qualified professional.\n\nFollow-up questions: does your best anchor differ between morning and night, and does an anchor's advantage grow or shrink after a week of use?\n\nYou're ready to build on this guide when you can:\n\n- Choose and describe an anchor that fits a short practice in your setting.\n- Compare two anchors and record which supported the return.\n- Name one limit of a single quick comparison."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "body-scan-practice",
+  "blocks": [
+   {
+    "id": "body-scan-practice-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Move attention through the body and describe sensations with curiosity and precision.\n\nA body scan uses a sequence to notice pressure, temperature, tension, movement, and neutral areas. Sensation descriptions create information while interpretation remains open.\n\n**How a scan works**\n\nA body scan moves attention along a fixed route, usually feet to head, pausing at each region to notice whatever is actually there. The sequence matters: it keeps the exercise systematic instead of letting attention jump to whatever aches loudest. At each stop, the task is description at the level of raw sensation: pressure, warmth, coolness, tingling, tightness, pulsing, or nothing at all. Noticing nothing is a legitimate finding; neutral areas are part of the data.\n\n**Description versus interpretation**\n\nThe skill under the skill is separating what you sense from what you conclude. \"Tight band across the shoulders\" is a description. \"I'm stressed and it's going to be a terrible week\" is an interpretation stacked on top of it. Descriptions are checkable and often lead somewhere useful; interpretations imported too early tend to amplify the feeling they describe. The scan trains the descriptive register, which pays off far beyond the practice, in noticing early stress signals, describing symptoms accurately, and catching tension before it sets.\n\n**An everyday example**\n\nMid-scan, a student finds a clenched jaw they had not noticed all day. Nothing mystical occurred. Attention visited a region that never gets visited, and the finding, once described, was easy to release."
+    }
+   },
+   {
+    "id": "body-scan-practice-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Run one five-minute scan. You need a chair or a place to lie down, a timer, and your journal.\n\n1. Set the timer for five minutes and settle into a comfortable position.\n2. Start at the feet. Notice contact, temperature, and any sensation present, then move upward: legs, hips, belly, chest, hands, arms, shoulders, neck, face.\n3. At each region, silently describe what is there in sensation words. If a region reports nothing, note that and move on.\n4. When attention drifts, return to the last region you remember.\n5. Record: write three sensations you found, in descriptive language only, and one thing that changed between the start and end of the scan."
+    }
+   },
+   {
+    "id": "body-scan-practice-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "A body scan is an awareness practice; it describes sensation and is never a diagnostic tool, so a persistent or worrying physical finding belongs with a health professional. For some people, especially those with pain conditions or trauma histories, close body attention can increase distress; shortening the scan, keeping eyes open, or choosing an external anchor are all reasonable adaptations, and persistent distress deserves qualified support. Sensations also shift naturally, so one scan is a snapshot rather than a baseline.\n\nFollow-up questions: does your tension map change across a week of scans, and which regions consistently escape your notice?\n\nYou're ready to build on this guide when you can:\n\n- Describe bodily sensations with specific, observable language.\n- Complete a five-minute scan and record three findings.\n- Name one limit of the practice and one adaptation."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "brain-and-behavior",
+  "blocks": [
+   {
+    "id": "brain-and-behavior-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Build a careful map of how brain processes, body states, and environments relate to behavior.\n\nBehavior emerges from interacting brain, body, history, and context. A brain explanation can add useful detail while leaving room for learning, relationships, culture, and current conditions.\n\n**Four streams into one act**\n\nTake a single behavior, snapping at a friend, and trace its inputs. Brain processes: threat detection running fast, regulation running slow, systems shaped by sleep and stress. Body state: six hours of sleep, no lunch, caffeine wearing off; body states tilt which responses come easily. Learned history: every previous version of this situation taught something about what snapping gets or costs. Context: the room, the audience, the time pressure, the relationship. The behavior is the meeting point of all four streams, which is why single-cause stories about behavior are almost always too small.\n\n**Why multiple influences matter practically**\n\nEach stream offers a different lever. A brain-only story (\"that's just how my brain works\") quietly deletes the levers of sleep, practice, and environment. A willpower-only story deletes the genuine biology. Holding all four means a behavior can be understood with compassion and still be changeable: adjust the body state, redesign the context, practice a different response, and the brain-level tendencies express differently.\n\n**Reading brain claims**\n\nThe same map guards against neuro-hype. A headline that says a brain region \"lights up\" during anger has located part of one stream; it has explained neither the behavior nor the person."
+    }
+   },
+   {
+    "id": "brain-and-behavior-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Build a four-stream map for one everyday behavior. Ten minutes, journal or blank page.\n\n1. Choose one specific behavior you did this week, ideally one you'd like to understand: procrastinating, snapping, doomscrolling, or a good one like finishing a hard task.\n2. Draw four boxes around it: brain process, body signal, environmental cue, learned history.\n3. Fill each box with at least one concrete entry. For learned history, ask what this behavior got you in the past.\n4. Circle the box with the easiest lever, the influence you could realistically change this week.\n5. Record: write one sentence on which stream you usually ignore when explaining your own behavior."
+    }
+   },
+   {
+    "id": "brain-and-behavior-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "The four-stream map is a thinking tool rather than a scientific method: it organizes influences without measuring them, and your guesses about each stream can be wrong. Neuroscience itself explains behavior at the level of populations and probabilities, and rarely licenses confident claims about why one person did one thing. The map also describes rather than excuses; understanding a behavior's inputs and being responsible for it are compatible. Behavior that feels out of control or harmful deserves support from a qualified professional.\n\nFollow-up questions: which stream does your family or culture favor when explaining behavior, and what changes when you deliberately adjust one stream for a week?\n\nYou're ready to build on this guide when you can:\n\n- Explain why behavior usually has multiple interacting influences.\n- Map one real behavior across four streams and record one observation.\n- Name one limit of single-cause explanations."
+    }
+   }
+  ]
+ }
+]

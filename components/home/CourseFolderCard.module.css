@@ -32,6 +32,16 @@
   filter: drop-shadow(0 9px 8px rgba(0, 0, 0, 0.5));
 }
 
+/* Field Notes uses the dark folder variant, so its fade stays neutral too. */
+.folderDark .bottomFade {
+  background: linear-gradient(
+    to bottom,
+    rgba(42, 42, 46, 0) 0%,
+    rgba(42, 42, 46, 0.55) 55%,
+    rgba(42, 42, 46, 0.92) 100%
+  );
+}
+
 .folder:hover {
   transform: translateY(-3px);
   filter: drop-shadow(0 9px 8px rgba(24, 42, 114, 0.5));

@@ -1,0 +1,706 @@
+[
+ {
+  "slug": "feedback-and-learning",
+  "blocks": [
+   {
+    "id": "feedback-and-learning-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Turn corrections into specific information about the next action to take.\n\nFeedback works best when it arrives close enough to the attempt to guide revision and names the gap between the goal and the current work. Encouragement can support persistence, while details guide change.\n\n**What feedback is**\nFeedback is any information that compares a performance against a goal. It can come from a teacher, a coach, a peer, or a self-check against a rubric. Feedback is only useful once it becomes actionable: it has to answer the question \"what do I do differently next time?\"\n\n**Why specificity matters**\nVague feedback like \"good job\" or \"needs work\" tells a learner that a gap exists without locating it. Specific feedback names the exact feature of the work that fell short of the goal — a missing citation, an unclear thesis, a rushed transition — and often implies the fix. This works because skill improvement depends on narrowing a search: a learner revising blind has to guess at dozens of possible problems, while a learner with located feedback can spend their limited attention on the one or two changes that matter most.\n\n**Sorting feedback into categories**\nComments usually fall into three kinds: accuracy (is this correct?), strategy (is this the right approach?), and presentation (is this clear and well organized?). Sorting comments this way keeps a learner from treating a small wording note with the same urgency as a factual error.\n\n**A concrete example**\nImagine a student turns in a lab report and gets the comment \"your conclusion doesn't follow from your data.\" That single sentence is more useful than \"you need to work on your writing,\" because it names exactly which part of the report to revisit and points to a next action: reread the data table, then rewrite the conclusion so each claim traces back to a specific result."
+    }
+   },
+   {
+    "id": "feedback-and-learning-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Setup: 20 minutes, one finished or in-progress piece of work (an essay, project, or assignment), and a way to collect comments — a teacher, tutor, peer, or written rubric.\n\n1. Share the work and ask for specific feedback: \"What is one thing that would make this stronger?\"\n2. Write down every comment you receive, even small ones.\n3. Sort each comment into one of three categories: accuracy, strategy, or presentation.\n4. Pick the single comment that would improve the work the most if you acted on it.\n5. Make that one revision.\n6. Record: write one sentence naming which comment you chose and why it mattered more than the others."
+    }
+   },
+   {
+    "id": "feedback-and-learning-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Feedback like this works best for skills you can revise again soon — writing, problem sets, performances — where the gap between attempt and correction stays visible. It works less well for one-time decisions or for feedback that arrives too long after the attempt to connect to it. One honest limit: people often remember praise more than specifics, so a learner has to deliberately extract the actionable part from an otherwise encouraging comment. Two questions worth investigating further: how does feedback timing change its effect on revision, and how does feedback differ when it comes from a peer instead of an expert?\n\nYou're ready to build on this guide when you can:\n- turn feedback into a concrete revision or practice step\n- apply the idea in the practice and record one observation\n- name one context, limit, or follow-up question for further investigation"
+    }
+   }
+  ]
+ },
+ {
+  "slug": "group-norms",
+  "blocks": [
+   {
+    "id": "group-norms-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Make the expectations that guide a group visible, discussable, and revisable.\n\nNorms are shared expectations about behavior. Explicit norms can protect participation, evidence, safety, and belonging when a group reviews them together.\n\n**What a norm is**\nA norm is an unwritten or written rule about how people in a group are expected to act — how loudly to speak, who gets interrupted, how disagreement is handled, how work gets divided. Every group has norms whether or not anyone names them; the difference between a healthy group and a strained one is often whether those norms are visible enough to discuss and change.\n\n**Why writing norms down helps**\nUnstated norms tend to reflect whoever is loudest or most comfortable in the room, which can quietly exclude people who think or communicate differently. Writing norms down turns an assumption into something the whole group can see, question, and agree to. It also creates a reference point: when conflict happens, the group can point to the norm instead of arguing about what \"should\" have happened.\n\n**Participation, evidence, safety, and belonging**\nGood norms usually cover a few areas: how everyone gets a turn to speak (participation), how claims get supported (evidence), how mistakes and disagreement are handled without punishment (safety), and how new or quieter members are welcomed (belonging). A norm like \"cite where an idea came from\" protects evidence; a norm like \"no interrupting\" protects participation.\n\n**Revision matters as much as writing**\nA norm that never changes stops fitting the group as it grows or as new problems appear. Building in a scheduled check-in — say, once a month — keeps norms working documents rather than fixed rules.\n\n**A concrete example**\nA study group agrees on a norm: \"anyone can say 'I'm lost' without apologizing.\" That single sentence changes what happens the next time someone doesn't understand a concept — instead of staying silent, they say the phrase, and the group pauses to explain."
+    }
+   },
+   {
+    "id": "group-norms-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Setup: 20 minutes with your study group, project team, or club, plus paper or a shared document.\n\n1. List every norm the group already follows informally, even ones no one has said out loud.\n2. As a group, draft five explicit norms covering participation, evidence, safety, and belonging.\n3. Write each norm as a short, concrete sentence — something a new member could follow without guessing.\n4. Add one process for revisiting the norms after a month, such as a five-minute check-in at a regular meeting.\n5. Share the final list with everyone in the group.\n6. Record: write one sentence about which norm felt hardest to agree on and why."
+    }
+   },
+   {
+    "id": "group-norms-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Explicit norms help most in groups that meet repeatedly and depend on trust — study groups, teams, clubs. They matter less for one-off interactions with strangers, where there isn't time to build or revise shared expectations. One honest limit: writing a norm down doesn't guarantee anyone follows it, especially under stress, so norms need occasional enforcement and modeling, not just a document. Two questions worth investigating: how do norms differ across cultures with different expectations about directness, and what happens when one group member consistently breaks an agreed norm?\n\nYou're ready to build on this guide when you can:\n- write group norms that support participation and revision\n- apply the idea in the practice and record one observation\n- name one context, limit, or follow-up question for further investigation"
+    }
+   }
+  ]
+ },
+ {
+  "slug": "health-messages-and-trust",
+  "blocks": [
+   {
+    "id": "health-messages-and-trust-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Design health information that respects evidence, audience, culture, uncertainty, and trust.\n\nPeople use health messages through existing relationships and experiences. Clear sources, practical actions, transparent uncertainty, and community partnership can strengthen understanding.\n\n**What a health message is**\nA health message is any piece of communication meant to inform a decision about health — a poster about vaccination, a pamphlet about sleep, a public announcement about an outbreak. Its purpose is not just to state a fact but to help someone act on it.\n\n**Why audience and trust matter**\nA technically accurate message can still fail if the audience doesn't trust its source, doesn't recognize its own situation in the wording, or can't picture how to apply it. Trust is built over time through relationships, past accuracy, and respect for a community's knowledge and constraints — it isn't something a single message can manufacture on its own. That's why the same underlying evidence often needs to be delivered differently to different audiences without changing what the evidence actually says.\n\n**The parts that need to survive adaptation**\nAdapting a message means changing tone, examples, language, or format while keeping four things intact: the evidence behind the claim, a practical action the person can take, an honest account of uncertainty (what is well established versus still being studied), and a cue that signals the source is trustworthy, such as citing where the information came from.\n\n**Why uncertainty should stay visible**\nHealth science is rarely settled all at once. A message that overstates certainty to sound authoritative can backfire if new evidence updates the picture — audiences remember being misled more than they remember being told \"this is what we know so far.\"\n\n**A concrete example**\nA message about handwashing aimed at young children might use a song and a visual timer, while the same evidence aimed at a clinic waiting room might use a short sign citing infection rates. Both preserve the same evidence and action; only the delivery changes."
+    }
+   },
+   {
+    "id": "health-messages-and-trust-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Setup: 20 minutes, one existing health message (a flyer, a public health website snippet, or a paragraph from a class reading), and two audiences you know well — for example, young children and adults.\n\n1. Identify the core evidence and action inside the original message.\n2. Rewrite the message for the first audience, keeping the evidence and action but changing tone, examples, and vocabulary.\n3. Rewrite the message again for the second audience the same way.\n4. For each version, write one sentence naming its evidence, its action, its uncertainty cue, and its trust cue.\n5. Compare the two versions side by side.\n6. Record: write one observation about what changed and what had to stay the same across both versions."
+    }
+   },
+   {
+    "id": "health-messages-and-trust-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Adapting health messages works well for prevention topics with solid, mainstream evidence — handwashing, sleep, vaccination schedules. It works less well for contested or fast-changing topics, where adapting tone can accidentally adapt the claim itself. One honest limit: audience testing usually happens with small groups, so a message that works for one community may not transfer cleanly to another. Two questions worth investigating: how does a message change when trust in institutions is already low, and how do health messages get adapted across languages without losing meaning?\n\nYou're ready to build on this guide when you can:\n- adapt a health message while preserving evidence and context\n- apply the idea in the practice and record one observation\n- name one context, limit, or follow-up question for further investigation"
+    }
+   }
+  ]
+ },
+ {
+  "slug": "identity-and-context",
+  "blocks": [
+   {
+    "id": "identity-and-context-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Explore how identity is shaped through personal history, relationships, roles, and social context.\n\nIdentity includes self-understanding and the roles people move through. Context can make different parts of identity more visible, valued, challenged, or supported.\n\n**What identity means here**\nIdentity is the ongoing sense a person has of who they are — their values, memberships, history, and the roles they occupy, such as student, sibling, teammate, or employee. It is not a single fixed label but a collection of parts that a person carries into different situations.\n\n**Why context changes what shows up**\nA person doesn't express their whole identity at once. Context — the people present, the setting, the expectations of the moment — determines which parts of identity become relevant. A student who is confident and talkative in a debate club might be quiet in a large lecture hall, not because their identity changed, but because the context called on different roles and made different traits useful or safe to show.\n\n**The mechanism: cueing and constraint**\nContext works in two directions. It cues certain identities by making them relevant — wearing a team jersey cues \"teammate.\" It can also constrain identities by making some roles harder to express — a workplace might discourage the humor that feels natural among friends. Over time, repeated context can also shape identity itself: someone who spends years in a caretaking role may come to see caretaking as central to who they are, not just a role they perform.\n\n**Relationships and history**\nIdentity also carries a person's history: family background, culture, past experiences, and relationships all leave a residue in how someone understands themselves. A relationship that consistently affirms one part of a person's identity — a mentor who takes their scientific curiosity seriously — can strengthen that part over time.\n\n**A concrete example**\nConsider a student who is the primary English speaker in an immigrant family. At school they may be seen mainly as a student; at home they may take on a translator and coordinator role. Both are real parts of their identity, made visible by different contexts."
+    }
+   },
+   {
+    "id": "identity-and-context-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Setup: 20 minutes, paper or a blank document, and a quiet space to think.\n\n1. In the center of the page, write your name.\n2. Around it, write four or five roles or communities you belong to — student, sibling, teammate, employee, and so on.\n3. For each role, add one word or short phrase describing how you act or feel differently in that context.\n4. Draw a line between any two roles that feel connected or in tension with each other.\n5. Mark with a star any role where you feel strongly supported, and with a dot any role where you feel challenged or unsupported.\n6. Record: write one observation about a role where context clearly changed how you showed up."
+    }
+   },
+   {
+    "id": "identity-and-context-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Thinking about identity through roles and context helps most for everyday self-understanding and for noticing patterns across settings. It applies less cleanly to identity categories tied to discrimination or systemic disadvantage, where context can constrain a person regardless of their own choices. One honest limit: self-description is subjective, so an identity map reflects a person's perception in one moment, not a complete or permanent picture. Two questions worth investigating: how does identity shift across major life transitions, and how do other people's expectations shape which parts of identity a person feels safe expressing?\n\nYou're ready to build on this guide when you can:\n- describe how identity and context influence one another\n- apply the idea in the practice and record one observation\n- name one context, limit, or follow-up question for further investigation"
+    }
+   }
+  ]
+ },
+ {
+  "slug": "language-and-development",
+  "blocks": [
+   {
+    "id": "language-and-development-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Explore how language, conversation, culture, and interaction support thinking and belonging.\n\nLanguage carries concepts, relationships, memories, and cultural knowledge. Development grows through interaction with people and environments that offer meaningful communication.\n\n**What language does beyond communication**\nLanguage is often thought of as a tool for sending messages, but it does more than that. It gives a person categories for thinking — words for emotions, sequences for reasoning, labels for objects and relationships. Without a word for something, it can be harder to notice, remember, or discuss it.\n\n**The cognitive role**\nLanguage supports memory (it's easier to recall something you can name), planning (talking through steps helps organize them), and abstract thought (words let people reason about things that aren't physically present, like the future or a hypothetical). Children who talk through a problem out loud, a behavior called self-directed speech, often solve it more effectively than those who work silently — the language itself becomes a thinking tool.\n\n**The social role**\nLanguage also carries relationships and belonging. Shared vocabulary, inside jokes, accents, and storytelling traditions signal who is part of a group. Conversations transmit not just information but emotional tone — comfort, humor, respect — that shapes how connected people feel to each other.\n\n**Why interaction drives development**\nLanguage ability tends to grow fastest through responsive interaction rather than through passive exposure alone. A caregiver who notices what a child is looking at and names it, or a friend who asks a follow-up question, gives language meaning by connecting words to real, shared attention. This is why conversation-rich environments tend to support stronger language development than environments with the same amount of words but less back-and-forth exchange.\n\n**A concrete example**\nA grandparent telling a family story at dinner does more than pass along facts — the child listening absorbs vocabulary, narrative structure, cultural values, and a felt sense of belonging to that family's history, all through one shared conversation."
+    }
+   },
+   {
+    "id": "language-and-development-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Setup: 15 minutes, a conversation or story you can observe — a family dinner, a class discussion, a video of people talking, or a book read aloud.\n\n1. Watch or listen to the conversation or story once without taking notes.\n2. Listen again, and note one moment where language seems to help someone think through an idea, not just state it.\n3. Note one moment where language seems to build connection or belonging — a shared reference, tone, or story.\n4. Write one sentence connecting the two moments: how did language do cognitive work and social work at the same time?\n5. Record: write one observation about which role of language — thinking or belonging — felt more visible in this example."
+    }
+   },
+   {
+    "id": "language-and-development-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Language's role in thinking and belonging applies across ages, but the balance shifts: young children rely more heavily on interaction to build basic vocabulary and concepts, while older learners use language more for reasoning about abstract ideas. This framework applies less cleanly to communication that happens without shared spoken language, such as some sign languages or nonverbal relationships, where the same cognitive and social roles operate through different channels. One honest limit: it's hard to separate language's effect from the relationships it happens within, since supportive conversation and supportive relationships tend to occur together. Two questions worth investigating: how does bilingualism change these roles, and how does written language differ from spoken conversation in supporting thought and belonging?\n\nYou're ready to build on this guide when you can:\n- identify cognitive and social roles of language across development\n- apply the idea in the practice and record one observation\n- name one context, limit, or follow-up question for further investigation"
+    }
+   }
+  ]
+ },
+ {
+  "slug": "life-stage-transition-plan",
+  "blocks": [
+   {
+    "id": "life-stage-transition-plan-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Use values, support, routines, and information to navigate a changing life stage.\n\nA transition plan makes change concrete. It names what is ending, what is beginning, what support exists, and what experiment can make the next step clearer.\n\n**What a life-stage transition is**\nA life-stage transition is a shift between major periods of life that changes routines, relationships, and roles — moving from high school to college, from one job to another, from living with family to living independently. Transitions are often stressful not because change itself is bad, but because familiar routines and support structures disappear at the same time new demands appear.\n\n**Why naming what's ending and beginning helps**\nTransitions can feel overwhelming when they stay vague — \"everything is different now.\" Naming specifics turns a vague feeling into a manageable list: which routines are ending, which relationships will need new effort to maintain, which new responsibilities are beginning. This makes the transition something a person can plan for rather than just endure.\n\n**The role of support**\nEvery transition plan benefits from mapping support explicitly: people who can offer advice, practical help, or emotional steadiness, plus institutional resources like advising offices, mentors, or community groups. Support that existed automatically in the old context — a familiar teacher, a roommate down the hall — often has to be deliberately rebuilt in the new one.\n\n**Why small experiments beat big decisions**\nBig transitions rarely need to be solved all at once. A transition plan works best when it includes one small, low-stakes action that generates real information — trying a new study routine for a week, attending one club meeting — rather than trying to decide the whole future in advance.\n\n**A concrete example**\nA student moving away for college might write: ending — living with family, daily meals together; beginning — self-directed schedule, new friend group; support — a weekly call with a parent, a campus advising office; experiment — join one club in the first month to test a new social routine."
+    }
+   },
+   {
+    "id": "life-stage-transition-plan-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Setup: 20 minutes, paper or a document, and a transition you're currently facing or anticipating.\n\n1. Write a heading for the transition — for example, \"starting college\" or \"changing jobs.\"\n2. List three concrete changes: what is ending and what is beginning.\n3. List three supports — people or resources you can reach out to during the transition.\n4. Write two open questions you still have about the transition.\n5. Choose one small action you can take this week to learn something real about the new stage.\n6. Record: write one observation about which part of the plan — the changes, the support, or the action — felt most useful to write down."
+    }
+   },
+   {
+    "id": "life-stage-transition-plan-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Transition planning works well for transitions with some lead time and some degree of choice — starting school, changing jobs, moving. It works less well for sudden, unchosen transitions, like a loss or an emergency, where there isn't space to plan calmly in advance and more immediate support may be needed. One honest limit: a plan can create a false sense of control over a transition that has many uncontrollable parts. Two questions worth investigating: how do transition plans differ for changes a person didn't choose, and how does social support change in availability across different life stages?\n\nYou're ready to build on this guide when you can:\n- create a support-aware plan for a life-stage transition\n- apply the idea in the practice and record one observation\n- name one context, limit, or follow-up question for further investigation"
+    }
+   }
+  ]
+ },
+ {
+  "slug": "meditation-practice-design",
+  "blocks": [
+   {
+    "id": "meditation-practice-design-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Design a short meditation practice with a clear aim, safe setting, and observation plan.\n\nA practice design names the anchor, duration, context, instructions, and signals for adjustment. Observation helps a learner understand fit without turning a personal trial into a universal claim.\n\n**What a practice design is**\nA meditation practice is more than sitting quietly — it is a structured activity with specific parts that make it repeatable and understandable. Designing one means deciding on an anchor (what you pay attention to, such as breath, sound, or body sensations), a duration, a setting, and a plan for what to do if attention wanders or discomfort arises.\n\n**Why an anchor matters**\nAn anchor is a chosen point of focus that gives wandering attention somewhere to return to. Common anchors include the sensation of breathing, a repeated word, or a sequence of body regions. The anchor itself isn't magic — its purpose is to make it easy to notice when the mind has drifted, since noticing the drift is the actual skill being practiced rather than holding perfect focus.\n\n**Why boundaries and safety matter**\nA \"bounded\" practice has clear limits: a set duration, a safe and private setting, and simple instructions the person can remember without a script. Boundaries make a practice easier to start and easier to evaluate honestly, since an open-ended, vague practice is hard to judge or repeat.\n\n**Why observation matters more than proof**\nA short trial of a new practice cannot prove that meditation works in general — it can only tell one person something about how a specific practice felt to them under specific conditions. Recording specific observations (how attention felt, whether the duration felt too long or short, what came up) turns a vague impression into information that can shape the next attempt.\n\n**A concrete example**\nA five-minute breath-anchored practice, done sitting upright in a quiet room, with the instruction \"notice when your mind wanders and gently return to the breath,\" is bounded enough to try consistently and evaluate honestly after a week."
+    }
+   },
+   {
+    "id": "meditation-practice-design-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Setup: 15 minutes to plan, then one week to carry it out. You'll need a quiet space and a way to time short sessions.\n\n1. Choose one anchor: breath, sound, or body sensations.\n2. Choose a duration between three and ten minutes.\n3. Choose a consistent time and place for the week.\n4. Write one simple instruction for what to do when your attention wanders.\n5. Do three sessions across the week, following the same anchor and duration each time.\n6. Record: after each session, write one or two words describing how attention felt, and at the end of the week, write one overall observation about fit."
+    }
+   },
+   {
+    "id": "meditation-practice-design-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Short meditation trials like this can show a person how a practice feels and whether it's sustainable, but they don't establish broader health effects — research on meditation is ongoing and outcomes vary by practice, duration, and person. Meditation may not be the right approach for everyone; anyone processing significant trauma or a mental health condition should design a practice with guidance from a qualified professional rather than through self-experimentation alone. One honest limit: a one-week trial is too short and too personal to generalize from. Two questions worth investigating: how do different anchors compare for beginners, and how does practice consistency change its effects over months rather than days?\n\nYou're ready to build on this guide when you can:\n- design a bounded meditation practice with a clear observation plan\n- apply the idea in the practice and record one observation\n- name one context, limit, or follow-up question for further investigation"
+    }
+   }
+  ]
+ },
+ {
+  "slug": "mindfulness-and-emotion",
+  "blocks": [
+   {
+    "id": "mindfulness-and-emotion-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Use present-moment awareness to notice emotion before choosing a response.\n\nMindfulness creates a pause for noticing body signals, thoughts, and action urges. The pause can support a deliberate response while preserving the information inside the emotion.\n\n**What mindfulness means here**\nMindfulness is the practice of paying deliberate, nonjudgmental attention to what is happening right now — body sensations, thoughts, and surroundings — rather than reacting automatically or getting lost in the story about what happened. Applied to emotion, it means noticing an emotional reaction as it's happening instead of only recognizing it afterward.\n\n**Why the pause matters**\nEmotions arrive with an action urge attached — anger nudges toward confrontation, anxiety nudges toward avoidance, embarrassment nudges toward hiding. These urges can be useful signals, but acting on them instantly skips the step of deciding whether the urge fits the situation. A brief pause between noticing the emotion and acting on it creates room for that decision.\n\n**The four parts of the map**\nA useful emotion map has four parts: the body signal (a racing heart, tight shoulders, a knot in the stomach), the thought that goes with it (\"this is unfair,\" \"I'm going to fail\"), the action urge (yell, leave, apologize excessively), and the chosen action, which may or may not match the urge. Naming all four separately keeps the emotion from feeling like one undifferentiated wave.\n\n**Why this preserves the emotion's information rather than suppressing it**\nThe goal isn't to eliminate the emotion or pretend it isn't there — emotions carry real information about what matters to a person. The goal is to notice that information clearly enough to choose a response that fits the situation, instead of letting the urge choose automatically.\n\n**A concrete example**\nSomeone feels their face get hot and their thoughts race toward \"they think I'm stupid\" after a comment in class. Noticing the body signal and the thought before reacting gives them a moment to choose a calm question instead of a defensive interruption."
+    }
+   },
+   {
+    "id": "mindfulness-and-emotion-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Setup: any day this week, a small notebook or notes app, and a willingness to pause during one mild emotional moment — not an intense or overwhelming one.\n\n1. When you notice a mild emotion arise — irritation, nervousness, embarrassment — pause before responding.\n2. Write one line naming the body signal (where you feel it and what it's like).\n3. Write one line naming the thought that came with it.\n4. Write one line naming the action urge — what you felt like doing.\n5. Write one line naming the action you actually chose.\n6. Record: after the four lines, write one observation about whether the chosen action matched the urge, and why."
+    }
+   },
+   {
+    "id": "mindfulness-and-emotion-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "This kind of mapping works well for mild, everyday emotions where there's time to pause and reflect. It is not designed for moments of crisis, intense distress, or danger, where quick action matters more than reflection, and it is not a substitute for care from a qualified professional when emotional patterns feel persistent or overwhelming. One honest limit: self-reported body signals and thoughts are hard to verify and can shift simply from the act of paying attention to them. Two questions worth investigating: how does this pause change with practice over time, and how do cultural norms shape which action urges feel acceptable to act on?\n\nYou're ready to build on this guide when you can:\n- map an emotion with present-moment attention before acting\n- apply the idea in the practice and record one observation\n- name one context, limit, or follow-up question for further investigation"
+    }
+   }
+  ]
+ },
+ {
+  "slug": "movement-recovery-balance",
+  "blocks": [
+   {
+    "id": "movement-recovery-balance-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Plan movement, rest, and recovery as a flexible system that changes with demand.\n\nMovement can support capacity while recovery restores it. A balanced plan adapts intensity, duration, sleep, and rest to the person and the current context.\n\n**What movement and recovery mean together**\nMovement includes any physical activity — walking, sports, stretching, structured exercise — that places a demand on the body. Recovery includes sleep, rest days, and lower-intensity activity that allows the body to adapt to that demand. Neither works well without the other: movement without recovery leads to fatigue and injury risk, while recovery without movement doesn't build capacity.\n\n**Why \"system\" is the right word**\nMovement and recovery aren't separate categories to balance once and forget — they interact continuously. A hard week of movement increases the need for recovery; a poor night of sleep reduces the capacity for demanding movement the next day. Thinking of them as a system means planning both together and expecting the plan to shift.\n\n**Why adaptability matters**\nA rigid plan — the same workout every day regardless of sleep, stress, or soreness — ignores that capacity changes. An adaptable plan builds in a rule for adjusting: lighter movement on days with poor sleep, more recovery after an unusually demanding stretch, more movement on days with more energy and time.\n\n**The mechanism: stress followed by adaptation**\nMovement places manageable stress on muscles, the heart, and the nervous system; recovery is when the body adapts to that stress and becomes more capable of handling it next time. Skipping recovery doesn't skip a step — it removes the process that turns effort into capacity.\n\n**A concrete example**\nA student plans two movement options for the week — a run and a bodyweight strength session — and two recovery options — a full rest day and a short walk. Their rule: if sleep was under six hours, swap the harder option for the lighter one that day."
+    }
+   },
+   {
+    "id": "movement-recovery-balance-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Setup: 15 minutes to plan, then one week to follow the plan. No special equipment required.\n\n1. Choose two movement options for the week — one higher intensity, one lower intensity.\n2. Choose two recovery options — one full rest day, one lighter active option like walking or stretching.\n3. Write one adjustment rule: a condition (like poor sleep or high stress) and what you'll do instead that day.\n4. Follow the plan for the week, using the adjustment rule at least once if the condition comes up.\n5. Record: write one observation about a day you adjusted the plan and what you noticed about how your body responded."
+    }
+   },
+   {
+    "id": "movement-recovery-balance-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "This kind of planning works well for general activity and everyday recovery in healthy adults, but it is not medical guidance for injury, chronic illness, or intense athletic training, which need individualized care from a coach or a qualified professional. Movement and recovery needs also vary widely by age, health status, and life circumstances, so a plan that fits one person may not fit another. One honest limit: self-reported energy and soreness are subjective and can be influenced by mood or expectation rather than the body alone. Two questions worth investigating: how does recovery need change with age, and how do sleep and movement interact over longer stretches than a single week?\n\nYou're ready to build on this guide when you can:\n- create an adaptable movement and recovery plan\n- apply the idea in the practice and record one observation\n- name one context, limit, or follow-up question for further investigation"
+    }
+   }
+  ]
+ },
+ {
+  "slug": "online-identity-and-audiences",
+  "blocks": [
+   {
+    "id": "online-identity-and-audiences-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Study how platforms, audiences, permanence, and context shape online self-presentation.\n\nOnline identity is built through messages, images, interactions, platform design, and imagined audiences. A post can travel across contexts, so intentional sharing includes privacy and future effects.\n\n**What online identity means**\nOnline identity is the version of a person that others encounter through posts, profiles, comments, and interactions on digital platforms. It is shaped not only by what someone chooses to share but by the platform's design — what gets highlighted, how content spreads, and who can see what.\n\n**The imagined audience versus the real audience**\nWhen posting, people usually picture an \"imagined audience\" — friends, followers, the people they expect to see the post. The real audience can be much larger or different: a post can be shared, screenshotted, found through search, or seen by someone outside the intended group months or years later. This gap between imagined and real audience is one of the main sources of online missteps.\n\n**Why permanence and context collapse matter**\nMany platforms make content persistent and searchable long after the moment it was posted in. Content also travels across \"context collapse\" — a joke meant for close friends can be read very differently by a teacher, a future employer, or a stranger, because each audience brings different context to interpret it.\n\n**Platform design shapes behavior**\nFeatures like likes, follower counts, and algorithmic ranking reward certain kinds of content — often more dramatic, more personal, or more frequent posting — which can push self-presentation toward what performs well rather than what feels accurate or private.\n\n**A concrete example**\nA student posts a venting story about a friend, imagining only close friends will see it. The post gets shared outside that circle, reaches the friend involved, and is read without the tone or context the student intended — illustrating how imagined and real audiences can diverge."
+    }
+   },
+   {
+    "id": "online-identity-and-audiences-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Setup: 15 minutes, and one post format you use or are considering — a photo, a caption, a video, or a comment.\n\n1. Choose one post you've made or plan to make.\n2. Write down the audience you imagined would see it.\n3. List two or three other audiences who could realistically see it, now or later.\n4. Note any private detail in the post — a location, a name, an identifying detail.\n5. Write one sentence on how the post might be interpreted differently a year from now, or by someone outside the intended audience.\n6. Record: write one observation about the gap between your imagined audience and the possible real audience."
+    }
+   },
+   {
+    "id": "online-identity-and-audiences-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "This kind of analysis applies well to public or semi-public platforms where content can spread beyond its original audience. It applies less to fully private, ephemeral, or end-to-end encrypted communication, where permanence and reach work differently. One honest limit: it's hard to predict exactly how far a post will travel or who will eventually see it, so this practice reduces risk without eliminating it. Two questions worth investigating: how do privacy settings actually change audience reach on different platforms, and how does context collapse affect people differently depending on their job, age, or visibility?\n\nYou're ready to build on this guide when you can:\n- identify audience and context factors in an online communication choice\n- apply the idea in the practice and record one observation\n- name one context, limit, or follow-up question for further investigation"
+    }
+   }
+  ]
+ },
+ {
+  "slug": "play-and-learning",
+  "blocks": [
+   {
+    "id": "play-and-learning-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Study how play supports exploration, practice, imagination, rules, and social learning.\n\nPlay creates a low-stakes space for trying possibilities, negotiating rules, and practicing skills. Different materials and cultures create different play opportunities.\n\n**What play is**\nPlay is voluntary, self-directed activity done for its own sake rather than for an external outcome — building with blocks, inventing a game, pretending, competing in a low-stakes match. Because it isn't graded or judged the way real tasks often are, play removes much of the fear of failure that can block trying something new.\n\n**Exploration**\nPlay gives a person freedom to test what happens without a fixed goal — stacking blocks to see how high they can go, mixing colors to see what results. This kind of open-ended trying builds knowledge about how the world works that structured instruction doesn't always provide, because the learner is choosing the questions.\n\n**Practice**\nPlay also repeats skills in a low-stakes way. A pretend cooking game rehearses sequencing and following steps; a pickup basketball game rehearses coordination and quick decisions. Because mistakes in play carry little cost, they get corrected quickly and without much anxiety.\n\n**Rules and negotiation**\nMany forms of play involve rules the players make or adapt themselves — deciding what counts as \"out,\" inventing a new version of tag. Negotiating rules with other people practices real skills: proposing an idea, compromising, and handling disagreement, all inside a flexible, low-stakes frame.\n\n**Social learning**\nPlay with others teaches turn-taking, reading another person's intentions, and cooperating toward a shared, invented goal. Watching a more skilled peer play can also transfer strategies without any formal teaching taking place.\n\n**A concrete example**\nTwo children inventing a new tag game negotiate boundaries, safe zones, and what counts as \"caught.\" In the process they practice proposing rules, testing them, and revising them when a dispute comes up — a small rehearsal of the same skills used in adult group decision-making."
+    }
+   },
+   {
+    "id": "play-and-learning-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Setup: 15 minutes, a small group of two to five people (peers, siblings, or classmates), and simple materials — a ball, cards, or nothing at all.\n\n1. Choose or invent a simple activity with an open-ended goal, such as a new version of an existing game.\n2. Let the group set one or two rules together before starting.\n3. Play for five to ten minutes, and let the group adjust a rule if it isn't working.\n4. Notice one moment where someone tried something new, one moment of practiced skill, and one moment of negotiation or cooperation.\n5. Record: write one observation connecting exploration, practice, or social learning to something specific that happened during play."
+    }
+   },
+   {
+    "id": "play-and-learning-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Play-based learning applies most clearly to open-ended skills — creativity, negotiation, coordination — and less directly to highly structured knowledge that needs explicit instruction, like historical dates or formal definitions. Access to play also varies: materials, safe space, and free time are not equally available to everyone, which shapes how much a person can learn this way. One honest limit: it's hard to isolate what play specifically teaches from what a supportive environment more broadly provides. Two questions worth investigating: how does play change across childhood into adulthood, and how do different cultures structure play differently while still supporting learning?\n\nYou're ready to build on this guide when you can:\n- connect play with exploration, practice, and social learning\n- apply the idea in the practice and record one observation\n- name one context, limit, or follow-up question for further investigation"
+    }
+   }
+  ]
+ },
+ {
+  "slug": "privacy-and-research",
+  "blocks": [
+   {
+    "id": "privacy-and-research-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Balance useful data with privacy, confidentiality, minimization, and participant control.\n\nPrivacy protects people from unwanted exposure and misuse of information. Ethical research collects what it needs, explains access, limits identifiers, and plans deletion or retention.\n\n**What privacy means in research**\nPrivacy, in this context, is a participant's ability to control what information about them is collected, who can see it, and what happens to it afterward. Confidentiality is a related but distinct idea: it's the promise that identifiable information will be protected from unauthorized access, even if it's collected.\n\n**Why data minimization matters**\nData minimization means collecting only the information actually needed to answer the research question. Every extra piece of data collected — a name, an exact birthdate, a precise location — is also an extra piece of data that could be exposed or misused later. Asking \"do I need this to answer my question?\" before collecting something is the core discipline behind minimization.\n\n**Identifiers and access**\nAn identifier is any piece of data that can be traced back to a specific person, directly (a name) or indirectly (a rare combination of details). Limiting identifiers — using a participant number instead of a name, rounding an age instead of recording a birthdate — reduces risk even if the data is later seen by someone unauthorized. Access control means deciding, in advance, exactly who can see the raw data and why.\n\n**Retention and deletion**\nA privacy plan also includes what happens to the data after the project ends: how long it will be kept, where it will be stored, and when and how it will be deleted. Data kept indefinitely \"just in case\" is a lingering privacy risk with no ongoing research benefit.\n\n**A concrete example**\nA student survey about study habits might collect grade level and answers, but skip full names, using a randomly assigned number instead, and plan to delete the raw responses once the summary is written up."
+    }
+   },
+   {
+    "id": "privacy-and-research-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Setup: 20 minutes, a simple research idea (a small survey or a set of interview questions for a class project), and paper or a document.\n\n1. List every piece of data your project would need to collect.\n2. For each item, write one sentence on why it's needed to answer your question.\n3. Cross out or replace any identifying detail that isn't necessary, such as a full name.\n4. Write who would have access to the raw data and why.\n5. Write a deletion or retention plan: how long the data will be kept and what happens to it afterward.\n6. Record: write one observation about a piece of data you decided to remove or change, and why."
+    }
+   },
+   {
+    "id": "privacy-and-research-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "This kind of privacy planning fits low-risk classroom or informal projects well, but formal research involving human participants — especially anything involving minors, health information, or vulnerable groups — requires review by an institutional ethics process, not just a self-made plan. One honest limit: even careful minimization can't fully prevent re-identification if enough small details are combined. Two questions worth investigating: how do formal research ethics boards evaluate privacy risk, and how does privacy planning change for data collected online versus in person?\n\nYou're ready to build on this guide when you can:\n- design a basic privacy plan for a low-risk research project\n- apply the idea in the practice and record one observation\n- name one context, limit, or follow-up question for further investigation"
+    }
+   }
+  ]
+ },
+ {
+  "slug": "public-health-basics",
+  "blocks": [
+   {
+    "id": "public-health-basics-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Study how health patterns and protective conditions affect groups of people.\n\nPublic health looks at prevention, environments, systems, and population patterns alongside individual care. It asks what conditions make healthy choices more possible for more people.\n\n**Individual versus population approaches**\nAn individual approach to health focuses on one person: a checkup, a diagnosis, a personal treatment plan. A population approach asks a different kind of question: what patterns of illness or wellness exist across a whole group, and what shared conditions are driving those patterns? Both are necessary, but they answer different questions and call for different tools.\n\n**What \"conditions\" means**\nPublic health pays close attention to the environments people live in — clean water, safe housing, access to food, availability of parks, exposure to pollution — because these conditions shape health outcomes before any individual choice comes into play. Two people can make identical personal choices and end up with very different health outcomes if their surrounding conditions differ.\n\n**Prevention as a population strategy**\nWhere individual medicine often treats illness after it appears, public health emphasizes prevention: vaccination programs, clean water systems, workplace safety rules, and health education are all designed to reduce how often illness occurs across a whole population, not just to treat it once it does.\n\n**Why population thinking matters**\nA purely individual lens can miss patterns that only become visible at scale — like a neighborhood with unusually high asthma rates linked to nearby air quality. Public health uses population data to spot these patterns and target conditions rather than only individual behavior.\n\n**A concrete example**\nReducing lead poisoning in children wasn't achieved primarily by treating individual cases — it was achieved by removing lead from gasoline and paint, a population-level change in environmental conditions that reduced exposure for everyone at once, regardless of any single family's choices."
+    }
+   },
+   {
+    "id": "public-health-basics-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Setup: 15 minutes, paper or a document, and a common health concern you're familiar with, such as poor sleep, seasonal illness, or stress.\n\n1. Choose one common health concern.\n2. Write one individual action a person could take to address it, such as a personal habit change.\n3. Write one school or workplace action that could support many people at once, such as a policy or schedule change.\n4. Write one community-level action, such as a public program or environmental change.\n5. Compare the three: which one could reach the most people, and which requires the least individual effort to work?\n6. Record: write one observation about how the three levels of action relate to each other."
+    }
+   },
+   {
+    "id": "public-health-basics-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Population-level thinking applies well to prevention and to patterns that affect large groups, but it can't replace individual medical care for a specific person's diagnosis or treatment. One honest limit: population data describes patterns across groups and doesn't predict what will happen to any one individual. Two questions worth investigating: how do public health interventions get funded and prioritized, and how does population health data account for differences between smaller communities within a larger group?\n\nYou're ready to build on this guide when you can:\n- distinguish individual and population approaches to health\n- apply the idea in the practice and record one observation\n- name one context, limit, or follow-up question for further investigation"
+    }
+   }
+  ]
+ },
+ {
+  "slug": "reliability-and-validity",
+  "blocks": [
+   {
+    "id": "reliability-and-validity-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Compare consistency of measurement with how well a measure represents the intended idea.\n\nReliability asks whether a measure is consistent. Validity asks whether the measure supports the interpretation being made. A measure can be consistent and still capture the wrong thing.\n\n**Defining reliability**\nReliability is consistency: if you use the same measure on the same thing under the same conditions, do you get the same result? A bathroom scale that reads five pounds heavier every time is unreliable in the sense of being wrong, but if it consistently reads five pounds heavy every single time, it is actually reliable — just inaccurate in what it's measuring.\n\n**Defining validity**\nValidity is a different question: does the measure actually capture the concept it claims to capture? A scale that reliably shows the same number every time is only valid for measuring weight if that number genuinely reflects weight and not something else, like the angle of the floor.\n\n**Why a measure can be reliable but not valid**\nThis is the key relationship to understand: reliability is necessary but not sufficient for validity. A measure has to be consistent before it can be trusted at all, but consistency alone doesn't guarantee it's measuring the right thing. A test of \"class participation\" that only counts how many times a student raises their hand is reliable — it produces the same count every time — but it may not be valid, since a thoughtful, quiet student might participate meaningfully without raising a hand.\n\n**Why this distinction matters**\nConfusing the two leads to trusting numbers too much. A consistent result feels objective, but consistency says nothing about whether the number means what people assume it means.\n\n**A concrete example**\nA daily mood rating from one to ten can be reliable if a person interprets the scale the same way each day, but it may not be valid as a measure of \"well-being\" if it mostly captures how tired someone is that day rather than their broader sense of well-being."
+    }
+   },
+   {
+    "id": "reliability-and-validity-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Setup: 15 minutes, paper or a document, and a simple measure you use or have seen used, such as a daily mood rating from one to ten.\n\n1. Describe the measure and what it's meant to capture.\n2. Ask: if you used this measure on the same day three times in a row, would you likely get the same answer? Write yes, no, or unsure, and explain.\n3. Ask: does a consistent answer actually reflect the concept it claims to measure, or could it be capturing something else? Write your reasoning.\n4. Identify one piece of missing context that could change how you interpret a single reading.\n5. Record: write one observation about whether this measure seems more reliable, more valid, both, or neither, and why."
+    }
+   },
+   {
+    "id": "reliability-and-validity-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Reliability and validity apply to almost any measurement, from lab instruments to self-report surveys, but they matter most when a number is being used to make a decision or support a claim. One honest limit: validity is rarely all-or-nothing — a measure can be valid for one purpose and not another, so the question \"valid for what?\" always matters. Two questions worth investigating: how do researchers actually test a measure's validity, and how does a measure's reliability change across different populations or settings?\n\nYou're ready to build on this guide when you can:\n- distinguish reliability from validity in a measurement example\n- apply the idea in the practice and record one observation\n- name one context, limit, or follow-up question for further investigation"
+    }
+   }
+  ]
+ },
+ {
+  "slug": "retrieval-practice",
+  "blocks": [
+   {
+    "id": "retrieval-practice-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Strengthen learning by pulling an idea from memory before checking the source.\n\nRetrieval practice uses questions, blank-page summaries, flashcards, or explanations from memory. Feedback closes the loop and turns an error into a target for another attempt.\n\n**What retrieval practice is**\nRetrieval practice means trying to recall information from memory before looking it up — answering a question from memory, writing a summary with the book closed, or explaining a concept out loud without notes. This is different from rereading, which only requires recognizing information rather than producing it.\n\n**Why retrieval strengthens memory**\nThe act of pulling information out of memory is itself a learning event, not just a test of what's already known. Each successful retrieval makes the memory easier to access next time, and even a failed retrieval attempt can strengthen learning if it's followed by feedback — the struggle to recall seems to prime the brain to encode the correct answer more deeply once it's revealed.\n\n**Why feedback closes the loop**\nRetrieval without feedback risks reinforcing a wrong answer with false confidence. The value of a retrieval prompt comes from what happens after: checking the answer, noticing the gap, and treating that gap as a specific target for the next round of practice, not as a final verdict on ability.\n\n**A concrete example**\nA student studying for a psychology exam closes their notes and writes everything they remember about a term, like \"cognitive dissonance,\" from memory. They then check their notes, discover they left out the tension between belief and behavior, and mark that specific piece as a gap to review — rather than rereading the whole chapter.\n\n**A concrete mechanism worth naming**\nThis effect is sometimes called the testing effect: retrieval attempts, even ungraded ones, produce more durable learning than an equivalent amount of time spent rereading. It works because retrieval forces active reconstruction, which builds stronger and more flexible retrieval pathways than passive recognition does."
+    }
+   },
+   {
+    "id": "retrieval-practice-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Setup: 15 minutes, notes or a textbook from one lesson, and something to write with.\n\n1. Close your notes so you can't glance at them while working.\n2. Write five questions about the lesson from memory, covering the main ideas rather than small details.\n3. Answer each question from memory, without looking anything up, even if you're unsure.\n4. Open your notes and check each answer carefully against the source.\n5. Mark each answer as clear, partial, or missing.\n6. Revisit only the partial and missing answers, rereading just the relevant section for each one.\n7. Record: write one observation about which specific idea was hardest to retrieve and what made it harder than the others."
+    }
+   },
+   {
+    "id": "retrieval-practice-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Retrieval practice works best for factual and conceptual knowledge that can be checked against a clear source, such as definitions, sequences, and explanations. It's less suited to open-ended creative work or skills without a clear right answer, where \"checking\" isn't as straightforward. One honest limit: retrieval practice can feel harder and less pleasant than rereading, which sometimes makes learners avoid it even though it works better. Two questions worth investigating: how does spacing retrieval attempts over days compare to doing them all at once, and how does retrieval practice work differently for skills like writing compared to facts?\n\nYou're ready to build on this guide when you can:\n- use a retrieval prompt and interpret the result as information for the next practice\n- apply the idea in the practice and record one observation\n- name one context, limit, or follow-up question for further investigation"
+    }
+   }
+  ]
+ },
+ {
+  "slug": "rumination-and-attention",
+  "blocks": [
+   {
+    "id": "rumination-and-attention-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Study repetitive thought loops and how attention can return to a chosen task.\n\nRumination repeats a concern without producing a next action. Attention cues, time limits, writing, movement, and social support can create a transition from looping to a bounded response.\n\n**What rumination is**\nRumination is a pattern of repetitive thinking about a concern, replaying the same worry, regret, or problem without arriving anywhere new. It's different from productive problem-solving, which moves toward a decision or action; rumination tends to circle the same ground, often intensifying distress without resolving it.\n\n**Why it's easy to get stuck**\nRumination can feel productive because it's about a real concern, and the mind treats repeated attention as if it must be leading somewhere. But without a concrete next step, the loop just repeats the same appraisal of the problem rather than generating new information or progress.\n\n**What breaks the loop**\nA bounded next action interrupts rumination by giving attention somewhere specific and finite to go: naming the topic out loud, writing down one small actionable step, setting a time limit on thinking about it, or shifting attention through movement or conversation. The key feature is boundedness — a clear stopping point or a clear task, rather than an open-ended attempt to \"stop worrying.\"\n\n**Why attention needs a return cue**\nEven after a bounded action, attention often drifts back to the loop. A return cue — a phrase, a physical action, a scheduled time to revisit the concern — gives the mind a specific, repeatable way to redirect attention each time it wanders back, rather than relying on willpower alone.\n\n**A concrete example**\nSomeone replaying an awkward conversation labels the topic (\"the conversation with my coworker\"), writes one actionable step (\"I'll ask for a quick check-in tomorrow\"), and sets a return cue: each time the thought returns in the next hour, they silently note \"already have a plan\" and redirect to their current task."
+    }
+   },
+   {
+    "id": "rumination-and-attention-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Setup: any day this week, a notebook or notes app, and awareness of when a thought loop starts.\n\n1. Notice when the same worry or concern starts repeating in your mind.\n2. Write a short label for the topic, in a few words.\n3. Write one actionable step you can take about it, even a small one.\n4. Choose a return cue — a phrase or action you'll use if the thought comes back.\n5. Set a time limit of ten minutes: if the thought returns before then, use your return cue and redirect to your current task.\n6. Record: write one observation about whether the loop returned, and how the return cue felt to use."
+    }
+   },
+   {
+    "id": "rumination-and-attention-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "This approach helps with everyday repetitive worry about specific, nameable concerns. It is not a substitute for professional support when rumination is frequent, severe, or connected to a mental health condition — a qualified professional can help with patterns that don't respond to self-directed strategies. One honest limit: a bounded action can feel artificial or insufficient for concerns that are genuinely large or unresolved. Two questions worth investigating: how does rumination differ from healthy reflection, and how do different return cues compare in how well they work over time?\n\nYou're ready to build on this guide when you can:\n- recognize a repetitive thought loop and create one bounded next action\n- apply the idea in the practice and record one observation\n- name one context, limit, or follow-up question for further investigation"
+    }
+   }
+  ]
+ },
+ {
+  "slug": "shame-and-self-talk",
+  "blocks": [
+   {
+    "id": "shame-and-self-talk-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Recognize identity-level self-judgments and replace them with specific, changeable descriptions.\n\nShame can compress a mistake into a global judgment about the self. Specific language restores detail: what happened, what mattered, what can be repaired, and what support is available.\n\n**What shame does to language**\nShame often shows up as a global statement about identity: \"I'm such an idiot,\" \"I'm a bad friend,\" \"I always mess things up.\" These statements treat a single event as evidence about a person's entire character, rather than describing what actually happened.\n\n**Why global judgments are hard to act on**\nA judgment like \"I'm a failure\" gives no next step, because it isn't about anything specific — there's nothing concrete to repair or change about being a whole category of person. Global self-judgments also tend to spread: one mistake becomes evidence for a permanent trait, which makes the feeling of shame larger than the event that caused it.\n\n**Why specific description helps**\nRewriting a global judgment as a specific, observable event restores what actually happened and what can be done about it. \"I forgot to text back for two days\" is a specific, describable event with a possible next step — apologize, follow up — while \"I'm a bad friend\" is not.\n\n**The mechanism: separating the act from the identity**\nThis distinction is sometimes framed as separating \"what I did\" from \"who I am.\" A specific description keeps the behavior open to change, because behaviors can be repeated, avoided, or repaired, while an identity label feels fixed and harder to update, which is part of why shame can be so sticky.\n\n**A concrete example**\nA student who bombs a presentation might think \"I'm terrible at public speaking.\" Rewritten specifically: \"I lost my place twice and spoke too fast.\" The second version names something a person can actually practice and improve, and doesn't foreclose the possibility of getting better.\n\nOne honest note: this practice is about ordinary mistakes and self-criticism, not a replacement for professional support with more persistent shame or trauma."
+    }
+   },
+   {
+    "id": "shame-and-self-talk-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Setup: 10 minutes, paper or a notes app, and one recent moment of self-criticism you can still remember clearly.\n\n1. Write down one self-critical sentence you've said to yourself recently, exactly as it came to mind.\n2. Identify what specific event or action the sentence is really about.\n3. Rewrite the sentence as an observable event: what happened, described plainly, without a character judgment attached.\n4. Add one next step: something concrete you could do to repair, practice, or respond to the event.\n5. Read both versions side by side, slowly.\n6. Record: write one observation about how the two versions felt different to read."
+    }
+   },
+   {
+    "id": "shame-and-self-talk-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "This practice helps with everyday mistakes and ordinary self-criticism. It applies less directly to shame connected to trauma, chronic self-esteem difficulties, or mental health conditions, where a qualified professional can offer more sustained support than a self-directed rewrite. One honest limit: rewriting language changes how a thought is framed, but it doesn't erase the underlying feeling immediately, and shame can return even after a specific rewrite. Two questions worth investigating: how does shame differ from guilt in its effects on behavior, and how do cultural norms shape which mistakes trigger shame most strongly?\n\nYou're ready to build on this guide when you can:\n- turn a global self-judgment into a specific and actionable description\n- apply the idea in the practice and record one observation\n- name one context, limit, or follow-up question for further investigation"
+    }
+   }
+  ]
+ },
+ {
+  "slug": "source-checking-workflow",
+  "blocks": [
+   {
+    "id": "source-checking-workflow-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Use a repeatable sequence for checking an author, source, date, evidence, and context.\n\nA source check moves from claim to origin, method, date, comparison, and limits. The workflow protects time by stopping when the evidence cannot answer the question.\n\n**Why a sequence helps**\nChecking a claim without a structure often turns into an unfocused search that either stops too early or never ends. A repeatable sequence gives a clear order of questions to ask, so checking becomes a habit rather than a fresh decision every time.\n\n**The parts of the sequence**\n- Author: who made the claim, and what is their expertise or connection to the topic?\n- Source: where was it published, and does that outlet have a track record for accuracy?\n- Date: when was it published, and could newer information have changed the picture?\n- Evidence: what specific evidence backs the claim — a study, an official statistic, an anecdote?\n- Context: what does the claim leave out, and how does it compare to other sources on the same topic?\n\n**Why \"stopping when evidence can't answer\" matters**\nNot every claim can be fully verified with a reasonable amount of time and effort. Part of the skill is recognizing when the available evidence is too thin, too old, or too one-sided to reach a confident conclusion, and being willing to say so instead of forcing a verdict.\n\n**Why this protects time and judgment**\nA structured sequence stops the common failure modes of casual fact-checking: trusting a source because it's familiar, trusting a claim because it confirms what you already believed, or spending unlimited time without a clear stopping point. Moving through the same steps every time makes the process quicker the more a person practices it.\n\n**A concrete example**\nA claim online states a food additive is dangerous. Checking the sequence: the author has no listed credentials, the source is an unfamiliar blog, the linked study is a decade old and doesn't test the amount typically consumed, and mainstream health sources describe the additive as safe within regulated limits — the workflow surfaces a clear conclusion faster than reading in circles."
+    }
+   },
+   {
+    "id": "source-checking-workflow-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Setup: 15 minutes, one article or public claim you've encountered recently — a news story, a social media post, or a headline.\n\n1. Identify the author and note what you can find about their expertise or connection to the topic.\n2. Identify the source or publication and note anything you know about its track record.\n3. Check the date and consider whether newer information could exist.\n4. Identify the specific evidence behind the claim.\n5. Look for one other source on the same topic to compare.\n6. Record: write a two-sentence conclusion — one supported claim you're confident in, and one open question you couldn't resolve."
+    }
+   },
+   {
+    "id": "source-checking-workflow-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "This workflow works well for public claims with traceable authors and sources, such as news articles and online posts. It works less well for claims from anonymous or hard-to-trace sources, where several steps of the sequence can't be completed at all. One honest limit: the workflow reduces error but doesn't guarantee a correct conclusion, especially on complex or actively contested topics. Two questions worth investigating: how does source-checking change for claims spreading quickly on social media, and how do professional fact-checkers handle claims where evidence is genuinely mixed?\n\nYou're ready to build on this guide when you can:\n- apply a source-checking sequence to a public claim\n- apply the idea in the practice and record one observation\n- name one context, limit, or follow-up question for further investigation"
+    }
+   }
+  ]
+ },
+ {
+  "slug": "stress-response-systems",
+  "blocks": [
+   {
+    "id": "stress-response-systems-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Learn how the body and brain coordinate responses to challenge and recovery.\n\nStress responses mobilize attention and energy for a demand. Recovery systems help return the body toward a flexible baseline, and repeated demands can interact with sleep, support, and perceived control.\n\n**What a stress response is**\nA stress response is the body's coordinated reaction to a perceived challenge or threat: the brain signals the release of hormones like adrenaline and cortisol, the heart rate increases, attention sharpens, and energy gets redirected toward dealing with the demand. This response evolved to help meet real physical challenges, but it activates for many kinds of modern demands too, including a difficult conversation or an upcoming deadline.\n\n**The three stages: signal, response, recovery**\nA stress episode can be described in three stages. First, a signal: something is perceived as demanding or threatening, whether physically dangerous or not. Second, a response: the body mobilizes — faster heartbeat, heightened alertness, redirected energy. Third, recovery: once the demand passes, the body works to return toward a flexible baseline, slowing the heart rate and settling the nervous system.\n\n**Why recovery matters as much as response**\nThe stress response itself isn't the problem — it's adaptive and often useful. Problems arise more from incomplete recovery: when demands repeat faster than the body can return to baseline, the system stays activated longer than any single challenge requires, which can affect sleep, mood, and long-term health.\n\n**What shapes recovery**\nRecovery isn't purely automatic. Sleep quality, a sense of control over the situation, and social support all interact with how quickly and completely a person's stress response resolves. Two people facing the same demand can recover at very different rates depending on these contextual factors.\n\n**A concrete example**\nBefore a timed exam, a student's heart rate rises and focus narrows (signal and response). Afterward, taking a walk, talking with a friend, and getting a full night's sleep support recovery — while staying up late worrying about the grade would interfere with it."
+    }
+   },
+   {
+    "id": "stress-response-systems-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Setup: 15 minutes, paper or a document, and a short, real challenge you experienced recently — a test, a conversation, a deadline.\n\n1. Describe the signal: what made the situation feel demanding or challenging?\n2. Describe the response: what did you notice in your body or attention during it?\n3. Describe the recovery: what happened afterward, and how long did it take to feel settled?\n4. Name one contextual support that helped or could have helped recovery — sleep, a person, a routine.\n5. Record: write one observation about which stage — signal, response, or recovery — you have the least control over, and why."
+    }
+   },
+   {
+    "id": "stress-response-systems-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "This three-stage framework applies well to everyday, time-limited demands like tests, conversations, and deadlines. It applies less directly to chronic or ongoing stressors without a clear endpoint, where the same recovery stage may never fully complete, and to situations involving trauma, which need care from a qualified professional rather than self-mapping alone. One honest limit: body signals are influenced by many factors at once — caffeine, sleep, illness — so a single mapped episode doesn't isolate stress cleanly from other causes. Two questions worth investigating: how does chronic stress change the recovery stage over time, and how do different kinds of social support affect recovery differently?\n\nYou're ready to build on this guide when you can:\n- map a stress response from trigger through recovery and name a contextual support\n- apply the idea in the practice and record one observation\n- name one context, limit, or follow-up question for further investigation"
+    }
+   }
+  ]
+ },
+ {
+  "slug": "technology-and-attention",
+  "blocks": [
+   {
+    "id": "technology-and-attention-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Analyze how digital tools shape attention, choice, social connection, and recovery.\n\nTechnology changes the cues and rewards around attention. Good design makes goals visible, supports control, and gives people meaningful choices about interruptions and data.\n\n**How design shapes attention**\nDigital platforms are built with specific design choices — notifications, autoplay, infinite scroll, variable rewards like unpredictable likes or messages — that are intended to capture and hold attention. These aren't neutral defaults; they're chosen because they reliably increase how much time and attention people spend on a platform.\n\n**The mechanism: cues and unpredictable rewards**\nA notification is a cue that interrupts whatever a person was doing and redirects attention. Unpredictable rewards — not knowing when the next interesting post or message will appear — are a particularly strong design pattern, because unpredictable reward schedules keep attention engaged more effectively than a predictable one, a pattern well documented in learning research.\n\n**What personal agency means here**\nPersonal agency is a person's ability to make deliberate choices about their attention rather than having it captured automatically by design. Agency isn't about avoiding technology entirely — it's about having visible, usable control: knowing what's pulling attention, and having real settings or habits that let a person choose when to engage.\n\n**What supports agency**\nSome design features support agency directly: visible time-use summaries, adjustable notification settings, clear data controls. Personal habits can support it too: setting specific times to check a platform, turning off nonessential notifications, or choosing a device-free period for recovery from constant stimulation.\n\n**A concrete example**\nA student who mutes notifications during homework time and checks messages only at set intervals is exercising agency against a system designed to prompt more frequent checking — the underlying design didn't change, but the person's control over their response to it did.\n\n**A note on limits**\nAttention and its costs are shaped by both individual choices and platform design; both matter, and neither alone explains the whole picture."
+    }
+   },
+   {
+    "id": "technology-and-attention-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Setup: 15 minutes to plan, then one day to try the redesign. You'll need your phone or main device.\n\n1. Pick one digital routine you use daily — checking social media, messaging, or browsing.\n2. Write one attention goal for that routine, such as \"check messages twice a day\" instead of continuously.\n3. Write one notification rule to support the goal, such as muting nonessential alerts.\n4. Write one recovery break — a set time each day with no screen use.\n5. Check one privacy or data setting related to the app and note what you found.\n6. Record: write one observation about how the routine felt different with the new rule in place."
+    }
+   },
+   {
+    "id": "technology-and-attention-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "This kind of analysis applies well to platforms designed around attention and engagement, such as social media and games. It applies less to tools used briefly for a specific task, like a calculator or a map, where attention-capturing design isn't usually the concern. One honest limit: individual habit changes can help, but they operate against systems specifically designed to override them, so agency has real limits without broader design or policy changes. Two questions worth investigating: how do notification settings differ in effectiveness across platforms, and how does attention-capturing design affect people differently by age?\n\nYou're ready to build on this guide when you can:\n- connect technology design with attention and personal agency\n- apply the idea in the practice and record one observation\n- name one context, limit, or follow-up question for further investigation"
+    }
+   }
+  ]
+ },
+ {
+  "slug": "uncertainty-and-stress",
+  "blocks": [
+   {
+    "id": "uncertainty-and-stress-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Use information, boundaries, and flexible plans when the future remains unclear.\n\nUncertainty creates space for prediction, worry, and preparation. A useful response separates what is known, what is possible, what can be checked, and what deserves a support plan.\n\n**Why uncertainty is stressful**\nUncertainty is stressful partly because the mind tends to fill unknown gaps with worst-case predictions, and partly because an unresolved situation demands ongoing attention without offering a clear stopping point. Unlike a known problem with a known solution, uncertainty can feel like it has no natural end to the thinking about it.\n\n**Why organizing it helps**\nSorting an uncertain situation into categories turns an overwhelming, undifferentiated worry into a set of smaller, more workable parts. This works because much of the distress in uncertainty comes from treating \"unknown\" and \"unknowable\" as the same thing, when in practice some parts of a situation are genuinely fixed, some are checkable soon, and only a smaller remainder is truly unresolved for now.\n\n**The four categories**\n- Known: facts that are already established and don't need more worrying.\n- Unknown: genuinely open questions that don't have an answer yet.\n- Next check: a specific, concrete action that could resolve part of the unknown — asking someone, checking a date, looking something up.\n- Support: what to lean on if the outcome turns out to be difficult, named in advance rather than figured out in the moment.\n\n**Why naming support in advance matters**\nDeciding in advance what support looks like — a person to talk to, a plan for a hard outcome — reduces the load of an already uncertain situation, since a difficult outcome doesn't also require inventing a coping plan from scratch in the moment.\n\n**A concrete example**\nWaiting on a college decision: known — the application was submitted correctly; unknown — the actual decision; next check — the date the results are released; support — a plan to talk with a mentor regardless of the outcome."
+    }
+   },
+   {
+    "id": "uncertainty-and-stress-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Setup: 15 minutes, paper or a document, and one uncertain situation you're currently facing, big or small.\n\n1. Write four column headings across the page: known, unknown, next check, support.\n2. Under known, list facts about the situation that are already settled and don't need more worrying.\n3. Under unknown, list what genuinely isn't known yet, without guessing at an answer.\n4. Under next check, write one specific action that could resolve part of the unknown.\n5. Under support, name one person or plan you'll lean on if the outcome turns out to be difficult.\n6. Record: write one observation about which column was hardest to fill in, and why."
+    }
+   },
+   {
+    "id": "uncertainty-and-stress-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "This framework works well for uncertainty with a foreseeable resolution — a decision, a result, an outcome that will eventually become known. It applies less cleanly to open-ended or chronic uncertainty without a clear resolution point, where \"next check\" may not exist in any meaningful way. One honest limit: sorting uncertainty into categories organizes worry but doesn't reduce the actual uncertainty or guarantee a good outcome. Two questions worth investigating: how does prolonged, unresolved uncertainty affect stress differently than short-term uncertainty, and how do people differ in their tolerance for not knowing?\n\nYou're ready to build on this guide when you can:\n- organize uncertainty into facts, questions, next checks, and support\n- apply the idea in the practice and record one observation\n- name one context, limit, or follow-up question for further investigation"
+    }
+   }
+  ]
+ },
+ {
+  "slug": "visualizing-data",
+  "blocks": [
+   {
+    "id": "visualizing-data-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Choose charts, labels, scales, and comparisons that help readers see the data accurately.\n\nA chart is an argument about what deserves attention. Titles, axes, units, colors, missing values, and comparison groups can clarify or distort interpretation.\n\n**Why a chart is a kind of argument**\nEvery chart requires choices: what data to include, what scale to use, what to compare against, what to leave out. These choices shape what a reader notices first and what conclusion feels obvious, which means a chart isn't a raw, neutral view of data — it's a version of the data, shaped by decisions the chart-maker made, whether deliberately or not.\n\n**How specific design choices distort or clarify**\n- **Titles**: a title that states a conclusion (\"sales are booming\") primes the reader to see that conclusion, even if the data supports a more modest one.\n- **Axes**: starting a bar chart's y-axis above zero can make a small difference look dramatic, while starting at zero shows the true proportion.\n- **Units and scales**: switching between percentages and raw counts, or between linear and logarithmic scales, can make the same data look very different.\n- **Colors**: using an alarming color for one category can make it seem more significant than the data alone suggests.\n- **Missing values**: leaving out a category or time period can hide a trend that would otherwise be visible.\n- **Comparison groups**: choosing which groups to compare against changes what looks normal or extreme.\n\n**Why this matters for interpretation**\nNone of these choices need to be dishonest to distort interpretation — a well-intentioned chart-maker can still mislead through a default setting or an unexamined habit. Reading a chart carefully means noticing these choices, not just absorbing the visual impression.\n\n**A concrete example**\nThe same small change in a class's average test scores can look dramatic on a bar chart with a y-axis starting at 70, and look modest on the same chart with a y-axis starting at zero — the underlying numbers never changed, only the design."
+    }
+   },
+   {
+    "id": "visualizing-data-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Setup: 20 minutes, one small data set (five to ten numbers you have or can quickly gather, like daily step counts or weekly grades), and paper or a simple charting tool.\n\n1. Make one chart of the data using a design choice that could exaggerate a difference, such as a y-axis that doesn't start at zero.\n2. Make a second chart of the exact same data using a more neutral design choice, such as a y-axis starting at zero.\n3. Look at both charts side by side.\n4. Write one sentence on what a reader would likely notice first in each version.\n5. Record: write one observation about which specific design choice changed the impression the most."
+    }
+   },
+   {
+    "id": "visualizing-data-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "This kind of analysis applies to any chart meant to inform a decision or support a claim — news graphics, reports, presentations. It matters less for purely exploratory charts a person makes for themselves during early analysis, where clarity for one's own use matters more than persuasive framing. One honest limit: even a well-designed chart can't fix a poor or biased underlying data set — good chart design only helps interpretation of the data that's actually there. Two questions worth investigating: how do interactive charts change these design effects, and how do readers with different levels of data literacy interpret the same chart differently?\n\nYou're ready to build on this guide when you can:\n- identify how chart design affects interpretation of a data set\n- apply the idea in the practice and record one observation\n- name one context, limit, or follow-up question for further investigation"
+    }
+   }
+  ]
+ }
+]

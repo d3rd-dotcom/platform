@@ -1,0 +1,354 @@
+[
+ {
+  "slug": "brain-plasticity",
+  "blocks": [
+   {
+    "id": "brain-plasticity-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Explore how experience, practice, and changing conditions can shape brain networks.\n\nPlasticity describes change in nervous-system structure or function across time. It supports learning and adaptation, while the size and meaning of a change depend on the task, person, and evidence.\n\n**What plasticity means**\n\nPlasticity is the brain's capacity to change with experience. At a small scale, connections between neurons strengthen when they fire together repeatedly and weaken when they go unused, which is the physical footprint of learning a skill or a fact. At a larger scale, regions can reorganize, such as areas taking on new roles after injury or after intense practice of a skill. The headline version, \"the brain rewires itself,\" is true but vague; the useful version specifies what changed, how much, and whether it lasted.\n\n**Why context sets the limits**\n\nPlasticity is real and bounded. Change follows practice that is specific, repeated, and effortful, and it tends to transfer narrowly: practicing one task improves that task more than distant ones. Age, sleep, stress, and health all shape how readily change happens. This is why sweeping claims, \"train your brain\" apps that promise general intelligence gains, outrun the evidence: a measured improvement on the trained task rarely means a rebuilt brain or a smarter person overall.\n\n**An everyday example**\n\nA student practicing an instrument for five short sessions gets measurably better at the practiced passage. That improvement is plasticity in action. Whether it also improves their unrelated math grade is a separate, and usually much weaker, claim."
+    }
+   },
+   {
+    "id": "brain-plasticity-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Track one skill across five short sessions. You need a small skill and a way to measure it.\n\n1. Choose a specific, measurable skill: a scale on an instrument, a set of vocabulary words, a typing passage.\n2. Define the task measure before you start: time, errors, or number correct.\n3. Practice in five short sessions across several days. Keep each session focused on the same task.\n4. Record the measure after each session, plus one condition that may have influenced it: sleep, mood, distraction, time of day.\n5. Record: write one sentence on the trend across sessions and one on whether any improvement seems to transfer to a related task."
+    }
+   },
+   {
+    "id": "brain-plasticity-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Plasticity explains that change is possible; it does not promise fast, large, or general change, and marketing that implies otherwise is running ahead of the science. Your five-session record is a single-person observation, shaped by conditions you only partly tracked, so it illustrates the idea rather than proving a rule. Recovery after brain injury is a medical matter for qualified professionals, not a practice exercise. The safest reading of any plasticity claim asks what specifically changed and whether the change lasted.\n\nFollow-up questions: how narrowly did your improvement transfer, and what does research say about whether \"brain training\" games improve anything beyond the trained game?\n\nYou're ready to build on this guide when you can:\n\n- Explain plasticity as experience-related change with context-dependent limits.\n- Track a skill across sessions and record the trend and its conditions.\n- Name one limit of broad brain-change claims."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "brain-science-claims",
+  "blocks": [
+   {
+    "id": "brain-science-claims-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Evaluate brain-based explanations by checking the measure, sample, method, and practical conclusion.\n\nBrain images and neuroscience terms can make a claim sound certain. Strong reading separates what researchers measured from what a headline infers and checks whether the result applies to daily behavior.\n\n**Why brain claims feel convincing**\n\nBrain images and words like \"neural\" and \"dopamine\" carry an aura of hard science, and studies show people rate the same explanation as more credible when a brain scan or neuroscience language is attached, even when it adds nothing. That reaction is worth naming, because it makes brain claims exactly the kind you should slow down for. A colorful scan is data that was measured, processed, and averaged, not a photograph of a thought.\n\n**Four lines to separate**\n\nStrong reading pulls a claim apart into four lines. The measured variable: what the instrument actually recorded, such as blood-oxygen change in a region. The sample: who was studied, how many, and how selected. The method: what the participants did and what was compared. The practical claim: the behavior-level conclusion the headline draws. The gap between line one and line four is where most overreach hides. \"A region was more active during a gambling task in 16 adults\" is a measurement; \"your brain is wired to gamble\" is a leap across three missing steps.\n\n**An everyday example**\n\nA headline reads \"Social media rewires the teenage brain.\" The measurement underneath might be a small correlational study of self-reported use and one brain measure. Useful, but a long way from the causal, universal claim on the front page."
+    }
+   },
+   {
+    "id": "brain-science-claims-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Take one brain-related claim apart. Ten minutes; find a headline or post that explains behavior with the brain.\n\n1. Copy the claim as stated, including the headline's verb.\n2. Find the source study if you can, or the study description in the article.\n3. Write four separate lines: the measured variable, the sample, the method, and the practical claim.\n4. Underline the widest gap between what was measured and what was claimed.\n5. Record: rewrite the headline in one sentence so that it matches what was actually measured."
+    }
+   },
+   {
+    "id": "brain-science-claims-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "This four-line check catches overreach; it does not let a non-specialist judge a study's technical quality, which takes training. Popular articles also often omit the sample and method, so sometimes the honest finding is that you cannot evaluate the claim from what is provided, which is itself a reason for caution. Neuroscience is a real and valuable field; the target here is the hype layer between a lab result and a headline, not the research itself.\n\nFollow-up questions: how often can you find the original study behind a brain headline, and how does the study's own summary differ from the news version?\n\nYou're ready to build on this guide when you can:\n\n- Separate a neuroscience measurement from a broader claim about behavior.\n- Break a real claim into measure, sample, method, and conclusion.\n- Name one limit of what a non-specialist can judge."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "civic-dialogue",
+  "blocks": [
+   {
+    "id": "civic-dialogue-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Practice evidence-aware conversation across disagreement, identity, values, and public decisions.\n\nCivic dialogue combines listening, evidence, shared rules, uncertainty, and a search for workable action. Agreement is one possible outcome; understanding and a fair process are also outcomes.\n\n**Dialogue is not debate**\n\nDebate aims to win; dialogue aims to understand and, where possible, to find action people can live with. The shift changes the moves. Instead of collecting rebuttals while someone talks, you listen for the need or value underneath their position. Instead of treating uncertainty as weakness, you state what you are unsure about, which invites the other person to do the same. Instead of demanding agreement, you count a fairer understanding and a process everyone accepts as real progress.\n\n**What holds a dialogue together**\n\nFour things. A shared question specific enough to answer, rather than a vague clash of sides. Evidence both people can examine, with sources named. Ground rules agreed in advance: no interrupting, no motive-guessing, a way to pause when heat rises. And separation of the person from the position, so a disagreement about a policy does not become an attack on an identity. Public decisions add one more: the recognition that people can share facts and still weigh values differently, and that this is legitimate rather than a failure of one side.\n\n**An everyday example**\n\nTwo students disagree about a school phone policy. A debate produces two speeches. A dialogue starts from a shared question, \"what would make focus and safety both better here,\" surfaces the value under each side, and often ends with a proposal neither had at the start."
+    }
+   },
+   {
+    "id": "civic-dialogue-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Prepare one dialogue on paper before you hold it. Fifteen minutes.\n\n1. Write a shared question, phrased so both people could genuinely want to answer it.\n2. Gather two evidence sources you could put on the table, with where each came from.\n3. Write one genuine curiosity question for the other person, aimed at the value under their view.\n4. Agree a process in advance: turn-taking, no motive-guessing, and a signal to pause if it gets heated.\n5. Record: after the conversation, or after a practice run, write one sentence on what you understood that you had not before, and whether the process held."
+    }
+   },
+   {
+    "id": "civic-dialogue-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Dialogue needs a baseline of good faith and safety; it is not the tool for a conversation where someone denies your dignity or where you feel unsafe, and stepping away is a valid choice rather than a lost argument. Not every disagreement resolves, and pretending otherwise pressures people to fake agreement. Online settings, with audiences and no shared rules, make genuine dialogue much harder than a private conversation. Some public disputes also turn on values that evidence cannot settle, only clarify.\n\nFollow-up questions: what changes when a dialogue has an audience, and how do skilled mediators keep a process fair when emotions run high?\n\nYou're ready to build on this guide when you can:\n\n- Plan a respectful dialogue that includes evidence and a fair process.\n- Hold or rehearse one and record what you came to understand.\n- Name one situation where dialogue is not the right tool."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "college-transition-and-wellness",
+  "blocks": [
+   {
+    "id": "college-transition-and-wellness-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Plan for changing routines, belonging, workload, resources, and support during a college transition.\n\nTransitions change time, place, relationships, identity, and available services. A wellness plan names routines to protect, people to contact, and systems to learn.\n\n**Why transitions strain wellness**\n\nA move to college changes many systems at once. The structure that school and family quietly provided, meals, sleep timing, reminders, built-in social contact, disappears and has to be rebuilt deliberately. Workload becomes self-directed, with fewer checkpoints and longer feedback loops. Belonging resets to zero, and the loneliness of the first weeks is common rather than a personal failing. Naming these as predictable pressures, rather than surprises, is half the work: a stressor you expected is one you can plan for.\n\n**What a wellness plan holds**\n\nA plan turns intentions into named resources across a few areas. Routines to protect: the sleep window, movement, and eating patterns that keep everything else functioning. People to contact: at least one academic support, one social connection, and one person for hard days. Systems to learn: how advising, health services, and deadlines actually work at this specific place, ideally located before a crisis rather than during one. Logistics: the money and paperwork questions that quietly generate stress when left vague.\n\n**An everyday example**\n\nA first-year student who located the counseling center, the tutoring hours, and one friend from orientation in week one has a very different October than one who waits until something breaks to go looking."
+    }
+   },
+   {
+    "id": "college-transition-and-wellness-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Build a transition map for a real or upcoming change. Fifteen minutes.\n\n1. Draw four areas: academic support, social support, recovery routine, logistics.\n2. Under academic support, name one specific resource and how to reach it.\n3. Under social support, name one connection to build or keep, and one concrete step to do it.\n4. Under recovery routine, name one non-negotiable, such as a sleep window, and how you'll protect it.\n5. Under logistics, write one financial or practical question you need answered, and where the answer lives.\n6. Record: circle the item you'd want in place before day one, and write one sentence on why."
+    }
+   },
+   {
+    "id": "college-transition-and-wellness-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "A plan reduces avoidable stress; it does not remove the real difficulty of a major transition, and struggling through one does not mean the plan failed. Circumstances vary enormously: financial pressure, family obligations, first-generation status, and commuting all reshape what a realistic plan looks like, so borrowed plans fit poorly. This guide covers ordinary adjustment, and persistent low mood, anxiety, or thoughts of self-harm during a transition deserve prompt support from a qualified professional or campus services.\n\nFollow-up questions: which support did you underestimate needing, and how do transitions other than college, a new job, a move, share the same structure?\n\nYou're ready to build on this guide when you can:\n\n- Build a practical wellness map for a major transition.\n- Name specific supports across academics, social life, recovery, and logistics.\n- Name one limit of a generic transition plan."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "communication-basics",
+  "blocks": [
+   {
+    "id": "communication-basics-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Study how messages, context, feedback, and interpretation shape shared understanding.\n\nCommunication includes a sender, message, medium, receiver, context, and feedback. Meaning depends on words, timing, relationship, expectations, and the information each person brings.\n\n**The parts of an exchange**\n\nA basic model names six parts. A sender with an intention. A message, the words and tone actually produced. A medium, the channel it travels through, face to face, text, a call. A receiver who decodes it. A context, the setting, timing, and relationship surrounding it. And feedback, the receiver's response that tells the sender how the message landed. The gap between what the sender intended and what the receiver understood is where most communication problems live, and it is almost always wider than either person assumes.\n\n**Why meaning is not in the words alone**\n\nThe same words carry different meanings across mediums and contexts. \"Fine\" is neutral in person with a warm tone and cold in a one-word text. Each person also decodes through their own expectations and history, so a message passes through two different interpreters. This is why low-feedback mediums, texts, posts, cause so many misreads: the fast correction loop that a face-to-face conversation provides, a puzzled look, a follow-up question, is missing.\n\n**An everyday example**\n\nA parent texts \"we need to talk.\" The intended message might be logistical; the received message, decoded through anxiety and no tone, reads as trouble. Nobody lied. The medium stripped the context, and the receiver's expectations filled the gap."
+    }
+   },
+   {
+    "id": "communication-basics-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Take one confusing exchange apart. Ten minutes, journal.\n\n1. Pick a real exchange that went sideways: a text misread, a comment that landed wrong.\n2. Write the message as actually sent, word for word if you can.\n3. Separate the parts: what the sender likely intended, what medium and context surrounded it, and how the receiver interpreted it.\n4. Identify the missing feedback, the question or signal that would have caught the misread earlier.\n5. Record: write one sentence on where intended and received meaning split apart, and one thing that would have closed the gap."
+    }
+   },
+   {
+    "id": "communication-basics-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "The six-part model is a lens, not a full account: real conversations run fast, in both directions at once, layered with history the model does not capture. Norms for directness, tone, and silence also vary widely across cultures and relationships, so a message that reads as clear in one setting reads as rude or cold in another. And understanding an exchange after the fact is far easier than steering one live, which is why the practice works on past events first.\n\nFollow-up questions: which medium generates the most misreads for you, and how does adding one clarifying question change your exchanges over a week?\n\nYou're ready to build on this guide when you can:\n\n- Identify the main parts of a communication exchange.\n- Take one confusing exchange apart and record where meaning split.\n- Name one limit of a simple communication model."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "community-health-data",
+  "blocks": [
+   {
+    "id": "community-health-data-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Read population data with attention to denominators, time, geography, missingness, and lived experience.\n\nCommunity data can reveal patterns while hiding variation within groups. Good interpretation pairs numbers with definitions, context, and questions from people represented by the data.\n\n**The denominator is everything**\n\nA raw count rarely means anything on its own. \"200 cases\" in a city of two million is a very different picture than 200 in a town of five thousand. A rate, cases divided by population, makes comparison possible, which is why the denominator deserves as much attention as the number on top. The same care applies to the time frame (a month or a decade?) and geography (a whole county can average away a struggling neighborhood). Small groups also produce unstable rates, where a handful of cases swings the percentage wildly.\n\n**What the data leaves out**\n\nEvery dataset has gaps. Missingness is rarely random: people without health care access, without stable housing, or from undercounted groups appear less in the data, which can make a real problem look smaller than it is. Categories also flatten variation; \"youth\" or a single racial category contains enormous internal difference. This is why sound public health reading pairs the numbers with the knowledge of people the data represents, who can often explain a pattern the spreadsheet only hints at.\n\n**An everyday example**\n\nA chart shows a neighborhood with low clinic visits. Read alone, it might suggest good health. Paired with local knowledge, the clinic is two bus transfers away, and the low number reflects access, not wellness."
+    }
+   },
+   {
+    "id": "community-health-data-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Annotate one real public health chart. Fifteen minutes; find one from a city, health department, or news source.\n\n1. Write the population: who is counted, and the denominator behind any rate.\n2. Write the time frame and the geography.\n3. Write the measure: what exactly was counted, and how it was defined.\n4. Note the comparison, if any, and what is missing, who or what might be undercounted.\n5. Record: write one sentence on a pattern the chart shows, one on a question you'd ask someone from the community it describes, and one possible action the data supports."
+    }
+   },
+   {
+    "id": "community-health-data-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Reading a chart well is not the same as verifying its underlying data quality, which requires the methodology behind it, often unpublished. Community data describes groups and can never tell you about any individual, and treating a group average as a fact about a person is a common and harmful error. Numbers also carry the priorities of whoever collected them: what gets counted reflects choices, and what goes uncounted can be the most important part. Pairing data with lived experience is a corrective, not a formality.\n\nFollow-up questions: how does a rate change when you shrink the geography, and who decided what this dataset would and would not measure?\n\nYou're ready to build on this guide when you can:\n\n- Interpret community health data with clear definitions and limits.\n- Annotate a real chart's population, time, measure, comparison, and gaps.\n- Name one limit of applying group data to an individual."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "community-research",
+  "blocks": [
+   {
+    "id": "community-research-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Ask community questions with listening, consent, shared ownership, and useful feedback.\n\nCommunity research begins with relationships and a question that matters to participants. Good projects share decisions, protect privacy, return findings, and make room for local knowledge.\n\n**Research with, not on**\n\nThe defining shift in community research is a preposition: research with a community rather than on it. Traditional studies can treat people as sources of data to be extracted and published elsewhere. Community-based approaches instead involve participants in shaping the question, interpreting the findings, and deciding what happens next. The reasoning is both ethical and practical: people affected by an issue often understand it better than an outside researcher, and a question that matters to them produces answers they will actually use.\n\n**What good projects protect**\n\nFour commitments recur. Relationships first: trust is built before data is collected, not assumed. Real consent: people understand the purpose, choose freely, and can withdraw. Privacy: identifying information is protected, especially for small communities where a \"de-identified\" quote can still be traced to one person. And return of results: findings come back to participants in a usable form, rather than vanishing into a report they never see. Local knowledge is treated as evidence, not decoration.\n\n**An everyday example**\n\nStudents wondering why a youth center is underused could survey from a distance, or they could ask young people who use and avoid it to help design the questions. The second version surfaces reasons, transport, hours, a past incident, that an outside survey would never think to ask."
+    }
+   },
+   {
+    "id": "community-research-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Draft the frame for a low-risk community project. Fifteen minutes.\n\n1. Write one question that matters to a community you belong to, phrased in their terms rather than an outsider's.\n2. Write a plain-language consent statement: purpose, what participating involves, privacy, and the right to stop.\n3. Write three listening prompts, open questions that invite a story rather than a yes or no.\n4. Write a plan to share results back with participants in a form they'd actually use.\n5. Record: write one sentence on who should help shape the question before you start, and why their view would change it."
+    }
+   },
+   {
+    "id": "community-research-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Real community research involves oversight, often an ethics review, and relationships built over months; a student exercise practices the mindset but should stay low-risk and adult-supervised. Any topic touching health, trauma, or vulnerable groups needs qualified guidance before you collect anything. Small communities also make privacy genuinely hard, since identifying details survive removal of names. Good intentions do not substitute for consent, and speaking with a community is not the same as speaking for it.\n\nFollow-up questions: how do formal ethics reviews protect participants, and what makes a returned finding actually useful to the people who gave the data?\n\nYou're ready to build on this guide when you can:\n\n- Outline a respectful community research process.\n- Draft a question, consent statement, prompts, and results-sharing plan.\n- Name one privacy or ethics limit of a student project."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "community-wellness-project",
+  "blocks": [
+   {
+    "id": "community-wellness-project-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Design a small, consent-aware project that responds to a community-defined wellness question.\n\nA community wellness project combines listening, evidence, design, evaluation, and shared ownership. The project should fit the setting and return useful information to participants.\n\n**From question to project**\n\nA wellness project turns a community-defined question into a small, doable intervention with a way to tell whether it helped. The sequence matters: listen first to find a question people actually care about, check what is already known so you are not reinventing a solved problem, design something modest that fits the setting's real constraints, and build the evaluation in from the start rather than bolting it on at the end. A project designed without a measure cannot learn; a project designed without listening solves the wrong problem elegantly.\n\n**Why evaluation and ethics belong at the start**\n\nEvaluation planned early shapes the design: deciding in advance what \"better\" would look like, and how you'd notice, keeps the project honest and modest. Ethics planned early prevents harm: consent, privacy, and a realistic read of risk decide whether the project should run at all. Both are cheap to build in and expensive to add later. Shared ownership runs through everything, participants help decide the question, the design, and what to do with results.\n\n**An everyday example**\n\nStudents hearing that lunchtime feels stressful might design a quiet room for two weeks, ask a simple before-and-after question about stress, protect responses, and share what they found with the people who asked. Small, measured, and owned by the people it serves."
+    }
+   },
+   {
+    "id": "community-wellness-project-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Draft a one-page project brief. Fifteen minutes.\n\n1. Write the community question, in the community's own terms.\n2. Name the partners: who helps shape and run it.\n3. Describe one low-risk activity that responds to the question and fits the real setting.\n4. Define one simple measure: what you'd look at to tell whether it helped, decided before you start.\n5. Add a consent plan and a return-of-results plan in one line each.\n6. Record: write one sentence on the biggest risk or constraint, and how the design handles it."
+    }
+   },
+   {
+    "id": "community-wellness-project-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "A small project can improve a specific setting; it cannot prove a general claim, since one uncontrolled trial with a tiny sample has many alternative explanations. Keep activities low-risk and adult-supervised, and route anything touching health conditions or vulnerable groups through qualified guidance and any required review first. There is also an ethical trap in raising expectations: inviting a community into a project you cannot sustain can do harm, so honesty about scope and duration is part of the design.\n\nFollow-up questions: what would it take to tell whether your project's effect was real or just enthusiasm, and how do you hand a project off so it outlasts you?\n\nYou're ready to build on this guide when you can:\n\n- Design a small community wellness project with evaluation and ethics built in.\n- Produce a brief with question, activity, measure, consent, and results-sharing.\n- Name one limit of what a small project can conclude."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "conflict-and-repair",
+  "blocks": [
+   {
+    "id": "conflict-and-repair-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Understand conflict as a process and practice repair through facts, impact, responsibility, and requests.\n\nConflict can involve different needs, interpretations, resources, or values. Repair begins with accurate description, listening, accountability, and an agreement about what happens next.\n\n**Conflict is a process, not an event**\n\nConflicts feel like single explosions, but they usually run as a process: a difference in needs or interpretations, a triggering moment, an escalation where each response raises the stakes, and then either rupture or repair. Seeing the process helps because most conflicts are not about the surface topic. Two people arguing over dishes are often really negotiating fairness, respect, or feeling unseen. Naming the real difference, needs, interpretations, resources, or values, aims the conversation at something resolvable.\n\n**The anatomy of a repair**\n\nRepair is a learnable structure with four parts. What happened: the facts, described without interpretation or blame. Impact: the effect it had, owned honestly by each side. Responsibility: naming your own part, which is the hardest and most powerful step, since a genuine \"I did X\" ends most defensive spirals. And a request: a specific, forward-looking ask about what happens next. Repair does not require agreement on who was more wrong. It requires accurate description and a shared decision about the future.\n\n**An everyday example**\n\nAfter a blowup with a friend, a repair message might read: \"When I read your text in front of the group, I laughed and repeated it. That embarrassed you. That was mine, and I'm sorry. Can we agree to keep that stuff between us?\" Facts, impact, responsibility, request, no re-litigating the whole fight."
+    }
+   },
+   {
+    "id": "conflict-and-repair-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Write one repair message. Ten minutes, best after a real conflict has cooled.\n\n1. Write what happened in one factual sentence, stripped of blame and motive-guessing.\n2. Write the impact: the effect on the other person, and on you, owned honestly.\n3. Write your responsibility: name your part plainly, without a hidden \"but.\"\n4. Write one specific request for what happens next.\n5. Read it aloud and cut anything that reopens the argument rather than repairing it.\n6. Record: whether or not you send it, write one sentence on which part was hardest to write and why."
+    }
+   },
+   {
+    "id": "conflict-and-repair-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Repair takes two willing people; you can offer it cleanly and still get no repair back, and that outcome is information about the relationship rather than a failed technique. The model also assumes rough equality and safety. Conflict that involves control, intimidation, or any form of abuse is not a repair situation, and the priority there is safety and a trusted adult or professional. Owning your part never means accepting responsibility for someone else's harm. Timing matters too: a repair offered mid-escalation usually fails, which is why distance comes first.\n\nFollow-up questions: which of the four parts do you tend to skip, and how does repair differ over text versus in person?\n\nYou're ready to build on this guide when you can:\n\n- Create a repair message that includes impact and a next request.\n- Separate facts, impact, responsibility, and request in a real conflict.\n- Name one situation where repair is not the right frame."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "conformity-and-independence",
+  "blocks": [
+   {
+    "id": "conformity-and-independence-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Study how belonging, uncertainty, and evidence influence agreement with a group.\n\nPeople may align with a group to gain information, approval, or coordination. Independent judgment becomes easier when a group invites private thinking and dissenting evidence.\n\n**Two reasons people conform**\n\nClassic experiments separated two motives. Informational conformity happens when you are genuinely unsure and use others as evidence, reasonable, and often correct, since the group frequently does know more. Normative conformity happens when you know the group is wrong but go along anyway to keep belonging or approval. In studies where people judged obvious line lengths, many gave an answer they could see was wrong once a unanimous group gave it first. The pull is real, and it is stronger than most people predict about themselves.\n\n**What restores independence**\n\nThe same research points to what helps. A single dissenting voice dramatically reduces conformity, because it breaks the illusion of unanimity and makes disagreement thinkable. Private judgment helps too: writing your answer before hearing the group protects it from the pull. And separating the two motives in the moment is powerful, asking \"am I unsure, or do I just not want to stand out?\" often reveals that the group's confidence, not its evidence, is doing the work.\n\n**An everyday example**\n\nA study group agrees on an answer and you privately doubt it. Informational conformity says maybe they know something you don't; normative conformity says you'd rather not be the one who objects. The first deserves a question; the second deserves a spine."
+    }
+   },
+   {
+    "id": "conformity-and-independence-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Protect your own judgment in one real group decision. Ten minutes across the decision.\n\n1. Before a group discussion, write your own answer privately, and one fact that could change it.\n2. During the discussion, notice the moment you feel the pull to agree, and silently label it: informational or normative?\n3. If normative, say your view or at least your question aloud once.\n4. After the decision, compare your private answer with the group's, and note whether the group changed your mind with evidence or with confidence.\n5. Record: write one sentence on which pull you felt most, and whether writing first changed what you did."
+    }
+   },
+   {
+    "id": "conformity-and-independence-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Conformity is not the enemy: much of it is useful coordination, and the aim is to conform on purpose rather than reflexively. Independence also has a failure mode, disagreeing to look independent is just conformity to a different self-image, and a lone dissenter is sometimes simply wrong. The classic studies were run in specific settings and cultures, and the size of these effects varies with context. In situations involving real pressure or safety, the priority is protection and a trusted adult, not proving a point.\n\nFollow-up questions: how does online group pressure differ from in-person, and what makes it safe enough in a group to voice a minority view?\n\nYou're ready to build on this guide when you can:\n\n- Identify a group pressure and design a step that protects independent judgment.\n- Distinguish informational from normative conformity in a real decision.\n- Name one limit of treating all conformity as bad."
+    }
+   }
+  ]
+ },
+ {
+  "slug": "consent-and-autonomy",
+  "blocks": [
+   {
+    "id": "consent-and-autonomy-core",
+    "componentType": "rich_text",
+    "title": "Core idea",
+    "config": {
+     "format": "markdown",
+     "content": "Study informed choice, capacity, voluntariness, and the right to change one's mind.\n\nConsent requires understandable information, a real choice, and respect for a person's decision. Autonomy grows when people can ask questions, pause, and withdraw.\n\n**The parts of real consent**\n\nMeaningful consent is more than a yes. It rests on several conditions together. Information: the person understands what they are agreeing to, in language they can follow, including risks and alternatives. Capacity: they are in a position to understand and decide, which age, state, and circumstance can affect. Voluntariness: the choice is free, not extracted by pressure, threat, or a lopsided power relationship. And an ongoing right to withdraw: consent given once can be taken back, and a past yes does not bind a future no. Remove any of these and the yes stops meaning much.\n\n**Why the right to change your mind matters**\n\nAutonomy, the capacity to govern your own choices, is not a one-time event but a standing condition. People can say yes and then encounter new information, new feelings, or new limits. A system that treats withdrawal as betrayal, or that buries the option, is not really offering a choice. Genuine consent cultures make questions welcome, pauses normal, and withdrawal easy. This applies far beyond formal settings, to research, to medical care, to friendships and relationships.\n\n**An everyday example**\n\nA classmate agrees to be filmed for a project, then feels uneasy. In a real consent culture, \"actually, please don't use that\" is honored without argument. The original yes did not sign away the right to a later no."
+    }
+   },
+   {
+    "id": "consent-and-autonomy-practice",
+    "componentType": "rich_text",
+    "title": "Try it",
+    "config": {
+     "format": "markdown",
+     "content": "Write a plain-language consent explanation for a low-risk school project. Ten minutes.\n\n1. Pick a real or imagined project that involves other people: a survey, an interview, a recording.\n2. Write the purpose in one or two sentences a peer could understand without jargon.\n3. Describe what participating actually involves: what they'd do, and how long.\n4. State the privacy protection: what happens to their information and who sees it.\n5. State the withdrawal right plainly: how they can stop or pull their data, at any time, without penalty.\n6. Record: read it as if you were the participant, and write one sentence on whether you'd feel free to say no."
+    }
+   },
+   {
+    "id": "consent-and-autonomy-check",
+    "componentType": "rich_text",
+    "title": "Limits and context",
+    "config": {
+     "format": "markdown",
+     "content": "Consent is necessary but not always sufficient: some situations carry so much power imbalance or risk that a yes cannot really be free, and rules exist precisely because consent alone cannot protect people there. Capacity and consent in medical, legal, and safeguarding contexts follow specific laws and standards that belong with qualified professionals, not a general guide. The wording here practices the principles rather than meeting any legal standard. And a signed form is not consent if the person did not understand or felt they could not refuse.\n\nFollow-up questions: how do consent standards change when there is a power difference, such as teacher and student, and how does consent work for data you agree to online without reading?\n\nYou're ready to build on this guide when you can:\n\n- Identify the parts of informed and voluntary consent.\n- Write a plain-language consent explanation with a clear withdrawal right.\n- Name one situation where consent alone is not enough."
+    }
+   }
+  ]
+ }
+]
