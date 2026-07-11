@@ -10,6 +10,7 @@ import {
   Circle,
   Clock,
   GraduationCap,
+  LockKey,
   RocketLaunch,
   TreeStructure,
   UsersThree,
@@ -97,13 +98,47 @@ function WalkthroughOverlay({ slug, onClose }: { slug: string; onClose: () => vo
 }
 
 export default function GuidePage({ params }: PageProps) {
-  const { ready, getAccessToken } = usePrivy();
+  const { ready, authenticated, getAccessToken } = usePrivy();
   const { play } = useSound();
   const [data, setData] = useState<GuidePayload | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [showWalkthrough, setShowWalkthrough] = useState(false);
   const [materials, setMaterials] = useState<GuideMaterial[]>([]);
+  const [completedIds, setCompletedIds] = useState<Set<string> | null>(null);
+  const [progressResolved, setProgressResolved] = useState(false);
+
+  // The viewer's completed guide ids gate the reading content: a higher-level
+  // topic stays locked until its prerequisites are cleared. Signed-out readers
+  // have no progress, so a topic with prerequisites reads as locked for them.
+  useEffect(() => {
+    if (!ready) return;
+    if (!authenticated) {
+      setCompletedIds(null);
+      setProgressResolved(true);
+      return;
+    }
+    let cancelled = false;
+    setProgressResolved(false);
+    (async () => {
+      try {
+        const token = await getAccessToken().catch(() => null);
+        const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+        const res = await fetch('/api/guides/progress', { cache: 'no-store', headers });
+        if (res.ok) {
+          const json = (await res.json()) as { completedGuideIds?: string[] };
+          if (!cancelled) setCompletedIds(new Set(json.completedGuideIds ?? []));
+        }
+      } catch {
+        /* soft-fail: treat as no progress, which locks gated topics */
+      } finally {
+        if (!cancelled) setProgressResolved(true);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [ready, authenticated, getAccessToken]);
 
   useEffect(() => {
     fetch(`/api/guides/${params.slug}/materials`)
@@ -136,6 +171,15 @@ export default function GuidePage({ params }: PageProps) {
     if (!ready) return;
     load();
   }, [ready, load]);
+
+  // A prerequisite counts as met only for a signed-in viewer who has completed
+  // it. Everything the reader still needs to clear gates the guide body below.
+  const missingPrereqs = data
+    ? data.prereqs.filter((p) => !(authenticated && completedIds?.has(p.id)))
+    : [];
+  const prereqCheckPending = !!data && data.prereqs.length > 0 && !progressResolved;
+  const contentLocked =
+    !!data && data.prereqs.length > 0 && progressResolved && missingPrereqs.length > 0;
 
   return (
     <div className={styles.layout}>
@@ -232,32 +276,66 @@ export default function GuidePage({ params }: PageProps) {
               </section>
             )}
 
-            <div className={styles.divider}>
-              <span className={styles.dividerRule} />
-              <Circle size={8} weight="fill" className={styles.dividerIcon} />
-              <span className={styles.dividerRule} />
-            </div>
+            {prereqCheckPending ? (
+              <div className={styles.state}>Checking your progress…</div>
+            ) : contentLocked ? (
+              <section
+                className={styles.lockedPanel}
+                aria-label="Locked until prerequisites are complete"
+              >
+                <div className={styles.lockedIconWrap}>
+                  <LockKey size={22} weight="bold" />
+                </div>
+                <h2 className={styles.lockedTitle}>Complete the groundwork first</h2>
+                <p className={styles.lockedText}>
+                  {authenticated
+                    ? 'This topic builds on the ideas below it. Finish its prerequisites and the full guide opens right here.'
+                    : 'This topic builds on the ideas below it. Sign in and finish its prerequisites to open the full guide.'}
+                </p>
+                <div className={styles.chips}>
+                  {missingPrereqs.map((p) => (
+                    <Link
+                      key={p.id}
+                      href={`/learn/guides/${p.slug}`}
+                      className={styles.chip}
+                      onMouseEnter={() => play('soft-hover')}
+                      onClick={() => play('navigation')}
+                    >
+                      {p.topicTitle}
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            ) : (
+              <>
+                <div className={styles.divider}>
+                  <span className={styles.dividerRule} />
+                  <Circle size={8} weight="fill" className={styles.dividerIcon} />
+                  <span className={styles.dividerRule} />
+                </div>
 
-            <article className={styles.content}>
-              <GuideBody body={data.guide.body} topicTitle={data.guide.topicTitle} />
-            </article>
+                <article className={styles.content}>
+                  <GuideBody body={data.guide.body} topicTitle={data.guide.topicTitle} />
+                </article>
 
-            <div className={styles.voteRow}>
-              <GuideVoteBar
-                slug={data.guide.slug}
-                sectionTitles={
-                  Array.isArray(data.guide.body)
-                    ? data.guide.body
-                        .map((c) => (typeof c?.title === 'string' ? c.title : ''))
-                        .filter(Boolean)
-                    : []
-                }
-              />
-            </div>
+                <div className={styles.voteRow}>
+                  <GuideVoteBar
+                    slug={data.guide.slug}
+                    sectionTitles={
+                      Array.isArray(data.guide.body)
+                        ? data.guide.body
+                            .map((c) => (typeof c?.title === 'string' ? c.title : ''))
+                            .filter(Boolean)
+                        : []
+                    }
+                  />
+                </div>
 
-            <GuideMethods methods={data.methods} />
+                <GuideMethods methods={data.methods} />
 
-            <GuideMaterials materials={materials} />
+                <GuideMaterials materials={materials} />
+              </>
+            )}
 
             {(data.guide.sourceProvenance || data.guide.sourceReviewedAt) && (
               <section className={styles.sourceSection}>

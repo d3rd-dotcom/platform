@@ -373,6 +373,57 @@
   transform: translateX(3px);
 }
 
+/* Locked reading state — a higher-level topic whose prerequisites the viewer
+   has not cleared. Replaces the guide body until the groundwork is done. */
+.lockedPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  padding: 32px 24px;
+  border-radius: var(--radius-xl, 1.25rem);
+  border: 1.5px dashed color-mix(in oklch, var(--color-primary) 32%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 5%, var(--color-surface-base));
+}
+
+.lockedIconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full, 9999px);
+  color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+}
+
+.lockedTitle {
+  margin: 0;
+  font-family: var(--type-font-heading, var(--type-font-body));
+  font-size: 1.125rem;
+  font-weight: var(--type-weight-bold, 700);
+  color: var(--color-text-dark);
+}
+
+.lockedText {
+  margin: 0;
+  max-width: 46ch;
+  font-family: var(--type-font-body);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--color-text-muted);
+}
+
+.lockedPanel .chips {
+  justify-content: center;
+  margin-top: 4px;
+}
+
+:global([data-theme="dark"]) .lockedPanel {
+  background: color-mix(in oklch, var(--color-primary) 10%, #0d0e16);
+}
+
 /* Used by the dedicated walkthrough page at ./walkthrough/ */
 .walkthroughPanel {
   border: 1.5px solid color-mix(in oklch, var(--color-primary) 18%, transparent);

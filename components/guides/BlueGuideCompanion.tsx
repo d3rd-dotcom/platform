@@ -81,7 +81,7 @@ export default function BlueGuideCompanion({ guide, prereqs }: BlueGuideCompanio
 
     // 2. Signed-out → one warm invite to sign in and track the climb.
     if (!authenticated) {
-      return 'New face! Sign in and I’ll keep a marker on every rung you climb: your progress, saved as you go.';
+      return 'I don’t know you yet. Sign in, and whatever brought you here, I’ll make sure you finish it. Every step of the way.';
     }
 
     // 3. Above-your-level nudge — signed in, but missing a prerequisite.
