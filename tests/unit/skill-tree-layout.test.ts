@@ -2,7 +2,8 @@ import { describe, it, expect } from 'vitest';
 import type { Walkthrough, WalkthroughNode } from '@/lib/guides-db';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GuideSkillTree's band/level grouping and per-node gating (stateOf) are defined
+// GuideSkillTree's layout filtering, band ordering, title wrapping, and per-node
+// gating (stateOf) are defined
 // inline in components/guides/GuideSkillTree.tsx (a client component). They are
 // not exported, and importing the .tsx would pull in React / next/navigation /
 // CSS-modules / the useSound hook — none of which belong in a pure logic test.
@@ -17,19 +18,85 @@ import type { Walkthrough, WalkthroughNode } from '@/lib/guides-db';
 type NodeState = 'completed' | 'available' | 'locked';
 type ClusterableNode = WalkthroughNode & { subjects?: string[] };
 
-// Verbatim from GuideSkillTree.tsx `bands` useMemo: group by level, sort each
-// band by title, then order bands by ascending level.
-function computeBands(nodes: WalkthroughNode[]): Array<[number, WalkthroughNode[]]> {
-  const map = new Map<number, WalkthroughNode[]>();
+// Verbatim from GuideSkillTree.tsx `layoutNodes` useMemo: a selected subject
+// shows its guides plus the full prerequisite closure required to reach them.
+function computeLayoutNodes(nodes: ClusterableNode[], selectedSubject: string | null) {
+  if (!selectedSubject) return nodes;
+
+  const byId = new Map(nodes.map((entry) => [entry.id, entry]));
+  const included = new Set(
+    nodes
+      .filter((entry) => entry.subjects?.includes(selectedSubject))
+      .map((entry) => entry.id),
+  );
+  const queue = Array.from(included);
+  while (queue.length > 0) {
+    const id = queue.pop()!;
+    for (const prereqId of byId.get(id)?.prereqIds ?? []) {
+      if (included.has(prereqId)) continue;
+      included.add(prereqId);
+      queue.push(prereqId);
+    }
+  }
+  return nodes.filter((entry) => included.has(entry.id));
+}
+
+// Verbatim from GuideSkillTree.tsx `bands` useMemo: group by level, then order
+// child bands by the horizontal center of their prerequisites to reduce edge
+// crossings. Titles provide the stable fallback.
+function computeBands(nodes: ClusterableNode[]): Array<[number, ClusterableNode[]]> {
+  const map = new Map<number, ClusterableNode[]>();
   for (const n of nodes) {
     const list = map.get(n.level);
     if (list) list.push(n);
     else map.set(n.level, [n]);
   }
-  for (const list of map.values()) {
-    list.sort((a, b) => a.topicTitle.localeCompare(b.topicTitle));
+
+  const order = new Map<string, number>();
+  const sortedLevels = Array.from(map.keys()).sort((a, b) => a - b);
+  for (const level of sortedLevels) {
+    const list = map.get(level)!;
+    list.sort((a, b) => {
+      const aParents = a.prereqIds.map((id) => order.get(id)).filter((n): n is number => n !== undefined);
+      const bParents = b.prereqIds.map((id) => order.get(id)).filter((n): n is number => n !== undefined);
+      const aCenter = aParents.length > 0 ? aParents.reduce((sum, n) => sum + n, 0) / aParents.length : null;
+      const bCenter = bParents.length > 0 ? bParents.reduce((sum, n) => sum + n, 0) / bParents.length : null;
+      if (aCenter !== null && bCenter !== null && aCenter !== bCenter) return aCenter - bCenter;
+      if (aCenter !== null && bCenter === null) return -1;
+      if (aCenter === null && bCenter !== null) return 1;
+      return a.topicTitle.localeCompare(b.topicTitle);
+    });
+    list.forEach((entry, index) => order.set(entry.id, index));
   }
   return Array.from(map.entries()).sort((a, b) => a[0] - b[0]);
+}
+
+function titleLines(title: string): string[] {
+  const maxChars = 22;
+  const words = title.split(/\s+/);
+  const lines: string[] = [];
+  let line = '';
+
+  for (const word of words) {
+    const candidate = line ? `${line} ${word}` : word;
+    if (candidate.length <= maxChars || line.length === 0) {
+      line = candidate;
+      continue;
+    }
+    lines.push(line);
+    line = word;
+    if (lines.length === 1) break;
+  }
+
+  if (lines.length < 2 && line) lines.push(line);
+  lines.forEach((value, index) => {
+    if (value.length > maxChars) lines[index] = `${value.slice(0, maxChars - 1)}…`;
+  });
+  const consumed = lines.join(' ').length;
+  if (consumed < title.length && lines.length > 0) {
+    lines[lines.length - 1] = `${lines[lines.length - 1].slice(0, maxChars - 1).trim()}…`;
+  }
+  return lines.slice(0, 2);
 }
 
 // Verbatim from GuideSkillTree.tsx `stateOf`: completed wins; else available iff
@@ -119,6 +186,18 @@ describe('level bands', () => {
     expect(level1.map((n) => n.topicTitle)).toEqual(['Cognition', 'Discipline']);
   });
 
+  it('keeps dependent nodes close to their prerequisite columns', () => {
+    const nodes = [
+      node('A', 'Alpha root', 0, []),
+      node('B', 'Beta root', 0, []),
+      node('Z', 'Zed child', 1, ['A']),
+      node('C', 'Alpha child', 1, ['B']),
+    ];
+    const level1 = computeBands(nodes).find(([level]) => level === 1)![1];
+
+    expect(level1.map((entry) => entry.id)).toEqual(['Z', 'C']);
+  });
+
   it('places the sole target as the single node at the max level', () => {
     const wt = makeWalkthrough();
     const bands = computeBands(wt.nodes);
@@ -127,6 +206,42 @@ describe('level bands', () => {
     expect(maxLevel).toBe(2);
     expect(topBand).toHaveLength(1);
     expect(topBand[0].id).toBe(wt.targetId);
+  });
+});
+
+describe('subject branch isolation', () => {
+  const subjectNodes = (): ClusterableNode[] =>
+    makeWalkthrough().nodes.map((entry) => ({
+      ...entry,
+      subjects: entry.id === 'C' ? ['Focus'] : ['Habits'],
+    }));
+
+  it('keeps the selected subject and its complete prerequisite closure', () => {
+    expect(computeLayoutNodes(subjectNodes(), 'Focus').map((entry) => entry.id).sort()).toEqual([
+      'A',
+      'B',
+      'C',
+    ]);
+  });
+
+  it('keeps the full published graph when no subject is selected', () => {
+    expect(computeLayoutNodes(subjectNodes(), null)).toHaveLength(5);
+  });
+});
+
+describe('task-header node titles', () => {
+  it('keeps a short title on one line', () => {
+    expect(titleLines('Healthy Boundaries')).toEqual(['Healthy Boundaries']);
+  });
+
+  it('wraps a long goal title to at most two readable lines', () => {
+    const lines = titleLines('Building Emotional Resilience Through Daily Reflection');
+    expect(lines).toHaveLength(2);
+    expect(lines[1].endsWith('…')).toBe(true);
+  });
+
+  it('truncates an unusually long unbroken topic name', () => {
+    expect(titleLines('Psychoneuroimmunological')).toEqual(['Psychoneuroimmunologi…']);
   });
 });
 

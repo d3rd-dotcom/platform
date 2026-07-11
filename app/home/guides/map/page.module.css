@@ -26,8 +26,8 @@
 .page {
   position: relative;
   z-index: 1;
-  /* Wider than a reading column — the graph wants room to breathe. */
-  max-width: 1180px;
+  width: 100%;
+  max-width: none;
   margin: 0;
   padding: 48px 32px 48px 48px;
   display: flex;

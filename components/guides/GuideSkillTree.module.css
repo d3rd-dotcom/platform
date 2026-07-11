@@ -15,6 +15,7 @@
   display: flex;
   gap: 16px;
   align-items: stretch;
+  min-width: 0;
 }
 
 /* ── Progress rail ──────────────────────────────────────────────────────── */
@@ -30,6 +31,11 @@
   border: 1.5px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
   background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-base));
   flex-shrink: 0;
+}
+
+.mapMode .rail {
+  max-height: clamp(560px, 72vh, 760px);
+  overflow-y: auto;
 }
 
 .railHeader {
@@ -66,6 +72,11 @@
 }
 
 .tick {
+  width: 100%;
+  appearance: none;
+  text-align: left;
+  font: inherit;
+  color: inherit;
   min-height: 38px;
   border-radius: 6px;
   display: flex;
@@ -75,7 +86,13 @@
   padding: 7px 8px;
   border: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
   background: color-mix(in oklch, var(--color-primary) 3%, var(--color-surface-base));
+  cursor: pointer;
   transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tick:hover {
+  border-color: color-mix(in oklch, var(--color-primary) 42%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 7%, var(--color-surface-base));
 }
 
 .tickDone {
@@ -132,10 +149,76 @@
 
 /* ── Canvas + SVG ───────────────────────────────────────────────────────── */
 
+.canvasShell {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.canvasToolbar {
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.canvasHint {
+  margin-right: auto;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+}
+
+.viewButton {
+  min-width: 34px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0 9px;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
+  border-radius: 9px;
+  background: color-mix(in oklch, var(--color-primary) 5%, var(--color-surface-base));
+  color: var(--color-primary);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.viewButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: color-mix(in oklch, var(--color-primary) 48%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 10%, var(--color-surface-base));
+}
+
+.viewButton:disabled {
+  opacity: 0.38;
+  cursor: default;
+}
+
+.startButton {
+  padding-inline: 10px;
+}
+
+.zoomValue {
+  min-width: 42px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
 .canvas {
   flex: 1;
   min-width: 0;
-  overflow-x: auto;
+  overflow: auto;
   border-radius: 12px;
   border: 1.5px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
   background:
@@ -145,6 +228,19 @@
       transparent 65%
     ),
     color-mix(in oklch, var(--color-primary) 2%, var(--color-surface-base));
+  scrollbar-color: color-mix(in oklch, var(--color-primary) 38%, transparent) transparent;
+}
+
+.canvasInteractive {
+  height: clamp(560px, 72vh, 760px);
+  touch-action: none;
+  cursor: grab;
+  overscroll-behavior: contain;
+}
+
+.canvasPanning {
+  cursor: grabbing;
+  user-select: none;
 }
 
 .svg {
@@ -154,6 +250,12 @@
   min-width: 480px;
 }
 
+.canvasInteractive .svg {
+  max-width: none;
+  min-width: 0;
+  transform-origin: top left;
+}
+
 /* ── Edges ──────────────────────────────────────────────────────────────── */
 
 .edges {
@@ -161,14 +263,14 @@
 }
 
 .edge {
-  stroke: color-mix(in oklch, var(--color-primary) 22%, transparent);
-  stroke-width: 1.5;
+  stroke: color-mix(in oklch, var(--color-primary) 34%, transparent);
+  stroke-width: 1.8;
   transition: stroke 0.2s ease, stroke-width 0.2s ease;
 }
 
 .edgeActive {
   stroke: url(#mwa-edge);
-  stroke-width: 2.25;
+  stroke-width: 3;
 }
 
 /* ── Nodes (SVG groups) ─────────────────────────────────────────────────── */
@@ -184,26 +286,61 @@
 }
 
 .nodeBox {
-  fill: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-base));
-  stroke: color-mix(in oklch, var(--color-primary) 18%, transparent);
-  stroke-width: 1.5;
+  fill: color-mix(in srgb, oklch(64% 0.14 var(--subject-hue, 255)) 7%, #ffffff);
+  stroke: color-mix(in srgb, oklch(64% 0.14 var(--subject-hue, 255)) 24%, rgba(26, 29, 51, 0.08));
+  stroke-width: 1.25;
   transition: fill 0.15s ease, stroke 0.15s ease, filter 0.2s ease;
 }
 
 .nodeLabel {
-  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  fill: var(--color-text-dark);
+  font-family: var(--font-secondary);
+  font-size: 15px;
+  font-weight: 700;
+  fill: #1a1d33;
   transition: fill 0.15s ease;
   pointer-events: none;
 }
 
+.nodeStateLabel {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 400;
+  fill: rgba(26, 29, 51, 0.48);
+  pointer-events: none;
+}
+
+.nodeArtwork {
+  fill: oklch(52% 0.16 var(--subject-hue, 255));
+  stroke: color-mix(in srgb, oklch(64% 0.14 var(--subject-hue, 255)) 58%, transparent);
+  stroke-width: 1;
+  filter: drop-shadow(0 4px 7px color-mix(in srgb, oklch(52% 0.16 var(--subject-hue, 255)) 28%, transparent));
+  transition: filter 0.2s ease, transform 0.2s ease;
+  transform-origin: 48px 39px;
+}
+
+.nodeArtworkOrb {
+  fill: rgba(255, 255, 255, 0.22);
+  pointer-events: none;
+}
+
+.nodeArtworkLine {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.68);
+  stroke-width: 2;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+
+.node:hover .nodeArtwork {
+  transform: translateY(-1px) scale(1.03);
+  filter: drop-shadow(0 6px 10px color-mix(in srgb, oklch(52% 0.16 var(--subject-hue, 255)) 38%, transparent));
+}
+
 /* Available — inviting, glows on hover */
 .node_available:hover .nodeBox {
-  fill: color-mix(in oklch, var(--color-primary) 9%, var(--color-surface-base));
-  stroke: color-mix(in oklch, var(--color-primary) 45%, transparent);
-  filter: drop-shadow(0 0 6px color-mix(in oklch, var(--color-primary) 30%, transparent));
+  fill: color-mix(in srgb, oklch(64% 0.14 var(--subject-hue, 255)) 12%, #ffffff);
+  stroke: color-mix(in srgb, oklch(64% 0.14 var(--subject-hue, 255)) 46%, rgba(26, 29, 51, 0.08));
+  filter: drop-shadow(0 5px 10px color-mix(in srgb, oklch(52% 0.16 var(--subject-hue, 255)) 20%, transparent));
 }
 
 .node_available:hover .nodeLabel {
@@ -212,15 +349,14 @@
 
 /* Completed — lit up, gentle pulse */
 .node_completed .nodeBox {
-  fill: color-mix(in oklch, var(--color-primary) 16%, var(--color-surface-base));
-  stroke: color-mix(in oklch, var(--color-primary) 55%, transparent);
+  fill: color-mix(in srgb, #22c55e 9%, #ffffff);
+  stroke: color-mix(in srgb, #22c55e 42%, transparent);
   filter: drop-shadow(0 0 5px color-mix(in oklch, var(--color-primary) 35%, transparent));
   animation: nodeGlow 3.2s ease-in-out infinite;
 }
 
 .node_completed .nodeLabel {
-  fill: var(--color-primary);
-  font-weight: 600;
+  fill: #176c36;
 }
 
 @keyframes nodeGlow {
@@ -233,19 +369,18 @@
   }
 }
 
-/* Locked — dimmed, dashed, padlock */
+/* Locked — still inspectable, with its prerequisite state made explicit. */
 .node_locked {
-  cursor: not-allowed;
+  cursor: pointer;
 }
 
 .node_locked .nodeBox {
-  fill: color-mix(in oklch, var(--color-primary) 2%, var(--color-surface-base));
-  stroke: color-mix(in oklch, var(--color-primary) 12%, transparent);
-  stroke-dasharray: 5 4;
+  fill: color-mix(in srgb, oklch(64% 0.06 var(--subject-hue, 255)) 4%, #ffffff);
+  stroke: color-mix(in srgb, oklch(64% 0.06 var(--subject-hue, 255)) 18%, rgba(26, 29, 51, 0.06));
 }
 
 .node_locked .nodeLabel {
-  fill: var(--color-text-faint);
+  fill: rgba(26, 29, 51, 0.55);
 }
 
 .lockMark rect,
@@ -260,7 +395,7 @@
 
 /* Dimmed — subject filter is active and this node isn't in the selected subject */
 .nodeDimmed {
-  opacity: 0.32;
+  opacity: 0.62;
   transition: opacity 0.15s ease;
 }
 
@@ -270,6 +405,24 @@
 .subjectAccent {
   fill: oklch(64% 0.14 var(--subject-hue, 255));
   pointer-events: none;
+}
+
+.availableMark {
+  fill: rgba(26, 29, 51, 0.04);
+  stroke: color-mix(in srgb, oklch(64% 0.14 var(--subject-hue, 255)) 68%, rgba(26, 29, 51, 0.3));
+  stroke-width: 2;
+}
+
+.completeMark circle {
+  fill: #22c55e;
+}
+
+.completeMark path {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 2.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 /* Target — the summit: larger presence via ring */
@@ -392,6 +545,13 @@
   .tick {
     min-width: 112px;
   }
+  .canvasInteractive {
+    height: 62vh;
+    min-height: 480px;
+  }
+  .canvasHint {
+    display: none;
+  }
 }
 
 /* ── Dark theme ─────────────────────────────────────────────────────────── */
@@ -416,23 +576,37 @@
   border-color: color-mix(in oklch, var(--color-primary) 22%, transparent);
 }
 
+:global([data-theme='dark']) .viewButton {
+  background: color-mix(in oklch, var(--color-primary) 10%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
+}
+
 :global([data-theme='dark']) .nodeBox {
-  fill: color-mix(in oklch, var(--color-primary) 10%, #15172a);
-  stroke: color-mix(in oklch, var(--color-primary) 30%, transparent);
+  fill: color-mix(in srgb, oklch(62% 0.13 var(--subject-hue, 255)) 10%, #1e1f2c);
+  stroke: color-mix(in srgb, oklch(62% 0.13 var(--subject-hue, 255)) 32%, rgba(255, 255, 255, 0.06));
 }
 
 :global([data-theme='dark']) .nodeLabel {
-  fill: #e8e9f4;
+  fill: rgba(227, 225, 238, 0.96);
+}
+
+:global([data-theme='dark']) .nodeStateLabel {
+  fill: rgba(227, 225, 238, 0.56);
 }
 
 :global([data-theme='dark']) .node_completed .nodeBox {
-  fill: color-mix(in oklch, var(--color-primary) 24%, #15172a);
+  fill: color-mix(in srgb, #22c55e 13%, #1e1f2c);
+  stroke: color-mix(in srgb, #22c55e 48%, transparent);
 }
 
 :global([data-theme='dark']) .node_completed .nodeLabel {
-  fill: color-mix(in oklch, var(--color-primary) 70%, white);
+  fill: #b8f2cc;
 }
 
 :global([data-theme='dark']) .node_locked .nodeBox {
-  fill: color-mix(in oklch, var(--color-primary) 4%, #15172a);
+  fill: color-mix(in srgb, oklch(62% 0.06 var(--subject-hue, 255)) 5%, #1e1f2c);
+}
+
+:global([data-theme='dark']) .node_locked .nodeLabel {
+  fill: rgba(227, 225, 238, 0.62);
 }

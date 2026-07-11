@@ -1,7 +1,16 @@
 'use client';
 
-import { useCallback, useMemo, useRef, useState, type CSSProperties } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type PointerEvent as ReactPointerEvent,
+} from 'react';
 import { useRouter } from 'next/navigation';
+import { ArrowsInSimple, Minus, Plus } from '@phosphor-icons/react';
 import { useSound } from '@/hooks/useSound';
 import type { WalkthroughNode } from '@/lib/guides-db';
 import { getWellbeingDomain } from '@/lib/wellbeing-domains';
@@ -58,13 +67,44 @@ interface Placed {
 }
 
 // ── Layout constants (SVG user units) ────────────────────────────────────────
-const NODE_W = 168;
-const NODE_H = 56;
-const COL_GAP = 40; // horizontal gap between node boxes in a band
-const BAND_H = 132; // vertical distance between level bands
-const PAD_X = 40;
-const PAD_TOP = 44;
-const PAD_BOTTOM = 44;
+const NODE_W = 252;
+const NODE_H = 78;
+const COL_GAP = 18;
+const BAND_H = 118;
+const PAD_X = 44;
+const PAD_TOP = 48;
+const PAD_BOTTOM = 48;
+const MIN_ZOOM = 0.55;
+const MAX_ZOOM = 1.25;
+const DEFAULT_MAP_ZOOM = 0.78;
+
+function titleLines(title: string): string[] {
+  const maxChars = 22;
+  const words = title.split(/\s+/);
+  const lines: string[] = [];
+  let line = '';
+
+  for (const word of words) {
+    const candidate = line ? `${line} ${word}` : word;
+    if (candidate.length <= maxChars || line.length === 0) {
+      line = candidate;
+      continue;
+    }
+    lines.push(line);
+    line = word;
+    if (lines.length === 1) break;
+  }
+
+  if (lines.length < 2 && line) lines.push(line);
+  lines.forEach((value, index) => {
+    if (value.length > maxChars) lines[index] = `${value.slice(0, maxChars - 1)}…`;
+  });
+  const consumed = lines.join(' ').length;
+  if (consumed < title.length && lines.length > 0) {
+    lines[lines.length - 1] = `${lines[lines.length - 1].slice(0, maxChars - 1).trim()}…`;
+  }
+  return lines.slice(0, 2);
+}
 
 export default function GuideSkillTree({
   nodes: inputNodes,
@@ -77,8 +117,14 @@ export default function GuideSkillTree({
   const router = useRouter();
   const { play } = useSound();
   const svgRef = useRef<SVGSVGElement>(null);
+  const canvasRef = useRef<HTMLDivElement>(null);
+  const dragRef = useRef<{ x: number; y: number; left: number; top: number } | null>(null);
+  const mapInitializedRef = useRef(false);
+  const previousSubjectRef = useRef<string | null>(null);
   const [hoverId, setHoverId] = useState<string | null>(null);
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+  const [zoom, setZoom] = useState(clusterBySubject ? DEFAULT_MAP_ZOOM : 1);
+  const [isPanning, setIsPanning] = useState(false);
 
   // Legend entries: every distinct subject across the graph, each with a
   // deterministic accent hue and (when we have one) its wellbeing domain.
@@ -98,20 +144,55 @@ export default function GuideSkillTree({
       }));
   }, [inputNodes, clusterBySubject]);
 
-  // Group nodes by level, sorted ascending (0 = primitives).
+  const layoutNodes = useMemo(() => {
+    if (!selectedSubject) return inputNodes;
+
+    const byId = new Map(inputNodes.map((node) => [node.id, node]));
+    const included = new Set(
+      inputNodes
+        .filter((node) => node.subjects?.includes(selectedSubject))
+        .map((node) => node.id),
+    );
+    const queue = Array.from(included);
+    while (queue.length > 0) {
+      const id = queue.pop()!;
+      for (const prereqId of byId.get(id)?.prereqIds ?? []) {
+        if (included.has(prereqId)) continue;
+        included.add(prereqId);
+        queue.push(prereqId);
+      }
+    }
+    return inputNodes.filter((node) => included.has(node.id));
+  }, [inputNodes, selectedSubject]);
+
+  // Group nodes by level. Higher bands follow the horizontal order of their
+  // prerequisites, which keeps branches closer and cuts down edge crossings.
   const bands = useMemo(() => {
-    const map = new Map<number, WalkthroughNode[]>();
-    for (const n of inputNodes) {
+    const map = new Map<number, ClusterableNode[]>();
+    for (const n of layoutNodes) {
       const list = map.get(n.level);
       if (list) list.push(n);
       else map.set(n.level, [n]);
     }
-    // Stable ordering inside a band: by title.
-    for (const list of map.values()) {
-      list.sort((a, b) => a.topicTitle.localeCompare(b.topicTitle));
+
+    const order = new Map<string, number>();
+    const sortedLevels = Array.from(map.keys()).sort((a, b) => a - b);
+    for (const level of sortedLevels) {
+      const list = map.get(level)!;
+      list.sort((a, b) => {
+        const aParents = a.prereqIds.map((id) => order.get(id)).filter((n): n is number => n !== undefined);
+        const bParents = b.prereqIds.map((id) => order.get(id)).filter((n): n is number => n !== undefined);
+        const aCenter = aParents.length > 0 ? aParents.reduce((sum, n) => sum + n, 0) / aParents.length : null;
+        const bCenter = bParents.length > 0 ? bParents.reduce((sum, n) => sum + n, 0) / bParents.length : null;
+        if (aCenter !== null && bCenter !== null && aCenter !== bCenter) return aCenter - bCenter;
+        if (aCenter !== null && bCenter === null) return -1;
+        if (aCenter === null && bCenter !== null) return 1;
+        return a.topicTitle.localeCompare(b.topicTitle);
+      });
+      list.forEach((node, index) => order.set(node.id, index));
     }
     return Array.from(map.entries()).sort((a, b) => a[0] - b[0]);
-  }, [inputNodes]);
+  }, [layoutNodes]);
 
   // A node is available when every DIRECT prereq is completed; completed wins;
   // otherwise locked. (Mirrors the server-side gate, applied per-node.)
@@ -208,8 +289,10 @@ export default function GuideSkillTree({
         play('soft-hover');
         router.push(`/home/guides/${p.node.slug}`);
       } else {
-        // Locked — reject with error feedback.
-        play('error');
+        // Locked guides remain inspectable so the learner can understand the
+        // goal; the server-side completion gate still enforces prerequisites.
+        play('navigation');
+        router.push(`/home/guides/${p.node.slug}`);
       }
     },
     [play, router],
@@ -224,6 +307,95 @@ export default function GuideSkillTree({
     [play],
   );
 
+  const centerOnLevel = useCallback(
+    (level: number, behavior: ScrollBehavior = 'smooth') => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const y = PAD_TOP + (totalLevels - 1 - level) * BAND_H + NODE_H / 2;
+      canvas.scrollTo({
+        left: Math.max(0, (width * zoom - canvas.clientWidth) / 2),
+        top: Math.max(0, y * zoom - canvas.clientHeight / 2),
+        behavior,
+      });
+    },
+    [totalLevels, width, zoom],
+  );
+
+  const changeZoom = useCallback(
+    (nextZoom: number) => {
+      const next = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, nextZoom));
+      const canvas = canvasRef.current;
+      if (!canvas) {
+        setZoom(next);
+        return;
+      }
+      const centerX = (canvas.scrollLeft + canvas.clientWidth / 2) / zoom;
+      const centerY = (canvas.scrollTop + canvas.clientHeight / 2) / zoom;
+      setZoom(next);
+      requestAnimationFrame(() => {
+        canvas.scrollLeft = Math.max(0, centerX * next - canvas.clientWidth / 2);
+        canvas.scrollTop = Math.max(0, centerY * next - canvas.clientHeight / 2);
+      });
+    },
+    [zoom],
+  );
+
+  const resetMapView = useCallback(() => {
+    setZoom(DEFAULT_MAP_ZOOM);
+    requestAnimationFrame(() => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const startY = PAD_TOP + (totalLevels - 1) * BAND_H + NODE_H / 2;
+      canvas.scrollTo({
+        left: Math.max(0, (width * DEFAULT_MAP_ZOOM - canvas.clientWidth) / 2),
+        top: Math.max(0, startY * DEFAULT_MAP_ZOOM - canvas.clientHeight / 2),
+        behavior: 'smooth',
+      });
+    });
+  }, [totalLevels, width]);
+
+  useEffect(() => {
+    if (!clusterBySubject || mapInitializedRef.current) return;
+    mapInitializedRef.current = true;
+    const frame = requestAnimationFrame(() => centerOnLevel(0, 'auto'));
+    return () => cancelAnimationFrame(frame);
+  }, [centerOnLevel, clusterBySubject]);
+
+  useEffect(() => {
+    if (!clusterBySubject || previousSubjectRef.current === selectedSubject) return;
+    previousSubjectRef.current = selectedSubject;
+    const frame = requestAnimationFrame(() => centerOnLevel(0));
+    return () => cancelAnimationFrame(frame);
+  }, [centerOnLevel, clusterBySubject, selectedSubject]);
+
+  const handlePointerDown = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    if ((event.target as Element).closest('[role="button"]')) return;
+    const canvas = event.currentTarget;
+    dragRef.current = {
+      x: event.clientX,
+      y: event.clientY,
+      left: canvas.scrollLeft,
+      top: canvas.scrollTop,
+    };
+    setIsPanning(true);
+    canvas.setPointerCapture(event.pointerId);
+  }, []);
+
+  const handlePointerMove = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    const drag = dragRef.current;
+    if (!drag) return;
+    event.currentTarget.scrollLeft = drag.left - (event.clientX - drag.x);
+    event.currentTarget.scrollTop = drag.top - (event.clientY - drag.y);
+  }, []);
+
+  const stopPanning = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    dragRef.current = null;
+    setIsPanning(false);
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  }, []);
+
   // Curved edge path from the top of a node to the bottom of its prereq.
   const edgePath = (from: Placed, to: Placed) => {
     const x1 = from.x + NODE_W / 2;
@@ -235,7 +407,7 @@ export default function GuideSkillTree({
   };
 
   return (
-    <div className={styles.outer}>
+    <div className={`${styles.outer} ${clusterBySubject ? styles.mapMode : ''}`}>
     <div className={styles.wrapper}>
       {/* ── Branch-aware progress ─────────────────────────────────────── */}
       <aside className={styles.rail} aria-label="Knowledge depth progress">
@@ -257,12 +429,14 @@ export default function GuideSkillTree({
             const bandDone = stat.completed === stat.total;
             const isCurrent = stat.available > 0;
             return (
-              <span
+              <button
+                type="button"
                 key={stat.level}
                 className={`${styles.tick} ${bandDone ? styles.tickDone : ''} ${
                   isCurrent ? styles.tickCurrent : ''
                 }`}
                 title={`Depth ${stat.level + 1}: ${stat.completed} of ${stat.total} cleared`}
+                onClick={() => centerOnLevel(stat.level)}
               >
                 <span className={styles.tickRow}>
                   <span className={styles.tickNum}>Depth {stat.level + 1}</span>
@@ -274,19 +448,59 @@ export default function GuideSkillTree({
                     style={{ width: `${(stat.completed / stat.total) * 100}%` }}
                   />
                 </span>
-              </span>
+              </button>
             );
           })}
         </div>
       </aside>
 
       {/* ── Constellation ─────────────────────────────────────────────── */}
-      <div className={styles.canvas}>
+      <div className={styles.canvasShell}>
+        {clusterBySubject && (
+          <div className={styles.canvasToolbar} aria-label="Map view controls">
+            <span className={styles.canvasHint}>Drag to move</span>
+            <button
+              type="button"
+              className={styles.viewButton}
+              onClick={() => changeZoom(zoom - 0.12)}
+              disabled={zoom <= MIN_ZOOM}
+              aria-label="Zoom out"
+            >
+              <Minus size={15} weight="bold" />
+            </button>
+            <span className={styles.zoomValue}>{Math.round(zoom * 100)}%</span>
+            <button
+              type="button"
+              className={styles.viewButton}
+              onClick={() => changeZoom(zoom + 0.12)}
+              disabled={zoom >= MAX_ZOOM}
+              aria-label="Zoom in"
+            >
+              <Plus size={15} weight="bold" />
+            </button>
+            <button
+              type="button"
+              className={`${styles.viewButton} ${styles.startButton}`}
+              onClick={resetMapView}
+            >
+              <ArrowsInSimple size={15} weight="bold" /> Start
+            </button>
+          </div>
+        )}
+      <div
+        ref={canvasRef}
+        className={`${styles.canvas} ${clusterBySubject ? styles.canvasInteractive : ''} ${isPanning ? styles.canvasPanning : ''}`}
+        onPointerDown={clusterBySubject ? handlePointerDown : undefined}
+        onPointerMove={clusterBySubject ? handlePointerMove : undefined}
+        onPointerUp={clusterBySubject ? stopPanning : undefined}
+        onPointerCancel={clusterBySubject ? stopPanning : undefined}
+      >
         <svg
           ref={svgRef}
           className={styles.svg}
           viewBox={`0 0 ${width} ${height}`}
           preserveAspectRatio="xMidYMid meet"
+          style={clusterBySubject ? { width: width * zoom, height: height * zoom } : undefined}
           role="group"
           aria-label="Guide prerequisite skill tree"
         >
@@ -328,10 +542,7 @@ export default function GuideSkillTree({
               ]
                 .filter(Boolean)
                 .join(' ');
-              const label =
-                p.node.topicTitle.length > 26
-                  ? `${p.node.topicTitle.slice(0, 25)}…`
-                  : p.node.topicTitle;
+              const lines = titleLines(p.node.topicTitle);
               const accentStyle = primarySubject
                 ? ({ '--subject-hue': hueForSubject(primarySubject) } as CSSProperties)
                 : undefined;
@@ -371,22 +582,23 @@ export default function GuideSkillTree({
                     className={styles.nodeBox}
                     width={NODE_W}
                     height={NODE_H}
-                    rx={12}
+                    rx={14}
                   />
-                  {primarySubject && (
-                    <rect
-                      className={styles.subjectAccent}
-                      x={0}
-                      y={0}
-                      width={4}
-                      height={NODE_H}
-                      rx={2}
-                    />
-                  )}
+                  <rect
+                    className={styles.subjectAccent}
+                    x={14}
+                    y={25}
+                    width={3}
+                    height={28}
+                    rx={2}
+                  />
+                  <rect className={styles.nodeArtwork} x={28} y={19} width={40} height={40} rx={8} />
+                  <circle className={styles.nodeArtworkOrb} cx={55} cy={31} r={9} />
+                  <path className={styles.nodeArtworkLine} d="M 34 52 C 43 42, 51 55, 63 38" />
                   {p.state === 'locked' && (
                     <g
                       className={styles.lockMark}
-                      transform={`translate(${NODE_W - 24} 11)`}
+                      transform={`translate(${NODE_W - 35} 27)`}
                     >
                       {/* Inline padlock — avoids nested <svg> positioning quirks. */}
                       <rect x={2} y={6} width={10} height={7} rx={1.5} />
@@ -397,20 +609,31 @@ export default function GuideSkillTree({
                       />
                     </g>
                   )}
-                  <text
-                    className={styles.nodeLabel}
-                    x={NODE_W / 2}
-                    y={NODE_H / 2}
-                    textAnchor="middle"
-                    dominantBaseline="central"
-                  >
-                    {label}
+                  {p.state === 'completed' && (
+                    <g className={styles.completeMark} transform={`translate(${NODE_W - 37} 25)`}>
+                      <circle cx={10} cy={10} r={10} />
+                      <path d="M5.5 10.5 8.5 13.5 14.8 6.8" />
+                    </g>
+                  )}
+                  {p.state === 'available' && (
+                    <circle className={styles.availableMark} cx={NODE_W - 27} cy={39} r={10} />
+                  )}
+                  <text className={styles.nodeLabel}>
+                    {lines.map((line, index) => (
+                      <tspan key={line} x={80} y={lines.length === 1 ? 35 : 28 + index * 16}>
+                        {line}
+                      </tspan>
+                    ))}
+                  </text>
+                  <text className={styles.nodeStateLabel} x={80} y={lines.length === 1 ? 56 : 62}>
+                    {p.state === 'completed' ? 'Cleared' : p.state === 'available' ? 'Ready now' : 'Requires prerequisites'}
                   </text>
                 </g>
               );
             })}
           </g>
         </svg>
+      </div>
       </div>
     </div>
 
