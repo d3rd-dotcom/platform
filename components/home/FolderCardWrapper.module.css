@@ -68,43 +68,68 @@
 }
 
 .tab {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 120px;
+  min-width: 156px;
   height: 52px;
-  padding: 0 12px;
-  border: 2px solid var(--color-primary-hover);
-  border-bottom: 0;
-  border-radius: 24px 32px 0 0;
-  background: var(--color-background);
+  /* Extra right padding leaves room for the diagonal folder-tab cut */
+  padding: 0 40px 0 20px;
+  /* The tab background is the border colour; the inset ::before carries the
+     real fill, so the exposed 2px wraps the shape as an outline. */
+  background: var(--color-primary-hover);
   color: var(--color-text-muted);
   font-family: var(--font-primary);
   font-size: 0.75rem;
   font-weight: 700;
   z-index: 1;
+  /* Mask the right side into the same manila-folder tab silhouette as the
+     folder cards inside the wrapper: rounded top-left, flat top, then a
+     diagonal descending cut on the right. */
+  clip-path: polygon(0% 100%, 0% 26%, 5% 8%, 12% 0%, 74% 0%, 100% 100%);
+}
+
+/* Inner fill inset 2px on every side except the bottom, leaving the border
+   around the top, left and diagonal right edge but open along the base. */
+.tab::before {
+  content: '';
+  position: absolute;
+  inset: 2px 2px 0 2px;
+  z-index: 0;
+  background: var(--color-background);
+  clip-path: polygon(0% 100%, 0% 26%, 5% 8%, 12% 0%, 74% 0%, 100% 100%);
+}
+
+.tabLabel {
+  position: relative;
+  z-index: 1;
 }
 
 .tab + .tab {
-  margin-left: -18px;
+  margin-left: -30px;
 }
 
 .tab:nth-child(2) {
-  min-width: 136px;
-  margin-left: -34px;
+  min-width: 172px;
+  margin-left: -44px;
   height: 52px;
   z-index: 2;
-  border-top-left-radius: 4px;
-  background: var(--folder-lecture-surface);
   color: var(--color-text-light);
 }
 
+.tab:nth-child(2)::before {
+  background: var(--folder-lecture-surface);
+}
+
 .tab:nth-child(3) {
-  min-width: 136px;
-  margin-left: -34px;
-  border-top-left-radius: 4px;
-  background: var(--folder-workshop-surface);
+  min-width: 172px;
+  margin-left: -44px;
   color: var(--color-text-light);
+}
+
+.tab:nth-child(3)::before {
+  background: var(--folder-workshop-surface);
 }
 
 .tab:nth-child(2) .tabLabel,
@@ -115,10 +140,11 @@
 .tabActive {
   height: 52px;
   z-index: 3;
-  border-color: var(--color-primary-hover);
-  border-radius: 18px 32px 0 0;
-  background: var(--folder-wrapper-surface);
   color: var(--color-text-dark);
+}
+
+.tabActive::before {
+  background: var(--folder-wrapper-surface);
 }
 
 .content {
