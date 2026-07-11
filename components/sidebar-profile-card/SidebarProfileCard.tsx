@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import styles from './SidebarProfileCard.module.css';
 
 interface SidebarProfileCardProps {
@@ -11,7 +10,6 @@ interface SidebarProfileCardProps {
   address: string | undefined;
   isCollapsed: boolean;
   onOpenWallet: () => void;
-  onViewProfile?: () => void;
 }
 
 function truncate(addr: string) {
@@ -24,9 +22,7 @@ export default function SidebarProfileCard({
   address,
   isCollapsed,
   onOpenWallet,
-  onViewProfile,
 }: SidebarProfileCardProps) {
-  const router = useRouter();
   const displayName = username && !username.startsWith('user_') ? username : null;
   const initials = displayName
     ? displayName.slice(0, 2).toUpperCase()
@@ -35,11 +31,7 @@ export default function SidebarProfileCard({
     : '??';
 
   const handleProfileClick = () => {
-    if (onViewProfile) {
-      onViewProfile();
-    } else {
-      router.push('/profile');
-    }
+    onOpenWallet();
   };
 
   if (isCollapsed) {
@@ -48,8 +40,8 @@ export default function SidebarProfileCard({
         type="button"
         className={`${styles.cardCollapsed} ${styles.cardCollapsedClickable}`}
         onClick={handleProfileClick}
-        aria-label="View profile"
-        title="View profile"
+        aria-label="Open wallet"
+        title="Open wallet"
       >
         {avatarUrl ? (
           <Image src={avatarUrl} alt={displayName || 'Profile'} width={36} height={36} className={styles.avatarSm} unoptimized />
@@ -67,8 +59,8 @@ export default function SidebarProfileCard({
           type="button"
           className={styles.profileArea}
           onClick={handleProfileClick}
-          aria-label="View profile"
-          title="View profile"
+          aria-label="Open wallet"
+          title="Open wallet"
         >
           {avatarUrl ? (
             <Image src={avatarUrl} alt={displayName || 'Profile'} width={32} height={32} className={styles.avatar} unoptimized />

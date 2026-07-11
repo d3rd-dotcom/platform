@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { createPublicClient, http, erc20Abi } from 'viem';
 import { base, baseSepolia } from 'viem/chains';
 import { getChainConfig } from '@/lib/chain-config';
@@ -36,6 +37,7 @@ export default function WalletDrawer({
   onConnections,
   onSignOut,
 }: WalletDrawerProps) {
+  const router = useRouter();
   const [addressCopied, setAddressCopied] = useState(false);
   const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -243,6 +245,10 @@ export default function WalletDrawer({
           <section className={styles.section}>
             <h3 className={styles.sectionTitle}>Account</h3>
             <div className={styles.menu}>
+              <button className={styles.menuItem} type="button" onClick={() => { onClose(); router.push('/profile'); }}>
+                <span>Profile</span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+              </button>
               <button className={styles.menuItem} type="button" onClick={() => { onClose(); onChangeAvatar(); }}>
                 <span>Change avatar</span>
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
