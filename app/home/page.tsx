@@ -400,6 +400,11 @@ export default function HomePage() {
     <div className={styles.layout}>
       <SideNavigation />
       <main className={styles.pageColumns}>
+      <div className={styles.globalPanel}>
+      <div className={styles.panelHeader}>
+        <span className={styles.panelTitleJa}>知識</span>
+        <span className={styles.panelTitle}>Academy</span>
+      </div>
       {!learnOnly && (
       <section className={styles.dashboardHeader}>
         <ProfileDashboard />
@@ -848,6 +853,7 @@ export default function HomePage() {
           </article>
         </section>
       )}
+      </div>
       </main>
 
       {!learnOnly && fieldNotesOpen && <FieldNotesSheet onClose={() => setFieldNotesOpen(false)} />}
