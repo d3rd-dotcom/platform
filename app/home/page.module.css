@@ -204,9 +204,9 @@
   transform: translateY(-1px);
   border-color: var(--color-primary);
   box-shadow:
-    0 8px 0 var(--color-primary),
-    0 0px 12px rgba(0, 0, 0, 0.14),
-    0 12px 8px rgba(0, 0, 0, 0.30);
+    0 6px 0 var(--color-primary),
+    0 0px 10px rgba(0, 0, 0, 0.14),
+    0 10px 5px rgba(0, 0, 0, 0.30);
 }
 
 .cardHeader {
@@ -1408,9 +1408,9 @@
 :global([data-theme="dark"]) .courseCard:hover {
   border-color: rgba(255, 255, 255, 0.2);
   box-shadow:
-    0 8px 0 #000000,
-    0 0px 12px rgba(0, 0, 0, 0.14),
-    0 12px 8px rgba(0, 0, 0, 0.30);
+    0 6px 0 #000000,
+    0 0px 10px rgba(0, 0, 0, 0.14),
+    0 10px 5px rgba(0, 0, 0, 0.30);
 }
 
 :global([data-theme="dark"]) .cardHeader {

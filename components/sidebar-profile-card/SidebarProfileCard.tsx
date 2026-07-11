@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import styles from './SidebarProfileCard.module.css';
 
 interface SidebarProfileCardProps {
@@ -23,7 +24,9 @@ export default function SidebarProfileCard({
   address,
   isCollapsed,
   onOpenWallet,
+  onViewProfile,
 }: SidebarProfileCardProps) {
+  const router = useRouter();
   const displayName = username && !username.startsWith('user_') ? username : null;
   const initials = displayName
     ? displayName.slice(0, 2).toUpperCase()
@@ -31,14 +34,22 @@ export default function SidebarProfileCard({
     ? address.slice(2, 4).toUpperCase()
     : '??';
 
+  const handleProfileClick = () => {
+    if (onViewProfile) {
+      onViewProfile();
+    } else {
+      router.push('/profile');
+    }
+  };
+
   if (isCollapsed) {
     return (
       <button
         type="button"
         className={`${styles.cardCollapsed} ${styles.cardCollapsedClickable}`}
-        onClick={onOpenWallet}
-        aria-label="Open wallet and profile"
-        title="Wallet and profile"
+        onClick={handleProfileClick}
+        aria-label="View profile"
+        title="View profile"
       >
         {avatarUrl ? (
           <Image src={avatarUrl} alt={displayName || 'Profile'} width={36} height={36} className={styles.avatarSm} unoptimized />
@@ -55,10 +66,9 @@ export default function SidebarProfileCard({
         <button
           type="button"
           className={styles.profileArea}
-          onClick={onOpenWallet}
-          aria-label="Open wallet and profile"
-          aria-haspopup="dialog"
-          title="Wallet and profile"
+          onClick={handleProfileClick}
+          aria-label="View profile"
+          title="View profile"
         >
           {avatarUrl ? (
             <Image src={avatarUrl} alt={displayName || 'Profile'} width={32} height={32} className={styles.avatar} unoptimized />
@@ -82,7 +92,7 @@ export default function SidebarProfileCard({
           className={styles.menuBtn}
           onClick={onOpenWallet}
           type="button"
-          aria-label="Open wallet and profile"
+          aria-label="Open wallet"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
             <circle cx="5" cy="12" r="2" /><circle cx="12" cy="12" r="2" /><circle cx="19" cy="12" r="2" />

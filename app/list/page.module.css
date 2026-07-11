@@ -38,47 +38,17 @@
   overflow: hidden;
 }
 
-/* Blue image behind everything */
-.blueBackground {
+/* Blue character behind the lists — same image as landing hero */
+.blueCharacter {
   position: absolute;
   z-index: 0;
   bottom: 0;
   left: 5%;
-  width: clamp(240px, 32vw, 480px);
+  width: clamp(200px, 28vw, 400px);
   height: auto;
   object-fit: contain;
-  object-position: bottom left;
   pointer-events: none;
   user-select: none;
-  animation: blueSway 7s ease-in-out infinite alternate;
-}
-
-.blueGlow {
-  position: absolute;
-  z-index: 0;
-  bottom: -8%;
-  left: 12%;
-  width: 30%;
-  height: 50%;
-  transform: translateX(-50%);
-  background: radial-gradient(
-    ellipse at center,
-    color-mix(in oklch, var(--color-primary) 18%, transparent) 0%,
-    rgba(100, 80, 180, 0.08) 50%,
-    transparent 80%
-  );
-  pointer-events: none;
-  animation: blueGlowPulse 4.5s ease-in-out infinite;
-}
-
-@keyframes blueSway {
-  from { transform: translateY(0); }
-  to { transform: translateY(-12px); }
-}
-
-@keyframes blueGlowPulse {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 0.9; }
 }
 
 /* Lists in front of Blue */
@@ -95,31 +65,19 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .blueBackground,
-  .blueGlow {
+  .blueCharacter {
     animation: none;
   }
 }
 
 /* ── Responsive — stack on mobile ───────────────────────────────────────── */
 @media (max-width: 960px) {
-  .page {
-    overflow: visible;
-  }
-
   .layout {
     padding-left: 24px;
     padding-right: 24px;
-    height: auto;
-    min-height: calc(100vh - 72px);
-    min-height: calc(100svh - 72px);
   }
 
-  .blueBackground {
-    display: none;
-  }
-
-  .blueGlow {
+  .blueCharacter {
     display: none;
   }
 }
