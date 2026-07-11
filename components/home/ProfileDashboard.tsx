@@ -15,8 +15,6 @@ import { fetchDiamondBalance } from '@/lib/diamonds-balance';
 import { useSound } from '@/hooks/useSound';
 import styles from './ProfileDashboard.module.css';
 
-type PanelTab = 'badges' | 'certificates' | 'quests';
-
 export interface PanelCourse {
   title: string;
   href: string;
@@ -53,7 +51,6 @@ export default function ProfileDashboard({
   const [currentQuest, setCurrentQuest] = useState<QuestDefinition | null>(null);
   const [editingAvatar, setEditingAvatar] = useState(false);
   const [editingUsername, setEditingUsername] = useState(false);
-  const [tab, setTab] = useState<PanelTab>('badges');
 
   const authHeaders = useCallback(async (): Promise<HeadersInit> => {
     const token = await getAccessToken();
@@ -121,22 +118,6 @@ export default function ProfileDashboard({
 
   return (
     <section className={styles.panel}>
-      <div className={styles.mission}>
-        <div className={styles.tabRow}>
-          {(['badges', 'certificates', 'quests'] as const).map((t) => (
-            <button
-              key={t}
-              type="button"
-              className={`${styles.tab} ${tab === t ? styles.tabActive : ''}`}
-              onClick={() => { play('click'); setTab(t); }}
-              onMouseEnter={() => play('soft-hover')}
-            >
-              {t === 'badges' ? 'Items' : t === 'certificates' ? 'Awards' : 'Quests'}
-            </button>
-          ))}
-        </div>
-      </div>
-
       <div className={styles.fieldNotesSection}>
         <DailyNotes
           enablePersistence={authenticated && ready}
@@ -144,37 +125,6 @@ export default function ProfileDashboard({
         />
       </div>
 
-      {tab === 'quests' && (
-      <div className={styles.badges}>
-        <span className={styles.missionHeading}>Current Quest</span>
-        {currentQuest ? (
-          <Link
-            href="/quests"
-            className={styles.missionCard}
-            onMouseEnter={() => play('hover')}
-            onClick={() => play('click')}
-          >
-            <span className={styles.questPoints}>
-              <Image src="/icons/ui-diamond.svg" alt="" width={16} height={16} className={styles.questDiamond} />
-              {currentQuest.points}
-            </span>
-            <span className={styles.questBody}>
-              <span className={styles.questTitle}>{currentQuest.title}</span>
-              <span className={styles.questDesc}>{currentQuest.desc}</span>
-            </span>
-          </Link>
-        ) : (
-          <div className={styles.missionCard}>
-            <span className={styles.questBody}>
-              <span className={styles.questTitle}>All quests complete</span>
-              <span className={styles.questDesc}>New quests are on the way. Nice work.</span>
-            </span>
-          </div>
-        )}
-      </div>
-      )}
-
-      {tab === 'badges' && (
       <div className={styles.badges}>
         <span className={styles.missionHeading}>Items</span>
         <div className={styles.badgeRow}>
@@ -206,11 +156,37 @@ export default function ProfileDashboard({
           </div>
         </div>
       </div>
-      )}
 
-      {tab === 'certificates' && (
-        <div className={styles.badges}>
-          <span className={styles.missionHeading}>Awards</span>
+      <div className={styles.badges}>
+        <span className={styles.missionHeading}>Current Quest</span>
+        {currentQuest ? (
+          <Link
+            href="/quests"
+            className={styles.missionCard}
+            onMouseEnter={() => play('hover')}
+            onClick={() => play('click')}
+          >
+            <span className={styles.questPoints}>
+              <Image src="/icons/ui-diamond.svg" alt="" width={16} height={16} className={styles.questDiamond} />
+              {currentQuest.points}
+            </span>
+            <span className={styles.questBody}>
+              <span className={styles.questTitle}>{currentQuest.title}</span>
+              <span className={styles.questDesc}>{currentQuest.desc}</span>
+            </span>
+          </Link>
+        ) : (
+          <div className={styles.missionCard}>
+            <span className={styles.questBody}>
+              <span className={styles.questTitle}>All quests complete</span>
+              <span className={styles.questDesc}>New quests are on the way. Nice work.</span>
+            </span>
+          </div>
+        )}
+      </div>
+
+      <div className={styles.badges}>
+        <span className={styles.missionHeading}>Awards</span>
           {courses.length > 0 ? (
             <div className={styles.courseList}>
               {courses.map((c) => {
@@ -231,8 +207,7 @@ export default function ProfileDashboard({
           ) : (
             <div className={styles.tabPanel}>No certificates yet. Finish a full course to earn your first one.</div>
           )}
-        </div>
-      )}
+      </div>
 
       {editingAvatar && (
         <AvatarSelectorModal
