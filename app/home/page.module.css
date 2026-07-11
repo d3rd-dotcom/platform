@@ -52,7 +52,8 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 0 12px;
+  margin: 0 -18px;
+  padding: 12px 20px 10px;
   background: color-mix(in oklch, var(--color-primary) 8%, #ffffff);
   border-bottom: 2px solid var(--color-primary-hover);
   flex-shrink: 0;
