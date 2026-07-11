@@ -5,7 +5,6 @@ import CtaButton from '@/components/shared/CtaButton';
 import styles from './page.module.css';
 import {
   colors,
-  gradients,
   fontFamilies,
   fontSizes,
   typography,
@@ -20,12 +19,50 @@ import {
 import Banner from '@/components/banner/Banner';
 import { SoulGemDisplay } from '@/components/soul-gems/SoulGemDisplay';
 import ProposalStages from '@/components/proposal-stages/ProposalStages';
+import CourseFolderCard from '@/components/home/CourseFolderCard';
+import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
+import {
+  MagnifyingGlass,
+  Plus,
+  X,
+  Check,
+  CheckCircle,
+  XCircle,
+  ArrowRight,
+  ArrowLeft,
+  ArrowUpRight,
+  ArrowsClockwise,
+  CaretDown,
+  CaretUp,
+  Bell,
+  Lock,
+  Key,
+  Copy,
+  Trash,
+  PencilSimple,
+  Sparkle,
+  Shield,
+  Coins,
+  Medal,
+  Cube,
+  GridFour,
+  Rows,
+  Clock,
+  ChatCircle,
+  Eye,
+  Robot,
+  Path,
+  SealCheck,
+  Paperclip,
+} from '@phosphor-icons/react';
 
 /**
  * Mental Wealth Academy Style Guide
  * Visual reference for all design tokens
  */
 export default function StyleGuidePage() {
+  const [blueOpen, setBlueOpen] = React.useState(false);
+
   return (
     <div className={styles.container}>
       <div className={styles.content}>
@@ -39,7 +76,7 @@ export default function StyleGuidePage() {
 
         {/* Colors Section */}
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>🎨 Colors</h2>
+          <h2 className={styles.sectionTitle}>Colors</h2>
           <p className={styles.sectionDescription}>
             Our color palette is rooted in knowledge, community, and transparency. 
             Academy Blue signals trust and primary actions, while Growth Green signals progress and achievements.
@@ -113,44 +150,9 @@ export default function StyleGuidePage() {
           </div>
         </section>
 
-        {/* Gradients Section */}
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>🎨 Solid Colors</h2>
-          <p className={styles.sectionDescription}>
-            Clean solid colors for actions, surfaces, and UI elements.
-          </p>
-          <div className={styles.gradientGrid}>
-            <GradientCard 
-              name="Futuristic Floss" 
-              value={gradients.futuristicFloss}
-              description="Hero sections, featured content"
-            />
-            <GradientCard 
-              name="Primary Gradient" 
-              value={gradients.primary}
-              description="Primary action emphasis"
-            />
-            <GradientCard 
-              name="Secondary Gradient" 
-              value={gradients.secondary}
-              description="Progress and achievement"
-            />
-            <GradientCard 
-              name="Swipe Like" 
-              value={gradients.swipeLike}
-              description="Positive swipe actions"
-            />
-            <GradientCard
-              name="Swipe Save" 
-              value={gradients.swipeSave}
-              description="Save/bookmark actions"
-            />
-          </div>
-        </section>
-
         {/* Typography Section */}
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>✏️ Typography</h2>
+          <h2 className={styles.sectionTitle}>Typography</h2>
           <p className={styles.sectionDescription}>
             Typography sets the tone for knowledge transfer and community trust.
             Space Grotesk for headlines, Poppins for body text, and Space Grotesk for buttons and technical data.
@@ -255,11 +257,11 @@ export default function StyleGuidePage() {
                 style={{ ...typography.caption, fontSize: fontSizes.xs }}
                 meta={`${fontSizes.xs} / Regular / Poppins`}
               />
-              <TypographySample 
-                label="Button — Actions" 
-                text="CONNECT WALLET" 
-                style={{ ...typography.button, fontSize: fontSizes.base }}
-                meta={`${fontSizes.base} / Medium / Space Grotesk / Uppercase`}
+              <TypographySample
+                label="Button — Actions"
+                text="Connect wallet"
+                style={{ ...typography.button, fontSize: fontSizes.base, textTransform: 'none' }}
+                meta={`${fontSizes.base} / Medium / Space Grotesk / Sentence case`}
               />
               <TypographySample 
                 label="Mono — Technical Data" 
@@ -273,7 +275,7 @@ export default function StyleGuidePage() {
 
         {/* Spacing Section */}
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>📏 Spacing Scale</h2>
+          <h2 className={styles.sectionTitle}>Spacing Scale</h2>
           <p className={styles.sectionDescription}>
             All spacing uses a 4px base grid for precision and rhythm. Compatible with Tailwind spacing utilities.
           </p>
@@ -307,7 +309,7 @@ export default function StyleGuidePage() {
 
         {/* Border Radius Section */}
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>🔲 Border Radius</h2>
+          <h2 className={styles.sectionTitle}>Border Radius</h2>
           <p className={styles.sectionDescription}>
             Soft corners to balance technical precision with approachability. Stick to the 4px grid.
           </p>
@@ -327,7 +329,7 @@ export default function StyleGuidePage() {
 
         {/* Shadows Section */}
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>🌓 Shadows</h2>
+          <h2 className={styles.sectionTitle}>Shadows</h2>
           <p className={styles.sectionDescription}>
             The four drop-shadow treatments actually in use across the top nav and home bento. Pick the one that matches the surface, not an arbitrary blur value.
           </p>
@@ -353,7 +355,7 @@ export default function StyleGuidePage() {
 
         {/* Breakpoints Section */}
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>📱 Breakpoints</h2>
+          <h2 className={styles.sectionTitle}>Breakpoints</h2>
           <p className={styles.sectionDescription}>
             Mobile-first responsive design breakpoints. Design for the smallest screen first.
           </p>
@@ -383,7 +385,7 @@ export default function StyleGuidePage() {
 
         {/* Animation Section */}
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>⚡ Animation</h2>
+          <h2 className={styles.sectionTitle}>Animation</h2>
           <p className={styles.sectionDescription}>
             Smooth, decisive animations that respect user focus. No spring/bouncy effects in enterprise UI.
           </p>
@@ -407,7 +409,7 @@ export default function StyleGuidePage() {
 
         {/* Z-Index Section */}
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>📚 Z-Index Scale</h2>
+          <h2 className={styles.sectionTitle}>Z-Index Scale</h2>
           <p className={styles.sectionDescription}>
             Layering system for managing stacking contexts consistently across components.
           </p>
@@ -459,24 +461,18 @@ export default function StyleGuidePage() {
 
         {/* Cards Section */}
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>🃏 Cards</h2>
+          <h2 className={styles.sectionTitle}>Cards</h2>
           <p className={styles.sectionDescription}>
-            Two surfaces cover almost every card in the app: the comic-offset course card from <code>/home</code>, and the flatter drag-and-drop row from <code>/course-builder</code>.
+            Two surfaces cover almost every card in the app: the folder-style course card from <code>/home</code> (the live <code>CourseFolderCard</code> component), and the flatter drag-and-drop row from <code>/course-builder</code>.
           </p>
           <div className={styles.cardGrid}>
-            <div className={styles.courseCardDemo}>
-              <div className={styles.courseCardDemoHeader}>
-                <span className={styles.courseCardDemoKanji}>WK 01</span>
-                <span className={styles.courseCardDemoHeaderTitle}>Foundations</span>
-              </div>
-              <div className={styles.courseCardDemoThumb} />
-              <div className={styles.courseCardDemoBody}>
-                <div className={styles.courseCardDemoCategory}>Productivity</div>
-                <div className={styles.courseCardDemoTitle}>Deep Work Workshop</div>
-                <div className={styles.courseCardDemoDesc}>
-                  Master the art of focused work in an age of constant distraction.
-                </div>
-              </div>
+            <div className={styles.folderCardDemo}>
+              <CourseFolderCard
+                title="Shadow Work"
+                count={12}
+                images={[]}
+                ctaLabel="Start Course"
+              />
             </div>
             <div className={styles.taskCardDemo}>
               <span className={styles.taskCardDemoHandle}>⠿</span>
@@ -496,9 +492,10 @@ export default function StyleGuidePage() {
         
         {/* Banner Component */}
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>📢 Banner</h2>
+          <h2 className={styles.sectionTitle}>Banner</h2>
           <p className={styles.sectionDescription}>
-            Announcement banner for site-wide messages. Full-width with background image and centered text.
+            Announcement banner for site-wide messages. Full-width over a blurple fractal-line
+            field, with centered text or a back-arrow breadcrumb trail on course pages.
           </p>
           <div className={styles.componentShowcase}>
             <div className={styles.componentLabel}>Banner</div>
@@ -511,14 +508,14 @@ export default function StyleGuidePage() {
           </div>
         </section>
 
-        {/* Credit Display Component */}
+        {/* Diamond Display Component */}
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Credit Display</h2>
+          <h2 className={styles.sectionTitle}>Diamond Display</h2>
           <p className={styles.sectionDescription}>
-            Token/currency display with animated credit icon. Used for voting power and governance tokens.
+            Academy point system, earned through quests and activities.
           </p>
           <div className={styles.componentShowcase}>
-            <div className={styles.componentLabel}>CreditDisplay</div>
+            <div className={styles.componentLabel}>DiamondDisplay</div>
             <div className={styles.componentPreviewRow}>
               <div className={styles.componentVariant}>
                 <span className={styles.variantLabel}>Small Amount</span>
@@ -545,7 +542,7 @@ export default function StyleGuidePage() {
 
         {/* Proposal Stages Component */}
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>📊 Proposal Stages</h2>
+          <h2 className={styles.sectionTitle}>Proposal Stages</h2>
           <p className={styles.sectionDescription}>
             Visual progress indicator for governance proposals showing Blue review, blockchain transaction, and voting stages.
           </p>
@@ -594,70 +591,41 @@ export default function StyleGuidePage() {
           </div>
         </section>
 
-        {/* Vote Buttons Preview */}
+        {/* Blue Dialogue Component */}
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>🗳️ Vote Buttons</h2>
+          <h2 className={styles.sectionTitle}>Blue Dialogue</h2>
           <p className={styles.sectionDescription}>
-            Approve/Reject voting buttons with loading states. Connects to blockchain for on-chain voting.
+            Blue&apos;s visual-novel dialogue overlay. Typewritten lines, eight expression
+            portraits, optional reward chip and reply field. Used for check-ins, first-run
+            guides, and reward moments.
           </p>
           <div className={styles.componentShowcase}>
-            <div className={styles.componentLabel}>VoteButtons (Preview)</div>
+            <div className={styles.componentLabel}>BlueDialogue</div>
             <div className={styles.componentPreviewRow}>
-              <button className={styles.voteApprove}>
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
-                  <path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-                <span>Approve</span>
-              </button>
-              <button className={styles.voteReject}>
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
-                  <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                </svg>
-                <span>Reject</span>
-              </button>
+              <CtaButton variant="primary" onClick={() => setBlueOpen(true)}>
+                Open dialogue
+              </CtaButton>
             </div>
             <div className={styles.componentMeta}>
-              <code>components/vote-buttons/VoteButtons.tsx</code>
+              <code>components/blue-dialogue/BlueDialogue.tsx</code>
             </div>
           </div>
-        </section>
-
-        {/* Status Badges */}
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>🏷️ Status Badges</h2>
-          <p className={styles.sectionDescription}>
-            Status indicators used across proposals, quests, and transactions.
-          </p>
-          <div className={styles.componentShowcase}>
-            <div className={styles.componentLabel}>Status Badges</div>
-            <div className={styles.componentPreviewRow}>
-              <span className={styles.badgePending}>
-                <span className={styles.badgeDot} />
-                Under Review
-              </span>
-              <span className={styles.badgeApproved}>
-                <span className={styles.badgeDot} />
-                Approved
-              </span>
-              <span className={styles.badgeRejected}>
-                <span className={styles.badgeDot} />
-                Rejected
-              </span>
-              <span className={styles.badgeActive}>
-                <span className={styles.badgeDot} />
-                Active
-              </span>
-              <span className={styles.badgeCompleted}>
-                <span className={styles.badgeDot} />
-                Completed
-              </span>
-            </div>
-          </div>
+          <BlueDialogue
+            open={blueOpen}
+            onClose={() => setBlueOpen(false)}
+            emotion="happy"
+            title="Style guide"
+            subtitle="Component demo"
+            lines={[
+              'This overlay is where I do my best work — the whole app dims, and for a breath it is just the two of us and the words.',
+              'Every check-in, every reward, every first-run guide passes through this panel. Treat it gently.',
+            ]}
+          />
         </section>
 
         {/* Input Fields */}
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>📝 Input Fields</h2>
+          <h2 className={styles.sectionTitle}>Input Fields</h2>
           <p className={styles.sectionDescription}>
             Form inputs with consistent styling, focus states, and validation.
           </p>
@@ -703,155 +671,148 @@ export default function StyleGuidePage() {
 
         {/* Icons Reference */}
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>🎯 Icon System</h2>
+          <h2 className={styles.sectionTitle}>Icon System</h2>
           <p className={styles.sectionDescription}>
-            We use inline SVGs for icons to maintain consistency and enable color theming. Icons should be 16-24px.
+            Icons come from the Phosphor set (<code>@phosphor-icons/react</code>), the same library
+            used across the app. Default to the regular weight at 16-24px; icons inherit
+            <code>currentColor</code> so they theme with the surrounding text.
           </p>
           <div className={styles.componentShowcase}>
-            <div className={styles.componentLabel}>Common Icons</div>
+            <div className={styles.componentLabel}>Phosphor Icons</div>
             <div className={styles.iconGrid}>
-              <div className={styles.iconItem}>
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-                  <path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-                <span>Check</span>
-              </div>
-              <div className={styles.iconItem}>
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-                  <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                </svg>
-                <span>Close</span>
-              </div>
-              <div className={styles.iconItem}>
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-                  <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-                <span>Arrow Right</span>
-              </div>
-              <div className={styles.iconItem}>
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
-                  <path d="M12 16V12M12 8H12.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                </svg>
-                <span>Info</span>
-              </div>
-              <div className={styles.iconItem}>
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-                  <path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="currentColor"/>
-                </svg>
-                <span>Star</span>
-              </div>
-              <div className={styles.iconItem}>
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-                  <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
-                  <rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
-                  <rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
-                  <rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
-                </svg>
-                <span>Grid</span>
-              </div>
-              <div className={styles.iconItem}>
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-                  <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="2"/>
-                </svg>
-                <span>User</span>
-              </div>
-              <div className={styles.iconItem}>
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-                  <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C14.8273 3 17.35 4.30367 19 6.34267M21 3V9M21 9H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-                <span>Refresh</span>
-              </div>
+              {[
+                { icon: <MagnifyingGlass size={24} />, name: 'MagnifyingGlass' },
+                { icon: <Plus size={24} />, name: 'Plus' },
+                { icon: <X size={24} />, name: 'X' },
+                { icon: <Check size={24} />, name: 'Check' },
+                { icon: <CheckCircle size={24} />, name: 'CheckCircle' },
+                { icon: <XCircle size={24} />, name: 'XCircle' },
+                { icon: <ArrowRight size={24} />, name: 'ArrowRight' },
+                { icon: <ArrowLeft size={24} />, name: 'ArrowLeft' },
+                { icon: <ArrowUpRight size={24} />, name: 'ArrowUpRight' },
+                { icon: <ArrowsClockwise size={24} />, name: 'ArrowsClockwise' },
+                { icon: <CaretDown size={24} />, name: 'CaretDown' },
+                { icon: <CaretUp size={24} />, name: 'CaretUp' },
+                { icon: <Bell size={24} />, name: 'Bell' },
+                { icon: <Lock size={24} />, name: 'Lock' },
+                { icon: <Key size={24} />, name: 'Key' },
+                { icon: <Copy size={24} />, name: 'Copy' },
+                { icon: <Trash size={24} />, name: 'Trash' },
+                { icon: <PencilSimple size={24} />, name: 'PencilSimple' },
+                { icon: <Sparkle size={24} />, name: 'Sparkle' },
+                { icon: <Shield size={24} />, name: 'Shield' },
+                { icon: <Coins size={24} />, name: 'Coins' },
+                { icon: <Medal size={24} />, name: 'Medal' },
+                { icon: <Cube size={24} />, name: 'Cube' },
+                { icon: <GridFour size={24} />, name: 'GridFour' },
+                { icon: <Rows size={24} />, name: 'Rows' },
+                { icon: <Clock size={24} />, name: 'Clock' },
+                { icon: <ChatCircle size={24} />, name: 'ChatCircle' },
+                { icon: <Eye size={24} />, name: 'Eye' },
+                { icon: <Robot size={24} />, name: 'Robot' },
+                { icon: <Path size={24} />, name: 'Path' },
+                { icon: <SealCheck size={24} />, name: 'SealCheck' },
+                { icon: <Paperclip size={24} />, name: 'Paperclip' },
+              ].map((item) => (
+                <div key={item.name} className={styles.iconItem}>
+                  {item.icon}
+                  <span>{item.name}</span>
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
         {/* Component Index */}
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>📦 Component Index</h2>
+          <h2 className={styles.sectionTitle}>Component Index</h2>
           <p className={styles.sectionDescription}>
             Complete list of all components available in the codebase.
           </p>
           <div className={styles.componentIndex}>
-            <ComponentIndexItem 
-              name="Banner" 
-              path="components/banner" 
-              description="Site-wide announcement banner"
-            />
-            <ComponentIndexItem 
-              name="BookCard" 
-              path="components/book-card" 
-              description="Library book display card"
+            <ComponentIndexItem
+              name="Banner"
+              path="components/banner"
+              description="Site-wide announcement banner with breadcrumb trail"
             />
             <ComponentIndexItem
-              name="ProposalCard"
-              path="components/proposal-card" 
-              description="Governance proposal display"
-            />
-            <ComponentIndexItem 
-              name="ProposalStages" 
-              path="components/proposal-stages" 
-              description="Proposal progress indicator"
-            />
-            <ComponentIndexItem 
-              name="VoteButtons" 
-              path="components/vote-buttons" 
-              description="Approve/Reject voting UI"
-            />
-            <ComponentIndexItem 
-              name="ShardDisplay"
-              path="components/soul-gems" 
-              description="Token/voting power display"
-            />
-            <ComponentIndexItem 
-              name="TreasuryDisplay" 
-              path="components/treasury-display" 
-              description="Treasury balance widget"
+              name="CtaButton"
+              path="components/shared"
+              description="Canonical call-to-action button"
             />
             <ComponentIndexItem
-              name="ImpactSnapshot"
-              path="components/impact-snapshot" 
-              description="User impact metrics display"
+              name="BlueDialogue"
+              path="components/blue-dialogue"
+              description="Blue's visual-novel dialogue overlay"
             />
-            <ComponentIndexItem 
-              name="DiamondReward" 
-              path="components/rewards" 
+            <ComponentIndexItem
+              name="CourseFolderCard"
+              path="components/home"
+              description="Folder-style course card on /home"
+            />
+            <ComponentIndexItem
+              name="FolderCardWrapper"
+              path="components/home"
+              description="Layout wrapper for folder card rows"
+            />
+            <ComponentIndexItem
+              name="ProfileDashboard"
+              path="components/home"
+              description="Profile card with avatar, streak, and stats"
+            />
+            <ComponentIndexItem
+              name="FieldNotesSheet"
+              path="components/home"
+              description="Field notes ledger bottom sheet"
+            />
+            <ComponentIndexItem
+              name="DailyNotes"
+              path="components/daily-notes"
+              description="Daily note capture on /home"
+            />
+            <ComponentIndexItem
+              name="HomeBento"
+              path="components/home-bento"
+              description="Bento grid dashboard on /dao"
+            />
+            <ComponentIndexItem
+              name="FeatureTour"
+              path="components/feature-tour"
+              description="Daily Note first-run guide"
+            />
+            <ComponentIndexItem
+              name="WelcomePremiumGate"
+              path="components/welcome-premium"
+              description="Welcome gate for premium onboarding"
+            />
+            <ComponentIndexItem
+              name="SideNavigation"
+              path="components/side-navigation"
+              description="App-wide side navigation rail"
+            />
+            <ComponentIndexItem
+              name="DiamondDisplay"
+              path="components/soul-gems"
+              description="Diamond point balance display"
+            />
+            <ComponentIndexItem
+              name="DiamondReward"
+              path="components/rewards"
               description="Diamond reward pop-up from Blue"
             />
-            <ComponentIndexItem 
-              name="Navbar" 
-              path="components/navbar" 
-              description="Main navigation bar"
+            <ComponentIndexItem
+              name="ProposalStages"
+              path="components/proposal-stages"
+              description="Proposal progress indicator"
             />
-            <ComponentIndexItem 
-              name="Footer" 
-              path="components/footer" 
-              description="Site footer"
-            />
-            <ComponentIndexItem 
-              name="Hero" 
-              path="components/hero" 
-              description="Hero section for landing pages"
-            />
-            <ComponentIndexItem 
-              name="BlueDialogue" 
-              path="components/blue-dialogue" 
-              description="AI assistant dialogue interface"
-            />
-            <ComponentIndexItem 
-              name="OnboardingTour" 
-              path="components/onboarding-tour" 
-              description="Interactive onboarding walkthrough"
-            />
-            <ComponentIndexItem 
-              name="SearchModal" 
-              path="components/search-modal" 
+            <ComponentIndexItem
+              name="SearchModal"
+              path="components/search-modal"
               description="Global search modal"
             />
-            <ComponentIndexItem 
-              name="AvatarSelectorModal" 
-              path="components/avatar-selector" 
+            <ComponentIndexItem
+              name="AvatarSelectorModal"
+              path="components/avatar-selector"
               description="Avatar selection modal"
             />
           </div>
@@ -880,21 +841,6 @@ function ColorCard({ name, value }: { name: string; value: string }) {
       <div className={styles.colorInfo}>
         <div className={styles.colorName}>{name}</div>
         <div className={styles.colorValue}>{value}</div>
-      </div>
-    </div>
-  );
-}
-
-function GradientCard({ name, value, description }: { name: string; value: string; description: string }) {
-  return (
-    <div className={styles.gradientCard}>
-      <div 
-        className={styles.gradientSwatch} 
-        style={{ background: value }} 
-      />
-      <div className={styles.gradientInfo}>
-        <div className={styles.gradientName}>{name}</div>
-        <div className={styles.gradientValue}>{description}</div>
       </div>
     </div>
   );
