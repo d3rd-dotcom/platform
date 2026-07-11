@@ -567,6 +567,238 @@
   gap: 6px;
 }
 
+/* ── Featured guide cards + shuffle control ─────────────────────────────── */
+.featuredRow {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.featuredGrid {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.featuredCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 5%, transparent);
+  box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 22%, transparent);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.featuredCard:hover {
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 45%, transparent);
+  box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 32%, transparent);
+}
+
+.featuredCardTitle {
+  font-family: var(--font-primary);
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+  color: #1e1e2a;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.featuredCard:hover .featuredCardTitle {
+  color: var(--color-primary);
+}
+
+.featuredCardSummary {
+  font-family: var(--font-primary);
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: var(--color-text-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.featuredShuffle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.featuredShuffleBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9999px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 5%, transparent);
+  box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 22%, transparent);
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.featuredShuffleBtn:hover {
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 45%, transparent);
+  box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 32%, transparent);
+}
+
+.featuredShuffleBtn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 color-mix(in oklch, var(--color-primary) 22%, transparent);
+}
+
+.featuredShufflePage {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+/* ── View toggle (list / cards / 3D) ────────────────────────────────────── */
+.guideViewBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+}
+
+.viewToggle {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 9999px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 5%, transparent);
+  box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 22%, transparent);
+}
+
+.viewToggleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 9999px;
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.viewToggleBtn:hover {
+  color: var(--color-primary);
+}
+
+.viewToggleBtnActive {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.viewToggleBtnActive:hover {
+  color: #fff;
+}
+
+/* Grid + 3D layouts for the below guide list */
+.guideCardListCards,
+.guideCardList3d {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.guideCardTile {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  min-height: 108px;
+  padding: 16px;
+}
+
+.guideCardTile .guideCardChevron {
+  align-self: flex-end;
+  margin-top: auto;
+}
+
+.guideCardSummary {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-top: 4px;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+  white-space: normal;
+}
+
+.guideCardList3d {
+  perspective: 900px;
+}
+
+.guideCardList3d .guideCardTile {
+  transform: rotateX(6deg) rotateY(-6deg);
+  transform-style: preserve-3d;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  box-shadow: 6px 8px 18px rgba(0, 0, 0, 0.16);
+}
+
+.guideCardList3d .guideCardTile:hover {
+  transform: rotateX(0deg) rotateY(0deg) translateY(-2px);
+  box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+:global([data-theme="dark"]) .featuredCard {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: color-mix(in oklch, var(--color-primary) 35%, transparent);
+  box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 22%, transparent);
+}
+
+:global([data-theme="dark"]) .featuredCard:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: color-mix(in oklch, var(--color-primary) 50%, transparent);
+}
+
+:global([data-theme="dark"]) .featuredCardTitle {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+:global([data-theme="dark"]) .featuredShuffleBtn {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: color-mix(in oklch, var(--color-primary) 35%, transparent);
+}
+
+:global([data-theme="dark"]) .viewToggle {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: color-mix(in oklch, var(--color-primary) 35%, transparent);
+}
+
 /* ── Author impact stats row ────────────────────────────────────────────── */
 .authorStatsRow {
   display: flex;
@@ -1016,6 +1248,23 @@
 
   .guideSubjectGroup {
     gap: 8px;
+  }
+
+  .featuredRow {
+    flex-direction: column;
+  }
+
+  .featuredGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .featuredShuffle {
+    flex-direction: row;
+  }
+
+  .guideCardListCards,
+  .guideCardList3d {
+    grid-template-columns: 1fr;
   }
 
   .guideSubjectLabel {

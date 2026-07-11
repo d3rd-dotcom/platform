@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
-import { Plus } from '@phosphor-icons/react';
+import { Plus, CaretUp, CaretDown, Rows, GridFour, Cube } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import { scriptForWeek, WEEKLY_SEEN_KEY } from '@/components/daily-read/weeklyScripts';
@@ -135,6 +135,8 @@ export default function HomePage() {
   );
   const [weeklyWeek, setWeeklyWeek] = useState(0);
   const [weeklyOpen, setWeeklyOpen] = useState(false);
+  const [featuredPage, setFeaturedPage] = useState(0);
+  const [guideView, setGuideView] = useState<'card' | 'list' | '3d'>('list');
   const { play } = useSound();
 
   // One Blue moment per day, by priority: first-run intro, then the season
@@ -337,6 +339,19 @@ export default function HomePage() {
     return Array.from(map.entries()).sort((a, b) => a[0].localeCompare(b[0]));
   })();
 
+  // Featured guides cycle through the full published set in groups of three.
+  const featuredGroups = (() => {
+    const groups: GuideRecord[][] = [];
+    for (let i = 0; i < guides.length; i += 3) {
+      groups.push(guides.slice(i, i + 3));
+    }
+    return groups;
+  })();
+  const featuredPageCount = featuredGroups.length;
+  const activeFeaturedPage =
+    featuredPageCount > 0 ? ((featuredPage % featuredPageCount) + featuredPageCount) % featuredPageCount : 0;
+  const featuredGuides = featuredGroups[activeFeaturedPage] ?? [];
+
   const panelCourses = [
     { title: "Blue's Quest", href: '/shadow-work', progressPct: 0 },
     ...(personalCourse ? [{ title: personalCourse.title, href: '/course/personal', progressPct: 0 }] : []),
@@ -437,6 +452,55 @@ export default function HomePage() {
           <div className={styles.guideSection}>
             <h2 className={styles.guideSectionHeading}>Knowledge Base</h2>
             <div className={styles.guideSectionContent}>
+              {featuredGuides.length > 0 && (
+                <div className={styles.featuredRow}>
+                  <div className={styles.featuredGrid}>
+                    {featuredGuides.map((g) => (
+                      <Link
+                        key={`featured-${g.id}`}
+                        href={`/home/guides/${g.slug}`}
+                        className={styles.featuredCard}
+                        onMouseEnter={() => play('soft-hover')}
+                      >
+                        <span className={styles.featuredCardTitle}>{g.topicTitle}</span>
+                        {g.summary && (
+                          <span className={styles.featuredCardSummary}>{g.summary}</span>
+                        )}
+                      </Link>
+                    ))}
+                  </div>
+                  {featuredPageCount > 1 && (
+                    <div className={styles.featuredShuffle}>
+                      <button
+                        type="button"
+                        className={styles.featuredShuffleBtn}
+                        aria-label="Previous guides"
+                        onClick={() => {
+                          setFeaturedPage((p) => p - 1);
+                          play('soft-hover');
+                        }}
+                      >
+                        <CaretUp size={18} weight="bold" />
+                      </button>
+                      <span className={styles.featuredShufflePage}>
+                        {activeFeaturedPage + 1}/{featuredPageCount}
+                      </span>
+                      <button
+                        type="button"
+                        className={styles.featuredShuffleBtn}
+                        aria-label="More guides"
+                        onClick={() => {
+                          setFeaturedPage((p) => p + 1);
+                          play('soft-hover');
+                        }}
+                      >
+                        <CaretDown size={18} weight="bold" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {authenticated && frontierGuides && frontierGuides.length > 0 && (
                 <div className={styles.guideSubjectGroup}>
                   <span className={styles.guideSubjectLabel}>
@@ -578,19 +642,62 @@ export default function HomePage() {
                 </div>
               )}
 
+              {guidesBySubject.length > 0 && (
+                <div className={styles.guideViewBar}>
+                  <span className={styles.guideSubjectLabel}>All guides</span>
+                  <div className={styles.viewToggle} role="group" aria-label="Guide layout">
+                    <button
+                      type="button"
+                      className={`${styles.viewToggleBtn} ${guideView === 'list' ? styles.viewToggleBtnActive : ''}`}
+                      aria-pressed={guideView === 'list'}
+                      onClick={() => setGuideView('list')}
+                    >
+                      <Rows size={15} weight="bold" /> List
+                    </button>
+                    <button
+                      type="button"
+                      className={`${styles.viewToggleBtn} ${guideView === 'card' ? styles.viewToggleBtnActive : ''}`}
+                      aria-pressed={guideView === 'card'}
+                      onClick={() => setGuideView('card')}
+                    >
+                      <GridFour size={15} weight="bold" /> Cards
+                    </button>
+                    <button
+                      type="button"
+                      className={`${styles.viewToggleBtn} ${guideView === '3d' ? styles.viewToggleBtnActive : ''}`}
+                      aria-pressed={guideView === '3d'}
+                      onClick={() => setGuideView('3d')}
+                    >
+                      <Cube size={15} weight="bold" /> 3D
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {guidesBySubject.map(([subject, subjectGuides]) => (
                 <div key={subject} className={styles.guideSubjectGroup}>
                   <span className={styles.guideSubjectLabel}>{subject}</span>
-                  <div className={styles.guideCardList}>
+                  <div
+                    className={`${styles.guideCardList} ${
+                      guideView === 'card'
+                        ? styles.guideCardListCards
+                        : guideView === '3d'
+                          ? styles.guideCardList3d
+                          : ''
+                    }`}
+                  >
                     {subjectGuides.map((g) => (
                       <Link
                         key={`${subject}-${g.id}`}
                         href={`/home/guides/${g.slug}`}
-                        className={styles.guideCard}
+                        className={`${styles.guideCard} ${guideView !== 'list' ? styles.guideCardTile : ''}`}
                         onMouseEnter={() => play('soft-hover')}
                       >
                         <div className={styles.guideCardBody}>
                           <span className={styles.guideCardTitle}>{g.topicTitle}</span>
+                          {guideView !== 'list' && g.summary && (
+                            <span className={styles.guideCardSummary}>{g.summary}</span>
+                          )}
                         </div>
                         <span className={styles.guideCardChevron} aria-hidden="true">›</span>
                       </Link>
