@@ -3,11 +3,13 @@ import type { ReactNode } from 'react';
 import styles from './FolderCardWrapper.module.css';
 
 // Folder-tab silhouette: rounded top-left, flat top, rounded top-right, then a
-// straight slant down to the bottom-right where it meets the tray.
-const TAB_FILL_PATH = 'M0 52 L0 16 Q0 0 16 0 L150 0 Q166 0 172 12 L210 52 Z';
+// straight slant down to the bottom-right where it meets the tray. Inset 1px on
+// the top/left/right so the centred 2px stroke sits fully inside the box, lining
+// up with the tray's border-box border below (bottom stays at 52 to meet flush).
+const TAB_FILL_PATH = 'M1 52 L1 16 Q1 1 16 1 L150 1 Q166 1 172 13 L209 52 Z';
 // Same outline minus the bottom edge, so the border wraps the top and slant
 // but leaves the base open against the tray.
-const TAB_STROKE_PATH = 'M0 52 L0 16 Q0 0 16 0 L150 0 Q166 0 172 12 L210 52';
+const TAB_STROKE_PATH = 'M1 52 L1 16 Q1 1 16 1 L150 1 Q166 1 172 13 L209 52';
 
 function TabShape() {
   return (
