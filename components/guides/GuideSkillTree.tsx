@@ -74,7 +74,7 @@ const BAND_H = 118;
 const PAD_X = 44;
 const PAD_TOP = 48;
 const PAD_BOTTOM = 48;
-const MIN_ZOOM = 0.55;
+const MIN_ZOOM = 0.3;
 const MAX_ZOOM = 1.25;
 const DEFAULT_MAP_ZOOM = 0.78;
 
@@ -279,6 +279,22 @@ export default function GuideSkillTree({
     return { stats, deepestCompleted, available };
   }, [completed, inputNodes, selectedSubject, stateOf, totalLevels]);
 
+  // Rail segments by what the learner can do about each depth: something is
+  // clearable right now, everything is done, or prerequisites still stand in
+  // the way. Shallowest first inside each segment — the next move sits on top.
+  const railSections = useMemo(() => {
+    const stats = depthProgress.stats;
+    return [
+      { key: 'reach', label: 'In reach', items: stats.filter((s) => s.available > 0) },
+      {
+        key: 'ahead',
+        label: 'Ahead',
+        items: stats.filter((s) => s.available === 0 && s.completed < s.total),
+      },
+      { key: 'cleared', label: 'Cleared', items: stats.filter((s) => s.completed === s.total) },
+    ].filter((section) => section.items.length > 0);
+  }, [depthProgress.stats]);
+
   const handleActivate = useCallback(
     (p: Placed) => {
       if (p.state === 'available') {
@@ -340,26 +356,40 @@ export default function GuideSkillTree({
     [zoom],
   );
 
-  const resetMapView = useCallback(() => {
-    setZoom(DEFAULT_MAP_ZOOM);
-    requestAnimationFrame(() => {
+  // The start view fits the whole climb vertically (clamped to the zoom
+  // range) and centers on the base band, so the full tree is in view at once.
+  const applyStartView = useCallback(
+    (behavior: ScrollBehavior = 'smooth') => {
       const canvas = canvasRef.current;
-      if (!canvas) return;
-      const startY = PAD_TOP + (totalLevels - 1) * BAND_H + NODE_H / 2;
-      canvas.scrollTo({
-        left: Math.max(0, (width * DEFAULT_MAP_ZOOM - canvas.clientWidth) / 2),
-        top: Math.max(0, startY * DEFAULT_MAP_ZOOM - canvas.clientHeight / 2),
-        behavior: 'smooth',
+      const fit = canvas
+        ? Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, canvas.clientHeight / height))
+        : DEFAULT_MAP_ZOOM;
+      setZoom(fit);
+      requestAnimationFrame(() => {
+        if (!canvas) return;
+        const startY = PAD_TOP + (totalLevels - 1) * BAND_H + NODE_H / 2;
+        canvas.scrollTo({
+          left: Math.max(0, (width * fit - canvas.clientWidth) / 2),
+          top: Math.max(0, startY * fit - canvas.clientHeight / 2),
+          behavior,
+        });
       });
-    });
-  }, [totalLevels, width]);
+    },
+    [height, totalLevels, width],
+  );
+
+  const resetMapView = useCallback(() => applyStartView('smooth'), [applyStartView]);
 
   useEffect(() => {
     if (!clusterBySubject || mapInitializedRef.current) return;
-    mapInitializedRef.current = true;
-    const frame = requestAnimationFrame(() => centerOnLevel(0, 'auto'));
+    // Mark initialized inside the frame — strict mode runs the effect twice,
+    // and cancelling the first frame must not swallow the start view.
+    const frame = requestAnimationFrame(() => {
+      mapInitializedRef.current = true;
+      applyStartView('auto');
+    });
     return () => cancelAnimationFrame(frame);
-  }, [centerOnLevel, clusterBySubject]);
+  }, [applyStartView, clusterBySubject]);
 
   useEffect(() => {
     if (!clusterBySubject || previousSubjectRef.current === selectedSubject) return;
@@ -425,32 +455,37 @@ export default function GuideSkillTree({
           </span>
         </div>
         <div className={styles.railTicks}>
-          {[...depthProgress.stats].reverse().map((stat) => {
-            const bandDone = stat.completed === stat.total;
-            const isCurrent = stat.available > 0;
-            return (
-              <button
-                type="button"
-                key={stat.level}
-                className={`${styles.tick} ${bandDone ? styles.tickDone : ''} ${
-                  isCurrent ? styles.tickCurrent : ''
-                }`}
-                title={`Depth ${stat.level + 1}: ${stat.completed} of ${stat.total} cleared`}
-                onClick={() => centerOnLevel(stat.level)}
-              >
-                <span className={styles.tickRow}>
-                  <span className={styles.tickNum}>Depth {stat.level + 1}</span>
-                  <span className={styles.tickCount}>{stat.completed}/{stat.total}</span>
-                </span>
-                <span className={styles.tickTrack} aria-hidden="true">
-                  <span
-                    className={styles.tickFill}
-                    style={{ width: `${(stat.completed / stat.total) * 100}%` }}
-                  />
-                </span>
-              </button>
-            );
-          })}
+          {railSections.map((section) => (
+            <div key={section.key} className={styles.railSection}>
+              <span className={styles.railCaption}>{section.label}</span>
+              {section.items.map((stat) => {
+                const bandDone = stat.completed === stat.total;
+                const isCurrent = stat.available > 0;
+                return (
+                  <button
+                    type="button"
+                    key={stat.level}
+                    className={`${styles.tick} ${bandDone ? styles.tickDone : ''} ${
+                      isCurrent ? styles.tickCurrent : ''
+                    }`}
+                    title={`Depth ${stat.level + 1}: ${stat.completed} of ${stat.total} cleared`}
+                    onClick={() => centerOnLevel(stat.level)}
+                  >
+                    <span className={styles.tickRow}>
+                      <span className={styles.tickNum}>Depth {stat.level + 1}</span>
+                      <span className={styles.tickCount}>{stat.completed}/{stat.total}</span>
+                    </span>
+                    <span className={styles.tickTrack} aria-hidden="true">
+                      <span
+                        className={styles.tickFill}
+                        style={{ width: `${(stat.completed / stat.total) * 100}%` }}
+                      />
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          ))}
         </div>
       </aside>
 

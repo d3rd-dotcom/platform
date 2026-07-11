@@ -62,44 +62,42 @@ export default function KnowledgeMapPage() {
     <div className={styles.layout}>
       <SideNavigation />
       <main className={styles.page}>
-        <Link href="/home" className={styles.back}>
-          <ArrowLeft size={16} weight="bold" /> Back to courses
-        </Link>
-
-        <header className={styles.header}>
-          <span className={styles.eyebrow}>Knowledge base</span>
-          <h1 className={styles.title}>Knowledge map</h1>
-          <p className={styles.lede}>
-            Every published guide, connected by what it builds on. Start at the base and climb —
-            each guide you clear lights the path to the next.
-          </p>
-        </header>
-
-        {!loading && !error && nodeCount > 0 && (
-          <div className={styles.stats}>
-            <span className={styles.stat}>
-              <span className={styles.statNum}>{nodeCount}</span>
-              <span className={styles.statLabel}>{nodeCount === 1 ? 'guide' : 'guides'}</span>
-            </span>
-            <span className={styles.statDivider} />
-            <span className={styles.stat}>
-              <span className={styles.statNum}>{depthCount}</span>
-              <span className={styles.statLabel}>
-                {depthCount === 1 ? 'depth' : 'depths'}
-              </span>
-            </span>
-            <span className={styles.statDivider} />
-            <span className={styles.stat}>
-              <span className={styles.statNum}>{completedCount}</span>
-              <span className={styles.statLabel}>cleared</span>
-            </span>
-            <span className={styles.statDivider} />
-            <span className={styles.stat}>
-              <span className={styles.statNum}>{readyCount}</span>
-              <span className={styles.statLabel}>ready now</span>
-            </span>
+        {/* One slim bar — the map itself is the page, so the chrome stays out
+            of its way and the graph starts above the fold. */}
+        <header className={styles.topBar}>
+          <Link href="/home" className={styles.back} aria-label="Back to courses">
+            <ArrowLeft size={16} weight="bold" />
+          </Link>
+          <div className={styles.topBarTitles}>
+            <h1 className={styles.title}>Knowledge map</h1>
+            <p className={styles.lede}>Every guide, connected by what it builds on.</p>
           </div>
-        )}
+          {!loading && !error && nodeCount > 0 && (
+            <div className={styles.stats}>
+              <span className={styles.stat}>
+                <span className={styles.statNum}>{nodeCount}</span>
+                <span className={styles.statLabel}>{nodeCount === 1 ? 'guide' : 'guides'}</span>
+              </span>
+              <span className={styles.statDivider} />
+              <span className={styles.stat}>
+                <span className={styles.statNum}>{depthCount}</span>
+                <span className={styles.statLabel}>
+                  {depthCount === 1 ? 'depth' : 'depths'}
+                </span>
+              </span>
+              <span className={styles.statDivider} />
+              <span className={styles.stat}>
+                <span className={styles.statNum}>{completedCount}</span>
+                <span className={styles.statLabel}>cleared</span>
+              </span>
+              <span className={styles.statDivider} />
+              <span className={styles.stat}>
+                <span className={styles.statNum}>{readyCount}</span>
+                <span className={styles.statLabel}>ready now</span>
+              </span>
+            </div>
+          )}
+        </header>
 
         <section className={styles.panel}>
           {loading ? (

@@ -29,70 +29,74 @@
   width: 100%;
   max-width: none;
   margin: 0;
-  padding: 48px 32px 48px 48px;
+  padding: 20px 32px 32px 32px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 14px;
+}
+
+/* One-row header: back arrow, title + one-line lede, stats pushed right. */
+.topBar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  min-height: 44px;
 }
 
 .back {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-family: var(--font-mono);
-  font-size: var(--font-size-sm, 0.75rem);
-  font-weight: var(--font-weight-medium, 500);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
   color: var(--color-text-muted);
   text-decoration: none;
-  width: fit-content;
+  transition: color 0.15s ease, border-color 0.15s ease;
 }
 
 .back:hover {
   color: var(--color-primary);
+  border-color: color-mix(in oklch, var(--color-primary) 45%, transparent);
 }
 
-.header {
+.topBarTitles {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--color-primary);
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
 .title {
   font-family: var(--font-editorial), 'PP Editorial New', Georgia, serif;
-  font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem);
+  font-size: 1.618rem;
   font-weight: var(--font-weight-regular, 400);
   line-height: 1.12;
   letter-spacing: -0.005em;
   color: var(--color-text-dark);
   margin: 0;
+  white-space: nowrap;
 }
 
 .lede {
   font-family: var(--font-primary);
-  font-size: 1rem;
-  line-height: 1.5;
+  font-size: 0.875rem;
+  line-height: 1.4;
   color: var(--color-text-muted);
-  max-width: 60ch;
   margin: 0;
 }
 
-/* Count eyebrow above the graph. */
+/* Counts live inside the top bar, right-aligned. */
 .stats {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px 14px;
+  margin-left: auto;
 }
 
 .stat {

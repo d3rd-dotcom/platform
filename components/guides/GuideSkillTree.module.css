@@ -34,8 +34,30 @@
 }
 
 .mapMode .rail {
-  max-height: clamp(560px, 72vh, 760px);
+  /* Match the canvas height so rail and map read as one surface. */
+  max-height: clamp(520px, calc(100vh - 240px), 900px);
   overflow-y: auto;
+}
+
+/* Rail segments: in reach / ahead / cleared. */
+.railSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.railSection + .railSection {
+  margin-top: 10px;
+  padding-top: 12px;
+  border-top: 1px solid color-mix(in oklch, var(--color-primary) 14%, transparent);
+}
+
+.railCaption {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
 }
 
 .railHeader {
@@ -232,7 +254,11 @@
 }
 
 .canvasInteractive {
-  height: clamp(560px, 72vh, 760px);
+  /* Fill the viewport below the slim top bar — the map is the page.
+     flex: none, or the column shell's flex-basis wins and the height
+     clamp silently never applies. */
+  flex: none;
+  height: clamp(520px, calc(100vh - 240px), 900px);
   touch-action: none;
   cursor: grab;
   overscroll-behavior: contain;
