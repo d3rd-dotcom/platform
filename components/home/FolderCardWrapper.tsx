@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, type ReactNode } from 'react';
+import { useSound } from '@/hooks/useSound';
 
 import styles from './FolderCardWrapper.module.css';
 
@@ -33,6 +34,7 @@ interface FolderCardWrapperProps {
 
 export default function FolderCardWrapper({ tabs }: FolderCardWrapperProps) {
   const [active, setActive] = useState(0);
+  const { play } = useSound();
   const activeTab = tabs[active] ?? tabs[0];
 
   return (
@@ -49,7 +51,7 @@ export default function FolderCardWrapper({ tabs }: FolderCardWrapperProps) {
               className={`${styles.tab} ${isActive ? styles.tabActive : ''}`}
               // Active tab sits in front; the rest keep left-over-right slant order.
               style={{ zIndex: isActive ? tabs.length + 1 : tabs.length - i }}
-              onClick={() => setActive(i)}
+              onClick={() => { play('click'); setActive(i); }}
             >
               <TabShape />
               <span className={styles.tabLabel}>{tab.label}</span>

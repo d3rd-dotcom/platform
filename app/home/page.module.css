@@ -135,6 +135,15 @@
   box-shadow:
     0 6px 0 color-mix(in oklch, var(--color-primary) 64%, #000),
     0 0 10px rgba(0, 0, 0, 0.14);
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.2s ease;
+}
+
+.indicators:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 0 color-mix(in oklch, var(--color-primary) 64%, #000),
+    0 0 14px rgba(0, 0, 0, 0.18),
+    0 14px 8px rgba(0, 0, 0, 0.30);
 }
 
 /* Ordered dither texture: two interleaved dot grids, matching the profile card. */
