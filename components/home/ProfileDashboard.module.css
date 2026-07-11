@@ -499,3 +499,78 @@ a.missionCard:hover {
   transform: scale(0.92);
   transform-origin: top center;
 }
+
+/* Dark theme */
+:global([data-theme="dark"]) .panel {
+  background: #15172a;
+  border-color: color-mix(in oklch, var(--panel-blue) 78%, #a8b2ff);
+  box-shadow:
+    0 5px 0 color-mix(in oklch, var(--panel-blue) 72%, #111426),
+    0 8px 18px rgba(0, 0, 0, 0.48);
+}
+
+:global([data-theme="dark"]) .tab,
+:global([data-theme="dark"]) .editBtn,
+:global([data-theme="dark"]) .levelPill,
+:global([data-theme="dark"]) .certSealMark {
+  background: #20243d;
+  border-color: #5869c7;
+  color: #c9cfff;
+  box-shadow: 0 3px 0 #111426;
+}
+
+:global([data-theme="dark"]) .tab:hover,
+:global([data-theme="dark"]) .editBtn:hover {
+  background: #292e4d;
+}
+
+:global([data-theme="dark"]) .tabActive,
+:global([data-theme="dark"]) .certRow:not(.certLocked) .certSealMark {
+  background: var(--panel-blue);
+  border-color: #8594ff;
+  color: #f6f8ed;
+  box-shadow: 0 3px 0 #303b91;
+}
+
+:global([data-theme="dark"]) .tabActive:hover {
+  background: #6679ff;
+}
+
+:global([data-theme="dark"]) .tabPanel,
+:global([data-theme="dark"]) .courseRow,
+:global([data-theme="dark"]) .certRow,
+:global([data-theme="dark"]) .statsRow {
+  background: #1b1e33;
+  border-color: #353a59;
+  color: #c5c9dc;
+}
+
+:global([data-theme="dark"]) .courseRow:hover {
+  border-color: #7182ee;
+}
+
+:global([data-theme="dark"]) .courseRowTitle,
+:global([data-theme="dark"]) .headline,
+:global([data-theme="dark"]) .panel .description,
+:global([data-theme="dark"]) .statValue,
+:global([data-theme="dark"]) .missionHeading {
+  color: #eef0fa;
+}
+
+:global([data-theme="dark"]) .panel .description.bioPlaceholder,
+:global([data-theme="dark"]) .statLabel,
+:global([data-theme="dark"]) .certState {
+  color: #9ba1bd;
+}
+
+:global([data-theme="dark"]) .courseRowTrack {
+  background: #2a2e49;
+}
+
+:global([data-theme="dark"]) .badge {
+  background: #20233a;
+  border-color: #6577e4;
+  box-shadow:
+    0 4.8px 0 #3948a3,
+    0 7px 14px rgba(0, 0, 0, 0.42);
+}

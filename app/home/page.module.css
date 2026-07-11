@@ -561,6 +561,12 @@
   gap: 10px;
 }
 
+.guideCardList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
 /* ── Author impact stats row ────────────────────────────────────────────── */
 .authorStatsRow {
   display: flex;
@@ -787,7 +793,7 @@
 .guideDraftGroup {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
   margin-top: 4px;
 }
 

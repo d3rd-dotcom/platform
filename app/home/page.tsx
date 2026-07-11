@@ -8,9 +8,9 @@ import { Plus } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import { scriptForWeek, WEEKLY_SEEN_KEY } from '@/components/daily-read/weeklyScripts';
-import CourseFolderCard from '@/components/courses/CourseFolderCard';
-import ProfileDashboard from '@/components/courses/ProfileDashboard';
-import FieldNotesSheet from '@/components/courses/FieldNotesSheet';
+import CourseFolderCard from '@/components/home/CourseFolderCard';
+import ProfileDashboard from '@/components/home/ProfileDashboard';
+import FieldNotesSheet from '@/components/home/FieldNotesSheet';
 
 import type { CourseData } from '@/lib/personal-course';
 import { onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
@@ -442,7 +442,7 @@ export default function HomePage() {
                   <span className={styles.guideSubjectLabel}>
                     {(guideProgress?.completedGuides ?? 0) === 0 ? 'Start here' : 'Next unlocks'}
                   </span>
-                  <div className={styles.authoredList}>
+                  <div className={styles.guideCardList}>
                     {frontierGuides.slice(0, 6).map((g) => (
                       <Link
                         key={`frontier-${g.id}`}
@@ -581,7 +581,7 @@ export default function HomePage() {
               {guidesBySubject.map(([subject, subjectGuides]) => (
                 <div key={subject} className={styles.guideSubjectGroup}>
                   <span className={styles.guideSubjectLabel}>{subject}</span>
-                  <div className={styles.authoredList}>
+                  <div className={styles.guideCardList}>
                     {subjectGuides.map((g) => (
                       <Link
                         key={`${subject}-${g.id}`}

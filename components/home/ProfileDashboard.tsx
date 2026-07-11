@@ -8,7 +8,7 @@ import Link from 'next/link';
 import AvatarSelectorModal from '@/components/avatar-selector/AvatarSelectorModal';
 import UsernameChangeModal from '@/components/username-change/UsernameChangeModal';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
-import CourseFolderCard from '@/components/courses/CourseFolderCard';
+import CourseFolderCard from '@/components/home/CourseFolderCard';
 import { useAccount } from 'wagmi';
 import { QUEST_DEFINITIONS, type QuestDefinition } from '@/lib/quest-definitions';
 import { fetchDiamondBalance } from '@/lib/diamonds-balance';

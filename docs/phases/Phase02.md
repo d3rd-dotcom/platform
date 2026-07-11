@@ -15,7 +15,7 @@
 **UI — inside /courses only**
 - `app/courses/guides/[slug]/page.tsx` — guide page rendering body through the existing `course-renderers` (guides are course content with a DAG on top — no parallel rendering stack), prereq/dependent links, collapsible methods, walkthrough entry.
 - `app/courses/guides/[slug]/walkthrough/` — leveled climb view: guides grouped by computed level, rendered bottom-up, "Level N of M" indicator, upper levels visually locked until every lower-level guide is complete. This is the leveling-up/anti-fatigue mechanic.
-- `components/guides/` — `GuideBody`, `GuideMethods`, `GuideWalkthrough` (+ CSS modules on the new typography system and existing design tokens). Kept out of `components/courses/` to avoid colliding with the typography pass.
+- `components/guides/` — `GuideBody`, `GuideMethods`, `GuideWalkthrough` (+ CSS modules on the new typography system and existing design tokens). Kept out of `components/home/` to avoid colliding with the typography pass.
 - `app/courses/page.tsx` — ONE added section, "Knowledge Base," listing published guides grouped by subject, reusing the existing authored-card styles. **Right-side column and CourseFolderCard / ProfileDashboard / FieldNotesSheet placement untouched** (verified in diff — additions only, no moved JSX).
 
 ## Review verdict

@@ -217,7 +217,7 @@ Code:
 - New `lib/diamonds-burn-relayer.ts` — mirror of `diamonds-paymaster.ts` but transport =
   Alchemy bundler RPC + policy ID. Keep CDP sponsoring mints; Alchemy sponsors burns.
   Two independent sponsors also means one dashboard outage never halts both faucet and sink.
-- [components/courses/FieldNotesSheet.tsx](../../components/courses/FieldNotesSheet.tsx):
+- [components/home/FieldNotesSheet.tsx](../../components/home/FieldNotesSheet.tsx):
   replace the `transfer(dEaD)` signing with `signTypedData` (permit). Delete the "you need
   a little ETH" warning copy at line ~316 — that constraint dies with this mission.
 - Unseal route: `verifyBurnTx` accepts `Transfer` to `address(0)` (what `burnFrom` emits)
