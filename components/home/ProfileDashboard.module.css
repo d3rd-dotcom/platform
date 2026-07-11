@@ -10,24 +10,27 @@
   max-width: 100%;
   justify-self: start;
   padding: 16px;
-  border: 2px solid var(--color-primary-hover);
+  border: 2px solid #1a1a1d;
   border-radius: 16px;
-  background:
-    linear-gradient(135deg, color-mix(in oklch, var(--color-primary) 8%, transparent), transparent 52%),
-    var(--color-surface-base, #fff);
+  background: #2a2a2e;
   box-shadow:
     0 6px 0 var(--color-primary),
     0 0 10px rgba(0, 0, 0, 0.14),
     0 10px 5px rgba(0, 0, 0, 0.30);
 }
 
-.dotPattern {
+/* Ordered dither texture: two interleaved dot grids over the dark surface. */
+.dither {
   position: absolute;
-  right: 8px;
-  bottom: 8px;
+  inset: 0;
   z-index: 0;
-  opacity: 0.22;
   pointer-events: none;
+  border-radius: inherit;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.06) 0.5px, transparent 0.7px),
+    radial-gradient(rgba(255, 255, 255, 0.06) 0.5px, transparent 0.7px);
+  background-size: 4px 4px, 4px 4px;
+  background-position: 0 0, 2px 2px;
 }
 
 .avatar {
@@ -72,15 +75,15 @@
   align-items: center;
   min-height: 24px;
   padding: 0 8px;
-  border: 1px solid color-mix(in oklch, var(--color-primary) 55%, var(--color-border-subtle, #c7c7c7));
+  border: 1px solid color-mix(in oklch, var(--color-primary) 60%, transparent);
   border-radius: 999px;
-  background: color-mix(in oklch, var(--color-primary) 10%, var(--color-surface-base, #fff));
+  background: color-mix(in oklch, var(--color-primary) 22%, transparent);
   font-family: var(--font-mono);
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--color-primary);
+  color: #dfe3ff;
 }
 
 .nameButton {
@@ -88,7 +91,7 @@
   padding: 0;
   border: 0;
   background: transparent;
-  color: inherit;
+  color: #f6f8ed;
   cursor: pointer;
   font: inherit;
   font-size: 1.125rem;
@@ -100,7 +103,7 @@
 
 .streakLabel {
   font-size: 0.875rem;
-  color: var(--color-text-muted, #666);
+  color: rgba(246, 248, 237, 0.6);
 }
 
 .streak {
@@ -122,23 +125,23 @@
   align-items: center;
   gap: 2px;
   padding: 4px 8px;
-  border: 1px solid color-mix(in oklch, var(--color-primary) 35%, var(--color-border-subtle, #c7c7c7));
+  border: 1px solid rgba(246, 248, 237, 0.14);
   border-radius: 999px;
-  background: color-mix(in oklch, var(--color-primary) 6%, var(--color-surface-base, #fff));
+  background: rgba(0, 0, 0, 0.25);
 }
 
 .streakDay {
   width: 16px;
   height: 16px;
-  border: 1.5px solid var(--color-border-subtle, #c7c7c7);
+  border: 1.5px solid rgba(246, 248, 237, 0.22);
   border-radius: 50%;
-  background: var(--color-surface-base, #fff);
+  background: rgba(246, 248, 237, 0.06);
 }
 
 .streakDayFilled {
-  border-color: var(--color-primary);
-  background: var(--color-primary);
-  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary) 14%, transparent);
+  border-color: var(--color-secondary);
+  background: var(--color-secondary);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-secondary) 22%, transparent);
 }
 
 @media (max-width: 640px) {

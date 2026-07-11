@@ -5,7 +5,6 @@ import { usePrivy } from '@privy-io/react-auth';
 
 import AvatarSelectorModal from '@/components/avatar-selector/AvatarSelectorModal';
 import UsernameChangeModal from '@/components/username-change/UsernameChangeModal';
-import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
 import styles from './ProfileDashboard.module.css';
 
 export default function ProfileDashboard() {
@@ -47,9 +46,7 @@ export default function ProfileDashboard() {
 
   return (
     <section className={styles.panel}>
-      <div className={styles.dotPattern}>
-        <DotmSquare15 speed={0.8} dotSize={4} gap={2} />
-      </div>
+      <div className={styles.dither} aria-hidden="true" />
       <button
         type="button"
         className={styles.avatar}
