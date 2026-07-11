@@ -409,7 +409,7 @@ export default function HomePage() {
       {!learnOnly && (
       <section className={styles.dashboardHeader}>
         <ProfileDashboard />
-        <section className={styles.indicators} aria-label="Course indicators">
+        <section className={styles.indicators} aria-label="Course indicators" onMouseEnter={() => play('soft-hover')}>
           <div className={styles.indicator}>
             <span className={styles.indicatorLabel}>Completed courses</span>
             <span className={styles.indicatorValue}>{courseIndicators.completed}</span>

@@ -1,6 +1,5 @@
 .panel {
   position: relative;
-  isolation: isolate;
   overflow: hidden;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);

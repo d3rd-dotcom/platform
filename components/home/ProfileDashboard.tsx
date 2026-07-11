@@ -6,6 +6,7 @@ import { SealCheck } from '@phosphor-icons/react';
 
 import AvatarSelectorModal from '@/components/avatar-selector/AvatarSelectorModal';
 import UsernameChangeModal from '@/components/username-change/UsernameChangeModal';
+import { useSound } from '@/hooks/useSound';
 import styles from './ProfileDashboard.module.css';
 
 /** Tier names by credential level, mirroring VerifierBadges. */
@@ -17,6 +18,7 @@ function tierName(level: number): string {
 
 export default function ProfileDashboard() {
   const { ready, authenticated, getAccessToken } = usePrivy();
+  const { play } = useSound();
   const [username, setUsername] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [streak, setStreak] = useState(0);
@@ -73,7 +75,7 @@ export default function ProfileDashboard() {
   }, [ready, authenticated, loadMe, authHeaders]);
 
   return (
-    <section className={styles.panel}>
+    <section className={styles.panel} onMouseEnter={() => play('soft-hover')}>
       <div className={styles.dither} aria-hidden="true" />
       <button
         type="button"
