@@ -147,8 +147,8 @@ export default function GuidePage({ params }: PageProps) {
         {data && !loading && (
           <>
             <header className={styles.header}>
-              <Link href="/home" className={styles.back}>
-                <ArrowLeft size={16} weight="bold" /> Knowledge Base
+              <Link href="/learn" className={styles.back}>
+                <ArrowLeft size={16} weight="bold" /> Learn
               </Link>
               <div className={styles.subjects}>
                 {data.guide.subjects.map((s) => {
@@ -209,7 +209,7 @@ export default function GuidePage({ params }: PageProps) {
                   {data.prereqs.map((p) => (
                     <Link
                       key={p.id}
-                      href={`/home/guides/${p.slug}`}
+                      href={`/learn/guides/${p.slug}`}
                       className={styles.chip}
                       onMouseEnter={() => play('soft-hover')}
                       onClick={() => play('navigation')}
@@ -286,7 +286,7 @@ export default function GuidePage({ params }: PageProps) {
                   {data.dependents.map((d) => (
                     <Link
                       key={d.id}
-                      href={`/home/guides/${d.slug}`}
+                      href={`/learn/guides/${d.slug}`}
                       className={styles.chipNext}
                       onMouseEnter={() => play('soft-hover')}
                       onClick={() => play('navigation')}

@@ -3,35 +3,27 @@
   margin-left: var(--sidebar-width, 265px);
   min-height: 100vh;
   background-color: var(--color-background, #ffffff);
-  background-image:
-    linear-gradient(to right, color-mix(in oklch, var(--color-primary) 8%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in oklch, var(--color-primary) 8%, transparent) 1px, transparent 1px);
-  background-size: 32px 32px;
-  background-position: -1px -1px;
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 :global([data-theme="dark"]) .layout {
   background-color: #0d0e16;
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
 }
 
 .pageColumns {
   position: relative;
   z-index: 1;
-  max-width: 1400px;
+  max-width: 1600px;
   width: 100%;
   margin: 0 auto;
-  padding: 48px 24px;
-  display: flex;
-  align-items: flex-start;
-  gap: 32px;
+  padding: 48px 64px;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 24px;
 }
 
 .main {
-  flex: 1;
+  grid-column: 1 / -1;
   min-width: 0;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -40,39 +32,139 @@
 }
 
 .folderRow {
-  grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 340px));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 24px;
-  margin-top: 12px;
 }
 
-.asideQuestFolder {
-  width: 100%;
-  margin: 24px auto 0;
+.dashboardHeader {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: start;
+  flex-wrap: wrap;
+  gap: 48px;
+  margin-bottom: 24px;
 }
 
-.aside {
-  width: 380px;
-  flex-shrink: 0;
-  position: sticky;
-  top: 48px;
+.indicators {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  flex: 1;
+  min-width: 320px;
+  gap: 32px;
+  min-height: 112px;
+  padding: 16px 64px 0;
 }
 
-@media (max-width: 1100px) {
+.indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 112px;
+  max-width: 88px;
+  text-align: center;
+}
+
+.indicatorLabel {
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  color: var(--color-text-muted, #666);
+}
+
+.indicatorValue {
+  font-family: var(--font-mono);
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--color-text-dark, #141414);
+}
+
+.dailyNotes {
+  width: 320px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (max-width: 1200px) {
+  .indicators {
+    padding-inline: 16px;
+  }
+
+  .dailyNotes {
+    margin-left: auto;
+  }
+}
+
+.fieldNotesGhost {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 72px;
+  padding: 16px 20px;
+  border: 2px dashed color-mix(in oklch, var(--color-primary) 45%, var(--color-border-subtle, #c7c7c7));
+  border-radius: 12px;
+  background: transparent;
+  color: var(--color-text-muted, #666);
+  cursor: pointer;
+  font-family: var(--font-secondary);
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: left;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.fieldNotesGhost img {
+  opacity: 0.55;
+}
+
+.fieldNotesGhost:not(:disabled):hover {
+  border-color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
+  color: var(--color-text-dark, #141414);
+}
+
+.fieldNotesGhost:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+}
+
+.fieldNotesGhost:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+@media (max-width: 1050px) {
+  .folderRow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
   .pageColumns {
-    flex-direction: column-reverse;
+    padding: 32px 24px;
   }
 
-  .aside {
-    width: 100%;
-    max-width: 480px;
-    margin: 0 auto;
-    position: static;
+  .folderRow {
+    grid-template-columns: 1fr;
   }
 
-  .main {
+  .dashboardHeader {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .indicators {
+    min-height: 0;
+    gap: 16px;
+  }
+
+  .dailyNotes {
     width: 100%;
+    margin-left: 0;
   }
 }
 
@@ -412,6 +504,206 @@
   background: var(--color-primary);
   border-radius: 999px;
   transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Home dashboard insights ────────────────────────────────────────────── */
+.dashboardInsights {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.insightCard {
+  min-width: 0;
+  min-height: 276px;
+  overflow: hidden;
+  padding: 28px 28px 22px;
+  border: 2px solid var(--color-primary-hover);
+  border-radius: 12px;
+  background: var(--color-surface-base);
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    0 0 10px rgba(0, 0, 0, 0.14),
+    0 10px 5px rgba(0, 0, 0, 0.30);
+}
+
+.insightTitle {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-text-dark, #141414);
+}
+
+.statsChart {
+  position: relative;
+  height: 192px;
+  margin-top: 20px;
+  overflow: hidden;
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, color-mix(in oklch, var(--color-primary) 10%, transparent), transparent 72%),
+    color-mix(in oklch, var(--color-primary) 3%, var(--color-surface-base));
+}
+
+.chartLines {
+  position: absolute;
+  inset: 0 0 24px;
+  width: 100%;
+  height: calc(100% - 24px);
+  overflow: visible;
+  shape-rendering: crispEdges;
+}
+
+.chartArea { fill: url(#stats-area); }
+.chartLineMuted,
+.chartLinePrimary {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.chartLineMuted {
+  stroke: color-mix(in oklch, var(--color-text-muted, #667085) 55%, transparent);
+  stroke-width: 1.5;
+}
+
+.chartLinePrimary {
+  stroke: var(--color-primary);
+  stroke-width: 2;
+}
+
+.chartMarkerLine {
+  stroke: color-mix(in oklch, var(--color-primary) 42%, transparent);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.chartMarker {
+  fill: var(--color-primary);
+  stroke: var(--color-surface-base);
+  stroke-width: 3;
+}
+
+.chartTooltip {
+  position: absolute;
+  z-index: 1;
+  top: 26px;
+  left: 64%;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: var(--color-surface-base);
+  box-shadow: 0 3px 10px rgba(20, 20, 28, 0.14);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--color-text-dark, #141414);
+}
+
+.chartTooltip span { color: var(--color-primary); }
+
+.chartMonths {
+  position: absolute;
+  right: 10px;
+  bottom: 5px;
+  left: 10px;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  color: var(--color-text-muted, #667085);
+}
+
+.planningHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.planningControls { display: flex; gap: 8px; }
+
+.planningControls span {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 25%, transparent);
+  border-radius: 50%;
+  color: var(--color-text-muted, #667085);
+}
+
+.planningViewport {
+  margin-top: 18px;
+  overflow: hidden;
+}
+
+.planningDays {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(88px, 1fr));
+  gap: 8px;
+  width: calc(100% + 106px);
+  transform: translateX(-53px);
+}
+
+.planningDay,
+.planningDayMuted {
+  display: flex;
+  min-height: 80px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border-radius: 20px;
+  font-family: var(--font-primary);
+}
+
+.planningDay span,
+.planningDayMuted span {
+  font-size: 0.6875rem;
+  font-weight: 500;
+}
+
+.planningDay strong,
+.planningDayMuted strong {
+  font-family: var(--font-mono);
+  font-size: 1.125rem;
+  line-height: 1;
+}
+
+.planningDay { color: #171822; }
+.planningDayWarm { background: var(--color-accent, #f4ef55); }
+.planningDayBlue { background: var(--color-primary); color: #fff; }
+.planningDayMuted {
+  background: color-mix(in oklch, var(--color-text-dark, #141414) 7%, var(--color-surface-base));
+  color: var(--color-text-muted, #667085);
+}
+
+.planningTasks {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.planningTask {
+  min-height: 56px;
+  padding: 10px;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 16%, transparent);
+  border-radius: 10px;
+  background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-base));
+  font-family: var(--font-primary);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--color-text-muted, #667085);
 }
 
 
@@ -1209,6 +1501,23 @@
 
   .desc {
     font-size: 15px;
+  }
+
+  .dashboardInsights {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .insightCard {
+    min-height: 260px;
+    padding: 22px 18px 18px;
+  }
+
+  .planningDays {
+    grid-template-columns: repeat(5, minmax(76px, 1fr));
+    width: calc(100% + 88px);
+    transform: translateX(-44px);
   }
 }
 

@@ -65,7 +65,7 @@ export default function KnowledgeMapPage() {
         {/* One slim bar — the map itself is the page, so the chrome stays out
             of its way and the graph starts above the fold. */}
         <header className={styles.topBar}>
-          <Link href="/home" className={styles.back} aria-label="Back to courses">
+          <Link href="/learn" className={styles.back} aria-label="Back to Learn">
             <ArrowLeft size={16} weight="bold" />
           </Link>
           <div className={styles.topBarTitles}>

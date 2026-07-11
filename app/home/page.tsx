@@ -3,13 +3,16 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
-import { Plus, CaretUp, CaretDown, Rows, GridFour, Cube } from '@phosphor-icons/react';
+import { Plus, CaretUp, CaretDown, Rows, GridFour, Cube, CaretLeft, CaretRight } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import { scriptForWeek, WEEKLY_SEEN_KEY } from '@/components/daily-read/weeklyScripts';
 import CourseFolderCard from '@/components/home/CourseFolderCard';
+import FolderCardWrapper from '@/components/home/FolderCardWrapper';
 import ProfileDashboard from '@/components/home/ProfileDashboard';
+import DailyNotes from '@/components/daily-notes/DailyNotes';
 import FieldNotesSheet from '@/components/home/FieldNotesSheet';
 
 import type { CourseData } from '@/lib/personal-course';
@@ -31,9 +34,9 @@ interface CourseDialogue {
 const FIRST_COURSES_DIALOGUE: CourseDialogue = {
   emotion: 'neutral',
   lines: [
-    'I keep the Academy learning records. This page is where courses, guides, and field notes meet.',
-    'Start with one guide, continue a course, or record an observation. I remember what you finish.',
-    'Completing lessons and guides earns diamonds. Your progress unlocks the next branch.',
+    'I keep the Academy learning records. This page is where courses and field notes meet.',
+    'Continue a course or record an observation. I remember what you finish.',
+    'Completing lessons earns credits. Your progress stays with you.',
   ],
 };
 
@@ -41,8 +44,8 @@ const DAILY_COURSES_DIALOGUES: CourseDialogue[] = [
   {
     emotion: 'calm',
     lines: [
-      'One completed guide teaches me more than five open tabs.',
-      'Choose the next node. Finish it, then follow the branch it unlocks.',
+      'One completed lesson teaches me more than five open tabs.',
+      'Choose one task. Finish it, then return for the next session.',
     ],
   },
   {
@@ -69,8 +72,8 @@ const DAILY_COURSES_DIALOGUES: CourseDialogue[] = [
   {
     emotion: 'calm',
     lines: [
-      'The knowledge tree maps dependencies.',
-      'Clear the next prerequisite and the harder branch opens.',
+      'A course holds a sequence of useful practice.',
+      'Finish one session before opening the next thread.',
     ],
   },
   {
@@ -105,6 +108,7 @@ function dialogueIndexForDate(dateKey: string): number {
 }
 
 export default function HomePage() {
+  const learnOnly = usePathname() === '/learn';
   const { ready, authenticated, getAccessToken } = usePrivy();
   const [personalCourse, setPersonalCourse] = useState<CourseData | null>(null);
   const [academyCourses, setAcademyCourses] = useState<CourseRecord[]>([]);
@@ -128,7 +132,8 @@ export default function HomePage() {
 
   const [isVip, setIsVip] = useState(false);
   const [fieldNotesOpen, setFieldNotesOpen] = useState(false);
-  const [noteCount, setNoteCount] = useState(0);
+  const [notebookEntriesUnlocked, setNotebookEntriesUnlocked] = useState(false);
+  const [courseIndicators, setCourseIndicators] = useState({ completed: 0, inProgress: 0, saved: 0 });
   const [introOpen, setIntroOpen] = useState(false);
   const [courseDialogue, setCourseDialogue] = useState<CourseDialogue>(
     FIRST_COURSES_DIALOGUE,
@@ -220,16 +225,17 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
+    if (!learnOnly) return;
     fetch('/api/guides?status=published')
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         if (d?.guides) setGuides(d.guides);
       })
       .catch(() => {});
-  }, []);
+  }, [learnOnly]);
 
   useEffect(() => {
-    if (!ready || !authenticated) return;
+    if (!learnOnly || !ready || !authenticated) return;
     (async () => {
       try {
         const token = await getAccessToken();
@@ -238,10 +244,10 @@ export default function HomePage() {
         if (res.ok) setGuideProgress(await res.json());
       } catch {}
     })();
-  }, [ready, authenticated, getAccessToken]);
+  }, [learnOnly, ready, authenticated, getAccessToken]);
 
   useEffect(() => {
-    if (!ready || !authenticated) return;
+    if (!learnOnly || !ready || !authenticated) return;
     (async () => {
       try {
         const token = await getAccessToken();
@@ -253,12 +259,31 @@ export default function HomePage() {
         }
       } catch {}
     })();
-  }, [ready, authenticated, getAccessToken]);
+  }, [learnOnly, ready, authenticated, getAccessToken]);
 
   const authHeaders = useCallback(async (): Promise<HeadersInit> => {
     const token = await getAccessToken();
     return token ? { Authorization: `Bearer ${token}` } : {};
   }, [getAccessToken]);
+
+  useEffect(() => {
+    if (!ready || !authenticated) {
+      setNotebookEntriesUnlocked(false);
+      return;
+    }
+
+    (async () => {
+      try {
+        const headers = await authHeaders();
+        const res = await fetch('/api/me', { cache: 'no-store', credentials: 'include', headers });
+        if (!res.ok) return;
+        const data = await res.json();
+        setNotebookEntriesUnlocked((data?.user?.shardCount ?? 0) >= 3_000);
+      } catch {
+        setNotebookEntriesUnlocked(false);
+      }
+    })();
+  }, [ready, authenticated, authHeaders]);
 
   const loadPersonalCourse = useCallback(async () => {
     try {
@@ -289,11 +314,30 @@ export default function HomePage() {
       .then((d) => setIsVip(d?.hasVipMembershipCard ?? false))
       .catch(() => setIsVip(false));
 
-    fetch('/api/daily-notes/count', { credentials: 'include' })
-      .then((r) => r.ok ? r.json() : null)
-      .then((d) => setNoteCount(d?.count ?? 0))
-      .catch(() => setNoteCount(0));
   }, [ready, authenticated]);
+
+  useEffect(() => {
+    if (!ready || !authenticated) return;
+
+    (async () => {
+      try {
+        const token = await getAccessToken();
+        const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+        const res = await fetch('/api/vip/courses/public', { cache: 'no-store', credentials: 'include', headers });
+        if (!res.ok) return;
+        const data = await res.json();
+        const courses = data.courses ?? [];
+        setCourseIndicators({
+          completed: courses.filter((course: { viewerProgressPct?: number }) => course.viewerProgressPct === 100).length,
+          inProgress: courses.filter((course: { viewerProgressPct?: number }) => {
+            const progress = course.viewerProgressPct ?? 0;
+            return progress > 0 && progress < 100;
+          }).length,
+          saved: courses.length,
+        });
+      } catch { /* Keep the zero-state indicators visible. */ }
+    })();
+  }, [ready, authenticated, getAccessToken]);
 
   const loadMyGuides = useCallback(async () => {
     try {
@@ -320,9 +364,9 @@ export default function HomePage() {
   }, [authHeaders]);
 
   useEffect(() => {
-    if (!ready || !authenticated) return;
+    if (!learnOnly || !ready || !authenticated) return;
     loadMyGuides();
-  }, [ready, authenticated, loadMyGuides]);
+  }, [learnOnly, ready, authenticated, loadMyGuides]);
 
   useEffect(() => onPersonalCourseUpdated(loadPersonalCourse), [loadPersonalCourse]);
 
@@ -352,37 +396,80 @@ export default function HomePage() {
     featuredPageCount > 0 ? ((featuredPage % featuredPageCount) + featuredPageCount) % featuredPageCount : 0;
   const featuredGuides = featuredGroups[activeFeaturedPage] ?? [];
 
-  const panelCourses = [
-    { title: "Blue's Quest", href: '/shadow-work', progressPct: 0 },
-    ...(personalCourse ? [{ title: personalCourse.title, href: '/course/personal', progressPct: 0 }] : []),
-    ...academyCourses.map((c) => ({ title: c.title, href: `/course/${c.slug}`, progressPct: 0 })),
-  ];
-
   return (
     <div className={styles.layout}>
       <SideNavigation />
       <main className={styles.pageColumns}>
-      <aside className={styles.aside}>
-        <ProfileDashboard
-          courses={panelCourses}
-          noteCount={noteCount}
-          onOpenNotes={() => setFieldNotesOpen(true)}
-          questFolder={{ title: "Blue's Quest", count: 12, href: '/shadow-work' }}
-        />
-        <div className={styles.asideQuestFolder}>
-          <CourseFolderCard
-            title="Field Notes"
-            count={noteCount}
-            onOpen={() => setFieldNotesOpen(true)}
-            ctaLabel="Open notes"
-            dark
-            images={[]}
-          />
+      {!learnOnly && (
+      <section className={styles.dashboardHeader}>
+        <ProfileDashboard />
+        <section className={styles.indicators} aria-label="Course indicators">
+          <div className={styles.indicator}>
+            <span className={styles.indicatorLabel}>Completed courses</span>
+            <span className={styles.indicatorValue}>{courseIndicators.completed}</span>
+          </div>
+          <div className={styles.indicator}>
+            <span className={styles.indicatorLabel}>In progress of study</span>
+            <span className={styles.indicatorValue}>{courseIndicators.inProgress}</span>
+          </div>
+          <div className={styles.indicator}>
+            <span className={styles.indicatorLabel}>Saved courses</span>
+            <span className={styles.indicatorValue}>{courseIndicators.saved}</span>
+          </div>
+        </section>
+        <div className={styles.dailyNotes}>
+          <DailyNotes enablePersistence={authenticated && ready} compact compactLabel="Daily Notes" />
+          <button
+            type="button"
+            className={styles.fieldNotesGhost}
+            onClick={() => setFieldNotesOpen(true)}
+            disabled={!notebookEntriesUnlocked}
+            title={notebookEntriesUnlocked ? undefined : 'Unlocks at 3,000 credits'}
+          >
+            <Image src="/icons/notebook-writing.svg" alt="" width={36} height={36} />
+            <span>Notebook Entries</span>
+          </button>
         </div>
-      </aside>
+      </section>
+      )}
+      {!learnOnly && (
+        <FolderCardWrapper>
+          <section className={styles.folderRow} aria-label="Course folders">
+            <CourseFolderCard
+              title="Blue's Quest"
+              count={12}
+              href="/shadow-work"
+              avatarSrc="/blue/blue-home.png"
+              ctaDark
+              images={[]}
+            />
+            <CourseFolderCard
+              title="Course Library"
+              count={academyCourses.length}
+              href="/course"
+              dark
+              images={[]}
+            />
+            <CourseFolderCard
+              title="Your Course"
+              count={personalCourse ? 1 : 0}
+              href="/course/personal"
+              dark
+              images={[]}
+            />
+            <CourseFolderCard
+              title="Build a Course"
+              count={0}
+              href="/course-builder"
+              dark
+              images={[]}
+            />
+          </section>
+        </FolderCardWrapper>
+      )}
       <div className={styles.main}>
 
-        {personalCourse && (
+        {!learnOnly && personalCourse && (
           <div className={styles.cardWrapper}>
           <Link href="/course/personal" className={styles.courseCard}>
             <span
@@ -427,7 +514,7 @@ export default function HomePage() {
           </div>
         )}
 
-        {academyCourses.length > 0 && (
+        {!learnOnly && academyCourses.length > 0 && (
           <section className={styles.authoredSection}>
             <h2 className={styles.authoredHeading}>Academy courses</h2>
             <div className={styles.authoredList}>
@@ -448,9 +535,9 @@ export default function HomePage() {
           </section>
         )}
 
-        {(guides.length > 0 || (authenticated && (isVip || myGuides.length > 0))) && (
+        {learnOnly && (guides.length > 0 || (authenticated && (isVip || myGuides.length > 0))) && (
           <div className={styles.guideSection}>
-            <h2 className={styles.guideSectionHeading}>Knowledge Base</h2>
+            <h1 className={styles.guideSectionHeading}>Learn</h1>
             <div className={styles.guideSectionContent}>
               {featuredGuides.length > 0 && (
                 <div className={styles.featuredRow}>
@@ -458,7 +545,7 @@ export default function HomePage() {
                     {featuredGuides.map((g) => (
                       <Link
                         key={`featured-${g.id}`}
-                        href={`/home/guides/${g.slug}`}
+                        href={`/learn/guides/${g.slug}`}
                         className={styles.featuredCard}
                         onMouseEnter={() => play('soft-hover')}
                       >
@@ -510,7 +597,7 @@ export default function HomePage() {
                     {frontierGuides.slice(0, 6).map((g) => (
                       <Link
                         key={`frontier-${g.id}`}
-                        href={`/home/guides/${g.slug}`}
+                        href={`/learn/guides/${g.slug}`}
                         className={styles.guideCard}
                         onMouseEnter={() => play('soft-hover')}
                       >
@@ -534,7 +621,7 @@ export default function HomePage() {
                   </p>
                 )}
               <Link
-                href="/home/guides/map"
+                href="/learn/guides/map"
                 className={styles.guideCard}
                 onMouseEnter={() => play('soft-hover')}
               >
@@ -689,7 +776,7 @@ export default function HomePage() {
                     {subjectGuides.map((g) => (
                       <Link
                         key={`${subject}-${g.id}`}
-                        href={`/home/guides/${g.slug}`}
+                        href={`/learn/guides/${g.slug}`}
                         className={`${styles.guideCard} ${guideView !== 'list' ? styles.guideCardTile : ''}`}
                         onMouseEnter={() => play('soft-hover')}
                       >
@@ -711,11 +798,61 @@ export default function HomePage() {
         )}
 
       </div>
+      {!learnOnly && (
+        <section className={styles.dashboardInsights} aria-label="Learning insights">
+          <article className={styles.insightCard}>
+            <h2 className={styles.insightTitle}>My Stats</h2>
+            <div className={styles.statsChart} aria-label="Learning activity from March through October">
+              <div className={styles.chartTooltip}><span>↗</span> 178</div>
+              <svg className={styles.chartLines} viewBox="0 0 520 190" role="img" aria-hidden="true" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="stats-area" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.22" />
+                    <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+                <path className={styles.chartArea} d="M0 128 L20 141 L40 124 L60 125 L80 151 L100 158 L120 140 L140 96 L160 125 L180 136 L200 130 L220 67 L240 50 L260 103 L280 126 L300 130 L320 115 L340 120 L360 145 L380 150 L400 162 L420 145 L440 155 L460 140 L480 146 L500 118 L520 95 L520 190 L0 190 Z" />
+                <path className={styles.chartLineMuted} d="M0 120 L20 136 L40 119 L60 119 L80 148 L100 153 L120 128 L140 135 L160 108 L180 139 L200 120 L220 125 L240 101 L260 114 L280 108 L300 95 L320 108 L340 127 L360 140 L380 133 L400 149 L420 140 L440 158 L460 147 L480 153 L500 132 L520 112" />
+                <path className={styles.chartLinePrimary} d="M0 128 L20 141 L40 124 L60 125 L80 151 L100 158 L120 140 L140 96 L160 125 L180 136 L200 130 L220 67 L240 50 L260 103 L280 126 L300 130 L320 115 L340 120 L360 145 L380 150 L400 162 L420 145 L440 155 L460 140 L480 146 L500 118 L520 95" />
+                <line className={styles.chartMarkerLine} x1="342" x2="342" y1="95" y2="190" />
+                <circle className={styles.chartMarker} cx="342" cy="120" r="5" />
+              </svg>
+              <div className={styles.chartMonths} aria-hidden="true">
+                {['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'].map((month) => <span key={month}>{month}</span>)}
+              </div>
+            </div>
+          </article>
+
+          <article className={styles.insightCard}>
+            <div className={styles.planningHeader}>
+              <h2 className={styles.insightTitle}>Planning</h2>
+              <div className={styles.planningControls} aria-hidden="true">
+                <span><CaretLeft size={16} weight="bold" /></span>
+                <span><CaretRight size={16} weight="bold" /></span>
+              </div>
+            </div>
+            <div className={styles.planningViewport} aria-label="Five-day calendar, focused on July 16 through 18">
+              <div className={styles.planningDays}>
+                <div className={styles.planningDayMuted}><span>Mon</span><strong>15</strong></div>
+                <div className={`${styles.planningDay} ${styles.planningDayWarm}`}><span>Tue</span><strong>16</strong></div>
+                <div className={`${styles.planningDay} ${styles.planningDayBlue}`}><span>Wed</span><strong>17</strong></div>
+                <div className={`${styles.planningDay} ${styles.planningDayWarm}`}><span>Thu</span><strong>18</strong></div>
+                <div className={styles.planningDayMuted}><span>Fri</span><strong>19</strong></div>
+              </div>
+              <div className={styles.planningTasks}>
+                <span className={styles.planningTask}>Homework deadline</span>
+                <span className={styles.planningTask}>Lecture: UI Kit&apos;s Guide</span>
+                <span className={styles.planningTask}>Lesson: Figma</span>
+              </div>
+            </div>
+          </article>
+        </section>
+      )}
       </main>
 
-      {fieldNotesOpen && <FieldNotesSheet onClose={() => setFieldNotesOpen(false)} />}
+      {!learnOnly && fieldNotesOpen && <FieldNotesSheet onClose={() => setFieldNotesOpen(false)} />}
 
-      {weeklyScript ? (
+      {!learnOnly && (weeklyScript ? (
         <BlueDialogue
           open={weeklyOpen}
           placement="center"
@@ -733,7 +870,7 @@ export default function HomePage() {
           emotion={courseDialogue.emotion}
           onClose={handleIntroClose}
         />
-      )}
+      ))}
 
     </div>
   );

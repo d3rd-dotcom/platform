@@ -34,6 +34,7 @@ interface FieldNoteEntry {
 interface DailyNotesProps {
   enablePersistence?: boolean;
   compact?: boolean;
+  compactLabel?: string;
   onCompactClick?: () => void;
   panelMode?: boolean;
   onPanelClose?: () => void;
@@ -59,6 +60,7 @@ const WEEK_COLORS = [
 export default function DailyNotes({
   enablePersistence = false,
   compact = false,
+  compactLabel = 'Field Notes',
   onCompactClick,
   panelMode = false,
   onPanelClose,
@@ -794,7 +796,7 @@ export default function DailyNotes({
           />
           <div className={styles.cardText}>
             <span className={`${styles.label} ${compact ? styles.labelCompact : ''}`}>
-              Field Notes
+              {compact ? compactLabel : 'Field Notes'}
             </span>
             {!compact && (
               <span className={`${styles.sublabel} ${compact ? styles.sublabelCompact : ''}`}>

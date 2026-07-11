@@ -44,7 +44,7 @@ export default function FieldNotesSheet({ onClose }: FieldNotesSheetProps) {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch('/api/daily-notes');
+        const res = await fetch('/api/daily-notes?review=1');
         if (!res.ok) { setLoading(false); return; }
         const data = await res.json();
         const allPages: Record<string, LedgerEntry[]> = data.allWeekPages ?? {};

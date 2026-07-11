@@ -6,9 +6,12 @@ import { ensurePrayersSchema } from '@/lib/ensurePrayersSchema';
 import { encryptForUser, decryptForUser } from '@/lib/encrypt';
 import { recordAgentActivity } from '@/lib/room-log';
 import { postSystemMessage } from '@/lib/chat';
+import { fetchDiamondBalance } from '@/lib/diamonds-balance';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+
+const NOTEBOOK_ENTRIES_UNLOCK_CREDITS = 3_000;
 
 function parseAllWeekPages(userId: string, progressData: any): Record<string, unknown[]> {
   if (progressData?.encrypted && progressData?.data) {
@@ -43,6 +46,16 @@ export async function GET(request: NextRequest) {
   const user = await getCurrentUserFromRequestCookie();
   if (!user) {
     return NextResponse.json({ error: 'Not authenticated.' }, { status: 401 });
+  }
+
+  if (request.nextUrl.searchParams.get('review') === '1') {
+    const balance = (await fetchDiamondBalance(user.walletAddress)) ?? user.shardCount;
+    if (balance < NOTEBOOK_ENTRIES_UNLOCK_CREDITS) {
+      return NextResponse.json(
+        { error: 'Notebook Entries unlock at 3,000 credits.', code: 'NOTEBOOK_ENTRIES_LOCKED' },
+        { status: 403 },
+      );
+    }
   }
 
   await ensurePrayersSchema();

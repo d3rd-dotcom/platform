@@ -5,46 +5,17 @@ import { usePrivy } from '@privy-io/react-auth';
 
 import AvatarSelectorModal from '@/components/avatar-selector/AvatarSelectorModal';
 import UsernameChangeModal from '@/components/username-change/UsernameChangeModal';
-import DailyNotes from '@/components/daily-notes/DailyNotes';
-import CourseFolderCard from '@/components/home/CourseFolderCard';
-import { useAccount } from 'wagmi';
-import { fetchDiamondBalance } from '@/lib/diamonds-balance';
-import { useSound } from '@/hooks/useSound';
+import { DotmSquare15 } from '@/components/dot-matrix/DotmSquare15';
 import styles from './ProfileDashboard.module.css';
 
-export interface PanelCourse {
-  title: string;
-  href: string;
-  progressPct: number;
-}
-
-interface ProfileDashboardProps {
-  bannerUrl?: string | null;
-  courses?: PanelCourse[];
-  bio?: string | null;
-  noteCount?: number;
-  onOpenNotes?: () => void;
-  questFolder?: { title: string; count: number; href: string };
-}
-
-export default function ProfileDashboard({
-  bannerUrl,
-  courses = [],
-  bio = null,
-  noteCount = 0,
-  onOpenNotes,
-  questFolder,
-}: ProfileDashboardProps) {
+export default function ProfileDashboard() {
   const { ready, authenticated, getAccessToken } = usePrivy();
-  const { address } = useAccount();
-  const { play } = useSound();
   const [username, setUsername] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [creditDiamonds, setCreditDiamonds] = useState(0);
-  const [chainDiamonds, setChainDiamonds] = useState<number | null>(null);
   const [streak, setStreak] = useState(0);
   const [editingAvatar, setEditingAvatar] = useState(false);
   const [editingUsername, setEditingUsername] = useState(false);
+  const filledStreakDays = Math.min(Math.max(streak, 0), 7);
 
   const authHeaders = useCallback(async (): Promise<HeadersInit> => {
     const token = await getAccessToken();
@@ -59,7 +30,6 @@ export default function ProfileDashboard({
       if (data?.user) {
         setUsername(data.user.username ?? null);
         setAvatarUrl(data.user.avatarUrl ?? null);
-        setCreditDiamonds(data.user.shardCount ?? 0);
       }
     } catch { /* ignore */ }
   }, [authHeaders]);
@@ -75,24 +45,43 @@ export default function ProfileDashboard({
       .catch(() => {});
   }, [ready, authenticated, loadMe]);
 
-  // Chain is the source of truth for diamonds: prefer the live $BLUE balance
-  // over the in-app mirror whenever the wallet reads successfully.
-  useEffect(() => {
-    if (!address) return;
-    let cancelled = false;
-    fetchDiamondBalance(address).then((balance) => {
-      if (!cancelled && balance !== null) setChainDiamonds(balance);
-    });
-    return () => { cancelled = true; };
-  }, [address]);
-
   return (
     <section className={styles.panel}>
-      <div className={styles.fieldNotesSection}>
-        <DailyNotes
-          enablePersistence={authenticated && ready}
-          compact
-        />
+      <div className={styles.dotPattern}>
+        <DotmSquare15 speed={0.8} dotSize={4} gap={2} />
+      </div>
+      <button
+        type="button"
+        className={styles.avatar}
+        style={avatarUrl ? { backgroundImage: `url(${JSON.stringify(avatarUrl)})` } : undefined}
+        onClick={() => setEditingAvatar(true)}
+        aria-label="Change avatar"
+      >
+        {!avatarUrl && (username?.slice(0, 1).toUpperCase() ?? '?')}
+      </button>
+
+      <div className={styles.identity}>
+        <div className={styles.nameRow}>
+          <button
+            type="button"
+            className={styles.nameButton}
+            onClick={() => setEditingUsername(true)}
+          >
+            {username ?? 'Your profile'}
+          </button>
+          <span className={styles.learnerBadge}>Learner</span>
+        </div>
+        <div className={styles.streak} aria-label={`Current streak: ${streak} days`}>
+          <span className={styles.streakLabel}>Current Streak</span>
+          <span className={styles.streakDays} aria-hidden="true">
+            {Array.from({ length: 7 }, (_, index) => (
+              <span
+                key={index}
+                className={`${styles.streakDay} ${index < filledStreakDays ? styles.streakDayFilled : ''}`}
+              />
+            ))}
+          </span>
+        </div>
       </div>
 
       {editingAvatar && (
@@ -115,16 +104,6 @@ export default function ProfileDashboard({
         />
       )}
 
-      {questFolder && (
-        <div className={styles.questFolderWrap}>
-          <CourseFolderCard
-            title={questFolder.title}
-            count={questFolder.count}
-            href={questFolder.href}
-            images={[]}
-          />
-        </div>
-      )}
     </section>
   );
 }

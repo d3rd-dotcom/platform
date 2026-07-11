@@ -7,8 +7,16 @@
   aspect-ratio: 474 / 330;
   isolation: isolate;
   text-decoration: none;
-  filter: drop-shadow(0 5px 4px rgba(24, 42, 114, 0.55));
-  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), filter 0.2s ease;
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.folderSurface {
+  position: absolute;
+  inset: 0;
+  filter:
+    drop-shadow(0 5px 0 color-mix(in oklch, var(--color-primary) 36%, transparent))
+    drop-shadow(0 10px 12px color-mix(in oklch, var(--color-primary) 18%, transparent));
+  transition: filter 0.2s ease;
 }
 
 .folderButton {
@@ -28,8 +36,10 @@
   --folder-stroke: #1a1a1d;
 }
 
-.folderDark:hover {
-  filter: drop-shadow(0 9px 8px rgba(0, 0, 0, 0.5));
+.folderDark:hover .folderSurface {
+  filter:
+    drop-shadow(0 7px 0 color-mix(in oklch, var(--color-primary-hover) 48%, transparent))
+    drop-shadow(0 12px 14px color-mix(in oklch, var(--color-primary-hover) 22%, transparent));
 }
 
 /* Field Notes uses the dark folder variant, so its fade stays neutral too. */
@@ -44,7 +54,12 @@
 
 .folder:hover {
   transform: translateY(-3px);
-  filter: drop-shadow(0 9px 8px rgba(24, 42, 114, 0.5));
+}
+
+.folder:hover .folderSurface {
+  filter:
+    drop-shadow(0 7px 0 color-mix(in oklch, var(--color-primary) 48%, transparent))
+    drop-shadow(0 12px 14px color-mix(in oklch, var(--color-primary) 22%, transparent));
 }
 
 .shape {
@@ -80,7 +95,7 @@
 /* Contents clipped to the folder body (below the tab) */
 .contents {
   position: absolute;
-  inset: 13.3% 5.9% 11.2% 5.9%; /* 44/330 top + padding, 28/474 sides */
+  inset: 18.2% 5.9% 11.2% 5.9%; /* 60/330 top + padding, 28/474 sides */
   z-index: 1;
 }
 
@@ -140,47 +155,64 @@
 /* Tab label row */
 .tabRow {
   position: absolute;
-  top: 0;
+  top: 18px;
   left: 6.5%;
-  height: 12.7%; /* 42/330 */
-  padding-top: 12px;
+  height: 40px;
+  padding-top: 0;
   display: flex;
   align-items: center;
   gap: 12px;
   z-index: 4;
 }
 
+.folderAvatar {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.18);
+  background-position: center;
+  background-size: cover;
+}
+
 .tabTitle {
   font-family: var(--type-font-heading);
   font-weight: var(--type-weight-semibold);
-  font-size: var(--type-h4-size);
-  letter-spacing: var(--type-h4-track);
-  line-height: var(--type-h4-lh);
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
   color: #f6f8ed;
 }
 
 .tabBadge {
+  position: absolute;
+  top: 0;
+  right: 12px;
+  z-index: 4;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 44px;
-  padding: 2px 12px;
+  width: 62px;
+  height: 32px;
+  padding: 0;
   border-radius: 999px;
-  background: #f6f8ed;
+  background: var(--color-primary);
+  box-shadow: none;
   font-family: var(--type-font-label);
   font-weight: var(--type-weight-semibold);
   font-size: var(--type-body-sm-size);
-  color: #397bed;
+  color: #ffffff;
 }
 
 /* Fancy CTA button */
 .ctaOuter {
   position: absolute;
-  left: 50%;
+  right: 24px;
+  left: 24px;
   bottom: 10%;
-  transform: translateX(-50%);
   z-index: 5;
-  display: inline-flex;
+  display: flex;
   padding: 2px;
   border-radius: 999px;
   background: linear-gradient(to bottom, #63fcff, #69d9d0 50%, #4affbd);
@@ -189,13 +221,14 @@
 }
 
 .folder:hover .ctaOuter {
-  transform: translateX(-50%) scale(1.04);
+  transform: scale(1.02);
 }
 
 .ctaInner {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
   padding: 7px 22px;
   border-radius: 999px;
   background: linear-gradient(to bottom, #9dded7, #069865);
@@ -207,4 +240,17 @@
   letter-spacing: var(--type-track-label);
   color: #f6f8ed;
   text-shadow: 0 -0.5px 0 rgba(0, 0, 0, 0.9), 0 0 3px rgba(0, 0, 0, 0.35);
+}
+
+.ctaOuterDark {
+  background: var(--color-grey-900);
+  border-color: var(--color-grey-600);
+}
+
+.ctaInnerDark {
+  background: var(--color-grey-900);
+  border-color: var(--color-grey-600);
+  box-shadow: none;
+  color: var(--color-text-light);
+  text-shadow: none;
 }
