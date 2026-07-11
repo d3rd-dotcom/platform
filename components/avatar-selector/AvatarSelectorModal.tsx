@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import styles from './AvatarSelectorModal.module.css';
@@ -22,7 +22,11 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const MAX_UPLOAD = 10 * 1024 * 1024; // matches /api/upload
 
   useEffect(() => {
     const fetchAvatars = async () => {
@@ -98,6 +102,59 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
     }
   };
 
+  const handleUploadClick = () => fileInputRef.current?.click();
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = ''; // allow re-selecting the same file later
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setError('Choose an image file (PNG, JPEG, GIF, or WebP).');
+      return;
+    }
+    if (file.size > MAX_UPLOAD) {
+      setError('Image is larger than 10MB. Pick a smaller one.');
+      return;
+    }
+
+    setUploading(true);
+    setError(null);
+    try {
+      const token = await getAccessToken();
+      const authHeader: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
+
+      const form = new FormData();
+      form.append('file', file);
+      const uploadRes = await fetch('/api/upload', {
+        method: 'POST',
+        credentials: 'include',
+        headers: authHeader,
+        body: form,
+      });
+      const uploaded = await uploadRes.json().catch(() => ({}));
+      if (!uploadRes.ok) throw new Error(uploaded.error || 'Upload failed.');
+
+      const saveRes = await fetch('/api/avatars/custom', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', ...authHeader },
+        body: JSON.stringify({ url: uploaded.url }),
+      });
+      const saved = await saveRes.json().catch(() => ({}));
+      if (!saveRes.ok) throw new Error(saved.error || 'Could not save your photo.');
+
+      onAvatarSelected(uploaded.url);
+      window.dispatchEvent(new Event('profileUpdated'));
+      onClose();
+    } catch (err: any) {
+      console.error('Custom avatar upload failed:', err);
+      setError(err?.message || 'Upload failed. Try again.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <div className={styles.modalBackdrop} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -150,22 +207,39 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
         </div>
 
         <div className={styles.modalFooter}>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/png,image/jpeg,image/gif,image/webp"
+            onChange={handleFileChange}
+            style={{ display: 'none' }}
+          />
           <button
-            className={styles.cancelButton}
-            onClick={onClose}
-            disabled={saving}
+            className={styles.uploadButton}
+            onClick={handleUploadClick}
+            disabled={uploading || saving}
             type="button"
           >
-            Cancel
+            {uploading ? 'Uploading...' : 'Upload your own'}
           </button>
-          <button
-            className={styles.selectButton}
-            onClick={handleSelectAvatar}
-            disabled={saving || loading || !selectedAvatar}
-            type="button"
-          >
-            {saving ? 'Selecting...' : 'Select Avatar'}
-          </button>
+          <div className={styles.footerActions}>
+            <button
+              className={styles.cancelButton}
+              onClick={onClose}
+              disabled={saving || uploading}
+              type="button"
+            >
+              Cancel
+            </button>
+            <button
+              className={styles.selectButton}
+              onClick={handleSelectAvatar}
+              disabled={saving || uploading || loading || !selectedAvatar}
+              type="button"
+            >
+              {saving ? 'Selecting...' : 'Select Avatar'}
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -51,43 +51,6 @@ function sampleSeries(): Series {
   return { days, notes, missions, guides, balloons };
 }
 
-// Progressive "draw-on" line animation with easing: each point eases in from
-// the previous point's position, staggered left → right.
-function progressiveAnimation(pointCount: number) {
-  const total = 1400;
-  const step = pointCount > 0 ? total / pointCount : total;
-  const prevY = (ctx: any) =>
-    ctx.index === 0
-      ? ctx.chart.scales.y.getPixelForValue(0)
-      : ctx.chart
-          .getDatasetMeta(ctx.datasetIndex)
-          .data[ctx.index - 1].getProps(['y'], true).y;
-  return {
-    x: {
-      type: 'number',
-      easing: 'easeInOutCubic',
-      duration: step,
-      from: NaN,
-      delay(ctx: any) {
-        if (ctx.type !== 'data' || ctx.xStarted) return 0;
-        ctx.xStarted = true;
-        return ctx.index * step;
-      },
-    },
-    y: {
-      type: 'number',
-      easing: 'easeInOutCubic',
-      duration: step,
-      from: prevY,
-      delay(ctx: any) {
-        if (ctx.type !== 'data' || ctx.yStarted) return 0;
-        ctx.yStarted = true;
-        return ctx.index * step;
-      },
-    },
-  };
-}
-
 export default function StatsChart() {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
@@ -141,16 +104,16 @@ export default function StatsChart() {
       label,
       data: values,
       borderColor: rgba(color, alpha),
-      backgroundColor: axis === 'y1' ? rgba(color, 0.13 * alpha) : 'transparent',
+      backgroundColor: color,
       borderWidth: 2,
       pointRadius: 0,
-      pointHoverRadius: isSample ? 0 : 5,
+      pointHoverRadius: 5,
       pointHoverBorderWidth: 2,
       pointHoverBorderColor: isDark ? '#191a26' : '#ffffff',
       pointHoverBackgroundColor: color,
       pointHitRadius: 12,
       tension: 0.35,
-      fill: axis === 'y1',
+      fill: false,
       yAxisID: axis,
     });
     return {
@@ -177,9 +140,14 @@ export default function StatsChart() {
     maintainAspectRatio: false,
     // Top padding clears the "My Stats" title that overlays the chart's top-left.
     layout: { padding: { top: 30, right: 8, bottom: 2, left: 8 } },
-    animation: progressiveAnimation(data?.days.length ?? 30),
+    // Progressive draw-in: the lines ease up from the baseline on load. Kept as a
+    // plain animation (no per-point scriptable delays) so it never interferes
+    // with hover interaction.
+    animation: { duration: 1100, easing: 'easeInOutQuart' },
+    animations: { y: { from: (ctx: any) => (ctx.type === 'data' ? ctx.chart.scales[ctx.dataset?.yAxisID ?? 'y']?.getPixelForValue(0) : undefined) } },
     // Smoothly grow the hovered points so they "pop" as the cursor moves.
     transitions: { active: { animation: { duration: 300, easing: 'easeOutCubic' } } },
+    hover: { mode: 'index', intersect: false },
     interaction: { mode: 'index', intersect: false },
     plugins: {
       legend: {
@@ -196,7 +164,7 @@ export default function StatsChart() {
         },
       },
       tooltip: {
-        enabled: !isSample,
+        enabled: true,
         titleFont: { family: font, size: 11 },
         bodyFont: { family: font, size: 11 },
       },
