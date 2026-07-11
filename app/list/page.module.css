@@ -23,7 +23,7 @@
   overflow: hidden;
 }
 
-/* ── Content layout ─────────────────────────────────────────────────────── */
+/* ── Content layout — Blue behind, Lists in front ────────────────────────── */
 .layout {
   position: relative;
   z-index: 1;
@@ -38,31 +38,70 @@
   overflow: hidden;
 }
 
-.heroCharacter {
-  position: fixed;
-  z-index: 1;
+/* Blue image behind everything */
+.blueBackground {
+  position: absolute;
+  z-index: 0;
   bottom: 0;
   left: 5%;
-  width: clamp(200px, 28vw, 400px);
+  width: clamp(240px, 32vw, 480px);
   height: auto;
   object-fit: contain;
+  object-position: bottom left;
   pointer-events: none;
   user-select: none;
-  transform-origin: bottom center;
-  animation: heroSway 7s ease-in-out infinite alternate;
+  animation: blueSway 7s ease-in-out infinite alternate;
 }
 
-@keyframes heroSway {
-  from { transform: scaleX(-1) rotate(-2deg); }
-  to { transform: scaleX(-1) rotate(2.4deg); }
+.blueGlow {
+  position: absolute;
+  z-index: 0;
+  bottom: -8%;
+  left: 12%;
+  width: 30%;
+  height: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in oklch, var(--color-primary) 18%, transparent) 0%,
+    rgba(100, 80, 180, 0.08) 50%,
+    transparent 80%
+  );
+  pointer-events: none;
+  animation: blueGlowPulse 4.5s ease-in-out infinite;
+}
+
+@keyframes blueSway {
+  from { transform: translateY(0); }
+  to { transform: translateY(-12px); }
+}
+
+@keyframes blueGlowPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.9; }
+}
+
+/* Lists in front of Blue */
+.listsWrapper {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+}
+
+.listsWrapper > :global(*) {
+  flex: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .heroCharacter {
+  .blueBackground,
+  .blueGlow {
     animation: none;
   }
 }
 
+/* ── Responsive — stack on mobile ───────────────────────────────────────── */
 @media (max-width: 960px) {
   .page {
     overflow: visible;
@@ -76,7 +115,11 @@
     min-height: calc(100svh - 72px);
   }
 
-  .heroCharacter {
+  .blueBackground {
+    display: none;
+  }
+
+  .blueGlow {
     display: none;
   }
 }

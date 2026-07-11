@@ -44,23 +44,28 @@ export default function ListPage() {
       </div>
 
       <div className={styles.layout}>
-        <ListsPanel
-          authHeaders={authHeaders}
-          isAuthenticated={ready && authenticated}
-          onSound={play}
-          showHeader={false}
+        {/* Blue behind the lists */}
+        <Image
+          src="/blue/blue-left.png"
+          alt=""
+          fill
+          className={styles.blueBackground}
+          unoptimized
+          priority
+          aria-hidden="true"
         />
-      </div>
+        <div className={styles.blueGlow} aria-hidden="true" />
 
-      <Image
-        src="/images/blueastro.png"
-        alt=""
-        width={400}
-        height={400}
-        className={styles.heroCharacter}
-        priority
-        aria-hidden="true"
-      />
+        {/* Lists in front */}
+        <div className={styles.listsWrapper}>
+          <ListsPanel
+            authHeaders={authHeaders}
+            isAuthenticated={ready && authenticated}
+            onSound={play}
+            showHeader={false}
+          />
+        </div>
+      </div>
     </main>
   );
 }
