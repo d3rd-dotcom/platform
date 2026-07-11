@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
-import { Plus, CaretUp, CaretDown, Rows, GridFour, Cube, CaretLeft, CaretRight } from '@phosphor-icons/react';
+import { Plus, CaretUp, CaretDown, Rows, GridFour, Cube, CaretLeft, CaretRight, TreeStructure } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import { scriptForWeek, WEEKLY_SEEN_KEY } from '@/components/daily-read/weeklyScripts';
@@ -142,7 +142,7 @@ export default function HomePage() {
   const [weeklyWeek, setWeeklyWeek] = useState(0);
   const [weeklyOpen, setWeeklyOpen] = useState(false);
   const [featuredPage, setFeaturedPage] = useState(0);
-  const [guideView, setGuideView] = useState<'card' | 'list' | '3d'>('list');
+  const [guideView, setGuideView] = useState<'card' | 'list' | '3d'>('card');
   const { play } = useSound();
 
   // One Blue moment per day, by priority: first-run intro, then the season
@@ -545,11 +545,65 @@ export default function HomePage() {
 
         {learnOnly && (guides.length > 0 || (authenticated && (isVip || myGuides.length > 0))) && (
           <div className={styles.guideSection}>
-            <h1 className={styles.guideSectionHeading}>Learn</h1>
+            {guidesBySubject.length > 0 ? (
+              <div className={styles.guideSectionToggle} role="group" aria-label="Guide layout">
+                <button
+                  type="button"
+                  className={`${styles.viewToggleBtn} ${guideView === 'list' ? styles.viewToggleBtnActive : ''}`}
+                  aria-pressed={guideView === 'list'}
+                  onClick={() => setGuideView('list')}
+                >
+                  <Rows size={15} weight="bold" /> List
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.viewToggleBtn} ${guideView === 'card' ? styles.viewToggleBtnActive : ''}`}
+                  aria-pressed={guideView === 'card'}
+                  onClick={() => setGuideView('card')}
+                >
+                  <GridFour size={15} weight="bold" /> Cards
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.viewToggleBtn} ${guideView === '3d' ? styles.viewToggleBtnActive : ''}`}
+                  aria-pressed={guideView === '3d'}
+                  onClick={() => setGuideView('3d')}
+                >
+                  <Cube size={15} weight="bold" /> 3D
+                </button>
+              </div>
+            ) : (
+              <h1 className={styles.guideSectionHeading}>Learn</h1>
+            )}
             <div className={styles.guideSectionContent}>
+              {guideProgress && authenticated && (
+                <div className={styles.guideProgressCard}>
+                  <div className={styles.guideProgressStats}>
+                    <span className={styles.guideProgressStat}>
+                      <span className={styles.guideProgressNum}>{guideProgress.completedGuides}</span>
+                      <span className={styles.guideProgressLabel}>of {guideProgress.totalGuides} guides complete</span>
+                    </span>
+                    <span className={styles.guideProgressStat}>
+                      <span className={styles.guideProgressNum}>{guideProgress.totalDiamondsEarned}</span>
+                      <span className={styles.guideProgressLabel}>diamonds earned</span>
+                    </span>
+                  </div>
+                  {guideProgress.totalGuides > 0 && (
+                    <div className={styles.guideProgressTrack}>
+                      <div
+                        className={styles.guideProgressFill}
+                        style={{ width: `${(guideProgress.completedGuides / guideProgress.totalGuides) * 100}%` }}
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+
               {featuredGuides.length > 0 && (
-                <div className={styles.featuredRow}>
-                  <div className={styles.featuredGrid}>
+                <div className={styles.guideSubjectGroup}>
+                  <span className={styles.guideSubjectLabel}>Popular topics</span>
+                  <div className={styles.featuredRow}>
+                    <div className={styles.featuredGrid}>
                     {featuredGuides.map((g) => (
                       <Link
                         key={`featured-${g.id}`}
@@ -593,8 +647,58 @@ export default function HomePage() {
                       </button>
                     </div>
                   )}
+                  </div>
                 </div>
               )}
+
+              {guidesBySubject.length > 0 && (
+                <div className={styles.guideViewBar}>
+                  <span className={styles.guideSubjectLabel}>All guides</span>
+                </div>
+              )}
+
+              {guidesBySubject.length > 0 && (
+                <Link
+                  href="/learn/guides/map"
+                  className={styles.knowledgeTreeCard}
+                  onMouseEnter={() => play('soft-hover')}
+                >
+                  <TreeStructure size={18} weight="bold" />
+                  <span>See the knowledge tree</span>
+                </Link>
+              )}
+
+              {guidesBySubject.map(([subject, subjectGuides]) => (
+                <div key={subject} className={styles.guideSubjectGroup}>
+                  <span className={styles.guideSubjectLabel}>{subject}</span>
+                  <div
+                    className={`${styles.guideCardList} ${
+                      guideView === 'card'
+                        ? styles.guideCardListCards
+                        : guideView === '3d'
+                          ? styles.guideCardList3d
+                          : ''
+                    }`}
+                  >
+                    {subjectGuides.map((g) => (
+                      <Link
+                        key={`${subject}-${g.id}`}
+                        href={`/learn/guides/${g.slug}`}
+                        className={`${styles.guideCard} ${guideView !== 'list' ? styles.guideCardTile : ''}`}
+                        onMouseEnter={() => play('soft-hover')}
+                      >
+                        <div className={styles.guideCardBody}>
+                          <span className={styles.guideCardTitle}>{g.topicTitle}</span>
+                          {guideView !== 'list' && g.summary && (
+                            <span className={styles.guideCardSummary}>{g.summary}</span>
+                          )}
+                        </div>
+                        <span className={styles.guideCardChevron} aria-hidden="true">›</span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ))}
 
               {authenticated && frontierGuides && frontierGuides.length > 0 && (
                 <div className={styles.guideSubjectGroup}>
@@ -628,38 +732,7 @@ export default function HomePage() {
                     You&apos;ve completed every guide here. Nice work.
                   </p>
                 )}
-              <Link
-                href="/learn/guides/map"
-                className={styles.guideCard}
-                onMouseEnter={() => play('soft-hover')}
-              >
-                <div className={styles.guideCardBody}>
-                  <span className={styles.guideCardTitle}>See the knowledge map</span>
-                </div>
-                <span className={styles.guideCardChevron} aria-hidden="true">›</span>
-              </Link>
-              {guideProgress && authenticated && (
-                <div className={styles.guideProgressCard}>
-                  <div className={styles.guideProgressStats}>
-                    <span className={styles.guideProgressStat}>
-                      <span className={styles.guideProgressNum}>{guideProgress.completedGuides}</span>
-                      <span className={styles.guideProgressLabel}>of {guideProgress.totalGuides} guides complete</span>
-                    </span>
-                    <span className={styles.guideProgressStat}>
-                      <span className={styles.guideProgressNum}>{guideProgress.totalDiamondsEarned}</span>
-                      <span className={styles.guideProgressLabel}>diamonds earned</span>
-                    </span>
-                  </div>
-                  {guideProgress.totalGuides > 0 && (
-                    <div className={styles.guideProgressTrack}>
-                      <div
-                        className={styles.guideProgressFill}
-                        style={{ width: `${(guideProgress.completedGuides / guideProgress.totalGuides) * 100}%` }}
-                      />
-                    </div>
-                  )}
-                </div>
-              )}
+
               {authenticated && isVip && (
                 <div className={styles.guideAuthorRow}>
                   <div className={styles.guideAuthorCopy}>
@@ -736,70 +809,6 @@ export default function HomePage() {
                   </div>
                 </div>
               )}
-
-              {guidesBySubject.length > 0 && (
-                <div className={styles.guideViewBar}>
-                  <span className={styles.guideSubjectLabel}>All guides</span>
-                  <div className={styles.viewToggle} role="group" aria-label="Guide layout">
-                    <button
-                      type="button"
-                      className={`${styles.viewToggleBtn} ${guideView === 'list' ? styles.viewToggleBtnActive : ''}`}
-                      aria-pressed={guideView === 'list'}
-                      onClick={() => setGuideView('list')}
-                    >
-                      <Rows size={15} weight="bold" /> List
-                    </button>
-                    <button
-                      type="button"
-                      className={`${styles.viewToggleBtn} ${guideView === 'card' ? styles.viewToggleBtnActive : ''}`}
-                      aria-pressed={guideView === 'card'}
-                      onClick={() => setGuideView('card')}
-                    >
-                      <GridFour size={15} weight="bold" /> Cards
-                    </button>
-                    <button
-                      type="button"
-                      className={`${styles.viewToggleBtn} ${guideView === '3d' ? styles.viewToggleBtnActive : ''}`}
-                      aria-pressed={guideView === '3d'}
-                      onClick={() => setGuideView('3d')}
-                    >
-                      <Cube size={15} weight="bold" /> 3D
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {guidesBySubject.map(([subject, subjectGuides]) => (
-                <div key={subject} className={styles.guideSubjectGroup}>
-                  <span className={styles.guideSubjectLabel}>{subject}</span>
-                  <div
-                    className={`${styles.guideCardList} ${
-                      guideView === 'card'
-                        ? styles.guideCardListCards
-                        : guideView === '3d'
-                          ? styles.guideCardList3d
-                          : ''
-                    }`}
-                  >
-                    {subjectGuides.map((g) => (
-                      <Link
-                        key={`${subject}-${g.id}`}
-                        href={`/learn/guides/${g.slug}`}
-                        className={`${styles.guideCard} ${guideView !== 'list' ? styles.guideCardTile : ''}`}
-                        onMouseEnter={() => play('soft-hover')}
-                      >
-                        <div className={styles.guideCardBody}>
-                          <span className={styles.guideCardTitle}>{g.topicTitle}</span>
-                          {guideView !== 'list' && g.summary && (
-                            <span className={styles.guideCardSummary}>{g.summary}</span>
-                          )}
-                        </div>
-                        <span className={styles.guideCardChevron} aria-hidden="true">›</span>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              ))}
             </div>
             <div className={styles.guideSectionFooter}>guides & references</div>
           </div>
