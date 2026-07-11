@@ -440,39 +440,48 @@ export default function HomePage() {
       )}
       {!learnOnly && (
         <div className={styles.folderSection}>
-        <FolderCardWrapper>
-          <section className={styles.folderRow} aria-label="Course folders">
-            <CourseFolderCard
-              title="Blue's Quest"
-              count={12}
-              href="/shadow-work"
-              avatarSrc="/blue/blue-home.png"
-              ctaDark
-              images={[]}
-            />
-            <CourseFolderCard
-              title="Course Library"
-              count={academyCourses.length}
-              href="/course"
-              dark
-              images={[]}
-            />
-            <CourseFolderCard
-              title="Your Course"
-              count={personalCourse ? 1 : 0}
-              href="/course/personal"
-              dark
-              images={[]}
-            />
-            <CourseFolderCard
-              title="Build a Course"
-              count={0}
-              href="/course-builder"
-              dark
-              images={[]}
-            />
-          </section>
-        </FolderCardWrapper>
+        <FolderCardWrapper
+          tabs={[
+            {
+              label: 'My Courses',
+              content: (
+                <section className={styles.folderRow} aria-label="Course folders">
+                  <CourseFolderCard
+                    title="Blue's Quest"
+                    count={12}
+                    href="/shadow-work"
+                    avatarSrc="/blue/blue-home.png"
+                    ctaDark
+                    images={[]}
+                  />
+                  <CourseFolderCard
+                    title="Course Library"
+                    count={academyCourses.length}
+                    href="/course"
+                    dark
+                    images={[]}
+                  />
+                  <CourseFolderCard
+                    title="Your Course"
+                    count={personalCourse ? 1 : 0}
+                    href="/course/personal"
+                    dark
+                    images={[]}
+                  />
+                  <CourseFolderCard
+                    title="Build a Course"
+                    count={0}
+                    href="/course-builder"
+                    dark
+                    images={[]}
+                  />
+                </section>
+              ),
+            },
+            { label: 'Lectures' },
+            { label: 'Workshops' },
+          ]}
+        />
         </div>
       )}
       <div className={styles.main}>

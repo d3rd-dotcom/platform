@@ -1,4 +1,6 @@
-import type { ReactNode } from 'react';
+'use client';
+
+import { useState, type ReactNode } from 'react';
 
 import styles from './FolderCardWrapper.module.css';
 
@@ -20,30 +22,48 @@ function TabShape() {
   );
 }
 
-interface FolderCardWrapperProps {
-  children: ReactNode;
+export interface FolderTab {
+  label: string;
+  content?: ReactNode;
 }
 
-export default function FolderCardWrapper({ children }: FolderCardWrapperProps) {
+interface FolderCardWrapperProps {
+  tabs: FolderTab[];
+}
+
+export default function FolderCardWrapper({ tabs }: FolderCardWrapperProps) {
+  const [active, setActive] = useState(0);
+  const activeTab = tabs[active] ?? tabs[0];
+
   return (
     <section className={styles.shell} aria-label="Learning folders">
-      <div className={styles.tabs} aria-label="Learning categories">
-        <span className={`${styles.tab} ${styles.tabActive}`}>
-          <TabShape />
-          <span className={styles.tabLabel}>My Courses</span>
-        </span>
-        <span className={styles.tab}>
-          <TabShape />
-          <span className={styles.tabLabel}>Lectures</span>
-        </span>
-        <span className={styles.tab}>
-          <TabShape />
-          <span className={styles.tabLabel}>Workshops</span>
-        </span>
+      <div className={styles.tabs} role="tablist" aria-label="Learning categories">
+        {tabs.map((tab, i) => {
+          const isActive = i === active;
+          return (
+            <button
+              key={tab.label}
+              type="button"
+              role="tab"
+              aria-selected={isActive}
+              className={`${styles.tab} ${isActive ? styles.tabActive : ''}`}
+              // Active tab sits in front; the rest keep left-over-right slant order.
+              style={{ zIndex: isActive ? tabs.length + 1 : tabs.length - i }}
+              onClick={() => setActive(i)}
+            >
+              <TabShape />
+              <span className={styles.tabLabel}>{tab.label}</span>
+            </button>
+          );
+        })}
       </div>
       <div className={styles.trayTopBorder} aria-hidden="true" />
       <div className={styles.wrapper}>
-        <div className={styles.content}>{children}</div>
+        <div className={styles.content}>
+          {activeTab?.content ?? (
+            <p className={styles.emptyPanel}>{activeTab?.label} are coming soon.</p>
+          )}
+        </div>
       </div>
     </section>
   );

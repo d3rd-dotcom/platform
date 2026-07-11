@@ -10,11 +10,11 @@
   max-width: 100%;
   justify-self: start;
   padding: 16px;
-  border: 2px solid #1a1a1d;
+  border: 2px solid color-mix(in oklch, var(--color-primary) 72%, #000);
   border-radius: 16px;
-  background: #2a2a2e;
+  background: var(--color-primary);
   box-shadow:
-    0 6px 0 var(--color-primary),
+    0 6px 0 color-mix(in oklch, var(--color-primary) 64%, #000),
     0 0 10px rgba(0, 0, 0, 0.14),
     0 10px 5px rgba(0, 0, 0, 0.30);
 }
@@ -42,7 +42,7 @@
   width: 80px;
   height: 80px;
   padding: 0;
-  border: 2px solid var(--color-primary);
+  border: 2px solid rgba(246, 248, 237, 0.9);
   border-radius: 50%;
   background-color: color-mix(in oklch, var(--color-primary) 10%, var(--color-surface-base, #fff));
   background-position: center;
@@ -73,17 +73,25 @@
 .learnerBadge {
   display: inline-flex;
   align-items: center;
+  gap: 4px;
   min-height: 24px;
   padding: 0 8px;
-  border: 1px solid color-mix(in oklch, var(--color-primary) 60%, transparent);
+  border: 1px solid rgba(246, 248, 237, 0.28);
   border-radius: 999px;
-  background: color-mix(in oklch, var(--color-primary) 22%, transparent);
+  background: rgba(0, 0, 0, 0.22);
   font-family: var(--font-mono);
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #dfe3ff;
+  color: #f6f8ed;
+}
+
+/* Earned verifier standing: greenlit with the secondary accent. */
+.verifierBadge {
+  border-color: color-mix(in oklch, var(--color-secondary) 70%, transparent);
+  background: color-mix(in oklch, var(--color-secondary) 24%, rgba(0, 0, 0, 0.35));
+  color: #eafff4;
 }
 
 .nameButton {

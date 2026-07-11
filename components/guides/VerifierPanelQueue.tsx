@@ -581,8 +581,7 @@ export default function VerifierPanelQueue() {
         <div className={styles.stateError}>{loadError}</div>
       ) : !hasAny ? (
         <p className={styles.empty}>
-          You have not been drawn onto any panels yet. Earn a verifier credential and you
-          will be picked at random to review guides in your subjects.
+          No panels yet. Earn a verifier credential to be drawn at random onto guide reviews in your subjects.
         </p>
       ) : (
         <div className={styles.list}>

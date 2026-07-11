@@ -2,16 +2,25 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
+import { SealCheck } from '@phosphor-icons/react';
 
 import AvatarSelectorModal from '@/components/avatar-selector/AvatarSelectorModal';
 import UsernameChangeModal from '@/components/username-change/UsernameChangeModal';
 import styles from './ProfileDashboard.module.css';
+
+/** Tier names by credential level, mirroring VerifierBadges. */
+function tierName(level: number): string {
+  if (level >= 3) return 'Arbiter';
+  if (level === 2) return 'Verifier';
+  return 'Verifier';
+}
 
 export default function ProfileDashboard() {
   const { ready, authenticated, getAccessToken } = usePrivy();
   const [username, setUsername] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [streak, setStreak] = useState(0);
+  const [verifierLevel, setVerifierLevel] = useState<number | null>(null);
   const [editingAvatar, setEditingAvatar] = useState(false);
   const [editingUsername, setEditingUsername] = useState(false);
   const filledStreakDays = Math.min(Math.max(streak, 0), 7);
@@ -42,7 +51,26 @@ export default function ProfileDashboard() {
       .then((r) => r.ok ? r.json() : null)
       .then((d) => setStreak(d?.streak ?? 0))
       .catch(() => {});
-  }, [ready, authenticated, loadMe]);
+
+    // Verifier standing: once the user passes a qualification test they hold a
+    // credential — surface it as a "Verifier" badge in place of "Learner".
+    (async () => {
+      try {
+        const res = await fetch('/api/guides/verifier-test/stats', {
+          cache: 'no-store',
+          headers: await authHeaders(),
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        const creds: Array<{ maxLevel: number }> = data?.stats?.credentials ?? [];
+        if (creds.length > 0) {
+          setVerifierLevel(Math.max(...creds.map((c) => c.maxLevel)));
+        } else {
+          setVerifierLevel(null);
+        }
+      } catch { /* non-fatal — falls back to the Learner badge */ }
+    })();
+  }, [ready, authenticated, loadMe, authHeaders]);
 
   return (
     <section className={styles.panel}>
@@ -66,7 +94,14 @@ export default function ProfileDashboard() {
           >
             {username ?? 'Your profile'}
           </button>
-          <span className={styles.learnerBadge}>Learner</span>
+          {verifierLevel !== null ? (
+            <span className={`${styles.learnerBadge} ${styles.verifierBadge}`}>
+              <SealCheck size={12} weight="fill" aria-hidden="true" />
+              {tierName(verifierLevel)}
+            </span>
+          ) : (
+            <span className={styles.learnerBadge}>Learner</span>
+          )}
         </div>
         <div className={styles.streak} aria-label={`Current streak: ${streak} days`}>
           <span className={styles.streakLabel}>Current Streak</span>

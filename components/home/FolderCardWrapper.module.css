@@ -1,6 +1,7 @@
 .shell {
   --folder-wrapper-surface: color-mix(in oklch, var(--color-primary) 12%, var(--color-surface-base));
   --folder-wrapper-border: color-mix(in oklch, var(--color-primary) 28%, var(--color-border-subtle));
+  --folder-courses-surface: color-mix(in oklch, var(--folder-wrapper-surface) 80%, var(--color-primary-hover));
   --folder-lecture-surface: color-mix(in oklch, var(--folder-wrapper-surface) 60%, var(--color-primary-hover));
   --folder-workshop-surface: color-mix(in oklch, var(--folder-wrapper-surface) 30%, var(--color-primary-hover));
   grid-column: 1 / -1;
@@ -57,17 +58,21 @@
 }
 
 .tab {
-  --tab-fill: var(--color-background);
+  --tab-fill: var(--folder-courses-surface);
   position: relative;
   display: inline-flex;
   align-items: center;
   width: 210px;
   height: 52px;
   padding-left: 26px;
-  color: var(--color-text-muted);
+  border: 0;
+  background: transparent;
+  color: var(--color-text-dark);
   font-family: var(--font-primary);
   font-size: 0.75rem;
   font-weight: 700;
+  text-align: left;
+  cursor: pointer;
   z-index: 1;
 }
 
@@ -102,7 +107,6 @@
 }
 
 .tab:nth-child(2) {
-  z-index: 2;
   padding-left: 66px;
   color: var(--color-text-light);
   --tab-fill: var(--folder-lecture-surface);
@@ -114,10 +118,20 @@
   --tab-fill: var(--folder-workshop-surface);
 }
 
-.tabActive {
-  z-index: 3;
+/* Active tab: light tray-coloured fill, dark text, in front. Written as
+   .tab.tabActive so it outranks the position-based nth-child fills above. */
+.tab.tabActive {
   color: var(--color-text-dark);
   --tab-fill: var(--folder-wrapper-surface);
+}
+
+.emptyPanel {
+  margin: 0;
+  padding: 28px 8px;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-family: var(--font-primary);
+  font-size: 0.9375rem;
 }
 
 .content {

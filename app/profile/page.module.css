@@ -25,6 +25,9 @@
   max-width: 640px;
   width: 100%;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
   padding: 24px 16px 112px;
 }
 
@@ -34,7 +37,7 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
 }
 
 .skeletonBlock {
