@@ -34,9 +34,61 @@
 }
 
 .mapMode .rail {
-  /* Match the canvas height so rail and map read as one surface. */
+  /* Subject tabs sit directly on the panel chrome — no box of their own. */
+  width: 200px;
   max-height: clamp(520px, calc(100vh - 240px), 900px);
   overflow-y: auto;
+  gap: 6px;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+/* ── Subject tabs (map mode left rail) ──────────────────────────────────── */
+
+.subjectTab {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1.5px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.subjectTab:hover {
+  background: color-mix(in oklch, var(--color-primary) 7%, transparent);
+}
+
+.subjectTabSelected {
+  border-color: oklch(64% 0.14 var(--subject-hue, 255));
+  background: var(--color-surface-base, #ffffff);
+}
+
+.subjectTabLabel {
+  font-family: var(--font-secondary);
+  font-size: 0.8125rem;
+  font-weight: var(--font-weight-semibold, 600);
+  /* An ancestor sets uppercase; tabs stay sentence case. */
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--color-text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+:global([data-theme='dark']) .subjectTabSelected {
+  background: color-mix(in oklch, var(--color-primary) 12%, #15172a);
+}
+
+:global([data-theme='dark']) .subjectTabLabel {
+  color: #e8e9f4;
 }
 
 /* Rail segments: in reach / ahead / cleared. */
@@ -243,14 +295,17 @@
   overflow: auto;
   border-radius: 12px;
   border: 1.5px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
-  background:
-    radial-gradient(
-      ellipse at 50% 110%,
-      color-mix(in oklch, var(--color-primary) 7%, transparent),
-      transparent 65%
-    ),
-    color-mix(in oklch, var(--color-primary) 2%, var(--color-surface-base));
+  /* White field with a monochrome dot grid — the nodes carry the color. */
+  background-color: #ffffff;
+  background-image: radial-gradient(rgba(26, 29, 51, 0.16) 1px, transparent 1.5px);
+  background-size: 24px 24px;
+  background-position: -1px -1px;
   scrollbar-color: color-mix(in oklch, var(--color-primary) 38%, transparent) transparent;
+}
+
+:global([data-theme='dark']) .canvas {
+  background-color: #0d0e16;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1.5px);
 }
 
 .canvasInteractive {

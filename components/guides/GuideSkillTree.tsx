@@ -78,6 +78,13 @@ const MIN_ZOOM = 0.3;
 const MAX_ZOOM = 1.25;
 const DEFAULT_MAP_ZOOM = 0.78;
 
+// Tab labels stay single-subject: compound names ("Mindfulness and
+// Meditation") display their leading term; the filter still matches the
+// full stored subject.
+function subjectTabLabel(subject: string): string {
+  return subject.split(/\s+and\s+/i)[0];
+}
+
 function titleLines(title: string): string[] {
   const maxChars = 22;
   const words = title.split(/\s+/);
@@ -439,7 +446,42 @@ export default function GuideSkillTree({
   return (
     <div className={`${styles.outer} ${clusterBySubject ? styles.mapMode : ''}`}>
     <div className={styles.wrapper}>
-      {/* ── Branch-aware progress ─────────────────────────────────────── */}
+      {/* ── Left rail: subject tabs on the map, depth progress elsewhere ── */}
+      {clusterBySubject ? (
+        <aside className={styles.rail} aria-label="Filter by subject">
+          <button
+            type="button"
+            className={`${styles.subjectTab} ${selectedSubject === null ? styles.subjectTabSelected : ''}`}
+            aria-pressed={selectedSubject === null}
+            onClick={() => {
+              play('soft-hover');
+              setSelectedSubject(null);
+            }}
+          >
+            <span className={styles.legendDot} aria-hidden="true" />
+            <span className={styles.subjectTabLabel}>All</span>
+          </button>
+          {subjectLegend.map(({ subject, hue }) => {
+            const isSelected = selectedSubject === subject;
+            return (
+              <button
+                key={subject}
+                type="button"
+                className={`${styles.subjectTab} ${isSelected ? styles.subjectTabSelected : ''}`}
+                style={{ '--subject-hue': hue } as CSSProperties}
+                aria-pressed={isSelected}
+                onClick={() => {
+                  play('soft-hover');
+                  setSelectedSubject((prev) => (prev === subject ? null : subject));
+                }}
+              >
+                <span className={styles.legendDot} aria-hidden="true" />
+                <span className={styles.subjectTabLabel}>{subjectTabLabel(subject)}</span>
+              </button>
+            );
+          })}
+        </aside>
+      ) : (
       <aside className={styles.rail} aria-label="Knowledge depth progress">
         <div className={styles.railHeader}>
           <span className={styles.railLabel}>
@@ -488,6 +530,7 @@ export default function GuideSkillTree({
           ))}
         </div>
       </aside>
+      )}
 
       {/* ── Constellation ─────────────────────────────────────────────── */}
       <div className={styles.canvasShell}>
@@ -672,32 +715,6 @@ export default function GuideSkillTree({
       </div>
     </div>
 
-      {/* ── Subject legend / filter (opt-in overlay, layout untouched) ────── */}
-      {clusterBySubject && subjectLegend.length > 0 && (
-        <div className={styles.legend} role="group" aria-label="Filter by subject">
-          {subjectLegend.map(({ subject, hue, domain }) => {
-            const isSelected = selectedSubject === subject;
-            return (
-              <button
-                key={subject}
-                type="button"
-                className={`${styles.legendItem} ${isSelected ? styles.legendItemSelected : ''}`}
-                style={{ '--subject-hue': hue } as CSSProperties}
-                title={domain ? domain.blurb : undefined}
-                aria-pressed={isSelected}
-                onClick={() => {
-                  play('soft-hover');
-                  setSelectedSubject((prev) => (prev === subject ? null : subject));
-                }}
-              >
-                <span className={styles.legendDot} aria-hidden="true" />
-                <span className={styles.legendLabel}>{subject}</span>
-                {domain && <span className={styles.legendDomain}>{domain.label}</span>}
-              </button>
-            );
-          })}
-        </div>
-      )}
     </div>
   );
 }
