@@ -2,7 +2,7 @@
   position: relative;
   margin-left: var(--sidebar-width, 265px);
   min-height: 100vh;
-  background-color: #FAF6F0;
+  background-color: var(--color-background);
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
@@ -99,6 +99,7 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 24px;
+  justify-items: center;
 }
 
 .folderSection {
