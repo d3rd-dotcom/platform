@@ -23,7 +23,7 @@
 .cohortContainer {
   position: relative;
   z-index: 1;
-  width: min(1180px, 100%);
+  width: min(1240px, 100%);
   margin: 0 auto;
 }
 
@@ -31,15 +31,6 @@
   max-width: 700px;
   margin: 0 auto 48px;
   text-align: center;
-}
-
-.eyebrow {
-  margin: 0 0 16px;
-  color: color-mix(in srgb, var(--color-brand) 70%, var(--color-text-light));
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
 }
 
 .cohortTitle {
@@ -66,16 +57,16 @@
 .tierGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: 20px;
   align-items: stretch;
 }
 
 .tierCard {
   position: relative;
   display: flex;
-  min-height: 440px;
+  min-height: 520px;
   flex-direction: column;
-  padding: 30px;
+  padding: 40px 36px 36px;
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--color-text-light) 12%, transparent);
   border-radius: 20px;
@@ -96,52 +87,26 @@
   box-shadow: 0 26px 70px -36px color-mix(in srgb, var(--color-brand) 80%, transparent);
 }
 
-.tierBadge {
-  position: absolute;
-  top: 0;
-  right: 24px;
-  padding: 8px 12px;
-  border-radius: 0 0 9px 9px;
-  background: var(--color-brand);
-  color: var(--color-text-light);
-  font-family: var(--font-primary);
-  font-size: 0.68rem;
-  font-weight: 700;
-}
-
-.tierTopline {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
 .tierName {
   margin: 0;
   color: color-mix(in srgb, var(--color-text-light) 80%, transparent);
   font-family: var(--font-primary);
-  font-size: 0.82rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
-}
-
-.tierIndex {
-  color: color-mix(in srgb, var(--color-text-light) 30%, transparent);
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
+  letter-spacing: 0.04em;
 }
 
 .priceRow {
   display: flex;
   align-items: baseline;
   gap: 8px;
-  margin: 32px 0 14px;
+  margin: 38px 0 18px;
 }
 
 .tierPrice {
   color: var(--color-text-light);
   font-family: var(--font-poppins), sans-serif;
-  font-size: clamp(2.6rem, 4vw, 3.6rem);
+  font-size: clamp(3rem, 4.5vw, 4.25rem);
   font-weight: 700;
   letter-spacing: -0.06em;
   line-height: 0.95;
@@ -214,14 +179,6 @@
   padding-top: 24px;
 }
 
-.membershipNote {
-  margin: 28px 0 0;
-  color: color-mix(in srgb, var(--color-text-light) 38%, transparent);
-  font-family: var(--font-primary);
-  font-size: 0.76rem;
-  text-align: center;
-}
-
 @media (max-width: 860px) {
   .tierGrid {
     grid-template-columns: 1fr;
@@ -231,6 +188,7 @@
 
   .tierCard {
     min-height: 0;
+    padding: 32px;
   }
 }
 

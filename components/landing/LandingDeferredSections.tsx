@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { LazySection } from './LazySection';
-import { KeyFiguresSection } from './KeyFiguresSection';
+import { RotatingTextSection } from './RotatingTextSection';
 
 const CohortSection = dynamic(() =>
   import('./CohortSection').then((mod) => mod.CohortSection),
@@ -78,13 +78,13 @@ export function LandingDeferredSections() {
 
   return (
     <>
-      <LazySection minHeight="70vh"><KeyFiguresSection /></LazySection>
+      <LazySection minHeight="70vh"><RotatingTextSection /></LazySection>
       <LazySection minHeight="90vh"><FeaturesSection /></LazySection>
       <LazySection minHeight="90vh"><EcosystemSection /></LazySection>
       <LazySection minHeight="80vh"><FounderSection /></LazySection>
       <LazySection minHeight="80vh"><TestimonialSection /></LazySection>
-      <LazySection minHeight="90vh"><MagazineSection /></LazySection>
       <LazySection minHeight="90vh"><CohortSection /></LazySection>
+      <LazySection minHeight="90vh"><MagazineSection /></LazySection>
       <LazySection minHeight="60vh"><PatternTextSection /></LazySection>
       <LazySection minHeight="80vh"><FAQSection /></LazySection>
       <LazySection minHeight="40vh"><LandingFooter /></LazySection>

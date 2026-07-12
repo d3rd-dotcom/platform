@@ -24,16 +24,6 @@
   gap: 16px;
 }
 
-.eyebrow {
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.7);
-  font-weight: 600;
-}
-
 .heading {
   margin: 0;
   font-family: var(--font-primary);
@@ -87,8 +77,15 @@
 .imageColumn {
   position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 24px;
+}
+
+.magazineStack {
+  position: relative;
+  width: 100%;
   min-height: 420px;
 }
 
@@ -159,6 +156,10 @@
   }
 
   .imageColumn {
+    gap: 24px;
+  }
+
+  .magazineStack {
     min-height: 360px;
   }
 
@@ -181,6 +182,10 @@
   }
 
   .imageColumn {
+    gap: 18px;
+  }
+
+  .magazineStack {
     min-height: 280px;
   }
 

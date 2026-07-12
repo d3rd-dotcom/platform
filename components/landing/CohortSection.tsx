@@ -39,7 +39,6 @@ export const CohortSection = () => {
     <section id="cohort" className={styles.cohortSection}>
       <div className={styles.cohortContainer}>
         <div className={styles.sectionIntro}>
-          <p className={styles.eyebrow}>Choose your membership</p>
           <h2 className={styles.cohortTitle}>A place to keep doing the work.</h2>
           <p className={styles.cohortSubtitle}>
             Start with the essentials, deepen your practice, or join for the long arc. Every tier gives you a clear way into the Academy.
@@ -49,11 +48,7 @@ export const CohortSection = () => {
         <div className={styles.tierGrid}>
           {tiers.map((tier) => (
             <article key={tier.name} className={`${styles.tierCard} ${tier.featured ? styles.featuredTier : ''}`}>
-              {tier.featured && <span className={styles.tierBadge}>Most chosen</span>}
-              <div className={styles.tierTopline}>
-                <p className={styles.tierName}>{tier.name}</p>
-                <span className={styles.tierIndex}>0{tiers.indexOf(tier) + 1}</span>
-              </div>
+              <p className={styles.tierName}>{tier.name}</p>
               <div className={styles.priceRow}>
                 <span className={styles.tierPrice}>{tier.price}</span>
                 <span className={styles.tierCadence}>{tier.cadence}</span>
@@ -74,7 +69,6 @@ export const CohortSection = () => {
             </article>
           ))}
         </div>
-        <p className={styles.membershipNote}>Membership supports the Academy’s courses, community, and ongoing research.</p>
       </div>
     </section>
   );
