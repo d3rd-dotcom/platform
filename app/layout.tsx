@@ -150,9 +150,9 @@ export default function RootLayout({
             __html: `
               (function() {
                 try {
-                  var theme = localStorage.getItem('mwa-theme') || 'dark';
+                  var theme = localStorage.getItem('mwa-theme') || 'light';
                   if (!localStorage.getItem('mwa-theme')) {
-                    localStorage.setItem('mwa-theme', 'dark');
+                    localStorage.setItem('mwa-theme', 'light');
                   }
                   if (theme === 'dark' && window.location.pathname !== '/') {
                     document.documentElement.setAttribute('data-theme', 'dark');

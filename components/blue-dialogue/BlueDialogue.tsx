@@ -8,8 +8,8 @@ import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 import styles from './BlueDialogue.module.css';
 
 // ── Blue Voice TTS ──────────────────────────────────────────
-// Opt-in, off by default. Mirrors the pattern in BlueChat: a persisted
-// preference gates an ElevenLabs-backed read-aloud of each spoken line.
+// A persisted preference gates an ElevenLabs-backed read-aloud of each spoken
+// line. New members begin with Blue's voice enabled.
 const VOICE_PREF_KEY = 'blueDialogue.voiceEnabled';
 
 /** Strip single-letter hotkey brackets (e.g. "[E]nd" → "End") before speaking. */
@@ -158,8 +158,8 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   const [portraitReady, setPortraitReady] = useState(false);
   const [displayReward, setDisplayReward] = useState(0);
   const [reply, setReply] = useState('');
-  const [voiceEnabled, setVoiceEnabled] = useState(false);
-  const voiceEnabledRef = useRef(false);
+  const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const voiceEnabledRef = useRef(true);
   const voiceAbortRef = useRef<AbortController | null>(null);
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -206,12 +206,11 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
     }
   }, []);
 
-  // Load the persisted voice preference (default off) once on mount.
+  // Load an explicit off preference. With no saved choice, voice starts on.
   useEffect(() => {
-    if (getStorageItem(VOICE_PREF_KEY) === '1') {
-      setVoiceEnabled(true);
-      voiceEnabledRef.current = true;
-    }
+    const enabled = getStorageItem(VOICE_PREF_KEY) !== '0';
+    setVoiceEnabled(enabled);
+    voiceEnabledRef.current = enabled;
   }, []);
 
   const toggleVoice = useCallback(() => {

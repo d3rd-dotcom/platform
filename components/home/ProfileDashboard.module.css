@@ -141,9 +141,9 @@
   align-items: center;
   gap: 2px;
   padding: 4px 8px;
-  border: 1px solid rgba(246, 248, 237, 0.14);
+  border: 1px solid color-mix(in oklch, var(--color-streak) 52%, transparent);
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.25);
+  background: color-mix(in oklch, var(--color-streak) 12%, var(--color-inverse-surface-1));
 }
 
 .streakDay {
@@ -155,9 +155,9 @@
 }
 
 .streakDayFilled {
-  border-color: var(--color-secondary);
-  background: var(--color-secondary);
-  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-secondary) 22%, transparent);
+  border-color: var(--color-streak);
+  background: var(--color-streak);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-streak) 24%, transparent);
 }
 
 @media (max-width: 640px) {
