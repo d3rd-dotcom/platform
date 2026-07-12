@@ -70,20 +70,20 @@
 }
 
 :global([data-theme="dark"]) .item {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.08);
+  background: var(--color-surface-2);
+  border-color: var(--color-border-subtle);
 }
 
 :global([data-theme="dark"]) .item:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.12);
+  background: var(--color-surface-3);
+  border-color: var(--color-border-strong);
 }
 
 :global([data-theme="dark"]) .itemIcon {
-  background: rgba(255, 255, 255, 0.06);
-  color: #8f9bff;
+  background: var(--color-surface-1);
+  color: var(--color-primary);
 }
 
 :global([data-theme="dark"]) .itemLabel {
-  color: #f0f1fa;
+  color: var(--color-text-dark);
 }

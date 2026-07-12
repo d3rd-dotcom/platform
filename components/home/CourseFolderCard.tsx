@@ -20,6 +20,7 @@ interface CourseFolderCardProps {
   onOpen?: () => void;
   images: string[];
   avatarSrc?: string;
+  centerLabel?: string;
   ctaLabel?: string;
   ctaDark?: boolean;
   dark?: boolean;
@@ -32,6 +33,7 @@ export default function CourseFolderCard({
   onOpen,
   images,
   avatarSrc,
+  centerLabel,
   ctaLabel = 'Start Course',
   ctaDark = false,
   dark,
@@ -110,6 +112,8 @@ export default function CourseFolderCard({
       </motion.div>
 
       <span className={styles.tabBadge}>{count}</span>
+
+      {centerLabel && <span className={styles.centerLabel}>{centerLabel}</span>}
 
       {/* CTA */}
       <span

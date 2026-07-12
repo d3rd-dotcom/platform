@@ -454,6 +454,7 @@ export default function HomePage() {
                     count={12}
                     href="/shadow-work"
                     avatarSrc="/blue/blue-home.png"
+                    centerLabel="Shadow Work"
                     ctaDark
                     images={[]}
                   />
@@ -462,6 +463,7 @@ export default function HomePage() {
                     count={academyCourses.length}
                     href="/course"
                     avatarSrc="/academy-story.png"
+                    centerLabel="Academy Courses"
                     dark
                     images={[]}
                   />
@@ -470,6 +472,7 @@ export default function HomePage() {
                     count={personalCourse ? 1 : 0}
                     href="/course/personal"
                     avatarSrc="/academic-angels.webp"
+                    centerLabel={personalCourse?.focus ?? 'Personal Curriculum'}
                     dark
                     images={[]}
                   />
@@ -478,6 +481,7 @@ export default function HomePage() {
                     count={0}
                     href="/course-builder"
                     avatarSrc="/images/academy-blockchain.png"
+                    centerLabel="Course Studio"
                     dark
                     images={[]}
                   />
@@ -832,14 +836,14 @@ export default function HomePage() {
       </div>
       {!learnOnly && (
         <section className={styles.dashboardInsights} aria-label="Learning insights">
-          <article className={styles.insightCard}>
+          <article className={`${styles.insightCard} ${styles.statsInsightCard}`}>
             <h2 className={styles.insightTitle}>My Stats</h2>
             <div className={styles.statsChart} aria-label="Your field notes, missions, and balloons popped over the last 30 days">
               <StatsChart />
             </div>
           </article>
 
-          <article className={styles.insightCard}>
+          <article className={`${styles.insightCard} ${styles.planningInsightCard}`}>
             <div className={styles.planningHeader}>
               <h2 className={styles.insightTitle}>Planning</h2>
               <div className={styles.planningControls} aria-hidden="true">

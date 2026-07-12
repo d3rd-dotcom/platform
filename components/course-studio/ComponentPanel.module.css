@@ -199,21 +199,21 @@
 }
 
 :global([data-theme="dark"]) .weekTitleInput {
-  background: #1e1f2c;
-  border-color: rgba(255, 255, 255, 0.1);
-  color: #f0f1fa;
+  background: var(--color-surface-1);
+  border-color: var(--color-border-subtle);
+  color: var(--color-text-dark);
 }
 
 :global([data-theme="dark"]) .weekThemeInput {
-  background: #1e1f2c;
-  border-color: rgba(255, 255, 255, 0.1);
-  color: #f0f1fa;
+  background: var(--color-surface-1);
+  border-color: var(--color-border-subtle);
+  color: var(--color-text-dark);
 }
 
 :global([data-theme="dark"]) .weekNavArrow {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.1);
-  color: #9aa0c0;
+  background: var(--color-surface-1);
+  border-color: var(--color-border-subtle);
+  color: var(--color-text-muted);
 }
 
 :global([data-theme="dark"]) .weekNavDelete:hover {
@@ -240,8 +240,8 @@
   width: 100%;
   padding: 12px 14px;
   border-radius: 14px;
-  background: color-mix(in srgb, var(--color-primary) 7%, #ffffff);
-  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, rgba(26, 29, 51, 0.06));
+  background: color-mix(in srgb, var(--color-primary) 7%, var(--color-surface-1));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, var(--color-border-subtle));
   box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -251,8 +251,8 @@
 }
 
 .readingCard:hover {
-  background: color-mix(in srgb, var(--color-primary) 11%, #ffffff);
-  border-color: color-mix(in srgb, var(--color-primary) 38%, rgba(26, 29, 51, 0.06));
+  background: color-mix(in srgb, var(--color-primary) 11%, var(--color-surface-1));
+  border-color: color-mix(in srgb, var(--color-primary) 38%, var(--color-border-subtle));
   box-shadow: 0 4px 16px color-mix(in oklch, var(--color-primary) 14%, transparent);
 }
 
@@ -271,7 +271,7 @@
   height: 48px;
   flex-shrink: 0;
   border-radius: 10px;
-  background: color-mix(in srgb, var(--color-primary) 14%, #eef0ff);
+  background: color-mix(in srgb, var(--color-primary) 14%, var(--color-surface-2));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -316,7 +316,7 @@
   font-size: var(--type-h4-size);
   font-weight: var(--type-weight-bold);
   letter-spacing: var(--type-track-heading);
-  color: #1A1D33;
+  color: var(--color-text-dark);
   line-height: var(--type-lh-snug);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -325,7 +325,7 @@
 
 .readingArrow {
   flex-shrink: 0;
-  color: #1A1D33;
+  color: var(--color-text-dark);
   opacity: 0.2;
 }
 
@@ -341,14 +341,14 @@
 .missionsDivider {
   flex: 1;
   height: 1px;
-  background: rgba(26, 29, 51, 0.1);
+  background: var(--color-border-subtle);
 }
 
 .missionsHeading {
   font-family: var(--type-font-label);
   font-size: var(--type-h4-size);
   font-weight: var(--type-weight-bold);
-  color: #1A1D33;
+  color: var(--color-text-dark);
   letter-spacing: var(--type-track-label-lg);
   line-height: var(--type-lh-solid);
   text-transform: uppercase;
@@ -381,8 +381,8 @@
 .taskCard {
   --task-accent: var(--color-primary);
   width: 100%;
-  background: color-mix(in srgb, var(--task-accent) 7%, #ffffff);
-  border: 1px solid color-mix(in srgb, var(--task-accent) 22%, rgba(26, 29, 51, 0.06));
+  background: color-mix(in srgb, var(--task-accent) 7%, var(--color-surface-1));
+  border: 1px solid color-mix(in srgb, var(--task-accent) 22%, var(--color-border-subtle));
   border-radius: 14px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
@@ -391,13 +391,13 @@
 }
 
 .taskCard:hover {
-  background: color-mix(in srgb, var(--task-accent) 11%, #ffffff);
-  border-color: color-mix(in srgb, var(--task-accent) 38%, rgba(26, 29, 51, 0.06));
+  background: color-mix(in srgb, var(--task-accent) 11%, var(--color-surface-1));
+  border-color: color-mix(in srgb, var(--task-accent) 38%, var(--color-border-subtle));
   box-shadow: 0 4px 16px color-mix(in srgb, var(--task-accent) 20%, transparent);
 }
 
 .taskCardSelected {
-  background: color-mix(in srgb, var(--task-accent) 14%, #ffffff) !important;
+  background: color-mix(in srgb, var(--task-accent) 14%, var(--color-surface-1)) !important;
   border-color: var(--task-accent) !important;
   box-shadow: 0 0 0 1px var(--task-accent), 0 4px 16px color-mix(in srgb, var(--task-accent) 24%, transparent) !important;
 }
@@ -513,7 +513,7 @@
   font-size: var(--type-h4-size);
   font-weight: var(--type-weight-bold);
   letter-spacing: var(--type-track-heading);
-  color: #1A1D33;
+  color: var(--color-text-dark);
   line-height: var(--type-lh-snug);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -591,9 +591,9 @@
   width: 100%;
   padding: 10px;
   border-radius: 8px;
-  border: 2px dashed rgba(26, 29, 51, 0.12);
+  border: 2px dashed var(--color-border-strong);
   background: transparent;
-  color: rgba(26, 29, 51, 0.35);
+  color: var(--color-text-faint);
   font-family: var(--type-font-label);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-weight-semibold);
@@ -617,21 +617,21 @@
 /* ── Dark mode ── */
 
 :global([data-theme="dark"]) .readingCard {
-  background: color-mix(in srgb, var(--color-primary) 12%, #181926);
-  border-color: color-mix(in srgb, var(--color-primary) 30%, rgba(255, 255, 255, 0.06));
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface-1));
+  border-color: color-mix(in srgb, var(--color-primary) 30%, var(--color-border-subtle));
 }
 
 :global([data-theme="dark"]) .readingCard:hover {
-  background: color-mix(in srgb, var(--color-primary) 18%, #181926);
-  border-color: color-mix(in srgb, var(--color-primary) 45%, rgba(255, 255, 255, 0.08));
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface-1));
+  border-color: color-mix(in srgb, var(--color-primary) 45%, var(--color-border-subtle));
 }
 
 :global([data-theme="dark"]) .readingCategory {
-  color: rgba(240, 241, 250, 0.5);
+  color: var(--color-text-muted);
 }
 
 :global([data-theme="dark"]) .readingTitle {
-  color: #f0f1fa;
+  color: var(--color-text-dark);
 }
 
 :global([data-theme="dark"]) .readingArrow {
@@ -650,26 +650,26 @@
 }
 
 :global([data-theme="dark"]) .missionsHeading {
-  color: #f0f1fa;
+  color: var(--color-text-dark);
 }
 
 :global([data-theme="dark"]) .taskCard {
-  background: color-mix(in srgb, var(--task-accent) 12%, #181926);
-  border-color: color-mix(in srgb, var(--task-accent) 30%, rgba(255, 255, 255, 0.06));
+  background: color-mix(in srgb, var(--task-accent) 12%, var(--color-surface-1));
+  border-color: color-mix(in srgb, var(--task-accent) 30%, var(--color-border-subtle));
 }
 
 :global([data-theme="dark"]) .taskCard:hover {
-  background: color-mix(in srgb, var(--task-accent) 18%, #181926);
-  border-color: color-mix(in srgb, var(--task-accent) 45%, rgba(255, 255, 255, 0.08));
+  background: color-mix(in srgb, var(--task-accent) 18%, var(--color-surface-1));
+  border-color: color-mix(in srgb, var(--task-accent) 45%, var(--color-border-subtle));
 }
 
 :global([data-theme="dark"]) .taskCardSelected {
-  background: color-mix(in srgb, var(--task-accent) 22%, #181926) !important;
+  background: color-mix(in srgb, var(--task-accent) 22%, var(--color-surface-1)) !important;
   border-color: var(--task-accent) !important;
 }
 
 :global([data-theme="dark"]) .taskTitle {
-  color: #f0f1fa;
+  color: var(--color-text-dark);
 }
 
 :global([data-theme="dark"]) .taskArrow {
@@ -693,5 +693,4 @@
 :global([data-theme="dark"]) .addBtnTall {
   border-color: rgba(240, 241, 250, 0.12);
 }
-
 

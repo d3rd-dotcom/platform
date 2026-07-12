@@ -262,7 +262,7 @@
   gap: 6px;
   justify-content: center;
   padding: 12px;
-  background: var(--color-surface-subtle);
+  background: var(--color-surface-2);
   border-radius: 8px;
   border: 1px solid var(--color-border-subtle);
 }

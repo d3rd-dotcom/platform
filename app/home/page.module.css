@@ -130,9 +130,11 @@
   justify-content: space-around;
   flex-wrap: nowrap;
   flex: 1;
+  height: 132px;
   min-width: 320px;
   gap: 24px;
-  padding: 28px 40px;
+  padding: 20px 40px;
+  box-sizing: border-box;
   border: 2px solid color-mix(in oklch, var(--color-primary) 72%, #000);
   border-radius: 22px;
   background: var(--color-primary);
@@ -650,18 +652,27 @@
 }
 
 .insightCard {
+  --insight-color: var(--color-primary);
   position: relative;
   min-width: 0;
   min-height: 276px;
   overflow: hidden;
   padding: 28px 28px 22px;
-  border: 2px solid var(--color-primary-hover);
+  border: 2px solid color-mix(in oklch, var(--insight-color) 72%, var(--color-text-dark));
   border-radius: 22px;
-  background: var(--color-surface-base);
+  background: color-mix(in oklch, var(--insight-color) 14%, var(--color-surface-base));
   box-shadow:
-    0 4px 0 var(--color-primary),
+    0 4px 0 var(--insight-color),
     0 0 6px rgba(0, 0, 0, 0.10),
     0 6px 3px rgba(0, 0, 0, 0.22);
+}
+
+.statsInsightCard {
+  --insight-color: var(--color-primary);
+}
+
+.planningInsightCard {
+  --insight-color: var(--color-accent);
 }
 
 .insightTitle {

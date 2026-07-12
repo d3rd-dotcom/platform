@@ -6,8 +6,8 @@
   overflow: hidden;
   background: linear-gradient(
     to right,
-    var(--color-surface-2) 0,
-    var(--color-surface-2) var(--sidebar-width, 265px),
+    var(--color-surface-1) 0,
+    var(--color-surface-1) var(--sidebar-width, 265px),
     var(--color-surface-base) var(--sidebar-width, 265px)
   );
   position: relative;
@@ -55,7 +55,7 @@
   padding: 20px 24px 16px 24px;
   flex-shrink: 0;
   gap: 12px;
-  background: var(--color-surface-2);
+  background: var(--color-surface-1);
   z-index: 1;
   position: relative;
 }
@@ -159,7 +159,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #f59e0b;
+  background: var(--color-warning);
   opacity: 0;
   transition: opacity 0.15s ease;
 }
@@ -171,7 +171,7 @@
 .errorText {
   font-family: var(--type-font-body);
   font-size: var(--type-caption-size);
-  color: #ef4444;
+  color: var(--color-danger);
 }
 
 .saveBtn {
@@ -181,7 +181,7 @@
   border-radius: 8px;
   border: none;
   background: var(--color-primary);
-  color: #fff;
+  color: var(--color-on-action);
   cursor: pointer;
   font-weight: var(--type-weight-semibold);
   transition: opacity 0.12s ease;
@@ -238,9 +238,9 @@
   letter-spacing: var(--type-track-label);
   padding: 4px 8px;
   border-radius: 4px;
-  border: 1px solid #f59e0b;
-  color: #f59e0b;
-  background: color-mix(in srgb, #f59e0b 8%, transparent);
+  border: 1px solid var(--color-warning);
+  color: var(--color-warning-text);
+  background: color-mix(in srgb, var(--color-warning) 10%, transparent);
   cursor: pointer;
   transition: opacity 0.12s ease;
 }
@@ -250,9 +250,9 @@
 }
 
 .statusPublished {
-  border-color: #22c55e;
-  color: #22c55e;
-  background: color-mix(in srgb, #22c55e 8%, transparent);
+  border-color: var(--color-positive);
+  color: var(--color-positive);
+  background: var(--color-positive-muted);
 }
 
 .publishBtn {
@@ -260,9 +260,9 @@
   font-family: var(--type-font-label);
   font-size: var(--type-label-size);
   border-radius: 8px;
-  border: 1px solid #22c55e;
-  background: #22c55e;
-  color: #fff;
+  border: 1px solid var(--color-positive);
+  background: var(--color-positive);
+  color: var(--color-on-positive);
   cursor: pointer;
   font-weight: var(--type-weight-semibold);
   transition: opacity 0.12s ease;
@@ -286,11 +286,11 @@
   padding: 40px 48px;
   max-width: 720px;
   margin: 0 auto;
-  background: var(--color-surface-subtle);
+  background: var(--color-surface-base);
 }
 
 :global([data-theme="dark"]) .previewBody {
-  background: #13141f;
+  background: var(--color-surface-base);
 }
 
 /* ── Floating save bar above palette ── */
@@ -303,7 +303,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 8px 24px;
-  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-surface-2));
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-surface-1));
   border-top: 1px solid var(--color-border-subtle);
   backdrop-filter: blur(8px);
   z-index: 40;
@@ -321,14 +321,14 @@
   font-family: var(--type-font-label);
   font-size: var(--type-label-size);
   font-weight: var(--type-weight-semibold);
-  color: #f59e0b;
+  color: var(--color-warning-text);
   text-transform: uppercase;
   letter-spacing: var(--type-track-label);
 }
 
 :global([data-theme="dark"]) .floatingSaveBar {
-  background: color-mix(in srgb, var(--color-primary) 10%, #0d0e16);
-  border-top-color: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface-1));
+  border-top-color: var(--color-border-subtle);
 }
 
 /* ── Bottom: component palette bar ── */
@@ -338,7 +338,7 @@
   left: var(--sidebar-width, 265px);
   right: 0;
   border-top: 2px solid var(--color-border-subtle);
-  background: var(--color-surface-base);
+  background: var(--color-surface-1);
   z-index: 50;
 }
 
@@ -384,6 +384,7 @@
   flex-direction: column;
   padding: 16px;
   border-right: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-1);
 }
 
 /* ── Right: Week canvas ── */
@@ -392,7 +393,7 @@
   min-width: 0;
   overflow-y: auto;
   padding: 24px 28px;
-  background: var(--color-surface-subtle);
+  background: var(--color-surface-base);
   background-image:
     linear-gradient(to right, color-mix(in oklch, var(--color-primary) 4%, transparent) 1px, transparent 1px),
     linear-gradient(to bottom, color-mix(in oklch, var(--color-primary) 4%, transparent) 1px, transparent 1px);
@@ -400,7 +401,7 @@
 }
 
 :global([data-theme="dark"]) .weekCanvasArea {
-  background: #0d0e16;
+  background: var(--color-surface-base);
   background-image:
     linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
@@ -412,7 +413,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-surface-subtle);
+  background: var(--color-surface-base);
   background-image:
     linear-gradient(to right, color-mix(in oklch, var(--color-primary) 4%, transparent) 1px, transparent 1px),
     linear-gradient(to bottom, color-mix(in oklch, var(--color-primary) 4%, transparent) 1px, transparent 1px);
@@ -420,7 +421,7 @@
 }
 
 :global([data-theme="dark"]) .editorEmptyBase {
-  background: #0d0e16;
+  background: var(--color-surface-base);
   background-image:
     linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
@@ -448,7 +449,7 @@
   display: flex;
   flex-direction: column;
   padding: 24px 28px;
-  background: var(--color-surface-subtle);
+  background: var(--color-surface-base);
   background-image:
     linear-gradient(to right, color-mix(in oklch, var(--color-primary) 4%, transparent) 1px, transparent 1px),
     linear-gradient(to bottom, color-mix(in oklch, var(--color-primary) 4%, transparent) 1px, transparent 1px);
@@ -456,16 +457,16 @@
 }
 
 :global([data-theme="dark"]) .missionEditor {
-  background: #0d0e16;
+  background: var(--color-surface-base);
   background-image:
     linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
 }
 
 .panelCard {
-  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, var(--color-border-subtle));
+  border: 1px solid var(--color-border-strong);
   border-radius: 14px;
-  background: color-mix(in srgb, var(--color-primary) 7%, var(--color-surface-base));
+  background: var(--color-surface-2);
   box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
   padding: 20px;
   display: flex;
@@ -475,8 +476,8 @@
 }
 
 :global([data-theme="dark"]) .panelCard {
-  background: color-mix(in srgb, var(--color-primary) 10%, #0d0e16);
-  border-color: color-mix(in srgb, var(--color-primary) 18%, rgba(255, 255, 255, 0.06));
+  background: var(--color-surface-2);
+  border-color: var(--color-border-strong);
 }
 
 /* ── Drag overlay item ── */
@@ -487,7 +488,7 @@
   padding: 8px 14px;
   border-radius: 8px;
   background: var(--color-primary);
-  color: #fff;
+  color: var(--color-on-action);
   font-family: var(--type-font-label);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-weight-semibold);
@@ -535,7 +536,7 @@
 }
 
 :global([data-theme="dark"]) .loadingOverlay {
-  background: #0d0e19;
+  background: var(--color-surface-base);
 }
 
 /* ── Publish Review ── */
@@ -745,9 +746,9 @@
   flex-direction: column;
   gap: 6px;
   padding: 12px 14px;
-  border: 1px solid color-mix(in srgb, #ef4444 35%, var(--color-border-subtle));
+  border: 1px solid color-mix(in srgb, var(--color-danger) 35%, var(--color-border-subtle));
   border-radius: 10px;
-  background: color-mix(in srgb, #ef4444 6%, var(--color-surface-base, #ffffff));
+  background: color-mix(in srgb, var(--color-danger) 6%, var(--color-surface-base));
 }
 
 .publishIssuesTitle {
@@ -756,7 +757,7 @@
   font-weight: var(--type-weight-bold);
   text-transform: uppercase;
   letter-spacing: var(--type-track-label);
-  color: #b91c1c;
+  color: var(--color-danger);
 }
 
 .publishIssuesList {
@@ -811,8 +812,8 @@
   font-size: var(--type-label-size);
   border-radius: 8px;
   border: none;
-  background: #22c55e;
-  color: #fff;
+  background: var(--color-positive);
+  color: var(--color-on-positive);
   cursor: pointer;
   font-weight: var(--type-weight-semibold);
   text-transform: uppercase;
@@ -839,18 +840,18 @@
 }
 
 :global([data-theme="dark"]) .header {
-  background: var(--color-surface-base);
+  background: var(--color-surface-1);
 }
 
 :global([data-theme="dark"]) .backBtn {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.1);
-  color: #9aa0c0;
+  background: var(--color-surface-2);
+  border-color: var(--color-border-subtle);
+  color: var(--color-text-muted);
 }
 
 :global([data-theme="dark"]) .backBtn:hover {
-  color: #f0f1fa;
-  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--color-text-dark);
+  border-color: var(--color-border-strong);
 }
 
 :global([data-theme="dark"]) .saveBtn {
@@ -858,17 +859,17 @@
 }
 
 :global([data-theme="dark"]) .bottomPalette {
-  background: #181926;
-  border-top-color: rgba(255, 255, 255, 0.08);
+  background: var(--color-surface-1);
+  border-top-color: var(--color-border-subtle);
 }
 
 :global([data-theme="dark"]) .paletteToggle {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--color-surface-2);
 }
 
 :global([data-theme="dark"]) .paletteToggle:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: #8f9bff;
+  background: var(--color-surface-3);
+  color: var(--color-primary);
 }
 
 /* ── Undo toast ── */
@@ -920,6 +921,6 @@
 }
 
 :global([data-theme="dark"]) .previewBrowser {
-  background: #13141f;
-  border-left-color: rgba(255, 255, 255, 0.06);
+  background: var(--color-surface-1);
+  border-left-color: var(--color-border-subtle);
 }

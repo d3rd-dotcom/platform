@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mwa-assets-v2';
+const CACHE_NAME = 'mwa-assets-v3';
 const PRECACHE_ASSETS = ['/manifest.webmanifest', '/icons/badge-academy.png'];
 const CACHEABLE_DESTINATIONS = new Set(['image', 'font', 'manifest']);
 

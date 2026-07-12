@@ -4,11 +4,20 @@
   --folder-courses-surface: color-mix(in oklch, var(--folder-wrapper-surface) 80%, var(--color-primary-hover));
   --folder-lecture-surface: color-mix(in oklch, var(--folder-wrapper-surface) 60%, var(--color-primary-hover));
   --folder-workshop-surface: color-mix(in oklch, var(--folder-wrapper-surface) 30%, var(--color-primary-hover));
+  --folder-active-surface: var(--folder-courses-surface);
   grid-column: 1 / -1;
   display: grid;
   grid-template-columns: max-content minmax(0, 1fr);
   grid-template-rows: 52px auto;
   width: 100%;
+}
+
+.shell[data-active-tab='1'] {
+  --folder-active-surface: var(--folder-lecture-surface);
+}
+
+.shell[data-active-tab='2'] {
+  --folder-active-surface: var(--folder-workshop-surface);
 }
 
 .wrapper {
@@ -21,7 +30,7 @@
   border: 2px solid var(--color-primary-hover);
   border-top: 0;
   border-radius: 0 20px 24px 24px;
-  background: var(--folder-wrapper-surface);
+  background: var(--folder-active-surface);
   box-shadow:
     0 6px 0 var(--color-primary),
     0 0 10px rgba(0, 0, 0, 0.14),
@@ -43,18 +52,14 @@
   grid-row: 1 / -1;
   align-self: start;
   height: 20px;
-  margin-left: -2px;
   margin-top: 52px;
   /* Sits above the tray surface but below the tabs, so the last tab's slant
      stroke stays on top instead of being clipped by this border. */
   z-index: 1;
+  box-sizing: border-box;
+  border-top: 2px solid var(--color-primary-hover);
   border-right: 2px solid var(--color-primary-hover);
   border-top-right-radius: 20px;
-  background:
-    linear-gradient(
-      to right,
-      var(--color-primary-hover) 0 100%
-    ) top / 100% 2px no-repeat;
   position: relative;
 }
 
@@ -132,21 +137,33 @@
    .tab.tabActive so it outranks the position-based nth-child fills above. */
 .tab.tabActive {
   color: var(--color-text-dark);
-  --tab-fill: var(--folder-wrapper-surface);
+  --tab-fill: var(--folder-active-surface);
+}
+
+.emptyState {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
 }
 
 .emptyPanel {
   margin: 0;
-  padding: 28px 8px;
+  padding: 0 8px;
   text-align: center;
   color: var(--color-text-muted);
   font-family: var(--font-secondary);
   font-size: 0.9375rem;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
+}
+
+.emptyStateGif {
+  height: 44px;
+  width: auto;
+  flex-shrink: 0;
+  image-rendering: pixelated;
 }
 
 .content {

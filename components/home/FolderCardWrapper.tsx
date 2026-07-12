@@ -6,13 +6,13 @@ import { useSound } from '@/hooks/useSound';
 import styles from './FolderCardWrapper.module.css';
 
 // Folder-tab silhouette: rounded top-left, flat top, rounded top-right, then a
-// straight slant down to the bottom-right where it meets the tray. Inset 1px on
-// the top/left/right so the centred 2px stroke sits fully inside the box, lining
-// up with the tray's border-box border below (bottom stays at 52 to meet flush).
-const TAB_FILL_PATH = 'M1 52 L1 16 Q1 1 16 1 L150 1 Q166 1 172 13 L209 52 Z';
+// straight slant down to the bottom-right where it meets the tray. The top and
+// left stay inset for their centred stroke; the slant ends on the right grid
+// boundary so it meets the tray's border without an overlap seam.
+const TAB_FILL_PATH = 'M1 52 L1 16 Q1 1 16 1 L150 1 Q166 1 172 13 L210 52 Z';
 // Same outline minus the bottom edge, so the border wraps the top and slant
 // but leaves the base open against the tray.
-const TAB_STROKE_PATH = 'M1 52 L1 16 Q1 1 16 1 L150 1 Q166 1 172 13 L209 52';
+const TAB_STROKE_PATH = 'M1 52 L1 16 Q1 1 16 1 L150 1 Q166 1 172 13 L210 52';
 
 function TabShape() {
   return (
@@ -38,7 +38,7 @@ export default function FolderCardWrapper({ tabs }: FolderCardWrapperProps) {
   const activeTab = tabs[active] ?? tabs[0];
 
   return (
-    <section className={styles.shell} aria-label="Learning folders">
+    <section className={styles.shell} data-active-tab={active} aria-label="Learning folders">
       <div className={styles.tabs} role="tablist" aria-label="Learning categories">
         {tabs.map((tab, i) => {
           const isActive = i === active;
@@ -63,7 +63,11 @@ export default function FolderCardWrapper({ tabs }: FolderCardWrapperProps) {
       <div className={styles.wrapper}>
         <div className={styles.content}>
           {activeTab?.content ?? (
-            <p className={styles.emptyPanel}>{activeTab?.label} are coming soon.</p>
+            <div className={styles.emptyState}>
+              <p className={styles.emptyPanel}>{activeTab?.label} are coming soon.</p>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img className={styles.emptyStateGif} src="/images/walking.gif" alt="Blue walking" />
+            </div>
           )}
         </div>
       </div>
