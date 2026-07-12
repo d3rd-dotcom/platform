@@ -35,6 +35,7 @@ const DRAFTS_DIR = join(__dirname, '..', 'content', 'guide-drafts');
 interface GuideDef {
   slug: string;
   topicTitle: string;
+  summary?: string;
   subjects: string[];
   draftPath: string; // relative to DRAFTS_DIR
   blockTitle: string;
@@ -119,6 +120,7 @@ const GUIDES: GuideDef[] = [
   {
     slug: 'adhd-and-focus',
     topicTitle: 'ADHD and Focus',
+    summary: 'Study how ADHD shapes attention, activity, and impulse control across school, work, and daily life.',
     subjects: ['Focus'],
     draftPath: 'medlineplus/adhd.md',
     blockTitle: 'When attention differences go beyond normal distraction',
@@ -262,6 +264,7 @@ async function main() {
     const guide = await createGuide({
       slug: def.slug,
       topicTitle: def.topicTitle,
+      summary: def.summary,
       status: 'published',
       body: [
         {
