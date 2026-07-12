@@ -673,11 +673,17 @@
 .planningHeader {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 16px;
+  position: relative;
 }
 
-.planningControls { display: flex; gap: 8px; }
+.planningControls {
+  position: absolute;
+  right: 0;
+  display: flex;
+  gap: 8px;
+}
 
 .planningControls span {
   display: grid;
