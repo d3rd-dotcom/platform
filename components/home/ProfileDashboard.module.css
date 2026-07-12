@@ -10,7 +10,7 @@
   justify-self: start;
   padding: 16px;
   border: 2px solid color-mix(in oklch, var(--color-primary) 72%, #000);
-  border-radius: 16px;
+  border-radius: 22px;
   background: var(--color-primary);
   box-shadow:
     0 6px 0 color-mix(in oklch, var(--color-primary) 64%, #000),

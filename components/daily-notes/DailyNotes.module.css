@@ -4,7 +4,7 @@
   width: 100%;
   background: transparent;
   border: 2px solid var(--color-primary-hover);
-  --card-radius: 12px;
+  --card-radius: 22px;
   --card-border-width: 2px;
   border-radius: var(--card-radius);
   overflow: visible;

@@ -2,7 +2,7 @@
   position: relative;
   margin-left: var(--sidebar-width, 265px);
   min-height: 100vh;
-  background-color: var(--color-background, #ffffff);
+  background-color: #FAF6F0;
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
@@ -222,7 +222,7 @@
   min-height: 72px;
   padding: 16px 20px;
   border: 2px dashed color-mix(in oklch, var(--color-primary) 45%, var(--color-border-subtle, #c7c7c7));
-  border-radius: 18px;
+  border-radius: 22px;
   background: transparent;
   color: var(--color-text-muted, #666);
   cursor: pointer;
@@ -639,7 +639,7 @@
   overflow: hidden;
   padding: 28px 28px 22px;
   border: 2px solid var(--color-primary-hover);
-  border-radius: 18px;
+  border-radius: 22px;
   background: var(--color-surface-base);
   box-shadow:
     0 4px 0 var(--color-primary),
