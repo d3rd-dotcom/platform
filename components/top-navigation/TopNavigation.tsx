@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
 import { MagnifyingGlass } from '@phosphor-icons/react';
+import { Phone } from '@phosphor-icons/react';
 import styles from './TopNavigation.module.css';
 import { useSound } from '@/hooks/useSound';
 import ColorThemePicker from '@/components/theme/ColorThemePicker';
@@ -172,6 +173,18 @@ const TopNavigation: React.FC = () => {
             </svg>
           </Link>
           <ColorThemePicker />
+          <button
+            type="button"
+            className={styles.callBlueButton}
+            data-tour="ask-blue"
+            onClick={() => { play('click'); window.dispatchEvent(new Event('callBlue')); }}
+            onMouseEnter={() => play('hover')}
+            title="Call Blue"
+            aria-label="Call Blue"
+          >
+            <Phone size={16} weight="fill" className={styles.callBlueIcon} />
+            <span className={styles.callBlueLabel}>Call Blue</span>
+          </button>
 
           {!authenticated && (
             <>

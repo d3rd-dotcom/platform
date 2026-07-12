@@ -9,7 +9,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useAccount } from 'wagmi';
 import { usePrivy } from '@privy-io/react-auth';
 import type { IconProps } from '@phosphor-icons/react';
-import { Phone } from '@phosphor-icons/react';
 import styles from './SideNavigation.module.css';
 import { useSound } from '@/hooks/useSound';
 import { useInitialSidebarCollapsed } from './SidebarStateProvider';
@@ -82,7 +81,7 @@ const primaryNavItems: NavItem[] = [
     id: 'learn',
     label: 'Learn',
     href: '/learn',
-    iconSrc: '/icons/ui-book-v2.svg',
+    iconSrc: '/icons/guidance.svg',
   },
   {
     id: 'simulations',
@@ -269,6 +268,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
 
     const blueChatHandler = () => setIsCallingBlue(true);
     window.addEventListener('toggleBlueChat', blueChatHandler);
+    window.addEventListener('callBlue', blueChatHandler);
 
     const openProHandler = () => setIsProModalOpen(true);
     window.addEventListener('openProModal', openProHandler);
@@ -276,6 +276,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     return () => {
       window.removeEventListener('toggleSidebar', handler);
       window.removeEventListener('toggleBlueChat', blueChatHandler);
+      window.removeEventListener('callBlue', blueChatHandler);
       window.removeEventListener('openProModal', openProHandler);
     };
   }, [onExternalMobileClose, toggleCollapsed]);
@@ -802,40 +803,6 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
               </Link>
               );
             })}
-
-            {/* Call Blue */}
-            <div className={styles.askBlueCardContainer}>
-              {isCollapsed ? (
-                <button
-                  onClick={() => { play('click'); setIsCallingBlue(true); }}
-                  onMouseEnter={() => play('hover')}
-                  className={styles.askBlueCollapsed}
-                  title="Call Blue"
-                  aria-label="Call Blue"
-                >
-                  <Phone
-                    size={20}
-                    weight="fill"
-                    className={styles.askBlueCardIcon}
-                  />
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  className={`${styles.askBlueCard} hover-slide-trigger`}
-                  data-tour="ask-blue"
-                  onClick={() => { play('click'); setIsCallingBlue(true); }}
-                  onMouseEnter={() => play('hover')}
-                >
-                  <Phone
-                    size={16}
-                    weight="fill"
-                    className={styles.askBlueCardIcon}
-                  />
-                  <span><HoverSlideText>Call Blue</HoverSlideText></span>
-                </button>
-              )}
-            </div>
 
             {/* Bottom group: Surveys */}
             <div className={styles.navBottomGroup}>

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import type { CSSProperties, ReactNode } from 'react';
-import { Space_Grotesk, Patrick_Hand, Instrument_Serif } from 'next/font/google';
+import { Space_Grotesk, Patrick_Hand, Instrument_Serif, Poppins } from 'next/font/google';
 import localFont from 'next/font/local';
 import '@/styles/globals.css';
 import { RouteShell } from '@/components/layout/RouteShell';
@@ -44,6 +44,13 @@ const editorialSerif = Instrument_Serif({
 const departureMono = localFont({
   src: './fonts/DepartureMono-Regular.otf',
   variable: '--font-departure-mono',
+  display: 'swap',
+});
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['700'],
+  variable: '--font-poppins',
   display: 'swap',
 });
 
@@ -102,7 +109,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${commitMono.variable} ${spaceGrotesk.variable} ${patrickHand.variable} ${departureMono.variable} ${editorialSerif.variable}`}
+      className={`${commitMono.variable} ${spaceGrotesk.variable} ${patrickHand.variable} ${departureMono.variable} ${editorialSerif.variable} ${poppins.variable}`}
       data-sidebar-collapsed="false"
       style={{ '--sidebar-width': '265px' } as CSSProperties}
       suppressHydrationWarning
