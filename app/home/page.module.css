@@ -728,7 +728,7 @@
 }
 
 .planningDay { color: #171822; }
-.planningDayWarm { background: #2a2a2e; }
+.planningDayWarm { background: #2a2a2e; color: #ffffff; }
 .planningDayBlue { background: var(--color-primary); color: #fff; }
 .planningDayMuted {
   background: color-mix(in oklch, var(--color-text-dark, #141414) 7%, var(--color-surface-base));
