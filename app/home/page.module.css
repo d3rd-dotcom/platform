@@ -6,6 +6,10 @@
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
+.learnLayout :global(*) {
+  font-family: var(--font-mono) !important;
+}
+
 :global([data-theme="dark"]) .layout {
   background-color: #0d0e16;
 }
@@ -184,7 +188,7 @@
 }
 
 .indicatorLabel {
-  font-family: var(--font-primary);
+  font-family: var(--font-secondary);
   font-size: 0.8125rem;
   line-height: 1.2;
   color: rgba(246, 248, 237, 0.72);
@@ -195,6 +199,19 @@
   font-size: 2rem;
   line-height: 1;
   color: #f6f8ed;
+}
+
+/* Counts, progress figures, and other numeric readouts use the Academy's
+   monospace face so values scan as data across the home dashboard. */
+.memberCount,
+.badgeValue,
+.tabBadge,
+.guideProgressNum,
+.indicatorValue,
+.featuredShufflePage,
+.planningDay strong,
+.planningDayMuted strong {
+  font-family: var(--font-mono);
 }
 
 .dailyNotes {
@@ -651,7 +668,7 @@
   position: relative;
   z-index: 2;
   margin: 0;
-  font-family: var(--font-primary);
+  font-family: var(--font-secondary);
   font-size: 1.25rem;
   font-weight: 700;
   line-height: 1.2;
@@ -717,7 +734,7 @@
   justify-content: center;
   gap: 4px;
   border-radius: 26px;
-  font-family: var(--font-primary);
+  font-family: var(--font-secondary);
 }
 
 .planningDay span,
@@ -754,7 +771,7 @@
   border: 1px solid color-mix(in oklch, var(--color-primary) 16%, transparent);
   border-radius: 14px;
   background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-base));
-  font-family: var(--font-primary);
+  font-family: var(--font-secondary);
   font-size: 0.6875rem;
   font-weight: 500;
   line-height: 1.25;
@@ -813,7 +830,7 @@
 }
 
 .guideProgressNum {
-  font-family: var(--type-font-display);
+  font-family: var(--font-mono);
   font-size: 1.25rem;
   font-weight: var(--type-weight-bold);
   color: var(--color-primary);

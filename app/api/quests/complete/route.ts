@@ -136,6 +136,14 @@ export async function POST(request: Request) {
     );
   }
 
+  // Follow rewards are awarded only by the server-side X verification route.
+  if (definition?.questType === 'twitter-follow' || questId === 'twitter-follow-quest') {
+    return NextResponse.json(
+      { error: 'Verify your X follow before claiming this quest.' },
+      { status: 400 },
+    );
+  }
+
   if (!definition && customQuest) {
     if (customQuest.archived_at) {
       return NextResponse.json({ error: 'Quest is no longer available.' }, { status: 410 });
@@ -289,13 +297,15 @@ export async function POST(request: Request) {
       shardsToAward = Math.floor(shardsToAward * 0.25);
     }
 
-    // Creator-funded credit quests draw the reward from the creator's escrow.
-    // Legacy custom quests (escrow_remaining NULL) keep minting credits as
-    // before, so nothing changes for quests that predate escrow. The full
-    // per-slot reward is drawn even when an agent earns a reduced payout.
-    const usesCreditEscrow = !!(
-      customQuest && customQuest.reward_kind !== 'usdc' && customQuest.escrow_remaining != null
-    );
+    // Every paying custom quest must have verified, funded escrow. This also
+    // retires the legacy NULL-escrow mint path.
+    if (customQuest && customQuest.escrow_status !== 'funded') {
+      return NextResponse.json({ error: 'This quest is not funded yet.' }, { status: 409 });
+    }
+    if (customQuest && customQuest.escrow_remaining == null) {
+      return NextResponse.json({ error: 'This quest has no verified escrow.' }, { status: 409 });
+    }
+    const usesCreditEscrow = !!(customQuest && customQuest.reward_kind !== 'usdc');
     const escrowDraw = customQuest ? Number(customQuest.reward_amount ?? customQuest.points) : 0;
 
     // Check if quest already completed (outside transaction for early exit)

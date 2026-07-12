@@ -5,10 +5,12 @@ import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import { ConfettiCelebration } from '@/components/quests/ConfettiCelebration';
 import { DiamondReward } from '@/components/rewards/DiamondReward';
+import CtaButton from '@/components/shared/CtaButton';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 import styles from './WeekOneVisualNovel.module.css';
 
 const NARRATION_PREF_KEY = 'weekOneVN.narrationEnabled';
+const NARRATOR_VOICE_ID = 'ksryVoNAGZT8GxWCTiVm';
 
 const CHECK_IN_QUESTIONS = [
   'How many days did you do your field notes?',
@@ -118,103 +120,103 @@ const WEEK_ART_COUNTS: Record<number, number> = {
 // story: Blue and her Shades encounter it rather than explaining it to the player.
 const WEEK_STORIES: Record<number, string[]> = {
   2: [
-    'Blue found a Shade at the Academy gate with a map of her life. Every route past the familiar district had been crossed out. “I have been changing,” she said, as if change were evidence against her.',
-    'The Shade opened her field notes and read the first line twice. The second pass said the work was temporary, amateur, already late. Blue recognized the old simulator pattern: self-doubt arrives dressed as analysis.',
-    'Blue left the voice on the page and wrote its claim in the margin. Then she asked for evidence. The page stayed quiet. Some thoughts borrow authority they have not earned.',
-    'At the workshop door, another Shade asked to see the notes. Blue closed the book gently. Early work needs a protected room before it can survive an audience.',
-    'Outside, the loudest people wanted her back in the role they understood. They called her different, then selfish, then unrealistic. Blue watched the Shade feel the pull of each word.',
-    'The Academy scheduler kept offering her empty hours. She chose one, set a lamp on the desk, and made it hers. A boundary became real when it appeared on the calendar.',
-    'Blue asked which friends left the Shade feeling larger after a conversation. Three names came easily. The rest of the list took longer, and told the truth anyway.',
-    'The Shade drew a new line across the map in blue pencil. Fear still waited at the edge of it. The next hour had a direction.',
-    'At the Ethereal Horizon, Blue kept the map beside the field notes. The route was still unfinished. For the first time, it belonged to the person holding it.',
+    'The storm above the Academy spoke in borrowed voices: too sensitive, too strange, already behind. Each sentence left grit on the Shade’s tongue. Blue reached into the black paper clouds and caught one before it struck.',
+    'The captured sentence pulled them to a narrow door. Voices pressed against the other side, eager to finish the Shade’s story for her. Blue kept one hand on the knob. “Which voice is yours?”',
+    'Blue set a white flower beside the field notes. The Shade wrote: drawing after midnight, difficult questions, the hush before anyone praised the page. Her shoulders lowered as the list grew. The handwriting belonged to her.',
+    'By evening, the flower had opened orange beneath a single lamp. The Shade held her palm over its heat and named five small things she had noticed that day. The borrowed voices thinned at the edge of the light.',
+    'The flower lit a fork in the floor. Failure and selfish lay crumpled along one path; possibility, discovery, growth, and change rose along the other. Blue moved one torn label aside. The Shade’s foot found the brighter step.',
+    'That step ended at another door, bright around its frame. The Shade reached for the knob, then pulled back. Blue opened it the width of a blank page. “Try one thing.”',
+    'The Shade crossed and wrote down what happened. One call returned. One hour stayed protected. One page became two. Blue touched a match to the edge of the record, and a small steady flame rose without consuming it.',
+    'The flame exposed a paper stage nearby. A tall figure worked a megaphone while exhausted makers bent over someone else’s drama. Blue stopped at the torn curtain. The Shade recognized where her own hours had been going.',
+    'The megaphone followed them into the street. Hands reached from every side for the Shade’s page and time. Blue drew a clear circle around her. Inside it, the Shade opened the field notes and wrote her own name.',
   ],
   3: [
-    'The simulator registered a heat spike before Blue saw the Shade in the corridor. She had been swallowing anger until it felt like a personal flaw. Blue placed a glass of water on the floor between them and waited.',
-    'The anger had a message. A film she wanted to make had been made by someone else, and the loss stung. Blue wrote down the useful part: she wanted to make films.',
-    'They followed the heat backward through an old review and a classroom where a teacher had laughed. The memory still had authority because nobody had asked whether it was accurate. Blue asked now.',
-    'Some criticism named a craft problem and could be used. The rest was vague, shaming noise. Blue put the useful note in one column and the wound in another.',
-    'The Shade wrote the critic a letter she would never send. She defended the work, named what had hurt, and left room for the one revision she actually wanted to make.',
-    'A door opened on a beginner class. The Shade nearly called it coincidence, then remembered she had made the inquiry yesterday. Opportunity had followed a visible step.',
-    'Joy arrived after the fear, sudden and embarrassing. Blue logged it beside grief and anger. All three were data about what mattered.',
-    'The Shade kept her fear and made one call, bought one notebook, and returned to the unfinished scene. Power looked smaller than the fantasy and more useful.',
-    'Blue watched her leave the Academy with the map of her anger folded in her pocket. It pointed toward the Ethereal Horizon because she had learned to read it.',
+    'The small flame opened a hallway crowded with doors. Behind one waited a class, behind another a call, behind another the work the Shade kept postponing. Blue left every door ajar. The Shade chose the one with stairs.',
+    'The first stair held an old sentence: someday. The next held a name she envied. Heat climbed into the Shade’s throat as the steps rose. Blue went ahead slowly enough for her to follow.',
+    'At the landing, Blue carried out a bowl from the Shade’s childhood kitchen. Steam warmed her face; clean socks waited on a chair. The first spoonful returned a room where she had made things freely. She wrote the room down.',
+    'The memory led to a desk buried in crumpled reviews. Blue lifted one page beneath the lamp. The Shade marked the useful sentence with a circle and the cruel one with a tear. Her breathing eased when each had an address.',
+    'The marked page unfolded into a compass: anger, shame, fear, desire. Its needle shook until the Shade wrote what the anger wanted from her: finish the film. The point steadied beneath her hand.',
+    'Blue opened a cabinet beside the compass. A doll sat among drawings in the Shade’s childhood hand. She touched the crooked paper star. Wanting to make things was older than the grades.',
+    'A thread from the star ran into a narrow wardrobe. Blue opened it; the coat that made the Shade disappear hung in front. She took it down, found the phone in its pocket, and called the friend who spoke to her as capable.',
+    'After the call, Blue held out the old review. Heat gathered in the Shade’s palms and took the shape of a flame. She carried it to the unfinished page and wrote through the first difficult minute.',
+    'Violet light moved through the Academy like sap. The Shade felt it in her wrists, then in the pen. One finished minute had become a path. Blue closed the field notes. “Again tomorrow.”',
   ],
   4: [
-    'Blue turned off the Academy feed for one night. Without articles, alerts, or borrowed opinions, the rooms sounded different. The pipes cooled. A Shade heard her own thoughts arrive without an audience.',
-    'She brought her field notes unopened. “I am fine with it,” she said. Blue asked what fine meant today: numb, resigned, relieved, or afraid.',
-    'The pages held a small hurt she had minimized and a success she had never allowed herself to count. Blue placed both on the table. Reality needed the whole record.',
-    'The Shade’s body had been sending reports before her mind would read them: exhaustion after caretaking, a tight chest before a deadline, sleep after a hard truth. Blue treated each signal as information with a purpose.',
-    'In the closet, she found clothes for a version of herself she no longer recognized. She gave one away. The empty hanger made room without explaining what would come next.',
-    'Blue set a timer for five fast lists: classes, hobbies, skills, silly risks, old pleasures. The Shade wrote before the censor could make the choices respectable.',
-    'By the end of the week, the silence no longer felt blank. It held French lessons, clay, a private corner, and a letter from her eight-year-old self.',
-    'At dawn, Blue returned the field notes. They were messy and specific. The Shade carried them out as proof that integrity begins by naming what is true.',
+    'The next morning, flowers pushed from the floor where the Shade had gone still. She touched one and felt the old answer rise: “I’m okay.” Blue opened the field notes. “Use the exact word.”',
+    'Resigned. Delighted. Afraid. Alive. Blue left the pen across the open book. The Shade circled afraid, then alive; the second circle pressed through three pages.',
+    'Blue folded the pierced page into a paper airplane and climbed in. The Shade followed with one bag as the old schedule tore into weather around them. Turbulence shook certainty loose from her hands.',
+    'They landed beside a bright trunk. Blue opened it, releasing the old job, a borrowed timetable, a pair of worn shoes, and the dream hidden underneath. The Shade caught the dream before it touched the floor.',
+    'The dream unrolled into a long truth audit. Outgrown job. Stale pattern. Old belief. New desire. Blue held the paper steady while the Shade tore away each line that had expired.',
+    'That night, fever pinned the Shade beneath the blankets. In sleep, a pale outline of her kept reaching for the buried dream. Blue lowered the lamp and set the field notes within reach of morning.',
+    'Morning arrived without books, headlines, or anyone else’s words. The quiet rang in the Shade’s ears. She dipped the dream into a basin, and its buried colors climbed through the water into her hands.',
+    'The discarded pages rose around them and broke into leaves. One sheet remained: a private corner, a clear hour, the first line of the chosen work. Blue let the leaves pass. The Shade carried that sheet outside.',
   ],
   5: [
-    'A bus passed the Academy with one empty seat. Blue watched a Shade let it go by. “Someone else may need it more,” she said, and the empty street held the sentence for a moment.',
-    'The old instructions were familiar: be realistic, stay useful, wait your turn. They had arrived from frightened teachers, tired parents, and friends who mistook shrinking for wisdom.',
-    'Blue opened the field notes to a clean page and asked for nineteen wishes. The Shade wrote too fast to edit: a class, a trip, boots, a studio, a bolder life.',
-    'At the river, Blue gave her an afternoon with no task attached. The Shade walked, drew in a sketchbook, and noticed how quickly guilt tried to turn rest into evidence.',
-    'Nothing collapsed when she chose the pottery class over another obligation. The friend moved without her. The world remained intact. Her own attention returned with oxygen in it.',
-    'A useful contact appeared through a path she had not planned. Blue recorded the sequence carefully: she made room, took one step, and a new option became visible.',
-    'The Shade stopped calling the wish list frivolous. It became data about the life she wanted and a direction she could defend.',
-    'When the next bus came, Blue ran beside her. The Shade stepped on before the old instructions could finish speaking.',
+    'Outside, the chosen sheet whispered against Blue’s hand: you could still try this. A second line followed: it might be fun to explore that. The Shade leaned close enough to hear her own attention returning.',
+    'Blue spread the field notes across a desk. The Shade wrote nineteen wishes at speed: a studio, a trip, boots, a class, a room with music. Each finished line folded itself into a paper bird before the Censor could catch it.',
+    'The birds returned carrying deferred joys: a train ticket, a book, red shoes, roller skates, a small house key. The Shade reached for the skates, laughed at the choice, and kept them.',
+    'Their wheels found a river running through the Academy. It carried a class listing, an open studio, a collaborator’s note, and one free afternoon. Blue caught the note as it passed and placed it in the Shade’s wet hand.',
+    'Paper commands sagged across the river: be realistic, be useful, stay small. They pressed against Blue’s shoulders as she held a passage open. The Shade waded through before the paper could dry around her.',
+    'On the far bank, the Shade crouched beyond a small stage. Blue stepped into the spotlight and held it open with one raised hand. “One minute.” The Shade stood and walked toward the empty mark.',
+    'Her minute unlocked doors across the city. Music sounded behind one; paint and conversation waited behind others. The Shade chose the door with music and left the skates beside it for her return.',
+    'The river lifted the wish pages around Blue and carried them past every planned route. The Shade kept the collaborator’s note in both hands. By nightfall, one wish had become an appointment.',
   ],
   6: [
-    'Blue found a deficit in the Academy ledger where a Shade had written her own name. Every desire had been entered as a cost. Every bill had become proof that her creative life should wait.',
-    'Blue counted the rent with her. Then they counted the fifteen minutes for field notes, the windowsill, the clean desk, and the walk home.',
-    'For one week, the Shade wrote down every purchase without scolding herself. Coffee. Transit. A late fee. A small object she loved. The numbers began to show what her money was actually protecting.',
-    'At the market, she touched good paper and almost put it back. Blue asked which old belief had reached for her hand. The answer came from a family story about people like them never having enough.',
-    'They wrote the story out fast: money equals danger, art equals waste, receiving equals taking. Seeing the sentences on paper made them less like laws.',
-    'The Shade bought one useful thing for the work and carried it home carefully. It was a small decision, but the room changed once it had a place for her practice.',
-    'Blue entered the receipt in the ledger beside the time she protected that week. Abundance had become a record of attention, choice, and practical care.',
-    'The balance did not become infinite. The Shade’s options became easier to see. Blue called that a resource worth building.',
+    'The appointment cost money. At once, a machine began feeding Blue paper strips: creative work is unstable, people like us wait, wanting makes you selfish. She slid a blank strip to the Shade. “Whose story is this?”',
+    'They carried the question to a small shop. Blue bought one daisy and set the receipt beside it. The Shade held the flower under her chin all the way home. Her room looked cared for before anything else had changed.',
+    'For seven days, every coin went into the field notes. Coffee. Transit. A late fee. Good paper. Blue dated each page and left judgment out of the columns. The numbers began to show what the Shade had been feeding.',
+    'The old money strips linked themselves into chains: be realistic, save everything, art is a luxury. Blue cut one paper link. The Shade cut the next, then kept every piece beside the ledger as evidence.',
+    'A gate marked later blocked the hallway. The Shade produced a key she had been saving for a life that kept receding. Blue guided it toward the lock. “What fits today?”',
+    'Beyond the gate, a bright current lifted a sketchbook, brushes, a clock, lunch, and a glass of water from a heap labeled someday. The Shade caught the sketchbook. Blue caught the water and handed it over.',
+    'By morning, signs marked Maybe and What If had narrowed into a paper maze. Its walls pressed the Shade’s elbows to her sides. Blue opened the ledger to the marked purchases; one violet line continued between the walls toward light.',
+    'The line ended in a garden grown from small entries: one flower, one protected hour, one useful tool. Blue picked the first luminous bloom. The Shade wrote beneath it, small steps root big things.',
   ],
   7: [
-    'A Shade redrew one corner of a portrait until the paper tore. She called it standards. Blue set a fresh page beside her and named the loop: perfection had stopped the work from moving.',
-    'In the workshop, Blue asked the Shades to listen before they tried to invent. One caught a line of dialogue from the room. Another heard a rhythm in a failed note. The work began by getting something down.',
-    'A rough first page passed from hand to hand. Nobody graded it. Someone answered its melody, and the wrong note became part of a song.',
-    'The Shade saw another artist receive the opportunity she wanted. Her stomach tightened. Blue did not ask her to be nicer about it; she asked what the jealousy was pointing toward.',
-    'The answer was a door she had avoided for years. She wanted to perform. She wanted to risk looking new at something.',
-    'Blue helped her make the risk small enough to begin: one class, one draft, one person safe enough to hear it. The goal was a real attempt before a polished debut.',
-    'The first attempt was awkward. The room stayed with her. A second attempt had more air in it.',
-    'Blue wrote the outcome in the field notes: there was room for other artists and room for her work too. Envy had become a direction instead of a verdict.',
-    'Beyond the Academy windows, the Ethereal Horizon held every unfinished song. The Shade stopped waiting to deserve a place in it.',
+    'Blue stood at the lip of the Academy’s well, toes over black air and violet light. The Shade gripped the rail behind her. “What would you try badly?” Blue asked, and stepped off.',
+    'A stair appeared beneath her foot, then another. The Shade followed as each step sounded once: brush, voice, drum, turning page. She stopped demanding the whole staircase. The next note was enough.',
+    'The stairs ended at an easel. The Shade laid down one blue stroke; the painting answered with a pale shape of its own. Blue moved the clean water within reach. The brush followed the shape.',
+    'To refill the well, Blue spread the artist date across a table: lipstick, a book, a bicycle wheel, a train ticket, a small camera. The Shade took the camera outside before readiness could become another appointment.',
+    'Through the lens, an ordinary black stone held a tiny stage and one waiting page. Blue turned the magnifying glass until the hidden lines sharpened. The Shade copied them into the field notes.',
+    'The lines led back to the well. Blue lowered herself past shelves of forgotten faces, songs, and scraps of dialogue. The Shade held the rope above until three notes rose from the violet current.',
+    'Blue set the notes on a blank page. Light ran through her open hands and down into the paper, carrying an image, a color, then a line of speech. The Shade wrote each one as it arrived.',
+    'The page gave off several frequencies at once: comparison, fear, an old teacher, the work itself. Blue turned the dial one mark. A child’s clear voice came through with the next line.',
+    'Then the critic closed its arrows around the desk: fix it, improve it, make it perfect. The Shade pressed until the drawing tore. Blue laid one hand over the pencil. “Stop here.” The torn page stayed in the stack.',
   ],
   8: [
-    'The simulator clock had been set to too late. Blue knew the setting well. A Shade held an old teacher’s voice in her pocket: you missed your chance, you were never serious enough.',
-    'They gave the loss its real name. The rejection, the canceled project, the cruel review, and the years spent recovering all belonged in the record. Nothing healed by pretending it had not happened.',
-    'Blue asked what small care would support the artist today. The Shade bought flowers, cleared a corner of the desk, and let the next action be modest.',
-    'The large question arrived on schedule: How will I change my whole life? Blue set it aside. First came the class listing, the clean brush, the one phone call, the page for today.',
-    'The Shade began as a beginner and hated the feeling for ten minutes. Then her hands learned the hour was still hers. The work did not ask her age before accepting a mark.',
-    'They revisited the old lesson from childhood and wrote the part that had been missing: one person had believed in her. The earlier shame was real. It was not the only evidence.',
-    'Blue logged the work instead of the fantasy of a finished career. Process gave the day a shape that comparison could not take away.',
-    'At dusk, the Shade left one line on the page and kept walking. The clock moved forward. So did she.',
-    'Blue filed the day under strength, then turned the Academy lights toward the Ethereal Horizon.',
+    'The clock had been saying too old for so long that dust filled the letters. Blue braced both hands beneath its rim. The minute hand scraped forward. In the Shade’s pocket, an unfinished page warmed against her leg.',
+    'Five lanterns rose from that pocket. I am talented. I have a right to be an artist. My creativity blesses others. I accept hope. I allow myself to heal. Blue steadied the lowest lantern until the Shade took its tassel.',
+    'Two scrolls waited in the next room. I WROTE lay gray and sealed. I AM WRITING spat violet sparks across Blue’s knuckles. She unrolled it anyway. The Shade put down one crooked sentence, and the dead scroll darkened behind them.',
+    'The sentence opened a white door. Cold air came through with the smell of paint and a class beginning somewhere below. The Shade caught the frame, toes curled inside her shoes. Blue held the door. “Which step fits today?”',
+    'Four small graves stood outside: the book that did not sell, the role she did not get, the canceled show, the cruel review. The Shade’s throat hurt as she cleared leaves from each name. Blue set one flower down. They stayed until the light changed.',
+    'Beyond the graves, a staircase climbed toward the dream. Wash the brushes. Make one phone call. Clear a corner. Write today’s pages. Blue stepped onto the first block. The Shade washed one stiff brush and followed with wet hands.',
+    'The cleared corner held a lamp, warm tea, and paper enough for mistakes. The Shade wrote until the tea cooled. Blue slid a star-shaped biscuit beside her wrist. Ten minutes became a page they could return to in the morning.',
+    'Morning brought the old paper voices. Get a real job. Artists are irresponsible. The Shade crumpled each sheet, then smoothed it flat and wrote where it came from. Blue stacked the pages beneath the new one so the new one sat higher.',
+    'At the Institute of Pure Analysis, white hands descended to assess the seedling. Blue crouched over its two leaves while the Shade pressed her fresh page around the roots. One hand measured. One optimized. The seed pushed up between them.',
   ],
   9: [
-    'A Shade stood outside the studio and called herself lazy. Blue found fear beside the door instead: fear of failing, fear of succeeding, fear that the work would make her easier to leave. Naming it changed the next step.',
-    'Blue made the task smaller. One paragraph. One color on the page. One message to a supportive person. The Shade entered before she had time to demand a masterpiece from herself.',
-    'When a promising opening appeared, the Shade almost made her usual U-turn: delay the reply, abandon the draft, start a fight. Blue asked what she gained by leaving first. The answer was safety, old and expensive.',
-    'They made a different deal. The Shade would show up for the quantity; Blue would help her notice the quality later. When she turned back toward the work, the Academy light was already on.',
+    'Blue carried the seedling through the Institute’s open door. Behind her, the measuring hands kept closing on empty air. Ahead, a warm path waited. The Shade looked back once, then took the pot from Blue and crossed the threshold.',
+    'Inside, crumpled pages formed a hill labeled GREAT BIG IMPOSSIBLE THING. The Shade’s knees locked. Blue pulled one page from the bottom and folded it into a small square: one paragraph. The hill settled by the width of her hand.',
+    'The square read LAZY. Blue turned it over and wrote AFRAID. Heat reached the Shade’s face: failure, success, the old fear of being left for wanting this. She crossed out one excuse, uncapped the pen, and kept the truer name.',
+    'At the worktable, Blue cupped a tiny maker in both hands. The figure held the same stiff brush they had washed. The Shade added one mark to the waiting page. Blue set the little one beside it. “You bring the pages. I’ll remember this return.”',
   ],
   10: [
-    'Blue found the studio full of borrowed noise: late-night work, messages, comparison, hunger, and a deadline used to justify all of it. A Shade had built a life so busy that her own field notes could not reach her.',
-    'They named the habit she used when the work began to matter. It had become a way to mute anxiety about change. Naming the payoff gave her a choice.',
-    'Blue helped her write five bottom lines on the wall: what could no longer take the evening, the money, the sleep, or the desk. Boundaries made room for play to feel safe again.',
-    'Then came a dry week. The pages felt mechanical and foolish. Blue left them open beside an empty cup and asked only for ten minutes. Drought was a season, not a verdict.',
-    'The Shade stopped checking who was ahead. She returned to the workbench, used a touchstone she loved, and made something small. The work had been waiting, not judging.',
+    'Urgent papers covered the studio floor. They climbed the desk, the stool, the Shade’s lap. Blue pulled one from beneath her elbow. The page beneath it held three lines of field notes, all unfinished.',
+    'At the fork, one path carried a clock, a full plate, and a bright screen. The other ended at a dark easel. Blue placed the Shade’s pencil on the second path. “What do you reach for when the work gets quiet?”',
+    'The pencil made one mark. Then the Shade stopped. The ground beyond the desk had split into gray plates, and a small plant leaned beside the notebook. Blue set a cup of water near its roots and left the page open.',
+    'A board rose behind them, names and numbers stacked higher than the studio. The Shade searched for her own name until her neck hurt. Blue turned the notebook around. “Is the work going well?”',
+    'At the next fork, work, food, messages, and sleep pointed in different directions. The Shade carried one touchstone and one blank page toward the blue-lit path. Behind her, the urgent papers stayed on the floor.',
   ],
   11: [
-    'Blue built a small desk at the edge of the Academy, where the light changed slowly. A Shade filled it with stones, paper, a candle, and one letter to the artist she had kept waiting.',
-    'She tested the life around the work instead of copying someone else’s. A steady job gave her one kind of freedom. A different schedule gave her another. Practice and judgment decided what fit.',
-    'When her last project worked, the old temptation returned: repeat it exactly, accept every request, protect the formula. Blue kept one hour free for the strange project with no obvious market.',
-    'The Shade walked until the argument in her head became footsteps. She returned to the desk with a new line and no need to ask the room for permission.',
+    'Two roads left the Academy. One was stamped with formula until the stones disappeared. The other was overgrown with flowers and a sign that said unknown. Blue stepped onto the second. The Shade followed with her notebook.',
+    'They ran until the road became a pale line through green hills. Breath entered, left, entered again. Blue kept pace. The Shade’s next idea arrived between two footfalls and stayed there.',
+    'At the split in the crowd, lanterns burned on one side and gray figures folded their arms on the other. Blue carried her own small light. The Shade named one person who made the work larger and walked beside her.',
+    'In the corner they made, a candle warmed the paper, a leaf dried beside the ink, and a letter waited for the artist inside it. Blue picked up the leaf and set it near the notebook. The Shade began.',
   ],
   12: [
-    'Blue set a jar beside the first page. A Shade filled it with the worries she had been carrying: the unfinished work, the late start, the people who would not understand. Then she wrote the next action where she could see it.',
-    'The whole road stayed hidden. Blue had no false map for that. She had the evidence of the field notes, the artist dates, and every small move that had made an option appear.',
-    'A message from an old doubt arrived just as the Shade prepared to leave. Blue let it wait unopened while the Shade named the people safe enough to hear her real plans.',
-    'She carried her tools past the Academy gate and made a ninety-day promise: keep the notes, keep the dates, keep taking the next action. The Ethereal Horizon was still there because she had learned how to travel toward it.',
+    'The workroom smelled of wax and paper. Blue set a small leaf in the Shade’s hand, then returned to the table where odd shapes, shells, stars, and scraps waited. The Shade made one thing without asking what it was for.',
+    'Beneath the table, violet roots held small lights in the dark. The Shade pressed both palms to the paper above them. Blue watched one light brighten when the pencil moved. “What do you know from doing?”',
+    'Outside, a crowd reached toward the opening in the clouds. Some hands offered lanterns. Others reached to pull the Shade back. Blue stood at the edge. The Shade turned toward the hands that kept their light low and steady.',
+    'The road ahead carried little lamps marked with a brush, a note, a star, a song. Blue placed an empty jar beside the first one. The Shade lifted her tools and followed the next light.',
   ],
 };
 
@@ -247,22 +249,27 @@ export default function WeekOneVisualNovel({
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isPortrait, setIsPortrait] = useState(false);
+  const [showWeeklyIntro, setShowWeeklyIntro] = useState(true);
   const [showCheckIn, setShowCheckIn] = useState(false);
   const [isClaiming, setIsClaiming] = useState(false);
   const [claimStatus, setClaimStatus] = useState<'idle' | 'claimed' | 'already-claimed' | 'error'>('idle');
   const [showRewardAnimation, setShowRewardAnimation] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const preloadAudioRef = useRef<HTMLAudioElement | null>(null);
+  const narrationRequestRef = useRef<AbortController | null>(null);
+  const narrationObjectUrlRef = useRef<string | null>(null);
   const spokenSceneRef = useRef<string | null>(null);
-  const [narrationEnabled, setNarrationEnabled] = useState(false);
-  const narrationEnabledRef = useRef(false);
+  const [narrationEnabled, setNarrationEnabled] = useState(true);
+  const narrationEnabledRef = useRef(true);
   const scenes = useMemo(() => getScenesForWeek(weekNumber), [weekNumber]);
   const hasCheckIn = weekNumber === 1;
 
   useEffect(() => {
     const stored = getStorageItem(NARRATION_PREF_KEY);
-    if (stored === '1') {
+    if (stored === '0') {
+      setNarrationEnabled(false);
+      narrationEnabledRef.current = false;
+    } else {
       setNarrationEnabled(true);
       narrationEnabledRef.current = true;
     }
@@ -287,7 +294,7 @@ export default function WeekOneVisualNovel({
 
   // Letter-by-letter animation
   useEffect(() => {
-    if (!shouldRender || showCheckIn) {
+    if (!shouldRender || showWeeklyIntro || showCheckIn) {
       audioRef.current?.pause();
       if (audioRef.current) audioRef.current.currentTime = 0;
       return;
@@ -313,36 +320,51 @@ export default function WeekOneVisualNovel({
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [sceneIndex, scenes, shouldRender, showCheckIn, weekNumber]);
+  }, [sceneIndex, scenes, shouldRender, showWeeklyIntro, showCheckIn, weekNumber]);
 
-  // Load current scene audio as soon as scene changes (during typing).
-  // Also preload the next scene's audio so it's ready when the user advances.
+  // Generate the current scene narration with the dedicated narrator voice.
   useEffect(() => {
-    if (!shouldRender || showCheckIn) return;
-    if (!narrationEnabledRef.current) return;
+    if (!shouldRender || showWeeklyIntro || showCheckIn || !narrationEnabledRef.current) return;
 
     const currentScene = scenes[sceneIndex];
-    if (!currentScene?.audio || spokenSceneRef.current === currentScene.id) return;
+    const text = currentScene?.body?.trim();
+    if (!currentScene || !text || spokenSceneRef.current === currentScene.id) return;
 
     spokenSceneRef.current = currentScene.id;
+    narrationRequestRef.current?.abort();
+    const controller = new AbortController();
+    narrationRequestRef.current = controller;
 
-    const el = audioRef.current ?? new Audio();
-    audioRef.current = el;
-    el.volume = 0.4;
-    el.preload = 'auto';
-    el.src = currentScene.audio;
-    el.currentTime = 0;
-    // Audio loads in the background. Playback triggers when typing completes.
+    void (async () => {
+      try {
+        const response = await fetch('/api/voice/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text, voiceId: NARRATOR_VOICE_ID }),
+          signal: controller.signal,
+        });
+        if (!response.ok) throw new Error('Narration request failed');
+        const { audio } = await response.json() as { audio?: string };
+        if (!audio || controller.signal.aborted) return;
 
-    // Preload next scene audio
-    const nextIndex = sceneIndex + 1;
-    if (nextIndex < scenes.length && scenes[nextIndex].audio) {
-      const nextEl = preloadAudioRef.current ?? new Audio();
-      preloadAudioRef.current = nextEl;
-      nextEl.preload = 'auto';
-      nextEl.src = scenes[nextIndex].audio!;
-    }
-  }, [sceneIndex, scenes, shouldRender, showCheckIn, narrationEnabled]);
+        const bytes = Uint8Array.from(atob(audio), (character) => character.charCodeAt(0));
+        const url = URL.createObjectURL(new Blob([bytes], { type: 'audio/mpeg' }));
+        if (narrationObjectUrlRef.current) URL.revokeObjectURL(narrationObjectUrlRef.current);
+        narrationObjectUrlRef.current = url;
+
+        const el = audioRef.current ?? new Audio();
+        audioRef.current = el;
+        el.volume = 0.4;
+        el.preload = 'auto';
+        el.src = url;
+        el.currentTime = 0;
+      } catch (error) {
+        if (!controller.signal.aborted) console.warn('[VisualNovel] narration failed:', error);
+      }
+    })();
+
+    return () => controller.abort();
+  }, [sceneIndex, scenes, shouldRender, showWeeklyIntro, showCheckIn, narrationEnabled]);
 
   // Play narration once the typewriter animation finishes.
   useEffect(() => {
@@ -389,15 +411,15 @@ export default function WeekOneVisualNovel({
 
   useEffect(() => {
     return () => {
+      narrationRequestRef.current?.abort();
       audioRef.current?.pause();
       if (audioRef.current) {
         audioRef.current.removeAttribute('src');
         audioRef.current.load();
       }
-      preloadAudioRef.current?.pause();
-      if (preloadAudioRef.current) {
-        preloadAudioRef.current.removeAttribute('src');
-        preloadAudioRef.current.load();
+      if (narrationObjectUrlRef.current) {
+        URL.revokeObjectURL(narrationObjectUrlRef.current);
+        narrationObjectUrlRef.current = null;
       }
     };
   }, []);
@@ -407,7 +429,7 @@ export default function WeekOneVisualNovel({
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isOpen) return;
       if (e.key === 'Escape') onClose();
-      if (showCheckIn) return;
+      if (showWeeklyIntro || showCheckIn) return;
       if (e.key === 'ArrowRight' && sceneIndex < scenes.length - 1) setSceneIndex((c) => c + 1);
       if (e.key === 'ArrowRight' && sceneIndex === scenes.length - 1) {
         if (hasCheckIn) setShowCheckIn(true);
@@ -418,18 +440,18 @@ export default function WeekOneVisualNovel({
 
     if (isOpen) {
       setShouldRender(true);
+      setShowWeeklyIntro(true);
       requestAnimationFrame(() => requestAnimationFrame(() => setIsAnimating(true)));
       document.body.style.overflow = 'hidden';
       window.addEventListener('keydown', handleKeyDown);
     } else {
       audioRef.current?.pause();
       if (audioRef.current) audioRef.current.currentTime = 0;
-      preloadAudioRef.current?.pause();
-      if (preloadAudioRef.current) preloadAudioRef.current.currentTime = 0;
       setIsAnimating(false);
       const timer = setTimeout(() => {
         setShouldRender(false);
         setSceneIndex(0);
+        setShowWeeklyIntro(true);
         setShowCheckIn(false);
         setDisplayedText('');
         setClaimStatus('idle');
@@ -442,7 +464,7 @@ export default function WeekOneVisualNovel({
       document.body.style.overflow = 'unset';
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [hasCheckIn, isOpen, onClose, sceneIndex, scenes.length, showCheckIn]);
+  }, [hasCheckIn, isOpen, onClose, sceneIndex, scenes.length, showCheckIn, showWeeklyIntro]);
 
   if (!shouldRender) return null;
 
@@ -468,6 +490,7 @@ export default function WeekOneVisualNovel({
   };
 
   const goPrev = () => {
+    if (showWeeklyIntro) return;
     if (showCheckIn) {
       setShowCheckIn(false);
       return;
@@ -553,8 +576,8 @@ export default function WeekOneVisualNovel({
           </svg>
         </button>
 
-        {/* Narration toggle — opt-in, off by default, also mounted on the bezel */}
-        {!showCheckIn && weekNumber === 1 && (
+        {/* Narration toggle — on by default, also mounted on the bezel */}
+        {!showWeeklyIntro && !showCheckIn && (
           <button
             type="button"
             className={`${styles.audioButton} ${narrationEnabled ? styles.audioButtonOn : ''}`}
@@ -579,7 +602,29 @@ export default function WeekOneVisualNovel({
           </button>
         )}
 
-        {!showCheckIn && (
+        {showWeeklyIntro ? (
+          <div className={styles.weeklyIntroCard} role="dialog" aria-labelledby="weekly-intro-title" aria-describedby="weekly-intro-description">
+            <div className={styles.weeklyIntroSignal} aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </div>
+            <span className={styles.weeklyIntroEyebrow}>Academy story · {weekTitle}</span>
+            <h2 id="weekly-intro-title" className={styles.weeklyIntroTitle}>A story for this week</h2>
+            <p id="weekly-intro-description" className={styles.weeklyIntroBody}>
+              This chapter is audio-based. Put on your headphones, settle in, and let the images and narration carry you through the work.
+            </p>
+            <p className={styles.weeklyIntroQuestion}>Are you ready?</p>
+            <CtaButton
+              size="lg"
+              block
+              className={styles.weeklyIntroContinue}
+              onClick={() => setShowWeeklyIntro(false)}
+            >
+              Continue
+            </CtaButton>
+          </div>
+        ) : !showCheckIn ? (
           <div className={styles.screen}>
             {/* Background image */}
             <Image
@@ -637,7 +682,7 @@ export default function WeekOneVisualNovel({
               </div>
             )}
           </div>
-        )}
+        ) : null}
 
         {showCheckIn && (
           <div className={styles.checkInScreen}>

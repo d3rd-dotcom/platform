@@ -1,68 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { providers, utils } from 'ethers';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
-import { getDiamondsTokenAddress } from '@/lib/diamonds-onchain';
-import { getChainConfig } from '@/lib/chain-config';
 import { getDiamondPrice } from '@/lib/shop-catalog';
 import { checkRateLimit, getRateLimitHeaders } from '@/lib/rate-limit';
+import { recordDiamondBurn, releaseDiamondBurn, verifyDiamondBurnTx, TX_HASH_PATTERN } from '@/lib/diamond-burns';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-const BURN_ADDRESS = '0x000000000000000000000000000000000000dEaD';
-const TX_HASH_PATTERN = /^0x[0-9a-fA-F]{64}$/;
-
-const ERC20_INTERFACE = new utils.Interface([
-  'event Transfer(address indexed from, address indexed to, uint256 value)',
-]);
-
-function getBaseProvider(): providers.JsonRpcProvider {
-  const cfg = getChainConfig();
-  const rpcUrl = cfg.chainId === 8453
-    ? process.env.BASE_RPC_URL || cfg.rpcUrl
-    : cfg.rpcUrl;
-  return new providers.JsonRpcProvider(rpcUrl);
-}
-
-/**
- * Verify the supplied tx is a confirmed burn of at least `requiredDiamonds`
- * $BLUE, from the signed-in user's wallet to the dead address, emitted by the
- * Diamonds token. Fail closed on any mismatch.
- */
-async function verifyBurnTx(
-  txHash: string,
-  userWallet: string,
-  requiredDiamonds: number,
-): Promise<{ ok: true } | { ok: false; reason: string }> {
-  const tokenAddress = getDiamondsTokenAddress();
-  if (!tokenAddress) return { ok: false, reason: 'token_not_configured' };
-
-  const provider = getBaseProvider();
-  const receipt = await provider.getTransactionReceipt(txHash);
-  if (!receipt) return { ok: false, reason: 'tx_not_found' };
-  if (receipt.status !== 1) return { ok: false, reason: 'tx_failed' };
-  if (receipt.from.toLowerCase() !== userWallet.toLowerCase()) return { ok: false, reason: 'wrong_sender' };
-
-  const required = utils.parseUnits(String(requiredDiamonds), 18);
-
-  for (const log of receipt.logs) {
-    if (log.address.toLowerCase() !== tokenAddress.toLowerCase()) continue;
-    let parsed;
-    try {
-      parsed = ERC20_INTERFACE.parseLog(log);
-    } catch {
-      continue;
-    }
-    if (parsed.name !== 'Transfer') continue;
-    if (String(parsed.args.from).toLowerCase() !== userWallet.toLowerCase()) continue;
-    if (String(parsed.args.to).toLowerCase() !== BURN_ADDRESS.toLowerCase()) continue;
-    if (parsed.args.value.lt(required)) continue;
-    return { ok: true };
-  }
-
-  return { ok: false, reason: 'no_burn_transfer' };
-}
 
 let schemaEnsured = false;
 async function ensurePurchaseSchema() {
@@ -129,7 +73,7 @@ export async function POST(request: NextRequest) {
 
   let verification;
   try {
-    verification = await verifyBurnTx(txHash, user.walletAddress, price);
+    verification = await verifyDiamondBurnTx(txHash, user.walletAddress, price);
   } catch (error) {
     console.error('Shop burn verification failed:', error);
     return NextResponse.json({ error: 'verify_failed' }, { status: 502 });
@@ -143,6 +87,17 @@ export async function POST(request: NextRequest) {
   }
 
   await ensurePurchaseSchema();
+  const recorded = await recordDiamondBurn({
+    userId: user.id,
+    walletAddress: user.walletAddress,
+    purpose: 'shop_purchase',
+    amount: price,
+    txHash,
+  });
+  if (!recorded) {
+    return NextResponse.json({ error: 'tx_already_used' }, { status: 409 });
+  }
+
   try {
     await sqlQuery(
       `INSERT INTO shop_purchases (user_id, wallet_address, item_id, diamonds, tx_hash)
@@ -159,6 +114,7 @@ export async function POST(request: NextRequest) {
     if (err?.code === '23505') {
       return NextResponse.json({ error: 'tx_already_used' }, { status: 409 });
     }
+    await releaseDiamondBurn(txHash, user.id);
     throw err;
   }
 

@@ -143,10 +143,24 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Wallet does not match authenticated user.' }, { status: 403 });
   }
 
-  const tokenId = PROFILE_TO_TOKEN_ID[profileType];
   const surveyId = 'attachment-style';
 
   await ensureSurveyCertificateMintsSchema();
+
+  const completions = await sqlQuery<Array<{ profile_type: string }>>(
+    `SELECT profile_type FROM survey_completions
+     WHERE user_id = :userId AND survey_id = :surveyId
+     LIMIT 1`,
+    { userId: user.id, surveyId },
+  );
+  const verifiedProfileType = completions[0]?.profile_type;
+  if (!verifiedProfileType || !PROFILE_TO_TOKEN_ID[verifiedProfileType]) {
+    return NextResponse.json({ error: 'Complete the attachment survey before minting.' }, { status: 403 });
+  }
+  if (profileType !== verifiedProfileType) {
+    return NextResponse.json({ error: 'Certificate profile does not match the verified survey result.' }, { status: 409 });
+  }
+  const tokenId = PROFILE_TO_TOKEN_ID[verifiedProfileType];
 
   // ── Idempotency: return existing mint if already done ──
   const existing = await sqlQuery<Array<{ tx_hash: string | null; image_uri: string | null; metadata_uri: string | null; status: string }>>(

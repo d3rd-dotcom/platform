@@ -30,6 +30,19 @@ export async function ensureSurveyCertificateMintsSchema() {
 
 async function _impl() {
   await sqlQuery(`
+    CREATE TABLE IF NOT EXISTS survey_completions (
+      id           CHAR(36)     PRIMARY KEY,
+      user_id      CHAR(36)     NOT NULL,
+      survey_id    VARCHAR(64)  NOT NULL,
+      profile_type VARCHAR(64)  NOT NULL,
+      completed_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      CONSTRAINT uq_survey_completion_user_survey UNIQUE (user_id, survey_id),
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )
+  `);
+  await sqlQuery(`ALTER TABLE survey_completions ENABLE ROW LEVEL SECURITY`);
+
+  await sqlQuery(`
     CREATE TABLE IF NOT EXISTS survey_certificate_mints (
       id           CHAR(36)     PRIMARY KEY,
       user_id      CHAR(36)     NOT NULL,

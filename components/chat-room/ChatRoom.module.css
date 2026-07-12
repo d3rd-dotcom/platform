@@ -13,6 +13,10 @@
   min-height: 0;
 }
 
+.chatRoom * {
+  font-family: var(--font-mono);
+}
+
 :global([data-theme="dark"]) .chatRoom {
   background-color: #15172a;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");

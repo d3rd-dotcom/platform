@@ -399,7 +399,7 @@ export default function HomePage() {
   const featuredGuides = featuredGroups[activeFeaturedPage] ?? [];
 
   return (
-    <div className={styles.layout}>
+    <div className={`${styles.layout} ${learnOnly ? styles.learnLayout : ''}`}>
       <SideNavigation />
       <main className={styles.pageColumns}>
       <div className={styles.globalPanel}>

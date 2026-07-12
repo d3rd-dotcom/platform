@@ -5,10 +5,7 @@ import { buildTopTradePlan, type TradingLog } from '@/lib/trading-engine';
 import { placeKalshiOrder } from '@/lib/kalshi-trading';
 import { setExecutionLogs, type PositionEntry } from '@/lib/execution-log-store';
 import { getClientIdentifier, checkRateLimit, getRateLimitHeaders } from '@/lib/rate-limit';
-import {
-  walletHoldsVipMembershipCard,
-  VIP_MEMBERSHIP_CARD_ADDRESS,
-} from '@/lib/vip-membership-card';
+import { isStaffUser } from '@/lib/staff-auth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -29,19 +26,16 @@ export async function POST(request: Request) {
 
   if (!user) {
     return NextResponse.json(
-      { error: 'unauthenticated', message: 'Sign in with the wallet that holds the VIP Membership Card.' },
+      { error: 'unauthenticated', message: 'Sign in with an authorized staff wallet.' },
       { status: 401, headers: rateLimitHeaders },
     );
   }
 
-  const hasVipCard = await walletHoldsVipMembershipCard(user.walletAddress);
-  if (!hasVipCard) {
+  if (!isStaffUser(user)) {
     return NextResponse.json(
       {
-        error: 'vip_required',
-        message: 'Only the verified VIP Membership Card wallet can execute trades from Blue.',
-        contractAddress: VIP_MEMBERSHIP_CARD_ADDRESS,
-        tokenRequirement: 'any ERC-1155 token id held from this contract',
+        error: 'staff_required',
+        message: 'Only an authorized staff wallet can execute trades from Blue.',
       },
       { status: 403, headers: rateLimitHeaders },
     );
@@ -62,7 +56,7 @@ export async function POST(request: Request) {
     if (!plan) {
       const skipLogs: TradingLog[] = [
         ...logs,
-        { action: 'SKIP', details: 'VIP execution requested but no actionable edge was available.', timestamp: Date.now() },
+        { action: 'SKIP', details: 'Staff execution requested but no actionable edge was available.', timestamp: Date.now() },
       ];
       setExecutionLogs(skipLogs, []);
       return NextResponse.json(

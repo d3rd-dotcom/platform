@@ -187,7 +187,7 @@
   border: 1.5px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
   background: color-mix(in oklch, var(--color-primary) 5%, transparent);
   box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 22%, transparent);
-  font-family: var(--font-primary);
+  font-family: var(--font-secondary);
   font-size: 13px;
   font-weight: var(--font-weight-semibold, 600);
   color: var(--color-text-soft);
@@ -706,5 +706,4 @@
   .mobileActions { margin-left: auto; }
   .header { padding: 0 12px; }
 }
-
 

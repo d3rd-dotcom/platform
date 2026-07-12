@@ -187,7 +187,7 @@
   border-radius: 999px;
   background: var(--color-primary);
   box-shadow: none;
-  font-family: var(--type-font-label);
+  font-family: var(--font-mono);
   font-weight: var(--type-weight-semibold);
   font-size: var(--type-body-sm-size);
   color: #ffffff;

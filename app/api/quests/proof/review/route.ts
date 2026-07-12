@@ -4,7 +4,7 @@ import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery, withTransaction, sqlQueryWithClient } from '@/lib/db';
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { ensureQuestProofSubmissionsSchema } from '@/lib/ensureQuestProofSubmissionsSchema';
-import { walletHoldsVipMembershipCard } from '@/lib/vip-membership-card';
+import { isStaffUser } from '@/lib/staff-auth';
 import { getQuestDefinition } from '@/lib/quest-definitions';
 import { deliverDiamondsOnchain } from '@/lib/diamonds-onchain';
 
@@ -24,12 +24,10 @@ interface SubmissionRow {
   username: string | null;
 }
 
-/** Staff = holder of the VIP membership card. */
 async function requireStaff() {
   const user = await getCurrentUserFromRequestCookie();
   if (!user) return { error: NextResponse.json({ error: 'Not authenticated' }, { status: 401 }) };
-  const isStaff = await walletHoldsVipMembershipCard(user.walletAddress);
-  if (!isStaff) {
+  if (!isStaffUser(user)) {
     return { error: NextResponse.json({ error: 'Staff only.' }, { status: 403 }) };
   }
   return { user };

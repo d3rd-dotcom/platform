@@ -14,7 +14,7 @@
   min-height: 190px;
   padding: 0 24px;
   text-align: center;
-  font-family: var(--font-body, 'Space Grotesk', sans-serif);
+  font-family: var(--font-secondary);
   font-size: 12px;
   line-height: 1.5;
   color: var(--color-text-muted, #6b6890);

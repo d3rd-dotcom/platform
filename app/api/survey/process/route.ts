@@ -7,6 +7,9 @@ import { VIA_SURVEY_ID } from '@/components/survey/viaQuestions'
 import { scoreBigFiveSurvey } from '@/components/survey/bigFiveScoring'
 import { scoreMoralFoundationsSurvey } from '@/components/survey/moralFoundationsScoring'
 import { scoreAttachmentSurvey } from '@/components/survey/attachmentScoring'
+import { isDbConfigured, sqlQuery } from '@/lib/db'
+import { ensureSurveyCertificateMintsSchema } from '@/lib/ensureSurveyCertificateMintsSchema'
+import { randomUUID } from 'crypto'
 
 interface ProcessSurveyRequest {
   surveyId: string
@@ -97,6 +100,18 @@ export async function POST(request: NextRequest) {
         scored.results.profileType,
       )
       scored.results.insights = []
+      if (!isDbConfigured()) {
+        return NextResponse.json({ success: false, error: 'Database not configured.' }, { status: 503 })
+      }
+      await ensureSurveyCertificateMintsSchema()
+      await sqlQuery(
+        `INSERT INTO survey_completions (id, user_id, survey_id, profile_type)
+         VALUES (:id, :userId, :surveyId, :profileType)
+         ON CONFLICT (user_id, survey_id) DO UPDATE SET
+           profile_type = EXCLUDED.profile_type,
+           completed_at = CURRENT_TIMESTAMP`,
+        { id: randomUUID(), userId: user.id, surveyId, profileType: scored.results.profileType },
+      )
       return NextResponse.json({
         success: true,
         results: scored.results,

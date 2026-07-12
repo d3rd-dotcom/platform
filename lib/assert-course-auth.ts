@@ -10,7 +10,7 @@ import { walletHoldsVipMembershipCard } from './vip-membership-card';
  */
 export async function assertCourseUser(): Promise<string> {
   const bypass = process.env.DEV_BYPASS_AUTH;
-  if (bypass && bypass !== '0' && bypass !== 'false' && bypass !== 'no') {
+  if (process.env.NODE_ENV !== 'production' && bypass && bypass !== '0' && bypass !== 'false' && bypass !== 'no') {
     return 'dev-bypass-user';
   }
 

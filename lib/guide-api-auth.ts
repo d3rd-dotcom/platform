@@ -47,7 +47,7 @@ function authError(message: string, status: number): GuideAuthError {
  */
 export async function requireUser(_request?: Request): Promise<{ userId: string }> {
   const bypass = process.env.DEV_BYPASS_AUTH;
-  if (bypass && bypass !== '0' && bypass !== 'false' && bypass !== 'no') {
+  if (process.env.NODE_ENV !== 'production' && bypass && bypass !== '0' && bypass !== 'false' && bypass !== 'no') {
     return { userId: 'dev-bypass-user' };
   }
 

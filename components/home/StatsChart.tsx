@@ -32,7 +32,7 @@ const MISSIONS = '#5168FF';
 const GUIDES = '#9724A6';
 const BALLOONS = '#FF7729';
 
-const font = "'Space Grotesk', sans-serif";
+const font = 'var(--font-secondary)';
 
 // A gentle, obviously-decorative sample so the card always reads as a chart
 // before any real activity exists. Never presented as the user's real numbers.

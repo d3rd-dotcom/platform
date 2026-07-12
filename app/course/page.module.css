@@ -576,11 +576,12 @@
 .contentDesktop {
   max-width: none;
   display: grid;
-  grid-template-columns: 420px 1fr;
+  grid-template-columns: minmax(0, 420px) minmax(280px, 520px);
   gap: 0 32px;
   align-items: start;
   padding: 24px 32px 48px;
   margin: 0;
+  justify-content: center;
 }
 
 .leftCol {
@@ -605,10 +606,19 @@
   scrollbar-color: rgba(26, 29, 51, 0.12) transparent;
   padding: 2px 12px 16px;
   margin: -2px -12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
 .rightPanel > :first-child {
   margin-top: 0;
+}
+
+.blueTv {
+  width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 10px 24px color-mix(in oklch, var(--color-primary) 12%, transparent);
 }
 
 /* Reading card highlight when open in right panel */

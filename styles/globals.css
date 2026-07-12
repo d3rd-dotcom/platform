@@ -26,8 +26,8 @@
   --font-primary: var(--font-poppins), 'Poppins', ui-sans-serif, sans-serif;
   --font-secondary: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
   --font-button: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
-  --font-mono: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
-  --font-code: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  --font-mono: var(--font-commit-mono), 'Commit Mono', monospace;
+  --font-code: var(--font-commit-mono), 'Commit Mono', monospace;
   --font-poppins: var(--font-poppins), 'Poppins', sans-serif;
   
   /* Font Weights */

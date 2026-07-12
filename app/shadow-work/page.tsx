@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import { usePrivy } from '@privy-io/react-auth';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
+import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
 import Banner from '@/components/banner/Banner';
 import WeekTasksView from '@/components/week-tasks/WeekTasksView';
 import HomeWelcomeFlow from '@/components/home-welcome/HomeWelcomeFlow';
@@ -529,8 +530,12 @@ export default function CoursePage() {
         </div>
 
         {/* ── Right panel — Weekly Read opens here (stacks below missions on mobile) ── */}
-        {rightContent === 'reading' && (
-          <div className={styles.rightPanel} ref={rightPanelRef}>
+        <div className={styles.rightPanel} ref={rightPanelRef}>
+          <BlueVideoPanel
+            className={styles.blueTv}
+            message="One mission at a time. Your work leaves evidence."
+          />
+          {rightContent === 'reading' && (
             <div className={styles.popupCard}>
               <div className={styles.inlineReaderInner}>
                 <CourseInlineReader
@@ -539,8 +544,8 @@ export default function CoursePage() {
                 />
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
       </main>
 

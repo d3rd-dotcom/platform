@@ -98,6 +98,98 @@
   transform: scale(1);
 }
 
+/* Weekly story introduction — a quiet landing point before the first still. */
+.weeklyIntroCard {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  width: min(470px, calc(100vw - 40px));
+  transform: translate(-50%, -50%);
+  padding: clamp(2rem, 5vw, 3.25rem);
+  overflow: hidden;
+  text-align: center;
+  background:
+    radial-gradient(circle at 50% 0%, color-mix(in oklch, var(--color-primary) 28%, transparent), transparent 58%),
+    color-mix(in oklch, var(--color-primary) 88%, #090b16);
+  border: 1px solid rgba(190, 198, 255, 0.24);
+  border-radius: 24px;
+  box-shadow:
+    0 26px 80px rgba(0, 0, 0, 0.44),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  animation: weeklyIntroIn 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes weeklyIntroIn {
+  from { opacity: 0; transform: translate(-50%, -46%) scale(0.96); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+.weeklyIntroSignal {
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  gap: 5px;
+  height: 28px;
+  margin: 0 auto 1.5rem;
+}
+
+.weeklyIntroSignal span {
+  width: 5px;
+  border-radius: 999px;
+  background: #8ce8df;
+  box-shadow: 0 0 16px rgba(140, 232, 223, 0.55);
+}
+
+.weeklyIntroSignal span:nth-child(1) { height: 12px; opacity: 0.55; }
+.weeklyIntroSignal span:nth-child(2) { height: 24px; }
+.weeklyIntroSignal span:nth-child(3) { height: 16px; opacity: 0.72; }
+
+.weeklyIntroEyebrow {
+  display: block;
+  margin-bottom: 0.8rem;
+  color: rgba(203, 211, 255, 0.72);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.weeklyIntroTitle {
+  margin: 0;
+  color: #f5f6ff;
+  font-family: var(--font-primary);
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  line-height: 1.12;
+}
+
+.weeklyIntroBody {
+  max-width: 30rem;
+  margin: 1.15rem auto 0;
+  color: rgba(235, 238, 255, 0.78);
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  line-height: 1.7;
+}
+
+.weeklyIntroQuestion {
+  margin: 1.5rem 0 1.25rem;
+  color: #a7fff5;
+  font-family: var(--font-primary);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.weeklyIntroContinue {
+  min-height: 50px;
+  box-shadow: 0 12px 28px color-mix(in oklch, #37cfc0 28%, transparent);
+}
+
 /* Check-in step: drop the cinematic stage and any wrapper chrome — the Blue
    card is the only surface, sitting directly on the dimmed backdrop. */
 .modalCheckIn {
