@@ -22,8 +22,8 @@
   /* ============================================
      Typography
      ============================================ */
-  --font-body: var(--font-commit-mono), 'Commit Mono', ui-monospace, monospace;
-  --font-primary: var(--font-commit-mono), 'Commit Mono', ui-monospace, monospace;
+  --font-body: var(--font-poppins), 'Poppins', ui-sans-serif, sans-serif;
+  --font-primary: var(--font-poppins), 'Poppins', ui-sans-serif, sans-serif;
   --font-secondary: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
   --font-button: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
   --font-mono: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
