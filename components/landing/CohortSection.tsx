@@ -1,109 +1,80 @@
 'use client';
 
-import Image from 'next/image';
 import CtaButton from '../shared/CtaButton';
 import styles from './CohortSection.module.css';
 
+const CheckIcon = () => (
+  <svg aria-hidden="true" viewBox="0 0 16 16" className={styles.checkIcon}>
+    <path d="m3.25 8.25 3 3 6.5-6.5" />
+  </svg>
+);
+
 const tiers = [
   {
-    name: 'Explorer',
-    price: '$0/mo',
-    description: 'Start free with courses, community access, and monthly calls.',
-    features: [
-      'Community access',
-      'Public research library',
-      'Monthly community calls',
-    ],
+    name: 'Foundation',
+    price: '$20',
+    cadence: '/ month',
+    description: 'Build a steady practice with the Academy’s core learning path.',
+    features: ['Full course library', 'Weekly quests and field notes', 'Community access'],
   },
   {
-    name: 'Researcher',
-    price: '$3/mo',
-    description: 'Join live studies, earn credits for approved work, and help shape proposals.',
-    features: [
-      'Everything in Explorer',
-      'Participate in live research',
-      'Earn credits for contributions',
-    ],
+    name: 'Practice',
+    price: '$50',
+    cadence: '/ month',
+    description: 'Make your study more active with deeper support and live work.',
+    features: ['Everything in Foundation', 'Live study sessions', 'Research and project tools'],
+    featured: true,
   },
   {
-    name: 'Architect',
-    price: '$20/mo',
-    description: 'Help govern the protocols and behavioral dataset behind the academy.',
-    features: [
-      'Everything in Researcher',
-      'Governance and voting rights',
-      'Early access to all research',
-    ],
+    name: 'Lifetime',
+    price: '$888',
+    cadence: 'one-time',
+    description: 'Keep your place in the Academy through every course and cohort.',
+    features: ['Everything in Practice', 'Lifetime course access', 'Priority cohort invitations'],
   },
 ];
 
 export const CohortSection = () => {
   return (
     <section id="cohort" className={styles.cohortSection}>
-
       <div className={styles.cohortContainer}>
-        <div className={styles.board}>
-
-          <div className={styles.titlePanel}>
-            <div className={styles.titlePanelText}>
-              <h2 className={styles.cohortTitle}>Cohort memberships</h2>
-              <p className={styles.cohortSubtitle}>
-                Choose how you want to participate. Start free, join live research, or help govern the infrastructure behind quests, credits, and community-funded studies.
-              </p>
-            </div>
-          </div>
-
-          <div className={styles.cohortContentGrid}>
-            {/* Left: Cohort photo collage */}
-            <div className={styles.cohortDiamonds}>
-              <div className={styles.cohortGrid}>
-                <div className={styles.cohortImgCell}>
-                  <Image src="/images/cohort-1.png" alt="Students collaborating" fill sizes="(min-width: 1024px) 25vw, 100vw" className={styles.cohortImg} />
-                </div>
-                <div className={styles.cohortImgCell}>
-                  <Image src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400&h=600&fit=crop&crop=faces" alt="Campus study group" fill sizes="(min-width: 1024px) 25vw, 100vw" className={styles.cohortImg} />
-                </div>
-                <div className={styles.cohortImgCell}>
-                  <Image src="/images/cohort-3.jpg" alt="Diverse cohort" fill sizes="(min-width: 1024px) 25vw, 100vw" className={styles.cohortImg} />
-                </div>
-                <div className={styles.cohortImgCell}>
-                  <Image src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=600&fit=crop&crop=faces" alt="Team working together" fill sizes="(min-width: 1024px) 25vw, 100vw" className={styles.cohortImg} />
-                </div>
-                <div className={styles.cohortImgCell}>
-                  <Image src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&h=600&fit=crop&crop=faces" alt="Creative session" fill sizes="(min-width: 1024px) 25vw, 100vw" className={styles.cohortImg} />
-                </div>
-                <div className={styles.cohortImgCell}>
-                  <Image src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=400&h=600&fit=crop&crop=faces" alt="Study session" fill sizes="(min-width: 1024px) 25vw, 100vw" className={styles.cohortImg} />
-                </div>
-              </div>
-            </div>
-
-            {/* Right: Membership tiers */}
-            <div className={styles.tiers}>
-              {tiers.map((tier) => (
-                <div key={tier.name} className={styles.tierCard}>
-                  <div className={styles.tierHeader}>
-                    <h3 className={styles.tierName}>{tier.name}</h3>
-                    <span className={styles.tierPrice}>{tier.price}</span>
-                  </div>
-                  <p className={styles.tierDescription}>{tier.description}</p>
-                  <ul className={styles.tierFeatureList}>
-                    {tier.features.map((f) => (
-                      <li key={f} className={styles.tierFeatureItem}>{f}</li>
-                    ))}
-                  </ul>
-                  <CtaButton
-                    variant={tier.name === 'Explorer' ? 'secondary' : 'primary'}
-                    size="sm"
-                    className={styles.tierCta}
-                  >
-                    {tier.name === 'Explorer' ? 'Get started' : `Join ${tier.name}`}
-                  </CtaButton>
-                </div>
-              ))}
-            </div>
-          </div>
+        <div className={styles.sectionIntro}>
+          <p className={styles.eyebrow}>Choose your membership</p>
+          <h2 className={styles.cohortTitle}>A place to keep doing the work.</h2>
+          <p className={styles.cohortSubtitle}>
+            Start with the essentials, deepen your practice, or join for the long arc. Every tier gives you a clear way into the Academy.
+          </p>
         </div>
+
+        <div className={styles.tierGrid}>
+          {tiers.map((tier) => (
+            <article key={tier.name} className={`${styles.tierCard} ${tier.featured ? styles.featuredTier : ''}`}>
+              {tier.featured && <span className={styles.tierBadge}>Most chosen</span>}
+              <div className={styles.tierTopline}>
+                <p className={styles.tierName}>{tier.name}</p>
+                <span className={styles.tierIndex}>0{tiers.indexOf(tier) + 1}</span>
+              </div>
+              <div className={styles.priceRow}>
+                <span className={styles.tierPrice}>{tier.price}</span>
+                <span className={styles.tierCadence}>{tier.cadence}</span>
+              </div>
+              <p className={styles.tierDescription}>{tier.description}</p>
+              <div className={styles.tierRule} />
+              <ul className={styles.tierFeatures}>
+                {tier.features.map((feature) => (
+                  <li key={feature} className={styles.tierFeature}>
+                    <span className={styles.check}><CheckIcon /></span>
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              <CtaButton variant={tier.featured ? 'primary' : 'secondary'} size="md" block className={styles.tierCta}>
+                Choose {tier.name}
+              </CtaButton>
+            </article>
+          ))}
+        </div>
+        <p className={styles.membershipNote}>Membership supports the Academy’s courses, community, and ongoing research.</p>
       </div>
     </section>
   );

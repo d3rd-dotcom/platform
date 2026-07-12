@@ -1,231 +1,249 @@
 .cohortSection {
   position: relative;
   width: 100%;
-  background-color: #202127;
-  padding: 48px 0;
-  z-index: 1;
+  padding: clamp(72px, 9vw, 128px) 24px;
   overflow: hidden;
-  min-height: 780px;
+  background:
+    radial-gradient(circle at 50% -20%, color-mix(in srgb, var(--color-brand) 20%, transparent), transparent 46%),
+    var(--color-grey-950);
+  color: var(--color-text-light);
+}
+
+.cohortSection::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.3;
+  background-image: linear-gradient(color-mix(in srgb, var(--color-text-light) 6%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--color-text-light) 6%, transparent) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(to bottom, var(--color-grey-950), transparent 80%);
 }
 
 .cohortContainer {
   position: relative;
   z-index: 1;
-  width: 100%;
-  padding: 0;
+  width: min(1180px, 100%);
+  margin: 0 auto;
 }
 
-/* Full-bleed dark board */
-.board {
-  border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  overflow: hidden;
-  background: #202127;
+.sectionIntro {
+  max-width: 700px;
+  margin: 0 auto 48px;
+  text-align: center;
 }
 
-/* Title panel */
-.titlePanel {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 32px;
-  padding: 40px 80px 32px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.titlePanelText {
-  min-width: 0;
+.eyebrow {
+  margin: 0 0 16px;
+  color: color-mix(in srgb, var(--color-brand) 70%, var(--color-text-light));
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
 }
 
 .cohortTitle {
+  margin: 0;
+  color: var(--color-text-light);
   font-family: var(--font-secondary);
-  font-size: clamp(2rem, 4vw, 3.2rem);
-  line-height: 1.04;
-  font-weight: var(--font-weight-bold);
-  letter-spacing: -0.04em;
-  color: #ffffff;
-  margin: 0 0 14px;
+  font-size: clamp(2.3rem, 5vw, 4.4rem);
+  font-weight: 700;
+  letter-spacing: -0.055em;
+  line-height: 0.98;
   text-wrap: balance;
 }
 
 .cohortSubtitle {
-  margin: 0;
-  max-width: 680px;
+  max-width: 590px;
+  margin: 22px auto 0;
+  color: color-mix(in srgb, var(--color-text-light) 62%, transparent);
   font-family: var(--font-primary);
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 1.65;
-  color: rgba(255, 255, 255, 0.66);
+  text-wrap: balance;
 }
 
-/* Content Grid */
-.cohortContentGrid {
+.tierGrid {
   display: grid;
-}
-
-@media (min-width: 1024px) {
-  .cohortContentGrid {
-    grid-template-columns: 1.4fr 1fr;
-  }
-}
-
-/* Tiers Column */
-.tiers {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
-  gap: 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  align-items: stretch;
 }
 
 .tierCard {
-  padding: 28px 80px;
+  position: relative;
+  display: flex;
+  min-height: 440px;
+  flex-direction: column;
+  padding: 30px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-text-light) 12%, transparent);
+  border-radius: 20px;
+  background: linear-gradient(155deg, color-mix(in srgb, var(--color-text-light) 9%, transparent), color-mix(in srgb, var(--color-text-light) 3.5%, transparent));
+  box-shadow: 0 24px 60px -34px color-mix(in srgb, var(--color-grey-950) 90%, transparent);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
-.tierCard + .tierCard {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+.tierCard:hover {
+  transform: translateY(-6px);
+  border-color: color-mix(in srgb, var(--color-text-light) 28%, transparent);
+  box-shadow: 0 32px 70px -34px color-mix(in srgb, var(--color-brand) 45%, transparent);
 }
 
-.tierHeader {
+.featuredTier {
+  border-color: color-mix(in srgb, var(--color-brand) 80%, var(--color-text-light));
+  background: linear-gradient(155deg, color-mix(in srgb, var(--color-brand) 32%, transparent), color-mix(in srgb, var(--color-text-light) 6%, transparent) 72%);
+  box-shadow: 0 26px 70px -36px color-mix(in srgb, var(--color-brand) 80%, transparent);
+}
+
+.tierBadge {
+  position: absolute;
+  top: 0;
+  right: 24px;
+  padding: 8px 12px;
+  border-radius: 0 0 9px 9px;
+  background: var(--color-brand);
+  color: var(--color-text-light);
+  font-family: var(--font-primary);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.tierTopline {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-bottom: 10px;
+  gap: 12px;
 }
 
 .tierName {
-  font-family: var(--font-primary);
-  font-size: 1rem;
-  font-weight: 800;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  color: #ffffff;
   margin: 0;
-  line-height: 1.2;
+  color: color-mix(in srgb, var(--color-text-light) 80%, transparent);
+  font-family: var(--font-primary);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.tierIndex {
+  color: color-mix(in srgb, var(--color-text-light) 30%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+}
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 32px 0 14px;
 }
 
 .tierPrice {
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
+  color: var(--color-text-light);
+  font-family: var(--font-poppins), sans-serif;
+  font-size: clamp(2.6rem, 4vw, 3.6rem);
   font-weight: 700;
-  color: var(--color-primary);
-  letter-spacing: 0.04em;
-  white-space: nowrap;
+  letter-spacing: -0.06em;
+  line-height: 0.95;
+}
+
+.tierCadence {
+  color: color-mix(in srgb, var(--color-text-light) 52%, transparent);
+  font-family: var(--font-primary);
+  font-size: 0.82rem;
 }
 
 .tierDescription {
+  min-height: 52px;
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text-light) 62%, transparent);
   font-family: var(--font-primary);
   font-size: 0.9rem;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.62);
-  margin: 0 0 14px;
+  line-height: 1.55;
 }
 
-.tierFeatureList {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.tierRule {
+  height: 1px;
+  margin: 26px 0 22px;
+  background: color-mix(in srgb, var(--color-text-light) 13%, transparent);
+}
+
+.tierFeatures {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.tierFeatureItem {
+.tierFeature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: color-mix(in srgb, var(--color-text-light) 78%, transparent);
   font-family: var(--font-primary);
-  font-size: 0.85rem;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.48);
-  padding-left: 16px;
-  position: relative;
+  font-size: 0.84rem;
+  line-height: 1.35;
 }
 
-.tierFeatureItem::before {
-  content: '→';
-  position: absolute;
-  left: 0;
-  color: var(--color-primary);
+.check {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, var(--color-brand) 45%, transparent);
+  border-radius: 50%;
+  color: color-mix(in srgb, var(--color-brand) 70%, var(--color-text-light));
+}
+
+.checkIcon {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .tierCta {
-  margin-top: 18px;
-  width: auto;
-  align-self: flex-start;
+  margin-top: auto;
+  padding-top: 24px;
 }
 
-/* Cohort Photo Grid */
-.cohortDiamonds {
-  display: none;
+.membershipNote {
+  margin: 28px 0 0;
+  color: color-mix(in srgb, var(--color-text-light) 38%, transparent);
+  font-family: var(--font-primary);
+  font-size: 0.76rem;
+  text-align: center;
 }
 
-@media (min-width: 1024px) {
-  .cohortDiamonds {
-    display: block;
-    position: relative;
-    padding: 28px 24px 28px 80px;
-  }
-}
-
-.cohortGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 10px;
-  height: 100%;
-}
-
-.cohortImgCell {
-  position: relative;
-  min-height: 170px;
-  overflow: hidden;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 12px 28px -14px rgba(0, 0, 0, 0.6);
-}
-
-.cohortImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  filter: saturate(0.94);
-  transition: filter 0.4s ease, transform 0.5s ease;
-}
-
-.cohortImgCell:hover .cohortImg {
-  filter: saturate(1.06);
-  transform: scale(1.05);
-}
-
-/* Mobile */
-@media (max-width: 1023px) {
-  .tiers {
-    border-left: 0;
-  }
-}
-
-@media (max-width: 767px) {
-  .cohortSection {
-    padding: 24px 0;
-    min-height: 480px;
-  }
-
-  .titlePanel {
-    flex-direction: column;
-    gap: 22px;
-    padding: 28px 24px 24px;
-  }
-
-  .cohortTitle {
-    font-size: 1.75rem;
-  }
-
-  .cohortSubtitle {
-    font-size: 15px;
+@media (max-width: 860px) {
+  .tierGrid {
+    grid-template-columns: 1fr;
+    max-width: 540px;
+    margin: 0 auto;
   }
 
   .tierCard {
-    padding: 20px 24px;
+    min-height: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .cohortSection {
+    padding: 64px 18px;
+  }
+
+  .sectionIntro {
+    margin-bottom: 34px;
+  }
+
+  .tierCard {
+    padding: 26px 22px;
   }
 }

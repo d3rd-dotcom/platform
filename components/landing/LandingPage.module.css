@@ -170,9 +170,9 @@
 }
 
 .heroHeadline {
-  font-family: var(--font-primary);
+  font-family: var(--font-poppins), sans-serif;
   font-size: clamp(1.9rem, 3.6vw, 3.4rem);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.16;
   margin: 0 0 16px 0;
   padding: 0 48px;
