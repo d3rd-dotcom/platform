@@ -5,8 +5,8 @@
 > [`styles/design-tokens.ts`](../../styles/design-tokens.ts) and the CSS custom properties in `globals.css`.
 
 The tone is **calm and editorial meets modern, tech-forward** — academic, highly readable,
-with a beautiful fluid scale. Fonts are self-hosted via `next/font/google` in `app/layout.tsx`,
-exposed as CSS variables (`--font-inter`, `--font-space-grotesk`, `--font-poppins`,
+with a beautiful fluid scale. Fonts are self-hosted via `next/font` in `app/layout.tsx`,
+exposed as CSS variables (`--font-commit-mono`, `--font-space-grotesk`,
 `--font-patrick-hand`). No external Google Fonts `<link>`.
 
 ---
@@ -16,13 +16,13 @@ exposed as CSS variables (`--font-inter`, `--font-space-grotesk`, `--font-poppin
 | Role | Face | Variable | Rationale |
 | --- | --- | --- | --- |
 | Display / headings / labels | **Space Grotesk** | `--type-font-heading` / `--type-font-display` / `--type-font-label` | A geometric grotesque with subtle personality (distinctive digits, open apertures). Gives headings and UI labels a modern, tech-forward voice while staying legible at small sizes and in uppercase. |
-| Body / long-form / inputs | **Inter** | `--type-font-body` | A neutral, screen-optimized humanist sans with a tall x-height and excellent legibility at reading sizes. Carries long course copy calmly and editorially. |
+| Body / long-form / inputs | **Commit Mono** | `--type-font-body` | A precise monospaced face with open forms and clear punctuation. It gives course copy and inputs a consistent technical rhythm. |
 | Code / mono badges / IDs | **Space Grotesk** (tabular) | `--type-font-code` | Reused as the "mono-feeling" face for slugs, block IDs and counters with `tabular-nums`, keeping the palette tight rather than adding a fourth family. |
 | Accent / annotation | **Patrick Hand** | `--type-font-accent` | Hand-drawn accent, used **only where already present** (field-notes / doodle flourishes). Never a primary UI face. |
 
-**Pairing logic:** Space Grotesk (display) over Inter (text) is a classic
-"characterful heading + neutral body" pairing. The heading face adds identity;
-the body face gets out of the way so course content reads effortlessly.
+**Pairing logic:** Space Grotesk (display) over Commit Mono (text) pairs broad,
+characterful headings with a precise technical reading texture. The heading face
+adds identity while the body face creates a consistent academic rhythm.
 
 **Banned as primary faces:** Arial, Helvetica, Times New Roman, and bare
 system-default stacks. Generic families only ever appear as the *tail* of a
@@ -44,11 +44,11 @@ exposed as a size / line-height / tracking triple **and** a matching utility cla
 | **h2** | `clamp(1.375rem, 1.19rem + 0.9vw, 1.75rem)` | 22 → 28 | 1.2 | −0.015em | Space Grotesk | Week titles, studio title input, rich-text `h1` |
 | **h3** | `clamp(1.1875rem, 1.09rem + 0.5vw, 1.375rem)` | 19 → 22 | 1.3 | −0.015em | Space Grotesk | Reader theme, publish-form title, rich-text `h2` |
 | **h4** | `clamp(1rem, 0.95rem + 0.25vw, 1.125rem)` | 16 → 18 | 1.3 | −0.015em | Space Grotesk | Card titles, task/mission/reading titles, question inputs |
-| **body-lg** | `clamp(1rem, 0.96rem + 0.2vw, 1.0625rem)` | 16 → 17 | 1.6 | 0 | Inter | Long-form reading surfaces, rich-text body, instructions |
-| **body** | `clamp(0.875rem, 0.85rem + 0.12vw, 0.9375rem)` | 14 → 15 | 1.6 | 0 | Inter | Default UI copy, inputs, options |
-| **body-sm** | `clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem)` | 13 → 14 | 1.6 | 0 | Inter | Secondary copy, compact inputs, hints, buttons |
+| **body-lg** | `clamp(1rem, 0.96rem + 0.2vw, 1.0625rem)` | 16 → 17 | 1.6 | 0 | Commit Mono | Long-form reading surfaces, rich-text body, instructions |
+| **body** | `clamp(0.875rem, 0.85rem + 0.12vw, 0.9375rem)` | 14 → 15 | 1.6 | 0 | Commit Mono | Default UI copy, inputs, options |
+| **body-sm** | `clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem)` | 13 → 14 | 1.6 | 0 | Commit Mono | Secondary copy, compact inputs, hints, buttons |
 | **label** | `clamp(0.6875rem, 0.66rem + 0.1vw, 0.75rem)` | 11 → 12 | 1 | +0.05em | Space Grotesk | Small **uppercase** labels, badges, kickers, palette item labels |
-| **caption** | `clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem)` | 12 → 13 | 1.4 | 0 | Inter | Fine print, meta, captions, counters |
+| **caption** | `clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem)` | 12 → 13 | 1.4 | 0 | Commit Mono | Fine print, meta, captions, counters |
 | **code** | `clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem)` | 13 → 14 | 1.55 | 0 | Space Grotesk | Slugs, inline `code`, block IDs (`tabular-nums`) |
 
 Utility classes apply family + size + line-height + tracking + a sensible default

@@ -26,7 +26,7 @@ const DRY_RUN = process.argv.includes('--dry-run');
 const REFRESH = process.argv.includes('--refresh');
 const REVIEW_DATE = '2026-07-09';
 const MINIMUM_ADDITIONS = 109;
-const AUDIENCE = 'Middle school through college learners; contributors can adapt examples by age.';
+const AUDIENCE = '12+';
 
 const SOURCE_PROVENANCE: Record<string, string> = {
   learning: 'Original MWA synthesis referencing OpenStax Psychology 2e learning, memory, and cognition material: https://openstax.org/books/psychology-2e/pages/6-introduction',

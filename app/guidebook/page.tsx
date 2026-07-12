@@ -21,7 +21,7 @@ const containerStyle = {
   display: 'flex' as const,
   minHeight: 'calc(100vh - 72px)',
   background: 'var(--color-primary)',
-  fontFamily: 'var(--font-primary, Poppins, sans-serif)',
+  fontFamily: "var(--font-primary, 'Commit Mono', monospace)",
 };
 
 const sidebarStyle = {
@@ -60,7 +60,7 @@ const linkStyle = {
   textDecoration: 'none' as const,
   borderLeft: '3px solid transparent',
   transition: 'all 0.15s ease',
-  fontFamily: 'var(--font-primary, Poppins, sans-serif)',
+  fontFamily: "var(--font-primary, 'Commit Mono', monospace)",
   lineHeight: 1.4,
 };
 
@@ -79,7 +79,7 @@ const mainStyle = {
 };
 
 const h1Style = {
-  fontFamily: 'var(--font-primary, Poppins, sans-serif)',
+  fontFamily: "var(--font-primary, 'Commit Mono', monospace)",
   fontSize: 'clamp(2rem, 4vw, 3rem)',
   fontWeight: 800,
   lineHeight: 1.05,
@@ -96,7 +96,7 @@ const subtitleStyle = {
 };
 
 const h2Style = {
-  fontFamily: 'var(--font-primary, Poppins, sans-serif)',
+  fontFamily: "var(--font-primary, 'Commit Mono', monospace)",
   fontSize: 'clamp(1.5rem, 2.5vw, 1.875rem)',
   fontWeight: 800,
   lineHeight: 1.15,
@@ -109,7 +109,7 @@ const h2Style = {
 };
 
 const h3Style = {
-  fontFamily: 'var(--font-primary, Poppins, sans-serif)',
+  fontFamily: "var(--font-primary, 'Commit Mono', monospace)",
   fontSize: 'clamp(1.125rem, 1.6vw, 1.25rem)',
   fontWeight: 700,
   lineHeight: 1.2,

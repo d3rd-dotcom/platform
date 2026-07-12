@@ -6,6 +6,7 @@ import { ensureWeeksSchema } from '@/lib/ensureWeeksSchema';
 import { getSeasonInfo } from '@/lib/season';
 import { deliverDiamondsOnchain } from '@/lib/diamonds-onchain';
 import { getVipCourseFullBySlug } from '@/lib/vip-course-db';
+import { postSystemMessage } from '@/lib/chat';
 
 const PATHWAY_COURSE_SLUG = 'creative-healing';
 
@@ -274,6 +275,20 @@ export async function POST(request: Request) {
     } catch (memoryError: unknown) {
       const message = memoryError instanceof Error ? memoryError.message : 'unknown blue week memory error';
       console.error('Blue week seal memory error:', message);
+    }
+
+    // Mission completions belong to the quiet system stream in Global Chat.
+    // Post from this authenticated server path so clients cannot forge system
+    // messages and the completion never renders as the member's own chat bubble.
+    try {
+      await postSystemMessage(
+        user.id,
+        user.username,
+        user.avatarUrl,
+        `${user.username} completed a mission (+${SEAL_REWARD} credits).`,
+      );
+    } catch (chatError: unknown) {
+      console.error('Global chat mission notification error:', chatError);
     }
 
     return NextResponse.json({

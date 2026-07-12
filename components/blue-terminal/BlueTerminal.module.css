@@ -49,7 +49,7 @@
 
 .title {
   margin: 0;
-  font-family: var(--font-primary), Poppins, sans-serif;
+  font-family: var(--font-primary), 'Commit Mono', monospace;
   font-size: clamp(24px, 3vw, 38px);
   font-weight: 600;
   line-height: 1.08;
@@ -126,7 +126,7 @@
 
 .statusTitle {
   margin: 0 0 8px;
-  font-family: var(--font-primary), Poppins, sans-serif;
+  font-family: var(--font-primary), 'Commit Mono', monospace;
   font-size: clamp(20px, 2vw, 28px);
   font-weight: 600;
   line-height: 1.15;
@@ -136,7 +136,7 @@
 .statusText,
 .statusNote {
   margin: 0;
-  font-family: var(--font-body), Inter, sans-serif;
+  font-family: var(--font-body), 'Commit Mono', monospace;
   font-size: 15px;
   line-height: 1.55;
   color: rgba(243, 244, 248, 0.74);
@@ -172,7 +172,7 @@
 
 .questIntro {
   margin: 0;
-  font-family: var(--font-body), Inter, sans-serif;
+  font-family: var(--font-body), 'Commit Mono', monospace;
   font-size: 14px;
   line-height: 1.6;
   color: rgba(243, 244, 248, 0.7);
@@ -229,7 +229,7 @@
 .questionText {
   margin: 0;
   max-width: 920px;
-  font-family: var(--font-primary), Poppins, sans-serif;
+  font-family: var(--font-primary), 'Commit Mono', monospace;
   font-size: clamp(21px, 2.4vw, 32px);
   font-weight: 500;
   line-height: 1.24;
@@ -254,7 +254,7 @@
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.035);
   color: rgba(243, 244, 248, 0.84);
-  font-family: var(--font-body), Inter, sans-serif;
+  font-family: var(--font-body), 'Commit Mono', monospace;
   font-size: 15px;
   line-height: 1.45;
   text-align: left;
@@ -305,7 +305,7 @@
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  font-family: var(--font-body), Inter, sans-serif;
+  font-family: var(--font-body), 'Commit Mono', monospace;
   font-size: 13px;
   color: rgba(243, 244, 248, 0.62);
 }
@@ -322,7 +322,7 @@
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.035);
   color: rgba(243, 244, 248, 0.84);
-  font-family: var(--font-primary), Poppins, sans-serif;
+  font-family: var(--font-primary), 'Commit Mono', monospace;
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
@@ -343,7 +343,7 @@
 }
 
 .fieldLabel {
-  font-family: var(--font-body), Inter, sans-serif;
+  font-family: var(--font-body), 'Commit Mono', monospace;
   font-size: 13px;
   font-weight: 500;
   color: rgba(243, 244, 248, 0.72);
@@ -357,7 +357,7 @@
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.04);
   color: #ffffff;
-  font-family: var(--font-body), Inter, sans-serif;
+  font-family: var(--font-body), 'Commit Mono', monospace;
   font-size: 15px;
   line-height: 1.6;
   padding: 14px 15px;
@@ -443,7 +443,7 @@
   border-radius: 8px;
   background: rgba(127, 29, 29, 0.16);
   color: #fecaca;
-  font-family: var(--font-body), Inter, sans-serif;
+  font-family: var(--font-body), 'Commit Mono', monospace;
   font-size: 13px;
   line-height: 1.5;
   padding: 12px 14px;
@@ -466,7 +466,7 @@
 
 .brandFooter p {
   margin: 0;
-  font-family: var(--font-primary), Poppins, sans-serif;
+  font-family: var(--font-primary), 'Commit Mono', monospace;
   font-size: 12px;
   line-height: 1.4;
   text-align: center;

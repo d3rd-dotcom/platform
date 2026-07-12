@@ -206,7 +206,7 @@ The primary blue gradient and halftone dots are reserved for hero and section mo
 
 ### Typography
 
-- Headlines: Poppins Bold
+- Headlines: Commit Mono Bold
 - Body: Space Grotesk
 - Accent and numeric values: Roboto Mono or Departure Mono
 

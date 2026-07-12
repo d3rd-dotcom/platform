@@ -42,7 +42,7 @@ interface GuideDef {
   prereqSlugs: string[];
 }
 
-const AUDIENCE = 'Middle school through college learners; contributors can adapt examples by age.';
+const AUDIENCE = '12+';
 
 const GUIDES: GuideDef[] = [
   {

@@ -155,7 +155,7 @@ export default function StyleGuidePage() {
           <h2 className={styles.sectionTitle}>Typography</h2>
           <p className={styles.sectionDescription}>
             Typography sets the tone for knowledge transfer and community trust.
-            Space Grotesk for headlines, Poppins for body text, and Space Grotesk for buttons and technical data.
+            Space Grotesk for headlines, Commit Mono for body text, and Space Grotesk for buttons and technical data.
           </p>
 
           {/* Font Families */}
@@ -164,7 +164,7 @@ export default function StyleGuidePage() {
             <div className={styles.fontFamilyGrid}>
               <div className={styles.fontFamilyCard}>
                 <div className={styles.fontFamilyName} style={{ fontFamily: fontFamilies.primary }}>
-                  Poppins
+                  Commit Mono
                 </div>
                 <div className={styles.fontFamilyUsage}>Primary — Body Text</div>
                 <div className={styles.fontFamilySample} style={{ fontFamily: fontFamilies.primary, fontWeight: 300 }}>
@@ -243,19 +243,19 @@ export default function StyleGuidePage() {
                 label="Body — Primary Text" 
                 text="Our design is educational, community-centered, transparent, accessible, empowering, collaborative, and forward-thinking." 
                 style={{ ...typography.body, fontSize: fontSizes.base }}
-                meta={`${fontSizes.base} / Light / Poppins`}
+                meta={`${fontSizes.base} / Regular / Commit Mono`}
               />
               <TypographySample 
                 label="Body Large — Featured Text" 
                 text="Knowledge for all, together. Growing stronger by empowering your community." 
                 style={{ ...typography.bodyLarge, fontSize: fontSizes.md }}
-                meta={`${fontSizes.md} / Light / Poppins`}
+                meta={`${fontSizes.md} / Regular / Commit Mono`}
               />
               <TypographySample 
                 label="Caption — Metadata" 
                 text="Last updated 2 hours ago • 1.2k views • 48 comments" 
                 style={{ ...typography.caption, fontSize: fontSizes.xs }}
-                meta={`${fontSizes.xs} / Regular / Poppins`}
+                meta={`${fontSizes.xs} / Regular / Commit Mono`}
               />
               <TypographySample
                 label="Button — Actions"
@@ -778,7 +778,7 @@ export default function StyleGuidePage() {
             <ComponentIndexItem
               name="FeatureTour"
               path="components/feature-tour"
-              description="Daily Note first-run guide"
+              description="First-run guide for the /home dashboard"
             />
             <ComponentIndexItem
               name="WelcomePremiumGate"

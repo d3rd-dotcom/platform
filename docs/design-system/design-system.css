@@ -1,5 +1,21 @@
 /* Font Imports - Must be at the top before any other CSS rules */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
+
+@font-face {
+  font-family: 'Commit Mono';
+  src: url('../../app/fonts/CommitMono-400-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Commit Mono';
+  src: url('../../app/fonts/CommitMono-700-Regular.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 
 /**
  * Academy V3 Design System
@@ -27,7 +43,7 @@
   
   
   /* Typography */
-  --font-primary: 'Poppins', sans-serif;
+  --font-primary: 'Commit Mono', monospace;
   --font-secondary: 'Space Grotesk', sans-serif;
   --font-button: 'IBM Plex Mono', monospace;
   
@@ -113,7 +129,7 @@ body {
    Typography
    ============================================ */
 
-/* Paragraphs - Poppins Light */
+/* Paragraphs - Commit Mono */
 p {
   font-family: var(--font-primary);
   font-weight: var(--font-weight-light);
@@ -441,4 +457,3 @@ button,
     font-size: 1.5rem;
   }
 }
-

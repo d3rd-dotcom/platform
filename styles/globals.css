@@ -1,6 +1,6 @@
-/* Fonts are self-hosted. Inter/Poppins/Space Grotesk/Patrick Hand come from
-   next/font/google in layout.tsx (--font-* vars). There is no external Google
-   Fonts <link> — everything is local. */
+/* Fonts are self-hosted through next/font in layout.tsx. Commit Mono is bundled
+   in app/fonts; the remaining --font-* variables use next/font/google. There is
+   no external Google Fonts <link>. */
 
 /* Typographic system — fluid type scale, pairing, utility classes.
    Must be imported before the rules below so its custom properties are
@@ -62,8 +62,8 @@
   /* ============================================
      Typography
      ============================================ */
-  --font-body: var(--font-inter), 'Inter', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
-  --font-primary: var(--font-poppins), 'Poppins', sans-serif;
+  --font-body: var(--font-commit-mono), 'Commit Mono', ui-monospace, monospace;
+  --font-primary: var(--font-commit-mono), 'Commit Mono', ui-monospace, monospace;
   --font-secondary: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
   --font-button: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
   --font-mono: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
@@ -377,14 +377,14 @@ body {
    Typography
    ============================================ */
 
-/* Paragraphs - Poppins Light */
+/* Paragraphs - Commit Mono */
 p {
   font-family: var(--font-primary);
   font-weight: var(--font-weight-light);
   color: var(--color-text-dark);
 }
 
-/* Headings - H1 uses Poppins, others use Space Grotesk */
+/* Headings - H1 uses Commit Mono, others use Space Grotesk */
 h1 {
   font-family: var(--font-primary);
   font-size: 2.5rem;

@@ -194,6 +194,7 @@ export default function GuidePage({ params }: PageProps) {
               <Link href="/learn" className={styles.back}>
                 <ArrowLeft size={16} weight="bold" /> Learn
               </Link>
+              <h1 className={styles.title}>{data.guide.topicTitle}</h1>
               <div className={styles.subjects}>
                 {data.guide.subjects.map((s) => {
                   const domain = getWellbeingDomain(s);
@@ -215,11 +216,10 @@ export default function GuidePage({ params }: PageProps) {
                     setShowWalkthrough(true);
                   }}
                 >
-                  <GraduationCap size={14} weight="bold" />
+                  <GraduationCap size={11} weight="bold" />
                   Walkthrough
                 </button>
               </div>
-              <h1 className={styles.title}>{data.guide.topicTitle}</h1>
               {data.guide.summary && (
                 <p className={styles.topicSummary}>{data.guide.summary}</p>
               )}
@@ -234,7 +234,9 @@ export default function GuidePage({ params }: PageProps) {
                   {data.guide.intendedAudience && (
                     <span className={styles.topicMetaItem}>
                       <UsersThree size={15} weight="bold" />
-                      {data.guide.intendedAudience}
+                      {data.guide.intendedAudience === 'Middle school through college learners; contributors can adapt examples by age.'
+                        ? '12+'
+                        : data.guide.intendedAudience}
                     </span>
                   )}
                 </div>
@@ -369,7 +371,7 @@ export default function GuidePage({ params }: PageProps) {
                       onMouseEnter={() => play('soft-hover')}
                       onClick={() => play('navigation')}
                     >
-                      {d.topicTitle} <ArrowRight size={13} weight="bold" />
+                      {d.topicTitle} <ArrowRight size={10} weight="bold" />
                     </Link>
                   ))}
                 </div>

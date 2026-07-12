@@ -368,17 +368,9 @@ export default function WeekTasksView({
       setShowRewardAnimation(true);
       // Tell the navbar credit counter (and anything else listening) to refresh.
       if (typeof window !== 'undefined') window.dispatchEvent(new Event('shardsUpdated'));
-      // Post to global chat
-      try {
-        const authHeadersPost = await getAuthHeaders();
-        await fetch('/api/chat/messages', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', ...authHeadersPost },
-          credentials: 'include',
-          body: JSON.stringify({ message: 'completed a mission' }),
-        });
-        if (typeof window !== 'undefined') window.dispatchEvent(new Event('globalChatUpdate'));
-      } catch {}
+      // The authenticated seal API posts the completion to Global Chat as a
+      // grey system message. Refresh non-realtime clients after it returns.
+      if (typeof window !== 'undefined') window.dispatchEvent(new Event('globalChatUpdate'));
       if (onSealComplete) onSealComplete(weekNumber, data.txHash ?? null);
       if (typeof window !== 'undefined' && 'vibrate' in navigator) navigator.vibrate([50, 30, 50, 30, 100]);
     } catch (err) {

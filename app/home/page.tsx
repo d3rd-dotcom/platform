@@ -15,6 +15,7 @@ import ProfileDashboard from '@/components/home/ProfileDashboard';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
 import FieldNotesSheet from '@/components/home/FieldNotesSheet';
 import StatsChart from '@/components/home/StatsChart';
+import FeatureTour from '@/components/feature-tour/FeatureTour';
 
 import type { CourseData } from '@/lib/personal-course';
 import { onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
@@ -408,7 +409,9 @@ export default function HomePage() {
       </div>
       {!learnOnly && (
       <section className={styles.dashboardHeader}>
-        <ProfileDashboard />
+        <div data-tour="home-profile">
+          <ProfileDashboard />
+        </div>
         <section className={styles.indicators} aria-label="Course indicators" onMouseEnter={() => play('soft-hover')}>
           <div className={styles.indicator}>
             <span className={styles.indicatorLabel}>Completed courses</span>
@@ -423,7 +426,7 @@ export default function HomePage() {
             <span className={styles.indicatorValue}>{courseIndicators.saved}</span>
           </div>
         </section>
-        <div className={styles.dailyNotes}>
+        <div className={styles.dailyNotes} data-tour="daily-note">
           <DailyNotes enablePersistence={authenticated && ready} compact compactLabel="Daily Notes" />
           <button
             type="button"
@@ -439,7 +442,7 @@ export default function HomePage() {
       </section>
       )}
       {!learnOnly && (
-        <div className={styles.folderSection}>
+        <div className={styles.folderSection} data-tour="home-courses">
         <FolderCardWrapper
           tabs={[
             {
@@ -862,6 +865,8 @@ export default function HomePage() {
       </main>
 
       {!learnOnly && fieldNotesOpen && <FieldNotesSheet onClose={() => setFieldNotesOpen(false)} />}
+
+      {!learnOnly && <FeatureTour />}
 
       {!learnOnly && (weeklyScript ? (
         <BlueDialogue

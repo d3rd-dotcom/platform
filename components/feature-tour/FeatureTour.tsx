@@ -5,20 +5,20 @@ import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { getStorageItem, setStorageItem, removeStorageItem } from '@/lib/safe-storage';
+import CtaButton from '@/components/shared/CtaButton';
 import styles from './FeatureTour.module.css';
 
 /**
  * The home first-run guide. A focused, two-phase walkthrough that runs after
  * onboarding on every device:
  *
- *   Phase A ("intro")  — right after onboarding, dim the page, spotlight the
- *     Daily Note card, and let Blue introduce the core daily loop, ending with
- *     a "Start your first note" call to action.
+ *   Phase A ("intro")  — right after onboarding, walk through the profile,
+ *     learning folders, and Daily Notes on the current /home dashboard.
  *   Phase B ("course") — after the user finishes their first note, a centered
  *     Blue card points them to the course (weekly tasks + seasonal activities)
  *     and reminds them they can ask Blue anything about the Academy.
  *
- * The spotlight target is marked with `data-tour="daily-note"`.
+ * Spotlight targets are marked with `data-tour` attributes on /home.
  */
 
 // Set by OnboardingModal the moment a profile is created — the only signal that
@@ -33,27 +33,39 @@ const COURSE_NUDGE_KEY = 'mwa-home-course-nudge-seen';
 // Armed when the user accepts the Phase B nudge — tells the course page's
 // CourseTour to pick the walkthrough back up the moment they land there.
 const COURSE_TOUR_PENDING_KEY = 'mwa-course-tour-pending';
-// Recurring daily-note nudge: shown once per calendar day, on the first /dao
+// Recurring daily-note nudge: shown once per calendar day, on the first /home
 // visit of the day, regardless of time of day (no "morning only" gate).
 const DAILY_SPOTLIGHT_PREFIX = 'mwa-daily-spotlight-shown';
 const dailySpotlightKey = () =>
   `${DAILY_SPOTLIGHT_PREFIX}-${new Date().toISOString().split('T')[0]}`;
 
-const TARGET = 'daily-note';
-const BLUE_AVATAR_SRC = '/exxie.png';
+const DAILY_NOTE_TARGET = 'daily-note';
+const BLUE_AVATAR_SRC = '/blue/blue-home.png';
 
 type Phase = 'idle' | 'intro' | 'course' | 'remind';
 type RemindMode = 'reminder' | 'done';
 
 interface IntroStep {
+  target: string;
   title: string;
   body: string;
 }
 
 const INTRO_STEPS: IntroStep[] = [
   {
-    title: 'Signal acquired',
-    body: 'The day leaves traces. Field notes preserve one before memory edits the file.',
+    target: 'home-profile',
+    title: 'Your Academy record',
+    body: 'Your profile keeps your learning status and current streak together. Select your avatar or name to update them.',
+  },
+  {
+    target: 'home-courses',
+    title: 'Choose a learning path',
+    body: 'Continue Blue\'s Quest, browse Academy courses, open your personal course, or build a new one.',
+  },
+  {
+    target: DAILY_NOTE_TARGET,
+    title: 'Record a Daily Note',
+    body: 'Capture one observation, question, or pattern each day. Saving the note adds it to your field-note record.',
   },
 ];
 
@@ -67,6 +79,7 @@ export default function FeatureTour() {
 
   const introStep = INTRO_STEPS[stepIndex];
   const isLastIntro = stepIndex === INTRO_STEPS.length - 1;
+  const activeTarget = phase === 'intro' ? introStep.target : DAILY_NOTE_TARGET;
 
   // ── Phase A controls ──
   const finishIntro = useCallback(() => {
@@ -84,7 +97,7 @@ export default function FeatureTour() {
     // Open the writing session by activating the card's button. A short delay
     // lets the overlay tear down first so focus lands cleanly in the editor.
     window.setTimeout(() => {
-      const btn = document.querySelector<HTMLElement>(`[data-tour="${TARGET}"] button`);
+      const btn = document.querySelector<HTMLElement>(`[data-tour="${DAILY_NOTE_TARGET}"] button`);
       btn?.click();
     }, 80);
   }, []);
@@ -124,7 +137,7 @@ export default function FeatureTour() {
     // Open the writing session by activating the card's button, after the
     // overlay tears down so focus lands cleanly in the editor.
     window.setTimeout(() => {
-      const btn = document.querySelector<HTMLElement>(`[data-tour="${TARGET}"] button`);
+      const btn = document.querySelector<HTMLElement>(`[data-tour="${DAILY_NOTE_TARGET}"] button`);
       btn?.click();
     }, 80);
   }, []);
@@ -147,7 +160,7 @@ export default function FeatureTour() {
       let tries = 0;
       const poll = () => {
         if (cancelled) return;
-        if (document.querySelector(`[data-tour="${TARGET}"]`)) {
+        if (document.querySelector(`[data-tour="${INTRO_STEPS[0].target}"]`)) {
           setStepIndex(0);
           setPhase('intro');
           return;
@@ -169,7 +182,7 @@ export default function FeatureTour() {
       return;
     }
 
-    // Daily reminder — once per calendar day, on the first /dao visit. Waits
+    // Daily reminder — once per calendar day, on the first /home visit. Waits
     // for the Daily Note card to resolve its status, then spotlights it with a
     // reminder (note still pending) or a brief confirmation (already done).
     if (getStorageItem(dailyKey) !== '1') {
@@ -178,7 +191,7 @@ export default function FeatureTour() {
       const poll = () => {
         if (cancelled) return;
         const el = document.querySelector(
-          `[data-tour="${TARGET}"] [data-daily-note-status]`,
+          `[data-tour="${DAILY_NOTE_TARGET}"] [data-daily-note-status]`,
         );
         const stat = el?.getAttribute('data-daily-note-status');
         if (stat === 'done' || stat === 'pending') {
@@ -228,7 +241,7 @@ export default function FeatureTour() {
     let cancelled = false;
     const locate = () => {
       if (cancelled) return;
-      const el = document.querySelector<HTMLElement>(`[data-tour="${TARGET}"]`);
+      const el = document.querySelector<HTMLElement>(`[data-tour="${activeTarget}"]`);
       if (!el) return;
       // Instant scroll so the rect is settled when we read it — capturing it
       // mid-smooth-scroll is what makes the spotlight jitter into place.
@@ -239,13 +252,13 @@ export default function FeatureTour() {
     return () => {
       cancelled = true;
     };
-  }, [phase]);
+  }, [activeTarget, phase]);
 
   // Keep the spotlight aligned as the page scrolls or resizes (spotlight phases).
   useEffect(() => {
     if (phase !== 'intro' && phase !== 'remind') return;
     const sync = () => {
-      const el = document.querySelector<HTMLElement>(`[data-tour="${TARGET}"]`);
+      const el = document.querySelector<HTMLElement>(`[data-tour="${activeTarget}"]`);
       if (el) setRect(el.getBoundingClientRect());
     };
     window.addEventListener('resize', sync);
@@ -254,7 +267,7 @@ export default function FeatureTour() {
       window.removeEventListener('resize', sync);
       window.removeEventListener('scroll', sync, true);
     };
-  }, [phase]);
+  }, [activeTarget, phase]);
 
   // Keyboard controls for the intro phase.
   useEffect(() => {
@@ -369,9 +382,9 @@ export default function FeatureTour() {
             </button>
           </span>
           <span className={styles.navBtns}>
-            <button type="button" className={styles.next} onClick={goToCourse}>
+            <CtaButton size="sm" className={styles.next} onClick={goToCourse}>
               Go to your course
-            </button>
+            </CtaButton>
           </span>
         </div>
       </div>
@@ -412,18 +425,18 @@ export default function FeatureTour() {
           </span>
           <span className={styles.navBtns}>
             {stepIndex > 0 && (
-              <button type="button" className={styles.back} onClick={backIntro}>
+              <CtaButton variant="secondary" size="sm" className={styles.back} onClick={backIntro}>
                 Back
-              </button>
+              </CtaButton>
             )}
             {isLastIntro ? (
-              <button type="button" className={styles.next} onClick={startFirstNote}>
+              <CtaButton size="sm" className={styles.next} onClick={startFirstNote}>
                 Start your first note
-              </button>
+              </CtaButton>
             ) : (
-              <button type="button" className={styles.next} onClick={nextIntro}>
+              <CtaButton size="sm" className={styles.next} onClick={nextIntro}>
                 Next
-              </button>
+              </CtaButton>
             )}
           </span>
         </div>
@@ -458,9 +471,9 @@ export default function FeatureTour() {
             <div className={styles.actions}>
               <span className={styles.skipSlot} />
               <span className={styles.navBtns}>
-                <button type="button" className={styles.next} onClick={dismissRemind}>
+                <CtaButton size="sm" className={styles.next} onClick={dismissRemind}>
                   Got it
-                </button>
+                </CtaButton>
               </span>
             </div>
           </>
@@ -477,9 +490,9 @@ export default function FeatureTour() {
                 </button>
               </span>
               <span className={styles.navBtns}>
-                <button type="button" className={styles.next} onClick={writeTodayNote}>
+                <CtaButton size="sm" className={styles.next} onClick={writeTodayNote}>
                   Get started
-                </button>
+                </CtaButton>
               </span>
             </div>
           </>

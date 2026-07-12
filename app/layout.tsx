@@ -1,21 +1,18 @@
 import type { Metadata } from 'next';
 import type { CSSProperties, ReactNode } from 'react';
-import { Poppins, Space_Grotesk, Inter, Patrick_Hand, Instrument_Serif } from 'next/font/google';
+import { Space_Grotesk, Patrick_Hand, Instrument_Serif } from 'next/font/google';
 import localFont from 'next/font/local';
 import '@/styles/globals.css';
 import { RouteShell } from '@/components/layout/RouteShell';
 
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500'],
-  variable: '--font-inter',
-  display: 'swap',
-});
-
-const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700', '800', '900'],
-  variable: '--font-poppins',
+const commitMono = localFont({
+  src: [
+    { path: './fonts/CommitMono-400-Regular.otf', weight: '400', style: 'normal' },
+    { path: './fonts/CommitMono-400-Italic.otf', weight: '400', style: 'italic' },
+    { path: './fonts/CommitMono-700-Regular.otf', weight: '700', style: 'normal' },
+    { path: './fonts/CommitMono-700-Italic.otf', weight: '700', style: 'italic' },
+  ],
+  variable: '--font-commit-mono',
   display: 'swap',
 });
 
@@ -105,7 +102,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${poppins.variable} ${spaceGrotesk.variable} ${patrickHand.variable} ${departureMono.variable} ${editorialSerif.variable}`}
+      className={`${commitMono.variable} ${spaceGrotesk.variable} ${patrickHand.variable} ${departureMono.variable} ${editorialSerif.variable}`}
       data-sidebar-collapsed="false"
       style={{ '--sidebar-width': '265px' } as CSSProperties}
       suppressHydrationWarning

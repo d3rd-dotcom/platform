@@ -24,7 +24,7 @@ Voice check against `Brand Editorial.md` passed: upbeat/academic/short, no corpo
 
 A dedicated agent built the site typography system in the same wave (full rules in `docs/design-system/typography.md`):
 
-- `styles/typography.css` — fluid clamp() scale (display → caption), Space Grotesk headings/labels, Inter body, 1.6 body / 1.2 heading line-heights, −0.02em display tracking, +0.05em uppercase labels. Imported at top of `styles/globals.css`.
+- `styles/typography.css` — fluid clamp() scale (display → caption), Space Grotesk headings/labels, Commit Mono body, 1.6 body / 1.2 heading line-heights, −0.02em display tracking, +0.05em uppercase labels. Imported at top of `styles/globals.css`.
 - Applied across all 11 `components/course-studio/*.module.css` (ComponentPalette first), all 14 `components/course-renderers/*.module.css`, and typography-only passes on `CourseFolderCard`, `ProfileDashboard`, `FieldNotesSheet` (layout untouched, per constraint).
 - WCAG AA verified for every text/surface combo against `#090A10`, `#11131B`, `#171A24`, and white — no color changes were needed.
 

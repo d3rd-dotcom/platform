@@ -70,29 +70,29 @@
   gap: 6px;
 }
 
-/* Eyebrow tags — deliberately larger than the back-link eyebrow (0.75rem). */
+/* Compact metadata tags sit directly beneath the guide title. */
 .subjectTag {
   font-family: var(--font-mono);
-  font-size: 0.875rem;
+  font-size: 0.625rem;
   font-weight: var(--font-weight-semibold, 600);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--color-primary);
   background: color-mix(in oklch, var(--color-primary) 10%, transparent);
-  padding: 5px 14px;
+  padding: 3px 8px;
   border-radius: var(--radius-full, 9999px);
 }
 
 /* Level indicator — filled chip so it reads as rank, not just another tag. */
 .levelChip {
   font-family: var(--font-departure-mono), var(--font-mono);
-  font-size: 0.875rem;
+  font-size: 0.625rem;
   font-weight: var(--font-weight-semibold, 600);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: #ffffff;
   background: var(--color-primary);
-  padding: 5px 14px;
+  padding: 3px 8px;
   border-radius: var(--radius-full, 9999px);
   box-shadow: 0 1px 4px color-mix(in oklch, var(--color-primary) 40%, transparent);
 }
@@ -100,17 +100,17 @@
 .walkthroughTrigger {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   font-family: var(--font-departure-mono), var(--font-mono), monospace;
-  font-size: 0.8125rem;
+  font-size: 0.625rem;
   font-weight: var(--font-weight-semibold, 600);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--color-text-dark);
   background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-base));
-  border: 1.5px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
   border-radius: var(--radius-full, 9999px);
-  padding: 5px 14px;
+  padding: 3px 8px;
   cursor: pointer;
   transition:
     border-color 0.15s ease,
@@ -319,7 +319,7 @@
 .chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 5px;
 }
 
 /* Chips in guideCard hover language — tint, 1.5px border, glow on hover */
@@ -327,18 +327,18 @@
 .chipNext {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   font-family: var(--type-font-label);
-  font-size: 0.9375rem;
+  font-size: 0.6875rem;
   font-weight: var(--type-weight-medium, 500);
   color: var(--color-text-dark);
   background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-base));
-  border: 1.5px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
   border-radius: var(--radius-full, 9999px);
   box-shadow:
     0 2px 6px rgba(0, 0, 0, 0.05),
     0 1px 0 color-mix(in oklch, var(--color-primary) 10%, transparent);
-  padding: 8px 18px;
+  padding: 4px 9px;
   text-decoration: none;
   transition:
     border-color 0.15s ease,
