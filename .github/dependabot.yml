@@ -9,15 +9,14 @@ updates:
     groups:
       dev-dependencies:
         dependency-type: development
+        update-types:
+          - minor
+          - patch
       production-dependencies:
         dependency-type: production
-
-  # Chainlink CRE workflows
-  - package-ecosystem: npm
-    directory: "/cre-workflows"
-    schedule:
-      interval: weekly
-    open-pull-requests-limit: 5
+        update-types:
+          - minor
+          - patch
 
   # Blue agent server
   - package-ecosystem: npm
@@ -25,6 +24,17 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    groups:
+      dev-dependencies:
+        dependency-type: development
+        update-types:
+          - minor
+          - patch
+      production-dependencies:
+        dependency-type: production
+        update-types:
+          - minor
+          - patch
 
   # GitHub Actions used in CI
   - package-ecosystem: github-actions

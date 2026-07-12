@@ -32,6 +32,14 @@ jobs:
       - name: Test
         run: npm test --if-present
 
+      - name: Install Blue server dependencies
+        run: npm install --legacy-peer-deps
+        working-directory: blue-server
+
+      - name: Type check Blue server
+        run: npx tsc --noEmit
+        working-directory: blue-server
+
       - name: Install CRE workflows dependencies
         run: npm install --legacy-peer-deps
         working-directory: cre-workflows

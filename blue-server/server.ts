@@ -94,7 +94,7 @@ let initError: string | null = null;
 
 async function initializeRuntime() {
   try {
-    runtime = new AgentRuntime(character);
+    runtime = new AgentRuntime({ character });
 
     runtime.registerPlugin(sqlPlugin);
 
@@ -116,7 +116,7 @@ async function initializeRuntime() {
     initError = err.message;
 
     try {
-      runtime = new AgentRuntime(character);
+      runtime = new AgentRuntime({ character });
       runtime.registerPlugin(elizaClassicPlugin);
       await runtime.initialize();
       initMode = "classic";
@@ -183,6 +183,7 @@ app.post("/chat", async (req, res) => {
     try {
       const worldId = stringToUuid("blue-world") as UUID;
       await ensureConnection(runtime, {
+        agentId: runtime.agentId,
         entityId: userId,
         roomId,
         worldId,
