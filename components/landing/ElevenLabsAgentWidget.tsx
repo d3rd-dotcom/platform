@@ -12,8 +12,6 @@ declare global {
     interface IntrinsicElements {
       'elevenlabs-convai': DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> & {
         'agent-id'?: string;
-        'action-text'?: string;
-        'avatar-image-url'?: string;
       };
     }
   }
@@ -35,13 +33,7 @@ export function ElevenLabsAgentWidget() {
     document.body.appendChild(script);
   }, []);
 
-  return (
-    <elevenlabs-convai
-      agent-id={BLUE_AGENT_ID}
-      action-text="Talk to Blue"
-      avatar-image-url="/blue/blue-home.png"
-    />
-  );
+  return <elevenlabs-convai agent-id={BLUE_AGENT_ID} />;
 }
 
 export default ElevenLabsAgentWidget;
