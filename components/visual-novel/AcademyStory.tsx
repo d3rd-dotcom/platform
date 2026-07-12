@@ -18,7 +18,7 @@ const CHECK_IN_QUESTIONS = [
   'Were there any other significant moments this week?',
 ];
 
-interface WeekOneVisualNovelProps {
+interface AcademyStoryProps {
   isOpen: boolean;
   onClose: () => void;
   weekNumber?: number;
@@ -236,12 +236,12 @@ type ScreenOrientationWithLock = ScreenOrientation & {
   lock?: (orientation: 'landscape' | 'portrait' | 'any' | 'natural' | 'portrait-primary' | 'portrait-secondary' | 'landscape-primary' | 'landscape-secondary') => Promise<void>;
 };
 
-export default function WeekOneVisualNovel({
+export default function AcademyStory({
   isOpen,
   onClose,
   weekNumber = 1,
   weekTitle = 'Creative Healing',
-}: WeekOneVisualNovelProps) {
+}: AcademyStoryProps) {
   const { ready, authenticated, login, getAccessToken } = usePrivy();
   const [shouldRender, setShouldRender] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -424,26 +424,22 @@ export default function WeekOneVisualNovel({
     };
   }, []);
 
-  // Keyboard nav + open/close lifecycle
+  // Open/close lifecycle. Keep this independent from story navigation state so
+  // advancing past the intro cannot reinitialize the modal.
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isOpen) return;
-      if (e.key === 'Escape') onClose();
-      if (showWeeklyIntro || showCheckIn) return;
-      if (e.key === 'ArrowRight' && sceneIndex < scenes.length - 1) setSceneIndex((c) => c + 1);
-      if (e.key === 'ArrowRight' && sceneIndex === scenes.length - 1) {
-        if (hasCheckIn) setShowCheckIn(true);
-        else onClose();
-      }
-      if (e.key === 'ArrowLeft' && sceneIndex > 0) setSceneIndex((c) => c - 1);
-    };
-
     if (isOpen) {
       setShouldRender(true);
-      setShowWeeklyIntro(true);
-      requestAnimationFrame(() => requestAnimationFrame(() => setIsAnimating(true)));
+      let secondFrame: number | null = null;
+      const firstFrame = requestAnimationFrame(() => {
+        secondFrame = requestAnimationFrame(() => setIsAnimating(true));
+      });
       document.body.style.overflow = 'hidden';
-      window.addEventListener('keydown', handleKeyDown);
+
+      return () => {
+        cancelAnimationFrame(firstFrame);
+        if (secondFrame !== null) cancelAnimationFrame(secondFrame);
+        document.body.style.overflow = 'unset';
+      };
     } else {
       audioRef.current?.pause();
       if (audioRef.current) audioRef.current.currentTime = 0;
@@ -459,9 +455,29 @@ export default function WeekOneVisualNovel({
       }, 250);
       return () => clearTimeout(timer);
     }
+  }, [isOpen]);
 
+  // Keyboard navigation follows the current scene without reinitializing the
+  // modal lifecycle above.
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+      if (showWeeklyIntro || showCheckIn) return;
+      if (e.key === 'ArrowRight' && sceneIndex < scenes.length - 1) setSceneIndex((c) => c + 1);
+      if (e.key === 'ArrowRight' && sceneIndex === scenes.length - 1) {
+        if (hasCheckIn) setShowCheckIn(true);
+        else onClose();
+      }
+      if (e.key === 'ArrowLeft' && sceneIndex > 0) setSceneIndex((c) => c - 1);
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
     return () => {
-      document.body.style.overflow = 'unset';
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [hasCheckIn, isOpen, onClose, sceneIndex, scenes.length, showCheckIn, showWeeklyIntro]);

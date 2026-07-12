@@ -1193,3 +1193,311 @@
 :global([data-theme="dark"]) .rightPanel {
   scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
 }
+
+/* ============================================ */
+/* COURSE WORKSPACE — 2026 structural refresh   */
+/* ============================================ */
+
+.content {
+  max-width: 1240px;
+  padding: 32px 40px 72px;
+}
+
+.controlPanel {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.9fr) minmax(380px, 1.1fr);
+  min-height: 260px;
+  margin: 8px 0 30px;
+  border-radius: 24px;
+  box-shadow: var(--shadow-xl);
+}
+
+.panelBanner {
+  height: auto;
+  min-height: 260px;
+  border: 0;
+  border-radius: 0;
+}
+
+.panelBody {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  align-items: center;
+  gap: 24px;
+  padding: 36px 40px;
+}
+
+.panelAvatarWrap {
+  margin: 0;
+}
+
+.panelAvatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 22px;
+}
+
+.panelHeader {
+  align-items: flex-start;
+  margin: 0;
+  text-align: left;
+}
+
+.courseEyebrow,
+.weekEyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--color-primary);
+}
+
+.panelTitle {
+  margin-top: 8px;
+  font-size: clamp(30px, 3vw, 42px);
+  line-height: 1.04;
+  color: var(--color-text-dark);
+}
+
+.panelDescription {
+  max-width: 520px;
+  margin: 14px 0 0;
+  color: var(--color-text-muted);
+}
+
+.panelBadgeRow {
+  top: auto;
+  right: auto;
+  bottom: 18px;
+  left: 18px;
+  max-width: calc(45% - 36px);
+}
+
+.panelBadgeProgress {
+  min-width: 140px;
+}
+
+.weeklyShell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 390px);
+  align-items: start;
+  gap: 32px;
+}
+
+.weekHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(250px, 0.8fr);
+  align-items: center;
+  gap: 24px;
+  padding: 20px 22px;
+  background: color-mix(in srgb, var(--color-surface-base) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 18%, var(--color-border-subtle));
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(14px);
+}
+
+.weekHeadingGroup {
+  min-width: 0;
+}
+
+.weekHeading {
+  margin: 5px 0 0;
+  font-family: var(--font-secondary);
+  font-size: clamp(22px, 2.4vw, 30px);
+  line-height: 1.12;
+  color: var(--color-text-dark);
+}
+
+.weekNav {
+  margin: 0;
+  padding: 0;
+}
+
+.weekNavArrow {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+}
+
+.weekDot {
+  width: 9px;
+  height: 9px;
+}
+
+.weekContent {
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.readingCard {
+  grid-template-columns: 4px 88px minmax(0, 1fr) auto;
+  gap: 18px;
+  min-height: 132px;
+  margin-bottom: 2px;
+  padding: 21px 22px;
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg);
+}
+
+.readingAccent {
+  height: 48px;
+}
+
+.readingThumb {
+  width: 88px;
+  height: 88px;
+  border-radius: 16px;
+}
+
+.readingCategory {
+  font-size: 11px;
+}
+
+.readingTitle {
+  font-size: 20px;
+}
+
+.readingArrow {
+  color: var(--color-primary);
+}
+
+.missionsHeadingRow {
+  margin: 10px 2px 2px;
+}
+
+.missionsHeading {
+  font-size: 13px;
+}
+
+.rightPanel {
+  top: calc(72px + 28px);
+  max-height: calc(100vh - 72px - 56px);
+  gap: 20px;
+}
+
+.blueTv {
+  border-radius: 22px;
+  box-shadow: 0 18px 40px color-mix(in oklch, var(--color-primary) 18%, transparent);
+}
+
+.popupCard {
+  border-radius: 20px;
+}
+
+:global([data-theme="dark"]) .panelTitle,
+:global([data-theme="dark"]) .weekHeading {
+  color: var(--color-text-dark);
+}
+
+:global([data-theme="dark"]) .panelDescription {
+  color: var(--color-text-muted);
+}
+
+:global([data-theme="dark"]) .weekHeader {
+  background: color-mix(in srgb, var(--color-surface-1) 88%, transparent);
+  border-color: var(--color-border-subtle);
+  box-shadow: var(--shadow-lg);
+}
+
+@media (max-width: 1023px) {
+  .content {
+    max-width: 760px;
+    padding: 24px 24px 64px;
+  }
+
+  .controlPanel {
+    grid-template-columns: 1fr;
+  }
+
+  .panelBanner {
+    min-height: 190px;
+  }
+
+  .panelBadgeRow {
+    top: 14px;
+    bottom: auto;
+    max-width: calc(100% - 36px);
+  }
+
+  .weeklyShell {
+    grid-template-columns: 1fr;
+  }
+
+  .rightPanel {
+    max-height: none;
+    padding: 0;
+    margin: 8px 0 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .content {
+    padding: 16px 14px calc(96px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .controlPanel {
+    min-height: 0;
+    margin-bottom: 20px;
+    border-radius: 18px;
+  }
+
+  .panelBanner {
+    min-height: 146px;
+  }
+
+  .panelBody {
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 16px;
+    padding: 24px 20px;
+  }
+
+  .panelAvatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+  }
+
+  .panelTitle {
+    font-size: 28px;
+  }
+
+  .panelDescription {
+    grid-column: 1 / -1;
+    font-size: 14px;
+  }
+
+  .weekHeader {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 18px 16px;
+    border-radius: 16px;
+  }
+
+  .weekNavDots {
+    gap: 4px;
+  }
+
+  .weekDot {
+    width: 7px;
+    height: 7px;
+  }
+
+  .readingCard {
+    grid-template-columns: 3px 64px minmax(0, 1fr) auto;
+    gap: 12px;
+    min-height: 104px;
+    padding: 16px 14px;
+    border-radius: 16px;
+  }
+
+  .readingThumb {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+  }
+
+  .readingTitle {
+    font-size: 16px;
+  }
+}

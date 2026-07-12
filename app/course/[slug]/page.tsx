@@ -293,16 +293,13 @@ export default function CourseSlugPage({ params }: PageProps) {
             { label: `Week ${activeWeek}` },
           ]}
         />
-        <main className={`${courseStyles.content} ${isDesktop ? courseStyles.contentDesktop : ''}`}>
+        <main className={courseStyles.content}>
 
           {diamondReward !== null && (
             <DiamondReward amount={diamondReward} onComplete={() => setDiamondReward(null)} />
           )}
 
-          {/* ── Left column (Control Panel) ── */}
-          <div className={isDesktop ? courseStyles.leftCol : undefined}>
-
-           <div className={courseStyles.controlPanel}>
+          <section className={courseStyles.controlPanel} aria-labelledby="course-title">
 
             {/* Banner */}
             <div
@@ -313,20 +310,26 @@ export default function CourseSlugPage({ params }: PageProps) {
 
             <div className={courseStyles.panelBody}>
 
-            {/* Blue avatar */}
             <div className={courseStyles.panelAvatarWrap}>
               <Image src="/blue/blue-home.png" alt="Blue" width={120} height={120} className={courseStyles.panelAvatar} />
             </div>
 
-            {/* Title */}
             <div className={courseStyles.panelHeader}>
-              <h1 className={courseStyles.panelTitle}>{vipCourse.title || 'Custom course'}</h1>
+              <span className={courseStyles.courseEyebrow}>Academy course</span>
+              <h1 id="course-title" className={courseStyles.panelTitle}>{vipCourse.title || 'Custom course'}</h1>
+              {vipCourse.focus && <p className={courseStyles.panelDescription}>{vipCourse.focus}</p>}
             </div>
+            </div>
+          </section>
 
-            <div className={courseStyles.panelDivider} aria-hidden="true" />
-
-            {/* Week navigation */}
-            <div className={courseStyles.weekNav}>
+          <section className={courseStyles.weeklyShell} aria-labelledby="week-heading">
+            <div className={courseStyles.leftCol}>
+              <header className={courseStyles.weekHeader}>
+                <div className={courseStyles.weekHeadingGroup}>
+                  <span className={courseStyles.weekEyebrow}>Week {activeWeek} of {weeks.length}</span>
+                  <h2 id="week-heading" className={courseStyles.weekHeading}>{weekTitle || `Week ${activeWeek}`}</h2>
+                </div>
+                <div className={courseStyles.weekNav} aria-label="Choose a week">
               <button
                 className={courseStyles.weekNavArrow}
                 onClick={() => { const n = Math.max(1, activeWeek - 1); setActiveWeek(n); setRightContent(null); }}
@@ -363,7 +366,10 @@ export default function CourseSlugPage({ params }: PageProps) {
                   <path d="M9 18l6-6-6-6"/>
                 </svg>
               </button>
-            </div>
+                </div>
+              </header>
+
+              <div className={courseStyles.weekContent}>
 
             {/* Reading card */}
             {readingComponent && (
@@ -490,12 +496,11 @@ export default function CourseSlugPage({ params }: PageProps) {
                 <span>Week {activeWeek} sealed</span>
               </div>
             )}
+              </div>
             </div>
-           </div>
-          </div>
 
           {/* ── Right panel (below the list on mobile) ── */}
-          <div className={courseStyles.rightPanel} ref={rightPanelRef}>
+          <aside className={courseStyles.rightPanel} ref={rightPanelRef} aria-label="Blue and weekly reading">
             <BlueVideoPanel
               className={courseStyles.blueTv}
               message="One mission at a time. Your work leaves evidence."
@@ -554,7 +559,8 @@ export default function CourseSlugPage({ params }: PageProps) {
               </div>
             )}
             {!rightContent && <div />}
-          </div>
+          </aside>
+          </section>
 
         </main>
       </div>

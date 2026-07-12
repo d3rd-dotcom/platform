@@ -23,7 +23,7 @@ const CyberpunkDataViz = dynamic(() => import('@/components/cyberpunk-data-viz/C
 const BookReaderModal = dynamic(() => import('@/components/book-reader/BookReaderModal'), {
   ssr: false,
 });
-const WeekOneVisualNovel = dynamic(() => import('@/components/visual-novel/WeekOneVisualNovel'), {
+const AcademyStory = dynamic(() => import('@/components/visual-novel/AcademyStory'), {
   ssr: false,
 });
 
@@ -139,7 +139,7 @@ export default function CoursePage() {
     setStorageItem('mwa-shadow-work-intro-seen', 'true');
   };
   const [isReaderOpen, setIsReaderOpen] = useState(false);
-  const [isWeekOneNovelOpen, setIsWeekOneNovelOpen] = useState(false);
+  const [isAcademyStoryOpen, setIsAcademyStoryOpen] = useState(false);
   const [readerIndex, setReaderIndex] = useState(0);
   const [activeWeek, setActiveWeek] = useState<number>(0);
   const [viewWeek, setViewWeek] = useState<number | null>(null);
@@ -326,7 +326,7 @@ export default function CoursePage() {
   const weekReading = WEEKLY_READINGS[Math.min(resolvedViewWeek, WEEKLY_READINGS.length - 1)];
   const handleOpenReading = useCallback((index: number) => {
     setReaderIndex(index);
-    setIsWeekOneNovelOpen(true);
+    setIsAcademyStoryOpen(true);
   }, []);
 
   const [rightContent, setRightContent] = useState<'reading' | null>(null);
@@ -368,12 +368,8 @@ export default function CoursePage() {
           { label: `Week ${resolvedViewWeek}` },
         ]}
       />
-      <main className={`${styles.content} ${isDesktop ? styles.contentDesktop : ''}`} onFocus={handleFocus}>
-
-        {/* ── Left / main column ── */}
-        <div className={isDesktop ? styles.leftCol : undefined}>
-
-          <div className={styles.controlPanel}>
+      <main className={styles.content} onFocus={handleFocus}>
+        <section className={styles.controlPanel} aria-labelledby="course-title">
             {(() => {
               const stats = weekStats[resolvedViewWeek];
               if (!stats || stats.total === 0) return null;
@@ -408,11 +404,21 @@ export default function CoursePage() {
                 <Image src="/blue/blue-home.png" alt="Blue" width={120} height={120} className={styles.panelAvatar} />
               </div>
               <div className={styles.panelHeader}>
-                <h1 className={styles.panelTitle}>Creative Healing</h1>
+                <span className={styles.courseEyebrow}>Twelve-week academy</span>
+                <h1 id="course-title" className={styles.panelTitle}>Creative Healing</h1>
+                <p className={styles.panelDescription}>A guided return to your creative practice, one week and one piece of evidence at a time.</p>
               </div>
-              <div className={styles.panelDivider} aria-hidden="true" />
+            </div>
+        </section>
 
-          <div className={styles.weekNav}>
+        <section className={styles.weeklyShell} aria-labelledby="week-heading">
+          <div className={styles.leftCol}>
+            <header className={styles.weekHeader}>
+              <div className={styles.weekHeadingGroup}>
+                <span className={styles.weekEyebrow}>Week {resolvedViewWeek} of 12</span>
+                <h2 id="week-heading" className={styles.weekHeading}>{weekReading.title}</h2>
+              </div>
+              <div className={styles.weekNav} aria-label="Choose a week">
             <button
               className={styles.weekNavArrow}
               onClick={() => goToWeek('prev')}
@@ -452,14 +458,15 @@ export default function CoursePage() {
                 <path d="M9 18l6-6-6-6"/>
               </svg>
             </button>
-          </div>
+              </div>
+            </header>
 
-          <div
-            className={`${styles.weekContent} ${swipeAnim === 'left' ? styles.weekContentSwipeLeft : swipeAnim === 'right' ? styles.weekContentSwipeRight : ''}`}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-          >
+            <div
+              className={`${styles.weekContent} ${swipeAnim === 'left' ? styles.weekContentSwipeLeft : swipeAnim === 'right' ? styles.weekContentSwipeRight : ''}`}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
             {seasonLoading || viewWeek === null ? (
               <>
                 <div className={styles.readingCardSkeleton}>
@@ -525,12 +532,9 @@ export default function CoursePage() {
             )}
             </div>
           </div>
-          </div>
-
-        </div>
 
         {/* ── Right panel — Weekly Read opens here (stacks below missions on mobile) ── */}
-        <div className={styles.rightPanel} ref={rightPanelRef}>
+        <aside className={styles.rightPanel} ref={rightPanelRef} aria-label="Blue and weekly reading">
           <BlueVideoPanel
             className={styles.blueTv}
             message="One mission at a time. Your work leaves evidence."
@@ -545,8 +549,8 @@ export default function CoursePage() {
               </div>
             </div>
           )}
-        </div>
-
+        </aside>
+        </section>
       </main>
 
       {isReaderOpen && (
@@ -559,10 +563,10 @@ export default function CoursePage() {
           slug={currentReading.slug}
         />
       )}
-      {isWeekOneNovelOpen && (
-        <WeekOneVisualNovel
-          isOpen={isWeekOneNovelOpen}
-          onClose={() => setIsWeekOneNovelOpen(false)}
+      {isAcademyStoryOpen && (
+        <AcademyStory
+          isOpen={isAcademyStoryOpen}
+          onClose={() => setIsAcademyStoryOpen(false)}
           weekNumber={readerIndex}
           weekTitle={currentReading.title}
         />
