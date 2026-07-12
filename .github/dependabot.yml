@@ -1,0 +1,34 @@
+version: 2
+updates:
+  # Root Next.js app
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      dev-dependencies:
+        dependency-type: development
+      production-dependencies:
+        dependency-type: production
+
+  # Chainlink CRE workflows
+  - package-ecosystem: npm
+    directory: "/cre-workflows"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+
+  # Blue agent server
+  - package-ecosystem: npm
+    directory: "/blue-server"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+
+  # GitHub Actions used in CI
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
