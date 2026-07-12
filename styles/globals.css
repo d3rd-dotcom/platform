@@ -6,6 +6,7 @@
    Must be imported before the rules below so its custom properties are
    available to the rest of the sheet. */
 @import './typography.css';
+@import './color-system.css';
 
 /**
  * Academy V3 Design System
@@ -18,47 +19,6 @@
    ============================================ */
 
 :root {
-  /* ============================================
-     Colors - Brand Palette
-     ============================================ */
-  --color-background: #FFFFFF;
-  --color-primary: #5168FF;
-  --color-primary-hover: #324BE4;
-  --color-primary-muted: rgba(81, 104, 255, 0.6);
-  --color-secondary: #44E990;
-  --color-secondary-hover: #16BD8B;
-  --color-tertiary: #1F7A3A;
-  --color-tertiary-hover: #17632F;
-  --color-tertiary-muted: rgba(31, 122, 58, 0.6);
-  --color-accent: #FF7729;
-  --color-accent-hover: #E5631A;
-  --color-accent-muted: rgba(255, 119, 41, 0.6);
-  --color-text-dark: #1A1B24;
-  --color-text-light: #FFFFFF;
-  --color-text-muted: rgba(26, 27, 36, 0.6);
-  --color-text-soft: rgba(26, 27, 36, 0.72);
-  --color-text-faint: rgba(26, 27, 36, 0.42);
-  --color-surface-base: #FFFFFF;
-  --color-surface-1: rgba(255, 255, 255, 0.95);
-  --color-surface-2: #F4F5FE;
-  --color-surface-3: #E7E8F8;
-  --color-border-subtle: rgba(26, 27, 36, 0.08);
-  --color-border-strong: rgba(26, 27, 36, 0.16);
-  --color-shell-background: rgba(244, 245, 254, 0.6);
-
-  /* Neutral Greys — for dark-first components (SurveyController, SurveySpace) */
-  --color-grey-500: #282836;
-  --color-grey-600: #555565;
-  --color-grey-600-50: rgba(85, 85, 101, 0.5);
-  --color-grey-900: #11121c;
-  --color-grey-950: #0c0d17;
-
-  /* Category Colors */
-  --color-mental-health: #9724A6;
-  --color-productivity: #FF8C42;
-  --color-wealth: #50599B;
-  
-  
   /* ============================================
      Typography
      ============================================ */
@@ -140,14 +100,14 @@
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
   --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.15);
-  --shadow-primary: 0 4px 12px rgba(81, 104, 255, 0.3);
-  --shadow-secondary: 0 4px 12px rgba(68, 233, 144, 0.3);
-  --shadow-tertiary: 0 4px 12px rgba(31, 122, 58, 0.3);
-  --shadow-accent: 0 4px 12px rgba(255, 119, 41, 0.3);
+  --shadow-primary: 0 4px 12px color-mix(in srgb, var(--color-action) 30%, transparent);
+  --shadow-secondary: 0 4px 12px color-mix(in srgb, var(--color-positive) 30%, transparent);
+  --shadow-tertiary: var(--shadow-secondary);
+  --shadow-accent: 0 4px 12px color-mix(in srgb, var(--color-accent) 30%, transparent);
   
   /* Card Styles */
-  --card-background: rgba(255, 255, 255, 0.95);
-  --card-border: 1px solid rgba(255, 255, 255, 0.8);
+  --card-background: var(--color-surface-1);
+  --card-border: 1px solid var(--color-border-subtle);
   --card-radius: var(--radius-xl);
   
   /* ============================================
@@ -203,30 +163,6 @@
    ============================================ */
 
 [data-theme="dark"] {
-  --color-background: oklch(15% 0.017 270);
-  --color-surface-base: oklch(15% 0.017 270);
-  --color-surface-1: oklch(19.5% 0.021 270);
-  --color-surface-2: oklch(24% 0.025 270);
-  --color-surface-3: oklch(29% 0.029 270);
-  --color-border-subtle: rgba(235, 232, 247, 0.1);
-  --color-border-strong: rgba(235, 232, 247, 0.18);
-  --color-shell-background: rgba(10, 10, 17, 0.9);
-  /* Primary stays the true Academy blue in dark mode — not a lightened tint */
-  --color-primary: #5168FF;
-  --color-primary-hover: #324BE4;
-  --color-primary-muted: rgba(81, 104, 255, 0.6);
-  --color-secondary: #44E990;
-  --color-secondary-hover: #16BD8B;
-  --color-tertiary: oklch(73% 0.12 150);
-  --color-tertiary-hover: oklch(79% 0.105 150);
-  --color-accent: oklch(75% 0.13 48);
-  --color-accent-hover: oklch(81% 0.105 48);
-  --color-text-dark: oklch(93.5% 0.016 285);
-  --color-text-light: oklch(97% 0.012 285);
-  --color-text-muted: rgba(235, 232, 247, 0.64);
-  --color-text-soft: rgba(235, 232, 247, 0.78);
-  --color-text-faint: rgba(235, 232, 247, 0.46);
-
   /* Card & surface */
   --card-background: color-mix(in oklch, var(--color-surface-1) 94%, transparent);
   --card-border: 1px solid var(--color-border-subtle);
@@ -237,50 +173,7 @@
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
   --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.5);
   --shadow-primary: 0 4px 12px rgba(139, 149, 255, 0.22);
-  --shadow-secondary: 0 4px 12px rgba(68, 233, 144, 0.18);
-}
-
-/* ============================================
-   Color Themes (accessibility accent tinting)
-   Orthogonal to light/dark. Each theme sets an accent hue (--accent-h) and
-   chroma (--accent-c); the shared rules below derive the primary accent and a
-   soft, low-stimulation page wash from them. Calmer, desaturated palettes help
-   light-sensitive and neurodivergent users. Selected via [data-color] on <html>.
-   Placed AFTER the dark block so these (equal-specificity) accent overrides win
-   in both modes; dark-specific tints use [data-theme="dark"][data-color].
-   ============================================ */
-
-[data-color="teal"]     { --accent-h: 195; --accent-c: 0.12; }
-[data-color="sage"]     { --accent-h: 150; --accent-c: 0.10; }
-[data-color="lavender"] { --accent-h: 295; --accent-c: 0.11; }
-[data-color="rose"]     { --accent-h: 12;  --accent-c: 0.12; }
-[data-color="amber"]    { --accent-h: 70;  --accent-c: 0.12; }
-[data-color="neutral"]  { --accent-h: 270; --accent-c: 0.02; }
-
-/* Accent — same in light & dark; overrides :root and the dark block by source order */
-[data-color] {
-  --color-primary: oklch(60% var(--accent-c) var(--accent-h));
-  --color-primary-hover: oklch(52% var(--accent-c) var(--accent-h));
-  --color-primary-muted: oklch(60% var(--accent-c) var(--accent-h) / 0.6);
-  --shadow-primary: 0 4px 12px oklch(60% var(--accent-c) var(--accent-h) / 0.3);
-
-  /* Soft light-mode page wash — very low chroma so it reads as a tint, not a flood */
-  --color-background: oklch(98.8% calc(var(--accent-c) * 0.16) var(--accent-h));
-  --color-surface-base: var(--color-background);
-  --color-surface-1: oklch(99% calc(var(--accent-c) * 0.14) var(--accent-h));
-  --color-surface-2: oklch(96.5% calc(var(--accent-c) * 0.22) var(--accent-h));
-  --color-surface-3: oklch(93.5% calc(var(--accent-c) * 0.28) var(--accent-h));
-  --color-shell-background: oklch(96.5% calc(var(--accent-c) * 0.22) var(--accent-h) / 0.6);
-}
-
-/* Dark-mode tint — higher specificity wins over the light wash above */
-[data-theme="dark"][data-color] {
-  --color-background: oklch(15% calc(var(--accent-c) * 0.18) var(--accent-h));
-  --color-surface-base: var(--color-background);
-  --color-surface-1: oklch(19.5% calc(var(--accent-c) * 0.2) var(--accent-h));
-  --color-surface-2: oklch(24% calc(var(--accent-c) * 0.22) var(--accent-h));
-  --color-surface-3: oklch(29% calc(var(--accent-c) * 0.24) var(--accent-h));
-  --color-shell-background: oklch(12% calc(var(--accent-c) * 0.18) var(--accent-h) / 0.9);
+  --shadow-secondary: 0 4px 12px color-mix(in srgb, var(--color-positive) 22%, transparent);
 }
 
 /* ============================================
@@ -426,8 +319,8 @@ button,
 .btn {
   font-family: var(--font-button);
   font-weight: var(--font-weight-medium);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  text-transform: none;
+  letter-spacing: 0.01em;
 }
 
 /* ============================================
@@ -446,30 +339,30 @@ button,
 }
 
 .btn-primary {
-  background-color: var(--color-primary);
-  color: var(--color-text-light);
+  background-color: var(--color-action);
+  color: var(--color-on-action);
 }
 
 .btn-primary:hover {
-  background-color: #3d52e6;
+  background-color: var(--color-action-hover);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(81, 104, 255, 0.3);
 }
 
 .btn-secondary {
-  background-color: var(--color-secondary);
-  color: var(--color-text-light);
+  background-color: var(--color-positive);
+  color: var(--color-on-positive);
 }
 
 .btn-secondary:hover {
-  background-color: #3C4686;
+  background-color: var(--color-positive-hover);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(80, 89, 155, 0.3);
 }
 
 .btn-tertiary {
-  background-color: var(--color-tertiary);
-  color: var(--color-text-light);
+  background-color: var(--color-positive);
+  color: var(--color-on-positive);
 }
 
 .btn-tertiary:hover {
@@ -480,7 +373,7 @@ button,
 
 .btn-accent {
   background-color: var(--color-accent);
-  color: var(--color-text-light);
+  color: var(--color-on-accent);
 }
 
 .btn-accent:hover {
@@ -792,8 +685,8 @@ h6 { font-size: var(--font-size-xs); }
 .introjs-button {
   font-family: var(--font-button);
   font-weight: var(--font-weight-medium);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  text-transform: none;
+  letter-spacing: 0.01em;
   padding: 12px 24px;
   border-radius: 8px;
   cursor: pointer;

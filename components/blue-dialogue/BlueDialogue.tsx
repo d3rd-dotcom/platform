@@ -76,9 +76,8 @@ export interface BlueDialogueProps {
   /** Supporting line rendered under the title. */
   subtitle?: string;
   /**
-   * 'bottom' docks the panel in the visual-novel convention (default).
-   * 'center' floats it in the middle of the viewport over a dimmed,
-   * click-to-dismiss backdrop, ignoring the topnav/sidenav offsets.
+   * Retained for call-site compatibility. BlueDialogue is always centered in
+   * the viewport, regardless of the value passed here.
    */
   placement?: 'bottom' | 'center';
   /**
@@ -136,7 +135,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   reward,
   title,
   subtitle,
-  placement = 'bottom',
+  placement: _placement = 'center',
   chatback,
 }) => {
   const { play } = useSound();
@@ -164,8 +163,8 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   const voiceAbortRef = useRef<AbortController | null>(null);
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Centered pop-up mode freezes the page behind it.
-  useScrollLock(open && placement === 'center');
+  // The centered overlay freezes the page behind it.
+  useScrollLock(open);
 
   // The expressions sprite can finish loading before hydration attaches
   // onLoad (SSR + warm cache), which would leave portraitReady false forever.
@@ -457,16 +456,12 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   return (
     <div
       ref={overlayRef}
-      className={`${styles.overlay} ${placement === 'center' ? styles.overlayCenter : ''}`}
+      className={`${styles.overlay} ${styles.overlayCenter}`}
       role="dialog"
       aria-label="Blue dialogue"
-      onClick={
-        placement === 'center'
-          ? (e) => {
-              if (e.target === e.currentTarget) close();
-            }
-          : undefined
-      }
+      onClick={(e) => {
+        if (e.target === e.currentTarget) close();
+      }}
     >
       <div
         className={`${styles.stage} ${portraitReady ? styles.stageReady : ''}`}

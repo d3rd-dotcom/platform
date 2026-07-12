@@ -24,6 +24,7 @@
   font-weight: var(--font-weight-bold, 700);
   letter-spacing: 0.01em;
   line-height: 1;
+  text-transform: none;
   white-space: nowrap;
   cursor: pointer;
   -webkit-appearance: none;
@@ -71,16 +72,16 @@
 
 /* ── Primary: solid brand pill ── */
 .primary {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-  color: #ffffff;
-  box-shadow: 0 6px 18px color-mix(in oklch, var(--color-primary) 24%, transparent);
+  background: var(--color-action);
+  border-color: var(--color-action);
+  color: var(--color-on-action);
+  box-shadow: 0 6px 18px color-mix(in oklch, var(--color-action) 24%, transparent);
 }
 
 .primary:not(:disabled):hover {
   transform: translateY(-1px);
-  background: var(--color-primary-hover, var(--color-primary));
-  box-shadow: 0 12px 28px color-mix(in oklch, var(--color-primary) 38%, transparent);
+  background: var(--color-action-hover);
+  box-shadow: 0 12px 28px color-mix(in oklch, var(--color-action) 38%, transparent);
 }
 
 /* ── Secondary: tinted brand pill ── */

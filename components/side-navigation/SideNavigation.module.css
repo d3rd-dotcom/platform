@@ -1971,7 +1971,7 @@
 }
 
 .footerDot {
-  color: #ff7729;
+  color: var(--color-accent);
   font-weight: bold;
 }
 
@@ -2010,4 +2010,3 @@
 :global([data-theme="dark"]) .footerLink:hover {
   color: var(--color-primary);
 }
-

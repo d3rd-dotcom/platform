@@ -12,7 +12,7 @@
   --c-blue: var(--color-primary);
   --c-blue-hover: #6072ff;
   --c-blue-text: #7586ff;
-  --c-green: #44e990;
+  --c-positive: var(--color-positive);
   --c-fg: #ebe8f7;
   --c-fg-soft: rgba(235, 232, 247, 0.74);
   --c-fg-muted: rgba(235, 232, 247, 0.52);
@@ -304,7 +304,7 @@
   background: linear-gradient(
     to right,
     var(--c-blue) 0%,
-    var(--c-green) var(--progress, 17%),
+    var(--c-positive) var(--progress, 17%),
     rgba(235, 232, 247, 0.14) var(--progress, 17%),
     rgba(235, 232, 247, 0.14) 100%
   );
@@ -452,7 +452,7 @@
   background: linear-gradient(
     to right,
     var(--c-blue) 0%,
-    var(--c-green) var(--progress, 17%),
+    var(--c-positive) var(--progress, 17%),
     rgba(26, 29, 51, 0.12) var(--progress, 17%),
     rgba(26, 29, 51, 0.12) 100%
   );

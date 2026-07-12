@@ -4,7 +4,7 @@
   height: calc(100dvh - 72px);
   min-height: 0;
   display: flex;
-  background: #ffffff;
+  background: var(--color-background);
   overflow: hidden;
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }

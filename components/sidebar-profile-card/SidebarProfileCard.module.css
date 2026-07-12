@@ -207,12 +207,12 @@
 }
 
 .menuItemSuccess {
-  color: #44e990;
+  color: var(--color-positive);
 }
 
 .menuItemSuccess:hover {
   background: rgba(68, 233, 144, 0.1);
-  color: #44e990;
+  color: var(--color-positive);
 }
 
 .menuItemDanger:hover {

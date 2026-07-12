@@ -1,23 +1,24 @@
 /* BlueDialogue — centered visual-novel panel based on the Researcher frame. */
 
 /*
- * Anchored dialogue box: docked to the bottom-centre of the viewport in the
- * visual-novel convention, with no darkening backdrop and no full-page
- * centring. The wrapper spans the width but ignores pointer events so the page
- * behind stays interactive — only the stage panel itself is clickable.
+ * The dialogue is always centered in the viewport. Keeping the positioning on
+ * the fixed wrapper means page chrome and scroll position cannot pull it toward
+ * the bottom edge.
  */
 .overlay {
   position: fixed;
   left: 0;
   right: 0;
+  top: 0;
   bottom: 0;
   z-index: 9999;
   display: flex;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
   padding: 16px;
   box-sizing: border-box;
-  pointer-events: none;
+  pointer-events: auto;
+  background: rgba(7, 9, 24, 0.6);
   animation: overlayIn 220ms ease-out;
 }
 
@@ -29,12 +30,9 @@
 }
 
 /*
- * Pop-up variant: the panel floats dead-centre of the viewport (position is
- * fixed, so the topnav/sidenav offsets never shift it) over a dimmed,
- * click-to-dismiss backdrop.
+ * Kept as a compatibility class for callers that still pass placement="center".
  */
 .overlayCenter {
-  top: 0;
   align-items: center;
   pointer-events: auto;
   background: rgba(7, 9, 24, 0.6);
@@ -54,7 +52,7 @@
   position: relative;
   display: grid;
   grid-template-columns: 35.59% 64.41%;
-  width: min(900px, calc(100vw - 32px), calc(166.667dvh - 53.334px));
+  width: min(760px, calc(100vw - 32px), calc(166.667dvh - 53.334px));
   aspect-ratio: 1065 / 639;
   opacity: 0;
   transform: translateY(6px) scale(0.985);

@@ -194,13 +194,14 @@ The logo should feel like a strange artifact from another planet. It does not ne
 
 ### Color Palette
 
-- Academy Blue: `#5168FF` - our flagship shade; primary actions
+- Academy Blue: `#5168FF` - our flagship brand shade
+- Action Blue: `#465BE0` - accessible primary actions and small text on filled controls
 - Blackpill Text: `#1A1B24` - bluish black for smooth dark text
-- Quantum White: `#F4F5FE` - backgrounds; calm and sharp
-- Accent Green: `#5DD68F` - rewards and positive signals
-- Text Black: `#000000` - precision
+- Canvas: `#FAF6F0` - the single light-mode foundation
+- Academy Indigo: `#50599B` - rewards, progress, and positive signals
+- Study Violet: `#7A56C6` - restrained emphasis and secondary accents
 
-Cards stay flat: `2px` solid primary border, `12px` corner radius.
+Cards stay flat: a clear border, a `12px` corner radius, and minimal shadow.
 
 The primary blue gradient and halftone dots are reserved for hero and section moments. Keep day-to-day UI direct and flat.
 
@@ -236,7 +237,7 @@ Use this treatment for Blue panels, social art, review backgrounds, and any mome
 - Lifted deep-blue base so dark blends keep visible detail
 - Inverted treatment: `filter: invert(1) hue-rotate(180deg) saturate(0.92) brightness(0.9) contrast(1.05)`
 - Blend with `mix-blend-mode: soft-light`
-- Foreground text in Quantum White or high-opacity white
+- Foreground text in the semantic on-dark color or high-opacity white
 - On hover, use a restrained chromatic split with duplicated layers offset by 3-4px, hue rotation, and `mix-blend-mode: screen`
 
 The result should feel like a restrained system presence, not decoration for decoration's sake.

@@ -113,7 +113,11 @@ const ColorThemePicker: React.FC = () => {
                   }}
                   onMouseEnter={() => play('hover')}
                 >
-                  <span className={styles.swatch} style={{ background: c.swatch }} aria-hidden="true" />
+                  <span
+                    className={styles.swatch}
+                    data-color={c.id === 'default' ? 'academy' : c.id}
+                    aria-hidden="true"
+                  />
                   <span className={styles.swatchLabel}>{c.label}</span>
                 </button>
               );

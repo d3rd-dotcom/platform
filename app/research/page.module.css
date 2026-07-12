@@ -368,7 +368,7 @@
 }
 
 .statTilePrimary { background: color-mix(in oklch, var(--color-primary) 10%, #fff); border: 2px solid color-mix(in oklch, var(--color-primary) 25%, transparent); }
-.statTileAccent { background: color-mix(in oklch, #FF7729 10%, #fff); border: 2px solid color-mix(in oklch, #FF7729 25%, transparent); }
+.statTileAccent { background: color-mix(in oklch, var(--color-warning) 10%, var(--color-canvas)); border: 2px solid color-mix(in oklch, var(--color-warning) 25%, transparent); }
 .statTileTertiary { background: color-mix(in oklch, #74C465 10%, #fff); border: 2px solid color-mix(in oklch, #74C465 25%, transparent); }
 .statTileSecondary { background: color-mix(in oklch, #50599B 10%, #fff); border: 2px solid color-mix(in oklch, #50599B 25%, transparent); }
 .statTileMental { background: color-mix(in oklch, #9724A6 10%, #fff); border: 2px solid color-mix(in oklch, #9724A6 25%, transparent); }
@@ -486,7 +486,7 @@
 .tdMean { color: #1A1B24; }
 .tdSd { color: #50599B; }
 .tdMin { color: #5FA852; }
-.tdMax { color: #FF7729; }
+.tdMax { color: var(--color-warning-text); }
 .tdP { color: #9724A6; font-weight: 600; }
 
 .emptyRow {
@@ -521,7 +521,7 @@
 
 .groupWaitlist {
   background: rgba(255,119,41,0.1);
-  border: 1px solid #FF7729;
+  border: 1px solid var(--color-warning);
 }
 
 /* ── TAB BAR ─────────────────────────────────────────── */
@@ -797,7 +797,7 @@
 }
 
 .findingTagSig { border-color: #74C465; color: #74C465; }
-.findingTagWarn { border-color: #FF7729; color: #FF7729; }
+.findingTagWarn { border-color: var(--color-warning); color: var(--color-warning-text); }
 .findingTagInfo { border-color: rgba(26,27,36,0.25); color: rgba(26,27,36,0.55); }
 
 /* ── TOAST ───────────────────────────────────────────── */
@@ -1056,8 +1056,8 @@
 }
 
 .ratingBtnActiveDown {
-  border-color: #FF7729;
-  color: #FF7729;
+  border-color: var(--color-warning);
+  color: var(--color-warning-text);
   background: rgba(255,119,41,0.15);
 }
 
@@ -1133,8 +1133,8 @@
 }
 
 :global([data-theme="dark"]) .statTileAccent {
-  background: color-mix(in oklch, #FF7729 18%, rgba(25, 26, 38, 0.94));
-  border-color: color-mix(in oklch, #FF7729 40%, transparent);
+  background: color-mix(in oklch, var(--color-warning) 18%, var(--color-surface-1));
+  border-color: color-mix(in oklch, var(--color-warning) 40%, transparent);
 }
 
 :global([data-theme="dark"]) .statTileTertiary {

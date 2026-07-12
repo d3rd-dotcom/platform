@@ -232,7 +232,7 @@ const ACCENT_CLASSES = ['statTilePrimary', 'statTileAccent', 'statTileTertiary',
 const CHART_COLORS = [
   { bg: 'rgba(81,104,255,0.6)', border: '#5168FF' },
   { bg: 'rgba(116,196,101,0.6)', border: '#74C465' },
-  { bg: 'rgba(255,119,41,0.6)', border: '#FF7729' },
+  { bg: 'color-mix(in srgb, var(--color-warning) 60%, transparent)', border: 'var(--color-warning)' },
   { bg: 'rgba(151,36,166,0.6)', border: '#9724A6' },
   { bg: 'rgba(80,89,155,0.6)', border: '#50599B' },
   { bg: 'rgba(255,200,41,0.6)', border: '#E5B01A' },

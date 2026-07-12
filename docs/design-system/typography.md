@@ -1,8 +1,8 @@
 # Mental Wealth Academy — Typographic System
 
 > Source of truth: [`styles/typography.css`](../../styles/typography.css), imported at the top of
-> [`styles/globals.css`](../../styles/globals.css). Colors reference the tokens in
-> [`styles/design-tokens.ts`](../../styles/design-tokens.ts) and the CSS custom properties in `globals.css`.
+> [`styles/globals.css`](../../styles/globals.css). Color has one runtime source of truth:
+> [`styles/color-system.css`](../../styles/color-system.css).
 
 The tone is **calm and editorial meets modern, tech-forward** — academic, highly readable,
 with a beautiful fluid scale. Fonts are self-hosted via `next/font` in `app/layout.tsx`,
@@ -47,7 +47,7 @@ exposed as a size / line-height / tracking triple **and** a matching utility cla
 | **body-lg** | `clamp(1rem, 0.96rem + 0.2vw, 1.0625rem)` | 16 → 17 | 1.6 | 0 | Commit Mono | Long-form reading surfaces, rich-text body, instructions |
 | **body** | `clamp(0.875rem, 0.85rem + 0.12vw, 0.9375rem)` | 14 → 15 | 1.6 | 0 | Commit Mono | Default UI copy, inputs, options |
 | **body-sm** | `clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem)` | 13 → 14 | 1.6 | 0 | Commit Mono | Secondary copy, compact inputs, hints, buttons |
-| **label** | `clamp(0.6875rem, 0.66rem + 0.1vw, 0.75rem)` | 11 → 12 | 1 | +0.05em | Space Grotesk | Small **uppercase** labels, badges, kickers, palette item labels |
+| **label** | `clamp(0.6875rem, 0.66rem + 0.1vw, 0.75rem)` | 11 → 12 | 1 | +0.03em | Space Grotesk | Small sentence-case labels, badges, kickers, palette item labels |
 | **caption** | `clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem)` | 12 → 13 | 1.4 | 0 | Commit Mono | Fine print, meta, captions, counters |
 | **code** | `clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem)` | 13 → 14 | 1.55 | 0 | Space Grotesk | Slugs, inline `code`, block IDs (`tabular-nums`) |
 
@@ -69,8 +69,8 @@ selectors keep their own colours and box styles while inheriting the scale.
   > Exception: `FieldNotesSheet .noteBody` keeps `line-height: 28px` because it is
   > locked to the ruled-paper background lines — a layout constraint, not free type.
 - **Tracking:** `−0.02em` on large headings (display/h1), `−0.015em` on mid
-  headings, `+0.05em` on small uppercase labels, `+0.08em`
-  (`--type-track-label-lg`) on the tightest uppercase micro-labels (week badges,
+  headings, `+0.03em` on small sentence-case labels, `+0.05em`
+  (`--type-track-label-lg`) on the tightest micro-labels (week badges,
   section kickers).
 - **Spacing rhythm:** margins/padding follow a **4px-based scale**. Flow headings
   use a consistent ratio — **`1.5em` above, `0.5em` below**
@@ -92,25 +92,22 @@ evaluated composited over the opaque surface.
 | Dark-mode `--color-text-soft` (.78) | 10.0 | 9.6 | 9.2 | — | ✅ AA/AAA |
 | Dark-mode `--color-text-muted` (.64) | 7.0 | 6.8 | 6.6 | — | ✅ AA/AAA |
 | Dark-mode `--color-text-faint` (.46) | 4.05 | 4.07 | 4.04 | — | ✅ large text (3:1); placeholder/meta only |
-| Light `--color-text-dark` `#1A1B24` | — | — | — | 17.1 | ✅ AA/AAA |
-| Light `--color-text-muted` (.6) | — | — | — | 4.51 | ✅ AA (normal) |
+| Light `--color-text-dark` `#1A1B24` | — | — | — | 15.91 on `#FAF6F0` | ✅ AA/AAA |
+| Light `--color-text-muted` (.64) | — | — | — | 5.00 on `#FAF6F0` | ✅ AA (normal) |
 | Accent link/title `#8f9bff` (dark) | 7.8 | 7.3 | 6.9 | 2.5 | ✅ on dark; not used as text on white |
-| Primary `#5168FF` (badge/label text) | 4.49 | 4.21 | 3.95 | 4.40 | ✅ **large text** (3:1); see note |
+| Action Blue `#465BE0` (control text/fill) | — | — | — | 5.48 | ✅ AA for normal text |
 
 **Notes**
-- Primary `#5168FF` used as *label* text (badges, kickers, "reading category")
-  is bold and/or uppercase at label sizes and reads as large text per WCAG, so
-  the 3.95–4.49:1 range passes. It also serves as fills/borders where contrast is
-  not text-critical. On white it is 4.40:1 — used for small accent numerals
-  (e.g. progress %) which are semibold; acceptable, and the surrounding titles use
-  the AA-passing dark text.
+- Uppercase styling and bold weight do not make 11–13px labels large text. Every
+  label-sized foreground/background pair must meet the normal-text threshold of
+  4.5:1. Academy Blue remains the brand swatch; Action Blue is the accessible
+  interactive shade for small text and filled controls.
 - `--color-text-faint` (~4:1) is intentionally reserved for placeholders,
   disabled states and decorative meta — never for primary reading content.
 
 ### Colour changes made to pass AA
-**None.** All text/surface pairings already met their applicable AA threshold
-(4.5:1 normal, 3:1 large), so no colour tokens were altered. Only
-font-family / size / line-height / letter-spacing / weight were changed.
+Action Blue was introduced for normal-size control text and filled controls.
+Automated contrast tests now protect the semantic foreground/background pairs.
 
 ---
 

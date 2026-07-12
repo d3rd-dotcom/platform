@@ -1,0 +1,166 @@
+/**
+ * Mental Wealth Academy color system
+ *
+ * This file is the runtime source of truth for product color. Brand prose,
+ * TypeScript helpers, component CSS, and /style-guide reference these variables
+ * instead of repeating color values.
+ */
+
+:root {
+  /* Primitive palette */
+  --palette-canvas: #FAF6F0;
+  --palette-academy-blue: #5168FF;
+  --palette-action-blue: #465BE0;
+  --palette-action-blue-hover: #3246BE;
+  --palette-indigo: #50599B;
+  --palette-indigo-hover: #3C4686;
+  --palette-violet: #7A56C6;
+  --palette-violet-hover: #6841AE;
+  --palette-gold: #B58A00;
+  --palette-gold-text: #8A6A00;
+  --palette-danger: #BA1A1A;
+  --palette-ink: #1A1B24;
+  --palette-on-dark: #FFFFFF;
+
+  /* Semantic roles */
+  --color-canvas: var(--palette-canvas);
+  --color-brand: var(--palette-academy-blue);
+  --color-action: var(--palette-action-blue);
+  --color-action-hover: var(--palette-action-blue-hover);
+  --color-action-muted: rgba(70, 91, 224, 0.6);
+  --color-on-action: var(--palette-on-dark);
+  --color-positive: var(--palette-indigo);
+  --color-positive-hover: var(--palette-indigo-hover);
+  --color-positive-muted: rgba(80, 89, 155, 0.18);
+  --color-on-positive: var(--palette-on-dark);
+  --color-accent: var(--palette-violet);
+  --color-accent-hover: var(--palette-violet-hover);
+  --color-accent-muted: rgba(122, 86, 198, 0.18);
+  --color-on-accent: var(--palette-on-dark);
+  --color-warning: var(--palette-gold);
+  --color-warning-text: var(--palette-gold-text);
+  --color-on-warning: var(--palette-ink);
+  --color-danger: var(--palette-danger);
+  --color-on-danger: var(--palette-on-dark);
+
+  /* Text, surfaces, and borders */
+  --color-text-dark: var(--palette-ink);
+  --color-text-light: var(--palette-on-dark);
+  --color-text-muted: rgba(26, 27, 36, 0.64);
+  --color-text-soft: rgba(26, 27, 36, 0.72);
+  --color-text-faint: rgba(26, 27, 36, 0.42);
+  --color-background: var(--color-canvas);
+  --color-surface-base: var(--color-canvas);
+  --color-surface-1: color-mix(in srgb, var(--color-canvas) 96%, var(--color-text-dark));
+  --color-surface-2: color-mix(in srgb, var(--color-canvas) 92%, var(--color-text-dark));
+  --color-surface-3: color-mix(in srgb, var(--color-canvas) 86%, var(--color-text-dark));
+  --color-border-subtle: rgba(26, 27, 36, 0.08);
+  --color-border-strong: rgba(26, 27, 36, 0.16);
+  --color-shell-background: color-mix(in srgb, var(--color-canvas) 94%, transparent);
+
+  /* Compatibility aliases. New work should use the semantic role names. */
+  --color-primary: var(--color-action);
+  --color-primary-hover: var(--color-action-hover);
+  --color-primary-muted: var(--color-action-muted);
+  --color-secondary: var(--color-positive);
+  --color-secondary-hover: var(--color-positive-hover);
+  --color-tertiary: var(--color-positive);
+  --color-tertiary-hover: var(--color-positive-hover);
+  --color-tertiary-muted: var(--color-positive-muted);
+
+  /* Existing category roles */
+  --color-mental-health: var(--color-accent);
+  --color-productivity: var(--color-action);
+  --color-wealth: var(--color-positive);
+
+  /* Existing dark-first component neutrals */
+  --color-grey-500: #282836;
+  --color-grey-600: #555565;
+  --color-grey-600-50: rgba(85, 85, 101, 0.5);
+  --color-grey-900: #11121C;
+  --color-grey-950: #0C0D17;
+}
+
+[data-theme="dark"] {
+  --color-canvas: oklch(15% 0.017 270);
+  --color-background: var(--color-canvas);
+  --color-surface-base: var(--color-canvas);
+  --color-surface-1: oklch(19.5% 0.021 270);
+  --color-surface-2: oklch(24% 0.025 270);
+  --color-surface-3: oklch(29% 0.029 270);
+  --color-border-subtle: rgba(235, 232, 247, 0.1);
+  --color-border-strong: rgba(235, 232, 247, 0.18);
+  --color-shell-background: rgba(10, 10, 17, 0.9);
+  --color-text-dark: oklch(93.5% 0.016 285);
+  --color-text-light: oklch(97% 0.012 285);
+  --color-text-muted: rgba(235, 232, 247, 0.64);
+  --color-text-soft: rgba(235, 232, 247, 0.78);
+  --color-text-faint: rgba(235, 232, 247, 0.46);
+}
+
+/* Explicit light values support nested previews inside a dark application
+   shell and make the light contract as inspectable as the dark contract. */
+[data-theme="light"] {
+  --color-text-dark: var(--palette-ink);
+  --color-text-light: var(--palette-on-dark);
+  --color-text-muted: rgba(26, 27, 36, 0.64);
+  --color-text-soft: rgba(26, 27, 36, 0.72);
+  --color-text-faint: rgba(26, 27, 36, 0.42);
+  --color-border-subtle: rgba(26, 27, 36, 0.08);
+  --color-border-strong: rgba(26, 27, 36, 0.16);
+}
+
+/* Optional accent themes remain orthogonal to light and dark modes. */
+[data-color="teal"]     { --accent-h: 195; --accent-c: 0.12; }
+[data-color="sage"]     { --accent-h: 150; --accent-c: 0.10; }
+[data-color="lavender"] { --accent-h: 295; --accent-c: 0.11; }
+[data-color="rose"]     { --accent-h: 12;  --accent-c: 0.12; }
+[data-color="amber"]    { --accent-h: 70;  --accent-c: 0.12; }
+[data-color="neutral"]  { --accent-h: 270; --accent-c: 0.02; }
+
+[data-color] {
+  --color-action: oklch(52% var(--accent-c) var(--accent-h));
+  --color-action-hover: oklch(45% var(--accent-c) var(--accent-h));
+  --color-action-muted: oklch(52% var(--accent-c) var(--accent-h) / 0.6);
+  --color-canvas: oklch(98.8% calc(var(--accent-c) * 0.16) var(--accent-h));
+  --color-background: var(--color-canvas);
+  --color-surface-base: var(--color-canvas);
+  --color-surface-1: oklch(97% calc(var(--accent-c) * 0.18) var(--accent-h));
+  --color-surface-2: oklch(94.5% calc(var(--accent-c) * 0.22) var(--accent-h));
+  --color-surface-3: oklch(91.5% calc(var(--accent-c) * 0.28) var(--accent-h));
+  --color-shell-background: oklch(96.5% calc(var(--accent-c) * 0.22) var(--accent-h) / 0.6);
+}
+
+[data-theme="dark"][data-color] {
+  --color-canvas: oklch(15% calc(var(--accent-c) * 0.18) var(--accent-h));
+  --color-background: var(--color-canvas);
+  --color-surface-base: var(--color-canvas);
+  --color-surface-1: oklch(19.5% calc(var(--accent-c) * 0.2) var(--accent-h));
+  --color-surface-2: oklch(24% calc(var(--accent-c) * 0.22) var(--accent-h));
+  --color-surface-3: oklch(29% calc(var(--accent-c) * 0.24) var(--accent-h));
+  --color-shell-background: oklch(12% calc(var(--accent-c) * 0.18) var(--accent-h) / 0.9);
+}
+
+/* Explicit Academy values let the style guide preview the default beside a
+   currently selected optional theme. ThemeProvider still omits data-color for
+   the default application state. */
+[data-color="academy"] {
+  --color-action: var(--palette-action-blue);
+  --color-action-hover: var(--palette-action-blue-hover);
+  --color-action-muted: rgba(70, 91, 224, 0.6);
+  --color-canvas: var(--palette-canvas);
+  --color-background: var(--color-canvas);
+  --color-surface-base: var(--color-canvas);
+  --color-surface-1: color-mix(in srgb, var(--color-canvas) 96%, var(--color-text-dark));
+  --color-surface-2: color-mix(in srgb, var(--color-canvas) 92%, var(--color-text-dark));
+  --color-surface-3: color-mix(in srgb, var(--color-canvas) 86%, var(--color-text-dark));
+}
+
+[data-theme="dark"][data-color="academy"] {
+  --color-canvas: oklch(15% 0.017 270);
+  --color-background: var(--color-canvas);
+  --color-surface-base: var(--color-canvas);
+  --color-surface-1: oklch(19.5% 0.021 270);
+  --color-surface-2: oklch(24% 0.025 270);
+  --color-surface-3: oklch(29% 0.029 270);
+}

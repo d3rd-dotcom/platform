@@ -23,7 +23,7 @@
   min-height: calc(100dvh - 72px);
   max-height: calc(100dvh - 72px);
   margin-left: var(--sidebar-width, 272px);
-  background: #FFFFFF;
+  background: var(--color-background);
   overflow: hidden;
 }
 

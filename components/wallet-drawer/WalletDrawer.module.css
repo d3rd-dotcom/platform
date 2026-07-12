@@ -129,7 +129,7 @@
   color: #1f9d55;
 }
 :global([data-theme="dark"]) .walletChipCopied .copyHint {
-  color: #44e990;
+  color: var(--color-positive);
 }
 
 .closeBtn {

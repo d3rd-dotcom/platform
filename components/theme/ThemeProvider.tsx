@@ -14,18 +14,16 @@ export type ColorTheme = 'default' | 'teal' | 'sage' | 'lavender' | 'rose' | 'am
 export interface ColorThemeOption {
   id: ColorTheme;
   label: string;
-  /** Representative swatch colour for the picker UI. */
-  swatch: string;
 }
 
 export const COLOR_THEMES: ColorThemeOption[] = [
-  { id: 'default', label: 'Academy', swatch: '#5168FF' },
-  { id: 'teal', label: 'Teal', swatch: 'oklch(62% 0.12 195)' },
-  { id: 'sage', label: 'Sage', swatch: 'oklch(62% 0.10 150)' },
-  { id: 'lavender', label: 'Lavender', swatch: 'oklch(62% 0.11 295)' },
-  { id: 'rose', label: 'Rose', swatch: 'oklch(62% 0.12 12)' },
-  { id: 'amber', label: 'Amber', swatch: 'oklch(64% 0.12 70)' },
-  { id: 'neutral', label: 'Neutral', swatch: 'oklch(60% 0.02 270)' },
+  { id: 'default', label: 'Academy' },
+  { id: 'teal', label: 'Teal' },
+  { id: 'sage', label: 'Sage' },
+  { id: 'lavender', label: 'Lavender' },
+  { id: 'rose', label: 'Rose' },
+  { id: 'amber', label: 'Amber' },
+  { id: 'neutral', label: 'Neutral' },
 ];
 
 const COLOR_THEME_IDS = COLOR_THEMES.map((c) => c.id);

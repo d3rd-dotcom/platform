@@ -43,8 +43,8 @@
   --type-track-display: -0.02em;  /* large headings */
   --type-track-heading: -0.015em; /* mid headings */
   --type-track-body: 0em;
-  --type-track-label: 0.05em;     /* small uppercase labels */
-  --type-track-label-lg: 0.08em;  /* extra-tight uppercase micro labels */
+  --type-track-label: 0.03em;     /* compact sentence-case labels */
+  --type-track-label-lg: 0.05em;  /* compact micro labels */
 
   /* ============================================================
      FLUID TYPE SCALE  (size / line-height / tracking per step)
@@ -90,7 +90,7 @@
   --type-body-sm-lh: var(--type-lh-body);
   --type-body-sm-track: var(--type-track-body);
 
-  /* Label — small uppercase (Space Grotesk) */
+  /* Label — small sentence case (Space Grotesk) */
   --type-label-size: clamp(0.6875rem, 0.66rem + 0.1vw, 0.75rem); /* 11 → 12px */
   --type-label-lh: var(--type-lh-solid);
   --type-label-track: var(--type-track-label);
@@ -185,7 +185,7 @@
   line-height: var(--type-label-lh);
   letter-spacing: var(--type-label-track);
   font-weight: var(--type-weight-semibold);
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .type-caption {

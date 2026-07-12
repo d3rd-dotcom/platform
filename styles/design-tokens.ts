@@ -1,11 +1,10 @@
 /**
  * Mental Wealth Academy Design Tokens
  * 
- * A comprehensive TypeScript design system extracted from our design system.
- * Use these tokens for consistent styling across all components.
+ * TypeScript references for the CSS design system. Color values resolve through
+ * styles/color-system.css, the runtime source of truth.
  * 
- * @see docs/design-system/design-system.css
- * @see SKILL.md
+ * @see styles/color-system.css
  */
 
 // ============================================
@@ -18,106 +17,106 @@
 export const colors = {
   // Primary Colors
   primary: {
-    DEFAULT: '#5168FF',
-    hover: '#324BE4',
-    muted: 'rgba(81, 104, 255, 0.6)',
-    light: '#7586FF',
-    dark: '#8A94FF',
+    DEFAULT: 'var(--color-action)',
+    hover: 'var(--color-action-hover)',
+    muted: 'var(--color-action-muted)',
+    light: 'var(--color-action-muted)',
+    dark: 'var(--color-action-hover)',
   },
   
   // Secondary Colors
   secondary: {
-    DEFAULT: '#50599B',
-    hover: '#3C4686',
-    muted: 'rgba(80, 89, 155, 0.6)',
-    light: '#ADB7FF',
-    dark: '#A79BC8',
+    DEFAULT: 'var(--color-positive)',
+    hover: 'var(--color-positive-hover)',
+    muted: 'var(--color-positive-muted)',
+    light: 'var(--color-positive-muted)',
+    dark: 'var(--color-positive-hover)',
   },
   
   // Background Colors
   background: {
-    DEFAULT: '#FFFFFF',
-    card: 'rgba(255, 255, 255, 0.95)',
-    dark: '#090A10',
-    cardDark: '#11131B',
-    surfaceDark: '#171A24',
-    surfaceDarkRaised: '#1D2130',
+    DEFAULT: 'var(--color-background)',
+    card: 'var(--color-surface-1)',
+    dark: 'var(--color-background)',
+    cardDark: 'var(--color-surface-1)',
+    surfaceDark: 'var(--color-surface-2)',
+    surfaceDarkRaised: 'var(--color-surface-3)',
   },
   
   // Neutral Colors (Gray Scale)
   neutrals: {
-    white: '#FFFFFF',
-    50: '#FAFAFA',
-    100: '#F4F5FE',
-    200: '#ECECEC',
-    300: '#D4D4D4',
-    400: '#A3A3A3',
-    500: '#737373',
-    600: '#525252',
-    700: '#404040',
-    800: '#262626',
-    900: '#171717',
-    black: '#0C0D17',
+    white: 'var(--color-text-light)',
+    50: 'var(--color-canvas)',
+    100: 'var(--color-surface-1)',
+    200: 'var(--color-surface-2)',
+    300: 'var(--color-surface-3)',
+    400: 'var(--color-text-faint)',
+    500: 'var(--color-text-muted)',
+    600: 'var(--color-text-soft)',
+    700: 'var(--color-text-dark)',
+    800: 'var(--color-text-dark)',
+    900: 'var(--color-text-dark)',
+    black: 'var(--color-text-dark)',
   },
   
   // Text Colors
   text: {
-    dark: '#1A1B24',
-    light: '#FFFFFF',
-    muted: 'rgba(26, 27, 36, 0.6)',
-    soft: 'rgba(26, 27, 36, 0.72)',
-    faint: 'rgba(26, 27, 36, 0.42)',
-    foreground: 'rgba(26, 27, 36, 1.0)',
-    secondary: 'rgba(26, 27, 36, 0.7)',
+    dark: 'var(--color-text-dark)',
+    light: 'var(--color-text-light)',
+    muted: 'var(--color-text-muted)',
+    soft: 'var(--color-text-soft)',
+    faint: 'var(--color-text-faint)',
+    foreground: 'var(--color-text-dark)',
+    secondary: 'var(--color-text-soft)',
     // Dark mode variants
-    foregroundDark: '#EEEAF8',
-    secondaryDark: 'rgba(235, 232, 247, 0.78)',
-    mutedDark: 'rgba(235, 232, 247, 0.64)',
-    faintDark: 'rgba(235, 232, 247, 0.46)',
+    foregroundDark: 'var(--color-text-dark)',
+    secondaryDark: 'var(--color-text-soft)',
+    mutedDark: 'var(--color-text-muted)',
+    faintDark: 'var(--color-text-faint)',
   },
   
   // Semantic Colors
   semantic: {
     success: {
-      DEFAULT: '#50599B',
-      light: '#ADB7FF',
-      dark: '#3C4686',
-      muted: 'rgba(80, 89, 155, 0.2)',
+      DEFAULT: 'var(--color-positive)',
+      light: 'var(--color-positive-muted)',
+      dark: 'var(--color-positive-hover)',
+      muted: 'var(--color-positive-muted)',
     },
     warning: {
-      DEFAULT: '#F59E0B',
-      light: '#FCD34D',
-      dark: '#D97706',
-      muted: 'rgba(245, 158, 11, 0.2)',
+      DEFAULT: 'var(--color-warning)',
+      light: 'color-mix(in srgb, var(--color-warning) 18%, transparent)',
+      dark: 'var(--color-warning)',
+      muted: 'color-mix(in srgb, var(--color-warning) 18%, transparent)',
     },
     error: {
-      DEFAULT: '#BA1A1A',
-      light: '#FFDAD6',
-      dark: '#93000A',
-      muted: 'rgba(186, 26, 26, 0.2)',
+      DEFAULT: 'var(--color-danger)',
+      light: 'color-mix(in srgb, var(--color-danger) 18%, transparent)',
+      dark: 'var(--color-danger)',
+      muted: 'color-mix(in srgb, var(--color-danger) 18%, transparent)',
     },
     info: {
-      DEFAULT: '#5168FF',
-      light: '#7586FF',
-      dark: '#324BE4',
-      muted: 'rgba(81, 104, 255, 0.2)',
+      DEFAULT: 'var(--color-action)',
+      light: 'var(--color-action-muted)',
+      dark: 'var(--color-action-hover)',
+      muted: 'var(--color-action-muted)',
     },
   },
   
   // Category Colors
   category: {
-    mentalHealth: '#9724A6',
-    productivity: '#5168FF',
-    wealth: '#50599B',
+    mentalHealth: 'var(--color-accent)',
+    productivity: 'var(--color-action)',
+    wealth: 'var(--color-positive)',
   },
 
   // Border Colors
   border: {
-    DEFAULT: 'rgba(0, 0, 0, 0.08)',
-    subtle: 'rgba(0, 0, 0, 0.05)',
-    card: 'rgba(255, 255, 255, 0.8)',
-    subtleDark: 'rgba(235, 232, 247, 0.10)',
-    strongDark: 'rgba(235, 232, 247, 0.18)',
+    DEFAULT: 'var(--color-border-subtle)',
+    subtle: 'var(--color-border-subtle)',
+    card: 'var(--color-border-subtle)',
+    subtleDark: 'var(--color-border-subtle)',
+    strongDark: 'var(--color-border-strong)',
   },
 } as const;
 
@@ -125,14 +124,14 @@ export const colors = {
  * Brand Colors (exported as named tokens for API compatibility)
  */
 export const gradients = {
-  futuristicFloss: '#FFFFFF',
+  futuristicFloss: 'var(--color-canvas)',
   primary: colors.primary.DEFAULT,
   secondary: colors.secondary.DEFAULT,
-  darkFuturisticFloss: '#090A10',
-  darkPrimary: '#8A94FF',
-  darkSecondary: '#766C96',
+  darkFuturisticFloss: 'var(--color-background)',
+  darkPrimary: 'var(--color-action)',
+  darkSecondary: 'var(--color-positive)',
   swipeLike: colors.secondary.DEFAULT,
-  swipeSkip: '#FF6B6B',
+  swipeSkip: 'var(--color-danger)',
   swipeSave: colors.primary.DEFAULT,
 } as const;
 
@@ -273,7 +272,7 @@ export const typography = {
     fontSize: fontSizes.base,       // 14px
     fontWeight: fontWeights.medium,
     letterSpacing: letterSpacing.wider,
-    textTransform: 'uppercase' as const,
+    textTransform: 'none' as const,
   },
   mono: {
     fontFamily: fontFamilies.mono,
@@ -512,7 +511,7 @@ export const button = {
   fontFamily: fontFamilies.mono,
   fontWeight: fontWeights.medium,
   letterSpacing: letterSpacing.wider,
-  textTransform: 'uppercase' as const,
+  textTransform: 'none' as const,
   paddingX: spacing[6],
   paddingY: spacing[3],
   borderRadius: borderRadius.sm,
