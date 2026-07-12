@@ -461,6 +461,7 @@ export default function HomePage() {
                     title="Course Library"
                     count={academyCourses.length}
                     href="/course"
+                    avatarSrc="/academy-story.png"
                     dark
                     images={[]}
                   />
@@ -468,6 +469,7 @@ export default function HomePage() {
                     title="Your Course"
                     count={personalCourse ? 1 : 0}
                     href="/course/personal"
+                    avatarSrc="/academic-angels.webp"
                     dark
                     images={[]}
                   />
@@ -475,6 +477,7 @@ export default function HomePage() {
                     title="Build a Course"
                     count={0}
                     href="/course-builder"
+                    avatarSrc="/images/academy-blockchain.png"
                     dark
                     images={[]}
                   />

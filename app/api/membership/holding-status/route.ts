@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getWalletAddressFromRequest } from '@/lib/wallet-auth';
-import { walletHoldsConfiguredVipMembershipCard } from '@/lib/vip-membership-card';
+import { walletHasMembershipAccess } from '@/lib/membership-access';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -19,7 +19,7 @@ export async function GET() {
       return NextResponse.json({ error: 'Sign in to check membership status.' }, { status: 401 });
     }
 
-    const hasVipMembershipCard = await walletHoldsConfiguredVipMembershipCard(buyerWallet);
+    const hasVipMembershipCard = await walletHasMembershipAccess(buyerWallet);
     return NextResponse.json({ hasVipMembershipCard, walletAddress: buyerWallet });
   } catch (error) {
     console.error('[api/membership/holding-status] Membership read failed:', error);

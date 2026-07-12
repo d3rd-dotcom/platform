@@ -748,7 +748,7 @@ export default function GuidebookPage() {
         <P>A: Base Mainnet (Ethereum Layer 2). All onchain transactions (week seals, governance votes, NFT certificates) happen on Base.</P>
 
         <P><Strong>Q: How do I become a VIP member?</Strong></P>
-        <P>A: Purchase VIP membership for $90 via Stripe (card) or USDC (crypto). You&apos;ll receive a VIP Membership Card NFT in your wallet.</P>
+        <P>A: Choose $20 monthly member access or purchase the $888 lifetime VIP membership. The lifetime option includes a VIP Membership Card NFT in your wallet.</P>
 
         <P><Strong>Q: Can I use MWA on mobile?</Strong></P>
         <P>A: Yes! MWA is a Progressive Web App (PWA) &mdash; you can install it on your phone&apos;s home screen for a native-like experience.</P>

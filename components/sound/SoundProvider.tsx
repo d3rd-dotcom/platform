@@ -39,6 +39,7 @@ function readVolumePref(): number {
 export function SoundProvider({ children }: { children: React.ReactNode }) {
   const engineRef = useRef<SoundEngine | null>(null);
   const initedRef = useRef(false);
+  const lastPlayRef = useRef<{ type: SoundType; at: number } | null>(null);
 
   const [muted, setMutedRaw] = useState(readMutedPref);
   const [volume, setVolumeRaw] = useState(readVolumePref);
@@ -101,6 +102,12 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
   const play = useCallback(
     (type: SoundType) => {
       if (muted) return;
+      // Delegated page sounds can run before a component's own handler for the
+      // same gesture. Coalesce that pair while preserving intentional sequences.
+      const now = performance.now();
+      const last = lastPlayRef.current;
+      if (last?.type === type && now - last.at < 35) return;
+      lastPlayRef.current = { type, at: now };
       // If not initialized yet, attempt (works only for click/key/touch, not hover)
       if (!initedRef.current) doInit();
       const engine = engineRef.current;

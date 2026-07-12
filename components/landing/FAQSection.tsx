@@ -28,7 +28,7 @@ const FAQ_ITEMS = [
   {
     question: 'How does membership work?',
     answer:
-      'Every course is free, no matter your membership. The $90 VIP membership is a one-time, lifetime option with an onchain membership card on Base — it unlocks research tools and deeper Blue features, not the curriculum.',
+      'Every course is free, no matter your membership. Member access is $20 per month. The $888 VIP membership is a one-time, lifetime option with an onchain membership card on Base. Both unlock research tools and deeper Blue features.',
   },
   {
     question: 'How does the 12-week course work?',

@@ -34,7 +34,7 @@ function getStripePromise(): Promise<Stripe | null> | null {
 const BLUE_AVATAR = '/uploads/blueagent.png';
 const MEMBERSHIP_IMAGE = '/uploads/vip-membership-card.png';
 const EXXIE_IMAGE = '/exxie.png';
-const PRICE_LABEL = '$89.90';
+const PRICE_LABEL = '$888';
 const OPENSEA_URL =
   'https://opensea.io/item/base/0x5da79055cf8ca6482c997df58822e08e5707d6fc/1';
 
@@ -424,7 +424,7 @@ function TransferStage({
 /* ── Modal ───────────────────────────────────────────────────────────────── */
 
 const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose }) => {
-  const { getAccessToken } = usePrivy();
+  const { ready, authenticated, login, getAccessToken } = usePrivy();
   const devMode = useDevMode();
 
   const [screen, setScreen] = useState<Screen>('intro');
@@ -438,6 +438,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
   const [intentError, setIntentError] = useState<string | null>(null);
   const [membershipCheckLoading, setMembershipCheckLoading] = useState(false);
   const [membershipCheckError, setMembershipCheckError] = useState<string | null>(null);
+  const [resumeAfterLogin, setResumeAfterLogin] = useState(false);
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
   const [transferPhase, setTransferPhase] = useState<TransferPhase>('working');
   const [transferError, setTransferError] = useState<string | null>(null);
@@ -467,6 +468,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
       cardIntentInFlightRef.current = false;
       setMembershipCheckLoading(false);
       setMembershipCheckError(null);
+      setResumeAfterLogin(false);
       setTransferPhase('working');
       setTransferError(null);
       setTxHash(null);
@@ -475,6 +477,13 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
 
   const continueToPurchase = useCallback(async () => {
     if (membershipCheckLoading) return;
+
+    if (!ready) return;
+    if (!authenticated) {
+      setResumeAfterLogin(true);
+      login();
+      return;
+    }
 
     setMembershipCheckLoading(true);
     setMembershipCheckError(null);
@@ -499,7 +508,13 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
     } finally {
       setMembershipCheckLoading(false);
     }
-  }, [authHeaders, membershipCheckLoading]);
+  }, [authenticated, authHeaders, login, membershipCheckLoading, ready]);
+
+  useEffect(() => {
+    if (!isOpen || !authenticated || !resumeAfterLogin) return;
+    setResumeAfterLogin(false);
+    void continueToPurchase();
+  }, [authenticated, continueToPurchase, isOpen, resumeAfterLogin]);
 
   // Dev-only: drop straight into a screen / transfer phase, no real payment.
   const devJump = useCallback((target: Screen | 'transfer:done' | 'transfer:failed') => {
@@ -724,9 +739,17 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
               <button
                 className={`${styles.ctaButton} ${styles.ctaButtonBuy}`}
                 onClick={continueToPurchase}
-                disabled={membershipCheckLoading}
+                disabled={!ready || membershipCheckLoading}
               >
-                <span>{membershipCheckLoading ? 'Checking...' : `Continue · ${PRICE_LABEL}`}</span>
+                <span>
+                  {!ready
+                    ? 'Loading...'
+                    : membershipCheckLoading
+                      ? 'Checking...'
+                      : authenticated
+                        ? `Continue · ${PRICE_LABEL}`
+                        : `Create an account · ${PRICE_LABEL}`}
+                </span>
               </button>
               {membershipCheckError && (
                 <p className={styles.formError}>{membershipCheckError}</p>

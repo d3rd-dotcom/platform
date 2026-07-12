@@ -2,7 +2,7 @@
   position: relative;
   width: 100%;
   padding: 100px 24px;
-  background: var(--color-primary);
+  background: var(--color-grey-950);
   overflow: hidden;
   z-index: 1;
 }
@@ -24,6 +24,16 @@
   gap: 16px;
 }
 
+.eyebrow {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text-light) 70%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
 .heading {
   margin: 0;
   font-family: var(--font-primary);
@@ -31,7 +41,7 @@
   font-weight: 800;
   line-height: 1.05;
   letter-spacing: -0.03em;
-  color: #ffffff;
+  color: color-mix(in srgb, var(--color-text-light) 92%, transparent);
 }
 
 .description {
@@ -39,13 +49,13 @@
   font-family: var(--font-primary);
   font-size: 1rem;
   line-height: 1.7;
-  color: rgba(255, 255, 255, 0.65);
+  color: color-mix(in srgb, var(--color-text-light) 68%, transparent);
   max-width: 440px;
 }
 
 .description em {
   font-style: italic;
-  color: rgba(255, 255, 255, 0.85);
+  color: color-mix(in srgb, var(--color-text-light) 84%, transparent);
 }
 
 .cta {
@@ -55,10 +65,10 @@
   height: 44px;
   padding: 0 28px;
   margin-top: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid color-mix(in srgb, var(--color-text-light) 30%, transparent);
   border-radius: 999px;
   background: transparent;
-  color: #ffffff;
+  color: color-mix(in srgb, var(--color-text-light) 88%, transparent);
   font-family: var(--font-primary);
   font-size: 0.85rem;
   font-weight: 600;
@@ -69,23 +79,16 @@
 }
 
 .cta:hover {
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 24px rgba(255, 255, 255, 0.15);
+  background: color-mix(in srgb, var(--color-text-light) 10%, transparent);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--color-text-light) 15%, transparent);
   transform: translateY(-1px);
 }
 
 .imageColumn {
   position: relative;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 24px;
-}
-
-.magazineStack {
-  position: relative;
-  width: 100%;
   min-height: 420px;
 }
 
@@ -156,10 +159,6 @@
   }
 
   .imageColumn {
-    gap: 24px;
-  }
-
-  .magazineStack {
     min-height: 360px;
   }
 
@@ -182,10 +181,6 @@
   }
 
   .imageColumn {
-    gap: 18px;
-  }
-
-  .magazineStack {
     min-height: 280px;
   }
 

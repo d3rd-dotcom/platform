@@ -8,7 +8,13 @@ export const MagazineSection: React.FC = () => {
     <section id="vision" className={styles.section}>
       <div className={styles.container}>
         <div className={styles.textColumn}>
-          <h2 className={styles.heading}>A Human-Crafted Masterpiece</h2>
+          <p className={styles.eyebrow}>Mental Wealth Magazine</p>
+          <h2 className={styles.heading}>Read the Vision</h2>
+          <p className={styles.description}>
+            Every issue of <em>Mental Wealth</em> covers the research behind
+            the Academy — behavioral science, onchain governance, and the
+            case studies that shape what Blue teaches next.
+          </p>
           <a
             href="https://zora.co/coin/base:0xbfa7ba543ec90ccd9c30de7a76a5a23e1f18f92c?referrer=0x8c0704cde03a42f1a9362e574addb156bb7e8c95"
             target="_blank"
@@ -19,29 +25,24 @@ export const MagazineSection: React.FC = () => {
           </a>
         </div>
         <div className={styles.imageColumn}>
-          <div className={styles.magazineStack}>
-            <div className={`${styles.magazineCard} ${styles.magazineRear}`}>
-              <Image
-                src="/magazines/2082.png"
-                alt="Mental Wealth Magazine — Issue 2082"
-                width={300}
-                height={400}
-                className={styles.magazineImage}
-              />
-            </div>
-            <div className={`${styles.magazineCard} ${styles.magazineFront}`}>
-              <Image
-                src="/magazines/september-2031.png"
-                alt="Mental Wealth Magazine — September 2031"
-                width={300}
-                height={400}
-                className={styles.magazineImage}
-              />
-            </div>
+          <div className={`${styles.magazineCard} ${styles.magazineRear}`}>
+            <Image
+              src="/magazines/2082.png"
+              alt="Mental Wealth Magazine — Issue 2082"
+              width={300}
+              height={400}
+              className={styles.magazineImage}
+            />
           </div>
-          <p className={styles.description}>
-            Every issue of Mental Wealth covers the research behind the Academy; science, onchain governance, infinite wealth and wellness. The case studies that shape what we are.
-          </p>
+          <div className={`${styles.magazineCard} ${styles.magazineFront}`}>
+            <Image
+              src="/magazines/september-2031.png"
+              alt="Mental Wealth Magazine — September 2031"
+              width={300}
+              height={400}
+              className={styles.magazineImage}
+            />
+          </div>
         </div>
       </div>
     </section>

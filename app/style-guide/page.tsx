@@ -41,6 +41,9 @@ const surfaceColors: ColorToken[] = [
   { label: 'Surface one', token: '--color-surface-1', role: 'Cards and panels' },
   { label: 'Surface two', token: '--color-surface-2', role: 'Nested and selected regions' },
   { label: 'Surface three', token: '--color-surface-3', role: 'Strongest surface separation' },
+  { label: 'Inverse surface one', token: '--color-inverse-surface-1', role: 'Quiet glass on dark or brand fields' },
+  { label: 'Inverse surface two', token: '--color-inverse-surface-2', role: 'Cards on dark or brand fields' },
+  { label: 'Inverse surface three', token: '--color-inverse-surface-3', role: 'Selected cards on dark or brand fields' },
   { label: 'Subtle border', token: '--color-border-subtle', role: 'Quiet boundaries' },
   { label: 'Strong border', token: '--color-border-strong', role: 'Interactive boundaries' },
 ];

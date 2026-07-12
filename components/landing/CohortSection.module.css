@@ -3,9 +3,7 @@
   width: 100%;
   padding: clamp(72px, 9vw, 128px) 24px;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 50% -20%, color-mix(in srgb, var(--color-brand) 20%, transparent), transparent 46%),
-    var(--color-grey-950);
+  background: var(--color-grey-950);
   color: var(--color-text-light);
 }
 

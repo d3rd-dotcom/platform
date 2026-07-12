@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured } from '@/lib/db';
-import { walletHoldsVipMembershipCard } from '@/lib/vip-membership-card';
+import { walletHasMembershipAccess } from '@/lib/membership-access';
 import { walletHoldsAcademicAngel } from '@/lib/academic-angels';
 
 export const runtime = 'nodejs';
@@ -17,7 +17,7 @@ export async function GET(request: Request) {
   if (requestedWallet && /^0x[a-fA-F0-9]{40}$/.test(requestedWallet)) {
     try {
       const [hasVipMembershipCard, hasAcademicAngel] = await Promise.all([
-        walletHoldsVipMembershipCard(requestedWallet),
+        walletHasMembershipAccess(requestedWallet),
         walletHoldsAcademicAngel(requestedWallet),
       ]);
       return NextResponse.json(
@@ -78,7 +78,7 @@ export async function GET(request: Request) {
     const hasLinkedAccount = !!user.walletAddress;
     const [hasVipMembershipCard, hasAcademicAngel] = checkedWalletAddress
       ? await Promise.all([
-          walletHoldsVipMembershipCard(checkedWalletAddress),
+          walletHasMembershipAccess(checkedWalletAddress),
           walletHoldsAcademicAngel(checkedWalletAddress),
         ])
       : [false, false];

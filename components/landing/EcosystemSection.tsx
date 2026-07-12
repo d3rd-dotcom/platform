@@ -46,7 +46,7 @@ export const EcosystemSection: React.FC = () => {
       <div className={styles.container}>
         <p className={styles.kicker}>Mental Wealth Is</p>
         {words.map((word, i) => (
-          <h1 key={i} className={styles.text}>
+          <h1 key={i} className={styles.text} data-landing-sound-hover>
             {word.text}
             <span>{word.reveal}</span>
           </h1>

@@ -1,6 +1,6 @@
 import { getCurrentUserFromRequestCookie } from './auth';
 import { getVipCourseById } from './vip-course-db';
-import { walletHoldsVipMembershipCard } from './vip-membership-card';
+import { walletHasMembershipAccess } from './membership-access';
 
 /**
  * Returns the authenticated user's ID.
@@ -19,7 +19,7 @@ export async function assertCourseUser(): Promise<string> {
     throw Object.assign(new Error('Sign in to access courses.'), { status: 401 });
   }
 
-  const isVip = await walletHoldsVipMembershipCard(user.walletAddress);
+  const isVip = await walletHasMembershipAccess(user.walletAddress);
   if (!isVip) {
     throw Object.assign(new Error('A VIP membership is required to create courses.'), { status: 403 });
   }

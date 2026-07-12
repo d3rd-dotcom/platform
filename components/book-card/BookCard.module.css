@@ -12,6 +12,7 @@
   box-shadow: 4px 4px 0 #1A1D33;
   transition: all 0.15s ease;
   overflow: hidden;
+  height: 100%;
 }
 
 .bookCard:hover {
@@ -20,9 +21,17 @@
 }
 
 .cardClickable {
-  cursor: pointer;
+  cursor: default;
   display: flex;
   flex-direction: column;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.cardClickable[href],
+.cardClickable[role='button'] {
+  cursor: pointer;
 }
 
 .header {
@@ -73,9 +82,10 @@
   flex-direction: column;
   gap: 8px;
   padding: 20px;
+  flex: 1;
 }
 
-.title {
+.bookCard .title {
   font-family: var(--font-primary);
   font-size: 18px;
   font-weight: 700;
@@ -84,7 +94,7 @@
   line-height: 1.3;
 }
 
-.author {
+.bookCard .author {
   font-family: var(--font-primary);
   font-size: 12px;
   font-weight: 500;
@@ -92,7 +102,7 @@
   margin: 0;
 }
 
-.description {
+.bookCard .description {
   font-family: var(--font-primary);
   font-size: 13px;
   font-weight: 400;

@@ -97,7 +97,7 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
     ],
     body:
       'MWA runs a freemium model: community features and most activities are free, while advanced tools are gated behind paid tiers — ' +
-      'the one-time $89.90 VIP Membership (lifetime, on-chain) and capped Academic Angel and Staff membership cards. ' +
+      'the $20 monthly membership, the one-time $888 VIP Membership (lifetime, onchain), and capped Academic Angel and Staff membership cards. ' +
       'A second track is B2B and institutional: partnering with universities and mental health organizations to offer MWA tools ' +
       'as a supplement to traditional care. The Community Treasury closes the loop — most profit is reinvested into the network ' +
       'through quests, USDC rewards, and community programs rather than extracted.',
@@ -461,7 +461,7 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
       'lifetime', 'price', 'cost', 'buy', 'purchase', 'card', 'stripe', 'nft',
     ],
     body:
-      'VIP Membership is a one-time $89.90 purchase that unlocks MWA for life. It is an ERC-1155 NFT on Base ' +
+      'Member access is $20 per month. VIP Membership is a one-time $888 purchase that unlocks MWA for life. It is an ERC-1155 NFT on Base ' +
       '(contract 0x5da79055cf8ca6482c997df58822e08e5707d6fc, token id 1) — real on-chain ownership, not a subscription. ' +
       'Members can build and deploy their own AI agent squads and design a fully personalized learning path. ' +
       'How buying works: open the VIP Membership pop-up, pay by card (no crypto or gas needed), and Blue transfers the ' +

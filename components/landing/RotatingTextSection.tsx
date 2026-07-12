@@ -25,7 +25,7 @@ export const RotatingTextSection: React.FC = () => {
 
   useEffect(() => {
     const measureAllWidths = () => {
-      const fontSize = window.innerWidth >= 768 ? '2.65rem' : '1.2rem';
+      const fontSize = window.innerWidth >= 768 ? '2.65rem' : '0.78rem';
       const widths = texts.map((text) => {
         const span = document.createElement('span');
         span.style.visibility = 'hidden';
@@ -83,9 +83,10 @@ export const RotatingTextSection: React.FC = () => {
   const rotation = step * degreesPerItem;
 
   return (
-    <div className={styles.rotatingTextContainer}>
-      <div className={styles.rotatingTextLines}>
-        <h3 className={styles.rotatingTextHeading}>
+    <section className={styles.rotatingTextSection} aria-label="What the Academy advances">
+      <div className={styles.rotatingTextContainer}>
+        <div className={styles.rotatingTextLines}>
+          <h3 className={styles.rotatingTextHeading}>
           <span className={styles.rotatingTextStatic}>Advancing</span>
           <div
             className={styles.rotatingTextWrapper}
@@ -131,10 +132,11 @@ export const RotatingTextSection: React.FC = () => {
               })}
             </div>
           </div>
-        </h3>
-        <p className={styles.rotatingTextStaticLine}>through research, rewards, and memory</p>
+          </h3>
+          <p className={styles.rotatingTextStaticLine}>through research, rewards, and memory</p>
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 

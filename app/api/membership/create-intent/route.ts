@@ -24,7 +24,7 @@ const RESERVATION_MINUTES = 30;
  * POST /api/membership/create-intent
  *
  * Reserves a membership slot from Blue's inventory and opens a Stripe
- * PaymentIntent for $89.90. Returns { clientSecret, orderId } for the
+ * PaymentIntent for $888. Returns { clientSecret, orderId } for the
  * on-page Payment Element.
  */
 export async function POST() {

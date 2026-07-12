@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
-import { walletHoldsVipMembershipCard } from '@/lib/vip-membership-card';
+import { walletHasMembershipAccess } from '@/lib/membership-access';
 import { elizaAPI } from '@/lib/eliza-api';
 import {
   FORGE_LIMITS,
@@ -168,7 +168,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
 
-  const hasMembership = await walletHoldsVipMembershipCard(user.walletAddress);
+  const hasMembership = await walletHasMembershipAccess(user.walletAddress);
   if (!hasMembership) {
     return NextResponse.json(
       { error: 'A membership NFT is required to forge quests.', code: 'vip_required' },

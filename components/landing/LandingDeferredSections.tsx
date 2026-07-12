@@ -5,10 +5,6 @@ import { useEffect, useState } from 'react';
 import { LazySection } from './LazySection';
 import { RotatingTextSection } from './RotatingTextSection';
 
-const CohortSection = dynamic(() =>
-  import('./CohortSection').then((mod) => mod.CohortSection),
-  { ssr: false }
-);
 const EcosystemSection = dynamic(() =>
   import('./EcosystemSection').then((mod) => mod.EcosystemSection),
   { ssr: false }
@@ -21,12 +17,12 @@ const TestimonialSection = dynamic(() =>
   import('./TestimonialSection').then((mod) => mod.TestimonialSection),
   { ssr: false }
 );
-const FeaturesSection = dynamic(() =>
-  import('./FeaturesSection').then((mod) => mod.FeaturesSection),
+const MembershipSection = dynamic(() =>
+  import('./MembershipSection').then((mod) => mod.MembershipSection),
   { ssr: false }
 );
-const PatternTextSection = dynamic(() =>
-  import('./PatternTextSection').then((mod) => mod.PatternTextSection),
+const FeaturesSection = dynamic(() =>
+  import('./FeaturesSection').then((mod) => mod.FeaturesSection),
   { ssr: false }
 );
 const MagazineSection = dynamic(() =>
@@ -78,14 +74,13 @@ export function LandingDeferredSections() {
 
   return (
     <>
-      <LazySection minHeight="70vh"><RotatingTextSection /></LazySection>
+      <LazySection minHeight="clamp(220px, 32vw, 400px)"><RotatingTextSection /></LazySection>
       <LazySection minHeight="90vh"><FeaturesSection /></LazySection>
       <LazySection minHeight="90vh"><EcosystemSection /></LazySection>
       <LazySection minHeight="80vh"><FounderSection /></LazySection>
       <LazySection minHeight="80vh"><TestimonialSection /></LazySection>
-      <LazySection minHeight="90vh"><CohortSection /></LazySection>
+      <LazySection minHeight="100vh"><MembershipSection /></LazySection>
       <LazySection minHeight="90vh"><MagazineSection /></LazySection>
-      <LazySection minHeight="60vh"><PatternTextSection /></LazySection>
       <LazySection minHeight="80vh"><FAQSection /></LazySection>
       <LazySection minHeight="40vh"><LandingFooter /></LazySection>
       {overlaysReady && <DonationPopup />}

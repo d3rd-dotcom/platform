@@ -23,5 +23,8 @@ export function getStripe(): Stripe {
   return stripe;
 }
 
-/** VIP Membership price: $89.90, charged once. */
-export const MEMBERSHIP_PRICE_CENTS = 8990;
+/** Lifetime VIP Membership price: $888, charged once. */
+export const MEMBERSHIP_PRICE_CENTS = 88800;
+
+/** Recurring Member access: $20 per month. */
+export const MONTHLY_MEMBERSHIP_PRICE_CENTS = 2000;

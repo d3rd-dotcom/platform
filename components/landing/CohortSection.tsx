@@ -14,14 +14,14 @@ const tiers = [
     name: 'Foundation',
     price: '$20',
     cadence: '/ month',
-    description: 'Build a steady practice with the Academy’s core learning path.',
+    description: 'Build a steady learning practice.',
     features: ['Full course library', 'Weekly quests and field notes', 'Community access'],
   },
   {
     name: 'Practice',
     price: '$50',
     cadence: '/ month',
-    description: 'Make your study more active with deeper support and live work.',
+    description: 'Go deeper with live study and research tools.',
     features: ['Everything in Foundation', 'Live study sessions', 'Research and project tools'],
     featured: true,
   },
@@ -29,7 +29,7 @@ const tiers = [
     name: 'Lifetime',
     price: '$888',
     cadence: 'one-time',
-    description: 'Keep your place in the Academy through every course and cohort.',
+    description: 'Keep access to the Academy for life.',
     features: ['Everything in Practice', 'Lifetime course access', 'Priority cohort invitations'],
   },
 ];
@@ -39,9 +39,9 @@ export const CohortSection = () => {
     <section id="cohort" className={styles.cohortSection}>
       <div className={styles.cohortContainer}>
         <div className={styles.sectionIntro}>
-          <h2 className={styles.cohortTitle}>A place to keep doing the work.</h2>
+          <h2 className={styles.cohortTitle}>Choose your way in.</h2>
           <p className={styles.cohortSubtitle}>
-            Start with the essentials, deepen your practice, or join for the long arc. Every tier gives you a clear way into the Academy.
+            Learn at your pace, deepen your practice, or stay for the long term.
           </p>
         </div>
 

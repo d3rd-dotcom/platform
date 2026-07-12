@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { randomUUID } from 'crypto';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { getWalletAddressFromRequest } from '@/lib/wallet-auth';
-import { walletHoldsVipMembershipCard } from '@/lib/vip-membership-card';
+import { walletHasMembershipAccess } from '@/lib/membership-access';
 import { buildBlueContext, storeBlueChatMessage, touchBlueRelationship, upsertBlueFacts } from '@/lib/blue-memory';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { verifyDiamondBurnTx, recordDiamondBurn, releaseDiamondBurn, TX_HASH_PATTERN } from '@/lib/diamond-burns';
@@ -544,7 +544,7 @@ export async function POST(request: Request) {
   // on every research turn — not just at activation.
   if (isResearch) {
     const wallet = await getWalletAddressFromRequest();
-    if (!wallet || !(await walletHoldsVipMembershipCard(wallet))) {
+    if (!wallet || !(await walletHasMembershipAccess(wallet))) {
       return NextResponse.json({ error: 'vip_required' }, { status: 403 });
     }
     try {

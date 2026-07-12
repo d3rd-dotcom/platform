@@ -1,7 +1,9 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import Image from 'next/image';
 import { createPortal } from 'react-dom';
+import { usePrivy } from '@privy-io/react-auth';
 import {
   SCATTER_COLLECTION_SLUG,
   getEligibleInviteLists,
@@ -9,6 +11,8 @@ import {
   type MintList,
 } from '@/lib/scatter-api';
 import { useSound } from '@/hooks/useSound';
+import ProMembershipModal from '@/components/pro-membership-modal/ProMembershipModal';
+import CtaButton from '@/components/shared/CtaButton';
 import styles from './MembershipSection.module.css';
 
 const CheckIcon = () => (
@@ -19,8 +23,13 @@ const CheckIcon = () => (
 
 export const MembershipSection: React.FC = () => {
   const { play } = useSound();
+  const { ready, authenticated, login, getAccessToken } = usePrivy();
   const [isVisible, setIsVisible] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showLifetimeCheckout, setShowLifetimeCheckout] = useState(false);
+  const [monthlyCheckoutPending, setMonthlyCheckoutPending] = useState(false);
+  const [monthlyCheckoutLoading, setMonthlyCheckoutLoading] = useState(false);
+  const [monthlyCheckoutError, setMonthlyCheckoutError] = useState<string | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
   // Scatter / mint state
@@ -151,6 +160,44 @@ export const MembershipSection: React.FC = () => {
     setShowModal(false);
   }, [play]);
 
+  const startMonthlyCheckout = useCallback(async () => {
+    if (!ready || monthlyCheckoutLoading) return;
+    play('click');
+    setMonthlyCheckoutError(null);
+
+    if (!authenticated) {
+      setMonthlyCheckoutPending(true);
+      login();
+      return;
+    }
+
+    setMonthlyCheckoutPending(false);
+    setMonthlyCheckoutLoading(true);
+    try {
+      const token = await getAccessToken();
+      const response = await fetch('/api/membership/create-subscription-session', {
+        method: 'POST',
+        credentials: 'include',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data?.url) {
+        setMonthlyCheckoutError(data?.error || 'Could not start subscription checkout.');
+        return;
+      }
+      window.location.assign(data.url);
+    } catch {
+      setMonthlyCheckoutError('Could not reach the payment service.');
+    } finally {
+      setMonthlyCheckoutLoading(false);
+    }
+  }, [authenticated, getAccessToken, login, monthlyCheckoutLoading, play, ready]);
+
+  useEffect(() => {
+    if (!authenticated || !monthlyCheckoutPending) return;
+    void startMonthlyCheckout();
+  }, [authenticated, monthlyCheckoutPending, startMonthlyCheckout]);
+
   useEffect(() => {
     if (!showModal) return;
     const handleKey = (e: KeyboardEvent) => {
@@ -162,20 +209,28 @@ export const MembershipSection: React.FC = () => {
 
   // Allow other sections to open the purchase modal
   useEffect(() => {
-    const handler = () => openModal();
+    const handler = () => setShowLifetimeCheckout(true);
     window.addEventListener('openPurchaseModal', handler);
     return () => window.removeEventListener('openPurchaseModal', handler);
-  }, [openModal]);
+  }, []);
 
   return (
     <section ref={sectionRef} id="membership" className={`${styles.section} ${isVisible ? styles.sectionVisible : ''}`}>
       <div className={styles.container}>
-        <h2 className={styles.title}>Choose Your Path</h2>
-        <p className={styles.subtitle}>
-          Choose the access level that fits how you want to participate.
-        </p>
+        <div className={styles.dinoWrap} aria-hidden="true">
+          <div className={styles.dinoGlow} />
+          <Image
+            src="/images/dino-heart.png"
+            alt=""
+            width={1280}
+            height={1280}
+            className={styles.dino}
+            sizes="(max-width: 768px) 88px, 132px"
+          />
+        </div>
 
-        <div className={styles.tierGrid}>
+        <div className={styles.comparisonPanel}>
+          <div className={styles.tierGrid}>
           {/* Free Tier */}
           <div className={styles.tierCard}>
             <div className={styles.tierHeader}>
@@ -208,14 +263,19 @@ export const MembershipSection: React.FC = () => {
                 Credit rewards for study
               </li>
             </ul>
-            <a
-              href="/home"
-              className={styles.tierBtnSecondary}
-              onClick={() => play('click')}
+            <CtaButton
+              type="button"
+              variant="ghost"
+              block
+              className={`${styles.tierCta} ${styles.explorerCta}`}
+              onClick={() => {
+                play('click');
+                window.location.assign('/home');
+              }}
               onMouseEnter={() => play('hover')}
             >
               Enter Free
-            </a>
+            </CtaButton>
           </div>
 
           {/* Monthly Tier */}
@@ -224,7 +284,7 @@ export const MembershipSection: React.FC = () => {
             <div className={styles.tierHeader}>
               <span className={styles.tierName}>Member</span>
               <div className={styles.tierPriceRow}>
-                <span className={styles.tierPrice}>$12</span>
+                <span className={styles.tierPrice}>$20</span>
                 <span className={styles.tierPriceLabel}>/month</span>
               </div>
               <p className={styles.tierDesc}>Full access with governance power and research tools.</p>
@@ -252,14 +312,18 @@ export const MembershipSection: React.FC = () => {
                 Blue AI co-pilot
               </li>
             </ul>
-            <button
+            <CtaButton
               type="button"
-              className={styles.tierBtnPrimary}
-              onClick={openModal}
+              variant="primary"
+              block
+              className={styles.tierCta}
+              onClick={startMonthlyCheckout}
               onMouseEnter={() => play('hover')}
+              disabled={!ready || monthlyCheckoutLoading}
             >
-              Subscribe
-            </button>
+              {monthlyCheckoutLoading ? 'Opening checkout...' : 'Subscribe'}
+            </CtaButton>
+            {monthlyCheckoutError && <p className={styles.checkoutError}>{monthlyCheckoutError}</p>}
           </div>
 
           {/* Lifetime Tier */}
@@ -268,7 +332,7 @@ export const MembershipSection: React.FC = () => {
             <div className={styles.tierHeader}>
               <span className={styles.tierName}>Academic Angel</span>
               <div className={styles.tierPriceRow}>
-                <span className={styles.tierPrice}>$90</span>
+                <span className={styles.tierPrice}>$888</span>
                 <span className={styles.tierPriceLabel}>one-time</span>
               </div>
               <p className={styles.tierDesc}>Lifetime membership with on-chain ownership.</p>
@@ -292,17 +356,35 @@ export const MembershipSection: React.FC = () => {
                 Treasury profit sharing
               </li>
             </ul>
-            <button
+            <CtaButton
               type="button"
-              className={styles.tierBtnSecondary}
-              onClick={openModal}
+              variant="secondary"
+              block
+              className={`${styles.tierCta} ${styles.lifetimeCta}`}
+              onClick={() => {
+                play('click');
+                setShowLifetimeCheckout(true);
+              }}
               onMouseEnter={() => play('hover')}
             >
               Purchase Membership
-            </button>
+            </CtaButton>
+          </div>
           </div>
         </div>
+
+        <div className={styles.supportRow}>
+          <p className={styles.supportCopy}>
+            Spread the wealth! Payments help keep our platform free for others.
+          </p>
+        </div>
+
       </div>
+
+      <ProMembershipModal
+        isOpen={showLifetimeCheckout}
+        onClose={() => setShowLifetimeCheckout(false)}
+      />
 
       {/* Purchase Modal */}
       {showModal && typeof window !== 'undefined' && createPortal(
@@ -318,7 +400,7 @@ export const MembershipSection: React.FC = () => {
             </div>
 
             <div className={styles.modalBody}>
-              <span className={styles.price}>$90</span>
+              <span className={styles.price}>$888</span>
               <span className={styles.priceNote}>One-time membership</span>
 
               <div className={styles.divider} />

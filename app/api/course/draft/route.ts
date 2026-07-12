@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { elizaAPI } from '@/lib/eliza-api';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
-import { walletHoldsVipMembershipCard } from '@/lib/vip-membership-card';
+import { walletHasMembershipAccess } from '@/lib/membership-access';
 import type { CourseData } from '@/lib/personal-course';
 
 export const runtime = 'nodejs';
@@ -83,7 +83,7 @@ export async function POST(request: Request) {
   if (!user) {
     return NextResponse.json({ error: 'Sign in to build a course.' }, { status: 401 });
   }
-  const hasMembership = await walletHoldsVipMembershipCard(user.walletAddress);
+  const hasMembership = await walletHasMembershipAccess(user.walletAddress);
   if (!hasMembership) {
     return NextResponse.json(
       { error: 'A VIP membership is required to build a course.', code: 'vip_required' },

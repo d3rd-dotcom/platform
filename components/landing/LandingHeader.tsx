@@ -94,7 +94,7 @@ export const LandingHeader: React.FC = () => {
   };
 
   const handleMobileMenuToggle = () => {
-    play('click');
+    play(mobileMenuOpen ? 'toggle-off' : 'toggle-on');
     setMobileMenuOpen((open) => !open);
   };
 

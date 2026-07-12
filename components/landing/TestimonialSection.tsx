@@ -105,7 +105,7 @@ export const TestimonialSection: React.FC = () => {
   return (
     <section ref={sectionRef} className={`${styles.section} ${hasEnteredView ? styles.sectionVisible : ''}`}>
       <div className={styles.container}>
-        <div className={styles.eyebrow}>Hear what academy members have to say</div>
+        <div className={styles.eyebrow}>Hear what academy members are saying</div>
         <div
           className={styles.scrollWrapper}
           onMouseEnter={handleMouseEnter}
@@ -113,7 +113,7 @@ export const TestimonialSection: React.FC = () => {
         >
           <div ref={trackRef} className={styles.scrollTrack}>
             {items.map((t, i) => (
-              <div key={i} className={styles.card}>
+              <div key={i} className={styles.card} data-landing-sound-hover>
                 <blockquote className={styles.quote}>
                   &ldquo;{t.quote}&rdquo;
                 </blockquote>

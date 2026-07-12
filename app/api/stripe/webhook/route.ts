@@ -39,6 +39,57 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid signature.' }, { status: 400 });
   }
 
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object as Stripe.Checkout.Session;
+    const recordId = session.metadata?.membershipSubscriptionId;
+    if (recordId && session.mode === 'subscription') {
+      await ensureMembershipSchema();
+      await sqlQuery(
+        `UPDATE membership_subscriptions
+            SET stripe_customer_id=:customerId,
+                stripe_subscription_id=:subscriptionId,
+                updated_at=CURRENT_TIMESTAMP
+          WHERE id=:id`,
+        {
+          id: recordId,
+          customerId: typeof session.customer === 'string' ? session.customer : session.customer?.id ?? null,
+          subscriptionId: typeof session.subscription === 'string' ? session.subscription : session.subscription?.id ?? null,
+        },
+      );
+    }
+    return NextResponse.json({ received: true });
+  }
+
+  if (
+    event.type === 'customer.subscription.created' ||
+    event.type === 'customer.subscription.updated' ||
+    event.type === 'customer.subscription.deleted'
+  ) {
+    const subscription = event.data.object as Stripe.Subscription;
+    const recordId = subscription.metadata?.membershipSubscriptionId;
+    if (recordId) {
+      await ensureMembershipSchema();
+      const periodEnd = (subscription as Stripe.Subscription & { current_period_end?: number }).current_period_end;
+      await sqlQuery(
+        `UPDATE membership_subscriptions
+            SET stripe_customer_id=:customerId,
+                stripe_subscription_id=:subscriptionId,
+                status=:status,
+                current_period_end=:periodEnd,
+                updated_at=CURRENT_TIMESTAMP
+          WHERE id=:id`,
+        {
+          id: recordId,
+          customerId: typeof subscription.customer === 'string' ? subscription.customer : subscription.customer.id,
+          subscriptionId: subscription.id,
+          status: subscription.status,
+          periodEnd: periodEnd ? new Date(periodEnd * 1000) : null,
+        },
+      );
+    }
+    return NextResponse.json({ received: true });
+  }
+
   // A payment that never cleared — release the slot.
   if (event.type === 'payment_intent.payment_failed') {
     const pi = event.data.object as Stripe.PaymentIntent;

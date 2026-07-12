@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
-import { walletHoldsVipMembershipCard } from '@/lib/vip-membership-card';
+import { walletHasMembershipAccess } from '@/lib/membership-access';
 
 /**
  * Authenticated proxy to the Azure World simulation backend (Flask + OASIS).
@@ -41,7 +41,7 @@ async function authorize(): Promise<NextResponse | null> {
   if (!user) {
     return NextResponse.json({ success: false, error: 'Not authenticated' }, { status: 401 });
   }
-  const isMember = await walletHoldsVipMembershipCard(user.walletAddress);
+  const isMember = await walletHasMembershipAccess(user.walletAddress);
   if (!isMember) {
     return NextResponse.json(
       { success: false, error: 'Pro membership required.' },

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured } from '@/lib/db';
 import { getPersonalCourse, saveGeneratedCourse, saveIntake } from '@/lib/personal-course-db';
-import { walletHoldsVipMembershipCard } from '@/lib/vip-membership-card';
+import { walletHasMembershipAccess } from '@/lib/membership-access';
 import { buildCourse } from '@/lib/personal-course';
 import type { IntakeAnswers, CourseData } from '@/lib/personal-course';
 
@@ -59,7 +59,7 @@ export async function POST(request: Request) {
     // Path A: pre-built course data from Blue's course builder.
     // Building a real course is a VIP-membership perk — gate the save fail-closed.
     if (prebuiltCourse) {
-      const hasMembership = await walletHoldsVipMembershipCard(userWallet);
+      const hasMembership = await walletHasMembershipAccess(userWallet);
       if (!hasMembership) {
         return NextResponse.json(
           { error: 'A VIP membership is required to build a course.', code: 'vip_required' },

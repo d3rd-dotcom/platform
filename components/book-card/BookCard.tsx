@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import styles from './BookCard.module.css';
 
 interface BookCardProps {
@@ -11,6 +12,8 @@ interface BookCardProps {
   imageUrl?: string;
   slug?: string;
   onReadClick?: (slug: string) => void;
+  href?: string;
+  actionLabel?: string;
 }
 
 const BookCard: React.FC<BookCardProps> = ({
@@ -21,6 +24,8 @@ const BookCard: React.FC<BookCardProps> = ({
   imageUrl = "https://i.imgur.com/4K6QZ8k.png",
   slug = "",
   onReadClick,
+  href,
+  actionLabel = 'Read article',
 }) => {
   const handleCardClick = () => {
     if (onReadClick && slug) {
@@ -28,15 +33,8 @@ const BookCard: React.FC<BookCardProps> = ({
     }
   };
 
-  return (
-    <div className={styles.bookCard}>
-      <div
-        className={styles.cardClickable}
-        onClick={handleCardClick}
-        role={slug ? 'button' : undefined}
-        tabIndex={slug ? 0 : undefined}
-        onKeyDown={slug ? (e) => { if (e.key === 'Enter') handleCardClick(); } : undefined}
-      >
+  const content = (
+    <>
         <div className={styles.header}>
           <div
             className={styles.bookImage}
@@ -55,16 +53,35 @@ const BookCard: React.FC<BookCardProps> = ({
             <div className={styles.categoryDot} />
             <span className={styles.categoryText}>{category}</span>
           </div>
-          {slug && (
+          {(href || slug) && (
             <span className={styles.readLink}>
-              Read article
+              {actionLabel}
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                 <path d="M4.5 9L7.5 6L4.5 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </span>
           )}
         </div>
-      </div>
+    </>
+  );
+
+  return (
+    <div className={styles.bookCard}>
+      {href ? (
+        <Link href={href} className={styles.cardClickable}>
+          {content}
+        </Link>
+      ) : (
+        <div
+          className={styles.cardClickable}
+          onClick={handleCardClick}
+          role={slug ? 'button' : undefined}
+          tabIndex={slug ? 0 : undefined}
+          onKeyDown={slug ? (e) => { if (e.key === 'Enter') handleCardClick(); } : undefined}
+        >
+          {content}
+        </div>
+      )}
     </div>
   );
 };

@@ -100,6 +100,47 @@ async function _ensureMembershipSchemaImpl(): Promise<void> {
     `CREATE UNIQUE INDEX IF NOT EXISTS idx_membership_orders_payment_tx
        ON membership_orders(payment_tx_hash) WHERE payment_tx_hash IS NOT NULL`
   );
+
+  await sqlQuery(`
+    CREATE TABLE IF NOT EXISTS membership_subscriptions (
+      id CHAR(36) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+      user_id CHAR(36) NULL REFERENCES users(id) ON DELETE SET NULL,
+      buyer_wallet VARCHAR(42) NOT NULL,
+      stripe_customer_id VARCHAR(255) NULL,
+      stripe_subscription_id VARCHAR(255) UNIQUE,
+      stripe_checkout_session_id VARCHAR(255) UNIQUE,
+      status VARCHAR(24) NOT NULL DEFAULT 'pending'
+        CHECK (status IN ('pending', 'active', 'trialing', 'past_due', 'paused', 'canceled', 'unpaid', 'incomplete', 'incomplete_expired')),
+      current_period_end TIMESTAMP NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+  await sqlQuery(
+    `CREATE INDEX IF NOT EXISTS idx_membership_subscriptions_wallet
+       ON membership_subscriptions(LOWER(buyer_wallet))`
+  );
+  await sqlQuery(
+    `CREATE INDEX IF NOT EXISTS idx_membership_subscriptions_status
+       ON membership_subscriptions(status)`
+  );
+  await sqlQuery(
+    `CREATE UNIQUE INDEX IF NOT EXISTS idx_membership_subscriptions_pending_wallet
+       ON membership_subscriptions(LOWER(buyer_wallet)) WHERE status='pending'`
+  );
+}
+
+export async function walletHasActiveSubscription(wallet: string): Promise<boolean> {
+  await ensureMembershipSchema();
+  const rows = await sqlQuery<Array<{ active: boolean }>>(
+    `SELECT EXISTS(
+       SELECT 1 FROM membership_subscriptions
+        WHERE LOWER(buyer_wallet) = LOWER(:wallet)
+          AND status IN ('active', 'trialing')
+     ) AS active`,
+    { wallet },
+  );
+  return Boolean(rows[0]?.active);
 }
 
 /**

@@ -4,7 +4,7 @@ import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { ensureCustomQuestsSchema } from '@/lib/ensureCustomQuestsSchema';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
-import { walletHoldsVipMembershipCard } from '@/lib/vip-membership-card';
+import { walletHasMembershipAccess } from '@/lib/membership-access';
 import { getBlueWalletAddress } from '@/lib/blue-membership';
 import { BASE_CHAIN_ID, USDC_ADDRESS } from '@/lib/crypto-payment';
 import {
@@ -116,7 +116,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
 
-  const hasMembership = await walletHoldsVipMembershipCard(user.walletAddress);
+  const hasMembership = await walletHasMembershipAccess(user.walletAddress);
   if (!hasMembership) {
     return NextResponse.json(
       { error: 'A membership NFT is required to author quests.' },

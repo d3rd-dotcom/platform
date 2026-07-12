@@ -1,5 +1,5 @@
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
-import { walletHoldsVipMembershipCard } from '@/lib/vip-membership-card';
+import { walletHasMembershipAccess } from '@/lib/membership-access';
 import MarketsClient from './MarketsClient';
 import MarketsLockedPage from './MarketsLockedPage';
 
@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 export default async function MarketsPage() {
   const user = await getCurrentUserFromRequestCookie();
   const hasVipMembershipCard = user
-    ? await walletHoldsVipMembershipCard(user.walletAddress)
+    ? await walletHasMembershipAccess(user.walletAddress)
     : false;
 
   if (!hasVipMembershipCard) {

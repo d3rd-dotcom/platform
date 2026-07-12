@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { getWalletAddressFromRequest } from '@/lib/wallet-auth';
-import { walletHoldsVipMembershipCard } from '@/lib/vip-membership-card';
+import { walletHasMembershipAccess } from '@/lib/membership-access';
 import { isDbConfigured } from '@/lib/db';
 import { checkRateLimit, getRateLimitHeaders } from '@/lib/rate-limit';
 
@@ -31,7 +31,7 @@ export async function POST() {
   }
 
   const wallet = await getWalletAddressFromRequest();
-  if (!wallet || !(await walletHoldsVipMembershipCard(wallet))) {
+  if (!wallet || !(await walletHasMembershipAccess(wallet))) {
     return NextResponse.json({ error: 'vip_required' }, { status: 403 });
   }
 

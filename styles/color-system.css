@@ -54,6 +54,9 @@
   --color-surface-1: color-mix(in srgb, var(--color-canvas) 96%, var(--color-text-dark));
   --color-surface-2: color-mix(in srgb, var(--color-canvas) 92%, var(--color-text-dark));
   --color-surface-3: color-mix(in srgb, var(--color-canvas) 86%, var(--color-text-dark));
+  --color-inverse-surface-1: color-mix(in srgb, var(--palette-ink) 42%, transparent);
+  --color-inverse-surface-2: color-mix(in srgb, var(--palette-ink) 58%, transparent);
+  --color-inverse-surface-3: color-mix(in srgb, var(--palette-ink) 70%, transparent);
   --color-border-subtle: rgba(26, 27, 36, 0.08);
   --color-border-strong: rgba(26, 27, 36, 0.16);
   --color-shell-background: color-mix(in srgb, var(--color-canvas) 94%, transparent);
