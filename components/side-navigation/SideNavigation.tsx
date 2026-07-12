@@ -81,7 +81,7 @@ const primaryNavItems: NavItem[] = [
     id: 'learn',
     label: 'Learn',
     href: '/learn',
-    iconSrc: '/icons/guidance.svg',
+    iconSrc: '/icons/daemon.svg',
   },
   {
     id: 'simulations',
