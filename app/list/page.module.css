@@ -58,6 +58,7 @@
   flex: 1;
   min-width: 0;
   display: flex;
+  height: min(700px, calc(100vh - 160px));
 }
 
 .listsWrapper > :global(*) {
