@@ -198,7 +198,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const [isProModalOpen, setIsProModalOpen] = useState(false);
   const [isAngelModalOpen, setIsAngelModalOpen] = useState(false);
 
-  const [adminExpanded, setAdminExpanded] = useState(true);
+  const [adminExpanded, setAdminExpanded] = useState(false);
   const [isYourAccountsModalOpen, setIsYourAccountsModalOpen] = useState(false);
   const [isCreatingSession, setIsCreatingSession] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(() => {

@@ -51,7 +51,7 @@
   flex: 1;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 64px;
+  gap: 24px;
   min-height: 0;
   overflow: hidden;
 }
@@ -390,3 +390,273 @@
 :global(:root:not([data-theme="dark"])) .gateBody {
   color: rgba(26, 29, 51, 0.52);
 }
+
+/* Mac Window Frame */
+.macWindow {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 100%;
+  border-radius: 12px;
+  background: rgba(30, 31, 41, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Document Tab Bar (NSWindowTabGroup) */
+.tabBar {
+  background: rgba(20, 21, 29, 0.35);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0 8px;
+  height: 38px;
+  display: flex;
+  align-items: flex-end;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.tabGroup {
+  display: flex;
+  gap: 2px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.windowTab {
+  flex: 1;
+  max-width: 150px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: none;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  color: rgba(255, 255, 255, 0.45);
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  padding: 0 8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.windowTab:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.windowTabActive {
+  background: rgba(30, 31, 41, 0.85);
+  border-color: rgba(255, 255, 255, 0.1) rgba(255, 255, 255, 0.1) transparent;
+  color: #ffffff;
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Title Bar & Unified Toolbar (NSWindow.ToolbarStyle.unified) */
+.titleBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  padding: 0 16px;
+  background: rgba(25, 27, 37, 0.2);
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* Traffic Lights */
+.trafficLights {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 120px; /* balance out spacing */
+}
+
+.light {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  border: 0.5px solid rgba(0, 0, 0, 0.12);
+}
+
+.lightRed {
+  background: #ff5f56;
+}
+
+.lightYellow {
+  background: #ffbd2e;
+}
+
+.lightGreen {
+  background: #27c93f;
+}
+
+.windowTitle {
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: -0.01em;
+  text-align: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.toolbarItems {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.searchWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 10px;
+  color: rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+}
+
+.toolbarSearch {
+  width: 180px;
+  padding: 6px 12px 6px 28px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: 0.8125rem;
+  color: #ffffff;
+  outline: none;
+  transition: width 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.toolbarSearch:focus {
+  width: 220px;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.toolbarSearch::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* Hairline Separator */
+.separator {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+}
+
+/* Content Area */
+.windowContent {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  overflow: hidden;
+}
+
+/* Single column centering */
+.singleColumnView {
+  grid-template-columns: 1fr;
+  max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Resize Grip */
+.resizeCorner {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 15px;
+  height: 15px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 2px;
+  pointer-events: none;
+}
+
+/* Light Theme overrides */
+:global(:root:not([data-theme="dark"])) .macWindow {
+  background: rgba(244, 245, 254, 0.72);
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+:global(:root:not([data-theme="dark"])) .tabBar {
+  background: rgba(0, 0, 0, 0.03);
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+:global(:root:not([data-theme="dark"])) .windowTab {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.06);
+  color: rgba(0, 0, 0, 0.45);
+}
+
+:global(:root:not([data-theme="dark"])) .windowTab:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: rgba(0, 0, 0, 0.7);
+}
+
+:global(:root:not([data-theme="dark"])) .windowTabActive {
+  background: rgba(244, 245, 254, 0.9);
+  border-color: rgba(0, 0, 0, 0.12) rgba(0, 0, 0, 0.12) transparent;
+  color: #1a1d33;
+}
+
+:global(:root:not([data-theme="dark"])) .titleBar {
+  background: rgba(0, 0, 0, 0.01);
+}
+
+:global(:root:not([data-theme="dark"])) .windowTitle {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+:global(:root:not([data-theme="dark"])) .searchIcon {
+  color: rgba(0, 0, 0, 0.35);
+}
+
+:global(:root:not([data-theme="dark"])) .toolbarSearch {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #1a1d33;
+}
+
+:global(:root:not([data-theme="dark"])) .toolbarSearch:focus {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.18);
+}
+
+:global(:root:not([data-theme="dark"])) .toolbarSearch::placeholder {
+  color: rgba(0, 0, 0, 0.35);
+}
+
+:global(:root:not([data-theme="dark"])) .separator {
+  background: rgba(0, 0, 0, 0.08);
+}
+

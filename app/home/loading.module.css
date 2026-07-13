@@ -1,0 +1,157 @@
+.layout {
+  min-height: 100vh;
+  margin-left: var(--sidebar-width, 265px);
+  background: var(--color-background);
+}
+
+.pageColumns {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 16px 24px;
+}
+
+.globalPanel {
+  overflow: hidden;
+  padding: 0 18px 18px;
+  border: 2px solid var(--color-primary-hover);
+  border-radius: 18px;
+  background: var(--color-surface-3);
+  box-shadow: 0 4px 0 var(--color-primary);
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 50px;
+  margin: 0 -18px;
+  padding: 0 20px;
+  border-bottom: 2px solid var(--color-primary-hover);
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-3));
+}
+
+.skeleton {
+  display: block;
+  border-radius: 6px;
+  background: linear-gradient(
+    100deg,
+    color-mix(in oklch, var(--color-text-muted) 12%, transparent) 35%,
+    color-mix(in oklch, var(--color-text-muted) 22%, transparent) 50%,
+    color-mix(in oklch, var(--color-text-muted) 12%, transparent) 65%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.headerMark { width: 42px; height: 14px; }
+.headerTitle { width: 78px; height: 14px; }
+
+.dashboardHeader {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 48px;
+  margin: 14px 0 24px;
+}
+
+.profileCard {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 300px;
+  height: 132px;
+  padding: 20px;
+  border: 2px solid var(--color-border-subtle);
+  border-radius: 22px;
+}
+
+.avatar { width: 60px; height: 60px; border-radius: 50%; }
+.profileCopy { display: grid; gap: 12px; flex: 1; }
+.profileTitle { width: 80%; height: 16px; }
+.profileDetail { width: 58%; height: 12px; }
+
+.indicators {
+  display: flex;
+  flex: 1;
+  min-width: 320px;
+  height: 132px;
+  padding: 20px 40px;
+  border: 2px solid var(--color-primary);
+  border-radius: 22px;
+  background: var(--color-primary);
+}
+
+.indicator {
+  display: grid;
+  flex: 1;
+  place-items: center;
+  gap: 18px;
+}
+
+.indicator + .indicator { border-left: 1px solid color-mix(in oklch, var(--color-surface-3) 25%, transparent); }
+.indicatorLabel { width: 72%; height: 12px; background-color: color-mix(in oklch, var(--color-surface-3) 34%, transparent); background-image: none; }
+.indicatorValue { width: 38px; height: 28px; background-color: color-mix(in oklch, var(--color-surface-3) 48%, transparent); background-image: none; }
+
+.notes { display: grid; gap: 16px; width: 320px; }
+.note { height: 58px; border-radius: 16px; }
+
+.folderSection { margin-bottom: 24px; }
+.tabs { display: flex; gap: 22px; padding: 12px 16px; border-bottom: 1px solid var(--color-border-subtle); }
+.tabActive { width: 88px; height: 14px; }
+.tab { width: 62px; height: 14px; }
+
+.folderRow,
+.courseGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 18px;
+}
+
+.folder,
+.courseCard {
+  overflow: hidden;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 14px;
+  background: color-mix(in oklch, var(--color-surface-3) 82%, var(--color-background));
+}
+
+.folder { padding: 12px; }
+.folderImage { height: 112px; border-radius: 9px; }
+.folderTitle { width: 65%; height: 14px; margin: 14px 4px 10px; }
+.folderDetail { width: 44%; height: 11px; margin: 0 4px 4px; }
+
+.courseGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.courseImage { height: 128px; border-radius: 0; }
+.courseBody { display: grid; gap: 11px; padding: 16px; }
+.courseEyebrow { width: 24%; height: 10px; }
+.courseTitle { width: 72%; height: 18px; }
+.courseDescription { width: 92%; height: 12px; }
+.courseDescriptionShort { width: 64%; height: 12px; }
+
+@keyframes shimmer {
+  to { background-position: -200% 0; }
+}
+
+@media (max-width: 1200px) {
+  .notes { margin-left: auto; }
+}
+
+@media (max-width: 1050px) {
+  .folderRow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 700px) {
+  .layout { margin-left: 0; padding-bottom: 84px; }
+  .pageColumns { padding: 12px; }
+  .globalPanel { padding-inline: 12px; }
+  .panelHeader { margin-inline: -12px; }
+  .dashboardHeader { gap: 16px; }
+  .profileCard, .indicators, .notes { width: 100%; min-width: 0; }
+  .indicators { padding-inline: 12px; }
+  .folderRow, .courseGrid { grid-template-columns: 1fr; gap: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none; }
+}

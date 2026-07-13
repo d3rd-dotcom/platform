@@ -109,8 +109,8 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${commitMono.variable} ${spaceGrotesk.variable} ${patrickHand.variable} ${departureMono.variable} ${editorialSerif.variable} ${poppins.variable}`}
-      data-sidebar-collapsed="false"
-      style={{ '--sidebar-width': '265px' } as CSSProperties}
+      data-sidebar-collapsed="true"
+      style={{ '--sidebar-width': '72px' } as CSSProperties}
       suppressHydrationWarning
     >
       <head>
