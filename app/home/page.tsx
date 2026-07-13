@@ -10,6 +10,7 @@ import SideNavigation from '@/components/side-navigation/SideNavigation';
 import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import { scriptForWeek, WEEKLY_SEEN_KEY } from '@/components/daily-read/weeklyScripts';
 import CourseFolderCard from '@/components/home/CourseFolderCard';
+import EmptyCourseStudioFolder from '@/components/home/EmptyCourseStudioFolder';
 import FolderCardWrapper from '@/components/home/FolderCardWrapper';
 import ProfileDashboard from '@/components/home/ProfileDashboard';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
@@ -476,15 +477,7 @@ export default function HomePage() {
                     dark
                     images={[]}
                   />
-                  <CourseFolderCard
-                    title="Build a Course"
-                    count={0}
-                    href="/course-builder"
-                    avatarSrc="/images/academy-blockchain.png"
-                    centerLabel="Course Studio"
-                    dark
-                    images={[]}
-                  />
+                  <EmptyCourseStudioFolder />
                 </section>
               ),
             },
