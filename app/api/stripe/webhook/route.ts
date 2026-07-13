@@ -97,10 +97,15 @@ export async function POST(request: Request) {
     if (orderId) {
       await ensureMembershipSchema();
       await sqlQuery(
-        `UPDATE membership_orders
+          `UPDATE membership_orders
             SET status='failed', error=:err, updated_at=CURRENT_TIMESTAMP
-          WHERE id=:id AND status IN ('pending', 'paid')`,
-        { id: orderId, err: pi.last_payment_error?.message ?? 'Payment failed' },
+          WHERE id=:id AND stripe_payment_intent_id=:paymentIntentId
+            AND status IN ('pending', 'paid')`,
+        {
+          id: orderId,
+          paymentIntentId: pi.id,
+          err: pi.last_payment_error?.message ?? 'Payment failed',
+        },
       );
     }
     return NextResponse.json({ received: true });
@@ -126,8 +131,9 @@ export async function POST(request: Request) {
   await sqlQuery(
     `UPDATE membership_orders
         SET status='paid', updated_at=CURRENT_TIMESTAMP
-      WHERE id=:id AND status IN ('pending', 'paid', 'expired')`,
-    { id: orderId },
+      WHERE id=:id AND stripe_payment_intent_id=:paymentIntentId
+        AND status IN ('pending', 'paid', 'expired')`,
+    { id: orderId, paymentIntentId: pi.id },
   );
 
   // Hand off to the shared delivery path. If it fails, the order is left as

@@ -83,7 +83,7 @@ export default function TreasurySnapshotCard() {
                   {treasury.balances.cbBtc.amount !== null && <small> Bitcoin</small>}
                 </strong>
               </div>
-              <div className={styles.metric}>
+              <div className={`${styles.metric} ${styles.secondaryMetric}`}>
                 <Image className={styles.metricIcon} src="/tokens/usdc.webp" alt="" width={20} height={20} />
                 <span className={styles.metricLabel}>USDC</span>
                 <strong className={styles.metricValue}>
@@ -91,12 +91,12 @@ export default function TreasurySnapshotCard() {
                   {treasury.balances.usdc.amount !== null && <small> USDC</small>}
                 </strong>
               </div>
-              <div className={styles.metric}>
+              <div className={`${styles.metric} ${styles.secondaryMetric}`}>
                 <Image className={styles.metricIcon} src="/icons/ui-diamond.svg" alt="" width={20} height={20} />
-                <span className={styles.metricLabel}>Credits</span>
+                <span className={styles.metricLabel}>Diamonds</span>
                 <strong className={styles.metricValue}>
                   {formatBalance(treasury.balances.credits.amount, 2)}
-                  {treasury.balances.credits.amount !== null && <small> credits</small>}
+                  {treasury.balances.credits.amount !== null && <small> Diamonds</small>}
                 </strong>
               </div>
             </div>

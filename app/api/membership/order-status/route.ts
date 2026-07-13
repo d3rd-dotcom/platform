@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { getStripe } from '@/lib/stripe';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { ensureMembershipSchema } from '@/lib/ensureMembershipSchema';
 import { getWalletAddressFromRequest } from '@/lib/wallet-auth';
@@ -7,7 +8,30 @@ import { reconcileMembershipOrder } from '@/lib/membership-fulfillment';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const TERMINAL = new Set(['transferred', 'expired']);
+const TERMINAL = new Set(['transferred']);
+
+async function reconcileStripePayment(orderId: string, paymentIntentId: string | null): Promise<void> {
+  if (!paymentIntentId || !process.env.STRIPE_SECRET_KEY) return;
+
+  try {
+    const intent = await getStripe().paymentIntents.retrieve(paymentIntentId);
+    if (intent.status !== 'succeeded') return;
+
+    // The client can only poll its own order, but the server still verifies the
+    // Stripe result before marking payment as cleared. This is a fallback for a
+    // delayed webhook, not a client-controlled payment confirmation.
+    await sqlQuery(
+      `UPDATE membership_orders
+          SET status = 'paid', error = NULL, updated_at = CURRENT_TIMESTAMP
+        WHERE id = :id
+          AND stripe_payment_intent_id = :paymentIntentId
+          AND status IN ('pending', 'paid', 'expired')`,
+      { id: orderId, paymentIntentId },
+    );
+  } catch (err) {
+    console.error('[membership] order-status Stripe reconciliation failed:', err);
+  }
+}
 
 /**
  * GET /api/membership/order-status?orderId=...
@@ -39,8 +63,9 @@ export async function GET(request: Request) {
       tx_hash: string | null;
       error: string | null;
       buyer_wallet: string;
+      stripe_payment_intent_id: string | null;
     }>>(
-      `SELECT status, tx_hash, error, buyer_wallet
+      `SELECT status, tx_hash, error, buyer_wallet, stripe_payment_intent_id
          FROM membership_orders WHERE id = :id LIMIT 1`,
       { id: orderId },
     );
@@ -56,6 +81,7 @@ export async function GET(request: Request) {
   // Best-effort: advance the order, then re-read so the poll sees fresh state.
   if (!TERMINAL.has(rows[0].status)) {
     try {
+      await reconcileStripePayment(orderId, rows[0].stripe_payment_intent_id);
       await reconcileMembershipOrder(orderId);
       rows = await fetchOrder();
     } catch (err) {

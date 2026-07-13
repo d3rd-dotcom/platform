@@ -17,8 +17,8 @@ const TestimonialSection = dynamic(() =>
   import('./TestimonialSection').then((mod) => mod.TestimonialSection),
   { ssr: false }
 );
-const MembershipSection = dynamic(() =>
-  import('./MembershipSection').then((mod) => mod.MembershipSection),
+const LandingMembershipSection = dynamic(() =>
+  import('./LandingMembershipSection').then((mod) => mod.LandingMembershipSection),
   { ssr: false }
 );
 const FeaturesSection = dynamic(() =>
@@ -79,7 +79,7 @@ export function LandingDeferredSections() {
       <LazySection minHeight="90vh"><EcosystemSection /></LazySection>
       <LazySection minHeight="80vh"><FounderSection /></LazySection>
       <LazySection minHeight="80vh"><TestimonialSection /></LazySection>
-      <LazySection minHeight="100vh"><MembershipSection /></LazySection>
+      <LazySection minHeight="100vh"><LandingMembershipSection /></LazySection>
       <LazySection minHeight="90vh"><MagazineSection /></LazySection>
       <LazySection minHeight="80vh"><FAQSection /></LazySection>
       <LazySection minHeight="40vh"><LandingFooter /></LazySection>

@@ -60,9 +60,9 @@ async function readOrder(orderId: string): Promise<OrderRow | null> {
 }
 
 /**
- * Claims an order for delivery and sends the NFT. The conditional UPDATE is the
- * idempotency gate: only one caller can move an order into `transferring`, so
- * concurrent webhook / cron / poll calls cannot double-send. A delivery left
+ * Claims a paid order for delivery and sends the NFT. The conditional UPDATE is
+ * the idempotency gate: only one caller can move an order into `transferring`,
+ * so concurrent webhook / cron / poll calls cannot double-send. A delivery left
  * stuck in `transferring` for over 10 minutes (a crashed process) is reclaimed.
  */
 export async function deliverMembershipOrder(orderId: string): Promise<FulfilmentResult> {
@@ -74,7 +74,8 @@ export async function deliverMembershipOrder(orderId: string): Promise<Fulfilmen
       WHERE id = :id
         AND delivery_attempts < :max
         AND (
-          status IN ('pending', 'paid', 'failed', 'expired')
+          status = 'paid'
+          OR (status = 'failed' AND delivery_attempts > 0)
           OR (status = 'transferring'
               AND updated_at < CURRENT_TIMESTAMP - INTERVAL '10 minutes')
         )
@@ -130,10 +131,17 @@ export async function reconcileMembershipOrder(orderId: string): Promise<Fulfilm
     return { status: 'transferring' };
   }
 
-  // A verified-but-undelivered order (or a delivery that previously failed)
-  // just needs another delivery attempt.
-  if (order.status === 'paid' || order.status === 'failed') {
+  // A verified-but-undelivered order needs delivery. A failed order is only
+  // retryable when an earlier delivery attempt occurred; payment failures and
+  // unverified crypto payments have zero attempts and must remain fail-closed.
+  if (order.status === 'paid') {
     if (order.delivery_attempts >= MAX_DELIVERY_ATTEMPTS) {
+      return { status: order.status, error: order.error };
+    }
+    return deliverMembershipOrder(orderId);
+  }
+  if (order.status === 'failed') {
+    if (order.delivery_attempts === 0 || order.delivery_attempts >= MAX_DELIVERY_ATTEMPTS) {
       return { status: order.status, error: order.error };
     }
     return deliverMembershipOrder(orderId);
@@ -223,7 +231,7 @@ export async function reconcileMembershipOrders(): Promise<ReconcileSummary> {
   const rows = await sqlQuery<Array<{ id: string }>>(
     `SELECT id FROM membership_orders
       WHERE status = 'paid'
-         OR (status = 'failed' AND delivery_attempts < :max)
+         OR (status = 'failed' AND delivery_attempts > 0 AND delivery_attempts < :max)
          OR (status IN ('pending', 'expired') AND payment_tx_hash IS NOT NULL)
          OR (status = 'transferring'
              AND updated_at < CURRENT_TIMESTAMP - INTERVAL '10 minutes')

@@ -61,8 +61,9 @@ export async function POST(request: Request) {
     buyer_wallet: string;
     tx_hash: string | null;
     payment_tx_hash: string | null;
+    delivery_attempts: number;
   }>>(
-    `SELECT id, status, buyer_wallet, tx_hash, payment_tx_hash
+    `SELECT id, status, buyer_wallet, tx_hash, payment_tx_hash, delivery_attempts
        FROM membership_orders WHERE id = :id LIMIT 1`,
     { id: orderId },
   );
@@ -77,6 +78,18 @@ export async function POST(request: Request) {
   if (order.status === 'transferred') {
     return NextResponse.json({ status: 'transferred', txHash: order.tx_hash });
   }
+  if (order.status === 'failed' && order.delivery_attempts > 0) {
+    return NextResponse.json(
+      { error: 'Your payment is already recorded and card delivery is being retried.' },
+      { status: 409 },
+    );
+  }
+  if (order.status === 'failed') {
+    return NextResponse.json(
+      { error: 'This checkout payment was not confirmed. Start a new crypto checkout.' },
+      { status: 409 },
+    );
+  }
   if (order.payment_tx_hash && order.payment_tx_hash.toLowerCase() !== txHash.toLowerCase()) {
     return NextResponse.json(
       { error: 'A different payment is already recorded for this order.' },
@@ -89,8 +102,9 @@ export async function POST(request: Request) {
   await sqlQuery(
     `UPDATE membership_orders
         SET payment_method = 'crypto', payment_currency = :cur,
-            payment_tx_hash = :tx, updated_at = CURRENT_TIMESTAMP
-      WHERE id = :id AND status IN ('pending', 'paid', 'failed', 'expired')`,
+            payment_tx_hash = :tx,
+            updated_at = CURRENT_TIMESTAMP
+      WHERE id = :id AND status IN ('pending', 'paid', 'expired')`,
     { id: orderId, cur: currency, tx: txHash },
   );
 

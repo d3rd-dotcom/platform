@@ -3,6 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePrivy } from '@privy-io/react-auth';
 import { useAccount } from 'wagmi';
@@ -17,7 +18,7 @@ interface ProMembershipModalProps {
   onClose: () => void;
 }
 
-type Screen = 'intro' | 'duplicate-warning' | 'purchase' | 'transfer';
+type Screen = 'intro' | 'account' | 'duplicate-warning' | 'purchase' | 'transfer';
 type TransferPhase = 'working' | 'done' | 'failed';
 type PaymentMethod = 'card' | 'crypto';
 
@@ -35,9 +36,7 @@ const BLUE_AVATAR = '/uploads/blueagent.png';
 const MEMBERSHIP_IMAGE = '/uploads/vip-membership-card.png';
 const EXXIE_IMAGE = '/exxie.png';
 const PRICE_LABEL = '$888';
-const OPENSEA_URL =
-  'https://opensea.io/item/base/0x5da79055cf8ca6482c997df58822e08e5707d6fc/1';
-
+const CHECKOUT_REQUEST_TIMEOUT_MS = 20_000;
 const FEATURES = [
   "Unlock Blue's AI Power-Tools",
   'Access Community Treasury',
@@ -55,6 +54,22 @@ const BASE_CHAIN_PARAMS = {
   rpcUrls: ['https://mainnet.base.org'],
   blockExplorerUrls: ['https://basescan.org'],
 };
+
+async function checkoutFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), CHECKOUT_REQUEST_TIMEOUT_MS);
+
+  try {
+    return await fetch(input, { ...init, signal: controller.signal });
+  } catch (error) {
+    if (controller.signal.aborted) {
+      throw new Error('The checkout service took too long to respond. Please try again.');
+    }
+    throw error;
+  } finally {
+    window.clearTimeout(timeout);
+  }
+}
 
 interface Eip1193Provider {
   request: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
@@ -198,7 +213,7 @@ function CryptoCheckout({
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch('/api/membership/crypto-intent', {
+        const res = await checkoutFetch('/api/membership/crypto-intent', {
           method: 'POST',
           credentials: 'include',
           headers: await authHeaders(),
@@ -210,8 +225,12 @@ function CryptoCheckout({
           return;
         }
         setIntent(data as CryptoIntent);
-      } catch {
-        if (!cancelled) setError('Could not reach the checkout service.');
+      } catch (error) {
+        if (!cancelled) {
+          setError(
+            error instanceof Error ? error.message : 'Could not reach the checkout service.',
+          );
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -257,7 +276,7 @@ function CryptoCheckout({
       // server owns delivery — verification and the NFT transfer happen in the
       // backend reconcile worker, so closing this tab no longer loses the order.
       const headers = (await authHeaders()) as Record<string, string>;
-      const confirmRes = await fetch('/api/membership/confirm-crypto', {
+      const confirmRes = await checkoutFetch('/api/membership/confirm-crypto', {
         method: 'POST',
         credentials: 'include',
         headers: { ...headers, 'Content-Type': 'application/json' },
@@ -443,6 +462,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
   const [transferPhase, setTransferPhase] = useState<TransferPhase>('working');
   const [transferError, setTransferError] = useState<string | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);
+  const [transferPollAttempt, setTransferPollAttempt] = useState(0);
   const cardIntentAttemptedRef = useRef(false);
   const cardIntentInFlightRef = useRef(false);
 
@@ -472,23 +492,42 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
       setTransferPhase('working');
       setTransferError(null);
       setTxHash(null);
+      setTransferPollAttempt(0);
     }
   }, [isOpen]);
 
   const continueToPurchase = useCallback(async () => {
     if (membershipCheckLoading) return;
 
-    if (!ready) return;
+    setMembershipCheckError(null);
+    if (!ready) {
+      setMembershipCheckError('Secure sign-in is still starting. Please try again in a moment.');
+      return;
+    }
     if (!authenticated) {
       setResumeAfterLogin(true);
-      login();
+      try {
+        await login();
+      } catch {
+        setResumeAfterLogin(false);
+        setMembershipCheckError('Account setup could not open. Please try again.');
+      }
       return;
     }
 
     setMembershipCheckLoading(true);
-    setMembershipCheckError(null);
     try {
-      const res = await fetch('/api/membership/holding-status', {
+      const accountResponse = await checkoutFetch('/api/auth/wallet-signup', {
+        method: 'POST',
+        credentials: 'include',
+        headers: await authHeaders(),
+      });
+      const accountData = await accountResponse.json().catch(() => ({}));
+      if (!accountResponse.ok) {
+        throw new Error(accountData?.error || 'Could not create your Academy account.');
+      }
+
+      const res = await checkoutFetch('/api/membership/holding-status', {
         method: 'GET',
         credentials: 'include',
         headers: await authHeaders(),
@@ -498,13 +537,15 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
         setScreen('duplicate-warning');
         return;
       }
-      if (res.ok || res.status === 401) {
+      if (res.ok) {
         setScreen('purchase');
         return;
       }
       setMembershipCheckError(data?.error || 'Could not check your current membership.');
-    } catch {
-      setMembershipCheckError('Could not check your current membership. Try again.');
+    } catch (error) {
+      setMembershipCheckError(
+        error instanceof Error ? error.message : 'Could not prepare checkout. Please try again.',
+      );
     } finally {
       setMembershipCheckLoading(false);
     }
@@ -584,7 +625,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
     setIntentLoading(true);
     setIntentError(null);
     try {
-      const res = await fetch('/api/membership/create-intent', {
+      const res = await checkoutFetch('/api/membership/create-intent', {
         method: 'POST',
         credentials: 'include',
         headers: await authHeaders(),
@@ -626,7 +667,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
 
     const poll = async () => {
       try {
-        const res = await fetch(
+        const res = await checkoutFetch(
           `/api/membership/order-status?orderId=${encodeURIComponent(orderId)}`,
           { credentials: 'include', headers: await authHeaders() },
         );
@@ -640,7 +681,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
         }
         if (data.status === 'failed' || data.status === 'expired') {
           setTransferError(
-            data.error || 'The transfer hit a snag. Our team has been notified.',
+            data.error || 'We could not confirm card delivery yet.',
           );
           setTransferPhase('failed');
           return;
@@ -656,7 +697,14 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [screen, orderId, authHeaders]);
+  }, [screen, orderId, authHeaders, transferPollAttempt]);
+
+  const retryDelivery = useCallback(() => {
+    if (!orderId) return;
+    setTransferError(null);
+    setTransferPhase('working');
+    setTransferPollAttempt((attempt) => attempt + 1);
+  }, [orderId]);
 
   useEffect(() => {
     if (transferPhase === 'done') {
@@ -676,9 +724,15 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
       }
     : undefined;
 
-  return (
+  return createPortal(
     <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+      <div
+        className={styles.modal}
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="membership-checkout-title"
+      >
         <button className={styles.closeButton} onClick={onClose} aria-label="Close">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path
@@ -706,7 +760,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
 
             <div className={styles.textContent}>
               <span className={styles.badge}>VIP Membership</span>
-              <h2 className={styles.title}>Earn Your Wings</h2>
+              <h2 id="membership-checkout-title" className={styles.title}>Earn Your Wings</h2>
               <p className={styles.description}>
                 Mental Wealth Academy is a research cohort built like a club,
                 not a classroom. One membership unlocks the path to excellence.
@@ -738,17 +792,42 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
 
               <button
                 className={`${styles.ctaButton} ${styles.ctaButtonBuy}`}
+                onClick={() => setScreen('account')}
+              >
+                <span>Next</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ── Screen 1a: Account setup ─────────────────────────────────── */}
+        {screen === 'account' && (
+          <div className={styles.content}>
+            <button className={styles.backLink} onClick={() => setScreen('intro')} type="button">
+              Back
+            </button>
+            <div className={styles.textContent}>
+              <span className={styles.badge}>Step 1 of 2</span>
+              <h2 id="membership-checkout-title" className={styles.title}>Create your account</h2>
+              <p className={styles.description}>
+                Your account records the purchase and the wallet that receives your membership card.
+              </p>
+              {!ready && (
+                <p className={styles.secureNote}>
+                  Secure sign-in is starting. Try again in a moment.
+                </p>
+              )}
+              <button
+                className={`${styles.ctaButton} ${styles.ctaButtonBuy}`}
                 onClick={continueToPurchase}
-                disabled={!ready || membershipCheckLoading}
+                disabled={membershipCheckLoading}
               >
                 <span>
-                  {!ready
-                    ? 'Loading...'
-                    : membershipCheckLoading
-                      ? 'Checking...'
-                      : authenticated
-                        ? `Continue · ${PRICE_LABEL}`
-                        : `Create an account · ${PRICE_LABEL}`}
+                  {membershipCheckLoading
+                    ? 'Preparing checkout...'
+                    : authenticated
+                      ? 'Continue to checkout'
+                      : 'Create account'}
                 </span>
               </button>
               {membershipCheckError && (
@@ -767,7 +846,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
                 cardIntentAttemptedRef.current = false;
                 cardIntentInFlightRef.current = false;
                 setIntentError(null);
-                setScreen('intro');
+                setScreen('account');
               }}
               type="button"
             >
@@ -784,7 +863,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
             </div>
             <div className={styles.textContent}>
               <span className={styles.badge}>Already a Member</span>
-              <h2 className={styles.title}>
+              <h2 id="membership-checkout-title" className={styles.title}>
                 You already have one, are you sure you want another one?
               </h2>
               <p className={styles.description}>
@@ -801,7 +880,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
                 <button
                   type="button"
                   className={`${styles.ctaButton} ${styles.ctaButtonSecondary}`}
-                  onClick={() => setScreen('intro')}
+                  onClick={() => setScreen('account')}
                 >
                   <span>Cancel</span>
                 </button>
@@ -815,7 +894,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
           <div className={styles.content}>
             <button
               className={styles.backLink}
-              onClick={() => setScreen('intro')}
+              onClick={() => setScreen('account')}
               type="button"
             >
               Back
@@ -830,7 +909,8 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
               />
             </div>
             <div className={styles.textContent}>
-              <h2 className={styles.title}>Checkout</h2>
+              <span className={styles.badge}>Step 2 of 2</span>
+              <h2 id="membership-checkout-title" className={styles.title}>Checkout</h2>
               <p className={styles.description}>
                 VIP Membership. Lifetime access, charged once.
               </p>
@@ -915,7 +995,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
         {screen === 'transfer' && (
           <div className={styles.content}>
             <div className={styles.textContent}>
-              <h2 className={styles.title}>
+              <h2 id="membership-checkout-title" className={styles.title}>
                 {transferPhase === 'done'
                   ? 'Welcome, member'
                   : transferPhase === 'failed'
@@ -958,16 +1038,11 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
 
               {transferPhase === 'failed' && (
                 <div className={styles.transferActions}>
-                  <a
-                    className={styles.txLink}
-                    href={OPENSEA_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    View collection on OpenSea
-                  </a>
-                  <button className={styles.ctaButton} onClick={onClose}>
-                    <span>Close</span>
+                  <p className={styles.secureNote}>
+                    Your payment remains recorded. Do not submit another payment.
+                  </p>
+                  <button className={styles.ctaButton} onClick={retryDelivery}>
+                    <span>Retry delivery</span>
                   </button>
                 </div>
               )}
@@ -1023,7 +1098,8 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
 

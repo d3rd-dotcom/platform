@@ -7,7 +7,6 @@ import Image from 'next/image';
 import { CheckCircle, SealCheck, SpinnerGap, ArrowLeft, ArrowRight } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import Banner from '@/components/banner/Banner';
-import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
 import ComponentRenderer from '@/components/course-renderers/ComponentRenderer';
 import DiamondReward from '@/components/rewards/DiamondReward';
 import type { CourseRecord, ChapterRecord, LessonRecord } from '@/lib/course-content-db';
@@ -500,11 +499,7 @@ export default function CourseSlugPage({ params }: PageProps) {
             </div>
 
           {/* ── Right panel (below the list on mobile) ── */}
-          <aside className={courseStyles.rightPanel} ref={rightPanelRef} aria-label="Blue and weekly reading">
-            <BlueVideoPanel
-              className={courseStyles.blueTv}
-              message="One mission at a time. Your work leaves evidence."
-            />
+          <aside className={courseStyles.rightPanel} ref={rightPanelRef} aria-label="Weekly reading">
             {rightContent === 'reading' && readingComponent && (
               <div className={courseStyles.popupCard}>
                 <div className={courseStyles.inlineReaderInner}>

@@ -1,12 +1,10 @@
 .card {
   width: 100%;
   padding: 16px;
-  background: var(--color-surface-1);
-  border: 2px solid var(--color-primary-hover);
+  background: color-mix(in oklch, var(--color-surface-1) 94%, white);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 24%, var(--color-border-subtle));
   border-radius: 12px;
-  box-shadow:
-    0 6px 0 var(--color-primary),
-    var(--shadow-lg);
+  box-shadow: var(--shadow-md);
 }
 
 .header {
@@ -16,8 +14,8 @@
   padding: 12px 16px;
   margin: -16px -16px 12px;
   border-radius: 10px 10px 0 0;
-  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-1));
-  border-bottom: 2px solid var(--color-primary-hover);
+  background: color-mix(in oklch, var(--color-primary) 5%, var(--color-surface-1));
+  border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 16%, var(--color-border-subtle));
 }
 
 .kanji,
@@ -59,7 +57,7 @@
 .metrics,
 .skeleton {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -85,6 +83,7 @@
 }
 
 .skeleton span:first-child {
+  grid-column: 1 / -1;
   height: 88px;
 }
 
@@ -102,17 +101,29 @@
 }
 
 .primaryMetric {
+  grid-column: 1 / -1;
   min-height: 88px;
   padding: 16px 54px 16px 14px;
-  background: color-mix(in oklch, var(--color-primary) 10%, var(--color-surface-1));
-  border-color: color-mix(in oklch, var(--color-primary) 24%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 7%, var(--color-surface-1));
+  border-color: color-mix(in oklch, var(--color-primary) 18%, transparent);
 }
 
 .primaryMetric .metricIcon {
-  top: 16px;
   right: 16px;
   width: 30px;
   height: 30px;
+}
+
+.secondaryMetric {
+  min-height: 68px;
+  background: color-mix(in oklch, var(--color-primary-hover) 68%, var(--color-surface-3));
+  border-color: color-mix(in oklch, var(--color-primary) 30%, var(--color-border-strong));
+}
+
+.secondaryMetric .metricLabel,
+.secondaryMetric .metricValue,
+.secondaryMetric .metricValue small {
+  color: var(--color-text-light);
 }
 
 .primaryMetric .metricLabel {
@@ -127,11 +138,12 @@
 
 .metricIcon {
   position: absolute;
-  top: 8px;
+  top: 50%;
   right: 9px;
   width: 20px;
   height: 20px;
   object-fit: contain;
+  transform: translateY(-50%);
 }
 
 .metricLabel {
@@ -177,4 +189,20 @@
 
 .walletLink:hover {
   color: var(--color-primary-hover);
+}
+
+:global([data-theme="dark"]) .card {
+  background: var(--color-surface-3);
+}
+
+:global([data-theme="dark"]) .header {
+  background: color-mix(in oklch, var(--color-primary) 6%, var(--color-surface-3));
+}
+
+:global([data-theme="dark"]) .primaryMetric {
+  background: color-mix(in oklch, var(--color-primary) 9%, var(--color-surface-3));
+}
+
+:global([data-theme="dark"]) .secondaryMetric {
+  background: color-mix(in oklch, var(--color-primary) 15%, var(--color-surface-1));
 }
