@@ -115,7 +115,7 @@ const TopNavigation: React.FC = () => {
                 >
                   <span className={styles.navLinkIconWrap}>
                     <Image
-                      src={icon}
+                      src={icon as string}
                       alt=""
                       width={16}
                       height={16}
