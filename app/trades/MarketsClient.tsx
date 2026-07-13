@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import type { CSSProperties, FormEvent } from 'react';
 import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
+import TreasurySnapshotCard from '@/components/treasury-snapshot/TreasurySnapshotCard';
 import { HowToButton } from '@/components/treasury-how-to/TreasuryHowTo';
 import ProMembershipModal from '@/components/pro-membership-modal/ProMembershipModal';
 import CtaButton from '@/components/shared/CtaButton';
@@ -1097,55 +1098,54 @@ export default function Markets() {
         {/* ── Dashboard Grid: treasury + Quant engine stack column 1, markets fill column 2 ── */}
         <div className={styles.grid}>
 
-          {/* Treasury card sits above the Quant engine. */}
-          {(() => {
-            const rangeLen = TREASURY_RANGES.find((range) => range.id === treasuryRange)?.len ?? 80;
-            return (
-          <div className={styles.treasuryFloat} aria-label="Trades treasury">
-            <span className={styles.treasuryFloatTitle}>Trades Treasury</span>
-            <button
-              type="button"
-              className={styles.treasuryReceiptHint}
-              onClick={() => setIsReceiptOpen(true)}
-            >
-              Receipts
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-            {!balance && !balanceError && (
-              <TreasuryQuickSkeleton />
-            )}
-            {balanceError && !balance && (
-              <span className={styles.errorText}>Failed to load balance</span>
-            )}
-            {balance && (
-              <>
-                <div className={styles.treasuryQuickPrimary}>
-                  <div className={styles.balanceHero}>${balance.formatted}</div>
+          {/* Treasury balance and the moved wallet snapshot share the left stack. */}
+          <div className={styles.treasuryStack}>
+            {(() => {
+              const rangeLen = TREASURY_RANGES.find((range) => range.id === treasuryRange)?.len ?? 80;
+              return (
+                <div className={styles.treasuryFloat} aria-label="Trades treasury">
+                  <span className={styles.treasuryFloatTitle}>Trades Treasury</span>
+                  <button
+                    type="button"
+                    className={styles.treasuryReceiptHint}
+                    onClick={() => setIsReceiptOpen(true)}
+                  >
+                    Receipts
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                  {!balance && !balanceError && <TreasuryQuickSkeleton />}
+                  {balanceError && !balance && <span className={styles.errorText}>Failed to load balance</span>}
+                  {balance && (
+                    <>
+                      <div className={styles.treasuryQuickPrimary}>
+                        <div className={styles.balanceHero}>${balance.formatted}</div>
+                      </div>
+                      <div className={styles.treasuryQuickSpark}>
+                        <TickerLine key={`a-${treasuryRange}`} len={rangeLen} stroke="var(--color-primary)" strokeWidth={2} opacity={0.85} />
+                        <TickerLine key={`b-${treasuryRange}`} len={rangeLen} drift={0.18} vol={0.8} stroke="var(--color-tertiary)" strokeWidth={1.5} opacity={0.55} speed={350} />
+                        <TickerLine key={`c-${treasuryRange}`} len={rangeLen} drift={0.05} vol={0.5} stroke="var(--color-primary)" strokeWidth={1.5} opacity={0.5} speed={500} />
+                      </div>
+                      <div className={styles.treasuryRange} role="group" aria-label="Treasury range">
+                        {TREASURY_RANGES.map((range) => (
+                          <button
+                            key={range.id}
+                            type="button"
+                            className={`${styles.treasuryRangeButton} ${treasuryRange === range.id ? styles.treasuryRangeButtonActive : ''}`}
+                            onClick={() => setTreasuryRange(range.id)}
+                          >
+                            {range.id}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
                 </div>
-                <div className={styles.treasuryQuickSpark}>
-                  <TickerLine key={`a-${treasuryRange}`} len={rangeLen} stroke="var(--color-primary)" strokeWidth={2} opacity={0.85} />
-                  <TickerLine key={`b-${treasuryRange}`} len={rangeLen} drift={0.18} vol={0.8} stroke="var(--color-tertiary)" strokeWidth={1.5} opacity={0.55} speed={350} />
-                  <TickerLine key={`c-${treasuryRange}`} len={rangeLen} drift={0.05} vol={0.5} stroke="var(--color-primary)" strokeWidth={1.5} opacity={0.5} speed={500} />
-                </div>
-                <div className={styles.treasuryRange} role="group" aria-label="Treasury range">
-                  {TREASURY_RANGES.map((range) => (
-                    <button
-                      key={range.id}
-                      type="button"
-                      className={`${styles.treasuryRangeButton} ${treasuryRange === range.id ? styles.treasuryRangeButtonActive : ''}`}
-                      onClick={() => setTreasuryRange(range.id)}
-                    >
-                      {range.id}
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
+              );
+            })()}
+            <TreasurySnapshotCard />
           </div>
-            );
-          })()}
 
           {/* ════ POP-UP: Model Parameters ════ */}
           <aside

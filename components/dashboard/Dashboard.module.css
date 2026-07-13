@@ -18,7 +18,7 @@
 /* ── Desktop: two-column fill-height layout ── */
 @media (min-width: 1025px) {
   .dashboard {
-    grid-template-columns: 380px 1fr;
+    grid-template-columns: 1fr 380px;
     grid-template-rows: minmax(0, 1fr);
     gap: 16px;
     min-height: 100%;
@@ -27,7 +27,7 @@
   }
 
   .blueSceneWrap {
-    grid-column: 2;
+    grid-column: 1;
     grid-row: 1;
     height: 100%;
     box-sizing: border-box;
@@ -35,7 +35,7 @@
   }
 
   .sidebarWrap {
-    grid-column: 1;
+    grid-column: 2;
     grid-row: 1;
     display: flex;
     flex-direction: column;

@@ -176,11 +176,12 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
   },
   {
     id: 'page-dao',
-    title: 'DAO world',
+    title: 'Live',
     routes: ['/dao'],
-    keywords: ['dao', 'world', 'treasury', 'blue', 'chat'],
+    keywords: ['dao', 'world', 'live', 'livestream', 'stream', 'broadcast', 'video', 'blue', 'chat'],
     body:
-      'The /dao page is the DAO world. It contains Blue\'s scene, treasury information, and the community chat room.',
+      'The /dao page is Live. Its main scene switches between Blue\'s balloon garden and live broadcasts tied to the curriculum. ' +
+      'The side column shows the upcoming event and Global Chat.',
   },
   {
     id: 'page-landing',
@@ -275,14 +276,6 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
       'The /community page surfaces other MWA users and social activity (Farcaster via Neynar). Where users find peers, leaderboards, and shared milestones.',
   },
   {
-    id: 'page-livestream',
-    title: 'Livestream',
-    routes: ['/livestream'],
-    keywords: ['livestream', 'stream', 'live', 'broadcast', 'video'],
-    body:
-      'The /livestream page hosts live broadcasts — lectures, Q&A, and event streams tied to the curriculum.',
-  },
-  {
     id: 'page-profile',
     title: 'Profile',
     routes: ['/profile'],
@@ -303,7 +296,7 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
   {
     id: 'page-events',
     title: 'Events',
-    routes: ['*', '/events', '/livestream', '/community'],
+    routes: ['*', '/events', '/dao', '/community'],
     keywords: ['events', 'event', 'guest', 'special guest', 'refresh', 'reset', 'ticket', 'tickets', 'paywall', 'provider'],
     body:
       'Events are ways to intellectually refresh or reset. MWA has special guests and members who help activate events. ' +

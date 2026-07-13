@@ -1,0 +1,31 @@
+import styles from './BlueScene.module.css';
+
+export default function LivestreamFeed() {
+  const streamUrl = process.env.NEXT_PUBLIC_LIVESTREAM_EMBED_URL?.trim();
+
+  return (
+    <div className={styles.liveFeed}>
+      {streamUrl ? (
+        <iframe
+          className={styles.liveFrame}
+          src={streamUrl}
+          title="Mental Wealth Academy live session"
+          allow="autoplay; encrypted-media; picture-in-picture"
+          allowFullScreen
+        />
+      ) : (
+        <div className={styles.offlineState}>
+          <span className={styles.offlineIcon} aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M17 10.5V7C17 6.45 16.55 6 16 6H4C3.45 6 3 6.45 3 7V17C3 17.55 3.45 18 4 18H16C16.55 18 17 17.55 17 17V13.5L21 17.5V6.5L17 10.5Z" fill="currentColor" />
+              <circle cx="8" cy="12" r="2" fill="currentColor" opacity="0.4" />
+            </svg>
+          </span>
+          <h2 className={styles.offlineTitle}>Stream offline</h2>
+          <p className={styles.offlineText}>Live workshops and community sessions will appear here.</p>
+          <span className={styles.offlineStatus}>Next session coming soon</span>
+        </div>
+      )}
+    </div>
+  );
+}

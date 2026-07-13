@@ -60,7 +60,7 @@ const PRE_RECORDED = new Map<string, string>([
   ['diamond payouts from contributions, validated surveys, or treasury proposals. pick a lane.', 'faq-diamond-payouts'],
   ["where diamonds go - loot boxes, upgrades, season drops. check rewards.", 'faq-rewards-shop'],
   ['Prompts holds reusable instructions and selected essays. Copy what fits the work.', 'faq-prompts'],
-  ["lectures, Q&As, curriculum events. check the livestream for what's up.", 'faq-livestream'],
+  ["workshops, questions, curriculum events. open Live, then switch to the feed.", 'faq-livestream'],
   ['see other users and shared milestones over in community. discord.gg/ZTRVCYwncs for the real-time convo.', 'faq-community'],
   ['wallet, username, on-chain state — all in your profile.', 'faq-profile'],
   ['runs on Base. four contracts handling governance, treasury, your state, and markets.', 'faq-blockchain'],

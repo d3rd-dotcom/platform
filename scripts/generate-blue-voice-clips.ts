@@ -269,7 +269,7 @@ const CLIPS: Clip[] = [
     id: 'faq-livestream',
     dir: 'blue-voice',
     priority: 2,
-    text: "lectures, Q&As, curriculum events. check the livestream for what's up.",
+    text: "workshops, questions, curriculum events. open Live, then switch to the feed.",
   },
   {
     id: 'faq-community',

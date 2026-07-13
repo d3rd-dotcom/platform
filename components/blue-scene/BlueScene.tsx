@@ -4,6 +4,8 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Image from 'next/image';
 import { useSound } from '@/hooks/useSound';
 import { DiamondReward } from '@/components/rewards/DiamondReward';
+import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
+import LivestreamFeed from './LivestreamFeed';
 import styles from './BlueScene.module.css';
 
 // bg-02 through bg-04 were removed from the rotation and must never be selected again.
@@ -91,6 +93,7 @@ function balloonDialogue(pops: number): Dialogue {
 
 export default function BlueScene() {
   const { play } = useSound();
+  const [view, setView] = useState<'garden' | 'live'>('garden');
   const [balloons, setBalloons] = useState<Balloon[]>([]);
   const [sessionPops, setSessionPops] = useState(0);
   const [communityTotal, setCommunityTotal] = useState<number | null>(null);
@@ -109,16 +112,14 @@ export default function BlueScene() {
   // Restore last rewarded milestone from storage and use it as baseline
   // so cumulative pop tracking works across sessions.
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem('lastBalloonMilestone');
-      if (saved) {
-        const n = Number(saved);
-        if (!isNaN(n) && n > 0) {
-          lastMilestoneRef.current = n;
-          baselineRef.current = n;
-        }
+    const saved = getStorageItem('lastBalloonMilestone');
+    if (saved) {
+      const n = Number(saved);
+      if (!isNaN(n) && n > 0) {
+        lastMilestoneRef.current = n;
+        baselineRef.current = n;
       }
-    } catch {}
+    }
   }, []);
 
   useEffect(() => {
@@ -179,6 +180,8 @@ export default function BlueScene() {
 
   // Spawn balloons while the tab is visible.
   useEffect(() => {
+    if (view !== 'garden') return;
+
     const spawn = () => {
       if (document.hidden) return;
       setBalloons((prev) => {
@@ -208,7 +211,7 @@ export default function BlueScene() {
     spawn();
     const interval = setInterval(spawn, SPAWN_INTERVAL_MS);
     return () => clearInterval(interval);
-  }, [reducedMotion]);
+  }, [reducedMotion, view]);
 
   const popBalloon = useCallback((id: number) => {
     if (poppedIdsRef.current.has(id)) return;
@@ -235,7 +238,7 @@ export default function BlueScene() {
     const cumulativePops = baselineRef.current + sessionPopsRef.current;
     if (cumulativePops % 5 === 0 && cumulativePops > lastMilestoneRef.current) {
       lastMilestoneRef.current = cumulativePops;
-      try { localStorage.setItem('lastBalloonMilestone', String(cumulativePops)); } catch {}
+      setStorageItem('lastBalloonMilestone', String(cumulativePops));
 
       fetch('/api/quests/complete', {
         method: 'POST',
@@ -261,96 +264,121 @@ export default function BlueScene() {
   const dialogue = useMemo(() => balloonDialogue(sessionPops), [sessionPops]);
 
   return (
-    <section className={styles.scene} aria-label="Balloon popping with Blue">
-      <div className={styles.bgImage} style={{ backgroundImage: `url(${bgUrl})` }} />
+    <section className={styles.scene} aria-label={view === 'garden' ? 'Balloon popping with Blue' : 'Live session feed'}>
       <div className={styles.sceneHeader}>
-        <span className={styles.sceneTitleJa}>幻想庭園</span>
-        <span className={styles.sceneTitle}>Ethereal Gardens</span>
+        <div className={styles.sceneHeading}>
+          <span className={styles.sceneTitleJa} lang="ja">{view === 'garden' ? '幻想庭園' : '生配信'}</span>
+          <span className={styles.sceneTitle}>{view === 'garden' ? 'Ethereal Gardens' : 'Live Sessions'}</span>
+        </div>
+        <div className={styles.sceneSwitch} role="tablist" aria-label="Scene view">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={view === 'garden'}
+            className={`${styles.sceneSwitchButton} ${view === 'garden' ? styles.sceneSwitchButtonActive : ''}`}
+            onClick={() => { play('click'); setView('garden'); }}
+          >
+            Garden
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={view === 'live'}
+            className={`${styles.sceneSwitchButton} ${view === 'live' ? styles.sceneSwitchButtonActive : ''}`}
+            onClick={() => { play('click'); setView('live'); }}
+          >
+            Live
+          </button>
+        </div>
       </div>
 
-      <div className={styles.sceneFooter}>
-        <div className={`${styles.footerText}${dialogue.chaotic ? ' ' + styles.footerTextChaotic : ''}`}>
-          <span className={styles.footerTextJa}>{dialogue.ja}</span>
-          <span className={styles.footerTextEn}>{dialogue.en}</span>
-        </div>
-        <div className={styles.footerCounters}>
-          <span className={styles.counterChip}>
-            <span className={styles.counterLabel}>you</span>
-            <span className={styles.counterValue}>{sessionPops}</span>
-          </span>
-          <span className={styles.counterChip}>
-            <span className={styles.counterLabel}>community</span>
-            <span className={styles.counterValue}>
-              {communityTotal === null ? '—' : communityTotal.toLocaleString()}
-            </span>
-          </span>
-        </div>
-      </div>
+      {view === 'garden' ? (
+        <>
+          <div className={styles.bgImage} style={{ backgroundImage: `url(${bgUrl})` }} />
+          <div className={styles.sceneFooter}>
+            <div className={`${styles.footerText}${dialogue.chaotic ? ' ' + styles.footerTextChaotic : ''}`}>
+              <span className={styles.footerTextJa}>{dialogue.ja}</span>
+              <span className={styles.footerTextEn}>{dialogue.en}</span>
+            </div>
+            <div className={styles.footerCounters}>
+              <span className={styles.counterChip}>
+                <span className={styles.counterLabel}>you</span>
+                <span className={styles.counterValue}>{sessionPops}</span>
+              </span>
+              <span className={styles.counterChip}>
+                <span className={styles.counterLabel}>community</span>
+                <span className={styles.counterValue}>
+                  {communityTotal === null ? '—' : communityTotal.toLocaleString()}
+                </span>
+              </span>
+            </div>
+          </div>
 
-      {balloons.map((b) => (
-        <button
-          key={b.id}
-          type="button"
-          className={`${styles.balloon} ${reducedMotion ? styles.balloonStatic : styles.balloonRising} ${b.popped ? styles.balloonPopped : ''}`}
-          style={{
-            left: `${b.left}%`,
-            width: b.size,
-            color: b.color,
-            ...(reducedMotion ? { top: `${b.top}%` } : {}),
-            '--rise-duration': `${b.duration}s`,
-            '--sway-delay': `${b.delay}s`,
-          } as React.CSSProperties}
-          tabIndex={-1}
-          onClick={() => popBalloon(b.id)}
-          disabled={b.popped}
-          aria-label="Pop balloon"
-        >
-          {b.popped ? (
-            <span className={styles.burst} aria-hidden="true">
-              {Array.from({ length: 8 }, (_, i) => (
-                <span
-                  key={i}
-                  className={styles.particle}
-                  style={{ '--angle': `${i * 45}deg` } as React.CSSProperties}
-                />
-              ))}
-            </span>
-          ) : (
-            <svg viewBox="0 0 60 108" aria-hidden="true">
-              <path
-                d="M30 2 C13 2 8 16 8 27 C8 40 20 50 27 52 L25 57 L35 57 L33 52 C40 50 52 40 52 27 C52 16 47 2 30 2 Z"
-                fill="currentColor"
-              />
-              <ellipse cx="21" cy="18" rx="6" ry="9" fill="#FFFFFF" opacity="0.32" />
-              <path
-                d="M30 57 C30 70 22 74 26 84 C29 92 34 96 32 106"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                opacity="0.55"
-                strokeLinecap="round"
-              />
-            </svg>
+          {balloons.map((b) => (
+            <button
+              key={b.id}
+              type="button"
+              className={`${styles.balloon} ${reducedMotion ? styles.balloonStatic : styles.balloonRising} ${b.popped ? styles.balloonPopped : ''}`}
+              style={{
+                left: `${b.left}%`,
+                width: b.size,
+                color: b.color,
+                ...(reducedMotion ? { top: `${b.top}%` } : {}),
+                '--rise-duration': `${b.duration}s`,
+                '--sway-delay': `${b.delay}s`,
+              } as React.CSSProperties}
+              tabIndex={-1}
+              onClick={() => popBalloon(b.id)}
+              disabled={b.popped}
+              aria-label="Pop balloon"
+            >
+              {b.popped ? (
+                <span className={styles.burst} aria-hidden="true">
+                  {Array.from({ length: 8 }, (_, i) => (
+                    <span
+                      key={i}
+                      className={styles.particle}
+                      style={{ '--angle': `${i * 45}deg` } as React.CSSProperties}
+                    />
+                  ))}
+                </span>
+              ) : (
+                <svg viewBox="0 0 60 108" aria-hidden="true">
+                  <path
+                    d="M30 2 C13 2 8 16 8 27 C8 40 20 50 27 52 L25 57 L35 57 L33 52 C40 50 52 40 52 27 C52 16 47 2 30 2 Z"
+                    fill="currentColor"
+                  />
+                  <ellipse cx="21" cy="18" rx="6" ry="9" fill="var(--color-text-light)" opacity="0.32" />
+                  <path
+                    d="M30 57 C30 70 22 74 26 84 C29 92 34 96 32 106"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    opacity="0.55"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              )}
+            </button>
+          ))}
+
+          <div className={styles.blueWrap}>
+            <Image
+              src="/blue/blue-home.png"
+              alt="Blue, the Academy mascot"
+              width={742}
+              height={705}
+              priority
+              className={styles.blueImage}
+            />
+          </div>
+
+          {rewardData && (
+            <DiamondReward amount={rewardData.shards} onComplete={handleRewardComplete} />
           )}
-        </button>
-      ))}
-
-      <div className={styles.blueWrap}>
-        <Image
-          src="/blue/blue-home.png"
-          alt="Blue, the Academy mascot"
-          width={742}
-          height={705}
-          priority
-          className={styles.blueImage}
-        />
-      </div>
-
-      {rewardData && (
-        <DiamondReward
-          amount={rewardData.shards}
-          onComplete={handleRewardComplete}
-        />
+        </>
+      ) : (
+        <LivestreamFeed />
       )}
     </section>
   );

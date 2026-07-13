@@ -1044,9 +1044,9 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
       return "Prompts holds reusable instructions and selected essays. Copy what fits the work.";
     }
 
-    // Livestream / events
+    // Live sessions / events
     if (has('livestream', 'live stream', 'broadcast', 'live event', 'lecture')) {
-      return "lectures, Q&As, curriculum events. check the livestream for what's up.";
+      return "workshops, questions, curriculum events. open Live, then switch to the feed.";
     }
 
     // Community page / Farcaster / social

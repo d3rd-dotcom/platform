@@ -1,6 +1,5 @@
 import {
   createPublicClient,
-  formatEther,
   formatUnits,
   http,
   isAddress,
@@ -16,30 +15,6 @@ const ERC20_BALANCE_ABI = [
     name: 'balanceOf',
     stateMutability: 'view',
     inputs: [{ type: 'address' }],
-    outputs: [{ type: 'uint256' }],
-  },
-] as const;
-
-const VAULT_STATS_ABI = [
-  {
-    type: 'function',
-    name: 'totalDistributed',
-    stateMutability: 'view',
-    inputs: [],
-    outputs: [{ type: 'uint256' }],
-  },
-  {
-    type: 'function',
-    name: 'holderCount',
-    stateMutability: 'view',
-    inputs: [],
-    outputs: [{ type: 'uint256' }],
-  },
-  {
-    type: 'function',
-    name: 'totalShares',
-    stateMutability: 'view',
-    inputs: [],
     outputs: [{ type: 'uint256' }],
   },
 ] as const;
@@ -62,16 +37,8 @@ export interface TreasurySnapshot {
   };
   balances: {
     cbBtc: TreasuryMetric;
+    usdc: TreasuryMetric;
     credits: TreasuryMetric;
-    eth: TreasuryMetric;
-  };
-  vault: {
-    address: string | null;
-    explorerUrl: string | null;
-    cbBtcBalance: string | null;
-    totalDistributed: string | null;
-    eligibleHolders: number | null;
-    eligibleCredits: string | null;
   };
   updatedAt: string;
 }
@@ -104,11 +71,12 @@ function fulfilledValue<T>(result: PromiseSettledResult<T>): T | null {
 export async function fetchTreasurySnapshot(): Promise<TreasurySnapshot> {
   const cfg = getChainConfig();
   const treasuryAddress = resolveBlueTreasuryAddress();
-  const vaultAddress = cfg.reflectionVaultAddress && isAddress(cfg.reflectionVaultAddress)
-    ? cfg.reflectionVaultAddress as Address
-    : null;
   const cbBtcAddress = cfg.cbBTcAddress && isAddress(cfg.cbBTcAddress)
     ? cfg.cbBTcAddress as Address
+    : null;
+  const usdcAddress = isAddress(cfg.usdcAddress) ? cfg.usdcAddress as Address : null;
+  const creditsAddress = isAddress(cfg.diamondsTokenAddress)
+    ? cfg.diamondsTokenAddress as Address
     : null;
 
   const emptySnapshot: TreasurySnapshot = {
@@ -124,21 +92,13 @@ export async function fetchTreasurySnapshot(): Promise<TreasurySnapshot> {
     },
     balances: {
       cbBtc: { amount: null, symbol: 'cbBTC' },
+      usdc: { amount: null, symbol: 'USDC' },
       credits: { amount: null, symbol: 'BLUE' },
-      eth: { amount: null, symbol: 'ETH' },
-    },
-    vault: {
-      address: vaultAddress,
-      explorerUrl: vaultAddress ? `${cfg.explorerUrl}/address/${vaultAddress}` : null,
-      cbBtcBalance: null,
-      totalDistributed: null,
-      eligibleHolders: null,
-      eligibleCredits: null,
     },
     updatedAt: new Date().toISOString(),
   };
 
-  if (!treasuryAddress || !cbBtcAddress) return emptySnapshot;
+  if (!treasuryAddress || !cbBtcAddress || !usdcAddress || !creditsAddress) return emptySnapshot;
 
   const rpcUrl = await resolveVerifiedRpcUrl();
   const chain = cfg.chainId === baseSepolia.id ? baseSepolia : base;
@@ -152,51 +112,23 @@ export async function fetchTreasurySnapshot(): Promise<TreasurySnapshot> {
       args: [treasuryAddress],
     }),
     client.readContract({
-      address: cfg.diamondsTokenAddress as Address,
+      address: usdcAddress,
       abi: ERC20_BALANCE_ABI,
       functionName: 'balanceOf',
       args: [treasuryAddress],
     }),
-    client.getBalance({ address: treasuryAddress }),
-    vaultAddress
-      ? client.readContract({
-          address: cbBtcAddress,
-          abi: ERC20_BALANCE_ABI,
-          functionName: 'balanceOf',
-          args: [vaultAddress],
-        })
-      : Promise.resolve(null),
-    vaultAddress
-      ? client.readContract({
-          address: vaultAddress,
-          abi: VAULT_STATS_ABI,
-          functionName: 'totalDistributed',
-        })
-      : Promise.resolve(null),
-    vaultAddress
-      ? client.readContract({
-          address: vaultAddress,
-          abi: VAULT_STATS_ABI,
-          functionName: 'holderCount',
-        })
-      : Promise.resolve(null),
-    vaultAddress
-      ? client.readContract({
-          address: vaultAddress,
-          abi: VAULT_STATS_ABI,
-          functionName: 'totalShares',
-        })
-      : Promise.resolve(null),
+    client.readContract({
+      address: creditsAddress,
+      abi: ERC20_BALANCE_ABI,
+      functionName: 'balanceOf',
+      args: [treasuryAddress],
+    }),
   ]);
 
   const cbBtcBalance = fulfilledValue(reads[0]);
-  const creditsBalance = fulfilledValue(reads[1]);
-  const ethBalance = fulfilledValue(reads[2]);
-  const vaultBalance = fulfilledValue(reads[3]);
-  const totalDistributed = fulfilledValue(reads[4]);
-  const holderCount = fulfilledValue(reads[5]);
-  const totalShares = fulfilledValue(reads[6]);
-  const walletReadCount = [cbBtcBalance, creditsBalance, ethBalance]
+  const usdcBalance = fulfilledValue(reads[1]);
+  const creditsBalance = fulfilledValue(reads[2]);
+  const walletReadCount = [cbBtcBalance, usdcBalance, creditsBalance]
     .filter((value) => value !== null)
     .length;
 
@@ -208,21 +140,14 @@ export async function fetchTreasurySnapshot(): Promise<TreasurySnapshot> {
         amount: cbBtcBalance === null ? null : formatUnits(cbBtcBalance, 8),
         symbol: 'cbBTC',
       },
+      usdc: {
+        amount: usdcBalance === null ? null : formatUnits(usdcBalance, 6),
+        symbol: 'USDC',
+      },
       credits: {
         amount: creditsBalance === null ? null : formatUnits(creditsBalance, 18),
         symbol: 'BLUE',
       },
-      eth: {
-        amount: ethBalance === null ? null : formatEther(ethBalance),
-        symbol: 'ETH',
-      },
-    },
-    vault: {
-      ...emptySnapshot.vault,
-      cbBtcBalance: vaultBalance === null ? null : formatUnits(vaultBalance, 8),
-      totalDistributed: totalDistributed === null ? null : formatUnits(totalDistributed, 8),
-      eligibleHolders: holderCount === null ? null : Number(holderCount),
-      eligibleCredits: totalShares === null ? null : formatUnits(totalShares, 18),
     },
   };
 }

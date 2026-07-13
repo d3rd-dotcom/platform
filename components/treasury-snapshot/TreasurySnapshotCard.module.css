@@ -1,0 +1,180 @@
+.card {
+  width: 100%;
+  padding: 16px;
+  background: var(--color-surface-1);
+  border: 2px solid var(--color-primary-hover);
+  border-radius: 12px;
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    var(--shadow-lg);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 12px 16px;
+  margin: -16px -16px 12px;
+  border-radius: 10px 10px 0 0;
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-1));
+  border-bottom: 2px solid var(--color-primary-hover);
+}
+
+.kanji,
+.title {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.kanji {
+  color: var(--color-primary);
+  letter-spacing: 0.08em;
+}
+
+.title {
+  color: var(--color-text-dark);
+}
+
+.swapBadge {
+  margin-left: auto;
+  padding: 3px 7px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
+  color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
+  font-family: var(--font-button);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.swapBadge:hover {
+  background: color-mix(in oklch, var(--color-primary) 22%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
+}
+
+.metrics,
+.skeleton {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+
+.empty {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.skeleton span {
+  display: block;
+  height: 64px;
+  border-radius: 10px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklch, var(--color-primary) 8%, transparent) 25%,
+    color-mix(in oklch, var(--color-primary) 18%, transparent) 50%,
+    color-mix(in oklch, var(--color-primary) 8%, transparent) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
+}
+
+.skeleton span:first-child {
+  height: 88px;
+}
+
+@keyframes shimmer {
+  to { background-position: -200% 0; }
+}
+
+.metric {
+  position: relative;
+  min-width: 0;
+  padding: 9px 36px 9px 10px;
+  border-radius: 10px;
+  background: color-mix(in oklch, var(--color-primary) 5%, var(--color-surface-1));
+  border: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
+}
+
+.primaryMetric {
+  min-height: 88px;
+  padding: 16px 54px 16px 14px;
+  background: color-mix(in oklch, var(--color-primary) 10%, var(--color-surface-1));
+  border-color: color-mix(in oklch, var(--color-primary) 24%, transparent);
+}
+
+.primaryMetric .metricIcon {
+  top: 16px;
+  right: 16px;
+  width: 30px;
+  height: 30px;
+}
+
+.primaryMetric .metricLabel {
+  margin-bottom: 8px;
+  color: var(--color-primary);
+  font-size: 0.75rem;
+}
+
+.primaryMetric .metricValue {
+  font-size: 1.35rem;
+}
+
+.metricIcon {
+  position: absolute;
+  top: 8px;
+  right: 9px;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.metricLabel {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--color-text-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.metricValue {
+  display: block;
+  overflow: hidden;
+  color: var(--color-text-dark);
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metricValue small {
+  color: var(--color-text-muted);
+  font-size: 0.62rem;
+  font-weight: 800;
+}
+
+.walletLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 9px;
+  padding: 7px 2px 0;
+  border-top: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
+  color: var(--color-primary);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.walletLink:hover {
+  color: var(--color-primary-hover);
+}

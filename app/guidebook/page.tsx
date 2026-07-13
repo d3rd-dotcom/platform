@@ -11,7 +11,7 @@ const sections = [
   { id: 'blue-ai-assistant', title: 'Blue AI Assistant' },
   { id: 'profile-streaks', title: 'Profile & Streaks' },
   { id: 'prompt-skill-library', title: 'Prompt & Skill Library' },
-  { id: 'livestream', title: 'Livestream' },
+  { id: 'livestream', title: 'Live Sessions' },
   { id: 'integrations', title: 'Integrations' },
   { id: 'diamond-economy', title: 'Diamond Economy' },
   { id: 'faq', title: 'FAQ & Troubleshooting' },
@@ -671,18 +671,18 @@ export default function GuidebookPage() {
           ]}
         />
 
-        <H2 id="livestream">9. Livestream</H2>
-        <P>Watch live sessions and interact with the community in real-time.</P>
+        <H2 id="livestream">9. Live Sessions</H2>
+        <P>Watch live sessions beside the Global Chat.</P>
 
         <H3>Watching a Stream</H3>
         <Ol>
-          <Li>Go to <Strong>Livestream</Strong> in the navigation bar</Li>
-          <Li>The video player loads with the current stream (if live)</Li>
-          <Li>Use the <Strong>chat panel</Strong> on the side to interact with other viewers</Li>
+          <Li>Open <Strong>Live</Strong> in the top navigation</Li>
+          <Li>Switch the main scene from <Strong>Garden</Strong> to <Strong>Live</Strong></Li>
+          <Li>Use <Strong>Global Chat</Strong> beside the feed to join the discussion</Li>
         </Ol>
 
-        <H3>Upcoming Sessions</H3>
-        <P>Below the video player, you&apos;ll see: schedule of upcoming livestreams, session descriptions and topics, and a <Strong>Set Reminder</Strong> button to get notified before a session starts.</P>
+        <H3>Upcoming Event</H3>
+        <P>The event card above Global Chat shows the next session and its subject.</P>
 
         <H2 id="integrations">10. Integrations</H2>
 

@@ -26,12 +26,18 @@
   z-index: 4;
 }
 
+.sceneHeading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
 .sceneTitleJa {
   font-family: var(--font-mono);
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
   color: var(--color-primary);
 }
 
@@ -40,8 +46,116 @@
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
   color: #2a2f52;
+}
+
+.sceneSwitch {
+  display: inline-flex;
+  flex-shrink: 0;
+  gap: 2px;
+  margin-left: auto;
+  padding: 2px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--color-text-dark) 7%, transparent);
+}
+
+.sceneSwitchButton {
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  background: transparent;
+  font-family: var(--font-button);
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sceneSwitchButton:hover {
+  color: var(--color-text-dark);
+}
+
+.sceneSwitchButtonActive {
+  color: var(--color-on-action);
+  background: var(--color-primary);
+  box-shadow: 0 2px 6px color-mix(in oklch, var(--color-primary) 28%, transparent);
+}
+
+.liveFeed {
+  position: absolute;
+  inset: 46px 0 0;
+  z-index: 1;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  background:
+    radial-gradient(circle at 50% 36%, color-mix(in oklch, var(--color-primary) 25%, transparent), transparent 42%),
+    var(--color-grey-950);
+}
+
+.liveFrame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: var(--color-grey-950);
+}
+
+.offlineState {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px;
+  text-align: center;
+}
+
+.offlineIcon {
+  display: grid;
+  width: 72px;
+  height: 72px;
+  place-items: center;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 40%, transparent);
+  border-radius: 50%;
+  color: var(--color-text-light);
+  background: color-mix(in oklch, var(--color-primary) 16%, transparent);
+  box-shadow: var(--shadow-xl);
+}
+
+.offlineIcon svg {
+  width: 34px;
+  height: 34px;
+}
+
+.offlineTitle {
+  margin: 4px 0 0;
+  color: var(--color-text-light);
+  font-family: var(--font-body);
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  line-height: 1.1;
+}
+
+.offlineText {
+  max-width: 420px;
+  margin: 0;
+  color: color-mix(in oklch, var(--color-text-light) 70%, transparent);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.offlineStatus {
+  margin-top: 4px;
+  padding: 6px 11px;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 35%, transparent);
+  border-radius: 999px;
+  color: var(--color-text-light);
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
 }
 
 
@@ -338,10 +452,6 @@
 }
 
 @media (max-width: 1024px) {
-  .sceneHeader {
-    display: none;
-  }
-
   .scene {
     min-height: 520px;
     overflow-anchor: none;
@@ -350,7 +460,7 @@
   .blueWrap {
     width: 48px;
     height: 48px;
-    top: 12px;
+    top: 56px;
     left: 10px;
     bottom: auto;
     z-index: 6;
@@ -387,6 +497,11 @@
     display: flex;
     position: static;
     flex-shrink: 0;
+    padding-inline: 12px;
+  }
+
+  .liveFeed {
+    top: 46px;
   }
 
   .sceneFooter {
@@ -413,5 +528,19 @@
   .bubble {
     max-width: 190px;
     font-size: var(--font-size-xs, 0.75rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .sceneTitleJa {
+    display: none;
+  }
+
+  .sceneSwitchButton {
+    padding-inline: 8px;
+  }
+
+  .offlineState {
+    padding: 24px;
   }
 }

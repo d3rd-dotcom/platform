@@ -205,7 +205,7 @@ interface BlueDebugInfo {
 // Describe the user's location by name, not URL path, so Blue never echoes a slug.
 const PAGE_LABELS: Record<string, string> = {
   '/home': 'the home dashboard',
-  '/dao': 'the DAO world',
+  '/dao': 'Live',
   '/shadow-work': 'the course',
   '/research': 'research mode',
   '/trades': 'trades',
@@ -215,7 +215,6 @@ const PAGE_LABELS: Record<string, string> = {
   '/quests': 'quests',
   '/profile': 'their profile',
   '/rewards': 'rewards',
-  '/livestream': 'the livestream page',
 };
 
 function describePage(pathname: string | null): string {

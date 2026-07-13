@@ -19,7 +19,7 @@ interface NavLink {
 }
 
 const NAV_LINKS: NavLink[] = [
-  { label: 'World', href: '/dao', icon: '/icons/nav-world-v2.svg' },
+  { label: 'Live', href: '/dao', icon: '/icons/nav-world-v2.svg' },
   { label: 'Trading', href: '/trades', icon: '/icons/nav-trades-v1.svg' },
 ];
 

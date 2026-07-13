@@ -1,0 +1,20 @@
+import styles from './UpcomingEvent.module.css';
+
+export default function UpcomingEvent() {
+  return (
+    <section className={styles.card} aria-labelledby="upcoming-event-title">
+      <div className={styles.header}>
+        <span className={styles.kanji} lang="ja">次回</span>
+        <span id="upcoming-event-title" className={styles.headerTitle}>Upcoming Event</span>
+        <span className={styles.subject}>Psychology</span>
+      </div>
+      <div className={styles.body}>
+        <div className={styles.time}>
+          <span className={styles.date}>Date to be announced</span>
+          <span className={styles.status}>Coming soon</span>
+        </div>
+        <h2 className={styles.eventTitle}>Daemon Analysis Workshop</h2>
+      </div>
+    </section>
+  );
+}
