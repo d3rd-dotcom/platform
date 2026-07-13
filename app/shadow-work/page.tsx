@@ -403,14 +403,55 @@ export default function CoursePage() {
                 <Image src="/blue/blue-home.png" alt="Blue" width={120} height={120} className={styles.panelAvatar} />
               </div>
               <div className={styles.panelHeader}>
-                <span className={styles.courseEyebrow}>Twelve-week academy</span>
+                <span className={styles.courseEyebrow}>Creative Practice Program</span>
                 <h1 id="course-title" className={styles.panelTitle}>Creative Healing</h1>
                 <p className={styles.panelDescription}>A guided return to your creative practice, one week and one piece of evidence at a time.</p>
+                <dl className={styles.courseMeta} aria-label="Course details">
+                  <div className={styles.courseMetaItem}>
+                    <dt className={styles.courseMetaLabel}>Faculty</dt>
+                    <dd className={styles.courseMetaValue}>Blue</dd>
+                  </div>
+                  <div className={styles.courseMetaItem}>
+                    <dt className={styles.courseMetaLabel}>Duration</dt>
+                    <dd className={styles.courseMetaValue}>12 weeks</dd>
+                  </div>
+                  <div className={styles.courseMetaItem}>
+                    <dt className={styles.courseMetaLabel}>Format</dt>
+                    <dd className={styles.courseMetaValue}>Reading, practice, evidence</dd>
+                  </div>
+                </dl>
               </div>
             </div>
         </section>
 
         <section className={styles.weeklyShell} aria-labelledby="week-heading">
+          <nav className={styles.curriculumRail} aria-label="Course outline">
+            <div className={styles.curriculumRailHeader}>
+              <span className={styles.curriculumRailKicker}>Curriculum</span>
+              <strong className={styles.curriculumRailTitle}>Course Outline</strong>
+            </div>
+            <div className={styles.weekNavDots}>
+              {Array.from({ length: 12 }, (_, i) => {
+                const w = i + 1;
+                const status = getWeekStatus(w);
+                const isCurrent = !seasonLoading && w === resolvedViewWeek;
+                return (
+                  <button
+                    key={w}
+                    className={`${styles.weekDot} ${isCurrent ? styles.weekDotActive : ''} ${status?.isSealed ? styles.weekDotSealed : ''} ${seasonLoading ? styles.weekDotLoading : ''}`}
+                    onClick={() => { play('click'); setViewWeek(w); }}
+                    title={`Week ${w}: ${WEEK_TITLES[w]}`}
+                    disabled={seasonLoading}
+                    aria-current={isCurrent ? 'step' : undefined}
+                  >
+                    <span className={styles.weekDotNumber}>Week {w}</span>
+                    <span className={styles.weekDotStatus}>{status?.isSealed ? 'Sealed' : isCurrent ? 'Current' : ''}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </nav>
+
           <div className={styles.leftCol}>
             <header className={styles.weekHeader}>
               <div className={styles.weekHeadingGroup}>
@@ -418,45 +459,30 @@ export default function CoursePage() {
                 <h2 id="week-heading" className={styles.weekHeading}>{weekReading.title}</h2>
               </div>
               <div className={styles.weekNav} aria-label="Choose a week">
-            <button
-              className={styles.weekNavArrow}
-              onClick={() => goToWeek('prev')}
-              onMouseEnter={() => play('hover')}
-              disabled={seasonLoading || resolvedViewWeek <= 1}
-              aria-label="Previous week"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M15 18l-6-6 6-6"/>
-              </svg>
-            </button>
-
-            <div className={styles.weekNavDots}>
-              {Array.from({ length: 12 }, (_, i) => {
-                const w = i + 1;
-                const status = getWeekStatus(w);
-                return (
-                  <button
-                    key={w}
-                    className={`${styles.weekDot} ${!seasonLoading && w === resolvedViewWeek ? styles.weekDotActive : ''} ${status?.isSealed ? styles.weekDotSealed : ''} ${seasonLoading ? styles.weekDotLoading : ''}`}
-                    onClick={() => { play('click'); setViewWeek(w); }}
-                    title={`Week ${w}: ${WEEK_TITLES[w]}`}
-                    disabled={seasonLoading}
-                  />
-                );
-              })}
-            </div>
-
-            <button
-              className={styles.weekNavArrow}
-              onClick={() => goToWeek('next')}
-              onMouseEnter={() => play('hover')}
-              disabled={seasonLoading || resolvedViewWeek >= 12}
-              aria-label="Next week"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 18l6-6-6-6"/>
-              </svg>
-            </button>
+                <button
+                  className={styles.weekNavArrow}
+                  onClick={() => goToWeek('prev')}
+                  onMouseEnter={() => play('hover')}
+                  disabled={seasonLoading || resolvedViewWeek <= 1}
+                  aria-label="Previous week"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M15 18l-6-6 6-6"/>
+                  </svg>
+                  <span>Previous</span>
+                </button>
+                <button
+                  className={styles.weekNavArrow}
+                  onClick={() => goToWeek('next')}
+                  onMouseEnter={() => play('hover')}
+                  disabled={seasonLoading || resolvedViewWeek >= 12}
+                  aria-label="Next week"
+                >
+                  <span>Next</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 18l6-6-6-6"/>
+                  </svg>
+                </button>
               </div>
             </header>
 
@@ -503,7 +529,7 @@ export default function CoursePage() {
                     aria-hidden="true"
                   />
                   <div className={styles.readingInfo}>
-                    <span className={styles.readingCategory}>{weekReading.category}</span>
+                    <span className={styles.readingCategory}>Required reading · {weekReading.category}</span>
                     <span className={styles.readingTitle}>{weekReading.title}</span>
                   </div>
                   <svg className={styles.readingArrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -511,9 +537,9 @@ export default function CoursePage() {
                   </svg>
                 </button>
 
-                <div className={styles.missionsHeadingRow} aria-hidden="true">
+                <div className={styles.missionsHeadingRow}>
                   <span className={styles.missionsDivider} />
-                  <h2 className={styles.missionsHeading}>Missions</h2>
+                  <h2 className={styles.missionsHeading}>Coursework</h2>
                   <span className={styles.missionsDivider} />
                 </div>
 

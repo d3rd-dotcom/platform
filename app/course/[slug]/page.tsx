@@ -314,14 +314,54 @@ export default function CourseSlugPage({ params }: PageProps) {
             </div>
 
             <div className={courseStyles.panelHeader}>
-              <span className={courseStyles.courseEyebrow}>Academy course</span>
+              <span className={courseStyles.courseEyebrow}>Independent Study Program</span>
               <h1 id="course-title" className={courseStyles.panelTitle}>{vipCourse.title || 'Custom course'}</h1>
               {vipCourse.focus && <p className={courseStyles.panelDescription}>{vipCourse.focus}</p>}
+              <dl className={courseStyles.courseMeta} aria-label="Course details">
+                <div className={courseStyles.courseMetaItem}>
+                  <dt className={courseStyles.courseMetaLabel}>Faculty</dt>
+                  <dd className={courseStyles.courseMetaValue}>Blue</dd>
+                </div>
+                <div className={courseStyles.courseMetaItem}>
+                  <dt className={courseStyles.courseMetaLabel}>Duration</dt>
+                  <dd className={courseStyles.courseMetaValue}>{weeks.length} weeks</dd>
+                </div>
+                <div className={courseStyles.courseMetaItem}>
+                  <dt className={courseStyles.courseMetaLabel}>Format</dt>
+                  <dd className={courseStyles.courseMetaValue}>Guided independent study</dd>
+                </div>
+              </dl>
             </div>
             </div>
           </section>
 
           <section className={courseStyles.weeklyShell} aria-labelledby="week-heading">
+            <nav className={courseStyles.curriculumRail} aria-label="Course outline">
+              <div className={courseStyles.curriculumRailHeader}>
+                <span className={courseStyles.curriculumRailKicker}>Curriculum</span>
+                <strong className={courseStyles.curriculumRailTitle}>Course Outline</strong>
+              </div>
+              <div className={courseStyles.weekNavDots}>
+                {weeks.map((w) => {
+                  const wp = progress.find((p) => p.weekId === w.id);
+                  const sealed = wp?.isSealed ?? false;
+                  const isCurrent = activeWeek === w.weekNumber;
+                  return (
+                    <button
+                      key={w.id}
+                      className={`${courseStyles.weekDot} ${isCurrent ? courseStyles.weekDotActive : ''} ${sealed ? courseStyles.weekDotSealed : ''}`}
+                      onClick={() => { setActiveWeek(w.weekNumber); setRightContent(null); }}
+                      title={w.title || `Week ${w.weekNumber}`}
+                      aria-current={isCurrent ? 'step' : undefined}
+                    >
+                      <span className={courseStyles.weekDotNumber}>Week {w.weekNumber}</span>
+                      <span className={courseStyles.weekDotStatus}>{sealed ? 'Sealed' : isCurrent ? 'Current' : ''}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </nav>
+
             <div className={courseStyles.leftCol}>
               <header className={courseStyles.weekHeader}>
                 <div className={courseStyles.weekHeadingGroup}>
@@ -329,42 +369,28 @@ export default function CourseSlugPage({ params }: PageProps) {
                   <h2 id="week-heading" className={courseStyles.weekHeading}>{weekTitle || `Week ${activeWeek}`}</h2>
                 </div>
                 <div className={courseStyles.weekNav} aria-label="Choose a week">
-              <button
-                className={courseStyles.weekNavArrow}
-                onClick={() => { const n = Math.max(1, activeWeek - 1); setActiveWeek(n); setRightContent(null); }}
-                disabled={activeWeek <= 1}
-                aria-label="Previous week"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M15 18l-6-6 6-6"/>
-                </svg>
-              </button>
-
-              <div className={courseStyles.weekNavDots}>
-                {weeks.map((w) => {
-                  const wp = progress.find((p) => p.weekId === w.id);
-                  const sealed = wp?.isSealed ?? false;
-                  return (
-                    <button
-                      key={w.id}
-                      className={`${courseStyles.weekDot} ${activeWeek === w.weekNumber ? courseStyles.weekDotActive : ''} ${sealed ? courseStyles.weekDotSealed : ''}`}
-                      onClick={() => { setActiveWeek(w.weekNumber); setRightContent(null); }}
-                      title={w.title || `Week ${w.weekNumber}`}
-                    />
-                  );
-                })}
-              </div>
-
-              <button
-                className={courseStyles.weekNavArrow}
-                onClick={() => { const n = Math.min(weeks.length, activeWeek + 1); setActiveWeek(n); setRightContent(null); }}
-                disabled={activeWeek >= weeks.length}
-                aria-label="Next week"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M9 18l6-6-6-6"/>
-                </svg>
-              </button>
+                  <button
+                    className={courseStyles.weekNavArrow}
+                    onClick={() => { const n = Math.max(1, activeWeek - 1); setActiveWeek(n); setRightContent(null); }}
+                    disabled={activeWeek <= 1}
+                    aria-label="Previous week"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M15 18l-6-6 6-6"/>
+                    </svg>
+                    <span>Previous</span>
+                  </button>
+                  <button
+                    className={courseStyles.weekNavArrow}
+                    onClick={() => { const n = Math.min(weeks.length, activeWeek + 1); setActiveWeek(n); setRightContent(null); }}
+                    disabled={activeWeek >= weeks.length}
+                    aria-label="Next week"
+                  >
+                    <span>Next</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 18l6-6-6-6"/>
+                    </svg>
+                  </button>
                 </div>
               </header>
 
@@ -384,7 +410,7 @@ export default function CourseSlugPage({ params }: PageProps) {
                   )}
                 </span>
                 <div className={courseStyles.readingInfo}>
-                  <span className={courseStyles.readingCategory}>{weekTheme || `Week ${activeWeek}`}</span>
+                  <span className={courseStyles.readingCategory}>Required reading · {weekTheme || `Week ${activeWeek}`}</span>
                   <span className={courseStyles.readingTitle}>{weekTitle || 'Weekly Read'}</span>
                 </div>
                 <svg className={courseStyles.readingArrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -395,11 +421,11 @@ export default function CourseSlugPage({ params }: PageProps) {
 
 
 
-            {/* Missions heading */}
+            {/* Coursework heading */}
             {taskComponents.length > 0 && (
-              <div className={courseStyles.missionsHeadingRow} style={{ marginBottom: 12 }} aria-hidden="true">
+              <div className={courseStyles.missionsHeadingRow} style={{ marginBottom: 12 }}>
                 <span className={courseStyles.missionsDivider} />
-                <h2 className={courseStyles.missionsHeading}>Missions</h2>
+                <h2 className={courseStyles.missionsHeading}>Coursework</h2>
                 <span className={courseStyles.missionsDivider} />
               </div>
             )}
@@ -508,7 +534,7 @@ export default function CourseSlugPage({ params }: PageProps) {
                     className={courseStyles.inlineReaderBack}
                     onClick={() => setRightContent(null)}
                   >
-                    ← Back to missions
+                    ← Back to coursework
                   </button>
                   <div className={courseStyles.inlineReaderHeader}>
                     <span className={courseStyles.inlineReaderCategory}>{weekTheme || `Week ${activeWeek}`}</span>
