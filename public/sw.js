@@ -1,5 +1,5 @@
-const CACHE_NAME = 'mwa-assets-v3';
-const PRECACHE_ASSETS = ['/manifest.webmanifest', '/icons/badge-academy.png'];
+const CACHE_NAME = 'mwa-assets-v4';
+const PRECACHE_ASSETS = ['/manifest.webmanifest?v=4', '/icons/badge-academy.png?v=4'];
 const CACHEABLE_DESTINATIONS = new Set(['image', 'font', 'manifest']);
 
 self.addEventListener('install', (event) => {
@@ -34,7 +34,9 @@ self.addEventListener('fetch', (event) => {
     !url.pathname.startsWith('/api/');
 
   event.respondWith(
-    fetch(event.request)
+    // Force an HTTP revalidation so a previous immutable response cannot keep
+    // an updated icon or image pinned under the same public URL.
+    fetch(event.request, { cache: 'no-cache' })
       .then((response) => {
         if (shouldCache && response.ok) {
           const responseClone = response.clone();

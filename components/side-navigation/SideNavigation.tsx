@@ -53,7 +53,7 @@ const desktopNavSections: NavSection[] = [
     badge: 'Pro',
     badgeType: 'pro',
     items: [
-      { id: 'genetics', label: 'Genetics', href: '/genetics', iconSrc: '/icons/genetics.svg', requiresPro: true },
+      { id: 'genetics', label: 'Genetics', href: '/genetics', iconSrc: '/icons/genetics.svg?v=4', requiresPro: true },
     ],
   },
 ];
@@ -65,7 +65,7 @@ const mobileNavSections: NavSection[] = [
     badge: 'Pro',
     badgeType: 'pro',
     items: [
-      { id: 'genetics', label: 'Genetics', href: '/genetics', iconSrc: '/icons/genetics.svg', requiresPro: true },
+      { id: 'genetics', label: 'Genetics', href: '/genetics', iconSrc: '/icons/genetics.svg?v=4', requiresPro: true },
     ],
   },
 ];
@@ -75,19 +75,19 @@ const primaryNavItems: NavItem[] = [
     id: 'home',
     label: 'Home',
     href: '/home',
-    iconSrc: '/icons/nav-home.svg',
+    iconSrc: '/icons/nav-home.svg?v=4',
   },
   {
     id: 'learn',
     label: 'Learn',
     href: '/learn',
-    iconSrc: '/icons/daemon.svg',
+    iconSrc: '/icons/daemon.svg?v=4',
   },
   {
     id: 'simulations',
     label: 'Pocket News',
     href: '/simulation',
-    iconSrc: '/icons/nav-simulations-v2.svg',
+    iconSrc: '/icons/nav-simulations-v2.svg?v=4',
   },
 ];
 
@@ -96,7 +96,7 @@ const bottomNavItems: NavItem[] = [
     id: 'surveys',
     label: 'Surveys',
     href: '/surveys',
-    iconSrc: '/icons/nav-surveys-v5.svg',
+    iconSrc: '/icons/nav-surveys-v5.svg?v=4',
   },
 ];
 
@@ -139,6 +139,7 @@ const NavIconMark: React.FC<{
           alt=""
           width={20}
           height={20}
+          unoptimized
           className={`${styles.navItemImageIcon} ${preserveColor ? styles.navItemImageIconOriginal : ''} ${isActive ? styles.navItemImageIconActive : ''}`}
         />
       </span>
