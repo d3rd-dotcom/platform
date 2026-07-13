@@ -1,9 +1,7 @@
 .page {
   position: relative;
-  height: 100vh;
-  height: 100svh;
-  /* Sit clear of the fixed 72px top navigation. */
-  padding-top: 72px;
+  height: calc(100vh - 72px);
+  height: calc(100svh - 72px);
   box-sizing: border-box;
   overflow: hidden;
 }
