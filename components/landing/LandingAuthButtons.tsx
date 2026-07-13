@@ -11,7 +11,7 @@ export function LandingAuthButtons() {
 
   const handleJoinNow = () => {
     play('click');
-    router.push('/home');
+    router.push('/dao');
   };
 
   return (

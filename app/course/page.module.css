@@ -911,6 +911,34 @@
   align-items: start;
   gap: 28px;
   padding: 48px 52px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.panelBody::before {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  content: '';
+  background: url('/images/course-panel-blue-art.png') center / cover no-repeat;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.panelBody::after {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  content: '';
+  background: color-mix(in oklch, var(--color-surface-1) 48%, transparent);
+  backdrop-filter: blur(18px);
+  pointer-events: none;
+}
+
+.panelBody > * {
+  position: relative;
+  z-index: 2;
 }
 
 .panelAvatarWrap {
@@ -925,10 +953,17 @@
 }
 
 .panelHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(200px, 280px);
+  column-gap: 48px;
   width: 100%;
   align-items: flex-start;
   margin: 0;
   text-align: left;
+}
+
+.panelHeader > :not(.courseMeta) {
+  grid-column: 1;
 }
 
 .courseEyebrow {
@@ -961,22 +996,28 @@
 
 .courseMeta {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  width: 100%;
-  margin: 30px 0 0;
-  padding: 20px 0 0;
-  border-top: 1px solid var(--color-border-strong);
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  grid-template-columns: 1fr;
+  align-self: start;
+  justify-self: end;
+  width: min(100%, 280px);
+  gap: 12px;
+  margin: 0;
+  padding: 0 0 0 24px;
+  border-top: 0;
+  border-left: 1px solid var(--color-border-strong);
 }
 
 .courseMetaItem {
   min-width: 0;
   margin: 0;
-  padding: 0 18px;
-  border-left: 1px solid var(--color-border-subtle);
+  padding: 0;
+  border-left: 0;
 }
 
 .courseMetaItem:first-child {
-  padding-left: 0;
+  padding: 0;
   border-left: 0;
 }
 
@@ -1161,7 +1202,7 @@
 
 .weekHeading {
   margin: 0;
-  font-family: var(--font-secondary);
+  font-family: var(--font-poppins);
   font-size: clamp(1.9rem, 3vw, 2.8rem);
   font-weight: 700;
   line-height: 1.08;
@@ -1206,26 +1247,26 @@
 
 .readingCard,
 .readingCardSkeleton {
-  grid-template-columns: 96px minmax(0, 1fr) auto;
-  gap: 20px;
-  min-height: 138px;
+  grid-template-columns: 80px minmax(0, 1fr) auto;
+  gap: 16px;
+  min-height: 112px;
   margin: 0;
-  padding: 20px 22px;
+  padding: 16px;
   background: var(--color-surface-1);
   border: 1px solid var(--color-border-strong);
-  border-top: 0;
-  border-radius: 0 !important;
+  border-radius: 8px !important;
 }
 
 .readingCard {
-  border-left: 4px solid var(--color-primary);
+  border-left: 1px solid var(--color-border-strong);
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
 }
 
 .readingCard:hover,
 .readingCardActive {
-  background: color-mix(in oklch, var(--color-text-dark) 3%, var(--color-surface-1)) !important;
-  border-color: var(--color-border-strong) !important;
-  transform: none;
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-1)) !important;
+  border-color: color-mix(in oklch, var(--color-primary) 46%, var(--color-border-strong)) !important;
+  transform: translateY(-1px);
 }
 
 .readingAccent {
@@ -1233,25 +1274,16 @@
 }
 
 .readingThumb {
-  width: 96px;
-  height: 96px;
+  width: 80px;
+  height: 80px;
   border: 1px solid var(--color-border-subtle);
-  border-radius: 2px;
-}
-
-.readingCategory {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 650;
-  color: var(--color-text-muted);
-  letter-spacing: 0.025em;
-  text-transform: none;
+  border-radius: 6px;
 }
 
 .readingTitle {
-  font-family: var(--font-secondary);
-  font-size: 1.35rem;
-  font-weight: 650;
+  font-family: var(--font-poppins);
+  font-size: 1.1rem;
+  font-weight: 700;
   line-height: 1.25;
   color: var(--color-text-dark);
 }
@@ -1398,8 +1430,32 @@
     padding: 38px 36px;
   }
 
-  .panelBadgeRow {
-    margin: 0 36px 26px 130px;
+  .panelHeader {
+    display: flex;
+  }
+
+  .courseMeta {
+    grid-column: auto;
+    grid-row: auto;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-self: auto;
+    justify-self: auto;
+    width: 100%;
+    gap: 0;
+    margin: 30px 0 0;
+    padding: 20px 0 0;
+    border-top: 1px solid var(--color-border-strong);
+    border-left: 0;
+  }
+
+  .courseMetaItem {
+    padding: 0 18px;
+    border-left: 1px solid var(--color-border-subtle);
+  }
+
+  .courseMetaItem:first-child {
+    padding-left: 0;
+    border-left: 0;
   }
 
   .weeklyShell,
@@ -1457,10 +1513,6 @@
   .panelDescription {
     grid-column: 1 / -1;
     font-size: 0.92rem;
-  }
-
-  .panelBadgeRow {
-    margin: 0 22px 22px;
   }
 
   .courseMeta {

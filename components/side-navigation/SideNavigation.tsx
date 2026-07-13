@@ -73,9 +73,9 @@ const mobileNavSections: NavSection[] = [
 const primaryNavItems: NavItem[] = [
   {
     id: 'home',
-    label: 'Home',
+    label: 'Profile',
     href: '/home',
-    iconSrc: '/icons/nav-home.svg?v=4',
+    iconSrc: '/icons/nav-profile.svg',
   },
   {
     id: 'learn',

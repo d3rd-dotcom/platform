@@ -329,7 +329,7 @@ export default function CourseSlugPage({ params }: PageProps) {
             </div>
           </section>
 
-          <section className={courseStyles.weeklyShell} aria-labelledby="week-heading">
+          <section className={courseStyles.weeklyShell} aria-label="Course materials">
             <nav className={courseStyles.curriculumRail} aria-label="Course outline">
               <div className={courseStyles.curriculumRailHeader}>
                 <span className={courseStyles.curriculumRailKicker}>Curriculum</span>
@@ -357,37 +357,6 @@ export default function CourseSlugPage({ params }: PageProps) {
             </nav>
 
             <div className={courseStyles.leftCol}>
-              <header className={courseStyles.weekHeader}>
-                <div className={courseStyles.weekHeadingGroup}>
-                  <span className={courseStyles.weekEyebrow}>Week {activeWeek} of {weeks.length}</span>
-                  <h2 id="week-heading" className={courseStyles.weekHeading}>{weekTitle || `Week ${activeWeek}`}</h2>
-                </div>
-                <div className={courseStyles.weekNav} aria-label="Choose a week">
-                  <button
-                    className={courseStyles.weekNavArrow}
-                    onClick={() => { const n = Math.max(1, activeWeek - 1); setActiveWeek(n); setRightContent(null); }}
-                    disabled={activeWeek <= 1}
-                    aria-label="Previous week"
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M15 18l-6-6 6-6"/>
-                    </svg>
-                    <span>Previous</span>
-                  </button>
-                  <button
-                    className={courseStyles.weekNavArrow}
-                    onClick={() => { const n = Math.min(weeks.length, activeWeek + 1); setActiveWeek(n); setRightContent(null); }}
-                    disabled={activeWeek >= weeks.length}
-                    aria-label="Next week"
-                  >
-                    <span>Next</span>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M9 18l6-6-6-6"/>
-                    </svg>
-                  </button>
-                </div>
-              </header>
-
               <div className={courseStyles.weekContent}>
 
             {/* Reading card */}
@@ -404,7 +373,6 @@ export default function CourseSlugPage({ params }: PageProps) {
                   )}
                 </span>
                 <div className={courseStyles.readingInfo}>
-                  <span className={courseStyles.readingCategory}>Required reading · {weekTheme || `Week ${activeWeek}`}</span>
                   <span className={courseStyles.readingTitle}>{weekTitle || 'Weekly Read'}</span>
                 </div>
                 <svg className={courseStyles.readingArrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

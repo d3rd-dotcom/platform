@@ -307,20 +307,6 @@ export default function CoursePage() {
     }
   };
 
-  const goToWeek = (dir: 'prev' | 'next') => {
-    if (viewWeek === null) return;
-    const currentWeek = viewWeek;
-    if (dir === 'next' && currentWeek < 12) {
-      setSwipeAnim('left');
-      setTimeout(() => { setViewWeek(w => (w ?? 1) + 1); setSwipeAnim('none'); }, 150);
-      play('click');
-    } else if (dir === 'prev' && currentWeek > 1) {
-      setSwipeAnim('right');
-      setTimeout(() => { setViewWeek(w => (w ?? 2) - 1); setSwipeAnim('none'); }, 150);
-      play('click');
-    }
-  };
-
   const resolvedViewWeek = viewWeek ?? 1;
   const weekReading = WEEKLY_READINGS[Math.min(resolvedViewWeek, WEEKLY_READINGS.length - 1)];
   const handleOpenReading = useCallback((index: number) => {
@@ -367,10 +353,7 @@ export default function CoursePage() {
           { label: 'Creative Healing' },
           { label: `Week ${resolvedViewWeek}` },
         ]}
-      />
-      <main className={styles.content} onFocus={handleFocus}>
-        <section className={styles.controlPanel} aria-labelledby="course-title">
-            {(() => {
+        actions={(() => {
               const stats = weekStats[resolvedViewWeek];
               if (!stats || stats.total === 0) return null;
               const diamondsLeft = Math.max(0, stats.total - stats.completed) * 50;
@@ -398,14 +381,16 @@ export default function CoursePage() {
                 </div>
               );
             })()}
+      />
+      <main className={styles.content} onFocus={handleFocus}>
+        <section className={styles.controlPanel} aria-labelledby="course-title">
             <div className={styles.panelBody}>
               <div className={styles.panelAvatarWrap}>
                 <Image src="/blue/blue-home.png" alt="Blue" width={120} height={120} className={styles.panelAvatar} />
               </div>
               <div className={styles.panelHeader}>
-                <span className={styles.courseEyebrow}>Creative Practice Program</span>
                 <h1 id="course-title" className={styles.panelTitle}>Creative Healing</h1>
-                <p className={styles.panelDescription}>A guided return to your creative practice, one week and one piece of evidence at a time.</p>
+                <p className={styles.panelDescription}>A guided journey to unlock your inner creativity.</p>
                 <dl className={styles.courseMeta} aria-label="Course details">
                   <div className={styles.courseMetaItem}>
                     <dt className={styles.courseMetaLabel}>Faculty</dt>
@@ -424,10 +409,9 @@ export default function CoursePage() {
             </div>
         </section>
 
-        <section className={styles.weeklyShell} aria-labelledby="week-heading">
+        <section className={styles.weeklyShell} aria-label="Course materials">
           <nav className={styles.curriculumRail} aria-label="Course outline">
             <div className={styles.curriculumRailHeader}>
-              <span className={styles.curriculumRailKicker}>Curriculum</span>
               <strong className={styles.curriculumRailTitle}>Course Outline</strong>
             </div>
             <div className={styles.weekNavDots}>
@@ -453,39 +437,6 @@ export default function CoursePage() {
           </nav>
 
           <div className={styles.leftCol}>
-            <header className={styles.weekHeader}>
-              <div className={styles.weekHeadingGroup}>
-                <span className={styles.weekEyebrow}>Week {resolvedViewWeek} of 12</span>
-                <h2 id="week-heading" className={styles.weekHeading}>{weekReading.title}</h2>
-              </div>
-              <div className={styles.weekNav} aria-label="Choose a week">
-                <button
-                  className={styles.weekNavArrow}
-                  onClick={() => goToWeek('prev')}
-                  onMouseEnter={() => play('hover')}
-                  disabled={seasonLoading || resolvedViewWeek <= 1}
-                  aria-label="Previous week"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M15 18l-6-6 6-6"/>
-                  </svg>
-                  <span>Previous</span>
-                </button>
-                <button
-                  className={styles.weekNavArrow}
-                  onClick={() => goToWeek('next')}
-                  onMouseEnter={() => play('hover')}
-                  disabled={seasonLoading || resolvedViewWeek >= 12}
-                  aria-label="Next week"
-                >
-                  <span>Next</span>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M9 18l6-6-6-6"/>
-                  </svg>
-                </button>
-              </div>
-            </header>
-
             <div
               className={`${styles.weekContent} ${swipeAnim === 'left' ? styles.weekContentSwipeLeft : swipeAnim === 'right' ? styles.weekContentSwipeRight : ''}`}
               onTouchStart={handleTouchStart}
@@ -529,7 +480,6 @@ export default function CoursePage() {
                     aria-hidden="true"
                   />
                   <div className={styles.readingInfo}>
-                    <span className={styles.readingCategory}>Required reading · {weekReading.category}</span>
                     <span className={styles.readingTitle}>{weekReading.title}</span>
                   </div>
                   <svg className={styles.readingArrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

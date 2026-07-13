@@ -11,9 +11,10 @@ interface BannerProps {
   backHref?: string;
   breadcrumbs?: Crumb[];
   tone?: 'brand' | 'neutral';
+  actions?: React.ReactNode;
 }
 
-const Banner: React.FC<BannerProps> = ({ backHref, breadcrumbs, tone = 'brand' }) => {
+const Banner: React.FC<BannerProps> = ({ backHref, breadcrumbs, tone = 'brand', actions }) => {
   const showTrail = Boolean(backHref && breadcrumbs && breadcrumbs.length > 0);
 
   return (
@@ -50,6 +51,7 @@ const Banner: React.FC<BannerProps> = ({ backHref, breadcrumbs, tone = 'brand' }
               );
             })}
           </nav>
+          {actions && <div className={styles.actions}>{actions}</div>}
         </div>
       ) : (
         <p className={styles.bannerText}>

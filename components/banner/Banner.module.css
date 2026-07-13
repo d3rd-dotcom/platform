@@ -109,6 +109,13 @@ a.crumb:hover {
   flex-shrink: 0;
 }
 
+.actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
 .bannerNeutral {
   background: var(--color-surface-1);
   border-bottom-color: var(--color-border-strong);
@@ -141,6 +148,10 @@ a.crumb:hover {
 }
 
 @media (max-width: 640px) {
+  .actions {
+    display: none;
+  }
+
   .crumbs {
     font-size: 12px;
     gap: 4px;

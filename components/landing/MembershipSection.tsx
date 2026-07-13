@@ -270,7 +270,7 @@ export const MembershipSection: React.FC = () => {
               className={`${styles.tierCta} ${styles.explorerCta}`}
               onClick={() => {
                 play('click');
-                window.location.assign('/home');
+                window.location.assign('/dao');
               }}
               onMouseEnter={() => play('hover')}
             >
