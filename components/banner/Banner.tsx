@@ -10,13 +10,14 @@ interface Crumb {
 interface BannerProps {
   backHref?: string;
   breadcrumbs?: Crumb[];
+  tone?: 'brand' | 'neutral';
 }
 
-const Banner: React.FC<BannerProps> = ({ backHref, breadcrumbs }) => {
+const Banner: React.FC<BannerProps> = ({ backHref, breadcrumbs, tone = 'brand' }) => {
   const showTrail = Boolean(backHref && breadcrumbs && breadcrumbs.length > 0);
 
   return (
-    <div className={styles.banner}>
+    <div className={`${styles.banner} ${tone === 'neutral' ? styles.bannerNeutral : ''}`}>
       {showTrail ? (
         <div className={styles.trail}>
           <Link href={backHref!} className={styles.backArrow} aria-label="Back">

@@ -924,3 +924,199 @@
   background: var(--color-surface-1);
   border-left-color: var(--color-border-subtle);
 }
+
+/* ── Academic course shell — mirrors /shadow-work ── */
+
+.layout,
+.layout * {
+  box-shadow: none !important;
+}
+
+.layout {
+  background: var(--color-background);
+}
+
+:global([data-theme="light"]) .layout {
+  --color-background: var(--palette-cool-canvas);
+  --color-surface-base: var(--palette-cool-canvas);
+  --color-surface-1: var(--palette-cool-surface);
+  --color-surface-2: var(--palette-cool-surface-muted);
+  --color-surface-3: color-mix(in srgb, var(--palette-cool-surface-muted) 82%, var(--color-text-dark));
+}
+
+.layout::before {
+  display: none;
+}
+
+.body {
+  background: var(--color-background);
+}
+
+.header {
+  min-height: 72px;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--color-border-strong);
+  background: var(--color-surface-1);
+}
+
+.backBtn,
+.previewBtn,
+.saveBtn,
+.publishBtn,
+.statusBadge {
+  border-radius: 2px;
+}
+
+.editorArea {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  align-items: stretch;
+  gap: 0;
+  padding-bottom: 96px;
+  background: var(--color-surface-1);
+}
+
+.componentPanel {
+  width: auto;
+  max-width: none;
+  padding: 0;
+  border-right: 1px solid var(--color-border-strong);
+  background: var(--color-surface-1);
+}
+
+.panelCard {
+  padding: 18px;
+  border: 0;
+  border-radius: 0;
+  background: var(--color-surface-1);
+}
+
+.weekCanvasArea,
+.missionEditor,
+.editorEmptyBase {
+  padding: 32px 36px 48px;
+  background: var(--color-surface-1);
+  background-image: none;
+}
+
+.editorEmptyBase {
+  padding: 0;
+}
+
+.editorEmptyCard {
+  width: 100%;
+  padding: 48px 36px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.floatingSaveBar {
+  left: calc(var(--sidebar-width, 265px) + 280px);
+  bottom: 36px;
+  padding: 8px 24px;
+  border-top: 1px solid var(--color-border-strong);
+  background: var(--color-surface-1);
+  backdrop-filter: none;
+}
+
+.bottomPalette {
+  border-top: 1px solid var(--color-border-strong);
+  background: var(--color-surface-1);
+}
+
+.paletteToggle {
+  background: var(--color-surface-2);
+}
+
+.publishDialog,
+.previewCard,
+.publishFieldInput,
+.publishFieldTextarea,
+.publishCancelBtn,
+.publishConfirmBtn {
+  border-radius: 2px;
+}
+
+:global([data-theme="dark"]) .weekCanvasArea,
+:global([data-theme="dark"]) .missionEditor,
+:global([data-theme="dark"]) .editorEmptyBase {
+  background: var(--color-surface-1);
+  background-image: none;
+}
+
+@media (max-width: 900px) {
+  .body {
+    margin-left: 0;
+  }
+
+  .editorArea {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(220px, 42%) minmax(0, 1fr);
+  }
+
+  .componentPanel {
+    width: 100%;
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border-strong);
+  }
+
+  .floatingSaveBar,
+  .bottomPalette {
+    left: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .header {
+    min-height: 72px;
+    padding: 10px 14px;
+  }
+
+  .headerMeta {
+    gap: 6px;
+  }
+
+  .headerActions {
+    gap: 6px;
+  }
+
+  .previewBtn {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    justify-content: center;
+    font-size: 0;
+  }
+
+  .publishBtn {
+    display: none;
+  }
+
+  .saveBtn {
+    padding: 7px 10px;
+  }
+
+  .titleInput {
+    font-size: 1.35rem;
+  }
+
+  .editorArea {
+    grid-template-rows: minmax(240px, 46%) minmax(0, 1fr);
+  }
+
+  .panelCard {
+    padding: 16px 14px;
+  }
+
+  .weekCanvasArea,
+  .missionEditor {
+    padding: 26px 20px 40px;
+  }
+
+  .floatingSaveBar {
+    padding: 8px 14px;
+  }
+
+  .floatingDirtyLabel {
+    display: none;
+  }
+}

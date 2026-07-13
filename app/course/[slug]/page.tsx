@@ -286,6 +286,7 @@ export default function CourseSlugPage({ params }: PageProps) {
         <SideNavigation />
         <Banner
           backHref="/home"
+          tone="neutral"
           breadcrumbs={[
             { label: 'Home', href: '/home' },
             { label: vipCourse.title || 'Custom course' },
@@ -299,13 +300,6 @@ export default function CourseSlugPage({ params }: PageProps) {
           )}
 
           <section className={courseStyles.controlPanel} aria-labelledby="course-title">
-
-            {/* Banner */}
-            <div
-              className={courseStyles.panelBanner}
-              style={vipCourse.coverImageUrl ? { backgroundImage: `url(${vipCourse.coverImageUrl})` } : undefined}
-              aria-hidden="true"
-            />
 
             <div className={courseStyles.panelBody}>
 

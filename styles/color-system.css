@@ -9,6 +9,9 @@
 :root {
   /* Primitive palette */
   --palette-canvas: #FAF6F0;
+  --palette-cool-canvas: #F4F6FA;
+  --palette-cool-surface: #FFFFFF;
+  --palette-cool-surface-muted: #EDF1F7;
   --palette-academy-blue: #5168FF;
   --palette-action-blue: #465BE0;
   --palette-action-blue-hover: #3246BE;

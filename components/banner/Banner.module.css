@@ -109,6 +109,37 @@ a.crumb:hover {
   flex-shrink: 0;
 }
 
+.bannerNeutral {
+  background: var(--color-surface-1);
+  border-bottom-color: var(--color-border-strong);
+}
+
+.bannerNeutral::before {
+  background-image: none;
+}
+
+.bannerNeutral .backArrow {
+  color: var(--color-text-dark);
+  background: var(--color-surface-2);
+}
+
+.bannerNeutral .backArrow:hover {
+  background: var(--color-surface-3);
+}
+
+.bannerNeutral .crumb {
+  color: var(--color-text-muted);
+}
+
+.bannerNeutral a.crumb:hover,
+.bannerNeutral .crumbCurrent {
+  color: var(--color-text-dark);
+}
+
+.bannerNeutral .crumbSep {
+  color: var(--color-text-faint);
+}
+
 @media (max-width: 640px) {
   .crumbs {
     font-size: 12px;
@@ -132,4 +163,3 @@ a.crumb:hover {
     display: none;
   }
 }
-

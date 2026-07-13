@@ -361,6 +361,7 @@ export default function CoursePage() {
       <SideNavigation />
       <Banner
         backHref="/home"
+        tone="neutral"
         breadcrumbs={[
           { label: 'Home', href: '/home' },
           { label: 'Creative Healing' },
@@ -397,7 +398,6 @@ export default function CoursePage() {
                 </div>
               );
             })()}
-            <div className={styles.panelBanner} aria-hidden="true" />
             <div className={styles.panelBody}>
               <div className={styles.panelAvatarWrap}>
                 <Image src="/blue/blue-home.png" alt="Blue" width={120} height={120} className={styles.panelAvatar} />
