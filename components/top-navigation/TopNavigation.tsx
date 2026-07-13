@@ -14,13 +14,14 @@ import HoverSlideText from '@/components/shared/HoverSlideText';
 interface NavLink {
   label: string;
   href: string;
-  icon: string;
+  icon?: string;
   comingSoon?: boolean;
 }
 
 const NAV_LINKS: NavLink[] = [
   { label: 'Live', href: '/dao', icon: '/icons/nav-world-v2.svg' },
   { label: 'Trading', href: '/trades', icon: '/icons/nav-trades-v1.svg' },
+  { label: 'Lists', href: '/list' },
 ];
 
 const TopNavigation: React.FC = () => {
@@ -133,21 +134,25 @@ const TopNavigation: React.FC = () => {
               <Link
                 key={href}
                 href={href}
-                className={`${styles.navLink} hover-slide-trigger ${active ? styles.navLinkActive : ''}`}
+                className={`${styles.navLink} hover-slide-trigger ${active ? styles.navLinkActive : ''} ${!icon ? styles.navLinkTextOnly : ''}`}
                 onMouseEnter={() => play('hover')}
                 onClick={() => play('navigation')}
                 aria-current={active ? 'page' : undefined}
               >
-                <span className={styles.navLinkIconWrap}>
-                  <Image
-                    src={icon}
-                    alt=""
-                    width={16}
-                    height={16}
-                    className={styles.navLinkIcon}
-                  />
-                </span>
-                <span className={styles.navDivider} />
+                {icon && (
+                  <>
+                    <span className={styles.navLinkIconWrap}>
+                      <Image
+                        src={icon}
+                        alt=""
+                        width={16}
+                        height={16}
+                        className={styles.navLinkIcon}
+                      />
+                    </span>
+                    <span className={styles.navDivider} />
+                  </>
+                )}
                 <span className={styles.navLinkLabel}>
                   <HoverSlideText>{label}</HoverSlideText>
                 </span>

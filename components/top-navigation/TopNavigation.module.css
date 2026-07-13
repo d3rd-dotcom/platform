@@ -226,6 +226,11 @@
   background: color-mix(in oklch, var(--color-primary) 3%, transparent);
 }
 
+/* Label-only pill — no leading icon slot, so use symmetric padding. */
+.navLinkTextOnly .navLinkLabel {
+  padding: 0 16px;
+}
+
 .navLinkLabelText {
   display: inline-flex;
   align-items: center;
