@@ -69,7 +69,7 @@ export async function POST(request: Request) {
         source: 'guide',
         refId: body.guideId,
         amount: rewards.diamonds,
-        delivery: 'cdp_mint',
+        delivery: 'blue_transfer',
       });
     }
     return NextResponse.json({

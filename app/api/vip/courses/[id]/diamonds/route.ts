@@ -92,7 +92,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
     return NextResponse.json({ rewarded: false, error: result.error }, { status: result.status });
   }
 
-  // Deliver the claim onchain — Blue's CDP wallet mints $BLUE to the user.
+  // Deliver the claim onchain — Blue transfers $BLUE from her own stash.
   // Fail-soft: the in-app reward stands even if the chain is unreachable.
   const onchain = await deliverDiamondsOnchain({
     userId: user.id,
@@ -100,7 +100,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
     source: 'course_task',
     refId: componentId,
     amount: COMPLETION_REWARD,
-    delivery: 'cdp_mint',
+    delivery: 'blue_transfer',
   });
 
   return NextResponse.json({

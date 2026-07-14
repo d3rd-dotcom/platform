@@ -117,7 +117,7 @@ export async function POST(request: Request) {
       };
     });
 
-    // Survey diamonds are a claim mint, one-time per test via the
+    // Survey diamonds come from Blue's stash, one-time per test via the
     // diamond_onchain_rewards ledger (fail-soft, never blocks the completion).
     if (result.shardsAwarded > 0) {
       await deliverDiamondsOnchain({
@@ -126,7 +126,7 @@ export async function POST(request: Request) {
         source: 'survey',
         refId: testId,
         amount: result.shardsAwarded,
-        delivery: 'cdp_mint',
+        delivery: 'blue_transfer',
       });
     }
 

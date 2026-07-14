@@ -4,16 +4,34 @@
   display: flex;
   min-height: 100vh;
   z-index: 0;
-  background:
-    radial-gradient(circle at top left, color-mix(in oklch, var(--color-primary) 14%, transparent), transparent 34%),
-    radial-gradient(circle at top right, rgba(232, 85, 109, 0.12), transparent 30%),
-    linear-gradient(180deg, #090b11 0%, #05070b 100%);
+  background: linear-gradient(180deg, #090b11 0%, #05070b 100%);
 }
 
 .rail {
   flex: 0 0 var(--sidebar-width, 72px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding-top: 96px;
   border-right: 1px solid rgba(243, 244, 248, 0.06);
   background: rgba(255, 255, 255, 0.015);
+}
+
+.railIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.railIcon.railIconActive {
+  background: linear-gradient(
+    100deg,
+    color-mix(in oklch, var(--color-primary) 45%, transparent) 35%,
+    color-mix(in oklch, var(--color-primary) 70%, transparent) 50%,
+    color-mix(in oklch, var(--color-primary) 45%, transparent) 65%
+  );
+  background-size: 200% 100%;
 }
 
 .main {
@@ -23,43 +41,287 @@
   min-width: 0;
 }
 
+/* ── Topbar: mirrors components/top-navigation/TopNavigation ── */
+
 .topbar {
-  height: 64px;
+  display: flex;
+  align-items: center;
+  height: 72px;
+  padding: 0 24px;
   border-bottom: 1px solid rgba(243, 244, 248, 0.06);
   background: rgba(255, 255, 255, 0.015);
 }
 
-.content {
-  flex: 1;
-  display: grid;
-  place-items: center;
+.topbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 0 0 auto;
 }
 
-.pulse {
+.menuBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+
+.logo {
+  width: 110px;
+  height: 18px;
+}
+
+.searchWrap {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 0 24px;
+}
+
+.searchBar {
+  width: 100%;
+  max-width: 480px;
+  height: 36px;
+  border-radius: 10px;
+}
+
+.centerNav {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+}
+
+.navPill {
+  width: 82px;
+  height: 36px;
+  border-radius: 999px;
+}
+
+.navPillNarrow {
+  width: 60px;
+  height: 36px;
+  border-radius: 999px;
+}
+
+.rightNav {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.iconBtn {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: radial-gradient(circle at center, color-mix(in oklch, var(--color-primary) 55%, transparent), color-mix(in oklch, var(--color-primary) 12%, transparent) 60%, transparent 72%);
-  animation: shellPulse 1.4s ease-in-out infinite;
 }
 
-@keyframes shellPulse {
-  0%, 100% {
-    transform: scale(0.82);
-    opacity: 0.45;
+.calloutPill {
+  width: 108px;
+  height: 36px;
+  border-radius: 999px;
+}
+
+.pillOutline,
+.pillSolid {
+  width: 92px;
+  height: 36px;
+  border-radius: 6px;
+}
+
+/* ── Content: mirrors app/home dashboard ── */
+
+.content {
+  flex: 1;
+  padding: 32px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  overflow-y: auto;
+}
+
+.dashboardHeader {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.dashboardHeader > * {
+  opacity: 0;
+  animation: shellRevealLeft var(--duration-slow, 300ms) var(--ease-out, ease-out) forwards;
+}
+
+.dashboardHeader > *:nth-child(1) { animation-delay: 0ms; }
+.dashboardHeader > *:nth-child(2) { animation-delay: 60ms; }
+.dashboardHeader > *:nth-child(3) { animation-delay: 120ms; }
+
+.profileCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 300px;
+  max-width: 100%;
+  height: 90px;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(243, 244, 248, 0.06);
+  box-sizing: border-box;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.profileLines {
+  display: grid;
+  gap: 10px;
+  flex: 1;
+}
+
+.line { width: 70%; height: 14px; }
+.lineShort { width: 45%; height: 11px; }
+
+.indicators {
+  display: flex;
+  flex: 1;
+  min-width: 260px;
+  height: 90px;
+  padding: 0 24px;
+  border-radius: 18px;
+  border: 1px solid rgba(243, 244, 248, 0.06);
+  box-sizing: border-box;
+}
+
+.indicator {
+  display: grid;
+  flex: 1;
+  place-items: center;
+  gap: 12px;
+}
+
+.indicatorLabel { width: 70%; height: 10px; }
+.indicatorValue { width: 26px; height: 20px; }
+
+.notes {
+  display: grid;
+  gap: 12px;
+  width: 240px;
+  max-width: 100%;
+}
+
+.note {
+  height: 39px;
+  border-radius: 12px;
+}
+
+.folderSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tabs {
+  display: flex;
+  gap: 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(243, 244, 248, 0.06);
+}
+
+.tab { width: 56px; height: 12px; }
+.tabActive { width: 78px; height: 12px; }
+
+.folderRow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.folderCard {
+  height: 140px;
+  border-radius: 14px;
+  opacity: 0;
+  background: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0.045) 35%,
+    rgba(255, 255, 255, 0.09) 50%,
+    rgba(255, 255, 255, 0.045) 65%
+  );
+  background-size: 200% 100%;
+  /* Reveal (opacity/transform, one-shot) and shimmer (background-position,
+     looping) both live on this element, so they're combined in one
+     animation shorthand — separate rules for the same property would just
+     overwrite each other instead of layering. */
+  animation:
+    shellRevealLeft var(--duration-slow, 300ms) var(--ease-out, ease-out) forwards,
+    shimmer 1.5s ease-in-out infinite;
+}
+
+.folderCard:nth-child(1) { animation-delay: 160ms, 160ms; }
+.folderCard:nth-child(2) { animation-delay: 210ms, 210ms; }
+.folderCard:nth-child(3) { animation-delay: 260ms, 260ms; }
+.folderCard:nth-child(4) { animation-delay: 310ms, 310ms; }
+
+.courseGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.courseCard {
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid rgba(243, 244, 248, 0.06);
+  opacity: 0;
+  animation: shellRevealLeft var(--duration-slow, 300ms) var(--ease-out, ease-out) forwards;
+}
+
+.courseCard:nth-child(1) { animation-delay: 360ms; }
+.courseCard:nth-child(2) { animation-delay: 410ms; }
+.courseCard:nth-child(3) { animation-delay: 460ms; }
+
+.courseImage { height: 110px; border-radius: 0; }
+.courseBody { display: grid; gap: 10px; padding: 14px; }
+.courseEyebrow { width: 30%; height: 9px; }
+.courseTitle { width: 68%; height: 15px; }
+.courseDescription { width: 88%; height: 11px; }
+
+/* ── Shared skeleton texture ── */
+
+.skeleton {
+  display: block;
+  background: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0.045) 35%,
+    rgba(255, 255, 255, 0.09) 50%,
+    rgba(255, 255, 255, 0.045) 65%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  to { background-position: -200% 0; }
+}
+
+@keyframes shellRevealLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
   }
-  50% {
-    transform: scale(1.08);
-    opacity: 0.9;
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
 /* Light theme */
 :global(:root:not([data-theme="dark"])) .shell {
-  background:
-    radial-gradient(circle at top left, color-mix(in oklch, var(--color-primary) 12%, transparent), transparent 34%),
-    radial-gradient(circle at top right, rgba(232, 85, 109, 0.1), transparent 30%),
-    linear-gradient(180deg, #f8faff 0%, #eef3ff 100%);
+  background: linear-gradient(180deg, #f8faff 0%, #eef3ff 100%);
 }
 
 :global(:root:not([data-theme="dark"])) .rail,
@@ -68,15 +330,81 @@
   background: rgba(8, 11, 17, 0.015);
 }
 
+:global(:root:not([data-theme="dark"])) .profileCard,
+:global(:root:not([data-theme="dark"])) .indicators,
+:global(:root:not([data-theme="dark"])) .courseCard {
+  border-color: rgba(26, 27, 36, 0.08);
+}
+
+:global(:root:not([data-theme="dark"])) .tabs {
+  border-color: rgba(26, 27, 36, 0.08);
+}
+
+:global(:root:not([data-theme="dark"])) .skeleton,
+:global(:root:not([data-theme="dark"])) .folderCard {
+  background: linear-gradient(
+    100deg,
+    color-mix(in oklch, var(--color-text-muted) 12%, transparent) 35%,
+    color-mix(in oklch, var(--color-text-muted) 22%, transparent) 50%,
+    color-mix(in oklch, var(--color-text-muted) 12%, transparent) 65%
+  );
+  background-size: 200% 100%;
+}
+
+:global(:root:not([data-theme="dark"])) .railIcon.railIconActive {
+  background: linear-gradient(
+    100deg,
+    color-mix(in oklch, var(--color-primary) 45%, transparent) 35%,
+    color-mix(in oklch, var(--color-primary) 70%, transparent) 50%,
+    color-mix(in oklch, var(--color-primary) 45%, transparent) 65%
+  );
+  background-size: 200% 100%;
+}
+
 @media (max-width: 768px) {
   .rail {
     display: none;
   }
+
+  .searchWrap,
+  .centerNav {
+    display: none;
+  }
+
+  .content {
+    padding: 20px;
+  }
+
+  .dashboardHeader {
+    flex-direction: column;
+  }
+
+  .profileCard,
+  .indicators,
+  .notes {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .folderRow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .courseGrid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pulse {
+  .skeleton {
     animation: none;
-    opacity: 0.7;
+  }
+
+  .dashboardHeader > *,
+  .folderCard,
+  .courseCard {
+    opacity: 1;
+    animation: none;
+    transform: none;
   }
 }

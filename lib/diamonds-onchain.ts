@@ -8,14 +8,15 @@ import { getDiamondsTokenAddress as getTokenAddress, getChainConfig, resolveVeri
 /**
  * Onchain delivery of Diamonds ($BLUE) rewards.
  *
- * Two delivery paths, per the reward's source:
- * - cdp_mint: course missions/tasks, week seals, and field notes are claim
- *   mints. Preferred transport is a gas-sponsored user operation through
- *   Alchemy Gas Manager (Blue's smart account signs — see
- *   diamonds-paymaster.ts), with a direct owner mint from Blue's key as the
- *   fallback so claims never stall. Users never sign or pay gas either way.
- * - blue_transfer: quest rewards are true p2p transfers from Blue's own 200M
- *   stash, signed by her key. Quest diamonds genuinely come from her.
+ * One delivery path since 2026-07-14: every reward — course missions/tasks,
+ * week seals, field notes, guides, surveys, quests, welcome grants — is a
+ * blue_transfer, a true p2p transfer from Blue's own 200M stash signed by her
+ * key. Rewards never mint new supply; they genuinely come from her.
+ *
+ * cdp_mint survives as a delivery method only for replaying legacy ledger
+ * rows and as the sponsored-mint machinery (Alchemy Gas Manager through
+ * Blue's smart account — see diamonds-paymaster.ts) should minting ever be
+ * deliberately turned back on.
  *
  * Delivery is fail-soft: the in-app reward always lands first, every attempt
  * is recorded in diamond_onchain_rewards (unique per user+source+ref so a

@@ -134,6 +134,7 @@ export default function HomePage() {
   const [frontierGuides, setFrontierGuides] = useState<FrontierGuide[] | null>(null);
 
   const [isVip, setIsVip] = useState(false);
+  const [hasAngel, setHasAngel] = useState(false);
   const [fieldNotesOpen, setFieldNotesOpen] = useState(false);
   const [notebookEntriesUnlocked, setNotebookEntriesUnlocked] = useState(false);
   const [courseIndicators, setCourseIndicators] = useState({ completed: 0, inProgress: 0, saved: 0 });
@@ -314,8 +315,14 @@ export default function HomePage() {
     if (!ready || !authenticated) return;
     fetch('/api/account/status')
       .then((r) => r.ok ? r.json() : null)
-      .then((d) => setIsVip(d?.hasVipMembershipCard ?? false))
-      .catch(() => setIsVip(false));
+      .then((d) => {
+        setIsVip(d?.hasVipMembershipCard ?? false);
+        setHasAngel(d?.hasAcademicAngel ?? false);
+      })
+      .catch(() => {
+        setIsVip(false);
+        setHasAngel(false);
+      });
 
   }, [ready, authenticated]);
 
@@ -477,7 +484,7 @@ export default function HomePage() {
                     dark
                     images={[]}
                   />
-                  <EmptyCourseStudioFolder />
+                  <EmptyCourseStudioFolder hasAngel={hasAngel} />
                 </section>
               ),
             },

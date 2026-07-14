@@ -428,29 +428,36 @@ export const mediaQueries = {
 // ============================================
 // Animation Tokens
 // ============================================
+// Runtime source of truth is styles/globals.css (:root custom properties);
+// see docs/design-system/motion.md for the full rules. Rule of thumb:
+// never ship "linear" or an unnamed default easing except on continuous
+// loops (marquees/spinners) — use `out` for things entering, `in` for
+// things leaving, `default` for everything else, and keep interface
+// transition durations between `fast` (150ms) and `slow` (300ms).
 
 /**
  * Animation Durations
  */
 export const durations = {
-  instant: '50ms',
-  fast: '150ms',      // Micro-interactions (hover, focus)
-  normal: '250ms',    // Standard transitions (cards, dropdowns)
-  slow: '400ms',      // Large state changes (modals, sidebars)
-  slower: '500ms',
-  swipe: '300ms',     // Swipe card gamification
+  instant: 'var(--duration-instant)',  // 50ms — near-imperceptible feedback only
+  fast: 'var(--duration-fast)',        // 150ms — micro-interactions (hover, focus, toggles)
+  normal: 'var(--duration-normal)',    // 250ms — standard UI moves (cards, dropdowns, tabs)
+  slow: 'var(--duration-slow)',        // 300ms — upper bound for interface transitions
+  slower: 'var(--duration-slower)',    // 500ms — large, rare, non-interface reveals only
+  swipe: 'var(--duration-slow)',       // Swipe card gamification
 } as const;
 
 /**
  * Easing Curves
  */
 export const easings = {
-  default: 'cubic-bezier(0.4, 0, 0.2, 1)',
-  in: 'cubic-bezier(0.4, 0, 1, 1)',
-  out: 'cubic-bezier(0.25, 1, 0.5, 1)',
-  inOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
-  bounce: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
-  spring: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+  default: 'var(--ease-default)',  // fast start, soft landing — UI moves in place
+  in: 'var(--ease-in)',            // things leaving
+  out: 'var(--ease-out)',          // things entering
+  inOut: 'var(--ease-in-out)',
+  bounce: 'var(--ease-bounce)',
+  spring: 'var(--ease-spring)',
+  linear: 'var(--ease-linear)',    // marquee/spinner continuous loops only
 } as const;
 
 /**

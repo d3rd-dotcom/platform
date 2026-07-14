@@ -2,10 +2,12 @@
 
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useAccount } from 'wagmi';
 import { providers } from 'ethers';
 import { getEligibleInviteLists, getMintTransaction, SCATTER_COLLECTION_SLUG } from '@/lib/scatter-api';
 import { useSound } from '@/hooks/useSound';
+import CtaButton from '@/components/shared/CtaButton';
 import styles from './AngelUpsellModal.module.css';
 
 interface AngelUpsellModalProps {
@@ -15,13 +17,7 @@ interface AngelUpsellModalProps {
 
 type MintPhase = 'idle' | 'loading' | 'minting' | 'success' | 'error';
 
-const ANGEL_IMAGE = 'https://i.imgur.com/GXA3DBV.gif';
-
-const FEATURES = [
-  'Earn cash from quests',
-  'Access private courses',
-  'Earn exclusive rewards',
-];
+const ANGEL_IMAGE = '/angel-upsell-mural.webp';
 
 export default function AngelUpsellModal({ isOpen, onClose }: AngelUpsellModalProps) {
   const { play } = useSound();
@@ -134,13 +130,20 @@ export default function AngelUpsellModal({ isOpen, onClose }: AngelUpsellModalPr
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || typeof document === 'undefined') return null;
 
-  return (
+  // Portal to <body> so a transformed ancestor can't trap the fixed overlay.
+  return createPortal(
     <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.topBar}>
-          <span className={styles.topBarBadge}><span className={styles.topBarKanji}>会員</span> Exclusive Membership</span>
+      <div
+        className={styles.modal}
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="angel-upsell-title"
+      >
+        <div className={styles.imageSection}>
+          <img src={ANGEL_IMAGE} alt="Academic Angel" className={styles.angelImage} />
           <button className={styles.closeButton} onClick={onClose} aria-label="Close">
             <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
               <path
@@ -153,42 +156,21 @@ export default function AngelUpsellModal({ isOpen, onClose }: AngelUpsellModalPr
           </button>
         </div>
 
-        <div className={styles.content}>
-          {(phase === 'idle' || phase === 'loading') && (
-            <div className={styles.topSection}>
-              <div className={styles.imageWrapper}>
-                <img src={ANGEL_IMAGE} alt="Academic Angel" className={styles.angelImage} />
-              </div>
+        <div className={styles.body}>
+          {(phase === 'idle' || phase === 'error') && (
+            <h2 id="angel-upsell-title" className={styles.title}>
+              You need an Angel to play this game
+            </h2>
+          )}
 
-              <div className={styles.textContent}>
-                <h2 className={styles.title}>Join The Tribe</h2>
-                <p className={styles.description}>
-                  Closer to the Ethereal Horizon
-                </p>
-                <ul className={styles.featureList}>
-                  {FEATURES.map((feature) => (
-                    <li key={feature} className={styles.featureItem}>
-                      <svg
-                        className={styles.checkIcon}
-                        width="16"
-                        height="16"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                      >
-                        <path
-                          d="M13.5 4.5L6.5 11.5L2.5 7.5"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+          {phase === 'idle' && (
+            <CtaButton
+              block
+              onClick={() => { play('click'); handleMint(); }}
+              onMouseEnter={() => play('hover')}
+            >
+              Mint your Angel
+            </CtaButton>
           )}
 
           {phase === 'loading' && (
@@ -207,7 +189,6 @@ export default function AngelUpsellModal({ isOpen, onClose }: AngelUpsellModalPr
 
           {phase === 'success' && (
             <div className={styles.successContainer}>
-              <div className={styles.successIcon}>✨</div>
               <p className={styles.successTitle}>Welcome to the Tribe</p>
               <p className={styles.successMessage}>Your angel is on its way</p>
               {txHash && (
@@ -222,43 +203,31 @@ export default function AngelUpsellModal({ isOpen, onClose }: AngelUpsellModalPr
                   View on BaseScan
                 </a>
               )}
-              <button
-                onClick={() => { play('click'); onClose() }}
+              <CtaButton
+                variant="secondary"
+                onClick={() => { play('click'); onClose(); }}
                 onMouseEnter={() => play('hover')}
-                className={styles.closeButtonSecondary}
-                type="button"
               >
                 Close
-              </button>
+              </CtaButton>
             </div>
           )}
 
           {phase === 'error' && (
             <div className={styles.errorContainer}>
               <p className={styles.errorText}>{errorMsg}</p>
-              <button
-                type="button"
-                className={styles.ctaButton}
+              <CtaButton
+                block
                 onClick={() => { play('click'); handleMint(); }}
                 onMouseEnter={() => play('hover')}
               >
-                <span>Try Again</span>
-              </button>
+                Try again
+              </CtaButton>
             </div>
-          )}
-
-          {phase === 'idle' && (
-            <button
-              type="button"
-              className={styles.ctaButton}
-              onClick={() => { play('click'); handleMint(); }}
-              onMouseEnter={() => play('hover')}
-            >
-              <span>Join The Tribe</span>
-            </button>
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

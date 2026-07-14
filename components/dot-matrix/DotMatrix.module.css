@@ -10,6 +10,6 @@
   height: var(--dot-size, 6px);
   border-radius: 50%;
   background: var(--dot-color, var(--color-primary));
-  transition: opacity 0.08s linear;
+  transition: opacity 0.08s var(--ease-default);
   flex-shrink: 0;
 }

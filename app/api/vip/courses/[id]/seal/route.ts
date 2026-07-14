@@ -94,14 +94,14 @@ export async function POST(request: Request, { params }: { params: { id: string 
     return NextResponse.json({ error: 'Complete every task in this week before sealing it.' }, { status: 400 });
   }
 
-  // Deliver the seal bonus onchain via Blue's CDP wallet (fail-soft).
+  // Deliver the seal bonus onchain — Blue sends it from her own stash (fail-soft).
   const onchain = await deliverDiamondsOnchain({
     userId: user.id,
     walletAddress: user.walletAddress,
     source: 'course_seal',
     refId: weekId,
     amount: SEAL_REWARD,
-    delivery: 'cdp_mint',
+    delivery: 'blue_transfer',
   });
 
   return NextResponse.json({

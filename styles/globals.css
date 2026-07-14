@@ -110,22 +110,39 @@
   --card-radius: var(--radius-xl);
   
   /* ============================================
-     Animation Tokens
-     ============================================ */
+     Animation Tokens — see docs/design-system/motion.md
+     ============================================
+     Rules for every new transition/animation in the app:
+       1. Never leave transition-timing-function at its implicit default
+          ("ease") or at "linear" — always name one of the curves below.
+       2. Exception: continuous, constant-speed loops (marquees, spinners,
+          ticker scrolls) are correctly linear — use --ease-linear there
+          and nowhere else.
+       3. Elements entering the viewport/DOM use --ease-out (fast start,
+          gentle arrival). Elements leaving use --ease-in (gentle start,
+          fast exit). Everything else moving in place (hover, toggle,
+          drag-settle, tab switches) uses --ease-default.
+       4. Interface transition durations stay within --duration-fast
+          (150ms) to --duration-slow (300ms). Reach for --duration-instant
+          only for near-imperceptible feedback (e.g. opacity nudges under
+          a user's cursor), and --duration-slower only for large, rare,
+          non-interface reveals (full-screen modals, page transitions). */
+
   /* Durations */
   --duration-instant: 50ms;
-  --duration-fast: 200ms;
-  --duration-normal: 300ms;
-  --duration-slow: 500ms;
-  --duration-slower: 500ms;
-  
+  --duration-fast: 150ms;    /* micro-interactions: hover, focus, toggles */
+  --duration-normal: 250ms;  /* standard UI moves: cards, dropdowns, tabs */
+  --duration-slow: 300ms;    /* upper bound for interface transitions */
+  --duration-slower: 500ms;  /* large, rare, non-interface reveals only */
+
   /* Easing Curves */
-  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-in: cubic-bezier(0.4, 0, 1, 1);
-  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);   /* UI moves: fast start, soft landing */
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);            /* things leaving */
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);           /* things entering */
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-linear: linear;                             /* marquee/spinner loops only */
   
   /* Swipe Gesture Thresholds */
   --swipe-threshold: 100px;

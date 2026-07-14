@@ -252,15 +252,15 @@ export async function POST(request: Request) {
       return completed;
     });
 
-    // Field-note seals are CDP claim mints — Blue's server wallet signs so
-    // the user never has to (fail-soft, never blocks the seal).
+    // Field-note seals are paid from Blue's own stash — she signs so the
+    // user never has to (fail-soft, never blocks the seal).
     await deliverDiamondsOnchain({
       userId: user.id,
       walletAddress: user.walletAddress,
       source: 'field_note',
       refId: `week-${weekNumber}`,
       amount: SEAL_REWARD,
-      delivery: 'cdp_mint',
+      delivery: 'blue_transfer',
     });
 
     try {
@@ -344,7 +344,7 @@ export async function POST(request: Request) {
         source: 'course_task',
         refId: sectionId,
         amount: TASK_REWARD,
-        delivery: 'cdp_mint',
+        delivery: 'blue_transfer',
       });
     }
   }
