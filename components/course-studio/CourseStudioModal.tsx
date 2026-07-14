@@ -1095,7 +1095,8 @@ export default function CourseStudioModal({
         )}
       </DndContext>
 
-      <CourseBuilderTour />
+      {/* First-run tour waits until Blue's intake questionnaire is done */}
+      {!showIntake && <CourseBuilderTour />}
     </div>
     </>
   );

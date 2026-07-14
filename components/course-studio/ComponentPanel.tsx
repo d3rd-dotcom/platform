@@ -1,55 +1,62 @@
 'use client';
 
-import { useRef } from 'react';
 import Image from 'next/image';
 import { useDroppable } from '@dnd-kit/core';
-import { Plus, ArrowLeft, ArrowRight, Trash } from '@phosphor-icons/react';
+import {
+  Plus,
+  CaretLeft,
+  CaretRight,
+  Trash,
+  BookOpen,
+  TextT,
+  ListChecks,
+  Star,
+  LockSimple,
+  VideoCamera,
+  ImageSquare,
+  MonitorPlay,
+  PencilSimpleLine,
+  StackSimple,
+} from '@phosphor-icons/react';
+import type { Icon } from '@phosphor-icons/react';
 import { useSound } from '@/hooks/useSound';
 import type { CourseComponentRecord } from '@/lib/vip-course-db';
 import styles from './ComponentPanel.module.css';
 
-const TASK_ACCENTS = [
-  '#5168FF', '#7C8FFF', '#8B5CF6', '#A855F7',
-  '#38BDF8', '#22D3EE', '#2DD4BF', '#34D399',
-];
+const BLOCK_LABELS: Record<string, string> = {
+  reflection_journal: 'Field Notes',
+  text_input: 'Text Input',
+  rich_text: 'Rich Text',
+  multiple_choice: 'Multiple Choice',
+  rating_scale: 'Rating Scale',
+  nft_gate: 'NFT Gate',
+  video_embed: 'Video',
+  image_embed: 'Image',
+  media_embed: 'Media',
+};
 
-function getTaskArtwork(index: number): string {
-  const variants = ['aurora', 'sunrise', 'orbit', 'bloom', 'ribbon', 'prism'];
-  return variants[index % variants.length];
+const BLOCK_ICONS: Record<string, Icon> = {
+  reflection_journal: PencilSimpleLine,
+  text_input: TextT,
+  rich_text: TextT,
+  multiple_choice: ListChecks,
+  rating_scale: Star,
+  nft_gate: LockSimple,
+  video_embed: VideoCamera,
+  image_embed: ImageSquare,
+  media_embed: MonitorPlay,
+};
+
+function getMissionType(comp: CourseComponentRecord): string {
+  if (comp.componentType === 'mission_container') {
+    return comp.blocks?.[0]?.blockType ?? 'mission_container';
+  }
+  return comp.componentType;
 }
 
 function getMissionLabel(comp: CourseComponentRecord): string {
   if (comp.title) return comp.title;
-  if (comp.componentType === 'mission_container') {
-    const labels: Record<string, string> = {
-      reflection_journal: 'Field Notes',
-      text_input: 'Text Input',
-      rich_text: 'Rich Text',
-      multiple_choice: 'Multiple Choice',
-      rating_scale: 'Rating Scale',
-      nft_gate: 'NFT Gate',
-      video_embed: 'Video',
-      image_embed: 'Image',
-      media_embed: 'Media',
-    };
-    const firstBlock = comp.blocks?.[0];
-    if (firstBlock && labels[firstBlock.blockType]) {
-      return labels[firstBlock.blockType];
-    }
-    return 'Mission';
-  }
-  const labels: Record<string, string> = {
-    reflection_journal: 'Field Notes',
-    text_input: 'Text Input',
-    rich_text: 'Rich Text',
-    multiple_choice: 'Multiple Choice',
-    rating_scale: 'Rating Scale',
-    nft_gate: 'NFT Gate',
-    video_embed: 'Video',
-    image_embed: 'Image',
-    media_embed: 'Media',
-  };
-  return labels[comp.componentType] || 'Mission';
+  return BLOCK_LABELS[getMissionType(comp)] || 'Mission';
 }
 
 interface StudioWeek {
@@ -104,43 +111,26 @@ export default function ComponentPanel({
 
   return (
     <div className={styles.panel}>
-      {/* Week navigation — dots on the left, arrows + delete on the right */}
-      <div className={styles.weekNav}>
-        <div className={styles.weekNavLeft}>
-          <div className={styles.weekNavDots}>
-            {weeks.map((week) => (
-              <button
-                key={week.id}
-                type="button"
-                className={`${styles.weekDot} ${week.id === selectedWeekId ? styles.weekDotActive : ''}`}
-                onClick={() => onSelectWeek(week.id)}
-                title={week.title || `Week ${week.weekNumber}`}
-              />
-            ))}
-            <button
-              type="button"
-              onClick={onAddWeek}
-              className={styles.weekDotAdd}
-              title="Add week"
-            >
-              <Plus size={10} weight="bold" />
-            </button>
-          </div>
+      {/* Weeks header — label + count on the left, actions on the right */}
+      <div className={styles.sectionHeader}>
+        <div className={styles.sectionLabelGroup}>
+          <span className={styles.sectionLabel}>Weeks</span>
+          <span className={styles.countBadge}>{weeks.length}</span>
         </div>
-
-        <div className={styles.weekNavRight}>
+        <div className={styles.sectionActions}>
           <button
             type="button"
-            className={styles.weekNavDelete}
+            className={`${styles.iconBtn} ${styles.iconBtnDanger}`}
             onClick={() => onDeleteWeek(selectedWeekId)}
             disabled={weeks.length <= 1}
             title="Delete week"
           >
-            <Trash size={13} weight="bold" />
+            <Trash size={13} />
           </button>
+          <span className={styles.actionDivider} aria-hidden="true" />
           <button
             type="button"
-            className={styles.weekNavArrow}
+            className={styles.iconBtn}
             onClick={() => {
               const idx = Math.max(0, currentIndex - 1);
               onSelectWeek(weeks[idx].id);
@@ -148,11 +138,11 @@ export default function ComponentPanel({
             disabled={!displayWeek || currentIndex <= 0}
             aria-label="Previous week"
           >
-            <ArrowLeft size={14} weight="bold" />
+            <CaretLeft size={13} />
           </button>
           <button
             type="button"
-            className={styles.weekNavArrow}
+            className={styles.iconBtn}
             onClick={() => {
               const idx = Math.min(weeks.length - 1, currentIndex + 1);
               onSelectWeek(weeks[idx].id);
@@ -160,61 +150,102 @@ export default function ComponentPanel({
             disabled={!displayWeek || currentIndex >= weeks.length - 1}
             aria-label="Next week"
           >
-            <ArrowRight size={14} weight="bold" />
+            <CaretRight size={13} />
           </button>
         </div>
       </div>
 
+      {/* Week chips — direct selection plus add */}
+      <div className={styles.weekChips}>
+        {weeks.map((week) => (
+          <button
+            key={week.id}
+            type="button"
+            className={`${styles.weekChip} ${week.id === selectedWeekId ? styles.weekChipActive : ''}`}
+            onClick={() => onSelectWeek(week.id)}
+            title={week.title || `Week ${week.weekNumber}`}
+          >
+            {week.weekNumber}
+          </button>
+        ))}
+        <button
+          type="button"
+          onClick={onAddWeek}
+          className={styles.weekChipAdd}
+          title="Add week"
+        >
+          <Plus size={11} weight="bold" />
+        </button>
+      </div>
+
       {/* Week meta — theme, title */}
       {displayWeek && (
-        <input
-          value={displayWeek.theme}
-          onChange={(e) => onUpdateWeek(displayWeek.id, { theme: e.target.value })}
-          onKeyDown={() => play('click')}
-          placeholder="Theme — shows as eyebrow text"
-          className={styles.weekThemeInput}
-        />
-      )}
-      {displayWeek && (
-        <div className={styles.weekMeta}>
-          <span className={styles.weekBadge}>Title</span>
-          <input
-            value={displayWeek.title}
-            onChange={(e) => onUpdateWeek(displayWeek.id, { title: e.target.value })}
-            onKeyDown={() => play('click')}
-            placeholder="Name this week"
-            className={styles.weekTitleInput}
-          />
+        <div className={styles.weekMetaStack}>
+          <div className={styles.weekMetaRow}>
+            <span className={styles.fieldBadge}>Theme</span>
+            <input
+              value={displayWeek.theme}
+              onChange={(e) => onUpdateWeek(displayWeek.id, { theme: e.target.value })}
+              onKeyDown={() => play('click')}
+              placeholder="Shows as eyebrow text"
+              className={styles.weekInput}
+            />
+          </div>
+          <div className={styles.weekMetaRow}>
+            <span className={styles.fieldBadge}>Title</span>
+            <input
+              value={displayWeek.title}
+              onChange={(e) => onUpdateWeek(displayWeek.id, { title: e.target.value })}
+              onKeyDown={() => play('click')}
+              placeholder="Name this week"
+              className={`${styles.weekInput} ${styles.weekInputTitle}`}
+            />
+          </div>
         </div>
       )}
 
-      {/* Reading card — compact style matching CoursePreview */}
-      <button type="button" className={styles.readingCard} onClick={onEditReading}>
-        <span className={styles.readingAccent} aria-hidden="true" />
-        <span className={styles.readingThumb} aria-hidden="true">
-          {readingImageUrl ? (
-            <Image src={readingImageUrl} alt="" fill sizes="48px" unoptimized className={styles.readingThumbImg} />
+      {/* Reading row */}
+      <div className={styles.sectionHeader}>
+        <div className={styles.sectionLabelGroup}>
+          <span className={styles.sectionLabel}>Weekly read</span>
+          {readingContent ? (
+            <span className={`${styles.stateBadge} ${styles.stateBadgeSet}`}>Ready</span>
           ) : (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={styles.readingThumbIcon}>
-              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-            </svg>
+            <span className={styles.stateBadge}>Empty</span>
+          )}
+        </div>
+      </div>
+      <button type="button" className={styles.readingRow} onClick={onEditReading}>
+        <span className={styles.rowIcon} aria-hidden="true">
+          {readingImageUrl ? (
+            <Image src={readingImageUrl} alt="" fill sizes="28px" unoptimized className={styles.rowIconImg} />
+          ) : (
+            <BookOpen size={15} />
           )}
         </span>
-        <div className={styles.readingInfo}>
-          <span className={styles.readingCategory}>{displayWeek.theme || 'Reading'}</span>
-          <span className={styles.readingTitle}>{readingContent ? displayWeek.title || 'Reading' : displayWeek.title || 'Add reading'}</span>
+        <div className={styles.rowInfo}>
+          <span className={styles.rowTitle}>{displayWeek.title || (readingContent ? 'Reading' : 'Add reading')}</span>
+          {displayWeek.theme && <span className={styles.rowSub}>{displayWeek.theme}</span>}
         </div>
-        <svg className={styles.readingArrow} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M9 18l6-6-6-6" />
-        </svg>
+        <CaretRight size={13} className={styles.rowChevron} />
       </button>
 
-      {/* Missions heading — mirrors /course page */}
-      <div className={styles.missionsHeadingRow} aria-hidden="true">
-        <span className={styles.missionsDivider} />
-        <h2 className={styles.missionsHeading}>Missions</h2>
-        <span className={styles.missionsDivider} />
+      {/* Missions header */}
+      <div className={styles.sectionHeader}>
+        <div className={styles.sectionLabelGroup}>
+          <span className={styles.sectionLabel}>Missions</span>
+          <span className={styles.countBadge}>{missions.length}</span>
+        </div>
+        <div className={styles.sectionActions}>
+          <button
+            type="button"
+            className={styles.iconBtn}
+            onClick={() => { play('click'); onAddBlankMission(); }}
+            title="Add mission"
+          >
+            <Plus size={13} />
+          </button>
+        </div>
       </div>
 
       {/* Droppable missions zone */}
@@ -222,35 +253,32 @@ export default function ComponentPanel({
         ref={setNodeRef}
         className={`${styles.missionsZone} ${isOver ? styles.missionsZoneOver : ''}`}
       >
-        {missions.length > 0 && missions.map((comp, i) => {
-          const accent = TASK_ACCENTS[i % TASK_ACCENTS.length];
-          const artworkVariant = getTaskArtwork(i + 1);
+        {missions.map((comp) => {
+          const TypeIcon = BLOCK_ICONS[getMissionType(comp)] ?? StackSimple;
           return (
             <div
               key={comp.id}
-              className={`${styles.taskCard} ${comp.id === selectedMissionId ? styles.taskCardSelected : ''}`}
+              className={`${styles.missionRow} ${comp.id === selectedMissionId ? styles.missionRowSelected : ''}`}
               onClick={() => onSelectMission(comp.id)}
-              style={{ '--task-accent': accent } as React.CSSProperties}
             >
-              <div className={styles.taskCardHeader}>
-                <span className={styles.taskAccent} aria-hidden="true" />
-                <span className={`${styles.taskArtwork} ${styles[`taskArtwork${artworkVariant.charAt(0).toUpperCase() + artworkVariant.slice(1)}`] || ''}`} aria-hidden="true" />
-                <span className={styles.taskTitle}>{getMissionLabel(comp)}</span>
-                {comp.componentType === 'mission_container' && comp.blocks && comp.blocks.length > 0 && (
-                  <span className={styles.blockCount}>{comp.blocks.length} block{comp.blocks.length !== 1 ? 's' : ''}</span>
-                )}
-                <button
-                  type="button"
-                  className={styles.taskDelete}
-                  onClick={(e) => { e.stopPropagation(); onDeleteMission(comp.id); }}
-                  title="Delete mission"
-                >
-                  <Trash size={13} weight="bold" />
-                </button>
-                <svg className={styles.taskArrow} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M9 18l6-6-6-6" />
-                </svg>
+              <span className={styles.rowIcon} aria-hidden="true">
+                <TypeIcon size={15} />
+              </span>
+              <div className={styles.rowInfo}>
+                <span className={styles.rowTitle}>{getMissionLabel(comp)}</span>
               </div>
+              {comp.componentType === 'mission_container' && comp.blocks && comp.blocks.length > 0 && (
+                <span className={styles.countBadge}>{comp.blocks.length}</span>
+              )}
+              <button
+                type="button"
+                className={`${styles.iconBtn} ${styles.iconBtnDanger} ${styles.rowDelete}`}
+                onClick={(e) => { e.stopPropagation(); onDeleteMission(comp.id); }}
+                title="Delete mission"
+              >
+                <Trash size={13} />
+              </button>
+              <CaretRight size={13} className={styles.rowChevron} />
             </div>
           );
         })}
@@ -260,10 +288,8 @@ export default function ComponentPanel({
           className={`${styles.addBtn} ${missions.length === 0 ? styles.addBtnTall : ''}`}
           onClick={() => { play('click'); onAddBlankMission(); }}
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 5v14M5 12h14" />
-          </svg>
-          Add Mission
+          <Plus size={13} weight="bold" />
+          Add mission
         </button>
       </div>
 
