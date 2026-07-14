@@ -28,6 +28,7 @@ import { useSound } from '@/hooks/useSound';
 import ComponentPalette from './ComponentPalette';
 import ComponentPanel from './ComponentPanel';
 import MissionEditor from './MissionEditor';
+import StudioIntake from './StudioIntake';
 import dynamic from 'next/dynamic';
 
 const ReadingEditor = dynamic(() => import('./ReadingEditor'), { ssr: false });
@@ -97,6 +98,8 @@ export default function CourseStudioModal({
 }: CourseStudioProps) {
   const { play } = useSound();
   const [phase, setPhase] = useState<'loading' | 'edit' | 'saving'>(existingCourseId ? 'loading' : 'edit');
+  // Blue's intake questionnaire runs once, before building a brand-new course.
+  const [showIntake, setShowIntake] = useState(!existingCourseId && !initialCourse);
   const [courseId, setCourseId] = useState<string | null>(existingCourseId ?? null);
   const [title, setTitle] = useState('');
   const [focus, setFocus] = useState('');
@@ -157,10 +160,10 @@ export default function CourseStudioModal({
 
   // Auto-focus the title input for new courses
   useEffect(() => {
-    if (phase === 'edit' && !existingCourseId && titleRef.current) {
+    if (phase === 'edit' && !existingCourseId && !showIntake && titleRef.current) {
       titleRef.current.focus();
     }
-  }, [phase, existingCourseId]);
+  }, [phase, existingCourseId, showIntake]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -876,7 +879,13 @@ export default function CourseStudioModal({
               </motion.aside>
 
               {/* Right: Component editor — always block-based MissionEditor */}
-              {selectedComponent ? (
+              {showIntake ? (
+                <StudioIntake
+                  authHeaders={authHeaders}
+                  onComplete={() => setShowIntake(false)}
+                  onSkip={() => setShowIntake(false)}
+                />
+              ) : selectedComponent ? (
                 <main className={styles.missionEditor}>
                   <MissionEditor
                     component={selectedComponent}
