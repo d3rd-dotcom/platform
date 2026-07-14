@@ -1,4 +1,6 @@
-import { Contract, providers, utils, Wallet } from 'ethers';
+import { createPublicClient, createWalletClient, http, parseUnits, parseGwei, parseAbi, type Chain } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
+import { base, baseSepolia } from 'viem/chains';
 import { getPaymasterRpcUrl, getBlueSmartAccount, mintDiamondsSponsored } from './diamonds-paymaster';
 import { sqlQuery } from './db';
 import { getDiamondsTokenAddress as getTokenAddress, getChainConfig, resolveVerifiedRpcUrl } from './chain-config';
@@ -31,37 +33,42 @@ export type RewardSource =
   | 'welcome';
 export type DeliveryMethod = 'cdp_mint' | 'blue_transfer';
 
-const DIAMONDS_ABI = [
+const DIAMONDS_ABI = parseAbi([
   'function transfer(address to, uint256 amount) returns (bool)',
   'function mint(address to, uint256 amount)',
   'function minters(address) view returns (bool)',
   'function setMinter(address minter, bool allowed)',
   'function balanceOf(address) view returns (uint256)',
-];
+]);
 
 export function getDiamondsTokenAddress(): string | null {
   return getTokenAddress();
 }
 
 /**
- * Blue's wallet as an ethers signer on the ACTIVE Diamonds chain. Unlike
+ * Blue's wallet as viem clients on the ACTIVE Diamonds chain. Unlike
  * blue-membership's getBlueSigner (mainnet-pinned for VIP card sales), every
  * Diamonds write must follow chain-config, or testnet-mode transfers and
  * mints land on mainnet as codeless-address no-ops that still ledger 'sent'.
  * The RPC is verified against the expected chain id before use — a wrong
  * BASE_SEPOLIA_RPC_URL in prod env has pointed these writes at mainnet.
+ * viem, not ethers: ethers v5's node HTTP transport fails inside deployed
+ * Vercel lambdas — every delivery since 2026-07-08 died on it.
  */
-async function getBlueSigner(): Promise<Wallet> {
+async function getBlueClients() {
   const cfg = getChainConfig();
   const key = process.env.BLUE_PRIVATE_KEY || process.env.AZURA_PRIVATE_KEY;
   if (!key) {
     throw new Error('BLUE_PRIVATE_KEY or AZURA_PRIVATE_KEY is not set — Blue cannot sign Diamonds rewards.');
   }
-  const provider = new providers.StaticJsonRpcProvider(await resolveVerifiedRpcUrl(), {
-    chainId: cfg.chainId,
-    name: cfg.chainName.toLowerCase().replace(/\s+/g, '-'),
-  });
-  return new Wallet(key.startsWith('0x') ? key : `0x${key}`, provider);
+  const chain: Chain = cfg.chainId === 84532 ? baseSepolia : base;
+  const transport = http(await resolveVerifiedRpcUrl());
+  const account = privateKeyToAccount((key.startsWith('0x') ? key : `0x${key}`) as `0x${string}`);
+  return {
+    account,
+    publicClient: createPublicClient({ chain, transport }),
+    walletClient: createWalletClient({ account, chain, transport }),
+  };
 }
 
 /**
@@ -77,9 +84,9 @@ function getDailyMintCap(): number {
 }
 
 /**
- * ethers v5 defaults EIP-1559 transactions to a 1.5 gwei priority tip —
- * roughly 200x what Base clears at — which drains Blue's gas wallet in a
- * handful of payouts. Price every write from the live base fee instead.
+ * Wallet-default EIP-1559 priority tips run far above what Base clears at,
+ * which drains Blue's gas wallet in a handful of payouts. Price every write
+ * from the live base fee instead.
  *
  * The base-fee read is just that — a read — so it's safe to retry a few
  * times against RPC blips, and safe to fall back to a static estimate if
@@ -88,13 +95,13 @@ function getDailyMintCap(): number {
  * eth_getBlockByNumber SERVER_ERROR from Alchemy) even though the actual
  * mint/transfer never got a chance to run.
  */
-async function baseFeeOverrides(provider: providers.Provider) {
-  const priority = utils.parseUnits('0.001', 'gwei');
-  const fallbackBaseFee = utils.parseUnits('0.05', 'gwei');
+async function baseFeeOverrides(publicClient: { getBlock: () => Promise<{ baseFeePerGas: bigint | null }> }) {
+  const priority = parseGwei('0.001');
+  const fallbackBaseFee = parseGwei('0.05');
   let baseFee = fallbackBaseFee;
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
-      const block = await provider.getBlock('latest');
+      const block = await publicClient.getBlock();
       baseFee = block.baseFeePerGas ?? fallbackBaseFee;
       break;
     } catch (err: any) {
@@ -107,7 +114,7 @@ async function baseFeeOverrides(provider: providers.Provider) {
   }
   return {
     maxPriorityFeePerGas: priority,
-    maxFeePerGas: baseFee.mul(2).add(priority),
+    maxFeePerGas: baseFee * 2n + priority,
   };
 }
 
@@ -146,12 +153,25 @@ const grantedMinters = new Set<string>();
 async function ensureMinter(tokenAddress: string, minterAddress: string) {
   const cacheKey = `${tokenAddress}:${minterAddress}`.toLowerCase();
   if (grantedMinters.has(cacheKey)) return;
-  const signer = await getBlueSigner();
-  const contract = new Contract(tokenAddress, DIAMONDS_ABI, signer);
-  const isMinter: boolean = await contract.minters(minterAddress);
+  const { publicClient, walletClient } = await getBlueClients();
+  const isMinter = await publicClient.readContract({
+    address: tokenAddress as `0x${string}`,
+    abi: DIAMONDS_ABI,
+    functionName: 'minters',
+    args: [minterAddress as `0x${string}`],
+  });
   if (!isMinter) {
-    const tx = await contract.setMinter(minterAddress, true, await baseFeeOverrides(signer.provider));
-    await tx.wait();
+    const hash = await walletClient.writeContract({
+      address: tokenAddress as `0x${string}`,
+      abi: DIAMONDS_ABI,
+      functionName: 'setMinter',
+      args: [minterAddress as `0x${string}`, true],
+      ...(await baseFeeOverrides(publicClient)),
+    });
+    const receipt = await publicClient.waitForTransactionReceipt({ hash });
+    if (receipt.status !== 'success') {
+      throw new Error(`setMinter reverted (${hash})`);
+    }
     console.log(`[diamonds] Granted minter to ${minterAddress}`);
   }
   grantedMinters.add(cacheKey);
@@ -163,37 +183,49 @@ async function ensureMinter(tokenAddress: string, minterAddress: string) {
  * Blue's key so claims never stall on Gas Manager config or outages.
  */
 async function mintDiamonds(tokenAddress: string, to: string, wholeDiamonds: number): Promise<string> {
-  const amountWei = utils.parseUnits(String(wholeDiamonds), 18);
+  const amountWei = parseUnits(String(wholeDiamonds), 18);
 
   if (getPaymasterRpcUrl()) {
     try {
       const { account } = await getBlueSmartAccount();
       await ensureMinter(tokenAddress, account.address);
-      const { txHash } = await mintDiamondsSponsored(tokenAddress, to, BigInt(amountWei.toString()));
+      const { txHash } = await mintDiamondsSponsored(tokenAddress, to, amountWei);
       return txHash;
     } catch (err: any) {
       console.error('[diamonds] Sponsored mint failed, falling back to owner mint:', err?.message ?? err);
     }
   }
 
-  const signer = await getBlueSigner();
-  const contract = new Contract(tokenAddress, DIAMONDS_ABI, signer);
-  const tx = await contract.mint(to, amountWei, await baseFeeOverrides(signer.provider));
-  const receipt = await tx.wait();
+  const { publicClient, walletClient } = await getBlueClients();
+  const hash = await walletClient.writeContract({
+    address: tokenAddress as `0x${string}`,
+    abi: DIAMONDS_ABI,
+    functionName: 'mint',
+    args: [to as `0x${string}`, amountWei],
+    ...(await baseFeeOverrides(publicClient)),
+  });
+  const receipt = await publicClient.waitForTransactionReceipt({ hash });
+  if (receipt.status !== 'success') {
+    throw new Error(`Owner mint reverted (${hash})`);
+  }
   return receipt.transactionHash;
 }
 
 // ── Blue p2p transfer (quests) ──
 
 async function transferFromBlue(tokenAddress: string, to: string, wholeDiamonds: number): Promise<string> {
-  const signer = await getBlueSigner();
-  const contract = new Contract(tokenAddress, DIAMONDS_ABI, signer);
-  const tx = await contract.transfer(
-    to,
-    utils.parseUnits(String(wholeDiamonds), 18),
-    await baseFeeOverrides(signer.provider),
-  );
-  const receipt = await tx.wait();
+  const { publicClient, walletClient } = await getBlueClients();
+  const hash = await walletClient.writeContract({
+    address: tokenAddress as `0x${string}`,
+    abi: DIAMONDS_ABI,
+    functionName: 'transfer',
+    args: [to as `0x${string}`, parseUnits(String(wholeDiamonds), 18)],
+    ...(await baseFeeOverrides(publicClient)),
+  });
+  const receipt = await publicClient.waitForTransactionReceipt({ hash });
+  if (receipt.status !== 'success') {
+    throw new Error(`Blue transfer reverted (${hash})`);
+  }
   return receipt.transactionHash;
 }
 

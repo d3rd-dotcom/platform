@@ -1,7 +1,8 @@
-import { providers, utils } from 'ethers';
+import { createPublicClient, http, parseUnits, parseEventLogs, parseAbi, type Chain, type TransactionReceipt } from 'viem';
+import { base, baseSepolia } from 'viem/chains';
 import { sqlQuery } from './db';
 import { getDiamondsTokenAddress } from './diamonds-onchain';
-import { getChainConfig, BURN_ADDRESS } from './chain-config';
+import { getChainConfig, resolveVerifiedRpcUrl, BURN_ADDRESS } from './chain-config';
 
 /**
  * Diamond ($BLUE) spending — real burns, server-verified.
@@ -13,20 +14,25 @@ import { getChainConfig, BURN_ADDRESS } from './chain-config';
  * chat AI call) should reserve the burn first with recordDiamondBurn and
  * release it with releaseDiamondBurn on failure, so the user's burn is never
  * consumed by a turn that produced nothing.
+ *
+ * Built on viem: ethers v5's node HTTP transport fails inside deployed Vercel
+ * lambdas ("missing response" on every RPC host), which made verification
+ * throw on every spend in production.
  */
 
 export const TX_HASH_PATTERN = /^0x[0-9a-fA-F]{64}$/;
 
-const ERC20_INTERFACE = new utils.Interface([
+const ERC20_EVENTS_ABI = parseAbi([
   'event Transfer(address indexed from, address indexed to, uint256 value)',
 ]);
 
-function getBurnProvider(): providers.JsonRpcProvider {
+async function getBurnClient() {
   const cfg = getChainConfig();
-  const rpcUrl = cfg.chainId === 8453
-    ? process.env.BASE_RPC_URL || cfg.rpcUrl
-    : cfg.rpcUrl;
-  return new providers.JsonRpcProvider(rpcUrl);
+  const chain: Chain = cfg.chainId === 84532 ? baseSepolia : base;
+  return createPublicClient({
+    chain,
+    transport: http(await resolveVerifiedRpcUrl()),
+  });
 }
 
 /**
@@ -45,28 +51,33 @@ export async function verifyDiamondsTransferTx(
   const tokenAddress = getDiamondsTokenAddress();
   if (!tokenAddress) return { ok: false, reason: 'token_not_configured' };
 
-  const provider = getBurnProvider();
-  const receipt = await provider
-    .waitForTransaction(txHash, 1, 30_000)
-    .catch(() => provider.getTransactionReceipt(txHash));
+  const client = await getBurnClient();
+  const hash = txHash as `0x${string}`;
+  let receipt: TransactionReceipt | null = await client
+    .waitForTransactionReceipt({ hash, confirmations: 1, timeout: 30_000 })
+    .catch(() => null);
+  if (!receipt) {
+    receipt = await client.getTransactionReceipt({ hash }).catch(() => null);
+  }
   if (!receipt) return { ok: false, reason: 'tx_not_found' };
-  if (receipt.status !== 1) return { ok: false, reason: 'tx_failed' };
+  if (receipt.status !== 'success') return { ok: false, reason: 'tx_failed' };
   if (receipt.from.toLowerCase() !== from.toLowerCase()) return { ok: false, reason: 'wrong_sender' };
 
-  const requiredAmount = utils.parseUnits(String(minWholeDiamonds), 18);
+  const requiredAmount = parseUnits(String(minWholeDiamonds), 18);
+  const transfers = parseEventLogs({
+    abi: ERC20_EVENTS_ABI,
+    eventName: 'Transfer',
+    logs: receipt.logs,
+    strict: false,
+  });
 
-  for (const log of receipt.logs) {
+  for (const log of transfers) {
     if (log.address.toLowerCase() !== tokenAddress.toLowerCase()) continue;
-    let parsed;
-    try {
-      parsed = ERC20_INTERFACE.parseLog(log);
-    } catch {
-      continue;
-    }
-    if (parsed.name !== 'Transfer') continue;
-    if (String(parsed.args.from).toLowerCase() !== from.toLowerCase()) continue;
-    if (String(parsed.args.to).toLowerCase() !== to.toLowerCase()) continue;
-    if (parsed.args.value.lt(requiredAmount)) continue;
+    const args = log.args as { from?: string; to?: string; value?: bigint };
+    if (!args.from || !args.to || typeof args.value !== 'bigint') continue;
+    if (args.from.toLowerCase() !== from.toLowerCase()) continue;
+    if (args.to.toLowerCase() !== to.toLowerCase()) continue;
+    if (args.value < requiredAmount) continue;
     return { ok: true };
   }
 

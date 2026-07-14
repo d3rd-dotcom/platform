@@ -15,6 +15,7 @@ import QuestForgeInline from './QuestForgeInline';
 import type { QuestForgeDraft, QuestForgeRequest } from './QuestForgeInline';
 import { sendUsdcOnBase, type Eip1193Provider } from '@/lib/usdc-base-transfer';
 import { sendDiamonds, sendDiamondsBurn } from '@/lib/diamonds-base-transfer';
+import { getChainConfig } from '@/lib/chain-config';
 import { broadcastPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
 
 const ProMembershipModal = dynamic(() => import('../pro-membership-modal/ProMembershipModal'), { ssr: false });
@@ -579,8 +580,13 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
     } catch (err) {
       setIsTyping(false);
       const code = (err as { code?: string | number })?.code;
+      const errMessage = (err as { message?: string })?.message ?? '';
       if (code === 'ACTION_REJECTED' || code === 4001) {
         addBlueMessage(`no burn, no message — each one costs ${SHARD_COST} diamonds. confirm it in your wallet when you're ready.`);
+      } else if (code === 'INSUFFICIENT_FUNDS' || /insufficient funds/i.test(errMessage)) {
+        // Burns are signed by the user's wallet, so the network fee comes
+        // from their ETH — an empty gas tank reads like a balance problem.
+        addBlueMessage(`your diamonds are there, but the burn needs a sliver of ${getChainConfig().chainName} ETH for the network fee. add a little and send it again.`);
       } else {
         openShardUpsell(SHARD_COST, 'chat');
       }

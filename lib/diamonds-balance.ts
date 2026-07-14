@@ -1,7 +1,8 @@
-import { Contract, providers, utils } from 'ethers';
-import { getDiamondsTokenAddress, getRpcUrl } from './chain-config';
+import { createPublicClient, http, formatUnits, parseAbi, type Chain } from 'viem';
+import { base, baseSepolia } from 'viem/chains';
+import { getDiamondsTokenAddress, getChainConfig, getRpcUrl } from './chain-config';
 
-const BALANCE_ABI = ['function balanceOf(address) view returns (uint256)'];
+const BALANCE_ABI = parseAbi(['function balanceOf(address) view returns (uint256)']);
 
 // Server routes (/api/me, /api/profile) read the balance on every call, so a
 // short cache keeps one RPC read per wallet per few seconds. Client callers
@@ -24,10 +25,21 @@ export async function fetchDiamondBalance(address: string): Promise<number | nul
   if (hit && Date.now() - hit.at < CACHE_TTL_MS) return hit.balance;
 
   try {
-    const provider = new providers.JsonRpcProvider(getRpcUrl());
-    const token = new Contract(tokenAddress, BALANCE_ABI, provider);
-    const raw = await token.balanceOf(address);
-    const balance = Math.floor(Number(utils.formatUnits(raw, 18)));
+    // viem (fetch transport): ethers v5 cannot make RPC calls from deployed
+    // Vercel lambdas, which silently pushed every caller onto the DB fallback.
+    const cfg = getChainConfig();
+    const chain: Chain = cfg.chainId === 84532 ? baseSepolia : base;
+    const client = createPublicClient({
+      chain,
+      transport: http(getRpcUrl()),
+    });
+    const raw = await client.readContract({
+      address: tokenAddress as `0x${string}`,
+      abi: BALANCE_ABI,
+      functionName: 'balanceOf',
+      args: [address as `0x${string}`],
+    });
+    const balance = Math.floor(Number(formatUnits(raw, 18)));
     balanceCache.set(key, { at: Date.now(), balance });
     return balance;
   } catch {

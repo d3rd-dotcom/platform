@@ -82,16 +82,23 @@ export async function getBlueSmartAccount(): Promise<{ account: SmartAccount; bu
   const owner = privateKeyToAccount(getBluePrivateKeyHex());
   const client = createPublicClient({ chain, transport: http(await getBaseRpcUrl()) });
   const account = await toCoinbaseSmartAccount({ client, owners: [owner], version: '1.1' });
+  // Alchemy's Gas Manager speaks ERC-7677: the policy rides in the paymaster
+  // context of pm_getPaymasterStubData/pm_getPaymasterData. Zero fee
+  // estimates get user operations rejected by the bundler, so estimate from
+  // the live chain instead.
+  const policyId = getAlchemyGasPolicyId();
   const bundlerClient = createBundlerClient({
     account,
     client,
     transport: http(paymasterUrl),
     paymaster: true,
+    ...(policyId ? { paymasterContext: { policyId } } : {}),
     userOperation: {
       estimateFeesPerGas: async () => {
+        const fees = await client.estimateFeesPerGas();
         return {
-          maxFeePerGas: 0n,
-          maxPriorityFeePerGas: 0n,
+          maxFeePerGas: fees.maxFeePerGas,
+          maxPriorityFeePerGas: fees.maxPriorityFeePerGas,
         };
       },
     },
@@ -111,7 +118,6 @@ export async function mintDiamondsSponsored(
   amountWei: bigint,
 ): Promise<{ txHash: string; smartAccountAddress: string }> {
   const { account, bundlerClient } = await getBlueSmartAccount();
-  const policyId = getAlchemyGasPolicyId();
 
   const hash = await bundlerClient.sendUserOperation({
     calls: [
@@ -124,11 +130,6 @@ export async function mintDiamondsSponsored(
         }),
       },
     ],
-    ...(policyId ? {
-      alchemy: {
-        gasPolicyId: policyId,
-      },
-    } : {}),
   });
 
   const receipt = await bundlerClient.waitForUserOperationReceipt({ hash });
