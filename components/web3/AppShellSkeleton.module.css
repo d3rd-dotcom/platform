@@ -371,6 +371,16 @@
     display: none;
   }
 
+  /* Mirrors TopNavigation's .mobileActions: the desktop button row
+     collapses to a single icon on small screens. */
+  .rightNav {
+    gap: 0;
+  }
+
+  .rightNav > *:not(:first-child) {
+    display: none;
+  }
+
   .content {
     padding: 20px;
   }
