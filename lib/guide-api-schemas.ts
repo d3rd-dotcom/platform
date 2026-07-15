@@ -273,6 +273,10 @@ export const frontierGuidesResponseSchema = z.object({
     topicTitle: z.string(),
     status: guideStatusSchema,
     prereqCount: z.number(),
+    summary: z.string().nullable(),
+    estimatedMinutes: z.number().nullable(),
+    unlockedBy: z.array(z.string()),
+    lastUnlockAt: z.string().nullable(),
   })),
 });
 export type FrontierGuidesResponse = z.infer<typeof frontierGuidesResponseSchema>;

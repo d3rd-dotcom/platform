@@ -81,6 +81,14 @@ export interface GuideLink {
 /** A frontier guide: not yet completed, all direct (published) prereqs done. */
 export interface FrontierGuide extends GuideLink {
   prereqCount: number;
+  summary: string | null;
+  estimatedMinutes: number | null;
+  /** Titles of the published prereqs the caller completed, most recent first.
+      On the frontier every published prereq is completed, so this is the full
+      published prereq list — empty for primitives. */
+  unlockedBy: string[];
+  /** Most recent completion among those prereqs; null for primitives. */
+  lastUnlockAt: string | null;
 }
 
 export interface WalkthroughNode extends GuideLink {
@@ -476,12 +484,30 @@ export async function getFrontierGuides(userId: string): Promise<FrontierGuide[]
        g.slug,
        g.topic_title AS "topicTitle",
        g.status,
+       g.summary,
+       g.estimated_minutes AS "estimatedMinutes",
        (
          SELECT COUNT(*)::int
          FROM guide_edges pe
          JOIN guides pg ON pg.id = pe.prereq_id AND pg.status = 'published'
          WHERE pe.guide_id = g.id
-       ) AS "prereqCount"
+       ) AS "prereqCount",
+       COALESCE((
+         SELECT array_agg(pg2.topic_title ORDER BY gp3.completed_at DESC)
+         FROM guide_edges pe2
+         JOIN guides pg2 ON pg2.id = pe2.prereq_id AND pg2.status = 'published'
+         JOIN guide_progress gp3
+           ON gp3.guide_id = pe2.prereq_id AND gp3.user_id = :userId
+         WHERE pe2.guide_id = g.id
+       ), ARRAY[]::varchar[]) AS "unlockedBy",
+       (
+         SELECT MAX(gp4.completed_at)
+         FROM guide_edges pe3
+         JOIN guides pg3 ON pg3.id = pe3.prereq_id AND pg3.status = 'published'
+         JOIN guide_progress gp4
+           ON gp4.guide_id = pe3.prereq_id AND gp4.user_id = :userId
+         WHERE pe3.guide_id = g.id
+       ) AS "lastUnlockAt"
      FROM guides g
      WHERE g.status = 'published'
        AND NOT EXISTS (

@@ -702,8 +702,117 @@
     0 6px 3px rgba(0, 0, 0, 0.22);
 }
 
-.statsInsightCard {
+/* Blue recommends — the frontier guide Blue would start next, with the
+   completed prereqs that unlocked it as the visible reason. */
+.recommendInsightCard {
   --insight-color: var(--color-primary);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.recommendMain {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  text-decoration: none;
+  text-align: center;
+}
+
+.recommendGuideTitle {
+  font-family: var(--font-secondary);
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--color-text-dark);
+  transition: color var(--duration-fast) var(--ease-default);
+}
+
+.recommendMain:hover .recommendGuideTitle {
+  color: var(--insight-color);
+}
+
+.recommendSummary {
+  font-family: var(--font-primary);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+  max-width: 300px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.recommendCta {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklch, var(--insight-color) 40%, transparent);
+  color: var(--insight-color);
+  background: color-mix(in oklch, var(--insight-color) 8%, transparent);
+  transition: background var(--duration-fast) var(--ease-default);
+}
+
+.recommendMain:hover .recommendCta {
+  background: color-mix(in oklch, var(--insight-color) 14%, transparent);
+}
+
+.recommendReason {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: auto;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border-subtle);
+  background: color-mix(in oklch, var(--color-surface-base) 60%, transparent);
+}
+
+.recommendAvatar {
+  flex-shrink: 0;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-subtle);
+  object-fit: cover;
+}
+
+.recommendReasonText {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--color-text-soft);
+}
+
+.recommendAlso {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.recommendAlsoLink {
+  color: var(--insight-color);
+  text-decoration: none;
+}
+
+.recommendAlsoLink:hover {
+  text-decoration: underline;
+}
+
+.recommendEmpty {
+  margin: auto 0;
+  font-family: var(--font-primary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  text-align: center;
 }
 
 .planningInsightCard {
@@ -720,17 +829,6 @@
   line-height: 1.2;
   color: var(--color-text-dark, #141414);
   text-align: center;
-}
-
-.statsChart {
-  /* Fill the whole card, all four edges, so the chart runs full-height rather
-     than parked beneath the title. The card's overflow:hidden + radius clip the
-     corners; the "My Stats" title sits above it via z-index. Transparent so it
-     matches the card background instead of tinting it. */
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  background: transparent;
 }
 
 .planningHeader {

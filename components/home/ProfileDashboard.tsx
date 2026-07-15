@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
-import { SealCheck } from '@phosphor-icons/react';
+import { NotePencil, SealCheck } from '@phosphor-icons/react';
 
 import AvatarSelectorModal from '@/components/avatar-selector/AvatarSelectorModal';
 import UsernameChangeModal from '@/components/username-change/UsernameChangeModal';
@@ -23,6 +23,7 @@ export default function ProfileDashboard() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [streak, setStreak] = useState(0);
   const [verifierLevel, setVerifierLevel] = useState<number | null>(null);
+  const [guidesDone, setGuidesDone] = useState<number | null>(null);
   const [editingAvatar, setEditingAvatar] = useState(false);
   const [editingUsername, setEditingUsername] = useState(false);
   const filledStreakDays = Math.min(Math.max(streak, 0), 7);
@@ -72,7 +73,29 @@ export default function ProfileDashboard() {
         }
       } catch { /* non-fatal — falls back to the Learner badge */ }
     })();
+
+    // Blue's notes: what she can honestly say she remembers about this
+    // learner, backed by real completion data.
+    (async () => {
+      try {
+        const res = await fetch('/api/guides/progress/stats', {
+          cache: 'no-store',
+          headers: await authHeaders(),
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (typeof data?.completedGuides === 'number') setGuidesDone(data.completedGuides);
+      } catch { /* non-fatal — the badge simply doesn't render */ }
+    })();
   }, [ready, authenticated, loadMe, authHeaders]);
+
+  const memoryNote = (() => {
+    if (guidesDone === null || guidesDone <= 0) return null;
+    const guidesPart = `${guidesDone} guide${guidesDone === 1 ? '' : 's'} finished`;
+    return streak > 0
+      ? `Blue remembers: ${guidesPart}, ${streak}-day streak.`
+      : `Blue remembers: ${guidesPart}.`;
+  })();
 
   return (
     <section className={styles.panel} onMouseEnter={() => play('soft-hover')}>
@@ -103,6 +126,12 @@ export default function ProfileDashboard() {
             </span>
           ) : (
             <span className={styles.learnerBadge}>Learner</span>
+          )}
+          {memoryNote && (
+            <span className={`${styles.learnerBadge} ${styles.memoryBadge}`} title={memoryNote}>
+              <NotePencil size={12} weight="fill" aria-hidden="true" />
+              Blue&apos;s notes
+            </span>
           )}
         </div>
         <div className={styles.streak} aria-label={`Current streak: ${streak} days`}>

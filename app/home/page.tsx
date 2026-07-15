@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -14,7 +14,6 @@ import EmptyCourseStudioFolder from '@/components/home/EmptyCourseStudioFolder';
 import ProfileDashboard from '@/components/home/ProfileDashboard';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
 import FieldNotesSheet from '@/components/home/FieldNotesSheet';
-import StatsChart from '@/components/home/StatsChart';
 import FolderCardWrapper from '@/components/home/FolderCardWrapper';
 import HomeLeaderboard from '@/components/home/HomeLeaderboard';
 import FeatureTour from '@/components/feature-tour/FeatureTour';
@@ -250,8 +249,10 @@ export default function HomePage() {
     })();
   }, [learnOnly, ready, authenticated, getAccessToken]);
 
+  // Fetched in both views: the learn view's "Next unlocks" row and the
+  // dashboard's Blue recommends card share this frontier.
   useEffect(() => {
-    if (!learnOnly || !ready || !authenticated) return;
+    if (!ready || !authenticated) return;
     (async () => {
       try {
         const token = await getAccessToken();
@@ -263,7 +264,7 @@ export default function HomePage() {
         }
       } catch {}
     })();
-  }, [learnOnly, ready, authenticated, getAccessToken]);
+  }, [ready, authenticated, getAccessToken]);
 
   const authHeaders = useCallback(async (): Promise<HeadersInit> => {
     const token = await getAccessToken();
@@ -382,6 +383,35 @@ export default function HomePage() {
   const activeFeaturedPage =
     featuredPageCount > 0 ? ((featuredPage % featuredPageCount) + featuredPageCount) % featuredPageCount : 0;
   const featuredGuides = featuredGroups[activeFeaturedPage] ?? [];
+
+  // Blue's pick: the frontier guide unlocked most recently, so the
+  // recommendation follows the learner's own momentum. Primitives (no
+  // prereqs) come last as fresh entry points.
+  const recommendedGuide = useMemo(() => {
+    if (!frontierGuides || frontierGuides.length === 0) return null;
+    return [...frontierGuides].sort((a, b) => {
+      const ta = a.lastUnlockAt ? Date.parse(a.lastUnlockAt) : 0;
+      const tb = b.lastUnlockAt ? Date.parse(b.lastUnlockAt) : 0;
+      if (tb !== ta) return tb - ta;
+      if (b.prereqCount !== a.prereqCount) return b.prereqCount - a.prereqCount;
+      return a.topicTitle.localeCompare(b.topicTitle);
+    })[0];
+  }, [frontierGuides]);
+
+  const recommendRunnersUp = useMemo(() => {
+    if (!frontierGuides || !recommendedGuide) return [];
+    return frontierGuides.filter((g) => g.id !== recommendedGuide.id).slice(0, 2);
+  }, [frontierGuides, recommendedGuide]);
+
+  // The visible reason is derived from real completions only — never invented.
+  const recommendReason = (() => {
+    if (!recommendedGuide) return '';
+    const done = recommendedGuide.unlockedBy;
+    if (done.length === 0) return 'No prerequisites. A clean place to begin.';
+    if (done.length === 1) return `You finished ${done[0]}. That unlocked this.`;
+    if (done.length === 2) return `You finished ${done[0]} and ${done[1]}. Together they unlocked this.`;
+    return `You finished ${done[0]} and ${done.length - 1} others. Together they unlocked this.`;
+  })();
 
   return (
     <div className={`${styles.layout} ${learnOnly ? styles.learnLayout : ''}`}>
@@ -793,11 +823,57 @@ export default function HomePage() {
       </div>
       {!learnOnly && (
         <section className={styles.dashboardInsights} aria-label="Learning insights">
-          <article className={`${styles.insightCard} ${styles.statsInsightCard}`}>
-            <h2 className={styles.insightTitle}>My Stats</h2>
-            <div className={styles.statsChart} aria-label="Your field notes, missions, and balloons popped over the last 30 days">
-              <StatsChart />
-            </div>
+          <article className={`${styles.insightCard} ${styles.recommendInsightCard}`}>
+            <h2 className={styles.insightTitle}>Blue recommends</h2>
+            {recommendedGuide ? (
+              <>
+                <Link
+                  href={`/learn/guides/${recommendedGuide.slug}`}
+                  className={styles.recommendMain}
+                  onMouseEnter={() => play('soft-hover')}
+                  onClick={() => play('click')}
+                >
+                  <span className={styles.recommendGuideTitle}>{recommendedGuide.topicTitle}</span>
+                  {recommendedGuide.summary && (
+                    <span className={styles.recommendSummary}>{recommendedGuide.summary}</span>
+                  )}
+                  <span className={styles.recommendCta}>
+                    {recommendedGuide.estimatedMinutes
+                      ? `Start this guide · ${recommendedGuide.estimatedMinutes} min`
+                      : 'Start this guide'}
+                  </span>
+                </Link>
+                <div className={styles.recommendReason}>
+                  <Image
+                    src="/blue/blue-home.png"
+                    alt="Blue"
+                    width={30}
+                    height={30}
+                    className={styles.recommendAvatar}
+                  />
+                  <p className={styles.recommendReasonText}>{recommendReason}</p>
+                </div>
+                {recommendRunnersUp.length > 0 && (
+                  <p className={styles.recommendAlso}>
+                    Also open:{' '}
+                    {recommendRunnersUp.map((g, i) => (
+                      <React.Fragment key={g.id}>
+                        {i > 0 && ' · '}
+                        <Link href={`/learn/guides/${g.slug}`} className={styles.recommendAlsoLink}>
+                          {g.topicTitle}
+                        </Link>
+                      </React.Fragment>
+                    ))}
+                  </p>
+                )}
+              </>
+            ) : (
+              <p className={styles.recommendEmpty}>
+                {authenticated
+                  ? 'Nothing to unlock right now. Blue will chart your next step when a new guide opens.'
+                  : 'Sign in and finish a guide. Blue will chart your next step here.'}
+              </p>
+            )}
           </article>
 
           <Link

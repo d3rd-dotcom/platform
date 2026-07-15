@@ -100,6 +100,16 @@
   color: #eafff4;
 }
 
+/* Blue's running notes on the learner — hover for what she remembers. */
+.memoryBadge {
+  border-color: color-mix(in oklch, var(--color-accent) 60%, transparent);
+  background: color-mix(in oklch, var(--color-accent) 26%, rgba(0, 0, 0, 0.3));
+  color: #f1eaff;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  cursor: help;
+}
+
 .nameButton {
   overflow: hidden;
   padding: 0;
