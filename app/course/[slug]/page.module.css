@@ -1,23 +1,21 @@
+/* Custom-course view-specific styles — flat technical surface matching the
+   Course Studio conventions and app/shadow-work (course-design-parity skill):
+   flat surfaces, hairline borders, 6-8px radii, calm accent washes,
+   sentence case, both themes. */
+
 /* ── Shared: layout for non-VIP views (academy, gate, loading, not-found) ── */
 
 .layout {
   position: relative;
   margin-left: var(--sidebar-width, 265px);
   min-height: 100vh;
-  background-color: var(--color-background, #ffffff);
-  background-image:
-    linear-gradient(to right, color-mix(in oklch, var(--color-primary) 8%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in oklch, var(--color-primary) 8%, transparent) 1px, transparent 1px);
-  background-size: 32px 32px;
-  background-position: -1px -1px;
+  background-color: var(--color-background);
+  color: var(--color-text-dark);
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 :global([data-theme="dark"]) .layout {
-  background-color: #0d0e16;
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-color: var(--color-background);
 }
 
 .main {
@@ -44,15 +42,16 @@
 }
 
 .stateHeading {
-  font-family: var(--font-secondary);
+  font-family: var(--type-font-heading);
   font-size: 24px;
-  font-weight: 800;
+  font-weight: var(--type-weight-bold);
+  letter-spacing: var(--type-track-heading);
   color: var(--color-text-dark);
   margin: 0;
 }
 
 .stateText {
-  font-family: var(--font-primary);
+  font-family: var(--type-font-body);
   font-size: 14px;
   color: var(--color-text-muted);
   margin: 0;
@@ -71,26 +70,27 @@
   to { transform: rotate(360deg); }
 }
 
+/* Pill CTA link — mirrors the canonical CtaButton silhouette. */
 .backBtn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 10px 20px;
   font-size: 0.8125rem;
-  font-weight: 700;
+  font-weight: var(--type-weight-bold);
   font-family: var(--font-button);
   border-radius: 999px;
   border: 2px solid var(--color-primary);
   color: var(--color-primary);
   background: transparent;
   text-decoration: none;
-  transition: all 0.12s ease;
+  transition: background 0.12s ease, color 0.12s ease;
   margin-top: 8px;
 }
 
 .backBtn:hover {
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-on-action);
 }
 
 /* ── Gate screen ── */
@@ -104,52 +104,43 @@
   margin: 48px auto;
   max-width: 420px;
   text-align: center;
-  background: var(--color-surface-base);
-  border: 2px solid var(--color-primary-hover);
-  border-radius: 20px;
-  box-shadow:
-    0 6px 0 var(--color-primary),
-    0 0px 10px rgba(0, 0, 0, 0.14);
-}
-
-:global([data-theme="dark"]) .gateCard {
-  background: var(--color-surface-2);
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow:
-    0 6px 0 #000000,
-    0 0px 10px rgba(0, 0, 0, 0.14);
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 12px;
 }
 
 .gateImage {
   width: 140px;
   height: 140px;
-  border-radius: 20px;
-  border: 2px solid var(--color-primary-hover);
+  border-radius: 8px;
+  border: 1px solid var(--color-border-subtle);
   object-fit: cover;
 }
 
 .gateTitle {
-  font-family: var(--font-secondary);
+  font-family: var(--type-font-heading);
   font-size: 22px;
-  font-weight: 800;
+  font-weight: var(--type-weight-bold);
+  letter-spacing: var(--type-track-heading);
   color: var(--color-text-dark);
   margin: 0;
 }
 
 .gateDesc {
-  font-family: var(--font-primary);
+  font-family: var(--type-font-body);
   font-size: 14px;
   color: var(--color-text-muted);
-  line-height: 1.6;
+  line-height: var(--type-lh-body);
   margin: 0;
 }
 
 /* ── Academy course styles ── */
 
 .backLink {
-  font-family: var(--font-primary);
-  font-size: 13px;
-  font-weight: 600;
+  font-family: var(--type-font-label);
+  font-size: 12px;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: 0.02em;
   color: var(--color-text-muted);
   text-decoration: none;
   display: inline-flex;
@@ -172,36 +163,39 @@
 }
 
 .courseTitle {
-  font-family: var(--font-secondary);
+  font-family: var(--type-font-heading);
   font-size: 28px;
-  font-weight: 800;
+  font-weight: var(--type-weight-bold);
+  letter-spacing: var(--type-track-display);
   color: var(--color-text-dark);
   margin: 0;
   line-height: 1.2;
 }
 
 .courseSummary {
-  font-family: var(--font-primary);
+  font-family: var(--type-font-body);
   font-size: 15px;
   color: var(--color-text-muted);
-  line-height: 1.6;
+  line-height: var(--type-lh-body);
   margin: 0;
 }
 
+/* State badge — primary-tinted (studio Ready/Empty pattern). */
 .memberBadge {
   display: inline-flex;
   align-items: center;
   align-self: flex-start;
-  font-family: var(--font-mono);
+  height: 20px;
+  padding: 0 8px;
+  border-radius: 5px;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 32%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  color: var(--color-primary);
+  font-family: var(--type-font-label);
   font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 5px 12px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #5168FF, #9b7ed9);
-  color: #ffffff;
-  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: 0.02em;
+  line-height: 1;
 }
 
 .chapterList {
@@ -211,20 +205,15 @@
 }
 
 .chapterCard {
-  background: var(--color-surface-base);
-  border: 1.5px solid var(--color-border-subtle);
-  border-radius: 12px;
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 8px;
   overflow: hidden;
-  transition: border-color 0.15s ease;
-}
-
-:global([data-theme="dark"]) .chapterCard {
-  background: var(--color-surface-2);
-  border-color: rgba(255, 255, 255, 0.08);
+  transition: border-color 0.12s ease;
 }
 
 .chapterCard:hover {
-  border-color: var(--color-primary);
+  border-color: color-mix(in srgb, var(--color-primary) 36%, var(--color-border-subtle));
 }
 
 .chapterHeader {
@@ -232,7 +221,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 14px 18px;
+  padding: 13px 16px;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -247,16 +236,17 @@
 }
 
 .chapterTitle {
-  font-family: var(--font-secondary);
+  font-family: var(--type-font-heading);
   font-size: 15px;
-  font-weight: 700;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-heading);
   color: var(--color-text-dark);
 }
 
 .chapterToggle {
-  font-family: var(--font-mono);
-  font-size: 18px;
-  font-weight: 700;
+  font-family: var(--type-font-code);
+  font-size: 16px;
+  font-weight: var(--type-weight-semibold);
   color: var(--color-text-muted);
   line-height: 1;
 }
@@ -265,39 +255,38 @@
   border-top: 1px solid var(--color-border-subtle);
 }
 
-:global([data-theme="dark"]) .lessonList {
-  border-top-color: rgba(255, 255, 255, 0.06);
-}
-
 .lessonItem {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 18px 10px 26px;
+  padding: 10px 16px 10px 24px;
   transition: background 0.12s ease;
 }
 
 .lessonItem:hover {
-  background: color-mix(in srgb, var(--color-primary) 3%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 4%, transparent);
 }
 
 .lessonType {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 2px 8px;
-  border-radius: 4px;
-  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 7px;
+  border-radius: 5px;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 32%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
   color: var(--color-primary);
+  font-family: var(--type-font-code);
+  font-size: 10px;
+  font-weight: var(--type-weight-semibold);
+  line-height: 1;
   flex-shrink: 0;
 }
 
 .lessonTitle {
-  font-family: var(--font-primary);
+  font-family: var(--type-font-body);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: var(--type-weight-medium);
   color: var(--color-text-dark);
 }
 
@@ -326,7 +315,7 @@
 }
 
 /* ═══════════════════════════════════════════════ */
-/* VIP course — task cards (matches CoursePreview) */
+/* VIP course — task cards (mirror WeekTasksView)  */
 /* ═══════════════════════════════════════════════ */
 
 .taskList {
@@ -336,27 +325,26 @@
 }
 
 /* Wrapper card — the header button and (when expanded) the content pane
-   both live inside this so the accordion reads as one continuous card. */
+   both live inside this so the accordion reads as one continuous card.
+   Flat surface with a calm per-task accent wash on hover / open. */
 .taskCard {
   width: 100%;
-  border-radius: 14px;
+  border-radius: 8px;
   overflow: hidden;
-  background: color-mix(in srgb, var(--task-accent, #6C5CE7) 7%, #ffffff);
-  border: 1px solid color-mix(in srgb, var(--task-accent, #6C5CE7) 22%, rgba(26, 29, 51, 0.06));
-  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
-  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border-subtle);
+  transition: background 0.12s ease, border-color 0.12s ease;
 }
 
 .taskCard:hover {
-  background: color-mix(in srgb, var(--task-accent, #6C5CE7) 11%, #ffffff);
-  border-color: color-mix(in srgb, var(--task-accent, #6C5CE7) 38%, rgba(26, 29, 51, 0.06));
-  box-shadow: 0 4px 16px color-mix(in srgb, var(--task-accent, #6C5CE7) 20%, transparent);
+  background: color-mix(in srgb, var(--task-accent, #5168FF) 4%, var(--color-surface-1));
+  border-color: color-mix(in srgb, var(--task-accent, #5168FF) 36%, var(--color-border-subtle));
 }
 
-.taskCardActive {
-  background: color-mix(in srgb, var(--task-accent, #6C5CE7) 14%, #ffffff) !important;
-  border-color: var(--task-accent, #6C5CE7) !important;
-  box-shadow: 0 4px 16px color-mix(in srgb, var(--task-accent, #6C5CE7) 25%, transparent) !important;
+.taskCardActive,
+.taskCardActive:hover {
+  background: color-mix(in srgb, var(--task-accent, #5168FF) 8%, var(--color-surface-1));
+  border-color: var(--task-accent, #5168FF);
 }
 
 .taskCardComplete {
@@ -365,91 +353,43 @@
 
 .taskAccent {
   width: 3px;
-  height: 28px;
+  height: 26px;
   border-radius: 999px;
   flex-shrink: 0;
   opacity: 0.85;
 }
 
+/* Accent tile — 26px bordered tile with a flat accent wash (studio rowIcon). */
 .taskArtwork {
-  width: 40px;
-  height: 40px;
+  width: 26px;
+  height: 26px;
   position: relative;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-subtle);
   flex-shrink: 0;
-  background:
-    linear-gradient(135deg,
-      color-mix(in srgb, var(--task-accent, #6C5CE7) 68%, #0f172a 32%) 0%,
-      var(--task-accent, #6C5CE7) 48%,
-      color-mix(in srgb, var(--task-accent, #6C5CE7) 42%, #ffffff 58%) 100%);
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--task-accent, #6C5CE7) 28%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.28),
-    0 4px 10px color-mix(in srgb, var(--task-accent, #6C5CE7) 22%, transparent);
+  background: color-mix(in srgb, var(--task-accent, #5168FF) 10%, var(--color-surface-base));
 }
 
-.taskArtworkAurora {
-  background-image:
-    radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.42), transparent 28%),
-    linear-gradient(135deg,
-      color-mix(in srgb, var(--task-accent, #6C5CE7) 68%, #0f172a 32%) 0%,
-      var(--task-accent, #6C5CE7) 48%,
-      color-mix(in srgb, var(--task-accent, #6C5CE7) 42%, #ffffff 58%) 100%);
-}
-
-.taskArtworkSunrise {
-  background-image:
-    radial-gradient(circle at 75% 24%, rgba(255, 255, 255, 0.52), transparent 22%),
-    linear-gradient(140deg,
-      color-mix(in srgb, var(--task-accent, #6C5CE7) 70%, #0f172a 30%) 0%,
-      var(--task-accent, #6C5CE7) 50%,
-      color-mix(in srgb, var(--task-accent, #6C5CE7) 38%, #ffffff 62%) 100%);
-}
-
-.taskArtworkOrbit {
-  background-image:
-    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.22), transparent 28%),
-    linear-gradient(135deg,
-      color-mix(in srgb, var(--task-accent, #6C5CE7) 60%, #0f172a 40%) 0%,
-      var(--task-accent, #6C5CE7) 52%,
-      color-mix(in srgb, var(--task-accent, #6C5CE7) 46%, #ffffff 54%) 100%);
-}
-
-.taskArtworkBloom {
-  background-image:
-    radial-gradient(circle at 24% 22%, rgba(255, 255, 255, 0.46), transparent 26%),
-    linear-gradient(135deg,
-      color-mix(in srgb, var(--task-accent, #6C5CE7) 72%, #1a1336 28%) 0%,
-      var(--task-accent, #6C5CE7) 50%,
-      color-mix(in srgb, var(--task-accent, #6C5CE7) 35%, #ffffff 65%) 100%);
-}
-
-.taskArtworkRibbon {
-  background-image:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.18), transparent 48%),
-    linear-gradient(135deg,
-      color-mix(in srgb, var(--task-accent, #6C5CE7) 65%, #0f172a 35%) 0%,
-      var(--task-accent, #6C5CE7) 50%,
-      color-mix(in srgb, var(--task-accent, #6C5CE7) 40%, #ffffff 60%) 100%);
-}
-
+/* Variant classes kept for the stored per-task art keys — all resolve to the
+   same flat wash in the flat design language. */
+.taskArtworkAurora,
+.taskArtworkSunrise,
+.taskArtworkOrbit,
+.taskArtworkBloom,
+.taskArtworkRibbon,
 .taskArtworkPrism {
-  background-image:
-    radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.38), transparent 32%),
-    linear-gradient(150deg,
-      color-mix(in srgb, var(--task-accent, #6C5CE7) 72%, #0f0a1e 28%) 0%,
-      var(--task-accent, #6C5CE7) 48%,
-      color-mix(in srgb, var(--task-accent, #6C5CE7) 36%, #f0f0ff 64%) 100%);
+  background: color-mix(in srgb, var(--task-accent, #5168FF) 10%, var(--color-surface-base));
 }
 
 .taskTitle {
   flex: 1;
-  font-family: var(--font-secondary);
-  font-size: 15px;
-  font-weight: 700;
-  color: #1A1D33;
-  line-height: 1.2;
+  font-family: var(--type-font-heading);
+  font-size: 14px;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-heading);
+  color: var(--color-text-dark);
+  line-height: var(--type-lh-snug);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -464,66 +404,62 @@
 }
 
 .taskCheckDone {
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #22C55E;
-  color: #FFFFFF;
+  background: var(--color-positive);
+  color: var(--color-on-positive);
   border: none;
-  border-radius: 50%;
+  border-radius: 6px;
   flex-shrink: 0;
 }
 
+.taskCheckDone svg {
+  width: 13px;
+  height: 13px;
+}
+
 .taskCheckEmpty {
-  width: 28px;
-  height: 28px;
-  border: 2px solid rgba(26, 29, 51, 0.38);
-  background: rgba(26, 29, 51, 0.04);
-  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-surface-base);
+  border-radius: 6px;
   flex-shrink: 0;
 }
 
 .emptyText {
+  font-family: var(--type-font-body);
   font-size: 0.75rem;
   color: var(--color-text-faint);
   text-align: center;
   padding: 24px;
 }
 
-/* ── Detail card (right panel) ── */
-
-.rightPanelReader {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 4px 0 48px;
-}
-
-/* Chrome comes from the shared .popupCard wrapper (matches home GlobalChat) */
-
+/* ── Accordion header + expanded content ── */
 
 .detailCardHeader {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
+  gap: 10px;
+  padding: 12px 14px;
   background: none;
   border: none;
   cursor: pointer;
   text-align: left;
   font-family: inherit;
-  transition: background 0.15s ease;
+  transition: background 0.12s ease;
 }
 
 .detailCardHeader:hover {
-  background: rgba(26, 29, 51, 0.02);
+  background: color-mix(in srgb, var(--color-text-dark) 3%, transparent);
 }
 
 .expandArrow {
-  color: rgba(26, 29, 51, 0.6);
+  color: var(--color-text-faint);
   flex-shrink: 0;
   transition: transform 0.2s ease;
 }
@@ -533,8 +469,8 @@
 }
 
 .detailCardContent {
-  padding: 14px 18px 18px;
-  border-top: 1px solid rgba(26, 29, 51, 0.06);
+  padding: 14px 16px 16px;
+  border-top: 1px solid var(--color-border-subtle);
   animation: slideDown 0.2s ease;
 }
 
@@ -552,40 +488,29 @@
   border-top: 1px solid var(--color-border-subtle);
 }
 
-.rightPanelEmpty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  color: var(--color-text-faint);
-  font-size: 0.8125rem;
-  text-align: center;
-}
-
 /* ── Completion button ── */
 
 .completeBtn {
-  padding: 6px 14px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  border-radius: 6px;
+  padding: 7px 14px;
+  font-family: var(--type-font-label);
+  font-size: 12px;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: 0.02em;
+  border-radius: 7px;
   border: 1px solid var(--color-primary);
   color: var(--color-primary);
   background: transparent;
   cursor: pointer;
-  transition: all 0.12s ease;
-  font-family: var(--font-mono);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  transition: background 0.12s ease;
 }
 
 .completeBtn:hover {
-  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 6%, transparent);
 }
 
 .completeBtnDone {
-  border-color: #22c55e;
-  color: #22c55e;
+  border-color: var(--color-positive);
+  color: var(--color-positive);
   cursor: default;
   opacity: 0.6;
 }
@@ -599,17 +524,17 @@
 }
 
 .sealBtn {
-  padding: 12px 28px;
-  font-size: 0.875rem;
-  font-weight: 700;
-  border-radius: 10px;
+  padding: 11px 26px;
+  font-family: var(--type-font-label);
+  font-size: 13px;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: 0.02em;
+  border-radius: 8px;
   border: none;
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  color: #fff;
+  background: var(--color-positive);
+  color: var(--color-on-positive);
   cursor: pointer;
   transition: opacity 0.12s ease;
-  font-family: var(--font-mono);
-  letter-spacing: 0.03em;
 }
 
 .sealBtn:hover:not(:disabled) {
@@ -627,53 +552,43 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  color: #22c55e;
-  font-weight: 700;
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  color: var(--color-positive);
+  font-family: var(--type-font-label);
+  font-size: 12px;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: 0.02em;
 }
 
-/* ── Dark mode overrides for task / detail cards ── */
+/* ── Dark mode — task / detail cards ── */
 
-:global([data-theme="dark"]) .taskTitle {
-  color: #f0f1fa;
+:global([data-theme="dark"]) .taskCard:hover {
+  background: color-mix(in srgb, var(--task-accent, #5168FF) 9%, var(--color-surface-1));
+  border-color: color-mix(in srgb, var(--task-accent, #5168FF) 42%, var(--color-border-subtle));
+}
+
+:global([data-theme="dark"]) .taskCardActive,
+:global([data-theme="dark"]) .taskCardActive:hover {
+  background: color-mix(in srgb, var(--task-accent, #5168FF) 15%, var(--color-surface-1));
+  border-color: var(--task-accent, #5168FF);
+}
+
+:global([data-theme="dark"]) .taskArtwork,
+:global([data-theme="dark"]) .taskArtworkAurora,
+:global([data-theme="dark"]) .taskArtworkSunrise,
+:global([data-theme="dark"]) .taskArtworkOrbit,
+:global([data-theme="dark"]) .taskArtworkBloom,
+:global([data-theme="dark"]) .taskArtworkRibbon,
+:global([data-theme="dark"]) .taskArtworkPrism {
+  background: color-mix(in srgb, var(--task-accent, #5168FF) 18%, var(--color-surface-1));
 }
 
 :global([data-theme="dark"]) .taskCheckEmpty {
-  border-color: rgba(240, 241, 250, 0.3);
-  background: rgba(240, 241, 250, 0.06);
-}
-
-:global([data-theme="dark"]) .taskCard {
-  background: color-mix(in srgb, var(--task-accent, #6C5CE7) 12%, #13141f);
-  border-color: color-mix(in srgb, var(--task-accent, #6C5CE7) 22%, rgba(240, 241, 250, 0.06));
-}
-
-:global([data-theme="dark"]) .taskCard:hover {
-  background: color-mix(in srgb, var(--task-accent, #6C5CE7) 18%, #13141f);
-}
-
-:global([data-theme="dark"]) .taskCardActive {
-  background: color-mix(in srgb, var(--task-accent, #6C5CE7) 22%, #13141f) !important;
-  border-color: var(--task-accent, #6C5CE7) !important;
-}
-
-:global([data-theme="dark"]) .detailCardContent {
-  border-top-color: rgba(255, 255, 255, 0.06);
+  border-color: var(--color-border-strong);
+  background: var(--color-surface-1);
 }
 
 :global([data-theme="dark"]) .detailCardHeader:hover {
   background: rgba(255, 255, 255, 0.03);
-}
-
-:global([data-theme="dark"]) .expandArrow {
-  color: rgba(227, 225, 238, 0.35);
-}
-
-:global([data-theme="dark"]) .rightPanelEmpty {
-  color: var(--color-text-faint);
 }
 
 /* ── Confirmation modal ── */
@@ -696,11 +611,11 @@
 }
 
 .confirmModal {
-  background: #ffffff;
-  border-radius: 16px;
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 12px;
   width: 340px;
   max-width: 90vw;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   overflow: hidden;
   animation: scaleIn 0.2s ease;
 }
@@ -719,19 +634,19 @@
 }
 
 .confirmKanji {
-  font-family: var(--font-mono);
+  font-family: var(--type-font-code);
   font-size: 11px;
-  font-weight: 600;
-  color: rgba(26, 29, 51, 0.35);
+  font-weight: var(--type-weight-semibold);
+  color: var(--color-text-faint);
   letter-spacing: 0.06em;
-  text-transform: uppercase;
 }
 
 .confirmTitle {
-  font-family: var(--font-secondary);
-  font-size: 18px;
-  font-weight: 700;
-  color: #1a1d33;
+  font-family: var(--type-font-heading);
+  font-size: 17px;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-heading);
+  color: var(--color-text-dark);
 }
 
 .confirmBody {
@@ -739,9 +654,10 @@
 }
 
 .confirmText {
+  font-family: var(--type-font-body);
   font-size: 14px;
   line-height: 1.5;
-  color: rgba(26, 29, 51, 0.7);
+  color: var(--color-text-soft);
   text-align: center;
   margin: 0;
 }
@@ -756,50 +672,30 @@
 .confirmSubmit {
   flex: 1;
   padding: 10px 0;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 700;
-  font-family: var(--font-primary);
+  border-radius: 8px;
+  font-family: var(--type-font-label);
+  font-size: 13px;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: 0.02em;
   cursor: pointer;
-  transition: all 0.12s ease;
+  transition: background 0.12s ease, opacity 0.12s ease;
   border: none;
 }
 
 .confirmBack {
-  background: #f0f1fa;
-  color: rgba(26, 29, 51, 0.55);
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
 }
 
 .confirmBack:hover {
-  background: #e4e5ef;
+  background: var(--color-surface-3);
 }
 
 .confirmSubmit {
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  color: #ffffff;
+  background: var(--color-positive);
+  color: var(--color-on-positive);
 }
 
 .confirmSubmit:hover {
   opacity: 0.85;
-}
-
-:global([data-theme="dark"]) .confirmModal {
-  background: #1a1d33;
-}
-
-:global([data-theme="dark"]) .confirmTitle {
-  color: #f0f1fa;
-}
-
-:global([data-theme="dark"]) .confirmText {
-  color: rgba(240, 241, 250, 0.65);
-}
-
-:global([data-theme="dark"]) .confirmBack {
-  background: rgba(240, 241, 250, 0.08);
-  color: rgba(240, 241, 250, 0.55);
-}
-
-:global([data-theme="dark"]) .confirmBack:hover {
-  background: rgba(240, 241, 250, 0.14);
 }

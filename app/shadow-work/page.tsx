@@ -93,7 +93,7 @@ function CourseInlineReader({ reading, onBack }: CourseInlineReaderProps) {
   return (
     <div className={styles.inlineReader}>
       <button type="button" className={styles.inlineReaderBack} onClick={onBack}>
-        ← Back to Journal
+        ← Back to journal
       </button>
       <div className={styles.inlineReaderHeader}>
         <span className={styles.inlineReaderCategory}>{reading.category}</span>
@@ -389,6 +389,7 @@ export default function CoursePage() {
                 <Image src="/blue/blue-home.png" alt="Blue" width={120} height={120} className={styles.panelAvatar} />
               </div>
               <div className={styles.panelHeader}>
+                <span className={styles.courseEyebrow}>Seasonal study program</span>
                 <h1 id="course-title" className={styles.panelTitle}>Creative Healing</h1>
                 <p className={styles.panelDescription}>A guided journey to unlock your inner creativity.</p>
                 <dl className={styles.courseMeta} aria-label="Course details">
@@ -412,7 +413,8 @@ export default function CoursePage() {
         <section className={styles.weeklyShell} aria-label="Course materials">
           <nav className={styles.curriculumRail} aria-label="Course outline">
             <div className={styles.curriculumRailHeader}>
-              <strong className={styles.curriculumRailTitle}>Course Outline</strong>
+              <span className={styles.curriculumRailKicker}>Curriculum</span>
+              <strong className={styles.curriculumRailTitle}>Course outline</strong>
             </div>
             <div className={styles.weekNavDots}>
               {Array.from({ length: 12 }, (_, i) => {

@@ -1,11 +1,13 @@
-/* WeekTasksView — Soft modern card style */
+/* WeekTasksView — flat technical card style, matching the Course Studio
+   conventions and the custom-course task cards in app/course/[slug]
+   (course-design-parity skill): flat surfaces, hairline borders, 6-8px radii,
+   calm per-task accent washes, sentence case. */
 
 .container {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
-
 
 /* Loading */
 .loading {
@@ -39,64 +41,47 @@
   align-items: center;
   gap: 12px;
   padding: 48px 24px;
-  color: rgba(26, 29, 51, 0.35);
-  font-family: var(--font-secondary);
+  color: var(--color-text-faint);
+  font-family: var(--type-font-heading);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: var(--type-weight-semibold);
 }
 
 /* Save bar */
 .saveBar {
   text-align: center;
-  font-family: var(--font-mono);
+  font-family: var(--type-font-code);
   font-size: 11px;
-  font-weight: 600;
-  color: rgba(26, 29, 51, 0.4);
+  font-weight: var(--type-weight-semibold);
+  color: var(--color-text-faint);
   padding: 4px 0;
   letter-spacing: 0.04em;
 }
 
-/* ─── Task Card ─── */
+/* ─── Task card — flat surface, calm accent wash on hover ─── */
 
 .taskCard {
   --task-accent: var(--color-primary);
   width: 100%;
-  background: color-mix(in srgb, var(--task-accent) 7%, #ffffff);
-  border: 1px solid color-mix(in srgb, var(--task-accent) 22%, rgba(26, 29, 51, 0.06));
-  border-radius: 14px;
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
-  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: background 0.12s ease, border-color 0.12s ease;
 }
 
 .taskCard:hover {
-  background: color-mix(in srgb, var(--task-accent) 11%, #ffffff);
-  border-color: color-mix(in srgb, var(--task-accent) 38%, rgba(26, 29, 51, 0.06));
-  box-shadow: 0 4px 16px color-mix(in srgb, var(--task-accent) 20%, transparent);
+  background: color-mix(in srgb, var(--task-accent) 4%, var(--color-surface-1));
+  border-color: color-mix(in srgb, var(--task-accent) 36%, var(--color-border-subtle));
 }
 
 .taskAccent {
   width: 3px;
-  height: 28px;
+  height: 26px;
   border-radius: 999px;
   background: var(--task-accent);
   flex-shrink: 0;
   opacity: 0.85;
-}
-
-.taskCardDone .taskArtwork {
-  box-shadow:
-    0 0 0 1px rgba(34, 197, 94, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35),
-    0 10px 24px rgba(34, 197, 94, 0.18);
-}
-
-.taskCardDone .taskArtworkBadge {
-  background: rgba(255, 255, 255, 0.92);
-  color: #16A34A;
-  box-shadow:
-    0 8px 18px rgba(22, 163, 74, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 .taskCardSealed {
@@ -104,113 +89,45 @@
   pointer-events: none;
 }
 
-/* Card Header */
+/* Card header */
 .taskCardHeader {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
+  gap: 10px;
+  padding: 12px 14px;
   background: none;
   border: none;
   cursor: pointer;
   text-align: left;
-  transition: background 0.15s ease;
+  transition: background 0.12s ease;
 }
 
 .taskCardHeader:hover {
-  background: rgba(26, 29, 51, 0.02);
+  background: color-mix(in srgb, var(--color-text-dark) 3%, transparent);
 }
 
+/* Accent tile — 26px bordered tile with a flat accent wash (studio rowIcon). */
 .taskArtwork {
-  width: 40px;
-  height: 40px;
+  width: 26px;
+  height: 26px;
   position: relative;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-subtle);
   flex-shrink: 0;
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--task-accent) 28%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.28),
-    0 4px 10px color-mix(in srgb, var(--task-accent) 22%, transparent);
-  transition: box-shadow 0.25s cubic-bezier(0.25, 1, 0.5, 1), transform 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+  background: color-mix(in srgb, var(--task-accent) 10%, var(--color-surface-base));
 }
 
-.taskCard:hover .taskArtwork {
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--task-accent) 42%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.34),
-    0 6px 14px color-mix(in srgb, var(--task-accent) 32%, transparent);
-  transform: translateY(-1px) scale(1.02);
-}
-
-/* Variant base — all share the same accent-driven color spine; the
-   radial-overlay below adds subtle per-variant texture. */
+/* Variant classes kept for the stored per-task art keys — all resolve to the
+   same flat wash in the flat design language. */
 .taskArtworkAurora,
 .taskArtworkSunrise,
 .taskArtworkOrbit,
 .taskArtworkBloom,
 .taskArtworkRibbon,
 .taskArtworkPrism {
-  background:
-    linear-gradient(135deg,
-      color-mix(in srgb, var(--task-accent) 68%, #0f172a 32%) 0%,
-      var(--task-accent) 48%,
-      color-mix(in srgb, var(--task-accent) 42%, #ffffff 58%) 100%);
-}
-
-.taskArtworkAurora {
-  background-image:
-    radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.42), transparent 28%),
-    linear-gradient(135deg,
-      color-mix(in srgb, var(--task-accent) 68%, #0f172a 32%) 0%,
-      var(--task-accent) 48%,
-      color-mix(in srgb, var(--task-accent) 42%, #ffffff 58%) 100%);
-}
-
-.taskArtworkSunrise {
-  background-image:
-    radial-gradient(circle at 75% 24%, rgba(255, 255, 255, 0.52), transparent 22%),
-    linear-gradient(140deg,
-      color-mix(in srgb, var(--task-accent) 70%, #0f172a 30%) 0%,
-      var(--task-accent) 50%,
-      color-mix(in srgb, var(--task-accent) 38%, #ffffff 62%) 100%);
-}
-
-.taskArtworkOrbit {
-  background-image:
-    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.22), transparent 28%),
-    linear-gradient(135deg,
-      color-mix(in srgb, var(--task-accent) 60%, #0f172a 40%) 0%,
-      var(--task-accent) 52%,
-      color-mix(in srgb, var(--task-accent) 46%, #ffffff 54%) 100%);
-}
-
-.taskArtworkBloom {
-  background-image:
-    radial-gradient(circle at 24% 22%, rgba(255, 255, 255, 0.46), transparent 26%),
-    linear-gradient(135deg,
-      color-mix(in srgb, var(--task-accent) 72%, #1a1336 28%) 0%,
-      var(--task-accent) 50%,
-      color-mix(in srgb, var(--task-accent) 35%, #ffffff 65%) 100%);
-}
-
-.taskArtworkRibbon {
-  background-image:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.18), transparent 48%),
-    linear-gradient(140deg,
-      color-mix(in srgb, var(--task-accent) 64%, #0f172a 36%) 0%,
-      var(--task-accent) 48%,
-      color-mix(in srgb, var(--task-accent) 44%, #ffffff 56%) 100%);
-}
-
-.taskArtworkPrism {
-  background-image:
-    radial-gradient(circle at 15% 18%, rgba(255, 255, 255, 0.26), transparent 22%),
-    linear-gradient(135deg,
-      color-mix(in srgb, var(--task-accent) 66%, #0f172a 34%) 0%,
-      var(--task-accent) 46%,
-      color-mix(in srgb, var(--task-accent) 38%, #ffffff 62%) 100%);
+  background: color-mix(in srgb, var(--task-accent) 10%, var(--color-surface-base));
 }
 
 .taskArtworkGlow,
@@ -228,10 +145,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #FFFFFF;
-  background: rgba(15, 23, 42, 0.2);
-  border-radius: 8px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  color: var(--task-accent);
+  background: transparent;
+  border-radius: inherit;
+}
+
+.taskCardDone .taskArtworkBadge {
+  color: var(--color-positive);
 }
 
 .taskInfo {
@@ -243,18 +163,19 @@
 }
 
 .taskTitle {
-  font-family: var(--font-secondary);
-  font-size: 15px;
-  font-weight: 700;
-  color: #1A1D33;
-  line-height: 1.2;
+  font-family: var(--type-font-heading);
+  font-size: 14px;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-heading);
+  color: var(--color-text-dark);
+  line-height: var(--type-lh-snug);
 }
 
 .taskPreview {
-  font-family: var(--font-primary);
+  font-family: var(--type-font-body);
   font-size: 12px;
-  font-weight: 300;
-  color: rgba(26, 29, 51, 0.4);
+  font-weight: var(--type-weight-regular);
+  color: var(--color-text-faint);
   line-height: 1.3;
   text-transform: none;
   letter-spacing: normal;
@@ -271,27 +192,34 @@
 }
 
 .taskCheckDone {
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #22C55E;
-  color: #FFFFFF;
+  background: var(--color-positive);
+  color: var(--color-on-positive);
   border: none;
-  border-radius: 50%;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.taskCheckDone svg {
+  width: 13px;
+  height: 13px;
 }
 
 .taskCheckEmpty {
-  width: 28px;
-  height: 28px;
-  border: 2px solid rgba(26, 29, 51, 0.38);
-  background: rgba(26, 29, 51, 0.04);
-  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-surface-base);
+  border-radius: 6px;
+  flex-shrink: 0;
 }
 
 .expandArrow {
-  color: rgba(26, 29, 51, 0.6);
+  color: var(--color-text-faint);
   transition: transform 0.2s ease;
 }
 
@@ -299,10 +227,10 @@
   transform: rotate(180deg);
 }
 
-/* Card Content (expanded) */
+/* Card content (expanded) */
 .taskCardContent {
-  padding: 0 18px 18px;
-  border-top: 1px solid rgba(26, 29, 51, 0.06);
+  padding: 0 16px 16px;
+  border-top: 1px solid var(--color-border-subtle);
   animation: slideDown 0.2s ease;
 }
 
@@ -312,10 +240,10 @@
 }
 
 .taskInstructions {
-  font-family: var(--font-primary);
+  font-family: var(--type-font-body);
   font-size: 15px;
-  font-weight: 400;
-  color: rgba(26, 29, 51, 0.88);
+  font-weight: var(--type-weight-regular);
+  color: var(--color-text-soft);
   line-height: 1.65;
   margin: 14px 0;
 }
@@ -324,30 +252,24 @@
   margin-bottom: 14px;
 }
 
-/* Mark Complete Button */
+/* Mark complete button */
 .markDoneBtn {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   width: 100%;
-  padding: 12px;
-  font-family: var(--font-mono);
+  padding: 10px;
+  font-family: var(--type-font-label);
   font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: 0.02em;
   color: var(--task-accent, var(--week-color, var(--color-primary)));
-  background: color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 10%, transparent);
+  background: color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 8%, transparent);
   border: 1px solid color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 28%, transparent);
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow:
-    0 4px 14px color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 18%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  transition: all 0.15s ease;
+  transition: background 0.12s ease, border-color 0.12s ease;
 }
 
 .markDoneCredits {
@@ -355,40 +277,29 @@
   align-items: center;
   gap: 4px;
   font-size: 10px;
-  font-weight: 600;
+  font-weight: var(--type-weight-semibold);
   opacity: 0.7;
   letter-spacing: 0.03em;
 }
 
 .markDoneBtn:hover {
-  background: color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 20%, transparent);
+  background: color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 14%, transparent);
   border-color: color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 48%, transparent);
-  box-shadow:
-    0 6px 22px color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 30%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
-  transform: translateY(-1px);
 }
 
 .markDoneBtnActive {
-  background: rgba(34, 197, 94, 0.14);
-  border-color: rgba(34, 197, 94, 0.4);
-  color: #22C55E;
-  box-shadow:
-    0 4px 14px rgba(34, 197, 94, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  background: var(--color-positive-muted);
+  border-color: color-mix(in srgb, var(--color-positive) 40%, transparent);
+  color: var(--color-positive);
 }
 
 .markDoneBtnActive:hover {
-  background: rgba(34, 197, 94, 0.22);
-  border-color: rgba(34, 197, 94, 0.55);
-  box-shadow:
-    0 6px 22px rgba(34, 197, 94, 0.32),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
-  color: #16A34A;
-  transform: translateY(-1px);
+  background: var(--color-positive-muted);
+  border-color: color-mix(in srgb, var(--color-positive) 55%, transparent);
+  color: var(--color-positive);
 }
 
-/* ─── Seal Section ─── */
+/* ─── Seal section ─── */
 
 .sealSection {
   display: flex;
@@ -406,10 +317,10 @@
 }
 
 .progressText {
-  font-family: var(--font-mono);
+  font-family: var(--type-font-code);
   font-size: 11px;
-  font-weight: 600;
-  color: rgba(26, 29, 51, 0.55);
+  font-weight: var(--type-weight-semibold);
+  color: var(--color-text-muted);
   text-align: center;
   letter-spacing: 0.04em;
 }
@@ -419,55 +330,61 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 16px 28px;
-  font-family: var(--font-secondary);
-  font-size: 15px;
-  font-weight: 700;
-  color: #AAAAAA;
-  background: #E8E9F0;
-  border: 1.5px solid rgba(26, 29, 51, 0.1);
-  border-radius: 10px;
+  padding: 14px 28px;
+  font-family: var(--type-font-label);
+  font-size: 14px;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: 0.02em;
+  color: var(--color-text-faint);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 8px;
   cursor: not-allowed;
+  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
 }
 
 .sealBtnReady {
-  color: #FFFFFF;
-  background: var(--week-color, var(--color-primary));
-  border-color: var(--week-color, var(--color-primary));
+  color: var(--color-on-positive);
+  background: var(--color-positive);
+  border-color: var(--color-positive);
   cursor: pointer;
 }
 
-.sealHint {
-  font-family: var(--font-primary);
-  font-size: 11px;
-  color: rgba(26, 29, 51, 0.35);
+.sealBtnReady:hover {
+  opacity: 0.85;
 }
 
-/* Sealed Banner */
+.sealHint {
+  font-family: var(--type-font-body);
+  font-size: 11px;
+  color: var(--color-text-faint);
+}
+
+/* Sealed banner */
 .sealedBanner {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 16px;
-  background: #F0FFF4;
-  border: 1px solid rgba(34, 197, 94, 0.25);
-  border-radius: 12px;
-  font-family: var(--font-secondary);
+  padding: 14px;
+  background: var(--color-positive-muted);
+  border: 1px solid color-mix(in srgb, var(--color-positive) 32%, transparent);
+  border-radius: 8px;
+  font-family: var(--type-font-heading);
   font-size: 14px;
-  font-weight: 700;
-  color: #166534;
+  font-weight: var(--type-weight-semibold);
+  color: var(--color-positive);
 }
 
 .sealedHash {
-  font-family: var(--font-mono);
+  font-family: var(--type-font-code);
   font-size: 11px;
-  font-weight: 500;
-  color: #22C55E;
+  font-weight: var(--type-weight-medium);
+  color: var(--color-positive);
   opacity: 0.7;
 }
 
-/* ─── Mission Completion Modal ─── */
+/* ─── Mission completion modal ─── */
 
 .missionModalOverlay {
   position: fixed;
@@ -488,12 +405,11 @@
 }
 
 .missionModal {
-  background: #FFFFFF;
-  border: 2px solid #1A1D33;
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border-subtle);
   border-radius: 12px;
   width: 100%;
   max-width: 400px;
-  box-shadow: 8px 8px 0 #1A1D33;
   overflow: hidden;
   animation: modalIn 0.25s ease;
 }
@@ -508,22 +424,24 @@
   align-items: center;
   gap: 10px;
   padding: 20px 24px 16px;
-  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
-  border-bottom: 1.5px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .missionModalKanji {
-  font-size: 17px;
-  font-weight: 700;
+  font-family: var(--type-font-code);
+  font-size: 16px;
+  font-weight: var(--type-weight-semibold);
   color: var(--color-primary);
   letter-spacing: 0.02em;
 }
 
 .missionModalTitle {
-  font-family: var(--font-secondary);
-  font-size: 17px;
-  font-weight: 700;
-  color: #1A1D33;
+  font-family: var(--type-font-heading);
+  font-size: 16px;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-heading);
+  color: var(--color-text-dark);
 }
 
 .missionModalBody {
@@ -531,17 +449,17 @@
 }
 
 .missionModalText {
-  font-family: var(--font-primary);
+  font-family: var(--type-font-body);
   font-size: 14px;
-  color: rgba(26, 29, 51, 0.6);
+  color: var(--color-text-soft);
   line-height: 1.7;
   margin: 0;
 }
 
 .missionModalError {
-  font-family: var(--font-primary);
+  font-family: var(--type-font-body);
   font-size: 13px;
-  color: #C0392B;
+  color: var(--color-danger);
   line-height: 1.5;
   margin: 12px 0 0;
 }
@@ -554,45 +472,40 @@
 
 .missionModalBack {
   flex: 1;
-  padding: 12px;
-  font-family: var(--font-mono);
+  padding: 11px;
+  font-family: var(--type-font-label);
   font-size: 12px;
-  font-weight: 700;
-  color: #1A1D33;
-  background: #F4F5FE;
-  border: 1.5px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
-  border-radius: 10px;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background 0.12s ease;
 }
 
 .missionModalBack:hover {
-  background: #E8E9F0;
+  background: var(--color-surface-3);
 }
 
 .missionModalConfirm {
   flex: 1;
-  padding: 12px;
-  font-family: var(--font-mono);
+  padding: 11px;
+  font-family: var(--type-font-label);
   font-size: 12px;
-  font-weight: 700;
-  color: #FFFFFF;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: 0.02em;
+  color: var(--color-on-action);
   background: var(--color-primary);
-  border: 2px solid #1A1D33;
-  border-radius: 10px;
-  box-shadow: 3px 3px 0 #1A1D33;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: opacity 0.12s ease;
 }
 
 .missionModalConfirm:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0 #1A1D33;
-}
-
-.missionModalConfirm:active {
-  transform: translate(1px, 1px);
-  box-shadow: 2px 2px 0 #1A1D33;
+  opacity: 0.85;
 }
 
 .missionModalProgress {
@@ -601,15 +514,15 @@
   align-items: center;
   gap: 16px;
   padding: 32px 24px;
-  font-family: var(--font-mono);
+  font-family: var(--type-font-code);
   font-size: 13px;
-  color: rgba(26, 29, 51, 0.6);
+  color: var(--color-text-muted);
 }
 
 .missionSpinner {
   width: 32px;
   height: 32px;
-  border: 3px solid #E8E9F0;
+  border: 3px solid var(--color-border-subtle);
   border-top-color: var(--color-primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
@@ -619,27 +532,18 @@
   to { transform: rotate(360deg); }
 }
 
+/* ─── Responsive ─── */
+
 @media (max-width: 640px) {
   .taskCardHeader {
     gap: 10px;
-    padding: 12px 14px;
+    padding: 12px;
   }
 }
 
-/* ─── Responsive ─── */
-
 @media (max-width: 480px) {
-  .taskCard {
-    border-radius: 12px;
-  }
-
-  .taskCardHeader {
-    padding: 12px 12px;
-    gap: 10px;
-  }
-
   .taskTitle {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .taskCardContent {
@@ -648,155 +552,29 @@
 }
 
 /* ============================================ */
-/* DARK MODE OVERRIDES                          */
+/* DARK MODE                                    */
 /* ============================================ */
 
-:global([data-theme="dark"]) .taskCard {
-  background: color-mix(in srgb, var(--task-accent) 10%, #1E1F2C);
-  border: 1px solid color-mix(in srgb, var(--task-accent) 28%, rgba(255, 255, 255, 0.06));
-  box-shadow:
-    0 6px 24px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-}
-
 :global([data-theme="dark"]) .taskCard:hover {
-  background: color-mix(in srgb, var(--task-accent) 16%, #1E1F2C);
-  border-color: color-mix(in srgb, var(--task-accent) 45%, rgba(255, 255, 255, 0.08));
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.6),
-    0 0 18px color-mix(in srgb, var(--task-accent) 18%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-}
-
-:global([data-theme="dark"]) .taskIcon {
-  background: linear-gradient(
-    135deg,
-    color-mix(in oklch, var(--color-primary) 15%, transparent) 0%,
-    rgba(140, 120, 200, 0.08) 50%,
-    color-mix(in oklch, var(--color-primary) 5%, transparent) 100%
-  );
-  box-shadow:
-    0 0 0 1px color-mix(in oklch, var(--color-primary) 15%, transparent),
-    inset 0 1px 2px rgba(255, 255, 255, 0.06),
-    inset 0 -1px 1px color-mix(in oklch, var(--color-primary) 6%, transparent),
-    0 4px 16px color-mix(in oklch, var(--color-primary) 8%, transparent);
-}
-
-:global([data-theme="dark"]) .taskCard:hover .taskIcon {
-  box-shadow:
-    0 0 0 1px color-mix(in oklch, var(--color-primary) 25%, transparent),
-    inset 0 1px 2px rgba(255, 255, 255, 0.08),
-    inset 0 -1px 1px color-mix(in oklch, var(--color-primary) 8%, transparent),
-    0 6px 20px color-mix(in oklch, var(--color-primary) 15%, transparent);
+  background: color-mix(in srgb, var(--task-accent) 9%, var(--color-surface-1));
+  border-color: color-mix(in srgb, var(--task-accent) 42%, var(--color-border-subtle));
 }
 
 :global([data-theme="dark"]) .taskCardHeader:hover {
   background: rgba(255, 255, 255, 0.03);
 }
 
-:global([data-theme="dark"]) .taskTitle {
-  color: rgba(227, 225, 238, 0.95);
-}
-
-:global([data-theme="dark"]) .taskPreview {
-  color: rgba(227, 225, 238, 0.55);
+:global([data-theme="dark"]) .taskArtwork,
+:global([data-theme="dark"]) .taskArtworkAurora,
+:global([data-theme="dark"]) .taskArtworkSunrise,
+:global([data-theme="dark"]) .taskArtworkOrbit,
+:global([data-theme="dark"]) .taskArtworkBloom,
+:global([data-theme="dark"]) .taskArtworkRibbon,
+:global([data-theme="dark"]) .taskArtworkPrism {
+  background: color-mix(in srgb, var(--task-accent) 18%, var(--color-surface-1));
 }
 
 :global([data-theme="dark"]) .taskCheckEmpty {
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-:global([data-theme="dark"]) .expandArrow {
-  color: rgba(227, 225, 238, 0.35);
-}
-
-:global([data-theme="dark"]) .taskCardContent {
-  border-top-color: rgba(255, 255, 255, 0.06);
-}
-
-:global([data-theme="dark"]) .taskInstructions {
-  color: rgba(227, 225, 238, 0.82);
-}
-
-:global([data-theme="dark"]) .lockedMessage {
-  color: rgba(227, 225, 238, 0.35);
-}
-
-:global([data-theme="dark"]) .saveBar {
-  color: rgba(227, 225, 238, 0.35);
-}
-
-:global([data-theme="dark"]) .progressText {
-  color: rgba(227, 225, 238, 0.75);
-}
-
-:global([data-theme="dark"]) .sealBtn {
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(227, 225, 238, 0.35);
-  border-color: rgba(255, 255, 255, 0.06);
-  font-family: var(--font-secondary);
-}
-
-:global([data-theme="dark"]) .sealHint {
-  color: rgba(227, 225, 238, 0.35);
-}
-
-:global([data-theme="dark"]) .sealedBanner {
-  background: rgba(34, 197, 94, 0.08);
-  border-color: rgba(34, 197, 94, 0.2);
-  color: #4ADE80;
-}
-
-:global([data-theme="dark"]) .missionModal {
-  background: #16171F;
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.5);
-}
-
-:global([data-theme="dark"]) .missionModalHeader {
-  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
-  border-bottom-color: rgba(255, 255, 255, 0.06);
-}
-
-:global([data-theme="dark"]) .missionModalTitle {
-  color: rgba(227, 225, 238, 0.95);
-}
-
-:global([data-theme="dark"]) .missionModalText {
-  color: rgba(227, 225, 238, 0.55);
-}
-
-:global([data-theme="dark"]) .missionModalError {
-  color: #E57373;
-}
-
-:global([data-theme="dark"]) .missionModalBack {
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(227, 225, 238, 0.95);
-  border-color: rgba(255, 255, 255, 0.06);
-}
-
-:global([data-theme="dark"]) .missionModalBack:hover {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-:global([data-theme="dark"]) .missionModalConfirm {
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.5);
-}
-
-:global([data-theme="dark"]) .missionModalConfirm:hover {
-  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
-}
-
-:global([data-theme="dark"]) .missionModalConfirm:active {
-  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
-}
-
-:global([data-theme="dark"]) .missionModalProgress {
-  color: rgba(227, 225, 238, 0.55);
-}
-
-:global([data-theme="dark"]) .missionSpinner {
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: var(--color-border-strong);
+  background: var(--color-surface-1);
 }

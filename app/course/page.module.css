@@ -1,23 +1,44 @@
-/* Home Page — Card-based layout with swipe navigation */
+/* Custom-course base layout (courseStyles) — flat technical surface shared
+   with app/shadow-work. Design language follows the Course Studio
+   (components/course-studio): flat surfaces, hairline borders, 6-8px radii,
+   calm primary washes, monospace count badges, sentence case. Keep this file
+   visually in sync with app/shadow-work/page.module.css
+   (course-design-parity skill). */
+
+/* ============================================ */
+/* PAGE SCAFFOLD                                */
+/* ============================================ */
 
 .pageLayout {
   position: relative;
   margin-left: var(--sidebar-width, 265px);
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   min-height: 100vh;
-  background-color: var(--color-background, #ffffff);
-  background-image:
-    linear-gradient(to right, color-mix(in oklch, var(--color-primary) 8%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in oklch, var(--color-primary) 8%, transparent) 1px, transparent 1px);
-  background-size: 32px 32px;
-  background-position: -1px -1px;
+  background-color: var(--color-background);
+  color: var(--color-text-dark);
+}
+
+/* Flat direction: nothing on this surface carries elevation. Embedded
+   renderers (missions, rewards) inherit the rule so the page stays flat. */
+.pageLayout,
+.pageLayout * {
+  box-shadow: none !important;
 }
 
 :global([data-theme="dark"]) .pageLayout {
-  background-color: #0d0e16;
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-color: var(--color-background);
+}
+
+/* Cool light palette — the course surfaces read as cool paper, matching the
+   studio editor rather than the warm app canvas. */
+:global([data-theme="light"]) .pageLayout {
+  --color-background: var(--palette-cool-canvas);
+  --color-surface-base: var(--palette-cool-canvas);
+  --color-surface-1: var(--palette-cool-surface);
+  --color-surface-2: var(--palette-cool-surface-muted);
+  --color-surface-3: color-mix(in srgb, var(--palette-cool-surface-muted) 82%, var(--color-text-dark));
+  background-color: var(--color-background);
+  color: var(--color-text-dark);
 }
 
 .bgViz {
@@ -27,7 +48,7 @@
   right: 0;
   bottom: 0;
   z-index: 0;
-  opacity: 0.18;
+  opacity: 0.14;
   pointer-events: none;
   overflow: hidden;
 }
@@ -35,16 +56,20 @@
 .content {
   position: relative;
   z-index: 1;
-  max-width: 640px;
+  max-width: none;
   width: 100%;
-  margin: 0 auto;
-  padding: 24px 24px 48px;
+  margin: 0;
+  padding: 0 0 72px;
 }
+
+/* ============================================ */
+/* SKELETON PRIMITIVES                          */
+/* ============================================ */
 
 .skeletonBlock {
   position: relative;
   overflow: hidden;
-  background: rgba(26, 29, 51, 0.08);
+  background: color-mix(in srgb, var(--color-text-dark) 8%, transparent);
   color: transparent;
   pointer-events: none;
 }
@@ -56,6 +81,12 @@
   transform: translateX(-100%);
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
   animation: shimmer 1.3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 .skeletonText,
@@ -79,251 +110,420 @@
 }
 
 /* ============================================ */
-/* CONTROL PANEL — matches /dao GlobalChat chrome */
+/* HERO — course control panel                  */
 /* ============================================ */
 
-/* Game-style back button — sits above the control panel */
-.backBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px 8px 12px;
-  font-family: var(--font-primary);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--color-text-muted, #6b6e82);
-  background: rgba(255, 255, 255, 0.85);
-  border: 2px solid rgba(26, 29, 51, 0.12);
-  border-radius: 10px;
-  text-decoration: none;
-  width: fit-content;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  backdrop-filter: blur(6px);
-}
-.backBtn:hover {
-  background: #ffffff;
-  border-color: rgba(26, 29, 51, 0.2);
-  color: var(--color-primary);
-}
-.backBtn svg {
-  flex-shrink: 0;
-}
-:global([data-theme="dark"]) .backBtn {
-  background: rgba(21, 23, 42, 0.85);
-  border-color: rgba(255, 255, 255, 0.1);
-  color: rgba(227, 225, 238, 0.65);
-}
-:global([data-theme="dark"]) .backBtn:hover {
-  background: #15172a;
-  border-color: rgba(255, 255, 255, 0.18);
-  color: var(--color-primary);
-}
-
-/* Shared card chrome — same borders, dividers and drop shadow the home
-   GlobalChat (ChatRoom) uses, reused here for the panel and the right-side
-   pop-ups so the course view reads as the same surface family. */
-.controlPanel,
-.popupCard {
-  position: relative;
-  background-color: #ffffff;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(81,104,255,0.06)'/%3E%3C/svg%3E");
-  border: 1.5px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
-  border-radius: 12px;
-  box-shadow:
-    0 3px 0 color-mix(in oklch, var(--color-primary) 22%, transparent),
-    0 0px 10px rgba(0, 0, 0, 0.14),
-    0 10px 5px rgba(0, 0, 0, 0.30);
+.controlPanel {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 0;
+  margin: 0;
+  background: var(--color-surface-1);
+  border: 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+  border-radius: 0;
   overflow: hidden;
 }
 
-.controlPanel {
-  margin: 8px 0 12px;
-}
-
-:global([data-theme="dark"]) .controlPanel,
-:global([data-theme="dark"]) .popupCard {
-  background-color: #15172a;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
-}
-
-/* Banner — full-bleed cover image behind the avatar */
-.panelBanner {
-  height: 120px;
-  width: 100%;
-  background-color: color-mix(in srgb, var(--color-primary) 18%, #ffffff);
-  background-image: linear-gradient(135deg, #5168FF, #9b7ed9);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-bottom: 2px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
-  border-radius: 8px 8px 0 0;
-}
-
 .panelBody {
-  padding: 0 22px 24px;
+  display: grid;
+  grid-row: 1;
+  grid-template-columns: 84px minmax(0, 1fr);
+  align-items: start;
+  gap: 28px;
+  padding: 48px 52px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
 }
 
-/* Blue avatar — rounded-square icon straddling the banner edge */
+/* Course identity art sits behind a frosted surface wash — the one deliberate
+   image on an otherwise flat page. */
+.panelBody::before {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  content: '';
+  background: url('/images/course-panel-blue-art.png') center / cover no-repeat;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.panelBody::after {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  content: '';
+  background: color-mix(in oklch, var(--color-surface-1) 55%, transparent);
+  backdrop-filter: blur(18px);
+  pointer-events: none;
+}
+
+.panelBody > * {
+  position: relative;
+  z-index: 2;
+}
+
 .panelAvatarWrap {
   display: flex;
-  justify-content: center;
-  margin-top: -72px;
+  justify-content: flex-start;
+  margin: 2px 0 0;
 }
 
 .panelAvatar {
-  width: 120px;
-  height: 120px;
-  border-radius: 14px;
+  width: 84px;
+  height: 84px;
   object-fit: cover;
-  background: #0b1560;
-  border: 3px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
-  box-shadow:
-    0 3px 0 color-mix(in oklch, var(--color-primary) 22%, transparent),
-    var(--shadow-md);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 12px;
 }
 
-:global([data-theme="dark"]) .panelAvatar {
-  border-color: color-mix(in oklch, var(--color-primary) 38%, transparent);
-}
-
-/* Title + short centered rule + description */
 .panelHeader {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  margin-top: 16px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(200px, 280px);
+  column-gap: 48px;
+  width: 100%;
+  align-items: flex-start;
+  margin: 0;
+  text-align: left;
+}
+
+.panelHeader > :not(.courseMeta) {
+  grid-column: 1;
+}
+
+.courseEyebrow {
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
+  line-height: var(--type-lh-solid);
 }
 
 .panelTitle {
-  font-family: var(--font-secondary);
-  font-size: 26px;
-  font-weight: 800;
-  line-height: 1.15;
-  color: var(--color-primary);
-  margin: 0;
+  max-width: 680px;
+  margin: 12px 0 0;
+  font-family: var(--type-font-heading);
+  font-size: clamp(2.35rem, 4vw, 3.6rem);
+  font-weight: var(--type-weight-bold);
+  line-height: 1.02;
+  letter-spacing: var(--type-track-display);
+  color: var(--color-text-dark);
 }
 
 .panelTitleDivider {
-  width: 128px;
-  height: 3px;
+  width: 96px;
+  height: 2px;
   border-radius: 999px;
-  background: var(--color-primary);
-  margin-top: 10px;
+  background: color-mix(in srgb, var(--color-primary) 40%, transparent);
+  margin-top: 12px;
 }
 
 .panelDescription {
-  font-family: var(--font-primary);
-  font-size: 15px;
-  line-height: 1.6;
-  color: #141414;
-  margin: 18px 0 0;
-}
-
-:global([data-theme="dark"]) .panelDescription {
-  color: var(--color-text-muted);
+  max-width: 640px;
+  margin: 16px 0 0;
+  font-family: var(--type-font-body);
+  font-size: 1rem;
+  line-height: var(--type-lh-body);
+  color: var(--color-text-soft);
 }
 
 .panelDivider {
-  height: 22px;
+  height: 20px;
 }
 
-/* ============================================ */
-/* WEEK NAV — compact single-row navigation     */
-/* ============================================ */
+.courseMeta {
+  display: grid;
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  grid-template-columns: 1fr;
+  align-self: start;
+  justify-self: end;
+  width: min(100%, 280px);
+  gap: 14px;
+  margin: 0;
+  padding: 0 0 0 24px;
+  border-top: 0;
+  border-left: 1px solid var(--color-border-subtle);
+}
 
-.weekNav {
+.courseMetaItem {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border-left: 0;
+}
+
+.courseMetaItem:first-child {
+  padding: 0;
+  border-left: 0;
+}
+
+.courseMetaLabel,
+.courseMetaValue {
+  margin: 0;
+}
+
+.courseMetaLabel {
+  font-family: var(--type-font-label);
+  font-size: 11px;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: 0.02em;
+  color: var(--color-text-faint);
+}
+
+.courseMetaValue {
+  margin-top: 4px;
+  font-family: var(--type-font-heading);
+  font-size: 0.875rem;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-heading);
+  line-height: var(--type-lh-snug);
+  color: var(--color-text-dark);
+}
+
+/* Banner compat — only rendered by /course/personal today; kept identical
+   across the two course files apart from the deliberate image line (custom
+   courses supply their cover via an inline style). */
+.panelBanner {
+  height: 120px;
+  width: 100%;
+  background-color: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface-1));
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-bottom: 1px solid var(--color-border-subtle);
+  border-radius: 0;
+}
+
+/* ── Panel badges — diamonds-left count + task progress meter ── */
+
+.panelBadgeRow {
+  position: static;
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin: 12px 0 12px;
-  padding: 0 2px;
+  gap: 6px;
+  width: 196px;
+  margin: 0;
 }
 
-.weekNavArrow {
-  width: 28px;
-  height: 28px;
+.panelBadgeDiamonds {
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 20px;
+  padding: 0 7px;
+  border-radius: 5px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-base);
+  color: var(--color-text-muted);
+  font-family: var(--type-font-code);
+  font-size: 11px;
+  font-weight: var(--type-weight-semibold);
+  line-height: 1;
+}
+
+.panelBadgeDiamonds img {
+  display: block;
+}
+
+.panelBadgeProgress {
+  flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(6px);
-  border: 1px solid rgba(26, 29, 51, 0.1);
-  border-radius: 8px;
-  cursor: pointer;
-  color: #1A1D33;
-  transition: all 0.15s ease;
+  gap: 3px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 5px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-base);
 }
 
-.weekNavArrow:hover:not(:disabled) {
-  background: #fff;
-  border-color: color-mix(in oklch, var(--color-primary) 25%, transparent);
-  box-shadow: 0 2px 6px color-mix(in oklch, var(--color-primary) 10%, transparent);
+.panelBadgeSquare {
+  flex: 1;
+  min-width: 3px;
+  height: 8px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--color-text-dark) 12%, transparent);
+  transition: background 0.2s ease;
 }
 
-.weekNavArrow:active:not(:disabled) {
-  transform: scale(0.93);
+.panelBadgeSquareFilled {
+  background: var(--color-primary);
 }
 
-.weekNavArrow:disabled {
-  opacity: 0.22;
-  cursor: not-allowed;
+/* ============================================ */
+/* WEEKLY SHELL — rail + canvas + reading panel */
+/* ============================================ */
+
+.weeklyShell {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  align-items: start;
+  gap: 0;
+  justify-content: stretch;
+  background: var(--color-surface-base);
+  background-image:
+    linear-gradient(to right, color-mix(in oklch, var(--color-primary) 4%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklch, var(--color-primary) 4%, transparent) 1px, transparent 1px);
+  background-size: 32px 32px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+/* Rail width stays constant whether or not the reading panel is open — only
+   the third column appears. */
+.weeklyShell:has(> .rightPanel > *) {
+  grid-template-columns: 200px minmax(0, 1fr) minmax(320px, 390px);
+  gap: 0;
+}
+
+/* ── Curriculum rail ── */
+
+.curriculumRail {
+  position: sticky;
+  top: calc(72px + 24px);
+  max-height: calc(100vh - 72px - 48px);
+  overflow-y: auto;
+  background: var(--color-surface-1);
+  border: 0;
+  border-right: 1px solid var(--color-border-subtle);
+  border-radius: 0;
+  scrollbar-width: thin;
+}
+
+.curriculumRailHeader {
+  padding: 16px 14px 14px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.curriculumRailKicker {
+  display: block;
+  font-family: var(--type-font-label);
+  font-size: 11px;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: 0.02em;
+  color: var(--color-text-faint);
+}
+
+.curriculumRailTitle {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--type-font-heading);
+  font-size: 0.9375rem;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-heading);
+  line-height: var(--type-lh-snug);
+  color: var(--color-text-dark);
 }
 
 .weekNavDots {
-  flex: 1;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
 }
 
-
-
-/* Week Dots */
-
 .weekDot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #E0E1EE;
-  border: 1.5px solid rgba(26, 29, 51, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  height: auto;
+  min-height: 40px;
+  padding: 9px 14px;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+  border-radius: 0;
+  color: var(--color-text-muted);
+  text-align: left;
   cursor: pointer;
-  padding: 0;
-  transition: all 0.15s ease;
+  transform: none;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.weekDot:last-child {
+  border-bottom: 0;
 }
 
 .weekDot:hover {
-  background: color-mix(in oklch, var(--color-primary) 30%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 4%, var(--color-surface-1));
 }
 
-.weekDotActive {
-  background: var(--color-primary);
-  border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
-  transform: scale(1.2);
+.weekDotActive,
+.weekDotActive:hover {
+  padding-left: 12px;
+  background: color-mix(in srgb, var(--color-primary) 9%, var(--color-surface-1));
+  border-left: 2px solid var(--color-primary);
+  color: var(--color-text-dark);
+  transform: none;
 }
 
 .weekDotSealed {
-  background: #22C55E;
-  border-color: rgba(34, 197, 94, 0.3);
+  background: transparent;
 }
 
 .weekDotLoading {
-  background: rgba(26, 29, 51, 0.08);
-  border-color: transparent;
+  opacity: 0.5;
   cursor: default;
 }
 
+.weekDotNumber {
+  font-family: var(--type-font-code);
+  font-size: 11px;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+/* State badge — faint when empty, primary-tinted when set (studio pattern). */
+.weekDotStatus {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 7px;
+  border-radius: 5px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-base);
+  font-family: var(--type-font-label);
+  font-size: 11px;
+  font-weight: var(--type-weight-semibold);
+  line-height: 1;
+  color: var(--color-text-faint);
+  flex-shrink: 0;
+}
+
+.weekDotStatus:empty {
+  display: none;
+}
+
+.weekDotActive .weekDotStatus,
+.weekDotSealed .weekDotStatus {
+  border-color: color-mix(in srgb, var(--color-primary) 32%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  color: var(--color-primary);
+}
+
 /* ============================================ */
-/* SWIPEABLE WEEK CONTENT                       */
+/* LEFT COLUMN — weekly content canvas          */
 /* ============================================ */
+
+.leftCol {
+  min-width: 0;
+  padding: 28px 32px 48px;
+}
 
 .weekContent {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
+  max-width: 860px;
+  margin-top: 0;
   transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
@@ -337,53 +537,56 @@
   transform: translateX(30px);
 }
 
-/* ============================================ */
-/* READING CARD (softened)                      */
-/* ============================================ */
+/* ── Reading card ── */
 
-.readingCard {
+.readingCard,
+.readingCardSkeleton {
   position: relative;
-  isolation: isolate;
-  overflow: hidden;
   width: 100%;
   display: grid;
-  margin-bottom: 20px;
-  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  grid-template-columns: 80px minmax(0, 1fr) auto;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   min-height: 108px;
-  padding: 20px 16px;
-  background: color-mix(in srgb, var(--color-primary) 7%, #ffffff);
-  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, rgba(26, 29, 51, 0.06));
-  border-radius: 14px;
-  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
+  margin: 0;
+  padding: 14px;
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 8px;
+}
+
+.readingCard {
   cursor: pointer;
   text-align: left;
-  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.readingCard:hover {
+  background: color-mix(in srgb, var(--color-primary) 4%, var(--color-surface-1));
+  border-color: color-mix(in srgb, var(--color-primary) 36%, var(--color-border-subtle));
+}
+
+.readingCardActive,
+.readingCardActive:hover {
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface-1));
+  border-color: var(--color-primary);
 }
 
 .readingAccent {
-  width: 3px;
-  height: 28px;
-  border-radius: 999px;
-  background: var(--color-primary);
-  flex-shrink: 0;
-  opacity: 0.85;
+  display: none;
 }
 
 .readingThumb {
   position: relative;
-  width: 64px;
-  height: 64px;
+  width: 80px;
+  height: 80px;
   flex-shrink: 0;
-  border-radius: 10px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 6px;
   overflow: hidden;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  box-shadow:
-    0 0 0 1px rgba(26, 29, 51, 0.08),
-    0 2px 6px rgba(26, 29, 51, 0.08);
 }
 
 .readingThumbImg {
@@ -395,45 +598,67 @@
   border-radius: inherit;
 }
 
-.readingThumb::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(0, 0, 0, 0.18));
-  pointer-events: none;
-}
-
-.readingCard:hover {
-  background: color-mix(in srgb, var(--color-primary) 11%, #ffffff);
-  border-color: color-mix(in srgb, var(--color-primary) 38%, rgba(26, 29, 51, 0.06));
-  box-shadow: 0 4px 16px color-mix(in oklch, var(--color-primary) 14%, transparent);
-  transform: translateY(-1px);
-}
-
-.readingCard:hover .readingThumb {
-  box-shadow:
-    0 0 0 1px color-mix(in oklch, var(--color-primary) 28%, transparent),
-    0 4px 10px color-mix(in oklch, var(--color-primary) 18%, transparent);
-}
-
-.readingCardSkeleton {
-  width: 100%;
+.readingInfo {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
   display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
-  background: color-mix(in oklch, var(--color-primary) 5%, transparent);
-  backdrop-filter: blur(8px);
-  border: 1px solid color-mix(in oklch, var(--color-primary) 14%, transparent);
-  border-radius: 14px;
-  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
+  flex-direction: column;
+  gap: 3px;
+  align-items: flex-start;
+  text-align: left;
 }
+
+.readingCategory {
+  font-family: var(--type-font-label);
+  font-size: 11px;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
+}
+
+.readingTitle {
+  font-family: var(--type-font-heading);
+  font-size: 1.0625rem;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-heading);
+  color: var(--color-text-dark);
+  line-height: var(--type-lh-snug);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+}
+
+.readingAuthor {
+  font-family: var(--type-font-body);
+  font-size: 12px;
+  font-weight: var(--type-weight-regular);
+  color: var(--color-text-faint);
+}
+
+.readingArrow {
+  position: relative;
+  z-index: 1;
+  color: var(--color-text-faint);
+  opacity: 0.6;
+  flex-shrink: 0;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.readingCard:hover .readingArrow {
+  transform: translateX(2px);
+  opacity: 1;
+}
+
+/* ── Reading skeleton lines ── */
 
 .readingMediaSkeleton {
-  width: 64px;
-  height: 64px;
-  border-radius: 10px;
+  width: 80px;
+  height: 80px;
+  border-radius: 6px;
   flex-shrink: 0;
 }
 
@@ -460,85 +685,41 @@
   margin-top: 4px;
 }
 
-.readingInfo {
-  position: relative;
-  z-index: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  align-items: flex-start;
-  text-align: left;
-}
-
-.readingCategory {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  color: rgba(26, 29, 51, 0.55);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-.readingTitle {
-  font-family: var(--font-secondary);
-  font-size: 16px;
-  font-weight: 700;
-  color: #1A1D33;
-  line-height: 1.25;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  white-space: normal;
-}
-
-.readingAuthor {
-  font-family: var(--font-primary);
-  font-size: 12px;
-  font-weight: 400;
-  color: rgba(26, 29, 51, 0.55);
-}
-
-.readingArrow {
-  position: relative;
-  z-index: 1;
-  color: rgba(26, 29, 51, 0.25);
-  flex-shrink: 0;
-}
+/* ── Coursework section header — label + trailing hairline ── */
 
 .missionsHeadingRow {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin: 8px 4px 0;
+  gap: 10px;
+  margin: 8px 0 0;
+  padding: 0;
+  border: 0;
+  min-height: 22px;
 }
 
 .missionsDivider {
   flex: 1;
   height: 1px;
-  background: rgba(26, 29, 51, 0.1);
+  background: var(--color-border-subtle);
+}
+
+.missionsHeadingRow .missionsDivider:first-child {
+  display: none;
 }
 
 .missionsHeading {
-  font-family: var(--font-mono);
-  font-size: 16px;
-  font-weight: 700;
-  color: #1A1D33;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  white-space: nowrap;
   margin: 0;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
+  line-height: var(--type-lh-solid);
+  white-space: nowrap;
+  text-transform: none;
 }
 
-:global([data-theme="dark"]) .missionsHeading {
-  color: var(--color-text-dark);
-}
-
-:global([data-theme="dark"]) .missionsDivider {
-  background: var(--color-border-subtle);
-}
+/* ── Week tasks skeleton ── */
 
 .weekTasksSkeleton {
   display: flex;
@@ -548,666 +729,192 @@
 
 .taskCardSkeleton {
   width: 100%;
-  height: 72px;
-  border-radius: 14px;
+  height: 64px;
+  border-radius: 8px;
 }
 
 .sealButtonSkeleton {
   width: 100%;
   height: 44px;
-  border-radius: 12px;
+  border-radius: 8px;
   margin-top: 4px;
 }
 
 /* ============================================ */
-/* ANIMATIONS                                   */
+/* RIGHT PANEL — inline reading                 */
 /* ============================================ */
-
-@keyframes shimmer {
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-/* ============================================ */
-/* DESKTOP TWO-COLUMN LAYOUT                    */
-/* ============================================ */
-
-.contentDesktop {
-  max-width: none;
-  display: grid;
-  grid-template-columns: minmax(0, 420px) minmax(280px, 520px);
-  gap: 0 32px;
-  align-items: start;
-  padding: 24px 32px 48px;
-  margin: 0;
-  justify-content: center;
-}
-
-.leftCol {
-  min-width: 0;
-}
 
 .rightPanel {
   min-width: 0;
   align-self: start;
   position: sticky;
   top: calc(72px + 24px);
-  /* Own scroll area: the detail/reading panel scrolls on its own without
-     moving the left mission column. overscroll-behavior stops the scroll
-     from chaining to the page once it bottoms out. The interior padding (and
-     matching negative margin) gives the card's raised-edge drop shadow room
-     so overflow-y clipping doesn't shave it — the column footprint is
-     unchanged. */
+  /* Own scroll area: the reading panel scrolls without moving the mission
+     column; overscroll-behavior stops the scroll from chaining to the page. */
   max-height: calc(100vh - 72px - 48px);
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
-  scrollbar-color: rgba(26, 29, 51, 0.12) transparent;
-  padding: 2px 12px 16px;
-  margin: -2px -12px 0;
+  scrollbar-color: color-mix(in srgb, var(--color-text-dark) 12%, transparent) transparent;
+  padding: 28px 32px 48px 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
 }
 
 .rightPanel > :first-child {
   margin-top: 0;
 }
 
-/* Reading card highlight when open in right panel */
-.readingCardActive {
-  background: color-mix(in srgb, var(--color-primary) 13%, #ffffff) !important;
-  border-color: color-mix(in srgb, var(--color-primary) 45%, rgba(26, 29, 51, 0.06)) !important;
-  box-shadow: 0 4px 16px color-mix(in oklch, var(--color-primary) 14%, transparent) !important;
+.rightPanel:empty {
+  display: none;
 }
 
-/* ============================================ */
-/* INLINE READING PANEL (right column)          */
-/* ============================================ */
-
-.inlineReader {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 4px 0 48px;
+.popupCard {
+  position: relative;
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
-/* Reading pop-up sits inside .popupCard chrome — supply its inner padding */
 .popupCard .inlineReaderInner {
   display: flex;
   flex-direction: column;
   gap: 18px;
-  padding: 22px;
+  padding: 22px 24px 30px;
+}
+
+.inlineReader {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 0 0 40px;
 }
 
 .inlineReaderBack {
   align-self: flex-start;
-  font-family: var(--font-mono);
+  font-family: var(--type-font-label);
   font-size: 12px;
-  font-weight: 600;
-  color: rgba(26, 29, 51, 0.45);
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
   background: none;
   border: none;
   padding: 0;
   cursor: pointer;
-  transition: color 0.15s ease;
+  transition: color 0.12s ease;
 }
 
-.inlineReaderBack:hover { color: var(--color-primary); }
+.inlineReaderBack:hover {
+  color: var(--color-primary);
+}
 
 .inlineReaderHeader {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  border-bottom: 1px solid rgba(26, 29, 51, 0.08);
-  padding-bottom: 20px;
+  margin: 0;
+  padding: 0 0 16px;
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .inlineReaderCategory {
-  font-family: var(--font-mono);
+  font-family: var(--type-font-label);
   font-size: 11px;
-  font-weight: 700;
-  color: rgba(26, 29, 51, 0.35);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: 0.02em;
+  color: var(--color-text-faint);
+  text-transform: none;
 }
 
 .inlineReaderTitle {
-  font-family: var(--font-secondary);
-  font-size: 22px;
-  font-weight: 700;
-  color: #1A1D33;
+  font-family: var(--type-font-heading);
+  font-size: 1.5rem;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-heading);
+  color: var(--color-text-dark);
   margin: 0;
   line-height: 1.2;
 }
 
-.inlineReaderLoading { padding: 8px 0; }
+.inlineReaderLoading {
+  padding: 8px 0;
+}
 
 .inlineReaderBody {
-  font-family: var(--font-primary);
+  font-family: var(--type-font-body);
   font-size: 15px;
   line-height: 1.75;
-  color: rgba(26, 29, 51, 0.78);
-}
-.inlineReaderBody p { margin: 0 0 1.1em; }
-.inlineReaderBody h1, .inlineReaderBody h2, .inlineReaderBody h3 {
-  font-family: var(--font-secondary);
-  font-weight: 700;
-  color: #1A1D33;
-  margin: 1.6em 0 0.5em;
-  line-height: 1.2;
-}
-.inlineReaderBody h1 { font-size: 20px; }
-.inlineReaderBody h2 { font-size: 17px; }
-.inlineReaderBody h3 { font-size: 15px; }
-.inlineReaderBody hr { border: none; border-top: 1px solid rgba(26, 29, 51, 0.1); margin: 1.5em 0; }
-.inlineReaderBody em { font-style: italic; }
-.inlineReaderBody strong { font-weight: 600; color: #1A1D33; }
-
-:global([data-theme="dark"]) .inlineReaderTitle,
-:global([data-theme="dark"]) .inlineReaderBody h1,
-:global([data-theme="dark"]) .inlineReaderBody h2,
-:global([data-theme="dark"]) .inlineReaderBody h3,
-:global([data-theme="dark"]) .inlineReaderBody strong { color: var(--color-text-dark); }
-:global([data-theme="dark"]) .inlineReaderBody { color: var(--color-text-muted); }
-:global([data-theme="dark"]) .inlineReaderCategory { color: var(--color-text-faint); }
-:global([data-theme="dark"]) .inlineReaderHeader { border-color: var(--color-border-subtle); }
-:global([data-theme="dark"]) .inlineReaderBack:hover { color: var(--color-primary); }
-
-/* ============================================ */
-/* RESPONSIVE                                   */
-/* ============================================ */
-
-@media (max-width: 900px) {
-  .pageLayout {
-    margin-left: 0;
-  }
-
-  .bgViz {
-    left: 0;
-  }
-}
-
-@media (max-width: 768px) {
-  .content {
-    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
-  }
-}
-
-/* Below the desktop grid the panel is normal flow — sticky positioning and
-   its own scroll area would trap the mission content in a short inner box. */
-@media (max-width: 1023px) {
-  .rightPanel {
-    position: static;
-    max-height: none;
-    overflow: visible;
-    padding: 0;
-    margin: 0;
-  }
-}
-
-@media (max-width: 480px) {
-  .content {
-    padding: 16px 14px calc(96px + env(safe-area-inset-bottom, 0px));
-  }
-
-  .weekNav {
-    gap: 6px;
-    margin: 10px 0 10px;
-  }
-
-  .weekNavArrow {
-    width: 36px;
-    height: 36px;
-  }
-
-  .weekDot {
-    width: 7px;
-    height: 7px;
-  }
-
-  .readingCard {
-    min-height: 84px;
-    padding: 14px 12px;
-    gap: 10px;
-  }
-
-  .readingTitle {
-    font-size: 14px;
-  }
-
-  .readingAuthor {
-    font-size: 11px;
-  }
-}
-
-/* ============================================ */
-/* DARK MODE OVERRIDES                          */
-/* ============================================ */
-
-:global([data-theme="dark"]) .skeletonBlock {
-  background: var(--color-surface-2);
-}
-
-:global([data-theme="dark"]) .skeletonBlock::after {
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
-}
-
-:global([data-theme="dark"]) .weekNavArrow {
-  background: color-mix(in oklch, var(--color-surface-1) 95%, transparent);
-  border-color: var(--color-border-subtle);
-  color: var(--color-text-dark);
-}
-
-:global([data-theme="dark"]) .weekNavArrow:hover:not(:disabled) {
-  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
-}
-
-:global([data-theme="dark"]) .weekDot {
-  background: var(--color-surface-2);
-  border-color: var(--color-border-subtle);
-}
-
-:global([data-theme="dark"]) .weekDotActive {
-  background: var(--color-primary);
-  border-color: color-mix(in oklch, var(--color-primary) 82%, transparent);
-  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-primary) 20%, transparent);
-}
-
-:global([data-theme="dark"]) .readingCard {
-  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface-1));
-  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, rgba(255, 255, 255, 0.06));
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
-}
-
-:global([data-theme="dark"]) .readingThumb {
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 2px 6px rgba(0, 0, 0, 0.5);
-}
-
-:global([data-theme="dark"]) .readingThumb::after {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.25));
-}
-
-:global([data-theme="dark"]) .readingCardSkeleton {
-  background: color-mix(in oklch, var(--color-primary) 10%, var(--color-surface-1));
-  border: 1px solid color-mix(in oklch, var(--color-primary) 28%, rgba(255, 255, 255, 0.06));
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.32);
-}
-
-:global([data-theme="dark"]) .readingCard:hover {
-  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface-1));
-  border-color: color-mix(in srgb, var(--color-primary) 45%, rgba(255, 255, 255, 0.08));
-  box-shadow: 0 4px 20px rgba(139, 149, 255, 0.16);
-}
-
-:global([data-theme="dark"]) .readingCard:hover .readingThumb {
-  box-shadow:
-    0 0 0 1px color-mix(in oklch, var(--color-primary) 38%, transparent),
-    0 4px 10px color-mix(in oklch, var(--color-primary) 25%, transparent);
-}
-
-:global([data-theme="dark"]) .readingCategory {
-  color: var(--color-text-muted);
-}
-
-:global([data-theme="dark"]) .readingTitle {
-  color: var(--color-text-dark);
-}
-
-
-:global([data-theme="dark"]) .readingAuthor {
-  color: var(--color-text-muted);
-}
-
-:global([data-theme="dark"]) .readingArrow {
-  color: var(--color-text-faint);
-}
-
-:global([data-theme="dark"]) .rightPanel {
-  scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
-}
-
-/* ============================================ */
-/* ACADEMIC CURRICULUM — syllabus architecture  */
-/* ============================================ */
-
-.pageLayout,
-.pageLayout * {
-  box-shadow: none !important;
-}
-
-.pageLayout {
-  background-color: var(--color-background);
-  background-image: none;
-}
-
-.pageLayout [style*="--task-accent"] {
-  --task-accent: var(--color-primary) !important;
-}
-
-.content {
-  max-width: none;
-  padding: 0 0 72px;
-}
-
-.controlPanel {
-  display: grid;
-  grid-template-columns: 1fr;
-  min-height: 0;
-  margin: 0;
-  background: var(--color-surface-1);
-  border: 0;
-  border-bottom: 1px solid var(--color-border-strong);
-  border-radius: 0 !important;
-}
-
-.panelBody {
-  display: grid;
-  grid-row: 1;
-  grid-template-columns: 84px minmax(0, 1fr);
-  align-items: start;
-  gap: 28px;
-  padding: 48px 52px;
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-}
-
-.panelBody::before {
-  position: absolute;
-  z-index: 0;
-  inset: 0;
-  content: '';
-  background: url('/images/course-panel-blue-art.png') center / cover no-repeat;
-  opacity: 0.8;
-  pointer-events: none;
-}
-
-.panelBody::after {
-  position: absolute;
-  z-index: 1;
-  inset: 0;
-  content: '';
-  background: color-mix(in oklch, var(--color-surface-1) 48%, transparent);
-  backdrop-filter: blur(18px);
-  pointer-events: none;
-}
-
-.panelBody > * {
-  position: relative;
-  z-index: 2;
-}
-
-.panelAvatarWrap {
-  margin: 2px 0 0;
-}
-
-.panelAvatar {
-  width: 84px;
-  height: 84px;
-  border: 1px solid var(--color-border-strong);
-  border-radius: 50%;
-}
-
-.panelHeader {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(200px, 280px);
-  column-gap: 48px;
-  width: 100%;
-  align-items: flex-start;
-  margin: 0;
-  text-align: left;
-}
-
-.panelHeader > :not(.courseMeta) {
-  grid-column: 1;
-}
-
-.courseEyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: var(--color-text-muted);
-  letter-spacing: 0.035em;
-  text-transform: none;
-}
-
-.panelTitle {
-  max-width: 680px;
-  margin: 12px 0 0;
-  font-family: var(--font-secondary);
-  font-size: clamp(2.35rem, 4vw, 3.6rem);
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.035em;
-  color: var(--color-text-dark);
-}
-
-.panelDescription {
-  max-width: 640px;
-  margin: 18px 0 0;
-  font-size: 1rem;
-  line-height: 1.7;
   color: var(--color-text-soft);
 }
 
-.courseMeta {
-  display: grid;
-  grid-column: 2;
-  grid-row: 1 / span 3;
-  grid-template-columns: 1fr;
-  align-self: start;
-  justify-self: end;
-  width: min(100%, 280px);
-  gap: 12px;
-  margin: 0;
-  padding: 0 0 0 24px;
-  border-top: 0;
-  border-left: 1px solid var(--color-border-strong);
+.inlineReaderBody p {
+  margin: 0 0 1.1em;
 }
 
-.courseMetaItem {
-  min-width: 0;
-  margin: 0;
-  padding: 0;
-  border-left: 0;
+.inlineReaderBody h1,
+.inlineReaderBody h2,
+.inlineReaderBody h3 {
+  font-family: var(--type-font-heading);
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-heading);
+  color: var(--color-text-dark);
+  margin: 1.6em 0 0.5em;
+  line-height: 1.2;
 }
 
-.courseMetaItem:first-child {
-  padding: 0;
-  border-left: 0;
+.inlineReaderBody h1 { font-size: 20px; }
+.inlineReaderBody h2 { font-size: 17px; }
+.inlineReaderBody h3 { font-size: 15px; }
+
+.inlineReaderBody hr {
+  border: none;
+  border-top: 1px solid var(--color-border-subtle);
+  margin: 1.5em 0;
 }
 
-.courseMetaLabel,
-.courseMetaValue {
-  margin: 0;
+.inlineReaderBody em {
+  font-style: italic;
 }
 
-.courseMetaLabel {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  font-weight: 600;
-  color: var(--color-text-faint);
-  letter-spacing: 0.04em;
-}
-
-.courseMetaValue {
-  margin-top: 5px;
-  font-family: var(--font-secondary);
-  font-size: 0.86rem;
-  font-weight: 650;
-  line-height: 1.4;
+.inlineReaderBody strong {
+  font-weight: var(--type-weight-semibold);
   color: var(--color-text-dark);
 }
 
-.panelBadgeRow {
-  position: static;
-  grid-row: 2;
-  width: auto;
-  max-width: none;
-  margin: 0 52px 28px 164px;
-}
+/* ============================================ */
+/* SHARED COMPAT — used by sibling course views */
+/* ============================================ */
 
-.weeklyShell {
-  display: grid;
-  grid-template-columns: 218px minmax(0, 1fr);
-  align-items: start;
-  gap: 0;
-  justify-content: stretch;
-  background: var(--color-surface-1);
-  border-bottom: 1px solid var(--color-border-strong);
-}
-
-.weeklyShell:has(> .rightPanel > *) {
-  grid-template-columns: 180px minmax(0, 1fr) minmax(320px, 390px);
-  gap: 0;
-}
-
-.curriculumRail {
-  position: sticky;
-  top: calc(72px + 24px);
-  overflow: hidden;
-  background: var(--color-surface-1);
-  border: 0;
-  border-right: 1px solid var(--color-border-strong);
-  border-radius: 0;
-}
-
-.curriculumRailHeader {
-  padding: 18px 18px 16px;
-  border-bottom: 1px solid var(--color-border-strong);
-}
-
-.curriculumRailKicker {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: var(--color-text-muted);
-  letter-spacing: 0.04em;
-}
-
-.curriculumRailTitle {
-  display: block;
-  margin-top: 5px;
-  font-family: var(--font-secondary);
-  font-size: 1rem;
-  line-height: 1.25;
-  color: var(--color-text-dark);
-}
-
-.weekNavDots {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0;
-}
-
-.weekDot {
-  display: flex;
+.backBtn {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
   gap: 8px;
-  width: 100%;
-  height: auto;
-  min-height: 42px;
-  padding: 10px 14px;
-  background: transparent;
-  border: 0;
-  border-bottom: 1px solid var(--color-border-subtle);
-  border-radius: 0;
+  padding: 7px 14px;
+  font-family: var(--type-font-label);
+  font-size: 12px;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: 0.02em;
   color: var(--color-text-muted);
-  text-align: left;
-  transform: none;
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 7px;
+  text-decoration: none;
+  width: fit-content;
+  cursor: pointer;
+  transition: border-color 0.12s ease, color 0.12s ease, background 0.12s ease;
 }
 
-.weekDot:last-child {
-  border-bottom: 0;
+.backBtn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-surface-1));
 }
 
-.weekDot:hover {
-  background: color-mix(in oklch, var(--color-text-dark) 4%, var(--color-surface-1));
-}
-
-.weekDotActive {
-  padding-left: 11px;
-  background: color-mix(in oklch, var(--color-primary) 10%, var(--color-surface-1));
-  border-left: 3px solid var(--color-primary);
-  color: var(--color-text-dark);
-  transform: none;
-}
-
-.weekDotSealed {
-  background: var(--color-surface-2);
-  border-color: var(--color-border-subtle);
-}
-
-.weekDotLoading {
-  background: transparent;
-}
-
-.weekDotNumber {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 650;
-  letter-spacing: 0.015em;
-}
-
-.weekDotStatus {
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  color: var(--color-text-faint);
-}
-
-.leftCol {
-  min-width: 0;
-  padding: 32px 36px 48px;
-}
-
-.weekHeader {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: end;
-  gap: 24px;
-  padding: 0 0 22px;
-  background: transparent !important;
-  border: 0;
-  border-top: 0;
-  border-bottom: 1px solid var(--color-border-strong);
-  border-radius: 0 !important;
-  backdrop-filter: none;
-}
-
-.weekHeadingGroup {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 7px;
-  min-width: 0;
-  padding-top: 18px;
-}
-
-.weekEyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: var(--color-text-muted);
-  letter-spacing: 0.035em;
-  line-height: 1.3;
-  text-transform: none;
-}
-
-.weekHeading {
-  margin: 0;
-  font-family: var(--font-poppins);
-  font-size: clamp(1.9rem, 3vw, 2.8rem);
-  font-weight: 700;
-  line-height: 1.08;
-  letter-spacing: -0.025em;
-  color: var(--color-text-dark);
+.backBtn svg {
+  flex-shrink: 0;
 }
 
 .weekNav {
@@ -1224,197 +931,120 @@
   justify-content: center;
   gap: 7px;
   width: auto;
-  height: 38px;
-  padding: 0 12px;
+  height: 32px;
+  padding: 0 11px;
   background: var(--color-surface-1);
-  border: 1px solid var(--color-border-strong);
-  border-radius: 2px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 7px;
   color: var(--color-text-dark);
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 650;
+  font-family: var(--type-font-label);
+  font-size: 11px;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease;
 }
 
 .weekNavArrow:hover:not(:disabled) {
-  background: color-mix(in oklch, var(--color-text-dark) 4%, var(--color-surface-1));
-  border-color: var(--color-border-strong);
+  background: color-mix(in srgb, var(--color-primary) 4%, var(--color-surface-1));
+  border-color: color-mix(in srgb, var(--color-primary) 36%, var(--color-border-subtle));
 }
 
-.weekContent {
-  gap: 0;
-  margin-top: 0;
+.weekNavArrow:active:not(:disabled) {
+  transform: scale(0.97);
 }
 
-.readingCard,
-.readingCardSkeleton {
-  grid-template-columns: 80px minmax(0, 1fr) auto;
-  gap: 16px;
-  min-height: 112px;
+.weekNavArrow:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.contentDesktop {
+  max-width: none;
+  display: grid;
+  grid-template-columns: minmax(0, 420px) minmax(280px, 520px);
+  gap: 0 32px;
+  align-items: start;
+  padding: 24px 32px 48px;
   margin: 0;
-  padding: 16px;
-  background: var(--color-surface-1);
-  border: 1px solid var(--color-border-strong);
-  border-radius: 8px !important;
+  justify-content: center;
 }
 
-.readingCard {
-  border-left: 1px solid var(--color-border-strong);
-  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
-}
+/* ============================================ */
+/* DARK MODE                                    */
+/* ============================================ */
 
-.readingCard:hover,
-.readingCardActive {
-  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-1)) !important;
-  border-color: color-mix(in oklch, var(--color-primary) 46%, var(--color-border-strong)) !important;
-  transform: translateY(-1px);
-}
-
-.readingAccent {
-  display: none;
-}
-
-.readingThumb {
-  width: 80px;
-  height: 80px;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 6px;
-}
-
-.readingTitle {
-  font-family: var(--font-poppins);
-  font-size: 1.1rem;
-  font-weight: 700;
-  line-height: 1.25;
-  color: var(--color-text-dark);
-}
-
-.missionsHeadingRow {
-  justify-content: flex-start;
-  gap: 0;
-  margin: 0;
-  padding: 14px 0 12px;
-  background: transparent !important;
-  border: 0;
-  border-top: 1px solid var(--color-border-strong);
-  border-bottom: 1px solid var(--color-border-strong);
-  border-radius: 0 !important;
-}
-
-.missionsDivider {
-  display: none;
-}
-
-.missionsHeading {
-  margin: 0;
-  font-family: var(--font-secondary);
-  font-size: 1.1rem;
-  font-weight: 650;
-  color: var(--color-text-dark);
-  letter-spacing: 0;
-  text-transform: none;
-}
-
-.rightPanel {
-  position: sticky;
-  top: calc(72px + 24px);
-  max-height: calc(100vh - 72px - 48px);
-  padding: 0;
-  margin: 0;
-  overflow-y: auto;
-}
-
-.rightPanel:empty {
-  display: none;
-}
-
-.popupCard {
-  background: var(--color-surface-1);
-  border: 1px solid var(--color-border-strong);
-  border-radius: 2px !important;
-}
-
-.popupCard .inlineReaderInner {
-  gap: 20px;
-  padding: 24px 26px 32px;
-}
-
-.inlineReaderHeader {
-  margin: 0;
-  padding: 0 0 18px;
-  background: transparent !important;
-  border-bottom: 1px solid var(--color-border-strong);
-}
-
-.inlineReaderCategory {
-  font-size: 0.7rem;
-  color: var(--color-text-muted);
-  text-transform: none;
-}
-
-.inlineReaderTitle {
-  font-size: 1.75rem;
-  line-height: 1.15;
-}
-
-:global([data-theme="dark"]) .controlPanel,
-:global([data-theme="dark"]) .curriculumRail,
-:global([data-theme="dark"]) .readingCard,
-:global([data-theme="dark"]) .readingCardSkeleton,
-:global([data-theme="dark"]) .popupCard,
-:global([data-theme="dark"]) .weekNavArrow {
-  background: var(--color-surface-1);
-  border-color: var(--color-border-strong);
-}
-
-:global([data-theme="dark"]) .pageLayout {
-  background-color: var(--color-background);
-  background-image: none;
-}
-
-:global([data-theme="light"]) .pageLayout {
-  --color-background: var(--palette-cool-canvas);
-  --color-surface-base: var(--palette-cool-canvas);
-  --color-surface-1: var(--palette-cool-surface);
-  --color-surface-2: var(--palette-cool-surface-muted);
-  --color-surface-3: color-mix(in srgb, var(--palette-cool-surface-muted) 82%, var(--color-text-dark));
-  background-color: var(--color-background);
-  background-image: none;
-  color: var(--color-text-dark);
-}
-
-:global([data-theme="light"]) .controlPanel,
-:global([data-theme="light"]) .weeklyShell,
-:global([data-theme="light"]) .curriculumRail,
-:global([data-theme="light"]) .readingCard,
-:global([data-theme="light"]) .readingCardSkeleton,
-:global([data-theme="light"]) .popupCard,
-:global([data-theme="light"]) .weekNavArrow {
-  background: var(--color-surface-1);
-  border-color: var(--color-border-strong);
-}
-
-:global([data-theme="light"]) .panelTitle,
-:global([data-theme="light"]) .courseMetaValue,
-:global([data-theme="light"]) .curriculumRailTitle,
-:global([data-theme="light"]) .weekHeading,
-:global([data-theme="light"]) .readingTitle,
-:global([data-theme="light"]) .missionsHeading {
-  color: var(--color-text-dark);
-}
-
-:global([data-theme="light"]) .panelDescription,
-:global([data-theme="light"]) .weekDot,
-:global([data-theme="light"]) .readingCategory {
-  color: var(--color-text-muted);
-}
-
-:global([data-theme="dark"]) .weekDotActive {
-  background: color-mix(in oklch, var(--color-primary) 14%, var(--color-surface-1));
-}
-
-:global([data-theme="dark"]) .weekDotSealed {
+:global([data-theme="dark"]) .skeletonBlock {
   background: var(--color-surface-2);
 }
+
+:global([data-theme="dark"]) .skeletonBlock::after {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+}
+
+:global([data-theme="dark"]) .weeklyShell {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}
+
+:global([data-theme="dark"]) .weekDot:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+:global([data-theme="dark"]) .weekDotActive,
+:global([data-theme="dark"]) .weekDotActive:hover {
+  background: color-mix(in srgb, var(--color-primary) 16%, var(--color-surface-1));
+  border-left-color: var(--color-primary);
+}
+
+:global([data-theme="dark"]) .weekDotStatus {
+  background: var(--color-surface-1);
+}
+
+:global([data-theme="dark"]) .weekDotActive .weekDotStatus,
+:global([data-theme="dark"]) .weekDotSealed .weekDotStatus {
+  border-color: color-mix(in srgb, var(--color-primary) 42%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 16%, transparent);
+  color: var(--color-primary);
+}
+
+:global([data-theme="dark"]) .readingCard:hover {
+  background: color-mix(in srgb, var(--color-primary) 9%, var(--color-surface-1));
+  border-color: color-mix(in srgb, var(--color-primary) 42%, var(--color-border-subtle));
+}
+
+:global([data-theme="dark"]) .readingCardActive,
+:global([data-theme="dark"]) .readingCardActive:hover {
+  background: color-mix(in srgb, var(--color-primary) 15%, var(--color-surface-1));
+  border-color: var(--color-primary);
+}
+
+:global([data-theme="dark"]) .weekNavArrow:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-primary) 9%, var(--color-surface-1));
+}
+
+:global([data-theme="dark"]) .panelBadgeDiamonds,
+:global([data-theme="dark"]) .panelBadgeProgress {
+  background: var(--color-surface-1);
+  border-color: var(--color-border-subtle);
+}
+
+:global([data-theme="dark"]) .panelBadgeSquare {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+:global([data-theme="dark"]) .panelBadgeSquareFilled {
+  background: var(--color-primary);
+}
+
+:global([data-theme="dark"]) .rightPanel {
+  scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
+}
+
+/* ============================================ */
+/* RESPONSIVE                                   */
+/* ============================================ */
 
 @media (max-width: 1023px) {
   .content {
@@ -1427,11 +1057,13 @@
   }
 
   .panelBody {
-    padding: 38px 36px;
+    padding: 36px 32px;
   }
 
   .panelHeader {
     display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .courseMeta {
@@ -1442,9 +1074,9 @@
     justify-self: auto;
     width: 100%;
     gap: 0;
-    margin: 30px 0 0;
+    margin: 28px 0 0;
     padding: 20px 0 0;
-    border-top: 1px solid var(--color-border-strong);
+    border-top: 1px solid var(--color-border-subtle);
     border-left: 0;
   }
 
@@ -1466,8 +1098,10 @@
 
   .curriculumRail {
     position: static;
+    max-height: none;
+    overflow: visible;
     border-right: 0;
-    border-bottom: 1px solid var(--color-border-strong);
+    border-bottom: 1px solid var(--color-border-subtle);
   }
 
   .weekNavDots {
@@ -1479,35 +1113,46 @@
     border-right: 1px solid var(--color-border-subtle);
   }
 
+  /* Below the desktop grid the panel is normal flow — sticky positioning and
+     an inner scroll box would trap the reading in a short viewport. */
   .rightPanel {
     position: static;
     max-height: none;
     overflow: visible;
+    padding: 0 32px 40px;
+    margin: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .pageLayout {
+    margin-left: 0;
+  }
+
+  .bgViz {
+    left: 0;
+  }
+
+  .content {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
   }
 }
 
 @media (max-width: 640px) {
-  .content {
-    padding: 72px 0 calc(96px + env(safe-area-inset-bottom, 0px));
-  }
-
-  .controlPanel {
-    margin-bottom: 0;
-  }
-
   .panelBody {
     grid-template-columns: 58px minmax(0, 1fr);
     gap: 18px;
-    padding: 28px 22px;
+    padding: 28px 20px;
   }
 
   .panelAvatar {
     width: 58px;
     height: 58px;
+    border-radius: 10px;
   }
 
   .panelTitle {
-    font-size: 2.15rem;
+    font-size: 2rem;
   }
 
   .panelDescription {
@@ -1519,7 +1164,7 @@
     grid-column: 1 / -1;
     grid-template-columns: 1fr;
     gap: 12px;
-    margin-top: 22px;
+    margin-top: 20px;
     padding-top: 16px;
   }
 
@@ -1538,38 +1183,39 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .weekHeader {
-    grid-template-columns: 1fr;
-    align-items: start;
-    gap: 18px;
-  }
-
   .leftCol {
-    padding: 26px 20px 40px;
+    padding: 24px 20px 40px;
   }
 
-  .weekNav {
-    width: 100%;
-  }
-
-  .weekNavArrow {
-    flex: 1;
+  .rightPanel {
+    padding: 0 20px 40px;
   }
 
   .readingCard,
   .readingCardSkeleton {
     grid-template-columns: 64px minmax(0, 1fr) auto;
     gap: 13px;
-    min-height: 108px;
-    padding: 14px;
+    min-height: 92px;
+    padding: 12px;
   }
 
-  .readingThumb {
+  .readingThumb,
+  .readingMediaSkeleton {
     width: 64px;
     height: 64px;
   }
 
   .readingTitle {
     font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .readingTitle {
+    font-size: 0.9375rem;
+  }
+
+  .readingAuthor {
+    font-size: 11px;
   }
 }

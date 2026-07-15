@@ -18,10 +18,12 @@ const ANGEL_IMAGE = 'https://i.imgur.com/KkpN9as.png';
 const COMPLETION_REWARD = 50;
 const SEAL_REWARD = 200;
 
-const TASK_ACCENTS = ['#6C5CE7', '#F97316', '#22D3EE', '#F43F5E', '#A855F7', '#14B8A6', '#EAB308'];
+// Per-task calm accent palette — mirrors the studio intake / WeekTasksView
+// hues (indigo → violet → sky → green); no warning or emergency colors.
+const TASK_ACCENTS = ['#5168FF', '#7C8FFF', '#8B5CF6', '#A855F7', '#38BDF8', '#22D3EE', '#2DD4BF', '#34D399'];
 const ARTWORK_VARIANTS = ['aurora', 'sunrise', 'orbit', 'bloom', 'ribbon', 'prism'];
-const READING_ACCENT = '#6C5CE7';
-const READING_THUMB_BG = 'linear-gradient(135deg, #6C5CE7 0%, #A855F7 50%, #C084FC 100%)';
+const READING_ACCENT = '#5168FF';
+const READING_THUMB_BG = 'color-mix(in srgb, #5168FF 14%, transparent)';
 
 type PageProps = { params: { slug: string } };
 
@@ -308,7 +310,7 @@ export default function CourseSlugPage({ params }: PageProps) {
             </div>
 
             <div className={courseStyles.panelHeader}>
-              <span className={courseStyles.courseEyebrow}>Independent Study Program</span>
+              <span className={courseStyles.courseEyebrow}>Independent study program</span>
               <h1 id="course-title" className={courseStyles.panelTitle}>{vipCourse.title || 'Custom course'}</h1>
               {vipCourse.focus && <p className={courseStyles.panelDescription}>{vipCourse.focus}</p>}
               <dl className={courseStyles.courseMeta} aria-label="Course details">
@@ -333,7 +335,7 @@ export default function CourseSlugPage({ params }: PageProps) {
             <nav className={courseStyles.curriculumRail} aria-label="Course outline">
               <div className={courseStyles.curriculumRailHeader}>
                 <span className={courseStyles.curriculumRailKicker}>Curriculum</span>
-                <strong className={courseStyles.curriculumRailTitle}>Course Outline</strong>
+                <strong className={courseStyles.curriculumRailTitle}>Course outline</strong>
               </div>
               <div className={courseStyles.weekNavDots}>
                 {weeks.map((w) => {
@@ -385,7 +387,7 @@ export default function CourseSlugPage({ params }: PageProps) {
 
             {/* Coursework heading */}
             {taskComponents.length > 0 && (
-              <div className={courseStyles.missionsHeadingRow} style={{ marginBottom: 12 }}>
+              <div className={courseStyles.missionsHeadingRow}>
                 <span className={courseStyles.missionsDivider} />
                 <h2 className={courseStyles.missionsHeading}>Coursework</h2>
                 <span className={courseStyles.missionsDivider} />
@@ -459,7 +461,7 @@ export default function CourseSlugPage({ params }: PageProps) {
                               setPendingConfirm(c);
                             }}
                           >
-                            {isComplete ? 'Task Complete' : `Complete task ◆ +${COMPLETION_REWARD}`}
+                            {isComplete ? 'Task complete' : `Complete task ◆ +${COMPLETION_REWARD}`}
                           </button>
                         </div>
                       </div>
@@ -473,7 +475,7 @@ export default function CourseSlugPage({ params }: PageProps) {
             {allDone && !isSealed && (
               <div className={styles.sealSection}>
                 <button type="button" className={styles.sealBtn} onClick={handleSeal} disabled={sealing}>
-                  {sealing ? 'Sealing...' : `Seal Week ${activeWeek} ◆ +${SEAL_REWARD}`}
+                  {sealing ? 'Sealing...' : `Seal week ${activeWeek} ◆ +${SEAL_REWARD}`}
                 </button>
               </div>
             )}
@@ -509,41 +511,43 @@ export default function CourseSlugPage({ params }: PageProps) {
               </div>
             )}
 
-            {pendingConfirm && (
-              <div className={styles.confirmOverlay} onClick={() => setPendingConfirm(null)}>
-                <div className={styles.confirmModal} onClick={(e) => e.stopPropagation()}>
-                  <div className={styles.confirmHeader}>
-                    <span className={styles.confirmKanji}>任務記録</span>
-                    <span className={styles.confirmTitle}>Mission Log</span>
-                  </div>
-                  <div className={styles.confirmBody}>
-                    <p className={styles.confirmText}>
-                      Completing a task is permanent — it can&apos;t be undone. Finish it and receive <strong>+{COMPLETION_REWARD} diamonds</strong>?
-                    </p>
-                  </div>
-                  <div className={styles.confirmFooter}>
-                    <button
-                      className={styles.confirmBack}
-                      onClick={() => setPendingConfirm(null)}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      className={styles.confirmSubmit}
-                      onClick={() => {
-                        if (pendingConfirm) handleComplete(pendingConfirm);
-                        setPendingConfirm(null);
-                      }}
-                    >
-                      Complete
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-            {!rightContent && <div />}
           </aside>
           </section>
+
+          {/* Fixed overlay — lives outside the weekly shell so opening it
+              never toggles the :has() grid behind the modal. */}
+          {pendingConfirm && (
+            <div className={styles.confirmOverlay} onClick={() => setPendingConfirm(null)}>
+              <div className={styles.confirmModal} onClick={(e) => e.stopPropagation()}>
+                <div className={styles.confirmHeader}>
+                  <span className={styles.confirmKanji}>任務記録</span>
+                  <span className={styles.confirmTitle}>Mission log</span>
+                </div>
+                <div className={styles.confirmBody}>
+                  <p className={styles.confirmText}>
+                    Completing a task is permanent — it can&apos;t be undone. Finish it and receive <strong>+{COMPLETION_REWARD} diamonds</strong>?
+                  </p>
+                </div>
+                <div className={styles.confirmFooter}>
+                  <button
+                    className={styles.confirmBack}
+                    onClick={() => setPendingConfirm(null)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className={styles.confirmSubmit}
+                    onClick={() => {
+                      if (pendingConfirm) handleComplete(pendingConfirm);
+                      setPendingConfirm(null);
+                    }}
+                  >
+                    Complete
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
         </main>
       </div>

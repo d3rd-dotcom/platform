@@ -711,7 +711,7 @@ export default function WeekTasksView({
                       'Completed'
                     ) : (
                       <>
-                        Complete Task
+                        Complete task
                         <span className={styles.markDoneCredits}>
                           <Image src="/icons/ui-diamond.svg" alt="" width={12} height={12} />
                           +50 diamonds
@@ -739,7 +739,7 @@ export default function WeekTasksView({
             onClick={() => { play('click'); setSealError(null); setShowSealModal(true); }}
             onMouseEnter={() => play('hover')}
           >
-            Seal The Week
+            Seal the week
           </button>
           {!canSeal && (
             <span className={styles.sealHint}>Complete all {totalSections} tasks to seal</span>
@@ -765,7 +765,7 @@ export default function WeekTasksView({
               <>
                 <div className={styles.missionModalHeader}>
                   <span className={styles.missionModalKanji}>任務記録</span>
-                  <span className={styles.missionModalTitle}>Mission Log</span>
+                  <span className={styles.missionModalTitle}>Mission log</span>
                 </div>
                 <div className={styles.missionModalBody}>
                   <p className={styles.missionModalText}>
@@ -778,7 +778,7 @@ export default function WeekTasksView({
                 <div className={styles.missionModalFooter}>
                   <button className={styles.missionModalBack}
                     onClick={() => { play('toggle-off'); setShowSealModal(false); setSealError(null); }}
-                    onMouseEnter={() => play('hover')}>Go Back</button>
+                    onMouseEnter={() => play('hover')}>Go back</button>
                   <button className={styles.missionModalConfirm}
                     onClick={() => { play('celebration'); handleSealWeek(); }}
                     onMouseEnter={() => play('hover')}>Completed</button>
@@ -801,7 +801,7 @@ export default function WeekTasksView({
           <div className={styles.missionModal} onClick={e => e.stopPropagation()}>
             <div className={styles.missionModalHeader}>
               <span className={styles.missionModalKanji}>任務記録</span>
-              <span className={styles.missionModalTitle}>Mission Log</span>
+              <span className={styles.missionModalTitle}>Mission log</span>
             </div>
             <div className={styles.missionModalBody}>
               <p className={styles.missionModalText}>
@@ -811,10 +811,10 @@ export default function WeekTasksView({
             <div className={styles.missionModalFooter}>
               <button className={styles.missionModalBack}
                 onClick={() => { play('toggle-off'); setPendingTaskId(null); }}
-                onMouseEnter={() => play('hover')}>Go Back</button>
+                onMouseEnter={() => play('hover')}>Go back</button>
               <button className={styles.missionModalConfirm}
                 onClick={confirmComplete}
-                onMouseEnter={() => play('hover')}>Complete Task</button>
+                onMouseEnter={() => play('hover')}>Complete task</button>
             </div>
           </div>
         </div>
