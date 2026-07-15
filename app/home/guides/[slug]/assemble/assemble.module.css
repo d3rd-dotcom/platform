@@ -131,10 +131,9 @@
 
 .cardSection {
   font-family: var(--type-font-label);
-  font-size: 0.625rem;
+  font-size: 0.75rem;
   font-weight: var(--type-weight-bold, 700);
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.01em;
   color: var(--color-primary);
 }
 
