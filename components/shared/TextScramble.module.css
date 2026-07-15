@@ -1,9 +1,19 @@
 /* ──────────────────────────────────────────────────────────────────────────
-   Text scramble / decode effect. Monospace + tabular figures so the churn
-   never reflows surrounding layout while glyphs cycle.
+   Text scramble / decode effect.
+
+   .monospace (default): tabular figures so the churn never reflows
+   surrounding layout while glyphs cycle — for compact UI text.
+
+   Fluid (monospace=false): inherits the parent's font and wraps normally —
+   for running text like a headline, at the cost of minor width jitter
+   during the brief decode.
    ────────────────────────────────────────────────────────────────────────── */
 
 .scramble {
+  display: inline;
+}
+
+.monospace {
   display: inline-flex;
   font-family: var(--type-font-code);
   font-variant-numeric: tabular-nums;
@@ -14,4 +24,8 @@
   display: inline-block;
   width: 1ch;
   text-align: center;
+}
+
+.charFluid {
+  display: inline;
 }

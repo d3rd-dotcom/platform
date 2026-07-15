@@ -15,6 +15,14 @@ export interface TextScrambleProps {
   /** Bumping this value re-runs the scramble (e.g. when `text` changes). */
   playKey?: string | number;
   className?: string;
+  /**
+   * Locks to a monospace/tabular font so per-character churn never jitters
+   * the surrounding layout — right for compact UI text (stats, labels).
+   * Set false to inherit the parent's font and wrap normally, for running
+   * text like a headline; width jitter during the brief decode is an
+   * acceptable trade for keeping the real typography. Defaults to true.
+   */
+  monospace?: boolean;
 }
 
 /**
@@ -29,6 +37,7 @@ export default function TextScramble({
   autoPlay = true,
   playKey,
   className = '',
+  monospace = true,
 }: TextScrambleProps) {
   const [display, setDisplay] = useState(text);
   const [reduceMotion, setReduceMotion] = useState(false);
@@ -81,12 +90,17 @@ export default function TextScramble({
 
   const spans = useMemo(() => display.split(''), [display]);
 
+  const wrapperClass = [styles.scramble, monospace ? styles.monospace : '', className]
+    .filter(Boolean)
+    .join(' ');
+  const charClass = monospace ? styles.char : styles.charFluid;
+
   return (
-    <span className={`${styles.scramble} ${className}`} aria-label={text}>
+    <span className={wrapperClass} role="text" aria-label={text}>
       <span aria-hidden="true">
         {spans.map((char, i) => (
           // eslint-disable-next-line react/no-array-index-key
-          <span key={i} className={styles.char}>
+          <span key={i} className={charClass}>
             {char === ' ' ? ' ' : char}
           </span>
         ))}
