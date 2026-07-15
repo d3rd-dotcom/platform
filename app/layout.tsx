@@ -213,7 +213,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <SoundProvider>
           <RouteShell>{children}</RouteShell>
         </SoundProvider>
