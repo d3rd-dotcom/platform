@@ -1,28 +1,45 @@
 .container {
   position: relative;
+  width: 100%;
+  aspect-ratio: 474 / 330;
+  cursor: default;
+  /* Same springy angled lift as the course folders beside it. */
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Inset to the folder silhouette's visible edges (tab top y=18, body bottom
+   y=328 in the 330-unit viewBox) so the dashed card matches folder height. */
+.card {
+  position: absolute;
+  inset: 5.45% 0 0.6% 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  aspect-ratio: 474 / 330;
   padding: 24px;
   box-sizing: border-box;
   text-align: center;
   background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-base));
   border: 2px dashed color-mix(in oklch, var(--color-primary) 30%, var(--color-border-subtle));
   border-radius: 22px;
-  transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-  cursor: default;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .container:hover {
+  transform: translate(-3px, -7px) rotate(-1.6deg);
+}
+
+.container:hover .card {
   border-color: var(--color-primary);
   background: color-mix(in oklch, var(--color-primary) 7%, var(--color-surface-base));
-  transform: translateY(-3px);
-  box-shadow:
-    0 4px 0 var(--color-primary),
-    0 6px 0 var(--color-primary-hover);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .container,
+  .container:hover {
+    transform: none;
+    transition: none;
+  }
 }
 
 .illustration {

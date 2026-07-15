@@ -1,17 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { motion, type PanInfo } from 'framer-motion';
+import { BookOpen, Sparkle } from '@phosphor-icons/react';
 import { useSound } from '@/hooks/useSound';
 import styles from './CourseFolderCard.module.css';
 
 const FOLDER_PATH =
   'M0 42 Q0 18 24 18 H224 Q242 18 252 30 L266 48 Q276 60 292 60 H450 Q472 60 472 84 V304 Q472 328 448 328 H24 Q0 328 0 304 Z';
-
-const TAB_DRAG_LIMIT = 40;
-const TAB_DRAG_COMMIT = 26;
 
 interface CourseFolderCardProps {
   title: string;
@@ -27,8 +23,6 @@ interface CourseFolderCardProps {
 }
 
 export default function CourseFolderCard({
-  title,
-  count,
   href,
   onOpen,
   images,
@@ -40,16 +34,6 @@ export default function CourseFolderCard({
 }: CourseFolderCardProps) {
   const slots = images.slice(0, 4);
   const { play } = useSound();
-  const router = useRouter();
-  const [tabDragging, setTabDragging] = useState(false);
-
-  // Pulling the tab down past the commit distance opens the folder,
-  // mirroring the drag-a-tab interaction at lucasch.me.
-  const openByTabPull = () => {
-    play('click');
-    if (href) router.push(href);
-    else onOpen?.();
-  };
 
   const contents = (
     <>
@@ -83,35 +67,18 @@ export default function CourseFolderCard({
         </svg>
       </div>
 
-      {/* Tab label — drag it down to pull the folder open */}
-      <motion.div
-        className={styles.tabRow}
-        drag="y"
-        dragConstraints={{ top: 0, bottom: TAB_DRAG_LIMIT }}
-        dragElastic={0.25}
-        dragSnapToOrigin
-        onDragStart={(e) => {
-          e.stopPropagation();
-          setTabDragging(true);
-        }}
-        onDragEnd={(e, info: PanInfo) => {
-          e.stopPropagation();
-          setTabDragging(false);
-          if (info.offset.y >= TAB_DRAG_COMMIT) openByTabPull();
-        }}
-        onPointerDown={(e) => e.stopPropagation()}
-        onClick={(e) => e.stopPropagation()}
-        style={{ cursor: tabDragging ? 'grabbing' : 'grab', touchAction: 'none' }}
-      >
+      {/* Placeholder icon pair on the folder tab */}
+      <span className={styles.tabIcons} aria-hidden="true">
         <span
-          className={styles.folderAvatar}
+          className={styles.tabIcon}
           style={avatarSrc ? { backgroundImage: `url(${JSON.stringify(avatarSrc)})` } : undefined}
-          aria-hidden="true"
-        />
-        <span className={styles.tabTitle}>{title}</span>
-      </motion.div>
-
-      <span className={styles.tabBadge}>{count}</span>
+        >
+          {!avatarSrc && <Sparkle size={12} weight="fill" />}
+        </span>
+        <span className={`${styles.tabIcon} ${styles.tabIconGlyph}`}>
+          <BookOpen size={12} weight="bold" />
+        </span>
+      </span>
 
       {centerLabel && <span className={styles.centerLabel}>{centerLabel}</span>}
 

@@ -11,11 +11,12 @@ import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import { scriptForWeek, WEEKLY_SEEN_KEY } from '@/components/daily-read/weeklyScripts';
 import CourseFolderCard from '@/components/home/CourseFolderCard';
 import EmptyCourseStudioFolder from '@/components/home/EmptyCourseStudioFolder';
-import FolderCardWrapper from '@/components/home/FolderCardWrapper';
 import ProfileDashboard from '@/components/home/ProfileDashboard';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
 import FieldNotesSheet from '@/components/home/FieldNotesSheet';
 import StatsChart from '@/components/home/StatsChart';
+import FolderCardWrapper from '@/components/home/FolderCardWrapper';
+import HomeLeaderboard from '@/components/home/HomeLeaderboard';
 import FeatureTour from '@/components/feature-tour/FeatureTour';
 
 import type { CourseData } from '@/lib/personal-course';
@@ -137,7 +138,6 @@ export default function HomePage() {
   const [hasAngel, setHasAngel] = useState(false);
   const [fieldNotesOpen, setFieldNotesOpen] = useState(false);
   const [notebookEntriesUnlocked, setNotebookEntriesUnlocked] = useState(false);
-  const [courseIndicators, setCourseIndicators] = useState({ completed: 0, inProgress: 0, saved: 0 });
   const [introOpen, setIntroOpen] = useState(false);
   const [courseDialogue, setCourseDialogue] = useState<CourseDialogue>(
     FIRST_COURSES_DIALOGUE,
@@ -326,29 +326,6 @@ export default function HomePage() {
 
   }, [ready, authenticated]);
 
-  useEffect(() => {
-    if (!ready || !authenticated) return;
-
-    (async () => {
-      try {
-        const token = await getAccessToken();
-        const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
-        const res = await fetch('/api/vip/courses/public', { cache: 'no-store', credentials: 'include', headers });
-        if (!res.ok) return;
-        const data = await res.json();
-        const courses = data.courses ?? [];
-        setCourseIndicators({
-          completed: courses.filter((course: { viewerProgressPct?: number }) => course.viewerProgressPct === 100).length,
-          inProgress: courses.filter((course: { viewerProgressPct?: number }) => {
-            const progress = course.viewerProgressPct ?? 0;
-            return progress > 0 && progress < 100;
-          }).length,
-          saved: courses.length,
-        });
-      } catch { /* Keep the zero-state indicators visible. */ }
-    })();
-  }, [ready, authenticated, getAccessToken]);
-
   const loadMyGuides = useCallback(async () => {
     try {
       const headers = await authHeaders();
@@ -420,20 +397,7 @@ export default function HomePage() {
         <div data-tour="home-profile">
           <ProfileDashboard />
         </div>
-        <section className={styles.indicators} aria-label="Course indicators" onMouseEnter={() => play('soft-hover')}>
-          <div className={styles.indicator}>
-            <span className={styles.indicatorLabel}>Completed courses</span>
-            <span className={styles.indicatorValue}>{courseIndicators.completed}</span>
-          </div>
-          <div className={styles.indicator}>
-            <span className={styles.indicatorLabel}>In progress of study</span>
-            <span className={styles.indicatorValue}>{courseIndicators.inProgress}</span>
-          </div>
-          <div className={styles.indicator}>
-            <span className={styles.indicatorLabel}>Saved courses</span>
-            <span className={styles.indicatorValue}>{courseIndicators.saved}</span>
-          </div>
-        </section>
+        <HomeLeaderboard />
         <div className={styles.dailyNotes} data-tour="daily-note">
           <DailyNotes enablePersistence={authenticated && ready} compact compactLabel="Daily Notes" />
           <button
@@ -463,16 +427,8 @@ export default function HomePage() {
                     href="/shadow-work"
                     avatarSrc="/blue/blue-home.png"
                     centerLabel="Shadow Work"
+                    ctaLabel="Continue Course"
                     ctaDark
-                    images={[]}
-                  />
-                  <CourseFolderCard
-                    title="Course Library"
-                    count={academyCourses.length}
-                    href="/course"
-                    avatarSrc="/academy-story.png"
-                    centerLabel="Academy Courses"
-                    dark
                     images={[]}
                   />
                   <CourseFolderCard
@@ -481,6 +437,7 @@ export default function HomePage() {
                     href="/course/personal"
                     avatarSrc="/academic-angels.webp"
                     centerLabel={personalCourse?.focus ?? 'Personal Curriculum'}
+                    ctaLabel={personalCourse ? 'Continue Course' : 'Start Course'}
                     dark
                     images={[]}
                   />

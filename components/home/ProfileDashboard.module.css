@@ -8,23 +8,21 @@
   width: fit-content;
   max-width: 100%;
   justify-self: start;
-  padding: 16px;
+  /* Height and padding mirror HomeLeaderboard's card so the dashboard
+     header reads as one row. */
+  height: 132px;
+  padding: 14px 20px;
+  box-sizing: border-box;
   border: 2px solid color-mix(in oklch, var(--color-primary) 72%, #000);
   border-radius: 22px;
   background: var(--color-primary);
-  box-shadow:
-    0 6px 0 color-mix(in oklch, var(--color-primary) 64%, #000),
-    0 0 10px rgba(0, 0, 0, 0.14),
-    0 10px 5px rgba(0, 0, 0, 0.30);
+  box-shadow: 0 6px 0 color-mix(in oklch, var(--color-primary) 64%, #000);
   transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.2s ease;
 }
 
 .panel:hover {
   transform: translateY(-2px);
-  box-shadow:
-    0 8px 0 color-mix(in oklch, var(--color-primary) 64%, #000),
-    0 0 14px rgba(0, 0, 0, 0.18),
-    0 14px 8px rgba(0, 0, 0, 0.30);
+  box-shadow: 0 8px 0 color-mix(in oklch, var(--color-primary) 64%, #000);
 }
 
 /* Ordered dither texture: two interleaved dot grids over the dark surface. */
@@ -160,8 +158,9 @@
   box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-streak) 24%, transparent);
 }
 
-@media (max-width: 640px) {
+@media (max-width: 700px) {
   .panel {
     width: 100%;
+    padding: 12px 14px;
   }
 }

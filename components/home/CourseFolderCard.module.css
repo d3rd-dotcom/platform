@@ -7,7 +7,8 @@
   aspect-ratio: 474 / 330;
   isolation: isolate;
   text-decoration: none;
-  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+  /* Springy overshoot so the lift reads as playful rather than mechanical. */
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .folderSurface {
@@ -16,7 +17,6 @@
   filter:
     drop-shadow(0 5px 0 color-mix(in oklch, var(--color-primary) 36%, transparent))
     drop-shadow(0 10px 12px color-mix(in oklch, var(--color-primary) 18%, transparent));
-  transition: filter 0.2s ease;
 }
 
 .folderButton {
@@ -36,12 +36,6 @@
   --folder-stroke: #1a1a1d;
 }
 
-.folderDark:hover .folderSurface {
-  filter:
-    drop-shadow(0 7px 0 color-mix(in oklch, var(--color-primary-hover) 48%, transparent))
-    drop-shadow(0 12px 14px color-mix(in oklch, var(--color-primary-hover) 22%, transparent));
-}
-
 /* Field Notes uses the dark folder variant, so its fade stays neutral too. */
 .folderDark .bottomFade {
   background: linear-gradient(
@@ -52,14 +46,17 @@
   );
 }
 
+/* Lifted by its tab: the folder rises and tips slightly, shadow stays put. */
 .folder:hover {
-  transform: translateY(-3px);
+  transform: translate(-3px, -7px) rotate(-1.6deg);
 }
 
-.folder:hover .folderSurface {
-  filter:
-    drop-shadow(0 7px 0 color-mix(in oklch, var(--color-primary) 48%, transparent))
-    drop-shadow(0 12px 14px color-mix(in oklch, var(--color-primary) 22%, transparent));
+@media (prefers-reduced-motion: reduce) {
+  .folder,
+  .folder:hover {
+    transform: none;
+    transition: none;
+  }
 }
 
 .shape {
@@ -173,24 +170,38 @@
   color: #f6f8ed;
 }
 
-.tabBadge {
+/* Placeholder icon pair sitting on the folder tab (tab band spans the
+   18–60 range of the 330-unit viewBox). */
+.tabIcons {
   position: absolute;
-  top: 0;
-  right: 12px;
+  top: 5.4%;
+  left: 5%;
+  height: 12.8%;
   z-index: 4;
+  display: flex;
+  align-items: center;
+}
+
+.tabIcon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 62px;
-  height: 32px;
-  padding: 0;
-  border-radius: 999px;
-  background: var(--color-primary);
-  box-shadow: none;
-  font-family: var(--font-mono);
-  font-weight: var(--type-weight-semibold);
-  font-size: var(--type-body-sm-size);
-  color: #ffffff;
+  width: 26px;
+  height: 26px;
+  border: 2px solid var(--folder-stroke);
+  border-radius: 50%;
+  background-color: color-mix(in srgb, #f6f8ed 86%, var(--folder-blue));
+  background-position: center;
+  background-size: cover;
+  color: var(--folder-stroke);
+}
+
+.tabIcon + .tabIcon {
+  margin-left: -9px;
+}
+
+.tabIconGlyph {
+  background-color: color-mix(in srgb, #f6f8ed 64%, var(--folder-blue));
 }
 
 .centerLabel {
@@ -230,8 +241,8 @@
   transition: transform 0.15s ease;
 }
 
-.folder:hover .ctaOuter {
-  transform: scale(1.02);
+.ctaOuter:hover {
+  transform: scale(1.03);
 }
 
 .ctaInner {
