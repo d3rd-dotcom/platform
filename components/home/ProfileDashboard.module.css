@@ -102,6 +102,10 @@
 
 /* Blue's running notes on the learner — hover for what she remembers. */
 .memoryBadge {
+  position: absolute;
+  top: 14px;
+  right: 20px;
+  z-index: 2;
   border-color: color-mix(in oklch, var(--color-accent) 60%, transparent);
   background: color-mix(in oklch, var(--color-accent) 26%, rgba(0, 0, 0, 0.3));
   color: #f1eaff;

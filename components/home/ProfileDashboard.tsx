@@ -127,12 +127,6 @@ export default function ProfileDashboard() {
           ) : (
             <span className={styles.learnerBadge}>Learner</span>
           )}
-          {memoryNote && (
-            <span className={`${styles.learnerBadge} ${styles.memoryBadge}`} title={memoryNote}>
-              <NotePencil size={12} weight="fill" aria-hidden="true" />
-              Blue&apos;s notes
-            </span>
-          )}
         </div>
         <div className={styles.streak} aria-label={`Current streak: ${streak} days`}>
           <span className={styles.streakLabel}>Current Streak</span>
@@ -146,6 +140,13 @@ export default function ProfileDashboard() {
           </span>
         </div>
       </div>
+
+      {memoryNote && (
+        <span className={`${styles.learnerBadge} ${styles.memoryBadge}`} title={memoryNote}>
+          <NotePencil size={12} weight="fill" aria-hidden="true" />
+          Blue&apos;s notes
+        </span>
+      )}
 
       {editingAvatar && (
         <AvatarSelectorModal
