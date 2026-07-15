@@ -12,6 +12,7 @@ import {
   GraduationCap,
   LockKey,
   RocketLaunch,
+  Stack,
   TreeStructure,
   UsersThree,
   X,
@@ -219,6 +220,17 @@ export default function GuidePage({ params }: PageProps) {
                   <GraduationCap size={11} weight="bold" />
                   Walkthrough
                 </button>
+                {data.guide.status === 'published' && (
+                  <Link
+                    href={`/learn/guides/${data.guide.slug}/assemble`}
+                    className={styles.walkthroughTrigger}
+                    onMouseEnter={() => play('soft-hover')}
+                    onClick={() => play('navigation')}
+                  >
+                    <Stack size={11} weight="bold" />
+                    Assemble
+                  </Link>
+                )}
               </div>
               {data.guide.summary && (
                 <p className={styles.topicSummary}>{data.guide.summary}</p>
