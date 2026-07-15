@@ -289,11 +289,6 @@ export default function CourseSlugPage({ params }: PageProps) {
         <Banner
           backHref="/home"
           tone="neutral"
-          breadcrumbs={[
-            { label: 'Home', href: '/home' },
-            { label: vipCourse.title || 'Custom course' },
-            { label: `Week ${activeWeek}` },
-          ]}
         />
         <main className={courseStyles.content}>
 

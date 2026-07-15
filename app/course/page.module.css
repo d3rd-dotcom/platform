@@ -1,9 +1,9 @@
-/* Custom-course base layout (courseStyles) — flat technical surface shared
-   with app/shadow-work. Design language follows the Course Studio
-   (components/course-studio): flat surfaces, hairline borders, 6-8px radii,
-   calm primary washes, monospace count badges, sentence case. Keep this file
-   visually in sync with app/shadow-work/page.module.css
-   (course-design-parity skill). */
+/* Custom-course base layout (courseStyles) — flat playful surface shared
+   with app/shadow-work. Structure follows the Course Studio (flat surfaces,
+   hairline borders, monospace count badges, sentence case) but the finish is
+   game-like: rounded 12-16px cards, pill badges, warm brand canvas in light
+   mode. Keep this file visually in sync with
+   app/shadow-work/page.module.css (course-design-parity skill). */
 
 /* ============================================ */
 /* PAGE SCAFFOLD                                */
@@ -29,17 +29,8 @@
   background-color: var(--color-background);
 }
 
-/* Cool light palette — the course surfaces read as cool paper, matching the
-   studio editor rather than the warm app canvas. */
-:global([data-theme="light"]) .pageLayout {
-  --color-background: var(--palette-cool-canvas);
-  --color-surface-base: var(--palette-cool-canvas);
-  --color-surface-1: var(--palette-cool-surface);
-  --color-surface-2: var(--palette-cool-surface-muted);
-  --color-surface-3: color-mix(in srgb, var(--palette-cool-surface-muted) 82%, var(--color-text-dark));
-  background-color: var(--color-background);
-  color: var(--color-text-dark);
-}
+/* Light mode stays on the warm brand canvas — the course surface should feel
+   like the rest of the academy, not a cool studio editor. */
 
 .bgViz {
   position: fixed;
@@ -157,6 +148,13 @@
   background: color-mix(in oklch, var(--color-surface-1) 55%, transparent);
   backdrop-filter: blur(18px);
   pointer-events: none;
+}
+
+/* Light mode lets more of the art through — the hero should feel like a game
+   title screen, with just enough wash to keep the heading legible. */
+:global([data-theme="light"]) .panelBody::after {
+  background: color-mix(in oklch, var(--color-surface-1) 40%, transparent);
+  backdrop-filter: blur(9px);
 }
 
 .panelBody > * {
@@ -315,8 +313,8 @@
   align-items: center;
   gap: 5px;
   height: 20px;
-  padding: 0 7px;
-  border-radius: 5px;
+  padding: 0 8px;
+  border-radius: 999px;
   border: 1px solid var(--color-border-subtle);
   background: var(--color-surface-base);
   color: var(--color-text-muted);
@@ -337,8 +335,8 @@
   align-items: center;
   gap: 3px;
   height: 20px;
-  padding: 0 6px;
-  border-radius: 5px;
+  padding: 0 8px;
+  border-radius: 999px;
   border: 1px solid var(--color-border-subtle);
   background: var(--color-surface-base);
 }
@@ -368,8 +366,8 @@
   justify-content: stretch;
   background: var(--color-surface-base);
   background-image:
-    linear-gradient(to right, color-mix(in oklch, var(--color-primary) 4%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in oklch, var(--color-primary) 4%, transparent) 1px, transparent 1px);
+    linear-gradient(to right, color-mix(in oklch, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklch, var(--color-primary) 7%, transparent) 1px, transparent 1px);
   background-size: 32px 32px;
   border-bottom: 1px solid var(--color-border-subtle);
 }
@@ -486,8 +484,8 @@
   display: inline-flex;
   align-items: center;
   height: 18px;
-  padding: 0 7px;
-  border-radius: 5px;
+  padding: 0 8px;
+  border-radius: 999px;
   border: 1px solid var(--color-border-subtle);
   background: var(--color-surface-base);
   font-family: var(--type-font-label);
@@ -552,18 +550,19 @@
   padding: 14px;
   background: var(--color-surface-1);
   border: 1px solid var(--color-border-subtle);
-  border-radius: 8px;
+  border-radius: 16px;
 }
 
 .readingCard {
   cursor: pointer;
   text-align: left;
-  transition: background 0.12s ease, border-color 0.12s ease;
+  transition: background 0.12s ease, border-color 0.12s ease, transform 0.12s ease;
 }
 
 .readingCard:hover {
-  background: color-mix(in srgb, var(--color-primary) 4%, var(--color-surface-1));
+  background: color-mix(in srgb, var(--color-primary) 5%, var(--color-surface-1));
   border-color: color-mix(in srgb, var(--color-primary) 36%, var(--color-border-subtle));
+  transform: translateY(-2px);
 }
 
 .readingCardActive,
@@ -582,7 +581,7 @@
   height: 80px;
   flex-shrink: 0;
   border: 1px solid var(--color-border-subtle);
-  border-radius: 6px;
+  border-radius: 12px;
   overflow: hidden;
   background-size: cover;
   background-position: center;
@@ -658,7 +657,7 @@
 .readingMediaSkeleton {
   width: 80px;
   height: 80px;
-  border-radius: 6px;
+  border-radius: 12px;
   flex-shrink: 0;
 }
 
@@ -730,13 +729,13 @@
 .taskCardSkeleton {
   width: 100%;
   height: 64px;
-  border-radius: 8px;
+  border-radius: 14px;
 }
 
 .sealButtonSkeleton {
   width: 100%;
   height: 44px;
-  border-radius: 8px;
+  border-radius: 14px;
   margin-top: 4px;
 }
 
@@ -775,7 +774,7 @@
   position: relative;
   background: var(--color-surface-1);
   border: 1px solid var(--color-border-subtle);
-  border-radius: 8px;
+  border-radius: 16px;
   overflow: hidden;
 }
 
@@ -1197,6 +1196,7 @@
     gap: 13px;
     min-height: 92px;
     padding: 12px;
+    border-radius: 14px;
   }
 
   .readingThumb,

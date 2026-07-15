@@ -280,11 +280,6 @@ export default function PersonalCoursePage() {
       <SideNavigation />
       <Banner
         backHref="/home"
-        breadcrumbs={[
-          { label: 'Home', href: '/home' },
-          { label: course.title },
-          { label: `Week ${week.weekNumber}` },
-        ]}
       />
       <main className={`${shared.content} ${isDesktop ? shared.contentDesktop : ''}`}>
         <div className={isDesktop ? shared.leftCol : undefined}>

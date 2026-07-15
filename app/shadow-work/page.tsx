@@ -348,11 +348,6 @@ export default function CoursePage() {
       <Banner
         backHref="/home"
         tone="neutral"
-        breadcrumbs={[
-          { label: 'Home', href: '/home' },
-          { label: 'Creative Healing' },
-          { label: `Week ${resolvedViewWeek}` },
-        ]}
         actions={(() => {
               const stats = weekStats[resolvedViewWeek];
               if (!stats || stats.total === 0) return null;

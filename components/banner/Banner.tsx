@@ -15,7 +15,8 @@ interface BannerProps {
 }
 
 const Banner: React.FC<BannerProps> = ({ backHref, breadcrumbs, tone = 'brand', actions }) => {
-  const showTrail = Boolean(backHref && breadcrumbs && breadcrumbs.length > 0);
+  const showTrail = Boolean(backHref);
+  const hasCrumbs = Boolean(breadcrumbs && breadcrumbs.length > 0);
 
   return (
     <div className={`${styles.banner} ${tone === 'neutral' ? styles.bannerNeutral : ''}`}>
@@ -26,7 +27,7 @@ const Banner: React.FC<BannerProps> = ({ backHref, breadcrumbs, tone = 'brand', 
               <polyline points="15 18 9 12 15 6" />
             </svg>
           </Link>
-          <nav className={styles.crumbs} aria-label="Breadcrumb">
+          {hasCrumbs && <nav className={styles.crumbs} aria-label="Breadcrumb">
             {breadcrumbs!.map((crumb, i) => {
               const isLast = i === breadcrumbs!.length - 1;
               const isRoot = i === 0;
@@ -50,7 +51,7 @@ const Banner: React.FC<BannerProps> = ({ backHref, breadcrumbs, tone = 'brand', 
                 </React.Fragment>
               );
             })}
-          </nav>
+          </nav>}
           {actions && <div className={styles.actions}>{actions}</div>}
         </div>
       ) : (
