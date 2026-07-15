@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { useDroppable } from '@dnd-kit/core';
 import {
   Plus,
-  CaretLeft,
   CaretRight,
   Trash,
   BookOpen,
@@ -107,191 +106,169 @@ export default function ComponentPanel({
   });
 
   const displayWeek = weeks.find((w) => w.id === selectedWeekId) ?? weeks[0];
-  const currentIndex = weeks.findIndex((w) => w.id === displayWeek?.id);
 
   return (
     <div className={styles.panel}>
-      {/* Weeks header — label + count on the left, actions on the right */}
+      {/* Course outline — one row per week, click to open */}
       <div className={styles.sectionHeader}>
         <div className={styles.sectionLabelGroup}>
-          <span className={styles.sectionLabel}>Weeks</span>
+          <span className={styles.sectionLabel}>Outline</span>
           <span className={styles.countBadge}>{weeks.length}</span>
         </div>
-        <div className={styles.sectionActions}>
-          <button
-            type="button"
-            className={`${styles.iconBtn} ${styles.iconBtnDanger}`}
-            onClick={() => onDeleteWeek(selectedWeekId)}
-            disabled={weeks.length <= 1}
-            title="Delete week"
-          >
-            <Trash size={13} />
-          </button>
-          <span className={styles.actionDivider} aria-hidden="true" />
-          <button
-            type="button"
-            className={styles.iconBtn}
-            onClick={() => {
-              const idx = Math.max(0, currentIndex - 1);
-              onSelectWeek(weeks[idx].id);
-            }}
-            disabled={!displayWeek || currentIndex <= 0}
-            aria-label="Previous week"
-          >
-            <CaretLeft size={13} />
-          </button>
-          <button
-            type="button"
-            className={styles.iconBtn}
-            onClick={() => {
-              const idx = Math.min(weeks.length - 1, currentIndex + 1);
-              onSelectWeek(weeks[idx].id);
-            }}
-            disabled={!displayWeek || currentIndex >= weeks.length - 1}
-            aria-label="Next week"
-          >
-            <CaretRight size={13} />
-          </button>
-        </div>
       </div>
-
-      {/* Week chips — direct selection plus add */}
-      <div className={styles.weekChips}>
-        {weeks.map((week) => (
-          <button
-            key={week.id}
-            type="button"
-            className={`${styles.weekChip} ${week.id === selectedWeekId ? styles.weekChipActive : ''}`}
-            onClick={() => onSelectWeek(week.id)}
-            title={week.title || `Week ${week.weekNumber}`}
-          >
-            {week.weekNumber}
-          </button>
-        ))}
-        <button
-          type="button"
-          onClick={onAddWeek}
-          className={styles.weekChipAdd}
-          title="Add week"
-        >
-          <Plus size={11} weight="bold" />
-        </button>
-      </div>
-
-      {/* Week meta — theme, title */}
-      {displayWeek && (
-        <div className={styles.weekMetaStack}>
-          <div className={styles.weekMetaRow}>
-            <span className={styles.fieldBadge}>Theme</span>
-            <input
-              value={displayWeek.theme}
-              onChange={(e) => onUpdateWeek(displayWeek.id, { theme: e.target.value })}
-              onKeyDown={() => play('click')}
-              placeholder="Shows as eyebrow text"
-              className={styles.weekInput}
-            />
-          </div>
-          <div className={styles.weekMetaRow}>
-            <span className={styles.fieldBadge}>Title</span>
-            <input
-              value={displayWeek.title}
-              onChange={(e) => onUpdateWeek(displayWeek.id, { title: e.target.value })}
-              onKeyDown={() => play('click')}
-              placeholder="Name this week"
-              className={`${styles.weekInput} ${styles.weekInputTitle}`}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Reading row */}
-      <div className={styles.sectionHeader}>
-        <div className={styles.sectionLabelGroup}>
-          <span className={styles.sectionLabel}>Weekly read</span>
-          {readingContent ? (
-            <span className={`${styles.stateBadge} ${styles.stateBadgeSet}`}>Ready</span>
-          ) : (
-            <span className={styles.stateBadge}>Empty</span>
-          )}
-        </div>
-      </div>
-      <button type="button" className={styles.readingRow} onClick={onEditReading}>
-        <span className={styles.rowIcon} aria-hidden="true">
-          {readingImageUrl ? (
-            <Image src={readingImageUrl} alt="" fill sizes="28px" unoptimized className={styles.rowIconImg} />
-          ) : (
-            <BookOpen size={15} />
-          )}
-        </span>
-        <div className={styles.rowInfo}>
-          <span className={styles.rowTitle}>{displayWeek.title || (readingContent ? 'Reading' : 'Add reading')}</span>
-          {displayWeek.theme && <span className={styles.rowSub}>{displayWeek.theme}</span>}
-        </div>
-        <CaretRight size={13} className={styles.rowChevron} />
-      </button>
-
-      {/* Missions header */}
-      <div className={styles.sectionHeader}>
-        <div className={styles.sectionLabelGroup}>
-          <span className={styles.sectionLabel}>Missions</span>
-          <span className={styles.countBadge}>{missions.length}</span>
-        </div>
-        <div className={styles.sectionActions}>
-          <button
-            type="button"
-            className={styles.iconBtn}
-            onClick={() => { play('click'); onAddBlankMission(); }}
-            title="Add mission"
-          >
-            <Plus size={13} />
-          </button>
-        </div>
-      </div>
-
-      {/* Droppable missions zone */}
-      <div
-        ref={setNodeRef}
-        className={`${styles.missionsZone} ${isOver ? styles.missionsZoneOver : ''}`}
-      >
-        {missions.map((comp) => {
-          const TypeIcon = BLOCK_ICONS[getMissionType(comp)] ?? StackSimple;
+      <div className={styles.weekList}>
+        {weeks.map((week) => {
+          const active = week.id === selectedWeekId;
           return (
             <div
-              key={comp.id}
-              className={`${styles.missionRow} ${comp.id === selectedMissionId ? styles.missionRowSelected : ''}`}
-              onClick={() => onSelectMission(comp.id)}
+              key={week.id}
+              className={`${styles.weekRow} ${active ? styles.weekRowActive : ''}`}
+              onClick={() => onSelectWeek(week.id)}
+              title={week.title || `Week ${week.weekNumber}`}
             >
-              <span className={styles.rowIcon} aria-hidden="true">
-                <TypeIcon size={15} />
+              <span className={styles.weekNum}>{week.weekNumber}</span>
+              <span className={styles.weekRowTitle}>
+                {week.title || `Week ${week.weekNumber}`}
               </span>
-              <div className={styles.rowInfo}>
-                <span className={styles.rowTitle}>{getMissionLabel(comp)}</span>
-              </div>
-              {comp.componentType === 'mission_container' && comp.blocks && comp.blocks.length > 0 && (
-                <span className={styles.countBadge}>{comp.blocks.length}</span>
+              {week.components.length > 0 && (
+                <span className={styles.countBadge}>{week.components.length}</span>
               )}
               <button
                 type="button"
                 className={`${styles.iconBtn} ${styles.iconBtnDanger} ${styles.rowDelete}`}
-                onClick={(e) => { e.stopPropagation(); onDeleteMission(comp.id); }}
-                title="Delete mission"
+                onClick={(e) => { e.stopPropagation(); onDeleteWeek(week.id); }}
+                disabled={weeks.length <= 1}
+                title="Delete week"
               >
                 <Trash size={13} />
               </button>
-              <CaretRight size={13} className={styles.rowChevron} />
             </div>
           );
         })}
-
         <button
           type="button"
-          className={`${styles.addBtn} ${missions.length === 0 ? styles.addBtnTall : ''}`}
-          onClick={() => { play('click'); onAddBlankMission(); }}
+          className={styles.addRow}
+          onClick={() => { play('click'); onAddWeek(); }}
         >
           <Plus size={13} weight="bold" />
-          Add mission
+          Add week
         </button>
       </div>
+
+      {/* Selected week — details, then its content */}
+      {displayWeek && (
+        <>
+          <div className={styles.sectionDivider} aria-hidden="true" />
+          <div className={styles.sectionHeader}>
+            <div className={styles.sectionLabelGroup}>
+              <span className={styles.sectionLabel}>Week {displayWeek.weekNumber} details</span>
+            </div>
+          </div>
+          <div className={styles.weekMetaStack}>
+            <div className={styles.weekMetaRow}>
+              <span className={styles.fieldBadge}>Title</span>
+              <input
+                value={displayWeek.title}
+                onChange={(e) => onUpdateWeek(displayWeek.id, { title: e.target.value })}
+                onKeyDown={() => play('click')}
+                placeholder="Name this week"
+                className={`${styles.weekInput} ${styles.weekInputTitle}`}
+              />
+            </div>
+            <div className={styles.weekMetaRow}>
+              <span className={styles.fieldBadge}>Theme</span>
+              <input
+                value={displayWeek.theme}
+                onChange={(e) => onUpdateWeek(displayWeek.id, { theme: e.target.value })}
+                onKeyDown={() => play('click')}
+                placeholder="Shows as eyebrow text"
+                className={styles.weekInput}
+              />
+            </div>
+          </div>
+
+          <div className={styles.sectionDivider} aria-hidden="true" />
+          <div className={styles.sectionHeader}>
+            <div className={styles.sectionLabelGroup}>
+              <span className={styles.sectionLabel}>Weekly read</span>
+              {readingContent ? (
+                <span className={`${styles.stateBadge} ${styles.stateBadgeSet}`}>Ready</span>
+              ) : (
+                <span className={styles.stateBadge}>Empty</span>
+              )}
+            </div>
+          </div>
+          <button type="button" className={styles.readingRow} onClick={onEditReading}>
+            <span className={styles.rowIcon} aria-hidden="true">
+              {readingImageUrl ? (
+                <Image src={readingImageUrl} alt="" fill sizes="28px" unoptimized className={styles.rowIconImg} />
+              ) : (
+                <BookOpen size={15} />
+              )}
+            </span>
+            <div className={styles.rowInfo}>
+              <span className={styles.rowTitle}>
+                {readingContent ? 'Edit this week’s reading' : 'Write this week’s reading'}
+              </span>
+              {displayWeek.theme && <span className={styles.rowSub}>{displayWeek.theme}</span>}
+            </div>
+            <CaretRight size={13} className={styles.rowChevron} />
+          </button>
+
+          <div className={styles.sectionDivider} aria-hidden="true" />
+          <div className={styles.sectionHeader}>
+            <div className={styles.sectionLabelGroup}>
+              <span className={styles.sectionLabel}>Missions</span>
+              <span className={styles.countBadge}>{missions.length}</span>
+            </div>
+          </div>
+
+          {/* Droppable missions zone */}
+          <div
+            ref={setNodeRef}
+            className={`${styles.missionsZone} ${isOver ? styles.missionsZoneOver : ''}`}
+          >
+            {missions.map((comp) => {
+              const TypeIcon = BLOCK_ICONS[getMissionType(comp)] ?? StackSimple;
+              return (
+                <div
+                  key={comp.id}
+                  className={`${styles.missionRow} ${comp.id === selectedMissionId ? styles.missionRowSelected : ''}`}
+                  onClick={() => onSelectMission(comp.id)}
+                >
+                  <span className={styles.rowIcon} aria-hidden="true">
+                    <TypeIcon size={15} />
+                  </span>
+                  <div className={styles.rowInfo}>
+                    <span className={styles.rowTitle}>{getMissionLabel(comp)}</span>
+                  </div>
+                  {comp.componentType === 'mission_container' && comp.blocks && comp.blocks.length > 0 && (
+                    <span className={styles.countBadge}>{comp.blocks.length}</span>
+                  )}
+                  <button
+                    type="button"
+                    className={`${styles.iconBtn} ${styles.iconBtnDanger} ${styles.rowDelete}`}
+                    onClick={(e) => { e.stopPropagation(); onDeleteMission(comp.id); }}
+                    title="Delete mission"
+                  >
+                    <Trash size={13} />
+                  </button>
+                  <CaretRight size={13} className={styles.rowChevron} />
+                </div>
+              );
+            })}
+
+            <button
+              type="button"
+              className={`${styles.addRow} ${missions.length === 0 ? styles.addRowTall : ''}`}
+              onClick={() => { play('click'); onAddBlankMission(); }}
+            >
+              <Plus size={13} weight="bold" />
+              Add mission
+            </button>
+          </div>
+        </>
+      )}
 
     </div>
   );

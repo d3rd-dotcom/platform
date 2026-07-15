@@ -1,8 +1,8 @@
-/* ── Full-page layout ── */
+/* ── Full-page layout — fills the viewport below the 72px fixed top nav ── */
 .layout {
   display: flex;
   width: 100%;
-  height: 100dvh;
+  height: calc(100dvh - 72px);
   overflow: hidden;
   background: linear-gradient(
     to right,
@@ -11,7 +11,14 @@
     var(--color-surface-base) var(--sidebar-width, 265px)
   );
   position: relative;
-  z-index: 300;
+  z-index: 150;
+}
+
+/* Mobile: body padding-top is 0 (no fixed top nav offset) */
+@media (max-width: 900px) {
+  .layout {
+    height: 100dvh;
+  }
 }
 
 .layout::before {

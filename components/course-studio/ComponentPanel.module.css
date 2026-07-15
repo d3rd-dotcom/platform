@@ -2,25 +2,20 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  gap: 10px;
+  gap: 8px;
   overflow-y: auto;
   flex: 1;
 }
 
-/* ── Section headers — shared by weeks, reading, missions ── */
+/* ── Section headers ── */
 
 .sectionHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  min-height: 24px;
+  min-height: 22px;
   padding: 0 2px;
-}
-
-.sectionHeader + .sectionHeader,
-.missionsZone + .sectionHeader {
-  margin-top: 8px;
 }
 
 .sectionLabelGroup {
@@ -40,18 +35,11 @@
   white-space: nowrap;
 }
 
-.sectionActions {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+.sectionDivider {
+  height: 1px;
   flex-shrink: 0;
-}
-
-.actionDivider {
-  width: 1px;
-  height: 14px;
+  margin: 4px 2px;
   background: var(--color-border-subtle);
-  margin: 0 3px;
 }
 
 /* ── Badges ── */
@@ -151,24 +139,47 @@
   color: #ef4444;
 }
 
-/* ── Week chips ── */
+/* ── Course outline — week list ── */
 
-.weekChips {
+.weekList {
   display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 4px;
-  padding: 0 2px;
+  flex-direction: column;
+  gap: 3px;
 }
 
-.weekChip {
-  min-width: 24px;
-  height: 24px;
-  padding: 0 6px;
+.weekRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 32px;
+  padding: 4px 7px;
+  border-radius: 7px;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease;
+  box-sizing: border-box;
+}
+
+.weekRow:hover {
+  background: var(--color-surface-base);
+  border-color: var(--color-border-subtle);
+}
+
+.weekRowActive,
+.weekRowActive:hover {
+  background: color-mix(in srgb, var(--color-primary) 9%, var(--color-surface-base));
+  border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+}
+
+.weekNum {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
   border: 1px solid var(--color-border-subtle);
   background: var(--color-surface-base);
   font-family: var(--type-font-code);
@@ -176,40 +187,27 @@
   font-weight: var(--type-weight-semibold);
   line-height: 1;
   color: var(--color-text-muted);
-  cursor: pointer;
-  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+  flex-shrink: 0;
 }
 
-.weekChip:hover {
-  border-color: color-mix(in srgb, var(--color-primary) 42%, var(--color-border-subtle));
+.weekRowActive .weekNum {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+.weekRowTitle {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--type-font-heading);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-heading);
   color: var(--color-text-dark);
-}
-
-.weekChipActive,
-.weekChipActive:hover {
-  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface-base));
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-
-.weekChipAdd {
-  width: 24px;
-  height: 24px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;
-  border: 1px dashed var(--color-border-strong);
-  background: transparent;
-  color: var(--color-text-faint);
-  cursor: pointer;
-  transition: border-color 0.12s ease, color 0.12s ease, background 0.12s ease;
-}
-
-.weekChipAdd:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
+  line-height: var(--type-lh-snug);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* ── Week meta inputs ── */
@@ -359,6 +357,7 @@
   opacity: 0;
 }
 
+.weekRow:hover .rowDelete,
 .missionRow:hover .rowDelete,
 .missionRowSelected .rowDelete {
   opacity: 1;
@@ -383,17 +382,17 @@
   outline-offset: 2px;
 }
 
-/* ── Add mission button ── */
+/* ── Add rows — weeks + missions ── */
 
-.addBtn {
+.addRow {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
   width: 100%;
-  min-height: 32px;
-  padding: 6px;
-  border-radius: 8px;
+  min-height: 30px;
+  padding: 5px;
+  border-radius: 7px;
   border: 1px dashed var(--color-border-strong);
   background: transparent;
   color: var(--color-text-faint);
@@ -405,13 +404,13 @@
   transition: border-color 0.12s ease, color 0.12s ease, background 0.12s ease;
 }
 
-.addBtn:hover {
+.addRow:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
   background: color-mix(in oklch, var(--color-primary) 5%, transparent);
 }
 
-.addBtnTall {
+.addRowTall {
   min-height: 56px;
 }
 
@@ -420,7 +419,7 @@
 :global([data-theme="dark"]) .countBadge,
 :global([data-theme="dark"]) .stateBadge,
 :global([data-theme="dark"]) .fieldBadge,
-:global([data-theme="dark"]) .weekChip,
+:global([data-theme="dark"]) .weekNum,
 :global([data-theme="dark"]) .weekInput,
 :global([data-theme="dark"]) .readingRow,
 :global([data-theme="dark"]) .missionRow {
@@ -428,10 +427,21 @@
   border-color: var(--color-border-subtle);
 }
 
-:global([data-theme="dark"]) .weekChipActive,
-:global([data-theme="dark"]) .weekChipActive:hover {
-  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface-1));
+:global([data-theme="dark"]) .weekRow:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .weekRowActive,
+:global([data-theme="dark"]) .weekRowActive:hover {
+  background: color-mix(in srgb, var(--color-primary) 16%, var(--color-surface-1));
+  border-color: color-mix(in srgb, var(--color-primary) 50%, transparent);
+}
+
+:global([data-theme="dark"]) .weekRowActive .weekNum {
   border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #ffffff;
 }
 
 :global([data-theme="dark"]) .stateBadgeSet {
@@ -467,12 +477,16 @@
   color: #f87171;
 }
 
-:global([data-theme="dark"]) .addBtn {
+:global([data-theme="dark"]) .sectionDivider {
+  background: rgba(240, 241, 250, 0.08);
+}
+
+:global([data-theme="dark"]) .addRow {
   border-color: rgba(240, 241, 250, 0.12);
   color: rgba(240, 241, 250, 0.3);
 }
 
-:global([data-theme="dark"]) .addBtn:hover {
+:global([data-theme="dark"]) .addRow:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
 }

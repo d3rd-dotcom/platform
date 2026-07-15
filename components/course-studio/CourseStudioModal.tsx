@@ -147,13 +147,11 @@ export default function CourseStudioModal({
   const deriveSlug = (val: string) =>
     val.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/^-+|-+$/g, '');
 
-  // Full-screen mode: prevent page scroll & body offset from fixed top nav
+  // Fill the viewport below the fixed top nav; only page scroll is locked
   useEffect(() => {
     document.body.style.overflow = 'hidden';
-    document.body.style.paddingTop = '0';
     return () => {
       document.body.style.overflow = '';
-      document.body.style.paddingTop = '';
       if (undoTimeoutRef.current) clearTimeout(undoTimeoutRef.current);
     };
   }, []);
@@ -747,7 +745,7 @@ export default function CourseStudioModal({
   return (
     <>
     <style>{`
-      body { padding-top: 0 !important; overflow: hidden !important; }
+      body { overflow: hidden !important; }
     `}</style>
     <div className={styles.layout}>
       <SideNavigation />
