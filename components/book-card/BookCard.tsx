@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { CaretRight } from '@phosphor-icons/react';
 import styles from './BookCard.module.css';
 
 interface BookCardProps {
@@ -44,21 +45,18 @@ const BookCard: React.FC<BookCardProps> = ({
 
         <div className={styles.content}>
           <h3 className={styles.title}>{title}</h3>
-          <p className={styles.author}>{author}</p>
           <p className={styles.description}>{description}</p>
         </div>
 
         <div className={styles.footer}>
-          <div className={styles.category}>
-            <div className={styles.categoryDot} />
-            <span className={styles.categoryText}>{category}</span>
+          <div className={styles.metaGroup}>
+            <span className={styles.category}>{category}</span>
+            {author && <span className={styles.metaBadge}>{author}</span>}
           </div>
           {(href || slug) && (
             <span className={styles.readLink}>
               {actionLabel}
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <path d="M4.5 9L7.5 6L4.5 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <CaretRight size={12} weight="bold" className={styles.readChevron} />
             </span>
           )}
         </div>

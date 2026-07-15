@@ -104,7 +104,7 @@ export default function CourseLibraryPage() {
             <span aria-hidden="true">←</span>
             Academy
           </Link>
-          <p className={styles.eyebrow}>Course Library</p>
+          <p className={styles.eyebrow}>Course library</p>
           <h1 className={styles.title}>Choose your next course.</h1>
           <p className={styles.intro}>
             Study behavioral psychology, technology, and mental wealth through structured lessons and practical tasks.
@@ -120,6 +120,10 @@ export default function CourseLibraryPage() {
                   <span className={styles.skeletonLineWide} />
                   <span className={styles.skeletonLine} />
                   <span className={styles.skeletonLineShort} />
+                </div>
+                <div className={styles.skeletonFooter}>
+                  <span className={styles.skeletonBadge} />
+                  <span className={styles.skeletonBadgeWide} />
                 </div>
               </div>
             ))}

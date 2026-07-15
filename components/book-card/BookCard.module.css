@@ -1,23 +1,22 @@
-/* BookCard - Brutalist Flat Design */
+/* BookCard — flat surface, hairline border, primary-tinted hover wash.
+   Mirrors the Course Studio ComponentPanel conventions (rows/badges). */
 
 .bookCard {
   width: 100%;
-  background: #ffffff;
-  border: 3px solid #1A1D33;
-  border-radius: 4px;
-  padding: 0;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0;
-  box-shadow: 4px 4px 0 #1A1D33;
-  transition: all 0.15s ease;
+  box-sizing: border-box;
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 8px;
   overflow: hidden;
-  height: 100%;
+  transition: background 0.12s ease, border-color 0.12s ease;
 }
 
 .bookCard:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 #1A1D33;
+  border-color: color-mix(in srgb, var(--color-primary) 36%, var(--color-border-subtle));
+  background: color-mix(in srgb, var(--color-primary) 4%, var(--color-surface-1));
 }
 
 .cardClickable {
@@ -36,294 +35,176 @@
 
 .header {
   position: relative;
+  flex-shrink: 0;
 }
 
 .bookImage {
   width: 100%;
-  height: 180px;
+  height: 168px;
+  background-color: var(--color-surface-base);
   background-size: cover;
   background-position: center;
-  border-radius: 0;
-  border-bottom: 3px solid #1A1D33;
-}
-
-.copyButton {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: #ffffff;
-  border: 2px solid #1A1D33;
-  cursor: pointer;
-  padding: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #1A1D33;
-  transition: all 0.15s ease;
-  border-radius: 4px;
-  box-shadow: 2px 2px 0 #1A1D33;
-  z-index: 2;
-}
-
-.copyButton:hover {
-  background: var(--color-primary);
-  color: #ffffff;
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 #1A1D33;
-}
-
-.copyButton:active {
-  transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0 #1A1D33;
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .content {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 20px;
+  padding: 18px 18px 4px;
   flex: 1;
 }
 
-.bookCard .title {
-  font-family: var(--font-primary);
-  font-size: 18px;
-  font-weight: 700;
-  color: #1A1D33;
-  margin: 0;
-  line-height: 1.3;
-}
-
-.bookCard .author {
-  font-family: var(--font-primary);
-  font-size: 12px;
-  font-weight: 500;
-  color: #666666;
+.title {
+  font-family: var(--type-font-heading);
+  font-size: var(--type-h4-size);
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-heading);
+  color: var(--color-text-dark);
+  line-height: var(--type-lh-snug);
   margin: 0;
 }
 
-.bookCard .description {
-  font-family: var(--font-primary);
-  font-size: 13px;
-  font-weight: 400;
-  color: #666666;
-  line-height: 1.6;
+.description {
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--type-weight-regular);
+  color: var(--color-text-muted);
+  line-height: var(--type-lh-body);
   margin: 0;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  text-overflow: ellipsis;
 }
 
 .footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+  padding: 14px 18px 18px;
 }
 
-.category {
+.metaGroup {
   display: flex;
   align-items: center;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
 }
 
-.categoryDot {
-  width: 12px;
-  height: 12px;
-  background: var(--color-primary);
-  border-radius: 2px;
-  border: 2px solid #1A1D33;
-}
-
-.categoryText {
-  font-family: var(--font-primary);
+/* Badges are block containers (not flex) so text-overflow: ellipsis
+   actually applies; 18px line-height centers text in the 20px box. */
+.category {
+  display: inline-block;
+  height: 20px;
+  max-width: 160px;
+  padding: 0 8px;
+  border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 32%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  font-family: var(--type-font-label);
   font-size: 11px;
-  font-weight: 700;
-  color: #1A1D33;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-weight: var(--type-weight-semibold);
+  line-height: 18px;
+  color: var(--color-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.metaBadge {
+  display: inline-block;
+  height: 20px;
+  max-width: 160px;
+  padding: 0 7px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-base);
+  font-family: var(--type-font-code);
+  font-size: 11px;
+  font-weight: var(--type-weight-semibold);
+  line-height: 18px;
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .readLink {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-family: var(--font-primary);
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--color-primary);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-/* Action Bar */
-.actionBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  background: #f5f5f5;
-  border-top: 3px solid #1A1D33;
-}
-
-.actionBarLeft {
-  display: flex;
-  align-items: center;
-  min-width: 0;
   flex-shrink: 0;
-}
-
-.starRating {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-}
-
-.starButton {
-  cursor: pointer;
-  transition: all 0.15s ease;
-  background: transparent;
-  border: none;
-  padding: 2px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-primary);
-  border-radius: 2px;
-  outline: none;
-}
-
-.starButton:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 1px;
-}
-
-.starButton:hover {
-  transform: scale(1.2);
-}
-
-.starButton:active {
-  transform: scale(0.9);
-}
-
-.starIcon {
-  width: 16px;
-  height: 16px;
-}
-
-.actionBarRight {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.commentButton {
-  display: flex;
-  align-items: center;
-  padding: 6px 10px;
-  border-radius: 4px;
-  background: #ffffff;
-  border: 2px solid #1A1D33;
-  cursor: pointer;
-  color: #1A1D33;
-  transition: all 0.15s ease;
-  font-size: 12px;
-  box-shadow: 2px 2px 0 #1A1D33;
-}
-
-.commentButton:hover {
-  background: var(--color-primary);
-  color: #ffffff;
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 #1A1D33;
-}
-
-.actionIcon {
-  width: 16px;
-  height: 16px;
-}
-
-.saveButtonWrapper {
-  position: relative;
-}
-
-.saveButton {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 6px 10px;
-  border-radius: 4px;
-  background: #ffffff;
-  border: 2px solid #1A1D33;
-  cursor: pointer;
-  color: #1A1D33;
-  transition: all 0.15s ease;
-  font-size: 11px;
-  font-weight: 700;
-  font-family: var(--font-primary);
-  outline: none;
-  box-shadow: 2px 2px 0 #1A1D33;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.saveButton:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 1px;
-}
-
-.saveButton:hover {
-  background: var(--color-accent);
-  color: #ffffff;
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 #1A1D33;
-}
-
-.saveText {
+  margin-left: auto;
   white-space: nowrap;
+  font-family: var(--type-font-label);
+  font-size: 12px;
+  font-weight: var(--type-weight-semibold);
+  color: var(--color-text-faint);
+  transition: color 0.12s ease;
 }
 
-.chevronIcon {
-  width: 12px;
-  height: 12px;
+.bookCard:hover .readLink {
+  color: var(--color-primary);
+}
+
+.readChevron {
+  flex-shrink: 0;
+  opacity: 0.6;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.bookCard:hover .readChevron {
+  transform: translateX(2px);
+  opacity: 1;
+}
+
+/* ── Dark mode ── */
+
+:global([data-theme="dark"]) .bookCard:hover {
+  border-color: color-mix(in srgb, var(--color-primary) 42%, var(--color-border-subtle));
+  background: color-mix(in srgb, var(--color-primary) 9%, var(--color-surface-1));
+}
+
+:global([data-theme="dark"]) .bookImage {
+  background-color: var(--color-surface-1);
+}
+
+:global([data-theme="dark"]) .metaBadge {
+  background: var(--color-surface-1);
+  border-color: var(--color-border-subtle);
+}
+
+:global([data-theme="dark"]) .category {
+  border-color: color-mix(in srgb, var(--color-primary) 42%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 16%, transparent);
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .bookCard {
-    box-shadow: 3px 3px 0 #1A1D33;
-  }
-
   .bookImage {
     height: 140px;
   }
 
   .content {
-    padding: 16px;
-  }
-
-  .title {
-    font-size: 16px;
-  }
-
-  .description {
-    font-size: 12px;
+    padding: 16px 16px 4px;
   }
 
   .footer {
-    padding: 0 16px 14px;
-  }
-
-  .actionBar {
-    padding: 10px 12px;
+    padding: 12px 16px 16px;
   }
 }
 
-@media (max-width: 640px) {
-  .saveText {
-    display: none;
+@media (prefers-reduced-motion: reduce) {
+  .bookCard,
+  .readLink,
+  .readChevron {
+    transition: none;
   }
 }
