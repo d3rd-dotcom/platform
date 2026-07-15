@@ -249,7 +249,7 @@ function buildBlueChatMessages(args: {
     '',
     pageLine,
     '',
-    truncate(args.contextText, 4000),
+    truncate(args.contextText, 6000),
     args.knowledgeText ? '' : null,
     args.knowledgeText ? truncate(args.knowledgeText, 4000) : null,
   ].filter((line) => line !== null).join('\n');

@@ -32,6 +32,13 @@ interface FieldNoteSummary {
   lastEntryDate: string | null;
 }
 
+/** A short quote from the learner's own field notes, for Blue to reference. */
+export interface JournalExcerpt {
+  weekNumber: number | null;
+  date: string | null;
+  excerpt: string;
+}
+
 interface BlueContextValues {
   username: string | null;
   fieldNotes: FieldNoteSummary;
@@ -43,6 +50,8 @@ interface BlueContextValues {
   relationship: BlueRelationshipState | null;
   recentFacts: Array<{ category: string; summary: string; confidence: number }>;
   recentMessages: BlueChatMessage[];
+  journalExcerpts: JournalExcerpt[];
+  recentGuides: Array<{ title: string; completedAt: string }>;
 }
 
 interface FieldNoteEntryLike {
@@ -210,6 +219,77 @@ async function getMorningPageSummary(userId: string): Promise<FieldNoteSummary> 
   }
 
   return { totalEntries, streak, lastEntryDate };
+}
+
+/**
+ * The learner's own recent field-note words, as short excerpts Blue can quote
+ * back ("in week 3 you wrote that mornings were the hard part"). Entries are
+ * encrypted per user at rest; excerpts are decrypted server-side, capped hard,
+ * and only ever assembled into that same user's own session context.
+ */
+export async function getRecentJournalExcerpts(userId: string, limit = 4): Promise<JournalExcerpt[]> {
+  await ensurePrayersSchema();
+
+  const rows = await sqlQuery<Array<{ progress_data: any }>>(
+    `SELECT progress_data FROM prayers
+     WHERE user_id = :userId
+     LIMIT 1`,
+    { userId }
+  );
+  if (!rows.length) return [];
+
+  let allWeekPages: Record<string, Array<{ date?: string | null; content?: string; submittedAt?: number | null }>> = {};
+  const progressData = rows[0].progress_data;
+
+  if (progressData?.encrypted && progressData?.data) {
+    try {
+      const decrypted = decryptForUser(userId, progressData.data);
+      allWeekPages = JSON.parse(decrypted).allWeekPages ?? {};
+    } catch {
+      return [];
+    }
+  } else {
+    allWeekPages = progressData?.allWeekPages ?? {};
+  }
+
+  const entries: Array<JournalExcerpt & { sortKey: number }> = [];
+  for (const [weekKey, rawPages] of Object.entries(allWeekPages || {})) {
+    const weekNumber = parseInt(String(weekKey), 10);
+    for (const entry of Array.isArray(rawPages) ? rawPages : []) {
+      const content = typeof entry?.content === 'string' ? entry.content.replace(/\s+/g, ' ').trim() : '';
+      if (!content) continue;
+      entries.push({
+        weekNumber: Number.isNaN(weekNumber) ? null : weekNumber,
+        date: entry?.date ?? null,
+        excerpt: content.length > 240 ? `${content.slice(0, 239).trimEnd()}…` : content,
+        sortKey: typeof entry?.submittedAt === 'number' ? entry.submittedAt : Date.parse(entry?.date ?? '') || 0,
+      });
+    }
+  }
+
+  return entries
+    .sort((a, b) => b.sortKey - a.sortKey)
+    .slice(0, limit)
+    .map(({ weekNumber, date, excerpt }) => ({ weekNumber, date, excerpt }));
+}
+
+/** Recent guide completions, fail-soft so a missing guides schema never
+    breaks context assembly. */
+async function getRecentGuideCompletions(userId: string, limit = 5) {
+  try {
+    const rows = await sqlQuery<Array<{ topic_title: string; completed_at: string }>>(
+      `SELECT g.topic_title, gp.completed_at
+       FROM guide_progress gp
+       JOIN guides g ON g.id = gp.guide_id
+       WHERE gp.user_id = :userId
+       ORDER BY gp.completed_at DESC
+       LIMIT :limit`,
+      { userId, limit }
+    );
+    return rows.map((row) => ({ title: row.topic_title, completedAt: row.completed_at }));
+  } catch {
+    return [];
+  }
 }
 
 async function getQuestSummary(userId: string) {
@@ -682,7 +762,7 @@ export async function buildBlueContext(args: {
 }) {
   await ensureBlueMemorySchema();
 
-  const [fieldNotes, questSummary, weekSummary, relationshipRows, factRows, recentMessages] = await Promise.all([
+  const [fieldNotes, questSummary, weekSummary, relationshipRows, factRows, recentMessages, journalExcerpts, recentGuides] = await Promise.all([
     getMorningPageSummary(args.userId),
     getQuestSummary(args.userId),
     getWeekSummary(args.userId),
@@ -706,6 +786,8 @@ export async function buildBlueContext(args: {
       { userId: args.userId }
     ),
     getBlueRecentMessages(args.userId, 8),
+    getRecentJournalExcerpts(args.userId, 4),
+    getRecentGuideCompletions(args.userId, 5),
   ]);
 
   const relationship = relationshipRows[0]
@@ -731,7 +813,15 @@ export async function buildBlueContext(args: {
       confidence: Number(row.confidence),
     })),
     recentMessages,
+    journalExcerpts,
+    recentGuides,
   };
+
+  const journalLines = values.journalExcerpts.map((entry) => {
+    const where = entry.weekNumber ? `Week ${entry.weekNumber}` : 'Undated';
+    const when = entry.date ? `, ${entry.date}` : '';
+    return `- ${where}${when}: "${entry.excerpt}"`;
+  });
 
   const contextText = [
     'Blue memory context for this user.',
@@ -747,9 +837,14 @@ export async function buildBlueContext(args: {
     values.relationship
       ? `Relationship: interaction #${values.relationship.interactionCount}, first seen ${values.relationship.firstInteractionAt}, last seen ${values.relationship.lastInteractionAt}`
       : 'Relationship: first-time or not yet recorded',
+    `Recent guides completed: ${values.recentGuides.length ? values.recentGuides.map((guide) => guide.title).join(', ') : 'none'}`,
     `Durable memories: ${values.recentFacts.length ? values.recentFacts.map((fact) => `[${fact.category}] ${fact.summary}`).join(' | ') : 'none yet'}`,
     `Recent chat history: ${values.recentMessages.length ? values.recentMessages.map((message) => `${message.role}: ${message.text}`).join(' || ') : 'none yet'}`,
+    journalLines.length
+      ? ['The learner\'s own recent field notes (private writing):', ...journalLines].join('\n')
+      : 'Field note excerpts: none yet',
     'Use this context naturally. Do not dump it back to the user. Reference it only when it improves warmth, continuity, accountability, or personalization.',
+    'When you reference their field notes, quote at most a short fragment of their own words and name where it came from ("in week 3 you wrote..."). Never read a whole entry back. If what they wrote is tender, handle it gently and without judgment.',
   ].join('\n');
 
   return { values, contextText };

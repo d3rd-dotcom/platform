@@ -143,6 +143,7 @@ export default function HomePage() {
   );
   const [weeklyWeek, setWeeklyWeek] = useState(0);
   const [weeklyOpen, setWeeklyOpen] = useState(false);
+  const [weeklyLines, setWeeklyLines] = useState<string[] | null>(null);
   const [featuredPage, setFeaturedPage] = useState(0);
   const [guideView, setGuideView] = useState<'card' | 'list' | '3d'>('card');
   const { play } = useSound();
@@ -192,7 +193,19 @@ export default function HomePage() {
         if (weeklyDue) {
           setWeeklyWeek(week);
           setStorageItem(COURSES_DIALOGUE_DATE_KEY, today);
-          timer = window.setTimeout(() => setWeeklyOpen(true), 500);
+          // Ask Blue for lines personalized from her memory of this learner,
+          // but never hold the moment hostage: after 3.5s the canonical
+          // script opens as-is.
+          const personalized = fetch(`/api/blue/dialogue?week=${week}`, { cache: 'no-store', credentials: 'include' })
+            .then((res) => (res.ok ? res.json() : null))
+            .then((d) => (Array.isArray(d?.lines) && d.lines.length >= 2 ? (d.lines as string[]) : null))
+            .catch(() => null);
+          const deadline = new Promise<null>((resolve) => window.setTimeout(() => resolve(null), 3500));
+          Promise.race([personalized, deadline]).then((lines) => {
+            if (cancelled) return;
+            if (lines) setWeeklyLines(lines);
+            timer = window.setTimeout(() => setWeeklyOpen(true), 500);
+          });
         } else {
           openDaily();
         }
@@ -906,7 +919,7 @@ export default function HomePage() {
           placement="center"
           title={weeklyScript.title}
           subtitle={weeklyScript.subtitle}
-          lines={weeklyScript.lines}
+          lines={weeklyLines ?? weeklyScript.lines}
           emotion={weeklyScript.emotion}
           chatback={weeklyScript.chatback ? { placeholder: 'Answer Blue' } : undefined}
           onClose={handleWeeklyClose}

@@ -1688,7 +1688,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
       <div className={styles.chatContainer}>
         <div className={styles.compactTopBar}>
           <div className={styles.compactTopBarBrand}>
-            <Image src="/splashlogo.png" alt="" width={44} height={29} className={styles.compactTopBarFace} unoptimized />
+            <Image src="/blue/blue-home.png" alt="" width={40} height={40} className={styles.compactTopBarFace} unoptimized />
             <span className={styles.compactTopBarName}>Blue</span>
           </div>
           <div className={styles.compactControls}>
