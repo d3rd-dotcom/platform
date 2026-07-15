@@ -175,8 +175,12 @@
   .folderRow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
+@media (max-width: 900px) {
+  .layout { margin-left: 0; }
+}
+
 @media (max-width: 700px) {
-  .layout { margin-left: 0; padding-bottom: 84px; }
+  .layout { padding-bottom: 84px; }
   .pageColumns { padding: 12px; }
   .globalPanel { padding-inline: 12px; }
   .panelHeader { margin-inline: -12px; }

@@ -1,0 +1,331 @@
+.layout {
+  min-height: 100vh;
+  margin-left: var(--sidebar-width, 265px);
+  background: var(--color-background);
+}
+
+:global([data-theme="dark"]) .layout {
+  background-color: #0d0e16;
+}
+
+.pageColumns {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 16px 24px;
+}
+
+.globalPanel {
+  overflow: visible;
+  padding: 0 18px 18px;
+  border: 2px solid var(--color-primary-hover);
+  border-radius: 18px;
+  background: var(--color-surface-3);
+  box-shadow: 0 4px 0 var(--color-primary);
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 50px;
+  margin: 0 -18px 34px;
+  padding: 0 20px;
+  border-bottom: 2px solid var(--color-primary-hover);
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-3));
+}
+
+.headerMark { width: 42px; height: 14px; }
+.headerTitle { width: 78px; height: 14px; }
+
+.guidePanel {
+  position: relative;
+  padding: 28px 22px 22px;
+  border: 2px solid var(--color-primary-hover);
+  border-radius: 18px;
+  background: var(--color-surface-base);
+  box-shadow:
+    0 4px 0 var(--color-primary),
+    0 0 6px rgba(0, 0, 0, 0.1),
+    0 6px 3px rgba(0, 0, 0, 0.22);
+}
+
+:global([data-theme="dark"]) .guidePanel {
+  background: #15172a;
+  border-color: color-mix(in oklch, var(--color-primary-hover) 40%, transparent);
+}
+
+.skeleton {
+  display: block;
+  border-radius: 6px;
+  background: linear-gradient(
+    100deg,
+    color-mix(in oklch, var(--color-text-muted) 12%, transparent) 35%,
+    color-mix(in oklch, var(--color-text-muted) 22%, transparent) 50%,
+    color-mix(in oklch, var(--color-text-muted) 12%, transparent) 65%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Floating view toggle pill, same footprint as the list/cards/3d switch. */
+.viewToggle {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 9999px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
+  background: var(--color-surface-base);
+}
+
+:global([data-theme="dark"]) .viewToggle {
+  background: #15172a;
+  border-color: color-mix(in oklch, var(--color-primary) 35%, transparent);
+}
+
+.toggleBtn {
+  width: 58px;
+  height: 26px;
+  border-radius: 9999px;
+}
+
+.toggleBtnActive {
+  background: linear-gradient(
+    100deg,
+    color-mix(in oklch, var(--color-primary) 45%, transparent) 35%,
+    color-mix(in oklch, var(--color-primary) 70%, transparent) 50%,
+    color-mix(in oklch, var(--color-primary) 45%, transparent) 65%
+  );
+  background-size: 200% 100%;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Progress card */
+.progressCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-base));
+}
+
+:global([data-theme="dark"]) .progressCard {
+  background: color-mix(in oklch, var(--color-primary) 8%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 22%, transparent);
+}
+
+.progressStats {
+  display: flex;
+  gap: 28px;
+}
+
+.progressStat {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.progressNum { width: 28px; height: 20px; }
+.progressLabel { width: 140px; height: 11px; }
+
+.progressTrack {
+  position: relative;
+  height: 8px;
+  border-radius: 9999px;
+  overflow: hidden;
+  background: color-mix(in oklch, var(--color-text-muted) 10%, transparent);
+}
+
+.progressFill {
+  width: 34%;
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(
+    100deg,
+    color-mix(in oklch, var(--color-primary) 45%, transparent) 35%,
+    color-mix(in oklch, var(--color-primary) 70%, transparent) 50%,
+    color-mix(in oklch, var(--color-primary) 45%, transparent) 65%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Centered section labels ("Popular topics" / "All guides") */
+.subjectLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.subjectLabelBar { width: 118px; height: 11px; }
+
+/* Featured guide grid */
+.featuredGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.featuredCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  min-height: 74px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 5%, transparent);
+  box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 22%, transparent);
+}
+
+:global([data-theme="dark"]) .featuredCard {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: color-mix(in oklch, var(--color-primary) 35%, transparent);
+}
+
+.featuredTitle { width: 68%; height: 13px; }
+.featuredSummary { width: 92%; height: 10px; }
+
+/* Knowledge map banner */
+.treeCard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 50px;
+  border-radius: 18px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 55%, transparent);
+  background: linear-gradient(
+    100deg,
+    color-mix(in oklch, var(--color-primary) 55%, transparent) 35%,
+    color-mix(in oklch, var(--color-primary) 78%, transparent) 50%,
+    color-mix(in oklch, var(--color-primary) 55%, transparent) 65%
+  );
+  background-size: 200% 100%;
+  box-shadow: 0 3px 0 var(--color-primary-hover);
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.treeCardLabel {
+  width: 170px;
+  height: 12px;
+  background: color-mix(in oklch, #ffffff 45%, transparent);
+  animation: none;
+}
+
+/* Guide list rows */
+.guideList {
+  display: grid;
+  gap: 10px;
+}
+
+.guideRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border-subtle);
+  background: color-mix(in oklch, var(--color-surface-3) 82%, var(--color-background));
+}
+
+:global([data-theme="dark"]) .guideRow {
+  background: color-mix(in oklch, var(--color-primary) 8%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 22%, transparent);
+}
+
+.guideRowDot { flex: 0 0 10px; width: 10px; height: 10px; border-radius: 50%; }
+.guideRowTitle { height: 13px; }
+.guideRowMeta { width: 74px; height: 10px; margin-left: auto; }
+
+/* Left-to-right, top-to-bottom reveal — same loading language as /home. */
+.content > * ,
+.featuredGrid > *,
+.guideList > * {
+  opacity: 0;
+  animation: revealLeft var(--duration-slow, 300ms) var(--ease-out, ease-out) forwards;
+}
+
+.content > *:nth-child(1) { animation-delay: 0ms; }
+.content > *:nth-child(2) { animation-delay: 50ms; }
+.content > *:nth-child(3) { animation-delay: 100ms; }
+.content > *:nth-child(4) { animation-delay: 150ms; }
+.content > *:nth-child(5) { animation-delay: 200ms; }
+.content > *:nth-child(6) { animation-delay: 250ms; }
+
+.featuredGrid > *:nth-child(1) { animation-delay: 120ms; }
+.featuredGrid > *:nth-child(2) { animation-delay: 180ms; }
+.featuredGrid > *:nth-child(3) { animation-delay: 240ms; }
+.featuredGrid > *:nth-child(4) { animation-delay: 300ms; }
+.featuredGrid > *:nth-child(5) { animation-delay: 360ms; }
+.featuredGrid > *:nth-child(6) { animation-delay: 420ms; }
+
+.guideList > *:nth-child(1) { animation-delay: 280ms; }
+.guideList > *:nth-child(2) { animation-delay: 330ms; }
+.guideList > *:nth-child(3) { animation-delay: 380ms; }
+.guideList > *:nth-child(4) { animation-delay: 430ms; }
+.guideList > *:nth-child(5) { animation-delay: 480ms; }
+.guideList > *:nth-child(6) { animation-delay: 530ms; }
+
+@keyframes revealLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes shimmer {
+  to { background-position: -200% 0; }
+}
+
+@media (max-width: 900px) {
+  .layout { margin-left: 0; }
+}
+
+@media (max-width: 700px) {
+  .layout { padding-bottom: 84px; }
+  .pageColumns { padding: 12px; }
+  .globalPanel { padding-inline: 12px; }
+  .panelHeader { margin-inline: -12px; }
+  .guidePanel {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+    padding: 0;
+  }
+  .viewToggle { position: static; transform: none; margin: 0 auto 16px; width: fit-content; display: flex; }
+  .featuredGrid { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton,
+  .progressFill,
+  .treeCard {
+    animation: none;
+  }
+
+  .content > *,
+  .featuredGrid > *,
+  .guideList > * {
+    opacity: 1;
+    animation: none;
+    transform: none;
+  }
+}

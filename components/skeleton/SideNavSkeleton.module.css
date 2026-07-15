@@ -1,0 +1,100 @@
+.sideNav {
+  position: fixed;
+  left: 0;
+  top: 72px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  width: var(--sidebar-width, 265px);
+  height: calc(100vh - 72px);
+  padding: 20px 16px;
+  overflow: hidden;
+  background: #f4f5fe;
+  border-right: 1px solid #d0d2e8;
+}
+
+:global([data-theme="dark"]) .sideNav {
+  background: var(--color-surface-base);
+  border-right-color: var(--color-border-strong);
+}
+
+.skeleton {
+  display: block;
+  border-radius: 6px;
+  background: linear-gradient(
+    100deg,
+    color-mix(in oklch, var(--color-text-muted) 12%, transparent) 35%,
+    color-mix(in oklch, var(--color-text-muted) 22%, transparent) 50%,
+    color-mix(in oklch, var(--color-text-muted) 12%, transparent) 65%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.sectionLabel {
+  width: 64px;
+  height: 10px;
+  margin: 6px 8px 16px;
+}
+
+.navList {
+  display: grid;
+  gap: 10px;
+}
+
+.navRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+}
+
+.navIcon {
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.navLabel {
+  height: 12px;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  padding: 12px 8px;
+  border-top: 1px solid color-mix(in oklch, var(--color-text-muted) 14%, transparent);
+}
+
+.footerAvatar {
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+}
+
+.footerLabel {
+  width: 56%;
+  height: 12px;
+}
+
+@media (max-width: 900px) {
+  .sideNav {
+    display: none;
+  }
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
