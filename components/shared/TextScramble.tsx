@@ -3,7 +3,23 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import styles from './TextScramble.module.css';
 
-const GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+const UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const LOWER = 'abcdefghijklmnopqrstuvwxyz';
+const DIGITS = '0123456789';
+
+/**
+ * Picks a random glyph matching the target character's case/type, so churn
+ * stays close to the settled text's width (an all-caps or symbol-heavy pool
+ * renders visibly wider than lowercase prose, causing lines to reflow as
+ * they lock in). Punctuation stays literal — narrow marks like "," or "."
+ * have no same-width substitute worth cycling.
+ */
+function randomGlyphFor(char: string): string {
+  if (/[A-Z]/.test(char)) return UPPER[Math.floor(Math.random() * UPPER.length)];
+  if (/[a-z]/.test(char)) return LOWER[Math.floor(Math.random() * LOWER.length)];
+  if (/[0-9]/.test(char)) return DIGITS[Math.floor(Math.random() * DIGITS.length)];
+  return char;
+}
 
 export interface TextScrambleProps {
   /** Final text the effect settles on. */
@@ -39,14 +55,16 @@ export default function TextScramble({
   className = '',
   monospace = true,
 }: TextScrambleProps) {
-  const [display, setDisplay] = useState(text);
-  const [reduceMotion, setReduceMotion] = useState(false);
+  const [display, setDisplay] = useState(() =>
+    autoPlay ? text.split('').map(randomGlyphFor).join('') : text,
+  );
+  const reduceMotionRef = useRef(false);
   const frameRef = useRef<number | null>(null);
 
   useEffect(() => {
     const mql = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setReduceMotion(mql.matches);
-    const onChange = () => setReduceMotion(mql.matches);
+    reduceMotionRef.current = mql.matches;
+    const onChange = () => { reduceMotionRef.current = mql.matches; };
     mql.addEventListener('change', onChange);
     return () => mql.removeEventListener('change', onChange);
   }, []);
@@ -54,7 +72,7 @@ export default function TextScramble({
   useEffect(() => {
     if (!autoPlay) return undefined;
 
-    if (reduceMotion) {
+    if (reduceMotionRef.current) {
       setDisplay(text);
       return undefined;
     }
@@ -69,7 +87,7 @@ export default function TextScramble({
         .map((char, i) => {
           if (char === ' ') return ' ';
           if (elapsed >= settleAt[i]) return char;
-          return GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+          return randomGlyphFor(char);
         })
         .join('');
       setDisplay(next);
@@ -86,7 +104,7 @@ export default function TextScramble({
       if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [text, duration, autoPlay, reduceMotion, playKey]);
+  }, [text, duration, autoPlay, playKey]);
 
   const spans = useMemo(() => display.split(''), [display]);
 

@@ -6,8 +6,6 @@ import styles from './LandingPage.module.css';
 import LandingEnterAcademyButton from './LandingEnterAcademyButton';
 import { LandingScene } from './LandingScene';
 import { PixelCursorTrail } from './PixelCursorTrail';
-import TextScramble from '@/components/shared/TextScramble';
-
 const HERO_HEADLINE = 'The free, social platform, for worldwide quality education.';
 
 export const HeroSection: React.FC = () => {
@@ -47,7 +45,7 @@ export const HeroSection: React.FC = () => {
         <div className={styles.heroContent}>
 
           <h1 className={styles.heroHeadline}>
-            <TextScramble text={HERO_HEADLINE} monospace={false} duration={900} />
+            {HERO_HEADLINE}
           </h1>
           <div className={styles.heroActions}>
             <LandingEnterAcademyButton dark />
