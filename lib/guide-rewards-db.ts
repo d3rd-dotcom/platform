@@ -26,6 +26,14 @@ export const WALKTHROUGH_COMPLETE_REWARD = GUIDE_COMPLETE_REWARD * WALKTHROUGH_C
 // Single source of truth — never hardcode this number elsewhere.
 export const GUIDE_VERIFIED_AUTHOR_REWARD = 250;
 
+// One-time reward for completing a guide's Assemble pass: decomposing a
+// published guide into its axioms and approving/flagging every one to re-author
+// it. A deep-read comprehension exercise on already-published material — sized
+// just under a plain completion (GUIDE_COMPLETE_REWARD = 50) so it rewards the
+// effort without dwarfing it, and far under authoring (250). Single source of
+// truth — never hardcode this number elsewhere.
+export const ASSEMBLY_REVIEW_REWARD = 40;
+
 export interface GuideRewardResult {
   diamonds: number;
   levelCleared: boolean;
@@ -257,4 +265,128 @@ export async function awardAuthorVerificationReward(
 
   await creditShards(client, authorId, GUIDE_VERIFIED_AUTHOR_REWARD);
   return { awarded: true, diamonds: GUIDE_VERIFIED_AUTHOR_REWARD, authorId };
+}
+
+// ── Assemble-game reward ─────────────────────────────────────────────────────
+
+/**
+ * Backstop time gate for an assembly claim: minimum seconds between a run's
+ * first verdict (started_at) and claiming, sized by axiom count. Honest
+ * card-by-card play always clears it; it only blunts a scripted "approve all
+ * instantly" burst. The one-per-(user, guide) claim UNIQUE already bounds the
+ * total value, so this is defence in depth, not the primary guard.
+ */
+const ASSEMBLY_MIN_SECONDS_BASE = 6;
+const ASSEMBLY_MIN_SECONDS_PER_AXIOM = 1;
+
+export interface AssemblyRewardResult {
+  awarded: boolean;
+  diamonds: number;
+  /** Why nothing was awarded, when awarded is false (for the route to surface). */
+  reason?:
+    | 'not_published'
+    | 'author'
+    | 'no_run'
+    | 'empty'
+    | 'incomplete'
+    | 'too_fast'
+    | 'already_claimed';
+}
+
+/**
+ * Pays the one-time ASSEMBLY_REVIEW_REWARD when a learner completes a guide's
+ * Assemble pass (a verdict on every current axiom). Mirrors awardGuideRewards's
+ * money-path discipline exactly:
+ *
+ *   - Fail-closed, trustless toward the caller: re-checks inside its own
+ *     transaction that the guide exists, is PUBLISHED, and is not authored by
+ *     the completing user (authors get no reward for reviewing their own guide).
+ *   - Completeness is computed from the DB, never the client: every axiom node
+ *     of the guide must carry a verdict under this user's run.
+ *   - Idempotent: guarded by guide_assembly_claims UNIQUE (user_id, guide_id)
+ *     with ON CONFLICT DO NOTHING — a second call inserts nothing and credits
+ *     nothing.
+ *   - users.shard_count is credited only when a claim row was actually inserted,
+ *     inside this same transaction.
+ *
+ * Onchain delivery (Blue transfer) is the route's job, keyed on a namespaced
+ * ref (`assembly:<guideId>`) so it never collides with the guide-completion
+ * delivery for the same guide.
+ */
+export async function awardAssemblyReward(
+  userId: string,
+  guideId: string,
+): Promise<AssemblyRewardResult> {
+  return withTransaction(async (client) => {
+    const guideRes = await client.query<{ author_id: string | null; status: string }>(
+      `SELECT author_id, status FROM guides WHERE id = $1`,
+      [guideId],
+    );
+    const guide = guideRes.rows[0];
+    if (!guide || guide.status !== 'published') {
+      return { awarded: false, diamonds: 0, reason: 'not_published' };
+    }
+    if (guide.author_id === userId) {
+      return { awarded: false, diamonds: 0, reason: 'author' };
+    }
+
+    const runRes = await client.query<{ id: string; secs: number }>(
+      `SELECT id, EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - started_at))::int AS secs
+       FROM guide_assembly_runs
+       WHERE user_id = $1 AND guide_id = $2`,
+      [userId, guideId],
+    );
+    const run = runRes.rows[0];
+    if (!run) {
+      return { awarded: false, diamonds: 0, reason: 'no_run' };
+    }
+
+    // Every current axiom must have a verdict under this run. Both counts are
+    // computed server-side; the client's claim of "done" is never trusted.
+    const axRes = await client.query<{ total: number }>(
+      `SELECT COUNT(*)::int AS total
+       FROM guide_assembly_nodes
+       WHERE guide_id = $1 AND kind = 'axiom'`,
+      [guideId],
+    );
+    const axiomCount = axRes.rows[0]?.total ?? 0;
+    if (axiomCount === 0) {
+      return { awarded: false, diamonds: 0, reason: 'empty' };
+    }
+
+    const doneRes = await client.query<{ done: number }>(
+      `SELECT COUNT(*)::int AS done
+       FROM guide_assembly_verdicts v
+       JOIN guide_assembly_nodes n ON n.id = v.node_id
+       WHERE v.run_id = $1 AND n.guide_id = $2 AND n.kind = 'axiom'`,
+      [run.id, guideId],
+    );
+    if ((doneRes.rows[0]?.done ?? 0) < axiomCount) {
+      return { awarded: false, diamonds: 0, reason: 'incomplete' };
+    }
+
+    const minSeconds = ASSEMBLY_MIN_SECONDS_BASE + axiomCount * ASSEMBLY_MIN_SECONDS_PER_AXIOM;
+    if ((run.secs ?? 0) < minSeconds) {
+      return { awarded: false, diamonds: 0, reason: 'too_fast' };
+    }
+
+    const claimRes = await client.query<{ id: string }>(
+      `INSERT INTO guide_assembly_claims (user_id, guide_id, diamonds)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (user_id, guide_id) DO NOTHING
+       RETURNING id`,
+      [userId, guideId, ASSEMBLY_REVIEW_REWARD],
+    );
+    if (claimRes.rows.length === 0) {
+      return { awarded: false, diamonds: 0, reason: 'already_claimed' };
+    }
+
+    await creditShards(client, userId, ASSEMBLY_REVIEW_REWARD);
+    await client.query(
+      `UPDATE guide_assembly_runs SET completed_at = CURRENT_TIMESTAMP WHERE id = $1`,
+      [run.id],
+    );
+
+    return { awarded: true, diamonds: ASSEMBLY_REVIEW_REWARD };
+  });
 }

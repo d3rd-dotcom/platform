@@ -426,6 +426,47 @@ export const revisionCheckResponseSchema = z
   .passthrough();
 export type RevisionCheckResponse = z.infer<typeof revisionCheckResponseSchema>;
 
+// ── Assemble game ────────────────────────────────────────────────────────────
+
+/** POST /api/guides/[slug]/assembly/verdict — record a verdict on one axiom. */
+export const assemblyVerdictBodySchema = z.object({
+  nodeId: z.string(),
+  verdict: z.enum(['approve', 'flag']),
+});
+export type AssemblyVerdictBody = z.infer<typeof assemblyVerdictBodySchema>;
+
+/**
+ * GET /api/guides/[slug]/assembly — the guide's decomposition tree plus the
+ * caller's run state. `sections` passthrough the AssemblySectionView shape
+ * (lib/guide-assembly-db owns it); the envelope is pinned. `available` is false
+ * for an unpublished guide or one whose body yields no axioms.
+ */
+export const assemblyTreeResponseSchema = z.object({
+  available: z.boolean(),
+  reason: z.string().optional(),
+  guide: z.object({ id: z.string(), slug: z.string(), topicTitle: z.string() }),
+  reward: z.number(),
+  isAuthor: z.boolean(),
+  authenticated: z.boolean(),
+  contentVersion: z.string(),
+  axiomCount: z.number(),
+  verdictCount: z.number(),
+  started: z.boolean(),
+  claimed: z.boolean(),
+  sections: z.array(looseRecord),
+});
+export type AssemblyTreeResponse = z.infer<typeof assemblyTreeResponseSchema>;
+
+/** POST /api/guides/[slug]/assembly/complete — claim the completion reward. */
+export const assemblyCompleteResponseSchema = z.object({
+  ok: z.literal(true),
+  awarded: z.boolean(),
+  alreadyClaimed: z.boolean(),
+  diamonds: z.number(),
+  reason: z.string().optional(),
+});
+export type AssemblyCompleteResponse = z.infer<typeof assemblyCompleteResponseSchema>;
+
 // ── Helper: flatten a zod error the way the routes surface it ────────────────────
 
 /**

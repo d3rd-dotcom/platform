@@ -1,0 +1,369 @@
+/* Assemble game — a card-stack pass over a guide's axioms. Reuses the guide
+   page's layout frame (../page.module.css) for .layout/.page/.back/.title; this
+   module owns the game surface only. Tokens only, no literal font families. */
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5rem);
+}
+
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  font-family: var(--font-departure-mono), var(--font-mono), monospace;
+  font-size: 0.625rem;
+  font-weight: var(--font-weight-semibold, 600);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+  background: var(--color-primary);
+  padding: 3px 9px;
+  border-radius: var(--radius-full, 9999px);
+  box-shadow: 0 1px 4px color-mix(in oklch, var(--color-primary) 40%, transparent);
+}
+
+.notice {
+  font-family: var(--type-font-body);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--color-text-muted);
+  padding: 24px;
+  border-radius: 14px;
+  border: 1.5px dashed color-mix(in oklch, var(--color-primary) 30%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 5%, var(--color-surface-base));
+  max-width: 60ch;
+}
+
+/* ── Intro ─────────────────────────────────────────────────────────────────── */
+.intro {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  max-width: 62ch;
+}
+
+.introLede {
+  margin: 0;
+  font-family: var(--type-font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--color-text-dark);
+}
+
+.rewardChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--type-font-label);
+  font-size: 0.8125rem;
+  font-weight: var(--type-weight-medium, 500);
+  color: var(--color-text-dark);
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-base));
+  border: 1px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
+  border-radius: var(--radius-full, 9999px);
+  padding: 7px 14px;
+}
+
+.rewardChip svg {
+  color: var(--color-primary);
+}
+
+/* ── Play ──────────────────────────────────────────────────────────────────── */
+.play {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 62ch;
+}
+
+.progressRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.progressTrack {
+  flex: 1;
+  height: 6px;
+  border-radius: var(--radius-full, 9999px);
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--color-primary);
+  transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.progressLabel {
+  font-family: var(--font-departure-mono), var(--font-mono), monospace;
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-semibold, 600);
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 32px 32px 26px;
+  border-radius: 18px;
+  background: var(--color-surface-base, #ffffff);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 14%, transparent);
+  box-shadow:
+    0 8px 24px rgba(15, 17, 34, 0.08),
+    0 1px 0 color-mix(in oklch, var(--color-primary) 10%, transparent);
+  animation: cardIn 0.22s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.cardSection {
+  font-family: var(--type-font-label);
+  font-size: 0.625rem;
+  font-weight: var(--type-weight-bold, 700);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--color-primary);
+}
+
+.axiom {
+  margin: 0;
+  font-family: var(--font-editorial), Georgia, serif;
+  font-size: 1.375rem;
+  line-height: 1.4;
+  letter-spacing: -0.003em;
+  color: var(--color-text-dark);
+}
+
+.cardMeta {
+  font-family: var(--type-font-code, var(--font-mono));
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+}
+
+.verdictRow {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.verdictBtn {
+  flex: 1 1 0;
+  min-width: 150px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--type-font-label);
+  font-size: 0.9375rem;
+  font-weight: var(--type-weight-bold, 700);
+  padding: 14px 18px;
+  border-radius: 14px;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.verdictBtn:active {
+  transform: translateY(1px);
+}
+
+.verdictBtn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.approve {
+  color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-base));
+  border-color: color-mix(in oklch, var(--color-primary) 26%, transparent);
+}
+
+.approve:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--color-primary) 14%, var(--color-surface-base));
+  box-shadow: 0 4px 14px color-mix(in oklch, var(--color-primary) 20%, transparent);
+}
+
+.flag {
+  color: var(--color-text-dark);
+  background: color-mix(in oklch, #c2410c 6%, var(--color-surface-base));
+  border-color: color-mix(in oklch, #c2410c 24%, transparent);
+}
+
+.flag:hover:not(:disabled) {
+  background: color-mix(in oklch, #c2410c 12%, var(--color-surface-base));
+  box-shadow: 0 4px 14px color-mix(in oklch, #c2410c 18%, transparent);
+}
+
+.flag svg {
+  color: #c2410c;
+}
+
+.chosen {
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary) 20%, transparent);
+}
+
+.approve.chosen {
+  background: color-mix(in oklch, var(--color-primary) 16%, var(--color-surface-base));
+}
+
+.flag.chosen {
+  box-shadow: 0 0 0 3px color-mix(in oklch, #c2410c 20%, transparent);
+  background: color-mix(in oklch, #c2410c 12%, var(--color-surface-base));
+}
+
+.navRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* ── Summary ───────────────────────────────────────────────────────────────── */
+.summary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  max-width: 62ch;
+}
+
+.summaryIcon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-full, 9999px);
+  color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+}
+
+.summaryTitle {
+  margin: 0;
+  font-family: var(--font-editorial), Georgia, serif;
+  font-size: 1.75rem;
+  font-weight: var(--font-weight-regular, 400);
+  line-height: 1.15;
+  color: var(--color-text-dark);
+}
+
+.summaryText {
+  margin: 0;
+  font-family: var(--type-font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+/* ── Buttons ───────────────────────────────────────────────────────────────── */
+.primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--type-font-label);
+  font-size: 0.9375rem;
+  font-weight: var(--type-weight-bold, 700);
+  color: #ffffff;
+  background: var(--color-primary);
+  border: none;
+  border-radius: var(--radius-full, 9999px);
+  padding: 12px 22px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px color-mix(in oklch, var(--color-primary) 34%, transparent);
+  transition: transform 0.12s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.primaryBtn:hover:not(:disabled) {
+  background: var(--color-primary-hover, var(--color-primary));
+  box-shadow: 0 6px 20px color-mix(in oklch, var(--color-primary) 44%, transparent);
+}
+
+.primaryBtn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.primaryBtn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.ghostBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--type-font-label);
+  font-size: 0.8125rem;
+  font-weight: var(--type-weight-medium, 500);
+  color: var(--color-text-muted);
+  background: transparent;
+  border: none;
+  padding: 6px 4px;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.ghostBtn:hover:not(:disabled) {
+  color: var(--color-primary);
+}
+
+.ghostBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.error {
+  font-family: var(--type-font-body);
+  font-size: 0.8125rem;
+  color: #c2410c;
+  background: color-mix(in oklch, #c2410c 8%, transparent);
+  border: 1px solid color-mix(in oklch, #c2410c 24%, transparent);
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
+/* ── Dark theme ────────────────────────────────────────────────────────────── */
+:global([data-theme='dark']) .card {
+  background: #15172a;
+  border-color: color-mix(in oklch, var(--color-primary) 24%, transparent);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+:global([data-theme='dark']) .notice,
+:global([data-theme='dark']) .rewardChip,
+:global([data-theme='dark']) .approve {
+  background: color-mix(in oklch, var(--color-primary) 12%, #15172a);
+}
+
+:global([data-theme='dark']) .flag {
+  background: color-mix(in oklch, #c2410c 12%, #15172a);
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 22px 20px;
+  }
+
+  .axiom {
+    font-size: 1.1875rem;
+  }
+
+  .verdictBtn {
+    min-width: 0;
+  }
+}
