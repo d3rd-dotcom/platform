@@ -139,10 +139,11 @@
 
 .axiom {
   margin: 0;
-  font-family: var(--font-editorial), Georgia, serif;
-  font-size: 1.375rem;
-  line-height: 1.4;
-  letter-spacing: -0.003em;
+  font-family: var(--type-font-body);
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 1.5;
+  letter-spacing: 0;
   color: var(--color-text-dark);
 }
 
