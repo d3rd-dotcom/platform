@@ -8,10 +8,7 @@
 
 :root {
   /* Primitive palette */
-  --palette-canvas: #FAF6F0;
-  --palette-cool-canvas: #F4F6FA;
-  --palette-cool-surface: #FFFFFF;
-  --palette-cool-surface-muted: #EDF1F7;
+  --palette-canvas: oklch(98% 0.008 270);
   --palette-academy-blue: #5168FF;
   --palette-action-blue: #465BE0;
   --palette-action-blue-hover: #3246BE;
@@ -56,9 +53,9 @@
   --color-text-faint: rgba(26, 27, 36, 0.42);
   --color-background: var(--color-canvas);
   --color-surface-base: var(--color-canvas);
-  --color-surface-1: color-mix(in srgb, var(--color-canvas) 96%, var(--color-text-dark));
-  --color-surface-2: color-mix(in srgb, var(--color-canvas) 92%, var(--color-text-dark));
-  --color-surface-3: color-mix(in srgb, var(--color-canvas) 86%, var(--color-text-dark));
+  --color-surface-1: oklch(96% 0.01 270);
+  --color-surface-2: oklch(93.5% 0.012 270);
+  --color-surface-3: oklch(90% 0.015 270);
   --color-inverse-surface-1: color-mix(in srgb, var(--palette-ink) 42%, transparent);
   --color-inverse-surface-2: color-mix(in srgb, var(--palette-ink) 58%, transparent);
   --color-inverse-surface-3: color-mix(in srgb, var(--palette-ink) 70%, transparent);
@@ -159,9 +156,9 @@
   --color-canvas: var(--palette-canvas);
   --color-background: var(--color-canvas);
   --color-surface-base: var(--color-canvas);
-  --color-surface-1: color-mix(in srgb, var(--color-canvas) 96%, var(--color-text-dark));
-  --color-surface-2: color-mix(in srgb, var(--color-canvas) 92%, var(--color-text-dark));
-  --color-surface-3: color-mix(in srgb, var(--color-canvas) 86%, var(--color-text-dark));
+  --color-surface-1: oklch(96% 0.01 270);
+  --color-surface-2: oklch(93.5% 0.012 270);
+  --color-surface-3: oklch(90% 0.015 270);
 }
 
 [data-theme="dark"][data-color="academy"] {

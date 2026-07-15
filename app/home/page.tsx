@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
-import { Plus, CaretUp, CaretDown, Rows, GridFour, Cube, CaretLeft, CaretRight, TreeStructure } from '@phosphor-icons/react';
+import { Plus, CaretUp, CaretDown, Rows, GridFour, Cube, CaretLeft, CaretRight, TreeStructure, Feather } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import { scriptForWeek, WEEKLY_SEEN_KEY } from '@/components/daily-read/weeklyScripts';
@@ -800,29 +800,21 @@ export default function HomePage() {
             </div>
           </article>
 
-          <article className={`${styles.insightCard} ${styles.planningInsightCard}`}>
-            <div className={styles.planningHeader}>
-              <h2 className={styles.insightTitle}>Planning</h2>
-              <div className={styles.planningControls} aria-hidden="true">
-                <span><CaretLeft size={16} weight="bold" /></span>
-                <span><CaretRight size={16} weight="bold" /></span>
-              </div>
+          <Link
+            href="/home/storyboard"
+            className={`${styles.insightCard} ${styles.storyboardInsightCard}`}
+            onMouseEnter={() => play('soft-hover')}
+            onClick={() => play('click')}
+          >
+            <div className={styles.storyboardHeader}>
+              <Feather size={20} weight="regular" />
+              <h2 className={styles.insightTitle}>Storyboard</h2>
             </div>
-            <div className={styles.planningViewport} aria-label="Five-day calendar, focused on July 16 through 18">
-              <div className={styles.planningDays}>
-                <div className={styles.planningDayMuted}><span>Mon</span><strong>15</strong></div>
-                <div className={`${styles.planningDay} ${styles.planningDayWarm}`}><span>Tue</span><strong>16</strong></div>
-                <div className={`${styles.planningDay} ${styles.planningDayBlue}`}><span>Wed</span><strong>17</strong></div>
-                <div className={`${styles.planningDay} ${styles.planningDayWarm}`}><span>Thu</span><strong>18</strong></div>
-                <div className={styles.planningDayMuted}><span>Fri</span><strong>19</strong></div>
-              </div>
-              <div className={styles.planningTasks}>
-                <span className={styles.planningTask}>Homework deadline</span>
-                <span className={styles.planningTask}>Lecture: UI Kit&apos;s Guide</span>
-                <span className={styles.planningTask}>Lesson: Figma</span>
-              </div>
-            </div>
-          </article>
+            <p className={styles.storyboardDesc}>
+              12-week story ideation. Map scenes, dialogue, and turning points for your narrative arc.
+            </p>
+            <span className={styles.storyboardCta}>Open Storyboard</span>
+          </Link>
         </section>
       )}
       </div>

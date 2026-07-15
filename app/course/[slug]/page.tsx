@@ -326,33 +326,33 @@ export default function CourseSlugPage({ params }: PageProps) {
             </div>
           </section>
 
-          <section className={courseStyles.weeklyShell} aria-label="Course materials">
-            <nav className={courseStyles.curriculumRail} aria-label="Course outline">
-              <div className={courseStyles.curriculumRailHeader}>
-                <span className={courseStyles.curriculumRailKicker}>Curriculum</span>
-                <strong className={courseStyles.curriculumRailTitle}>Course outline</strong>
-              </div>
-              <div className={courseStyles.weekNavDots}>
-                {weeks.map((w) => {
-                  const wp = progress.find((p) => p.weekId === w.id);
-                  const sealed = wp?.isSealed ?? false;
-                  const isCurrent = activeWeek === w.weekNumber;
-                  return (
-                    <button
-                      key={w.id}
-                      className={`${courseStyles.weekDot} ${isCurrent ? courseStyles.weekDotActive : ''} ${sealed ? courseStyles.weekDotSealed : ''}`}
-                      onClick={() => { setActiveWeek(w.weekNumber); setRightContent(null); }}
-                      title={w.title || `Week ${w.weekNumber}`}
-                      aria-current={isCurrent ? 'step' : undefined}
-                    >
-                      <span className={courseStyles.weekDotNumber}>Week {w.weekNumber}</span>
-                      <span className={courseStyles.weekDotStatus}>{sealed ? 'Sealed' : isCurrent ? 'Current' : ''}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </nav>
+          <nav className={courseStyles.curriculumRail} aria-label="Course outline">
+            <div className={courseStyles.curriculumRailHeader}>
+              <span className={courseStyles.curriculumRailKicker}>Curriculum</span>
+              <strong className={courseStyles.curriculumRailTitle}>Course outline</strong>
+            </div>
+            <div className={courseStyles.weekNavDots}>
+              {weeks.map((w) => {
+                const wp = progress.find((p) => p.weekId === w.id);
+                const sealed = wp?.isSealed ?? false;
+                const isCurrent = activeWeek === w.weekNumber;
+                return (
+                  <button
+                    key={w.id}
+                    className={`${courseStyles.weekDot} ${isCurrent ? courseStyles.weekDotActive : ''} ${sealed ? courseStyles.weekDotSealed : ''}`}
+                    onClick={() => { setActiveWeek(w.weekNumber); setRightContent(null); }}
+                    title={w.title || `Week ${w.weekNumber}`}
+                    aria-current={isCurrent ? 'step' : undefined}
+                  >
+                    <span className={courseStyles.weekDotNumber}>Week {w.weekNumber}</span>
+                    <span className={courseStyles.weekDotStatus}>{sealed ? 'Sealed' : isCurrent ? 'Current' : ''}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </nav>
 
+          <section className={courseStyles.weeklyShell} aria-label="Course materials">
             <div className={courseStyles.leftCol}>
               <div className={courseStyles.weekContent}>
 

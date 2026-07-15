@@ -92,8 +92,8 @@ evaluated composited over the opaque surface.
 | Dark-mode `--color-text-soft` (.78) | 10.0 | 9.6 | 9.2 | — | ✅ AA/AAA |
 | Dark-mode `--color-text-muted` (.64) | 7.0 | 6.8 | 6.6 | — | ✅ AA/AAA |
 | Dark-mode `--color-text-faint` (.46) | 4.05 | 4.07 | 4.04 | — | ✅ large text (3:1); placeholder/meta only |
-| Light `--color-text-dark` `#1A1B24` | — | — | — | 15.91 on `#FAF6F0` | ✅ AA/AAA |
-| Light `--color-text-muted` (.64) | — | — | — | 5.00 on `#FAF6F0` | ✅ AA (normal) |
+| Light `--color-text-dark` `#1A1B24` | — | — | — | 16.13 on `#F6F8FE` | ✅ AA/AAA |
+| Light `--color-text-muted` (.64) | — | — | — | 5.01 on `#F6F8FE` | ✅ AA (normal) |
 | Accent link/title `#8f9bff` (dark) | 7.8 | 7.3 | 6.9 | 2.5 | ✅ on dark; not used as text on white |
 | Action Blue `#465BE0` (control text/fill) | — | — | — | 5.48 | ✅ AA for normal text |
 

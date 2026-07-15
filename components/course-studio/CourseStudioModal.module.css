@@ -943,14 +943,6 @@
   background: var(--color-background);
 }
 
-:global([data-theme="light"]) .layout {
-  --color-background: var(--palette-cool-canvas);
-  --color-surface-base: var(--palette-cool-canvas);
-  --color-surface-1: var(--palette-cool-surface);
-  --color-surface-2: var(--palette-cool-surface-muted);
-  --color-surface-3: color-mix(in srgb, var(--palette-cool-surface-muted) 82%, var(--color-text-dark));
-}
-
 .layout::before {
   display: none;
 }

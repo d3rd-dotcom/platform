@@ -405,34 +405,34 @@ export default function CoursePage() {
             </div>
         </section>
 
-        <section className={styles.weeklyShell} aria-label="Course materials">
-          <nav className={styles.curriculumRail} aria-label="Course outline">
-            <div className={styles.curriculumRailHeader}>
-              <span className={styles.curriculumRailKicker}>Curriculum</span>
-              <strong className={styles.curriculumRailTitle}>Course outline</strong>
-            </div>
-            <div className={styles.weekNavDots}>
-              {Array.from({ length: 12 }, (_, i) => {
-                const w = i + 1;
-                const status = getWeekStatus(w);
-                const isCurrent = !seasonLoading && w === resolvedViewWeek;
-                return (
-                  <button
-                    key={w}
-                    className={`${styles.weekDot} ${isCurrent ? styles.weekDotActive : ''} ${status?.isSealed ? styles.weekDotSealed : ''} ${seasonLoading ? styles.weekDotLoading : ''}`}
-                    onClick={() => { play('click'); setViewWeek(w); }}
-                    title={`Week ${w}: ${WEEK_TITLES[w]}`}
-                    disabled={seasonLoading}
-                    aria-current={isCurrent ? 'step' : undefined}
-                  >
-                    <span className={styles.weekDotNumber}>Week {w}</span>
-                    <span className={styles.weekDotStatus}>{status?.isSealed ? 'Sealed' : isCurrent ? 'Current' : ''}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </nav>
+        <nav className={styles.curriculumRail} aria-label="Course outline">
+          <div className={styles.curriculumRailHeader}>
+            <span className={styles.curriculumRailKicker}>Curriculum</span>
+            <strong className={styles.curriculumRailTitle}>Course outline</strong>
+          </div>
+          <div className={styles.weekNavDots}>
+            {Array.from({ length: 12 }, (_, i) => {
+              const w = i + 1;
+              const status = getWeekStatus(w);
+              const isCurrent = !seasonLoading && w === resolvedViewWeek;
+              return (
+                <button
+                  key={w}
+                  className={`${styles.weekDot} ${isCurrent ? styles.weekDotActive : ''} ${status?.isSealed ? styles.weekDotSealed : ''} ${seasonLoading ? styles.weekDotLoading : ''}`}
+                  onClick={() => { play('click'); setViewWeek(w); }}
+                  title={`Week ${w}: ${WEEK_TITLES[w]}`}
+                  disabled={seasonLoading}
+                  aria-current={isCurrent ? 'step' : undefined}
+                >
+                  <span className={styles.weekDotNumber}>Week {w}</span>
+                  <span className={styles.weekDotStatus}>{status?.isSealed ? 'Sealed' : isCurrent ? 'Current' : ''}</span>
+                </button>
+              );
+            })}
+          </div>
+        </nav>
 
+        <section className={styles.weeklyShell} aria-label="Course materials">
           <div className={styles.leftCol}>
             <div
               className={`${styles.weekContent} ${swipeAnim === 'left' ? styles.weekContentSwipeLeft : swipeAnim === 'right' ? styles.weekContentSwipeRight : ''}`}

@@ -1,7 +1,7 @@
 /* Course page — flat playful surface, shared with app/course/[slug].
    Structure follows the Course Studio (flat surfaces, hairline borders,
    monospace count badges, sentence case) but the finish is game-like:
-   rounded 12-16px cards, pill badges, warm brand canvas in light mode.
+   rounded 12-16px cards, pill badges, cool brand canvas in light mode.
    Keep this file visually in sync with app/course/page.module.css
    (course-design-parity skill). */
 
@@ -29,8 +29,8 @@
   background-color: var(--color-background);
 }
 
-/* Light mode stays on the warm brand canvas — the course surface should feel
-   like the rest of the academy, not a cool studio editor. */
+/* Light mode stays on the shared brand canvas — the course surface should feel
+   like the rest of the academy. */
 
 .bgViz {
   position: fixed;
@@ -51,6 +51,24 @@
   width: 100%;
   margin: 0;
   padding: 0 0 72px;
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  align-items: start;
+}
+
+.content > .curriculumRail {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+
+.content > .controlPanel {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.content > .weeklyShell {
+  grid-column: 2;
+  grid-row: 2;
 }
 
 /* ============================================ */
@@ -355,12 +373,12 @@
 }
 
 /* ============================================ */
-/* WEEKLY SHELL — rail + canvas + reading panel */
+/* WEEKLY SHELL — canvas + reading panel        */
 /* ============================================ */
 
 .weeklyShell {
   display: grid;
-  grid-template-columns: 200px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
   gap: 0;
   justify-content: stretch;
@@ -375,7 +393,7 @@
 /* Rail width stays constant whether or not the reading panel is open — only
    the third column appears. */
 .weeklyShell:has(> .rightPanel > *) {
-  grid-template-columns: 200px minmax(0, 1fr) minmax(320px, 390px);
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 390px);
   gap: 0;
 }
 
@@ -383,8 +401,8 @@
 
 .curriculumRail {
   position: sticky;
-  top: calc(72px + 24px);
-  max-height: calc(100vh - 72px - 48px);
+  top: 0;
+  max-height: 100vh;
   overflow-y: auto;
   background: var(--color-surface-1);
   border: 0;
@@ -432,8 +450,8 @@
   gap: 8px;
   width: 100%;
   height: auto;
-  min-height: 40px;
-  padding: 9px 14px;
+  min-height: 48px;
+  padding: 12px 16px;
   background: transparent;
   border: 0;
   border-bottom: 1px solid var(--color-border-subtle);
@@ -473,7 +491,7 @@
 
 .weekDotNumber {
   font-family: var(--type-font-code);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: var(--type-weight-semibold);
   letter-spacing: 0;
   line-height: 1;
@@ -1049,10 +1067,19 @@
   .content {
     max-width: none;
     padding: 72px 0;
+    display: block;
   }
 
   .controlPanel {
     grid-template-columns: 1fr;
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .content > .curriculumRail,
+  .content > .weeklyShell {
+    grid-column: auto;
+    grid-row: auto;
   }
 
   .panelBody {

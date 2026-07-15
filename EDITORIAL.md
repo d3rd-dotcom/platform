@@ -197,7 +197,7 @@ The logo should feel like a strange artifact from another planet. It does not ne
 - Academy Blue: `#5168FF` - our flagship brand shade
 - Action Blue: `#465BE0` - accessible primary actions and small text on filled controls
 - Blackpill Text: `#1A1B24` - bluish black for smooth dark text
-- Canvas: `#FAF6F0` - the single light-mode foundation
+- Canvas: `#F6F8FE` - the single light-mode foundation, a cool blue-white (`oklch(98% 0.008 270)` in code)
 - Academy Indigo: `#50599B` - rewards, progress, and positive signals
 - Study Violet: `#7A56C6` - restrained emphasis and secondary accents
 

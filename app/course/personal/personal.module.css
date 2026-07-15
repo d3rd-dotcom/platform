@@ -128,7 +128,10 @@
 }
 
 /* ── Empty / loading states ── */
+/* The shared .content scaffold is a rail + canvas grid; the states have no
+   rail, so they span the full row to stay centered on the page. */
 .stateWrap {
+  grid-column: 1 / -1;
   display: flex;
   flex-direction: column;
   align-items: center;
