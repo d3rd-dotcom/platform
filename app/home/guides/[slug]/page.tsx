@@ -3,10 +3,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   ArrowLeft,
   ArrowRight,
   BookOpenText,
+  CheckCircle,
   GraduationCap,
   LockKey,
   PencilSimple,
@@ -19,6 +21,7 @@ import { useSound } from '@/hooks/useSound';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import CtaButton from '@/components/shared/CtaButton';
+import DiamondReward from '@/components/rewards/DiamondReward';
 import GuideBody from '@/components/guides/GuideBody';
 import GuideMethods from '@/components/guides/GuideMethods';
 import GuideWalkthrough from '@/components/guides/GuideWalkthrough';
@@ -40,6 +43,7 @@ interface GuidePayload {
   prereqs: GuideLink[];
   dependents: GuideLink[];
   level?: number;
+  completeReward?: number;
 }
 
 function formatReviewedDate(value: string): string {
@@ -99,7 +103,7 @@ function WalkthroughOverlay({ slug, onClose }: { slug: string; onClose: () => vo
 }
 
 export default function GuidePage({ params }: PageProps) {
-  const { ready, authenticated, getAccessToken } = usePrivy();
+  const { ready, authenticated, getAccessToken, login } = usePrivy();
   const { play } = useSound();
   const [data, setData] = useState<GuidePayload | null>(null);
   const [loading, setLoading] = useState(true);
@@ -108,6 +112,10 @@ export default function GuidePage({ params }: PageProps) {
   const [materials, setMaterials] = useState<GuideMaterial[]>([]);
   const [completedIds, setCompletedIds] = useState<Set<string> | null>(null);
   const [progressResolved, setProgressResolved] = useState(false);
+  const [completing, setCompleting] = useState(false);
+  const [completeError, setCompleteError] = useState<string | null>(null);
+  const [rewardDiamonds, setRewardDiamonds] = useState(0);
+  const [showDiamondReward, setShowDiamondReward] = useState(false);
 
   // The viewer's completed guide ids gate the reading content: a higher-level
   // topic stays locked until its prerequisites are cleared. Signed-out readers
@@ -172,6 +180,48 @@ export default function GuidePage({ params }: PageProps) {
     if (!ready) return;
     load();
   }, [ready, load]);
+
+  const isCompleted = !!data && !!completedIds?.has(data.guide.id);
+
+  // Mark this guide complete — the same server-gated, idempotent path the
+  // walkthrough uses (prereq gate 409s server-side; rewards pay once, ever).
+  const handleComplete = useCallback(async () => {
+    if (!data) return;
+    if (!authenticated) {
+      login();
+      return;
+    }
+    setCompleting(true);
+    setCompleteError(null);
+    try {
+      const token = await getAccessToken().catch(() => null);
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      };
+      const res = await fetch('/api/guides/progress', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ guideId: data.guide.id }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        play('error');
+        setCompleteError(body.error ?? 'Could not complete this guide.');
+        return;
+      }
+      setCompletedIds((prev) => new Set(prev ?? []).add(data.guide.id));
+      if (typeof body.diamonds === 'number' && body.diamonds > 0) {
+        play('celebration');
+        setRewardDiamonds(body.diamonds);
+        setShowDiamondReward(true);
+      } else {
+        play('success');
+      }
+    } finally {
+      setCompleting(false);
+    }
+  }, [data, authenticated, login, getAccessToken, play]);
 
   // A prerequisite counts as met only for a signed-in viewer who has completed
   // it. Everything the reader still needs to clear gates the guide body below.
@@ -370,17 +420,52 @@ export default function GuidePage({ params }: PageProps) {
               guideId={data.guide.id}
               footerAction={
                 data.guide.status === 'published' ? (
-                  <CtaButton
-                    variant="primary"
-                    size="lg"
-                    block
-                    href={`/learn/guides/${data.guide.slug}/assemble`}
-                    onMouseEnter={() => play('soft-hover')}
-                    onClick={() => play('navigation')}
-                  >
-                    <PencilSimple size={18} weight="bold" />
-                    Edit & Improve
-                  </CtaButton>
+                  <div className={styles.footerActions}>
+                    {!contentLocked && !prereqCheckPending && (
+                      <CtaButton
+                        variant="primary"
+                        size="lg"
+                        block
+                        disabled={isCompleted || completing}
+                        onMouseEnter={() => !isCompleted && play('soft-hover')}
+                        onClick={handleComplete}
+                      >
+                        {isCompleted ? (
+                          <>
+                            <CheckCircle size={18} weight="fill" />
+                            Completed
+                          </>
+                        ) : (
+                          <>
+                            {completing ? 'Completing…' : 'Mark this guide complete'}
+                            <span className={styles.rewardBadge}>
+                              <Image
+                                src="/icons/ui-diamond.svg"
+                                alt=""
+                                width={12}
+                                height={12}
+                              />
+                              +{data.completeReward ?? 50}
+                            </span>
+                          </>
+                        )}
+                      </CtaButton>
+                    )}
+                    {completeError && (
+                      <p className={styles.completeError}>{completeError}</p>
+                    )}
+                    <CtaButton
+                      variant="secondary"
+                      size="lg"
+                      block
+                      href={`/learn/guides/${data.guide.slug}/assemble`}
+                      onMouseEnter={() => play('soft-hover')}
+                      onClick={() => play('navigation')}
+                    >
+                      <PencilSimple size={18} weight="bold" />
+                      Edit & Improve
+                    </CtaButton>
+                  </div>
                 ) : undefined
               }
             />
@@ -389,6 +474,13 @@ export default function GuidePage({ params }: PageProps) {
               <WalkthroughOverlay
                 slug={data.guide.slug}
                 onClose={() => setShowWalkthrough(false)}
+              />
+            )}
+
+            {showDiamondReward && (
+              <DiamondReward
+                amount={rewardDiamonds}
+                onComplete={() => setShowDiamondReward(false)}
               />
             )}
           </>

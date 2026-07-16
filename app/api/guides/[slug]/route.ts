@@ -9,6 +9,7 @@ import {
   updateGuide,
   type GuideBodyComponent,
 } from '@/lib/guides-db';
+import { GUIDE_COMPLETE_REWARD } from '@/lib/guide-rewards-db';
 import type { GuideDetailResponse } from '@/lib/guide-api-schemas';
 
 export const runtime = 'nodejs';
@@ -47,7 +48,14 @@ export async function GET(_request: Request, { params }: { params: { slug: strin
     const level = Math.max(walkthrough?.levels ?? 1, 1);
 
     return NextResponse.json(
-      { guide, methods, prereqs, dependents, level } satisfies GuideDetailResponse,
+      {
+        guide,
+        methods,
+        prereqs,
+        dependents,
+        level,
+        completeReward: GUIDE_COMPLETE_REWARD,
+      } satisfies GuideDetailResponse,
     );
   } catch (err: any) {
     const status = err.status ?? 500;

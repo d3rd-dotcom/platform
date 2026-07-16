@@ -200,6 +200,8 @@ export const guideDetailResponseSchema = z.object({
   prereqs: z.array(looseRecord),
   dependents: z.array(looseRecord),
   level: z.number(),
+  /** Diamonds paid for completing this guide (GUIDE_COMPLETE_REWARD). */
+  completeReward: z.number(),
 });
 export type GuideDetailResponse = z.infer<typeof guideDetailResponseSchema>;
 
@@ -434,6 +436,13 @@ export const assemblyVerdictBodySchema = z.object({
   verdict: z.enum(['approve', 'flag']),
 });
 export type AssemblyVerdictBody = z.infer<typeof assemblyVerdictBodySchema>;
+
+/** POST /api/guides/[slug]/assembly/suggest — VIP rewrite proposal for one axiom. */
+export const assemblySuggestBodySchema = z.object({
+  nodeId: z.string(),
+  suggestion: z.string().trim().min(10, 'Give the rewrite at least 10 characters.').max(2000),
+});
+export type AssemblySuggestBody = z.infer<typeof assemblySuggestBodySchema>;
 
 /**
  * GET /api/guides/[slug]/assembly — the guide's decomposition tree plus the

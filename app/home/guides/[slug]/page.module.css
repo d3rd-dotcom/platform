@@ -130,6 +130,38 @@
   margin: 0;
 }
 
+/* Foot-of-page action stack: completion first (primary), Edit & Improve
+   beneath it (secondary) — progress outranks contribution in the hierarchy. */
+.footerActions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Inner diamond badge on the completion CTA — names the payout on the button. */
+.rewardBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: var(--radius-full, 9999px);
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  font-size: 12px;
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 1;
+  color: inherit;
+}
+
+.completeError {
+  margin: 0;
+  font-family: var(--type-font-body);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  text-align: center;
+  color: color-mix(in oklch, #BA1A1A 82%, var(--color-text-dark));
+}
+
 /* ── Article divider — Wikipedia-style ruled separator ──────────────────── */
 .divider {
   display: flex;
