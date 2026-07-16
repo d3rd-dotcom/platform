@@ -7,12 +7,14 @@ import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import TreasurySnapshotCard from '@/components/treasury-snapshot/TreasurySnapshotCard';
 import { HowToButton } from '@/components/treasury-how-to/TreasuryHowTo';
-import ProMembershipModal from '@/components/pro-membership-modal/ProMembershipModal';
+import dynamic from 'next/dynamic';
 import CtaButton from '@/components/shared/CtaButton';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
 import type { CoinPrice, TreasuryBalance, CategorizedMarkets, MarketCategory, MarketRow } from '@/lib/market-api';
+
+const ProMembershipModal = dynamic(() => import('@/components/pro-membership-modal/ProMembershipModal'), { ssr: false });
 
 // ── Helpers ──
 

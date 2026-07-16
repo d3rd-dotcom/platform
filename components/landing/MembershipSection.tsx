@@ -11,9 +11,11 @@ import {
   type MintList,
 } from '@/lib/scatter-api';
 import { useSound } from '@/hooks/useSound';
-import ProMembershipModal from '@/components/pro-membership-modal/ProMembershipModal';
+import dynamic from 'next/dynamic';
 import CtaButton from '@/components/shared/CtaButton';
 import styles from './MembershipSection.module.css';
+
+const ProMembershipModal = dynamic(() => import('@/components/pro-membership-modal/ProMembershipModal'), { ssr: false });
 
 const CheckIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

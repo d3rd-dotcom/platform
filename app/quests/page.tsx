@@ -8,11 +8,13 @@ import QuestSidePanel from '@/components/quest-side-panel/QuestSidePanel';
 import QuestModal from '@/components/quest-modal/QuestModal';
 import QuestAuthorPanel from '@/components/quest-author-panel/QuestAuthorPanel';
 import UsdcReviewPanel from '@/components/usdc-review-panel/UsdcReviewPanel';
-import AngelUpsellModal from '@/components/angel-upsell-modal/AngelUpsellModal';
+import dynamic from 'next/dynamic';
 import { useSound } from '@/hooks/useSound';
 import { QUEST_DEFINITIONS, QuestType } from '@/lib/quest-definitions';
 import type { QuestCardKind } from '@/components/quest-card/QuestCard';
 import styles from './page.module.css';
+
+const AngelUpsellModal = dynamic(() => import('@/components/angel-upsell-modal/AngelUpsellModal'), { ssr: false });
 
 interface WeekStatus {
   weekNumber: number;

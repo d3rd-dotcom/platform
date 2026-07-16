@@ -5,9 +5,7 @@ import Image from 'next/image';
 import { useState, useEffect, useCallback } from 'react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import type { TutorialStep } from '@/components/still-tutorial/StillTutorial';
-import TreasuryDisplay from '@/components/treasury-display/TreasuryDisplay';
 import ProposalCard from '@/components/proposal-card/ProposalCard';
-import ActivateVotesCard from '@/components/voting/ActivateVotesCard';
 import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
 import Button from '@/components/button/Button';
 import { useSound } from '@/hooks/useSound';
@@ -110,6 +108,8 @@ const ProposalDetailsModal = dynamic(() => import('@/components/proposal-card/Pr
 const SubmitProposalModal = dynamic(() => import('@/components/voting/SubmitProposalModal'), {
   ssr: false,
 });
+const TreasuryDisplay = dynamic(() => import('@/components/treasury-display/TreasuryDisplay'));
+const ActivateVotesCard = dynamic(() => import('@/components/voting/ActivateVotesCard'), { ssr: false });
 
 interface ProposalReview {
   decision: 'approved' | 'rejected';

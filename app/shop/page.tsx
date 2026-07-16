@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import { useAccount } from 'wagmi';
-import { Contract, providers, utils } from 'ethers';
+import type { ExternalProvider } from '@ethersproject/providers';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import { ShopPageSkeleton } from '@/components/skeleton/Skeleton';
 import { ensureBaseChain, type Eip1193Provider } from '@/lib/ensure-base-chain';
@@ -236,7 +236,8 @@ export default function ShopPage() {
     try {
       const eip1193 = (await connector.getProvider()) as Eip1193Provider;
       await ensureBaseChain(eip1193);
-      const web3 = new providers.Web3Provider(eip1193 as providers.ExternalProvider);
+      const { Contract, providers, utils } = await import('ethers');
+      const web3 = new providers.Web3Provider(eip1193 as ExternalProvider);
       const token = new Contract(DIAMONDS_TOKEN_ADDRESS, ERC20_TRANSFER_ABI, web3.getSigner());
       const tx = await token.transfer(BURN_ADDRESS, utils.parseUnits(String(price), 18));
       await tx.wait(1);

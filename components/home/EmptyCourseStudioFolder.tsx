@@ -4,8 +4,10 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FolderDashed } from '@phosphor-icons/react';
 import { useSound } from '@/hooks/useSound';
-import AngelUpsellModal from '@/components/angel-upsell-modal/AngelUpsellModal';
+import dynamic from 'next/dynamic';
 import styles from './EmptyCourseStudioFolder.module.css';
+
+const AngelUpsellModal = dynamic(() => import('@/components/angel-upsell-modal/AngelUpsellModal'), { ssr: false });
 
 interface EmptyCourseStudioFolderProps {
   /** Holding an Academic Angel unlocks the course builder; without one the

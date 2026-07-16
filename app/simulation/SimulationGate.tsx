@@ -3,12 +3,14 @@
 import { useCallback, useEffect, useState } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import { DotmSquare3 } from '@/components/dot-matrix/DotmSquare3';
-import ProMembershipModal from '@/components/pro-membership-modal/ProMembershipModal';
+import dynamic from 'next/dynamic';
 import { useSound } from '@/hooks/useSound';
 import { setSimulationAccessTokenProvider } from '@/lib/simulation-api';
 import Button from '@/components/button/Button';
 import SimulationWorkspace from './SimulationWorkspace';
 import styles from './simulation.module.css';
+
+const ProMembershipModal = dynamic(() => import('@/components/pro-membership-modal/ProMembershipModal'), { ssr: false });
 
 /**
  * Access gate for /simulation. Browsing worlds only needs a signed-in

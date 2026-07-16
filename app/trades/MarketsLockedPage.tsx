@@ -4,8 +4,10 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
-import ProMembershipModal from '@/components/pro-membership-modal/ProMembershipModal';
+import dynamic from 'next/dynamic';
 import styles from './page.module.css';
+
+const ProMembershipModal = dynamic(() => import('@/components/pro-membership-modal/ProMembershipModal'), { ssr: false });
 
 export default function MarketsLockedPage() {
   const router = useRouter();
