@@ -437,3 +437,8 @@
   background: color-mix(in oklch, #BA1A1A 14%, #15172a);
   border-color: color-mix(in oklch, #BA1A1A 30%, transparent);
 }
+
+/* Foot-of-section call to action (the guide page's Edit & Improve button). */
+.footerAction {
+  margin-top: var(--space-1, 0.25rem);
+}

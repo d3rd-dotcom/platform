@@ -753,14 +753,15 @@ export default function DailyNotes({
           document.body
         )}
 
-        {showRewardAnimation && rewardData && (
+        {showRewardAnimation && rewardData && typeof window !== 'undefined' && createPortal(
           <>
             <ConfettiCelebration trigger={true} />
             <DiamondReward
               amount={rewardData.shards}
               onComplete={() => setShowRewardAnimation(false)}
             />
-          </>
+          </>,
+          document.body
         )}
       </div>
     );
@@ -958,14 +959,15 @@ export default function DailyNotes({
 
       {timerActive && renderTimerSession(false)}
 
-      {showRewardAnimation && rewardData && (
+      {showRewardAnimation && rewardData && typeof window !== 'undefined' && createPortal(
         <>
           <ConfettiCelebration trigger={true} />
           <DiamondReward
             amount={rewardData.shards}
             onComplete={() => setShowRewardAnimation(false)}
           />
-        </>
+        </>,
+        document.body
       )}
     </>
   );

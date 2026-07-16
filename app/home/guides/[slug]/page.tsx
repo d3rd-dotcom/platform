@@ -7,13 +7,11 @@ import {
   ArrowLeft,
   ArrowRight,
   BookOpenText,
-  Clock,
   GraduationCap,
   LockKey,
+  PencilSimple,
   RocketLaunch,
-  Stack,
   TreeStructure,
-  UsersThree,
   X,
 } from '@phosphor-icons/react';
 import { usePrivy } from '@privy-io/react-auth';
@@ -209,32 +207,6 @@ export default function GuidePage({ params }: PageProps) {
                   <span className={styles.levelChip}>Depth {data.level}</span>
                 )}
               </div>
-              <div className={styles.actions}>
-                <CtaButton
-                  variant="secondary"
-                  size="sm"
-                  onMouseEnter={() => play('soft-hover')}
-                  onClick={() => {
-                    play('click');
-                    setShowWalkthrough(true);
-                  }}
-                >
-                  <GraduationCap size={14} weight="bold" />
-                  Walkthrough
-                </CtaButton>
-                {data.guide.status === 'published' && (
-                  <CtaButton
-                    variant="secondary"
-                    size="sm"
-                    href={`/learn/guides/${data.guide.slug}/assemble`}
-                    onMouseEnter={() => play('soft-hover')}
-                    onClick={() => play('navigation')}
-                  >
-                    <Stack size={14} weight="bold" />
-                    Assemble
-                  </CtaButton>
-                )}
-              </div>
               {data.guide.evidenceCriteria.length > 0 && (
                 <section className={styles.criteria} aria-label="What you will be able to do">
                   <span className={styles.criteriaLabel}>{"What you'll be able to do"}</span>
@@ -245,47 +217,46 @@ export default function GuidePage({ params }: PageProps) {
                   </ul>
                 </section>
               )}
-              {(data.guide.estimatedMinutes || data.guide.intendedAudience) && (
-                <div className={styles.topicMeta}>
-                  {data.guide.estimatedMinutes && (
-                    <span className={styles.topicMetaItem}>
-                      <Clock size={15} weight="bold" />
-                      {data.guide.estimatedMinutes} min
-                    </span>
-                  )}
-                  {data.guide.intendedAudience && (
-                    <span className={styles.topicMetaItem}>
-                      <UsersThree size={15} weight="bold" />
-                      {data.guide.intendedAudience === 'Middle school through college learners; contributors can adapt examples by age.'
-                        ? '12+'
-                        : data.guide.intendedAudience}
-                    </span>
-                  )}
-                </div>
-              )}
             </header>
 
-            {data.prereqs.length > 0 && (
-              <section className={styles.relSection}>
-                <h2 className={styles.relHeading}>
-                  <TreeStructure size={16} weight="duotone" className={styles.relIcon} />
-                  Prerequisites
-                </h2>
-                <div className={styles.chips}>
-                  {data.prereqs.map((p) => (
-                    <Link
-                      key={p.id}
-                      href={`/learn/guides/${p.slug}`}
-                      className={styles.chip}
-                      onMouseEnter={() => play('soft-hover')}
-                      onClick={() => play('navigation')}
-                    >
-                      {p.topicTitle}
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            )}
+            <section className={styles.relSection}>
+              <h2 className={styles.relHeading}>
+                <TreeStructure size={16} weight="duotone" className={styles.relIcon} />
+                Prerequisites
+              </h2>
+              <div className={styles.prereqRow}>
+                {data.prereqs.length > 0 ? (
+                  <div className={styles.chips}>
+                    {data.prereqs.map((p) => (
+                      <Link
+                        key={p.id}
+                        href={`/learn/guides/${p.slug}`}
+                        className={styles.chip}
+                        onMouseEnter={() => play('soft-hover')}
+                        onClick={() => play('navigation')}
+                      >
+                        {p.topicTitle}
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <p className={styles.prereqNone}>None. This topic stands on its own.</p>
+                )}
+                <CtaButton
+                  variant="primary"
+                  size="sm"
+                  className={styles.walkthroughCta}
+                  onMouseEnter={() => play('soft-hover')}
+                  onClick={() => {
+                    play('click');
+                    setShowWalkthrough(true);
+                  }}
+                >
+                  <GraduationCap size={14} weight="bold" />
+                  Walkthrough
+                </CtaButton>
+              </div>
+            </section>
 
             <BlueGuideCompanion guide={data.guide} prereqs={data.prereqs} />
 
@@ -393,7 +364,24 @@ export default function GuidePage({ params }: PageProps) {
 
             <VerificationLog guideId={data.guide.id} />
 
-            <DisputeSection guideId={data.guide.id} />
+            <DisputeSection
+              guideId={data.guide.id}
+              footerAction={
+                data.guide.status === 'published' ? (
+                  <CtaButton
+                    variant="primary"
+                    size="lg"
+                    block
+                    href={`/learn/guides/${data.guide.slug}/assemble`}
+                    onMouseEnter={() => play('soft-hover')}
+                    onClick={() => play('navigation')}
+                  >
+                    <PencilSimple size={18} weight="bold" />
+                    Edit & Improve
+                  </CtaButton>
+                ) : undefined
+              }
+            />
 
             {showWalkthrough && (
               <WalkthroughOverlay

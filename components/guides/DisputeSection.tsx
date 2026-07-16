@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import {
   Gavel,
@@ -63,6 +63,10 @@ interface Dispute {
 interface Props {
   /** Guide id whose disputes are displayed. */
   guideId: string;
+  /** Optional call-to-action rendered at the foot of the section (e.g. the
+      guide page's Edit & Improve button — improving a guide is the
+      constructive counterpart to disputing it). */
+  footerAction?: ReactNode;
 }
 
 function formatDate(iso: string): string {
@@ -90,7 +94,7 @@ function statusClass(status: string): string {
  * Self-fetching and standalone. The reviewer wires it into the guide page — it
  * is NOT imported by app/home/guides/[slug]/page.tsx here.
  */
-export default function DisputeSection({ guideId }: Props) {
+export default function DisputeSection({ guideId, footerAction }: Props) {
   const { ready, authenticated, getAccessToken, login } = usePrivy();
   const { play } = useSound();
 
@@ -289,6 +293,8 @@ export default function DisputeSection({ guideId }: Props) {
           ))}
         </ul>
       )}
+
+      {footerAction && <div className={styles.footerAction}>{footerAction}</div>}
     </section>
   );
 }

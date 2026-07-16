@@ -97,14 +97,27 @@
   box-shadow: 0 1px 4px color-mix(in oklch, var(--color-primary) 40%, transparent);
 }
 
-/* Page actions — real CTA pills, on their own row so they never read as
-   another metadata badge sitting in the chip line above. */
-.actions {
+/* Prerequisites row — prereq chips on the left, the walkthrough CTA pinned
+   to the far right so starting the guided path sits beside its groundwork. */
+.prereqRow {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
-  margin-top: 4px;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.prereqNone {
+  margin: 0;
+  font-family: var(--type-font-body);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--color-text-muted);
+}
+
+.walkthroughCta {
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 .title {
@@ -115,26 +128,6 @@
   letter-spacing: -0.005em;
   color: var(--color-text-dark);
   margin: 0;
-}
-
-.topicMeta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 18px;
-}
-
-.topicMetaItem {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--type-font-label);
-  font-size: var(--type-label-size);
-  color: var(--color-text-muted);
-}
-
-.topicMetaItem svg {
-  color: var(--color-primary);
 }
 
 /* ── Article divider — Wikipedia-style ruled separator ──────────────────── */
