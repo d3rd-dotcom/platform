@@ -76,14 +76,15 @@ export function isAffiliateLink(rawUrl: string): boolean {
 }
 
 /**
- * Default outbound link for a material with no usable URL — a Bookshop.org
- * search built from the material's name, so a broken/missing link never
- * renders dead. Bookshop's own affiliate program is a separate query param
- * (?affiliate=) and isn't wired up yet; this just guarantees a live link.
+ * Last-resort outbound link for a material whose stored URL is missing or
+ * malformed, so a broken row never renders dead. Points at Amazon (which
+ * `withAffiliateTag` can tag, and Associates pays on anything bought after a
+ * tagged click). Stored materials should always carry a real product URL —
+ * this fallback existing is a data bug to fix, not a destination to rely on.
  */
 export function defaultMaterialSearchLink(name: string | null | undefined): string {
-  const query = encodeURIComponent((name || '').trim() || 'book');
-  return `https://bookshop.org/search?keywords=${query}`;
+  const query = encodeURIComponent((name || '').trim() || 'journaling supplies');
+  return `https://www.amazon.com/s?k=${query}`;
 }
 
 /**
