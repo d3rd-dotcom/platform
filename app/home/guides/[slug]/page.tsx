@@ -79,10 +79,15 @@ function WalkthroughOverlay({ slug, onClose }: { slug: string; onClose: () => vo
     >
       <div className={styles.overlayModal} role="dialog" aria-modal="true" aria-label="Walkthrough">
         <div className={styles.overlayHeader}>
-          <h2 className={styles.overlayTitle}>
-            <GraduationCap size={18} weight="bold" />
-            Walkthrough
-          </h2>
+          <span className={styles.overlayIconBadge}>
+            <GraduationCap size={20} weight="duotone" />
+          </span>
+          <div className={styles.overlayTitleGroup}>
+            <h2 className={styles.overlayTitle}>Walkthrough</h2>
+            <p className={styles.overlaySubtitle}>
+              Every prerequisite for this topic, charted level by level.
+            </p>
+          </div>
           <button type="button" className={styles.overlayClose} onClick={onClose} aria-label="Close walkthrough">
             <X size={16} weight="bold" />
           </button>

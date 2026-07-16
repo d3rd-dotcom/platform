@@ -206,12 +206,6 @@ export default function GuideWalkthrough({ slug }: Props) {
         <span className={styles.progressLabel}>
           Level {Math.min(currentLevelIndex + 1, totalLevels)} of {totalLevels}
         </span>
-        <div className={styles.progressTrack}>
-          <div
-            className={styles.progressFill}
-            style={{ width: `${totalLevels ? (completed.size / walkthrough.nodes.length) * 100 : 0}%` }}
-          />
-        </div>
         <div className={styles.viewToggle} role="tablist" aria-label="Walkthrough view">
           {(['tree', 'list'] as const).map((v) => (
             <button
@@ -230,6 +224,12 @@ export default function GuideWalkthrough({ slug }: Props) {
               {v === 'tree' ? 'Tree' : 'List'}
             </button>
           ))}
+        </div>
+        <div className={styles.progressTrack}>
+          <div
+            className={styles.progressFill}
+            style={{ width: `${totalLevels ? (completed.size / walkthrough.nodes.length) * 100 : 0}%` }}
+          />
         </div>
       </div>
 
