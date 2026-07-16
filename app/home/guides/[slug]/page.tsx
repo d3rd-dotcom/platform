@@ -259,6 +259,9 @@ export default function GuidePage({ params }: PageProps) {
                   <span className={styles.levelChip}>Depth {data.level}</span>
                 )}
               </div>
+
+              <GuideMaterials materials={materials} />
+
               {data.guide.evidenceCriteria.length > 0 && (
                 <section className={styles.criteria} aria-label="What you will be able to do">
                   <span className={styles.criteriaLabel}>{"What you'll be able to do"}</span>
@@ -370,8 +373,6 @@ export default function GuidePage({ params }: PageProps) {
                 </div>
 
                 <GuideMethods methods={data.methods} />
-
-                <GuideMaterials materials={materials} />
               </>
             )}
 

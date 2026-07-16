@@ -26,10 +26,10 @@ function hashId(id: string): number {
 // sentences. Rotated by guide-id hash (not random per render) so a given guide
 // always greets you the same way.
 const READY_LINES = [
-  'Ooh ooh, this one is unlocked! I checked twice, then forgot, then checked again just to be sure. Go on, open it, I want to see!',
-  'Everything under this one is finished and sparkly! I filed the proof in a folder called Shiny Things, so it must be true.',
-  'You can totally start this one! I would race you to the first paragraph, but I got distracted just thinking about it.',
-  'All the groundwork is done! Now comes my favorite part, the part where you learn the thing. Okay, every part is my favorite part.',
+  'Ooh ooh, this one is unlocked! I checked twice, then forgot, then checked again just to be sure. Go on, open it — I want to see what you find! I made a folder just for your notes!!',
+  'Everything under this one is finished and sparkly! I filed the proof in a folder called Shiny Things, so it must be true. I am basically a professional folder manager by now, yay!!',
+  'You can totally start this one! I would race you to the first paragraph, but honestly I got distracted just thinking about it. Also I forgot the starting line but you go ahead, go!',
+  'All the groundwork is done! Now comes my favorite part — the part where you learn the thing. Okay every part is my favorite part, but this one especially. I put a star next to it!!',
 ];
 
 // Animated pixel-Blue sprites for the companion bubble — picked by guide-id
@@ -82,15 +82,15 @@ export default function BlueGuideCompanion({ guide, prereqs }: BlueGuideCompanio
     // 1. Verification states take priority — the reader should know why a guide
     //    looks the way it does before anything else.
     if (guide.status === 'pending_verification') {
-      return 'The reviewers are still poking this one with their little clipboards! I will tell you the second it earns its shiny stamp.';
+      return 'The reviewers are still poking this one with their little clipboards! I will tell you the second it earns its shiny stamp. I am camped out right here with snacks, just waiting, ok!';
     }
     if (guide.status === 'unpublished') {
-      return 'Oops, this one went home to its author for a glow-up! It will come back shinier, I just know it. I will wait right here!';
+      return 'Oops, this one went home to its author for a glow-up! It will come back shinier, I just know it. I will wait right here — I cleared my whole afternoon for this. Well, most of it!!!';
     }
 
     // 2. Signed-out → one warm invite to sign in and track the climb.
     if (!authenticated) {
-      return 'Wait, I do not even know your name yet! Sign in so I can cheer for you properly. I already made you a folder, it has stars on it.';
+      return 'Wait, I do not even know your name yet! Sign in so I can cheer for you properly. I already made you a folder, it has stars on it and everything. I put your name on it. Probably ok!';
     }
 
     // 3. Above-your-level nudge — signed in, but missing a prerequisite.
