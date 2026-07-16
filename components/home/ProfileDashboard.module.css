@@ -25,6 +25,16 @@
   box-shadow: 0 8px 0 color-mix(in oklch, var(--color-primary) 64%, #000);
 }
 
+/* Signed out, the whole panel is the login affordance. */
+.panel[data-signed-out] {
+  cursor: pointer;
+}
+
+.panel[data-signed-out]:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
 /* Ordered dither texture: two interleaved dot grids over the dark surface. */
 .dither {
   position: absolute;

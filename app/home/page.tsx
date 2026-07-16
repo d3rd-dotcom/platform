@@ -469,7 +469,7 @@ export default function HomePage() {
                     count={12}
                     href="/shadow-work"
                     avatarSrc="/blue/blue-home.png"
-                    centerLabel="Shadow Work"
+                    centerLabel="Blue's Story"
                     ctaLabel="Continue Course"
                     ctaDark
                     images={[]}

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { usePrivy } from '@privy-io/react-auth';
 import { NotePencil, SealCheck } from '@phosphor-icons/react';
 
@@ -17,7 +18,7 @@ function tierName(level: number): string {
 }
 
 export default function ProfileDashboard() {
-  const { ready, authenticated, getAccessToken } = usePrivy();
+  const { ready, authenticated, login, getAccessToken } = usePrivy();
   const { play } = useSound();
   const [username, setUsername] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -98,13 +99,28 @@ export default function ProfileDashboard() {
   })();
 
   return (
-    <section className={styles.panel} onMouseEnter={() => play('soft-hover')}>
+    <section
+      className={styles.panel}
+      onMouseEnter={() => play('soft-hover')}
+      onClick={() => { if (!authenticated) login(); }}
+      onKeyDown={(e) => {
+        if (authenticated) return;
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          login();
+        }
+      }}
+      role={!authenticated ? 'button' : undefined}
+      tabIndex={!authenticated ? 0 : undefined}
+      aria-label={!authenticated ? 'Log in to set up your profile' : undefined}
+      data-signed-out={!authenticated ? '' : undefined}
+    >
       <div className={styles.dither} aria-hidden="true" />
       <button
         type="button"
         className={styles.avatar}
         style={avatarUrl ? { backgroundImage: `url(${JSON.stringify(avatarUrl)})` } : undefined}
-        onClick={() => setEditingAvatar(true)}
+        onClick={(e) => { if (authenticated) { e.stopPropagation(); setEditingAvatar(true); } }}
         aria-label="Change avatar"
       >
         {!avatarUrl && (username?.slice(0, 1).toUpperCase() ?? '?')}
@@ -115,7 +131,7 @@ export default function ProfileDashboard() {
           <button
             type="button"
             className={styles.nameButton}
-            onClick={() => setEditingUsername(true)}
+            onClick={(e) => { if (authenticated) { e.stopPropagation(); setEditingUsername(true); } }}
           >
             {username ?? 'Your profile'}
           </button>
@@ -148,24 +164,29 @@ export default function ProfileDashboard() {
         </span>
       )}
 
-      {editingAvatar && (
-        <AvatarSelectorModal
-          onClose={() => setEditingAvatar(false)}
-          onAvatarSelected={(url) => {
-            setAvatarUrl(url);
-            setEditingAvatar(false);
-          }}
-        />
-      )}
-      {editingUsername && username && (
-        <UsernameChangeModal
-          currentUsername={username}
-          onClose={() => setEditingUsername(false)}
-          onUsernameChanged={(name) => {
-            setUsername(name);
-            setEditingUsername(false);
-          }}
-        />
+      {typeof window !== 'undefined' && createPortal(
+        <>
+          {editingAvatar && (
+            <AvatarSelectorModal
+              onClose={() => setEditingAvatar(false)}
+              onAvatarSelected={(url) => {
+                setAvatarUrl(url);
+                setEditingAvatar(false);
+              }}
+            />
+          )}
+          {editingUsername && username && (
+            <UsernameChangeModal
+              currentUsername={username}
+              onClose={() => setEditingUsername(false)}
+              onUsernameChanged={(name) => {
+                setUsername(name);
+                setEditingUsername(false);
+              }}
+            />
+          )}
+        </>,
+        document.body,
       )}
 
     </section>

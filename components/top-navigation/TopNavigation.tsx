@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -30,6 +30,9 @@ const TopNavigation: React.FC = () => {
   const { play } = useSound();
   const { login, authenticated } = usePrivy();
   const loginTriggered = useRef(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownTriggerRef = useRef<HTMLButtonElement>(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   // After Privy login succeeds, redirect to /home.
   useEffect(() => {
@@ -38,6 +41,34 @@ const TopNavigation: React.FC = () => {
       router.push('/home');
     }
   }, [authenticated, router]);
+
+  // Close dropdown on route change
+  useEffect(() => {
+    setDropdownOpen(false);
+  }, [pathname]);
+
+  // Close dropdown on outside click or Escape
+  useEffect(() => {
+    if (!dropdownOpen) return;
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      setDropdownOpen(false);
+      dropdownTriggerRef.current?.focus();
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [dropdownOpen]);
 
   if (pathname === '/') return null;
 
@@ -61,6 +92,65 @@ const TopNavigation: React.FC = () => {
     }
     loginTriggered.current = true;
     login();
+  };
+
+  const renderNavLink = ({ label, href, icon, comingSoon }: NavLink, inDropdown?: boolean) => {
+    const active = pathname === href || pathname?.startsWith(href + '/');
+
+    if (comingSoon) {
+      return (
+        <span
+          key={href}
+          className={`${styles.navLink} ${styles.navLinkDisabled} ${inDropdown ? styles.dropdownNavLink : ''}`}
+          aria-disabled="true"
+        >
+          {icon && (
+            <span className={styles.navLinkIconWrap}>
+              <Image
+                src={icon}
+                alt=""
+                width={16}
+                height={16}
+                className={styles.navLinkIcon}
+              />
+            </span>
+          )}
+          {icon && <span className={styles.navDivider} />}
+          <span className={styles.navLinkLabel}>
+            <span className={styles.navLinkBadge}>Coming soon</span>
+          </span>
+        </span>
+      );
+    }
+
+    return (
+      <Link
+        key={href}
+        href={href}
+        className={`${styles.navLink} hover-slide-trigger ${active ? styles.navLinkActive : ''} ${!icon ? styles.navLinkTextOnly : ''} ${inDropdown ? styles.dropdownNavLink : ''}`}
+        onMouseEnter={() => play('hover')}
+        onClick={() => { play('navigation'); setDropdownOpen(false); }}
+        aria-current={active ? 'page' : undefined}
+      >
+        {icon && (
+          <>
+            <span className={styles.navLinkIconWrap}>
+              <Image
+                src={icon}
+                alt=""
+                width={16}
+                height={16}
+                className={styles.navLinkIcon}
+              />
+            </span>
+            <span className={styles.navDivider} />
+          </>
+        )}
+        <span className={styles.navLinkLabel}>
+          <HoverSlideText>{label}</HoverSlideText>
+        </span>
+      </Link>
+    );
   };
 
   return (
@@ -103,62 +193,7 @@ const TopNavigation: React.FC = () => {
           </div>
         </div>
         <nav className={styles.centerNav} aria-label="Main navigation">
-          {NAV_LINKS.map(({ label, href, icon, comingSoon }) => {
-            const active = pathname === href || pathname?.startsWith(href + '/');
-
-            if (comingSoon) {
-              return (
-                <span
-                  key={href}
-                  className={`${styles.navLink} ${styles.navLinkDisabled}`}
-                  aria-disabled="true"
-                >
-                  <span className={styles.navLinkIconWrap}>
-                    <Image
-                      src={icon as string}
-                      alt=""
-                      width={16}
-                      height={16}
-                      className={styles.navLinkIcon}
-                    />
-                  </span>
-                  <span className={styles.navDivider} />
-                  <span className={styles.navLinkLabel}>
-                    <span className={styles.navLinkBadge}>Coming soon</span>
-                  </span>
-                </span>
-              );
-            }
-
-            return (
-              <Link
-                key={href}
-                href={href}
-                className={`${styles.navLink} hover-slide-trigger ${active ? styles.navLinkActive : ''} ${!icon ? styles.navLinkTextOnly : ''}`}
-                onMouseEnter={() => play('hover')}
-                onClick={() => play('navigation')}
-                aria-current={active ? 'page' : undefined}
-              >
-                {icon && (
-                  <>
-                    <span className={styles.navLinkIconWrap}>
-                      <Image
-                        src={icon as string}
-                        alt=""
-                        width={16}
-                        height={16}
-                        className={styles.navLinkIcon}
-                      />
-                    </span>
-                    <span className={styles.navDivider} />
-                  </>
-                )}
-                <span className={styles.navLinkLabel}>
-                  <HoverSlideText>{label}</HoverSlideText>
-                </span>
-              </Link>
-            );
-          })}
+          {NAV_LINKS.map((link) => renderNavLink(link))}
         </nav>
 
         <nav className={styles.nav}>
@@ -214,6 +249,81 @@ const TopNavigation: React.FC = () => {
           {/* Profile card slot — SideNavigation portals the profile card here */}
           <div id="topnav-profile-slot" className={styles.profileSlot} />
         </nav>
+
+        {/* Compact dropdown — replaces centerNav + nav at <= 1380px */}
+        <div className={styles.compactMenuWrap} ref={dropdownRef}>
+          <button
+            ref={dropdownTriggerRef}
+            type="button"
+            className={styles.compactMenuButton}
+            onClick={() => setDropdownOpen((prev) => !prev)}
+            onMouseEnter={() => play('hover')}
+            aria-label={dropdownOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={dropdownOpen}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none" />
+              <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
+              <circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none" />
+            </svg>
+          </button>
+          {dropdownOpen && (
+            <div className={styles.dropdownPanel}>
+              <div className={styles.dropdownSection}>
+                <span className={styles.dropdownSectionLabel}>Navigate</span>
+                {NAV_LINKS.map((link) => renderNavLink(link, true))}
+              </div>
+              <div className={styles.dropdownDivider} />
+              <div className={styles.dropdownSection}>
+                <span className={styles.dropdownSectionLabel}>Actions</span>
+                <Link
+                  href="/shop"
+                  className={`${styles.dropdownActionLink} ${pathname === '/shop' || pathname?.startsWith('/shop/') ? styles.dropdownActionActive : ''}`}
+                  onClick={() => { play('navigation'); setDropdownOpen(false); }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <circle cx="9" cy="20" r="1" />
+                    <circle cx="19" cy="20" r="1" />
+                    <path d="M3 4h2l2.4 11.1a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 1.9-1.4L22 8H7" />
+                  </svg>
+                  Shop
+                </Link>
+                <button
+                  type="button"
+                  className={styles.dropdownActionLink}
+                  onClick={() => { play('click'); setDropdownOpen(false); window.dispatchEvent(new Event('callBlue')); }}
+                >
+                  <Phone size={16} weight="fill" aria-hidden="true" />
+                  Call Blue
+                </button>
+                <div className={styles.dropdownThemeRow}>
+                  <ColorThemePicker />
+                </div>
+              </div>
+              {!authenticated && (
+                <>
+                  <div className={styles.dropdownDivider} />
+                  <div className={styles.dropdownSection}>
+                    <button
+                      type="button"
+                      onClick={() => { handleLogin(); setDropdownOpen(false); }}
+                      className={styles.dropdownAuthLink}
+                    >
+                      Login
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { handleJoinNow(); setDropdownOpen(false); }}
+                      className={styles.dropdownJoinButton}
+                    >
+                      Join Now
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+        </div>
 
         {/* Mobile-only action — replaces the search bar on small screens */}
         <div className={styles.mobileActions}>
