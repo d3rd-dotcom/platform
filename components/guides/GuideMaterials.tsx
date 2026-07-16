@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowUpRight, Package } from '@phosphor-icons/react';
 import { useSound } from '@/hooks/useSound';
 import type { GuideMaterial } from '@/lib/guide-materials-db';
+import { resolveOutboundLink } from '@/lib/affiliate';
 import styles from './GuideMaterials.module.css';
 
 /**
@@ -14,7 +15,12 @@ import styles from './GuideMaterials.module.css';
  *
  * Link handling:
  *  - internal_shop → next/link into /shop (client-side nav, no target/rel).
- *  - external      → plain anchor, target=_blank + rel="noopener nofollow".
+ *  - external      → plain anchor, target=_blank. The href always resolves to
+ *    a usable http(s) url (falling back to a default search link when the
+ *    stored linkUrl is missing/malformed) and is passed through
+ *    lib/affiliate.ts, which appends the MWA affiliate tag on supported
+ *    retailers (Amazon today). rel is "noopener nofollow", plus "sponsored"
+ *    when the link ended up tagged.
  *
  * Empty state: render nothing (no heading, no placeholder).
  */
@@ -89,12 +95,15 @@ function MaterialLink({
     );
   }
 
+  const { url, isAffiliate } = resolveOutboundLink(material.linkUrl, material.name);
+  const rel = isAffiliate ? 'noopener nofollow sponsored' : 'noopener nofollow';
+
   return (
     <a
-      href={material.linkUrl}
+      href={url}
       className={styles.link}
       target="_blank"
-      rel="noopener nofollow"
+      rel={rel}
       onClick={onNavigate}
     >
       <span>{label}</span>
