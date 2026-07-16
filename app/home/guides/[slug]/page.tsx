@@ -7,7 +7,6 @@ import {
   ArrowLeft,
   ArrowRight,
   BookOpenText,
-  Circle,
   Clock,
   GraduationCap,
   LockKey,
@@ -21,6 +20,7 @@ import { usePrivy } from '@privy-io/react-auth';
 import { useSound } from '@/hooks/useSound';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
+import CtaButton from '@/components/shared/CtaButton';
 import GuideBody from '@/components/guides/GuideBody';
 import GuideMethods from '@/components/guides/GuideMethods';
 import GuideWalkthrough from '@/components/guides/GuideWalkthrough';
@@ -208,32 +208,42 @@ export default function GuidePage({ params }: PageProps) {
                 {typeof data.level === 'number' && (
                   <span className={styles.levelChip}>Depth {data.level}</span>
                 )}
-                <button
-                  type="button"
-                  className={styles.walkthroughTrigger}
+              </div>
+              <div className={styles.actions}>
+                <CtaButton
+                  variant="secondary"
+                  size="sm"
                   onMouseEnter={() => play('soft-hover')}
                   onClick={() => {
                     play('click');
                     setShowWalkthrough(true);
                   }}
                 >
-                  <GraduationCap size={11} weight="bold" />
+                  <GraduationCap size={14} weight="bold" />
                   Walkthrough
-                </button>
+                </CtaButton>
                 {data.guide.status === 'published' && (
-                  <Link
+                  <CtaButton
+                    variant="secondary"
+                    size="sm"
                     href={`/learn/guides/${data.guide.slug}/assemble`}
-                    className={styles.walkthroughTrigger}
                     onMouseEnter={() => play('soft-hover')}
                     onClick={() => play('navigation')}
                   >
-                    <Stack size={11} weight="bold" />
+                    <Stack size={14} weight="bold" />
                     Assemble
-                  </Link>
+                  </CtaButton>
                 )}
               </div>
-              {data.guide.summary && (
-                <p className={styles.topicSummary}>{data.guide.summary}</p>
+              {data.guide.evidenceCriteria.length > 0 && (
+                <section className={styles.criteria} aria-label="What you will be able to do">
+                  <span className={styles.criteriaLabel}>{"What you'll be able to do"}</span>
+                  <ul className={styles.criteriaList}>
+                    {data.guide.evidenceCriteria.map((c, i) => (
+                      <li key={i} className={styles.criteriaItem}>{c}</li>
+                    ))}
+                  </ul>
+                </section>
               )}
               {(data.guide.estimatedMinutes || data.guide.intendedAudience) && (
                 <div className={styles.topicMeta}>
@@ -254,8 +264,6 @@ export default function GuidePage({ params }: PageProps) {
                 </div>
               )}
             </header>
-
-            <BlueGuideCompanion guide={data.guide} prereqs={data.prereqs} />
 
             {data.prereqs.length > 0 && (
               <section className={styles.relSection}>
@@ -279,16 +287,7 @@ export default function GuidePage({ params }: PageProps) {
               </section>
             )}
 
-            {data.guide.evidenceCriteria.length > 0 && (
-              <section className={styles.criteria} aria-label="What you will be able to do">
-                <span className={styles.criteriaLabel}>{"What you'll be able to do"}</span>
-                <ul className={styles.criteriaList}>
-                  {data.guide.evidenceCriteria.map((c, i) => (
-                    <li key={i} className={styles.criteriaItem}>{c}</li>
-                  ))}
-                </ul>
-              </section>
-            )}
+            <BlueGuideCompanion guide={data.guide} prereqs={data.prereqs} />
 
             {prereqCheckPending ? (
               <div className={styles.state}>Checking your progress…</div>
@@ -322,9 +321,11 @@ export default function GuidePage({ params }: PageProps) {
               </section>
             ) : (
               <>
-                <div className={styles.divider}>
+                <div className={styles.divider} role="separator">
                   <span className={styles.dividerRule} />
-                  <Circle size={8} weight="fill" className={styles.dividerIcon} />
+                  <span className={styles.dividerBadge}>
+                    <BookOpenText size={16} weight="duotone" />
+                  </span>
                   <span className={styles.dividerRule} />
                 </div>
 

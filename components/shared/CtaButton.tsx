@@ -1,4 +1,5 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from 'react';
+import Link from 'next/link';
 import styles from './CtaButton.module.css';
 
 type Variant = 'primary' | 'secondary' | 'ghost';
@@ -9,6 +10,8 @@ export interface CtaButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> 
   size?: Size;
   /** Stretch to fill the container width. */
   block?: boolean;
+  /** Render as a next/link anchor instead of a button, keeping the same skin. */
+  href?: string;
   children: ReactNode;
 }
 
@@ -23,6 +26,7 @@ export default function CtaButton({
   block = false,
   className = '',
   type = 'button',
+  href,
   children,
   ...rest
 }: CtaButtonProps) {
@@ -35,6 +39,15 @@ export default function CtaButton({
   ]
     .filter(Boolean)
     .join(' ');
+
+  if (href) {
+    const anchorProps = rest as AnchorHTMLAttributes<HTMLAnchorElement>;
+    return (
+      <Link href={href} className={classes} {...anchorProps}>
+        {children}
+      </Link>
+    );
+  }
 
   return (
     // eslint-disable-next-line react/button-has-type

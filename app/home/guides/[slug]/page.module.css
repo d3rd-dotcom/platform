@@ -97,35 +97,14 @@
   box-shadow: 0 1px 4px color-mix(in oklch, var(--color-primary) 40%, transparent);
 }
 
-.walkthroughTrigger {
-  display: inline-flex;
+/* Page actions — real CTA pills, on their own row so they never read as
+   another metadata badge sitting in the chip line above. */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 4px;
-  font-family: var(--font-departure-mono), var(--font-mono), monospace;
-  font-size: 0.625rem;
-  font-weight: var(--font-weight-semibold, 600);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--color-text-dark);
-  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-base));
-  border: 1px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
-  border-radius: var(--radius-full, 9999px);
-  padding: 3px 8px;
-  cursor: pointer;
-  transition:
-    border-color 0.15s ease,
-    background 0.15s ease,
-    box-shadow 0.15s ease;
-}
-
-.walkthroughTrigger:hover {
-  border-color: color-mix(in oklch, var(--color-primary) 42%, transparent);
-  background: color-mix(in oklch, var(--color-primary) 12%, var(--color-surface-base));
-  box-shadow: 0 2px 8px color-mix(in oklch, var(--color-primary) 20%, transparent);
-}
-
-.walkthroughTrigger:active {
-  transform: translateY(1px);
+  gap: 8px;
+  margin-top: 4px;
 }
 
 .title {
@@ -136,15 +115,6 @@
   letter-spacing: -0.005em;
   color: var(--color-text-dark);
   margin: 0;
-}
-
-.topicSummary {
-  max-width: 68ch;
-  margin: 0;
-  font-family: var(--type-font-body);
-  font-size: 1rem;
-  line-height: 1.6;
-  color: var(--color-text-muted);
 }
 
 .topicMeta {
@@ -181,9 +151,19 @@
   background: color-mix(in oklch, var(--color-primary) 18%, transparent);
 }
 
-.dividerIcon {
-  color: color-mix(in oklch, var(--color-primary) 35%, transparent);
+/* Icon badge marking the start of the article proper — a plain dot read as
+   decoration, so the mark is now legible enough to chunk the page. */
+.dividerBadge {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
   flex-shrink: 0;
+  border-radius: var(--radius-full, 9999px);
+  color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-base));
+  border: 1px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
+  box-shadow: 0 1px 4px color-mix(in oklch, var(--color-primary) 12%, transparent);
 }
 
 /* Solid reading surface — guide body text never sits on the dot grid. */
@@ -570,8 +550,10 @@
   background: color-mix(in oklch, var(--color-primary-hover) 25%, transparent);
 }
 
-:global([data-theme='dark']) .dividerIcon {
-  color: color-mix(in oklch, var(--color-primary-hover) 40%, transparent);
+:global([data-theme='dark']) .dividerBadge {
+  color: var(--color-primary-hover);
+  background: color-mix(in oklch, var(--color-primary) 12%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 28%, transparent);
 }
 
 :global([data-theme="dark"]) .relHeading::after {
@@ -599,17 +581,6 @@
 
 :global([data-theme="dark"]) .subjectTag {
   background: color-mix(in oklch, var(--color-primary) 16%, transparent);
-}
-
-:global([data-theme="dark"]) .walkthroughTrigger {
-  background: color-mix(in oklch, var(--color-primary) 10%, #15172a);
-  border-color: color-mix(in oklch, var(--color-primary-hover) 25%, transparent);
-  color: #e8e9f4;
-}
-
-:global([data-theme="dark"]) .walkthroughTrigger:hover {
-  border-color: color-mix(in oklch, var(--color-primary-hover) 50%, transparent);
-  background: color-mix(in oklch, var(--color-primary) 16%, #15172a);
 }
 
 @media (prefers-reduced-motion: reduce) {
