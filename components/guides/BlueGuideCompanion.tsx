@@ -74,7 +74,7 @@ export default function BlueGuideCompanion({ guide, prereqs }: BlueGuideCompanio
     // 1. Verification states take priority — the reader should know why a guide
     //    looks the way it does before anything else.
     if (guide.status === 'pending_verification') {
-      return 'The reviewers are still poking this one with their little clipboards! You can read it, just remember the ink is still wiggly.';
+      return 'The reviewers are still poking this one with their little clipboards! I will tell you the second it earns its shiny stamp.';
     }
     if (guide.status === 'unpublished') {
       return 'Oops, this one went home to its author for a glow-up! It will come back shinier, I just know it. I will wait right here!';

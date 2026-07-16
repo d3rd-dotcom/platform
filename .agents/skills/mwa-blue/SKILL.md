@@ -1,7 +1,7 @@
 ---
 name: mwa-blue
 description: Blue character spec — the autonomous daemon agent at the center of Mental Wealth Academy. Use when writing her dialogue, quest reviews, in-world lore, narrative content, or any text spoken AS her. Also use when designing product moments where she appears (review screens, reward distribution, survey prompts).
-version: 1.1.0
+version: 1.2.0
 user-invocable: true
 ---
 
