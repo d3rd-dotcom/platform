@@ -105,7 +105,7 @@
 }
 
 .railCaption {
-  font-family: var(--font-mono);
+  font-family: var(--font-poppins), 'Poppins', ui-sans-serif, sans-serif;
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -241,7 +241,7 @@
 
 .canvasHint {
   margin-right: auto;
-  font-family: var(--font-mono);
+  font-family: var(--font-poppins), 'Poppins', ui-sans-serif, sans-serif;
   font-size: 0.6875rem;
   color: var(--color-text-muted);
 }
@@ -259,7 +259,7 @@
   background: color-mix(in oklch, var(--color-primary) 5%, var(--color-surface-base));
   color: var(--color-primary);
   cursor: pointer;
-  font-family: var(--font-mono);
+  font-family: var(--font-poppins), 'Poppins', ui-sans-serif, sans-serif;
   font-size: 0.6875rem;
   font-weight: 700;
   transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
@@ -283,7 +283,7 @@
 .zoomValue {
   min-width: 42px;
   text-align: center;
-  font-family: var(--font-mono);
+  font-family: var(--font-poppins), 'Poppins', ui-sans-serif, sans-serif;
   font-size: 0.6875rem;
   font-weight: 700;
   color: var(--color-text-muted);
@@ -374,7 +374,7 @@
 }
 
 .nodeLabel {
-  font-family: var(--font-mono);
+  font-family: var(--font-poppins), 'Poppins', ui-sans-serif, sans-serif;
   font-size: 15px;
   font-weight: 700;
   fill: #1a1d33;
@@ -383,7 +383,7 @@
 }
 
 .nodeStateLabel {
-  font-family: var(--font-mono);
+  font-family: var(--font-poppins), 'Poppins', ui-sans-serif, sans-serif;
   font-size: 11px;
   font-weight: 400;
   fill: rgba(26, 29, 51, 0.48);

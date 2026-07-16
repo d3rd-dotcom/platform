@@ -112,7 +112,7 @@ export default function BlueGuideCompanion({ guide, prereqs }: BlueGuideCompanio
       <BlueChatBubble
         message={message}
         variant="compact"
-        context="Guide"
+        hideSender
         avatarSrc="/images/blue-guide-sprites/standing-front.png"
         avatarWidth={68}
         avatarHeight={68}

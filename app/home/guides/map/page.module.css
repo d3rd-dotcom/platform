@@ -196,7 +196,7 @@
   border: none;
   background: var(--color-primary);
   color: #fff;
-  font-family: var(--font-mono);
+  font-family: var(--font-poppins), 'Poppins', ui-sans-serif, sans-serif;
   font-size: 0.75rem;
   font-weight: 600;
   text-decoration: none;

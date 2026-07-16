@@ -16,6 +16,8 @@ interface BlueChatBubbleProps {
   pixelatedAvatar?: boolean;
   /** Optional eyebrow context shown after the name, e.g. "Review" -> "Blue · Review". */
   context?: string;
+  /** Hides the "Blue" sender label under the avatar entirely. */
+  hideSender?: boolean;
   ariaLive?: 'off' | 'polite' | 'assertive';
   /** On narrow screens, stack the avatar on top and center it instead of the
    *  side-by-side row (avoids the message text getting squished). */
@@ -31,6 +33,7 @@ export default function BlueChatBubble({
   avatarHeight = 48,
   pixelatedAvatar = false,
   context,
+  hideSender = false,
   ariaLive = 'off',
   stackOnMobile = false,
 }: BlueChatBubbleProps) {
@@ -51,9 +54,11 @@ export default function BlueChatBubble({
         <div className={`${styles.avatar} ${pixelatedAvatar ? styles.pixelatedAvatar : ''}`}>
           <Image src={avatarSrc} alt="Blue" width={avatarWidth} height={avatarHeight} unoptimized />
         </div>
-        <span className={styles.sender}>
-          Blue{context ? <span className={styles.context}> · {context}</span> : null}
-        </span>
+        {!hideSender && (
+          <span className={styles.sender}>
+            Blue{context ? <span className={styles.context}> · {context}</span> : null}
+          </span>
+        )}
       </div>
       <div className={styles.body}>
         <div className={styles.bubble}>

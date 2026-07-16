@@ -13,7 +13,7 @@
   align-items: center;
   gap: 5px;
   width: fit-content;
-  font-family: var(--font-departure-mono), var(--font-mono), monospace;
+  font-family: var(--font-poppins), 'Poppins', ui-sans-serif, sans-serif;
   font-size: 0.625rem;
   font-weight: var(--font-weight-semibold, 600);
   text-transform: uppercase;
@@ -102,7 +102,7 @@
 }
 
 .progressLabel {
-  font-family: var(--font-departure-mono), var(--font-mono), monospace;
+  font-family: var(--font-poppins), 'Poppins', ui-sans-serif, sans-serif;
   font-size: 0.6875rem;
   font-weight: var(--font-weight-semibold, 600);
   letter-spacing: 0.04em;

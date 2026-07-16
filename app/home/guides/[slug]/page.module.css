@@ -35,7 +35,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: var(--font-mono);
+  font-family: var(--font-poppins), 'Poppins', ui-sans-serif, sans-serif;
   font-size: var(--font-size-sm, 0.75rem);
   font-weight: var(--font-weight-medium, 500);
   text-transform: uppercase;
@@ -72,7 +72,7 @@
 
 /* Compact metadata tags sit directly beneath the guide title. */
 .subjectTag {
-  font-family: var(--font-mono);
+  font-family: var(--font-poppins), 'Poppins', ui-sans-serif, sans-serif;
   font-size: 0.625rem;
   font-weight: var(--font-weight-semibold, 600);
   text-transform: uppercase;
@@ -85,7 +85,7 @@
 
 /* Level indicator — filled chip so it reads as rank, not just another tag. */
 .levelChip {
-  font-family: var(--font-departure-mono), var(--font-mono);
+  font-family: var(--font-poppins), 'Poppins', ui-sans-serif, sans-serif;
   font-size: 0.625rem;
   font-weight: var(--font-weight-semibold, 600);
   text-transform: uppercase;
@@ -121,11 +121,11 @@
 }
 
 .title {
-  font-family: var(--font-editorial), 'PP Editorial New', Georgia, serif;
+  font-family: var(--font-poppins), 'Poppins', ui-sans-serif, sans-serif;
   font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem);
-  font-weight: var(--font-weight-regular, 400);
-  line-height: 1.12;
-  letter-spacing: -0.005em;
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
   color: var(--color-text-dark);
   margin: 0;
 }
