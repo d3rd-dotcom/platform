@@ -34,7 +34,7 @@ JOIN (VALUES
     '/images/materials/pen.png',
     'https://www.jetpens.com/',
     'external',
-    'Write down daily thoughts.',
+    'Premium writing tool!',
     '8 USDC',
     1
   ),
@@ -43,7 +43,7 @@ JOIN (VALUES
     '/images/materials/jar.png',
     'https://www.amazon.com/s?k=small+glass+jar+with+lid',
     'external',
-    'Save notes for later.',
+    'Glass jar with lid!',
     '6 USDC',
     2
   )
