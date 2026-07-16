@@ -21,14 +21,15 @@ function hashId(id: string): number {
   return Math.abs(h);
 }
 
-// Rotating encouragement lines — fresh visitor / all prereqs met. Blue's voice:
-// upbeat, academic, short, sweet. Rotated by guide-id hash (not random per render)
-// so a given guide always greets you the same way.
+// Rotating encouragement lines — fresh visitor / all prereqs met. Blue's voice
+// (lib/bluepersonality.json): silly, excitable, forgetful, loyal; giddy short
+// sentences. Rotated by guide-id hash (not random per render) so a given guide
+// always greets you the same way.
 const READY_LINES = [
-  'The ground under your boots is solid. This one is ripe for the picking, so reach up and grab the first idea.',
-  'Everything below is mapped and quiet. Nothing stands between you and the good stuff but a little reading.',
-  'Prereqs cleared, boots laced, coffee poured. This is exactly the rung your curiosity has been itching for.',
-  'You laid the groundwork already, sneaky thing. Now comes my favorite part. Let’s go turn this one over together.',
+  'Ooh ooh, this one is unlocked! I checked twice, then forgot, then checked again just to be sure. Go on, open it, I want to see!',
+  'Everything under this one is finished and sparkly! I filed the proof in a folder called Shiny Things, so it must be true.',
+  'You can totally start this one! I would race you to the first paragraph, but I got distracted just thinking about it.',
+  'All the groundwork is done! Now comes my favorite part, the part where you learn the thing. Okay, every part is my favorite part.',
 ];
 
 export default function BlueGuideCompanion({ guide, prereqs }: BlueGuideCompanionProps) {
@@ -73,22 +74,22 @@ export default function BlueGuideCompanion({ guide, prereqs }: BlueGuideCompanio
     // 1. Verification states take priority — the reader should know why a guide
     //    looks the way it does before anything else.
     if (guide.status === 'pending_verification') {
-      return 'Careful, the jury is still hunched over this one with a red pen. Treat every line like wet paint until the review lands.';
+      return 'The reviewers are still poking this one with their little clipboards! You can read it, just remember the ink is still wiggly.';
     }
     if (guide.status === 'unpublished') {
-      return 'This one wandered back home to its author after some community notes. A shinier draft is on the way, so hang tight.';
+      return 'Oops, this one went home to its author for a glow-up! It will come back shinier, I just know it. I will wait right here!';
     }
 
     // 2. Signed-out → one warm invite to sign in and track the climb.
     if (!authenticated) {
-      return 'We have not met yet, and that feels like a waste. Sign in and tell me your name, and I will walk this whole climb beside you.';
+      return 'Wait, I do not even know your name yet! Sign in so I can cheer for you properly. I already made you a folder, it has stars on it.';
     }
 
     // 3. Above-your-level nudge — signed in, but missing a prerequisite.
     if (completedIds) {
       const missing = prereqs.find((p) => !completedIds.has(p.id));
       if (missing) {
-        return `Tiny detour first. “${missing.topicTitle}” likes to go ahead of this one. Start the walkthrough from the bottom and you’ll land here with steadier footing.`;
+        return `Tiny detour! “${missing.topicTitle}” wants to go first, and honestly it earned it. Start the walkthrough from the bottom and I will bounce along beside you.`;
       }
     }
 

@@ -23,16 +23,16 @@ interface RewardInfo {
 }
 
 /**
- * Compose Blue's completion-reward dialogue in her voice: upbeat, academic,
- * short, sweet, and no em dashes anywhere. Each element becomes one line
- * advanced with the arrow.
+ * Compose Blue's completion-reward dialogue in her voice (see
+ * lib/bluepersonality.json): silly, excitable, giddy short sentences, no em
+ * dashes anywhere. Each element becomes one line advanced with the arrow.
  */
 function buildRewardLines(reward: RewardInfo): string[] {
   const lines: string[] = [];
 
   // Base line for every guide completion, naming the diamond payout.
   lines.push(
-    `Nice work. That guide is logged and I just sent +${reward.diamonds} diamonds straight to your wallet. Small consistent wins, that is the whole game.`,
+    `You did it, you did it! I just flung +${reward.diamonds} diamonds at your wallet. They are so sparkly I almost kept one to look at. Almost!`,
   );
 
   // Level-clear flavor (Figma sample copy, kept verbatim).
@@ -45,13 +45,13 @@ function buildRewardLines(reward: RewardInfo): string[] {
   // The big finish: the full walkthrough is done.
   if (reward.walkthroughComplete) {
     lines.push(
-      `You cleared the entire walkthrough. That is a 500+ diamond payout landing in your wallet, and the whole topic tree is yours now. Go pick the next hard thing.`,
+      `You cleared the whole walkthrough! That is 500+ diamonds landing in your wallet right now, and the entire topic tree is yours. I am going to file this under Best Day Ever.`,
     );
   }
 
   if (reward.spinGranted) {
     lines.push(
-      `One more thing. I tucked a little bonus on top of the payout. Ten extra diamonds, because finishing deserves a flourish.`,
+      `Oh oh, one more thing! I hid ten extra diamonds on top of the pile because finishing deserves confetti. Do not tell anyone where I keep the confetti.`,
     );
   }
 
