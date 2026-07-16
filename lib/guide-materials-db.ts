@@ -29,8 +29,9 @@ export interface GuideMaterial {
   updatedAt: string;
 }
 
-/** Minimum rationale length — mirrors the DB CHECK constraint. */
-export const MIN_RATIONALE_LENGTH = 40;
+/** Material-card descriptions are intentionally concise. */
+export const MAX_MATERIAL_DESCRIPTION_LENGTH = 30;
+export const USDC_PRICE_LABEL_PATTERN = /^\d+(?:\.\d{1,2})? USDC$/;
 
 // ── Row type / mapper ──────────────────────────────────────────────────────
 
@@ -93,7 +94,7 @@ export interface AddMaterialInput {
 /**
  * Inserts one material for a guide. Author-or-admin authorization is the route's
  * responsibility — this only validates the shape and enforces the contextual
- * rationale rule (surfacing the DB CHECK as a clean 400).
+ * description and USDC price rules (surfacing DB checks as clean 400 errors).
  *
  * @throws { status:number } on validation / not-found errors.
  */
@@ -110,10 +111,10 @@ export async function addMaterial(input: AddMaterialInput): Promise<GuideMateria
   if (!linkUrl) {
     throw Object.assign(new Error('A link URL is required.'), { status: 400 });
   }
-  if (!rationale || rationale.length < MIN_RATIONALE_LENGTH) {
+  if (!rationale || rationale.length > MAX_MATERIAL_DESCRIPTION_LENGTH) {
     throw Object.assign(
       new Error(
-        `Explain how the guide uses this material (at least ${MIN_RATIONALE_LENGTH} characters).`,
+        `Material descriptions must be 1–${MAX_MATERIAL_DESCRIPTION_LENGTH} characters.`,
       ),
       { status: 400 },
     );
@@ -136,6 +137,11 @@ export async function addMaterial(input: AddMaterialInput): Promise<GuideMateria
     typeof input.priceLabel === 'string' && input.priceLabel.trim()
       ? input.priceLabel.trim().slice(0, 64)
       : null;
+  if (!priceLabel || !USDC_PRICE_LABEL_PATTERN.test(priceLabel)) {
+    throw Object.assign(new Error('Material prices must use the format "8 USDC".'), {
+      status: 400,
+    });
+  }
   const sortOrder = Number.isFinite(input.sortOrder) ? Number(input.sortOrder) : 0;
 
   try {
@@ -158,11 +164,11 @@ export async function addMaterial(input: AddMaterialInput): Promise<GuideMateria
     );
     return toMaterial(rows[0]);
   } catch (err: any) {
-    // DB CHECK guide_materials_rationale_len_check — surface cleanly.
+    // DB checks for concise descriptions and USDC price badges.
     if (err?.code === '23514') {
       throw Object.assign(
         new Error(
-          `Explain how the guide uses this material (at least ${MIN_RATIONALE_LENGTH} characters).`,
+          `Material descriptions must be 1–${MAX_MATERIAL_DESCRIPTION_LENGTH} characters and prices must use USDC.`,
         ),
         { status: 400 },
       );

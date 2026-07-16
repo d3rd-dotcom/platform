@@ -8,6 +8,9 @@ import type { GuideMaterial } from '@/lib/guide-materials-db';
 import { resolveOutboundLink } from '@/lib/affiliate';
 import styles from './GuideMaterials.module.css';
 
+const USDC_PRICE_LABEL = /^\d+(?:\.\d{1,2})? USDC$/;
+const MAX_DESCRIPTION_LENGTH = 30;
+
 /**
  * "Materials for this guide" section — the contextual marketplace surface
  * (Phase 6). Renders one card per material with its image, name, the rationale
@@ -63,10 +66,12 @@ export default function GuideMaterials({ materials }: { materials: GuideMaterial
             <div className={styles.body}>
               <div className={styles.nameRow}>
                 <span className={styles.name}>{m.name}</span>
-                {m.priceLabel && <span className={styles.price}>{m.priceLabel}</span>}
+                {m.priceLabel && USDC_PRICE_LABEL.test(m.priceLabel) && (
+                  <span className={styles.price}>{m.priceLabel}</span>
+                )}
               </div>
 
-              <p className={styles.rationale}>{m.rationale}</p>
+              <p className={styles.rationale}>{m.rationale.slice(0, MAX_DESCRIPTION_LENGTH)}</p>
 
               <MaterialLink material={m} onNavigate={() => play('navigation')} />
             </div>

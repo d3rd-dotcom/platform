@@ -41,8 +41,8 @@ export async function GET(_request: Request, { params }: { params: { slug: strin
  * cookie (same pattern as app/api/guides/[slug]/vote/route.ts). Only the guide's
  * author may add: we compare guide.authorId to the caller's user id.
  *
- * Body: { name, linkUrl, linkType?, rationale, imageUrl?, priceLabel?, sortOrder? }
- * rationale must be a real justification (>= 40 chars, DB-enforced; surfaced 400).
+ * Body: { name, linkUrl, linkType?, rationale, imageUrl?, priceLabel, sortOrder? }
+ * rationale is a concise 1–30 character description; price labels use USDC.
  */
 export async function POST(request: Request, { params }: { params: { slug: string } }) {
   if (!isDbConfigured()) {

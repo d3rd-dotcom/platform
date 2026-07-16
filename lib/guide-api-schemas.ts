@@ -93,9 +93,9 @@ export const addMaterialBodySchema = z.object({
   name: z.string(),
   linkUrl: z.string(),
   linkType: z.enum(['internal_shop', 'external']).optional(),
-  rationale: z.string(),
+  rationale: z.string().trim().min(1).max(30),
   imageUrl: z.string().optional(),
-  priceLabel: z.string().optional(),
+  priceLabel: z.string().regex(/^\d+(?:\.\d{1,2})? USDC$/),
   sortOrder: z.number().optional(),
 });
 export type AddMaterialBody = z.infer<typeof addMaterialBodySchema>;
