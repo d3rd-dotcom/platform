@@ -367,3 +367,90 @@
     min-width: 0;
   }
 }
+
+/* ── Reward end-cap on the progress bar ──────────────────────────────────────
+   The diamonds sit at the end of the track so the path to the payout is the
+   progress bar itself. */
+.progressReward {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  font-family: var(--type-font-display);
+  font-size: 0.75rem;
+  font-weight: var(--type-weight-bold, 700);
+  color: var(--color-tertiary);
+  background: color-mix(in oklch, var(--color-tertiary) 8%, var(--color-surface-base));
+  border: 1px solid color-mix(in oklch, var(--color-tertiary) 26%, transparent);
+  border-radius: var(--radius-full, 9999px);
+  padding: 3px 10px;
+}
+
+/* ── VIP rewrite editor ─────────────────────────────────────────────────────── */
+.suggestPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-base));
+}
+
+.suggestLabel {
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size, 0.75rem);
+  font-weight: var(--type-weight-semibold, 600);
+  color: var(--color-text-muted);
+}
+
+.suggestTextarea {
+  width: 100%;
+  resize: vertical;
+  font-family: var(--type-font-body);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--color-text-dark);
+  background: var(--color-surface-base, #ffffff);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.suggestTextarea:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.suggestActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* Confirmation that a rewrite is queued, shown on the axiom card. */
+.suggestedNote {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--type-font-label);
+  font-size: 0.75rem;
+  font-weight: var(--type-weight-semibold, 600);
+  color: var(--color-primary);
+}
+
+:global([data-theme='dark']) .suggestPanel {
+  background: color-mix(in oklch, var(--color-primary) 10%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 26%, transparent);
+}
+
+:global([data-theme='dark']) .suggestTextarea {
+  background: #15172a;
+  color: #e8e9f4;
+  border-color: color-mix(in oklch, var(--color-primary-hover) 24%, transparent);
+}
+
+:global([data-theme='dark']) .progressReward {
+  background: color-mix(in oklch, var(--color-tertiary) 14%, #15172a);
+  border-color: color-mix(in oklch, var(--color-tertiary) 32%, transparent);
+}

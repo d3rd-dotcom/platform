@@ -316,3 +316,63 @@ export async function recordAssemblyVerdict(
     return { ok: true };
   });
 }
+
+/**
+ * Record a VIP member's proposed rewrite of one axiom. In one transaction:
+ * validates the node is an axiom of this guide, records a 'flag' verdict (the
+ * suggestion inherits the community signal and counts toward run progress),
+ * and upserts the suggestion text — one live suggestion per (user, axiom);
+ * resubmitting replaces the text and resets its status to 'pending' for Blue.
+ *
+ * The caller is responsible for the VIP gate (requireVip in the route); this
+ * function stays fail-closed on data validity either way.
+ */
+export async function recordAxiomSuggestion(
+  userId: string,
+  guideId: string,
+  contentVersion: string,
+  nodeId: string,
+  suggestedStatement: string,
+): Promise<{ ok: true }> {
+  const statement = suggestedStatement.trim();
+  if (!statement) {
+    throw Object.assign(new Error('The suggested rewrite cannot be empty.'), { status: 400 });
+  }
+
+  return withTransaction(async (client) => {
+    const nodeRows = await sqlQueryWithClient<Array<{ id: string; statement: string | null }>>(
+      client,
+      `SELECT id, statement FROM guide_assembly_nodes
+       WHERE id = :nodeId AND guide_id = :guideId AND kind = 'axiom'`,
+      { nodeId, guideId },
+    );
+    if (!nodeRows[0]) {
+      throw Object.assign(new Error('That axiom is not part of this guide.'), { status: 400 });
+    }
+    if ((nodeRows[0].statement ?? '').trim() === statement) {
+      throw Object.assign(new Error('The rewrite matches the axiom as written.'), { status: 400 });
+    }
+
+    const run = await ensureRun(client, userId, guideId, contentVersion);
+    await sqlQueryWithClient(
+      client,
+      `INSERT INTO guide_assembly_verdicts (run_id, node_id, verdict)
+       VALUES (:runId, :nodeId, 'flag')
+       ON CONFLICT (run_id, node_id)
+         DO UPDATE SET verdict = EXCLUDED.verdict, updated_at = CURRENT_TIMESTAMP`,
+      { runId: run.id, nodeId },
+    );
+    await sqlQueryWithClient(
+      client,
+      `INSERT INTO guide_axiom_suggestions (node_id, guide_id, user_id, suggested_statement)
+       VALUES (:nodeId, :guideId, :userId, :statement)
+       ON CONFLICT (user_id, node_id)
+         DO UPDATE SET
+           suggested_statement = EXCLUDED.suggested_statement,
+           status = 'pending',
+           updated_at = CURRENT_TIMESTAMP`,
+      { nodeId, guideId, userId, statement },
+    );
+    return { ok: true };
+  });
+}

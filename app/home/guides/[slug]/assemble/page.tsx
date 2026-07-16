@@ -2,12 +2,14 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   ArrowLeft,
   ArrowRight,
   Check,
   CheckCircle,
   Flag,
+  PencilSimple,
   Stack,
   Sparkle,
 } from '@phosphor-icons/react';
@@ -60,6 +62,8 @@ export default function GuideAssemblePage({ params }: PageProps) {
   const [phase, setPhase] = useState<Phase>('intro');
   const [index, setIndex] = useState(0);
   const [verdicts, setVerdicts] = useState<Record<string, AssemblyVerdict>>({});
+  const [suggested, setSuggested] = useState<Record<string, string>>({});
+  const [isVip, setIsVip] = useState(false);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -125,6 +129,32 @@ export default function GuideAssemblePage({ params }: PageProps) {
     };
   }, [ready, authenticated, params.slug, authHeaders]);
 
+  // VIP membership unlocks suggesting rewrites instead of plain flags.
+  useEffect(() => {
+    if (!ready || !authenticated) {
+      setIsVip(false);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/membership/holding-status', {
+          credentials: 'include',
+          headers: await authHeaders(),
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (!cancelled) setIsVip(!!json.hasVipMembershipCard);
+        }
+      } catch {
+        /* silent: non-VIP experience is the safe default */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [ready, authenticated, authHeaders]);
+
   const axioms = useMemo(
     () => (data ? flatten(data.sections as AssemblySectionView[]) : []),
     [data],
@@ -164,6 +194,50 @@ export default function GuideAssemblePage({ params }: PageProps) {
         });
       } catch (err: any) {
         setError(err?.message ?? 'Something went wrong.');
+      } finally {
+        setPending(false);
+      }
+    },
+    [authenticated, login, authHeaders, params.slug, axioms.length, play],
+  );
+
+  // VIP path: propose a rewrite for Blue to fold into the guide. Server
+  // records a flag verdict + the suggestion atomically, so progress advances
+  // exactly like a plain verdict.
+  const submitSuggestion = useCallback(
+    async (axiom: FlatAxiom, suggestion: string) => {
+      if (!authenticated) {
+        login();
+        return false;
+      }
+      setPending(true);
+      setError(null);
+      try {
+        const headers = { 'Content-Type': 'application/json', ...(await authHeaders()) };
+        const res = await fetch(`/api/guides/${params.slug}/assembly/suggest`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ nodeId: axiom.id, suggestion }),
+        });
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          throw new Error(body?.error || 'Could not send that rewrite. Try again.');
+        }
+        play('success');
+        setVerdicts((prev) => ({ ...prev, [axiom.id]: 'flag' }));
+        setSuggested((prev) => ({ ...prev, [axiom.id]: suggestion }));
+        setIndex((i) => {
+          const next = i + 1;
+          if (next >= axioms.length) {
+            setPhase('summary');
+            return i;
+          }
+          return next;
+        });
+        return true;
+      } catch (err: any) {
+        setError(err?.message ?? 'Something went wrong.');
+        return false;
       } finally {
         setPending(false);
       }
@@ -242,9 +316,11 @@ export default function GuideAssemblePage({ params }: PageProps) {
               <section className={styles.intro}>
                 <p className={styles.introLede}>
                   Every guide is built from smaller claims. Here you take this guide apart into its{' '}
-                  {data.axiomCount} axioms and rebuild it, one claim at a time. Approve each claim you
-                  would keep, flag any you doubt. When you have judged them all, the reconstruction is
-                  yours.
+                  {data.axiomCount} axioms and rebuild it, one claim at a time. Keep each claim that
+                  holds up{isVip
+                    ? ', or rewrite any that read wrong and Blue folds the good rewrites back into the guide'
+                    : ', or mark any that need another look'}. The progress bar tracks every judgment,
+                  and the diamonds at the end of it are yours when the rebuild is done.
                 </p>
                 <div className={styles.rewardChip}>
                   <Sparkle size={14} weight="fill" />
@@ -270,14 +346,19 @@ export default function GuideAssemblePage({ params }: PageProps) {
               </section>
             ) : phase === 'play' ? (
               <PlayView
+                key={axioms[index]?.id}
                 axiom={axioms[index]}
                 index={index}
                 total={axioms.length}
                 current={verdicts[axioms[index]?.id] ?? null}
+                suggestedText={suggested[axioms[index]?.id]}
+                isVip={isVip}
+                reward={data.isAuthor || claimed ? null : data.reward}
                 pending={pending}
                 error={error}
                 onApprove={() => submitVerdict(axioms[index], 'approve')}
                 onFlag={() => submitVerdict(axioms[index], 'flag')}
+                onSuggest={(text) => submitSuggestion(axioms[index], text)}
                 onPrev={index > 0 ? () => { setError(null); setIndex((i) => i - 1); } : undefined}
                 onNext={
                   verdicts[axioms[index]?.id] && index < axioms.length - 1
@@ -294,9 +375,11 @@ export default function GuideAssemblePage({ params }: PageProps) {
                 <h2 className={styles.summaryTitle}>You rebuilt {data.guide.topicTitle}</h2>
                 <p className={styles.summaryText}>
                   {answeredCount} of {axioms.length} axioms judged.{' '}
-                  {Object.values(verdicts).filter((v) => v === 'flag').length > 0
-                    ? `You flagged ${Object.values(verdicts).filter((v) => v === 'flag').length} for another look — that signal helps every future reader.`
-                    : 'You kept every claim in your reconstruction.'}
+                  {Object.keys(suggested).length > 0
+                    ? `You sent ${Object.keys(suggested).length} rewrite${Object.keys(suggested).length === 1 ? '' : 's'} to Blue; she folds the good ones back into the guide.`
+                    : Object.values(verdicts).filter((v) => v === 'flag').length > 0
+                      ? `You marked ${Object.values(verdicts).filter((v) => v === 'flag').length} for another look. That signal helps every future reader.`
+                      : 'You kept every claim in your reconstruction.'}
                 </p>
 
                 {error && <div className={styles.error}>{error}</div>}
@@ -351,10 +434,16 @@ interface PlayViewProps {
   index: number;
   total: number;
   current: AssemblyVerdict | null;
+  /** The rewrite this viewer already sent for this axiom, if any. */
+  suggestedText?: string;
+  isVip: boolean;
+  /** Diamonds waiting at the end of the pass; null hides the end-cap. */
+  reward: number | null;
   pending: boolean;
   error: string | null;
   onApprove: () => void;
   onFlag: () => void;
+  onSuggest: (text: string) => Promise<boolean>;
   onPrev?: () => void;
   onNext?: () => void;
   onReview?: () => void;
@@ -365,27 +454,42 @@ function PlayView({
   index,
   total,
   current,
+  suggestedText,
+  isVip,
+  reward,
   pending,
   error,
   onApprove,
   onFlag,
+  onSuggest,
   onPrev,
   onNext,
   onReview,
 }: PlayViewProps) {
+  const [editorOpen, setEditorOpen] = useState(false);
+  const [draft, setDraft] = useState('');
+
   if (!axiom) return null;
   const progress = Math.round(((index + (current ? 1 : 0)) / total) * 100);
   const community = axiom.approveCount + axiom.flagCount;
 
   return (
     <section className={styles.play}>
+      {/* The bar runs left to right and ends at the diamonds — the reward is
+          literally at the end of the visible path. */}
       <div className={styles.progressRow}>
-        <div className={styles.progressTrack}>
-          <div className={styles.progressFill} style={{ width: `${progress}%` }} />
-        </div>
         <span className={styles.progressLabel}>
           {index + 1} / {total}
         </span>
+        <div className={styles.progressTrack}>
+          <div className={styles.progressFill} style={{ width: `${progress}%` }} />
+        </div>
+        {reward !== null && (
+          <span className={styles.progressReward}>
+            <Image src="/icons/ui-diamond.svg" alt="" width={11} height={11} />
+            +{reward}
+          </span>
+        )}
       </div>
 
       <div className={styles.card}>
@@ -393,31 +497,86 @@ function PlayView({
         <p className={styles.axiom}>{axiom.statement}</p>
         {community > 0 && (
           <span className={styles.cardMeta}>
-            {axiom.approveCount} kept · {axiom.flagCount} flagged by other readers
+            {axiom.approveCount} kept · {axiom.flagCount} questioned by other readers
+          </span>
+        )}
+        {suggestedText && (
+          <span className={styles.suggestedNote}>
+            <PencilSimple size={12} weight="bold" /> Your rewrite is queued for Blue.
           </span>
         )}
       </div>
 
       {error && <div className={styles.error}>{error}</div>}
 
-      <div className={styles.verdictRow}>
-        <button
-          type="button"
-          className={`${styles.verdictBtn} ${styles.approve} ${current === 'approve' ? styles.chosen : ''}`}
-          onClick={onApprove}
-          disabled={pending}
-        >
-          <Check size={17} weight="bold" /> Keep this claim
-        </button>
-        <button
-          type="button"
-          className={`${styles.verdictBtn} ${styles.flag} ${current === 'flag' ? styles.chosen : ''}`}
-          onClick={onFlag}
-          disabled={pending}
-        >
-          <Flag size={17} weight="bold" /> Flag for review
-        </button>
-      </div>
+      {editorOpen ? (
+        <div className={styles.suggestPanel}>
+          <label className={styles.suggestLabel} htmlFor="axiom-rewrite">
+            Rewrite this claim the way it should read
+          </label>
+          <textarea
+            id="axiom-rewrite"
+            className={styles.suggestTextarea}
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            rows={4}
+          />
+          <div className={styles.suggestActions}>
+            <button
+              type="button"
+              className={styles.ghostBtn}
+              onClick={() => setEditorOpen(false)}
+              disabled={pending}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              className={styles.primaryBtn}
+              onClick={async () => {
+                const ok = await onSuggest(draft.trim());
+                if (ok) setEditorOpen(false);
+              }}
+              disabled={pending || draft.trim().length < 10}
+            >
+              {pending ? 'Sending…' : 'Send to Blue'}
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className={styles.verdictRow}>
+          <button
+            type="button"
+            className={`${styles.verdictBtn} ${styles.approve} ${current === 'approve' ? styles.chosen : ''}`}
+            onClick={onApprove}
+            disabled={pending}
+          >
+            <Check size={17} weight="bold" /> Keep this claim
+          </button>
+          {isVip ? (
+            <button
+              type="button"
+              className={`${styles.verdictBtn} ${styles.flag} ${current === 'flag' ? styles.chosen : ''}`}
+              onClick={() => {
+                setDraft(suggestedText ?? axiom.statement);
+                setEditorOpen(true);
+              }}
+              disabled={pending}
+            >
+              <PencilSimple size={17} weight="bold" /> Suggest a rewrite
+            </button>
+          ) : (
+            <button
+              type="button"
+              className={`${styles.verdictBtn} ${styles.flag} ${current === 'flag' ? styles.chosen : ''}`}
+              onClick={onFlag}
+              disabled={pending}
+            >
+              <Flag size={17} weight="bold" /> Needs another look
+            </button>
+          )}
+        </div>
+      )}
 
       <div className={styles.navRow}>
         {onPrev ? (
