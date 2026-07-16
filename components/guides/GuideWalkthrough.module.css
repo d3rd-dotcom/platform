@@ -376,14 +376,28 @@
 }
 
 /* ── Reward preview summary ─────────────────────────────────────────────── */
+/* Double-background technique: the inner layer paints the surface within
+   the padding box, the outer layer paints a soft rainbow in the border box,
+   so the gradient reads as a 1px ring that still respects the radius. */
 .rewardSummary {
   display: flex;
   flex-direction: column;
   gap: 6px;
   padding: 12px 14px;
   border-radius: 10px;
-  border: 1px solid color-mix(in oklch, var(--color-tertiary) 22%, transparent);
-  background: color-mix(in oklch, var(--color-tertiary) 5%, var(--color-surface-base));
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--color-surface-base, #ffffff), var(--color-surface-base, #ffffff)) padding-box,
+    linear-gradient(
+        135deg,
+        color-mix(in oklch, #f4a3a3 65%, var(--color-surface-base)),
+        color-mix(in oklch, #f2c48a 65%, var(--color-surface-base)),
+        color-mix(in oklch, #e8dd8f 65%, var(--color-surface-base)),
+        color-mix(in oklch, #9fd6ab 65%, var(--color-surface-base)),
+        color-mix(in oklch, #9dc3e8 65%, var(--color-surface-base)),
+        color-mix(in oklch, #b6a8e0 65%, var(--color-surface-base))
+      )
+      border-box;
 }
 
 .rewardSummaryLabel {
@@ -468,8 +482,18 @@
 }
 
 :global([data-theme="dark"]) .rewardSummary {
-  border-color: color-mix(in oklch, var(--color-tertiary) 30%, transparent);
-  background: color-mix(in oklch, var(--color-tertiary) 10%, #15172a);
+  background:
+    linear-gradient(#15172a, #15172a) padding-box,
+    linear-gradient(
+        135deg,
+        color-mix(in oklch, #f4a3a3 45%, #15172a),
+        color-mix(in oklch, #f2c48a 45%, #15172a),
+        color-mix(in oklch, #e8dd8f 45%, #15172a),
+        color-mix(in oklch, #9fd6ab 45%, #15172a),
+        color-mix(in oklch, #9dc3e8 45%, #15172a),
+        color-mix(in oklch, #b6a8e0 45%, #15172a)
+      )
+      border-box;
 }
 
 :global([data-theme="dark"]) .levelRewardBadge {

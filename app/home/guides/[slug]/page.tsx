@@ -84,9 +84,6 @@ function WalkthroughOverlay({ slug, onClose }: { slug: string; onClose: () => vo
           </span>
           <div className={styles.overlayTitleGroup}>
             <h2 className={styles.overlayTitle}>Walkthrough</h2>
-            <p className={styles.overlaySubtitle}>
-              Every prerequisite for this topic, charted level by level.
-            </p>
           </div>
           <button type="button" className={styles.overlayClose} onClick={onClose} aria-label="Close walkthrough">
             <X size={16} weight="bold" />

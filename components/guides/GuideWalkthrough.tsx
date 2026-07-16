@@ -69,13 +69,6 @@ export default function GuideWalkthrough({ slug }: Props) {
   const [view, setView] = useState<'list' | 'tree'>('list');
   const [reward, setReward] = useState<RewardInfo | null>(null);
 
-  // Tree is the default on wide screens; measured once on mount.
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.innerWidth >= 900) {
-      setView('tree');
-    }
-  }, []);
-
   const authHeaders = useCallback(async (): Promise<HeadersInit> => {
     const token = await getAccessToken().catch(() => null);
     return token ? { Authorization: `Bearer ${token}` } : {};
@@ -260,12 +253,6 @@ export default function GuideWalkthrough({ slug }: Props) {
               <Image src="/icons/ui-diamond.svg" alt="" width={12} height={12} className={styles.rewardIcon} />
               +{walkthrough.rewardPreview.walkthroughComplete} full clear
             </span>
-            {walkthrough.rewardPreview.spinGranted && (
-              <>
-                <span className={styles.rewardDivider} />
-                <span className={styles.rewardTier}>+free spin</span>
-              </>
-            )}
           </div>
         </div>
       )}

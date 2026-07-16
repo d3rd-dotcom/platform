@@ -496,14 +496,6 @@
   color: var(--color-text-dark);
 }
 
-.overlaySubtitle {
-  margin: 0;
-  font-family: var(--type-font-body);
-  font-size: 0.8125rem;
-  line-height: 1.45;
-  color: var(--color-text-muted);
-}
-
 .overlayClose {
   display: grid;
   place-items: center;
