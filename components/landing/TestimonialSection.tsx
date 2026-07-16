@@ -4,36 +4,48 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import styles from './TestimonialSection.module.css';
 
+// The diamond and cbBTC figures are placeholder mock-ups for layout review, not
+// real member earnings. Wire them to live data before this ships publicly.
 const testimonials = [
   {
     quote: 'The weekly sessions helped me get out of a burnt-out place. I feel clearer, more consistent, and more connected to what I want to make.',
     name: 'Jordan K.',
     title: 'Product designer',
     avatar: '/anbel03.png',
+    diamonds: 1240,
+    btc: '0.0021',
   },
   {
     quote: 'I joined because I wanted more structure and support in my life. What surprised me most was how thoughtful the community felt and how much people listened to each other.',
     name: 'Maya T.',
     title: 'Graduate student',
     avatar: '/anbel07.png',
+    diamonds: 880,
+    btc: '0.0014',
   },
   {
     quote: 'I usually fall off with programs like this, but the small prompts and check-ins kept me engaged. It made taking care of myself easier to come back to.',
     name: 'Aisha R.',
     title: 'UX researcher',
     avatar: '/anbel10.png',
+    diamonds: 2100,
+    btc: '0.0036',
   },
   {
     quote: 'I came for the tools, but I stayed because it felt like a real community. People support each other here in a way that feels practical.',
     name: 'Ezra M.',
     title: 'Community organizer',
     avatar: '/anbel04.png',
+    diamonds: 640,
+    btc: '0.0009',
   },
   {
     quote: 'The morning journaling practice changed my routine. It gave me a calmer start to the day and helped me notice patterns I normally ignore.',
     name: 'Priya S.',
     title: 'College student',
     avatar: '/anbel09.png',
+    diamonds: 1580,
+    btc: '0.0027',
   },
 ];
 
@@ -129,6 +141,31 @@ export const TestimonialSection: React.FC = () => {
                   <div className={styles.attribution}>
                     <div className={styles.authorName}>{t.name}</div>
                     <div className={styles.authorTitle}>{t.title}</div>
+                  </div>
+                  <div className={styles.earnings}>
+                    <span
+                      className={styles.earning}
+                      aria-label={`${t.diamonds.toLocaleString()} diamonds earned`}
+                    >
+                      +{t.diamonds.toLocaleString()}
+                      <Image
+                        src="/icons/ui-diamond.svg"
+                        alt=""
+                        width={13}
+                        height={13}
+                        className={styles.earningIcon}
+                      />
+                    </span>
+                    <span className={styles.earning} aria-label={`${t.btc} cbBTC earned`}>
+                      +{t.btc}
+                      <Image
+                        src="/tokens/cbbtc.webp"
+                        alt=""
+                        width={13}
+                        height={13}
+                        className={styles.earningIcon}
+                      />
+                    </span>
                   </div>
                 </div>
               </div>

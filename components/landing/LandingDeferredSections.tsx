@@ -29,6 +29,22 @@ const MagazineSection = dynamic(() =>
   import('./MagazineSection').then((mod) => mod.MagazineSection),
   { ssr: false }
 );
+const ProblemStatementSection = dynamic(() =>
+  import('./ProblemStatementSection').then((mod) => mod.ProblemStatementSection),
+  { ssr: false }
+);
+const HowItWorksSection = dynamic(() =>
+  import('./HowItWorksSection').then((mod) => mod.HowItWorksSection),
+  { ssr: false }
+);
+const KeyFiguresSection = dynamic(() =>
+  import('./KeyFiguresSection').then((mod) => mod.KeyFiguresSection),
+  { ssr: false }
+);
+const FinalCtaSection = dynamic(() =>
+  import('./FinalCtaSection').then((mod) => mod.FinalCtaSection),
+  { ssr: false }
+);
 const FAQSection = dynamic(() =>
   import('./FAQSection').then((mod) => mod.FAQSection),
   { ssr: false }
@@ -74,14 +90,18 @@ export function LandingDeferredSections() {
 
   return (
     <>
-      <LazySection minHeight="clamp(220px, 32vw, 400px)"><RotatingTextSection /></LazySection>
+      <LazySection minHeight="100vh"><ProblemStatementSection /></LazySection>
       <LazySection minHeight="90vh"><FeaturesSection /></LazySection>
+      <LazySection minHeight="80vh"><TestimonialSection /></LazySection>
       <LazySection minHeight="90vh"><EcosystemSection /></LazySection>
       <LazySection minHeight="80vh"><FounderSection /></LazySection>
-      <LazySection minHeight="80vh"><TestimonialSection /></LazySection>
+      <LazySection minHeight="90vh"><HowItWorksSection /></LazySection>
       <LazySection minHeight="100vh"><LandingMembershipSection /></LazySection>
-      <LazySection minHeight="90vh"><MagazineSection /></LazySection>
+      <LazySection minHeight="20vh"><KeyFiguresSection /></LazySection>
+      <LazySection minHeight="25vh"><FinalCtaSection /></LazySection>
       <LazySection minHeight="80vh"><FAQSection /></LazySection>
+      <LazySection minHeight="90vh"><MagazineSection /></LazySection>
+      <LazySection minHeight="clamp(220px, 32vw, 400px)"><RotatingTextSection /></LazySection>
       <LazySection minHeight="40vh"><LandingFooter /></LazySection>
       {overlaysReady && <DonationPopup />}
       {overlaysReady && <ElevenLabsAgentWidget />}

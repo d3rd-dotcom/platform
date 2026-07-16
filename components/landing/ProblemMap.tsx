@@ -11,7 +11,7 @@ const GEOJSON_URL = '/data/redlining-oakland.geojson';
 // faint so the map reads as a real graded gradient, not a binary two-box split.
 const HIDDEN: L.PathOptions = { weight: 0, fillOpacity: 0, interactive: false };
 const GRADE_STYLE: Record<string, L.PathOptions> = {
-  D: { color: '#5168FF', weight: 1, fillColor: '#3248D8', fillOpacity: 0.62, interactive: false },
+  D: { color: '#E4707A', weight: 1, fillColor: '#C4515C', fillOpacity: 0.52, interactive: false },
   A: { color: '#5fbf78', weight: 1, fillColor: '#5aa469', fillOpacity: 0.48, interactive: false },
   B: { color: '#6f86ff', weight: 0, fillColor: '#6f86ff', fillOpacity: 0.16, interactive: false },
   C: { color: '#e0a53b', weight: 0, fillColor: '#e0a53b', fillOpacity: 0.18, interactive: false },
@@ -183,7 +183,8 @@ export const ProblemMap: React.FC = () => {
           </div>
         </div>
         <p className={styles.source}>
-          Map &copy; OpenStreetMap, &copy; CARTO.
+          HOLC grades from Mapping Inequality, Digital Scholarship Lab,
+          University of Richmond. Map &copy; OpenStreetMap, &copy; CARTO.
         </p>
       </div>
     </div>

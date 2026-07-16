@@ -289,17 +289,13 @@ export const MembershipSection: React.FC = () => {
                 <span className={styles.tierPrice}>$20</span>
                 <span className={styles.tierPriceLabel}>/month</span>
               </div>
-              <p className={styles.tierDesc}>Full access with governance power and research tools.</p>
+              <p className={styles.tierDesc}>Full access with research tools and Blue.</p>
             </div>
             <div className={styles.tierDivider} />
             <ul className={styles.tierFeatures}>
               <li className={styles.tierFeature}>
                 <span className={`${styles.featureCheck} ${styles.featureCheckPrimary}`}><CheckIcon /></span>
                 Everything in Explorer
-              </li>
-              <li className={styles.tierFeature}>
-                <span className={`${styles.featureCheck} ${styles.featureCheckPrimary}`}><CheckIcon /></span>
-                Governance voting power
               </li>
               <li className={styles.tierFeature}>
                 <span className={`${styles.featureCheck} ${styles.featureCheckPrimary}`}><CheckIcon /></span>

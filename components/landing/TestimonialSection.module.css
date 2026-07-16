@@ -153,6 +153,36 @@
   text-align: left;
 }
 
+/* Pinned to the card's bottom-right; the footer's align-items: center keeps it
+   on the same horizon as the avatar. */
+.earnings {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.earning {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.82);
+  white-space: nowrap;
+}
+
+.earningIcon {
+  display: block;
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
 .authorName {
   font-weight: 800;
   color: var(--color-primary);

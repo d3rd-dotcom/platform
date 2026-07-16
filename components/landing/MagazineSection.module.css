@@ -7,6 +7,20 @@
   z-index: 1;
 }
 
+/* Splash of Academy Blue washing out from behind the covers, easing this band
+   into the primary-colored rotating text section below it. */
+.section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    58% 68% at 72% 46%,
+    color-mix(in oklch, var(--color-brand) 30%, transparent) 0%,
+    transparent 72%
+  );
+  pointer-events: none;
+}
+
 .container {
   position: relative;
   z-index: 1;
@@ -26,12 +40,11 @@
 
 .eyebrow {
   margin: 0;
-  color: color-mix(in srgb, var(--color-text-light) 70%, transparent);
+  color: color-mix(in oklch, var(--color-brand) 62%, #ffffff);
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.18em;
-  text-transform: uppercase;
 }
 
 .heading {
@@ -65,22 +78,22 @@
   height: 44px;
   padding: 0 28px;
   margin-top: 8px;
-  border: 1px solid color-mix(in srgb, var(--color-text-light) 30%, transparent);
+  border: 1px solid var(--color-action);
   border-radius: 999px;
-  background: transparent;
-  color: color-mix(in srgb, var(--color-text-light) 88%, transparent);
+  background: var(--color-action);
+  color: var(--color-on-action);
   font-family: var(--font-primary);
   font-size: 0.85rem;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-decoration: none;
-  text-transform: uppercase;
   transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
 }
 
 .cta:hover {
-  background: color-mix(in srgb, var(--color-text-light) 10%, transparent);
-  box-shadow: 0 0 24px color-mix(in srgb, var(--color-text-light) 15%, transparent);
+  background: var(--color-action-hover);
+  border-color: var(--color-action-hover);
+  box-shadow: 0 0 24px color-mix(in oklch, var(--color-brand) 45%, transparent);
   transform: translateY(-1px);
 }
 

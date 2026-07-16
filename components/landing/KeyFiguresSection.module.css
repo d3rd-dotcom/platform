@@ -33,7 +33,6 @@
   font-weight: 800;
   color: rgba(255, 255, 255, 0.5);
   font-size: 14px;
-  text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
@@ -48,7 +47,9 @@
   font-family: var(--font-secondary);
   font-size: 4.236rem;
   font-weight: var(--font-weight-bold);
-  color: #fff100;
+  /* Academy Blue, lifted toward white so it stays legible on the band's own
+     primary-tinted navy. */
+  color: color-mix(in oklch, var(--color-brand) 72%, #ffffff);
   letter-spacing: -0.02em;
 }
 
