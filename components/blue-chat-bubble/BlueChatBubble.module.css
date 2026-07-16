@@ -73,6 +73,8 @@
   color: #28388f;
   white-space: pre-wrap;
   word-break: break-word;
+  /* No orphaned single-word last lines in Blue's bubbles. */
+  text-wrap: pretty;
 }
 
 /* Variants */

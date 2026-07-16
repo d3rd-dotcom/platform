@@ -32,6 +32,14 @@ const READY_LINES = [
   'All the groundwork is done! Now comes my favorite part, the part where you learn the thing. Okay, every part is my favorite part.',
 ];
 
+// Animated pixel-Blue sprites for the companion bubble — picked by guide-id
+// hash (stable per guide, SSR-safe) so she is mid-motion instead of frozen.
+const COMPANION_SPRITES = [
+  '/images/blue-guide-sprites/walking-west.gif',
+  '/images/blue-guide-sprites/breathing-idle.gif',
+  '/images/blue-guide-sprites/walking-north.gif',
+];
+
 export default function BlueGuideCompanion({ guide, prereqs }: BlueGuideCompanionProps) {
   const { ready, authenticated, getAccessToken } = usePrivy();
   const { play } = useSound();
@@ -114,7 +122,7 @@ export default function BlueGuideCompanion({ guide, prereqs }: BlueGuideCompanio
         message={message}
         variant="compact"
         hideSender
-        avatarSrc="/images/blue-guide-sprites/standing-front.png"
+        avatarSrc={COMPANION_SPRITES[hashId(guide.id) % COMPANION_SPRITES.length]}
         avatarWidth={68}
         avatarHeight={68}
         pixelatedAvatar
