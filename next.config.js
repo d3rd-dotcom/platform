@@ -147,6 +147,11 @@ const nextConfig = {
       { protocol: 'https', hostname: 'dweb.link' },
       { protocol: 'https', hostname: 'peach-impossible-chicken-451.mypinata.cloud' },
       { protocol: 'https', hostname: 'nftstorage.link' },
+      {
+        protocol: 'https',
+        hostname: '*.supabase.co',
+        pathname: '/storage/v1/object/public/**',
+      },
       { protocol: 'https', hostname: '*.ipfs.nftstorage.link' },
       { protocol: 'https', hostname: '*.ipfs.dweb.link' },
     ],

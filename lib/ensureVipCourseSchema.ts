@@ -111,6 +111,25 @@ export async function ensureVipCourseSchema() {
       )
     `);
 
+    await sqlQuery(`
+      CREATE OR REPLACE FUNCTION prevent_vip_progress_unseal()
+      RETURNS TRIGGER AS $$
+      BEGIN
+        IF OLD.is_sealed AND NOT NEW.is_sealed THEN
+          RAISE EXCEPTION 'A sealed VIP course week cannot be unsealed';
+        END IF;
+        RETURN NEW;
+      END;
+      $$ LANGUAGE plpgsql
+    `);
+    await sqlQuery(`DROP TRIGGER IF EXISTS vip_progress_prevent_unseal ON vip_progress`);
+    await sqlQuery(`
+      CREATE TRIGGER vip_progress_prevent_unseal
+      BEFORE UPDATE OF is_sealed ON vip_progress
+      FOR EACH ROW
+      EXECUTE FUNCTION prevent_vip_progress_unseal()
+    `);
+
     try {
       await sqlQuery(`ALTER TABLE vip_courses DROP CONSTRAINT IF EXISTS vip_courses_slug_unique`);
       await sqlQuery(`ALTER TABLE vip_courses ADD CONSTRAINT vip_courses_slug_unique UNIQUE (slug)`);

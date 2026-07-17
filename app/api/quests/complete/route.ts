@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { ensureWeeksSchema } from '@/lib/ensureWeeksSchema';
 import { ensureCustomQuestsSchema } from '@/lib/ensureCustomQuestsSchema';
+import { ensurePrayersSchema } from '@/lib/ensurePrayersSchema';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { recordBlueQuestCompletion } from '@/lib/blue-memory';
 import { postSystemMessage } from '@/lib/chat';
@@ -11,6 +12,10 @@ import { ensureQuestUsdcClaimsSchema } from '@/lib/ensureQuestUsdcClaimsSchema';
 import { isOwnStorageUrl } from '@/lib/supabase-storage';
 import { recordAgentActivity } from '@/lib/room-log';
 import { deliverDiamondsOnchain } from '@/lib/diamonds-onchain';
+import {
+  parseBalloonMilestone,
+  parseDailyNoteQuestId,
+} from '@/lib/quest-reward-verification';
 import { v4 as uuidv4 } from 'uuid';
 
 interface CustomQuestRow {
@@ -37,6 +42,71 @@ async function loadCustomQuest(questId: string): Promise<CustomQuestRow | null> 
     { id: baseId }
   );
   return rows[0] ?? null;
+}
+
+async function verifyFixedQuestState(
+  questId: string,
+  user: { id: string; walletAddress: string },
+): Promise<boolean> {
+  switch (questId) {
+    case 'connect-wallet':
+      return /^0x[a-fA-F0-9]{40}$/.test(user.walletAddress);
+    case 'complete-profile': {
+      const rows = await sqlQuery<Array<{ complete: boolean }>>(
+         `SELECT (
+           username IS NOT NULL
+           AND LEFT(username, 5) <> 'user_'
+           AND selected_avatar_id IS NOT NULL
+           AND gender IS NOT NULL
+           AND birthday IS NOT NULL
+         ) AS complete
+         FROM users WHERE id = :userId LIMIT 1`,
+        { userId: user.id },
+      );
+      return rows[0]?.complete === true;
+    }
+    case 'first-reading': {
+      const rows = await sqlQuery<Array<{ complete: boolean }>>(
+        `SELECT EXISTS (
+           SELECT 1 FROM weeks
+           WHERE user_id = :userId
+             AND jsonb_array_length(COALESCE(credited_sections, '[]'::jsonb)) > 0
+         ) AS complete`,
+        { userId: user.id },
+      );
+      return rows[0]?.complete === true;
+    }
+    case 'first-journal': {
+      await ensurePrayersSchema();
+      const rows = await sqlQuery<Array<{ complete: boolean }>>(
+        `SELECT EXISTS (
+           SELECT 1 FROM daily_note_completions WHERE user_id = :userId
+         ) AS complete`,
+        { userId: user.id },
+      );
+      return rows[0]?.complete === true;
+    }
+    case 'week-1-story-checkin': {
+      // The story has no server-owned playback ledger. A sealed Week 1 is the
+      // authoritative end-of-week state that makes this check-in claimable.
+      const rows = await sqlQuery<Array<{ complete: boolean }>>(
+        `SELECT EXISTS (
+           SELECT 1 FROM weeks
+           WHERE user_id = :userId AND week_number = 1 AND is_sealed = true
+         ) AS complete`,
+        { userId: user.id },
+      );
+      return rows[0]?.complete === true;
+    }
+    // These legacy rewards have no trustworthy server-side completion ledger.
+    // Keep them closed until their originating feature records authoritative
+    // state. Proposal/voting paths are dormant and intentionally untouched.
+    case 'daily-checkin':
+    case 'first-proposal':
+    case 'first-vote':
+    default:
+      return false;
+  }
 }
 
 export const runtime = 'nodejs';
@@ -118,9 +188,10 @@ export async function POST(request: Request) {
   // SECURITY: only known quests pay out. The old generic 10-diamond fallback
   // let any invented questId string mint credits (and, now that rewards are
   // delivered onchain, drain real $BLUE from Blue's stash) without limit.
-  const isDailyNoteQuest = /^daily-notes-w([1-9]|1[0-2])-d[1-7]$/.test(questId);
-  const balloonCount = /^balloon-\d+$/.test(questId) ? parseInt(questId.slice(8), 10) : 0;
-  const isBalloonQuest = balloonCount > 0 && balloonCount % 5 === 0 && balloonCount <= 100;
+  const dailyNoteCoordinates = parseDailyNoteQuestId(questId);
+  const balloonCount = parseBalloonMilestone(questId);
+  const isDailyNoteQuest = dailyNoteCoordinates !== null;
+  const isBalloonQuest = balloonCount !== null;
   const isKnownFixedQuest = QUEST_REWARDS[questId] !== undefined;
   if (!definition && !customQuest && !isKnownFixedQuest && !isDailyNoteQuest && !isBalloonQuest) {
     return NextResponse.json({ error: 'Unknown quest.' }, { status: 404 });
@@ -144,6 +215,53 @@ export async function POST(request: Request) {
     );
   }
 
+  // Catalog quests require authoritative completion state. Definitions with
+  // dedicated verifiers continue below; generic no-proof entries remain
+  // unavailable until their originating feature records completion.
+  if (definition?.questType === 'no-proof') {
+    return NextResponse.json(
+      { error: 'This quest is awaiting a verified completion record.' },
+      { status: 409 },
+    );
+  }
+
+  if (isDailyNoteQuest) {
+    await ensurePrayersSchema();
+    const rows = await sqlQuery<Array<{ complete: boolean }>>(
+      `SELECT EXISTS (
+         SELECT 1 FROM daily_note_completions
+         WHERE user_id = :userId AND week_number = :week AND day_number = :day
+       ) AS complete`,
+      { userId: user.id, week: dailyNoteCoordinates.week, day: dailyNoteCoordinates.day },
+    );
+    if (rows[0]?.complete !== true) {
+      return NextResponse.json(
+        { error: 'Save this field note before claiming its reward.' },
+        { status: 409 },
+      );
+    }
+  }
+
+  if (isBalloonQuest) {
+    // A pop is a browser interaction. Even one authenticated request per pop
+    // can be scripted, so the counter cannot authorize real credits or an
+    // onchain transfer. Keep this legacy reward closed until there is a
+    // tamper-resistant challenge or another authoritative achievement source.
+    return NextResponse.json(
+      { error: 'Balloon rewards are temporarily unavailable.' },
+      { status: 409 },
+    );
+  }
+
+  if (isKnownFixedQuest && questId !== 'twitter-follow-quest') {
+    if (!(await verifyFixedQuestState(questId, user))) {
+      return NextResponse.json(
+        { error: 'Your completion record is still missing.' },
+        { status: 409 },
+      );
+    }
+  }
+
   if (!definition && customQuest) {
     if (customQuest.archived_at) {
       return NextResponse.json({ error: 'Quest is no longer available.' }, { status: 410 });
@@ -159,16 +277,10 @@ export async function POST(request: Request) {
     }
   }
 
-  // Custom quests require the creator's approval before any escrow is released
-  // when EITHER (a) the reward is real USDC, or (b) the quest is proof-required.
-  // In both cases, completing here only files a pending claim — no credits are
-  // minted and no `quests` row is written until the creator approves it via
-  // /api/quests/usdc/creator-review. This is what stops a proof-required quest
-  // from being drained without proof.
-  const needsCreatorReview = !!customQuest && (
-    customQuest.reward_kind === 'usdc' || customQuest.quest_type === 'proof-required'
-  );
-  if (customQuest && needsCreatorReview) {
+  // Every custom quest needs creator approval before escrow is released. The
+  // no-proof label controls the submission form, while the creator supplies
+  // the authoritative completion decision.
+  if (customQuest) {
     const isUsdc = customQuest.reward_kind === 'usdc';
 
     // Proof quests must carry the member's entry/link/file so the creator can judge it.
@@ -254,24 +366,7 @@ export async function POST(request: Request) {
     let resolvedQuestId = questId;
     let shardsToAward = getQuestShardReward(questId);
 
-    if (customQuest) {
-      shardsToAward = customQuest.points;
-
-      if (customQuest.target_count > 1) {
-        const existingRows = await sqlQuery<Array<{ quest_id: string }>>(
-          `SELECT quest_id FROM quests
-           WHERE user_id = :userId AND quest_id LIKE :prefix`,
-          { userId: user.id, prefix: `${customQuest.id}%` }
-        );
-        const completionCount = existingRows.length;
-        if (completionCount >= customQuest.target_count) {
-          return NextResponse.json({ error: 'Quest already completed.' }, { status: 409 });
-        }
-        resolvedQuestId = `${customQuest.id}-${completionCount + 1}`;
-      } else {
-        resolvedQuestId = customQuest.id;
-      }
-    } else if (definition && definition.targetCount > 1) {
+    if (definition && definition.targetCount > 1) {
       const existingRows = await sqlQuery<Array<{ quest_id: string }>>(
         `SELECT quest_id
          FROM quests
@@ -297,17 +392,6 @@ export async function POST(request: Request) {
       shardsToAward = Math.floor(shardsToAward * 0.25);
     }
 
-    // Every paying custom quest must have verified, funded escrow. This also
-    // retires the legacy NULL-escrow mint path.
-    if (customQuest && customQuest.escrow_status !== 'funded') {
-      return NextResponse.json({ error: 'This quest is not funded yet.' }, { status: 409 });
-    }
-    if (customQuest && customQuest.escrow_remaining == null) {
-      return NextResponse.json({ error: 'This quest has no verified escrow.' }, { status: 409 });
-    }
-    const usesCreditEscrow = !!(customQuest && customQuest.reward_kind !== 'usdc');
-    const escrowDraw = customQuest ? Number(customQuest.reward_amount ?? customQuest.points) : 0;
-
     // Check if quest already completed (outside transaction for early exit)
     const existingCompletion = await sqlQuery<Array<{ id: string }>>(
       `SELECT id FROM quests
@@ -332,21 +416,6 @@ export async function POST(request: Request) {
       );
       if (dupeCheck.length > 0) {
         throw new Error('QUEST_ALREADY_COMPLETED');
-      }
-
-      if (usesCreditEscrow) {
-        const drawn = await sqlQueryWithClient<Array<{ escrow_remaining: string }>>(
-          client,
-          `UPDATE custom_quests
-           SET escrow_remaining = escrow_remaining - :amt,
-               escrow_status = CASE WHEN escrow_remaining - :amt <= 0 THEN 'depleted' ELSE escrow_status END
-           WHERE id = :qid AND escrow_remaining >= :amt
-           RETURNING escrow_remaining`,
-          { qid: customQuest!.id, amt: escrowDraw }
-        );
-        if (drawn.length === 0) {
-          throw new Error('QUEST_REWARD_DEPLETED');
-        }
       }
 
       await sqlQueryWithClient(
@@ -440,9 +509,6 @@ export async function POST(request: Request) {
   } catch (err: any) {
     if (err.message === 'QUEST_ALREADY_COMPLETED') {
       return NextResponse.json({ error: 'Quest already completed.' }, { status: 409 });
-    }
-    if (err.message === 'QUEST_REWARD_DEPLETED') {
-      return NextResponse.json({ error: 'This quest reward has been fully claimed.' }, { status: 409 });
     }
     console.error('Error completing quest:', err);
     return NextResponse.json({ error: 'Failed to complete quest.' }, { status: 500 });

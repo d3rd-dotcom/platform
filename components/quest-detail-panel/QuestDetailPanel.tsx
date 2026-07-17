@@ -280,9 +280,8 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
       });
       const data = await response.json();
       if (data.ok && data.status === 'pending_review') {
-        // Creator-reviewed custom quest — no reflections are released until the
-        // quest creator approves, so don't celebrate a payout that hasn't happened.
-        window.dispatchEvent(new Event('shardsUpdated'));
+        // The creator's approval releases the credits, so pending submissions
+        // close without playing the reward celebration.
         alert('Submitted for review. The quest creator will approve your completion before the reward is released.');
         onDeselect();
         setProofText('');

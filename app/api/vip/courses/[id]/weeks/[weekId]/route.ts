@@ -40,7 +40,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
       input.status = body.status;
     }
 
-    const week = await updateCourseWeek(params.weekId, input);
+    const week = await updateCourseWeek(params.id, params.weekId, input);
     if (!week) {
       return NextResponse.json({ error: 'Week not found.' }, { status: 404 });
     }
@@ -54,7 +54,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 export async function DELETE(_request: Request, { params }: { params: { id: string; weekId: string } }) {
   try {
     await assertCourseOwner(params.id);
-    const deleted = await deleteCourseWeek(params.weekId);
+    const deleted = await deleteCourseWeek(params.id, params.weekId);
     if (!deleted) {
       return NextResponse.json({ error: 'Week not found.' }, { status: 404 });
     }

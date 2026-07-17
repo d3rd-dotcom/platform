@@ -21,6 +21,8 @@ interface AuthoredQuest {
 
 interface PendingClaim {
   id: string;
+  status: 'pending' | 'approved';
+  txHash: string | null;
   questId: string;
   questTitle: string;
   recipientWallet: string | null;
@@ -160,7 +162,7 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
         <div className={styles.formHeader}>
           <h3 className={styles.formTitle}>Create a quest</h3>
           <p className={styles.formSubtitle}>
-            Publish to everyone or assign to a wallet. The reflections are held in escrow and paid out as people complete it. For USDC-funded quests, ask Blue in chat to forge one.
+            Publish to everyone or assign to a wallet. The credits are held in escrow and paid out as people complete it. For USDC-funded quests, ask Blue in chat to forge one.
           </p>
         </div>
 
@@ -278,9 +280,10 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
           <ul className={styles.listItems}>
             {pendingClaims.map((claim) => {
               const isUsdc = claim.rewardKind !== 'credits';
+              const isReconciling = claim.status === 'approved';
               const rewardLabel = isUsdc
                 ? `$${claim.usdcAmount} USDC`
-                : `${claim.usdcAmount} reflections`;
+                : `${claim.usdcAmount} credits`;
               const escrowLabel = claim.escrowRemaining != null
                 ? (isUsdc ? `$${claim.escrowRemaining} left` : `${claim.escrowRemaining} left`)
                 : null;
@@ -298,6 +301,9 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
                     <span className={styles.itemMetaChip}>{who}</span>
                     {escrowLabel && (
                       <span className={styles.itemMetaChip}>{escrowLabel}</span>
+                    )}
+                    {isReconciling && (
+                      <span className={styles.itemMetaChip}>Awaiting payout confirmation</span>
                     )}
                   </span>
                   {claim.proofText && (
@@ -320,7 +326,7 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
                     className={styles.claimApprove}
                     onClick={() => reviewClaim(claim.id, 'approve')}
                     disabled={reviewingClaimId === claim.id}
-                    aria-label={`Approve and pay ${claim.questTitle}`}
+                    aria-label={isReconciling ? `Reconcile payout for ${claim.questTitle}` : `Approve and pay ${claim.questTitle}`}
                   >
                     <Check size={14} weight="bold" />
                   </button>
@@ -328,7 +334,7 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
                     type="button"
                     className={styles.claimReject}
                     onClick={() => reviewClaim(claim.id, 'reject')}
-                    disabled={reviewingClaimId === claim.id}
+                    disabled={reviewingClaimId === claim.id || isReconciling}
                     aria-label={`Reject ${claim.questTitle}`}
                   >
                     <X size={14} weight="bold" />
@@ -361,7 +367,7 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
                       <span className={styles.itemMetaChip}>
                         {q.rewardKind === 'usdc'
                           ? `$${q.rewardAmount ?? 0} USDC`
-                          : `${q.rewardAmount ?? q.points} reflections`}
+                          : `${q.rewardAmount ?? q.points} credits`}
                       </span>
                       {q.escrowStatus === 'pending_funding' && (
                         <span className={styles.itemExpired}>Awaiting funding</span>

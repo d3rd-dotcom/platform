@@ -333,7 +333,11 @@ const QuestDrawer: React.FC<QuestDrawerProps> = ({ isOpen, onClose, quest }) => 
       });
 
       const data = await response.json();
-      if (data.ok) {
+      if (data.ok && data.status === 'pending_review') {
+        alert('Submitted for review. The quest creator will approve your completion before the reward is released.');
+        onClose();
+        setSelectedFile(null);
+      } else if (data.ok) {
         setShardsAwarded(shardReward);
         setShowConfetti(true);
         setShowDiamondReward(true);

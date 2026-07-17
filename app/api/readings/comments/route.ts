@@ -1,52 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
+import { ensureReadingCommentsSchema } from '@/lib/ensureReadingCommentsSchema';
 import { checkRateLimit, getClientIdentifier, getRateLimitHeaders } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-async function ensureReadingCommentsTable() {
-  // Fix type mismatch: users.id is CHAR(36), not UUID
-  // Drop and recreate if the old UUID-typed columns exist
-  const cols = await sqlQuery<Array<{ data_type: string }>>(`
-    SELECT data_type FROM information_schema.columns
-    WHERE table_name = 'reading_comments' AND column_name = 'user_id'
-  `);
-  if (cols.length > 0 && cols[0].data_type === 'uuid') {
-    await sqlQuery(`DROP TABLE IF EXISTS reading_comment_likes`);
-    await sqlQuery(`DROP TABLE IF EXISTS reading_comments`);
-  }
-
-  await sqlQuery(`
-    CREATE TABLE IF NOT EXISTS reading_comments (
-      id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-      reading_slug TEXT NOT NULL,
-      user_id CHAR(36) NOT NULL REFERENCES users(id),
-      body TEXT NOT NULL,
-      created_at TIMESTAMPTZ DEFAULT NOW()
-    )
-  `);
-  await sqlQuery(`
-    CREATE INDEX IF NOT EXISTS idx_reading_comments_slug ON reading_comments(reading_slug, created_at DESC)
-  `);
-  await sqlQuery(`
-    CREATE TABLE IF NOT EXISTS reading_comment_likes (
-      id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-      comment_id UUID NOT NULL REFERENCES reading_comments(id) ON DELETE CASCADE,
-      user_id CHAR(36) NOT NULL REFERENCES users(id),
-      created_at TIMESTAMPTZ DEFAULT NOW(),
-      UNIQUE(comment_id, user_id)
-    )
-  `);
-}
 
 export async function GET(request: NextRequest) {
   if (!isDbConfigured()) {
     return NextResponse.json({ comments: [] });
   }
 
-  await ensureReadingCommentsTable();
+  await ensureReadingCommentsSchema();
 
   const slug = request.nextUrl.searchParams.get('slug');
   if (!slug) {
@@ -102,7 +68,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'DB not configured' }, { status: 500 });
   }
 
-  await ensureReadingCommentsTable();
+  await ensureReadingCommentsSchema();
 
   const user = await getCurrentUserFromRequestCookie();
   if (!user) {
@@ -146,7 +112,7 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: 'DB not configured' }, { status: 500 });
   }
 
-  await ensureReadingCommentsTable();
+  await ensureReadingCommentsSchema();
 
   const user = await getCurrentUserFromRequestCookie();
   if (!user) {
@@ -175,7 +141,7 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: 'DB not configured' }, { status: 500 });
   }
 
-  await ensureReadingCommentsTable();
+  await ensureReadingCommentsSchema();
 
   const user = await getCurrentUserFromRequestCookie();
   if (!user) {

@@ -4,6 +4,7 @@ import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { getWalletAddressFromRequest } from '@/lib/wallet-auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { fetchDiamondBalance } from '@/lib/diamonds-balance';
+import { isOwnStorageUrl, uploadBucket } from '@/lib/supabase-storage';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -69,6 +70,13 @@ function isValidUsername(username: unknown): username is string {
   return /^[a-zA-Z0-9_]+$/.test(trimmed);
 }
 
+function isValidUploadedAvatarUrl(avatarUrl: string): boolean {
+  return (
+    isOwnStorageUrl(avatarUrl, uploadBucket()) &&
+    /\.(png|jpe?g|gif|webp)$/i.test(avatarUrl)
+  );
+}
+
 export async function PUT(request: Request) {
   if (!isDbConfigured()) {
     return NextResponse.json(
@@ -85,8 +93,13 @@ export async function PUT(request: Request) {
   }
 
   const body = await request.json().catch(() => ({}));
+  const hasAvatarUrl = Boolean(
+    body &&
+    typeof body === 'object' &&
+    Object.prototype.hasOwnProperty.call(body, 'avatarUrl'),
+  );
   const username = body?.username;
-  const avatarUrl = typeof body?.avatarUrl === 'string' ? body.avatarUrl : null;
+  const avatarUrl = body?.avatarUrl;
 
   if (username !== undefined && !isValidUsername(username)) {
     return NextResponse.json(
@@ -98,16 +111,33 @@ export async function PUT(request: Request) {
     );
   }
 
+  // Avatar updates use the same Storage bucket policy as the custom-avatar
+  // flow. Dedicated platform and Farcaster flows retain ownership of their
+  // corresponding avatar values.
+  // Sending `avatarUrl: null` intentionally clears a custom avatar. Omitting
+  // the field preserves the existing value for username-only updates.
+  if (
+    hasAvatarUrl &&
+    avatarUrl !== null &&
+    (typeof avatarUrl !== 'string' || !isValidUploadedAvatarUrl(avatarUrl))
+  ) {
+    return NextResponse.json(
+      { error: 'Invalid avatar. Upload a PNG, JPEG, GIF, or WebP first.' },
+      { status: 400 },
+    );
+  }
+
   try {
     await sqlQuery(
       `UPDATE users
        SET username = COALESCE(:username, username),
-           avatar_url = :avatarUrl
+           avatar_url = CASE WHEN :hasAvatarUrl THEN :avatarUrl ELSE avatar_url END
        WHERE id = :id`,
       {
         id: user.id,
         username: username === undefined ? null : String(username).trim(),
-        avatarUrl,
+        avatarUrl: hasAvatarUrl ? avatarUrl : null,
+        hasAvatarUrl,
       }
     );
   } catch (err: any) {

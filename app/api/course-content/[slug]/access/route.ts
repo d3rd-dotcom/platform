@@ -22,9 +22,13 @@ export async function GET(_request: Request, { params }: { params: { slug: strin
 
     const tokenGate: string = courseRows[0].token_gate || '';
     const user = await getCurrentUserFromRequestCookie();
-    const { granted, gate } = await checkCourseAccess(tokenGate, user?.walletAddress);
+    const access = await checkCourseAccess(tokenGate, user?.walletAddress);
+    // Stored gates outside the supported allow-list fail closed.
+    const granted = tokenGate
+      ? access.granted && Boolean(access.gate)
+      : access.granted;
 
-    return NextResponse.json({ granted, gate, tokenGate });
+    return NextResponse.json({ granted, gate: access.gate, tokenGate });
   } catch (err: any) {
     console.error('[course-content/access] Error:', err);
     return NextResponse.json({ error: 'Failed to check access.' }, { status: 500 });

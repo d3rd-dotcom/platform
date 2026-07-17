@@ -53,7 +53,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
       input.required = body.required === true;
     }
 
-    const component = await updateCourseComponent(params.compId, input);
+    const component = await updateCourseComponent(params.id, params.weekId, params.compId, input);
     if (!component) {
       return NextResponse.json({ error: 'Component not found.' }, { status: 404 });
     }
@@ -67,7 +67,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 export async function DELETE(_request: Request, { params }: { params: { id: string; weekId: string; compId: string } }) {
   try {
     await assertCourseOwner(params.id);
-    const deleted = await deleteCourseComponent(params.compId);
+    const deleted = await deleteCourseComponent(params.id, params.weekId, params.compId);
     if (!deleted) {
       return NextResponse.json({ error: 'Component not found.' }, { status: 404 });
     }

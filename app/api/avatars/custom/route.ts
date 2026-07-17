@@ -2,19 +2,16 @@
  * POST /api/avatars/custom
  *
  * Set the signed-in user's avatar to a custom image they uploaded via
- * /api/upload. Only accepts URLs that point at our own /uploads/ directory —
- * never an arbitrary or external URL — so avatar_url can't be turned into an
- * SSRF vector or a link to off-site content.
+ * /api/upload. Only accepts URLs in the app's Supabase upload bucket, so
+ * avatar_url cannot be turned into a link to off-site content.
  */
 import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
+import { isOwnStorageUrl, uploadBucket } from '@/lib/supabase-storage';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-// A file produced by /api/upload: /uploads/<uuid>.<ext>
-const UPLOADED_IMAGE = /^\/uploads\/[A-Za-z0-9._-]+\.(png|jpe?g|gif|webp)$/;
 
 export async function POST(request: Request) {
   if (!isDbConfigured()) {
@@ -34,7 +31,7 @@ export async function POST(request: Request) {
   }
 
   const url = body.url;
-  if (typeof url !== 'string' || !UPLOADED_IMAGE.test(url)) {
+  if (!isOwnStorageUrl(url, uploadBucket()) || !/\.(png|jpe?g|gif|webp)$/i.test(url)) {
     return NextResponse.json(
       { error: 'Invalid image. Upload a PNG, JPEG, GIF, or WebP first.' },
       { status: 400 },

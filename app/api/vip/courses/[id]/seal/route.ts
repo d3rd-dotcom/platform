@@ -53,7 +53,9 @@ export async function POST(request: Request, { params }: { params: { id: string 
 
   const result = await withTransaction(async (client) => {
     const existing = await client.query(
-      `SELECT * FROM vip_progress WHERE user_id = $1 AND course_id = $2 AND week_id = $3`,
+      `SELECT * FROM vip_progress
+       WHERE user_id = $1 AND course_id = $2 AND week_id = $3
+       FOR UPDATE`,
       [user.id, params.id, weekId],
     );
 

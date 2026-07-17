@@ -6,7 +6,7 @@ import { ensureQuestUsdcClaimsSchema } from '@/lib/ensureQuestUsdcClaimsSchema';
 import { isStaffUser } from '@/lib/staff-auth';
 import { walletHoldsAcademicAngel } from '@/lib/academic-angels';
 import { getQuestDefinition } from '@/lib/quest-definitions';
-import { distributeUSDC } from '@/lib/blue-usdc';
+import { distributeUSDC, isUsdcPayoutRetrySafe, verifyUSDCTransfer } from '@/lib/blue-usdc';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -59,13 +59,15 @@ export async function GET() {
             c.status, c.tx_hash, c.note, c.created_at, u.username
      FROM quest_usdc_claims c
      LEFT JOIN users u ON u.id = c.user_id
-     WHERE c.status = 'pending'
+     WHERE c.status IN ('pending', 'approved')
      ORDER BY c.created_at ASC`,
   );
 
   return NextResponse.json({
     claims: rows.map((r) => ({
       id: r.id,
+      status: r.status,
+      txHash: r.tx_hash,
       questId: r.quest_id,
       questTitle: questTitle(r.quest_id),
       recipientWallet: r.recipient_wallet,
@@ -111,6 +113,9 @@ export async function POST(request: Request) {
   if (!claim) {
     return NextResponse.json({ error: 'Claim not found.' }, { status: 404 });
   }
+  if (action === 'approve' && claim.status === 'approved' && claim.tx_hash) {
+    return reconcileStaffPayout(claim);
+  }
   if (claim.status !== 'pending') {
     return NextResponse.json(
       { error: `Claim is already ${claim.status}.`, claim: { status: claim.status } },
@@ -151,41 +156,129 @@ export async function POST(request: Request) {
 
   const amountUnits = BigInt(Math.round(Number(claim.usdc_amount) * 10 ** USDC_DECIMALS)).toString();
 
+  let payout;
   try {
-    const { txHashes, failed } = await distributeUSDC([
-      { address: claim.recipient_wallet, amount: amountUnits },
-    ]);
+    payout = await distributeUSDC(
+      [{ address: claim.recipient_wallet, amount: amountUnits }],
+      {
+        onPrepared: async ({ txHash }) => {
+          const persisted = await sqlQuery<Array<{ id: string }>>(
+            `UPDATE quest_usdc_claims
+             SET tx_hash = :tx, updated_at = NOW()
+             WHERE id = :id AND status = 'approved'
+             RETURNING id`,
+            { id: claimId, tx: txHash },
+          );
+          if (persisted.length !== 1) throw new Error('PAYOUT_RESERVATION_LOST');
+        },
+      },
+    );
+  } catch (err) {
+    await resetStaffClaim(claimId, err instanceof Error ? err.message : 'USDC transfer error');
+    console.error('Error starting USDC claim payout:', err);
+    return NextResponse.json({ error: 'USDC payout failed.' }, { status: 500 });
+  }
 
-    if (failed.length > 0 || txHashes.length === 0) {
-      // Payment failed — return the claim to pending so it can be retried.
-      await sqlQuery(
-        `UPDATE quest_usdc_claims
-         SET status = 'pending', note = :note, updated_at = NOW()
-         WHERE id = :id`,
-        { id: claimId, note: failed[0]?.error ?? 'USDC transfer failed' },
-      );
+  const { txHashes, failed } = payout;
+
+  if (failed.length > 0 || txHashes.length === 0) {
+    const failure = failed[0];
+    if (failure && !isUsdcPayoutRetrySafe(failure)) {
+      if (failure.txHash) {
+        try {
+          await sqlQuery(
+            `UPDATE quest_usdc_claims SET tx_hash = :tx, note = :note, updated_at = NOW()
+             WHERE id = :id AND status = 'approved'`,
+            { id: claimId, tx: failure.txHash, note: failure.error },
+          );
+        } catch (persistErr) {
+          console.error('[usdc-review] could not persist uncertain payout hash:', persistErr);
+        }
+      }
       return NextResponse.json(
-        { error: failed[0]?.error ?? 'USDC transfer failed.' },
-        { status: 502 },
+        {
+          error: 'The payout was broadcast and is awaiting reconciliation.',
+          claim: { status: 'approved', txHash: failure.txHash ?? null },
+        },
+        { status: 202 },
       );
     }
 
+    await resetStaffClaim(claimId, failure?.error ?? 'USDC transfer failed');
+    return NextResponse.json(
+      { error: failure?.error ?? 'USDC transfer failed.' },
+      { status: 502 },
+    );
+  }
+
+  try {
     await sqlQuery(
       `UPDATE quest_usdc_claims
        SET status = 'paid', tx_hash = :tx, updated_at = NOW()
-       WHERE id = :id`,
+       WHERE id = :id AND status = 'approved'`,
       { id: claimId, tx: txHashes[0] },
     );
 
     return NextResponse.json({ ok: true, claim: { status: 'paid', txHash: txHashes[0] } });
   } catch (err) {
-    await sqlQuery(
-      `UPDATE quest_usdc_claims
-       SET status = 'pending', note = :note, updated_at = NOW()
-       WHERE id = :id`,
-      { id: claimId, note: err instanceof Error ? err.message : 'USDC transfer error' },
+    // The transfer is confirmed. Preserve the reservation and hash so a later
+    // approval call reconciles the row without another transfer.
+    console.error('Error finalizing confirmed USDC claim:', err);
+    return NextResponse.json(
+      {
+        error: 'USDC was sent and the claim is awaiting reconciliation.',
+        claim: { status: 'approved', txHash: txHashes[0] },
+      },
+      { status: 202 },
     );
-    console.error('Error paying USDC claim:', err);
-    return NextResponse.json({ error: 'USDC payout failed.' }, { status: 500 });
   }
+}
+
+async function resetStaffClaim(claimId: string, note: string) {
+  await sqlQuery(
+    `UPDATE quest_usdc_claims
+     SET status = 'pending', tx_hash = NULL, note = :note, updated_at = NOW()
+     WHERE id = :id AND status = 'approved'`,
+    { id: claimId, note },
+  );
+}
+
+async function reconcileStaffPayout(claim: ClaimRow) {
+  const amountUnits = BigInt(Math.round(Number(claim.usdc_amount) * 10 ** USDC_DECIMALS)).toString();
+  const verification = await verifyUSDCTransfer({
+    txHash: claim.tx_hash!,
+    recipient: claim.recipient_wallet,
+    amount: amountUnits,
+  });
+
+  if (verification.status === 'confirmed') {
+    try {
+      await sqlQuery(
+        `UPDATE quest_usdc_claims
+         SET status = 'paid', updated_at = NOW()
+         WHERE id = :id AND status = 'approved' AND tx_hash = :tx`,
+        { id: claim.id, tx: claim.tx_hash },
+      );
+      return NextResponse.json({ ok: true, claim: { status: 'paid', txHash: claim.tx_hash } });
+    } catch (err) {
+      console.error('[usdc-review] confirmed payout reconciliation failed:', err);
+      return NextResponse.json(
+        { error: 'The confirmed payout still needs database reconciliation.', claim: { status: 'approved', txHash: claim.tx_hash } },
+        { status: 202 },
+      );
+    }
+  }
+
+  if (verification.status === 'reverted') {
+    await resetStaffClaim(claim.id, 'USDC transfer reverted onchain.');
+    return NextResponse.json(
+      { error: 'The previous payout reverted. The claim is ready to retry.', claim: { status: 'pending' } },
+      { status: 409 },
+    );
+  }
+
+  return NextResponse.json(
+    { error: verification.error, claim: { status: 'approved', txHash: claim.tx_hash } },
+    { status: verification.status === 'pending' ? 202 : 409 },
+  );
 }

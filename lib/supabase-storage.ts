@@ -10,7 +10,8 @@ import { v4 as uuidv4 } from 'uuid';
  * they are effectively unguessable.
  *
  * Setup (one-time, in the Supabase dashboard):
- *   1. Storage → New bucket → name it (default: `quest-proofs`) → mark Public.
+ *   1. Storage → New bucket → create the public buckets used by the app
+ *      (defaults: `quest-proofs` for proofs and `uploads` for app images).
  *   2. Add env `SUPABASE_SERVICE_ROLE_KEY` (Settings → API → service_role key).
  *      `SUPABASE_URL` is optional — it is derived from DATABASE_URL when unset.
  */
@@ -44,7 +45,11 @@ export function proofBucket(): string {
   return process.env.SUPABASE_PROOF_BUCKET || 'quest-proofs';
 }
 
-/** Public URL prefix for our own proof bucket, or null if not derivable. */
+export function uploadBucket(): string {
+  return process.env.SUPABASE_UPLOAD_BUCKET || 'uploads';
+}
+
+/** Public URL prefix for one of our Storage buckets, or null if not derivable. */
 export function publicUrlPrefix(bucket: string = proofBucket()): string | null {
   const base = projectUrl();
   return base ? `${base}/storage/v1/object/public/${bucket}/` : null;
@@ -56,9 +61,9 @@ export function publicUrlPrefix(bucket: string = proofBucket()): string | null {
  * creators) in a crypto app is a phishing/drainer vector. Only accept URLs
  * under our own public Storage bucket.
  */
-export function isOwnStorageUrl(url: unknown): url is string {
+export function isOwnStorageUrl(url: unknown, bucket: string = proofBucket()): url is string {
   if (typeof url !== 'string') return false;
-  const prefix = publicUrlPrefix();
+  const prefix = publicUrlPrefix(bucket);
   return Boolean(prefix && url.startsWith(prefix));
 }
 

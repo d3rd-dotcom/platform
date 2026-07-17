@@ -374,6 +374,7 @@ export async function createCourseWeek(input: {
 }
 
 export async function updateCourseWeek(
+  courseId: string,
   id: string,
   input: Partial<{
     title: string;
@@ -392,18 +393,18 @@ export async function updateCourseWeek(
          status = COALESCE(:status, status),
          sort_order = COALESCE(:sortOrder, sort_order),
          updated_at = CURRENT_TIMESTAMP
-     WHERE id = :id
+     WHERE id = :id AND course_id = :courseId
      RETURNING *`,
-    { id, ...input },
+    { id, courseId, ...input },
   );
   return rows[0] ? toCourseWeek(rows[0]) : null;
 }
 
-export async function deleteCourseWeek(id: string): Promise<boolean> {
+export async function deleteCourseWeek(courseId: string, id: string): Promise<boolean> {
   await ensureVipCourseSchema();
   const rows = await sqlQuery<Array<{ id: string }>>(
-    `DELETE FROM course_weeks WHERE id = :id RETURNING id`,
-    { id },
+    `DELETE FROM course_weeks WHERE id = :id AND course_id = :courseId RETURNING id`,
+    { id, courseId },
   );
   return rows.length > 0;
 }
@@ -411,22 +412,26 @@ export async function deleteCourseWeek(id: string): Promise<boolean> {
 // ── Components ──
 
 export async function createCourseComponent(input: {
+  courseId: string;
   weekId: string;
   componentType: ComponentType;
   title?: string;
   config?: Record<string, unknown>;
   sortOrder?: number;
   required?: boolean;
-}): Promise<CourseComponentRecord> {
+}): Promise<CourseComponentRecord | null> {
   await ensureVipCourseSchema();
 
   const nextOrder = input.sortOrder ?? await getNextComponentSortOrder(input.weekId);
 
   const rows = await sqlQuery<CourseComponentRow[]>(
     `INSERT INTO course_components (week_id, sort_order, component_type, title, config, required)
-     VALUES (:weekId, :sortOrder, :componentType, :title, :config, :required)
+     SELECT :weekId, :sortOrder, :componentType, :title, :config, :required
+     FROM course_weeks
+     WHERE id = :weekId AND course_id = :courseId
      RETURNING *`,
     {
+      courseId: input.courseId,
       weekId: input.weekId,
       sortOrder: nextOrder,
       componentType: input.componentType,
@@ -435,7 +440,7 @@ export async function createCourseComponent(input: {
       required: input.required ?? false,
     },
   );
-  return toCourseComponent(rows[0]);
+  return rows[0] ? toCourseComponent(rows[0]) : null;
 }
 
 async function getNextComponentSortOrder(weekId: string): Promise<number> {
@@ -447,6 +452,8 @@ async function getNextComponentSortOrder(weekId: string): Promise<number> {
 }
 
 export async function updateCourseComponent(
+  courseId: string,
+  weekId: string,
   id: string,
   input: Partial<{
     componentType: ComponentType;
@@ -459,7 +466,7 @@ export async function updateCourseComponent(
   await ensureVipCourseSchema();
 
   const setClauses: string[] = ['updated_at = CURRENT_TIMESTAMP'];
-  const params: Record<string, unknown> = { id };
+  const params: Record<string, unknown> = { courseId, weekId, id };
 
   if (input.componentType !== undefined) {
     setClauses.push('component_type = :componentType');
@@ -483,17 +490,30 @@ export async function updateCourseComponent(
   }
 
   const rows = await sqlQuery<CourseComponentRow[]>(
-    `UPDATE course_components SET ${setClauses.join(', ')} WHERE id = :id RETURNING *`,
+    `UPDATE course_components AS component
+     SET ${setClauses.join(', ')}
+     FROM course_weeks AS week
+     WHERE component.id = :id
+       AND component.week_id = :weekId
+       AND week.id = component.week_id
+       AND week.course_id = :courseId
+     RETURNING component.*`,
     params,
   );
   return rows[0] ? toCourseComponent(rows[0]) : null;
 }
 
-export async function deleteCourseComponent(id: string): Promise<boolean> {
+export async function deleteCourseComponent(courseId: string, weekId: string, id: string): Promise<boolean> {
   await ensureVipCourseSchema();
   const rows = await sqlQuery<Array<{ id: string }>>(
-    `DELETE FROM course_components WHERE id = :id RETURNING id`,
-    { id },
+    `DELETE FROM course_components AS component
+     USING course_weeks AS week
+     WHERE component.id = :id
+       AND component.week_id = :weekId
+       AND week.id = component.week_id
+       AND week.course_id = :courseId
+     RETURNING component.id`,
+    { courseId, weekId, id },
   );
   return rows.length > 0;
 }
@@ -642,29 +662,52 @@ export async function replaceCourseContent(
 }
 
 export async function reorderCourseComponents(
+  courseId: string,
   weekId: string,
   orderedIds: string[],
-): Promise<CourseComponentRecord[]> {
+): Promise<CourseComponentRecord[] | null> {
   await ensureVipCourseSchema();
 
-  if (orderedIds.length === 0) return [];
+  return withTransaction(async (client) => {
+    const week = await client.query(
+      `SELECT id FROM course_weeks WHERE id = $1 AND course_id = $2 FOR UPDATE`,
+      [weekId, courseId],
+    );
+    if (week.rows.length === 0) return null;
 
-  const whenClauses = orderedIds.map((_, i) => `WHEN $${i + 1} THEN ${i}`).join(' ');
-  const params: unknown[] = [...orderedIds, weekId];
+    if (new Set(orderedIds).size !== orderedIds.length) {
+      throw Object.assign(new Error('orderedIds must not contain duplicates.'), { status: 400 });
+    }
 
-  await sqlQuery(
-    `UPDATE course_components
-     SET sort_order = CASE id ${whenClauses} ELSE sort_order END,
-         updated_at = CURRENT_TIMESTAMP
-     WHERE week_id = $${orderedIds.length + 1}`,
-    params,
-  );
+    if (orderedIds.length > 0) {
+      const owned = await client.query<{ id: string }>(
+        `SELECT id FROM course_components
+         WHERE week_id = $1 AND id::text = ANY($2::text[])`,
+        [weekId, orderedIds],
+      );
+      if (owned.rows.length !== orderedIds.length) {
+        throw Object.assign(
+          new Error('orderedIds contains a component outside this week.'),
+          { status: 400 },
+        );
+      }
 
-  const rows = await sqlQuery<CourseComponentRow[]>(
-    `SELECT * FROM course_components WHERE week_id = :weekId ORDER BY sort_order ASC`,
-    { weekId },
-  );
-  return rows.map(toCourseComponent);
+      const whenClauses = orderedIds.map((_, i) => `WHEN $${i + 1} THEN ${i}`).join(' ');
+      await client.query(
+        `UPDATE course_components
+         SET sort_order = CASE id::text ${whenClauses} ELSE sort_order END,
+             updated_at = CURRENT_TIMESTAMP
+         WHERE week_id = $${orderedIds.length + 1}`,
+        [...orderedIds, weekId],
+      );
+    }
+
+    const rows = await client.query<CourseComponentRow>(
+      `SELECT * FROM course_components WHERE week_id = $1 ORDER BY sort_order ASC`,
+      [weekId],
+    );
+    return rows.rows.map(toCourseComponent);
+  });
 }
 
 /**
@@ -744,43 +787,31 @@ export async function upsertVipProgress(
   data: {
     completedComponentIds?: string[];
     componentData?: Record<string, unknown>;
-    isSealed?: boolean;
   },
 ): Promise<VipProgressRecord> {
   await ensureVipCourseSchema();
-  const existing = await sqlQuery<VipProgressRow[]>(
-    `SELECT * FROM vip_progress WHERE user_id = :userId AND course_id = :courseId AND week_id = :weekId`,
-    { userId, courseId, weekId },
-  );
-
-  if (existing.length > 0) {
-    const row = existing[0];
-    const mergedIds = data.completedComponentIds ?? row.completed_component_ids;
-    const mergedData = data.componentData ? { ...row.component_data, ...data.componentData } : row.component_data;
-    const sealed = data.isSealed !== undefined ? data.isSealed : row.is_sealed;
-
-    const updated = await sqlQuery<VipProgressRow[]>(
-      `UPDATE vip_progress
-       SET completed_component_ids = :completedComponentIds::jsonb,
-           component_data = :componentData::jsonb,
-           is_sealed = :isSealed,
-           sealed_at = CASE WHEN :isSealed IS TRUE AND sealed_at IS NULL THEN CURRENT_TIMESTAMP ELSE sealed_at END,
-           updated_at = CURRENT_TIMESTAMP
-       WHERE id = :id
-       RETURNING *`,
-      {
-        id: row.id,
-        completedComponentIds: JSON.stringify(mergedIds),
-        componentData: JSON.stringify(mergedData),
-        isSealed: sealed,
-      },
-    );
-    return toVipProgress(updated[0]);
-  }
-
-  const created = await sqlQuery<VipProgressRow[]>(
+  const rows = await sqlQuery<VipProgressRow[]>(
     `INSERT INTO vip_progress (user_id, course_id, week_id, completed_component_ids, component_data, is_sealed)
-     VALUES (:userId, :courseId, :weekId, :completedComponentIds::jsonb, :componentData::jsonb, :isSealed)
+     VALUES (
+       :userId,
+       :courseId,
+       :weekId,
+       :completedComponentIds::jsonb,
+       :componentData::jsonb,
+       false
+     )
+     ON CONFLICT (user_id, course_id, week_id) DO UPDATE
+     SET completed_component_ids = CASE
+           WHEN :hasCompletedComponentIds
+             THEN EXCLUDED.completed_component_ids
+           ELSE vip_progress.completed_component_ids
+         END,
+         component_data = CASE
+           WHEN :hasComponentData
+             THEN vip_progress.component_data || EXCLUDED.component_data
+           ELSE vip_progress.component_data
+         END,
+         updated_at = CURRENT_TIMESTAMP
      RETURNING *`,
     {
       userId,
@@ -788,8 +819,9 @@ export async function upsertVipProgress(
       weekId,
       completedComponentIds: JSON.stringify(data.completedComponentIds ?? []),
       componentData: JSON.stringify(data.componentData ?? {}),
-      isSealed: data.isSealed ?? false,
+      hasCompletedComponentIds: data.completedComponentIds !== undefined,
+      hasComponentData: data.componentData !== undefined,
     },
   );
-  return toVipProgress(created[0]);
+  return toVipProgress(rows[0]);
 }

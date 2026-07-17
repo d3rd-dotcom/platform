@@ -14,7 +14,10 @@ export async function PUT(request: Request, { params }: { params: { id: string; 
       return NextResponse.json({ error: 'orderedIds must be a string array of component IDs.' }, { status: 400 });
     }
 
-    const components = await reorderCourseComponents(params.weekId, body.orderedIds);
+    const components = await reorderCourseComponents(params.id, params.weekId, body.orderedIds);
+    if (!components) {
+      return NextResponse.json({ error: 'Week not found.' }, { status: 404 });
+    }
     return NextResponse.json({ components });
   } catch (err: any) {
     const status = err.status ?? 500;

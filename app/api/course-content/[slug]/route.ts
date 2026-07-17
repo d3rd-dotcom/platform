@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import { getCurrentUserFromRequestCookie } from '@/lib/auth';
+import { checkCourseAccess } from '@/lib/course-access';
 import { sqlQuery } from '@/lib/db';
 import { ensureCourseContentSchema } from '@/lib/ensureCourseContentSchema';
 import { toCourseRecord, toChapterRecord, toLessonRecord } from '@/lib/course-content-db';
@@ -21,9 +23,31 @@ export async function GET(_request: Request, { params }: { params: { slug: strin
     }
 
     const course: CourseRecord = toCourseRecord(courseRows[0]);
+    const user = await getCurrentUserFromRequestCookie();
+    const access = await checkCourseAccess(course.tokenGate, user?.walletAddress);
+    // A non-empty but unknown gate must fail closed. checkCourseAccess returns
+    // an empty parsed gate for unknown values, which is safe for public callers
+    // only when the stored token_gate itself is empty.
+    const granted = course.tokenGate
+      ? access.granted && Boolean(access.gate)
+      : access.granted;
+
+    if (!granted) {
+      return NextResponse.json(
+        {
+          error: 'Course access required.',
+          granted: false,
+          gate: access.gate,
+          tokenGate: course.tokenGate,
+        },
+        { status: 403 },
+      );
+    }
 
     const chapterRows = await sqlQuery<any[]>(
-      `SELECT * FROM academy_chapters WHERE course_id = :courseId ORDER BY sort_order ASC`,
+      `SELECT * FROM academy_chapters
+       WHERE course_id = :courseId AND status = 'published'
+       ORDER BY sort_order ASC`,
       { courseId: course.id },
     );
 
@@ -32,7 +56,9 @@ export async function GET(_request: Request, { params }: { params: { slug: strin
     for (const chapterRow of chapterRows) {
       const chapter = toChapterRecord(chapterRow);
       const lessonRows = await sqlQuery<any[]>(
-        `SELECT * FROM academy_lessons WHERE chapter_id = :chapterId ORDER BY sort_order ASC`,
+        `SELECT * FROM academy_lessons
+         WHERE chapter_id = :chapterId AND status = 'published'
+         ORDER BY sort_order ASC`,
         { chapterId: chapter.id },
       );
       chapters.push({ ...chapter, lessons: lessonRows.map(toLessonRecord) });

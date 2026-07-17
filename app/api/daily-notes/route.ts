@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
-import { isDbConfigured, sqlQuery } from '@/lib/db';
+import { isDbConfigured, sqlQuery, sqlQueryWithClient, withTransaction } from '@/lib/db';
 import { recordBlueMorningPagesEvent } from '@/lib/blue-memory';
 import { ensurePrayersSchema } from '@/lib/ensurePrayersSchema';
 import { recordActivityEvent } from '@/lib/ensureActivityEventsSchema';
@@ -168,7 +168,7 @@ export async function GET(request: NextRequest) {
 /**
  * POST /api/daily-notes
  * Save field notes (encrypted at rest)
- * Body: { allWeekPages: Record<number, FieldNoteEntry[]> } or { weekNumber: number, entries: FieldNoteEntry[] }
+ * Body: { weekNumber: number, entries: FieldNoteEntry[] }
  */
 export async function POST(request: Request) {
   if (!isDbConfigured()) {
@@ -189,7 +189,7 @@ export async function POST(request: Request) {
     { userId: user.id }
   );
 
-  let body: { allWeekPages?: Record<string, unknown[]>; weekNumber?: number; entries?: unknown[] };
+  let body: { weekNumber?: number; entries?: unknown[] };
   try {
     body = await request.json();
   } catch {
@@ -200,35 +200,102 @@ export async function POST(request: Request) {
     ? parseAllWeekPages(user.id, existingRows[0].progress_data)
     : {};
 
-  let nextAllWeekPages: Record<string, unknown[]>;
-  if (body.allWeekPages) {
-    nextAllWeekPages = body.allWeekPages;
-  } else if (
-    Number.isInteger(body.weekNumber) &&
-    (body.weekNumber as number) >= 1 &&
-    (body.weekNumber as number) <= 12 &&
-    Array.isArray(body.entries)
+  if (
+    !Number.isInteger(body.weekNumber)
+    || (body.weekNumber as number) < 1
+    || (body.weekNumber as number) > 12
+    || !Array.isArray(body.entries)
   ) {
-    nextAllWeekPages = {
-      ...previousAllWeekPages,
-      [String(body.weekNumber)]: body.entries,
-    };
-  } else {
     return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
   }
+
+  const weekNumber = body.weekNumber as number;
+  const storedWeekEntries = Array.isArray(previousAllWeekPages[String(weekNumber)])
+    ? previousAllWeekPages[String(weekNumber)]
+    : [];
+  const previousWeekEntries = weekNumber === 1
+    ? Array.from({ length: 7 })
+    : Array.isArray(previousAllWeekPages[String(weekNumber - 1)])
+      ? previousAllWeekPages[String(weekNumber - 1)]
+      : [];
+
+  if (previousWeekEntries.length < 7) {
+    return NextResponse.json({ error: 'Complete the previous week first.' }, { status: 409 });
+  }
+  if (storedWeekEntries.length >= 7) {
+    return NextResponse.json({ error: 'This week is already complete.' }, { status: 409 });
+  }
+  if (body.entries.length !== storedWeekEntries.length + 1) {
+    return NextResponse.json(
+      { error: 'Field notes must be saved one entry at a time.' },
+      { status: 409 },
+    );
+  }
+
+  const candidate = body.entries[body.entries.length - 1];
+  if (!candidate || typeof candidate !== 'object') {
+    return NextResponse.json({ error: 'A field note entry is required.' }, { status: 400 });
+  }
+  const content = (candidate as Record<string, unknown>).content;
+  if (typeof content !== 'string' || content.trim().length === 0 || content.length > 50_000) {
+    return NextResponse.json({ error: 'Write something before saving this field note.' }, { status: 400 });
+  }
+
+  const rewardDay = new Date().toISOString().slice(0, 10);
+  const existingRewardDay = await sqlQuery<Array<{ id: string }>>(
+    `SELECT id FROM daily_note_completions
+     WHERE user_id = :userId AND reward_day = :rewardDay
+     LIMIT 1`,
+    { userId: user.id, rewardDay },
+  );
+  if (existingRewardDay.length > 0) {
+    return NextResponse.json({ error: 'Today\'s field note is already saved.' }, { status: 409 });
+  }
+
+  // The browser supplies private content and a display date. Reward authority
+  // lives in daily_note_completions, written atomically with this encrypted blob.
+  const requestedDisplayDate = (candidate as Record<string, unknown>).date;
+  const displayDate = typeof requestedDisplayDate === 'string'
+    && /^\d{4}-\d{2}-\d{2}$/.test(requestedDisplayDate)
+    ? requestedDisplayDate
+    : rewardDay;
+  const savedEntry = {
+    day: storedWeekEntries.length + 1,
+    date: displayDate,
+    content,
+    submittedAt: Date.now(),
+  };
+  const nextAllWeekPages: Record<string, unknown[]> = {
+    ...previousAllWeekPages,
+    [String(weekNumber)]: [...storedWeekEntries, savedEntry],
+  };
 
   // Encrypt the content before storing
   const plaintext = JSON.stringify({ allWeekPages: nextAllWeekPages });
   const encrypted = encryptForUser(user.id, plaintext);
   const progressData = JSON.stringify({ encrypted: true, data: encrypted });
 
-  await sqlQuery(
-    `INSERT INTO prayers (id, user_id, progress_data)
-     VALUES (gen_random_uuid()::text, :userId, :progressData::jsonb)
-     ON CONFLICT (user_id)
-     DO UPDATE SET progress_data = :progressData::jsonb, updated_at = CURRENT_TIMESTAMP`,
-    { userId: user.id, progressData }
-  );
+  await withTransaction(async (client) => {
+    await sqlQueryWithClient(
+      client,
+      `INSERT INTO prayers (id, user_id, progress_data)
+       VALUES (gen_random_uuid()::text, :userId, :progressData::jsonb)
+       ON CONFLICT (user_id)
+       DO UPDATE SET progress_data = :progressData::jsonb, updated_at = CURRENT_TIMESTAMP`,
+      { userId: user.id, progressData },
+    );
+    await sqlQueryWithClient(
+      client,
+      `INSERT INTO daily_note_completions (user_id, week_number, day_number, reward_day)
+       VALUES (:userId, :weekNumber, :dayNumber, :rewardDay)`,
+      {
+        userId: user.id,
+        weekNumber,
+        dayNumber: storedWeekEntries.length + 1,
+        rewardDay,
+      },
+    );
+  });
 
   const previousCount = countMorningPageEntries(previousAllWeekPages);
   const nextCount = countMorningPageEntries(nextAllWeekPages);

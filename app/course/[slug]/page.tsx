@@ -106,24 +106,55 @@ export default function CourseSlugPage({ params }: PageProps) {
     (async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/course-content/${params.slug}`);
-        if (res.ok) {
-          const data = await res.json();
-          setCourse(data.course);
-          setChapters(data.chapters ?? []);
-          if (data.chapters?.length > 0) setActiveChapter(data.chapters[0].id);
-          const accessRes = await fetch(`/api/course-content/${params.slug}/access`);
-          if (accessRes.ok) {
-            const accessData = await accessRes.json();
-            setAccessGranted(accessData.granted);
-            setGate(accessData.gate || null);
-          }
+        const headers = await authHeaders();
+        const accessRes = await fetch(`/api/course-content/${params.slug}/access`, {
+          headers,
+          credentials: 'include',
+          cache: 'no-store',
+        });
+
+        if (accessRes.ok) {
+          const accessData = await accessRes.json();
+          setAccessGranted(accessData.granted);
+          setGate(accessData.gate || null);
           setCheckingAccess(false);
-          setLoading(false);
+
+          if (!accessData.granted) {
+            if (!accessData.gate) setNotFound(true);
+            return;
+          }
+
+          const res = await fetch(`/api/course-content/${params.slug}`, {
+            headers,
+            credentials: 'include',
+            cache: 'no-store',
+          });
+          if (res.ok) {
+            const data = await res.json();
+            setCourse(data.course);
+            setChapters(data.chapters ?? []);
+            if (data.chapters?.length > 0) setActiveChapter(data.chapters[0].id);
+            return;
+          }
+
+          if (res.status === 403) {
+            const denied = await res.json().catch(() => ({}));
+            setAccessGranted(false);
+            setGate(denied.gate || null);
+            if (!denied.gate) setNotFound(true);
+            return;
+          }
+
+          setNotFound(true);
           return;
         }
 
-        const headers = await authHeaders();
+        if (accessRes.status !== 404) {
+          setCheckingAccess(false);
+          setNotFound(true);
+          return;
+        }
+
         const vipRes = await fetch(`/api/vip/courses/slug/${params.slug}`, { headers, credentials: 'include', cache: 'no-store' });
         if (vipRes.ok) {
           const vipData = await vipRes.json();

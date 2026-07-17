@@ -5,7 +5,7 @@ import { isDbConfigured, sqlQuery, withTransaction, sqlQueryWithClient } from '@
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { ensureCustomQuestsSchema } from '@/lib/ensureCustomQuestsSchema';
 import { ensureQuestUsdcClaimsSchema } from '@/lib/ensureQuestUsdcClaimsSchema';
-import { distributeUSDC } from '@/lib/blue-usdc';
+import { distributeUSDC, isUsdcPayoutRetrySafe, verifyUSDCTransfer } from '@/lib/blue-usdc';
 import { usdcToUnits } from '@/lib/quest-forge';
 import { deliverDiamondsOnchain } from '@/lib/diamonds-onchain';
 
@@ -23,6 +23,7 @@ interface ClaimJoinRow {
   proof_text: string | null;
   proof_url: string | null;
   status: string;
+  tx_hash: string | null;
   created_at: string;
   username: string | null;
   quest_title: string;
@@ -53,12 +54,12 @@ export async function GET() {
   }
 
   const rows = await sqlQuery<ClaimJoinRow[]>(
-    `SELECT c.id, c.user_id, c.quest_id, c.recipient_wallet, c.usdc_amount, c.reward_kind, c.proof_text, c.proof_url, c.status, c.created_at,
+    `SELECT c.id, c.user_id, c.quest_id, c.recipient_wallet, c.usdc_amount, c.reward_kind, c.proof_text, c.proof_url, c.status, c.tx_hash, c.created_at,
             u.username, q.title AS quest_title, q.created_by, q.escrow_remaining, q.escrow_status
      FROM quest_usdc_claims c
      JOIN custom_quests q ON q.id = c.quest_id
      LEFT JOIN users u ON u.id = c.user_id
-     WHERE q.created_by = :userId AND c.status = 'pending'
+     WHERE q.created_by = :userId AND c.status IN ('pending', 'approved')
      ORDER BY c.created_at ASC`,
     { userId: user.id },
   );
@@ -66,6 +67,8 @@ export async function GET() {
   return NextResponse.json({
     claims: rows.map((r) => ({
       id: r.id,
+      status: r.status,
+      txHash: r.tx_hash,
       questId: r.quest_id,
       questTitle: r.quest_title,
       recipientWallet: r.recipient_wallet,
@@ -105,7 +108,7 @@ export async function POST(request: Request) {
   }
 
   const rows = await sqlQuery<ClaimJoinRow[]>(
-    `SELECT c.id, c.user_id, c.quest_id, c.recipient_wallet, c.usdc_amount, c.reward_kind, c.status,
+    `SELECT c.id, c.user_id, c.quest_id, c.recipient_wallet, c.usdc_amount, c.reward_kind, c.status, c.tx_hash,
             c.created_at, NULL AS username, q.title AS quest_title, q.created_by,
             q.escrow_remaining, q.escrow_status
      FROM quest_usdc_claims c
@@ -119,6 +122,15 @@ export async function POST(request: Request) {
   }
   if (claim.created_by !== user.id) {
     return NextResponse.json({ error: 'Only the quest creator can review this claim.' }, { status: 403 });
+  }
+  if (
+    action === 'approve'
+    && claim.reward_kind === 'usdc'
+    && claim.status === 'approved'
+    && claim.tx_hash
+    && claim.recipient_wallet
+  ) {
+    return reconcileCreatorPayout(claim);
   }
   if (claim.status !== 'pending') {
     return NextResponse.json({ error: `Claim is already ${claim.status}.` }, { status: 409 });
@@ -258,53 +270,169 @@ export async function POST(request: Request) {
   }
 
   // Pay the completer from Blue's wallet (the escrow custodian).
+  let payout;
   try {
-    const { txHashes, failed } = await distributeUSDC([
-      { address: claim.recipient_wallet, amount: usdcToUnits(amount) },
-    ]);
-
-    if (failed.length > 0 || txHashes.length === 0) {
-      // Refund escrow and return the claim to pending so it can be retried.
-      await refundAndReset(claim.quest_id, claimId, amount, failed[0]?.error ?? 'USDC transfer failed');
-      return NextResponse.json({ error: failed[0]?.error ?? 'USDC transfer failed.' }, { status: 502 });
-    }
-
-    // Record the completion so the quest shows as done for the completer.
-    try {
-      await sqlQuery(
-        `INSERT INTO quests (id, user_id, quest_id, shards_awarded)
-         VALUES (:id, :userId, :questId, 0)`,
-        { id: uuidv4(), userId: claim.user_id, questId: claim.quest_id },
-      );
-    } catch (insertErr) {
-      // A completion row may already exist; payment still succeeded.
-      console.warn('[creator-review] completion row insert skipped:', insertErr);
-    }
-
-    await sqlQuery(
-      `UPDATE quest_usdc_claims SET status = 'paid', tx_hash = :tx, updated_at = NOW() WHERE id = :id`,
-      { id: claimId, tx: txHashes[0] },
+    payout = await distributeUSDC(
+      [{ address: claim.recipient_wallet, amount: usdcToUnits(amount) }],
+      {
+        onPrepared: async ({ txHash }) => {
+          const persisted = await sqlQuery<Array<{ id: string }>>(
+            `UPDATE quest_usdc_claims
+             SET tx_hash = :tx, updated_at = NOW()
+             WHERE id = :id AND status = 'approved'
+             RETURNING id`,
+            { id: claimId, tx: txHash },
+          );
+          if (persisted.length !== 1) throw new Error('PAYOUT_RESERVATION_LOST');
+        },
+      },
     );
+  } catch (err) {
+    // Configuration or RPC setup failed before the helper could broadcast.
+    await refundAndReset(claim.quest_id, claimId, amount, err instanceof Error ? err.message : 'USDC transfer error');
+    console.error('Error starting custom USDC claim payout:', err);
+    return NextResponse.json({ error: 'USDC payout failed.' }, { status: 500 });
+  }
 
+  const { txHashes, failed } = payout;
+
+  if (failed.length > 0 || txHashes.length === 0) {
+    const failure = failed[0];
+    if (failure && !isUsdcPayoutRetrySafe(failure)) {
+      // The chain outcome is uncertain. Keep the claim and escrow reserved so
+      // a retry cannot send the same real-money payout twice.
+      if (failure.txHash) {
+        try {
+          await sqlQuery(
+            `UPDATE quest_usdc_claims SET tx_hash = :tx, note = :note, updated_at = NOW()
+             WHERE id = :id AND status = 'approved'`,
+            { id: claimId, tx: failure.txHash, note: failure.error },
+          );
+        } catch (persistErr) {
+          console.error('[creator-review] could not persist uncertain payout hash:', persistErr);
+        }
+      }
+      return NextResponse.json(
+        {
+          error: 'The payout was broadcast and is awaiting reconciliation.',
+          claim: { status: 'approved', txHash: failure.txHash ?? null },
+        },
+        { status: 202 },
+      );
+    }
+
+    // A pre-broadcast failure or mined revert is safe to retry.
+    try {
+      await refundAndReset(claim.quest_id, claimId, amount, failed[0]?.error ?? 'USDC transfer failed');
+    } catch (resetErr) {
+      console.error('[creator-review] failed to reset a retry-safe payout:', resetErr);
+      return NextResponse.json({ error: 'USDC payout failed and requires reconciliation.' }, { status: 500 });
+    }
+    return NextResponse.json({ error: failed[0]?.error ?? 'USDC transfer failed.' }, { status: 502 });
+  }
+
+  try {
+    await finalizeCreatorPayout(claim, txHashes[0]);
     return NextResponse.json({ ok: true, claim: { status: 'paid', txHash: txHashes[0] } });
   } catch (err) {
-    await refundAndReset(claim.quest_id, claimId, amount, err instanceof Error ? err.message : 'USDC transfer error');
-    console.error('Error paying custom USDC claim:', err);
-    return NextResponse.json({ error: 'USDC payout failed.' }, { status: 500 });
+    // The transfer is confirmed. Keep approved + escrow reserved; the stored
+    // hash lets the same endpoint finalize it without sending another transfer.
+    console.error('Error finalizing confirmed custom USDC claim:', err);
+    return NextResponse.json(
+      {
+        error: 'USDC was sent and the claim is awaiting reconciliation.',
+        claim: { status: 'approved', txHash: txHashes[0] },
+      },
+      { status: 202 },
+    );
   }
 }
 
-/** Return drawn escrow and reset the claim to pending after a failed payout. */
+async function finalizeCreatorPayout(claim: ClaimJoinRow, txHash: string) {
+  // Completion display state is ancillary to the real-money ledger. A failure
+  // here must never make a confirmed transfer retryable.
+  try {
+    await sqlQuery(
+      `INSERT INTO quests (id, user_id, quest_id, shards_awarded)
+       VALUES (:id, :userId, :questId, 0)`,
+      { id: uuidv4(), userId: claim.user_id, questId: claim.quest_id },
+    );
+  } catch (insertErr) {
+    console.warn('[creator-review] completion row insert skipped:', insertErr);
+  }
+
+  await sqlQuery(
+    `UPDATE quest_usdc_claims
+     SET status = 'paid', tx_hash = :tx, updated_at = NOW()
+     WHERE id = :id AND status = 'approved'`,
+    { id: claim.id, tx: txHash },
+  );
+}
+
+async function reconcileCreatorPayout(claim: ClaimJoinRow) {
+  const verification = await verifyUSDCTransfer({
+    txHash: claim.tx_hash!,
+    recipient: claim.recipient_wallet!,
+    amount: usdcToUnits(Number(claim.usdc_amount)),
+  });
+
+  if (verification.status === 'confirmed') {
+    try {
+      await finalizeCreatorPayout(claim, claim.tx_hash!);
+      return NextResponse.json({ ok: true, claim: { status: 'paid', txHash: claim.tx_hash } });
+    } catch (err) {
+      console.error('[creator-review] confirmed payout reconciliation failed:', err);
+      return NextResponse.json(
+        { error: 'The confirmed payout still needs database reconciliation.', claim: { status: 'approved', txHash: claim.tx_hash } },
+        { status: 202 },
+      );
+    }
+  }
+
+  if (verification.status === 'reverted') {
+    try {
+      await refundAndReset(
+        claim.quest_id,
+        claim.id,
+        Number(claim.usdc_amount),
+        'USDC transfer reverted onchain.',
+      );
+      return NextResponse.json(
+        { error: 'The previous payout reverted. The claim is ready to retry.', claim: { status: 'pending' } },
+        { status: 409 },
+      );
+    } catch (err) {
+      console.error('[creator-review] reverted payout reset failed:', err);
+      return NextResponse.json({ error: 'The reverted payout needs manual reconciliation.' }, { status: 500 });
+    }
+  }
+
+  return NextResponse.json(
+    { error: verification.error, claim: { status: 'approved', txHash: claim.tx_hash } },
+    { status: verification.status === 'pending' ? 202 : 409 },
+  );
+}
+
+/** Return drawn escrow and reset the claim after a definitively failed payout. */
 async function refundAndReset(questId: string, claimId: string, amount: number, note: string) {
-  await sqlQuery(
-    `UPDATE custom_quests
-     SET escrow_remaining = escrow_remaining + :amt,
-         escrow_status = CASE WHEN escrow_status = 'depleted' THEN 'funded' ELSE escrow_status END
-     WHERE id = :qid`,
-    { qid: questId, amt: amount },
-  );
-  await sqlQuery(
-    `UPDATE quest_usdc_claims SET status = 'pending', note = :note, updated_at = NOW() WHERE id = :id`,
-    { id: claimId, note },
-  );
+  await withTransaction(async (client) => {
+    const reset = await sqlQueryWithClient<Array<{ id: string }>>(
+      client,
+      `UPDATE quest_usdc_claims
+       SET status = 'pending', tx_hash = NULL, note = :note, updated_at = NOW()
+       WHERE id = :id AND status = 'approved'
+       RETURNING id`,
+      { id: claimId, note },
+    );
+    if (reset.length === 0) return;
+
+    await sqlQueryWithClient(
+      client,
+      `UPDATE custom_quests
+       SET escrow_remaining = escrow_remaining + :amt,
+           escrow_status = CASE WHEN escrow_status = 'depleted' THEN 'funded' ELSE escrow_status END
+       WHERE id = :qid`,
+      { qid: questId, amt: amount },
+    );
+  });
 }

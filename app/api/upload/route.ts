@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
-import { mkdir, writeFile } from 'fs/promises';
-import { v4 as uuidv4 } from 'uuid';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { checkRateLimit, getClientIdentifier, getRateLimitHeaders } from '@/lib/rate-limit';
+import {
+  isStorageConfigured,
+  uploadBucket,
+  uploadPublicObject,
+} from '@/lib/supabase-storage';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -38,6 +41,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });
   }
 
+  if (!isStorageConfigured()) {
+    return NextResponse.json(
+      { error: 'File uploads are temporarily unavailable.' },
+      { status: 503 },
+    );
+  }
+
   const form = await request.formData();
   const file = form.get('file');
 
@@ -60,19 +70,23 @@ export async function POST(request: Request) {
     );
   }
 
-  const bytes = Buffer.from(await file.arrayBuffer());
+  try {
+    const data = await file.arrayBuffer();
+    const { url } = await uploadPublicObject({
+      bucket: uploadBucket(),
+      data,
+      contentType: file.type,
+      ext,
+    });
 
-  // Store under /public/uploads so it can be served at /uploads/...
-  const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
-  await mkdir(uploadsDir, { recursive: true });
-
-  const filename = `${uuidv4()}.${ext}`;
-  await writeFile(path.join(uploadsDir, filename), bytes);
-
-  return NextResponse.json({
-    url: `/uploads/${filename}`,
-    name: path.basename(file.name || `upload.${ext}`),
-    mime: file.type,
-    size: file.size,
-  });
+    return NextResponse.json({
+      url,
+      name: path.basename(file.name || `upload.${ext}`),
+      mime: file.type,
+      size: file.size,
+    });
+  } catch (error) {
+    console.error('Image upload failed:', error);
+    return NextResponse.json({ error: 'Upload failed. Please try again.' }, { status: 502 });
+  }
 }

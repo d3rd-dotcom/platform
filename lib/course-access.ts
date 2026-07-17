@@ -1,9 +1,11 @@
 import { walletHoldsAcademicAngel } from './academic-angels';
+import { walletHasMembershipAccess } from './membership-access';
 
 export type TokenGate = 'academic_angel' | 'vip_membership' | '';
 
 const GATE_CHECKERS: Record<string, (wallet: string) => Promise<boolean>> = {
   academic_angel: walletHoldsAcademicAngel,
+  vip_membership: walletHasMembershipAccess,
 };
 
 export function parseTokenGate(value: string): TokenGate {
@@ -16,7 +18,9 @@ export async function checkCourseAccess(
   wallet: string | null | undefined,
 ): Promise<{ granted: boolean; gate: TokenGate }> {
   const gate = parseTokenGate(tokenGate);
-  if (!gate) return { granted: true, gate: '' };
+  // An empty gate is public. A non-empty value outside the allow-list is a
+  // configuration error and must never make a protected course public.
+  if (!gate) return { granted: tokenGate === '', gate: '' };
 
   if (!wallet) return { granted: false, gate };
 

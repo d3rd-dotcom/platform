@@ -38,6 +38,7 @@ export async function POST(request: Request, { params }: { params: { id: string;
     }
 
     const component = await createCourseComponent({
+      courseId: params.id,
       weekId: params.weekId,
       componentType: body.componentType as ComponentType,
       title: typeof body.title === 'string' ? body.title : '',
@@ -47,6 +48,9 @@ export async function POST(request: Request, { params }: { params: { id: string;
       sortOrder: typeof body.sortOrder === 'number' ? body.sortOrder : undefined,
       required: body.required === true,
     });
+    if (!component) {
+      return NextResponse.json({ error: 'Week not found.' }, { status: 404 });
+    }
 
     return NextResponse.json({ component }, { status: 201 });
   } catch (err: any) {

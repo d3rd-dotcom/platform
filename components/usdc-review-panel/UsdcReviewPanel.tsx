@@ -7,6 +7,8 @@ import styles from './UsdcReviewPanel.module.css';
 
 interface ReviewClaim {
   id: string;
+  status: 'pending' | 'approved';
+  txHash: string | null;
   questId: string;
   questTitle: string;
   recipientWallet: string;
@@ -83,7 +85,9 @@ export default function UsdcReviewPanel({ fetchWithAuth }: UsdcReviewPanelProps)
         note = window.prompt('Optional note for the member (why this was not approved):') || null;
       } else if (
         !window.confirm(
-          `Approve and send $${claim.usdcAmount} USDC to ${truncate(claim.recipientWallet)}? This moves real funds from Blue's wallet.`,
+          claim.status === 'approved'
+            ? `Check the payout confirmation for ${truncate(claim.recipientWallet)}?`
+            : `Approve and send $${claim.usdcAmount} USDC to ${truncate(claim.recipientWallet)}? This moves real funds from Blue's wallet.`,
         )
       ) {
         return;
@@ -242,12 +246,15 @@ export default function UsdcReviewPanel({ fetchWithAuth }: UsdcReviewPanelProps)
               )}
             </li>
           ))}
-          {claims.map((claim) => (
+          {claims.map((claim) => {
+            const isReconciling = claim.status === 'approved';
+            return (
             <li key={claim.id} className={styles.row}>
               <div className={styles.rowInfo}>
                 <span className={styles.rowTitle}>{claim.questTitle}</span>
                 <span className={styles.rowMeta}>
                   {claim.username ? `@${claim.username}` : 'Member'} · {truncate(claim.recipientWallet)}
+                  {isReconciling ? ' · Awaiting payout confirmation' : ''}
                 </span>
               </div>
               <span className={styles.rowAmount}>${claim.usdcAmount}</span>
@@ -256,7 +263,7 @@ export default function UsdcReviewPanel({ fetchWithAuth }: UsdcReviewPanelProps)
                   type="button"
                   className={styles.reject}
                   onClick={() => review(claim, 'reject')}
-                  disabled={busyId === claim.id}
+                  disabled={busyId === claim.id || isReconciling}
                   aria-label="Reject claim"
                   title="Reject"
                 >
@@ -269,11 +276,14 @@ export default function UsdcReviewPanel({ fetchWithAuth }: UsdcReviewPanelProps)
                   disabled={busyId === claim.id}
                 >
                   <CheckCircle size={15} weight="fill" />
-                  {busyId === claim.id ? 'Sending…' : 'Approve & pay'}
+                  {busyId === claim.id
+                    ? (isReconciling ? 'Checking…' : 'Sending…')
+                    : (isReconciling ? 'Check payout' : 'Approve & pay')}
                 </button>
               </div>
             </li>
-          ))}
+            );
+          })}
         </ul>
       )}
     </div>
