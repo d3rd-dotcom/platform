@@ -12,6 +12,8 @@ import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 
 import ListsPanel from './ListsPanel';
 import QuestForgeInline from './QuestForgeInline';
+import GuideCardsInline from './GuideCardsInline';
+import type { GuideRecommendCard } from '@/lib/guide-api-schemas';
 import type { QuestForgeDraft, QuestForgeRequest } from './QuestForgeInline';
 import { sendUsdcOnBase, type Eip1193Provider } from '@/lib/usdc-base-transfer';
 import { sendDiamonds, sendDiamondsBurn } from '@/lib/diamonds-base-transfer';
@@ -81,6 +83,8 @@ interface Message {
   timestamp: Date;
   attachments?: UploadedAttachment[];
   debug?: MessageDebugInfo;
+  /** Knowledge-node cards from the guide finder, rendered under the text. */
+  guideCards?: GuideRecommendCard[];
 }
 
 interface MessageDebugInfo {
@@ -165,6 +169,39 @@ function isCourseDeleteIntent(text: string): boolean {
 
 function isAffirmative(text: string): boolean {
   return /^(yes|yeah|yep|ya|sure|ok|okay|confirm|do it|delete it|go ahead|please do)\b/i.test(text.trim());
+}
+
+// Detects when a typed message is asking to LEARN something — routed to the
+// guides DAG so Blue answers with real knowledge-node cards instead of a
+// generic reply. Conservative: needs an explicit learn-ish phrase, so ordinary
+// wellness chat is untouched.
+function isGuideLookupIntent(text: string): boolean {
+  const t = text.toLowerCase().trim();
+  return (
+    /\b(i want to|i wanna|i'd like to|help me|where (can|do) i|how (do|can) i)\s+(learn|study|understand|practice|get better at|get into)\b/.test(t) ||
+    /\b(teach me|learn about|learn how to|study up on|want to learn)\b/.test(t) ||
+    /\b(is there|do you have|find me|show me|got|any)\b.*\bguides?\b/.test(t) ||
+    /\bguides?\s+(on|about|for)\s+\w/.test(t)
+  );
+}
+
+// Strips the learn-intent framing so only the topic reaches search:
+// "i want to learn about box breathing" becomes "box breathing". An empty
+// result means no topic was named — the caller falls back to the frontier.
+function extractGuideTopic(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[?.!,]+/g, ' ')
+    .replace(/\b(i want to|i wanna|i'd like to|help me|where (can|do) i|how (do|can) i|can you|could you|please|teach me|show me|find me|do you have|is there|got|any)\b/g, ' ')
+    .replace(/\b(learn|learning|study|studying|understand|understanding|practice|practicing|get better at|get into|start|started)\b/g, ' ')
+    .replace(/\b(a|an|the|some|about|on|for|to|of|how|me|my|guide|guides|there)\b/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function isDismissal(text: string): boolean {
+  const t = text.trim();
+  return t.length < 24 && /^(no|nah|nope|nevermind|never mind|cancel|stop|ok|okay|cool|bet|thanks|thank you|all good|im good|i'm good)\b/i.test(t);
 }
 
 const KNOWLEDGE_DOMAINS = [
@@ -267,6 +304,8 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
   const [questDraftNonce, setQuestDraftNonce] = useState(0);
   const [questForgeBusy, setQuestForgeBusy] = useState(false);
   const [pendingCourseDelete, setPendingCourseDelete] = useState<string | null>(null);
+  // After the guide finder invites a topic, the next message is treated as one.
+  const [pendingGuideTopic, setPendingGuideTopic] = useState(false);
   const [openDebugMessageId, setOpenDebugMessageId] = useState<string | null>(null);
   const voiceAbortRef = useRef<AbortController | null>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
@@ -499,7 +538,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
     recognition.start();
   };
 
-  const addBlueMessage = (text: string, debug?: MessageDebugInfo) => {
+  const addBlueMessage = (text: string, debug?: MessageDebugInfo, guideCards?: GuideRecommendCard[]) => {
     // Strip <<recite>>...<</recite>> tags for display; drop the recited block entirely for TTS
     const reciteTag = /<<\s*recite\s*>>([\s\S]*?)<<\s*\/?\s*recite\s*>>/gi;
     const displayText = text.replace(reciteTag, '$1').trim();
@@ -515,6 +554,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
           sender: 'blue',
           timestamp: new Date(),
           debug,
+          guideCards,
         },
       ]);
       setIsTyping(false);
@@ -662,8 +702,60 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
     }
   };
 
+  // ── Guide finder ───────────────────────────────────────────
+  // Answers learn-intent messages with real knowledge-node cards from the
+  // guides DAG — the target guide plus the prereqs still standing between the
+  // user and it. Runs client-side against the recommend API, so Blue never
+  // invents a guide and the lookup costs no diamonds.
+  const lookupGuides = async (topic: string | null) => {
+    if (!ready || !authenticated) {
+      addBlueMessage('sign in first so i can line the guides up against your progress.');
+      return;
+    }
+    setIsTyping(true);
+    try {
+      const query = topic ? `?q=${encodeURIComponent(topic)}` : '';
+      const res = await fetch(`/api/guides/recommend${query}`, {
+        credentials: 'include',
+        headers: await authHeaders(),
+      });
+      const data = await res.json().catch(() => ({}));
+      setIsTyping(false);
+      if (!res.ok) {
+        addBlueMessage("the knowledge base isn't answering right now — give it a sec and ask again.");
+        return;
+      }
+      const cards = (data.cards ?? []) as GuideRecommendCard[];
+      if (cards.length === 0) {
+        if (topic) {
+          addBlueMessage(`no guide on ${topic} yet — the knowledge base is still growing. browse the map on the guides page, or write the definitive one yourself.`);
+        } else {
+          addBlueMessage('nothing new is unlocked right now — finish a guide in progress and the frontier opens back up.');
+        }
+        return;
+      }
+      if (!topic) {
+        setPendingGuideTopic(true);
+        addBlueMessage('these are open for you right now, every prereq cleared. or name a topic and i\'ll map the path to it.', undefined, cards);
+        return;
+      }
+      const blocked = cards.some((c) => !c.ready && !c.completed);
+      addBlueMessage(
+        blocked
+          ? 'found it in the knowledge base. here\'s the node — and what stands between you and it.'
+          : 'found it in the knowledge base, and nothing is standing in your way. go.',
+        undefined,
+        cards,
+      );
+    } catch {
+      setIsTyping(false);
+      addBlueMessage("the knowledge base isn't answering right now — give it a sec and ask again.");
+    }
+  };
+
   // Shared pipeline for typed and voice input — appends the user message,
-  // runs intent detection (quest forge, course delete), then sends to Blue.
+  // runs intent detection (quest forge, course delete, guide finder), then
+  // sends to Blue.
   const submitUserMessage = (text: string) => {
     setMessages((prev) => [...prev, {
       id: Date.now().toString(),
@@ -682,6 +774,16 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
       }
       return;
     }
+    // The guide finder just invited a topic — take this message as one.
+    if (pendingGuideTopic) {
+      setPendingGuideTopic(false);
+      if (!isDismissal(text)) {
+        lookupGuides(extractGuideTopic(text) || text.trim());
+        return;
+      }
+      addBlueMessage('bet. what else?');
+      return;
+    }
     if (isCourseDeleteIntent(text)) {
       startCourseDelete();
       return;
@@ -689,6 +791,11 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
     // "make a quest…" — draft and open the forge instead of a normal reply.
     if (isQuestForgeIntent(text)) {
       draftQuestFromPrompt(text);
+      return;
+    }
+    // "i want to learn…" — pull matching knowledge nodes from the DAG.
+    if (isGuideLookupIntent(text)) {
+      lookupGuides(extractGuideTopic(text) || null);
       return;
     }
 
@@ -1308,6 +1415,9 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
                   ))}
                 </div>
               )}
+              {isBlue && message.guideCards && message.guideCards.length > 0 && (
+                <GuideCardsInline cards={message.guideCards} onNavigate={onClose} />
+              )}
               <div className={styles.messageTime}>
                 {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </div>
@@ -1397,6 +1507,9 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
         </button>
         <button className={styles.quickAction} onClick={() => { play('click'); submitUserMessage('what missions are up?'); }} type="button">
           missions
+        </button>
+        <button className={styles.quickAction} onClick={() => { play('click'); submitUserMessage('find me a guide'); }} type="button">
+          guides
         </button>
       </div>
 

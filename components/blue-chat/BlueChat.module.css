@@ -434,6 +434,168 @@
   color: rgba(var(--bc-ink), 0.75);
 }
 
+/* ── Guide finder cards ──────────────────────────────────── */
+
+.guideCards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: min(100%, 420px);
+}
+
+.guideCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(var(--bc-ink), 0.04);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 16%, transparent);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.guideCard:hover {
+  border-color: color-mix(in oklch, var(--color-primary) 34%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
+}
+
+.guideCardHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.guideCardTitle {
+  min-width: 0;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: rgba(var(--bc-ink), 0.92);
+  text-decoration: none;
+}
+
+.guideCardTitle:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.guideCardBadge {
+  flex-shrink: 0;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.guideCardBadgeReady {
+  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
+  color: var(--color-primary);
+}
+
+.guideCardBadgeLocked {
+  background: rgba(var(--bc-ink), 0.06);
+  border: 1px solid rgba(var(--bc-ink), 0.14);
+  color: rgba(var(--bc-ink), 0.62);
+}
+
+.guideCardBadgeDone {
+  background: transparent;
+  border: 1px solid rgba(var(--bc-ink), 0.14);
+  color: rgba(var(--bc-ink), 0.42);
+}
+
+.guideCardSummary {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: rgba(var(--bc-ink), 0.62);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.guideCardFoot {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.guideCardMinutes {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(var(--bc-ink), 0.45);
+}
+
+.guideCardPrereqs {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-width: 0;
+}
+
+.guideCardPrereqLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(var(--bc-ink), 0.45);
+}
+
+.guideCardPrereqChip {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--color-primary) 7%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 16%, transparent);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(var(--bc-ink), 0.72);
+  text-decoration: none;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.guideCardPrereqChip:hover {
+  border-color: color-mix(in oklch, var(--color-primary) 36%, transparent);
+  color: var(--color-primary);
+}
+
+.guideCardPrereqMore {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(var(--bc-ink), 0.42);
+}
+
+.guideCardGo {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.guideCardGo:hover {
+  text-decoration: underline;
+}
+
 .reclaimBubble {
   display: inline-flex;
   align-items: center;

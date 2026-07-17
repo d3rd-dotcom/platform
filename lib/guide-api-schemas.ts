@@ -240,6 +240,34 @@ export const voteCastResponseSchema = z.object({
 });
 export type VoteCastResponse = z.infer<typeof voteCastResponseSchema>;
 
+/**
+ * GET /api/guides/recommend — Blue-chat guide cards. `mode` says how the cards
+ * were chosen: 'search' (matched the caller's topic) or 'frontier' (no topic —
+ * the caller's next unlocks). `prereqs` is the still-incomplete published
+ * prerequisite closure, shallowest first, so the card can show the path in.
+ */
+export const guideRecommendCardSchema = z.object({
+  id: z.string(),
+  slug: z.string(),
+  topicTitle: z.string(),
+  summary: z.string().nullable(),
+  estimatedMinutes: z.number().nullable(),
+  completed: z.boolean(),
+  ready: z.boolean(),
+  prereqs: z.array(z.object({
+    id: z.string(),
+    slug: z.string(),
+    topicTitle: z.string(),
+  })),
+});
+export type GuideRecommendCard = z.infer<typeof guideRecommendCardSchema>;
+
+export const guideRecommendResponseSchema = z.object({
+  cards: z.array(guideRecommendCardSchema),
+  mode: z.enum(['search', 'frontier']),
+});
+export type GuideRecommendResponse = z.infer<typeof guideRecommendResponseSchema>;
+
 /** GET /api/guides/progress — completed guide ids. */
 export const progressListResponseSchema = z.object({
   completedGuideIds: z.array(z.string()),

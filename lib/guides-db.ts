@@ -873,6 +873,63 @@ export async function searchPublishedGuides(input: {
   );
 }
 
+/** A chat-search match: link fields plus the copy Blue's inline cards show. */
+export interface GuideChatMatch extends GuideLink {
+  summary: string | null;
+  estimatedMinutes: number | null;
+}
+
+/**
+ * Token-based search over PUBLISHED guides for Blue's chat guide finder.
+ * Each token is matched (ILIKE substring) against the topic title, topic
+ * aliases, and summary; title/alias hits score double so a guide named for the
+ * topic outranks one that only mentions it in passing. Zero tokens returns []
+ * — the caller decides what "no query" means (the recommend route falls back
+ * to the frontier).
+ */
+export async function searchGuidesForChat(
+  tokens: string[],
+  limit = 3,
+): Promise<GuideChatMatch[]> {
+  const pats = tokens
+    .map((t) => t.trim())
+    .filter(Boolean)
+    .map((t) => `%${t}%`);
+  if (pats.length === 0) return [];
+
+  return sqlQuery<GuideChatMatch[]>(
+    `SELECT id, slug, "topicTitle", status, summary, "estimatedMinutes"
+     FROM (
+       SELECT
+         g.id,
+         g.slug,
+         g.topic_title AS "topicTitle",
+         g.status,
+         g.summary,
+         g.estimated_minutes AS "estimatedMinutes",
+         (
+           SELECT COALESCE(SUM(
+             CASE
+               WHEN g.topic_title ILIKE pat OR EXISTS (
+                 SELECT 1 FROM guide_topic_aliases gta
+                 WHERE gta.guide_id = g.id AND gta.alias ILIKE pat
+               ) THEN 2
+               WHEN COALESCE(g.summary, '') ILIKE pat THEN 1
+               ELSE 0
+             END
+           ), 0)::int
+           FROM unnest(:pats::text[]) AS pat
+         ) AS score
+       FROM guides g
+       WHERE g.status = 'published'
+     ) scored
+     WHERE score > 0
+     ORDER BY score DESC, "topicTitle" ASC
+     LIMIT :limit`,
+    { pats, limit: Math.min(Math.max(limit, 1), 10) },
+  );
+}
+
 // ── Forward references ─────────────────────────────────────────────────────────
 
 /**
