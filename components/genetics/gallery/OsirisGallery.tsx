@@ -8,7 +8,10 @@ import styles from './OsirisGallery.module.css';
 interface OsirisGalleryProps {
   pieces: Piece[];
   selectedId?: string | null;
+  /** Deliberate: the piece was clicked. This is a request to read it. */
   onSelect: (piece: Piece) => void;
+  /** Incidental: the piece you happen to be standing in front of changed. */
+  onFocus?: (piece: Piece) => void;
 }
 
 /** World spacing between hangings, in canvas pixels. */
@@ -32,18 +35,20 @@ const BLUE_OFFSET = -SLOT * 0.24;
 const BLUE_DIRS = ['north', 'east', 'west', 'south'] as const;
 type BlueDir = (typeof BLUE_DIRS)[number];
 
-export function OsirisGallery({ pieces, selectedId, onSelect }: OsirisGalleryProps) {
+export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisGalleryProps) {
   const hostRef = useRef<HTMLDivElement>(null);
 
   // The sketch is built once. Everything it needs to read lives in refs, so
   // new search results never tear down the room.
   const piecesRef = useRef(pieces);
   const onSelectRef = useRef(onSelect);
+  const onFocusRef = useRef(onFocus);
   const targetRef = useRef(0);
   const [focusIndex, setFocusIndex] = useState(0);
 
   piecesRef.current = pieces;
   onSelectRef.current = onSelect;
+  onFocusRef.current = onFocus;
 
   // Selecting from the terminal below should walk the gallery to that piece.
   useEffect(() => {
@@ -561,7 +566,10 @@ export function OsirisGallery({ pieces, selectedId, onSelect }: OsirisGalleryPro
         const snap = () => {
           targetRef.current = Math.round(targetRef.current / SLOT) * SLOT;
           clampTarget();
-          setFocusIndex(Math.round(targetRef.current / SLOT));
+          const i = Math.round(targetRef.current / SLOT);
+          setFocusIndex(i);
+          const piece = piecesRef.current[i];
+          if (piece) onFocusRef.current?.(piece);
         };
 
         s.mousePressed = () => {
@@ -628,7 +636,8 @@ export function OsirisGallery({ pieces, selectedId, onSelect }: OsirisGalleryPro
     const clamped = Math.max(0, Math.min(pieces.length - 1, next));
     targetRef.current = clamped * SLOT;
     setFocusIndex(clamped);
-    if (pieces[clamped]) onSelect(pieces[clamped]);
+    // Walking is not reading — it moves you, it does not open anything.
+    if (pieces[clamped]) onFocus?.(pieces[clamped]);
   };
 
   const focused = pieces[focusIndex];
@@ -665,7 +674,7 @@ export function OsirisGallery({ pieces, selectedId, onSelect }: OsirisGalleryPro
           >
             ‹
           </button>
-          <span className={styles.walkHint}>Drag or scroll to walk</span>
+          <span className={styles.walkHint}>Drag to walk · click a piece to read it</span>
           <button
             type="button"
             onClick={() => step(1)}
