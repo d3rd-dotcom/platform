@@ -18,10 +18,9 @@ interface NavLink {
   comingSoon?: boolean;
 }
 
+// Trading and Lists moved into SideNavigation's Pro Features section.
 const NAV_LINKS: NavLink[] = [
   { label: 'Live', href: '/dao', icon: '/icons/nav-world-v2.svg' },
-  { label: 'Trading', href: '/trades', icon: '/icons/nav-trades-v1.svg' },
-  { label: 'Lists', href: '/list' },
 ];
 
 const TopNavigation: React.FC = () => {

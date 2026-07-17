@@ -46,9 +46,21 @@ interface NavSection {
   badgeType?: 'default' | 'highlight' | 'muted' | 'pro';
 }
 
-const desktopNavSections: NavSection[] = [];
+// Trading and Lists moved here from the top nav; both stay public.
+const proFeaturesSection: NavSection = {
+  id: 'extras',
+  label: 'Pro Features',
+  badge: 'Pro',
+  badgeType: 'pro',
+  items: [
+    { id: 'markets', label: 'Trading', href: '/trades', iconSrc: '/icons/nav-trades-v1.svg' },
+    { id: 'lists', label: 'Lists', href: '/list', iconSrc: '/icons/nav-journal-v3.svg' },
+  ],
+};
 
-const mobileNavSections: NavSection[] = [];
+const desktopNavSections: NavSection[] = [proFeaturesSection];
+
+const mobileNavSections: NavSection[] = [proFeaturesSection];
 
 const primaryNavItems: NavItem[] = [
   {
@@ -184,7 +196,8 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const [isProModalOpen, setIsProModalOpen] = useState(false);
   const [isAngelModalOpen, setIsAngelModalOpen] = useState(false);
 
-  const [adminExpanded, setAdminExpanded] = useState(false);
+  // Pro Features starts open so the links moved out of the top nav stay visible.
+  const [adminExpanded, setAdminExpanded] = useState(true);
   const [isYourAccountsModalOpen, setIsYourAccountsModalOpen] = useState(false);
   const [isCreatingSession, setIsCreatingSession] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(() => {
