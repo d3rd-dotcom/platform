@@ -24,7 +24,7 @@
 /* ===== The room ===== */
 .galleryBand {
   position: relative;
-  flex: 1 1 55%;
+  flex: 1 1 77%;
   min-height: 240px;
   overflow: hidden;
   /* The floor ends and the wall of text begins. */
@@ -42,12 +42,13 @@
   position: relative;
   z-index: 1;
   flex: 0 0 auto;
-  height: 45%;
-  min-height: 320px;
+  /* The room is the point; the terminal is a caption under it. */
+  height: 23%;
+  min-height: 190px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 18px 22px 16px;
+  gap: 10px;
+  padding: 14px 22px 12px;
   background: #232326;
   overflow: hidden;
 }
@@ -55,11 +56,11 @@
 /* The licence text. Underlined, the way a caption is when it is also a claim. */
 .statement {
   flex-shrink: 0;
-  max-width: 78ch;
+  max-width: 104ch;
   margin: 0 auto;
   font-family: var(--font-secondary);
-  font-size: 13px;
-  line-height: 1.62;
+  font-size: 11.5px;
+  line-height: 1.55;
   color: rgba(244, 243, 240, 0.9);
   text-decoration: underline;
   text-decoration-color: rgba(244, 243, 240, 0.42);
@@ -71,25 +72,60 @@
   flex: 1;
   min-height: 0;
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 440px 1fr;
   gap: 16px;
 }
 
-/* ----- rail ----- */
+/* ----- rail -----
+   The terminal is a short, wide band, so the rail spends the axis it actually
+   has: the wing switch sits beside the status pill, and the filters run two to
+   a row. Stacked in a 300px column they needed ~280px of height and the whole
+   curate block fell below the fold. */
 .rail {
   min-height: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-content: start;
+  gap: 10px 12px;
   padding-right: 14px;
   border-right: 1px solid rgba(244, 243, 240, 0.12);
   overflow-y: auto;
+  /* At the terminal's full height the filters fit exactly. On a short viewport
+     they do not, so the rail needs to say it has more — and say it without
+     covering the last field, which a fade at the foot would do at precisely the
+     height where everything just fits. Asking for a styled scrollbar opts this
+     one element out of overlay behaviour, so the track is there whenever there
+     is somewhere to scroll and absent when there is not. */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(244, 243, 240, 0.3) transparent;
+}
+
+.rail::-webkit-scrollbar {
+  width: 6px;
+}
+
+.rail::-webkit-scrollbar-thumb {
+  border-radius: var(--radius-full);
+  background: rgba(244, 243, 240, 0.3);
+}
+
+.rail::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .railSection {
+  grid-column: 1 / -1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 7px;
+}
+
+/* The wing switch yields the rest of its row to the status pill, and hugs its
+   own labels — stretched across a wide stacked terminal it reads as two slabs
+   rather than as a switch. */
+.railSectionWing {
+  grid-column: 1;
+  align-items: flex-start;
 }
 
 .railHead {
@@ -97,6 +133,15 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 10px;
+}
+
+/* The count and the reset ride along on the label's row rather than costing the
+   short terminal another line of its own. */
+.railHeadRight {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
 }
 
 .railLabel {
@@ -134,7 +179,9 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  align-self: flex-start;
+  grid-column: 2;
+  align-self: end;
+  justify-self: end;
   padding: 6px 11px;
   border-radius: var(--radius-full);
   border: 1px solid rgba(244, 243, 240, 0.16);
@@ -203,7 +250,7 @@
 .field {
   width: 100%;
   min-width: 0;
-  padding: 9px 11px;
+  padding: 7px 11px;
   border-radius: var(--radius-sm);
   border: 1px solid rgba(244, 243, 240, 0.16);
   background: rgba(0, 0, 0, 0.26);
@@ -453,6 +500,8 @@
     overflow-y: auto;
   }
 
+  /* Stacked, the terminal grows and the rail scrolls with the grid rather than
+     inside itself, so it needs no scroll of its own. */
   .rail {
     padding-right: 0;
     padding-bottom: 12px;
@@ -496,5 +545,20 @@
 
   .fieldRow {
     grid-template-columns: 1fr;
+  }
+
+  /* The terminal has grown tall and narrow again, so the rail goes back to a
+     single stack rather than squeezing the pill beside the wing switch. */
+  .rail {
+    grid-template-columns: 1fr;
+  }
+
+  .railSectionWing,
+  .statusPill {
+    grid-column: 1;
+  }
+
+  .statusPill {
+    justify-self: start;
   }
 }

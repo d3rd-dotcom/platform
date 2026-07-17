@@ -409,16 +409,14 @@ function GeneticsLab() {
         <p className={styles.statement}>
           Osiris Art Gallery of Genetic Research. Under the Humane Genome Project License
           (HGPL), Maverick Blue splices epigenetic markers — non cell — to digital artistry.
-          Every rsid in this archive is a seed, and every seed paints exactly one canvas,
-          the same canvas, forever. What hangs here is not a portrait of you. It is a
-          portrait of a coordinate you happen to occupy. Your file is read on this device
-          and leaves no residue; the only thing that crosses the wire is the public
-          archive itself, coming the other way.
+          Every rsid is a seed, and every seed paints exactly one canvas, the same canvas,
+          forever. What hangs here is a portrait of a coordinate you happen to occupy. Your
+          file is read on this device and leaves no residue.
         </p>
 
         <div className={styles.terminalGrid}>
           <aside className={styles.rail}>
-            <div className={styles.railSection}>
+            <div className={`${styles.railSection} ${styles.railSectionWing}`}>
               <span className={styles.railLabel}>Wing</span>
               <div className={styles.segmented}>
                 <button
@@ -453,11 +451,18 @@ function GeneticsLab() {
               <div className={styles.railSection}>
                 <div className={styles.railHead}>
                   <span className={styles.railLabel}>Curate</span>
-                  {hasActiveFilters && (
-                    <button type="button" onClick={clearFilters} className={styles.linkButton}>
-                      Reset
-                    </button>
-                  )}
+                  <span className={styles.railHeadRight}>
+                    <span className={styles.railNote}>
+                      {isSearching
+                        ? 'Searching the archive'
+                        : `Hanging ${pieces.length.toLocaleString()} of ${browseTotal.toLocaleString()}`}
+                    </span>
+                    {hasActiveFilters && (
+                      <button type="button" onClick={clearFilters} className={styles.linkButton}>
+                        Reset
+                      </button>
+                    )}
+                  </span>
                 </div>
 
                 <input
@@ -482,28 +487,23 @@ function GeneticsLab() {
                   />
                 </div>
 
-                <select
-                  value={clinicalSignificance}
-                  onChange={(e) => setClinicalSignificance(e.target.value)}
-                  className={styles.field}
-                >
-                  <option value="">Any clinical significance</option>
-                  {CLINICAL_SIGNIFICANCE_OPTIONS.map((sig) => <option key={sig} value={sig}>{sig}</option>)}
-                </select>
-
-                <input
-                  type="text"
-                  placeholder="Disease"
-                  value={disease}
-                  onChange={(e) => setDisease(e.target.value)}
-                  className={styles.field}
-                />
-
-                <p className={styles.railNote}>
-                  {isSearching
-                    ? 'Searching the archive'
-                    : `Hanging ${pieces.length.toLocaleString()} of ${browseTotal.toLocaleString()} matching`}
-                </p>
+                <div className={styles.fieldRow}>
+                  <select
+                    value={clinicalSignificance}
+                    onChange={(e) => setClinicalSignificance(e.target.value)}
+                    className={styles.field}
+                  >
+                    <option value="">Any clinical significance</option>
+                    {CLINICAL_SIGNIFICANCE_OPTIONS.map((sig) => <option key={sig} value={sig}>{sig}</option>)}
+                  </select>
+                  <input
+                    type="text"
+                    placeholder="Disease"
+                    value={disease}
+                    onChange={(e) => setDisease(e.target.value)}
+                    className={styles.field}
+                  />
+                </div>
               </div>
             )}
 

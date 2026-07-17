@@ -24,6 +24,14 @@ const PLINTH_EVERY = SLOT * 4;
 const ORB_PARALLAX = 1.45;
 const ORB_EVERY = SLOT * 3;
 
+/* Blue walks the room with you. Her sprites are single frames (there is no walk
+ * cycle in the set), so the gait is procedural: a bob and a small squash. */
+const BLUE_PARALLAX = 1.15;
+/** She stands off to one side of a piece rather than in front of it. */
+const BLUE_OFFSET = -SLOT * 0.24;
+const BLUE_DIRS = ['north', 'east', 'west', 'south'] as const;
+type BlueDir = (typeof BLUE_DIRS)[number];
+
 export function OsirisGallery({ pieces, selectedId, onSelect }: OsirisGalleryProps) {
   const hostRef = useRef<HTMLDivElement>(null);
 
@@ -71,6 +79,8 @@ export function OsirisGallery({ pieces, selectedId, onSelect }: OsirisGalleryPro
       const sketch = (s: p5) => {
         const cache = new Map<string, PaintedPiece>();
         const order: string[] = [];
+        const blueSprites: Partial<Record<BlueDir, p5.Image>> = {};
+        let blueX = 0;
         let camX = 0;
         let dragging = false;
         let dragStartX = 0;
@@ -155,6 +165,24 @@ export function OsirisGallery({ pieces, selectedId, onSelect }: OsirisGalleryPro
             r.fill(120, 112, 104, 5);
             r.rect(0, hy - i * 1.6, W, 2);
           }
+
+          // A gallery wall is painted plaster, not a gradient. Grain both ways
+          // keeps the largest flat area on screen from banding into stripes.
+          for (let i = 0; i < 1100; i += 1) {
+            r.fill(255, 255, 255, 7);
+            r.rect(Math.random() * W, Math.random() * hy, 1, 1);
+          }
+          for (let i = 0; i < 1100; i += 1) {
+            r.fill(122, 116, 110, 6);
+            r.rect(Math.random() * W, Math.random() * hy, 1, 1);
+          }
+
+          // Skirting: the one piece of architecture the room admits to, and the
+          // line that makes the wall meet the floor rather than fade into it.
+          r.fill(252, 251, 249);
+          r.rect(0, hy - 10, W, 10);
+          r.fill(226, 223, 218);
+          r.rect(0, hy - 2.5, W, 2.5);
           roomBuf = r;
 
           // Polished floors carry the room's light back up at you. Kept wider than
@@ -281,7 +309,7 @@ export function OsirisGallery({ pieces, selectedId, onSelect }: OsirisGalleryPro
           }
         };
 
-        /** A plinth with something dark and unresolved on top of it. */
+        /** A plinth with something on top that never finishes resolving. */
         const drawPlinth = (worldX: number) => {
           const hy = horizonY();
           const x = s.width / 2 + (worldX - camX) * PLINTH_PARALLAX;
@@ -302,17 +330,46 @@ export function OsirisGallery({ pieces, selectedId, onSelect }: OsirisGalleryPro
           s.fill(250, 249, 246);
           s.rect(x - w / 2, topY, w, 6);
 
-          // The sculpture: a figure that never quite finishes assembling.
-          s.fill(26, 24, 28);
-          s.push();
-          s.translate(x, topY);
-          s.ellipse(0, -74, 26, 30);
-          s.rect(-13, -62, 26, 38, 4);
-          s.rect(-24, -58, 11, 32, 3);
-          s.rect(13, -58, 11, 32, 3);
-          s.rect(-12, -24, 10, 24, 2);
-          s.rect(2, -24, 10, 24, 2);
-          s.pop();
+          // Where the sculpture meets the stone. Laid down first, so the form
+          // sits in it rather than on top of it.
+          s.fill(28, 24, 32, 52);
+          s.ellipse(x, topY + 3, 42, 8);
+
+          // The sculpture: a bust that never resolves into a face. Lit from the
+          // left like the rest of the room, so it reads as carved rather than as
+          // a silhouette pasted onto the plinth. Raw canvas because a true
+          // gradient needs a fill p5's fill() cannot express.
+          const ctx = s.drawingContext as CanvasRenderingContext2D;
+          ctx.save();
+          ctx.translate(x, topY);
+
+          // The light rakes across it from the upper left, the way it does off
+          // the wall, so the form turns instead of reading as a flat cut-out.
+          const stone = ctx.createLinearGradient(-20, -70, 20, -6);
+          stone.addColorStop(0, '#6d6879');
+          stone.addColorStop(0.42, '#3a3543');
+          stone.addColorStop(1, '#15131a');
+          ctx.fillStyle = stone;
+
+          // A bust: narrow mount, shoulders, neck, head. The shoulders are what
+          // keep it from reading as a chess piece.
+          ctx.beginPath();
+          ctx.moveTo(-9, 0);
+          ctx.lineTo(-10, -12);
+          ctx.bezierCurveTo(-20, -18, -23, -28, -21, -36);
+          ctx.bezierCurveTo(-15, -44, -8, -46, -6, -54);
+          ctx.lineTo(6, -54);
+          ctx.bezierCurveTo(8, -46, 15, -44, 21, -36);
+          ctx.bezierCurveTo(23, -28, 20, -18, 10, -12);
+          ctx.lineTo(9, 0);
+          ctx.closePath();
+          ctx.fill();
+
+          // Head: bowed, and never given a face.
+          ctx.beginPath();
+          ctx.ellipse(0, -66, 11.5, 13.5, -0.1, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
         };
 
         /** The orb. Iridescent, patient, always slightly off the ground. */
@@ -363,6 +420,61 @@ export function OsirisGallery({ pieces, selectedId, onSelect }: OsirisGalleryPro
         };
 
         /**
+         * Blue, walking the gallery. She trails the camera rather than tracking it,
+         * so you arrive at a piece and she catches up — then turns her back to you
+         * and looks up at whatever you stopped in front of.
+         */
+        const drawBlue = () => {
+          const hy = horizonY();
+          const depth = s.height - hy;
+          const target = targetRef.current + BLUE_OFFSET;
+
+          // She trails the camera's 0.09 rather than matching it — she is
+          // following, not glued to you. But a fixed ease makes a jump across
+          // twenty slots take the same forever as a jump across one, so the ease
+          // opens up with distance: she lengthens her stride for the long walk
+          // and still settles gently over the last few pixels.
+          const gap = target - blueX;
+          blueX += gap * Math.min(0.12, 0.045 + (Math.abs(gap) / SLOT) * 0.02);
+
+          const dx = target - blueX;
+          const walking = Math.abs(dx) > 2.5;
+          const dir: BlueDir = walking ? (dx > 0 ? 'east' : 'west') : 'north';
+          const img = blueSprites[dir];
+          if (!img) return;
+
+          // Standing still, she shifts her weight. Slow enough to read as
+          // breathing rather than as drift.
+          const sway = walking ? 0 : Math.sin(s.frameCount * 0.009) * 4;
+          const x = s.width / 2 + (blueX + sway - camX) * BLUE_PARALLAX;
+          const h = depth * 1.25;
+          const w = h;
+          if (x < -w || x > s.width + w) return;
+
+          const feetY = hy + depth * 0.52;
+
+          // Gait: a bob at roughly a footfall's cadence, plus the squash that
+          // sells weight landing. Idle gets a much slower breath.
+          const bob = walking
+            ? Math.abs(Math.sin(s.frameCount * 0.22)) * h * 0.035
+            : Math.sin(s.frameCount * 0.045) * h * 0.006;
+          const squash = walking ? 1 - Math.abs(Math.sin(s.frameCount * 0.22)) * 0.025 : 1;
+
+          s.noStroke();
+          s.fill(30, 22, 18, 44);
+          s.ellipse(x, feetY, w * 0.3, h * 0.045);
+
+          // Pixel art must not be resampled on the way up, but the paintings and
+          // the room must stay smooth — so only her blit runs unsmoothed.
+          const ctx = s.drawingContext as CanvasRenderingContext2D;
+          const wasSmooth = ctx.imageSmoothingEnabled;
+          ctx.imageSmoothingEnabled = false;
+          const dh = h * squash;
+          s.image(img, x - w / 2, feetY - dh - bob, w, dh);
+          ctx.imageSmoothingEnabled = wasSmooth;
+        };
+
+        /**
          * Draw every instance of a prop that could reach the stage. A prop at
          * parallax `p` is visible while |worldX - camX| < (width/2 + margin) / p.
          */
@@ -385,6 +497,16 @@ export function OsirisGallery({ pieces, selectedId, onSelect }: OsirisGalleryPro
           // The room is fill-rate bound, and the extra density buys little on a
           // painted canvas. Cap it at 1.5.
           s.pixelDensity(Math.min(1.5, window.devicePixelRatio || 1));
+
+          // Blue is scenery: if a sprite fails to load the room carries on without
+          // her rather than taking the draw loop down.
+          for (const d of BLUE_DIRS) {
+            s.loadImage(
+              `/sprites/blue/blue-${d}.png`,
+              (img) => { blueSprites[d] = img; },
+              () => {},
+            );
+          }
         };
 
         s.draw = () => {
@@ -424,8 +546,10 @@ export function OsirisGallery({ pieces, selectedId, onSelect }: OsirisGalleryPro
           }
 
           // Room props sit at fixed world positions and are culled when off-stage,
-          // so walking never makes one pop into a new place.
+          // so walking never makes one pop into a new place. Blue shares the
+          // plinth's depth, and the orb is nearer the viewer than either.
           drawProps(PLINTH_EVERY, PLINTH_PARALLAX, -SLOT * 0.62, drawPlinth);
+          drawBlue();
           drawProps(ORB_EVERY, ORB_PARALLAX, SLOT * 0.5, drawOrb);
         };
 

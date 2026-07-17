@@ -37,18 +37,22 @@
   );
 }
 
-/* Wall label. Museum-issue: small, quiet, slightly to the side. */
+/* Room panel. Museum-issue: small, quiet, slightly to the side. It sits low and
+   left, standing on the floor — up on the wall it is in the path of every
+   hanging that slides past as you walk, and the art wins that argument. */
 .plaque {
   position: absolute;
-  top: 22px;
+  bottom: 18px;
   left: 24px;
   max-width: 300px;
   padding: 14px 16px;
   pointer-events: none;
   border-radius: 2px;
   border: 1px solid rgba(26, 27, 36, 0.14);
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(6px);
+  /* Standing on the floor, it has room props passing behind it. Near-opaque, so
+     it reads as a panel in front of them rather than as a smear over them. */
+  background: rgba(252, 251, 249, 0.95);
+  box-shadow: 0 6px 18px rgba(24, 20, 18, 0.16);
 }
 
 .plaqueEyebrow {
