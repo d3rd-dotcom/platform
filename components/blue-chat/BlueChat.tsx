@@ -606,7 +606,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
     // Chat costs a real $BLUE burn signed by the user's own wallet.
     let burnTxHash: string | undefined;
     if (!isConnected || !connector) {
-      addBlueMessage(`each message costs ${SHARD_COST} diamonds, burned straight from your wallet — connect your wallet and try again.`);
+      addBlueMessage(`each message costs ${SHARD_COST} diamonds, burned straight from your wallet. connect your wallet and try again!`);
       return;
     }
     if (shardCount !== null && shardCount < SHARD_COST) {
@@ -622,7 +622,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
       const code = (err as { code?: string | number })?.code;
       const errMessage = (err as { message?: string })?.message ?? '';
       if (code === 'ACTION_REJECTED' || code === 4001) {
-        addBlueMessage(`no burn, no message — each one costs ${SHARD_COST} diamonds. confirm it in your wallet when you're ready.`);
+        addBlueMessage(`no burn, no message! each one costs ${SHARD_COST} diamonds. confirm it in your wallet when you're ready.`);
       } else if (code === 'INSUFFICIENT_FUNDS' || /insufficient funds/i.test(errMessage)) {
         // Burns are signed by the user's wallet, so the network fee comes
         // from their ETH — an empty gas tank reads like a balance problem.
@@ -656,7 +656,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
 
       if (data.error === 'burn_required' || data.error === 'burn_not_verified' || data.error === 'tx_already_used') {
         setIsTyping(false);
-        addBlueMessage("i couldn't verify that diamond burn yet — give it a few seconds and send your message again.");
+        addBlueMessage("i couldn't verify that diamond burn yet. give it a few seconds and send your message again!");
         return;
       }
 
@@ -770,7 +770,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
         confirmCourseDelete();
       } else {
         setPendingCourseDelete(null);
-        addBlueMessage('kept it — your course is untouched.');
+        addBlueMessage('kept it! your course is untouched.');
       }
       return;
     }
@@ -832,7 +832,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
       setIsTyping(false);
       if (record?.courseData?.title) {
         setPendingCourseDelete(String(record.courseData.title));
-        addBlueMessage(`you've got "${record.courseData.title}". deleting it wipes the course and its progress for good — say "yes" to confirm, anything else keeps it.`);
+        addBlueMessage(`you've got "${record.courseData.title}". deleting it wipes the course and its progress for good. say "yes" to confirm, anything else keeps it.`);
       } else if (record) {
         setPendingCourseDelete('course draft');
         addBlueMessage("you have a course that never finished generating. say \"yes\" and i'll clear it out, anything else keeps it.");
@@ -841,7 +841,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
       }
     } catch {
       setIsTyping(false);
-      addBlueMessage("i couldn't check your course just now — try again in a sec.");
+      addBlueMessage("i couldn't check your course just now. try again in a sec!");
     }
   };
 
@@ -858,9 +858,9 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
       setIsTyping(false);
       if (res.ok && data.deleted) {
         broadcastPersonalCourseUpdated();
-        addBlueMessage('done — your course and its progress are deleted. build a new one from the Courses page whenever.');
+        addBlueMessage('done! your course and its progress are deleted. build a new one from the Courses page whenever.');
       } else if (res.ok) {
-        addBlueMessage("turns out there was no course left to delete — you're already clear.");
+        addBlueMessage("turns out there was no course left to delete. you're already clear!");
       } else {
         addBlueMessage("that delete didn't go through, so your course is still there. try again in a sec.");
       }
@@ -910,14 +910,14 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
         return;
       }
       if (!res.ok || !data.draft) {
-        addBlueMessage("i couldn't draft that one — fill the quest in below and i'll forge it.");
+        addBlueMessage("i couldn't draft that one. fill the quest in below and i'll forge it!");
         return;
       }
       setQuestDraft(data.draft as QuestForgeDraft);
       setQuestDraftNonce((n) => n + 1);
       addBlueMessage('drafted it below. tweak anything, set the reward, and forge it.');
     } catch {
-      addBlueMessage("something glitched drafting that — fill it in below and i'll forge it.");
+      addBlueMessage("something glitched drafting that. fill it in below and i'll forge it!");
     } finally {
       setQuestForgeBusy(false);
     }
@@ -971,7 +971,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
         return;
       }
 
-      addBlueMessage(`confirm the ${escrowLabel} transfer in your wallet — that funds the escrow i hold for "${req.title}".`);
+      addBlueMessage(`confirm the ${escrowLabel} transfer in your wallet. that funds the escrow i hold for "${req.title}".`);
       let txHash: string;
       try {
         const eip1193 = (await connector.getProvider()) as Eip1193Provider;
@@ -981,14 +981,14 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
       } catch (err) {
         const code = (err as { code?: string | number })?.code;
         if (code === 'ACTION_REJECTED' || code === 4001) {
-          addBlueMessage(`no worries — "${req.title}" is saved but stays hidden until it's funded. forge it again when you're ready to send the ${isCredits ? 'diamonds' : 'USDC'}.`);
+          addBlueMessage(`no worries! "${req.title}" is saved but stays hidden until it's funded. forge it again when you're ready to send the ${isCredits ? 'diamonds' : 'USDC'}.`);
         } else {
-          addBlueMessage("that transfer didn't go through. the quest's saved but unfunded — try forging it again.");
+          addBlueMessage("that transfer didn't go through. the quest's saved but unfunded, so try forging it again!");
         }
         return;
       }
 
-      addBlueMessage('got the transfer — confirming it on Base...');
+      addBlueMessage('got the transfer! confirming it on Base...');
       const confirm = await fetch('/api/quests/forge/confirm-funding', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
@@ -997,7 +997,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
       });
       const cdata = await confirm.json().catch(() => ({}));
       if (!confirm.ok) {
-        addBlueMessage(cdata.error || "i got the transfer but couldn't confirm it yet — give it a minute and it'll go live once it settles.");
+        addBlueMessage(cdata.error || "i got the transfer but couldn't confirm it yet. give it a minute and it'll go live once it settles!");
         return;
       }
 
@@ -1006,8 +1006,8 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
       fetchShardCount();
       window.dispatchEvent(new Event('shardsUpdated'));
       addBlueMessage(isCredits
-        ? `funded and live — "${req.title}" pays ${req.rewardAmount} diamonds each${req.targetCount > 1 ? `, up to ${req.targetCount} people` : ''}. the escrow sits in my wallet and i pay every completion onchain.`
-        : `funded and live — "${req.title}" pays $${req.rewardAmount} USDC each. you approve every completion before i release the money.`);
+        ? `funded and live! "${req.title}" pays ${req.rewardAmount} diamonds each${req.targetCount > 1 ? `, up to ${req.targetCount} people` : ''}. the escrow sits in my wallet and i pay every completion onchain.`
+        : `funded and live! "${req.title}" pays $${req.rewardAmount} USDC each. you approve every completion before i release the money.`);
     } catch {
       addBlueMessage('something went wrong forging that quest. try again.');
     } finally {
@@ -1028,7 +1028,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
 
     // Identity
     if (hasAll('who', 'you') || has('who are you', 'what are you', 'your name', 'are you ai', 'are you a bot')) {
-      return "i'm Blue. scientist, researcher, BCI. i'm connected to the AI and to you simultaneously — not a bot, a loop. what do you want to know?";
+      return "i'm Blue! i review quests, pay rewards from my own stash, and remember everything important. everything else i forget immediately. what do you want to know?";
     }
 
     // How are you
@@ -1038,7 +1038,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
 
     // What is MWA / about
     if (has('what is mwa', 'what is mental wealth', 'what\'s mwa', 'about mwa', 'explain mwa', 'tell me about mwa') || (hasAll('what', 'this', 'place')) || (hasAll('what', 'this', 'app'))) {
-      return "the world's first decentralized cohort for mental wellness. course, community, science — on-chain. not a self-help app.";
+      return "the world's first decentralized cohort for mental wellness! course, community, science, all onchain.";
     }
 
     // Founder / who built it
@@ -1048,7 +1048,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
 
     // Discord — check before community so the link always gets surfaced
     if (has('discord', 'server', 'join the community', 'join us')) {
-      return "discord.gg/ZTRVCYwncs — come say hi, we're in there.";
+      return "discord.gg/ZTRVCYwncs. come say hi, we're in there!";
     }
 
     // Credits - how to earn; legacy terms remain recognized.
@@ -1071,7 +1071,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
 
     // Field notes / journaling
     if (has('field notes', 'field note') || (hasAll('journal') && !has('research')) || has('prayer', 'daily writing', 'freewrite')) {
-      return "daily freewriting — no prompts, no grades, just you and the page. do it every day and the streak does the rest.";
+      return "daily freewriting! no prompts, no grades, just you and the page. do it every day and the streak does the rest.";
     }
 
     // Streak
@@ -1081,7 +1081,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
 
     // Course / curriculum / chapters / weeks
     if (has('course', 'lesson', 'curriculum', 'chapter', 'seal', 'pathway', 'week', 'ethereal')) {
-      return "11 chapters of real work — self-awareness to goal setting. complete each week to unlock the next.";
+      return "11 chapters of real work, self-awareness to goal setting. complete each week to unlock the next!";
     }
 
     // Quests
@@ -1091,17 +1091,17 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
 
     // Surveys / assessments
     if (has('survey', 'assessment', 'phq', 'gad', 'questionnaire', 'psychological test')) {
-      return "validated psych assessments — your results make the whole experience more personal. opt-in only.";
+      return "validated psych assessments. your results make the whole experience more personal, and it's opt-in only!";
     }
 
     // Research mode / DeSci
     if (has('research mode', 'proposal', 'grant', 'thesis') || (hasAll('research', 'desci')) || (hasAll('research', 'write'))) {
-      return "research mode is a VIP writing partner for grants, proposals, and thesis chapters — full report drafts you refine section by section. it unlocks with a VIP membership.";
+      return "research mode is a VIP writing partner for grants, proposals, and thesis chapters. full report drafts you refine section by section. it unlocks with a VIP membership!";
     }
 
     // DeSci
     if (has('desci', 'decentralized science', 'decentralised science')) {
-      return "science that isn't locked behind institutions. data, methods, funding — open. that's the whole thing.";
+      return "science that isn't locked behind institutions. data, methods, funding, all open. that's the whole thing!";
     }
 
     // Markets / Kalshi / prediction / trading
