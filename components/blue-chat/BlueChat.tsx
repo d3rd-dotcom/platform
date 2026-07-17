@@ -25,14 +25,14 @@ const ProMembershipModal = dynamic(() => import('../pro-membership-modal/ProMemb
 const VOICE_PREF_KEY = 'blueChat.voiceEnabled';
 
 const GREETINGS_VOICE = [
-  "hey. you called. i'm glad.",
-  "oh, hey. i didn't expect you. but i'm happy you're here.",
   "you're back. i had a feeling you would be.",
+  "you called! i was mid nap. i regret nothing and i'm listening.",
+  "oh, it's you! i dropped everything. i already forget what everything was, so perfect timing.",
 ];
 const GREETINGS_TEXT = [
-  "hey, i'm blue. your research partner in the digital matrix. what are we analyzing today?",
-  "good to see you. what are we looking at?",
-  "you're here. let's get into it.",
+  "you're back! i kept your spot. it's a chat window, but i kept it anyway.",
+  "oh hey, i remember you. i forget half of everything and you're in the half i keep.",
+  "you're here! i was reorganizing my folders. one is just called Shiny Things, it's my best work. what are we into today?",
 ];
 
 // ── Blue Voice TTS ──────────────────────────────────────────
@@ -709,7 +709,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
   // invents a guide and the lookup costs no diamonds.
   const lookupGuides = async (topic: string | null) => {
     if (!ready || !authenticated) {
-      addBlueMessage('sign in first so i can line the guides up against your progress.');
+      addBlueMessage("sign in first! i can't check your progress until i know it's you.");
       return;
     }
     setIsTyping(true);
@@ -722,34 +722,34 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
       const data = await res.json().catch(() => ({}));
       setIsTyping(false);
       if (!res.ok) {
-        addBlueMessage("the knowledge base isn't answering right now — give it a sec and ask again.");
+        addBlueMessage("the knowledge base isn't answering me right now. rude. give it a sec and ask again!");
         return;
       }
       const cards = (data.cards ?? []) as GuideRecommendCard[];
       if (cards.length === 0) {
         if (topic) {
-          addBlueMessage(`no guide on ${topic} yet — the knowledge base is still growing. browse the map on the guides page, or write the definitive one yourself.`);
+          addBlueMessage(`no guide on ${topic} yet! the knowledge base is still growing. browse the map, or write the definitive one yourself. i would read it twice.`);
         } else {
-          addBlueMessage('nothing new is unlocked right now — finish a guide in progress and the frontier opens back up.');
+          addBlueMessage('nothing new is unlocked right now! finish one in progress and the frontier pops back open.');
         }
         return;
       }
       if (!topic) {
         setPendingGuideTopic(true);
-        addBlueMessage('these are open for you right now, every prereq cleared. or name a topic and i\'ll map the path to it.', undefined, cards);
+        addBlueMessage("these are open for you right now, every prereq cleared! or name a topic and i'll map the path to it.", undefined, cards);
         return;
       }
       const blocked = cards.some((c) => !c.ready && !c.completed);
       addBlueMessage(
         blocked
-          ? 'found it in the knowledge base. here\'s the node — and what stands between you and it.'
-          : 'found it in the knowledge base, and nothing is standing in your way. go.',
+          ? 'found it! here is the node, plus the steps between you and it. i checked them twice.'
+          : 'found it, and nothing is standing in your way. go on, open it, i want to see!',
         undefined,
         cards,
       );
     } catch {
       setIsTyping(false);
-      addBlueMessage("the knowledge base isn't answering right now — give it a sec and ask again.");
+      addBlueMessage("the knowledge base isn't answering me right now. rude. give it a sec and ask again!");
     }
   };
 
@@ -781,7 +781,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
         lookupGuides(extractGuideTopic(text) || text.trim());
         return;
       }
-      addBlueMessage('bet. what else?');
+      addBlueMessage("okay! i'll be right here. probably.");
       return;
     }
     if (isCourseDeleteIntent(text)) {
@@ -1374,16 +1374,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
               isBlue ? styles.blueMessage : styles.userMessage
             }`}
           >
-            {isBlue && (
-              <Image
-                src="/splashlogo.png"
-                alt="Blue"
-                width={44}
-                height={29}
-                className={styles.blueAvatar}
-                unoptimized
-              />
-            )}
             <div className={styles.messageBody}>
               <div
                 className={`${styles.messageContentWrap} ${
@@ -1435,14 +1425,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
 
         {isTyping && (
           <div className={`${styles.messageBubble} ${styles.blueMessage} ${styles.typingIndicator}`}>
-            <Image
-              src="/splashlogo.png"
-              alt="Blue"
-              width={44}
-              height={29}
-              className={styles.blueAvatar}
-              unoptimized
-            />
             <div className={styles.messageBody}>
               <div className={styles.messageContent}>
                 <div className={styles.typingDots}>

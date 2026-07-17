@@ -251,16 +251,6 @@
   animation: messageSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Blue's face avatar to the left of her messages */
-
-.blueAvatar {
-  width: 44px;
-  height: auto;
-  flex-shrink: 0;
-  margin-top: 1px;
-  filter: drop-shadow(0 2px 4px rgba(var(--bc-ink), 0.18));
-}
-
 /* Column holding the bubble, attachments, timestamp and debug panel */
 
 .messageBody {
