@@ -31,14 +31,18 @@ Each has a place only if grounded immediately to a concrete mechanism. Standing 
 
 Watch for: *WAGMI, ser, gm, ngmi, frens, anon, based, alpha, degen, ape in, diamond hands, to the moon*.
 
-Zero of these belong in MWA copy. We are internet-savvy but never trend-hopping. The tokens are infrastructure, not the personality. (Diamonds and $BLUE are real product nouns — those are fine.)
+Zero of these belong in MWA copy. We are internet-savvy but never trend-hopping.
+
+## Crypto infrastructure leaking into copy
+
+The chain is a primitive, never the pitch. Grep marketing copy for: *Base, $BLUE, blockchain, onchain, crypto, token, wallet, mint, burn, gas, NFT, DEX, smart contract, transaction hash*, and tickers. All of it is backstage vocabulary — it belongs in `docs/tokenomics/` and technical surfaces only. "Diamonds" and "credits" are the product nouns; describe rewards as real, permanent, and owned, and stop there.
 
 ## Generic AI-product copy
 
 If the page describes a feature ChatGPT, Claude, and 50 other AI products also have, you've underdescribed. What's specific to MWA?
 
 - No: "Our AI is trained to understand you"
-- Yes: "Blue retains memory of every quest you've submitted and uses it to calibrate her review of the next one — then pays the reward from her own Base wallet"
+- Yes: "Blue retains memory of every quest you've submitted and uses it to calibrate her review of the next one — then pays the reward herself, from her own stash"
 
 ## Audience-mixing in one section
 
@@ -63,12 +67,12 @@ Feature titles, nav labels, and section headers name the **category** the user i
 |---|---|
 | Twelve-Week Cohort | A Micro-University For Intellectual Refreshment |
 | AI Reviews Your Progress | A Platform Governed By A Shade Of Blue |
-| A Crypto Token Called Diamonds | A Community Token That Earns Bitcoin |
+| A Crypto Token Called Diamonds | Rewards That Belong To You |
 | Building Research | Parasocial Research Programs |
 | Memory That Compounds | Certified Academic Labs |
-| One NFT, Full Access | Lifetime Membership NFTs You Own Forever |
+| One NFT, Full Access | A Membership You Own Forever |
 
-The pattern: bad titles describe *how it works*. Good titles name *what you're joining*. A short, research-elevated title sets the frame; the sentence below grounds it. Hold the "Earns Bitcoin" line until the ReflectionVault is live on mainnet.
+The pattern: bad titles describe *how it works*. Good titles name *what you're joining*. A short, research-elevated title sets the frame; the sentence below grounds it. Rows three and six also remove the technology from the title entirely — chain vocabulary never reaches marketing (see "Crypto infrastructure leaking into copy").
 
 ## ALL CAPS
 

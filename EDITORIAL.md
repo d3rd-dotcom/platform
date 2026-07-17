@@ -11,7 +11,7 @@ Official site: mentalwealthacademy.world.
 
 ## Introduction
 
-Mental Wealth Academy is a gameworld built around behavioral psychology, custom science tools, and Blue, our AI companion. The ecosystem runs on a blockchain foundation with permanent rewards, ownership, and anonymous-by-default participation.
+Mental Wealth Academy is a gameworld built around behavioral psychology, custom science tools, and Blue, our AI companion. Rewards are permanent and belong to the member, and participation is anonymous by default.
 
 Use this line, or a remixed piece of it, whenever a post needs to explain what we are:
 
@@ -37,7 +37,7 @@ Grounded meaning: small, consistent actions in the present can make the future m
 - Awe and intellectual rebellion, delivered calmly
 - Positive, encouraging, and clear
 - Investigating hidden structures with statistics, theory, and academic framing
-- Cyberpunk philosophy and decentralization, kept legible
+- Cyberpunk philosophy, kept legible
 
 ### We do not sound like
 
@@ -55,7 +55,7 @@ Does this communicate an educational gameworld, an academic angle, or a feature 
 
 **The product:** a co-op, interactive, anonymous-by-default gameworld that feels intellectually refreshing.
 
-**The innovation:** we blend AI, blockchain, and science with gaming in a way that supports education rather than just wrapping a token around a product.
+**The innovation:** we blend AI, behavioral science, and gaming in a way that genuinely supports education.
 
 **The difference:** we are social-first. We use courses, missions, quests, and tools to create micro-learning moments with real rewards, without turning people into targets or leads.
 
@@ -74,9 +74,9 @@ Ultimately, quality education should be open enough to compound into the future.
 ### Gamified Academic Ecosystem
 
 1. **Member** - Access the platform and earn points through courses. This is free.
-2. **Quests** - Staff researchers post bounties for small tasks with real USDC rewards.
+2. **Quests** - Staff researchers post bounties for small tasks with real dollar rewards.
 3. **Blue** - Tracks progress, chats with users, and handles reward flow.
-4. **Diamonds ($BLUE)** - Reputation points that live onchain on Base. Mission and field-note rewards mint straight to the wallet, with no signing and no gas. Quest rewards come from Blue's stash. Diamonds are user-owned and transferable.
+4. **Diamonds** - Reputation points you own. Mission and field-note rewards arrive automatically, with no signing and no fees. Quest rewards come from Blue's own stash. Diamonds are user-owned and transferable.
 5. **Evolve** - Gain knowledge, friends, and access to the Micro-University's tools.
 
 ### Case Studies
@@ -113,7 +113,7 @@ Scientists and academics seeking applied research.
 
 We keep courses free and channel revenue into research and development. Most of the proceeds go back into the DAO for community decision-making. The rest supports publicizing, documenting, and expanding the experiments so more people gain value from them.
 
-Memberships are optional and mainly gate the tools tied to onchain finance. Courses and core educational experiences stay accessible.
+Memberships are optional and mainly gate the advanced finance tools. Courses and core educational experiences stay accessible.
 
 **No subscriptions. Limited team seats are available for purchase.**
 
@@ -122,9 +122,9 @@ Memberships are optional and mainly gate the tools tied to onchain finance. Cour
 - Freemium B2C2B
 - Core products, courses, and guides remain free
 - Upgraded tools and Blue AI features require membership
-- Shop items and cosmetics are sold through the platform token, `$BLUE`
-- Users can also acquire Diamonds through UniSwap or a DEX
-- 1% of sales goes to a Bitcoin treasury on Base, which allocates reflections to `$BLUE` holders
+- Shop items and cosmetics are sold through Diamonds
+
+Token mechanics (tickers, exchanges, treasury flows) are documented in `docs/tokenomics/` and stay out of this book and out of marketing copy. See "Technology Stays Backstage" below.
 
 **Golden win:** a win that makes the next win easier.
 
@@ -142,7 +142,7 @@ Current golden win:
 
 ### Brand Positioning
 
-We are a research cohort for personal development, using agentic smart contracts and a living educational system.
+We are a research cohort for personal development, using autonomous agents and a living educational system.
 
 We are a research organization experimenting with technology in a way that makes quality education easier to access and easier to trust.
 
@@ -255,6 +255,16 @@ The result should feel like a restrained system presence, not decoration for dec
 
 *For writers and content creators*
 
+### Technology Stays Backstage
+
+The chain is a primitive, never the pitch. Marketing and outward-facing copy — landing pages, social posts, threads, ads, emails, press — never name the underlying technology.
+
+Never in marketing copy: Base, $BLUE, blockchain, onchain, crypto, token, wallet, mint, burn, gas, NFT, DEX, smart contract, transaction hash, or any ticker.
+
+Say what the reader gets instead: rewards that are real, permanent, and theirs. "Rewards you own." "Credits Blue pays you herself." "A record that can't be quietly edited." If a sentence needs a chain term to make its point, the sentence belongs in technical documentation, not marketing.
+
+Where the mechanics may appear: `docs/tokenomics/`, developer docs, and product surfaces that exist specifically to show the mechanics (a receipt view, the treasury page). Nowhere else.
+
 ### The Ground Then Elevate Rule
 
 Every poetic or narrative claim should be preceded or followed by its concrete meaning.
@@ -265,7 +275,7 @@ Ungrounded:
 
 Grounded then elevated:
 
-> Blue is an agentic smart contract with memory. She reviews platform data, and submissions and rewards are self-executed. Her characterization makes her feel more like infrastructure than a feature.
+> Blue is an AI agent with memory. She reviews platform data and submissions, and pays rewards herself. Her characterization makes her feel more like infrastructure than a feature.
 
 ### Hierarchy of Information
 
@@ -323,14 +333,12 @@ Feature card titles, nav labels, and section headers should name the category th
 | --- | --- |
 | Twelve-week cohort | A Micro-University For Intellectual Refreshment |
 | AI reviews your progress | A Platform Governed By A Shade Of Blue |
-| A crypto token called Diamonds | A Community Token That Earns Bitcoin |
+| A crypto token called Diamonds | Rewards That Belong To You |
 | Building research | Parasocial Research Programs |
 | Memory that compounds | Certified Academic Labs |
-| One NFT, full access | Lifetime Membership NFTs You Own Forever |
+| One NFT, full access | A Membership You Own Forever |
 
-Hold the "Earns Bitcoin" line until the ReflectionVault is live on mainnet.
-
-The bad version describes how it works. The good version names what you're joining.
+The bad version describes how it works. The good version names what you're joining. Note the third and sixth rows: the fix removes the technology from the title entirely — see Technology Stays Backstage.
 
 ### Before You Publish
 

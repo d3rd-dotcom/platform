@@ -10,7 +10,7 @@ Source of truth: `EDITORIAL.md` (Brand Book v4.0, synced with the Brand Guidelin
 - **Awe and intellectual rebellion, delivered calmly** — big questions about hidden structures, without urgency-bait.
 - **Positive, encouraging, and clear** — the lift comes from concrete wins, not hype adjectives.
 - **Statistics, theory, and academic framing** — we investigate hidden structures and show the work.
-- **Cyberpunk philosophy and decentralization, kept legible.**
+- **Cyberpunk philosophy, kept legible.**
 
 ## We do NOT sound like
 
@@ -28,10 +28,10 @@ If it doesn't land on one of those three concretely, cut it or ground it.
 
 ## What we are (30-second version — memorize)
 
-> **Mental Wealth Academy is a social-first gameworld for learning, research, and rewards.** A gameworld built around behavioral psychology, custom science tools, and Blue, our AI companion, on a blockchain foundation with permanent rewards, ownership, and anonymous-by-default participation.
+> **Mental Wealth Academy is a social-first gameworld for learning, research, and rewards.** A gameworld built around behavioral psychology, custom science tools, and Blue, our AI companion — with permanent rewards, real ownership, and anonymous-by-default participation.
 
 - **The product:** a co-op, interactive, anonymous-by-default gameworld that feels intellectually refreshing.
-- **The innovation:** we blend AI, blockchain, and science with gaming in a way that supports education rather than just wrapping a token around a product.
+- **The innovation:** we blend AI, behavioral science, and gaming in a way that genuinely supports education.
 - **The difference:** social-first. Courses, missions, quests, and tools create micro-learning moments with real rewards, without turning people into targets or leads.
 
 ## Core pillars
@@ -57,6 +57,10 @@ Blue is an RAG model AI agent who reviews MWA archives and treasury activity. To
 
 ## Positioning (internal — keeps us honest)
 
-We are a research cohort for personal development, using agentic smart contracts and a living educational system. Governance means how groups make decisions together; Blue's autonomous judgment is part of the governance layer, and quest completion is part of the self-repair loop.
+We are a research cohort for personal development, using autonomous agents and a living educational system. Governance means how groups make decisions together; Blue's autonomous judgment is part of the governance layer, and quest completion is part of the self-repair loop.
 
 In outward copy, state what we are and let it stand — never define us by contrast.
+
+## Technology stays backstage
+
+Marketing and outward copy never name the infrastructure: no Base, no $BLUE, no blockchain/onchain/crypto/token/wallet/NFT/smart-contract vocabulary, no tickers. Rewards are described by what they mean to the reader — real, permanent, and owned. The mechanics live in `docs/tokenomics/` and technical surfaces only (full rule in `sentence-rules.md`).

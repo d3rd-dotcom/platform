@@ -18,7 +18,7 @@ Reader has no idea what exists, what it does, or why it matters.
 
 ### Good (grounded then elevated)
 
-> "Blue is an agentic smart contract with memory. She reviews platform data and submissions, and the rewards are self-executed. Her characterization makes her feel more like infrastructure than a feature — the mascot of the Academy and a champion for your mental wealth."
+> "Blue is an AI agent with memory. She reviews platform data and submissions, and pays rewards herself. Her characterization makes her feel more like infrastructure than a feature — the mascot of the Academy and a champion for your mental wealth."
 
 Reader knows the function before they meet the story layer.
 
@@ -44,8 +44,10 @@ Replace the left side with the right side wherever you find it:
 | "Fresh perspectives" | "Psychology frameworks most people never encounter" |
 | "Quality storytelling" | "A story layer that makes the technology legible" |
 | "Interactive NPCs" | "Blue, an AI agent who reviews and rewards your work" |
-| "Digital opportunities" | "Diamonds and USDC you actually own" |
-| "Sentient AI fantasy" | "An agentic smart contract operating autonomously" |
+| "Digital opportunities" | "Diamonds and cash bounties that belong to you" |
+| "Sentient AI fantasy" | "An AI agent operating autonomously, within real limits" |
+
+Grounding never reaches for infrastructure vocabulary: no chain names, tickers, or wallet talk in marketing (see `sentence-rules.md`, "Technology stays backstage"). Ground in what the reader gets, not in how the plumbing works.
 
 ## When story-only is OK
 

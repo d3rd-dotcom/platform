@@ -15,6 +15,10 @@ Before writing or accepting any sentence, ask:
 
 If it doesn't land on one of those three concretely, cut it or ground it. This single question catches more drift than every other rule combined.
 
+## Technology stays backstage (hard rule)
+
+The chain is a primitive, never the pitch. Marketing and outward copy never name the infrastructure: no Base, $BLUE, blockchain, onchain, crypto, token, wallet, mint, NFT, smart contract, or tickers. Describe rewards by what they mean to the reader — real, permanent, owned. Mechanics belong in `docs/tokenomics/` and technical surfaces only. Full rule in `references/sentence-rules.md`.
+
 ## Voice in one breath
 
 **Calm, academic, short, sweet.** Internet-aware, never trend-hopping. Calmly skeptical of AI and its hype — awe and intellectual rebellion, delivered with evidence. Positive and encouraging, where the lift comes from concrete wins, not hype adjectives.
@@ -58,6 +62,7 @@ Most drafts jump straight to #4 without earning #1–3. Reorder before publishin
 - Cut every sentence that sounds cool but means nothing?
 - Did I avoid "this is X, not Y" phrasing?
 - No recruiter/referral-bait, no corporate-wellness or vague self-help tells?
+- No chain, token, or wallet vocabulary anywhere in a marketing surface?
 - Would an investor understand this? Would an artist feel it?
 
 If any answer is "no," go back to the relevant reference and revise.

@@ -1,4 +1,6 @@
-# Mental Wealth Academy - Brand Identity
+# Mental Wealth Academy - Brand Identity (v3 — superseded, do not use)
+
+> Historical archive only. This version is superseded by `EDITORIAL.md` (v4.0) at the repo root. Do not quote, distill, or feed this file into any prompt, skill, or marketing tool — its framing (blockchain foundation, cohort language, DAO, Tsukuyomi, token positioning) is retired. Current rule: infrastructure vocabulary never appears in marketing (see EDITORIAL.md, "Technology Stays Backstage").
 
 *Investing in the future of humanity, with the heart of tomorrow ʚїɞ*
 

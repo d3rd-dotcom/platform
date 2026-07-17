@@ -35,10 +35,15 @@ Short sentences carry weight. Use periods.
 | Generic | Specific |
 |---|---|
 | "users" | "members" or "participants" |
-| "rewards" | "Diamonds ($BLUE)" or "real USDC" |
+| "rewards" | name the actual reward: "credits", "Diamonds", "a cash bounty" — never a ticker or chain name |
 | "the platform" | name the actual surface (the gameworld, the quest board, the courses page) |
-| "AI" | "Blue" (when it's her) or "an agentic smart contract with memory" (the underlying tech) |
-| "blockchain" | "onchain, on Base" — and "onchain" is one word |
+| "AI" | "Blue" (when it's her) or "an AI agent with memory" |
+
+## Technology stays backstage (hard rule)
+
+Marketing and outward copy never name the underlying technology. Banned in marketing: *Base, $BLUE, blockchain, onchain, crypto, token, wallet, mint, burn, gas, NFT, DEX, smart contract, transaction hash*, and any ticker (including USDC — say "cash" or "a dollar bounty").
+
+Say what the reader gets: rewards that are real, permanent, and theirs. If a sentence needs a chain term to land, it belongs in `docs/tokenomics/` or a technical surface, not in copy. In the rare technical surface where the mechanics ARE the content, "onchain" is one word.
 
 ## Numbers
 
@@ -51,7 +56,7 @@ Use a real, current number when it changes the reader's understanding. Pull it f
 
 ## Capitalization
 
-Title Case is fine for feature titles and section headers. Never set words or headings in all caps — including inside prompt examples. Her name is written **Blue** in user-facing copy; use `BLUE` or `$BLUE` only for the token, code, and contract identifiers.
+Title Case is fine for feature titles and section headers. Never set words or headings in all caps — including inside prompt examples. Her name is written **Blue** in user-facing copy; `BLUE` appears only in code and contract identifiers, and never in marketing.
 
 ## The cut test
 

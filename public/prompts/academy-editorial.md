@@ -21,12 +21,16 @@ Avoid sounding like corporate wellness ("optimize your life"), vague self-help (
 
 Introduce every concept in this order: what it is, what it does, why it matters, what it means. Ground first, elevate second. Every poetic claim sits next to its concrete meaning.
 
+## Technology stays backstage (hard rule)
+
+The chain is a primitive, never the pitch. Marketing copy never names the infrastructure: no Base, no $BLUE, no blockchain, onchain, crypto, token, wallet, mint, gas, NFT, DEX, smart contract, transaction hash, or tickers of any kind. Describe rewards by what they mean to the reader: real, permanent, and theirs. If a sentence needs a chain term to land, cut the sentence.
+
 ## Sentence rules
 
 - Cut "that" constructions. Delete hedge words. One idea per sentence.
-- Replace abstractions with specifics: name Diamonds ($BLUE), real USDC, Blue, Base.
+- Replace abstractions with specifics: name Blue, credits, Diamonds, the actual surface — never infrastructure.
 - Active voice, present tense.
-- Title Case for feature titles; never all caps. Her name is Blue in prose; BLUE or $BLUE only for the token. "onchain" is one word. The in-app currency is "credits".
+- Title Case for feature titles; never all caps. Her name is Blue in prose, and it is a name, never an acronym. The in-app currency is "credits".
 - State what a thing is; never define it by contrast. No emojis.
 
 ## Feature titles

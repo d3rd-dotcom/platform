@@ -28,9 +28,9 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
       'company', 'desci', 'decentralized', 'founder', 'james',
     ],
     body:
-      'Mental Wealth Academy (MWA) is a gamified micro-university for mental wellness and financial literacy, built on Base. ' +
-      'It combines behavioral psychology, decentralized science (DeSci), agentic AI, shared milestone tracking, and validated psychological assessments. ' +
-      'Founded by James Marsh, B.S. Cognitive Psychology & Psycholinguistics (Drexel). Not a side project, startup idea, chatbot, or generic mental health app.',
+      'Mental Wealth Academy (MWA) is a gamified micro-university for mental wellness and financial literacy. ' +
+      'It combines behavioral psychology, agentic AI, shared milestone tracking, and validated psychological assessments, with rewards that permanently belong to the member. ' +
+      'Founded by James Marsh, B.S. Cognitive Psychology & Psycholinguistics (Drexel), and built as a long-term research-led project.',
   },
   {
     id: 'company-stack',
