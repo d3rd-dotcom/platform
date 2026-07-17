@@ -22,7 +22,7 @@ FROM guides g
 JOIN (VALUES
   (
     'Notebook',
-    '/images/shop/thesis-notebook.webp',
+    '/images/shop/ethereal-notebook-preview.webp',
     '/shop#notebook',
     'internal_shop',
     'Daily entries have a home.',
@@ -49,3 +49,12 @@ JOIN (VALUES
   )
 ) AS m(name, image_url, link_url, link_type, rationale, price_label, sort_order)
   ON g.slug = 'journaling-practice';
+
+-- Every remaining row now complies, so validate. The 30-char cap is a real rule
+-- for how a card description is written, not a display truncation: a card that
+-- needs two sentences is a card that has not been edited down yet.
+ALTER TABLE guide_materials
+  VALIDATE CONSTRAINT guide_materials_rationale_length_check;
+
+ALTER TABLE guide_materials
+  VALIDATE CONSTRAINT guide_materials_price_label_usdc_check;
