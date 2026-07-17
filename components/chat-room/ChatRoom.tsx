@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import { getSupabase } from '@/lib/supabase';
 import type { RealtimeChannel } from '@supabase/supabase-js';
@@ -74,8 +74,13 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
   const oldestIdRef = useRef<number | null>(null);
   const newestIdRef = useRef<number | null>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
-  const bottomRef = useRef<HTMLDivElement>(null);
   const subRef = useRef<RealtimeChannel>();
+  // Stick-to-bottom state: pinned means the user is at (or near) the newest
+  // message and the list should follow new arrivals. Scrolling up to read
+  // history unpins; returning to the bottom re-pins.
+  const pinnedRef = useRef(true);
+  const didInitialScrollRef = useRef(false);
+  const prependRef = useRef<{ scrollHeight: number; scrollTop: number } | null>(null);
 
   // ── Fetch new messages after a given id ──
   const fetchAfter = useCallback(async (afterId: number) => {
@@ -110,6 +115,10 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
       const data = await res.json();
       if (Array.isArray(data.messages) && data.messages.length > 0) {
         const mapped = data.messages.map(mapMessage);
+        const el = listRef.current;
+        if (el) {
+          prependRef.current = { scrollHeight: el.scrollHeight, scrollTop: el.scrollTop };
+        }
         setMessages((prev) => [...mapped, ...prev]);
         oldestIdRef.current = mapped[0].id;
         setHasMore(data.hasMore ?? false);
@@ -143,29 +152,56 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
     }
   }, []);
 
-  // ── Always scroll to bottom when messages update ──
-  useEffect(() => {
-    if (bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: 'instant', block: 'end' });
+  // ── Keep the viewport stable as messages change ──
+  // Only ever scrolls the list element itself (scrollIntoView also scrolled
+  // ancestor containers, which left the chat resting mid-list on /dao).
+  useLayoutEffect(() => {
+    const el = listRef.current;
+    if (!el || messages.length === 0) return;
+
+    // Older messages were prepended: keep the user anchored on the message
+    // they were reading instead of yanking them anywhere.
+    const prepend = prependRef.current;
+    if (prepend) {
+      prependRef.current = null;
+      el.scrollTop = el.scrollHeight - prepend.scrollHeight + prepend.scrollTop;
+      return;
+    }
+
+    if (pinnedRef.current) {
+      el.scrollTop = el.scrollHeight;
+      if (!didInitialScrollRef.current) {
+        didInitialScrollRef.current = true;
+        // Fonts and first paint can land after this effect and leave the
+        // first scroll short of the true bottom; settle on the next frame.
+        requestAnimationFrame(() => {
+          if (pinnedRef.current && listRef.current) {
+            listRef.current.scrollTop = listRef.current.scrollHeight;
+          }
+        });
+      }
     }
   }, [messages]);
 
-  // ── Infinite scroll for older messages ──
+  // ── Track pinned state + infinite scroll for older messages ──
   const handleScroll = useCallback(() => {
-    if (!listRef.current) return;
-    const { scrollTop } = listRef.current;
-    if (scrollTop < 60 && hasMore && !loadingOlder) {
+    const el = listRef.current;
+    if (!el) return;
+    pinnedRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < 48;
+    if (el.scrollTop < 60 && hasMore && !loadingOlder && didInitialScrollRef.current) {
       loadOlder();
     }
   }, [hasMore, loadingOlder, loadOlder]);
 
   // ── IntersectionObserver for sentinel (more robust infinite scroll) ──
+  // Gated until the initial bottom-scroll has landed; before that the list
+  // sits at the top and the sentinel would trigger a load immediately.
   useEffect(() => {
     const sentinel = sentinelRef.current;
     if (!sentinel) return;
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore && !loadingOlder) {
+        if (entries[0].isIntersecting && hasMore && !loadingOlder && didInitialScrollRef.current) {
           loadOlder();
         }
       },
@@ -315,6 +351,8 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
         type: 'user',
         createdAt: data.message.created_at,
       };
+      // Sending always returns you to the newest messages.
+      pinnedRef.current = true;
       setMessages((prev) => {
         if (prev.some((m) => m.id === optimistic.id)) return prev;
         return [...prev, optimistic];
@@ -403,7 +441,6 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
             </div>
           ))
         )}
-        <div ref={bottomRef} />
       </div>
 
       <div className={styles.chatInputWrap}>
