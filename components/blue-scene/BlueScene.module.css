@@ -163,16 +163,18 @@
   display: flex;
   flex: 1;
   overflow: hidden;
-  background: linear-gradient(180deg, #2e3342 0%, #1d2130 100%);
+  background: #fdfdfd url('/backgrounds/molecules-tile.webp') repeat center;
+  background-size: 370px 370px;
 }
 
+/* Soft wash that fades the pattern behind Blue so she stays the subject. */
 .radioGlow {
   position: absolute;
   inset: 0;
   background: radial-gradient(
-    ellipse 62% 55% at 50% 46%,
-    color-mix(in oklch, var(--color-primary) 34%, transparent) 0%,
-    transparent 70%
+    ellipse 62% 58% at 50% 46%,
+    rgba(255, 255, 255, 0.78) 0%,
+    rgba(255, 255, 255, 0) 74%
   );
   pointer-events: none;
 }
@@ -190,7 +192,7 @@
   height: 100%;
   max-width: 92%;
   object-fit: contain;
-  filter: drop-shadow(0 14px 30px rgba(0, 0, 0, 0.45));
+  filter: drop-shadow(0 14px 30px rgba(26, 29, 51, 0.28));
 }
 
 .radioTuneIn {
