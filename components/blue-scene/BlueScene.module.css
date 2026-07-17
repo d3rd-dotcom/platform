@@ -89,9 +89,7 @@
   display: flex;
   align-items: stretch;
   justify-content: stretch;
-  background:
-    radial-gradient(circle at 50% 36%, color-mix(in oklch, var(--color-primary) 25%, transparent), transparent 42%),
-    var(--color-grey-950);
+  background: #3a3f4d;
 }
 
 .liveFrame {

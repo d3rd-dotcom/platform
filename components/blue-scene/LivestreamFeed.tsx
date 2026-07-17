@@ -21,9 +21,8 @@ export default function LivestreamFeed() {
               <circle cx="8" cy="12" r="2" fill="currentColor" opacity="0.4" />
             </svg>
           </span>
-          <h2 className={styles.offlineTitle}>Stream offline</h2>
-          <p className={styles.offlineText}>Live workshops and community sessions will appear here.</p>
-          <span className={styles.offlineStatus}>Next session coming soon</span>
+          <h2 className={styles.offlineTitle}>We'll be back shortly :)</h2>
+          <p className={styles.offlineText}>Gather your thoughts and your notebooks and relax</p>
         </div>
       )}
     </div>
