@@ -93,7 +93,7 @@ function balloonDialogue(pops: number): Dialogue {
 
 export default function BlueScene() {
   const { play } = useSound();
-  const [view, setView] = useState<'garden' | 'live'>('garden');
+  const [view, setView] = useState<'garden' | 'live'>('live');
   const [balloons, setBalloons] = useState<Balloon[]>([]);
   const [sessionPops, setSessionPops] = useState(0);
   const [communityTotal, setCommunityTotal] = useState<number | null>(null);
