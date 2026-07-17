@@ -163,19 +163,40 @@
   display: flex;
   flex: 1;
   overflow: hidden;
-  background: #fdfdfd url('/backgrounds/molecules-tile.webp') repeat center;
-  background-size: 370px 370px;
+  background-color: color-mix(in oklch, var(--color-grey-950) 76%, var(--color-primary));
+  background-image:
+    radial-gradient(
+      circle at 74% 24%,
+      color-mix(in oklch, var(--color-primary) 38%, transparent),
+      transparent 42%
+    ),
+    radial-gradient(
+      circle at 18% 78%,
+      color-mix(in oklch, var(--color-accent) 30%, transparent),
+      transparent 48%
+    ),
+    url('/backgrounds/molecules-tile.webp');
+  background-position: center;
+  background-repeat: no-repeat, no-repeat, repeat;
+  background-size: 100% 100%, 100% 100%, 370px 370px;
+  background-blend-mode: screen, screen, multiply;
 }
 
-/* Soft wash that fades the pattern behind Blue so she stays the subject. */
+/* Blue-lit center and dark edges keep the pattern atmospheric behind her. */
 .radioGlow {
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    ellipse 62% 58% at 50% 46%,
-    rgba(255, 255, 255, 0.78) 0%,
-    rgba(255, 255, 255, 0) 74%
-  );
+  background:
+    radial-gradient(
+      ellipse 60% 58% at 50% 43%,
+      color-mix(in oklch, var(--color-primary) 30%, transparent) 0%,
+      transparent 68%
+    ),
+    radial-gradient(
+      ellipse at center,
+      transparent 44%,
+      color-mix(in oklch, var(--color-grey-950) 68%, transparent) 100%
+    );
   pointer-events: none;
 }
 
@@ -193,6 +214,29 @@
   max-width: 92%;
   object-fit: contain;
   filter: drop-shadow(0 14px 30px rgba(26, 29, 51, 0.28));
+  opacity: 1;
+  transition: opacity 0.35s ease;
+}
+
+.radioBlueHidden {
+  opacity: 0;
+}
+
+.radioVrmCanvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.radioVrmCanvasReady {
+  opacity: 1;
+}
+
+.radioVrmCanvas canvas {
+  display: block;
 }
 
 .radioTuneIn {
@@ -219,7 +263,7 @@
 }
 
 .radioTuneInText {
-  max-width: 380px;
+  max-width: 320px;
   margin: 0 0 6px;
   color: color-mix(in oklch, var(--color-text-light) 76%, transparent);
   font-family: var(--font-body);
@@ -357,8 +401,11 @@
 @media (prefers-reduced-motion: reduce) {
   .radioLiveDotOn,
   .radioBars span,
-  .radioMuteButtonLoud {
+  .radioMuteButtonLoud,
+  .radioBlue,
+  .radioVrmCanvas {
     animation: none;
+    transition: none;
   }
 }
 

@@ -1,12 +1,16 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import CtaButton from '@/components/shared/CtaButton';
 import manifest from '@/lib/blue-radio-manifest.json';
 import styles from './BlueScene.module.css';
 
+const BlueVrmStage = dynamic(() => import('./BlueVrmStage'), { ssr: false });
+
 type Playback = 'connecting' | 'live' | 'blocked';
+type AvatarState = 'loading' | 'ready' | 'fallback';
 
 interface RadioSegment {
   id: string;
@@ -35,9 +39,48 @@ function livePosition(): { index: number; offset: number } {
 export default function BlueRadio() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const audioSourceRef = useRef<MediaElementAudioSourceNode | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
   const [playback, setPlayback] = useState<Playback>('connecting');
   const [muted, setMuted] = useState(false);
+  const [avatarState, setAvatarState] = useState<AvatarState>('loading');
   const [segmentIndex, setSegmentIndex] = useState(() => livePosition().index);
+
+  const ensureAudioAnalyser = useCallback(async () => {
+    const audio = audioRef.current;
+    if (!audio || analyserRef.current || typeof window === 'undefined') return;
+
+    const AudioContextConstructor =
+      window.AudioContext ??
+      (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (!AudioContextConstructor) return;
+
+    const context = audioContextRef.current ?? new AudioContextConstructor();
+    audioContextRef.current = context;
+
+    if (context.state !== 'running') {
+      try {
+        await context.resume();
+      } catch {
+        return;
+      }
+    }
+    if (context.state !== 'running' || analyserRef.current) return;
+
+    try {
+      const source = context.createMediaElementSource(audio);
+      const analyser = context.createAnalyser();
+      analyser.fftSize = 256;
+      analyser.smoothingTimeConstant = 0.45;
+      source.connect(analyser);
+      analyser.connect(context.destination);
+      audioSourceRef.current = source;
+      analyserRef.current = analyser;
+    } catch {
+      // Playback remains usable if this browser cannot expose a media source.
+    }
+  }, []);
 
   const syncToLive = useCallback(async (wantMuted: boolean) => {
     const audio = audioRef.current;
@@ -57,9 +100,10 @@ export default function BlueRadio() {
       // Metadata not ready yet; onLoadedMetadata below re-seeks.
     }
     await audio.play();
+    void ensureAudioAnalyser();
     setMuted(wantMuted);
     setPlayback('live');
-  }, []);
+  }, [ensureAudioAnalyser]);
 
   // Tuning in on arrival, per the app-wide auto-narration default. Browsers
   // that refuse sound without a gesture get a muted broadcast plus a loud
@@ -84,6 +128,16 @@ export default function BlueRadio() {
       audio?.pause();
     };
   }, [syncToLive]);
+
+  useEffect(() => {
+    return () => {
+      audioSourceRef.current?.disconnect();
+      analyserRef.current?.disconnect();
+      if (audioContextRef.current) {
+        void audioContextRef.current.close();
+      }
+    };
+  }, []);
 
   // Re-seek once the segment's metadata is in, so the first audible moment
   // matches the broadcast clock instead of the segment's opening line.
@@ -128,7 +182,8 @@ export default function BlueRadio() {
     if (!audio) return;
     audio.muted = !audio.muted;
     setMuted(audio.muted);
-  }, []);
+    void ensureAudioAnalyser();
+  }, [ensureAudioAnalyser]);
 
   const tuneIn = useCallback(() => {
     syncToLive(false).catch(() => setPlayback('blocked'));
@@ -136,6 +191,8 @@ export default function BlueRadio() {
 
   const segment = SEGMENTS[segmentIndex];
   const onAir = playback === 'live';
+  const handleAvatarReady = useCallback(() => setAvatarState('ready'), []);
+  const handleAvatarError = useCallback(() => setAvatarState('fallback'), []);
 
   return (
     <div className={styles.radioStage}>
@@ -147,15 +204,24 @@ export default function BlueRadio() {
           width={742}
           height={705}
           priority
-          className={styles.radioBlue}
+          className={`${styles.radioBlue} ${avatarState === 'ready' ? styles.radioBlueHidden : ''}`}
         />
+        {avatarState !== 'fallback' && (
+          <BlueVrmStage
+            active={onAir}
+            analyserRef={analyserRef}
+            audioRef={audioRef}
+            onError={handleAvatarError}
+            onReady={handleAvatarReady}
+          />
+        )}
       </div>
 
       {playback === 'blocked' && (
         <div className={styles.radioTuneIn}>
           <span className={styles.radioTuneInKicker}>Blue Radio</span>
           <p className={styles.radioTuneInText}>
-            Live from Mental Wealth Academy, all day and all night.
+            Live from the Academy, day and night.
           </p>
           <CtaButton onClick={tuneIn}>Tune in</CtaButton>
         </div>
