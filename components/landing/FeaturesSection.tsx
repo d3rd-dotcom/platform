@@ -13,7 +13,7 @@ const featureCards = [
     details: ['Level-up and earn xp + rewards', 'Join a cohort of amazing builders and creators'],
   },
   {
-    title: 'Community Based',
+    title: 'An Organism of Thought',
     description:
       'The community uses Blue to turn what you are learning into real quests with real cash prizes.',
     details: ['Blue reviews every submission', 'Real USDC when you pass'],
@@ -21,8 +21,8 @@ const featureCards = [
   {
     title: 'Invest In Your Future',
     description:
-      'Mental Wealth is about creating a new form of digital space, and ecosystem that invests back in your future.',
-    details: ['Gasless mints on Base', 'User-owned and transferable'],
+      'Mental Wealth creates new forms of digital space and value that continually accrues value for participating.',
+    details: ['Bitcoin rewards for contributions', 'Non-extractive incentives bring curation and trust'],
   },
 ];
 
