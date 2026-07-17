@@ -1,0 +1,558 @@
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import type p5 from 'p5';
+import { paintPiece, type PaintedPiece, type Piece } from './snpArt';
+import styles from './OsirisGallery.module.css';
+
+interface OsirisGalleryProps {
+  pieces: Piece[];
+  selectedId?: string | null;
+  onSelect: (piece: Piece) => void;
+}
+
+/** World spacing between hangings, in canvas pixels. */
+const SLOT = 620;
+/** Source resolution of a painted buffer. Display size is derived from the wall. */
+const ART_W = 660;
+const ART_H = 440;
+const MAX_CACHED = 28;
+
+/* Room props. Parallax above 1 puts a prop nearer the viewer than the wall. */
+const PLINTH_PARALLAX = 1.15;
+const PLINTH_EVERY = SLOT * 4;
+const ORB_PARALLAX = 1.45;
+const ORB_EVERY = SLOT * 3;
+
+export function OsirisGallery({ pieces, selectedId, onSelect }: OsirisGalleryProps) {
+  const hostRef = useRef<HTMLDivElement>(null);
+
+  // The sketch is built once. Everything it needs to read lives in refs, so
+  // new search results never tear down the room.
+  const piecesRef = useRef(pieces);
+  const onSelectRef = useRef(onSelect);
+  const targetRef = useRef(0);
+  const [focusIndex, setFocusIndex] = useState(0);
+
+  piecesRef.current = pieces;
+  onSelectRef.current = onSelect;
+
+  // Selecting from the terminal below should walk the gallery to that piece.
+  useEffect(() => {
+    if (!selectedId) return;
+    const idx = pieces.findIndex((p) => p.id === selectedId);
+    if (idx >= 0) targetRef.current = idx * SLOT;
+  }, [selectedId, pieces]);
+
+  useEffect(() => {
+    let instance: p5 | null = null;
+    let cancelled = false;
+
+    (async () => {
+      const P5 = (await import('p5')).default;
+      if (cancelled || !hostRef.current) return;
+
+      /**
+       * p5's Element.remove() throws on graphics buffers in some construction
+       * paths. Disposal happens inside draw() (the room rebakes on resize), and
+       * p5 schedules the next frame from inside redraw — so an throwing cleanup
+       * kills the loop permanently and the room goes blank for good. Freeing a
+       * buffer is best-effort; dropping the reference is enough.
+       */
+      const disposeGraphics = (g: p5.Graphics | null | undefined) => {
+        if (!g) return;
+        try {
+          g.remove();
+        } catch {
+          /* GC will take it */
+        }
+      };
+
+      const sketch = (s: p5) => {
+        const cache = new Map<string, PaintedPiece>();
+        const order: string[] = [];
+        let camX = 0;
+        let dragging = false;
+        let dragStartX = 0;
+        let dragStartCam = 0;
+        let moved = 0;
+
+        const artFor = (piece: Piece): PaintedPiece => {
+          const hit = cache.get(piece.id);
+          if (hit) return hit;
+          const painted = paintPiece(s, piece, ART_W, ART_H);
+          cache.set(piece.id, painted);
+          order.push(piece.id);
+          while (order.length > MAX_CACHED) {
+            const evict = order.shift();
+            if (evict && evict !== piece.id) {
+              const dead = cache.get(evict);
+              disposeGraphics(dead?.art);
+              disposeGraphics(dead?.reflection);
+              cache.delete(evict);
+            }
+          }
+          return painted;
+        };
+
+        const horizonY = () => s.height * 0.74;
+
+        /**
+         * Hangings are sized by the wall, never by a constant — the room has to
+         * hold at any viewport, with air around each piece and a gap between them.
+         */
+        const metrics = () => {
+          const hy = horizonY();
+          let h = hy * 0.58;
+          let w = h * (ART_W / ART_H);
+          const maxW = SLOT * 0.62;
+          if (w > maxW) {
+            w = maxW;
+            h = w * (ART_H / ART_W);
+          }
+          return { hy, artW: w, artH: h };
+        };
+
+        /*
+         * The room is mostly static: the wall gradient, the oak gradient and the
+         * floor sheen never depend on where you are standing. Redrawing them per
+         * frame means hundreds of canvas-sized ellipses and the whole thing stalls,
+         * so they are baked once per resize and blitted.
+         */
+        let roomBuf: p5.Graphics | null = null;
+        let sheenBuf: p5.Graphics | null = null;
+        let poolBuf: p5.Graphics | null = null;
+        let poolW = 0;
+        let poolH = 0;
+
+        /** Built lazily from draw(), so it can never bake at a size of zero. */
+        const buildRoom = () => {
+          const W = s.width;
+          const H = s.height;
+          if (W < 2 || H < 2) return;
+
+          disposeGraphics(roomBuf);
+          disposeGraphics(sheenBuf);
+          disposeGraphics(poolBuf);
+
+          const hy = horizonY();
+
+          // Wall, oak, and the shadow where they meet.
+          const r = s.createGraphics(W, H);
+          r.noStroke();
+          for (let y = 0; y < hy; y += 2) {
+            const t = y / hy;
+            const v = 246 - t * 18;
+            r.fill(v, v - 1, v - 3);
+            r.rect(0, y, W, 3);
+          }
+          for (let y = hy; y < H; y += 2) {
+            const t = (y - hy) / (H - hy);
+            r.fill(108 + t * 78, 71 + t * 52, 40 + t * 30);
+            r.rect(0, y, W, 3);
+          }
+          for (let i = 0; i < 16; i += 1) {
+            r.fill(120, 112, 104, 5);
+            r.rect(0, hy - i * 1.6, W, 2);
+          }
+          roomBuf = r;
+
+          // Polished floors carry the room's light back up at you. Kept wider than
+          // the canvas so the falloff never resolves into a visible edge.
+          const sh = s.createGraphics(W, H);
+          sh.noStroke();
+          for (let i = 0; i < 26; i += 1) {
+            const f = i / 26;
+            sh.fill(255, 246, 226, 3);
+            sh.ellipse(
+              W / 2,
+              hy + (H - hy) * 0.62,
+              W * (3.4 - f * 2.2),
+              (H - hy) * (2.2 - f * 1.5),
+            );
+          }
+          sheenBuf = sh;
+
+          // One ceiling fixture's pool of light, stamped wherever a fixture hangs.
+          poolW = Math.max(2, Math.ceil(W * 0.34));
+          poolH = Math.max(2, Math.ceil(hy * 0.5));
+          const pb = s.createGraphics(poolW, poolH);
+          pb.noStroke();
+          for (let i = 18; i > 0; i -= 1) {
+            const f = i / 18;
+            pb.fill(255, 253, 244, 4);
+            pb.ellipse(poolW / 2, poolH / 2, poolW * f, poolH * f);
+          }
+          poolBuf = pb;
+        };
+
+        const drawRoom = () => {
+          if (!roomBuf || !sheenBuf || !poolBuf) return;
+          const hy = horizonY();
+          const vpX = s.width / 2;
+
+          s.image(roomBuf, 0, 0);
+
+          // Ceiling fixtures drift past as you walk.
+          const first = Math.floor((camX - s.width) / SLOT) - 1;
+          const last = Math.ceil((camX + s.width) / SLOT) + 1;
+          for (let i = first; i <= last; i += 1) {
+            const x = s.width / 2 + (i * SLOT - camX);
+            s.image(poolBuf, x - poolW / 2, hy * 0.02 - poolH / 2);
+          }
+
+          // Plank seams run away from the viewer and converge at the vanishing
+          // point. These are the only part of the floor that moves, and they are
+          // lines, so they stay cheap.
+          const plankW = 78;
+          const spread = s.width * 2.4;
+          const startX = Math.floor((camX - spread / 2) / plankW) * plankW;
+          s.strokeWeight(1.4);
+          s.stroke(58, 36, 20, 90);
+          for (let wx = startX; wx < camX + spread / 2; wx += plankW) {
+            const bx = s.width / 2 + (wx - camX) * 2.1;
+            s.line(bx, s.height, vpX, hy);
+          }
+
+          // Cross-cuts, compressed toward the horizon.
+          s.strokeWeight(1);
+          s.stroke(58, 36, 20, 55);
+          for (let i = 1; i < 22; i += 1) {
+            const t = i / 22;
+            s.line(0, hy + (s.height - hy) * Math.pow(t, 2.4), s.width, hy + (s.height - hy) * Math.pow(t, 2.4));
+          }
+          s.noStroke();
+
+          s.image(sheenBuf, 0, 0);
+        };
+
+        /** Screen geometry for a hanging, or null if it is off-stage. */
+        const layout = (i: number) => {
+          const { hy, artW, artH } = metrics();
+          const dx = i * SLOT - camX;
+          const sx = s.width / 2 + dx;
+          if (sx < -artW || sx > s.width + artW) return null;
+
+          // Faux depth: pieces read as further along the wall as they leave centre.
+          const off = Math.min(1, Math.abs(dx) / (s.width * 0.75));
+          const scale = 1 - off * 0.2;
+          return { sx, sy: hy * 0.46, w: artW * scale, h: artH * scale, off, dx };
+        };
+
+        const drawHanging = (piece: Piece, i: number) => {
+          const L = layout(i);
+          if (!L) return;
+          const { art, reflection } = artFor(piece);
+          const x = L.sx - L.w / 2;
+          const y = L.sy - L.h / 2;
+          const alpha = 255 * (1 - L.off * 0.42);
+
+          // Cast shadow on the wall.
+          s.noStroke();
+          for (let d = 10; d > 0; d -= 1) {
+            s.fill(90, 84, 78, 4);
+            s.rect(x - d, y - d + 6, L.w + d * 2, L.h + d * 2, 3);
+          }
+
+          s.push();
+          s.tint(255, alpha);
+          s.image(art, x, y, L.w, L.h);
+          s.pop();
+
+          // Thin museum frame.
+          s.noFill();
+          s.strokeWeight(2);
+          s.stroke(28, 26, 30, alpha * 0.8);
+          s.rect(x, y, L.w, L.h);
+
+          // The piece spills its light onto the floor. The falloff is baked into the
+          // buffer, so this stays one draw call.
+          const hy = horizonY();
+          s.push();
+          s.tint(255, 58 * (1 - L.off * 0.5));
+          s.image(reflection, x, hy, L.w, L.h * 0.62);
+          s.pop();
+
+          // Selected piece gets a warm accent line under it.
+          if (piece.id === piecesRef.current[Math.round(camX / SLOT)]?.id) {
+            s.strokeWeight(2);
+            s.stroke(214, 178, 96, 190);
+            s.line(L.sx - L.w * 0.16, y + L.h + 14, L.sx + L.w * 0.16, y + L.h + 14);
+          }
+        };
+
+        /** A plinth with something dark and unresolved on top of it. */
+        const drawPlinth = (worldX: number) => {
+          const hy = horizonY();
+          const x = s.width / 2 + (worldX - camX) * PLINTH_PARALLAX;
+          if (x < -260 || x > s.width + 260) return;
+
+          const topY = hy + 22;
+          const w = 96;
+          const h = s.height - topY - 40;
+
+          s.noStroke();
+          s.fill(20, 18, 22, 40);
+          s.ellipse(x + 10, topY + h + 6, w * 2.1, 20);
+
+          s.fill(238, 236, 232);
+          s.rect(x - w / 2, topY, w, h);
+          s.fill(214, 211, 206);
+          s.rect(x + w / 2 - 16, topY, 16, h);
+          s.fill(250, 249, 246);
+          s.rect(x - w / 2, topY, w, 6);
+
+          // The sculpture: a figure that never quite finishes assembling.
+          s.fill(26, 24, 28);
+          s.push();
+          s.translate(x, topY);
+          s.ellipse(0, -74, 26, 30);
+          s.rect(-13, -62, 26, 38, 4);
+          s.rect(-24, -58, 11, 32, 3);
+          s.rect(13, -58, 11, 32, 3);
+          s.rect(-12, -24, 10, 24, 2);
+          s.rect(2, -24, 10, 24, 2);
+          s.pop();
+        };
+
+        /** The orb. Iridescent, patient, always slightly off the ground. */
+        const drawOrb = (worldX: number) => {
+          // Closer to the viewer than the wall, so it parallaxes faster.
+          const x = s.width / 2 + (worldX - camX) * ORB_PARALLAX;
+          if (x < -400 || x > s.width + 400) return;
+
+          // Sized off the room, so it stays the same object at any viewport.
+          const r = s.height * 0.17;
+          const bob = Math.sin(s.frameCount * 0.012) * 6;
+          const cy = s.height - r * 0.8 + bob;
+
+          s.noStroke();
+          s.fill(30, 22, 18, 42);
+          s.ellipse(x, s.height - r * 0.08, r * 1.7, r * 0.24);
+
+          const hx = x - r * 0.34;
+          const hy2 = cy - r * 0.38;
+
+          // Bloom: the orb throws a little light before you reach its edge.
+          for (let i = 14; i > 0; i -= 1) {
+            const f = i / 14;
+            s.fill(198, 206, 246, 5);
+            s.ellipse(x, cy, r * 2 * (1 + f * 0.42), r * 2 * (1 + f * 0.42));
+          }
+
+          // Body. A true radial gradient with its focus at the highlight — stacked
+          // ellipses leave a transparent rim and the orb reads as a ghost.
+          const ctx = s.drawingContext as CanvasRenderingContext2D;
+          const grad = ctx.createRadialGradient(hx, hy2, r * 0.04, x, cy, r * 1.02);
+          grad.addColorStop(0, 'rgba(255,255,255,1)');
+          grad.addColorStop(0.22, 'rgba(226,240,255,1)');
+          grad.addColorStop(0.52, 'rgba(178,199,246,1)');
+          grad.addColorStop(0.78, 'rgba(186,166,236,1)');
+          grad.addColorStop(0.93, 'rgba(214,168,222,1)');
+          grad.addColorStop(1, 'rgba(150,178,226,1)');
+          ctx.save();
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(x, cy, r, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+
+          // Specular pin.
+          s.fill(255, 255, 255, 210);
+          s.ellipse(hx - r * 0.03, hy2 - r * 0.04, r * 0.14, r * 0.1);
+        };
+
+        /**
+         * Draw every instance of a prop that could reach the stage. A prop at
+         * parallax `p` is visible while |worldX - camX| < (width/2 + margin) / p.
+         */
+        const drawProps = (
+          every: number,
+          parallax: number,
+          offset: number,
+          draw: (worldX: number) => void,
+        ) => {
+          const reach = (s.width / 2 + 460) / parallax;
+          const first = Math.floor((camX - reach - offset) / every);
+          const last = Math.ceil((camX + reach - offset) / every);
+          for (let i = first; i <= last; i += 1) draw(i * every + offset);
+        };
+
+        s.setup = () => {
+          const host = hostRef.current!;
+          const c = s.createCanvas(Math.max(2, host.clientWidth), Math.max(2, host.clientHeight));
+          c.parent(host);
+          // The room is fill-rate bound, and the extra density buys little on a
+          // painted canvas. Cap it at 1.5.
+          s.pixelDensity(Math.min(1.5, window.devicePixelRatio || 1));
+        };
+
+        s.draw = () => {
+          const list = piecesRef.current;
+          camX += (targetRef.current - camX) * 0.09;
+
+          // Track the container here rather than via windowResized or a
+          // ResizeObserver. The band changes size for reasons a window-resize
+          // event never sees (the sidebar collapsing, the terminal reflowing), and
+          // the host can still be unmeasured on the frame the sketch mounts.
+          const host = hostRef.current;
+          if (host) {
+            const w = Math.max(2, host.clientWidth);
+            const h = Math.max(2, host.clientHeight);
+            if (w !== s.width || h !== s.height) s.resizeCanvas(w, h);
+          }
+
+          // The bake is only valid for the size it was made at.
+          if (!roomBuf || roomBuf.width !== s.width || roomBuf.height !== s.height) {
+            buildRoom();
+            if (!roomBuf) return;
+          }
+
+          s.background(244, 243, 240);
+          drawRoom();
+
+          if (list.length) {
+            const centre = Math.round(camX / SLOT);
+            const from = Math.max(0, centre - 3);
+            const to = Math.min(list.length - 1, centre + 3);
+
+            // Far pieces first so nearer ones overlap them correctly.
+            const idx: number[] = [];
+            for (let i = from; i <= to; i += 1) idx.push(i);
+            idx.sort((a, b) => Math.abs(b * SLOT - camX) - Math.abs(a * SLOT - camX));
+            for (const i of idx) drawHanging(list[i], i);
+          }
+
+          // Room props sit at fixed world positions and are culled when off-stage,
+          // so walking never makes one pop into a new place.
+          drawProps(PLINTH_EVERY, PLINTH_PARALLAX, -SLOT * 0.62, drawPlinth);
+          drawProps(ORB_EVERY, ORB_PARALLAX, SLOT * 0.5, drawOrb);
+        };
+
+        const clampTarget = () => {
+          const max = Math.max(0, (piecesRef.current.length - 1) * SLOT);
+          targetRef.current = Math.max(0, Math.min(max, targetRef.current));
+        };
+
+        const snap = () => {
+          targetRef.current = Math.round(targetRef.current / SLOT) * SLOT;
+          clampTarget();
+          setFocusIndex(Math.round(targetRef.current / SLOT));
+        };
+
+        s.mousePressed = () => {
+          if (s.mouseY < 0 || s.mouseY > s.height) return;
+          dragging = true;
+          moved = 0;
+          dragStartX = s.mouseX;
+          dragStartCam = targetRef.current;
+        };
+
+        s.mouseDragged = () => {
+          if (!dragging) return;
+          const dx = s.mouseX - dragStartX;
+          moved = Math.max(moved, Math.abs(dx));
+          targetRef.current = dragStartCam - dx;
+          clampTarget();
+        };
+
+        s.mouseReleased = () => {
+          if (!dragging) return;
+          dragging = false;
+
+          // A click, not a drag: hang whatever was under the cursor.
+          if (moved < 6) {
+            const list = piecesRef.current;
+            const centre = Math.round(camX / SLOT);
+            for (let i = Math.max(0, centre - 3); i <= Math.min(list.length - 1, centre + 3); i += 1) {
+              const L = layout(i);
+              if (!L) continue;
+              const inX = Math.abs(s.mouseX - L.sx) < L.w / 2;
+              const inY = Math.abs(s.mouseY - L.sy) < L.h / 2;
+              if (inX && inY) {
+                targetRef.current = i * SLOT;
+                setFocusIndex(i);
+                onSelectRef.current(list[i]);
+                return;
+              }
+            }
+          }
+          snap();
+        };
+
+        s.mouseWheel = (e: object) => {
+          const ev = e as WheelEvent;
+          if (s.mouseX < 0 || s.mouseX > s.width || s.mouseY < 0 || s.mouseY > s.height) return;
+          targetRef.current += (Math.abs(ev.deltaX) > Math.abs(ev.deltaY) ? ev.deltaX : ev.deltaY) * 1.4;
+          clampTarget();
+          setFocusIndex(Math.round(targetRef.current / SLOT));
+          return false;
+        };
+      };
+
+      instance = new P5(sketch);
+    })();
+
+    return () => {
+      cancelled = true;
+      instance?.remove();
+    };
+  }, []);
+
+  const step = (dir: number) => {
+    const next = Math.round(targetRef.current / SLOT) + dir;
+    const clamped = Math.max(0, Math.min(pieces.length - 1, next));
+    targetRef.current = clamped * SLOT;
+    setFocusIndex(clamped);
+    if (pieces[clamped]) onSelect(pieces[clamped]);
+  };
+
+  const focused = pieces[focusIndex];
+
+  return (
+    <div className={styles.gallery}>
+      <div ref={hostRef} className={styles.canvasHost} />
+
+      <div className={styles.vignette} aria-hidden="true" />
+
+      <div className={styles.plaque}>
+        <p className={styles.plaqueEyebrow}>Osiris Art Gallery of Genetic Research</p>
+        {focused ? (
+          <>
+            <p className={styles.plaqueTitle}>{focused.label}</p>
+            {focused.caption && <p className={styles.plaqueCaption}>{focused.caption}</p>}
+            <p className={styles.plaqueIndex}>
+              Piece {focusIndex + 1} of {pieces.length.toLocaleString()}
+            </p>
+          </>
+        ) : (
+          <p className={styles.plaqueCaption}>The walls are bare. Load a collection to hang it.</p>
+        )}
+      </div>
+
+      {pieces.length > 0 && (
+        <div className={styles.walk}>
+          <button
+            type="button"
+            onClick={() => step(-1)}
+            disabled={focusIndex <= 0}
+            className={styles.walkButton}
+            aria-label="Previous piece"
+          >
+            ‹
+          </button>
+          <span className={styles.walkHint}>Drag or scroll to walk</span>
+          <button
+            type="button"
+            onClick={() => step(1)}
+            disabled={focusIndex >= pieces.length - 1}
+            className={styles.walkButton}
+            aria-label="Next piece"
+          >
+            ›
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}

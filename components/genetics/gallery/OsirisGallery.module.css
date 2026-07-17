@@ -1,0 +1,148 @@
+/* The room. Everything here is gallery, not app. */
+
+.gallery {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background: #f4f3f0;
+  cursor: grab;
+}
+
+.gallery:active {
+  cursor: grabbing;
+}
+
+.canvasHost {
+  position: absolute;
+  inset: 0;
+}
+
+.canvasHost canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Corners fall away, the way they do in a room with one light source. */
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    120% 90% at 50% 42%,
+    transparent 42%,
+    rgba(22, 20, 26, 0.14) 100%
+  );
+}
+
+/* Wall label. Museum-issue: small, quiet, slightly to the side. */
+.plaque {
+  position: absolute;
+  top: 22px;
+  left: 24px;
+  max-width: 300px;
+  padding: 14px 16px;
+  pointer-events: none;
+  border-radius: 2px;
+  border: 1px solid rgba(26, 27, 36, 0.14);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(6px);
+}
+
+.plaqueEyebrow {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: rgba(26, 27, 36, 0.5);
+}
+
+.plaqueTitle {
+  margin: 8px 0 0;
+  font-family: var(--font-secondary);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #1a1b24;
+}
+
+.plaqueCaption {
+  margin: 5px 0 0;
+  font-family: var(--font-primary);
+  font-size: 11.5px;
+  line-height: 1.5;
+  font-style: italic;
+  color: rgba(26, 27, 36, 0.66);
+}
+
+.plaqueIndex {
+  margin: 9px 0 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: rgba(26, 27, 36, 0.42);
+}
+
+/* Walking the room. */
+.walk {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 7px 10px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(24, 20, 18, 0.42);
+  backdrop-filter: blur(8px);
+}
+
+.walkButton {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.1);
+  color: #f6f4ef;
+  font-family: var(--font-secondary);
+  font-size: 17px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.walkButton:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.walkButton:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.walkHint {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.78);
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .plaque {
+    top: 14px;
+    left: 14px;
+    max-width: 62%;
+    padding: 10px 12px;
+  }
+
+  .plaqueTitle {
+    font-size: 15px;
+  }
+}
