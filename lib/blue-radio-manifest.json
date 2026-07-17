@@ -1,0 +1,66 @@
+{
+  "generatedAt": "2026-07-17T19:00:19.531Z",
+  "totalSeconds": 285.93,
+  "segments": [
+    {
+      "id": "station-ident",
+      "title": "Welcome in",
+      "file": "/audio/blue-radio/station-ident.mp3",
+      "seconds": 29.1
+    },
+    {
+      "id": "what-is-mwa",
+      "title": "What this place is",
+      "file": "/audio/blue-radio/what-is-mwa.mp3",
+      "seconds": 26.86
+    },
+    {
+      "id": "mental-wealth-idea",
+      "title": "The idea of mental wealth",
+      "file": "/audio/blue-radio/mental-wealth-idea.mp3",
+      "seconds": 35.03
+    },
+    {
+      "id": "the-course",
+      "title": "The twelve week course",
+      "file": "/audio/blue-radio/the-course.mp3",
+      "seconds": 32.81
+    },
+    {
+      "id": "field-notes",
+      "title": "Field notes",
+      "file": "/audio/blue-radio/field-notes.mp3",
+      "seconds": 27.69
+    },
+    {
+      "id": "quests-and-credits",
+      "title": "Quests and credits",
+      "file": "/audio/blue-radio/quests-and-credits.mp3",
+      "seconds": 27.93
+    },
+    {
+      "id": "the-library",
+      "title": "The guide library",
+      "file": "/audio/blue-radio/the-library.mp3",
+      "seconds": 26.62
+    },
+    {
+      "id": "station-break-blue",
+      "title": "Station break, about Blue",
+      "file": "/audio/blue-radio/station-break-blue.mp3",
+      "seconds": 27.56
+    },
+    {
+      "id": "community",
+      "title": "The people next to you",
+      "file": "/audio/blue-radio/community.mp3",
+      "seconds": 25.55
+    },
+    {
+      "id": "signoff",
+      "title": "The loop begins again",
+      "file": "/audio/blue-radio/signoff.mp3",
+      "seconds": 26.78
+    }
+  ]
+}

@@ -14,6 +14,8 @@
     "generate:intake-audio": "tsx scripts/generate-course-intake-audio.ts",
     "generate:blue-voice": "tsx scripts/generate-blue-voice-clips.ts",
     "generate:blue-voice:force": "tsx scripts/generate-blue-voice-clips.ts --force",
+    "generate:blue-radio": "tsx scripts/generate-blue-radio.ts",
+    "generate:blue-radio:force": "tsx scripts/generate-blue-radio.ts --force",
     "test-db": "tsx scripts/test-db-connection.ts",
     "test-resend": "tsx scripts/test-resend.ts",
     "check-treasury": "tsx scripts/check-treasury-balance.ts",

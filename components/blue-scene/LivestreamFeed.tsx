@@ -1,7 +1,10 @@
+import BlueRadio from './BlueRadio';
+import manifest from '@/lib/blue-radio-manifest.json';
 import styles from './BlueScene.module.css';
 
 export default function LivestreamFeed() {
   const streamUrl = process.env.NEXT_PUBLIC_LIVESTREAM_EMBED_URL?.trim();
+  const hasBroadcast = Array.isArray(manifest.segments) && manifest.segments.length > 0;
 
   return (
     <div className={styles.liveFeed}>
@@ -13,6 +16,8 @@ export default function LivestreamFeed() {
           allow="autoplay; encrypted-media; picture-in-picture"
           allowFullScreen
         />
+      ) : hasBroadcast ? (
+        <BlueRadio />
       ) : (
         <div className={styles.offlineState}>
           <span className={styles.offlineIcon} aria-hidden="true">
@@ -21,7 +26,7 @@ export default function LivestreamFeed() {
               <circle cx="8" cy="12" r="2" fill="currentColor" opacity="0.4" />
             </svg>
           </span>
-          <h2 className={styles.offlineTitle}>We'll be back shortly :)</h2>
+          <h2 className={styles.offlineTitle}>We&apos;ll be back shortly :)</h2>
           <p className={styles.offlineText}>Gather your thoughts and your notebooks and relax</p>
         </div>
       )}
