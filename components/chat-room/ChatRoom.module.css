@@ -204,6 +204,77 @@
   cursor: default;
 }
 
+.emojiPickerWrap {
+  position: relative;
+  display: flex;
+}
+
+.emojiButton {
+  padding: 8px 12px;
+  font-size: 1.2rem;
+  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary-hover) 14%, transparent);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.emojiButton:hover {
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  border-color: var(--color-primary);
+}
+
+.emojiGrid {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  padding: 8px;
+  margin-bottom: 4px;
+  background: #ffffff;
+  border: 2px solid var(--color-primary-hover);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}
+
+.emojiOption {
+  padding: 6px;
+  font-size: 1.2rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.emojiOption:hover {
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  border-color: var(--color-primary);
+}
+
+:global([data-theme="dark"]) .emojiGrid {
+  background: #15172a;
+  border-color: color-mix(in oklch, var(--color-primary-hover) 30%, transparent);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .emojiButton {
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 22%, transparent);
+}
+
+:global([data-theme="dark"]) .emojiButton:hover {
+  background: color-mix(in oklch, var(--color-primary) 16%, transparent);
+  border-color: var(--color-primary);
+}
+
+:global([data-theme="dark"]) .emojiOption:hover {
+  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
+}
+
 :global([data-theme="dark"]) .chatRoom {
   background-color: #15172a;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(0,0,0,0.04)'/%3E%3C/svg%3E");

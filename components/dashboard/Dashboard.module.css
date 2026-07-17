@@ -18,7 +18,7 @@
 /* ── Desktop: two-column fill-height layout ── */
 @media (min-width: 1025px) {
   .dashboard {
-    grid-template-columns: 1fr 380px;
+    grid-template-columns: 1fr 475px;
     grid-template-rows: minmax(0, 1fr);
     gap: 16px;
     min-height: 100%;

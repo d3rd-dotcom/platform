@@ -324,6 +324,29 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
     inputRef.current?.focus();
   }, [input, sending, getAccessToken]);
 
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const emojiPickerRef = useRef<HTMLDivElement>(null);
+
+  const emojis = ['😀', '😍', '🎉', '✨', '🔥', '💜', '👍', '🙌', '💯', '🚀', '⭐', '😂', '🤔', '👏', '💪', '🎯'];
+
+  const addEmoji = (emoji: string) => {
+    setInput((prev) => prev + emoji);
+    setShowEmojiPicker(false);
+    inputRef.current?.focus();
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (emojiPickerRef.current && !emojiPickerRef.current.contains(e.target as Node)) {
+        setShowEmojiPicker(false);
+      }
+    };
+    if (showEmojiPicker) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showEmojiPicker]);
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     play('click');
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -397,6 +420,31 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
           maxLength={500}
           disabled={sending}
         />
+        <div className={styles.emojiPickerWrap} ref={emojiPickerRef}>
+          <button
+            type="button"
+            className={styles.emojiButton}
+            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+            aria-label="Add emoji"
+          >
+            😊
+          </button>
+          {showEmojiPicker && (
+            <div className={styles.emojiGrid}>
+              {emojis.map((emoji) => (
+                <button
+                  key={emoji}
+                  type="button"
+                  className={styles.emojiOption}
+                  onClick={() => addEmoji(emoji)}
+                  aria-label={`Add ${emoji}`}
+                >
+                  {emoji}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
         <button
           type="button"
           className={styles.chatSend}
