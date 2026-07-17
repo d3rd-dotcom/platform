@@ -46,29 +46,9 @@ interface NavSection {
   badgeType?: 'default' | 'highlight' | 'muted' | 'pro';
 }
 
-const desktopNavSections: NavSection[] = [
-  {
-    id: 'extras',
-    label: 'Pro Features',
-    badge: 'Pro',
-    badgeType: 'pro',
-    items: [
-      { id: 'genetics', label: 'Genetics', href: '/genetics', iconSrc: '/icons/genetics.svg?v=4', requiresPro: true },
-    ],
-  },
-];
+const desktopNavSections: NavSection[] = [];
 
-const mobileNavSections: NavSection[] = [
-  {
-    id: 'extras',
-    label: 'Pro Features',
-    badge: 'Pro',
-    badgeType: 'pro',
-    items: [
-      { id: 'genetics', label: 'Genetics', href: '/genetics', iconSrc: '/icons/genetics.svg?v=4', requiresPro: true },
-    ],
-  },
-];
+const mobileNavSections: NavSection[] = [];
 
 const primaryNavItems: NavItem[] = [
   {
@@ -76,6 +56,12 @@ const primaryNavItems: NavItem[] = [
     label: 'Profile',
     href: '/home',
     iconSrc: '/icons/nav-profile.svg',
+  },
+  {
+    id: 'genetics',
+    label: 'Genetics',
+    href: '/genetics',
+    iconSrc: '/icons/genetics.svg?v=4',
   },
   {
     id: 'learn',
