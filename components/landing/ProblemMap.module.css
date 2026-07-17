@@ -2,14 +2,14 @@
   /* Soft red for the redlined (HOLC grade D) figures — the historical grade
      color, muted so it sits beside the green "best" zones and the blue-tinted
      basemap without vibrating. --rl-red-text is lifted for legibility on dark. */
-  --rl-red: #E4707A;
-  --rl-red-text: #EE8F97;
+  --rl-red: var(--color-danger);
+  --rl-red-text: var(--color-danger);
+  --rl-green: var(--color-streak);
+  --rl-private: var(--color-accent);
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  position: relative;
   width: 100%;
-  padding: clamp(12px, 2vw, 24px) 0;
+  height: 100%;
 }
 
 /* A wide map region that melts into the dark section: dark basemap, no card
@@ -17,13 +17,12 @@
 .map {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
-  border-radius: 10px;
+  height: 100%;
+  min-height: 100%;
+  border-radius: 0;
   overflow: hidden;
   background: #10111b;
   font-family: var(--font-primary);
-  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
-  mask-image: linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
   opacity: 0;
   transition: opacity 0.5s ease;
 }
@@ -32,119 +31,18 @@
   opacity: 1;
 }
 
-/* ---- Mechanism + budget indicator ---- */
-.mechanism {
-  width: 100%;
-  max-width: 540px;
-  margin: 18px auto 0;
-  font-family: var(--font-primary);
-}
-
-.lead {
-  margin: 0 0 14px;
-  font-size: clamp(0.82rem, 0.98vw, 0.92rem);
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.82);
-  text-align: center;
-}
-
-.flow {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-}
-
-.flowItem {
-  display: flex;
-  align-items: baseline;
-  gap: 9px;
-  font-size: clamp(0.72rem, 0.86vw, 0.8rem);
-  line-height: 1.45;
-  color: rgba(255, 255, 255, 0.74);
-}
-
-.zoneTag {
-  flex: 0 0 auto;
-  padding: 1px 9px;
-  border-radius: 999px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  color: #fff;
-}
-
-.zoneRed {
-  background: var(--rl-red);
-}
-
-.zoneGreen {
-  background: #3e8e54;
-}
-
-.arrow {
-  color: rgba(255, 255, 255, 0.32);
-  padding: 0 4px;
-}
-
-/* gold = annual funding per school; redlined gets some, high-income far more */
-.budget {
-  margin-top: 16px;
-}
-
-.budgetTitle {
-  display: block;
-  margin-bottom: 9px;
-  font-size: clamp(0.7rem, 0.82vw, 0.76rem);
-  color: rgba(255, 255, 255, 0.55);
-  text-align: center;
-}
-
-.budgetTable {
-  display: grid;
-  grid-template-columns: auto auto;
-  align-items: center;
-  gap: 8px 12px;
-  width: fit-content;
-  margin: 0 auto;
-}
-
-.budgetLabel {
-  justify-self: start;
-  font-size: clamp(0.72rem, 0.84vw, 0.8rem);
-  font-weight: 700;
-  white-space: nowrap;
-}
-.budgetLabel[data-zone='red'] {
-  color: var(--rl-red-text);
-}
-.budgetLabel[data-zone='green'] {
-  color: #5fbf78;
-}
-
-.budgetCoins {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  filter: drop-shadow(0 0 4px rgba(240, 190, 70, 0.5));
-}
-
-.budgetCoin {
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #fff2bf, #f4cf6c 45%, #e3ab36 75%, #c6881f);
-  box-shadow: inset 0 0.6px 0 rgba(255, 255, 255, 0.85), 0 1px 1px rgba(0, 0, 0, 0.35);
-}
-
 .source {
-  margin: 14px 0 0;
-  font-size: clamp(0.68rem, 0.8vw, 0.74rem);
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 500;
+  margin: 0;
+  padding: 8px 12px;
+  font-size: 0.68rem;
   line-height: 1.4;
   color: rgba(255, 255, 255, 0.4);
-  text-align: center;
+  background: #10111b;
+  text-align: right;
 }
 
 /* Tint the basemap tiles toward Academy Blue without touching the GeoJSON overlays
@@ -244,6 +142,12 @@
 }
 
 .map :global(.rl-red .rl-cap) { background: var(--rl-red); }
-.map :global(.rl-green .rl-cap) { background: #3e8e54; }
+.map :global(.rl-green .rl-cap) { background: var(--rl-green); }
+.map :global(.rl-private .rl-cap) { background: var(--rl-private); }
 .map :global(.rl-red .rl-pin) { background: var(--rl-red); }
-.map :global(.rl-green .rl-pin) { background: #3e8e54; }
+.map :global(.rl-green .rl-pin) { background: var(--rl-green); }
+.map :global(.rl-private .rl-pin) { background: var(--rl-private); }
+
+@media (max-width: 768px) {
+  .map { min-height: 100%; }
+}

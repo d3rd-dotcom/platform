@@ -167,17 +167,17 @@
   color: #2a2f52;
 }
 
-/* Top panel: phones left, headline right */
+/* Top panel: context left, knowledge graph right */
 .topPanel {
   display: grid;
-  grid-template-columns: minmax(0, 1.85fr) minmax(280px, 0.8fr);
+  grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.85fr);
   border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 38%, transparent);
   min-height: 520px;
 }
 
 .graphPanel {
   position: relative;
-  border-right: 1px solid color-mix(in oklch, var(--color-primary) 38%, transparent);
+  border-left: 1px solid color-mix(in oklch, var(--color-primary) 38%, transparent);
   overflow: hidden;
 }
 
@@ -310,7 +310,7 @@
   }
 
   .graphPanel {
-    border-right: 0;
+    border-left: 0;
     border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 38%, transparent);
   }
 

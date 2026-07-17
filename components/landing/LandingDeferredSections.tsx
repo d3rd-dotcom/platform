@@ -90,7 +90,7 @@ export function LandingDeferredSections() {
 
   return (
     <>
-      <LazySection minHeight="100vh"><ProblemStatementSection /></LazySection>
+      <LazySection minHeight="clamp(580px, 72vw, 700px)"><ProblemStatementSection /></LazySection>
       <LazySection minHeight="90vh"><FeaturesSection /></LazySection>
       <LazySection minHeight="80vh"><TestimonialSection /></LazySection>
       <LazySection minHeight="90vh"><EcosystemSection /></LazySection>

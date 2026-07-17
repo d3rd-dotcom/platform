@@ -9,20 +9,20 @@ const featureCards = [
   {
     title: 'Learn Any Topic',
     description:
-      'One verified guide per topic, level-gated so there are no duplicate tutorials to sort through.',
-    details: ['Level-up and earn xp + rewards', 'Join a cohort of amazing builders and creators'],
+      'Go as deep as you want. Explore unique topics and subjects suggested by Blue and peer-reviewed by humans.',
+    details: ['Level-up and earn xp + rewards', 'Join a cohort of intellectual refreshment'],
   },
   {
-    title: 'An Organism of Thought',
+    title: 'A Living Knowledge Network',
     description:
       'The community uses Blue to turn what you are learning into real quests with real cash prizes.',
-    details: ['Blue reviews every submission', 'Real USDC when you pass'],
+    details: ['Blue reviews your work and suggests the next step', 'Approved quests earn cash rewards'],
   },
   {
-    title: 'Invest In Your Future',
+    title: 'Build Knowledge That Compounds',
     description:
-      'Mental Wealth creates new forms of digital space and value that continually accrues value for participating.',
-    details: ['Bitcoin rewards for contributions', 'Non-extractive incentives bring curation and trust'],
+      'Every completed guide and thoughtful contribution strengthens the knowledge network. Earn rewards for work that helps more people learn with confidence.',
+    details: ['Credits for verified contributions', 'Peer review keeps knowledge trustworthy'],
   },
 ];
 
@@ -53,7 +53,7 @@ export const FeaturesSection: React.FC = () => {
     >
       <div className={styles.container}>
         <p className={styles.sectionLead}>
-          Because quality education shouldn&apos;t rely on a zip code.
+          Because quality education shouldn&apos;t rely on wealth.
         </p>
         <div className={styles.board}>
           <div className={styles.boardHeader}>
@@ -62,18 +62,17 @@ export const FeaturesSection: React.FC = () => {
           </div>
 
           <div className={styles.topPanel}>
-            <div className={styles.graphPanel}>
-              <LandingKnowledgeGraph />
+            <div className={styles.headlinePanel}>
+              <h2 className={styles.title}>AI Powered Learning Nodes</h2>
+              <p className={styles.description}>
+                Each Academy subject becomes a path of connected, verified nodes. Follow the
+                foundations into deeper ideas. Blue autonomously suggests your next node from
+                your progress, giving you a course of study shaped by your questions.
+              </p>
             </div>
 
-            <div className={styles.headlinePanel}>
-              <h2 className={styles.title}>Access Quality Education</h2>
-              <p className={styles.description}>
-                Over 617 million children and teens globally are affected by the literacy crisis
-                — basic math and reading skill levels are declining. The information exists; but
-                we still haven&apos;t used the right format. A fun-first learning platform for
-                the next gen.
-              </p>
+            <div className={styles.graphPanel}>
+              <LandingKnowledgeGraph />
             </div>
           </div>
 

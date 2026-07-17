@@ -11,13 +11,13 @@ const steps = [
   },
   {
     num: '02',
-    title: 'Blue reads the archive',
-    body: 'Blue is the academy’s agent. She reviews what members write, then suggests your next topic, a new mission, or a story to play out in the gameworld.',
+    title: 'Blue connects the dots',
+    body: 'Blue reads your field notes, remembers your progress, and suggests the next node or mission to deepen what you are exploring.',
   },
   {
     num: '03',
-    title: 'Earn diamonds, gain bitcoin reflections',
-    body: 'Contributions pay Diamonds ($BLUE) onchain, on Base. Hold them, and the treasury’s cbBTC deposits reflect back to you in proportion to your balance.',
+    title: 'Let your work carry forward',
+    body: 'Complete missions, earn credits for verified work, and strengthen the knowledge map for the people who follow your path.',
   },
 ];
 
@@ -25,11 +25,10 @@ export const HowItWorksSection: React.FC = () => (
   <section id="how-it-works" className={styles.section} aria-label="How it works">
     <div className={styles.container}>
       <p className={styles.eyebrow}>How it works</p>
-      <h2 className={styles.heading}>Vibe-Learning, in three steps</h2>
+      <h2 className={styles.heading}>Learn Where Curiosity Leads</h2>
       <p className={styles.lead}>
-        Vibe-Learning means your curiosity sets the syllabus. You take the
-        missions that interest you, write down what you find, and Blue builds
-        the next one from that record.
+        Vibe-Learning means your curiosity sets the syllabus. Choose a mission.
+        Record what you find. Blue builds the next one from there.
       </p>
 
       <ol className={styles.steps}>

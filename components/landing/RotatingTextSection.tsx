@@ -6,7 +6,7 @@ import styles from './LandingPage.module.css';
 export const RotatingTextSection: React.FC = () => {
   const texts = useMemo(() => [
     'Cyberculture',
-    'Science',
+    'Education',
     'Intelligence'
   ], []);
   const [step, setStep] = useState(0);

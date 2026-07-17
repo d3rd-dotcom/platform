@@ -602,7 +602,7 @@ export default function LandingKnowledgeGraph() {
             <img className={styles.detailGif} src="/images/walking.gif" alt="Blue walking" />
             <div className={styles.detailCopy}>
               <strong className={styles.detailTitle}>
-                {map?.nodes.length ?? 0} verified topics across {map?.levels ?? 0} levels
+                171 topics peer-reviewed by PhD Students across 11 levels
               </strong>
             </div>
             <Link className={styles.detailLink} href="/home/guides/map">

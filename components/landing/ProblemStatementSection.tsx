@@ -7,23 +7,38 @@ import styles from './ProblemStatementSection.module.css';
 export const ProblemStatementSection: React.FC = () => (
   <section id="problem" className={styles.section} aria-label="The problem">
     <div className={styles.container}>
-      <p className={styles.eyebrow}>The problem</p>
-      <h2 className={styles.heading}>
-        A map drawn in the 1930s still sets what a school can spend.
-      </h2>
-      <p className={styles.lead}>
-        The federal Home Owners&apos; Loan Corporation graded American
-        neighborhoods for lending risk. Grade A meant best. Grade D meant
-        hazardous, and it was outlined in red. Below is Oakland, California,
-        drawn from the original survey.
-      </p>
-
-      <ProblemMap />
-
-      <p className={styles.close}>
-        Quality education still tracks a property line. Our courses are free,
-        and open to anyone 18 and up.
-      </p>
+      <div className={styles.board}>
+        <div className={styles.boardHeader}>
+          <span className={styles.headerIndex}>問題</span>
+          <span className={styles.headerTitle}>THE PROBLEM</span>
+        </div>
+        <div className={styles.content}>
+          <div className={styles.mapPanel}>
+            <ProblemMap />
+          </div>
+          <div className={styles.contextPanel}>
+            <div className={styles.titlePanel}>
+              <h2 className={styles.heading}>Education Quality Follows Systemic Boundaries.</h2>
+            </div>
+            <p className={styles.lead}>
+              Average U.S. literacy is 6th grade level. Redlining shaped wealth
+              across neighborhoods. Its effects still influence how education
+              resources are distributed.
+            </p>
+            <div className={styles.budget}>
+              <span className={styles.budgetTitle}>Annual funding per school</span>
+              <div className={styles.budgetTable}>
+                <span className={styles.budgetLabel} data-zone="red">Marginalized</span>
+                <span className={styles.budgetCoins} aria-hidden="true"><i /></span>
+                <span className={styles.budgetLabel} data-zone="green">Wealthy</span>
+                <span className={styles.budgetCoins} aria-hidden="true"><i /><i /><i /></span>
+                <span className={styles.budgetLabel} data-zone="private">Private</span>
+                <span className={styles.budgetCoins} aria-hidden="true"><i /><i /><i /><i /><i /></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 );

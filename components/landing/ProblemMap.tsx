@@ -6,15 +6,33 @@ import 'leaflet/dist/leaflet.css';
 import styles from './ProblemMap.module.css';
 
 const GEOJSON_URL = '/data/redlining-oakland.geojson';
+const SAN_FRANCISCO_REDLINE_URL = '/data/redlining-san-francisco.geojson';
+const EAST_BAY_DISTRICTS_URL = '/data/east-bay-school-districts.geojson';
+const PRIVATE_AREA_LABEL = 'D18';
+const INITIAL_MAP_ZOOM = 11.25;
 
-// HOLC grades. D (redlined) and A ("best"/wealthy) are the figures; B and C stay
-// faint so the map reads as a real graded gradient, not a binary two-box split.
+// Show the full HOLC grading field. D (redlined) and A ("best"/wealthy) remain
+// the strongest figures, while the B and C survey areas complete the historical
+// context rather than leaving most of the city visually unmarked.
 const HIDDEN: L.PathOptions = { weight: 0, fillOpacity: 0, interactive: false };
 const GRADE_STYLE: Record<string, L.PathOptions> = {
-  D: { color: '#E4707A', weight: 1, fillColor: '#C4515C', fillOpacity: 0.52, interactive: false },
-  A: { color: '#5fbf78', weight: 1, fillColor: '#5aa469', fillOpacity: 0.48, interactive: false },
-  B: { color: '#6f86ff', weight: 0, fillColor: '#6f86ff', fillOpacity: 0.16, interactive: false },
-  C: { color: '#e0a53b', weight: 0, fillColor: '#e0a53b', fillOpacity: 0.18, interactive: false },
+  D: { color: 'var(--color-danger)', weight: 1, fillColor: 'var(--color-danger)', fillOpacity: 0.52, interactive: false },
+  A: { color: 'var(--color-streak)', weight: 1, fillColor: 'var(--color-streak)', fillOpacity: 0.48, interactive: false },
+  B: { color: '#6f86ff', weight: 0.6, fillColor: '#6f86ff', fillOpacity: 0.32, interactive: false },
+  C: { color: '#e0a53b', weight: 0.6, fillColor: '#e0a53b', fillOpacity: 0.34, interactive: false },
+};
+const PRIVATE_AREA_STYLE: L.PathOptions = {
+  color: 'var(--color-accent)',
+  weight: 1,
+  fillColor: 'var(--color-accent)',
+  fillOpacity: 0.52,
+  interactive: false,
+};
+
+const DISTRICT_STYLE: Record<string, L.PathOptions> = {
+  Elementary: { color: 'var(--color-danger)', weight: 0.9, fillColor: 'var(--color-danger)', fillOpacity: 0.16, interactive: false },
+  Unified: { color: 'var(--color-streak)', weight: 1, fillColor: 'var(--color-streak)', fillOpacity: 0.28, interactive: false },
+  High: { color: 'var(--color-accent)', weight: 1, fillColor: 'var(--color-accent)', fillOpacity: 0.3, interactive: false },
 };
 
 const SCHOOL_SVG =
@@ -25,7 +43,7 @@ function coinStack(coins: number): string {
   return `<span class="rl-stack">${'<i class="rl-coin"></i>'.repeat(coins)}</span>`;
 }
 
-function markerHtml(variant: 'red' | 'green', coins: number): string {
+function markerHtml(variant: 'red' | 'green' | 'private', coins: number): string {
   const stack = coins > 0 ? coinStack(coins) : '';
   return (
     `<div class="rl-mk rl-${variant}">` +
@@ -65,7 +83,6 @@ export const ProblemMap: React.FC = () => {
 
     let cancelled = false;
     let map: L.Map | null = null;
-    let ro: ResizeObserver | null = null;
     const controller = new AbortController();
 
     const reveal = () => containerRef.current?.classList.add(styles.mapReady);
@@ -75,14 +92,29 @@ export const ProblemMap: React.FC = () => {
       const LR = (((mod as unknown as { default?: typeof L }).default ?? mod) as typeof L);
       if (cancelled || !containerRef.current) return;
 
-      const res = await fetch(GEOJSON_URL, { signal: controller.signal });
-      const data = await res.json();
+      const [oaklandResponse, sanFranciscoResponse, districtResponse] = await Promise.all([
+        fetch(GEOJSON_URL, { signal: controller.signal }),
+        fetch(SAN_FRANCISCO_REDLINE_URL, { signal: controller.signal }),
+        fetch(EAST_BAY_DISTRICTS_URL, { signal: controller.signal }),
+      ]);
+      if (!oaklandResponse.ok || !sanFranciscoResponse.ok || !districtResponse.ok) {
+        throw new Error('Problem map data could not be loaded.');
+      }
+
+      const [data, sanFranciscoData, eastBayDistricts] = await Promise.all([
+        oaklandResponse.json(),
+        sanFranciscoResponse.json(),
+        districtResponse.json(),
+      ]);
       if (cancelled || !containerRef.current) return;
 
       const [minLon, minLat, maxLon, maxLat] = data.metadata.bbox as number[];
       const bounds = LR.latLngBounds([minLat, minLon], [maxLat, maxLon]);
+      const mapCenter = bounds.getCenter();
 
       map = LR.map(containerRef.current, {
+        center: mapCenter,
+        zoom: INITIAL_MAP_ZOOM,
         zoomControl: false,
         attributionControl: false,
         dragging: false,
@@ -92,6 +124,9 @@ export const ProblemMap: React.FC = () => {
         boxZoom: false,
         keyboard: false,
         zoomSnap: 0,
+        zoomAnimation: false,
+        fadeAnimation: false,
+        markerZoomAnimation: false,
       });
 
       const tiles = LR.tileLayer(
@@ -105,11 +140,24 @@ export const ProblemMap: React.FC = () => {
       tiles.on('load', reveal);
 
       LR.geoJSON(data, {
-        style: (f) => (f?.properties?.grade && GRADE_STYLE[f.properties.grade]) || HIDDEN,
+        style: (f) => {
+          if (f?.properties?.label === PRIVATE_AREA_LABEL) return PRIVATE_AREA_STYLE;
+          return (f?.properties?.grade && GRADE_STYLE[f.properties.grade]) || HIDDEN;
+        },
         interactive: false,
       }).addTo(map);
 
-      const icon = (variant: 'red' | 'green', coins: number) =>
+      LR.geoJSON(sanFranciscoData, {
+        style: (feature) => (feature?.properties?.grade && GRADE_STYLE[feature.properties.grade]) || HIDDEN,
+        interactive: false,
+      }).addTo(map);
+
+      LR.geoJSON(eastBayDistricts, {
+        style: (feature) => DISTRICT_STYLE[feature?.properties?.DistrictType] || HIDDEN,
+        interactive: false,
+      }).addTo(map);
+
+      const icon = (variant: 'red' | 'green' | 'private', coins: number) =>
         LR.divIcon({ html: markerHtml(variant, coins), className: '', iconSize: [0, 0], iconAnchor: [0, 0] });
 
       const liveMap = map;
@@ -117,22 +165,18 @@ export const ProblemMap: React.FC = () => {
       const redlined: number[][] = Array.isArray(m.redlined)
         ? (Array.isArray(m.redlined[0]) ? m.redlined : [m.redlined])
         : [];
+      const southernmostRedlined = Math.min(...redlined.map((pt) => pt[1]));
       redlined.forEach((pt) => {
-        LR.marker([pt[1], pt[0]], { icon: icon('red', 2), interactive: false, keyboard: false }).addTo(liveMap);
+        const isPrivate = pt[1] === southernmostRedlined;
+        LR.marker([pt[1], pt[0]], {
+          icon: icon(isPrivate ? 'private' : 'red', isPrivate ? 5 : 1),
+          interactive: false,
+          keyboard: false,
+        }).addTo(liveMap);
       });
       if (m.wealthy) {
-        LR.marker([m.wealthy[1], m.wealthy[0]], { icon: icon('green', 6), interactive: false, keyboard: false }).addTo(map);
+        LR.marker([m.wealthy[1], m.wealthy[0]], { icon: icon('green', 3), interactive: false, keyboard: false }).addTo(map);
       }
-
-      const fit = () => {
-        if (!map || !containerRef.current) return;
-        map.invalidateSize({ animate: false });
-        map.fitBounds(bounds, { padding: [16, 16] });
-      };
-      fit();
-
-      ro = new ResizeObserver(fit);
-      ro.observe(containerRef.current);
 
       // Backstop: never leave the panel invisible if a tile 'load' never fires.
       window.setTimeout(reveal, 1500);
@@ -146,7 +190,6 @@ export const ProblemMap: React.FC = () => {
     return () => {
       cancelled = true;
       controller.abort();
-      ro?.disconnect();
       map?.remove();
     };
   }, [visible]);
@@ -157,36 +200,14 @@ export const ProblemMap: React.FC = () => {
         ref={containerRef}
         className={styles.map}
         role="img"
-        aria-label="Map of Oakland, California from the 1930s federal Home Owners' Loan Corporation survey. Neighborhoods shaded red were graded hazardous and redlined; neighborhoods shaded green were graded best. A public school sits in each."
+        aria-label="Map of historic redlining areas in Oakland and San Francisco, alongside current eastern Bay Area school-district boundaries."
       />
 
-      <div className={styles.mechanism}>
-        <p className={styles.lead}>
-          Public schools operate on local property taxes; so the line drawn in
-          1930s ends up dictating so much more than one&apos;s ability to learn.
-        </p>
-        <div className={styles.budget}>
-          <span className={styles.budgetTitle}>Annual funding per school</span>
-          <div className={styles.budgetTable}>
-            <span className={styles.budgetLabel} data-zone="red">Redlined</span>
-            <span className={styles.budgetCoins} aria-hidden="true">
-              {Array.from({ length: 2 }).map((_, i) => (
-                <i key={i} className={styles.budgetCoin} />
-              ))}
-            </span>
-            <span className={styles.budgetLabel} data-zone="green">High-income</span>
-            <span className={styles.budgetCoins} aria-hidden="true">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <i key={i} className={styles.budgetCoin} />
-              ))}
-            </span>
-          </div>
-        </div>
-        <p className={styles.source}>
-          HOLC grades from Mapping Inequality, Digital Scholarship Lab,
-          University of Richmond. Map &copy; OpenStreetMap, &copy; CARTO.
-        </p>
-      </div>
+      <p className={styles.source}>
+        Redlining areas: Mapping Inequality, Digital Scholarship Lab, University of Richmond.
+        School district boundaries: California Department of Education. Map &copy; OpenStreetMap, &copy; CARTO.
+      </p>
+
     </div>
   );
 };

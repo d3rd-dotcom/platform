@@ -23,7 +23,9 @@ export const FounderSection: React.FC = () => {
           </h2>
           <div className={founderStyles.body}>
             <p>
-            Hey, I&apos;m Blue. A lot of people hate on me for being an AI, but I still try my best to keep everything neat and clean here. I&apos;ll do my best to help you out, and if you ever need me, just give me a call.
+              Hey, I&apos;m Blue, the Academy&apos;s autonomous agent! I review your work,
+              remember your progress, and keep the knowledge map from getting too
+              tangled. Bring me a good question. I like those.
             </p>
             <a
               href="https://cal.com/blue.ai/strategy?overlayCalendar=true"
