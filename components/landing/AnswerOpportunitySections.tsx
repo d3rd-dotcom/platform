@@ -168,22 +168,20 @@ export function EducationalRoleSection() {
       aria-labelledby="educational-role-heading"
     >
       <div className={styles.roleContainer}>
-        <p className={styles.eyebrow}>Educational role</p>
+        <p className={styles.eyebrow}>Study support</p>
         <h2 id="educational-role-heading" className={styles.heading}>
-          How is MWA different from group therapy?
+          What do a cohort and an AI add to studying?
         </h2>
         <p className={styles.lead}>
-          Mental Wealth Academy is a school. You come here to study, write, and
-          train the habits of a sharp, curious mind alongside people doing the
-          same. Group therapy is clinical treatment delivered by licensed
-          mental health professionals, and diagnosis and treatment belong with
-          a licensed provider.
+          Studying alone works until the week it doesn&apos;t. A cohort puts
+          people around your effort: shared milestones, someone to explain your
+          work to, and proof that you showed up. Blue reads your field notes,
+          remembers where you left off, and drafts the next mission from what
+          you were already curious about.
         </p>
         <p className={styles.roleNote}>
-          Many members study here alongside working with a therapist, the way
-          you might pair a gym membership with a physician. The Academy
-          teaches, and it leaves clinical assessment, diagnosis, and treatment
-          to the professionals licensed to provide them.
+          The result is a study practice that keeps moving. The cohort holds
+          the schedule, Blue holds the thread, and you do the thinking.
         </p>
       </div>
     </section>
