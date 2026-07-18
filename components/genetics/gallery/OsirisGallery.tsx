@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type p5 from 'p5';
-import { paintPiece, type PaintedPiece, type Piece } from './snpArt';
+import { paintImagePiece, paintPiece, type PaintedPiece, type Piece } from './snpArt';
 import styles from './OsirisGallery.module.css';
 
 interface OsirisGalleryProps {
@@ -84,6 +84,7 @@ export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisG
       const sketch = (s: p5) => {
         const cache = new Map<string, PaintedPiece>();
         const order: string[] = [];
+        const sourceImages = new Map<string, p5.Image | 'loading' | 'failed'>();
         const blueSprites: Partial<Record<BlueDir, p5.Image>> = {};
         let blueX = 0;
         let camX = 0;
@@ -95,7 +96,35 @@ export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisG
         const artFor = (piece: Piece): PaintedPiece => {
           const hit = cache.get(piece.id);
           if (hit) return hit;
-          const painted = paintPiece(s, piece, ART_W, ART_H);
+
+          let sourceImage: p5.Image | undefined;
+          if (piece.imageUrl) {
+            const imageState = sourceImages.get(piece.id);
+            if (imageState && imageState !== 'loading' && imageState !== 'failed') {
+              sourceImage = imageState;
+            } else if (!imageState) {
+              sourceImages.set(piece.id, 'loading');
+              s.loadImage(
+                piece.imageUrl,
+                (image) => {
+                  sourceImages.set(piece.id, image);
+                  const placeholder = cache.get(piece.id);
+                  disposeGraphics(placeholder?.art);
+                  disposeGraphics(placeholder?.reflection);
+                  cache.delete(piece.id);
+                  const placeholderIndex = order.indexOf(piece.id);
+                  if (placeholderIndex >= 0) order.splice(placeholderIndex, 1);
+                },
+                () => {
+                  sourceImages.set(piece.id, 'failed');
+                },
+              );
+            }
+          }
+
+          const painted = sourceImage
+            ? paintImagePiece(s, sourceImage, ART_W, ART_H)
+            : paintPiece(s, piece, ART_W, ART_H);
           cache.set(piece.id, painted);
           order.push(piece.id);
           while (order.length > MAX_CACHED) {
@@ -631,6 +660,17 @@ export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisG
     };
   }, []);
 
+  // A different wing starts at its entrance. This also keeps a long archive
+  // position from leaving a shorter collection off-stage after a mode switch.
+  const previousPiecesRef = useRef(pieces);
+  useEffect(() => {
+    if (previousPiecesRef.current === pieces) return;
+    previousPiecesRef.current = pieces;
+    targetRef.current = 0;
+    setFocusIndex(0);
+    if (pieces[0]) onFocus?.(pieces[0]);
+  }, [pieces, onFocus]);
+
   const step = (dir: number) => {
     const next = Math.round(targetRef.current / SLOT) + dir;
     const clamped = Math.max(0, Math.min(pieces.length - 1, next));
@@ -654,6 +694,11 @@ export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisG
           <>
             <p className={styles.plaqueTitle}>{focused.label}</p>
             {focused.caption && <p className={styles.plaqueCaption}>{focused.caption}</p>}
+            {(focused.artist || focused.year) && (
+              <p className={styles.plaqueMeta}>
+                {[focused.artist, focused.year].filter(Boolean).join(', ')}
+              </p>
+            )}
             <p className={styles.plaqueIndex}>
               Piece {focusIndex + 1} of {pieces.length.toLocaleString()}
             </p>
@@ -674,7 +719,9 @@ export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisG
           >
             ‹
           </button>
-          <span className={styles.walkHint}>Drag to walk · click a piece to read it</span>
+          <span className={styles.walkHint}>
+            Drag to walk · click a piece to {focused?.externalUrl ? 'view details' : 'read it'}
+          </span>
           <button
             type="button"
             onClick={() => step(1)}

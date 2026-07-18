@@ -77,7 +77,7 @@ const primaryNavItems: NavItem[] = [
   },
   {
     id: 'learn',
-    label: 'Learn',
+    label: 'Library',
     href: '/learn',
     iconSrc: '/icons/daemon.svg?v=4',
   },

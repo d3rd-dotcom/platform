@@ -46,6 +46,14 @@ export interface Piece {
   label: string;
   /** second line on the wall label */
   caption?: string;
+  /** Same-origin image URL for a curated artwork. Genetic pieces omit this. */
+  imageUrl?: string;
+  /** Collection metadata shown in the reading panel. */
+  artist?: string;
+  year?: string;
+  era?: string;
+  description?: string;
+  externalUrl?: string;
 }
 
 interface Palette {
@@ -245,6 +253,34 @@ export function paintPiece(p: p5, piece: Piece, W: number, H: number): PaintedPi
   g.noStroke();
   g.fill(0, 0, 100, 0.05);
   g.rect(0, 0, W, H * 0.42);
+
+  return { art: g, reflection: bakeReflection(p, g, W, H) };
+}
+
+/**
+ * Seat a curated collection image inside the same canvas and reflection system
+ * as generated marker art. The full work remains visible; the matte absorbs
+ * aspect-ratio differences without cropping the source.
+ */
+export function paintImagePiece(
+  p: p5,
+  image: p5.Image,
+  W: number,
+  H: number,
+): PaintedPiece {
+  const g = p.createGraphics(W, H);
+  g.background(18, 17, 20);
+
+  const scale = Math.min(W / image.width, H / image.height);
+  const drawW = image.width * scale;
+  const drawH = image.height * scale;
+  g.image(image, (W - drawW) / 2, (H - drawH) / 2, drawW, drawH);
+
+  // A quiet inner edge keeps pale works distinct from the wall.
+  g.noFill();
+  g.stroke(244, 243, 240, 52);
+  g.strokeWeight(2);
+  g.rect(1, 1, W - 2, H - 2);
 
   return { art: g, reflection: bakeReflection(p, g, W, H) };
 }

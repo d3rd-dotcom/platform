@@ -10,6 +10,7 @@ import { GeneticsChat } from '@/components/genetics/GeneticsChat';
 import { GenosetDisplay } from '@/components/genetics/GenosetDisplay';
 import { WikiContent } from '@/components/genetics/WikiContent';
 import { TraitPanel } from '@/components/genetics/gallery/TraitPanel';
+import { ART_COLLECTION } from '@/components/genetics/gallery/artCollection';
 import type { Piece } from '@/components/genetics/gallery/snpArt';
 import type { ParseResult, MatchedSNP, MatchedGenoset, SNPRecord } from '@/types/genetics';
 import styles from './page.module.css';
@@ -24,9 +25,9 @@ const ProMembershipModal = dynamic(
   { ssr: false },
 );
 
-type AppMode = 'upload' | 'browse';
+type AppMode = 'collection' | 'upload' | 'browse';
 /** What the panel over the room is currently reading. */
-type Panel = 'marker' | 'genosets' | 'blue' | 'upload';
+type Panel = 'artwork' | 'marker' | 'genosets' | 'blue' | 'upload';
 type AccessState = 'checking' | 'granted' | 'locked';
 
 /**
@@ -68,8 +69,18 @@ function toMagnitude(content: string | undefined): number | undefined {
   return m ? Number(m[1]) : undefined;
 }
 
-function GeneticsLab() {
-  const [mode, setMode] = useState<AppMode>('upload');
+interface GeneticsLabProps {
+  canAccessGenetics: boolean;
+  accessChecking: boolean;
+  onRequireMembership: () => void;
+}
+
+function GeneticsLab({
+  canAccessGenetics,
+  accessChecking,
+  onRequireMembership,
+}: GeneticsLabProps) {
+  const [mode, setMode] = useState<AppMode>('collection');
   const [panel, setPanel] = useState<Panel | null>(null);
   const [isDbLoading, setIsDbLoading] = useState(true);
   const [dbError, setDbError] = useState<Error | null>(null);
@@ -105,7 +116,7 @@ function GeneticsLab() {
   const { api: workerApi, isReady: isWorkerReady, error: workerError } = useSNPMatcherWorker();
 
   useEffect(() => {
-    if (!isWorkerReady || !workerApi) return;
+    if (!canAccessGenetics || !isWorkerReady || !workerApi) return;
 
     async function loadDB() {
       if (!workerApi) return;
@@ -132,7 +143,7 @@ function GeneticsLab() {
     }
 
     loadDB();
-  }, [isWorkerReady, workerApi]);
+  }, [canAccessGenetics, isWorkerReady, workerApi]);
 
   // Search only runs once the archive is actually open.
   useEffect(() => {
@@ -281,7 +292,32 @@ function GeneticsLab() {
     [browseResults],
   );
 
-  const pieces = mode === 'browse' ? browsePieces : ownPieces;
+  const collectionPieces = useMemo<Piece[]>(
+    () =>
+      ART_COLLECTION.map((artwork, index) => ({
+        id: `collection-${index + 1}`,
+        label: artwork.title,
+        caption: artwork.desc,
+        imageUrl: `/api/genetics/artwork-image?id=${index + 1}`,
+        artist: artwork.artist,
+        year: artwork.year,
+        era: artwork.era,
+        description: artwork.desc,
+        externalUrl: artwork.linkUrl,
+      })),
+    [],
+  );
+
+  const pieces = mode === 'collection'
+    ? collectionPieces
+    : mode === 'browse'
+      ? browsePieces
+      : ownPieces;
+
+  const selectedArtwork = useMemo(
+    () => (mode === 'collection' ? collectionPieces.find((piece) => piece.id === selectedId) ?? null : null),
+    [collectionPieces, mode, selectedId],
+  );
 
   const selectedMatch = useMemo(
     () => (mode === 'upload' ? matches?.find((m) => m.rsid === selectedId) ?? null : null),
@@ -295,7 +331,7 @@ function GeneticsLab() {
   /** Clicking a hanging is how you read it. Walking past one only selects it. */
   const handleSelect = useCallback((piece: Piece) => {
     setSelectedId(piece.id);
-    setPanel('marker');
+    setPanel(piece.externalUrl ? 'artwork' : 'marker');
   }, []);
 
   const handleFocus = useCallback((piece: Piece) => {
@@ -308,12 +344,23 @@ function GeneticsLab() {
     setClinicalSignificance(''); setDisease('');
   };
 
+  const chooseMode = (nextMode: AppMode) => {
+    if (nextMode !== 'collection' && !canAccessGenetics) {
+      onRequireMembership();
+      return;
+    }
+    setMode(nextMode);
+    setSelectedId(null);
+    setPanel(null);
+  };
+
   /* ---------- the panel over the room ---------- */
   const markerContent = selectedMatch
     ? selectedMatch.genotypeData?.content || selectedMatch.snpData.content
     : selectedRecord?.content;
 
   const panelTitle = (() => {
+    if (panel === 'artwork') return selectedArtwork?.label || 'Collection piece';
     if (panel === 'genosets') return 'Genosets';
     if (panel === 'blue') return 'Ask Blue';
     if (panel === 'upload') return 'Bring your own genome';
@@ -321,6 +368,9 @@ function GeneticsLab() {
   })();
 
   const panelSubtitle = (() => {
+    if (panel === 'artwork') {
+      return [selectedArtwork?.artist, selectedArtwork?.year].filter(Boolean).join(', ');
+    }
     if (panel === 'genosets') return `${genosets?.length.toLocaleString() ?? 0} matched in your genome`;
     if (panel === 'blue') return 'She can see the markers currently hung.';
     if (panel === 'upload') return 'Read on this device. Nothing is uploaded.';
@@ -337,6 +387,29 @@ function GeneticsLab() {
   })();
 
   const renderPanel = () => {
+    if (panel === 'artwork') {
+      if (!selectedArtwork) return null;
+      return (
+        <div className={styles.artworkDetails}>
+          {selectedArtwork.description && (
+            <p className={styles.artworkDescription}>{selectedArtwork.description}</p>
+          )}
+          {selectedArtwork.era && (
+            <p className={styles.artworkEra}>{selectedArtwork.era}</p>
+          )}
+          {selectedArtwork.externalUrl && (
+            <a
+              href={selectedArtwork.externalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.artworkLink}
+            >
+              View original artwork
+            </a>
+          )}
+        </div>
+      );
+    }
     if (panel === 'blue') return <GeneticsChat matches={matches} genosets={genosets} />;
     if (panel === 'genosets') {
       return genosets ? <GenosetDisplay genosets={genosets} /> : null;
@@ -360,6 +433,7 @@ function GeneticsLab() {
   };
 
   const countNote = (() => {
+    if (mode === 'collection') return `${pieces.length.toLocaleString()} works on view`;
     if (hasError) return null;
     if (isDbLoading || isProcessing) return null;
     if (mode === 'browse') {
@@ -396,45 +470,55 @@ function GeneticsLab() {
           never a pool of dead space under the room. */}
       <section className={styles.terminal} data-theme="dark">
         <p className={styles.statement}>
-          Osiris Art Gallery of Genetic Research. Under the Humane Genome Project License
-          (HGPL), Maverick Blue splices epigenetic markers — non cell — to digital artistry.
-          Every rsid is a seed, and every seed paints exactly one canvas, the same canvas,
-          forever. What hangs here is a portrait of a coordinate you happen to occupy. Your
-          file is read on this device and leaves no residue.
+          {mode === 'collection'
+            ? 'The Osiris collection brings Academy art, concept studies, and interface experiments into one walkable room. Select a work to read its notes and visit the original.'
+            : 'Under the Humane Genome Project License, Maverick Blue splices epigenetic markers into digital studies. Every rsid produces one repeatable canvas. Your file stays on this device.'}
         </p>
 
         <div className={styles.strip}>
           <div className={styles.segmented}>
             <button
               type="button"
-              onClick={() => { setMode('browse'); setSelectedId(null); setPanel(null); }}
+              onClick={() => chooseMode('collection')}
               disabled={isProcessing}
-              className={`${styles.segmentBtn} ${mode === 'browse' ? styles.segmentBtnActive : ''}`}
+              className={`${styles.segmentBtn} ${mode === 'collection' ? styles.segmentBtnActive : ''}`}
             >
-              Public archive
+              Art collection
             </button>
             <button
               type="button"
-              onClick={() => { setMode('upload'); setSelectedId(null); setPanel(null); }}
+              onClick={() => chooseMode('browse')}
+              disabled={isProcessing}
+              className={`${styles.segmentBtn} ${mode === 'browse' ? styles.segmentBtnActive : ''}`}
+            >
+              Genetic archive
+            </button>
+            <button
+              type="button"
+              onClick={() => chooseMode('upload')}
               disabled={isProcessing}
               className={`${styles.segmentBtn} ${mode === 'upload' ? styles.segmentBtnActive : ''}`}
             >
-              {hasResults ? 'Your wing' : 'Bring a genome'}
+              {hasResults ? 'Your genome' : 'Bring a genome'}
             </button>
           </div>
 
           <span className={styles.statusPill}>
-            <span className={`${styles.statusDot} ${isDbLoading ? styles.statusDotLoading : ''}`} />
-            {isDbLoading
-              ? 'Uncrating the archive'
-              : dbStats
-                ? `${dbStats.totalSNPs.toLocaleString()} markers catalogued`
-                : 'Archive idle'}
+            <span className={`${styles.statusDot} ${mode !== 'collection' && isDbLoading ? styles.statusDotLoading : ''}`} />
+            {mode === 'collection'
+              ? `${ART_COLLECTION.length.toLocaleString()} works catalogued`
+              : !canAccessGenetics
+                ? (accessChecking ? 'Checking membership' : 'Membership required')
+                : isDbLoading
+                  ? 'Uncrating the archive'
+                  : dbStats
+                    ? `${dbStats.totalSNPs.toLocaleString()} markers catalogued`
+                    : 'Archive idle'}
           </span>
 
           {/* One search box for both wings: it queries the archive in the public
               wing and filters your own matches in yours. */}
-          {(mode === 'browse' || hasResults) && (
+          {(mode === 'browse' || (mode === 'upload' && hasResults)) && (
             <input
               type="text"
               placeholder={mode === 'browse' ? 'rsid, gene, disease, or text' : 'Search your markers'}
@@ -516,14 +600,16 @@ function GeneticsLab() {
                 </button>
               </>
             )}
-            <button type="button" onClick={() => setPanel('blue')} className={styles.terminalButton}>
-              Ask Blue
-            </button>
+            {mode !== 'collection' && (
+              <button type="button" onClick={() => setPanel('blue')} className={styles.terminalButton}>
+                Ask Blue
+              </button>
+            )}
           </div>
         </div>
 
         {/* Progress and failure live in the strip so the room keeps the space. */}
-        {(isDbLoading || isProcessing) && (
+        {mode !== 'collection' && canAccessGenetics && (isDbLoading || isProcessing) && (
           <div className={styles.progressRow}>
             <div className={styles.progressBar}>
               <div ref={progressBarRef} className={styles.progressFill} style={{ width: '0%' }} />
@@ -543,7 +629,7 @@ function GeneticsLab() {
           </div>
         )}
 
-        {hasError && (
+        {mode !== 'collection' && hasError && (
           <p className={styles.stateError}>
             {dbError?.message || matchError?.message || workerError?.message || 'An unknown error occurred'}
           </p>
@@ -595,35 +681,11 @@ export default function GeneticsPage() {
   return (
     <div className={styles.pageLayout}>
       <SideNavigation />
-      {access === 'granted' ? (
-        <GeneticsLab />
-      ) : (
-        <main className={styles.content}>
-          <section className={styles.galleryBand}>
-            <OsirisGallery pieces={[]} onSelect={() => {}} />
-          </section>
-          <section className={styles.terminal} data-theme="dark">
-            <p className={styles.statement}>
-              Osiris Art Gallery of Genetic Research. Under the Humane Genome Project
-              License (HGPL), Maverick Blue splices epigenetic markers — non cell — to
-              digital artistry. The room is open to members. Hold a VIP membership card
-              and the walls fill with 110,000 markers from SNPedia, or with your own
-              genome, read entirely on this device and uploaded nowhere.
-            </p>
-            <div className={styles.lockRow}>
-              <button
-                type="button"
-                onClick={() => setShowProModal(true)}
-                disabled={access === 'checking'}
-                className={styles.unlockButton}
-              >
-                {access === 'checking' ? 'Checking membership' : 'Unlock with VIP membership'}
-              </button>
-              <span className={styles.lockNote}>Members only</span>
-            </div>
-          </section>
-        </main>
-      )}
+      <GeneticsLab
+        canAccessGenetics={access === 'granted'}
+        accessChecking={access === 'checking'}
+        onRequireMembership={() => setShowProModal(true)}
+      />
       <ProMembershipModal isOpen={showProModal} onClose={handleProModalClose} />
     </div>
   );

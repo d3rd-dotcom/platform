@@ -293,6 +293,50 @@
   color: rgba(244, 243, 240, 0.58);
 }
 
+.artworkDetails {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.artworkDescription {
+  max-width: 62ch;
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--color-text-soft);
+}
+
+.artworkEra {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--color-text-faint);
+}
+
+.artworkLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 9px 15px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-strong);
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-light);
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.artworkLink:hover {
+  border-color: var(--color-text-muted);
+  background: var(--color-inverse-surface-1);
+}
+
 /* ----- locked ----- */
 .lockRow {
   display: flex;
