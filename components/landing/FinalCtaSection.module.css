@@ -24,8 +24,8 @@
 .heading {
   margin: 0;
   font-family: var(--font-primary);
-  font-size: clamp(1.35rem, 2.4vw, 1.9rem);
-  font-weight: var(--font-weight-semibold);
+  font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+  font-weight: var(--font-weight-bold);
   line-height: 1.2;
   letter-spacing: -0.02em;
   color: var(--color-text-light);

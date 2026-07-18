@@ -4,7 +4,7 @@
   width: 100%;
   padding: 48px 0;
   z-index: 1;
-  background: rgba(0, 0, 0, 0.9);
+  background: var(--color-grey-950);
 }
 
 @media (min-width: 768px) {
@@ -14,7 +14,7 @@
 }
 
 .faqContainer {
-  max-width: 1180px;
+  max-width: 1080px;
   margin: 0 auto;
   padding: 0 16px;
 }
@@ -28,8 +28,8 @@
 /* Eyebrow */
 .faqEyebrow {
   font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--color-primary);
@@ -38,9 +38,9 @@
 
 /* Title */
 .faqTitle {
-  font-family: var(--font-secondary);
-  font-size: 2rem;
-  line-height: 1.2;
+  font-family: var(--font-primary);
+  font-size: 2.1rem;
+  line-height: 1.12;
   font-weight: var(--font-weight-bold);
   letter-spacing: -0.02em;
   color: #ffffff;
@@ -70,7 +70,7 @@
 
 /* Accordion Item */
 .faqItem {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-text-light) 24%, transparent);
 }
 
 /* Question Row */
@@ -79,7 +79,7 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 20px 0;
+  padding: 24px 0;
   background: none;
   border: none;
   cursor: pointer;
@@ -89,15 +89,15 @@
 
 .faqQuestionText {
   font-family: var(--font-primary);
-  font-size: 1.0625rem;
-  font-weight: var(--font-weight-semibold);
+  font-size: 1.16rem;
+  font-weight: var(--font-weight-bold);
   color: #ffffff;
   line-height: 1.4;
 }
 
 @media (min-width: 768px) {
   .faqQuestionText {
-    font-size: 1.125rem;
+    font-size: 1.22rem;
   }
 }
 
@@ -126,17 +126,17 @@
 }
 
 .faqAnswerInner {
-  padding: 0 0 20px 0;
+  padding: 0 0 26px 0;
 }
 
 .faqAnswerText {
   font-family: var(--font-primary);
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: var(--font-weight-regular);
   line-height: 1.7;
-  color: rgba(255, 255, 255, 0.7);
+  color: color-mix(in srgb, var(--color-text-light) 86%, transparent);
   margin: 0;
-  max-width: 720px;
+  max-width: 820px;
 }
 
 /* Scroll to Top */
@@ -152,8 +152,8 @@
   border: none;
   border-radius: 100px;
   font-family: var(--font-primary);
-  font-size: 0.8125rem;
-  font-weight: var(--font-weight-medium);
+  font-size: 0.95rem;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.04em;
   cursor: pointer;
   transition: all 0.2s ease;

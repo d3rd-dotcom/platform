@@ -4,11 +4,13 @@ import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { LazySection } from './LazySection';
 import { RotatingTextSection } from './RotatingTextSection';
+import { FAQSection } from './FAQSection';
+import {
+  CohortLearningSection,
+  CommunityEducationSection,
+  EducationalRoleSection,
+} from './AnswerOpportunitySections';
 
-const EcosystemSection = dynamic(() =>
-  import('./EcosystemSection').then((mod) => mod.EcosystemSection),
-  { ssr: false }
-);
 const FounderSection = dynamic(() =>
   import('./FounderSection').then((mod) => mod.FounderSection),
   { ssr: false }
@@ -43,10 +45,6 @@ const KeyFiguresSection = dynamic(() =>
 );
 const FinalCtaSection = dynamic(() =>
   import('./FinalCtaSection').then((mod) => mod.FinalCtaSection),
-  { ssr: false }
-);
-const FAQSection = dynamic(() =>
-  import('./FAQSection').then((mod) => mod.FAQSection),
   { ssr: false }
 );
 const LandingFooter = dynamic(() =>
@@ -91,15 +89,19 @@ export function LandingDeferredSections() {
   return (
     <>
       <LazySection minHeight="clamp(580px, 72vw, 700px)"><ProblemStatementSection /></LazySection>
+      <CommunityEducationSection />
       <LazySection minHeight="90vh"><FeaturesSection /></LazySection>
       <LazySection minHeight="80vh"><TestimonialSection /></LazySection>
-      <LazySection minHeight="90vh"><EcosystemSection /></LazySection>
       <LazySection minHeight="80vh"><FounderSection /></LazySection>
       <LazySection minHeight="90vh"><HowItWorksSection /></LazySection>
-      <LazySection minHeight="100vh"><LandingMembershipSection /></LazySection>
+      <CohortLearningSection />
+      <EducationalRoleSection />
+      <div id="membership-anchor">
+        <LazySection minHeight="100vh"><LandingMembershipSection /></LazySection>
+      </div>
       <LazySection minHeight="20vh"><KeyFiguresSection /></LazySection>
       <LazySection minHeight="25vh"><FinalCtaSection /></LazySection>
-      <LazySection minHeight="80vh"><FAQSection /></LazySection>
+      <FAQSection />
       <LazySection minHeight="90vh"><MagazineSection /></LazySection>
       <LazySection minHeight="clamp(220px, 32vw, 400px)"><RotatingTextSection /></LazySection>
       <LazySection minHeight="40vh"><LandingFooter /></LazySection>

@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import Image from 'next/image';
 import { createPortal } from 'react-dom';
 import { usePrivy } from '@privy-io/react-auth';
 import {
@@ -219,18 +218,6 @@ export const MembershipSection: React.FC = () => {
   return (
     <section ref={sectionRef} id="membership" className={`${styles.section} ${isVisible ? styles.sectionVisible : ''}`}>
       <div className={styles.container}>
-        <div className={styles.dinoWrap} aria-hidden="true">
-          <div className={styles.dinoGlow} />
-          <Image
-            src="/images/dino-heart.png"
-            alt=""
-            width={1280}
-            height={1280}
-            className={styles.dino}
-            sizes="(max-width: 768px) 88px, 132px"
-          />
-        </div>
-
         <div className={styles.comparisonPanel}>
           <div className={styles.tierGrid}>
           {/* Free Tier */}

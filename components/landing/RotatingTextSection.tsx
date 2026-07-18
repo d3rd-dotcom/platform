@@ -25,7 +25,7 @@ export const RotatingTextSection: React.FC = () => {
 
   useEffect(() => {
     const measureAllWidths = () => {
-      const fontSize = window.innerWidth >= 768 ? '2.65rem' : '0.78rem';
+      const fontSize = window.innerWidth >= 768 ? '2.65rem' : '1.15rem';
       const widths = texts.map((text) => {
         const span = document.createElement('span');
         span.style.visibility = 'hidden';
