@@ -6,7 +6,7 @@ import styles from './LandingPage.module.css';
 import LandingEnterAcademyButton from './LandingEnterAcademyButton';
 import { LandingScene } from './LandingScene';
 import { PixelCursorTrail } from './PixelCursorTrail';
-const HERO_HEADLINE = 'Vibe-Learning platform for the next gen of quality education.';
+const HERO_HEADLINE = 'Vibe-learn any subject using AI-powered education.';
 
 export const HeroSection: React.FC = () => {
   return (

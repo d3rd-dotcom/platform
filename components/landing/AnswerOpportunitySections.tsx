@@ -36,38 +36,38 @@ function CommunityIcon({ name }: { name: CommunityIconName }) {
 }
 
 const communityBlurbs: Array<{ label: string; icon: CommunityIconName }> = [
-  { label: 'Accessible learning paths', icon: 'path' },
-  { label: 'Practical assignments', icon: 'assignment' },
-  { label: 'Peer discussion and feedback', icon: 'peers' },
-  { label: 'Progress into advanced topics', icon: 'progress' },
+  { label: 'Paths that start where you are', icon: 'path' },
+  { label: 'Assignments with same-day payoff', icon: 'assignment' },
+  { label: 'Peers who read your work', icon: 'peers' },
+  { label: 'Progress you can watch compound', icon: 'progress' },
 ];
 
 const cohortPrinciples = [
   {
     title: 'Shared direction',
-    body: 'Participants work toward a defined learning objective with milestones that make the route visible.',
+    body: 'Everyone climbs toward the same objective, with milestones that keep the route visible. Momentum is easier to keep when it belongs to a group.',
   },
   {
-    title: 'Individual contribution',
-    body: 'Each person completes and explains their own work, so participation has a clear purpose.',
+    title: 'Your own work',
+    body: 'You complete each mission yourself and explain it in your own words. That is how a reader becomes someone worth reading.',
   },
   {
-    title: 'Structured exchange',
-    body: 'Discussion, teach-backs, and feedback happen at planned points in the learning experience.',
+    title: 'Real exchange',
+    body: 'Teach-backs, discussion, and honest feedback at set points along the way. Explaining an idea once teaches you twice.',
   },
   {
     title: 'Visible progress',
-    body: 'The cohort can see what has been completed, what comes next, and where more attention is useful.',
+    body: 'You watch the map fill in: what is done, what comes next, and where your attention counts most.',
   },
 ];
 
 const compactItems = [
-  ['Objective', 'The outcome and shared milestones for the cohort.'],
-  ['Schedule', 'Dates, attendance expectations, and catch-up options.'],
-  ['Contribution', 'The individual work each participant agrees to complete.'],
-  ['Feedback', 'Standards for useful, specific, and respectful responses.'],
-  ['Privacy', 'How participants are expected to handle what others share.'],
-  ['Facilitation', 'The facilitator’s role and the route for participation concerns.'],
+  ['Objective', 'Where the cohort is headed and the milestones along the way.'],
+  ['Schedule', 'When you meet, what showing up looks like, and how to catch up.'],
+  ['Contribution', 'The work you agree to bring, written in your own words.'],
+  ['Feedback', 'Specific, useful, and kind. That is the bar.'],
+  ['Privacy', 'What people share inside the cohort stays inside the cohort.'],
+  ['Facilitation', 'Who keeps things on course, and who to talk to if something feels off.'],
 ];
 
 export function CommunityEducationSection() {
@@ -85,10 +85,10 @@ export function CommunityEducationSection() {
           </h2>
           <div className={styles.definitionCopy}>
             <p className={styles.lead}>
-              Community education is learning organized around the needs and
-              experiences of a shared community. Mental Wealth Academy combines
-              structured guides, practical assignments, peer discussion, and
-              pathways into deeper study.
+              Community education is learning built around the people doing it.
+              At Mental Wealth Academy, that means a library the whole academy
+              writes together: you study a guide, explain it in your own words,
+              and your note becomes part of the map the next learner follows.
             </p>
             <ul className={styles.inlineList} aria-label="Community education features">
               {communityBlurbs.map((blurb) => (
@@ -120,10 +120,10 @@ export function CohortLearningSection() {
           What is a cohort-based learning experience?
         </h2>
         <p className={`${styles.lead} ${styles.centeredLead}`}>
-          A cohort-based learning experience brings a group through a program
-          using shared milestones, discussion, feedback, and peer accountability.
-          At Mental Wealth Academy, participants study independently and
-          contribute what they learn to a shared knowledge network.
+          A cohort is a group moving through a program together: same
+          milestones, same deadlines, shared momentum. At Mental Wealth Academy
+          you study on your own, then bring back what you found, and every note
+          you contribute makes the shared knowledge network a little smarter.
         </p>
 
         <div className={styles.principleGrid}>
@@ -142,8 +142,8 @@ export function CohortLearningSection() {
           <summary>Read the cohort compact</summary>
           <div className={styles.compactBody}>
             <p>
-              Every cohort publishes its operating expectations before enrollment
-              so participants can make an informed choice.
+              Every cohort publishes its expectations before you join, so you
+              always know what you are signing up for.
             </p>
             <dl className={styles.compactGrid}>
               {compactItems.map(([term, description]) => (
@@ -173,14 +173,17 @@ export function EducationalRoleSection() {
           How is MWA different from group therapy?
         </h2>
         <p className={styles.lead}>
-          Mental Wealth Academy provides education, structured reflection, and
-          peer learning. Group therapy is clinical treatment delivered by
-          qualified mental health professionals. Diagnosis and treatment belong
-          with an appropriate licensed provider.
+          Mental Wealth Academy is a school. You come here to study, write, and
+          train the habits of a sharp, curious mind alongside people doing the
+          same. Group therapy is clinical treatment delivered by licensed
+          mental health professionals, and diagnosis and treatment belong with
+          a licensed provider.
         </p>
         <p className={styles.roleNote}>
-          MWA may complement someone&apos;s wider learning or wellbeing practices.
-          It does not provide clinical assessment, diagnosis, or treatment.
+          Many members study here alongside working with a therapist, the way
+          you might pair a gym membership with a physician. The Academy
+          teaches, and it leaves clinical assessment, diagnosis, and treatment
+          to the professionals licensed to provide them.
         </p>
       </div>
     </section>

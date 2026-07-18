@@ -27,8 +27,10 @@ export const HowItWorksSection: React.FC = () => (
       <p className={styles.eyebrow}>How it works</p>
       <h2 className={styles.heading}>Learn Where Curiosity Leads</h2>
       <p className={styles.lead}>
-        Vibe-Learning means your curiosity sets the syllabus. Choose a mission.
-        Record what you find. Blue builds the next one from there.
+        Vibe-Learning is like a digital classroom where your curiosity sets the
+        syllabus. Daily field notes build your mental sharpness, missions pay
+        real rewards, and the people beside you are working on the same things
+        you are.
       </p>
 
       <ol className={styles.steps}>
