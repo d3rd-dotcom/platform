@@ -218,6 +218,7 @@ export const MembershipSection: React.FC = () => {
   return (
     <section ref={sectionRef} id="membership" className={`${styles.section} ${isVisible ? styles.sectionVisible : ''}`}>
       <div className={styles.container}>
+        <h1 className={styles.title}>Products and Services</h1>
         <div className={styles.comparisonPanel}>
           <div className={styles.tierGrid}>
           {/* Free Tier */}

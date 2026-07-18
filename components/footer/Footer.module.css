@@ -1,10 +1,16 @@
 .footer {
-  margin-top: var(--space-2xl);
+  width: 100%;
+  margin-top: 0;
   padding-top: calc(var(--space-xl) * 2);
   padding-bottom: calc(var(--space-xl) * 2);
-  background-color: var(--color-background, #F4F5FE);
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-  width: 100%;
+  border-top: 1px solid color-mix(in srgb, var(--color-text-light) 16%, transparent);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-primary) 8%, var(--color-landing-black)) 0%,
+      var(--color-landing-black) 34%
+    );
+  color: var(--color-text-light);
 }
 
 .inner {
@@ -40,7 +46,7 @@
   font-family: var(--font-primary);
   font-size: 14px;
   font-weight: var(--font-weight-regular);
-  color: rgba(0, 0, 0, 0.7);
+  color: color-mix(in srgb, var(--color-text-light) 74%, transparent);
   line-height: 1.6;
   margin: 0;
   max-width: 400px;
@@ -62,30 +68,29 @@
 }
 
 .title {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
   font-family: var(--font-primary);
+  font-size: 1rem;
+  font-weight: var(--font-weight-bold);
   margin-bottom: var(--space-xs);
-  color: var(--color-text-dark);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  color: var(--color-text-light);
+  letter-spacing: -0.01em;
 }
 
 .link {
   display: block;
-  color: rgba(0, 0, 0, 0.7);
+  color: color-mix(in srgb, var(--color-text-light) 72%, transparent);
   font-size: var(--font-size-sm);
   font-family: var(--font-primary);
   font-weight: var(--font-weight-regular);
   padding-top: 1px;
   padding-bottom: 1px;
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: color var(--duration-fast) var(--ease-out);
 }
 
 .link:hover {
   text-decoration: underline;
-  color: var(--color-primary);
+  color: color-mix(in srgb, var(--color-primary) 76%, var(--color-text-light));
 }
 
 /* Bottom Section */
@@ -94,7 +99,7 @@
   max-width: 1180px;
   margin: 0 auto;
   padding: var(--space-xl) var(--space-md);
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  border-top: 1px solid color-mix(in srgb, var(--color-text-light) 14%, transparent);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -106,7 +111,7 @@
   font-family: var(--font-primary);
   font-size: 14px;
   font-weight: var(--font-weight-regular);
-  color: rgba(0, 0, 0, 0.6);
+  color: color-mix(in srgb, var(--color-text-light) 62%, transparent);
   margin: 0;
 }
 
@@ -124,16 +129,20 @@
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  color: rgba(0, 0, 0, 0.7);
-  transition: all 0.2s ease;
-  background: transparent;
-  border: 1px solid transparent;
+  border: 1px solid color-mix(in srgb, var(--color-text-light) 18%, transparent);
+  background: color-mix(in srgb, var(--color-text-light) 4%, transparent);
+  color: color-mix(in srgb, var(--color-text-light) 74%, transparent);
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
 }
 
 .socialIcon:hover {
-  color: var(--color-primary);
-  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
-  border-color: color-mix(in oklch, var(--color-primary) 20%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 48%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  color: color-mix(in srgb, var(--color-primary) 70%, var(--color-text-light));
   transform: translateY(-2px);
 }
 

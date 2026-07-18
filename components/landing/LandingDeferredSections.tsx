@@ -4,32 +4,27 @@ import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { LazySection } from './LazySection';
 import { RotatingTextSection } from './RotatingTextSection';
-import { FAQSection } from './FAQSection';
 import CompanyLogoMarquee from './CompanyLogoMarquee';
 import {
   CohortLearningSection,
   CommunityEducationSection,
-  EducationalRoleSection,
+  GettingStartedSection,
 } from './AnswerOpportunitySections';
 
 const FounderSection = dynamic(() =>
   import('./FounderSection').then((mod) => mod.FounderSection),
   { ssr: false }
 );
+const AIPoweredSection = dynamic(() =>
+  import('./FounderSection').then((mod) => mod.AIPoweredSection),
+  { ssr: false }
+);
 const TestimonialSection = dynamic(() =>
   import('./TestimonialSection').then((mod) => mod.TestimonialSection),
   { ssr: false }
 );
-const LandingMembershipSection = dynamic(() =>
-  import('./LandingMembershipSection').then((mod) => mod.LandingMembershipSection),
-  { ssr: false }
-);
 const FeaturesSection = dynamic(() =>
   import('./FeaturesSection').then((mod) => mod.FeaturesSection),
-  { ssr: false }
-);
-const MagazineSection = dynamic(() =>
-  import('./MagazineSection').then((mod) => mod.MagazineSection),
   { ssr: false }
 );
 const ProblemStatementSection = dynamic(() =>
@@ -40,16 +35,8 @@ const HowItWorksSection = dynamic(() =>
   import('./HowItWorksSection').then((mod) => mod.HowItWorksSection),
   { ssr: false }
 );
-const KeyFiguresSection = dynamic(() =>
-  import('./KeyFiguresSection').then((mod) => mod.KeyFiguresSection),
-  { ssr: false }
-);
-const FinalCtaSection = dynamic(() =>
-  import('./FinalCtaSection').then((mod) => mod.FinalCtaSection),
-  { ssr: false }
-);
-const LandingFooter = dynamic(() =>
-  import('./LandingFooter').then((mod) => mod.LandingFooter),
+const Footer = dynamic(() =>
+  import('@/components/footer/Footer').then((mod) => mod.Footer),
   { ssr: false }
 );
 const DonationPopup = dynamic(() =>
@@ -92,21 +79,15 @@ export function LandingDeferredSections() {
       <LazySection minHeight="clamp(580px, 72vw, 700px)"><ProblemStatementSection /></LazySection>
       <CommunityEducationSection />
       <CompanyLogoMarquee />
-      <LazySection minHeight="90vh"><FeaturesSection /></LazySection>
-      <LazySection minHeight="80vh"><TestimonialSection /></LazySection>
-      <LazySection minHeight="80vh"><FounderSection /></LazySection>
       <LazySection minHeight="90vh"><HowItWorksSection /></LazySection>
+      <LazySection minHeight="clamp(280px, 34vw, 440px)"><AIPoweredSection /></LazySection>
+      <LazySection minHeight="90vh"><FeaturesSection /></LazySection>
+      <LazySection minHeight="80vh"><FounderSection /></LazySection>
       <CohortLearningSection />
-      <EducationalRoleSection />
-      <div id="membership-anchor">
-        <LazySection minHeight="100vh"><LandingMembershipSection /></LazySection>
-      </div>
-      <LazySection minHeight="20vh"><KeyFiguresSection /></LazySection>
-      <LazySection minHeight="25vh"><FinalCtaSection /></LazySection>
-      <FAQSection />
-      <LazySection minHeight="90vh"><MagazineSection /></LazySection>
+      <LazySection minHeight="80vh"><TestimonialSection /></LazySection>
       <LazySection minHeight="clamp(220px, 32vw, 400px)"><RotatingTextSection /></LazySection>
-      <LazySection minHeight="40vh"><LandingFooter /></LazySection>
+      <GettingStartedSection />
+      <LazySection minHeight="40vh"><Footer /></LazySection>
       {overlaysReady && <DonationPopup />}
       {overlaysReady && <ElevenLabsAgentWidget />}
     </>

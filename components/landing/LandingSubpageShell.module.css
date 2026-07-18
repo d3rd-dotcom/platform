@@ -1,0 +1,61 @@
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: calc(100vh + 72px);
+  margin-top: -72px;
+  overflow-x: hidden;
+  background-color: var(--color-landing-black);
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--color-text-light) 9%, transparent) 0.5px, transparent 0.5px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-text-light) 9%, transparent) 0.5px, transparent 0.5px);
+  background-size: 40px 40px;
+  --landing-shell-width: calc(100% - 144px);
+  --landing-shell-padding: 24px;
+}
+
+.container h1,
+.container h2,
+.container h3,
+.container h4,
+.container h5,
+.container h6 {
+  font-family: var(--font-primary);
+}
+
+.main {
+  flex: 1;
+  width: 100%;
+  padding-top: clamp(112px, 12vw, 144px);
+}
+
+@media (max-width: 1200px) {
+  .container {
+    --landing-shell-width: calc(100% - 64px);
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    --landing-shell-width: calc(100% - 32px);
+    --landing-shell-padding: 16px;
+  }
+
+  .main {
+    padding-top: 104px;
+  }
+}
+
+@media (max-width: 520px) {
+  .container {
+    background-size: 32px 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    --landing-shell-width: calc(100% - 24px);
+    --landing-shell-padding: 12px;
+  }
+}

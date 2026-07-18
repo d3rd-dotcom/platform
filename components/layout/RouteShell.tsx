@@ -20,7 +20,11 @@ export function RouteShell({ children, initialCollapsed = true }: RouteShellProp
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  if (pathname === '/') {
+  if (
+    pathname === '/' ||
+    pathname === '/faq' ||
+    pathname === '/products-and-services'
+  ) {
     return <>{children}</>;
   }
 

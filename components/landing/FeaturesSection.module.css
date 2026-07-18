@@ -2,8 +2,8 @@
   position: relative;
   overflow: hidden;
   width: 100%;
-  padding: 40px 24px 112px;
-  background-color: #ffffff;
+  padding: 64px 24px 112px;
+  background-color: var(--color-landing-black);
   z-index: 1;
   --reveal-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -36,13 +36,13 @@
 }
 
 .sectionLead {
-  margin: 0 0 40px;
+  margin: 0 0 52px;
   font-family: var(--font-primary);
   font-size: clamp(1.4rem, 2.4vw, 2.1rem);
   font-weight: 800;
   line-height: 1.2;
   letter-spacing: -0.02em;
-  color: #0b0c12;
+  color: var(--color-text-light);
   text-align: center;
   text-wrap: balance;
 }
@@ -187,6 +187,17 @@
   flex-direction: column;
   justify-content: center;
   gap: 12px;
+  background:
+    radial-gradient(
+      circle at 6% 0%,
+      color-mix(in oklch, var(--color-card-pink) 24%, transparent),
+      transparent 42%
+    ),
+    linear-gradient(
+      145deg,
+      color-mix(in oklch, var(--color-primary) 18%, var(--color-landing-black)),
+      var(--color-landing-black) 72%
+    );
 }
 
 .title {
@@ -248,7 +259,37 @@
   gap: 14px;
   padding: 26px 24px 22px;
   border-right: 1px solid color-mix(in oklch, var(--color-primary) 38%, transparent);
-  transition: background-color 0.22s ease;
+  transition: filter 0.22s ease, background-color 0.22s ease;
+}
+
+.card:nth-child(1) {
+  background: linear-gradient(
+    145deg,
+    color-mix(in oklch, var(--color-accent) 20%, var(--color-landing-black)),
+    var(--color-landing-black) 72%
+  );
+}
+
+.card:nth-child(2) {
+  background:
+    radial-gradient(
+      circle at 82% 12%,
+      color-mix(in oklch, var(--color-card-pink) 14%, transparent),
+      transparent 46%
+    ),
+    linear-gradient(
+      155deg,
+      color-mix(in oklch, var(--color-brand) 16%, var(--color-landing-black)),
+      var(--color-landing-black) 74%
+    );
+}
+
+.card:nth-child(3) {
+  background: linear-gradient(
+    140deg,
+    color-mix(in oklch, var(--color-action-hover) 24%, var(--color-landing-black)),
+    color-mix(in oklch, var(--color-primary) 8%, var(--color-landing-black))
+  );
 }
 
 .card:last-child {
@@ -256,7 +297,8 @@
 }
 
 .card:hover {
-  background-color: color-mix(in oklch, var(--color-primary) 10%, transparent);
+  background-color: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  filter: brightness(1.08) saturate(1.08);
 }
 
 .cardTitle {
@@ -338,7 +380,7 @@
 
 @media (max-width: 640px) {
   .featuresSection {
-    padding: 32px 14px 80px;
+    padding: 48px 14px 80px;
   }
 
   .boardHeader {

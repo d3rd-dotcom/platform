@@ -91,7 +91,7 @@
   line-height: 1.02;
   letter-spacing: -0.04em;
   color: var(--color-text-light);
-  margin: 0 0 12px;
+  margin: 0 auto 40px;
   max-width: 860px;
   text-wrap: balance;
   opacity: 0;

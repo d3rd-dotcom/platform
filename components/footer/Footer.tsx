@@ -86,12 +86,11 @@ export function Footer() {
       <div className={styles.inner}>
         <div className={styles.logo}>
           <Image
-            src="/icons/logo-mwa.png"
+            src="/icons/logo-mwa-horizontal.png"
             alt="Mental Wealth Academy"
             width={180}
-            height={48}
+            height={58}
             className={styles.logoImage}
-            unoptimized
           />
           <p className={styles.description}>
             Building accessible mental health research infrastructure through community-governed funding and AI-driven care architecture.

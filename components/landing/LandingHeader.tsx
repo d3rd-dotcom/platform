@@ -40,17 +40,22 @@ export const LandingHeader: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { play } = useSound();
   const sectionLinks = [
-    { href: '#community-education', label: 'Learn' },
-    { href: '#cohort-learning', label: 'Cohorts' },
-    { href: '#membership-anchor', label: 'Pricing' },
-    { href: '#faqs', label: 'FAQs' },
+    {
+      href: '/#community-education',
+      label: 'Learn',
+      scrollTarget: '#community-education',
+    },
+    {
+      href: '/#cohort-learning',
+      label: 'Cohorts',
+      scrollTarget: '#cohort-learning',
+    },
+    { href: '/products-and-services', label: 'Pricing' },
+    { href: '/faq', label: 'FAQs' },
   ];
 
-  const smoothScrollToSection = (href: string) => {
+  const smoothScrollToSection = (target: HTMLElement) => {
     if (typeof window === 'undefined') return;
-
-    const target = document.querySelector<HTMLElement>(href);
-    if (!target) return;
 
     const header = document.querySelector<HTMLElement>('header');
     const headerOffset = header ? header.getBoundingClientRect().height + 28 : 120;
@@ -85,12 +90,19 @@ export const LandingHeader: React.FC = () => {
 
   const handleSectionLinkClick = (
     event: React.MouseEvent<HTMLAnchorElement>,
-    href: string
+    scrollTarget?: string
   ) => {
-    event.preventDefault();
     play('click');
     setMobileMenuOpen(false);
-    smoothScrollToSection(href);
+
+    const target = scrollTarget
+      ? document.querySelector<HTMLElement>(scrollTarget)
+      : null;
+
+    if (target) {
+      event.preventDefault();
+      smoothScrollToSection(target);
+    }
   };
 
   const handleMobileMenuToggle = () => {
@@ -138,12 +150,12 @@ export const LandingHeader: React.FC = () => {
         </a>
 
         <nav className={styles.sectionNav} aria-label="Section shortcuts">
-          {sectionLinks.map(({ href, label }) => (
+          {sectionLinks.map(({ href, label, scrollTarget }) => (
             <a
               key={href}
               href={href}
               className={styles.sectionNavLink}
-              onClick={(event) => handleSectionLinkClick(event, href)}
+              onClick={(event) => handleSectionLinkClick(event, scrollTarget)}
               onMouseEnter={() => play('hover')}
             >
               <span className={styles.slideWrap}>
@@ -175,12 +187,12 @@ export const LandingHeader: React.FC = () => {
       {mobileMenuOpen ? (
         <div className={styles.mobileMenuPanel}>
           <nav className={styles.mobileSectionNav} aria-label="Mobile section shortcuts">
-            {sectionLinks.map(({ href, label }) => (
+            {sectionLinks.map(({ href, label, scrollTarget }) => (
               <a
                 key={href}
                 href={href}
                 className={styles.mobileSectionNavLink}
-                onClick={(event) => handleSectionLinkClick(event, href)}
+                onClick={(event) => handleSectionLinkClick(event, scrollTarget)}
                 onMouseEnter={() => play('hover')}
               >
                 {label}

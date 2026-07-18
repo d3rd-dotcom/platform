@@ -1,33 +1,47 @@
+'use client';
+
+import Image from 'next/image';
+import type { PointerEvent as ReactPointerEvent } from 'react';
 import CommunityCardCarousel from './CommunityCardCarousel';
 import styles from './AnswerOpportunitySections.module.css';
 
-const cohortPrinciples = [
+const cohortGroups = [
   {
-    title: 'Shared direction',
-    body: 'Everyone climbs toward the same objective, with milestones that keep the route visible. Momentum is easier to keep when it belongs to a group.',
+    title: 'Mental Wealth Academy',
+    body: 'Guides, missions, and cohort schedules create shared direction. Study independently, then return with field notes, teach-backs, and useful feedback.',
+    topics: ['Connected guides', 'Practical missions', 'Peer study'],
   },
   {
-    title: 'Your own work',
-    body: 'You complete each mission yourself and explain it in your own words. That is how a reader becomes someone worth reading.',
+    title: 'MWA Funding',
+    body: 'Through Artizen, creative projects and original ideas can receive matched funding. Members share the work, gather support, and give promising concepts a practical next step.',
+    topics: ['Artizen', 'Matched funding', 'Creative projects'],
   },
   {
-    title: 'Real exchange',
-    body: 'Teach-backs, discussion, and honest feedback at set points along the way. Explaining an idea once teaches you twice.',
-  },
-  {
-    title: 'Visible progress',
-    body: 'You watch the map fill in: what is done, what comes next, and where your attention counts most.',
+    title: 'MWA Institute',
+    body: 'Structured studies connect members with researchers, methods, and shared evidence. Field notes and experiments strengthen an archive other learners can build from.',
+    topics: ['Guided studies', 'Science tools', 'Shared archive'],
   },
 ];
 
-const compactItems = [
-  ['Objective', 'Where the cohort is headed and the milestones along the way.'],
-  ['Schedule', 'When you meet, what showing up looks like, and how to catch up.'],
-  ['Contribution', 'The work you agree to bring, written in your own words.'],
-  ['Feedback', 'Specific, useful, and kind. That is the bar.'],
-  ['Privacy', 'What people share inside the cohort stays inside the cohort.'],
-  ['Facilitation', 'Who keeps things on course, and who to talk to if something feels off.'],
-];
+function followPointer(event: ReactPointerEvent<HTMLElement>) {
+  const card = event.currentTarget;
+  const bounds = card.getBoundingClientRect();
+  const x = event.clientX - bounds.left;
+  const y = event.clientY - bounds.top;
+
+  card.style.setProperty('--pointer-x', `${(x / bounds.width) * 100}%`);
+  card.style.setProperty('--pointer-y', `${(y / bounds.height) * 100}%`);
+  card.style.setProperty('--card-rotate-x', `${((y / bounds.height) - 0.5) * -2.4}deg`);
+  card.style.setProperty('--card-rotate-y', `${((x / bounds.width) - 0.5) * 2.4}deg`);
+}
+
+function resetPointer(event: ReactPointerEvent<HTMLElement>) {
+  const card = event.currentTarget;
+  card.style.setProperty('--pointer-x', '50%');
+  card.style.setProperty('--pointer-y', '50%');
+  card.style.setProperty('--card-rotate-x', '0deg');
+  card.style.setProperty('--card-rotate-y', '0deg');
+}
 
 export function CommunityEducationSection() {
   return (
@@ -63,6 +77,29 @@ export function CommunityEducationSection() {
   );
 }
 
+export function GettingStartedSection() {
+  return (
+    <section
+      id="getting-started"
+      className={`${styles.section} ${styles.communitySection}`}
+      aria-labelledby="getting-started-heading"
+    >
+      <div className={styles.container}>
+        <div className={styles.definitionGrid}>
+          <div className={styles.definitionHeadingCol}>
+            <h2 id="getting-started-heading" className={styles.heading}>
+              We’ll help you get started
+            </h2>
+          </div>
+          <div className={styles.definitionCopy}>
+            <CommunityCardCarousel />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function CohortLearningSection() {
   return (
     <section
@@ -70,75 +107,79 @@ export function CohortLearningSection() {
       className={`${styles.section} ${styles.cohortSection}`}
       aria-labelledby="cohort-learning-heading"
     >
-      <div className={styles.container}>
-        <p className={styles.eyebrow}>Collaborative learning</p>
-        <h2 id="cohort-learning-heading" className={styles.heading}>
-          What is a cohort-based learning experience?
-        </h2>
-        <p className={`${styles.lead} ${styles.centeredLead}`}>
-          A cohort is a group moving through a program together: same
-          milestones, same deadlines, shared momentum. At Mental Wealth Academy
-          you study on your own, then bring back what you found, and every note
-          you contribute makes the shared knowledge network a little smarter.
-        </p>
+      <div className={styles.cohortBackdrop} aria-hidden="true">
+        <svg className={styles.orbitField} viewBox="0 0 1600 980" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="cohort-orbit-near" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stopColor="var(--color-brand)" stopOpacity="0.12" />
+              <stop offset="0.44" stopColor="var(--color-accent)" stopOpacity="0.72" />
+              <stop offset="1" stopColor="var(--color-brand)" stopOpacity="0.18" />
+            </linearGradient>
+            <linearGradient id="cohort-orbit-far" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0" stopColor="var(--color-action)" stopOpacity="0.22" />
+              <stop offset="0.62" stopColor="var(--color-text-light)" stopOpacity="0.48" />
+              <stop offset="1" stopColor="var(--color-accent)" stopOpacity="0.18" />
+            </linearGradient>
+          </defs>
+          <ellipse cx="780" cy="690" rx="970" ry="300" fill="none" stroke="url(#cohort-orbit-near)" strokeWidth="92" transform="rotate(-11 780 690)" />
+          <ellipse cx="810" cy="660" rx="760" ry="218" fill="none" stroke="url(#cohort-orbit-far)" strokeWidth="48" transform="rotate(-11 810 660)" />
+          <ellipse cx="820" cy="645" rx="545" ry="146" fill="none" stroke="var(--color-text-light)" strokeOpacity="0.12" strokeWidth="22" transform="rotate(-11 820 645)" />
+        </svg>
+        <span className={`${styles.floatShape} ${styles.shapeOne}`} />
+        <span className={`${styles.floatShape} ${styles.shapeTwo}`} />
+        <span className={`${styles.floatShape} ${styles.shapeThree}`} />
+        <span className={`${styles.floatShape} ${styles.shapeFour}`} />
+        <span className={`${styles.floatShape} ${styles.shapeFive}`} />
+        <span className={`${styles.floatShape} ${styles.shapeSix}`} />
+        <span className={`${styles.floatShape} ${styles.shapeSeven}`} />
+        <span className={`${styles.floatShape} ${styles.shapeEight}`} />
+        <span className={`${styles.floatShape} ${styles.shapeNine}`} />
+      </div>
 
-        <div className={styles.principleGrid}>
-          {cohortPrinciples.map((principle, index) => (
-            <article className={styles.principleCard} key={principle.title}>
-              <span className={styles.cardIndex} aria-hidden="true">
-                {String(index + 1).padStart(2, '0')}
-              </span>
-              <h3>{principle.title}</h3>
-              <p>{principle.body}</p>
+      <div className={`${styles.container} ${styles.cohortContainer}`}>
+        <div className={styles.cohortIntro}>
+          <h2 id="cohort-learning-heading" className={styles.heading}>
+            What is a cohort-based learning experience?
+          </h2>
+          <p className={`${styles.lead} ${styles.centeredLead}`}>
+            A cohort moves through one program with shared milestones and
+            regular exchange. At MWA, that experience spans three connected
+            parts.
+          </p>
+        </div>
+
+        <div className={styles.cohortCardField}>
+          {cohortGroups.map((group, index) => (
+            <article
+              className={`${styles.cohortCard} ${[
+                styles.academyCard,
+                styles.fundingCard,
+                styles.instituteCard,
+              ][index]}`}
+              key={group.title}
+              onPointerMove={followPointer}
+              onPointerLeave={resetPointer}
+            >
+              <div className={styles.cardGlow} aria-hidden="true" />
+              <div className={styles.cohortMark}>
+                <Image
+                  src="/icons/icon-512.png"
+                  alt=""
+                  width={72}
+                  height={72}
+                  className={styles.cohortMarkImage}
+                />
+              </div>
+              <h3>{group.title}</h3>
+              <p>{group.body}</p>
+              <ul className={styles.topicList} aria-label={`${group.title} topics`}>
+                {group.topics.map((topic) => (
+                  <li key={topic}>{topic}</li>
+                ))}
+              </ul>
             </article>
           ))}
         </div>
-
-        <details className={styles.compact}>
-          <summary>Read the cohort compact</summary>
-          <div className={styles.compactBody}>
-            <p>
-              Every cohort publishes its expectations before you join, so you
-              always know what you are signing up for.
-            </p>
-            <dl className={styles.compactGrid}>
-              {compactItems.map(([term, description]) => (
-                <div className={styles.compactItem} key={term}>
-                  <dt>{term}</dt>
-                  <dd>{description}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-        </details>
-      </div>
-    </section>
-  );
-}
-
-export function EducationalRoleSection() {
-  return (
-    <section
-      id="educational-role"
-      className={`${styles.section} ${styles.roleSection}`}
-      aria-labelledby="educational-role-heading"
-    >
-      <div className={styles.roleContainer}>
-        <p className={styles.eyebrow}>Study support</p>
-        <h2 id="educational-role-heading" className={styles.heading}>
-          What do a cohort and an AI add to studying?
-        </h2>
-        <p className={styles.lead}>
-          Studying alone works until the week it doesn&apos;t. A cohort puts
-          people around your effort: shared milestones, someone to explain your
-          work to, and proof that you showed up. Blue reads your field notes,
-          remembers where you left off, and drafts the next mission from what
-          you were already curious about.
-        </p>
-        <p className={styles.roleNote}>
-          The result is a study practice that keeps moving. The cohort holds
-          the schedule, Blue holds the thread, and you do the thinking.
-        </p>
       </div>
     </section>
   );

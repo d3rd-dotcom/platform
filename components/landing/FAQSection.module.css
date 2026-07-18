@@ -25,17 +25,6 @@
   }
 }
 
-/* Eyebrow */
-.faqEyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--color-primary);
-  margin: 0 0 12px 0;
-}
-
 /* Title */
 .faqTitle {
   font-family: var(--font-primary);

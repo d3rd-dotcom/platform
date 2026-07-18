@@ -1190,6 +1190,7 @@ export async function getKnowledgeMap(userId?: string | null): Promise<Knowledge
       topicTitle: string;
       status: string;
       level: number;
+      summary: string | null;
     }>
   >(
     `
@@ -1221,10 +1222,11 @@ export async function getKnowledgeMap(userId?: string | null): Promise<Knowledge
       g.slug,
       g.topic_title AS "topicTitle",
       g.status,
+      g.summary,
       MAX(lvl.level) AS level
     FROM lvl
     JOIN guides g ON g.id = lvl.id
-    GROUP BY g.id, g.slug, g.topic_title, g.status
+    GROUP BY g.id, g.slug, g.topic_title, g.status, g.summary
     ORDER BY MAX(lvl.level) ASC, g.topic_title ASC
     `,
   );
@@ -1234,12 +1236,33 @@ export async function getKnowledgeMap(userId?: string | null): Promise<Knowledge
     return { levels: 0, nodes: [] };
   }
 
+  const missingSummaryIds = rows.filter((row) => !row.summary?.trim()).map((row) => row.id);
+
+  // Once the published node set is known, these reads are independent. Running
+  // them together keeps the public landing map to two database round trips.
+  const [prereqRows, doneRows, subjectsMap, bodyRows] = await Promise.all([
+    sqlQuery<Array<{ prereq_id: string; guide_id: string }>>(
+      `SELECT prereq_id, guide_id FROM guide_edges
+       WHERE guide_id = ANY(:ids) AND prereq_id = ANY(:ids)`,
+      { ids: nodeIds },
+    ),
+    userId
+      ? sqlQuery<Array<{ guide_id: string }>>(
+          `SELECT guide_id FROM guide_progress
+           WHERE user_id = :userId AND guide_id = ANY(:ids)`,
+          { userId, ids: nodeIds },
+        )
+      : Promise.resolve([]),
+    getSubjectsForGuides(nodeIds),
+    missingSummaryIds.length
+      ? sqlQuery<Array<{ id: string; body: unknown }>>(
+          `SELECT id, body FROM guides WHERE id = ANY(:ids)`,
+          { ids: missingSummaryIds },
+        )
+      : Promise.resolve([]),
+  ]);
+
   // Published-to-published edges among the mapped nodes → prereqIds per node.
-  const prereqRows = await sqlQuery<Array<{ prereq_id: string; guide_id: string }>>(
-    `SELECT prereq_id, guide_id FROM guide_edges
-     WHERE guide_id = ANY(:ids) AND prereq_id = ANY(:ids)`,
-    { ids: nodeIds },
-  );
   const prereqMap = new Map<string, string[]>();
   for (const r of prereqRows) {
     const list = prereqMap.get(r.guide_id);
@@ -1249,25 +1272,16 @@ export async function getKnowledgeMap(userId?: string | null): Promise<Knowledge
 
   // Completion state for the viewer.
   const completed = new Set<string>();
-  if (userId) {
-    const doneRows = await sqlQuery<Array<{ guide_id: string }>>(
-      `SELECT guide_id FROM guide_progress
-       WHERE user_id = :userId AND guide_id = ANY(:ids)`,
-      { userId, ids: nodeIds },
-    );
-    for (const r of doneRows) completed.add(r.guide_id);
-  }
-
-  const subjectsMap = await getSubjectsForGuides(nodeIds);
+  for (const r of doneRows) completed.add(r.guide_id);
 
   // Prefer the contributor-authored summary, with a body-derived legacy fallback.
-  const bodyRows = await sqlQuery<Array<{ id: string; body: unknown; summary: string | null }>>(
-    `SELECT id, body, summary FROM guides WHERE id = ANY(:ids)`,
-    { ids: nodeIds },
+  const summaryMap = new Map(
+    rows
+      .filter((row) => Boolean(row.summary?.trim()))
+      .map((row) => [row.id, row.summary!.trim()]),
   );
-  const summaryMap = new Map<string, string>();
   for (const r of bodyRows) {
-    summaryMap.set(r.id, r.summary?.trim() || deriveSummary(parseBody(r.body)));
+    summaryMap.set(r.id, deriveSummary(parseBody(r.body)));
   }
 
   const nodes: KnowledgeMapNode[] = rows.map((r) => ({

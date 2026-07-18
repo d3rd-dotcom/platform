@@ -4,9 +4,8 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  padding: 24px 0 28px;
+  padding: 50px 0 100px;
   overflow: hidden;
-  border-block: 1px solid color-mix(in srgb, var(--color-text-light) 12%, transparent);
   background: var(--color-landing-black);
 }
 
@@ -46,6 +45,7 @@
   justify-content: center;
   width: var(--logo-width);
   height: 48px;
+  overflow: hidden;
   flex: 0 0 auto;
 }
 
@@ -56,6 +56,12 @@
   filter: brightness(0) invert(1);
   opacity: 0.74;
   transition: opacity 180ms ease;
+}
+
+.openAiLogo {
+  transform: scale(1.86);
+  filter: invert(1);
+  mix-blend-mode: screen;
 }
 
 .marqueeSection:hover .logo {
@@ -87,8 +93,6 @@
 @media (max-width: 720px) {
   .marqueeSection {
     --logo-gap: 48px;
-
-    padding-block: 20px 24px;
   }
 
   .logoItem {

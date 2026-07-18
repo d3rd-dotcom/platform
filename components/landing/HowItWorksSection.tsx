@@ -1,47 +1,36 @@
 'use client';
 
+import Image from 'next/image';
 import React from 'react';
+import CtaButton from '@/components/shared/CtaButton';
 import styles from './HowItWorksSection.module.css';
 
-const steps = [
-  {
-    num: '01',
-    title: 'Learn, and contribute by learning',
-    body: 'Sign up and take on missions. Write a field note on each one, in your own words. The note is the contribution, and the contribution earns.',
-  },
-  {
-    num: '02',
-    title: 'Blue connects the dots',
-    body: 'Blue reads your field notes, remembers your progress, and suggests the next node or mission to deepen what you are exploring.',
-  },
-  {
-    num: '03',
-    title: 'Let your work carry forward',
-    body: 'Complete missions, earn credits for verified work, and strengthen the knowledge map for the people who follow your path.',
-  },
-];
+const introCopy =
+  'MWA started as a small cohort of “vibe-learners”: developers, psychologists, and designers. One IRB-study idea for a new social model for mental wealth. Members learn at a self-pace through journaling, knowledge nodes, and emerging mental wellness hacks. We support you as you level-up your education online and IRL.';
 
 export const HowItWorksSection: React.FC = () => (
   <section id="how-it-works" className={styles.section} aria-label="How it works">
     <div className={styles.container}>
-      <p className={styles.eyebrow}>How it works</p>
-      <h2 className={styles.heading}>Learn Where Curiosity Leads</h2>
-      <p className={styles.lead}>
-        Vibe-Learning is like a digital classroom where your curiosity sets the
-        syllabus. Daily field notes build your mental sharpness, missions pay
-        real rewards, and the people beside you are working on the same things
-        you are.
-      </p>
+      <div className={styles.copy}>
+        <h2 className={styles.heading}>
+          Your education deserves{' '}
+          <span className={styles.headingHighlight}>new solutions</span>
+        </h2>
+        <p className={styles.lead}>{introCopy}</p>
+        <div className={styles.actions}>
+          <CtaButton href="/home" size="lg">Explore the Academy</CtaButton>
+          <CtaButton href="#membership" variant="secondary" size="lg">View memberships</CtaButton>
+        </div>
+      </div>
 
-      <ol className={styles.steps}>
-        {steps.map((step) => (
-          <li key={step.num} className={styles.step}>
-            <span className={styles.stepNum} aria-hidden="true">{step.num}</span>
-            <h3 className={styles.stepTitle}>{step.title}</h3>
-            <p className={styles.stepBody}>{step.body}</p>
-          </li>
-        ))}
-      </ol>
+      <Image
+        className={styles.image}
+        src="/landing/blue-learning-companion.png"
+        alt="Blue, the Mental Wealth Academy learning companion"
+        width={1536}
+        height={1024}
+        sizes="(max-width: 900px) 100vw, 50vw"
+      />
     </div>
   </section>
 );

@@ -34,8 +34,7 @@ export const FAQSection = () => {
   return (
     <section id="faqs" className={styles.faqSection}>
       <div className={styles.faqContainer}>
-        <p className={styles.faqEyebrow}>FAQ</p>
-        <h2 className={styles.faqTitle}>Frequently asked questions</h2>
+        <h1 className={styles.faqTitle}>Frequently asked questions</h1>
         <ul className={styles.faqList}>
           {LANDING_FAQ_ITEMS.map((item, i) => {
             const isOpen = openIndex === i;

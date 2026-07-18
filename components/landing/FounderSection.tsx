@@ -50,4 +50,22 @@ export const FounderSection: React.FC = () => {
   );
 };
 
+export const AIPoweredSection: React.FC = () => {
+  return (
+    <section className={founderStyles.aiSection} aria-labelledby="ai-powered-heading">
+      <div className={founderStyles.aiContainer}>
+        <h2 id="ai-powered-heading" className={founderStyles.aiHeading}>
+          <span className={founderStyles.aiHighlight}>AI</span>-Powered:
+        </h2>
+        <p className={founderStyles.aiDescription}>
+          Blue uses agentic memory to carry useful context forward, while
+          coordinated agent swarms examine each question from multiple angles.
+          We built the system on OpenAI&apos;s GPT-5.6 Sol, with recommendation
+          criteria refined by a team of PhDs for current, high-quality guidance.
+        </p>
+      </div>
+    </section>
+  );
+};
+
 export default FounderSection;

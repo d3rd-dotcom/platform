@@ -374,7 +374,7 @@ export default function LandingKnowledgeGraph() {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch('/api/guides/map', { cache: 'no-store', signal: controller.signal })
+    fetch('/api/guides/map?public=1', { signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) throw new Error('Map unavailable');
         const data = (await response.json()) as { map?: KnowledgeMap };
