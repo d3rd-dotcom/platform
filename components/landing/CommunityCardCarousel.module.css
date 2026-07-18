@@ -99,48 +99,111 @@
 }
 
 .card[data-tone='brand'] {
-  background: linear-gradient(
-    172deg,
-    color-mix(in oklch, var(--color-brand) 62%, white),
-    var(--color-brand) 58%,
-    var(--color-action) 100%
-  );
+  background:
+    radial-gradient(
+      circle at 16% 12%,
+      color-mix(in oklch, var(--color-card-pink) 82%, transparent) 0%,
+      transparent 36%
+    ),
+    radial-gradient(
+      circle at 88% 24%,
+      color-mix(in oklch, var(--color-brand) 78%, transparent) 0%,
+      transparent 42%
+    ),
+    linear-gradient(
+      145deg,
+      color-mix(in oklch, var(--color-accent) 82%, var(--color-landing-black)) 0%,
+      var(--color-landing-black) 58%,
+      color-mix(in oklch, var(--color-card-pink) 48%, var(--color-action-hover)) 100%
+    );
 }
 
 .card[data-tone='action'] {
-  background: linear-gradient(
-    172deg,
-    color-mix(in oklch, var(--color-action) 55%, white),
-    var(--color-action) 62%,
-    var(--color-action-hover) 100%
-  );
+  background:
+    radial-gradient(
+      ellipse at 78% 8%,
+      color-mix(in oklch, var(--color-card-pink) 76%, transparent) 0%,
+      transparent 38%
+    ),
+    radial-gradient(
+      circle at 12% 68%,
+      color-mix(in oklch, var(--color-accent) 68%, transparent) 0%,
+      transparent 46%
+    ),
+    conic-gradient(
+      from 205deg at 54% 46%,
+      var(--color-action-hover),
+      var(--color-landing-black) 34%,
+      color-mix(in oklch, var(--color-brand) 70%, var(--color-accent)) 68%,
+      var(--color-action-hover)
+    );
 }
 
 .card[data-tone='deep'] {
-  background: linear-gradient(
-    172deg,
-    color-mix(in oklch, var(--color-brand) 45%, white),
-    color-mix(in oklch, var(--color-brand) 55%, var(--color-action-hover)) 60%,
-    var(--color-action-hover) 100%
-  );
+  background:
+    radial-gradient(
+      circle at 50% 18%,
+      color-mix(in oklch, var(--color-brand) 88%, transparent) 0%,
+      transparent 38%
+    ),
+    radial-gradient(
+      ellipse at 10% 92%,
+      color-mix(in oklch, var(--color-card-pink) 62%, transparent) 0%,
+      transparent 48%
+    ),
+    radial-gradient(
+      ellipse at 92% 76%,
+      color-mix(in oklch, var(--color-accent) 72%, transparent) 0%,
+      transparent 44%
+    ),
+    linear-gradient(
+      158deg,
+      color-mix(in oklch, var(--color-action-hover) 70%, var(--color-landing-black)),
+      var(--color-landing-black) 66%,
+      color-mix(in oklch, var(--color-accent) 52%, var(--color-landing-black))
+    );
 }
 
 .card[data-tone='accent'] {
-  background: linear-gradient(
-    172deg,
-    color-mix(in oklch, var(--color-accent) 52%, white),
-    var(--color-accent) 62%,
-    color-mix(in oklch, var(--color-accent) 62%, var(--color-action)) 100%
-  );
+  background:
+    radial-gradient(
+      ellipse at 18% 16%,
+      color-mix(in oklch, var(--color-card-pink) 74%, transparent) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 84% 70%,
+      color-mix(in oklch, var(--color-brand) 72%, transparent) 0%,
+      transparent 44%
+    ),
+    conic-gradient(
+      from 140deg at 64% 36%,
+      color-mix(in oklch, var(--color-accent) 84%, var(--color-landing-black)),
+      var(--color-action-hover) 24%,
+      var(--color-landing-black) 52%,
+      color-mix(in oklch, var(--color-card-pink) 62%, var(--color-accent)) 78%,
+      color-mix(in oklch, var(--color-accent) 84%, var(--color-landing-black))
+    );
 }
 
 .card[data-tone='night'] {
-  background: linear-gradient(
-    172deg,
-    color-mix(in oklch, var(--color-brand) 55%, white),
-    color-mix(in oklch, var(--color-brand) 60%, var(--color-accent)) 62%,
-    var(--color-accent) 100%
-  );
+  background:
+    radial-gradient(
+      circle at 72% 10%,
+      color-mix(in oklch, var(--color-card-pink) 68%, transparent) 0%,
+      transparent 34%
+    ),
+    radial-gradient(
+      ellipse at 12% 72%,
+      color-mix(in oklch, var(--color-brand) 74%, transparent) 0%,
+      transparent 48%
+    ),
+    linear-gradient(
+      132deg,
+      color-mix(in oklch, var(--color-accent) 68%, var(--color-landing-black)),
+      var(--color-landing-black) 52%,
+      color-mix(in oklch, var(--color-action-hover) 76%, var(--color-accent))
+    );
 }
 
 .media {
@@ -153,14 +216,148 @@
   padding: 22px 20px 4px;
 }
 
+.media::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.card[data-presentation='book'] .media::before {
+  opacity: 0.72;
+  background-image:
+    radial-gradient(
+      circle,
+      color-mix(in srgb, var(--color-text-light) 88%, transparent) 0 1px,
+      transparent 1.5px
+    ),
+    radial-gradient(
+      circle,
+      color-mix(in srgb, var(--color-card-pink) 76%, transparent) 0 1.4px,
+      transparent 2px
+    );
+  background-position: 4px 8px, 18px 22px;
+  background-size: 28px 28px, 46px 46px;
+  mask-image: linear-gradient(to bottom, var(--palette-ink), transparent 88%);
+}
+
+.card[data-presentation='phones'] .media::before {
+  opacity: 0.52;
+  background:
+    radial-gradient(
+      circle at 82% 22%,
+      transparent 0 36px,
+      color-mix(in srgb, var(--color-card-pink) 72%, transparent) 37px 40px,
+      transparent 41px
+    ),
+    conic-gradient(
+      from 45deg at 18% 34%,
+      transparent 0 25%,
+      color-mix(in srgb, var(--color-text-light) 28%, transparent) 25% 33%,
+      transparent 33% 100%
+    ),
+    linear-gradient(
+      132deg,
+      transparent 0 47%,
+      color-mix(in srgb, var(--color-brand) 42%, transparent) 47% 49%,
+      transparent 49%
+    );
+}
+
+.card[data-presentation='animes'] .media::before {
+  opacity: 0.62;
+  background:
+    radial-gradient(
+      ellipse at 22% 28%,
+      color-mix(in oklch, var(--color-card-pink) 54%, transparent),
+      transparent 48%
+    ),
+    radial-gradient(
+      ellipse at 76% 22%,
+      color-mix(in oklch, var(--color-brand) 58%, transparent),
+      transparent 44%
+    ),
+    radial-gradient(
+      ellipse at 52% 78%,
+      color-mix(in oklch, var(--color-accent) 62%, transparent),
+      transparent 50%
+    );
+  filter: blur(8px);
+}
+
+.card[data-presentation='dinosaur'] .media::before {
+  opacity: 0.42;
+  background:
+    repeating-radial-gradient(
+      ellipse at 54% 42%,
+      transparent 0 18px,
+      color-mix(in srgb, var(--color-text-light) 26%, transparent) 19px 21px,
+      transparent 22px 36px
+    ),
+    conic-gradient(
+      from 214deg at 54% 42%,
+      transparent 0 22%,
+      color-mix(in srgb, var(--color-card-pink) 32%, transparent) 30%,
+      transparent 40% 72%,
+      color-mix(in srgb, var(--color-brand) 38%, transparent) 80%,
+      transparent 92%
+    );
+  mask-image: radial-gradient(ellipse at 54% 42%, var(--palette-ink), transparent 78%);
+}
+
 .mediaImage {
   position: relative;
+  z-index: 1;
   width: auto;
   height: auto;
   max-width: 84%;
   max-height: 186px;
   object-fit: contain;
   filter: drop-shadow(0 16px 22px color-mix(in oklch, var(--color-action-hover) 35%, transparent));
+}
+
+.card[data-presentation='book'] .mediaImage {
+  max-width: 76%;
+  max-height: 310px;
+  transform: translateY(-28px);
+}
+
+.card[data-presentation='phones'] .mediaImage {
+  max-width: 96%;
+  max-height: 268px;
+  transform: translateY(-24px);
+}
+
+.card[data-presentation='animes'] .mediaImage {
+  max-width: 94%;
+  max-height: 256px;
+  transform: translateY(-24px);
+}
+
+.card[data-presentation='dinosaur'] .mediaImage {
+  max-width: 92%;
+  max-height: 248px;
+  transform: translateY(-38px);
+}
+
+.reflectionImage {
+  position: absolute;
+  top: auto;
+  bottom: 36%;
+  left: 50%;
+  z-index: 0;
+  width: auto;
+  height: auto;
+  max-width: 86%;
+  max-height: 220px;
+  opacity: 0.2;
+  object-fit: contain;
+  filter: blur(1.2px);
+  transform: translateX(-50%) scaleY(-0.42);
+  transform-origin: center bottom;
+  mask-image: linear-gradient(to bottom, var(--palette-ink), transparent 78%);
+  pointer-events: none;
 }
 
 .mediaCoverWrap {

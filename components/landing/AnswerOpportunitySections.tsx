@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import CommunityCardCarousel from './CommunityCardCarousel';
 import styles from './AnswerOpportunitySections.module.css';
 
@@ -43,20 +42,10 @@ export function CommunityEducationSection() {
             <h2 id="community-education-heading" className={styles.heading}>
               We help your{' '}
               <span className={styles.headingAccent}>
-                child learn, build confidence
+                teen learn, build confidence
               </span>
               , and keep growing
             </h2>
-            <div className={styles.dinoWrap} aria-hidden="true">
-              <span className={styles.dinoGlow} />
-              <Image
-                src="/images/dino-heart.png"
-                alt=""
-                width={1280}
-                height={1280}
-                className={styles.dino}
-              />
-            </div>
           </div>
           <div className={styles.definitionCopy}>
             <p className={styles.lead}>

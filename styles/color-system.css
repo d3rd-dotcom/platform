@@ -16,6 +16,7 @@
   --palette-indigo-hover: #3C4686;
   --palette-violet: #7A56C6;
   --palette-violet-hover: #6841AE;
+  --palette-neon-pink: #EC4899;
   --palette-streak-green: #8BE4AC;
   --palette-gold: #B58A00;
   --palette-gold-text: #8A6A00;
@@ -39,6 +40,7 @@
   --color-accent-hover: var(--palette-violet-hover);
   --color-accent-muted: rgba(122, 86, 198, 0.18);
   --color-on-accent: var(--palette-on-dark);
+  --color-card-pink: var(--palette-neon-pink);
   --color-streak: var(--palette-streak-green);
   --color-warning: var(--palette-gold);
   --color-warning-text: var(--palette-gold-text);

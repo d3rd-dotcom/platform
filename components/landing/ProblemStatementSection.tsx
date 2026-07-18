@@ -13,12 +13,9 @@ export const ProblemStatementSection: React.FC = () => (
           <span className={styles.headerTitle}>THE PROBLEM</span>
         </div>
         <div className={styles.content}>
-          <div className={styles.mapPanel}>
-            <ProblemMap />
-          </div>
           <div className={styles.contextPanel}>
             <div className={styles.titlePanel}>
-              <h2 className={styles.heading}>Education Quality Follows Systemic Boundaries.</h2>
+              <h2 className={styles.heading}>Education Inequality Is A Broken System.</h2>
             </div>
             <p className={styles.lead}>
               Average U.S. literacy is 6th grade level. Redlining shaped wealth
@@ -36,6 +33,9 @@ export const ProblemStatementSection: React.FC = () => (
                 <span className={styles.budgetCoins} aria-hidden="true"><i /><i /><i /><i /><i /></span>
               </div>
             </div>
+          </div>
+          <div className={styles.mapPanel}>
+            <ProblemMap />
           </div>
         </div>
       </div>

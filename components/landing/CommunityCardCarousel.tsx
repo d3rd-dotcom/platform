@@ -9,6 +9,10 @@ type CommunityCard = {
   title: string;
   description: string;
   image: string;
+  imageWidth: number;
+  imageHeight: number;
+  presentation?: 'book' | 'phones' | 'animes' | 'dinosaur';
+  reflection?: boolean;
   tone: 'brand' | 'action' | 'deep' | 'accent' | 'night';
   fit?: 'cover';
 };
@@ -17,32 +21,46 @@ const cards: CommunityCard[] = [
   {
     title: 'Start where you are',
     description: 'Choose one clear next step and build momentum from there.',
-    image: '/images/blueastro.png',
+    image: '/images/community-book.png',
+    imageWidth: 784,
+    imageHeight: 1000,
+    presentation: 'book',
     tone: 'brand',
   },
   {
     title: 'Field notes, every day',
     description: 'Capture what you notice so each lesson becomes part of your practice.',
-    image: '/images/community-blue-portrait.png',
+    image: '/images/community-phones.png',
+    imageWidth: 1000,
+    imageHeight: 873,
+    presentation: 'phones',
     tone: 'action',
   },
   {
     title: 'Peers read your work',
     description: 'Share your thinking, receive useful feedback, and learn through exchange.',
-    image: '/images/community-peers-panel.jpg',
+    image: '/images/community-animes.png',
+    imageWidth: 1000,
+    imageHeight: 801,
+    presentation: 'animes',
     tone: 'accent',
-    fit: 'cover',
   },
   {
     title: 'Progress that compounds',
     description: 'Connect small lessons over time and make your progress visible.',
-    image: '/images/egg.png',
+    image: '/images/community-dinosaur.png',
+    imageWidth: 1000,
+    imageHeight: 800,
+    presentation: 'dinosaur',
+    reflection: true,
     tone: 'deep',
   },
   {
     title: 'Missions worth finishing',
     description: 'Turn ideas into focused work with a clear outcome at the end.',
     image: '/images/treasury.png',
+    imageWidth: 640,
+    imageHeight: 640,
     tone: 'night',
   },
 ];
@@ -98,6 +116,7 @@ export default function CommunityCardCarousel() {
             key={card.title}
             data-card
             data-tone={card.tone}
+            data-presentation={card.presentation}
             className={styles.card}
             onPointerMove={handleCardPointerMove}
             onPointerLeave={handleCardPointerLeave}
@@ -109,11 +128,21 @@ export default function CommunityCardCarousel() {
               <Image
                 src={card.image}
                 alt=""
-                width={640}
-                height={640}
+                width={card.imageWidth}
+                height={card.imageHeight}
                 sizes="350px"
                 className={card.fit === 'cover' ? styles.mediaCover : styles.mediaImage}
               />
+              {card.reflection && (
+                <Image
+                  src={card.image}
+                  alt=""
+                  width={card.imageWidth}
+                  height={card.imageHeight}
+                  sizes="350px"
+                  className={styles.reflectionImage}
+                />
+              )}
             </div>
             <div className={styles.body}>
               <h3 className={styles.cardTitle}>{card.title}</h3>

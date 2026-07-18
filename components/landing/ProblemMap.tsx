@@ -7,7 +7,6 @@ import styles from './ProblemMap.module.css';
 
 const GEOJSON_URL = '/data/redlining-oakland.geojson';
 const SAN_FRANCISCO_REDLINE_URL = '/data/redlining-san-francisco.geojson';
-const EAST_BAY_DISTRICTS_URL = '/data/east-bay-school-districts.geojson';
 const PRIVATE_AREA_LABEL = 'D18';
 const INITIAL_MAP_ZOOM = 11.25;
 
@@ -27,12 +26,6 @@ const PRIVATE_AREA_STYLE: L.PathOptions = {
   fillColor: 'var(--color-accent)',
   fillOpacity: 0.52,
   interactive: false,
-};
-
-const DISTRICT_STYLE: Record<string, L.PathOptions> = {
-  Elementary: { color: 'var(--color-danger)', weight: 0.9, fillColor: 'var(--color-danger)', fillOpacity: 0.16, interactive: false },
-  Unified: { color: 'var(--color-streak)', weight: 1, fillColor: 'var(--color-streak)', fillOpacity: 0.28, interactive: false },
-  High: { color: 'var(--color-accent)', weight: 1, fillColor: 'var(--color-accent)', fillOpacity: 0.3, interactive: false },
 };
 
 const SCHOOL_SVG =
@@ -92,19 +85,17 @@ export const ProblemMap: React.FC = () => {
       const LR = (((mod as unknown as { default?: typeof L }).default ?? mod) as typeof L);
       if (cancelled || !containerRef.current) return;
 
-      const [oaklandResponse, sanFranciscoResponse, districtResponse] = await Promise.all([
+      const [oaklandResponse, sanFranciscoResponse] = await Promise.all([
         fetch(GEOJSON_URL, { signal: controller.signal }),
         fetch(SAN_FRANCISCO_REDLINE_URL, { signal: controller.signal }),
-        fetch(EAST_BAY_DISTRICTS_URL, { signal: controller.signal }),
       ]);
-      if (!oaklandResponse.ok || !sanFranciscoResponse.ok || !districtResponse.ok) {
+      if (!oaklandResponse.ok || !sanFranciscoResponse.ok) {
         throw new Error('Problem map data could not be loaded.');
       }
 
-      const [data, sanFranciscoData, eastBayDistricts] = await Promise.all([
+      const [data, sanFranciscoData] = await Promise.all([
         oaklandResponse.json(),
         sanFranciscoResponse.json(),
-        districtResponse.json(),
       ]);
       if (cancelled || !containerRef.current) return;
 
@@ -152,11 +143,6 @@ export const ProblemMap: React.FC = () => {
         interactive: false,
       }).addTo(map);
 
-      LR.geoJSON(eastBayDistricts, {
-        style: (feature) => DISTRICT_STYLE[feature?.properties?.DistrictType] || HIDDEN,
-        interactive: false,
-      }).addTo(map);
-
       const icon = (variant: 'red' | 'green' | 'private', coins: number) =>
         LR.divIcon({ html: markerHtml(variant, coins), className: '', iconSize: [0, 0], iconAnchor: [0, 0] });
 
@@ -200,12 +186,12 @@ export const ProblemMap: React.FC = () => {
         ref={containerRef}
         className={styles.map}
         role="img"
-        aria-label="Map of historic redlining areas in Oakland and San Francisco, alongside current eastern Bay Area school-district boundaries."
+        aria-label="Map of historic redlining areas in Oakland and San Francisco."
       />
 
       <p className={styles.source}>
         Redlining areas: Mapping Inequality, Digital Scholarship Lab, University of Richmond.
-        School district boundaries: California Department of Education. Map &copy; OpenStreetMap, &copy; CARTO.
+        Map &copy; OpenStreetMap, &copy; CARTO.
       </p>
 
     </div>
