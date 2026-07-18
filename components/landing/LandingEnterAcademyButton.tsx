@@ -1,6 +1,6 @@
 'use client';
 
-import { CaretRight } from '@phosphor-icons/react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSound } from '@/hooks/useSound';
 import styles from './LandingPage.module.css';
@@ -17,15 +17,21 @@ export default function LandingEnterAcademyButton({ showIcon = true, dark = fals
       className={`${styles.fancyButton} ${styles.fancyButtonHero}`}
     >
       <span className={styles.fancyButtonInner}>
+        {showIcon && (
+          <span className={styles.fancyButtonIcon} aria-hidden="true">
+            <Image
+              src="/icons/nav-world-v2.svg"
+              alt=""
+              width={18}
+              height={18}
+              className={styles.fancyButtonWorldIcon}
+            />
+          </span>
+        )}
         <span className={styles.heroSlideWrap}>
           <span className={styles.heroSlideText}>Enter Academy</span>
           <span className={`${styles.heroSlideText} ${styles.heroSlideClone}`}>Enter Academy</span>
         </span>
-        {showIcon && (
-          <span className={styles.fancyButtonIcon} aria-hidden="true">
-            <CaretRight size={20} weight="bold" />
-          </span>
-        )}
       </span>
     </button>
   );
