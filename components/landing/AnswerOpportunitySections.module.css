@@ -53,6 +53,11 @@
   text-wrap: balance;
 }
 
+.headingAccent {
+  display: block;
+  color: var(--color-brand);
+}
+
 .lead {
   margin: 0;
   font-family: var(--font-primary);
@@ -69,54 +74,46 @@
   align-items: start;
 }
 
+.definitionHeadingCol {
+  display: flex;
+  flex-direction: column;
+}
+
+.dinoWrap {
+  position: relative;
+  z-index: 2;
+  width: 132px;
+  height: 132px;
+  flex: 0 0 auto;
+  margin-top: 20px;
+}
+
+.dinoGlow {
+  position: absolute;
+  left: 50%;
+  bottom: 3px;
+  width: 116px;
+  height: 42px;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--color-action) 14%, transparent);
+  filter: blur(28px);
+  transform: translateX(-50%);
+}
+
+.dino {
+  position: relative;
+  width: 132px;
+  height: 132px;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 12px color-mix(in oklch, var(--color-action) 10%, transparent));
+}
+
 .definitionCopy {
   padding-top: 8px;
 }
 
 .communitySection .lead {
   color: var(--color-text-soft);
-}
-
-.inlineList {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin: 32px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.inlineList li {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  min-height: 72px;
-  padding: 14px 16px;
-  border: 1px solid color-mix(in srgb, var(--color-brand) 24%, transparent);
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--color-brand) 5%, var(--color-surface-1));
-  color: var(--color-text-dark);
-  font-family: var(--font-primary);
-  font-size: 0.98rem;
-  font-weight: 700;
-  line-height: 1.4;
-}
-
-.blurbIconWrap {
-  display: grid;
-  flex: 0 0 auto;
-  width: 38px;
-  height: 38px;
-  place-items: center;
-  border-radius: 10px;
-  background: var(--color-primary);
-  color: var(--color-on-action);
-}
-
-.blurbIcon {
-  width: 22px;
-  height: 22px;
-  fill: currentColor;
 }
 
 .centeredLead {
@@ -270,7 +267,17 @@
     padding-top: 0;
   }
 
-  .inlineList,
+  .dinoWrap {
+    width: 88px;
+    height: 88px;
+    margin-top: 20px;
+  }
+
+  .dino {
+    width: 88px;
+    height: 88px;
+  }
+
   .compactGrid {
     grid-template-columns: 1fr;
   }

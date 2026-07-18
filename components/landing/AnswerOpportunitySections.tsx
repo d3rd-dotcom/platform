@@ -1,46 +1,6 @@
+import Image from 'next/image';
+import CommunityCardCarousel from './CommunityCardCarousel';
 import styles from './AnswerOpportunitySections.module.css';
-
-type CommunityIconName = 'path' | 'assignment' | 'peers' | 'progress';
-
-function CommunityIcon({ name }: { name: CommunityIconName }) {
-  if (name === 'path') {
-    return (
-      <svg aria-hidden="true" viewBox="0 0 24 24" className={styles.blurbIcon}>
-        <path d="M3 4.75A2.75 2.75 0 0 1 5.75 2H11v17.2c-1.15-.8-2.53-1.2-4.13-1.2H3V4.75Zm18 0A2.75 2.75 0 0 0 18.25 2H13v17.2c1.15-.8 2.53-1.2 4.13-1.2H21V4.75ZM5 20h2.1c1.5 0 2.77.67 3.9 2H5a2 2 0 0 1-2-2h2Zm14 0h-2.1c-1.5 0-2.77.67-3.9 2h6a2 2 0 0 0 2-2h-2Z" />
-      </svg>
-    );
-  }
-
-  if (name === 'assignment') {
-    return (
-      <svg aria-hidden="true" viewBox="0 0 24 24" className={styles.blurbIcon}>
-        <path d="M9 2h6a2 2 0 0 1 2 2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2-2Zm0 4h6V4H9v2Zm8.7 4.3a1 1 0 0 0-1.4 0L11 15.58l-2.3-2.29a1 1 0 1 0-1.4 1.42l3 3a1 1 0 0 0 1.4 0l6-6a1 1 0 0 0 0-1.42Z" />
-      </svg>
-    );
-  }
-
-  if (name === 'peers') {
-    return (
-      <svg aria-hidden="true" viewBox="0 0 24 24" className={styles.blurbIcon}>
-        <path d="M8.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM15.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM1 19a6.5 6.5 0 0 1 13 0v2H3a2 2 0 0 1-2-2Zm14.7-5.84A6.43 6.43 0 0 1 17 17v4h4a2 2 0 0 0 2-2 6 6 0 0 0-7.3-5.84Z" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" className={styles.blurbIcon}>
-      <path d="M3 17h4v4H3v-4Zm7-6h4v10h-4V11Zm7-8h4v18h-4V3Z" />
-      <path d="M4.7 13.7a1 1 0 0 1 0-1.4l5-5a1 1 0 0 1 1.4 0l2.4 2.4 4.8-4.8a1 1 0 1 1 1.4 1.4l-5.5 5.5a1 1 0 0 1-1.4 0l-2.4-2.4-4.3 4.3a1 1 0 0 1-1.4 0Z" />
-    </svg>
-  );
-}
-
-const communityBlurbs: Array<{ label: string; icon: CommunityIconName }> = [
-  { label: 'Paths that start where you are', icon: 'path' },
-  { label: 'Assignments with same-day payoff', icon: 'assignment' },
-  { label: 'Peers who read your work', icon: 'peers' },
-  { label: 'Progress you can watch compound', icon: 'progress' },
-];
 
 const cohortPrinciples = [
   {
@@ -80,26 +40,32 @@ export function CommunityEducationSection() {
       <div className={styles.container}>
         <p className={styles.eyebrow}>Community education</p>
         <div className={styles.definitionGrid}>
-          <h2 id="community-education-heading" className={styles.heading}>
-            What is community education?
-          </h2>
+          <div className={styles.definitionHeadingCol}>
+            <h2 id="community-education-heading" className={styles.heading}>
+              Mental wealth
+              <span className={styles.headingAccent}>for uncertain times</span>
+            </h2>
+            <div className={styles.dinoWrap} aria-hidden="true">
+              <span className={styles.dinoGlow} />
+              <Image
+                src="/images/dino-heart.png"
+                alt=""
+                width={1280}
+                height={1280}
+                className={styles.dino}
+              />
+            </div>
+          </div>
           <div className={styles.definitionCopy}>
             <p className={styles.lead}>
-              Community education is learning built around the people doing it.
-              At Mental Wealth Academy, that means a library the whole academy
-              writes together: you study a guide, explain it in your own words,
-              and your note becomes part of the map the next learner follows.
+              Whether it&apos;s paralysis from a never-ending feed, distance from
+              friends and family, or a phone that eats your evenings, Mental
+              Wealth Academy helps people build the lives they want to live.
+              Drawing from current science and a clear-eyed read of modern
+              life, we build tools that help you take the next step toward
+              better mental wealth.
             </p>
-            <ul className={styles.inlineList} aria-label="Community education features">
-              {communityBlurbs.map((blurb) => (
-                <li key={blurb.label}>
-                  <span className={styles.blurbIconWrap}>
-                    <CommunityIcon name={blurb.icon} />
-                  </span>
-                  <span>{blurb.label}</span>
-                </li>
-              ))}
-            </ul>
+            <CommunityCardCarousel />
           </div>
         </div>
       </div>
