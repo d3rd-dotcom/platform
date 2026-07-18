@@ -20,12 +20,12 @@ const cards: CommunityCard[] = [
   },
   {
     title: 'Field notes, every day',
-    image: '/images/a.png',
+    image: '/images/community-blue-portrait.png',
     tone: 'action',
   },
   {
     title: 'Peers read your work',
-    image: '/images/course-panel-blue-art.png',
+    image: '/images/community-peers-panel.jpg',
     tone: 'accent',
     fit: 'cover',
   },
