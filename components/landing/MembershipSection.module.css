@@ -4,7 +4,7 @@
   width: 100%;
   padding: 80px 24px;
   overflow: hidden;
-  background: var(--color-grey-950);
+  background: var(--color-landing-black);
   z-index: 1;
 }
 

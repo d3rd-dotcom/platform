@@ -28,84 +28,101 @@
   min-height: 320px;
   scroll-snap-align: start;
   border-radius: 22px;
-  border: 1px solid color-mix(in oklch, var(--color-brand) 30%, transparent);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   overflow: hidden;
-  box-shadow: 0 18px 40px color-mix(in oklch, var(--color-grey-950) 22%, transparent);
-  color: var(--color-text-light);
+  box-shadow: 0 16px 36px color-mix(in oklch, var(--color-brand) 22%, transparent);
+  color: #ffffff;
   isolation: isolate;
+}
+
+/* Grain pass over every gradient, matching the membership panel noise. */
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.14;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><filter id='n'><feTurbulence type='turbulence' baseFrequency='0.85' numOctaves='1' seed='7' stitchTiles='stitch'/><feColorMatrix type='saturate' values='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 34%;
+  pointer-events: none;
 }
 
 .card[data-tone='brand'] {
   background: linear-gradient(
-    158deg,
-    color-mix(in oklch, var(--color-brand) 66%, var(--color-grey-950)),
-    color-mix(in oklch, var(--color-brand) 26%, var(--color-grey-950))
+    172deg,
+    color-mix(in oklch, var(--color-brand) 62%, white),
+    var(--color-brand) 58%,
+    var(--color-action) 100%
   );
 }
 
 .card[data-tone='action'] {
   background: linear-gradient(
-    158deg,
-    color-mix(in oklch, var(--color-action) 68%, var(--color-grey-950)),
-    color-mix(in oklch, var(--color-action-hover) 30%, var(--color-grey-950))
+    172deg,
+    color-mix(in oklch, var(--color-action) 55%, white),
+    var(--color-action) 62%,
+    var(--color-action-hover) 100%
   );
 }
 
 .card[data-tone='deep'] {
   background: linear-gradient(
-    158deg,
-    color-mix(in oklch, var(--color-action-hover) 70%, var(--color-grey-950)),
-    color-mix(in oklch, var(--color-action-hover) 24%, var(--color-grey-950))
+    172deg,
+    color-mix(in oklch, var(--color-brand) 45%, white),
+    color-mix(in oklch, var(--color-brand) 55%, var(--color-action-hover)) 60%,
+    var(--color-action-hover) 100%
   );
 }
 
 .card[data-tone='accent'] {
   background: linear-gradient(
-    158deg,
-    color-mix(in oklch, var(--color-brand) 48%, var(--color-grey-950)),
-    color-mix(in oklch, var(--color-accent) 34%, var(--color-grey-950))
+    172deg,
+    color-mix(in oklch, var(--color-accent) 52%, white),
+    var(--color-accent) 62%,
+    color-mix(in oklch, var(--color-accent) 62%, var(--color-action)) 100%
   );
-  border-color: color-mix(in oklch, var(--color-accent) 34%, transparent);
 }
 
 .card[data-tone='night'] {
   background: linear-gradient(
-    158deg,
-    color-mix(in oklch, var(--color-brand) 34%, var(--color-grey-950)),
-    var(--color-grey-950)
+    172deg,
+    color-mix(in oklch, var(--color-brand) 55%, white),
+    color-mix(in oklch, var(--color-brand) 60%, var(--color-accent)) 62%,
+    var(--color-accent) 100%
   );
 }
 
 .media {
   position: relative;
+  z-index: 1;
   flex: 1 1 auto;
-  min-height: 168px;
+  min-height: 190px;
   display: grid;
   place-items: center;
-  padding: 20px 20px 6px;
-}
-
-.media::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    120% 80% at 50% 24%,
-    color-mix(in oklch, var(--color-text-light) 16%, transparent),
-    transparent 62%
-  );
-  pointer-events: none;
+  padding: 22px 20px 4px;
 }
 
 .mediaImage {
   position: relative;
-  z-index: 1;
   width: auto;
   height: auto;
-  max-width: 74%;
-  max-height: 150px;
+  max-width: 84%;
+  max-height: 186px;
   object-fit: contain;
-  filter: drop-shadow(0 14px 20px color-mix(in oklch, var(--color-grey-950) 40%, transparent));
+  filter: drop-shadow(0 16px 22px color-mix(in oklch, var(--color-action-hover) 35%, transparent));
+}
+
+.mediaCoverWrap {
+  padding: 14px 14px 0;
+}
+
+.mediaCover {
+  width: 100%;
+  height: 100%;
+  min-height: 190px;
+  object-fit: cover;
+  border-radius: 14px;
+  box-shadow: 0 12px 26px color-mix(in oklch, var(--color-action-hover) 35%, transparent);
 }
 
 .body {
@@ -116,22 +133,13 @@
 
 .cardTitle {
   margin: 0;
+  color: #ffffff;
   font-family: var(--font-primary);
-  font-size: 1.24rem;
+  font-size: 1.4rem;
   font-weight: var(--font-weight-bold);
-  line-height: 1.2;
+  line-height: 1.16;
   letter-spacing: -0.02em;
   text-wrap: balance;
-}
-
-.cardCaption {
-  margin: 8px 0 0;
-  font-family: var(--font-primary);
-  font-size: 0.92rem;
-  font-weight: var(--font-weight-regular);
-  line-height: 1.5;
-  color: color-mix(in oklch, var(--color-text-light) 84%, transparent);
-  text-wrap: pretty;
 }
 
 .controls {

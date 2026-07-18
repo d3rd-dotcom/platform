@@ -3,7 +3,7 @@
   position: relative;
   width: 100%;
   min-height: 480px;
-  background: #000000;
+  background: var(--color-landing-black);
   z-index: 1;
   overflow: hidden;
   display: flex;
@@ -613,7 +613,7 @@
   width: 56px;
   height: 40px;
   border-radius: 8px;
-  background: #0d0e1a;
+  background: var(--color-landing-black);
   display: flex;
   align-items: center;
   justify-content: center;

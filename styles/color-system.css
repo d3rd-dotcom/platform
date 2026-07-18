@@ -21,6 +21,7 @@
   --palette-gold-text: #8A6A00;
   --palette-danger: #BA1A1A;
   --palette-ink: #1A1B24;
+  --palette-night: #0A0C1F; /* black with 12% academy blue; unified landing dark */
   --palette-on-dark: #FFFFFF;
 
   /* Semantic roles */
@@ -62,6 +63,7 @@
   --color-border-subtle: rgba(26, 27, 36, 0.08);
   --color-border-strong: rgba(26, 27, 36, 0.16);
   --color-shell-background: color-mix(in srgb, var(--color-canvas) 94%, transparent);
+  --color-landing-black: var(--palette-night);
 
   /* Compatibility aliases. New work should use the semantic role names. */
   --color-primary: var(--color-action);

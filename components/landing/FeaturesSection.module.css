@@ -132,7 +132,7 @@
   overflow: hidden;
   border: 2px solid var(--color-primary-hover);
   border-radius: 12px;
-  background: #07080c;
+  background: var(--color-landing-black);
   box-shadow:
     0 6px 0 var(--color-primary),
     0 0px 10px rgba(0, 0, 0, 0.14),

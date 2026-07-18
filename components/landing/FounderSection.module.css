@@ -38,7 +38,7 @@
   height: clamp(96px, 16vw, 160px);
   border-radius: 50%;
   overflow: hidden;
-  background: #1a1c25;
+  background: #1A1D33;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.32);
 }
 

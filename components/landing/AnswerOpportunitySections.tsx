@@ -38,7 +38,6 @@ export function CommunityEducationSection() {
       aria-labelledby="community-education-heading"
     >
       <div className={styles.container}>
-        <p className={styles.eyebrow}>Community education</p>
         <div className={styles.definitionGrid}>
           <div className={styles.definitionHeadingCol}>
             <h2 id="community-education-heading" className={styles.heading}>

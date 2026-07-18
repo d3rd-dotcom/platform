@@ -16,13 +16,13 @@
 }
 
 .cohortSection {
-  background: var(--color-grey-950);
+  background: var(--color-landing-black);
   color: var(--color-text-light);
 }
 
 .roleSection {
   padding-block: 64px;
-  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-grey-950));
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-landing-black));
   color: var(--color-text-light);
   border-block: 1px solid color-mix(in srgb, var(--color-primary) 38%, transparent);
 }
@@ -166,7 +166,7 @@
   margin-top: 18px;
   border: 1px solid color-mix(in srgb, var(--color-primary) 50%, transparent);
   border-radius: 18px;
-  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-grey-950));
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-landing-black));
 }
 
 .compact summary {

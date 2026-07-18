@@ -5,7 +5,7 @@
   margin-top: -72px;
   overflow-x: hidden;
   overflow-y: auto;
-  background-color: #000000;
+  background-color: var(--color-landing-black);
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.09) 0.5px, transparent 0.5px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.09) 0.5px, transparent 0.5px);
@@ -331,7 +331,7 @@
 
 /* Agent variant — solid dark, more presence */
 .fancyButtonAgent {
-  background: #16181F;
+  background: #161A30;
   border-color: rgba(255, 255, 255, 0.15);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
 }
@@ -339,7 +339,7 @@
 .fancyButtonAgent .fancyButtonInner {
   border-color: rgba(255, 255, 255, 0.12);
   box-shadow: 0 2px 12.6px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  background-color: #16181F;
+  background-color: #161A30;
   background-image:
     radial-gradient(120% 140% at 38% 42%, rgba(220, 224, 230, 0.15) 0%, rgba(40, 45, 55, 0.6) 78%),
     radial-gradient(130% 140% at 100% 0%, rgba(80, 85, 95, 0.1) 0%, rgba(50, 55, 65, 0.2) 85%);
@@ -576,7 +576,7 @@
   width: 100%;
   margin: 0 auto;
   padding: 96px 0 88px;
-  background-color: #10111b;
+  background-color: var(--color-landing-black);
   z-index: 2;
   box-sizing: border-box;
   overflow: hidden;
@@ -1369,7 +1369,7 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  background-color: #000000;
+  background-color: var(--color-landing-black);
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.09) 1px, transparent 1px);
@@ -1378,7 +1378,7 @@
 }
 
 .canvasFallback {
-  background-color: #000000;
+  background-color: var(--color-landing-black);
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.09) 1px, transparent 1px);
@@ -1609,7 +1609,7 @@
   top: 20px;
   left: 20px;
   color: #fff;
-  background: rgba(0, 0, 0, 0.859);
+  background: rgba(10, 12, 31, 0.9);
   padding: 15px 20px;
   border-radius: 10px;
   font-size: 14px;
@@ -2153,7 +2153,7 @@
 .demoVideoWrapper {
   width: 100%;
   aspect-ratio: 16 / 9;
-  background: #000;
+  background: var(--color-landing-black);
 }
 
 .demoIframe {

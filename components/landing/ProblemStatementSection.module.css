@@ -3,7 +3,7 @@
   width: 100%;
   padding: 72px 24px;
   overflow: hidden;
-  background: var(--color-grey-950);
+  background: var(--color-landing-black);
   z-index: 1;
 }
 
@@ -18,7 +18,7 @@
   overflow: hidden;
   border: 2px solid var(--color-primary-hover);
   border-radius: 12px;
-  background: var(--color-grey-950);
+  background: var(--color-landing-black);
   box-shadow: 0 6px 0 var(--color-primary), 0 10px 5px color-mix(in srgb, var(--palette-ink) 30%, transparent);
 }
 
@@ -50,7 +50,7 @@
   gap: 28px;
   padding: 28px 36px;
   border-top: 1px solid color-mix(in oklch, var(--color-primary) 38%, transparent);
-  background: color-mix(in srgb, var(--color-grey-950) 86%, var(--color-grey-900));
+  background: color-mix(in srgb, var(--color-landing-black) 86%, var(--color-grey-900));
 }
 
 .titlePanel { min-width: 0; }

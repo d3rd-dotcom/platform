@@ -7,39 +7,35 @@ import styles from './CommunityCardCarousel.module.css';
 
 type CommunityCard = {
   title: string;
-  caption: string;
   image: string;
   tone: 'brand' | 'action' | 'deep' | 'accent' | 'night';
+  fit?: 'cover';
 };
 
 const cards: CommunityCard[] = [
   {
     title: 'Start where you are',
-    caption: 'A study path mapped to what you already know.',
     image: '/images/blueastro.png',
     tone: 'brand',
   },
   {
     title: 'Field notes, every day',
-    caption: 'Short daily writing that turns reading into memory.',
-    image: '/images/materials/pen.png',
+    image: '/images/a.png',
     tone: 'action',
   },
   {
     title: 'Peers read your work',
-    caption: 'Honest feedback from people moving with you.',
-    image: '/images/blue-fullbody.png',
+    image: '/images/course-panel-blue-art.png',
     tone: 'accent',
+    fit: 'cover',
   },
   {
     title: 'Progress that compounds',
-    caption: 'Watch the map fill in, week over week.',
     image: '/images/egg.png',
     tone: 'deep',
   },
   {
     title: 'Missions worth finishing',
-    caption: 'Each one leaves you with something real to keep.',
     image: '/images/treasury.png',
     tone: 'night',
   },
@@ -71,19 +67,21 @@ export default function CommunityCardCarousel() {
             data-tone={card.tone}
             className={styles.card}
           >
-            <div className={styles.media} aria-hidden="true">
+            <div
+              className={`${styles.media} ${card.fit === 'cover' ? styles.mediaCoverWrap : ''}`}
+              aria-hidden="true"
+            >
               <Image
                 src={card.image}
                 alt=""
                 width={640}
                 height={640}
                 sizes="(max-width: 720px) 78vw, 300px"
-                className={styles.mediaImage}
+                className={card.fit === 'cover' ? styles.mediaCover : styles.mediaImage}
               />
             </div>
             <div className={styles.body}>
               <h3 className={styles.cardTitle}>{card.title}</h3>
-              <p className={styles.cardCaption}>{card.caption}</p>
             </div>
           </li>
         ))}

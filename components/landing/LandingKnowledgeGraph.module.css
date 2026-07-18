@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   min-height: 520px;
-  background: #05060a;
+  background: var(--color-landing-black);
   color: #ffffff;
 }
 
@@ -13,7 +13,7 @@
   overflow: hidden;
   cursor: grab;
   touch-action: none;
-  background: #05060a;
+  background: var(--color-landing-black);
 }
 
 .viewportDragging {
@@ -59,7 +59,7 @@
   padding: 14px 16px;
   border: 1px solid color-mix(in oklch, var(--color-primary) 44%, transparent);
   border-radius: 14px;
-  background: rgba(8, 10, 22, 0.9);
+  background: rgba(10, 12, 31, 0.9);
   box-shadow: 0 18px 46px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
   backdrop-filter: blur(10px);
   animation: hoverCardIn 0.16s ease-out;
@@ -133,7 +133,7 @@
   min-height: 84px;
   padding: 14px 16px;
   border-top: 1px solid color-mix(in oklch, var(--color-primary) 38%, transparent);
-  background: color-mix(in oklch, var(--color-primary) 6%, #05060a);
+  background: color-mix(in oklch, var(--color-primary) 6%, var(--color-landing-black));
 }
 
 .detailCopy {
@@ -171,7 +171,7 @@
 
 .detailLink {
   border: 1px solid color-mix(in oklch, var(--color-primary) 42%, transparent);
-  background: color-mix(in oklch, var(--color-primary) 10%, #05060a);
+  background: color-mix(in oklch, var(--color-primary) 10%, var(--color-landing-black));
   color: #ffffff;
   font-family: var(--font-mono);
   font-size: 0.68rem;
