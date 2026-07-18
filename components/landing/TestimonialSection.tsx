@@ -117,7 +117,19 @@ export const TestimonialSection: React.FC = () => {
   return (
     <section ref={sectionRef} className={`${styles.section} ${hasEnteredView ? styles.sectionVisible : ''}`}>
       <div className={styles.container}>
-        <div className={styles.eyebrow}>Hear what academy members are saying</div>
+        <h2 className={styles.heading}>Hear from people like you</h2>
+        <div className={styles.stars} role="img" aria-label="5 out of 5 stars">
+          {Array.from({ length: 5 }, (_, index) => (
+            <Image
+              key={index}
+              src="/images/testimonial-star.webp"
+              alt=""
+              width={75}
+              height={75}
+              className={styles.star}
+            />
+          ))}
+        </div>
         <div
           className={styles.scrollWrapper}
           onMouseEnter={handleMouseEnter}

@@ -11,8 +11,12 @@
 }
 
 .communitySection {
-  background: var(--color-surface-base);
-  color: var(--color-text-dark);
+  background: var(--color-landing-black);
+  color: var(--color-text-light);
+}
+
+.communitySection .container {
+  width: min(1456px, 100%);
 }
 
 .cohortSection {
@@ -54,8 +58,8 @@
 }
 
 .headingAccent {
-  display: block;
-  color: var(--color-brand);
+  color: color-mix(in oklch, var(--color-primary) 72%, var(--color-text-light));
+  font-weight: var(--font-weight-bold);
 }
 
 .lead {
@@ -69,23 +73,35 @@
 
 .definitionGrid {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: clamp(36px, 7vw, 88px);
-  align-items: start;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 36px;
 }
 
 .definitionHeadingCol {
+  position: relative;
   display: flex;
   flex-direction: column;
 }
 
+.communitySection .heading {
+  max-width: 800px;
+  margin-inline: auto;
+  color: var(--color-text-light);
+  font-size: 3rem;
+  line-height: 1.04;
+  letter-spacing: -0.045em;
+  text-align: center;
+  text-wrap: balance;
+}
+
 .dinoWrap {
-  position: relative;
+  position: absolute;
+  right: 0;
+  bottom: -8px;
   z-index: 2;
   width: 132px;
   height: 132px;
   flex: 0 0 auto;
-  margin-top: 20px;
 }
 
 .dinoGlow {
@@ -109,11 +125,16 @@
 }
 
 .definitionCopy {
-  padding-top: 8px;
+  min-width: 0;
 }
 
 .communitySection .lead {
-  color: var(--color-text-soft);
+  max-width: 820px;
+  margin-inline: auto;
+  color: color-mix(in srgb, var(--color-text-light) 92%, transparent);
+  font-size: 1rem;
+  font-weight: var(--font-weight-medium);
+  text-align: center;
 }
 
 .centeredLead {
@@ -259,7 +280,6 @@
   }
 
   .definitionGrid {
-    grid-template-columns: 1fr;
     gap: 28px;
   }
 
@@ -268,9 +288,12 @@
   }
 
   .dinoWrap {
+    position: relative;
+    right: auto;
+    bottom: auto;
     width: 88px;
     height: 88px;
-    margin-top: 20px;
+    margin-top: 18px;
   }
 
   .dino {

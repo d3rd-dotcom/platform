@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { LazySection } from './LazySection';
 import { RotatingTextSection } from './RotatingTextSection';
 import { FAQSection } from './FAQSection';
+import CompanyLogoMarquee from './CompanyLogoMarquee';
 import {
   CohortLearningSection,
   CommunityEducationSection,
@@ -90,6 +91,7 @@ export function LandingDeferredSections() {
     <>
       <LazySection minHeight="clamp(580px, 72vw, 700px)"><ProblemStatementSection /></LazySection>
       <CommunityEducationSection />
+      <CompanyLogoMarquee />
       <LazySection minHeight="90vh"><FeaturesSection /></LazySection>
       <LazySection minHeight="80vh"><TestimonialSection /></LazySection>
       <LazySection minHeight="80vh"><FounderSection /></LazySection>

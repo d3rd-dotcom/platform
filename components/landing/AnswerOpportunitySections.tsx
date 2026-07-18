@@ -41,8 +41,11 @@ export function CommunityEducationSection() {
         <div className={styles.definitionGrid}>
           <div className={styles.definitionHeadingCol}>
             <h2 id="community-education-heading" className={styles.heading}>
-              Mental wealth
-              <span className={styles.headingAccent}>for uncertain times</span>
+              We help your{' '}
+              <span className={styles.headingAccent}>
+                child learn, build confidence
+              </span>
+              , and keep growing
             </h2>
             <div className={styles.dinoWrap} aria-hidden="true">
               <span className={styles.dinoGlow} />
@@ -57,12 +60,11 @@ export function CommunityEducationSection() {
           </div>
           <div className={styles.definitionCopy}>
             <p className={styles.lead}>
-              Whether it&apos;s paralysis from a never-ending feed, distance from
-              friends and family, or a phone that eats your evenings, Mental
-              Wealth Academy helps people build the lives they want to live.
-              Drawing from current science and a clear-eyed read of modern
-              life, we build tools that help you take the next step toward
-              better mental wealth.
+              Whether it&apos;s paralysis from a never-ending feed,
+              interpersonal connections, or a phone that eats your evenings,
+              Mental Wealth Academy helps people build the lives they want to
+              live. Drawing from science and the spirit of life, our tools help
+              you take the next step toward better mental wealth.
             </p>
             <CommunityCardCarousel />
           </div>

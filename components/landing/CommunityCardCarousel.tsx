@@ -1,12 +1,13 @@
 'use client';
 
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, type PointerEvent } from 'react';
 import Image from 'next/image';
 import { useSound } from '@/hooks/useSound';
 import styles from './CommunityCardCarousel.module.css';
 
 type CommunityCard = {
   title: string;
+  description: string;
   image: string;
   tone: 'brand' | 'action' | 'deep' | 'accent' | 'night';
   fit?: 'cover';
@@ -15,27 +16,32 @@ type CommunityCard = {
 const cards: CommunityCard[] = [
   {
     title: 'Start where you are',
+    description: 'Choose one clear next step and build momentum from there.',
     image: '/images/blueastro.png',
     tone: 'brand',
   },
   {
     title: 'Field notes, every day',
+    description: 'Capture what you notice so each lesson becomes part of your practice.',
     image: '/images/community-blue-portrait.png',
     tone: 'action',
   },
   {
     title: 'Peers read your work',
+    description: 'Share your thinking, receive useful feedback, and learn through exchange.',
     image: '/images/community-peers-panel.jpg',
     tone: 'accent',
     fit: 'cover',
   },
   {
     title: 'Progress that compounds',
+    description: 'Connect small lessons over time and make your progress visible.',
     image: '/images/egg.png',
     tone: 'deep',
   },
   {
     title: 'Missions worth finishing',
+    description: 'Turn ideas into focused work with a clear outcome at the end.',
     image: '/images/treasury.png',
     tone: 'night',
   },
@@ -44,6 +50,33 @@ const cards: CommunityCard[] = [
 export default function CommunityCardCarousel() {
   const { play } = useSound();
   const trackRef = useRef<HTMLUListElement>(null);
+
+  const handleCardPointerMove = useCallback(
+    (event: PointerEvent<HTMLLIElement>) => {
+      if (event.pointerType === 'touch') return;
+
+      const card = event.currentTarget;
+      const bounds = card.getBoundingClientRect();
+      const horizontalPosition = (event.clientX - bounds.left) / bounds.width;
+      const verticalPosition = (event.clientY - bounds.top) / bounds.height;
+      const rotateX = (0.5 - verticalPosition) * 10;
+      const rotateY = (horizontalPosition - 0.5) * 10;
+
+      card.dataset.tiltActive = 'true';
+      card.style.setProperty('--card-rotate-x', `${rotateX.toFixed(2)}deg`);
+      card.style.setProperty('--card-rotate-y', `${rotateY.toFixed(2)}deg`);
+    },
+    []
+  );
+
+  const handleCardPointerLeave = useCallback(
+    (event: PointerEvent<HTMLLIElement>) => {
+      delete event.currentTarget.dataset.tiltActive;
+      event.currentTarget.style.setProperty('--card-rotate-x', '0deg');
+      event.currentTarget.style.setProperty('--card-rotate-y', '0deg');
+    },
+    []
+  );
 
   const scrollByCards = useCallback((direction: 1 | -1) => {
     const track = trackRef.current;
@@ -66,6 +99,8 @@ export default function CommunityCardCarousel() {
             data-card
             data-tone={card.tone}
             className={styles.card}
+            onPointerMove={handleCardPointerMove}
+            onPointerLeave={handleCardPointerLeave}
           >
             <div
               className={`${styles.media} ${card.fit === 'cover' ? styles.mediaCoverWrap : ''}`}
@@ -76,12 +111,13 @@ export default function CommunityCardCarousel() {
                 alt=""
                 width={640}
                 height={640}
-                sizes="(max-width: 720px) 78vw, 300px"
+                sizes="350px"
                 className={card.fit === 'cover' ? styles.mediaCover : styles.mediaImage}
               />
             </div>
             <div className={styles.body}>
               <h3 className={styles.cardTitle}>{card.title}</h3>
+              <p className={styles.cardDescription}>{card.description}</p>
             </div>
           </li>
         ))}

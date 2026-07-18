@@ -24,15 +24,29 @@
   padding-bottom: 80px;
 }
 
-.eyebrow {
+.heading {
   font-family: var(--font-primary);
-  font-size: clamp(1.4rem, 2.6vw, 2rem);
+  font-size: 46px;
   font-style: normal;
   font-weight: 700;
   line-height: 1.1;
-  margin-bottom: 40px;
+  margin: 0 20px 12px;
   color: #ffffff;
   text-align: center;
+}
+
+.stars {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 40px;
+}
+
+.star {
+  display: block;
+  width: 75px;
+  height: 75px;
+  flex: 0 0 75px;
 }
 
 /* Scroll wrapper — masks edges */
@@ -203,8 +217,12 @@
     padding-bottom: 56px;
   }
 
-  .eyebrow {
-    font-size: 1.15rem;
+  .heading {
+    margin-bottom: 12px;
+  }
+
+  .stars {
+    gap: 0;
     margin-bottom: 24px;
   }
 
