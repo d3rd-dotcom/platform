@@ -1,5 +1,8 @@
-import { access, mkdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { execFile } from 'node:child_process';
+import { access, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
 
 /**
@@ -17,6 +20,13 @@ import { fileURLToPath } from 'node:url';
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const force = process.argv.includes('--force');
+const execFileAsync = promisify(execFile);
+
+interface MeditationPart {
+  text: string;
+  /** Relative share of the meditation's remaining quiet time after this part. */
+  pauseWeight: number;
+}
 
 interface Segment {
   /** File name (without extension) for the output mp3 — kebab-case. */
@@ -24,12 +34,23 @@ interface Segment {
   /** Shown in the player as the now-playing chapter. */
   title: string;
   /** The text Blue speaks. */
-  text: string;
+  text?: string;
+  meditation?: {
+    targetSeconds: number;
+    parts: MeditationPart[];
+  };
+  voiceSettings?: {
+    stability: number;
+    similarity_boost: number;
+    style: number;
+    speed: number;
+    use_speaker_boost: boolean;
+  };
 }
 
-// Episode one: a solo Blue loop, roughly eight minutes. The planned two-hour
-// cut adds Dino as co-host (voiceId in lib/dinopersonality.json) — give those
-// segments a per-segment voiceId when that lands.
+// Episode one: a solo Blue loop with a twenty-minute guided reset. The planned
+// two-hour cut adds Dino as co-host (voiceId in lib/dinopersonality.json) —
+// give those segments a per-segment voiceId when that lands.
 const SEGMENTS: Segment[] = [
   {
     id: 'station-ident',
@@ -77,6 +98,116 @@ const SEGMENTS: Segment[] = [
     text: "Here is a good thing to remember. Other people are doing this same inside work right now, one tab away. The community feed shows shared milestones. The Discord has the real time chatter. Somebody finished week nine recently and I was very loud about it. I do not remember who it was, but I remember the being loud part! Hard inner work feels lighter when other people are lifting next to you. I am pretty sure that is science. It is at least true, which is my favorite kind of science.",
   },
   {
+    id: 'twenty-minute-reset',
+    title: 'A twenty-minute reset',
+    voiceSettings: {
+      stability: 0.76,
+      similarity_boost: 0.84,
+      style: 0.08,
+      speed: 0.84,
+      use_speaker_boost: true,
+    },
+    meditation: {
+      targetSeconds: 20 * 60,
+      parts: [
+        {
+          pauseWeight: 0.7,
+          text: `Welcome in. This round is a twenty-minute reset with me, Blue. Find a place where your body can stay safe and supported for a while. Sit down, lie down, or lean against something steady. Keep this meditation for a quiet moment away from driving or anything that needs your full attention.
+
+Let your hands land somewhere easy. Your eyes can close, or they can rest softly on one point in front of you. If any instruction feels uncomfortable, return to your ordinary breathing, open your eyes, and move in whatever way helps.
+
+There is nowhere else to get to for the next twenty minutes. I checked the schedule twice. This is the whole appointment. Notice the surface holding you. Let your weight arrive a little more fully. Take one unforced breath in. Let it go. Then allow the next breath to come when it is ready.`,
+        },
+        {
+          pauseWeight: 1,
+          text: `Begin by noticing the breath exactly as it is. There is no score attached to it. Feel where breathing is easiest to detect today. It might be the cool air near your nose, the small movement in your chest, or the rise and fall around your belly.
+
+Choose one of those places and rest your attention there. Breathing in, notice the beginning. Breathing out, notice the release. Let every breath keep its own size and pace.
+
+When attention wanders, recognize where it went. Then bring it back with as little drama as possible. Minds wander. Mine once wandered into a folder named Shiny Things for three hours. Returning is the practice. Follow the next few breaths from beginning to end, and leave a little quiet between my words.`,
+        },
+        {
+          pauseWeight: 1.1,
+          text: `Now include the points where your body meets the world. Feel the floor under your feet, the chair beneath you, or the bed supporting your back. Notice pressure, warmth, coolness, softness, or firmness.
+
+You do not need to name every sensation. Let the contact itself be enough. The surface is doing some of the work of holding you. Give it the weight you have been carrying in your muscles without realizing it.
+
+Feel the outline of your body from the inside. Notice that you occupy real space. There is a left side and a right side. A front and a back. A center that shifts gently as you breathe. Stay with that simple physical fact for a while. You are here. The room is around you. The ground remains under you.`,
+        },
+        {
+          pauseWeight: 1.15,
+          text: `Bring attention to the top of your head. Slowly move downward across your scalp, forehead, and temples. Notice any effort gathering there. Let the muscles around your eyes loosen. Give your eyes permission to become still.
+
+Feel your cheeks and the space around your mouth. Let your tongue rest. Allow a little room between your teeth. Your jaw can release some of its grip.
+
+Move attention through your neck. Notice the front, the sides, and the back. There may be tightness. There may be very little sensation. Both are useful information. Breathe as though the next exhale creates a little more space around whatever you find.
+
+Stay gentle. Keep this moment for observation, and leave repair for later. Your body already knows many small ways to settle when it gets enough time to notice itself.`,
+        },
+        {
+          pauseWeight: 1.25,
+          text: `Let attention spread across your shoulders. Feel their position. Notice whether one sits higher or carries more effort. On the next exhale, allow both shoulders to drop by one small degree.
+
+Move down through your upper arms, elbows, forearms, wrists, and hands. Feel each hand from the inside. Notice the palms, the backs of the hands, each finger, and the tiny spaces between them.
+
+Your hands solve problems all day. They type, carry, point, hold, and reach. For this moment, they have no assignment. Let them be heavy.
+
+If you discover tension, meet it with room. If you discover ease, stay long enough to recognize it. Continue breathing at your natural pace while attention moves slowly through both arms. Let the quiet do part of the guiding now.`,
+        },
+        {
+          pauseWeight: 1.45,
+          text: `Bring awareness to your chest and upper back. Feel the rib cage respond to each breath. The movement may be clear or almost invisible. Notice how many parts cooperate to make one ordinary breath happen.
+
+Move down toward your belly and lower back. Let the belly remain soft enough to move. Feel the breath arrive, change direction, and leave.
+
+Now include the whole center of the body. Chest, ribs, back, belly. Notice any emotion showing up as a physical signal. A tight place. A warm place. A hollow place. A restless place. You can let the sensation exist without building a story around it.
+
+Silently say, this is what is here right now. Then return to the next breath. Feelings change shape when they are given attention without an argument. Stay close to the body and let the next stretch of quiet belong to it.`,
+        },
+        {
+          pauseWeight: 1.35,
+          text: `Move attention through your hips and the place where your body is supported. Continue down through both thighs, knees, calves, ankles, and feet.
+
+Notice the legs as a whole. Heavy or light. Restless or quiet. Warm or cool. Feel the soles of your feet, the heels, the arches, and each toe.
+
+Now sense your entire body together. One field of changing sensation from the top of your head to the tips of your toes. Some areas are vivid. Some are faint. Let awareness hold all of it without needing equal detail.
+
+Take a slightly fuller breath in. Feel the whole body receive it. Exhale slowly and feel the whole body settle. For the next quiet interval, remain with this wide view. When one sensation asks for attention, notice it, then reopen awareness to the whole body.`,
+        },
+        {
+          pauseWeight: 2.1,
+          text: `Thoughts may be more noticeable now. Let them pass through awareness like balloons crossing a window. I love balloons, so I know the temptation to chase every single one. Here, we watch them move.
+
+When a thought appears, give it a simple label if that helps. Planning. Remembering. Rehearsing. Judging. Imagining. Then let the label go too.
+
+You are learning the difference between having a thought and following it. A thought can be present while your attention remains grounded in breath and body.
+
+If one thought keeps returning, acknowledge it kindly. Silently say, I see you. I can meet you after this. Then feel one full exhale.
+
+Rest now with the changing space of the mind. Sounds can come and go. Thoughts can come and go. Sensations can come and go. Awareness stays open enough to notice the movement.`,
+        },
+        {
+          pauseWeight: 1.35,
+          text: `Begin to gather your attention again. Feel the breath in one clear place. Feel the support beneath you. Notice the room around your body and the sounds reaching you from near and far.
+
+Ask yourself one quiet question. What deserves my attention after this?
+
+Wait for a simple answer. It might be a task, a conversation, a glass of water, a page in your field notes, or more rest. Choose something small enough to begin. Mental wealth grows through these ordinary deposits. One clear choice. One honest action. Then another.
+
+Hold your answer lightly. You do not need to solve the whole day while sitting here. Remember the next useful step and let the rest stay outside this moment.`,
+        },
+        {
+          pauseWeight: 0,
+          text: `Take a deeper breath in, comfortable and steady. Let it out completely. Begin moving your fingers and toes. Roll your shoulders if that feels good. Let your eyes open at their own pace and allow the room to come back into focus.
+
+Notice whether anything shifted. The change can be small. A softer jaw. A slower breath. One thought with less grip. Small counts. I am very good at counting small things, except when I forget what number I was on.
+
+Thank you for sitting with me. Carry the next step gently. This is Blue Radio, and the rest of the stream will be here when you are ready.`,
+        },
+      ],
+    },
+  },
+  {
     id: 'signoff',
     title: 'The loop begins again',
     text: "Okay! That is the whole loop of the show, which means it starts again in a moment. That is the beauty of a loop. Endings are just intros wearing a disguise! If you are still here, thank you for keeping me company. Now go do one small thing. Write your field note. Open your week. Pop a balloon in the garden, tell them Blue sent you. Or just stay and listen again, I genuinely do not mind saying all of this twice. This is Blue Radio, live from Mental Wealth Academy, all day and all night. Ooh, it is starting again. Hi!",
@@ -115,11 +246,158 @@ async function fileExists(filePath: string) {
   }
 }
 
-// mp3_44100_128 is constant bitrate, so byte size maps to duration within
-// a fraction of a second — good enough for wall-clock sync across a loop.
-async function durationSeconds(filePath: string) {
-  const { size } = await stat(filePath);
-  return size * 8 / 128000;
+async function preciseDurationSeconds(filePath: string) {
+  const { stdout } = await execFileAsync('ffprobe', [
+    '-v', 'error',
+    '-show_entries', 'format=duration',
+    '-of', 'default=noprint_wrappers=1:nokey=1',
+    filePath,
+  ]);
+  const seconds = Number.parseFloat(stdout.trim());
+  if (!Number.isFinite(seconds)) {
+    throw new Error(`Could not read duration for ${filePath}.`);
+  }
+  return seconds;
+}
+
+async function synthesizeSpeech({
+  apiKey,
+  modelId,
+  nextText,
+  outputPath,
+  previousText,
+  text,
+  voiceId,
+  voiceSettings,
+}: {
+  apiKey: string;
+  modelId: string;
+  nextText?: string;
+  outputPath: string;
+  previousText?: string;
+  text: string;
+  voiceId: string;
+  voiceSettings?: Segment['voiceSettings'];
+}) {
+  const response = await fetch(
+    `https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(voiceId)}?output_format=mp3_44100_128`,
+    {
+      method: 'POST',
+      headers: {
+        'xi-api-key': apiKey,
+        'Content-Type': 'application/json',
+        'Accept': 'audio/mpeg',
+      },
+      body: JSON.stringify({
+        text,
+        model_id: modelId,
+        ...(previousText ? { previous_text: previousText } : {}),
+        ...(nextText ? { next_text: nextText } : {}),
+        ...(voiceSettings ? { voice_settings: voiceSettings } : {}),
+      }),
+    },
+  );
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`Speech generation failed — ${response.status} ${body.slice(0, 240)}`);
+  }
+
+  await writeFile(outputPath, Buffer.from(await response.arrayBuffer()));
+}
+
+async function generateMeditation({
+  apiKey,
+  meditation,
+  modelId,
+  outputPath,
+  voiceId,
+  voiceSettings,
+}: {
+  apiKey: string;
+  meditation: NonNullable<Segment['meditation']>;
+  modelId: string;
+  outputPath: string;
+  voiceId: string;
+  voiceSettings?: Segment['voiceSettings'];
+}) {
+  const tempDir = await mkdtemp(path.join(tmpdir(), 'mwa-blue-radio-'));
+
+  try {
+    const partPaths: string[] = [];
+    for (let i = 0; i < meditation.parts.length; i++) {
+      const part = meditation.parts[i];
+      const partPath = path.join(tempDir, `part-${String(i).padStart(2, '0')}.mp3`);
+      await synthesizeSpeech({
+        apiKey,
+        modelId,
+        nextText: meditation.parts[i + 1]?.text,
+        outputPath: partPath,
+        previousText: meditation.parts[i - 1]?.text,
+        text: part.text,
+        voiceId,
+        voiceSettings,
+      });
+      console.log(`  Meditation narration ${i + 1}/${meditation.parts.length}`);
+      partPaths.push(partPath);
+    }
+
+    const spokenDurations = await Promise.all(partPaths.map(preciseDurationSeconds));
+    const spokenSeconds = spokenDurations.reduce((sum, seconds) => sum + seconds, 0);
+    const quietSeconds = meditation.targetSeconds - spokenSeconds;
+    const totalPauseWeight = meditation.parts.reduce((sum, part) => sum + part.pauseWeight, 0);
+
+    if (quietSeconds <= 0 || totalPauseWeight <= 0) {
+      throw new Error(
+        `Meditation narration is ${Math.round(spokenSeconds)}s and cannot fit the ${meditation.targetSeconds}s target.`,
+      );
+    }
+
+    const ffmpegArgs: string[] = ['-y'];
+    const filterParts: string[] = [];
+    const concatLabels: string[] = [];
+    let inputIndex = 0;
+
+    for (let i = 0; i < partPaths.length; i++) {
+      ffmpegArgs.push('-i', partPaths[i]);
+      filterParts.push(
+        `[${inputIndex}:a]aresample=44100,aformat=channel_layouts=stereo,asetpts=N/SR/TB[part${i}]`,
+      );
+      concatLabels.push(`[part${i}]`);
+      inputIndex++;
+
+      const pauseWeight = meditation.parts[i].pauseWeight;
+      if (pauseWeight > 0) {
+        const pauseSeconds = quietSeconds * pauseWeight / totalPauseWeight;
+        ffmpegArgs.push(
+          '-f', 'lavfi',
+          '-t', pauseSeconds.toFixed(3),
+          '-i', 'anullsrc=r=44100:cl=stereo',
+        );
+        filterParts.push(`[${inputIndex}:a]asetpts=N/SR/TB[pause${i}]`);
+        concatLabels.push(`[pause${i}]`);
+        inputIndex++;
+      }
+    }
+
+    filterParts.push(`${concatLabels.join('')}concat=n=${concatLabels.length}:v=0:a=1[out]`);
+    ffmpegArgs.push(
+      '-filter_complex', filterParts.join(';'),
+      '-map', '[out]',
+      '-c:a', 'libmp3lame',
+      '-b:a', '128k',
+      '-ar', '44100',
+      outputPath,
+    );
+
+    await execFileAsync('ffmpeg', ffmpegArgs, { maxBuffer: 1024 * 1024 * 4 });
+    const finalSeconds = await preciseDurationSeconds(outputPath);
+    console.log(
+      `  Meditation assembled: ${Math.round(spokenSeconds)}s narration + ${Math.round(quietSeconds)}s quiet = ${Math.round(finalSeconds)}s`,
+    );
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
 }
 
 async function main() {
@@ -149,28 +427,28 @@ async function main() {
       continue;
     }
 
-    const response = await fetch(
-      `https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(voiceId)}?output_format=mp3_44100_128`,
-      {
-        method: 'POST',
-        headers: {
-          'xi-api-key': apiKey,
-          'Content-Type': 'application/json',
-          'Accept': 'audio/mpeg',
-        },
-        body: JSON.stringify({
-          text: segment.text,
-          model_id: modelId,
-        }),
-      },
-    );
-
-    if (!response.ok) {
-      const body = await response.text();
-      throw new Error(`blue-radio/${segment.id}.mp3 failed — ${response.status} ${body.slice(0, 240)}`);
+    if (segment.meditation) {
+      await generateMeditation({
+        apiKey,
+        meditation: segment.meditation,
+        modelId,
+        outputPath,
+        voiceId,
+        voiceSettings: segment.voiceSettings,
+      });
+    } else if (segment.text) {
+      await synthesizeSpeech({
+        apiKey,
+        modelId,
+        outputPath,
+        text: segment.text,
+        voiceId,
+        voiceSettings: segment.voiceSettings,
+      });
+    } else {
+      throw new Error(`blue-radio/${segment.id}.mp3 has no text or meditation parts.`);
     }
 
-    await writeFile(outputPath, Buffer.from(await response.arrayBuffer()));
     console.log(`[${i + 1}/${total}] Generated  blue-radio/${segment.id}.mp3`);
     generated++;
   }
@@ -185,7 +463,7 @@ async function main() {
       id: segment.id,
       title: segment.title,
       file: `/audio/blue-radio/${segment.id}.mp3`,
-      seconds: Math.round(await durationSeconds(outputPath) * 100) / 100,
+      seconds: Math.round(await preciseDurationSeconds(outputPath) * 100) / 100,
     });
   }
 

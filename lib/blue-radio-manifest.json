@@ -1,66 +1,72 @@
 {
-  "generatedAt": "2026-07-17T19:00:19.531Z",
-  "totalSeconds": 285.93,
+  "generatedAt": "2026-07-19T01:16:28.533Z",
+  "totalSeconds": 1485.27,
   "segments": [
     {
       "id": "station-ident",
       "title": "Welcome in",
       "file": "/audio/blue-radio/station-ident.mp3",
-      "seconds": 29.1
+      "seconds": 29.02
     },
     {
       "id": "what-is-mwa",
       "title": "What this place is",
       "file": "/audio/blue-radio/what-is-mwa.mp3",
-      "seconds": 26.86
+      "seconds": 26.8
     },
     {
       "id": "mental-wealth-idea",
       "title": "The idea of mental wealth",
       "file": "/audio/blue-radio/mental-wealth-idea.mp3",
-      "seconds": 35.03
+      "seconds": 34.97
     },
     {
       "id": "the-course",
       "title": "The twelve week course",
       "file": "/audio/blue-radio/the-course.mp3",
-      "seconds": 32.81
+      "seconds": 32.74
     },
     {
       "id": "field-notes",
       "title": "Field notes",
       "file": "/audio/blue-radio/field-notes.mp3",
-      "seconds": 27.69
+      "seconds": 27.63
     },
     {
       "id": "quests-and-credits",
       "title": "Quests and credits",
       "file": "/audio/blue-radio/quests-and-credits.mp3",
-      "seconds": 27.93
+      "seconds": 27.86
     },
     {
       "id": "the-library",
       "title": "The guide library",
       "file": "/audio/blue-radio/the-library.mp3",
-      "seconds": 26.62
+      "seconds": 26.56
     },
     {
       "id": "station-break-blue",
       "title": "Station break, about Blue",
       "file": "/audio/blue-radio/station-break-blue.mp3",
-      "seconds": 27.56
+      "seconds": 27.49
     },
     {
       "id": "community",
       "title": "The people next to you",
       "file": "/audio/blue-radio/community.mp3",
-      "seconds": 25.55
+      "seconds": 25.5
+    },
+    {
+      "id": "twenty-minute-reset",
+      "title": "A twenty-minute reset",
+      "file": "/audio/blue-radio/twenty-minute-reset.mp3",
+      "seconds": 1200
     },
     {
       "id": "signoff",
       "title": "The loop begins again",
       "file": "/audio/blue-radio/signoff.mp3",
-      "seconds": 26.78
+      "seconds": 26.7
     }
   ]
 }
