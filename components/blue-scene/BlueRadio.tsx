@@ -196,7 +196,6 @@ export default function BlueRadio() {
 
   return (
     <div className={styles.radioStage}>
-      <div className={styles.radioGlow} aria-hidden="true" />
       <div className={styles.radioBlueWrap}>
         <Image
           src="/blue/blue-home.png"

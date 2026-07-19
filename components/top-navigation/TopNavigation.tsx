@@ -21,6 +21,7 @@ interface NavLink {
 // Trading and Lists moved into SideNavigation's Pro Features section.
 const NAV_LINKS: NavLink[] = [
   { label: 'Live', href: '/dao', icon: '/icons/nav-world-v2.svg' },
+  { label: 'Quests', href: '/quests', icon: '/icons/nav-quests-v3.svg' },
 ];
 
 const TopNavigation: React.FC = () => {

@@ -19,6 +19,8 @@ import {
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 const MODEL_URL = '/models/blue.vrm';
+const CAMERA_HEIGHT = 1.47;
+const CAMERA_DISTANCE = 0.94;
 const VISEME_SEQUENCE: VRMExpressionPresetName[] = [
   'aa',
   'ih',
@@ -49,7 +51,7 @@ function CameraAim() {
   const camera = useThree((state) => state.camera);
 
   useEffect(() => {
-    camera.lookAt(0, 1.31, 0);
+    camera.lookAt(0, CAMERA_HEIGHT, 0);
     camera.updateProjectionMatrix();
   }, [camera]);
 
@@ -276,7 +278,7 @@ export default function BlueVrmCanvas(props: BlueVrmCanvasProps) {
   return (
     <Canvas
       aria-hidden="true"
-      camera={{ position: [0, 1.31, 1.42], fov: 30, near: 0.1, far: 20 }}
+      camera={{ position: [0, CAMERA_HEIGHT, CAMERA_DISTANCE], fov: 30, near: 0.1, far: 20 }}
       dpr={[1, dpr]}
       frameloop={props.reducedMotion ? 'demand' : 'always'}
       gl={{
