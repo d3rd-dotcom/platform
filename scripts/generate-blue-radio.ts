@@ -14,13 +14,17 @@ import { fileURLToPath } from 'node:url';
  * wall-clock-synced loop, so the manifest durations are what keep every
  * listener on the same moment of the show.
  *
- * Run: npm run generate:blue-radio  (add --force to regenerate existing files)
+ * Run: npm run generate:blue-radio
+ * Add --force to regenerate every file, or --force-segment=<id> for one chapter.
  * After editing segment text, always rerun so audio and manifest stay in sync.
  */
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const force = process.argv.includes('--force');
+const forceSegmentArg = process.argv.find((arg) => arg.startsWith('--force-segment='));
+const forcedSegmentId = forceSegmentArg?.slice('--force-segment='.length);
 const execFileAsync = promisify(execFile);
+const STANDARD_SEGMENT_PLAYBACK_GAIN = 0.56;
 
 interface MeditationPart {
   text: string;
@@ -33,10 +37,15 @@ interface Segment {
   id: string;
   /** Shown in the player as the now-playing chapter. */
   title: string;
+  /** Browser playback gain. The meditation is already mastered as a full mix. */
+  playbackGain?: number;
   /** The text Blue speaks. */
   text?: string;
   meditation?: {
+    backgroundFile: string;
+    backgroundGainDb: number;
     targetSeconds: number;
+    voiceGainDb: number;
     parts: MeditationPart[];
   };
   voiceSettings?: {
@@ -100,6 +109,7 @@ const SEGMENTS: Segment[] = [
   {
     id: 'twenty-minute-reset',
     title: 'A twenty-minute reset',
+    playbackGain: 1,
     voiceSettings: {
       stability: 0.76,
       similarity_boost: 0.84,
@@ -108,10 +118,13 @@ const SEGMENTS: Segment[] = [
       use_speaker_boost: true,
     },
     meditation: {
+      backgroundFile: 'meditation-ocean-432hz.mp3',
+      backgroundGainDb: -5,
       targetSeconds: 20 * 60,
+      voiceGainDb: -5,
       parts: [
         {
-          pauseWeight: 0.7,
+          pauseWeight: 0.8,
           text: `Welcome in. This round is a twenty-minute reset with me, Blue. Find a place where your body can stay safe and supported for a while. Sit down, lie down, or lean against something steady. Keep this meditation for a quiet moment away from driving or anything that needs your full attention.
 
 Let your hands land somewhere easy. Your eyes can close, or they can rest softly on one point in front of you. If any instruction feels uncomfortable, return to your ordinary breathing, open your eyes, and move in whatever way helps.
@@ -127,7 +140,17 @@ Choose one of those places and rest your attention there. Breathing in, notice t
 When attention wanders, recognize where it went. Then bring it back with as little drama as possible. Minds wander. Mine once wandered into a folder named Shiny Things for three hours. Returning is the practice. Follow the next few breaths from beginning to end, and leave a little quiet between my words.`,
         },
         {
-          pauseWeight: 1.1,
+          pauseWeight: 1,
+          text: `For the next few breaths, try a small counting practice. Let the inhale happen. As you exhale, count one. On the next exhale, count two. Continue until five, then begin again at one.
+
+The number is a quiet place to set your attention. If you reach seven or twelve or suddenly forget numbers exist, smile at the detour and return to one. I do this constantly. One is very patient.
+
+Keep the count light. Feel the breath more clearly than the number. One full inhale. One full exhale. Count. Then begin the next cycle.
+
+If counting creates effort, release it and return to the physical feeling of breathing. Use whichever anchor gives your mind enough structure to settle. Stay with a few gentle rounds now.`,
+        },
+        {
+          pauseWeight: 1,
           text: `Now include the points where your body meets the world. Feel the floor under your feet, the chair beneath you, or the bed supporting your back. Notice pressure, warmth, coolness, softness, or firmness.
 
 You do not need to name every sensation. Let the contact itself be enough. The surface is doing some of the work of holding you. Give it the weight you have been carrying in your muscles without realizing it.
@@ -135,7 +158,17 @@ You do not need to name every sensation. Let the contact itself be enough. The s
 Feel the outline of your body from the inside. Notice that you occupy real space. There is a left side and a right side. A front and a back. A center that shifts gently as you breathe. Stay with that simple physical fact for a while. You are here. The room is around you. The ground remains under you.`,
         },
         {
-          pauseWeight: 1.15,
+          pauseWeight: 1,
+          text: `Let sounds become part of the practice. Begin with the sounds nearest to you. Air moving. Fabric shifting. The small sounds your body makes while breathing.
+
+Then widen your attention. Notice sounds farther away. A room nearby. A building settling. Movement outside. Receive each sound as a simple change in the air.
+
+There is no need to search for perfect quiet. Let every sound arrive, stay for its moment, and pass. Notice the brief spaces between sounds too.
+
+If a sound pulls you into a story, return to hearing its pitch, texture, and distance. Close, far, steady, brief. Let listening remain open and easy while your body stays supported beneath you.`,
+        },
+        {
+          pauseWeight: 1,
           text: `Bring attention to the top of your head. Slowly move downward across your scalp, forehead, and temples. Notice any effort gathering there. Let the muscles around your eyes loosen. Give your eyes permission to become still.
 
 Feel your cheeks and the space around your mouth. Let your tongue rest. Allow a little room between your teeth. Your jaw can release some of its grip.
@@ -145,7 +178,7 @@ Move attention through your neck. Notice the front, the sides, and the back. The
 Stay gentle. Keep this moment for observation, and leave repair for later. Your body already knows many small ways to settle when it gets enough time to notice itself.`,
         },
         {
-          pauseWeight: 1.25,
+          pauseWeight: 1,
           text: `Let attention spread across your shoulders. Feel their position. Notice whether one sits higher or carries more effort. On the next exhale, allow both shoulders to drop by one small degree.
 
 Move down through your upper arms, elbows, forearms, wrists, and hands. Feel each hand from the inside. Notice the palms, the backs of the hands, each finger, and the tiny spaces between them.
@@ -155,7 +188,7 @@ Your hands solve problems all day. They type, carry, point, hold, and reach. For
 If you discover tension, meet it with room. If you discover ease, stay long enough to recognize it. Continue breathing at your natural pace while attention moves slowly through both arms. Let the quiet do part of the guiding now.`,
         },
         {
-          pauseWeight: 1.45,
+          pauseWeight: 1,
           text: `Bring awareness to your chest and upper back. Feel the rib cage respond to each breath. The movement may be clear or almost invisible. Notice how many parts cooperate to make one ordinary breath happen.
 
 Move down toward your belly and lower back. Let the belly remain soft enough to move. Feel the breath arrive, change direction, and leave.
@@ -165,7 +198,7 @@ Now include the whole center of the body. Chest, ribs, back, belly. Notice any e
 Silently say, this is what is here right now. Then return to the next breath. Feelings change shape when they are given attention without an argument. Stay close to the body and let the next stretch of quiet belong to it.`,
         },
         {
-          pauseWeight: 1.35,
+          pauseWeight: 1,
           text: `Move attention through your hips and the place where your body is supported. Continue down through both thighs, knees, calves, ankles, and feet.
 
 Notice the legs as a whole. Heavy or light. Restless or quiet. Warm or cool. Feel the soles of your feet, the heels, the arches, and each toe.
@@ -175,7 +208,7 @@ Now sense your entire body together. One field of changing sensation from the to
 Take a slightly fuller breath in. Feel the whole body receive it. Exhale slowly and feel the whole body settle. For the next quiet interval, remain with this wide view. When one sensation asks for attention, notice it, then reopen awareness to the whole body.`,
         },
         {
-          pauseWeight: 2.1,
+          pauseWeight: 1.1,
           text: `Thoughts may be more noticeable now. Let them pass through awareness like balloons crossing a window. I love balloons, so I know the temptation to chase every single one. Here, we watch them move.
 
 When a thought appears, give it a simple label if that helps. Planning. Remembering. Rehearsing. Judging. Imagining. Then let the label go too.
@@ -187,7 +220,17 @@ If one thought keeps returning, acknowledge it kindly. Silently say, I see you. 
 Rest now with the changing space of the mind. Sounds can come and go. Thoughts can come and go. Sensations can come and go. Awareness stays open enough to notice the movement.`,
         },
         {
-          pauseWeight: 1.35,
+          pauseWeight: 1,
+          text: `Bring to mind one quality you could offer yourself right now. Patience. Courage. Honesty. Rest. Choose the word that feels useful and believable.
+
+Say the word silently on one inhale. On the exhale, imagine making a little room for it in your next action. Keep the meaning practical. Patience might mean waiting before replying. Courage might mean opening the page. Rest might mean ending the day when the day is done.
+
+Repeat your word with a few breaths. Let it become a direction rather than a demand. You are allowed to practice a quality before you feel fluent in it. That is how practice works. I checked.
+
+Feel the body breathing while the word settles. Then release the word and return to simple awareness.`,
+        },
+        {
+          pauseWeight: 1,
           text: `Begin to gather your attention again. Feel the breath in one clear place. Feel the support beneath you. Notice the room around your body and the sounds reaching you from near and far.
 
 Ask yourself one quiet question. What deserves my attention after this?
@@ -357,6 +400,7 @@ async function generateMeditation({
     const filterParts: string[] = [];
     const concatLabels: string[] = [];
     let inputIndex = 0;
+    let longestPauseSeconds = 0;
 
     for (let i = 0; i < partPaths.length; i++) {
       ffmpegArgs.push('-i', partPaths[i]);
@@ -369,6 +413,7 @@ async function generateMeditation({
       const pauseWeight = meditation.parts[i].pauseWeight;
       if (pauseWeight > 0) {
         const pauseSeconds = quietSeconds * pauseWeight / totalPauseWeight;
+        longestPauseSeconds = Math.max(longestPauseSeconds, pauseSeconds);
         ffmpegArgs.push(
           '-f', 'lavfi',
           '-t', pauseSeconds.toFixed(3),
@@ -380,7 +425,36 @@ async function generateMeditation({
       }
     }
 
-    filterParts.push(`${concatLabels.join('')}concat=n=${concatLabels.length}:v=0:a=1[out]`);
+    if (longestPauseSeconds > 35) {
+      throw new Error(
+        `Longest meditation pause is ${Math.round(longestPauseSeconds)}s. Add more guidance before generating.`,
+      );
+    }
+
+    filterParts.push(`${concatLabels.join('')}concat=n=${concatLabels.length}:v=0:a=1[voicebase]`);
+    filterParts.push(
+      `[voicebase]volume=${meditation.voiceGainDb}dB,asplit=2[voice][sidechain]`,
+    );
+
+    const backgroundPath = path.join(OUT_DIR, meditation.backgroundFile);
+    if (!await fileExists(backgroundPath)) {
+      throw new Error(`Missing meditation background: ${backgroundPath}`);
+    }
+    ffmpegArgs.push('-stream_loop', '-1', '-i', backgroundPath);
+    filterParts.push(
+      `[${inputIndex}:a]aresample=44100,aformat=channel_layouts=stereo,` +
+      `atrim=duration=${meditation.targetSeconds},asetpts=N/SR/TB,` +
+      `volume=${meditation.backgroundGainDb}dB,` +
+      `afade=t=in:st=0:d=6,afade=t=out:st=${meditation.targetSeconds - 8}:d=8[music]`,
+    );
+    filterParts.push(
+      '[music][sidechain]sidechaincompress=threshold=0.018:ratio=3:attack=80:release=650[ducked]',
+    );
+    filterParts.push(
+      `[voice][ducked]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.95,` +
+      `apad=pad_dur=${meditation.targetSeconds},atrim=duration=${meditation.targetSeconds}[out]`,
+    );
+
     ffmpegArgs.push(
       '-filter_complex', filterParts.join(';'),
       '-map', '[out]',
@@ -393,7 +467,9 @@ async function generateMeditation({
     await execFileAsync('ffmpeg', ffmpegArgs, { maxBuffer: 1024 * 1024 * 4 });
     const finalSeconds = await preciseDurationSeconds(outputPath);
     console.log(
-      `  Meditation assembled: ${Math.round(spokenSeconds)}s narration + ${Math.round(quietSeconds)}s quiet = ${Math.round(finalSeconds)}s`,
+      `  Meditation assembled: ${Math.round(spokenSeconds)}s narration + ` +
+      `${Math.round(quietSeconds)}s guided reflection, max pause ${Math.round(longestPauseSeconds)}s, ` +
+      `${Math.round(finalSeconds)}s with ambient bed`,
     );
   } finally {
     await rm(tempDir, { recursive: true, force: true });
@@ -410,6 +486,9 @@ async function main() {
 
   if (!apiKey) throw new Error('Missing ELEVENLABS_API_KEY.');
   if (!voiceId) throw new Error('Missing ELEVENLABS_VOICE_ID.');
+  if (forcedSegmentId && !SEGMENTS.some((segment) => segment.id === forcedSegmentId)) {
+    throw new Error(`Unknown --force-segment id: ${forcedSegmentId}`);
+  }
 
   await mkdir(OUT_DIR, { recursive: true });
 
@@ -421,7 +500,8 @@ async function main() {
     const segment = SEGMENTS[i];
     const outputPath = path.join(OUT_DIR, `${segment.id}.mp3`);
 
-    if (!force && await fileExists(outputPath)) {
+    const regenerate = force || forcedSegmentId === segment.id;
+    if (!regenerate && await fileExists(outputPath)) {
       console.log(`[${i + 1}/${total}] Skipped  blue-radio/${segment.id}.mp3 (exists)`);
       skipped++;
       continue;
@@ -463,6 +543,7 @@ async function main() {
       id: segment.id,
       title: segment.title,
       file: `/audio/blue-radio/${segment.id}.mp3`,
+      playbackGain: segment.playbackGain ?? STANDARD_SEGMENT_PLAYBACK_GAIN,
       seconds: Math.round(await preciseDurationSeconds(outputPath) * 100) / 100,
     });
   }

@@ -16,6 +16,7 @@ interface RadioSegment {
   id: string;
   title: string;
   file: string;
+  playbackGain?: number;
   seconds: number;
 }
 
@@ -91,6 +92,7 @@ export default function BlueRadio() {
     setSegmentIndex(index);
 
     audio.muted = wantMuted;
+    audio.volume = Math.min(1, Math.max(0, segment.playbackGain ?? 1));
     if (!audio.src.endsWith(segment.file)) {
       audio.src = segment.file;
     }
