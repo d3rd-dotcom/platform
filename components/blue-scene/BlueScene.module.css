@@ -249,9 +249,9 @@
   align-items: center;
   gap: 10px;
   padding: 9px 14px;
-  background: color-mix(in oklch, #141724 78%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--palette-canvas));
   backdrop-filter: blur(6px);
-  border-top: 1px solid color-mix(in oklch, var(--color-text-light) 12%, transparent);
+  border-top: 1px solid color-mix(in oklch, var(--color-primary) 26%, transparent);
 }
 
 .radioLiveChip {
@@ -261,9 +261,9 @@
   gap: 6px;
   padding: 4px 10px;
   border-radius: 999px;
-  border: 1px solid color-mix(in oklch, var(--color-danger) 55%, transparent);
-  color: var(--color-text-light);
-  background: color-mix(in oklch, var(--color-danger) 20%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-danger) 36%, transparent);
+  color: var(--color-danger);
+  background: color-mix(in oklch, var(--color-danger) 10%, transparent);
   font-family: var(--font-mono);
   font-size: 0.68rem;
   font-weight: 700;
@@ -294,7 +294,7 @@
 }
 
 .radioShowName {
-  color: color-mix(in oklch, var(--color-text-light) 62%, transparent);
+  color: color-mix(in oklch, var(--palette-ink) 62%, transparent);
   font-family: var(--font-mono);
   font-size: 0.62rem;
   font-weight: 700;
@@ -303,7 +303,7 @@
 
 .radioSegmentTitle {
   overflow: hidden;
-  color: var(--color-text-light);
+  color: var(--palette-ink);
   font-family: var(--font-body);
   font-size: 0.85rem;
   font-weight: 600;
@@ -346,10 +346,10 @@
 .radioMuteButton {
   flex-shrink: 0;
   padding: 5px 13px;
-  border: 1px solid color-mix(in oklch, var(--color-text-light) 30%, transparent);
+  border: 1px solid color-mix(in oklch, var(--palette-ink) 24%, transparent);
   border-radius: 999px;
-  color: var(--color-text-light);
-  background: color-mix(in oklch, var(--color-text-light) 8%, transparent);
+  color: var(--palette-ink);
+  background: color-mix(in oklch, var(--palette-ink) 6%, transparent);
   font-family: var(--font-button);
   font-size: 0.72rem;
   font-weight: 700;
@@ -358,7 +358,7 @@
 }
 
 .radioMuteButton:hover {
-  background: color-mix(in oklch, var(--color-text-light) 16%, transparent);
+  background: color-mix(in oklch, var(--palette-ink) 12%, transparent);
 }
 
 .radioMuteButtonLoud {
