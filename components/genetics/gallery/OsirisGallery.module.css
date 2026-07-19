@@ -50,28 +50,35 @@
   bottom: 18px;
   left: 24px;
   max-width: 300px;
-  padding: 12px 15px;
+  padding: 13px 16px 14px;
   pointer-events: none;
-  border-radius: 3px;
+  border-radius: 4px;
+  /* A gilded hairline on the reading edge, so the label reads as a struck
+     museum plate rather than a floating tooltip. */
   border: 1px solid rgba(244, 243, 240, 0.14);
+  border-left: 2px solid rgba(214, 178, 96, 0.7);
   background: rgba(28, 27, 31, 0.9);
   backdrop-filter: blur(6px);
   box-shadow: 0 8px 24px rgba(18, 15, 20, 0.34);
 }
 
 .plaqueEyebrow {
-  margin: 0;
+  margin: 0 0 9px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(244, 243, 240, 0.1);
   font-family: var(--font-mono);
   font-size: 9px;
   letter-spacing: 0.14em;
-  color: rgba(244, 243, 240, 0.46);
+  text-transform: none;
+  color: rgba(244, 243, 240, 0.5);
 }
 
 .plaqueTitle {
-  margin: 7px 0 0;
+  margin: 0;
   font-family: var(--font-secondary);
   font-size: 17px;
   font-weight: 700;
+  line-height: 1.25;
   letter-spacing: 0.01em;
   color: #f4f3f0;
 }
@@ -85,16 +92,19 @@
   color: rgba(244, 243, 240, 0.62);
 }
 
+/* Attribution. Gold, both because it is legible on the dark plate (the shared
+   --color-text-muted token is near-black here) and because it ties the label to
+   the room's accent — the same warm line struck under a selected piece. */
 .plaqueMeta {
-  margin: 5px 0 0;
+  margin: 6px 0 0;
   font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.05em;
-  color: var(--color-text-muted);
+  color: rgba(214, 178, 96, 0.82);
 }
 
 .plaqueIndex {
-  margin: 8px 0 0;
+  margin: 9px 0 0;
   font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.06em;
@@ -112,9 +122,10 @@
   gap: 14px;
   padding: 7px 10px;
   border-radius: var(--radius-full);
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  background: rgba(24, 20, 18, 0.42);
+  border: 1px solid rgba(244, 243, 240, 0.16);
+  background: rgba(28, 27, 31, 0.6);
   backdrop-filter: blur(8px);
+  box-shadow: 0 6px 20px rgba(18, 15, 20, 0.28);
 }
 
 .walkButton {
