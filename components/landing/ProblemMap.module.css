@@ -1,26 +1,36 @@
 .wrap {
-  /* Soft red for the redlined (HOLC grade D) figures — the historical grade
-     color, muted so it sits beside the green "best" zones and the blue-tinted
-     basemap without vibrating. --rl-red-text is lifted for legibility on dark. */
   --rl-red: var(--color-danger);
-  --rl-red-text: var(--color-danger);
   --rl-green: var(--color-streak);
   --rl-private: var(--color-accent);
 
   position: relative;
   width: 100%;
-  height: 100%;
+  overflow: hidden;
+  background: var(--color-landing-black);
+  color: var(--color-text-light);
+  font-family: var(--font-primary);
 }
 
-/* A wide map region that melts into the dark section: dark basemap, no card
-   chrome, and the side edges feathered into the background. */
-.map {
+.flow {
+  display: grid;
+  grid-template-columns: minmax(390px, 1.3fr) minmax(235px, 0.85fr) minmax(235px, 0.85fr);
+  align-items: stretch;
+  min-height: 520px;
+}
+
+.stage {
   position: relative;
-  width: 100%;
-  height: 100%;
-  min-height: 100%;
-  border-radius: 0;
+  min-width: 0;
+}
+
+.mapStage {
+  min-height: 520px;
   overflow: hidden;
+}
+
+.map {
+  position: absolute;
+  inset: 0;
   background: var(--color-landing-black);
   font-family: var(--font-primary);
   opacity: 0;
@@ -31,17 +41,239 @@
   opacity: 1;
 }
 
-.source {
+.mapShade {
   position: absolute;
-  right: 0;
-  bottom: 0;
+  inset: 0;
+  z-index: 450;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent 56%, color-mix(in srgb, var(--color-landing-black) 74%, transparent) 100%),
+    linear-gradient(180deg, color-mix(in srgb, var(--color-landing-black) 82%, transparent) 0%, transparent 30%),
+    linear-gradient(0deg, var(--color-landing-black) 0%, transparent 46%);
+}
+
+.mapStory {
+  position: absolute;
+  inset: 0;
   z-index: 500;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 30px;
+}
+
+.mapStoryFooter {
+  display: grid;
+  gap: 12px;
+}
+
+.stageHeading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stageNumber {
+  display: inline-grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--color-on-action);
+  background: var(--color-primary);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: var(--font-weight-semibold);
+}
+
+.stageTitle {
   margin: 0;
-  padding: 8px 12px;
+  color: var(--color-text-light);
+  font-family: var(--font-primary);
+  font-size: 1.1rem;
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.stageCopy {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text-light) 65%, transparent);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.mapStory .stageCopy {
+  max-width: 320px;
+  color: color-mix(in srgb, var(--color-text-light) 82%, transparent);
+}
+
+.mapLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  color: color-mix(in srgb, var(--color-text-light) 68%, transparent);
+  font-family: var(--font-mono);
   font-size: 0.68rem;
-  line-height: 1.4;
-  color: rgba(255, 255, 255, 0.4);
+}
+
+.mapLegend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mapLegend i {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+}
+
+.gradeA {
+  background: var(--rl-green);
+}
+
+.gradeD {
+  background: var(--rl-red);
+}
+
+.resourceStage,
+.outcomeStage {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 24px;
+  padding: 30px 26px 34px;
+  border-left: 1px solid color-mix(in srgb, var(--color-primary) 26%, transparent);
+  background: color-mix(in srgb, var(--color-grey-900) 46%, transparent);
+}
+
+.resourceStage::before,
+.outcomeStage::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: 50%;
+  z-index: 2;
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid color-mix(in srgb, var(--color-text-light) 42%, transparent);
+  border-right: 2px solid color-mix(in srgb, var(--color-text-light) 42%, transparent);
   background: var(--color-landing-black);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.outcomeStage {
+  background: color-mix(in srgb, var(--color-primary) 5%, var(--color-landing-black));
+  padding-bottom: 136px;
+}
+
+.stageHeaderBlock {
+  display: grid;
+  gap: 10px;
+}
+
+.resourceQualifier {
+  color: color-mix(in srgb, var(--color-text-light) 44%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+}
+
+.resourcePlot {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: end;
+  gap: 8px;
+  min-height: 190px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-text-light) 18%, transparent);
+}
+
+.resourceGroup {
+  display: grid;
+  align-content: end;
+  justify-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.resourceStack {
+  display: flex;
+  width: min(100%, 42px);
+  flex-direction: column-reverse;
+  gap: 4px;
+}
+
+.resourceStack i {
+  display: block;
+  height: 15px;
+  border-radius: 3px;
+}
+
+.marginalized i {
+  background: var(--color-danger);
+}
+
+.wealthy i {
+  background: var(--color-streak);
+}
+
+.private i {
+  background: var(--color-accent);
+}
+
+.resourceLabel {
+  color: color-mix(in srgb, var(--color-text-light) 78%, transparent);
+  font-size: 0.68rem;
+  white-space: nowrap;
+}
+
+.outcome {
+  display: grid;
+  align-content: center;
+  gap: 12px;
+}
+
+.outcomeValue {
+  color: var(--color-text-light);
+  font-family: var(--font-mono);
+  font-size: clamp(2.5rem, 4.5vw, 4rem);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.outcomeCopy {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text-light) 84%, transparent);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.people {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.people i {
+  display: block;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-text-light) 17%, transparent);
+}
+
+.people .personActive {
+  background: var(--color-primary);
+}
+
+.source {
+  margin: 0;
+  padding: 9px 12px 10px;
+  color: color-mix(in srgb, var(--color-text-light) 42%, transparent);
+  background: var(--color-landing-black);
+  font-size: 0.64rem;
+  line-height: 1.45;
   text-align: right;
 }
 
@@ -85,53 +317,6 @@
   fill: #fff;
 }
 
-/* school cap + its gold budget stack, sharing a ground line */
-.map :global(.rl-mkBody) {
-  display: flex;
-  align-items: flex-end;
-  gap: 4px;
-}
-
-.map :global(.rl-stack) {
-  position: relative;
-  display: flex;
-  flex-direction: column-reverse;
-  align-items: center;
-  gap: 1.5px;
-  padding-bottom: 1px;
-  /* soft gold aura = wealth */
-  filter: drop-shadow(0 0 5px rgba(240, 190, 70, 0.55));
-}
-
-.map :global(.rl-coin) {
-  position: relative;
-  overflow: hidden;
-  width: 17px;
-  height: 5px;
-  border-radius: 50%;
-  background: linear-gradient(180deg, #fff2bf 0%, #f4cf6c 40%, #e3ab36 72%, #c6881f 100%);
-  box-shadow: 0 1px 0 rgba(110, 70, 10, 0.5), inset 0 0.6px 0 rgba(255, 255, 255, 0.85);
-}
-/* a glint that sweeps the pile in sync */
-.map :global(.rl-coin)::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, 0.95) 50%, transparent 58%);
-  background-size: 260% 100%;
-  background-position: 150% 0;
-  animation: rlGlint 4s ease-in-out infinite;
-  pointer-events: none;
-}
-
-@keyframes rlGlint {
-  0%, 62% { background-position: 150% 0; }
-  84%, 100% { background-position: -70% 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .map :global(.rl-coin)::after { animation: none; opacity: 0; }
-}
-
 .map :global(.rl-pin) {
   width: 9px;
   height: 9px;
@@ -148,6 +333,66 @@
 .map :global(.rl-green .rl-pin) { background: var(--rl-green); }
 .map :global(.rl-private .rl-pin) { background: var(--rl-private); }
 
-@media (max-width: 768px) {
-  .map { min-height: 100%; }
+@media (max-width: 900px) {
+  .flow {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .mapStage {
+    min-height: 420px;
+  }
+
+  .resourceStage,
+  .outcomeStage {
+    min-height: 380px;
+    padding: 34px 28px 40px;
+    border-top: 1px solid color-mix(in srgb, var(--color-primary) 26%, transparent);
+    border-left: 0;
+  }
+
+  .resourceStage::before,
+  .outcomeStage::before {
+    left: 50%;
+    top: -6px;
+    transform: translateX(-50%) rotate(135deg);
+  }
+
+  .outcomeStage {
+    min-height: 470px;
+    padding-bottom: 150px;
+  }
+
+  .resourcePlot {
+    min-height: 150px;
+  }
+
+  .outcomeValue {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .mapStage {
+    min-height: 380px;
+  }
+
+  .mapStory {
+    padding: 24px;
+  }
+
+  .resourceStage,
+  .outcomeStage {
+    min-height: 360px;
+    padding: 30px 22px 38px;
+  }
+
+  .outcomeStage {
+    min-height: 440px;
+    padding-bottom: 150px;
+  }
+
+  .resourceLabel {
+    font-size: 0.62rem;
+  }
 }

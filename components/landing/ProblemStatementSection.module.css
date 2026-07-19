@@ -45,10 +45,10 @@
 
 .contextPanel {
   display: grid;
-  grid-template-columns: minmax(240px, 0.9fr) minmax(300px, 1.1fr) auto;
+  grid-template-columns: minmax(280px, 0.85fr) minmax(360px, 1.15fr);
   align-items: center;
-  gap: 28px;
-  padding: 28px 36px;
+  gap: 48px;
+  padding: 30px 36px 32px;
   border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 38%, transparent);
   background: color-mix(in srgb, var(--color-landing-black) 86%, var(--color-grey-900));
 }
@@ -59,9 +59,9 @@
   margin: 0;
   color: var(--color-text-light);
   font-family: var(--font-primary);
-  font-size: clamp(1.35rem, 2vw, 1.85rem);
+  font-size: clamp(1.45rem, 2vw, 1.8rem);
   font-weight: var(--font-weight-semibold);
-  line-height: 1.08;
+  line-height: 1.12;
   letter-spacing: -0.03em;
   text-wrap: balance;
 }
@@ -70,29 +70,17 @@
   margin: 0;
   color: color-mix(in srgb, var(--color-text-light) 76%, transparent);
   font-family: var(--font-primary);
-  font-size: 0.92rem;
-  line-height: 1.55;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  text-wrap: pretty;
 }
-
-.budget { min-width: max-content; }
-.budgetTitle { display: block; margin-bottom: 10px; color: color-mix(in srgb, var(--color-text-light) 52%, transparent); font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.04em; }
-.budgetTable { display: grid; grid-template-columns: auto auto; align-items: center; gap: 8px 12px; width: fit-content; }
-.budgetLabel { font-family: var(--font-primary); font-size: 0.78rem; font-weight: 700; }
-.budgetLabel[data-zone='red'] { color: var(--color-danger); }
-.budgetLabel[data-zone='green'] { color: var(--color-streak); }
-.budgetLabel[data-zone='private'] { color: var(--color-accent); }
-.budgetCoins { display: inline-flex; gap: 3px; filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-warning) 50%, transparent)); }
-.budgetCoins i { width: 10px; height: 10px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, var(--color-text-light), var(--color-warning) 55%, var(--color-warning-text)); box-shadow: inset 0 0.6px 0 color-mix(in srgb, var(--color-text-light) 85%, transparent), 0 1px 1px color-mix(in srgb, var(--palette-ink) 35%, transparent); }
 
 .mapPanel {
   min-width: 0;
-  height: 520px;
 }
 
 @media (max-width: 768px) {
   .section { padding: 48px 16px; }
   .contextPanel { display: block; padding: 24px; }
   .heading { margin-bottom: 14px; }
-  .lead { margin-bottom: 22px; }
-  .mapPanel { height: 360px; }
 }
