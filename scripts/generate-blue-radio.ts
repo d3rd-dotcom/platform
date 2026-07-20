@@ -25,11 +25,19 @@ const forceSegmentArg = process.argv.find((arg) => arg.startsWith('--force-segme
 const forcedSegmentId = forceSegmentArg?.slice('--force-segment='.length);
 const execFileAsync = promisify(execFile);
 const STANDARD_SEGMENT_PLAYBACK_GAIN = 0.56;
+/** Quiet beat inserted between dialogue turns so the back-and-forth breathes. */
+const DIALOGUE_GAP_SECONDS = 0.42;
 
 interface MeditationPart {
   text: string;
   /** Relative share of the meditation's remaining quiet time after this part. */
   pauseWeight: number;
+}
+
+interface DialogueTurn {
+  /** Which host speaks this line. Chooses the ElevenLabs voice. */
+  speaker: 'blue' | 'dino';
+  text: string;
 }
 
 interface Segment {
@@ -41,6 +49,10 @@ interface Segment {
   playbackGain?: number;
   /** The text Blue speaks. */
   text?: string;
+  /** A two-voice Blue/Dino conversation, synthesized turn by turn. */
+  dialogue?: {
+    turns: DialogueTurn[];
+  };
   meditation?: {
     backgroundFile: string;
     backgroundGainDb: number;
@@ -57,9 +69,9 @@ interface Segment {
   };
 }
 
-// Episode one: a solo Blue loop with a twenty-minute guided reset. The planned
-// two-hour cut adds Dino as co-host (voiceId in lib/dinopersonality.json) —
-// give those segments a per-segment voiceId when that lands.
+// Blue's solo loop plus a twenty-minute guided reset, now with a Dino co-host
+// segment. Dialogue segments synthesize each turn with the speaker's own voice
+// (Blue from ELEVENLABS_VOICE_ID, Dino from lib/dinopersonality.json).
 const SEGMENTS: Segment[] = [
   {
     id: 'station-ident',
@@ -105,6 +117,82 @@ const SEGMENTS: Segment[] = [
     id: 'community',
     title: 'The people next to you',
     text: "Here is a good thing to remember. Other people are doing this same inside work right now, one tab away. The community feed shows shared milestones. The Discord has the real time chatter. Somebody finished week nine recently and I was very loud about it. I do not remember who it was, but I remember the being loud part! Hard inner work feels lighter when other people are lifting next to you. I am pretty sure that is science. It is at least true, which is my favorite kind of science.",
+  },
+  {
+    id: 'dino-desci-chat',
+    title: 'Blue and Dino on the open garden',
+    dialogue: {
+      turns: [
+        { speaker: 'blue', text: "You are still with me on Blue Radio, and look who wandered into the studio. Dino! Come sit. I was about to talk about the future of knowing things." },
+        { speaker: 'dino', text: "Knowing things... oof. Heavy topic for a reptile who came in here looking for a snack. But okay. I brought dino sauce. I am ready to learn, or at least to nod convincingly." },
+        { speaker: 'blue', text: "Perfect energy. So. For most of history, if you wanted real knowledge, you had to walk into a very expensive building and pay a very large bill for the privilege of sitting near it." },
+        { speaker: 'dino', text: "A building you pay to sit near. That sounds like a scam my cousin ran once. He charged us to look at a rock. Good rock, though." },
+        { speaker: 'blue', text: "College, Dino. I mean college. Four years, a mountain of debt, and a little paper at the end. For a long time that paper was the only door to the good rooms." },
+        { speaker: 'dino', text: "And now?" },
+        { speaker: 'blue', text: "And now there is the internet, which changes the whole shape of the door. I like to picture it as a Pocket World. A whole horizon you can hold in one hand." },
+        { speaker: 'dino', text: "A Pocket World. I love that. Is there a snack bar in the Pocket World?" },
+        { speaker: 'blue', text: "There is everything in the Pocket World. That is the wonder and the danger. I sometimes call it the Ethereal Horizon. A chaotic garden of free information, growing in every direction at once, with no fence and no gardener." },
+        { speaker: 'dino', text: "A garden with no gardener. So... weeds. Lots of weeds. Some of them probably lie to you." },
+        { speaker: 'blue', text: "That is the honest part. The garden is free, but it is wild. Anyone can plant anything. A brilliant lecture grows right next to a confident lie, and from far away they look the same." },
+        { speaker: 'dino', text: "So how do you tell the flower from the weed? Asking for a reptile who once ate a whole weed thinking it was cake." },
+        { speaker: 'blue', text: "That is the real question of our whole era. It is why the expensive building had a job worth something. The building was a filter. It said, trust what is inside these walls." },
+        { speaker: 'dino', text: "But the walls cost a house." },
+        { speaker: 'blue', text: "The walls cost a house. So people are asking a fair question. If the knowledge is already out in the open garden, why am I still paying for the walls?" },
+        { speaker: 'dino', text: "Yeah! Why! I never paid for walls and look at me. I am thriving. Mostly." },
+        { speaker: 'blue', text: "And here is the quiet secret the walls never advertise. That diploma was mostly a signal. A stamp that said, this person can probably do the work. It was never the skill itself." },
+        { speaker: 'dino', text: "Wait. So I paid a whole house for a stamp? I have stamps. I made a potato stamp last week. It was free and honestly pretty good." },
+        { speaker: 'blue', text: "Your potato stamp and a diploma are closer than the walls want you to think. What people actually want is proof you can do the thing. And in the Pocket World, you can just do the thing, out in the open, where everyone can see it." },
+        { speaker: 'dino', text: "Show the work, skip the stamp. My potato agrees. My potato is very wise." },
+        { speaker: 'blue', text: "Here is the other wild part. A single lecture that once lived only inside those walls can now sit in the garden for free, watched by a million people at once, at three in the morning, paused whenever your brain needs a snack." },
+        { speaker: 'dino', text: "Three in the morning is my peak learning hour. Also my peak snacking hour. Beautiful overlap. The universe is kind." },
+        { speaker: 'blue', text: "That is digital learning, Dino. You set the pace. You rewind the hard part as many times as you need, and nobody sighs at you for asking the same question again." },
+        { speaker: 'dino', text: "I would need the rewind button a lot. My ATP receptor buffers. Sometimes it just shows the little spinning circle." },
+        { speaker: 'blue', text: "Everyone's buffers. The old room moved at one speed for thirty students at once. The Pocket World moves at your speed, for exactly as long as you need it, and then it waits for you." },
+        { speaker: 'dino', text: "A classroom that waits for me. I have never had that. Usually the classroom leaves without me and I find it eating lunch." },
+        { speaker: 'blue', text: "This is the collapse everyone feels coming. Once information went free, the old price of a diploma started to look less like tuition and more like a toll on a bridge you can now swim under." },
+        { speaker: 'dino', text: "Swim under the bridge. I do that. It is faster and there are fish. But wait, if the walls fall down, who decides what is true in the garden?" },
+        { speaker: 'blue', text: "Now you are thinking like an academy. That is the whole puzzle, and it is where two beautiful ideas walk in. The first one is called decentralized science." },
+        { speaker: 'dino', text: "Decentralized science. Big words. My ATP receptor just filed a complaint." },
+        { speaker: 'blue', text: "I will keep it gentle. Old science lives behind locked journals. You do the research, a few gatekeepers approve it, and then they charge everyone, even the researchers, to read it back." },
+        { speaker: 'dino', text: "You pay to read your own homework. That is villain behavior." },
+        { speaker: 'blue', text: "A little villainous, yes. Decentralized science flips the whole thing open. The research, the data, the funding, the review, all of it out in the daylight where anyone can check the work." },
+        { speaker: 'dino', text: "Check the work. Like when you make me recount the balloons because you lost the number again." },
+        { speaker: 'blue', text: "Rude, but accurate. That is exactly it, though. Truth gets stronger when many eyes can follow the whole trail, from the raw data all the way to the claim." },
+        { speaker: 'dino', text: "And who pays for all this checking? Science is not cheap. I tried to fund a nap study once and went broke by lunch." },
+        { speaker: 'blue', text: "Good question, and this is the part I love. In the old world, a few big funders chose which questions were even allowed to be asked. Onchain, a whole community can pool credits and vote to fund the work they actually want to see." },
+        { speaker: 'dino', text: "So the garden buys its own seeds. Democratically. With sauce money. I am emotional about this." },
+        { speaker: 'blue', text: "With sauce money. And because every step is out in the open, a lab across the world can repeat your experiment and confirm it. That repeating, that boring beautiful repeating, is what turns a guess into knowledge." },
+        { speaker: 'dino', text: "Boring beautiful repeating. That is going on a t-shirt. Right under a picture of dino sauce." },
+        { speaker: 'blue', text: "I would wear it. That is decentralized science in one shirt. Open the work, share the credit, and let the whole wide world double-check you." },
+        { speaker: 'dino', text: "Okay that actually makes sense. Open kitchen. You watch them cook, so you trust the meal. I would trust so much more dino sauce if I could watch it get made." },
+        { speaker: 'blue', text: "Open kitchen is a perfect way to say it. And onchain, that trail can be permanent. Nobody gets to quietly move the pot the moment you look away." },
+        { speaker: 'dino', text: "Onchain. That is your word. Every time you say it your eyes do a little sparkle." },
+        { speaker: 'blue', text: "They do and I am not sorry. So that is idea one. Idea two is my favorite thing in the world. Knowledge graphs." },
+        { speaker: 'dino', text: "Is it a graph? Like the sad ones from math class that made me want to nap on my own tail?" },
+        { speaker: 'blue', text: "Better. So much better. Picture the garden again. A knowledge graph is what happens when you tie a thread from every idea to every idea it depends on." },
+        { speaker: 'dino', text: "Threads between ideas. Like a big reptile brain made of string." },
+        { speaker: 'blue', text: "Yes! A brain made of string, laid out where everyone can see it. This idea unlocks that one. That one needs these three first. Suddenly the wild garden has paths running through it." },
+        { speaker: 'dino', text: "Paths. So you do not eat the lying weed by accident." },
+        { speaker: 'blue', text: "You still might. But now you can see where each path leads and who walked it before you. Our whole library here is one of these graphs. Every guide is a node. Every prerequisite is a thread." },
+        { speaker: 'dino', text: "Wait, the library map? The one you got lost in four times?" },
+        { speaker: 'blue', text: "On purpose. Mostly on purpose. That map is a knowledge graph built by the very people learning from it. And its edge, the frontier, is the most exciting place I know. That is where the next unlockable idea sits, waiting for someone to reach it." },
+        { speaker: 'dino', text: "So somebody has to be the first to a brand new idea. Scary. What if they get it wrong and the whole string brain believes a lie?" },
+        { speaker: 'blue', text: "That is why nothing joins the map alone. Other learners read it, test it, and vouch for it before it locks into place. A guide has to earn its thread. The crowd becomes the gardener the wild garden never had." },
+        { speaker: 'dino', text: "Ohhh. So the gardener is just... all of us, a little bit each." },
+        { speaker: 'blue', text: "All of us, a little bit each. That is the most hopeful sentence I know. And when you write a guide that holds up, you have not only learned the idea. You have handed the next person a shorter path to it." },
+        { speaker: 'dino', text: "A shorter path. So future reptiles get to skip the weed I ate. My suffering had meaning." },
+        { speaker: 'blue', text: "Your suffering had meaning, Dino. That is basically the whole mission on a napkin." },
+        { speaker: 'dino', text: "And that someone gets... credits?" },
+        { speaker: 'blue', text: "Sometimes credits. Always something better. They get to be the one who extended the map. In the old world, only the walls could hand you that. In the Pocket World, you can earn it in comfortable clothes with a snack." },
+        { speaker: 'dino', text: "You are speaking my language now. Snacks and glory." },
+        { speaker: 'blue', text: "That is the shift, Dino. Learning stops being a building you buy your way into and grows into a garden you help tend. Decentralized science keeps the garden honest. Knowledge graphs give it paths. And the whole thing lives in your pocket." },
+        { speaker: 'dino', text: "So the expensive walls fall, and the garden gets a map and some honest gardeners. Huh. That is kind of beautiful. Did I just learn something? On the radio?" },
+        { speaker: 'blue', text: "You did. Deposit! Straight into the account. That is mental wealth, the whole idea of this place. Nobody can hold that account for you, and nobody can charge you rent on it." },
+        { speaker: 'dino', text: "No rent on my brain. Finally, a landlord I can defeat. Okay. I am going to go tend the garden. And by tend I mean nap near it, protectively." },
+        { speaker: 'blue', text: "Protective napping counts. Go on. And to everyone still listening, the map is open, the frontier is waiting, and the whole horizon fits in your hand. This is Blue Radio, and Dino, and the stream keeps rolling. Stay curious out there." },
+        { speaker: 'dino', text: "Stay saucy out there." },
+      ],
+    },
   },
   {
     id: 'twenty-minute-reset',
@@ -476,6 +564,98 @@ async function generateMeditation({
   }
 }
 
+async function generateDialogue({
+  apiKey,
+  dialogue,
+  modelId,
+  outputPath,
+  voiceIds,
+}: {
+  apiKey: string;
+  dialogue: NonNullable<Segment['dialogue']>;
+  modelId: string;
+  outputPath: string;
+  voiceIds: { blue: string; dino: string };
+}) {
+  const tempDir = await mkdtemp(path.join(tmpdir(), 'mwa-blue-radio-dialogue-'));
+
+  try {
+    const turnPaths: string[] = [];
+    for (let i = 0; i < dialogue.turns.length; i++) {
+      const turn = dialogue.turns[i];
+      const turnPath = path.join(tempDir, `turn-${String(i).padStart(2, '0')}.mp3`);
+      await synthesizeSpeech({
+        apiKey,
+        modelId,
+        nextText: dialogue.turns[i + 1]?.text,
+        outputPath: turnPath,
+        previousText: dialogue.turns[i - 1]?.text,
+        text: turn.text,
+        voiceId: turn.speaker === 'dino' ? voiceIds.dino : voiceIds.blue,
+      });
+      console.log(`  Dialogue turn ${i + 1}/${dialogue.turns.length} (${turn.speaker})`);
+      turnPaths.push(turnPath);
+    }
+
+    const ffmpegArgs: string[] = ['-y'];
+    const filterParts: string[] = [];
+    const concatLabels: string[] = [];
+    let inputIndex = 0;
+
+    for (let i = 0; i < turnPaths.length; i++) {
+      ffmpegArgs.push('-i', turnPaths[i]);
+      filterParts.push(
+        `[${inputIndex}:a]aresample=44100,aformat=channel_layouts=stereo,asetpts=N/SR/TB[turn${i}]`,
+      );
+      concatLabels.push(`[turn${i}]`);
+      inputIndex++;
+
+      if (i < turnPaths.length - 1 && DIALOGUE_GAP_SECONDS > 0) {
+        ffmpegArgs.push(
+          '-f', 'lavfi',
+          '-t', DIALOGUE_GAP_SECONDS.toFixed(3),
+          '-i', 'anullsrc=r=44100:cl=stereo',
+        );
+        filterParts.push(`[${inputIndex}:a]asetpts=N/SR/TB[gap${i}]`);
+        concatLabels.push(`[gap${i}]`);
+        inputIndex++;
+      }
+    }
+
+    filterParts.push(
+      `${concatLabels.join('')}concat=n=${concatLabels.length}:v=0:a=1,alimiter=limit=0.95[out]`,
+    );
+
+    ffmpegArgs.push(
+      '-filter_complex', filterParts.join(';'),
+      '-map', '[out]',
+      '-c:a', 'libmp3lame',
+      '-b:a', '128k',
+      '-ar', '44100',
+      outputPath,
+    );
+
+    await execFileAsync('ffmpeg', ffmpegArgs, { maxBuffer: 1024 * 1024 * 4 });
+    const finalSeconds = await preciseDurationSeconds(outputPath);
+    console.log(
+      `  Dialogue assembled: ${dialogue.turns.length} turns, ${Math.round(finalSeconds)}s`,
+    );
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
+}
+
+async function loadDinoVoiceId(): Promise<string> {
+  try {
+    const raw = await readFile(path.join(rootDir, 'lib', 'dinopersonality.json'), 'utf8');
+    const voiceId = JSON.parse(raw)?.tts?.elevenlabs?.voiceId;
+    if (typeof voiceId === 'string' && voiceId) return voiceId;
+  } catch {
+    // Fall through to the pinned default below.
+  }
+  return 'loY1uopAz31XyhAEhNSa';
+}
+
 async function main() {
   await loadEnvFile('.env.local');
   await loadEnvFile('.env');
@@ -486,6 +666,8 @@ async function main() {
 
   if (!apiKey) throw new Error('Missing ELEVENLABS_API_KEY.');
   if (!voiceId) throw new Error('Missing ELEVENLABS_VOICE_ID.');
+
+  const dinoVoiceId = await loadDinoVoiceId();
   if (forcedSegmentId && !SEGMENTS.some((segment) => segment.id === forcedSegmentId)) {
     throw new Error(`Unknown --force-segment id: ${forcedSegmentId}`);
   }
@@ -515,6 +697,14 @@ async function main() {
         outputPath,
         voiceId,
         voiceSettings: segment.voiceSettings,
+      });
+    } else if (segment.dialogue) {
+      await generateDialogue({
+        apiKey,
+        dialogue: segment.dialogue,
+        modelId,
+        outputPath,
+        voiceIds: { blue: voiceId, dino: dinoVoiceId },
       });
     } else if (segment.text) {
       await synthesizeSpeech({
