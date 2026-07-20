@@ -406,7 +406,7 @@ export default function HomePage() {
       <div className={styles.globalPanel}>
       <div className={styles.panelHeader}>
         <span className={styles.panelTitleJa}>知識</span>
-        <span className={styles.panelTitle}>Academy</span>
+        <span className={styles.panelTitle}>{learnOnly ? 'Learn anything' : 'Academy'}</span>
       </div>
       {!learnOnly && (
       <section className={styles.dashboardHeader}>
@@ -537,7 +537,6 @@ export default function HomePage() {
 
         {learnOnly && (guides.length > 0 || (authenticated && (isVip || myGuides.length > 0))) && (
           <div className={styles.guideSection}>
-            <h1 className={styles.guideSectionHeading}>Learn</h1>
             <div className={styles.guideSectionContent}>
               {guideProgress && authenticated && (
                 <div className={styles.guideProgressCard}>
