@@ -10,16 +10,17 @@ export const ProblemStatementSection: React.FC = () => (
       <div className={styles.board}>
         <div className={styles.boardHeader}>
           <span className={styles.headerIndex}>問題</span>
-          <span className={styles.headerTitle}>The Problem</span>
+          <span className={styles.headerTitle}>Education infrastructure</span>
         </div>
         <div className={styles.content}>
           <div className={styles.contextPanel}>
             <div className={styles.titlePanel}>
-              <h2 className={styles.heading}>Education Inequality Follows The Map.</h2>
+              <h2 className={styles.heading}>Learning moved online. The community got left behind.</h2>
             </div>
             <p className={styles.lead}>
-              Historic redlining shaped neighborhood wealth. School resources
-              still reflect where students live.
+              Redlining decided who could reach a good school. Then Blackboard,
+              Moodle, and Canvas moved the classroom onto the internet and quietly
+              dropped the part that made it work: the people around you.
             </p>
           </div>
           <div className={styles.mapPanel}>

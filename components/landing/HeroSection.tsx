@@ -4,6 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import styles from './LandingPage.module.css';
 import LandingEnterAcademyButton from './LandingEnterAcademyButton';
+import ForTeachersModal from './ForTeachersModal';
 import { LandingScene } from './LandingScene';
 import { PixelCursorTrail } from './PixelCursorTrail';
 const HERO_HEADLINE = 'Vibe-learn any subject using AI-powered education.';
@@ -49,6 +50,7 @@ export const HeroSection: React.FC = () => {
           </h1>
           <div className={styles.heroActions}>
             <LandingEnterAcademyButton dark />
+            <ForTeachersModal />
           </div>
         </div>
 

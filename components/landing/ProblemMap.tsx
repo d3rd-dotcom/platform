@@ -6,15 +6,11 @@ import 'leaflet/dist/leaflet.css';
 import styles from './ProblemMap.module.css';
 
 const GEOJSON_URL = '/data/redlining-oakland.geojson';
-const SAN_FRANCISCO_REDLINE_URL = '/data/redlining-san-francisco.geojson';
 const PRIVATE_AREA_LABEL = 'D18';
 const MAX_MAP_ZOOM = 11.25;
 
-const RESOURCE_GROUPS = [
-  { label: 'Marginalized', units: 1, tone: 'marginalized' },
-  { label: 'Wealthy', units: 3, tone: 'wealthy' },
-  { label: 'Private', units: 5, tone: 'private' },
-] as const;
+// The dominant learning platforms, named for the "digital filing cabinet" stage.
+const PLATFORMS = ['Blackboard', 'Moodle', 'Canvas'] as const;
 
 // Show the full HOLC grading field. D (redlined) and A ("best"/wealthy) remain
 // the strongest figures, while the B and C survey areas complete the historical
@@ -86,23 +82,17 @@ export const ProblemMap: React.FC = () => {
       const LR = (((mod as unknown as { default?: typeof L }).default ?? mod) as typeof L);
       if (cancelled || !containerRef.current) return;
 
-      const [oaklandResponse, sanFranciscoResponse] = await Promise.all([
-        fetch(GEOJSON_URL, { signal: controller.signal }),
-        fetch(SAN_FRANCISCO_REDLINE_URL, { signal: controller.signal }),
-      ]);
-      if (!oaklandResponse.ok || !sanFranciscoResponse.ok) {
+      const oaklandResponse = await fetch(GEOJSON_URL, { signal: controller.signal });
+      if (!oaklandResponse.ok) {
         throw new Error('Problem map data could not be loaded.');
       }
 
-      const [data, sanFranciscoData] = await Promise.all([
-        oaklandResponse.json(),
-        sanFranciscoResponse.json(),
-      ]);
+      const data = await oaklandResponse.json();
       if (cancelled || !containerRef.current) return;
 
       map = LR.map(containerRef.current, {
-        center: [37.78, -122.33],
-        zoom: 10.5,
+        center: [37.8, -122.25],
+        zoom: 11,
         zoomControl: false,
         attributionControl: false,
         dragging: false,
@@ -118,7 +108,7 @@ export const ProblemMap: React.FC = () => {
       });
 
       const tiles = LR.tileLayer(
-        'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+        'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
         {
           subdomains: 'abcd',
           maxZoom: 19,
@@ -135,19 +125,6 @@ export const ProblemMap: React.FC = () => {
         interactive: false,
       }).addTo(map);
 
-      const sanFranciscoLayer = LR.geoJSON(sanFranciscoData, {
-        style: (feature) => (feature?.properties?.grade && GRADE_STYLE[feature.properties.grade]) || HIDDEN,
-        interactive: false,
-      }).addTo(map);
-
-      const surveyBounds = oaklandLayer.getBounds();
-      surveyBounds.extend(sanFranciscoLayer.getBounds());
-      map.fitBounds(surveyBounds, {
-        animate: false,
-        maxZoom: MAX_MAP_ZOOM,
-        padding: [12, 12],
-      });
-
       const icon = (variant: 'red' | 'green' | 'private') =>
         LR.divIcon({ html: markerHtml(variant), className: '', iconSize: [0, 0], iconAnchor: [0, 0] });
 
@@ -157,8 +134,10 @@ export const ProblemMap: React.FC = () => {
         ? (Array.isArray(m.redlined[0]) ? m.redlined : [m.redlined])
         : [];
       const southernmostRedlined = Math.min(...redlined.map((pt) => pt[1]));
+      const markerLatLngs: [number, number][] = [];
       redlined.forEach((pt) => {
         const isPrivate = pt[1] === southernmostRedlined;
+        markerLatLngs.push([pt[1], pt[0]]);
         LR.marker([pt[1], pt[0]], {
           icon: icon(isPrivate ? 'private' : 'red'),
           interactive: false,
@@ -166,8 +145,20 @@ export const ProblemMap: React.FC = () => {
         }).addTo(liveMap);
       });
       if (m.wealthy) {
+        markerLatLngs.push([m.wealthy[1], m.wealthy[0]]);
         LR.marker([m.wealthy[1], m.wealthy[0]], { icon: icon('green'), interactive: false, keyboard: false }).addTo(map);
       }
+
+      // Frame the East Bay redlining and school markers, reserving space up top so
+      // the highlights sit centered below the story text.
+      const surveyBounds = oaklandLayer.getBounds();
+      markerLatLngs.forEach((ll) => surveyBounds.extend(ll));
+      map.fitBounds(surveyBounds, {
+        animate: false,
+        maxZoom: MAX_MAP_ZOOM,
+        paddingTopLeft: [26, 200],
+        paddingBottomRight: [26, 48],
+      });
 
       // Backstop: never leave the panel invisible if a tile 'load' never fires.
       window.setTimeout(reveal, 1500);
@@ -190,7 +181,7 @@ export const ProblemMap: React.FC = () => {
       <div
         className={styles.flow}
         role="group"
-        aria-label="Historic redlining shaped neighborhood wealth and access to education resources. In 2017, 19 percent of assessed U.S. adults ages 16 to 65 performed at Level 1 or below in English literacy."
+        aria-label="Where you live still shapes access to a good school, because historic redlining tracked with school funding. Then the dominant online learning platforms, Blackboard, Moodle, and Canvas, moved the classroom onto the internet as one-way content delivery without a social layer, leaving learners isolated. Only about 12 percent finish a typical open online course, and isolation and loneliness are among the strongest predictors of who drops out."
       >
         <article className={`${styles.stage} ${styles.mapStage}`}>
           <div
@@ -200,77 +191,66 @@ export const ProblemMap: React.FC = () => {
           />
           <div className={styles.mapShade} aria-hidden="true" />
           <div className={styles.mapStory}>
-            <div className={styles.stageHeading}>
-              <span className={styles.stageNumber}>1</span>
-              <h3 className={styles.stageTitle}>Historic redlining</h3>
-            </div>
-            <div className={styles.mapStoryFooter}>
-              <p className={styles.stageCopy}>
-                Housing policy shaped neighborhood wealth and opportunity.
-              </p>
-              <div className={styles.mapLegend} aria-hidden="true">
-                <span><i className={styles.gradeA} />Grade A</span>
-                <span><i className={styles.gradeD} />Grade D</span>
+            <div className={styles.mapStoryTop}>
+              <div className={styles.stageHeading}>
+                <span className={styles.stageNumber}>1</span>
+                <h3 className={styles.stageTitle}>Place still decides access</h3>
               </div>
+              <p className={styles.stageCopy}>
+                Housing maps graded neighborhoods from A to D. Those grades still
+                track with school funding and who reaches a good classroom.
+              </p>
             </div>
           </div>
         </article>
 
-        <article className={`${styles.stage} ${styles.resourceStage}`}>
+        <article className={`${styles.stage} ${styles.platformStage}`}>
           <div className={styles.stageHeaderBlock}>
             <div className={styles.stageHeading}>
               <span className={styles.stageNumber}>2</span>
-              <h3 className={styles.stageTitle}>Unequal school resources</h3>
+              <h3 className={styles.stageTitle}>The classroom became a filing cabinet</h3>
             </div>
-            <span className={styles.resourceQualifier}>Illustrative comparison</span>
+            <div className={styles.platformChips} aria-hidden="true">
+              {PLATFORMS.map((name) => (
+                <span key={name}>{name}</span>
+              ))}
+            </div>
+            <p className={styles.stageCopy}>
+              The platforms that moved school online digitized enrollment, uploads,
+              and grades. Learning became one-way delivery, and the social layer
+              never came with it.
+            </p>
           </div>
-          <div className={styles.resourcePlot}>
-            {RESOURCE_GROUPS.map((group) => (
-              <div className={styles.resourceGroup} key={group.label}>
-                <div
-                  className={`${styles.resourceStack} ${styles[group.tone]}`}
-                  aria-hidden="true"
-                >
-                  {Array.from({ length: group.units }).map((_, index) => (
-                    <i key={index} />
-                  ))}
-                </div>
-                <span className={styles.resourceLabel}>{group.label}</span>
-              </div>
-            ))}
+          <div className={styles.nodeField} aria-hidden="true">
+            <div className={styles.nodeGrid}>
+              {Array.from({ length: 15 }).map((_, index) => (
+                <i key={index} />
+              ))}
+            </div>
+            <span className={styles.nodeCaption}>Learners, side by side but disconnected</span>
           </div>
-          <p className={styles.stageCopy}>
-            Where a student lives still influences the education resources around them.
-          </p>
         </article>
 
         <article className={`${styles.stage} ${styles.outcomeStage}`}>
           <div className={styles.stageHeading}>
             <span className={styles.stageNumber}>3</span>
-            <h3 className={styles.stageTitle}>Compounding outcomes</h3>
+            <h3 className={styles.stageTitle}>So most learners drop off</h3>
           </div>
           <div className={styles.outcome}>
-            <strong className={styles.outcomeValue}>19%</strong>
+            <strong className={styles.outcomeValue}>12%</strong>
             <p className={styles.outcomeCopy}>
-              of assessed U.S. adults ages 16–65 performed at Level 1 or below
-              in English literacy in 2017.
+              finish a typical open online course. Isolation and loneliness are among
+              the strongest predictors of who quits.
             </p>
             <div className={styles.people} aria-hidden="true">
-              {Array.from({ length: 10 }).map((_, index) => (
-                <i className={index < 2 ? styles.personActive : undefined} key={index} />
+              {Array.from({ length: 8 }).map((_, index) => (
+                <i className={index < 1 ? styles.personActive : undefined} key={index} />
               ))}
             </div>
+            <p className={styles.stageCopy}>About 1 in 8 reach the end.</p>
           </div>
-          <p className={styles.stageCopy}>
-            Barriers accumulate across place, access, and time.
-          </p>
         </article>
       </div>
-
-      <p className={styles.source}>
-        Map: Mapping Inequality, Digital Scholarship Lab, University of Richmond;
-        OpenStreetMap and CARTO. Literacy: NCES PIAAC 2017. Resource stacks are illustrative.
-      </p>
     </div>
   );
 };

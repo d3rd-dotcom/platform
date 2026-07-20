@@ -352,6 +352,33 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
+/* Teachers variant — colored but quieter than the primary hero CTA */
+.fancyButtonTeachers {
+  width: auto;
+  min-width: 200px;
+  background: rgba(122, 86, 198, 0.28);
+  border-color: rgba(196, 176, 240, 0.55);
+  box-shadow: 0 0 18px rgba(122, 86, 198, 0.22);
+}
+
+.fancyButtonTeachers .fancyButtonInner {
+  border-color: rgba(196, 176, 240, 0.45);
+  box-shadow: 0 2px 12px rgba(122, 86, 198, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  background-color: rgba(122, 86, 198, 0.22);
+  background-image:
+    radial-gradient(120% 140% at 38% 42%, rgba(150, 118, 220, 0.42) 0%, rgba(101, 74, 170, 0.28) 78%),
+    radial-gradient(130% 140% at 100% 0%, rgba(170, 140, 235, 0.14) 0%, rgba(101, 74, 170, 0.18) 85%);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.fancyButtonTeachers .fancyButtonIcon {
+  color: rgba(230, 220, 250, 0.9);
+}
+
+.fancyButtonTeachers:hover:not(:disabled) {
+  box-shadow: 0 0 28px rgba(122, 86, 198, 0.34), 0 4px 14px rgba(122, 86, 198, 0.22);
+}
+
 .fancyButtonLabel {
   display: inline-flex;
   align-items: center;
@@ -3310,5 +3337,437 @@
 @media (max-width: 1023px) {
   .donationPopup {
     display: none;
+  }
+}
+
+/* For Teachers modal */
+.teachersOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 12, 24, 0.6);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 24px;
+  animation: teachersFadeIn 0.2s ease-out both;
+}
+
+@keyframes teachersFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.teachersModal {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  background: rgba(244, 245, 254, 0.98);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 22px;
+  padding: 28px 26px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.4);
+  animation: teachersPopIn 0.28s var(--hero-ease-out) both;
+}
+
+@keyframes teachersPopIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.teachersClose {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 10px;
+  background: rgba(122, 86, 198, 0.1);
+  color: var(--color-text-dark);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.teachersClose:hover {
+  background: rgba(122, 86, 198, 0.18);
+  transform: scale(1.05);
+}
+
+.teachersHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin: 0 32px 20px 0;
+}
+
+.teachersHeaderIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--color-accent);
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(122, 86, 198, 0.35);
+}
+
+.teachersTitle {
+  font-family: var(--font-primary);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 2px 0 4px;
+}
+
+.teachersSubtitle {
+  font-family: var(--font-primary);
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.teachersTabs {
+  display: flex;
+  gap: 6px;
+  padding: 4px;
+  border-radius: 12px;
+  background: rgba(122, 86, 198, 0.08);
+  margin-bottom: 20px;
+}
+
+.teachersTab {
+  flex: 1 1 0;
+  padding: 9px 8px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  font-family: var(--font-primary);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--color-text-soft);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.teachersTab:hover {
+  color: var(--color-text-dark);
+}
+
+.teachersTabActive {
+  background: #ffffff;
+  color: var(--color-accent);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(26, 27, 36, 0.12);
+}
+
+.teachersBody {
+  min-height: 208px;
+  margin-bottom: 22px;
+}
+
+.teachersPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: teachersFadeIn 0.22s ease-out both;
+}
+
+/* Upload rows */
+.teachersUpload {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1.5px dashed rgba(122, 86, 198, 0.4);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.teachersUpload:hover {
+  border-color: var(--color-accent);
+  background: #ffffff;
+}
+
+.teachersUploadIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: rgba(122, 86, 198, 0.12);
+  color: var(--color-accent);
+}
+
+.teachersUploadText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.teachersUploadLabel {
+  font-family: var(--font-primary);
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+}
+
+.teachersUploadHint {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--color-text-muted);
+}
+
+.teachersUploadAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--color-accent);
+  color: #ffffff;
+}
+
+.teachersUploadInput {
+  display: none;
+}
+
+/* AI panel */
+.teachersAiCard {
+  display: flex;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(122, 86, 198, 0.14), rgba(122, 86, 198, 0.06));
+  border: 1px solid rgba(122, 86, 198, 0.18);
+}
+
+.teachersAiIcon {
+  display: inline-flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex: 0 0 auto;
+  color: var(--color-accent);
+}
+
+.teachersAiTitle {
+  font-family: var(--font-primary);
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 0 0 4px;
+}
+
+.teachersAiDescription {
+  font-family: var(--font-primary);
+  font-size: 12.75px;
+  line-height: 1.5;
+  color: var(--color-text-soft);
+  margin: 0;
+}
+
+.teachersTextarea {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: var(--font-primary);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--color-text-dark);
+  background: #ffffff;
+  border: 1.5px solid rgba(122, 86, 198, 0.25);
+  border-radius: 12px;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.teachersTextarea::placeholder {
+  color: var(--color-text-faint);
+}
+
+.teachersTextarea:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 4px rgba(122, 86, 198, 0.12);
+}
+
+/* Toggle rows */
+.teachersToggleRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid rgba(122, 86, 198, 0.16);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.teachersToggleRow:hover {
+  border-color: rgba(122, 86, 198, 0.35);
+  background: #ffffff;
+}
+
+.teachersToggleIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: rgba(122, 86, 198, 0.12);
+  color: var(--color-accent);
+}
+
+.teachersToggleText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.teachersToggleLabel {
+  font-family: var(--font-primary);
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+}
+
+.teachersToggleDescription {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
+
+.teachersToggle {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 26px;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgba(26, 27, 36, 0.2);
+  transition: background 0.22s ease;
+}
+
+.teachersToggleOn {
+  background: var(--color-accent);
+}
+
+.teachersToggleKnob {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  transition: transform 0.22s var(--hero-ease-out);
+}
+
+.teachersToggleOn .teachersToggleKnob {
+  transform: translateX(18px);
+}
+
+/* Submit + success */
+.teachersSubmit {
+  width: 100%;
+  padding: 14px 24px;
+  font-family: var(--font-primary);
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  background: var(--color-accent);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  box-shadow: 0 8px 24px rgba(122, 86, 198, 0.3);
+}
+
+.teachersSubmit:hover {
+  transform: translateY(-2px);
+  background: var(--color-accent-hover);
+  box-shadow: 0 12px 30px rgba(122, 86, 198, 0.4);
+}
+
+.teachersSuccess {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 12px 0 4px;
+  animation: teachersFadeIn 0.24s ease-out both;
+}
+
+.teachersSuccessIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: var(--color-accent);
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(122, 86, 198, 0.35);
+  margin-bottom: 6px;
+}
+
+.teachersSuccessTitle {
+  font-family: var(--font-primary);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 0;
+}
+
+.teachersSuccessText {
+  font-family: var(--font-primary);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  margin: 0 0 16px;
+  max-width: 300px;
+}
+
+@media (max-width: 520px) {
+  .teachersModal {
+    padding: 24px 20px;
+  }
+
+  .teachersHeader {
+    margin-right: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .teachersOverlay,
+  .teachersModal,
+  .teachersPanel,
+  .teachersSuccess {
+    animation: none !important;
   }
 }
