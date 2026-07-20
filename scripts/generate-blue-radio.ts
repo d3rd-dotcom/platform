@@ -45,6 +45,8 @@ interface Segment {
   id: string;
   /** Shown in the player as the now-playing chapter. */
   title: string;
+  /** When true, keep the content on disk but leave it out of the loop and manifest. */
+  disabled?: boolean;
   /** Browser playback gain. The meditation is already mastered as a full mix. */
   playbackGain?: number;
   /** The text Blue speaks. */
@@ -197,6 +199,7 @@ const SEGMENTS: Segment[] = [
   {
     id: 'twenty-minute-reset',
     title: 'A twenty-minute reset',
+    disabled: true,
     playbackGain: 1,
     voiceSettings: {
       stability: 0.76,
@@ -674,12 +677,13 @@ async function main() {
 
   await mkdir(OUT_DIR, { recursive: true });
 
-  const total = SEGMENTS.length;
+  const activeSegments = SEGMENTS.filter((segment) => !segment.disabled);
+  const total = activeSegments.length;
   let generated = 0;
   let skipped = 0;
 
-  for (let i = 0; i < SEGMENTS.length; i++) {
-    const segment = SEGMENTS[i];
+  for (let i = 0; i < activeSegments.length; i++) {
+    const segment = activeSegments[i];
     const outputPath = path.join(OUT_DIR, `${segment.id}.mp3`);
 
     const regenerate = force || forcedSegmentId === segment.id;
@@ -724,7 +728,7 @@ async function main() {
   }
 
   const manifestSegments = [];
-  for (const segment of SEGMENTS) {
+  for (const segment of activeSegments) {
     const outputPath = path.join(OUT_DIR, `${segment.id}.mp3`);
     if (!await fileExists(outputPath)) {
       throw new Error(`Missing blue-radio/${segment.id}.mp3 — cannot build manifest.`);

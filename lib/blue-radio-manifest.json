@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-20T03:44:59.112Z",
-  "totalSeconds": 2080.95,
+  "generatedAt": "2026-07-20T04:04:29.455Z",
+  "totalSeconds": 880.95,
   "segments": [
     {
       "id": "station-ident",
@@ -71,13 +71,6 @@
       "file": "/audio/blue-radio/dino-desci-chat.mp3",
       "playbackGain": 0.56,
       "seconds": 595.68
-    },
-    {
-      "id": "twenty-minute-reset",
-      "title": "A twenty-minute reset",
-      "file": "/audio/blue-radio/twenty-minute-reset.mp3",
-      "playbackGain": 1,
-      "seconds": 1200
     },
     {
       "id": "signoff",
