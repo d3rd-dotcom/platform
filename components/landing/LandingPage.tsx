@@ -2,6 +2,7 @@ import { LandingHeader } from './LandingHeader';
 import { HeroSection } from './HeroSection';
 import { LandingDeferredSections } from './LandingDeferredSections';
 import { LandingSoundEffects } from './LandingSoundEffects';
+import { LandingCursor } from './LandingCursor';
 import styles from './LandingPage.module.css';
 
 // Server Component - Static content is server-rendered for fast LCP
@@ -9,6 +10,7 @@ const LandingPage = () => {
   return (
     <div className={styles.container} data-landing-page>
       <LandingSoundEffects />
+      <LandingCursor />
       {/* Header - Logo and CTAs */}
       <LandingHeader />
 
