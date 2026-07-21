@@ -501,6 +501,7 @@ export default function LandingKnowledgeGraph() {
       <div
         ref={wrapperRef}
         className={`${styles.viewport} ${dragging ? styles.viewportDragging : ''}`}
+        data-cursor="grab"
         aria-label="Interactive three-dimensional map of published guide prerequisites"
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}

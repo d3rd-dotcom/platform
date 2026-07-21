@@ -146,6 +146,7 @@ export default function HeroFloatingPanels() {
               panelRefs.current[panel.id] = el;
             }}
             className={`${styles.panel} ${styles[panel.posClass]}`}
+            data-cursor="grab"
             style={{ animationDelay: `${0.9 + i * 0.18}s` }}
             onPointerDown={onPointerDown(panel.id)}
             onPointerMove={onPointerMove(panel.id)}
