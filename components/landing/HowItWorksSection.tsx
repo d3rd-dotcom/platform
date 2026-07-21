@@ -6,7 +6,7 @@ import CtaButton from '@/components/shared/CtaButton';
 import styles from './HowItWorksSection.module.css';
 
 const introCopy =
-  'MWA started as a small cohort of “vibe-learners”: developers, psychologists, and designers. One IRB-study idea for a new social model for mental wealth. Members learn at a self-pace through journaling, knowledge nodes, and emerging mental wellness hacks. We support you as you level-up your education online and IRL.';
+  'MWA started an IRB-study idea for a new educational model for mental wealth. Members learn at a self-pace through journaling, knowledge nodes, and still gain interpersonal connections and friendships digitally. Our infrastructure helps you create curriculums worth logging into. Join the next gen.';
 
 export const HowItWorksSection: React.FC = () => (
   <section id="how-it-works" className={styles.section} aria-label="How it works">
@@ -19,7 +19,9 @@ export const HowItWorksSection: React.FC = () => (
         <p className={styles.lead}>{introCopy}</p>
         <div className={styles.actions}>
           <CtaButton href="/home" size="lg">Explore the Academy</CtaButton>
-          <CtaButton href="#membership" variant="secondary" size="lg">View memberships</CtaButton>
+          <CtaButton href="#membership" variant="secondary" size="lg" className={styles.lightCta}>
+            View memberships
+          </CtaButton>
         </div>
       </div>
 

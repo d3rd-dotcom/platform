@@ -187,17 +187,9 @@
   flex-direction: column;
   justify-content: center;
   gap: 12px;
-  background:
-    radial-gradient(
-      circle at 6% 0%,
-      color-mix(in oklch, var(--color-card-pink) 24%, transparent),
-      transparent 42%
-    ),
-    linear-gradient(
-      145deg,
-      color-mix(in oklch, var(--color-primary) 18%, var(--color-landing-black)),
-      var(--color-landing-black) 72%
-    );
+  /* Light panel on the design surface scale — same treatment as the problem
+     section's contextPanel so the two boards read as one system. */
+  background: var(--color-surface-1);
 }
 
 .title {
@@ -206,7 +198,7 @@
   font-size: clamp(1.8rem, 2.8vw, 2.7rem);
   line-height: 1.06;
   letter-spacing: -0.03em;
-  color: #ffffff;
+  color: var(--color-text-dark);
   text-align: left;
 }
 
@@ -215,7 +207,7 @@
   font-family: var(--font-primary);
   font-size: 16px;
   line-height: 1.65;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--color-text-soft);
   text-align: left;
 }
 
@@ -262,34 +254,10 @@
   transition: filter 0.22s ease, background-color 0.22s ease;
 }
 
-.card:nth-child(1) {
-  background: linear-gradient(
-    145deg,
-    color-mix(in oklch, var(--color-accent) 20%, var(--color-landing-black)),
-    var(--color-landing-black) 72%
-  );
-}
-
-.card:nth-child(2) {
-  background:
-    radial-gradient(
-      circle at 82% 12%,
-      color-mix(in oklch, var(--color-card-pink) 14%, transparent),
-      transparent 46%
-    ),
-    linear-gradient(
-      155deg,
-      color-mix(in oklch, var(--color-brand) 16%, var(--color-landing-black)),
-      var(--color-landing-black) 74%
-    );
-}
-
+.card:nth-child(1),
+.card:nth-child(2),
 .card:nth-child(3) {
-  background: linear-gradient(
-    140deg,
-    color-mix(in oklch, var(--color-action-hover) 24%, var(--color-landing-black)),
-    color-mix(in oklch, var(--color-primary) 8%, var(--color-landing-black))
-  );
+  background: var(--color-surface-1);
 }
 
 .card:last-child {
@@ -297,8 +265,8 @@
 }
 
 .card:hover {
-  background-color: color-mix(in oklch, var(--color-primary) 12%, transparent);
-  filter: brightness(1.08) saturate(1.08);
+  background-color: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-1));
+  filter: saturate(1.04);
 }
 
 .cardTitle {
@@ -308,7 +276,7 @@
   font-weight: 800;
   letter-spacing: 0.03em;
   text-transform: none;
-  color: #ffffff;
+  color: var(--color-text-dark);
   line-height: 1.2;
 }
 
@@ -317,7 +285,7 @@
   font-family: var(--font-primary);
   font-size: 14px;
   line-height: 1.7;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-soft);
   flex: 1;
 }
 
@@ -331,7 +299,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--color-text-soft);
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.04em;

@@ -70,7 +70,7 @@
 
 .terminal {
   border: 1px solid rgba(255, 255, 255, 0.16);
-  background-color: rgba(10, 12, 31, 0.78);
+  background-color: rgba(18, 18, 18, 0.78);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   color: #e7e8f8;

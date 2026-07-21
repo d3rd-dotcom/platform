@@ -51,31 +51,14 @@
   transform: rotate(calc(var(--tilt, 0deg) * 0.4)) scale(1.02);
 }
 
-.stackSheet {
-  position: absolute;
-  inset: 0;
-  background: #efe9da;
-  border: 1px solid #d8cfb8;
-  border-radius: 6px;
-  transform: rotate(1.6deg) translate(5px, 4px);
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
-}
-
-.stackSheetTwo {
-  background: #f4efe2;
-  transform: rotate(-1.2deg) translate(-4px, 6px);
-}
-
 .sheet {
   position: relative;
   display: flex;
   flex-direction: column;
-  background: #faf6ea;
-  border: 1px solid #ddd3bc;
-  border-radius: 6px;
-  box-shadow:
-    inset 0 0 40px rgba(120, 100, 60, 0.08),
-    0 2px 8px rgba(0, 0, 0, 0.35);
+  background: var(--color-brand);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   overflow: hidden;
 }
 
@@ -83,9 +66,9 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 7px 8px 7px 10px;
-  border-bottom: 1px solid #e2d9c1;
-  background: #f4efe2;
+  padding: 8px 8px 8px 12px;
+  background: rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
   flex-shrink: 0;
 }
 
@@ -93,7 +76,7 @@
   width: 22px;
   height: 10px;
   flex-shrink: 0;
-  background-image: radial-gradient(rgba(92, 83, 64, 0.42) 1px, transparent 1.2px);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.55) 1px, transparent 1.2px);
   background-size: 5px 5px;
   background-position: center;
 }
@@ -101,11 +84,11 @@
 .title {
   flex: 1;
   min-width: 0;
-  font-family: var(--font-primary);
-  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
   font-weight: 600;
-  letter-spacing: 0.05em;
-  color: #5c5340;
+  letter-spacing: 0.03em;
+  color: rgba(255, 255, 255, 0.9);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -118,22 +101,22 @@
   width: 20px;
   height: 20px;
   flex-shrink: 0;
-  border-radius: 50%;
-  border: 1px solid #94a1ff;
-  background: #f4f5fe;
-  color: #3d2ba8;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: transparent;
+  color: #ffffff;
   cursor: pointer;
-  box-shadow: 0 2px 0 #5168ff;
   padding: 0;
+  transition: background 0.15s ease;
 }
 
 .closeBtn:hover {
-  background: #e4e8ff;
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .media {
   position: relative;
-  background: #efe9da;
+  background: color-mix(in oklch, var(--color-brand) 70%, black);
 }
 
 .media video,
@@ -147,13 +130,38 @@
   -webkit-user-drag: none;
 }
 
-.caption {
+/* Faint kaomoji floating in the mid-ground. */
+
+.kaomoji {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  color: #ffffff;
   font-family: var(--font-primary);
-  font-size: 0.66rem;
-  line-height: 1.35;
-  color: #8d8266;
-  padding: 6px 10px 8px;
-  border-top: 1px solid rgba(96, 128, 190, 0.2);
+  font-weight: 500;
+  font-size: 12px;
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+
+.kaomoji1 {
+  top: 56%;
+  left: 27%;
+  transform: rotate(-7deg);
+}
+
+.kaomoji2 {
+  top: 23%;
+  right: 25%;
+  transform: rotate(5deg);
+}
+
+.kaomoji3 {
+  bottom: 9%;
+  left: 45%;
+  transform: rotate(-3deg);
 }
 
 /* Initial scatter. Percent-based so it scales with the hero. */
@@ -191,14 +199,134 @@
   aspect-ratio: 500 / 281;
 }
 
+/* The two vertical clips ride smaller than the rest. */
+
+.posHelix {
+  --tilt: 2.4deg;
+  bottom: 12%;
+  right: 6%;
+  width: clamp(96px, 8.5vw, 128px);
+}
+
+.posSignal {
+  --tilt: -3deg;
+  top: 45%;
+  left: 1%;
+  width: clamp(88px, 7.5vw, 116px);
+}
+
+.posHelix .media,
+.posSignal .media {
+  aspect-ratio: 270 / 480;
+}
+
+.posHelix .title,
+.posSignal .title {
+  font-size: 0.6rem;
+}
+
+.posHelix .titleBar,
+.posSignal .titleBar {
+  gap: 6px;
+  padding: 5px 6px 5px 8px;
+}
+
+.posHelix .grip,
+.posSignal .grip {
+  width: 14px;
+}
+
+.posHelix .closeBtn,
+.posSignal .closeBtn {
+  width: 17px;
+  height: 17px;
+}
+
+/* Tablet: two smaller panels high in the corners, notebook rests. */
 @media (max-width: 1100px) {
-  .posNotebook {
+  .posNotebook,
+  .posSignal {
     display: none;
+  }
+
+  .posHelix {
+    bottom: 10%;
+    right: 4%;
+    width: clamp(84px, 10vw, 108px);
+  }
+
+  .posResearcher {
+    top: 12%;
+    width: clamp(170px, 20vw, 230px);
+  }
+
+  .posNightclass {
+    top: 13%;
+    width: clamp(160px, 19vw, 215px);
+  }
+
+  .kaomoji1 {
+    top: 62%;
+    left: 12%;
+  }
+
+  .kaomoji2 {
+    top: 30%;
+    right: 8%;
   }
 }
 
-@media (max-width: 900px) {
-  .field {
-    display: none;
+/* Mobile: two mini panels tucked in the top corners. */
+@media (max-width: 768px) {
+  .title {
+    font-size: 0.6rem;
+  }
+
+  .titleBar {
+    gap: 6px;
+    padding: 5px 6px 5px 8px;
+  }
+
+  .grip {
+    width: 14px;
+  }
+
+  .closeBtn {
+    width: 18px;
+    height: 18px;
+  }
+
+  .posResearcher {
+    top: 11%;
+    left: 3%;
+    width: clamp(118px, 36vw, 168px);
+  }
+
+  .posNightclass {
+    top: 12%;
+    right: 3%;
+    width: clamp(118px, 36vw, 168px);
+  }
+
+  .posHelix {
+    bottom: 8%;
+    right: 5%;
+    width: clamp(64px, 19vw, 88px);
+  }
+
+  .kaomoji1 {
+    top: 68%;
+    left: 7%;
+  }
+
+  .kaomoji2 {
+    top: 26%;
+    right: 6%;
+  }
+
+  .kaomoji3 {
+    bottom: 6%;
+    left: auto;
+    right: 10%;
   }
 }

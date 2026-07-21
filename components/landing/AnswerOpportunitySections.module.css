@@ -183,7 +183,7 @@
 }
 
 .cohortIntro .heading {
-  font-family: var(--font-secondary);
+  font-family: var(--font-poppins), 'Poppins', ui-sans-serif, sans-serif;
   font-size: clamp(2.5rem, 5.4vw, 5rem);
   line-height: 0.98;
   letter-spacing: -0.055em;
@@ -227,7 +227,7 @@
 }
 
 .communitySection .heading {
-  max-width: 800px;
+  max-width: 1080px;
   margin-inline: auto;
   color: var(--color-text-light);
   font-size: 3rem;

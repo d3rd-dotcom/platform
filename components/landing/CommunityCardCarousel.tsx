@@ -19,7 +19,7 @@ type CommunityCard = {
 
 const cards: CommunityCard[] = [
   {
-    title: 'Start where you are',
+    title: 'Build your knowledge graph',
     description: 'Choose one clear next step and build momentum from there.',
     image: '/images/community-book.png',
     imageWidth: 784,
@@ -28,7 +28,7 @@ const cards: CommunityCard[] = [
     tone: 'brand',
   },
   {
-    title: 'Field notes, every day',
+    title: 'Pattern mapping and habits',
     description: 'Capture what you notice so each lesson becomes part of your practice.',
     image: '/images/community-phones.png',
     imageWidth: 1000,
@@ -37,7 +37,7 @@ const cards: CommunityCard[] = [
     tone: 'action',
   },
   {
-    title: 'Peers read your work',
+    title: 'Increase student confidence',
     description: 'Share your thinking, receive useful feedback, and learn through exchange.',
     image: '/images/community-animes.png',
     imageWidth: 1000,
@@ -56,7 +56,7 @@ const cards: CommunityCard[] = [
     tone: 'deep',
   },
   {
-    title: 'Missions worth finishing',
+    title: 'World-changing research',
     description: 'Turn ideas into focused work with a clear outcome at the end.',
     image: '/images/treasury.png',
     imageWidth: 640,

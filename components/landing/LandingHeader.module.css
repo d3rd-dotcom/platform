@@ -6,7 +6,7 @@
   width: min(1280px, var(--landing-shell-width, calc(100% - 144px)));
   z-index: 100;
   padding: 10px var(--landing-shell-padding, 24px);
-  background: rgba(10, 12, 31, 0.82);
+  background: rgba(252, 252, 250, 0.86);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-radius: 20px;
@@ -61,11 +61,11 @@
 .headerScrolled {
   width: min(950px, var(--landing-shell-width, calc(100% - 144px)));
   padding: 8px clamp(20px, var(--landing-shell-padding, 24px), 24px);
-  background: rgba(10, 12, 31, 0.92);
+  background: rgba(252, 252, 250, 0.94);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-radius: 100px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.22);
 }
 
 .headerMenuOpen {
@@ -106,7 +106,7 @@
 }
 
 .sectionNavLink {
-  color: rgba(255, 255, 255, 0.7);
+  color: color-mix(in oklch, var(--color-landing-black) 78%, transparent);
   font-family: var(--font-primary);
   font-size: 0.72rem;
   font-weight: 500;
@@ -118,7 +118,7 @@
 }
 
 .sectionNavLink:hover {
-  color: #ffffff;
+  color: var(--color-landing-black);
 }
 
 .nav {
@@ -134,6 +134,44 @@
   gap: 10px;
 }
 
+.statusCluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-primary);
+}
+
+.statusCluster svg {
+  display: block;
+  flex-shrink: 0;
+}
+
+.statusBatteryShell {
+  fill: none;
+  stroke: color-mix(in oklch, var(--color-landing-black) 55%, transparent);
+}
+
+.statusBatteryNub {
+  fill: color-mix(in oklch, var(--color-landing-black) 55%, transparent);
+}
+
+.statusBatteryCharge {
+  fill: var(--color-primary);
+}
+
+.statusTime {
+  font-family: var(--font-primary);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  color: var(--color-primary);
+  min-width: 3.9em;
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
 .mobileMenuButton {
   display: none;
   width: 44px;
@@ -143,10 +181,10 @@
   justify-content: center;
   flex-direction: column;
   gap: 5px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid color-mix(in oklch, var(--color-landing-black) 18%, transparent);
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.06);
-  color: #ffffff;
+  background: color-mix(in oklch, var(--color-landing-black) 5%, transparent);
+  color: var(--color-landing-black);
   cursor: pointer;
 }
 
@@ -201,15 +239,15 @@
 }
 
 .mobileMenuPanel {
-  background: rgba(10, 12, 31, 0.95);
+  background: rgba(252, 252, 250, 0.96);
   border-radius: 16px;
   padding: 12px 16px;
   margin-top: 8px;
 }
 
 .discordButton:hover {
-  background: #1A1D33;
-  border-color: #1A1D33;
+  background: #262626;
+  border-color: #262626;
   color: #ffffff;
 }
 
@@ -379,7 +417,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    background: rgba(10, 12, 31, 0.95);
+    background: rgba(252, 252, 250, 0.96);
     border-radius: 16px;
     padding: 12px 16px;
     margin-top: 8px;
@@ -392,7 +430,7 @@
   }
 
   .mobileSectionNavLink {
-    color: rgba(255, 255, 255, 0.8);
+    color: color-mix(in oklch, var(--color-landing-black) 78%, transparent);
     font-family: var(--font-primary);
     font-size: 0.78rem;
     font-weight: 500;

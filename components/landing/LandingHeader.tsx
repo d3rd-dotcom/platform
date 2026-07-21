@@ -1,39 +1,45 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import { DiscordLogo } from '@phosphor-icons/react';
+import { WifiHigh, Headphones, Bluetooth } from '@phosphor-icons/react';
 import { useSound } from '@/hooks/useSound';
 import styles from './LandingHeader.module.css';
 
-const LandingAuthButtons = dynamic(
-  () => import('./LandingAuthButtons').then((mod) => mod.LandingAuthButtons),
-  {
-    ssr: false,
-    loading: () => (
-      <>
-        <a
-          href="https://discord.com/oauth2/authorize?client_id=1389107766752448645&permissions=8&integration_type=0&scope=bot"
-          className={styles.discordButton}
-          aria-disabled="true"
-        >
-          <DiscordLogo size={18} weight="fill" aria-hidden="true" />
-          <span className={styles.slideWrap}>
-            <span className={styles.slideText}>Discord</span>
-            <span className={`${styles.slideText} ${styles.slideClone}`}>Discord</span>
-          </span>
-        </a>
-        <button type="button" className={styles.joinButton} disabled aria-disabled="true">
-          <span className={styles.slideWrap}>
-            <span className={styles.slideText}>Apply to Join</span>
-            <span className={`${styles.slideText} ${styles.slideClone}`}>Apply to Join</span>
-          </span>
-        </button>
-      </>
-    ),
-  }
-);
+const formatClock = (date: Date) =>
+  date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+
+const HeaderStatusCluster: React.FC = () => {
+  const [clock, setClock] = useState('');
+
+  useEffect(() => {
+    const tick = () => setClock(formatClock(new Date()));
+    tick();
+    const id = window.setInterval(tick, 15000);
+    return () => window.clearInterval(id);
+  }, []);
+
+  return (
+    <div className={styles.statusCluster} aria-hidden="true">
+      <WifiHigh size={18} weight="bold" />
+      <Headphones size={16} weight="fill" />
+      <Bluetooth size={15} weight="bold" />
+      <svg
+        className={styles.statusBattery}
+        width="26"
+        height="12"
+        viewBox="0 0 26 12"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect x="0.5" y="0.5" width="21" height="11" rx="3" className={styles.statusBatteryShell} />
+        <rect x="23" y="3.5" width="2.4" height="5" rx="1.2" className={styles.statusBatteryNub} />
+        <rect x="2" y="2" width="14" height="8" rx="1.5" className={styles.statusBatteryCharge} />
+      </svg>
+      <span className={styles.statusTime}>{clock}</span>
+    </div>
+  );
+};
 
 export const LandingHeader: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -168,7 +174,7 @@ export const LandingHeader: React.FC = () => {
 
         <nav className={styles.nav}>
           <div className={styles.desktopActions}>
-            <LandingAuthButtons />
+            <HeaderStatusCluster />
           </div>
           <button
             type="button"
@@ -199,7 +205,7 @@ export const LandingHeader: React.FC = () => {
               </a>
             ))}
           </nav>
-          <LandingAuthButtons />
+          <HeaderStatusCluster />
         </div>
       ) : null}
     </header>

@@ -128,7 +128,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(ellipse at center, rgba(20, 24, 50, 0.92) 0%, rgba(10, 12, 31, 0.96) 100%);
+  background: radial-gradient(ellipse at center, rgba(32, 32, 32, 0.92) 0%, rgba(18, 18, 18, 0.96) 100%);
   backdrop-filter: blur(24px);
   animation: fadeIn 0.3s ease;
 }

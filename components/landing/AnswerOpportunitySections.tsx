@@ -54,20 +54,19 @@ export function CommunityEducationSection() {
         <div className={styles.definitionGrid}>
           <div className={styles.definitionHeadingCol}>
             <h2 id="community-education-heading" className={styles.heading}>
-              We help your{' '}
+              We give educators the tools to{' '}
               <span className={styles.headingAccent}>
-                teen learn, build confidence
+                teach and measure proficiency
               </span>
-              , and keep growing
+              {' '}at scale
             </h2>
           </div>
           <div className={styles.definitionCopy}>
             <p className={styles.lead}>
-              Whether it&apos;s paralysis from a never-ending feed,
-              interpersonal connections, or a phone that eats your evenings,
-              Mental Wealth Academy helps people build the lives they want to
-              live. Drawing from science and the spirit of life, our tools help
-              you take the next step toward better mental wealth.
+              MWA is the infrastructure for AI-powered learning in the modern age,
+              built from whatever you teach. World-building curricula. Design tests
+              that increase proficiency. Social-first designs that make sure no
+              student is left behind.
             </p>
             <CommunityCardCarousel />
           </div>
@@ -139,7 +138,7 @@ export function CohortLearningSection() {
       <div className={`${styles.container} ${styles.cohortContainer}`}>
         <div className={styles.cohortIntro}>
           <h2 id="cohort-learning-heading" className={styles.heading}>
-            What is a cohort-based learning experience?
+            Core Pillars of MWA
           </h2>
           <p className={`${styles.lead} ${styles.centeredLead}`}>
             A cohort moves through one program with shared milestones and

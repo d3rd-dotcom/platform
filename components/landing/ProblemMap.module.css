@@ -121,12 +121,13 @@
   display: grid;
   grid-template-rows: auto 1fr;
   gap: 30px;
-  padding: 42px 36px 46px;
+  padding: 40px 36px 46px;
   border-left: 1px solid var(--color-border-strong);
 }
 
 .platformStage {
   background: var(--color-surface-1);
+  gap: 44px;
 }
 
 .outcomeStage {
@@ -177,8 +178,8 @@
 .platformChips span {
   padding: 5px 12px;
   border-radius: 999px;
-  border: 1px solid var(--color-primary);
-  background: var(--color-primary);
+  border: 1px solid var(--chip-color, var(--color-primary));
+  background: var(--chip-color, var(--color-primary));
   color: var(--color-on-action);
   font-family: var(--font-mono);
   font-size: 0.72rem;
@@ -186,10 +187,22 @@
   white-space: nowrap;
 }
 
+.platformChips span:nth-child(1) {
+  --chip-color: var(--color-primary);
+}
+
+.platformChips span:nth-child(2) {
+  --chip-color: var(--color-accent);
+}
+
+.platformChips span:nth-child(3) {
+  --chip-color: var(--color-streak);
+}
+
 /* Isolated learner nodes — a literal picture of the missing social layer */
 .nodeField {
   display: grid;
-  align-content: end;
+  align-content: start;
   gap: 18px;
 }
 
@@ -210,10 +223,14 @@
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary) 14%, transparent);
 }
 
-.nodeCaption {
-  color: var(--color-text-muted);
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
+.nodeGrid i.nodeQuiet {
+  background: var(--color-danger);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-danger) 18%, transparent);
+}
+
+.nodeGrid i.nodeConnected {
+  background: var(--color-primary);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary) 24%, transparent);
 }
 
 .outcome {

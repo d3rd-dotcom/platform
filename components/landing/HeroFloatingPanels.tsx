@@ -11,7 +11,6 @@ type PanelMedia =
 interface PanelSpec {
   id: string;
   title: string;
-  caption: string;
   media: PanelMedia;
   posClass: string;
 }
@@ -19,15 +18,13 @@ interface PanelSpec {
 const PANELS: PanelSpec[] = [
   {
     id: 'researcher',
-    title: 'The researcher',
-    caption: 'Somewhere, someone is still reading.',
+    title: 'the.researcher',
     media: { kind: 'video', src: '/images/hero-desk/futaba-screens.mp4' },
     posClass: 'posResearcher',
   },
   {
     id: 'notebook',
-    title: 'Open notebook',
-    caption: 'The desk of someone becoming someone.',
+    title: 'open.notebook',
     media: {
       kind: 'image',
       src: '/images/hero-desk/study-desk.jpg',
@@ -37,10 +34,21 @@ const PANELS: PanelSpec[] = [
   },
   {
     id: 'nightclass',
-    title: 'Night class',
-    caption: 'Notes taken after midnight count double.',
+    title: 'night.class',
     media: { kind: 'video', src: '/images/hero-desk/keyboard-typing.mp4' },
     posClass: 'posNightclass',
+  },
+  {
+    id: 'helix',
+    title: 'helix.drift',
+    media: { kind: 'video', src: '/images/hero-desk/helix-drift.mp4' },
+    posClass: 'posHelix',
+  },
+  {
+    id: 'signal',
+    title: 'signal.map',
+    media: { kind: 'video', src: '/images/hero-desk/signal-map.mp4' },
+    posClass: 'posSignal',
   },
 ];
 
@@ -61,6 +69,8 @@ interface DragState {
 
 /* How far a panel may travel past the hero edge before it stops. */
 const EDGE_SLACK = 32;
+
+const KAOMOJI = ['ヽ(´ー｀)ノ', '(￣▽￣)', '(・_・)ノ'];
 
 export default function HeroFloatingPanels() {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -138,6 +148,11 @@ export default function HeroFloatingPanels() {
 
   return (
     <div ref={containerRef} className={styles.field} aria-hidden="false">
+      {KAOMOJI.map((face, i) => (
+        <span key={face} className={`${styles.kaomoji} ${styles[`kaomoji${i + 1}`]}`} aria-hidden="true">
+          {face}
+        </span>
+      ))}
       {PANELS.map((panel, i) =>
         closed[panel.id] ? null : (
           <div
@@ -154,8 +169,6 @@ export default function HeroFloatingPanels() {
             onPointerCancel={endDrag(panel.id)}
           >
             <div className={styles.panelInner}>
-              <div className={styles.stackSheet} aria-hidden="true" />
-              <div className={`${styles.stackSheet} ${styles.stackSheetTwo}`} aria-hidden="true" />
               <div className={styles.sheet}>
                 <div className={styles.titleBar}>
                   <span className={styles.grip} aria-hidden="true" />
@@ -184,7 +197,6 @@ export default function HeroFloatingPanels() {
                     <img src={panel.media.src} alt={panel.media.alt} draggable={false} />
                   )}
                 </div>
-                <div className={styles.caption}>{panel.caption}</div>
               </div>
             </div>
           </div>

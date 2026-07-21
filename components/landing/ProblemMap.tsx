@@ -12,6 +12,11 @@ const MAX_MAP_ZOOM = 11.25;
 // The dominant learning platforms, named for the "digital filing cabinet" stage.
 const PLATFORMS = ['Blackboard', 'Moodle', 'Canvas'] as const;
 
+// Learners in the 15-node field: a few went quiet, a few stayed connected, and
+// the cabinet records the same thing for both.
+const NODE_QUIET = new Set([1, 6, 9, 13]);
+const NODE_CONNECTED = new Set([3, 11]);
+
 // Show the full HOLC grading field. D (redlined) and A ("best"/wealthy) remain
 // the strongest figures, while the B and C survey areas complete the historical
 // context rather than leaving most of the city visually unmarked.
@@ -181,7 +186,7 @@ export const ProblemMap: React.FC = () => {
       <div
         className={styles.flow}
         role="group"
-        aria-label="Where you live still shapes access to a good school, because historic redlining tracked with school funding. Then the dominant online learning platforms, Blackboard, Moodle, and Canvas, moved the classroom onto the internet as one-way content delivery without a social layer, leaving learners isolated. Only about 12 percent finish a typical open online course, and isolation and loneliness are among the strongest predictors of who drops out."
+        aria-label="Where you live still shapes access to a good school, because historic redlining tracked with school funding. Only about 12 percent finish a typical open online course, and isolation and loneliness are among the strongest predictors of who drops out. The dominant online learning platforms, Blackboard, Moodle, and Canvas, presented a digital filing cabinet without the social togetherness that makes a class memorable, so next generation solutions need to put that first."
       >
         <article className={`${styles.stage} ${styles.mapStage}`}>
           <div
@@ -194,7 +199,7 @@ export const ProblemMap: React.FC = () => {
             <div className={styles.mapStoryTop}>
               <div className={styles.stageHeading}>
                 <span className={styles.stageNumber}>1</span>
-                <h3 className={styles.stageTitle}>Place still decides access</h3>
+                <h3 className={styles.stageTitle}>Freedom from wealth inequality</h3>
               </div>
               <p className={styles.stageCopy}>
                 Housing maps graded neighborhoods from A to D. Those grades still
@@ -204,11 +209,31 @@ export const ProblemMap: React.FC = () => {
           </div>
         </article>
 
+        <article className={`${styles.stage} ${styles.outcomeStage}`}>
+          <div className={styles.stageHeading}>
+            <span className={styles.stageNumber}>2</span>
+            <h3 className={styles.stageTitle}>Accelerate equitable proficiency</h3>
+          </div>
+          <div className={styles.outcome}>
+            <strong className={styles.outcomeValue}>12%</strong>
+            <p className={styles.outcomeCopy}>
+              Only 12% (1 in 8) of students complete a typical open online course,
+              with isolation and loneliness being the primary drivers for those who
+              quit.
+            </p>
+            <div className={styles.people} aria-hidden="true">
+              {Array.from({ length: 8 }).map((_, index) => (
+                <i className={index < 1 ? styles.personActive : undefined} key={index} />
+              ))}
+            </div>
+          </div>
+        </article>
+
         <article className={`${styles.stage} ${styles.platformStage}`}>
           <div className={styles.stageHeaderBlock}>
             <div className={styles.stageHeading}>
-              <span className={styles.stageNumber}>2</span>
-              <h3 className={styles.stageTitle}>The classroom became a filing cabinet</h3>
+              <span className={styles.stageNumber}>3</span>
+              <h3 className={styles.stageTitle}>Inexpressive digital classrooms</h3>
             </div>
             <div className={styles.platformChips} aria-hidden="true">
               {PLATFORMS.map((name) => (
@@ -216,38 +241,28 @@ export const ProblemMap: React.FC = () => {
               ))}
             </div>
             <p className={styles.stageCopy}>
-              The platforms that moved school online digitized enrollment, uploads,
-              and grades. Learning became one-way delivery, and the social layer
-              never came with it.
+              Legacy platforms presented a digital filing cabinet: tasks, curricula,
+              uploads, and grades. However, they lacked the social nature and
+              togetherness that make a class truly memorable. Next-gen solutions
+              require us to place social connection at the forefront and crux of
+              online learning.
             </p>
           </div>
           <div className={styles.nodeField} aria-hidden="true">
             <div className={styles.nodeGrid}>
               {Array.from({ length: 15 }).map((_, index) => (
-                <i key={index} />
+                <i
+                  key={index}
+                  className={
+                    NODE_QUIET.has(index)
+                      ? styles.nodeQuiet
+                      : NODE_CONNECTED.has(index)
+                        ? styles.nodeConnected
+                        : undefined
+                  }
+                />
               ))}
             </div>
-            <span className={styles.nodeCaption}>Learners, side by side but disconnected</span>
-          </div>
-        </article>
-
-        <article className={`${styles.stage} ${styles.outcomeStage}`}>
-          <div className={styles.stageHeading}>
-            <span className={styles.stageNumber}>3</span>
-            <h3 className={styles.stageTitle}>So most learners drop off</h3>
-          </div>
-          <div className={styles.outcome}>
-            <strong className={styles.outcomeValue}>12%</strong>
-            <p className={styles.outcomeCopy}>
-              finish a typical open online course. Isolation and loneliness are among
-              the strongest predictors of who quits.
-            </p>
-            <div className={styles.people} aria-hidden="true">
-              {Array.from({ length: 8 }).map((_, index) => (
-                <i className={index < 1 ? styles.personActive : undefined} key={index} />
-              ))}
-            </div>
-            <p className={styles.stageCopy}>About 1 in 8 reach the end.</p>
           </div>
         </article>
       </div>

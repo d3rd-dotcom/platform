@@ -26,18 +26,18 @@ interface GraphLayout {
   subjects: string[];
 }
 
-// Varied editorial palette chosen to read against the academy-blue field the
-// graph now sits on: cream, coral, pink, deep navy, periwinkle, amber, and a
-// teal secondary accent. Each node also gets a small lightness jitter below.
+// Varied editorial palette, deepened so each node reads against the light
+// surface the graph now sits on: indigo, coral, teal, periwinkle, rose, deep
+// navy, amber, and a cyan secondary. Small lightness jitter is applied below.
 const SUBJECT_COLORS = [
-  '#f2ede0',
-  '#ff5d47',
-  '#35d0ba',
-  '#a8bcff',
-  '#ff9eb5',
+  '#4a3fd1',
+  '#e0402a',
+  '#0f9c8a',
+  '#5566d4',
+  '#d94f83',
   '#1d2f7a',
-  '#ffb36b',
-  '#7ee0ff',
+  '#c5761a',
+  '#1a86ad',
 ];
 
 // Entrance timing: nodes rise in from the foundations up.
@@ -213,7 +213,8 @@ function GraphNode({
     if (coreMat.current) coreMat.current.opacity = baseCore * eased;
   });
 
-  const color = selected ? '#ffffff' : item.color;
+  // Selected reads as near-ink so it still pops on the light field.
+  const color = selected ? '#12131c' : item.color;
 
   return (
     <group
@@ -300,9 +301,9 @@ function GraphScene({
       g.rotation.y = rotation.y + autoSpinRef.current;
     }
 
-    // Soft white edges fade in just behind the nodes.
+    // Soft ink edges fade in just behind the nodes.
     if (edgeMat.current) {
-      const target = selectedId ? 0.2 : 0.38;
+      const target = selectedId ? 0.16 : 0.3;
       const appear = reducedMotion ? 1 : Math.min(1, Math.max(0, (clock.elapsedTime - 0.4) / 1.2));
       edgeMat.current.opacity = target * appear;
     }
@@ -318,7 +319,7 @@ function GraphScene({
           </bufferGeometry>
           <lineBasicMaterial
             ref={edgeMat}
-            color="#eef2ff"
+            color="#39406e"
             transparent
             opacity={0}
             depthWrite={false}

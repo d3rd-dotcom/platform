@@ -8,7 +8,7 @@ import ForTeachersModal from './ForTeachersModal';
 import { LandingScene } from './LandingScene';
 import { PixelCursorTrail } from './PixelCursorTrail';
 import HeroFloatingPanels from './HeroFloatingPanels';
-const HERO_HEADLINE = 'The open-sourced LMS platform for global quality education';
+const HERO_HEADLINE = 'Open-sourced LMS platform to empower educators worldwide';
 
 export const HeroSection: React.FC = () => {
   return (

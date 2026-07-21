@@ -60,6 +60,20 @@
   margin-top: 30px;
 }
 
+/* The dark band would swallow the tinted secondary pill, so this one takes the
+   light end of the surface scale with ink text. */
+.lightCta.lightCta {
+  background: #f2f2f6;
+  border-color: rgba(26, 27, 36, 0.12);
+  color: var(--palette-ink);
+}
+
+.lightCta.lightCta:hover {
+  background: #ffffff;
+  border-color: rgba(26, 27, 36, 0.2);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
+}
+
 .image {
   display: block;
   min-width: 0;

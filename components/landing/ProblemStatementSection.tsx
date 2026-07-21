@@ -15,12 +15,14 @@ export const ProblemStatementSection: React.FC = () => (
         <div className={styles.content}>
           <div className={styles.contextPanel}>
             <div className={styles.titlePanel}>
-              <h2 className={styles.heading}>Learning moved online. The community got left behind.</h2>
+              <h2 className={styles.heading}>Poor nations face a severe shortage of qualified teachers.</h2>
             </div>
             <p className={styles.lead}>
-              Redlining decided who could reach a good school. Then Blackboard,
-              Moodle, and Canvas moved the classroom onto the internet and quietly
-              dropped the part that made it work: the people around you.
+              When qualified teachers are scarce, schools struggle to compensate.
+              Yet, most course platforms assume this problem has already been solved,
+              providing software for classrooms that remain unstaffed. We built our
+              open, self-hostable platform to change this: it enables a small group
+              of experts to reach exponentially more learners.
             </p>
           </div>
           <div className={styles.mapPanel}>
