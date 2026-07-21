@@ -7,7 +7,8 @@ import LandingEnterAcademyButton from './LandingEnterAcademyButton';
 import ForTeachersModal from './ForTeachersModal';
 import { LandingScene } from './LandingScene';
 import { PixelCursorTrail } from './PixelCursorTrail';
-const HERO_HEADLINE = 'Vibe-learn any subject using AI-powered education.';
+import HeroFloatingPanels from './HeroFloatingPanels';
+const HERO_HEADLINE = 'The open-sourced LMS platform for global quality education';
 
 export const HeroSection: React.FC = () => {
   return (
@@ -54,6 +55,7 @@ export const HeroSection: React.FC = () => {
           </div>
         </div>
 
+        <HeroFloatingPanels />
       </div>
     </>
   );
