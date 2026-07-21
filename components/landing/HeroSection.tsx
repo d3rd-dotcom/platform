@@ -7,6 +7,7 @@ import LandingEnterAcademyButton from './LandingEnterAcademyButton';
 import ForTeachersModal from './ForTeachersModal';
 import { LandingScene } from './LandingScene';
 import HeroFloatingPanels from './HeroFloatingPanels';
+import ThinkingOrbBadge from './ThinkingOrbBadge';
 const HERO_HEADLINE = 'Open-sourced LMS platform to empower educators worldwide';
 
 export const HeroSection: React.FC = () => {
@@ -42,6 +43,13 @@ export const HeroSection: React.FC = () => {
           aria-hidden="true"
         />
         <div className={styles.heroContent}>
+          <ThinkingOrbBadge
+            label="Blue Thinking…"
+            state="composing"
+            size={64}
+            displaySize={20}
+            className={styles.heroOrbBadge}
+          />
 
           <h1 className={styles.heroHeadline}>
             {HERO_HEADLINE}

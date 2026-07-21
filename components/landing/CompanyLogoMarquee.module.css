@@ -9,6 +9,19 @@
   background: var(--color-landing-black);
 }
 
+/* Same turbulence-noise weave as FeaturesSection so the dark run reads as one field. */
+.marqueeSection::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.3;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><filter id='n'><feTurbulence type='turbulence' baseFrequency='0.85' numOctaves='1' seed='7' stitchTiles='stitch'/><feColorMatrix type='saturate' values='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 12%;
+  filter: saturate(1.2) contrast(1.1);
+  pointer-events: none;
+}
+
 .logoViewport {
   width: 100%;
   overflow: hidden;
@@ -56,12 +69,6 @@
   filter: brightness(0) invert(1);
   opacity: 0.74;
   transition: opacity 180ms ease;
-}
-
-.openAiLogo {
-  transform: scale(1.86);
-  filter: invert(1);
-  mix-blend-mode: screen;
 }
 
 .marqueeSection:hover .logo {

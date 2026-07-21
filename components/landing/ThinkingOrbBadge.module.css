@@ -1,0 +1,37 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  padding: 8px 16px;
+  border: 1px solid var(--color-text-light);
+  border-radius: 999px;
+}
+
+.block {
+  display: flex;
+  width: 100%;
+}
+
+.orb {
+  display: inline-flex;
+}
+
+/* Filter definition only — it must be in the document to be referenced, but it
+   takes no space. */
+.filterHost {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.orb canvas {
+  filter: var(--orb-filter);
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--color-text-light);
+}

@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { ArrowRight } from '@phosphor-icons/react';
+import ThinkingOrbBadge from './ThinkingOrbBadge';
 import styles from './LandingPage.module.css';
 import founderStyles from './FounderSection.module.css';
 
@@ -54,9 +55,12 @@ export const AIPoweredSection: React.FC = () => {
   return (
     <section className={founderStyles.aiSection} aria-labelledby="ai-powered-heading">
       <div className={founderStyles.aiContainer}>
-        <h2 id="ai-powered-heading" className={founderStyles.aiHeading}>
-          <span className={founderStyles.aiHighlight}>AI</span>-Powered:
-        </h2>
+        <div className={founderStyles.aiHeadingBlock}>
+          <h2 id="ai-powered-heading" className={founderStyles.aiHeading}>
+            <span className={founderStyles.aiHighlight}>AI</span>-Powered:
+          </h2>
+          <ThinkingOrbBadge label="Building your optimal curricula" block />
+        </div>
         <p className={founderStyles.aiDescription}>
           Blue uses agentic memory to carry useful context forward, while
           coordinated agent swarms examine each question from multiple angles.

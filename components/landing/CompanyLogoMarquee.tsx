@@ -60,12 +60,11 @@ const logos = [
     displayWidth: 136,
   },
   {
-    src: '/companylogos/openai-wordmark.webp',
-    alt: 'OpenAI',
-    width: 1042,
-    height: 521,
-    displayWidth: 148,
-    presentation: 'openai',
+    src: '/companylogos/chatgpt.svg',
+    alt: 'ChatGPT',
+    width: 797,
+    height: 173,
+    displayWidth: 155,
   },
   {
     src: '/companylogos/gemini.svg',
@@ -105,9 +104,7 @@ function LogoGroup({ duplicate = false }: { duplicate?: boolean }) {
             width={logo.width}
             height={logo.height}
             sizes={`${logo.displayWidth}px`}
-            className={`${styles.logo} ${
-              logo.presentation === 'openai' ? styles.openAiLogo : ''
-            }`}
+            className={styles.logo}
           />
         </li>
       ))}

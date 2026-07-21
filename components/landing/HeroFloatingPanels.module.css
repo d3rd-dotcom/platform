@@ -174,7 +174,7 @@
 }
 
 .posResearcher .media {
-  aspect-ratio: 540 / 230;
+  aspect-ratio: 16 / 9;
 }
 
 .posNotebook {
@@ -208,6 +208,42 @@
   width: clamp(96px, 8.5vw, 128px);
 }
 
+/* Sits just inboard of helix, riding a little higher so the two read as a pair
+   rather than a row. Landscape, so it runs wider than the vertical clips. */
+.posGreenroom {
+  --tilt: -2.2deg;
+  bottom: 21%;
+  right: 17%;
+  width: clamp(150px, 13vw, 190px);
+}
+
+.posGreenroom .media {
+  aspect-ratio: 16 / 9;
+}
+
+/* Hovering widens the panel itself rather than scaling it: the border stays
+   1px and the title bar keeps its own height and type size, while the video
+   grows with the container. Anchored on the right, so it opens leftward, away
+   from helix and the viewport edge. */
+.posGreenroom {
+  transition: width 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.posGreenroom:hover {
+  z-index: 40;
+  width: clamp(320px, 30vw, 440px);
+}
+
+.posGreenroom:hover .sheet {
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .posGreenroom {
+    transition: none;
+  }
+}
+
 .posSignal {
   --tilt: -3deg;
   top: 45%;
@@ -221,22 +257,26 @@
 }
 
 .posHelix .title,
+.posGreenroom .title,
 .posSignal .title {
   font-size: 0.6rem;
 }
 
 .posHelix .titleBar,
+.posGreenroom .titleBar,
 .posSignal .titleBar {
   gap: 6px;
   padding: 5px 6px 5px 8px;
 }
 
 .posHelix .grip,
+.posGreenroom .grip,
 .posSignal .grip {
   width: 14px;
 }
 
 .posHelix .closeBtn,
+.posGreenroom .closeBtn,
 .posSignal .closeBtn {
   width: 17px;
   height: 17px;
@@ -245,6 +285,7 @@
 /* Tablet: two smaller panels high in the corners, notebook rests. */
 @media (max-width: 1100px) {
   .posNotebook,
+  .posGreenroom,
   .posSignal {
     display: none;
   }
