@@ -34,7 +34,9 @@
   --card-rotate-x: 0deg;
   --card-rotate-y: 0deg;
 
-  /* Card gradient palette — mist, indigo, gold in place of the pink-violet pair. */
+  /* Card gradient palette — pale paper base, tinted with mist, indigo, gold. */
+  --card-paper: #FFFFFF;
+  --card-haze: #F4F3FB;
   --card-mist: #ECE9F6;
   --card-indigo: #4234E2;
   --card-gold: #F5BD3B;
@@ -47,10 +49,10 @@
   height: 450px;
   scroll-snap-align: start;
   border-radius: 22px;
-  border: 2px solid color-mix(in srgb, var(--color-text-light) 80%, transparent);
+  border: 2px solid color-mix(in srgb, var(--palette-ink) 12%, transparent);
   overflow: hidden;
   box-shadow: 0 6px 14px color-mix(in oklch, var(--color-brand) 16%, transparent);
-  color: #ffffff;
+  color: var(--palette-ink);
   isolation: isolate;
   transform-style: preserve-3d;
   transition:
@@ -90,10 +92,10 @@
   background: linear-gradient(
     180deg,
     transparent 42%,
-    color-mix(in srgb, var(--color-landing-black) 12%, transparent) 58%,
-    color-mix(in srgb, var(--color-landing-black) 76%, transparent) 100%
+    color-mix(in srgb, var(--card-paper) 40%, transparent) 58%,
+    color-mix(in srgb, var(--card-paper) 92%, transparent) 100%
   );
-  opacity: 0.78;
+  opacity: 0.86;
   pointer-events: none;
   transition: opacity 0.4s ease;
 }
@@ -107,19 +109,19 @@
   background:
     radial-gradient(
       circle at 16% 12%,
-      color-mix(in oklch, var(--card-gold) 82%, transparent) 0%,
+      color-mix(in oklch, var(--card-gold) 34%, transparent) 0%,
       transparent 36%
     ),
     radial-gradient(
       circle at 88% 24%,
-      color-mix(in oklch, var(--color-brand) 78%, transparent) 0%,
+      color-mix(in oklch, var(--color-brand) 26%, transparent) 0%,
       transparent 42%
     ),
     linear-gradient(
       145deg,
-      color-mix(in oklch, var(--card-indigo) 82%, var(--color-landing-black)) 0%,
-      var(--color-landing-black) 58%,
-      color-mix(in oklch, var(--card-gold) 48%, var(--color-action-hover)) 100%
+      color-mix(in oklch, var(--card-indigo) 14%, var(--card-paper)) 0%,
+      var(--card-paper) 58%,
+      color-mix(in oklch, var(--card-gold) 20%, var(--card-haze)) 100%
     );
 }
 
@@ -127,20 +129,20 @@
   background:
     radial-gradient(
       ellipse at 78% 8%,
-      color-mix(in oklch, var(--card-gold) 76%, transparent) 0%,
+      color-mix(in oklch, var(--card-gold) 30%, transparent) 0%,
       transparent 38%
     ),
     radial-gradient(
       circle at 12% 68%,
-      color-mix(in oklch, var(--card-indigo) 68%, transparent) 0%,
+      color-mix(in oklch, var(--card-indigo) 20%, transparent) 0%,
       transparent 46%
     ),
     conic-gradient(
       from 205deg at 54% 46%,
-      var(--color-action-hover),
-      var(--color-landing-black) 34%,
-      color-mix(in oklch, var(--color-brand) 70%, var(--card-indigo)) 68%,
-      var(--color-action-hover)
+      color-mix(in oklch, var(--color-action-hover) 16%, var(--card-paper)),
+      var(--card-paper) 34%,
+      color-mix(in oklch, var(--color-brand) 16%, var(--card-haze)) 68%,
+      color-mix(in oklch, var(--color-action-hover) 16%, var(--card-paper))
     );
 }
 
@@ -148,7 +150,7 @@
   background:
     radial-gradient(
       circle at 50% 18%,
-      color-mix(in oklch, var(--color-brand) 88%, transparent) 0%,
+      color-mix(in oklch, var(--color-brand) 30%, transparent) 0%,
       transparent 38%
     ),
     radial-gradient(
@@ -158,14 +160,14 @@
     ),
     radial-gradient(
       ellipse at 92% 76%,
-      color-mix(in oklch, var(--card-indigo) 72%, transparent) 0%,
+      color-mix(in oklch, var(--card-indigo) 20%, transparent) 0%,
       transparent 44%
     ),
     linear-gradient(
       158deg,
-      color-mix(in oklch, var(--color-action-hover) 70%, var(--color-landing-black)),
-      var(--color-landing-black) 66%,
-      color-mix(in oklch, var(--card-indigo) 52%, var(--color-landing-black))
+      color-mix(in oklch, var(--color-action-hover) 16%, var(--card-paper)),
+      var(--card-paper) 66%,
+      color-mix(in oklch, var(--card-indigo) 14%, var(--card-haze))
     );
 }
 
@@ -173,21 +175,21 @@
   background:
     radial-gradient(
       ellipse at 18% 16%,
-      color-mix(in oklch, var(--card-gold) 74%, transparent) 0%,
+      color-mix(in oklch, var(--card-gold) 30%, transparent) 0%,
       transparent 40%
     ),
     radial-gradient(
       circle at 84% 70%,
-      color-mix(in oklch, var(--color-brand) 72%, transparent) 0%,
+      color-mix(in oklch, var(--color-brand) 24%, transparent) 0%,
       transparent 44%
     ),
     conic-gradient(
       from 140deg at 64% 36%,
-      color-mix(in oklch, var(--card-indigo) 84%, var(--color-landing-black)),
-      var(--color-action-hover) 24%,
-      var(--color-landing-black) 52%,
-      color-mix(in oklch, var(--card-gold) 62%, var(--card-indigo)) 78%,
-      color-mix(in oklch, var(--card-indigo) 84%, var(--color-landing-black))
+      color-mix(in oklch, var(--card-indigo) 16%, var(--card-paper)),
+      color-mix(in oklch, var(--color-action-hover) 14%, var(--card-paper)) 24%,
+      var(--card-paper) 52%,
+      color-mix(in oklch, var(--card-gold) 22%, var(--card-haze)) 78%,
+      color-mix(in oklch, var(--card-indigo) 16%, var(--card-paper))
     );
 }
 
@@ -200,14 +202,14 @@
     ),
     radial-gradient(
       ellipse at 12% 72%,
-      color-mix(in oklch, var(--color-brand) 74%, transparent) 0%,
+      color-mix(in oklch, var(--color-brand) 26%, transparent) 0%,
       transparent 48%
     ),
     linear-gradient(
       132deg,
-      color-mix(in oklch, var(--card-indigo) 68%, var(--color-landing-black)),
-      var(--color-landing-black) 52%,
-      color-mix(in oklch, var(--color-action-hover) 76%, var(--card-indigo))
+      color-mix(in oklch, var(--card-indigo) 16%, var(--card-paper)),
+      var(--card-paper) 52%,
+      color-mix(in oklch, var(--color-action-hover) 18%, var(--card-haze))
     );
 }
 
@@ -234,7 +236,7 @@
   background-image:
     radial-gradient(
       circle,
-      color-mix(in srgb, var(--color-text-light) 88%, transparent) 0 1px,
+      color-mix(in srgb, var(--card-indigo) 46%, transparent) 0 1px,
       transparent 1.5px
     ),
     radial-gradient(
@@ -259,7 +261,7 @@
     conic-gradient(
       from 45deg at 18% 34%,
       transparent 0 25%,
-      color-mix(in srgb, var(--color-text-light) 28%, transparent) 25% 33%,
+      color-mix(in srgb, var(--card-indigo) 24%, transparent) 25% 33%,
       transparent 33% 100%
     ),
     linear-gradient(
@@ -297,7 +299,7 @@
     repeating-radial-gradient(
       ellipse at 54% 42%,
       transparent 0 18px,
-      color-mix(in srgb, var(--color-text-light) 26%, transparent) 19px 21px,
+      color-mix(in srgb, var(--card-indigo) 22%, transparent) 19px 21px,
       transparent 22px 36px
     ),
     conic-gradient(
@@ -396,7 +398,7 @@
 
 .cardTitle {
   margin: 0;
-  color: #ffffff;
+  color: var(--palette-ink);
   font-family: var(--font-primary);
   font-size: 2rem;
   font-weight: var(--font-weight-bold);
@@ -410,7 +412,7 @@
   margin: 0;
   overflow: hidden;
   opacity: 0;
-  color: color-mix(in srgb, var(--color-text-light) 90%, transparent);
+  color: color-mix(in srgb, var(--palette-ink) 78%, transparent);
   font-family: var(--font-primary);
   font-size: 0.95rem;
   line-height: 1.62;
