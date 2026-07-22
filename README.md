@@ -105,6 +105,12 @@ Knowledge is structured in ascending levels, so you level up instead of grinding
 
 ---
 
+## Built with GPT-5.6
+
+OpenAI's GPT-5.6 Sol was used to build this project: designing and writing application code across the Next.js app, the Solidity contracts, and the agent-based social simulation in `simulation-backend/`, alongside shaping Blue's character and the knowledge DAG's reward and verification logic. It was a development collaborator throughout the build rather than a runtime dependency of the deployed app.
+
+---
+
 ## Running locally
 
 ```bash
