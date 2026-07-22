@@ -8,6 +8,8 @@
 
 An interactive archive of knowledge built on psychology, with blockchain-based ownership, accompanied by Blue.
 
+**[Open the app → mentalwealthacademy.world](https://mentalwealthacademy.world)**
+
 </div>
 
 ---
@@ -134,7 +136,8 @@ Open infrastructure for open-sourced knowledge, tools, and collective intelligen
 
 ## Get involved
 
-Docs → docs.mentalwealthacademy.world
-Email → research@mentalwealthacademy.net
+App → [mentalwealthacademy.world](https://mentalwealthacademy.world)
+Docs → [docs.mentalwealthacademy.world](https://docs.mentalwealthacademy.world)
+Email → [research@mentalwealthacademy.net](mailto:research@mentalwealthacademy.net)
 
 Open protocol · Community governed · Apache-2.0 · © 2026
