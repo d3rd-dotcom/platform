@@ -15,14 +15,16 @@ exposed as CSS variables (`--font-commit-mono`, `--font-space-grotesk`,
 
 | Role | Face | Variable | Rationale |
 | --- | --- | --- | --- |
-| Display / headings / labels | **Space Grotesk** | `--type-font-heading` / `--type-font-display` / `--type-font-label` | A geometric grotesque with subtle personality (distinctive digits, open apertures). Gives headings and UI labels a modern, tech-forward voice while staying legible at small sizes and in uppercase. |
-| Body / long-form / inputs | **Commit Mono** | `--type-font-body` | A precise monospaced face with open forms and clear punctuation. It gives course copy and inputs a consistent technical rhythm. |
-| Code / mono badges / IDs | **Space Grotesk** (tabular) | `--type-font-code` | Reused as the "mono-feeling" face for slugs, block IDs and counters with `tabular-nums`, keeping the palette tight rather than adding a fourth family. |
+| Display / headings | **Poppins** | `--type-font-display` / `--type-font-heading` | A geometric sans with even, open counters. Carries headline sizes cleanly and stays warm rather than technical, which suits a gameworld that still reads as academic. |
+| Body / long-form / inputs | **Poppins** | `--type-font-body` | The same face at regular weight. Sharing display and body keeps the page a single voice; hierarchy comes from weight and scale instead of a second family. |
+| Labels / eyebrows / chips | **Space Grotesk** | `--type-font-label` | Distinctive digits and tight tracking hold up at small sizes, so metadata chips and eyebrows stay separable from the Poppins body around them. |
+| Code / mono badges / IDs | **Commit Mono** | `--type-font-code` | A precise monospaced face for slugs, block IDs, and counters, where characters need to line up. |
 | Accent / annotation | **Patrick Hand** | `--type-font-accent` | Hand-drawn accent, used **only where already present** (field-notes / doodle flourishes). Never a primary UI face. |
 
-**Pairing logic:** Space Grotesk (display) over Commit Mono (text) pairs broad,
-characterful headings with a precise technical reading texture. The heading face
-adds identity while the body face creates a consistent academic rhythm.
+**Pairing logic:** Poppins carries both display and body, so hierarchy is
+expressed through weight and scale rather than a family switch. Space Grotesk
+holds the small-label role where its narrower forms and distinctive digits stay
+legible, and Commit Mono is reserved for content that has to align in columns.
 
 **Banned as primary faces:** Arial, Helvetica, Times New Roman, and bare
 system-default stacks. Generic families only ever appear as the *tail* of a

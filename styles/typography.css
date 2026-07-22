@@ -5,9 +5,11 @@
  * beautiful fluid scale.
  *
  * PAIRING
- *   Display / headings / labels : Space Grotesk  (var(--font-space-grotesk))
- *   Body / long-form / inputs   : Commit Mono    (var(--font-commit-mono))
- *   Accent / annotation only    : Patrick Hand   (var(--font-patrick-hand))  — where already used
+ *   Display / headings         : Poppins        (var(--font-poppins))
+ *   Body / long-form / inputs  : Poppins        (var(--font-poppins))
+ *   Labels / eyebrows / chips  : Space Grotesk  (var(--font-space-grotesk))
+ *   Code / slugs / IDs         : Commit Mono    (var(--font-commit-mono))
+ *   Accent / annotation only   : Patrick Hand   (var(--font-patrick-hand))  — where already used
  *
  * SCALE  (fluid via clamp; base 16px)
  *   Every step defines size / line-height / tracking as CSS custom properties,
@@ -20,8 +22,8 @@
 
 :root {
   /* ---- Type-system font stacks (self-hosted via next/font) ---------------- */
-  --type-font-display: var(--font-space-grotesk), 'Space Grotesk', ui-sans-serif, sans-serif;
-  --type-font-heading: var(--font-space-grotesk), 'Space Grotesk', ui-sans-serif, sans-serif;
+  --type-font-display: var(--font-poppins), 'Poppins', ui-sans-serif, sans-serif;
+  --type-font-heading: var(--font-poppins), 'Poppins', ui-sans-serif, sans-serif;
   --type-font-body: var(--font-poppins), 'Poppins', ui-sans-serif, sans-serif;
   --type-font-label: var(--font-space-grotesk), 'Space Grotesk', ui-sans-serif, sans-serif;
   --type-font-code: var(--font-commit-mono), 'Commit Mono', ui-monospace, monospace;
