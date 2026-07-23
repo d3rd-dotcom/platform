@@ -70,16 +70,16 @@ const primaryNavItems: NavItem[] = [
     iconSrc: '/icons/nav-profile.svg',
   },
   {
-    id: 'genetics',
-    label: 'Genetics',
-    href: '/genetics',
-    iconSrc: '/icons/genetics.svg?v=4',
-  },
-  {
     id: 'learn',
     label: 'Library',
     href: '/learn',
     iconSrc: '/icons/daemon.svg?v=4',
+  },
+  {
+    id: 'genetics',
+    label: 'Genetics',
+    href: '/genetics',
+    iconSrc: '/icons/genetics.svg?v=4',
   },
   {
     id: 'simulations',

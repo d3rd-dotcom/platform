@@ -6,7 +6,6 @@ import { usePrivy } from '@privy-io/react-auth';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import { useSNPMatcherWorker, proxy } from '@/hooks/useSNPMatcherWorker';
 import { FileUpload } from '@/components/genetics/FileUpload';
-import { GeneticsChat } from '@/components/genetics/GeneticsChat';
 import { GenosetDisplay } from '@/components/genetics/GenosetDisplay';
 import { WikiContent } from '@/components/genetics/WikiContent';
 import { TraitPanel } from '@/components/genetics/gallery/TraitPanel';
@@ -27,7 +26,7 @@ const ProMembershipModal = dynamic(
 
 type AppMode = 'collection' | 'upload' | 'browse';
 /** What the panel over the room is currently reading. */
-type Panel = 'artwork' | 'marker' | 'genosets' | 'blue' | 'upload';
+type Panel = 'artwork' | 'marker' | 'genosets' | 'upload';
 type AccessState = 'checking' | 'granted' | 'locked';
 
 /**
@@ -80,7 +79,7 @@ function GeneticsLab({
   accessChecking,
   onRequireMembership,
 }: GeneticsLabProps) {
-  const [mode, setMode] = useState<AppMode>('collection');
+  const [mode, setMode] = useState<AppMode>('browse');
   const [panel, setPanel] = useState<Panel | null>(null);
   const [isDbLoading, setIsDbLoading] = useState(true);
   const [dbError, setDbError] = useState<Error | null>(null);
@@ -102,8 +101,6 @@ function GeneticsLab({
   const [clinicalSignificance, setClinicalSignificance] = useState('');
   const [disease, setDisease] = useState('');
   const [browseResults, setBrowseResults] = useState<SNPRecord[]>([]);
-  const [browseTotal, setBrowseTotal] = useState(0);
-  const [isSearching, setIsSearching] = useState(false);
   /** Markers with no call of your own are noise in your own wing — but they are
       yours to look at if you want them. */
   const [onlyWithGenotype, setOnlyWithGenotype] = useState(true);
@@ -151,9 +148,8 @@ function GeneticsLab({
     let stale = false;
 
     (async () => {
-      setIsSearching(true);
       try {
-        const { results, total } = await workerApi.searchSNPs({
+        const { results } = await workerApi.searchSNPs({
           searchTerm: searchTerm || undefined,
           chromosome: chromosome || undefined,
           gene: gene || undefined,
@@ -163,12 +159,9 @@ function GeneticsLab({
         });
         if (stale) return;
         setBrowseResults(results);
-        setBrowseTotal(total);
         setSelectedId(results[0]?.rsid ?? null);
       } catch (error) {
         console.error('Search error:', error);
-      } finally {
-        if (!stale) setIsSearching(false);
       }
     })();
 
@@ -362,7 +355,6 @@ function GeneticsLab({
   const panelTitle = (() => {
     if (panel === 'artwork') return selectedArtwork?.label || 'Collection piece';
     if (panel === 'genosets') return 'Genosets';
-    if (panel === 'blue') return 'Ask Blue';
     if (panel === 'upload') return 'Bring your own genome';
     return (selectedId || '').toUpperCase();
   })();
@@ -372,7 +364,6 @@ function GeneticsLab({
       return [selectedArtwork?.artist, selectedArtwork?.year].filter(Boolean).join(', ');
     }
     if (panel === 'genosets') return `${genosets?.length.toLocaleString() ?? 0} matched in your genome`;
-    if (panel === 'blue') return 'She can see the markers currently hung.';
     if (panel === 'upload') return 'Read on this device. Nothing is uploaded.';
     return undefined;
   })();
@@ -410,7 +401,6 @@ function GeneticsLab({
         </div>
       );
     }
-    if (panel === 'blue') return <GeneticsChat matches={matches} genosets={genosets} />;
     if (panel === 'genosets') {
       return genosets ? <GenosetDisplay genosets={genosets} /> : null;
     }
@@ -431,19 +421,6 @@ function GeneticsLab({
     }
     return <WikiContent content={markerContent} />;
   };
-
-  const countNote = (() => {
-    if (mode === 'collection') return `${pieces.length.toLocaleString()} works on view`;
-    if (hasError) return null;
-    if (isDbLoading || isProcessing) return null;
-    if (mode === 'browse') {
-      return isSearching
-        ? 'Searching the archive'
-        : `Hanging ${pieces.length.toLocaleString()} of ${browseTotal.toLocaleString()}`;
-    }
-    if (!hasResults) return null;
-    return `Hanging ${pieces.length.toLocaleString()} of ${matches?.length.toLocaleString() ?? 0} matched`;
-  })();
 
   return (
     <main className={styles.content}>
@@ -583,8 +560,6 @@ function GeneticsLab({
           )}
 
           <div className={styles.stripRight}>
-            {countNote && <span className={styles.railNote}>{countNote}</span>}
-
             {mode === 'upload' && !hasResults && !isProcessing && !isDbLoading && (
               <button type="button" onClick={() => setPanel('upload')} className={styles.terminalButton}>
                 Choose a file
@@ -599,11 +574,6 @@ function GeneticsLab({
                   New genome
                 </button>
               </>
-            )}
-            {mode !== 'collection' && (
-              <button type="button" onClick={() => setPanel('blue')} className={styles.terminalButton}>
-                Ask Blue
-              </button>
             )}
           </div>
         </div>
