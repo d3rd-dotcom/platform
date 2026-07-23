@@ -1,7 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -9,22 +8,23 @@ import {
   ArrowRight,
   BookOpenText,
   CheckCircle,
-  GraduationCap,
+  Clock,
+  GitBranch,
   LockKey,
   PencilSimple,
   RocketLaunch,
+  Target,
   TreeStructure,
-  X,
 } from '@phosphor-icons/react';
+import { ThinkingOrb } from 'thinking-orbs';
 import { usePrivy } from '@privy-io/react-auth';
 import { useSound } from '@/hooks/useSound';
-import { useScrollLock } from '@/hooks/useScrollLock';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import CtaButton from '@/components/shared/CtaButton';
 import DiamondReward from '@/components/rewards/DiamondReward';
+import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import GuideBody from '@/components/guides/GuideBody';
 import GuideMethods from '@/components/guides/GuideMethods';
-import GuideWalkthrough from '@/components/guides/GuideWalkthrough';
 import BlueGuideCompanion from '@/components/guides/BlueGuideCompanion';
 import GuideVoteBar from '@/components/guides/GuideVoteBar';
 import VerificationLog from '@/components/guides/VerificationLog';
@@ -55,50 +55,56 @@ function formatReviewedDate(value: string): string {
   }).format(new Date(`${value.slice(0, 10)}T00:00:00Z`));
 }
 
-function WalkthroughOverlay({ slug, onClose }: { slug: string; onClose: () => void }) {
-  const [mounted, setMounted] = useState(false);
+function buildGuideOrientationLines(guide: GuideRecord, materials: GuideMaterial[]): string[] {
+  const sectionCount = guide.body.length;
+  const duration = guide.estimatedMinutes
+    ? `Set aside about ${guide.estimatedMinutes} minutes for a careful first pass.`
+    : 'Give yourself enough time to pause, take notes, and return to anything that stays fuzzy.';
+  const materialNames = materials.slice(0, 3).map((material) => material.name);
+  const materialsLine = materials.length > 0
+    ? `I counted ${materials.length} ${materials.length === 1 ? 'material' : 'materials'} for this guide! You will use ${materialNames.join(', ')}${materials.length > 3 ? `, and ${materials.length - 3} more` : ''}. Open each one when the guide calls for it so it supports the work instead of becoming a shiny distraction.`
+    : 'No extra materials are required for this one! Bring your notes and enough attention to explain the ideas back in your own words.';
+  const expectations = guide.evidenceCriteria.length > 0
+    ? `Use the ${guide.evidenceCriteria.length} learning ${guide.evidenceCriteria.length === 1 ? 'outcome' : 'outcomes'} as your finish line.`
+    : 'Your finish line is being able to explain the central idea and use it without copying the guide.';
 
-  useEffect(() => {
-    setMounted(true);
-    return () => setMounted(false);
-  }, []);
+  return [
+    `Ooh, ${guide.topicTitle}! ${guide.summary || 'This guide gives you a focused path through the topic and a clear place to begin.'}`,
+    materialsLine,
+    `The guide moves through ${sectionCount} ${sectionCount === 1 ? 'learning block' : 'learning blocks'} from top to bottom. ${duration} Finish each prompt or example before moving on, even when the next heading looks extra shiny.`,
+    `${expectations} Do the examples yourself, write down what you cannot explain yet, and return to the difficult parts. That is the work that makes the guide count!`,
+  ];
+}
 
-  useScrollLock(mounted);
+function GuideDetails({ guide, level, prereqCount, dependentCount }: {
+  guide: GuideRecord;
+  level?: number;
+  prereqCount: number;
+  dependentCount: number;
+}) {
+  const details = [
+    ...(guide.estimatedMinutes ? [{ icon: Clock, value: `${guide.estimatedMinutes} min`, label: 'Estimated study time' }] : []),
+    { icon: TreeStructure, value: String(level ?? 0), label: 'Knowledge depth' },
+    { icon: GitBranch, value: String(prereqCount), label: 'Prerequisites' },
+    { icon: Target, value: String(guide.evidenceCriteria.length), label: 'Learning outcomes' },
+    ...(dependentCount > 0 ? [{ icon: RocketLaunch, value: String(dependentCount), label: 'Guides this unlocks' }] : []),
+  ];
 
-  useEffect(() => {
-    if (!mounted) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [mounted, onClose]);
-
-  if (!mounted || typeof document === 'undefined' || !document.body) return null;
-
-  return createPortal(
-    <div
-      className={styles.overlay}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-    >
-      <div className={styles.overlayModal} role="dialog" aria-modal="true" aria-label="Walkthrough">
-        <div className={styles.overlayHeader}>
-          <span className={styles.overlayIconBadge}>
-            <GraduationCap size={20} weight="duotone" />
-          </span>
-          <div className={styles.overlayTitleGroup}>
-            <h2 className={styles.overlayTitle}>Walkthrough</h2>
+  return (
+    <aside className={styles.guideDetails} aria-label="Guide details">
+      <h2 className={styles.guideDetailsTitle}>Guide Details</h2>
+      <div className={styles.guideDetailsList}>
+        {details.map(({ icon: Icon, value, label }) => (
+          <div key={label} className={styles.guideDetailCard}>
+            <Icon size={20} weight="duotone" className={styles.guideDetailIcon} aria-hidden="true" />
+            <div>
+              <p className={styles.guideDetailValue}>{value}</p>
+              <p className={styles.guideDetailLabel}>{label}</p>
+            </div>
           </div>
-          <button type="button" className={styles.overlayClose} onClick={onClose} aria-label="Close walkthrough">
-            <X size={16} weight="bold" />
-          </button>
-        </div>
-        <div className={styles.overlayBody}>
-          <GuideWalkthrough slug={slug} />
-        </div>
+        ))}
       </div>
-    </div>,
-    document.body,
+    </aside>
   );
 }
 
@@ -116,6 +122,10 @@ export default function GuidePage({ params }: PageProps) {
   const [completeError, setCompleteError] = useState<string | null>(null);
   const [rewardDiamonds, setRewardDiamonds] = useState(0);
   const [showDiamondReward, setShowDiamondReward] = useState(false);
+  const orientationLines = useMemo(
+    () => (data ? buildGuideOrientationLines(data.guide, materials) : []),
+    [data, materials],
+  );
 
   // The viewer's completed guide ids gate the reading content: a higher-level
   // topic stays locked until its prerequisites are cleared. Signed-out readers
@@ -235,6 +245,7 @@ export default function GuidePage({ params }: PageProps) {
   return (
     <div className={styles.layout}>
       <SideNavigation />
+      <div className={styles.guideLayout}>
       <main className={styles.page}>
         {loading && <div className={styles.state}>Loading guide…</div>}
         {notFound && !loading && <div className={styles.state}>Guide not found.</div>}
@@ -307,11 +318,25 @@ export default function GuidePage({ params }: PageProps) {
                     setShowWalkthrough(true);
                   }}
                 >
-                  <GraduationCap size={14} weight="bold" />
                   Walkthrough
+                  <span className={styles.walkthroughOrb} aria-hidden="true">
+                    <ThinkingOrb state="solving" size={20} theme="dark" />
+                  </span>
                 </CtaButton>
               </div>
             </section>
+
+            {showWalkthrough && (
+              <BlueDialogue
+                open
+                clearBackdrop
+                title="Guide orientation"
+                subtitle={data.guide.topicTitle}
+                lines={orientationLines}
+                emotion="happy"
+                onClose={() => setShowWalkthrough(false)}
+              />
+            )}
 
             <BlueGuideCompanion guide={data.guide} prereqs={data.prereqs} />
 
@@ -471,13 +496,6 @@ export default function GuidePage({ params }: PageProps) {
               }
             />
 
-            {showWalkthrough && (
-              <WalkthroughOverlay
-                slug={data.guide.slug}
-                onClose={() => setShowWalkthrough(false)}
-              />
-            )}
-
             {showDiamondReward && (
               <DiamondReward
                 amount={rewardDiamonds}
@@ -487,6 +505,15 @@ export default function GuidePage({ params }: PageProps) {
           </>
         )}
       </main>
+      {data && !loading && (
+        <GuideDetails
+          guide={data.guide}
+          level={data.level}
+          prereqCount={data.prereqs.length}
+          dependentCount={data.dependents.length}
+        />
+      )}
+      </div>
     </div>
   );
 }

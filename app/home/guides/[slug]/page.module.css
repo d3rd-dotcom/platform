@@ -18,17 +18,84 @@
   background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1.5px);
 }
 
+.guideLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 880px) minmax(340px, 380px);
+  align-items: start;
+  gap: 32px;
+  max-width: 1360px;
+  padding: 48px;
+}
+
 .page {
   position: relative;
   z-index: 1;
   /* Left-aligned reading column — anchored to the sidebar, not centered. */
-  max-width: 880px;
+  max-width: none;
   margin: 0;
-  padding: 48px 32px 48px 48px;
+  padding: 0;
   display: flex;
   flex-direction: column;
   /* Consistent vertical rhythm between sections (28px on a 4px grid). */
   gap: 28px;
+}
+
+.guideDetails {
+  position: sticky;
+  top: 28px;
+  padding: 22px;
+  border-radius: 16px;
+  background: color-mix(in oklch, var(--color-primary) 7%, var(--color-surface-base));
+}
+
+.guideDetailsTitle {
+  margin: 0 0 16px;
+  color: var(--color-text-dark);
+  font-family: var(--font-poppins);
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-semibold, 600);
+  letter-spacing: -0.02em;
+}
+
+.guideDetailsList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.guideDetailCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--color-surface-base);
+}
+
+.guideDetailIcon {
+  flex: none;
+  color: var(--color-primary);
+}
+
+.guideDetailValue,
+.guideDetailLabel {
+  margin: 0;
+}
+
+.guideDetailValue {
+  color: var(--color-text-dark);
+  font-family: var(--font-poppins);
+  font-size: 1rem;
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 1.2;
+}
+
+.guideDetailLabel {
+  margin-top: 3px;
+  color: var(--color-text-muted);
+  font-family: var(--font-poppins);
+  font-size: 0.75rem;
+  line-height: 1.35;
 }
 
 .back {
@@ -115,9 +182,37 @@
   color: var(--color-text-muted);
 }
 
-.walkthroughCta {
+.walkthroughCta.walkthroughCta {
   margin-left: auto;
   flex-shrink: 0;
+  border: 1.5px solid color-mix(in oklch, var(--color-accent) 62%, var(--color-primary));
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    color-mix(in oklch, var(--color-accent) 72%, var(--color-primary))
+  );
+  box-shadow: 0 6px 18px color-mix(in oklch, var(--color-primary) 28%, transparent);
+}
+
+.walkthroughCta.walkthroughCta:hover:not(:disabled) {
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-hover),
+    color-mix(in oklch, var(--color-accent-hover) 74%, var(--color-primary-hover))
+  );
+  box-shadow: 0 10px 26px color-mix(in oklch, var(--color-primary) 40%, transparent);
+}
+
+.walkthroughOrb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  margin-left: 2px;
+}
+
+.walkthroughOrb canvas {
+  display: block;
 }
 
 .title {
@@ -206,6 +301,14 @@
   background: #15172a;
   border-color: color-mix(in oklch, var(--color-primary) 22%, transparent);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+:global([data-theme="dark"]) .guideDetails {
+  background: color-mix(in oklch, var(--color-primary) 12%, var(--color-surface-1));
+}
+
+:global([data-theme="dark"]) .guideDetailCard {
+  background: var(--color-surface-1);
 }
 
 @media (max-width: 640px) {
@@ -651,10 +754,29 @@
   }
 }
 
+@media (max-width: 1080px) {
+  .guideLayout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .guideDetails {
+    position: static;
+    max-width: 440px;
+  }
+}
+
 @media (max-width: 640px) {
-  .page {
+  .guideLayout {
+    gap: 24px;
     padding: 24px 16px calc(96px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .page {
     margin: 0;
+  }
+
+  .guideDetailsList {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .title {

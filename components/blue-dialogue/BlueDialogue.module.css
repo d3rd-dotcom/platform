@@ -38,6 +38,10 @@
   background: rgba(7, 9, 24, 0.6);
 }
 
+.overlayClear {
+  background: transparent;
+}
+
 .preloadImage {
   position: fixed;
   width: 1px;

@@ -63,7 +63,7 @@ export interface BlueDialogueProps {
   open: boolean;
   /** Ordered dialogue lines. The arrow advances through them; the last closes. */
   lines: string[];
-  /** Selects one of Blue's eight distinct expression portraits. */
+  /** Sets the emotional family Blue varies through as the dialogue advances. */
   emotion?: BlueEmotion;
   /** Fired on close (arrow-past-last, ESC, backdrop, or a stub button). */
   onClose: () => void;
@@ -86,6 +86,8 @@ export interface BlueDialogueProps {
    * for members who would rather not answer.
    */
   chatback?: BlueChatback;
+  /** Keep the centered popup behavior without tinting the page behind it. */
+  clearBackdrop?: boolean;
 }
 
 /**
@@ -126,6 +128,22 @@ const EXPRESSION_POSITION: Record<
   calm: { left: '-478.5%', top: '-100%' },
 };
 
+/**
+ * Each script keeps its intended emotional tone while Blue's face changes with
+ * the conversation. The first expression always matches the caller's choice;
+ * subsequent lines move through nearby reactions instead of choosing randomly.
+ */
+const EXPRESSION_SEQUENCE: Record<BlueEmotion, BlueEmotion[]> = {
+  neutral: ['neutral', 'calm', 'happy', 'surprised'],
+  happy: ['happy', 'surprised', 'calm', 'happy'],
+  sad: ['sad', 'pain', 'calm', 'neutral'],
+  angry: ['angry', 'confused', 'calm', 'angry'],
+  surprised: ['surprised', 'happy', 'confused', 'calm'],
+  confused: ['confused', 'surprised', 'neutral', 'calm'],
+  pain: ['pain', 'sad', 'calm', 'neutral'],
+  calm: ['calm', 'neutral', 'happy', 'calm'],
+};
+
 const BlueDialogue: React.FC<BlueDialogueProps> = ({
   open,
   lines,
@@ -137,6 +155,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   subtitle,
   placement: _placement = 'center',
   chatback,
+  clearBackdrop = false,
 }) => {
   const { play } = useSound();
   const overlayRef = useRef<HTMLDivElement | null>(null);
@@ -444,7 +463,9 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   }
 
   const hover = () => play('soft-hover');
-  const expressionPosition = EXPRESSION_POSITION[emotion];
+  const expressionSequence = EXPRESSION_SEQUENCE[emotion];
+  const activeEmotion = expressionSequence[safeIndex % expressionSequence.length];
+  const expressionPosition = EXPRESSION_POSITION[activeEmotion];
 
   const menuItems: { label: string; onClick: () => void }[] = [
     { label: 'History', onClick: handleHistory },
@@ -455,7 +476,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   return (
     <div
       ref={overlayRef}
-      className={`${styles.overlay} ${styles.overlayCenter}`}
+      className={`${styles.overlay} ${styles.overlayCenter} ${clearBackdrop ? styles.overlayClear : ''}`}
       role="dialog"
       aria-label="Blue dialogue"
       onClick={(e) => {
@@ -468,7 +489,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
         <div className={styles.portrait}>
           <Image
             src="/images/blue-dialogue-expressions.png"
-            alt={`Blue, ${emotion}`}
+            alt={`Blue, ${activeEmotion}`}
             width={2752}
             height={1536}
             sizes="(max-width: 560px) 1400px, 1800px"
