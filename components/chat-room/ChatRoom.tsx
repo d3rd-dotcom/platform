@@ -360,7 +360,7 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
 
-  const emojis = ['🧠', '🌍', '📚', '💎', '⚡', '🌱', '🏆', '🤝', '🕹️', '🧩', '🔥', '🚀', '💡', '🎮', '🌌', '🔮'];
+  const emojis = ['🧠', '🌍', '📚', '💎', '⚡️', '🌱', '🏆', '🤝', '🕹️', '🧩', '🔥', '🚀', '💡', '🎮', '🌌', '🔮'];
 
   const addEmoji = (emoji: string) => {
     setInput((prev) => prev + emoji);
@@ -459,7 +459,7 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
             onClick={() => setShowEmojiPicker(!showEmojiPicker)}
             aria-label="Add emoji"
           >
-            😊
+            🌍
           </button>
           {showEmojiPicker && (
             <div className={styles.emojiGrid}>

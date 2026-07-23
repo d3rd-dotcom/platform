@@ -164,7 +164,6 @@
   flex: 1;
   overflow: hidden;
   background-color: var(--color-surface-1);
-  background-image: url('/backgrounds/blue-radio-medical-reference.webp');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;

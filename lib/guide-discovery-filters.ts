@@ -2,10 +2,7 @@ export const EDUCATION_LEVELS = [
   'College',
   'High School',
   'Adult Education',
-  'Middle School',
   'Graduate & Post-Graduate',
-  'Elementary School',
-  'Pre-K',
   'Professional Development',
 ] as const;
 

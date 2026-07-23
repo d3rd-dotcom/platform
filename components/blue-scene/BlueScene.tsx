@@ -378,7 +378,7 @@ export default function BlueScene() {
           )}
         </>
       ) : (
-        <LivestreamFeed />
+        <LivestreamFeed gardenBackground={bgUrl} />
       )}
     </section>
   );

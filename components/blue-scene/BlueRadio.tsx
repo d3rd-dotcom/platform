@@ -37,7 +37,7 @@ function livePosition(): { index: number; offset: number } {
   return { index: 0, offset: 0 };
 }
 
-export default function BlueRadio() {
+export default function BlueRadio({ gardenBackground }: { gardenBackground: string }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -197,7 +197,7 @@ export default function BlueRadio() {
   const handleAvatarError = useCallback(() => setAvatarState('fallback'), []);
 
   return (
-    <div className={styles.radioStage}>
+    <div className={styles.radioStage} style={{ backgroundImage: `url(${gardenBackground})` }}>
       <div className={styles.radioBlueWrap}>
         <Image
           src="/blue/blue-home.png"

@@ -212,6 +212,7 @@
 .emojiButton {
   padding: 8px 12px;
   font-size: 1.2rem;
+  font-variant-emoji: emoji;
   background: color-mix(in oklch, var(--color-primary) 6%, transparent);
   border: 1px solid color-mix(in oklch, var(--color-primary-hover) 14%, transparent);
   border-radius: 8px;
@@ -243,6 +244,7 @@
 .emojiOption {
   padding: 6px;
   font-size: 1.2rem;
+  font-variant-emoji: emoji;
   background: transparent;
   border: 1px solid transparent;
   border-radius: 6px;
