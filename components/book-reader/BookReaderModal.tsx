@@ -266,7 +266,7 @@ const BookReaderModal: React.FC<BookReaderModalProps> = ({ isOpen, onClose, titl
               <div className={styles.commentForm}>
                 <div className={styles.commentFormAvatar}>
                   {user.avatarUrl ? (
-                    <Image src={user.avatarUrl} alt="" width={32} height={32} className={styles.avatar} />
+                    <Image src={user.avatarUrl} alt="" width={32} height={32} className={styles.avatar} unoptimized />
                   ) : (
                     <div className={styles.avatarFallback}>
                       {displayName(user.username).charAt(0).toUpperCase()}
@@ -312,7 +312,7 @@ const BookReaderModal: React.FC<BookReaderModalProps> = ({ isOpen, onClose, titl
                 <div key={c.id} className={styles.commentItem}>
                   <div className={styles.commentAvatar}>
                     {c.avatar_url ? (
-                      <Image src={c.avatar_url} alt="" width={28} height={28} className={styles.avatar} />
+                      <Image src={c.avatar_url} alt="" width={28} height={28} className={styles.avatar} unoptimized />
                     ) : (
                       <div className={styles.avatarFallbackSmall}>
                         {displayName(c.username).charAt(0).toUpperCase()}

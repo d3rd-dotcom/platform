@@ -104,7 +104,7 @@ const CreateAccountButton: React.FC = () => {
         <span className={styles.buttonText}>{me ? `Welcome ${me.username}!` : 'Create Account'}</span>
         <div className={styles.logo}>
           {me?.avatarUrl ? (
-            <Image src={me.avatarUrl} alt={me.username} width={26} height={26} className={styles.logoImg} />
+            <Image src={me.avatarUrl} alt={me.username} width={26} height={26} className={styles.logoImg} unoptimized />
           ) : (
             <div className={styles.logoFallback} />
           )}

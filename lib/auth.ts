@@ -1,5 +1,6 @@
 import { getWalletAddressFromRequest } from './wallet-auth';
 import { sqlQuery } from './db';
+import { normalizeAvatarUrl } from './axis-avatar';
 
 export type CurrentUser = {
   id: string;
@@ -31,6 +32,7 @@ export async function getCurrentUserFromRequestCookie(): Promise<CurrentUser | n
         id: string;
         username: string;
         avatar_url: string | null;
+        selected_avatar_id: string | null;
         created_at: string;
         wallet_address: string;
         shard_count: number;
@@ -38,7 +40,7 @@ export async function getCurrentUserFromRequestCookie(): Promise<CurrentUser | n
         operator_wallet: string | null;
       }>
     >(
-      `SELECT u.id, u.username, u.avatar_url, u.created_at, u.wallet_address, u.shard_count,
+      `SELECT u.id, u.username, u.avatar_url, u.selected_avatar_id, u.created_at, u.wallet_address, u.shard_count,
               u.account_type, u.operator_wallet
        FROM users u
        WHERE LOWER(u.wallet_address) = LOWER(:walletAddress)
@@ -55,7 +57,7 @@ export async function getCurrentUserFromRequestCookie(): Promise<CurrentUser | n
     return {
       id: user.id,
       username: user.username,
-      avatarUrl: user.avatar_url,
+      avatarUrl: normalizeAvatarUrl(user.avatar_url, user.selected_avatar_id || `${user.id}#0`),
       createdAt: user.created_at,
       walletAddress: user.wallet_address,
       shardCount: user.shard_count,

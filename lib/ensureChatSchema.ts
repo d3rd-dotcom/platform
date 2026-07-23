@@ -34,6 +34,13 @@ export async function ensureChatSchema() {
          ON chat_messages (created_at DESC)`,
         {}
       );
+      await sqlQuery(
+        `UPDATE chat_messages
+         SET avatar_url = '/api/avatars/render?seed=' || substring(avatar_url FROM '[?&]seed=([^&]+)')
+         WHERE avatar_url LIKE 'https://api.dicebear.com/%'
+           AND substring(avatar_url FROM '[?&]seed=([^&]+)') IS NOT NULL`,
+        {}
+      );
       globalThis.__mwaChatSchemaEnsured = true;
     } finally {
       globalThis.__mwaChatSchemaLock = undefined;

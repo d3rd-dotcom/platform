@@ -348,7 +348,7 @@ export default function GuidebookPage() {
           <Li>On first connection, you&apos;ll be prompted to:
             <Ul>
               <Li>Choose a <Strong>username</Strong></Li>
-              <Li>Select an <Strong>avatar</Strong> from 5 generated options</Li>
+              <Li>Select an <Strong>avatar</Strong> from 6 generated options</Li>
               <Li>Complete your <Strong>profile setup</Strong></Li>
             </Ul>
           </Li>

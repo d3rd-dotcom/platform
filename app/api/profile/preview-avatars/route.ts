@@ -1,7 +1,7 @@
 /**
  * POST /api/profile/preview-avatars
  *
- * Returns 6 deterministically assigned toon avatars for a NEW user during onboarding.
+ * Returns 6 deterministically assigned three-axis avatars for a new user during onboarding.
  * This endpoint does NOT require authentication as it's used during signup.
  *
  * Body:

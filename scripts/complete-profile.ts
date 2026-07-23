@@ -3,7 +3,7 @@
  * 
  * This script will:
  * 1. Get the current user from session
- * 2. Generate 5 assigned avatars based on user ID
+ * 2. Generate 6 assigned avatars based on user ID
  * 3. Randomly select one avatar
  * 4. Update username to "jhinn" and set the selected avatar
  * 
@@ -75,7 +75,7 @@ async function completeProfile() {
     console.log(`  Current username: ${user.username}`);
 
 
-    // Get 5 assigned avatars for this user (deterministic based on user ID)
+    // Get 6 assigned avatars for this user (deterministic based on user ID)
     const assignedAvatars = await getAssignedAvatars(userId);
     console.log(`\nAssigned avatars (5 total):`);
     assignedAvatars.forEach((avatar, index) => {
@@ -124,7 +124,7 @@ async function completeProfile() {
         }
       );
 
-      // Store all 5 avatar choices
+      // Store all 6 avatar choices
       for (const avatar of assignedAvatars) {
         await sqlQueryWithClient(
           client,
@@ -160,4 +160,3 @@ async function completeProfile() {
 
 // Run the script
 completeProfile();
-

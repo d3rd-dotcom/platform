@@ -265,7 +265,7 @@ export async function POST(request: Request) {
         shardCount: WELCOME_SHARDS,
       });
 
-      // Store all 5 avatar choices for this user (only if not existing profile or if we want to refresh)
+      // Store all 6 avatar choices for this user.
       if (!hasExistingProfile) {
         const assignedAvatarsForDb = await getAssignedAvatars(userId, avatarRerollCount);
         for (const assignedAvatar of assignedAvatarsForDb) {

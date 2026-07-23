@@ -92,7 +92,7 @@ async function _ensureForumSchemaImpl() {
     }
   }
 
-  // Migration: widen avatar_url from VARCHAR(1024) to TEXT for SVG data URIs
+  // Keep avatar_url flexible for same-origin generated avatars and uploaded images.
   try {
     await sqlQuery(`ALTER TABLE users ALTER COLUMN avatar_url TYPE TEXT`);
   } catch (err: any) {
@@ -454,7 +454,7 @@ async function _ensureForumSchemaImpl() {
   }
 
 
-  // User avatars table - stores the 5 assigned avatars for each user
+  // User avatars table - stores the 6 assigned avatars for each user
   await sqlQuery(`
     CREATE TABLE IF NOT EXISTS user_avatars (
       id CHAR(36) PRIMARY KEY,
@@ -468,7 +468,7 @@ async function _ensureForumSchemaImpl() {
     )
   `);
 
-  // Migration: widen user_avatars.avatar_url from VARCHAR(1024) to TEXT
+  // Keep generated and uploaded avatar locations untruncated.
   try {
     await sqlQuery(`ALTER TABLE user_avatars ALTER COLUMN avatar_url TYPE TEXT`);
   } catch (err: any) {
@@ -480,5 +480,23 @@ async function _ensureForumSchemaImpl() {
     await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_user_avatars_selected ON user_avatars(user_id, is_selected) WHERE is_selected = true`);
   } catch (err: any) {
     // Indexes might already exist
+  }
+
+  // Data migration: generated avatars are now served by the app-owned
+  // three-axis renderer. Custom uploads and Academic Angels are untouched.
+  try {
+    await sqlQuery(`
+      UPDATE users
+      SET avatar_url = '/api/avatars/render?seed=' || replace(selected_avatar_id, '#', '%23')
+      WHERE selected_avatar_id IS NOT NULL
+        AND avatar_url LIKE 'https://api.dicebear.com/%'
+    `);
+    await sqlQuery(`
+      UPDATE user_avatars
+      SET avatar_url = '/api/avatars/render?seed=' || replace(avatar_id, '#', '%23')
+      WHERE avatar_url LIKE 'https://api.dicebear.com/%'
+    `);
+  } catch (err: any) {
+    console.warn('Migration: could not move generated avatars to the three-axis renderer:', err?.message);
   }
 }

@@ -5,6 +5,7 @@ import { usePrivy } from '@privy-io/react-auth';
 import { getSupabase } from '@/lib/supabase';
 import type { RealtimeChannel } from '@supabase/supabase-js';
 import { useSound } from '@/hooks/useSound';
+import { normalizeAvatarUrl } from '@/lib/axis-avatar';
 import styles from './ChatRoom.module.css';
 
 interface ChatMessage {
@@ -18,11 +19,13 @@ interface ChatMessage {
 }
 
 function mapMessage(row: Record<string, unknown>): ChatMessage {
+  const userId = (row.user_id ?? row.userId) as string;
+  const storedAvatarUrl = ((row.avatar_url ?? row.avatarUrl) as string | null) ?? null;
   return {
     id: row.id as number,
-    userId: (row.user_id ?? row.userId) as string,
+    userId,
     username: row.username as string,
-    avatarUrl: ((row.avatar_url ?? row.avatarUrl) as string | null) ?? null,
+    avatarUrl: normalizeAvatarUrl(storedAvatarUrl, `${userId}#0`),
     message: row.message as string,
     type: (row.type as 'user' | 'system') ?? 'user',
     createdAt: (row.created_at ?? row.createdAt) as string,
@@ -224,15 +227,7 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
           { event: 'INSERT', schema: 'public', table: 'chat_messages' },
           (payload) => {
             const msg = payload.new as Record<string, unknown>;
-            const mapped: ChatMessage = {
-              id: msg.id as number,
-              userId: msg.user_id as string,
-              username: msg.username as string,
-              avatarUrl: (msg.avatar_url as string) ?? null,
-              message: msg.message as string,
-              type: (msg.type as 'user' | 'system') ?? 'user',
-              createdAt: msg.created_at as string,
-            };
+            const mapped = mapMessage(msg);
             setMessages((prev) => {
               if (prev.some((m) => m.id === mapped.id)) return prev;
               return [...prev, mapped];

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useAccount } from 'wagmi';
 import { usePrivy } from '@privy-io/react-auth';
 import { setStorageItem } from '@/lib/safe-storage';
+import { buildAxisAvatarUrl } from '@/lib/axis-avatar';
 import { useDevOnboarding, getDevWallet } from '@/components/useDevMode';
 import styles from './OnboardingModal.module.css';
 
@@ -126,14 +127,10 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
       setAvatarError(null);
       try {
         if (forceReady) {
-          setAvatars([
-            { id: 'preview#0', image_url: 'https://api.dicebear.com/10.x/shape-grid/svg?seed=preview%230', metadata_url: '' },
-            { id: 'preview#1', image_url: 'https://api.dicebear.com/10.x/shape-grid/svg?seed=preview%231', metadata_url: '' },
-            { id: 'preview#2', image_url: 'https://api.dicebear.com/10.x/shape-grid/svg?seed=preview%232', metadata_url: '' },
-            { id: 'preview#3', image_url: 'https://api.dicebear.com/10.x/shape-grid/svg?seed=preview%233', metadata_url: '' },
-            { id: 'preview#4', image_url: 'https://api.dicebear.com/10.x/shape-grid/svg?seed=preview%234', metadata_url: '' },
-            { id: 'preview#5', image_url: 'https://api.dicebear.com/10.x/shape-grid/svg?seed=preview%235', metadata_url: '' },
-          ]);
+          setAvatars(Array.from({ length: 6 }, (_, index) => {
+            const id = `preview#${index}`;
+            return { id, image_url: buildAxisAvatarUrl(id), metadata_url: '' };
+          }));
           setLoadingAvatars(false);
           return;
         }
@@ -217,7 +214,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
         setUsername('preview_user');
         setGender('female');
         setBirthday('2000-01-15');
-        setSelectedAvatarId('avatar-1');
+        setSelectedAvatarId('preview#0');
         setUsernameAvailable(true);
         setCheckingUsername(false);
       } else {

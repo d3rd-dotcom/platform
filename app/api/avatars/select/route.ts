@@ -1,7 +1,7 @@
 /**
  * POST /api/avatars/select
  * 
- * Allows a user to select one of their 5 assigned avatars.
+ * Allows a user to select one of their 6 assigned avatars.
  * The server RECOMPUTES the user's assigned avatars and validates
  * that the selected avatar_id is in that set - this prevents spoofing.
  */
@@ -141,4 +141,3 @@ export async function POST(request: Request) {
     );
   }
 }
-

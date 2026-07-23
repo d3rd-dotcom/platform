@@ -21,7 +21,8 @@ CREATE TABLE users (
   email VARCHAR(255) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
   selected_avatar_id VARCHAR(50) NULL,
-  avatar_url VARCHAR(1024) NULL,
+  avatar_url TEXT NULL,
+  avatar_reroll_count INTEGER NOT NULL DEFAULT 0,
   gender VARCHAR(10) NULL,
   birthday DATE NULL,
   shard_count INTEGER NOT NULL DEFAULT 0,
@@ -31,13 +32,13 @@ CREATE TABLE users (
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- User avatars table - Stores all 5 assigned avatars per user
+-- User avatars table - Stores all 6 assigned avatars per user
 -- Allows users to switch between their assigned avatars later
 CREATE TABLE user_avatars (
   id CHAR(36) PRIMARY KEY DEFAULT gen_random_uuid()::text,
   user_id CHAR(36) NOT NULL,
   avatar_id VARCHAR(50) NOT NULL,
-  avatar_url VARCHAR(1024) NOT NULL,
+  avatar_url TEXT NOT NULL,
   is_selected BOOLEAN NOT NULL DEFAULT false,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
