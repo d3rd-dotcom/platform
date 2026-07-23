@@ -1,4 +1,12 @@
 import { sqlQuery, sqlQueryWithClient, withTransaction } from './db';
+import { ensureGuidesSchema } from './ensureGuidesSchema';
+import {
+  cleanDiscoveryTags,
+  isEducationLevel,
+  isGuideGoal,
+  type EducationLevel,
+  type GuideGoal,
+} from './guide-discovery-filters';
 import {
   GUIDE_COMPLETE_REWARD,
   LEVEL_CLEAR_REWARD,
@@ -34,6 +42,8 @@ export interface GuideRecord {
   topicAliases: string[];
   summary: string;
   intendedAudience: string;
+  educationLevels: EducationLevel[];
+  goals: GuideGoal[];
   estimatedMinutes: number | null;
   sourceProvenance: string;
   sourceReviewedAt: string | null;
@@ -146,6 +156,8 @@ interface GuideRow {
   topic_title: string;
   summary: string | null;
   intended_audience: string | null;
+  education_levels: string[] | null;
+  goals: string[] | null;
   estimated_minutes: number | null;
   source_provenance: string | null;
   source_reviewed_at: string | null;
@@ -235,6 +247,8 @@ function toGuide(
     topicAliases,
     summary: row.summary?.trim() ?? '',
     intendedAudience: row.intended_audience?.trim() ?? '',
+    educationLevels: cleanDiscoveryTags(row.education_levels ?? [], isEducationLevel),
+    goals: cleanDiscoveryTags(row.goals ?? [], isGuideGoal),
     estimatedMinutes:
       row.estimated_minutes === null || row.estimated_minutes === undefined
         ? null
@@ -353,6 +367,7 @@ async function getTopicAliasesForGuides(guideIds: string[]): Promise<Map<string,
 // ── Reads ────────────────────────────────────────────────────────────────────
 
 export async function getGuideBySlug(slug: string): Promise<GuideRecord | null> {
+  await ensureGuidesSchema();
   const rows = await sqlQuery<GuideRow[]>(
     `SELECT * FROM guides WHERE slug = :slug`,
     { slug },
@@ -377,6 +392,7 @@ export async function listGuides(filter?: {
   statuses?: GuideStatus[];
   authorId?: string;
 }): Promise<GuideRecord[]> {
+  await ensureGuidesSchema();
   const clauses: string[] = [];
   const params: Record<string, unknown> = {};
 
@@ -537,6 +553,8 @@ export async function createGuide(input: {
   topicAliases?: string[];
   summary?: string;
   intendedAudience?: string;
+  educationLevels?: EducationLevel[];
+  goals?: GuideGoal[];
   estimatedMinutes?: number | null;
   sourceProvenance?: string;
   sourceReviewedAt?: string | null;
@@ -546,6 +564,7 @@ export async function createGuide(input: {
   evidenceCriteria?: string[];
   subjectIds?: string[];
 }): Promise<GuideRecord> {
+  await ensureGuidesSchema();
   // NULL (not an empty array) when no criteria are supplied, keeping the column's
   // "author hasn't set these yet" semantics distinct from "set to none".
   const criteria =
@@ -558,6 +577,8 @@ export async function createGuide(input: {
        topic_title,
        summary,
        intended_audience,
+       education_levels,
+       goals,
        estimated_minutes,
        source_provenance,
        source_reviewed_at,
@@ -571,6 +592,8 @@ export async function createGuide(input: {
        :topicTitle,
        :summary,
        :intendedAudience,
+       :educationLevels,
+       :goals,
        :estimatedMinutes,
        :sourceProvenance,
        :sourceReviewedAt,
@@ -585,6 +608,8 @@ export async function createGuide(input: {
       topicTitle: input.topicTitle,
       summary: input.summary?.trim() || null,
       intendedAudience: input.intendedAudience?.trim() || null,
+      educationLevels: cleanDiscoveryTags(input.educationLevels, isEducationLevel),
+      goals: cleanDiscoveryTags(input.goals, isGuideGoal),
       estimatedMinutes: input.estimatedMinutes ?? null,
       sourceProvenance: input.sourceProvenance?.trim() || null,
       sourceReviewedAt: input.sourceReviewedAt ?? null,
@@ -625,6 +650,8 @@ export async function updateGuide(input: {
   topicAliases?: string[];
   summary?: string;
   intendedAudience?: string;
+  educationLevels?: EducationLevel[];
+  goals?: GuideGoal[];
   estimatedMinutes?: number | null;
   sourceProvenance?: string;
   sourceReviewedAt?: string | null;
@@ -633,6 +660,7 @@ export async function updateGuide(input: {
   subjectIds?: string[];
   evidenceCriteria?: string[];
 }): Promise<GuideRecord> {
+  await ensureGuidesSchema();
   const sets: string[] = [];
   const params: Record<string, unknown> = { id: input.id };
 
@@ -647,6 +675,14 @@ export async function updateGuide(input: {
   if (typeof input.intendedAudience === 'string') {
     sets.push('intended_audience = :intendedAudience');
     params.intendedAudience = input.intendedAudience.trim() || null;
+  }
+  if (input.educationLevels !== undefined) {
+    sets.push('education_levels = :educationLevels');
+    params.educationLevels = cleanDiscoveryTags(input.educationLevels, isEducationLevel);
+  }
+  if (input.goals !== undefined) {
+    sets.push('goals = :goals');
+    params.goals = cleanDiscoveryTags(input.goals, isGuideGoal);
   }
   if (input.estimatedMinutes !== undefined) {
     sets.push('estimated_minutes = :estimatedMinutes');

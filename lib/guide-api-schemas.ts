@@ -15,6 +15,7 @@
  * dropping or reshaping a field the client already consumes.
  */
 import { z } from 'zod';
+import { EDUCATION_LEVELS, GUIDE_GOALS } from './guide-discovery-filters';
 import { RUBRIC_REASONS } from './guide-votes-db';
 import type { GuideStatus } from './guides-db';
 
@@ -63,6 +64,8 @@ export const createGuideBodySchema = z.object({
   topicAliases: z.array(z.string()).max(12).optional(),
   summary: z.string().max(280).optional(),
   intendedAudience: z.string().max(280).optional(),
+  educationLevels: z.array(z.enum(EDUCATION_LEVELS)).optional(),
+  goals: z.array(z.enum(GUIDE_GOALS)).optional(),
   estimatedMinutes: z.number().int().min(1).max(600).nullable().optional(),
   sourceProvenance: z.string().max(4000).optional(),
   sourceReviewedAt: z.string().date().nullable().optional(),

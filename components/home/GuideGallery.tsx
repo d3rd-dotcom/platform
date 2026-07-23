@@ -1,14 +1,21 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { Check } from '@phosphor-icons/react';
 import type { GuideRecord } from '@/lib/guides-db';
 import { getWellbeingDomain } from '@/lib/wellbeing-domains';
+import { EDUCATION_LEVELS, GUIDE_GOALS, type EducationLevel, type GuideGoal } from '@/lib/guide-discovery-filters';
 import { useSound } from '@/hooks/useSound';
 import styles from './GuideGallery.module.css';
 
-const ALL_TAB = 'All';
 const NO_SUBJECT = 'General';
+const GUIDES_PER_PAGE = 12;
+
+export type GuideFilterState = {
+  educationLevels: EducationLevel[];
+  goals: GuideGoal[];
+};
 
 /** Deterministic 32-bit hash of a string — stable seed per guide. */
 function hashSeed(value: string): number {
@@ -156,57 +163,125 @@ function GuideGalleryCard({ guide }: { guide: GuideRecord }) {
   );
 }
 
-export default function GuideGallery({ guides }: { guides: GuideRecord[] }) {
-  const { play } = useSound();
-  const [activeTab, setActiveTab] = useState(ALL_TAB);
-
-  // Distinct subjects across the published set, in alphabetical order, with an
-  // "All" tab pinned first. A guide with no subject falls under "General".
-  const subjects = useMemo(() => {
-    const seen = new Set<string>();
-    for (const g of guides) {
-      if (g.subjects.length === 0) seen.add(NO_SUBJECT);
-      for (const s of g.subjects) seen.add(s);
-    }
-    return [ALL_TAB, ...Array.from(seen).sort((a, b) => a.localeCompare(b))];
-  }, [guides]);
+export default function GuideGallery({ guides, filters }: { guides: GuideRecord[]; filters: GuideFilterState }) {
+  const [page, setPage] = useState(1);
 
   const visibleGuides = useMemo(() => {
-    if (activeTab === ALL_TAB) return guides;
-    if (activeTab === NO_SUBJECT) return guides.filter((g) => g.subjects.length === 0);
-    return guides.filter((g) => g.subjects.includes(activeTab));
-  }, [guides, activeTab]);
+    return guides.filter((guide) =>
+      (filters.educationLevels.length === 0 || filters.educationLevels.some((level) => guide.educationLevels.includes(level)))
+      && (filters.goals.length === 0 || filters.goals.some((goal) => guide.goals.includes(goal))),
+    );
+  }, [guides, filters]);
+
+  const pageCount = Math.ceil(visibleGuides.length / GUIDES_PER_PAGE);
+  const currentPage = Math.min(page, Math.max(pageCount, 1));
+  const pageStart = (currentPage - 1) * GUIDES_PER_PAGE;
+  const pageGuides = visibleGuides.slice(pageStart, pageStart + GUIDES_PER_PAGE);
+  const leadingPages = Array.from({ length: Math.min(3, pageCount) }, (_, index) => index + 1);
+
+  useEffect(() => {
+    setPage(1);
+  }, [filters.educationLevels, filters.goals]);
 
   if (guides.length === 0) return null;
 
   return (
     <div className={styles.gallery}>
-      <div className={styles.tabs} role="tablist" aria-label="Filter guides by subject">
-        {subjects.map((subject) => {
-          const isActive = subject === activeTab;
-          return (
-            <button
-              key={subject}
-              type="button"
-              role="tab"
-              aria-selected={isActive}
-              className={`${styles.tab} ${isActive ? styles.tabActive : ''}`}
-              onClick={() => {
-                if (!isActive) play('soft-hover');
-                setActiveTab(subject);
-              }}
-            >
-              {subject}
+      <div className={styles.results}>
+        <div className={styles.grid}>
+          {pageGuides.map((guide) => (
+            <GuideGalleryCard key={guide.id} guide={guide} />
+          ))}
+        </div>
+        {visibleGuides.length === 0 && <p className={styles.empty}>No guides match these filters yet.</p>}
+        {pageCount > 1 && (
+          <nav className={styles.pagination} aria-label="Guide pages">
+            <button type="button" className={styles.paginationButton} onClick={() => setPage(currentPage - 1)} disabled={currentPage === 1}>
+              Previous
             </button>
-          );
-        })}
-      </div>
-
-      <div className={styles.grid}>
-        {visibleGuides.map((guide) => (
-          <GuideGalleryCard key={guide.id} guide={guide} />
-        ))}
+            <div className={styles.paginationPages}>
+              {leadingPages.map((pageNumber) => (
+                <button
+                  key={pageNumber}
+                  type="button"
+                  className={`${styles.paginationPageButton} ${pageNumber === currentPage ? styles.paginationPageButtonActive : ''}`}
+                  onClick={() => setPage(pageNumber)}
+                  aria-current={pageNumber === currentPage ? 'page' : undefined}
+                >
+                  {pageNumber}
+                </button>
+              ))}
+              {pageCount > 4 && <span className={styles.paginationEllipsis} aria-hidden="true">…</span>}
+              {pageCount > 3 && (
+                <button
+                  type="button"
+                  className={`${styles.paginationPageButton} ${pageCount === currentPage ? styles.paginationPageButtonActive : ''}`}
+                  onClick={() => setPage(pageCount)}
+                  aria-current={pageCount === currentPage ? 'page' : undefined}
+                >
+                  {pageCount}
+                </button>
+              )}
+            </div>
+            <button type="button" className={styles.paginationButton} onClick={() => setPage(currentPage + 1)} disabled={currentPage === pageCount}>
+              Next
+            </button>
+          </nav>
+        )}
       </div>
     </div>
+  );
+}
+
+export function GuideFilterSidebar({ filters, onChange }: {
+  filters: GuideFilterState;
+  onChange: (filters: GuideFilterState) => void;
+}) {
+  return (
+    <div className={styles.filters} aria-label="Guide filters">
+      <FilterGroup
+        label="Education level"
+        options={EDUCATION_LEVELS}
+        selected={filters.educationLevels}
+        onChange={(educationLevels) => onChange({ ...filters, educationLevels })}
+      />
+      <FilterGroup
+        label="Goals"
+        options={GUIDE_GOALS}
+        selected={filters.goals}
+        onChange={(goals) => onChange({ ...filters, goals })}
+      />
+    </div>
+  );
+}
+
+function FilterGroup<T extends string>({ label, options, selected, onChange }: {
+  label: string;
+  options: readonly T[];
+  selected: T[];
+  onChange: (next: T[]) => void;
+}) {
+  const { play } = useSound();
+  const toggle = (value: T) => {
+    onChange(selected.includes(value) ? selected.filter((item) => item !== value) : [...selected, value]);
+    play('soft-hover');
+  };
+  return (
+    <section className={styles.filterGroup}>
+      <h2 className={styles.filterTitle}>{label}</h2>
+      <button type="button" className={styles.filterOption} onClick={() => onChange([])} aria-pressed={selected.length === 0}>
+        <span className={`${styles.checkmark} ${selected.length === 0 ? styles.checkmarkSelected : ''}`}>{selected.length === 0 && <Check size={13} weight="bold" />}</span>
+        All
+      </button>
+      {options.map((option) => {
+        const active = selected.includes(option);
+        return (
+          <button key={option} type="button" className={styles.filterOption} onClick={() => toggle(option)} aria-pressed={active}>
+            <span className={`${styles.checkmark} ${active ? styles.checkmarkSelected : ''}`}>{active && <Check size={13} weight="bold" />}</span>
+            {option}
+          </button>
+        );
+      })}
+    </section>
   );
 }

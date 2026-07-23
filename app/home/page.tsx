@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
-import { Plus, TreeStructure, Feather } from '@phosphor-icons/react';
+import { Plus, TreeStructure, Feather, Star } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import { scriptForWeek, WEEKLY_SEEN_KEY } from '@/components/daily-read/weeklyScripts';
@@ -16,8 +16,9 @@ import DailyNotes from '@/components/daily-notes/DailyNotes';
 import FieldNotesSheet from '@/components/home/FieldNotesSheet';
 import FolderCardWrapper from '@/components/home/FolderCardWrapper';
 import HomeLeaderboard from '@/components/home/HomeLeaderboard';
-import GuideGallery from '@/components/home/GuideGallery';
+import GuideGallery, { GuideFilterSidebar, type GuideFilterState } from '@/components/home/GuideGallery';
 import FeatureTour from '@/components/feature-tour/FeatureTour';
+import CtaButton from '@/components/shared/CtaButton';
 
 import type { CourseData } from '@/lib/personal-course';
 import { onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
@@ -113,10 +114,11 @@ function dialogueIndexForDate(dateKey: string): number {
 
 export default function HomePage() {
   const learnOnly = usePathname() === '/learn';
-  const { ready, authenticated, getAccessToken } = usePrivy();
+  const { ready, authenticated, getAccessToken, login } = usePrivy();
   const [personalCourse, setPersonalCourse] = useState<CourseData | null>(null);
   const [academyCourses, setAcademyCourses] = useState<CourseRecord[]>([]);
   const [guides, setGuides] = useState<GuideRecord[]>([]);
+  const [guideFilters, setGuideFilters] = useState<GuideFilterState>({ educationLevels: [], goals: [] });
   const [myGuides, setMyGuides] = useState<GuideRecord[]>([]);
   const [guideProgress, setGuideProgress] = useState<{
     totalGuides: number;
@@ -403,6 +405,45 @@ export default function HomePage() {
     <div className={`${styles.layout} ${learnOnly ? styles.learnLayout : ''}`}>
       <SideNavigation />
       <main className={styles.pageColumns}>
+      {learnOnly && (
+        <section className={styles.learnOverview}>
+          <h1 className={styles.learnOverviewTitle}>Digital Courses, Guides, &amp; Test Curricula</h1>
+          <div className={styles.learnOverviewMetrics}>
+            <span className={styles.learnOverviewStars} aria-label="5 out of 5 stars">
+              {Array.from({ length: 5 }, (_, index) => <Star key={index} size={15} weight="fill" />)}
+            </span>
+            <span>{guideProgress?.completedGuides ?? 0} guides complete</span>
+            <span className={styles.learnOverviewCredits}>
+              <Image src="/icons/ui-diamond.svg" alt="" width={16} height={16} />
+              {guideProgress?.totalDiamondsEarned ?? 0} credits
+            </span>
+            <CtaButton href="#learn-reviews" variant="secondary" size="sm" className={styles.learnReviewsButton}>
+              See reviews
+            </CtaButton>
+          </div>
+          <div id="learn-reviews" className={styles.learnOverviewRating}>
+            <span>5 out of 5 stars based on 2,421 reviews by</span>
+            <Image src="/blue/blue-home.png" alt="Blue" width={18} height={18} className={styles.learnOverviewBlue} />
+            <span>Blue</span>
+          </div>
+          <div className={styles.learnOverviewBody}>
+            <p className={styles.learnOverviewCopy}>
+              Mental Wealth Academy&apos;s self-paced courses, guides, and practice curricula give autodidacts clearer learning paths through current knowledge. Teachers and researchers curate focused lessons for the next generation of education. Use them to strengthen coursework, study for assessments, and understand difficult concepts in a fast, engaging format.
+              <br />
+              <br />
+              Browse or filter through the guides below to find one you want to use. See for yourself why academics choose Mental Wealth Academy.
+            </p>
+            <aside className={styles.learnAccountCard}>
+              <TreeStructure size={88} weight="thin" className={styles.learnAccountMark} aria-hidden="true" />
+              <p className={styles.learnAccountTitle}>Easily Become a Master</p>
+              <p className={styles.learnAccountCopy}>Read short, fun guides by amazing humans.</p>
+              <CtaButton variant="ghost" size="sm" block className={styles.learnAccountCta} onClick={() => login()}>
+                Create an Account
+              </CtaButton>
+            </aside>
+          </div>
+        </section>
+      )}
       <div className={styles.globalPanel}>
       <div className={styles.panelHeader}>
         <span className={styles.panelTitleJa}>知識</span>
@@ -536,31 +577,8 @@ export default function HomePage() {
         )}
 
         {learnOnly && (guides.length > 0 || (authenticated && (isVip || myGuides.length > 0))) && (
-          <div className={styles.guideSection}>
+          <>
             <div className={styles.guideSectionContent}>
-              {guideProgress && authenticated && (
-                <div className={styles.guideProgressCard}>
-                  <div className={styles.guideProgressStats}>
-                    <span className={styles.guideProgressStat}>
-                      <span className={styles.guideProgressNum}>{guideProgress.completedGuides}</span>
-                      <span className={styles.guideProgressLabel}>of {guideProgress.totalGuides} guides complete</span>
-                    </span>
-                    <span className={styles.guideProgressStat}>
-                      <span className={styles.guideProgressNum}>{guideProgress.totalDiamondsEarned}</span>
-                      <span className={styles.guideProgressLabel}>diamonds earned</span>
-                    </span>
-                  </div>
-                  {guideProgress.totalGuides > 0 && (
-                    <div className={styles.guideProgressTrack}>
-                      <div
-                        className={styles.guideProgressFill}
-                        style={{ width: `${(guideProgress.completedGuides / guideProgress.totalGuides) * 100}%` }}
-                      />
-                    </div>
-                  )}
-                </div>
-              )}
-
               {guides.length > 0 && (
                 <Link
                   href="/learn/guides/map"
@@ -572,7 +590,7 @@ export default function HomePage() {
                 </Link>
               )}
 
-              <GuideGallery guides={guides} />
+              <GuideGallery guides={guides} filters={guideFilters} />
 
               {authenticated && frontierGuides && frontierGuides.length > 0 && (
                 <div className={styles.guideSubjectGroup}>
@@ -685,7 +703,7 @@ export default function HomePage() {
               )}
             </div>
             <div className={styles.guideSectionFooter}>guides & references</div>
-          </div>
+          </>
         )}
 
       </div>
@@ -762,6 +780,11 @@ export default function HomePage() {
         </section>
       )}
       </div>
+      {learnOnly && (
+        <aside className={styles.learnFiltersPanel}>
+          <GuideFilterSidebar filters={guideFilters} onChange={setGuideFilters} />
+        </aside>
+      )}
       </main>
 
       {!learnOnly && fieldNotesOpen && <FieldNotesSheet onClose={() => setFieldNotesOpen(false)} />}

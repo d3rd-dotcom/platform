@@ -95,6 +95,8 @@ export async function POST(request: Request) {
       topicAliases: body.topicAliases,
       summary: body.summary,
       intendedAudience: body.intendedAudience,
+      educationLevels: body.educationLevels,
+      goals: body.goals,
       estimatedMinutes: body.estimatedMinutes,
       sourceProvenance: body.sourceProvenance,
       sourceReviewedAt: body.sourceReviewedAt,

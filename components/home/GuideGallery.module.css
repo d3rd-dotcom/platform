@@ -1,44 +1,80 @@
 .gallery {
+  min-width: 0;
+}
+
+.filters {
+  align-self: start;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 22px;
+  padding: 4px 18px 4px 0;
 }
 
-/* ── Subject tabs ───────────────────────────────────────────────────────── */
-.tabs {
+.filterGroup {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 6px;
-  padding: 5px;
-  border-radius: 14px;
-  border: 1.5px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
-  background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-base));
 }
 
-.tab {
-  padding: 7px 15px;
-  border: none;
-  border-radius: 9999px;
+.filterTitle {
+  margin: 0 0 3px;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-style: italic;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.filterOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 2px 0;
+  border: 0;
   background: transparent;
-  font-family: var(--font-primary);
-  font-size: 0.8125rem;
-  font-weight: 600;
   color: var(--color-text-muted);
   cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: left;
 }
 
-.tab:hover {
+.filterOption:hover,
+.filterOption[aria-pressed="true"] {
   color: var(--color-primary);
-  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
 }
 
-.tabActive,
-.tabActive:hover {
+.filterTitle + .filterOption {
+  width: 100%;
+  margin-bottom: 4px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+}
+
+.checkmark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 15px;
+  height: 15px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 35%, transparent);
+  border-radius: 4px;
   color: var(--color-text-light);
+}
+
+.checkmarkSelected {
   background: var(--color-primary);
-  box-shadow: 0 2px 0 var(--color-primary-hover);
+  border-color: var(--color-primary);
+}
+
+.results {
+  min-width: 0;
 }
 
 /* ── Card grid ──────────────────────────────────────────────────────────── */
@@ -46,6 +82,94 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
   gap: 14px;
+}
+
+.empty {
+  margin: 24px 0 0;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.paginationButton {
+  min-height: 44px;
+  padding: 0 20px;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 28%, transparent);
+  border-radius: 8px;
+  background: var(--color-surface-base);
+  color: var(--color-primary);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.paginationButton:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-base));
+}
+
+.paginationButton:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.paginationButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.paginationPages {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.paginationPageButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  min-height: 36px;
+  padding: 0;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 28%, transparent);
+  border-radius: 7px;
+  background: var(--color-surface-base);
+  color: var(--color-primary);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.paginationPageButton:hover,
+.paginationPageButtonActive {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-text-light);
+}
+
+.paginationPageButton:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.paginationEllipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 600;
 }
 
 .card {
@@ -204,9 +328,14 @@
 
 /* ── Dark theme: only the surface tints need a nudge; text + shadows already
    adapt through their tokens. ──────────────────────────────────────────── */
-:global([data-theme="dark"]) .tabs {
-  background: color-mix(in oklch, var(--color-primary) 10%, var(--color-surface-1));
-  border-color: color-mix(in oklch, var(--color-primary-hover) 22%, transparent);
+@media (max-width: 760px) {
+  .filters {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    padding: 0 0 16px;
+    border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  }
 }
 
 :global([data-theme="dark"]) .card {

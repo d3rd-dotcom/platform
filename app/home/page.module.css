@@ -52,6 +52,42 @@
     0 6px 3px rgba(0, 0, 0, 0.22);
 }
 
+.learnLayout .globalPanel {
+  background-color: var(--palette-on-dark);
+}
+
+.learnLayout .pageColumns {
+  padding: 40px 48px 24px;
+}
+
+:global([data-theme="dark"]) .learnLayout .globalPanel {
+  background-color: var(--color-surface-3);
+}
+
+.learnLayout .globalPanel {
+  grid-column: 4 / -1;
+  grid-row: 2;
+}
+
+.learnFiltersPanel {
+  grid-column: 1 / 4;
+  grid-row: 2;
+  align-self: start;
+  margin-right: 24px;
+  padding: 18px 16px;
+  border: 2px solid var(--color-primary-hover);
+  border-radius: 18px;
+  background: var(--palette-on-dark);
+  box-shadow:
+    0 4px 0 var(--color-primary),
+    var(--shadow-lg);
+}
+
+:global([data-theme="dark"]) .learnFiltersPanel {
+  background: var(--color-surface-3);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 40%, transparent);
+}
+
 .panelHeader {
   display: flex;
   align-items: center;
@@ -1135,6 +1171,165 @@
   gap: 8px;
 }
 
+/* On Learn, guide content sits directly in the page panel. The former
+   guide-section card added a second border and background around it. */
+.learnLayout .guideSectionContent,
+.learnLayout .guideSectionFooter {
+  grid-column: 1 / -1;
+}
+
+.learnLayout .guideSectionContent {
+  padding-top: 20px;
+}
+
+.learnOverview {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 4px 0 20px;
+}
+
+.learnOverviewTitle {
+  margin: 0;
+  color: var(--color-text-dark);
+  font-family: var(--font-mono);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+.learnOverviewMetrics,
+.learnOverviewRating {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.learnOverviewRating {
+  padding-bottom: 16px;
+  border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
+  scroll-margin-top: 24px;
+}
+
+.learnOverviewCredits {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.learnReviewsButton {
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 5px;
+  font-size: 0.6875rem;
+}
+
+.learnOverviewStars {
+  display: inline-flex;
+  gap: 2px;
+  color: var(--color-brand);
+}
+
+.learnOverviewBlue {
+  border: 1px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.learnOverviewBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 430px);
+  align-items: start;
+  gap: 24px;
+}
+
+.learnOverviewCopy {
+  margin: 2px 0 0;
+  color: var(--color-text-dark);
+  font-family: var(--font-poppins) !important;
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.learnAccountCard {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 140px;
+  gap: 10px;
+  padding: 24px;
+  border: 2px solid color-mix(in oklch, var(--color-primary-hover) 58%, transparent);
+  border-radius: 14px;
+  background: var(--color-primary);
+  box-shadow: 0 5px 0 var(--color-primary-hover), var(--shadow-lg);
+}
+
+.learnAccountTitle,
+.learnAccountCopy {
+  margin: 0;
+}
+
+.learnAccountTitle {
+  position: relative;
+  z-index: 1;
+  color: var(--color-text-dark);
+  font-family: var(--font-poppins);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.learnAccountCopy {
+  position: relative;
+  z-index: 1;
+  color: var(--color-text-light);
+  font-family: var(--font-poppins);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.learnAccountTitle {
+  color: var(--color-text-light);
+}
+
+.learnAccountMark {
+  position: absolute;
+  right: -4px;
+  bottom: -8px;
+  color: color-mix(in oklch, var(--color-text-light) 24%, transparent);
+}
+
+.learnAccountCta {
+  position: relative;
+  z-index: 1;
+  min-width: 72%;
+  background: var(--palette-on-dark);
+  border-color: var(--palette-on-dark);
+  color: var(--color-primary-hover);
+}
+
+.learnAccountCta:hover:not(:disabled) {
+  background: var(--color-surface-base);
+  border-color: var(--color-surface-base);
+  color: var(--color-primary-hover);
+}
+
+:global([data-theme="dark"]) .learnAccountCard {
+  background: var(--color-primary);
+}
+
 .guideSubjectGroup {
   display: flex;
   flex-direction: column;
@@ -1865,6 +2060,29 @@
 @media (max-width: 768px) {
   .pageColumns {
     padding: 12px 10px 48px;
+  }
+
+  .learnLayout .globalPanel,
+  .learnFiltersPanel {
+    grid-column: 1 / -1;
+  }
+
+  .learnLayout .pageColumns {
+    padding: 24px 16px 48px;
+  }
+
+  .learnOverviewBody {
+    grid-template-columns: 1fr;
+  }
+
+  .learnLayout .globalPanel {
+    grid-row: 2;
+  }
+
+  .learnFiltersPanel {
+    grid-row: auto;
+    order: 2;
+    margin-right: 0;
   }
 
   .guideSection {

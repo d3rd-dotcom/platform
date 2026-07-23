@@ -15,6 +15,7 @@ import type {
   GuideSubjectDefinition,
 } from '@/lib/guides-db';
 import type { ComponentType } from '@/lib/vip-course-db';
+import { EDUCATION_LEVELS, GUIDE_GOALS, type EducationLevel, type GuideGoal } from '@/lib/guide-discovery-filters';
 import styles from './GuideStudio.module.css';
 
 interface GuideStudioProps {
@@ -70,6 +71,8 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
   const [aliasInput, setAliasInput] = useState('');
   const [summary, setSummary] = useState('');
   const [intendedAudience, setIntendedAudience] = useState('');
+  const [educationLevels, setEducationLevels] = useState<EducationLevel[]>([]);
+  const [goals, setGoals] = useState<GuideGoal[]>([]);
   const [estimatedMinutes, setEstimatedMinutes] = useState('');
   const [sourceProvenance, setSourceProvenance] = useState('');
   const [sourceReviewedAt, setSourceReviewedAt] = useState('');
@@ -114,6 +117,8 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
         setTopicAliases(guide.topicAliases ?? []);
         setSummary(guide.summary ?? '');
         setIntendedAudience(guide.intendedAudience ?? '');
+        setEducationLevels(guide.educationLevels ?? []);
+        setGoals(guide.goals ?? []);
         setEstimatedMinutes(
           guide.estimatedMinutes === null || guide.estimatedMinutes === undefined
             ? ''
@@ -312,6 +317,8 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
             topicAliases,
             summary,
             intendedAudience,
+            educationLevels,
+            goals,
             estimatedMinutes: estimatedMinutes ? Number(estimatedMinutes) : null,
             sourceProvenance,
             sourceReviewedAt: sourceReviewedAt || null,
@@ -336,6 +343,8 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
           topicAliases,
           summary,
           intendedAudience,
+          educationLevels,
+          goals,
           estimatedMinutes: estimatedMinutes ? Number(estimatedMinutes) : null,
           sourceProvenance,
           sourceReviewedAt: sourceReviewedAt || null,
@@ -360,6 +369,8 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
     topicAliases,
     summary,
     intendedAudience,
+    educationLevels,
+    goals,
     estimatedMinutes,
     sourceProvenance,
     sourceReviewedAt,
@@ -683,6 +694,55 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
                       placeholder="15"
                       disabled={!isDraft}
                     />
+                  </div>
+                </div>
+
+                <div className={styles.metadataGrid}>
+                  <div className={styles.field}>
+                    <span className={styles.fieldLabel}>Education levels</span>
+                    <div className={styles.discoveryTags}>
+                      {EDUCATION_LEVELS.map((level) => {
+                        const selected = educationLevels.includes(level);
+                        return (
+                          <button
+                            key={level}
+                            type="button"
+                            className={`${styles.discoveryTag} ${selected ? styles.discoveryTagSelected : ''}`}
+                            aria-pressed={selected}
+                            disabled={!isDraft}
+                            onClick={() => {
+                              setEducationLevels((current) => selected ? current.filter((item) => item !== level) : [...current, level]);
+                              setDirty(true);
+                            }}
+                          >
+                            {level}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div className={styles.field}>
+                    <span className={styles.fieldLabel}>Goals</span>
+                    <div className={styles.discoveryTags}>
+                      {GUIDE_GOALS.map((goal) => {
+                        const selected = goals.includes(goal);
+                        return (
+                          <button
+                            key={goal}
+                            type="button"
+                            className={`${styles.discoveryTag} ${selected ? styles.discoveryTagSelected : ''}`}
+                            aria-pressed={selected}
+                            disabled={!isDraft}
+                            onClick={() => {
+                              setGoals((current) => selected ? current.filter((item) => item !== goal) : [...current, goal]);
+                              setDirty(true);
+                            }}
+                          >
+                            {goal}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
 

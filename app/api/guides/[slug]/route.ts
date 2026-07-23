@@ -11,6 +11,7 @@ import {
 } from '@/lib/guides-db';
 import { GUIDE_COMPLETE_REWARD } from '@/lib/guide-rewards-db';
 import type { GuideDetailResponse } from '@/lib/guide-api-schemas';
+import { cleanDiscoveryTags, isEducationLevel, isGuideGoal, type EducationLevel, type GuideGoal } from '@/lib/guide-discovery-filters';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -97,6 +98,8 @@ export async function PATCH(request: Request, { params }: { params: { slug: stri
       topicAliases?: unknown;
       summary?: unknown;
       intendedAudience?: unknown;
+      educationLevels?: unknown;
+      goals?: unknown;
       estimatedMinutes?: unknown;
       sourceProvenance?: unknown;
       sourceReviewedAt?: unknown;
@@ -112,6 +115,8 @@ export async function PATCH(request: Request, { params }: { params: { slug: stri
       topicAliases?: string[];
       summary?: string;
       intendedAudience?: string;
+      educationLevels?: EducationLevel[];
+      goals?: GuideGoal[];
       estimatedMinutes?: number | null;
       sourceProvenance?: string;
       sourceReviewedAt?: string | null;
@@ -160,6 +165,26 @@ export async function PATCH(request: Request, { params }: { params: { slug: stri
         );
       }
       patch.intendedAudience = raw.intendedAudience;
+    }
+    if (raw.educationLevels !== undefined) {
+      if (!Array.isArray(raw.educationLevels) || raw.educationLevels.some((value) => typeof value !== 'string')) {
+        return NextResponse.json({ error: 'educationLevels must be an array of education levels.' }, { status: 400 });
+      }
+      const values = cleanDiscoveryTags(raw.educationLevels, isEducationLevel);
+      if (values.length !== new Set(raw.educationLevels).size) {
+        return NextResponse.json({ error: 'educationLevels contains an unsupported education level.' }, { status: 400 });
+      }
+      patch.educationLevels = values;
+    }
+    if (raw.goals !== undefined) {
+      if (!Array.isArray(raw.goals) || raw.goals.some((value) => typeof value !== 'string')) {
+        return NextResponse.json({ error: 'goals must be an array of guide goals.' }, { status: 400 });
+      }
+      const values = cleanDiscoveryTags(raw.goals, isGuideGoal);
+      if (values.length !== new Set(raw.goals).size) {
+        return NextResponse.json({ error: 'goals contains an unsupported guide goal.' }, { status: 400 });
+      }
+      patch.goals = values;
     }
     if (raw.estimatedMinutes !== undefined) {
       if (
