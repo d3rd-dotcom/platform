@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-20T04:04:29.455Z",
-  "totalSeconds": 880.95,
+  "generatedAt": "2026-07-23T00:55:53.954Z",
+  "totalSeconds": 1124.76,
   "segments": [
     {
       "id": "station-ident",
@@ -64,6 +64,13 @@
       "file": "/audio/blue-radio/community.mp3",
       "playbackGain": 0.56,
       "seconds": 25.5
+    },
+    {
+      "id": "pocket-world-thesis",
+      "title": "The pocket-world thesis",
+      "file": "/audio/blue-radio/pocket-world-thesis.mp3",
+      "playbackGain": 0.56,
+      "seconds": 243.81
     },
     {
       "id": "dino-desci-chat",
