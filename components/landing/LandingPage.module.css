@@ -3402,9 +3402,9 @@
   max-height: calc(100vh - 48px);
   overflow-y: auto;
   background: rgba(244, 245, 254, 0.98);
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  border-radius: 22px;
-  padding: 28px 26px;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 24%, transparent);
+  border-radius: 16px;
+  padding: 28px;
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.4);
   animation: teachersPopIn 0.28s var(--hero-ease-out) both;
 }
@@ -3425,14 +3425,14 @@
   height: 32px;
   border: none;
   border-radius: 10px;
-  background: rgba(122, 86, 198, 0.1);
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
   color: var(--color-text-dark);
   cursor: pointer;
   transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .teachersClose:hover {
-  background: rgba(122, 86, 198, 0.18);
+  background: color-mix(in oklch, var(--color-primary) 18%, transparent);
   transform: scale(1.05);
 }
 
@@ -3451,9 +3451,9 @@
   width: 44px;
   height: 44px;
   border-radius: 12px;
-  background: var(--color-accent);
+  background: var(--color-primary);
   color: #ffffff;
-  box-shadow: 0 6px 18px rgba(122, 86, 198, 0.35);
+  box-shadow: 0 6px 18px color-mix(in oklch, var(--color-primary) 35%, transparent);
 }
 
 .teachersTitle {
@@ -3477,7 +3477,7 @@
   gap: 6px;
   padding: 4px;
   border-radius: 12px;
-  background: rgba(122, 86, 198, 0.08);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
   margin-bottom: 20px;
 }
 
@@ -3501,7 +3501,7 @@
 
 .teachersTabActive {
   background: #ffffff;
-  color: var(--color-accent);
+  color: var(--color-primary);
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(26, 27, 36, 0.12);
 }
@@ -3509,6 +3509,113 @@
 .teachersBody {
   min-height: 208px;
   margin-bottom: 22px;
+}
+
+.teachersForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.teachersFormGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.teachersField {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.teachersFieldLabel {
+  color: var(--color-text-dark);
+  font-family: var(--font-primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.teachersInput,
+.teachersTextarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 24%, transparent);
+  border-radius: 10px;
+  background: var(--color-surface-1);
+  color: var(--color-text-dark);
+  font-family: var(--font-primary);
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.teachersInput {
+  height: 42px;
+  padding: 0 12px;
+}
+
+.teachersInput:focus,
+.teachersTextarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary) 14%, transparent);
+}
+
+.teachersUploads {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.teachersAssist {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
+  border-radius: 10px;
+  color: var(--color-text-dark);
+  background: color-mix(in oklch, var(--color-primary) 6%, var(--color-surface-1));
+  cursor: pointer;
+}
+
+.teachersAssistWide {
+  grid-column: 1 / -1;
+}
+
+.teachersAssistLabel {
+  font-family: var(--font-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.teachersAssistToggle {
+  display: inline-flex;
+  align-items: center;
+  width: 38px;
+  height: 22px;
+  padding: 3px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--color-text-dark) 18%, transparent);
+  transition: background 0.2s ease;
+}
+
+.teachersAssistToggleOn {
+  background: var(--color-primary);
+}
+
+.teachersAssistKnob {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-surface-1);
+  box-shadow: 0 1px 3px color-mix(in oklch, var(--color-text-dark) 24%, transparent);
+  transition: transform 0.2s var(--hero-ease-out);
+}
+
+.teachersAssistToggleOn .teachersAssistKnob {
+  transform: translateX(16px);
 }
 
 .teachersPanel {
@@ -3524,15 +3631,15 @@
   align-items: center;
   gap: 14px;
   padding: 14px 16px;
-  border: 1.5px dashed rgba(122, 86, 198, 0.4);
-  border-radius: 14px;
+  border: 1px dashed color-mix(in oklch, var(--color-primary) 48%, transparent);
+  border-radius: 10px;
   background: rgba(255, 255, 255, 0.7);
   cursor: pointer;
   transition: border-color 0.2s ease, background 0.2s ease;
 }
 
 .teachersUpload:hover {
-  border-color: var(--color-accent);
+  border-color: var(--color-primary);
   background: #ffffff;
 }
 
@@ -3544,8 +3651,8 @@
   width: 40px;
   height: 40px;
   border-radius: 11px;
-  background: rgba(122, 86, 198, 0.12);
-  color: var(--color-accent);
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  color: var(--color-primary);
 }
 
 .teachersUploadText {
@@ -3578,7 +3685,7 @@
   width: 30px;
   height: 30px;
   border-radius: 9px;
-  background: var(--color-accent);
+  background: var(--color-primary);
   color: #ffffff;
 }
 
@@ -3621,27 +3728,13 @@
 }
 
 .teachersTextarea {
-  width: 100%;
   padding: 12px 14px;
-  font-family: var(--font-primary);
-  font-size: 13.5px;
   line-height: 1.5;
-  color: var(--color-text-dark);
-  background: #ffffff;
-  border: 1.5px solid rgba(122, 86, 198, 0.25);
-  border-radius: 12px;
-  outline: none;
   resize: vertical;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .teachersTextarea::placeholder {
   color: var(--color-text-faint);
-}
-
-.teachersTextarea:focus {
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 4px rgba(122, 86, 198, 0.12);
 }
 
 /* Toggle rows */
@@ -3711,7 +3804,7 @@
 }
 
 .teachersToggleOn {
-  background: var(--color-accent);
+  background: var(--color-primary);
 }
 
 .teachersToggleKnob {
@@ -3735,18 +3828,18 @@
   font-size: 15px;
   font-weight: 600;
   color: #ffffff;
-  background: var(--color-accent);
+  background: var(--color-primary);
   border: none;
   border-radius: 12px;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-  box-shadow: 0 8px 24px rgba(122, 86, 198, 0.3);
+  box-shadow: 0 8px 24px color-mix(in oklch, var(--color-primary) 30%, transparent);
 }
 
 .teachersSubmit:hover {
   transform: translateY(-2px);
-  background: var(--color-accent-hover);
-  box-shadow: 0 12px 30px rgba(122, 86, 198, 0.4);
+  background: var(--color-primary-hover);
+  box-shadow: 0 12px 30px color-mix(in oklch, var(--color-primary) 40%, transparent);
 }
 
 .teachersSuccess {
@@ -3766,9 +3859,9 @@
   width: 56px;
   height: 56px;
   border-radius: 16px;
-  background: var(--color-accent);
+  background: var(--color-primary);
   color: #ffffff;
-  box-shadow: 0 8px 24px rgba(122, 86, 198, 0.35);
+  box-shadow: 0 8px 24px color-mix(in oklch, var(--color-primary) 35%, transparent);
   margin-bottom: 6px;
 }
 
@@ -3796,6 +3889,11 @@
 
   .teachersHeader {
     margin-right: 28px;
+  }
+
+  .teachersFormGrid,
+  .teachersUploads {
+    grid-template-columns: 1fr;
   }
 }
 

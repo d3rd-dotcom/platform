@@ -3,25 +3,17 @@
 import React, { useEffect, useState } from 'react';
 import {
   ChalkboardTeacher,
-  UsersThree,
   BookOpen,
   Folders,
   Sparkle,
-  ChatsCircle,
-  Waveform,
   X,
   UploadSimple,
 } from '@phosphor-icons/react';
+import { createPortal } from 'react-dom';
 import { useSound } from '@/hooks/useSound';
 import styles from './LandingPage.module.css';
 
-type TeacherTab = 'class' | 'ai' | 'options';
-
-const TABS: { id: TeacherTab; label: string }[] = [
-  { id: 'class', label: 'Your class' },
-  { id: 'ai', label: 'AI review' },
-  { id: 'options', label: 'Options' },
-];
+type TeacherTab = 'course' | 'materials' | 'social';
 
 /** Visual-only upload row. No file handling wired up yet. */
 function UploadField({
@@ -50,56 +42,17 @@ function UploadField({
   );
 }
 
-/** Visual-only toggle. */
-function ToggleRow({
-  icon,
-  label,
-  description,
-  checked,
-  onChange,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  description: string;
-  checked: boolean;
-  onChange: (next: boolean) => void;
-}) {
-  return (
-    <button
-      type="button"
-      className={styles.teachersToggleRow}
-      onClick={() => onChange(!checked)}
-      aria-pressed={checked}
-    >
-      <span className={styles.teachersToggleIcon} aria-hidden="true">
-        {icon}
-      </span>
-      <span className={styles.teachersToggleText}>
-        <span className={styles.teachersToggleLabel}>{label}</span>
-        <span className={styles.teachersToggleDescription}>{description}</span>
-      </span>
-      <span
-        className={`${styles.teachersToggle} ${checked ? styles.teachersToggleOn : ''}`}
-        aria-hidden="true"
-      >
-        <span className={styles.teachersToggleKnob} />
-      </span>
-    </button>
-  );
-}
-
 export default function ForTeachersModal() {
   const { play } = useSound();
   const [isOpen, setIsOpen] = useState(false);
-  const [tab, setTab] = useState<TeacherTab>('class');
   const [submitted, setSubmitted] = useState(false);
-  const [socialPortal, setSocialPortal] = useState(true);
-  const [audioGuide, setAudioGuide] = useState(true);
+  const [aiAssist, setAiAssist] = useState(true);
+  const [activeTab, setActiveTab] = useState<TeacherTab>('course');
 
   const open = () => {
     play('click');
-    setTab('class');
     setSubmitted(false);
+    setActiveTab('course');
     setIsOpen(true);
   };
 
@@ -136,7 +89,7 @@ export default function ForTeachersModal() {
         </span>
       </button>
 
-      {isOpen && (
+      {isOpen && createPortal(
         <div
           className={styles.teachersOverlay}
           onClick={close}
@@ -161,9 +114,6 @@ export default function ForTeachersModal() {
               </span>
               <div>
                 <h2 className={styles.teachersTitle}>Bring your classroom in</h2>
-                <p className={styles.teachersSubtitle}>
-                  Set up your cohort, curriculum, and AI guide in one place.
-                </p>
               </div>
             </div>
 
@@ -186,104 +136,100 @@ export default function ForTeachersModal() {
                 </button>
               </div>
             ) : (
-              <>
-                <div className={styles.teachersTabs} role="tablist">
-                  {TABS.map((t) => (
+              <form
+                className={styles.teachersForm}
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  play('click');
+                  setSubmitted(true);
+                }}
+              >
+                <div className={styles.teachersTabs} role="tablist" aria-label="Teacher setup sections">
+                  {([
+                    ['course', 'Course'],
+                    ['materials', 'Materials'],
+                    ['social', 'Social'],
+                  ] as const).map(([id, label]) => (
                     <button
-                      key={t.id}
+                      key={id}
                       type="button"
                       role="tab"
-                      aria-selected={tab === t.id}
-                      className={`${styles.teachersTab} ${tab === t.id ? styles.teachersTabActive : ''}`}
-                      onClick={() => {
-                        play('hover');
-                        setTab(t.id);
-                      }}
+                      aria-selected={activeTab === id}
+                      className={`${styles.teachersTab} ${activeTab === id ? styles.teachersTabActive : ''}`}
+                      onClick={() => setActiveTab(id)}
                     >
-                      {t.label}
+                      {label}
                     </button>
                   ))}
                 </div>
-
-                <div className={styles.teachersBody}>
-                  {tab === 'class' && (
-                    <div className={styles.teachersPanel}>
-                      <UploadField
-                        icon={<UsersThree size={20} weight="regular" />}
-                        label="Student list"
-                        hint="CSV or spreadsheet of names and emails"
-                      />
-                      <UploadField
-                        icon={<BookOpen size={20} weight="regular" />}
-                        label="Curriculum"
-                        hint="Your syllabus or week-by-week outline"
-                      />
-                      <UploadField
-                        icon={<Folders size={20} weight="regular" />}
-                        label="Course materials"
-                        hint="Readings, slides, worksheets, and media"
-                      />
-                    </div>
-                  )}
-
-                  {tab === 'ai' && (
-                    <div className={styles.teachersPanel}>
-                      <div className={styles.teachersAiCard}>
-                        <span className={styles.teachersAiIcon} aria-hidden="true">
-                          <Sparkle size={22} weight="fill" />
-                        </span>
-                        <div className={styles.teachersAiText}>
-                          <p className={styles.teachersAiTitle}>AI review assistant</p>
-                          <p className={styles.teachersAiDescription}>
-                            Blue reads student submissions and drafts feedback, flags
-                            work that needs your eyes, and keeps a running summary of how
-                            the class is doing.
-                          </p>
-                        </div>
-                      </div>
-                      <textarea
-                        className={styles.teachersTextarea}
-                        placeholder="How should the assistant grade and give feedback? Describe your rubric or tone."
-                        rows={4}
-                      />
-                    </div>
-                  )}
-
-                  {tab === 'options' && (
-                    <div className={styles.teachersPanel}>
-                      <ToggleRow
-                        icon={<ChatsCircle size={20} weight="regular" />}
-                        label="Social portal"
-                        description="A private space for your students to chat and study together."
-                        checked={socialPortal}
-                        onChange={setSocialPortal}
-                      />
-                      <ToggleRow
-                        icon={<Waveform size={20} weight="regular" />}
-                        label="AI audio tutorials"
-                        description="Let the AI guide narrate lessons as spoken audio walkthroughs."
-                        checked={audioGuide}
-                        onChange={setAudioGuide}
-                      />
-                    </div>
-                  )}
-                </div>
-
+                {activeTab === 'course' && (
+                  <div className={styles.teachersFormGrid}>
+                    <label className={styles.teachersField}>
+                      <span className={styles.teachersFieldLabel}>Organization</span>
+                      <input className={styles.teachersInput} name="organization" required />
+                    </label>
+                    <label className={styles.teachersField}>
+                      <span className={styles.teachersFieldLabel}>Work email</span>
+                      <input className={styles.teachersInput} name="email" type="email" required />
+                    </label>
+                    <button
+                      type="button"
+                      className={`${styles.teachersAssist} ${styles.teachersAssistWide}`}
+                      aria-pressed={aiAssist}
+                      onClick={() => setAiAssist((enabled) => !enabled)}
+                    >
+                      <span className={styles.teachersAssistLabel}>AI Assist?</span>
+                      <span
+                        className={`${styles.teachersAssistToggle} ${aiAssist ? styles.teachersAssistToggleOn : ''}`}
+                        aria-hidden="true"
+                      >
+                        <span className={styles.teachersAssistKnob} />
+                      </span>
+                    </button>
+                  </div>
+                )}
+                {activeTab === 'materials' && (
+                  <div className={styles.teachersUploads}>
+                    <UploadField
+                      icon={<BookOpen size={20} weight="regular" />}
+                      label="Curriculum"
+                      hint="Syllabus or course outline"
+                    />
+                    <UploadField
+                      icon={<Folders size={20} weight="regular" />}
+                      label="Materials"
+                      hint="Readings, slides, or worksheets"
+                    />
+                    <UploadField
+                      icon={<BookOpen size={20} weight="regular" />}
+                      label="Student roster"
+                      hint="Names and email addresses"
+                    />
+                  </div>
+                )}
+                {activeTab === 'social' && (
+                  <label className={styles.teachersField}>
+                    <span className={styles.teachersFieldLabel}>Point system</span>
+                    <input
+                      className={styles.teachersInput}
+                      name="pointSystem"
+                      defaultValue="Diamonds"
+                    />
+                  </label>
+                )}
                 <button
-                  type="button"
+                  type="submit"
                   className={styles.teachersSubmit}
-                  onClick={() => {
-                    play('click');
-                    setSubmitted(true);
-                  }}
                   onMouseEnter={() => play('hover')}
                 >
                   Request access
                 </button>
-              </>
+              </form>
             )}
           </div>
         </div>
+        ,
+        document.body,
       )}
     </>
   );
