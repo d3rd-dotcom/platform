@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-23T00:55:53.954Z",
-  "totalSeconds": 1124.76,
+  "generatedAt": "2026-07-23T01:08:02.537Z",
+  "totalSeconds": 795.23,
   "segments": [
     {
       "id": "station-ident",
@@ -73,11 +73,11 @@
       "seconds": 243.81
     },
     {
-      "id": "dino-desci-chat",
-      "title": "Blue and Dino on the open garden",
-      "file": "/audio/blue-radio/dino-desci-chat.mp3",
+      "id": "thousand-year-question",
+      "title": "The thousand-year question",
+      "file": "/audio/blue-radio/thousand-year-question.mp3",
       "playbackGain": 0.56,
-      "seconds": 595.68
+      "seconds": 266.15
     },
     {
       "id": "signoff",
