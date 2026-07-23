@@ -16,9 +16,21 @@ const BLUE_VOICE_ID =
   blueConfig.tts?.elevenlabs?.voiceId ||
   '';
 const BLUE_VOICE_MODEL =
+  process.env.ELEVENLABS_MODEL_ID ||
   blueConfig.settings?.voice?.model ||
   blueConfig.tts?.elevenlabs?.modelId ||
-  'eleven_flash_v2_5';
+  'eleven_multilingual_v2';
+
+// Blue's identity matters more than maximum emotional range. These settings
+// keep generations close to her configured voice while retaining enough
+// variation for her delivery to feel alive.
+const BLUE_VOICE_SETTINGS = {
+  stability: 0.72,
+  similarity_boost: 0.9,
+  style: 0,
+  use_speaker_boost: true,
+  speed: 1,
+};
 
 // Pre-recorded clips — exact text → public/audio/blue-voice/{id}.mp3.
 // When a match is found, the file is served directly instead of hitting the
@@ -107,6 +119,7 @@ async function requestElevenLabsTts(text: string, voiceId: string, modelId?: str
     body: JSON.stringify({
       text,
       model_id: modelId || BLUE_VOICE_MODEL,
+      voice_settings: BLUE_VOICE_SETTINGS,
     }),
   });
 }
@@ -150,21 +163,6 @@ export async function POST(req: NextRequest) {
     }
 
     // Check for a pre-recorded clip first — saves ElevenLabs credits.
-    // Multi-take greetings: same text, different audio generations for variance.
-    const MULTI_TAKE: Record<string, string[]> = {
-      "hey. you called. i'm glad.": ['greeting-v1', 'greeting-v2', 'greeting-v3'],
-      "oh, hey. i didn't expect you. but i'm happy you're here.": ['greeting-v4', 'greeting-v5', 'greeting-v6'],
-      "you're back. i had a feeling you would be.": ['greeting-v7', 'greeting-v8', 'greeting-v9'],
-    };
-    const takes = MULTI_TAKE[text];
-    if (takes) {
-      const clipId = takes[Math.floor(Math.random() * takes.length)];
-      try {
-        return await serveClip(clipId);
-      } catch {
-        // File missing; fall through.
-      }
-    }
     const clipId = PRE_RECORDED.get(text);
     if (clipId) {
       try {
@@ -176,6 +174,12 @@ export async function POST(req: NextRequest) {
 
     const resolvedVoiceId = voiceId || BLUE_VOICE_ID || undefined;
     const resolvedModelId = modelId || BLUE_VOICE_MODEL;
+
+    // Never let a provider choose a default speaker for Blue. A missing voice
+    // should fail quietly at the client instead of producing the wrong person.
+    if (!resolvedVoiceId) {
+      return NextResponse.json({ error: 'Blue voice is not configured' }, { status: 503 });
+    }
 
     // ElevenLabs — primary path when key + voiceId are configured
     if (ELEVENLABS_API_KEY && resolvedVoiceId) {
@@ -192,12 +196,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'TTS generation failed' }, { status: 502 });
     }
 
-    // Eliza fallback — only reached when ElevenLabs is not configured
+    // Eliza fallback — only reached when direct ElevenLabs is not configured.
+    // Every attempt carries Blue's explicit voice ID; there is no provider-
+    // selected default voice fallback.
     const attempts: Array<{ label: string; path: string; voiceId?: string }> = [
       { label: 'v1-configured-voice', path: '/api/v1/voice/tts', voiceId: resolvedVoiceId },
-      { label: 'v1-default-voice', path: '/api/v1/voice/tts' },
       { label: 'legacy-configured-voice', path: '/api/elevenlabs/tts', voiceId: resolvedVoiceId },
-      { label: 'legacy-default-voice', path: '/api/elevenlabs/tts' },
     ];
 
     let response: Response | null = null;
