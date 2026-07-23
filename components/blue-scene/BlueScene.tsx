@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useSound } from '@/hooks/useSound';
 import { DiamondReward } from '@/components/rewards/DiamondReward';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
+import HolographicFolder from '@/components/shared/HolographicFolder';
 import LivestreamFeed from './LivestreamFeed';
 import styles from './BlueScene.module.css';
 
@@ -295,6 +296,14 @@ export default function BlueScene() {
       {view === 'garden' ? (
         <>
           <div className={styles.bgImage} style={{ backgroundImage: `url(${bgUrl})` }} />
+          <HolographicFolder
+            className={styles.gardenArchiveFolder}
+            label="Academy world map"
+            fileSrc="/images/interactive-folders/academy-world-map.webp"
+            fileAlt="Illustrated Academy world map"
+            fileWidth={1920}
+            fileHeight={1547}
+          />
           <div className={styles.sceneFooter}>
             <div className={`${styles.footerText}${dialogue.chaotic ? ' ' + styles.footerTextChaotic : ''}`}>
               <span className={styles.footerTextJa}>{dialogue.ja}</span>

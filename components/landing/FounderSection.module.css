@@ -137,7 +137,7 @@
   width: 100%;
   padding: 64px clamp(20px, 4vw, 40px) 80px;
   border-top: 1px solid color-mix(in srgb, var(--color-text-light) 18%, transparent);
-  background: var(--color-landing-black);
+  background: var(--color-primary);
   color: var(--color-text-light);
   z-index: 1;
 }

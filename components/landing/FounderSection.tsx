@@ -62,10 +62,11 @@ export const AIPoweredSection: React.FC = () => {
           <ThinkingOrbBadge label="Building your optimal curricula" block />
         </div>
         <p className={founderStyles.aiDescription}>
-          Blue uses agentic memory to carry useful context forward, while
-          coordinated agent swarms examine each question from multiple angles.
-          We built the system on OpenAI&apos;s GPT-5.6 Sol, with recommendation
-          criteria refined by a team of PhDs for current, high-quality guidance.
+          Blue uses long-term memory and context to help build expert-level courses.
+          Fine-tuned by months of work, input from PhD students. Blue&apos;s coordinated
+          agentic swarm examines each topic from multiple angles. Operating with
+          OpenAI&apos;s GPT-5.6 Sol, Blue agent is a catalyst refining quality education,
+          giving educators the tools they really need to pass the baton forward.
         </p>
       </div>
     </section>

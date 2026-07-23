@@ -8,6 +8,7 @@ import ForTeachersModal from './ForTeachersModal';
 import { LandingScene } from './LandingScene';
 import HeroFloatingPanels from './HeroFloatingPanels';
 import ThinkingOrbBadge from './ThinkingOrbBadge';
+import HolographicFolder from '@/components/shared/HolographicFolder';
 const HERO_HEADLINE = 'Open-sourced LMS platform to empower educators worldwide';
 
 export const HeroSection: React.FC = () => {
@@ -41,6 +42,22 @@ export const HeroSection: React.FC = () => {
           className={styles.heroCharacter}
           priority
           aria-hidden="true"
+        />
+        <HolographicFolder
+          className={styles.heroFolderText}
+          label="Academy magazine"
+          fileSrc="/images/interactive-folders/academy-magazine-2082.jpg"
+          fileAlt="Mental Wealth Academy Artist Guide magazine cover"
+          fileWidth={927}
+          fileHeight={1200}
+        />
+        <HolographicFolder
+          className={styles.heroFolderVideo}
+          label="Culturally responsive AI research paper"
+          fileSrc="/images/interactive-folders/research-white-paper.png"
+          fileAlt="Culturally responsive AI for cognitive and psychosocial equity research paper"
+          fileWidth={1098}
+          fileHeight={1552}
         />
         <div className={styles.heroContent}>
           <ThinkingOrbBadge

@@ -161,6 +161,22 @@
   animation: heroCharacterSway 7s ease-in-out infinite alternate;
 }
 
+.heroFolderText,
+.heroFolderVideo {
+  position: absolute;
+  z-index: 5;
+}
+
+.heroFolderText {
+  top: clamp(88px, 16vh, 162px);
+  left: clamp(170px, 23vw, 390px);
+}
+
+.heroFolderVideo {
+  right: clamp(210px, 28vw, 470px);
+  bottom: clamp(72px, 13vh, 136px);
+}
+
 @keyframes heroCharacterSway {
   from {
     transform: scaleX(-1) rotate(-2deg);
@@ -1182,6 +1198,16 @@
     padding: 0 var(--landing-shell-padding);
     box-sizing: border-box;
     transform: none;
+  }
+
+  .heroFolderText {
+    top: 74px;
+    left: 20px;
+  }
+
+  .heroFolderVideo {
+    right: 22px;
+    bottom: 74px;
   }
 
   .heroEarth {

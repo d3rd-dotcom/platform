@@ -186,7 +186,7 @@ export const ProblemMap: React.FC = () => {
       <div
         className={styles.flow}
         role="group"
-        aria-label="Where you live still shapes access to a good school, because historic redlining tracked with school funding. Only about 12 percent finish a typical open online course, and isolation and loneliness are among the strongest predictors of who drops out. The dominant online learning platforms, Blackboard, Moodle, and Canvas, presented a digital filing cabinet without the social togetherness that makes a class memorable, so next generation solutions need to put that first."
+        aria-label="Redlining shapes school funding before kindergarten. Only about 12 percent finish a typical open online course, and isolation and loneliness are among the strongest predictors of who drops out. Legacy platforms offer stagnant curricula and few social features, leaving many online students isolated."
       >
         <article className={`${styles.stage} ${styles.mapStage}`}>
           <div
@@ -199,11 +199,12 @@ export const ProblemMap: React.FC = () => {
             <div className={styles.mapStoryTop}>
               <div className={styles.stageHeading}>
                 <span className={styles.stageNumber}>1</span>
-                <h3 className={styles.stageTitle}>Freedom from wealth inequality</h3>
+                <h3 className={styles.stageTitle}>Inequality in Education</h3>
               </div>
               <p className={styles.stageCopy}>
-                Housing maps graded neighborhoods from A to D. Those grades still
-                track with school funding and who reaches a good classroom.
+                Redlining shapes school funding before kindergarten. When housing
+                taxes fund public schools, poorer areas receive fewer resources and
+                less qualified educators.
               </p>
             </div>
           </div>
@@ -212,18 +213,18 @@ export const ProblemMap: React.FC = () => {
         <article className={`${styles.stage} ${styles.outcomeStage}`}>
           <div className={styles.stageHeading}>
             <span className={styles.stageNumber}>2</span>
-            <h3 className={styles.stageTitle}>Accelerate equitable proficiency</h3>
+            <h3 className={styles.stageTitle}>Lack of Proficiency in Educators</h3>
           </div>
           <div className={styles.outcome}>
-            <strong className={styles.outcomeValue}>12%</strong>
+            <strong className={styles.outcomeValue}>70%</strong>
             <p className={styles.outcomeCopy}>
-              Only 12% (1 in 8) of students complete a typical open online course,
-              with isolation and loneliness being the primary drivers for those who
-              quit.
+              Up to 70% of higher education instructors teaching open online courses
+              report feeling inadequately trained in utilizing digital engagement
+              tools, a factor that directly contributes to high learner dropout rates.
             </p>
             <div className={styles.people} aria-hidden="true">
               {Array.from({ length: 8 }).map((_, index) => (
-                <i className={index < 1 ? styles.personActive : undefined} key={index} />
+                <i className={index < 6 ? styles.personActive : undefined} key={index} />
               ))}
             </div>
           </div>
@@ -233,21 +234,19 @@ export const ProblemMap: React.FC = () => {
           <div className={styles.stageHeaderBlock}>
             <div className={styles.stageHeading}>
               <span className={styles.stageNumber}>3</span>
-              <h3 className={styles.stageTitle}>Inexpressive digital classrooms</h3>
+              <h3 className={styles.stageTitle}>Poorly Designed Infrastructure</h3>
             </div>
             <div className={styles.platformChips} aria-hidden="true">
               {PLATFORMS.map((name) => (
                 <span key={name}>{name}</span>
               ))}
             </div>
-            <p className={styles.stageCopy}>
-              Legacy platforms presented a digital filing cabinet: tasks, curricula,
-              uploads, and grades. However, they lacked the social nature and
-              togetherness that make a class truly memorable. Next-gen solutions
-              require us to place social connection at the forefront and crux of
-              online learning.
-            </p>
           </div>
+          <p className={styles.stageCopy}>
+            Legacy platforms offer stagnant curricula and few social features, leaving
+            many online students isolated. Next-gen courses should hold Gen-Z and
+            Gen-Alpha attention while improving global education.
+          </p>
           <div className={styles.nodeField} aria-hidden="true">
             <div className={styles.nodeGrid}>
               {Array.from({ length: 15 }).map((_, index) => (

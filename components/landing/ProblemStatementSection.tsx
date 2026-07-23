@@ -15,14 +15,13 @@ export const ProblemStatementSection: React.FC = () => (
         <div className={styles.content}>
           <div className={styles.contextPanel}>
             <div className={styles.titlePanel}>
-              <h2 className={styles.heading}>Poor nations face a severe shortage of qualified teachers.</h2>
+              <h2 className={styles.heading}>Modern systems fail to empower quality educators.</h2>
             </div>
             <p className={styles.lead}>
-              When qualified teachers are scarce, schools struggle to compensate.
-              Yet, most course platforms assume this problem has already been solved,
-              providing software for classrooms that remain unstaffed. We built our
-              open, self-hostable platform to change this: it enables a small group
-              of experts to reach exponentially more learners.
+              Schools struggle when qualified teachers are scarce, especially when
+              their infrastructure is not designed for the people who use it. Mental
+              Wealth Academy is open and self-hostable, so a small team of experts
+              can reach far more learners.
             </p>
           </div>
           <div className={styles.mapPanel}>
